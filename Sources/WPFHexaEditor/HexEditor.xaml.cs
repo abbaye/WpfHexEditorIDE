@@ -151,8 +151,9 @@ namespace WpfHexaEditor
 
         /// <summary>
         /// Custom character table loaded. Used for show byte as texte.
+        /// Now managed by TblService - use _tblService.CharacterTable instead.
         /// </summary>
-        private TblStream _tblCharacterTable;
+        // private TblStream _tblService.CharacterTable; // REMOVED - Now using _tblService.CharacterTable
 
         /// <summary>
         /// Hold the count of all byte in file.
@@ -1077,8 +1078,7 @@ namespace WpfHexaEditor
             if (!_tblService.LoadFromFile(fileName))
                 return;
 
-            // Update reference for backward compatibility
-            _tblCharacterTable = _tblService.CharacterTable;
+            // Service now manages CharacterTable internally - no manual assignment needed
 
             // Update UI (visual layer)
             TblLabel.Visibility = Visibility.Visible;
@@ -1101,8 +1101,7 @@ namespace WpfHexaEditor
             if (!_tblService.LoadDefault(type))
                 return;
 
-            // Update reference for backward compatibility
-            _tblCharacterTable = _tblService.CharacterTable;
+            // Service now manages CharacterTable internally - no manual assignment needed
             TblShowMte = false;
 
             // Update UI (visual layer)
@@ -1118,9 +1117,9 @@ namespace WpfHexaEditor
         private void UpdateTblBookMark()
         {
             //Load from loaded TBL bookmark
-            if (_tblCharacterTable == null) return;
+            if (_tblService.CharacterTable == null) return;
 
-            foreach (var mark in _tblCharacterTable.BookMarks)
+            foreach (var mark in _tblService.CharacterTable.BookMarks)
                 SetScrollMarker(mark);
         }
 
@@ -1858,7 +1857,7 @@ namespace WpfHexaEditor
         /// Copy to clipboard the current selection with actual change in control
         /// </summary>
         public void CopyToClipboard(CopyPasteMode copypastemode) =>
-            CopyToClipboard(copypastemode, SelectionStart, SelectionStop, true, _tblCharacterTable);
+            CopyToClipboard(copypastemode, SelectionStart, SelectionStop, true, _tblService.CharacterTable);
 
         /// <summary>
         /// Copy to clipboard
@@ -3024,7 +3023,7 @@ namespace WpfHexaEditor
 
                 for (var i = 0; i < BytePerLine * ByteSizeRatio; i++)
                 {
-                    if (_tblCharacterTable == null && (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                    if (_tblService.CharacterTable == null && (ByteSpacerPositioning == ByteSpacerPosition.Both ||
                                                        ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel))
                         AddByteSpacer(dataLineStack, i);
 
@@ -3265,7 +3264,7 @@ namespace WpfHexaEditor
                     c.Action = ByteAction.Nothing;
                     c.ReadOnlyMode = ReadOnlyMode;
                     c.InternalChange = true;
-                    c.TblCharacterTable = _tblCharacterTable;
+                    c.TblCharacterTable = _tblService.CharacterTable;
                     c.TypeOfCharacterTable = TypeOfCharacterTable;
 
                     var nextPos = startPosition + index;
@@ -3282,7 +3281,7 @@ namespace WpfHexaEditor
                             c.BytePositionInStream = !HideByteDeleted ? nextPos : _viewBufferBytePosition[index];
 
                             #region Load ByteNext for TBL MTE matching
-                            if (_tblCharacterTable is not null)
+                            if (_tblService.CharacterTable is not null)
                             {
                                 var (singleByte, succes) = _provider.GetByte(c.BytePositionInStream + 1);
                                 c.ByteNext = succes ? singleByte : null;
@@ -4517,7 +4516,7 @@ namespace WpfHexaEditor
 
                 }
 
-                if (_tblCharacterTable is not null)
+                if (_tblService.CharacterTable is not null)
                     CopyTblcMenu.IsEnabled = true;
             }
 
@@ -4848,7 +4847,7 @@ namespace WpfHexaEditor
             if (disposing)
             {
                 _provider?.Dispose();
-                _tblCharacterTable?.Dispose();
+                _tblService.CharacterTable?.Dispose();
                 _viewBuffer = null;
                 _viewBufferBytePosition = null;
                 // _markedPositionList is now managed by HighlightService (no need to null)
@@ -5227,7 +5226,7 @@ namespace WpfHexaEditor
                 new XAttribute(nameof(ReadOnlyMode), ReadOnlyMode),
                     new XElement("ByteModifieds", new XAttribute("Count", _provider.GetByteModifieds(ByteAction.All).Count)),
                     new XElement("BookMarks", new XAttribute("Count", BookMarks.Count())),
-                    new XElement("TBL", new XAttribute("Loaded", _tblCharacterTable is not null)),
+                    new XElement("TBL", new XAttribute("Loaded", _tblService.CharacterTable is not null)),
                     new XElement("HighLights", new XAttribute("Count", _highlightService.GetHighlightCount()))));
 
             #region Create ByteModifieds tag
@@ -5266,12 +5265,12 @@ namespace WpfHexaEditor
 
             #region Create TBL tag
 
-            if (_tblCharacterTable is not null)
+            if (_tblService.CharacterTable is not null)
                 doc.Element("WpfHexEditor")
                     ?.Element("TBL")
                     ?.Add(new XElement("TBLData",
-                            new XAttribute("Filename", _tblCharacterTable.FileName),
-                            new XAttribute("Data", _tblCharacterTable.ToString())));
+                            new XAttribute("Filename", _tblService.CharacterTable.FileName),
+                            new XAttribute("Data", _tblService.CharacterTable.ToString())));
             #endregion
 
             return doc;
@@ -5402,7 +5401,7 @@ namespace WpfHexaEditor
                     switch (at.Name.ToString())
                     {
                         case "Data":
-                            _tblCharacterTable.Load(at.Value);
+                            _tblService.CharacterTable.Load(at.Value);
                             break;
                         case "Filename":
                             //TODO
