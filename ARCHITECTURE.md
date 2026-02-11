@@ -477,11 +477,11 @@ graph LR
         HexStr[HexaString<br/>FF 00 AB]
         AsciiStr[ASCIIString<br/>Hello]
         TblStr[TBLString<br/>Custom chars]
-        CSharp[CSharpCode<br/>new byte[] {...}]
-        VBNet[VBNetCode<br/>Dim bytes() As Byte]
-        C[CCode<br/>unsigned char data[]]
-        Java[JavaCode<br/>byte[] data]
-        FSharp[FSharpCode<br/>let bytes = [|...|]]
+        CSharp["CSharpCode<br/>new byte[...]"]
+        VBNet["VBNetCode<br/>Dim bytes As Byte"]
+        C["CCode<br/>unsigned char data"]
+        Java["JavaCode<br/>byte data"]
+        FSharp["FSharpCode<br/>let bytes = array"]
     end
 
     User[User Copies] --> ClipboardService
@@ -557,7 +557,7 @@ graph TB
         F[ByteProvider.FindIndexOf<br/>⚡ Boyer-Moore algorithm]
 
         G[User Modifies Bytes]
-        H[UndoRedoService<br/>⚡ Stack operations O(1)]
+        H["UndoRedoService<br/>⚡ Stack operations O(1)"]
         I[ByteProvider.AddByteModified<br/>⚡ Minimal overhead]
     end
 
