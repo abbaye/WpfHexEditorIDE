@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36705.20 d17.14
+VisualStudioVersion = 17.14.36705.20
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{E7C58EBD-5476-4A12-83EB-235DE68AF079}"
 EndProject
@@ -24,6 +24,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Sample.ServiceUsage", "Samples\WpfHexEditor.Sample.ServiceUsage\WpfHexEditor.Sample.ServiceUsage.csproj", "{164B8974-751F-4611-929D-21CF3C03B4A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFHexaEditor.Tests", "WPFHexaEditor.Tests\WPFHexaEditor.Tests.csproj", "{73E610C2-5CFB-4B1E-A4CA-D1EEDD2DCE57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Sample.Performance", "Samples\WpfHexEditor.Sample.Performance\WpfHexEditor.Sample.Performance.csproj", "{7D2B8C5A-037E-4A5D-8687-505850EC2A54}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPFHexaEditor", "WPFHexaEditor", "{17DF3F5C-B057-775F-6415-08BE72BB68E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -155,6 +159,18 @@ Global
 		{73E610C2-5CFB-4B1E-A4CA-D1EEDD2DCE57}.Release|x64.Build.0 = Release|Any CPU
 		{73E610C2-5CFB-4B1E-A4CA-D1EEDD2DCE57}.Release|x86.ActiveCfg = Release|Any CPU
 		{73E610C2-5CFB-4B1E-A4CA-D1EEDD2DCE57}.Release|x86.Build.0 = Release|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Debug|x64.Build.0 = Debug|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Debug|x86.Build.0 = Debug|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Release|x64.ActiveCfg = Release|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Release|x64.Build.0 = Release|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Release|x86.ActiveCfg = Release|Any CPU
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,6 +185,7 @@ Global
 		{3D2FA808-7163-4103-ADBE-9912D28F7ECE} = {E7C58EBD-5476-4A12-83EB-235DE68AF079}
 		{164B8974-751F-4611-929D-21CF3C03B4A7} = {E7C58EBD-5476-4A12-83EB-235DE68AF079}
 		{73E610C2-5CFB-4B1E-A4CA-D1EEDD2DCE57} = {E7C58EBD-5476-4A12-83EB-235DE68AF079}
+		{7D2B8C5A-037E-4A5D-8687-505850EC2A54} = {E7C58EBD-5476-4A12-83EB-235DE68AF079}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B382CAE-4846-466E-A3D3-0842043B4012}
