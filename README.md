@@ -314,7 +314,7 @@ Insert the control like this in your XAML...:
 
 ## 🏗️ Architecture
 
-WPF HexEditor now uses a modern **service-based architecture** for improved maintainability and testability.
+WPF HexEditor now uses a modern [**service-based architecture**](ARCHITECTURE.md) for improved maintainability and testability.
 
 ### Service Layer (10 Services)
 
@@ -353,7 +353,7 @@ See [Services Documentation](Sources/WPFHexaEditor/Services/README.md) for detai
 ### 📖 Table of Contents
 
 - [Getting Started](#-how-to-use) - Quick integration guide
-- [Architecture](#️-architecture) - Service-based design overview
+- [Architecture](ARCHITECTURE.md) - Service-based design overview
 - [Performance Guide](PERFORMANCE_GUIDE.md) - ⚡ Performance optimization, benchmarking, best practices
 - [API Reference](#-main-control-api) - HexEditor control documentation
 - [Sample Applications](#-sample-applications) - Working examples
