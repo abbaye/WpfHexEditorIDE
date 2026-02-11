@@ -239,5 +239,128 @@ namespace WpfHexaEditor.Core.Bytes
         /// Convert String to hex string For example: "barn" = "62 61 72 6e"
         /// </summary>
         public static string StringToHex(string str) => ByteToHex(StringToByte(str));
+
+        #region Encoding Support (Issue #138)
+
+        /// <summary>
+        /// Convert byte to character using specified encoding
+        /// Supports multi-byte encodings (UTF-8, UTF-16, etc.)
+        /// </summary>
+        /// <param name="byteValue">Single byte to convert</param>
+        /// <param name="encoding">Encoding to use</param>
+        /// <returns>Decoded character or '.' for invalid sequences</returns>
+        public static string ByteToStringWithEncoding(byte byteValue, Encoding encoding)
+        {
+            if (encoding == null)
+                return ByteToChar(byteValue).ToString();
+
+            try
+            {
+                // For single-byte encodings (ASCII, Latin1), decode directly
+                var bytes = new[] { byteValue };
+                var result = encoding.GetString(bytes);
+
+                // Return '.' for control characters or invalid sequences
+                if (string.IsNullOrEmpty(result) || char.IsControl(result[0]))
+                    return ".";
+
+                return result;
+            }
+            catch
+            {
+                return ".";
+            }
+        }
+
+        /// <summary>
+        /// Convert bytes to string using specified CharacterTableType
+        /// </summary>
+        /// <param name="bytes">Bytes to convert</param>
+        /// <param name="tableType">Character table type</param>
+        /// <param name="customEncoding">Custom encoding (used when tableType is CustomEncoding)</param>
+        /// <returns>Decoded string</returns>
+        public static string BytesToStringWithEncoding(byte[] bytes, CharacterTableType tableType, Encoding customEncoding = null)
+        {
+            if (bytes == null || bytes.Length == 0)
+                return string.Empty;
+
+            try
+            {
+                switch (tableType)
+                {
+                    case CharacterTableType.Ascii:
+                        return BytesToString(bytes, ByteToString.ByteToCharProcess);
+
+                    case CharacterTableType.UTF8:
+                        return Encoding.UTF8.GetString(bytes);
+
+                    case CharacterTableType.UTF16LE:
+                        return Encoding.Unicode.GetString(bytes);
+
+                    case CharacterTableType.UTF16BE:
+                        return Encoding.BigEndianUnicode.GetString(bytes);
+
+                    case CharacterTableType.UTF32:
+                        return Encoding.UTF32.GetString(bytes);
+
+                    case CharacterTableType.Latin1:
+                        return Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
+
+                    case CharacterTableType.CustomEncoding:
+                        if (customEncoding != null)
+                            return customEncoding.GetString(bytes);
+                        goto default;
+
+                    case CharacterTableType.TblFile:
+                        // TBL handled separately by TblStream
+                        goto default;
+
+                    default:
+                        return BytesToString(bytes, ByteToString.ByteToCharProcess);
+                }
+            }
+            catch
+            {
+                // Fallback to ASCII on error
+                return BytesToString(bytes, ByteToString.ByteToCharProcess);
+            }
+        }
+
+        /// <summary>
+        /// Get the appropriate Encoding object for a CharacterTableType
+        /// </summary>
+        /// <param name="tableType">Character table type</param>
+        /// <param name="customEncoding">Custom encoding (used when tableType is CustomEncoding)</param>
+        /// <returns>Encoding instance or null for TblFile/Ascii</returns>
+        public static Encoding GetEncodingFromTableType(CharacterTableType tableType, Encoding customEncoding = null)
+        {
+            return tableType switch
+            {
+                CharacterTableType.UTF8 => Encoding.UTF8,
+                CharacterTableType.UTF16LE => Encoding.Unicode,
+                CharacterTableType.UTF16BE => Encoding.BigEndianUnicode,
+                CharacterTableType.UTF32 => Encoding.UTF32,
+                CharacterTableType.Latin1 => Encoding.GetEncoding("ISO-8859-1"),
+                CharacterTableType.CustomEncoding => customEncoding ?? Encoding.UTF8,
+                _ => null
+            };
+        }
+
+        /// <summary>
+        /// Check if the encoding is multi-byte (UTF-8, UTF-16, UTF-32)
+        /// </summary>
+        public static bool IsMultiByteEncoding(CharacterTableType tableType)
+        {
+            return tableType switch
+            {
+                CharacterTableType.UTF8 => true,
+                CharacterTableType.UTF16LE => true,
+                CharacterTableType.UTF16BE => true,
+                CharacterTableType.UTF32 => true,
+                _ => false
+            };
+        }
+
+        #endregion
     }
 }

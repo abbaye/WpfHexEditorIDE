@@ -140,12 +140,50 @@ namespace WpfHexaEditor.Core
     }
 
     /// <summary>
-    /// Type of character are used
+    /// Type of character encoding used for string display
     /// </summary>
     public enum CharacterTableType
     {
+        /// <summary>
+        /// ASCII encoding (single byte, 0-127)
+        /// </summary>
         Ascii,
-        TblFile
+
+        /// <summary>
+        /// Custom TBL file (for ROM hacking and game translation)
+        /// </summary>
+        TblFile,
+
+        /// <summary>
+        /// UTF-8 encoding (1-4 bytes per character, Unicode)
+        /// </summary>
+        UTF8,
+
+        /// <summary>
+        /// UTF-16 Little Endian encoding (2-4 bytes per character, Unicode)
+        /// </summary>
+        UTF16LE,
+
+        /// <summary>
+        /// UTF-16 Big Endian encoding (2-4 bytes per character, Unicode)
+        /// </summary>
+        UTF16BE,
+
+        /// <summary>
+        /// UTF-32 encoding (4 bytes per character, Unicode)
+        /// </summary>
+        UTF32,
+
+        /// <summary>
+        /// Latin-1 / ISO-8859-1 encoding (single byte, Western European)
+        /// </summary>
+        Latin1,
+
+        /// <summary>
+        /// Custom encoding specified by CustomEncoding property
+        /// Allows any encoding supported by System.Text.Encoding
+        /// </summary>
+        CustomEncoding
     }
 
     /// <summary>

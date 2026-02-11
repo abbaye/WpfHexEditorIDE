@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -1048,6 +1049,39 @@ namespace WpfHexaEditor
 
                     ctrl.RefreshView(true);
                     ctrl.TypeOfCharacterTableChanged?.Invoke(ctrl, EventArgs.Empty);
+                }));
+
+        /// <summary>
+        /// Custom encoding to use when TypeOfCharacterTable is set to CustomEncoding
+        /// Allows any encoding supported by System.Text.Encoding (e.g., Shift-JIS, EUC-KR, Windows-1252, etc.)
+        /// </summary>
+        /// <example>
+        /// <code>
+        /// // Use Shift-JIS encoding for Japanese text
+        /// hexEditor.TypeOfCharacterTable = CharacterTableType.CustomEncoding;
+        /// hexEditor.CustomEncoding = Encoding.GetEncoding("shift_jis");
+        ///
+        /// // Use EUC-KR encoding for Korean text
+        /// hexEditor.CustomEncoding = Encoding.GetEncoding("euc-kr");
+        ///
+        /// // Use Windows-1252 (Western European)
+        /// hexEditor.CustomEncoding = Encoding.GetEncoding(1252);
+        /// </code>
+        /// </example>
+        public Encoding CustomEncoding
+        {
+            get => (Encoding)GetValue(CustomEncodingProperty);
+            set => SetValue(CustomEncodingProperty, value);
+        }
+
+        public static readonly DependencyProperty CustomEncodingProperty =
+            DependencyProperty.Register(nameof(CustomEncoding), typeof(Encoding), typeof(HexEditor),
+                new FrameworkPropertyMetadata(Encoding.UTF8, (d, _) =>
+                {
+                    if (d is not HexEditor ctrl) return;
+                    // Only refresh if CustomEncoding is actually being used
+                    if (ctrl.TypeOfCharacterTable == CharacterTableType.CustomEncoding)
+                        ctrl.RefreshView(true);
                 }));
 
         /// <summary>

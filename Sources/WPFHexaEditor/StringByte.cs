@@ -99,13 +99,13 @@ namespace WpfHexaEditor
                     case CharacterTableType.Ascii:
                         Text = ByteConverters.ByteToChar(Byte.Byte[0]).ToString();
                         break;
+
                     case CharacterTableType.TblFile:
                         if (TblCharacterTable is not null)
                         {
                             ReadOnlyMode = !TblCharacterTable.AllowEdit;
 
                             var content = "#";
-
 
                             if (TblShowMte && ByteNext.HasValue)
                                 (content, dteType) = TblCharacterTable.FindMatch(ByteConverters.ByteToHex(Byte.Byte[0]) +
@@ -118,6 +118,31 @@ namespace WpfHexaEditor
                         }
                         else
                             goto case CharacterTableType.Ascii;
+                        break;
+
+                    // NEW: Unicode and standard encodings support
+                    case CharacterTableType.UTF8:
+                    case CharacterTableType.UTF16LE:
+                    case CharacterTableType.UTF16BE:
+                    case CharacterTableType.UTF32:
+                    case CharacterTableType.Latin1:
+                    case CharacterTableType.CustomEncoding:
+                        // For multi-byte encodings, we display single byte representation
+                        // Full multi-byte character rendering would require reading ahead
+                        var encoding = ByteConverters.GetEncodingFromTableType(TypeOfCharacterTable, _parent.CustomEncoding);
+                        if (encoding != null)
+                        {
+                            Text = ByteConverters.ByteToStringWithEncoding(Byte.Byte[0], encoding);
+                        }
+                        else
+                        {
+                            // Fallback to ASCII
+                            Text = ByteConverters.ByteToChar(Byte.Byte[0]).ToString();
+                        }
+                        break;
+
+                    default:
+                        Text = ByteConverters.ByteToChar(Byte.Byte[0]).ToString();
                         break;
                 }
 

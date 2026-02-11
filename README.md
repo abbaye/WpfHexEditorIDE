@@ -131,8 +131,9 @@ Unicode TBL are supported. For use put value at the right of equal (=) like this
 - ⭐ **BarChart view:** Visual data representation
 - ⭐ **AvalonDock support:** Dockable hex editor panels
 - **Byte grouping:** Group bytes in blocks of 2, 4, 6, 8, 16 bytes
-- **Custom TBL support:** Use .tbl character tables (game ROMs, etc.)
-- **Unicode TBL:** Support for Unicode character mapping
+- 🆕 **Multiple encodings:** ASCII, UTF-8, UTF-16 (LE/BE), UTF-32, Latin-1, and custom encodings via `Encoding.GetEncoding()`
+- **Custom TBL support:** Use .tbl character tables (game ROMs, translation hacking)
+- **Unicode TBL:** Support for Unicode character mapping in TBL files
 - **Zoom:** 50% to 200% content scaling
 - **Show deleted bytes:** Option to visualize deleted data
 - **Line addressing:** Show/hide byte addresses
