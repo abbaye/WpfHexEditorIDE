@@ -13,6 +13,45 @@ namespace WpfHexaEditor.Services
     /// <summary>
     /// Service responsible for bookmark management operations
     /// </summary>
+    /// <example>
+    /// Basic usage:
+    /// <code>
+    /// var service = new BookmarkService();
+    ///
+    /// // Add bookmarks with descriptions
+    /// service.AddBookmark(position: 100, description: "Header start");
+    /// service.AddBookmark(position: 500, description: "Data section");
+    /// service.AddBookmark(position: 1000, description: "Footer");
+    ///
+    /// // Check if bookmark exists
+    /// if (service.HasBookmarkAt(100))
+    ///     Console.WriteLine("Bookmark found at position 100");
+    ///
+    /// // Navigate between bookmarks
+    /// var current = 250;
+    /// var next = service.GetNextBookmark(current);
+    /// if (next != null)
+    ///     Console.WriteLine($"Next bookmark at {next.BytePositionInStream}: {next.Description}");
+    ///
+    /// var previous = service.GetPreviousBookmark(current);
+    /// if (previous != null)
+    ///     Console.WriteLine($"Previous bookmark at {previous.BytePositionInStream}");
+    ///
+    /// // Get all bookmarks
+    /// foreach (var bookmark in service.GetAllBookmarks())
+    ///     Console.WriteLine($"Position: {bookmark.BytePositionInStream}, Description: {bookmark.Description}");
+    ///
+    /// // Update bookmark description
+    /// service.UpdateBookmarkDescription(100, "Updated header description");
+    ///
+    /// // Remove specific bookmark
+    /// service.RemoveBookmark(500);
+    ///
+    /// // Get statistics
+    /// int count = service.GetBookmarkCount();
+    /// Console.WriteLine($"Total bookmarks: {count}");
+    /// </code>
+    /// </example>
     public class BookmarkService
     {
         #region Private Fields

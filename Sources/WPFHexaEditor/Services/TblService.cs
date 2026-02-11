@@ -15,6 +15,52 @@ namespace WpfHexaEditor.Services
     /// <summary>
     /// Service responsible for TBL (character table) management operations
     /// </summary>
+    /// <example>
+    /// Basic usage:
+    /// <code>
+    /// var service = new TblService();
+    ///
+    /// // Load character table from file (for game ROM editing)
+    /// if (service.LoadFromFile(@"C:\ROMs\FinalFantasy2.tbl"))
+    /// {
+    ///     Console.WriteLine($"Loaded: {service.GetTableInfo()}");
+    ///
+    ///     // Convert bytes using the TBL
+    ///     byte[] gameText = new byte[] { 0x82, 0x83, 0x84 };
+    ///     string decoded = service.BytesToString(gameText);
+    ///     Console.WriteLine($"Game text: {decoded}");
+    ///
+    ///     // Find character for hex value
+    ///     var (text, dteType) = service.FindMatch("82", showSpecialValue: true);
+    ///     Console.WriteLine($"Hex 82 = '{text}' (Type: {dteType})");
+    /// }
+    ///
+    /// // Or load a default table
+    /// service.LoadDefault(DefaultCharacterTableType.Ascii);
+    ///
+    /// // Check table state
+    /// if (service.HasTable)
+    /// {
+    ///     bool isDefault = service.IsDefaultTable();
+    ///     bool isFromFile = service.IsFileTable();
+    ///     Console.WriteLine($"Table loaded: Default={isDefault}, File={isFromFile}");
+    /// }
+    ///
+    /// // Work with TBL bookmarks
+    /// if (service.HasBookmarks())
+    /// {
+    ///     int count = service.GetBookmarkCount();
+    ///     Console.WriteLine($"TBL has {count} bookmarks");
+    ///
+    ///     foreach (var bookmark in service.GetTblBookmarks())
+    ///         Console.WriteLine($"Bookmark: {bookmark.Description} at {bookmark.BytePositionInStream}");
+    /// }
+    ///
+    /// // Clean up
+    /// service.Clear();
+    /// service.Dispose();
+    /// </code>
+    /// </example>
     public class TblService
     {
         #region Private Fields

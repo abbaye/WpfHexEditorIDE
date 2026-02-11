@@ -13,6 +13,44 @@ namespace WpfHexaEditor.Services
     /// <summary>
     /// Service responsible for position calculations and conversions
     /// </summary>
+    /// <example>
+    /// Basic usage:
+    /// <code>
+    /// var service = new PositionService();
+    /// var provider = hexEditor.Provider;
+    ///
+    /// // Line and column calculations
+    /// long position = 256;
+    /// long line = service.GetLineNumber(position, byteShiftLeft: 0, hideByteDeleted: false,
+    ///                                    bytePerLine: 16, byteSizeRatio: 1, provider);
+    /// long column = service.GetColumnNumber(position, hideByteDeleted: false,
+    ///                                       allowVisualByteAddress: false, visualByteAdressStart: 0,
+    ///                                       byteShiftLeft: 0, bytePerLine: 16, provider);
+    /// Console.WriteLine($"Position {position} is at line {line}, column {column}");
+    ///
+    /// // Hex conversion
+    /// var (success, pos) = service.HexLiteralToLong("0x100");  // Parse "0x100" → 256
+    /// if (success)
+    /// {
+    ///     string hexStr = service.LongToHex(pos);  // Convert back → "100"
+    ///     Console.WriteLine($"Parsed position: {pos}, Hex: {hexStr}");
+    /// }
+    ///
+    /// // Position validation
+    /// long fileLength = 1024;
+    /// bool isValid = service.IsPositionValid(position, fileLength);
+    /// long clamped = service.ClampPosition(2000, minPosition: 0, maxPosition: fileLength);
+    ///
+    /// // Visibility checking
+    /// long firstVisible = service.GetFirstVisibleBytePosition(scrollValue: 10, bytePerLine: 16,
+    ///                                                          byteShiftLeft: 0, byteSizeRatio: 1,
+    ///                                                          hideByteDeleted: false,
+    ///                                                          allowVisualByteAddress: false,
+    ///                                                          visualByteAdressStart: 0, provider);
+    /// long lastVisible = firstVisible + (16 * 20); // 20 visible lines
+    /// bool visible = service.IsBytePositionVisible(position, firstVisible, lastVisible);
+    /// </code>
+    /// </example>
     public class PositionService
     {
         #region Line/Column Calculations

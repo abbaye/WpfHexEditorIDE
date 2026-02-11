@@ -14,6 +14,56 @@ namespace WpfHexaEditor.Services
     /// <summary>
     /// Service responsible for custom background block management operations
     /// </summary>
+    /// <example>
+    /// Basic usage:
+    /// <code>
+    /// var service = new CustomBackgroundService();
+    ///
+    /// // Add background blocks with colors and descriptions
+    /// service.AddBlock(startOffset: 0, length: 16,
+    ///                  color: Brushes.LightBlue, description: "File Header");
+    /// service.AddBlock(startOffset: 100, length: 256,
+    ///                  color: Brushes.LightGreen, description: "Data Section");
+    /// service.AddBlock(startOffset: 500, length: 64,
+    ///                  color: Brushes.LightYellow, description: "Metadata");
+    ///
+    /// // Query blocks at specific positions
+    /// var block = service.GetBlockAt(position: 105);
+    /// if (block != null)
+    ///     Console.WriteLine($"Block at 105: {block.Description}, Color: {block.Color}");
+    ///
+    /// // Get all blocks in a range
+    /// var rangeBlocks = service.GetBlocksInRange(startPosition: 50, endPosition: 200);
+    /// foreach (var b in rangeBlocks)
+    ///     Console.WriteLine($"Block: {b.StartOffset}-{b.StopOffset}, {b.Description}");
+    ///
+    /// // Check for overlaps before adding
+    /// if (!service.WouldOverlap(startOffset: 150, length: 50))
+    /// {
+    ///     service.AddBlock(150, 50, Brushes.LightCoral, "Additional Data");
+    /// }
+    /// else
+    /// {
+    ///     var overlapping = service.GetOverlappingBlocks(150, 50);
+    ///     Console.WriteLine($"Would overlap with {overlapping.Count()} existing blocks");
+    /// }
+    ///
+    /// // Get statistics
+    /// int totalBlocks = service.GetBlockCount();
+    /// bool hasAny = service.HasBlocks();
+    ///
+    /// // Remove blocks
+    /// service.RemoveBlocksAt(position: 105);  // Remove blocks at specific position
+    /// service.RemoveBlocksInRange(50, 200);   // Remove blocks in range
+    ///
+    /// // Get sorted blocks
+    /// var sorted = service.GetBlocksSorted();  // By start offset
+    /// var byLength = service.GetBlocksSortedByLength();  // By length descending
+    ///
+    /// // Clear all
+    /// service.ClearAll();
+    /// </code>
+    /// </example>
     public class CustomBackgroundService
     {
         #region Private Fields
