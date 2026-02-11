@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>WpfHexEditor.Benchmarks.SpanBenchmarks-20260211-085052</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.13.12, Windows 11 (10.0.26200.7628)
+12th Gen Intel Core i9-12900H, 1 CPU, 20 logical and 14 physical cores
+.NET SDK 10.0.100-rc.2.25502.107
+  [Host]     : .NET 8.0.22 (8.0.2225.52707), X64 RyuJIT AVX2
+  Job-QLFFIZ : .NET 8.0.22 (8.0.2225.52707), X64 RyuJIT AVX2
+  Dry        : .NET 8.0.22 (8.0.2225.52707), X64 RyuJIT AVX2
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method     </th><th>Job </th><th>IterationCount</th><th>LaunchCount</th><th>RunStrategy</th><th>UnrollFactor</th><th>WarmupCount</th><th>ChunkSize</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Gen0</th><th>Completed Work Items</th><th>Lock Contentions</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>SpanWithArrayPool</td><td>Job-QLFFIZ</td><td>10</td><td>Default</td><td>Default</td><td>16</td><td>3</td><td>1024</td><td>31.65 ms</td><td>1.362 ms</td><td>0.901 ms</td><td>8000.0000</td><td>-</td><td>-</td><td>96 MB</td>
+</tr><tr><td>SpanWithArrayPool</td><td>Dry</td><td>1</td><td>1</td><td>ColdStart</td><td>1</td><td>1</td><td>1024</td><td>121.17 ms</td><td>NA</td><td>0.000 ms</td><td>8000.0000</td><td>-</td><td>-</td><td>96 MB</td>
+</tr><tr><td>SpanWithArrayPool</td><td>Job-QLFFIZ</td><td>10</td><td>Default</td><td>Default</td><td>16</td><td>3</td><td>8192</td><td>30.06 ms</td><td>0.545 ms</td><td>0.285 ms</td><td>8000.0000</td><td>-</td><td>-</td><td>96 MB</td>
+</tr><tr><td>SpanWithArrayPool</td><td>Dry</td><td>1</td><td>1</td><td>ColdStart</td><td>1</td><td>1</td><td>8192</td><td>106.51 ms</td><td>NA</td><td>0.000 ms</td><td>8000.0000</td><td>-</td><td>-</td><td>96.01 MB</td>
+</tr><tr><td>SpanWithArrayPool</td><td>Job-QLFFIZ</td><td>10</td><td>Default</td><td>Default</td><td>16</td><td>3</td><td>65536</td><td>31.01 ms</td><td>2.227 ms</td><td>1.473 ms</td><td>8000.0000</td><td>-</td><td>-</td><td>96 MB</td>
+</tr><tr><td>SpanWithArrayPool</td><td>Dry</td><td>1</td><td>1</td><td>ColdStart</td><td>1</td><td>1</td><td>65536</td><td>106.24 ms</td><td>NA</td><td>0.000 ms</td><td>8000.0000</td><td>-</td><td>-</td><td>96.06 MB</td>
+</tr></tbody></table>
+</body>
+</html>

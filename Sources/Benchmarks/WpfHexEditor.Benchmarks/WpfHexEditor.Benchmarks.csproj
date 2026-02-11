@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <AssemblyName>WpfHexEditor.Benchmarks</AssemblyName>
+    <RootNamespace>WpfHexEditor.Benchmarks</RootNamespace>
+    <Title>WPF HexEditor - Performance Benchmarks</Title>
+    <Description>BenchmarkDotNet suite for measuring WPF HexEditor performance optimizations</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WPFHexaEditor\WpfHexEditorCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.12" />
+  </ItemGroup>
+
+</Project>
