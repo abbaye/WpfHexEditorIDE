@@ -141,6 +141,25 @@ See [Services Documentation](Sources/WPFHexaEditor/Services/README.md) for detai
 - ✅ .NET Framework 4.8
 - ✅ .NET 8.0-windows
 
+## 🧪 Unit Testing
+
+The project includes comprehensive unit tests for all service layer components:
+
+- **Test Framework:** xUnit with .NET 8.0-windows
+- **Test Project:** `WPFHexaEditor.Tests`
+- **Coverage:** 80+ tests across 3 test suites
+  - `SelectionServiceTests` - 35 tests for selection operations
+  - `FindReplaceServiceTests` - 35 tests for search/replace with caching
+  - `HighlightServiceTests` - 10+ tests for highlight management
+
+**Running tests:**
+```bash
+cd Sources/WPFHexaEditor.Tests
+dotnet test
+```
+
+The service-based architecture makes unit testing straightforward - services can be tested in isolation without UI dependencies.
+
 ## 🐛 Recent Bug Fixes
 
 **Critical Fix (2026):**

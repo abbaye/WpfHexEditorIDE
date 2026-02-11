@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
-// Apache 2.0  - 2016-2021
+// Apache 2.0  - 2016-2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Refactored: 2026
+// Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
 using System.Collections.Generic;

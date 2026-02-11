@@ -128,6 +128,39 @@ dotnet run
 
 ---
 
+### 🔧 WpfHexEditor.Sample.ServiceUsage
+**Platform:** Console (.NET 8.0)
+**Description:** Educational console application demonstrating direct usage of all 10 services without the HexEditor UI control.
+
+**Features demonstrated:**
+- `SelectionService` - Selection validation and byte retrieval
+- `FindReplaceService` - Search with cache optimization
+- `ClipboardService` - Copy/paste operations
+- `HighlightService` - Managing highlighted byte positions
+- `ByteModificationService` - Insert, delete, and modify bytes
+- `UndoRedoService` - History management
+- `BookmarkService` - Bookmark creation and navigation
+- `CustomBackgroundService` - Background color blocks
+- `PositionService` - Position calculations and conversions
+- `TblService` - Character table operations
+
+**Use cases:**
+- Learning the service API architecture
+- Building headless/automated binary processing tools
+- Understanding how to use services independently
+- Creating custom tools without the UI control
+- Unit testing and service integration
+
+**How to run:**
+```bash
+cd WpfHexEditor.Sample.ServiceUsage
+dotnet run
+```
+
+**Output:** Console output showing the results of each service operation with sample data.
+
+---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -154,22 +187,25 @@ Or open the solution in Visual Studio and set the desired sample as the startup 
 
 **Recommended order for learning:**
 
-1. **Start with:** `WPFHexEditor.Sample.CSharp`
+1. **Architecture First:** `WpfHexEditor.Sample.ServiceUsage` ⭐ **NEW!**
+   Understand the service layer architecture and how services work independently
+
+2. **Start with:** `WPFHexEditor.Sample.CSharp`
    Learn the basics: opening files, editing, copy/paste, undo/redo
 
-2. **Next:** `WpfHexEditor.Sample.InsertByteAnywhere`
+3. **Next:** `WpfHexEditor.Sample.InsertByteAnywhere`
    Learn advanced editing: insertion, deletion, dynamic modifications
 
-3. **Then:** `WpfHexEditor.Sample.BarChart`
+4. **Then:** `WpfHexEditor.Sample.BarChart`
    Learn data visualization and analysis techniques
 
-4. **Advanced:** `WpfHexEditor.Sample.BinaryFilesDifference`
+5. **Advanced:** `WpfHexEditor.Sample.BinaryFilesDifference`
    Learn file comparison and custom rendering
 
-5. **Integration:** `WpfHexEditor.Sample.AvalonDock`
+6. **Integration:** `WpfHexEditor.Sample.AvalonDock`
    Learn professional UI integration patterns
 
-6. **Cross-platform:** `WpfHexEditor.Sample.Winform`
+7. **Cross-platform:** `WpfHexEditor.Sample.Winform`
    Learn WPF/WinForms interoperability
 
 ## 🎨 Common Code Patterns
@@ -206,13 +242,25 @@ hexEditor.SelectionStartChanged += (s, e) =>
 
 ## 🛠️ Architecture Integration
 
-All samples now use the new **Service-based Architecture**:
-- `ClipboardService` - Copy/paste operations
-- `FindReplaceService` - Search with optimized caching
-- `UndoRedoService` - Undo/redo history management
-- `SelectionService` - Selection validation and manipulation
+All samples now use the new **Service-based Architecture** (10 services total):
 
-See [Services/README.md](../WPFHexaEditor/Services/README.md) for details.
+**Stateless Services (6):**
+- `SelectionService` - Selection validation and manipulation
+- `FindReplaceService` - Search with optimized caching
+- `ClipboardService` - Copy/paste operations
+- `ByteModificationService` - Insert/delete/modify bytes
+- `UndoRedoService` - Undo/redo history management
+- `PositionService` - Position calculations and conversions
+
+**Stateful Services (4):**
+- `HighlightService` - Search result highlighting
+- `BookmarkService` - Bookmark management
+- `CustomBackgroundService` - Background color blocks
+- `TblService` - Character table operations
+
+**Learn more:**
+- [Services/README.md](../WPFHexaEditor/Services/README.md) - Complete service documentation
+- [WpfHexEditor.Sample.ServiceUsage](WpfHexEditor.Sample.ServiceUsage/) - Practical service usage examples
 
 ## 📖 Additional Resources
 

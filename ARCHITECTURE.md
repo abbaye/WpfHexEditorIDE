@@ -58,6 +58,11 @@ graph TB
             SampleAvalonDock[WpfHexEditor.Sample.AvalonDock]
             SampleInsert[WpfHexEditor.Sample.InsertByteAnywhere]
             SampleDiff[WpfHexEditor.Sample.BinaryFilesDifference]
+            SampleServiceUsage[WpfHexEditor.Sample.ServiceUsage<br/>Console Demo]
+        end
+
+        subgraph "Testing"
+            UnitTests[WPFHexaEditor.Tests<br/>xUnit Test Project<br/>80+ Tests]
         end
 
         subgraph "Tools"
