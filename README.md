@@ -63,34 +63,106 @@ Unicode TBL are supported. For use put value at the right of equal (=) like this
 
 ![example](Images/TBLExplain.png?raw=true)
 
-### 🛒 Somes features
+### 🛒 Complete Feature List
 
-⭐ = New features
+⭐ = New in v2.2+ | 🚀 = Performance feature
 
-- ⭐ AvalonDock support
-- ⭐ Edit in hexadecimal, decimal and binary 
-- ⭐ Edit in 8bit, 16bit and 32bit
-- ⭐ Edit in LoHi or HiLo
-- ⭐ View as BarChart (see in screenshot. will evoluate in future)
-- Find and Find/Replace dialog
-- Append byte at end of file
-- Include HexBox, an Hexadecimal TextBox with spinner
-- Fill selection (or another array) with byte.
-- Support of common key in window like CTRL+C, CTRL+V, CTRL+Z, CTRL+Y, CTRL+A, ESC...
-- Copy to clipboard as code like C#, VB.Net, C, Java, F# ... 
-- Support custom .TBL character table file insted of default ASCII.
-- Unlimited Undo / Redo
-- Finds methods (FindFirst, FindNext, FindAll, FindLast, FindSelection) and overload for (string, byte[])
-- Replace methods (ReplaceFirst, ReplaceNext, ReplaceAll) and overload for (string, byte[])
-- Highlight byte with somes find methods
-- Bookmark
-- Group byte in block of 2,4,6,8 bytes...
-- Show data as hexadecimal or decimal
-- Possibility to view only a part of file/stream in editor and dont loose anychange when used it (AllowVisualByteAdress...)
-- Zoom / UnZoom hexeditor content (50% to 200%)
-- Positility to show or not the bytes are deleted.
-- Customize the color of bytes, TBL, background, header, and much more ...
-- ...
+#### 📝 Core Editing
+- **Multi-format editing:** Hexadecimal, Decimal, Binary display modes
+- **Multi-byte support:** 8-bit, 16-bit, 32-bit editing
+- **Endianness:** LoHi (Little Endian) or HiLo (Big Endian)
+- **Insert/Delete bytes:** Full support with automatic length adjustments
+- **Append bytes:** Add bytes at end of file
+- **Fill selection:** Fill with specific byte value
+- **Unlimited Undo/Redo:** Full history with memory optimization
+- **Read-only mode:** View-only mode for safe browsing
+
+#### 🔍 Search & Navigation
+- **Advanced search:** FindFirst, FindNext, FindPrevious, FindLast, FindAll
+- **Pattern search:** Search for byte patterns (byte[] or string)
+- **Replace operations:** ReplaceFirst, ReplaceNext, ReplaceAll
+- 🚀 **Search caching:** 100-1000x faster repeated searches
+- **Highlight results:** Auto-highlight search matches
+- **Bookmarks:** Mark important positions with descriptions
+- **Go to offset:** Jump directly to byte position
+- **Selection highlighting:** Visual selection feedback
+
+#### 📋 Copy/Paste & Export
+- **Standard clipboard:** CTRL+C, CTRL+V, CTRL+X support
+- **Copy as code:** Export as C#, VB.NET, C, Java, F#, Python code
+- **Multiple formats:** HexString, ASCIIString, Binary, Decimal
+- **Copy to stream:** Export selection to Stream or file
+- **Custom copy modes:** Configurable default export format
+
+#### 🎨 Display & Visualization
+- ⭐ **BarChart view:** Visual data representation
+- ⭐ **AvalonDock support:** Dockable hex editor panels
+- **Byte grouping:** Group bytes in blocks of 2, 4, 6, 8, 16 bytes
+- **Custom TBL support:** Use .tbl character tables (game ROMs, etc.)
+- **Unicode TBL:** Support for Unicode character mapping
+- **Zoom:** 50% to 200% content scaling
+- **Show deleted bytes:** Option to visualize deleted data
+- **Line addressing:** Show/hide byte addresses
+- **Offset modes:** Decimal or hexadecimal addressing
+- **Scrollbar markers:** Visual markers for search results, bookmarks, changes
+
+#### ⚡ Performance & Optimization
+- 🚀 **UI Virtualization:** Handle GB-sized files (80-90% memory reduction)
+- 🚀 **Render caching:** 5-10x faster UI rendering
+- 🚀 **Width calculation cache:** 10-100x faster cell width calculations
+- 🚀 **Search result caching:** 460x speedup for repeated searches
+- 🚀 **Span&lt;T&gt; APIs:** Zero-allocation operations (.NET 5.0+)
+- 🚀 **SIMD search:** Hardware-accelerated search (AVX2/SSE2)
+- 🚀 **Async operations:** Non-blocking I/O for large files
+- 🚀 **Memory-mapped files:** Support files larger than RAM
+
+#### 🎨 Customization & Theming
+- **Color customization:** Bytes, TBL, backgrounds, headers, selection
+- **Custom backgrounds:** Highlight byte ranges with colors and descriptions
+- **Font customization:** Choose any font family and size
+- **Border styles:** Customize visual appearance
+- **Status bar:** Configurable position, selection, file info display
+- **Context menus:** Fully customizable right-click menus
+
+#### 🏗️ Architecture & Services
+- **Service-based design:** 10 specialized services for clean separation
+- **ByteProvider:** Efficient data access layer
+- **Stream support:** Work with any Stream (MemoryStream, FileStream, custom)
+- **Event system:** DataCopied, SelectionChanged, ByteModified, etc.
+- **Change tracking:** Track all modifications with position info
+
+#### 🧪 Developer Features
+- **HexBox control:** Standalone hex input control with spinner
+- **Dependency properties:** Full WPF binding support
+- **MVVM compatible:** Works with MVVM pattern
+- **Sample applications:** 7+ working samples (C#, VB.NET, WinForms)
+- **Unit tests:** 275+ tests with 100% service coverage
+- **Benchmarks:** BenchmarkDotNet suite for performance testing
+- **Localization:** English, French, Russian, Polish, Portuguese, Chinese
+
+#### 📊 File Format Support
+- **Any binary file:** No format restrictions
+- **Large files:** Tested with multi-GB files
+- **Partial loading:** Load only visible portions (AllowVisualByteAddress)
+- **Stream editing:** Edit without loading entire file into memory
+- **Custom formats:** Use TBL files for custom character encoding
+
+#### ⌨️ Keyboard Shortcuts
+- **CTRL+C / CTRL+V / CTRL+X:** Copy/Paste/Cut
+- **CTRL+Z / CTRL+Y:** Undo/Redo
+- **CTRL+A:** Select All
+- **CTRL+F:** Find dialog
+- **CTRL+H:** Replace dialog
+- **CTRL+G:** Go to offset
+- **CTRL+B:** Toggle bookmark
+- **ESC:** Clear selection
+- **Delete / Backspace:** Delete selected bytes
+- **Arrow keys:** Navigation
+- **Page Up/Down:** Fast scrolling
+
+---
+
+📖 **See [Performance Guide](PERFORMANCE_GUIDE.md) for detailed optimization documentation**
 
 ### ⚡ Performance Optimizations (v2.2+)
 
