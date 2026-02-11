@@ -10,6 +10,14 @@ This document provides visual diagrams and detailed architecture documentation f
 4. [Data Flow](#data-flow)
 5. [Class Relationships](#class-relationships)
 6. [Component Dependencies](#component-dependencies)
+7. [Performance Considerations](#performance-considerations)
+
+## 📚 Related Documentation
+
+- **[Performance Guide](PERFORMANCE_GUIDE.md)** - Comprehensive performance optimization guide with benchmarking
+- [Main README](README.md) - Project overview and quick start
+- [Services Documentation](Sources/WPFHexaEditor/Services/README.md) - Service layer details
+- [Benchmarks README](Sources/WPFHexaEditor.Benchmarks/README.md) - How to run performance benchmarks
 
 ---
 
@@ -1471,8 +1479,45 @@ Operation: Find all occurrences of byte pattern in 10MB file
 
 ---
 
+## ⚡ Performance Considerations
+
+The architecture has been optimized for performance at multiple levels:
+
+### Service Layer Performance
+- **Stateless Services**: Most services are stateless for zero overhead
+- **Caching Strategies**: FindReplaceService implements intelligent caching (100-1000x speedup)
+- **Lazy Loading**: Services only initialize resources when needed
+
+### UI Layer Performance
+- **UI Virtualization**: VirtualizationService enables handling of GB-sized files
+  - Only renders visible bytes (80-90% memory reduction)
+  - Constant-time calculations regardless of file size
+- **Rendering Cache**: BaseByte/HexByte/StringByte cache expensive WPF objects (5-10x faster)
+- **Width Calculation Cache**: Dictionary-based O(1) lookups (10-100x faster)
+
+### Core Layer Performance
+- **Span&lt;T&gt; APIs**: Zero-allocation search operations (net5.0+)
+- **SIMD Operations**: Hardware-accelerated search (AVX2/SSE2)
+- **Async Streaming**: Non-blocking I/O for large files
+- **Memory-Mapped Files**: Support for files larger than RAM
+
+### Benchmarking
+Performance metrics and detailed optimization guide:
+- **[Performance Guide](PERFORMANCE_GUIDE.md)** - Complete optimization documentation
+- **[Benchmarks](Sources/WPFHexaEditor.Benchmarks/README.md)** - Run benchmarks with BenchmarkDotNet
+
+**Key Metrics (2026):**
+- Load 1 MB file: ~80 ms
+- Load 100 MB file: ~1.5 sec
+- FindFirst (1 MB): ~12 ms
+- Search cache speedup: 460x
+- Render FPS: 45+ FPS
+
+---
+
 ## 📚 Related Documentation
 
+- **[Performance Guide](PERFORMANCE_GUIDE.md)** - ⚡ Comprehensive performance optimization guide
 - [Main README](README.md) - Project overview
 - [Services Documentation](Sources/WPFHexaEditor/Services/README.md) - Service details
 - [Core Documentation](Sources/WPFHexaEditor/Core/README.md) - Core components

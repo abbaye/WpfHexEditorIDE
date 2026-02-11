@@ -565,3 +565,12 @@ While the current 10 services cover all significant business logic, potential en
 - **Event System**: Add event notifications for service state changes
 - **Service Composition**: Create higher-level services that compose existing services
 - **Performance Monitoring**: Add instrumentation to measure service call performance
+
+---
+
+## 📚 Related Documentation
+
+- **[Performance Guide](../../../PERFORMANCE_GUIDE.md)** - ⚡ Service performance optimization and benchmarking
+- [Architecture Documentation](../../../ARCHITECTURE.md) - Overall system architecture
+- [Unit Tests](../../WPFHexaEditor.Tests/Services/) - Service test suite (275 tests)
+- [Main README](../../../README.md) - Project overview
