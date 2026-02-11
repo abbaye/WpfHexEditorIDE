@@ -116,6 +116,7 @@ See [Services Documentation](Sources/WPFHexaEditor/Services/README.md) for detai
 
 ## 📚 Documentation
 
+- **[📐 Architecture Diagrams](ARCHITECTURE.md)** - Visual architecture documentation with Mermaid diagrams
 - **[Services Architecture](Sources/WPFHexaEditor/Services/README.md)** - Business logic layer
 - **[Core Components](Sources/WPFHexaEditor/Core/README.md)** - Core infrastructure and data handling
 - **[Sample Applications](Sources/Samples/README.md)** - Usage examples and demos
