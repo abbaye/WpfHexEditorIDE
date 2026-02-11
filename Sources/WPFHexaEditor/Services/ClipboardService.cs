@@ -15,6 +15,30 @@ namespace WpfHexaEditor.Services
     /// <summary>
     /// Service responsible for clipboard operations (Copy/Paste/Cut)
     /// </summary>
+    /// <example>
+    /// Basic usage:
+    /// <code>
+    /// var service = new ClipboardService();
+    /// service.DefaultCopyMode = CopyPasteMode.HexaString;
+    ///
+    /// // Check if copy is possible
+    /// if (service.CanCopy(selectionLength, provider))
+    /// {
+    ///     // Copy to clipboard
+    ///     service.CopyToClipboard(provider, selectionStart, selectionStop);
+    /// }
+    ///
+    /// // Copy with specific mode
+    /// service.CopyToClipboard(provider, CopyPasteMode.AsciiString, start, stop);
+    ///
+    /// // Copy to stream
+    /// using (var stream = new MemoryStream())
+    /// {
+    ///     service.CopyToStream(provider, stream, start, stop, copyChange: false);
+    ///     var bytes = stream.ToArray();
+    /// }
+    /// </code>
+    /// </example>
     public class ClipboardService
     {
         #region Properties
@@ -31,6 +55,18 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Check if copy operation is possible
         /// </summary>
+        /// <param name="selectionLength">Length of selection in bytes</param>
+        /// <param name="provider">ByteProvider instance</param>
+        /// <returns>True if copy is possible</returns>
+        /// <example>
+        /// <code>
+        /// if (clipboardService.CanCopy(selectionLength, provider))
+        /// {
+        ///     clipboardService.CopyToClipboard(provider, start, stop);
+        ///     Console.WriteLine("Copied to clipboard!");
+        /// }
+        /// </code>
+        /// </example>
         public bool CanCopy(long selectionLength, ByteProvider provider)
         {
             return selectionLength >= 1 && provider != null && provider.IsOpen;

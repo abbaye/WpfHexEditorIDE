@@ -14,6 +14,28 @@ namespace WpfHexaEditor.Services
     /// <summary>
     /// Service responsible for selection operations
     /// </summary>
+    /// <example>
+    /// Basic usage:
+    /// <code>
+    /// var service = new SelectionService();
+    ///
+    /// // Validate selection
+    /// if (service.IsValidSelection(start, stop))
+    /// {
+    ///     long length = service.GetSelectionLength(start, stop);
+    ///     Console.WriteLine($"Selected {length} bytes");
+    /// }
+    ///
+    /// // Fix selection order
+    /// var (fixedStart, fixedStop) = service.FixSelectionStartStop(start, stop);
+    ///
+    /// // Select all
+    /// var (selectAllStart, selectAllStop) = service.SelectAll(provider);
+    ///
+    /// // Get selection as byte array
+    /// byte[] selectedBytes = service.GetSelectionByteArray(provider, start, stop);
+    /// </code>
+    /// </example>
     public class SelectionService
     {
         #region Public Methods

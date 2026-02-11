@@ -12,6 +12,36 @@ namespace WpfHexaEditor.Services
     /// <summary>
     /// Service responsible for undo/redo operations
     /// </summary>
+    /// <example>
+    /// Basic usage:
+    /// <code>
+    /// var service = new UndoRedoService();
+    ///
+    /// // Perform undo
+    /// if (service.CanUndo(provider))
+    /// {
+    ///     long position = service.Undo(provider);
+    ///     Console.WriteLine($"Undone to position {position}");
+    /// }
+    ///
+    /// // Perform redo
+    /// if (service.CanRedo(provider))
+    /// {
+    ///     long position = service.Redo(provider);
+    ///     Console.WriteLine($"Redone to position {position}");
+    /// }
+    ///
+    /// // Undo multiple times
+    /// service.Undo(provider, repeat: 5); // Undo last 5 operations
+    ///
+    /// // Clear history
+    /// service.ClearAll(provider);
+    ///
+    /// // Check counts
+    /// int undoCount = service.GetUndoCount(provider);
+    /// int redoCount = service.GetRedoCount(provider);
+    /// </code>
+    /// </example>
     public class UndoRedoService
     {
         #region Undo Methods
