@@ -13,6 +13,7 @@
 | [🖼 Screenshots](#-screenshots) | Visual examples and use cases |
 | [🛒 Features](#-somes-features) | Complete feature list |
 | [👏 How to Use](#-how-to-use) | Quick start guide |
+| [⚡ Performance](#-performance-optimizations-v22) | Performance optimizations (v2.2+) |
 | [🏗️ Architecture](#️-architecture) | Service-based design |
 | [📚 Documentation](#-documentation) | Complete documentation index |
 | [🧪 Testing](#-unit-testing) | Unit tests and quality |
@@ -92,6 +93,8 @@ Unicode TBL are supported. For use put value at the right of equal (=) like this
 - ...
 
 ### ⚡ Performance Optimizations (v2.2+)
+
+> **📖 For detailed performance documentation, benchmarking results, and best practices, see the [Performance Guide](PERFORMANCE_GUIDE.md)**
 
 **Advanced Backend Optimizations:**
 
@@ -222,6 +225,7 @@ See [Services Documentation](Sources/WPFHexaEditor/Services/README.md) for detai
 
 - [Getting Started](#-how-to-use) - Quick integration guide
 - [Architecture](#️-architecture) - Service-based design overview
+- [Performance Guide](PERFORMANCE_GUIDE.md) - ⚡ Performance optimization, benchmarking, best practices
 - [API Reference](#-main-control-api) - HexEditor control documentation
 - [Sample Applications](#-sample-applications) - Working examples
 - [Core Components](#-core-components) - Internal architecture
