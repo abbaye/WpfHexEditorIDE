@@ -269,6 +269,16 @@ namespace WpfHexaEditor.V2.Controls
         public ByteSpacerVisual ByteSpacerVisualStyle { get; set; } = ByteSpacerVisual.Empty;
 
         /// <summary>
+        /// Show or hide offset column (V1 compatible)
+        /// </summary>
+        public bool ShowOffset { get; set; } = true;
+
+        /// <summary>
+        /// Show or hide ASCII column (V1 compatible)
+        /// </summary>
+        public bool ShowAscii { get; set; } = true;
+
+        /// <summary>
         /// Force refresh of cached lines and visual rendering
         /// </summary>
         public void Refresh()
@@ -297,11 +307,14 @@ namespace WpfHexaEditor.V2.Controls
                 if (line.Bytes == null || line.Bytes.Count == 0)
                     continue;
 
-                // Draw offset
-                DrawOffset(dc, line.OffsetLabel, y);
+                // Draw offset (if visible)
+                if (ShowOffset)
+                {
+                    DrawOffset(dc, line.OffsetLabel, y);
+                }
 
                 // Draw hex bytes with byte spacers
-                double hexX = OffsetWidth;
+                double hexX = ShowOffset ? OffsetWidth : 0;
                 for (int i = 0; i < line.Bytes.Count; i++)
                 {
                     // Draw byte spacer before this byte if needed
@@ -318,26 +331,29 @@ namespace WpfHexaEditor.V2.Controls
                     hexX += HexByteWidth + HexByteSpacing;
                 }
 
-                // Draw separator
-                double separatorX = OffsetWidth + (_bytesPerLine * (HexByteWidth + HexByteSpacing)) + 8;
-                dc.DrawRectangle(_separatorBrush, null, new Rect(separatorX, y, 1, _lineHeight));
-
-                // Draw ASCII bytes with byte spacers
-                double asciiX = separatorX + SeparatorWidth;
-                for (int i = 0; i < line.Bytes.Count; i++)
+                // Draw separator and ASCII (if visible)
+                if (ShowAscii)
                 {
-                    // Draw byte spacer before this byte if needed
-                    if ((ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                         ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel) &&
-                        i % (int)ByteGrouping == 0 && i > 0)
-                    {
-                        DrawByteSpacer(dc, asciiX, y);
-                        asciiX += (int)ByteSpacerWidthTickness;
-                    }
+                    double separatorX = (ShowOffset ? OffsetWidth : 0) + (_bytesPerLine * (HexByteWidth + HexByteSpacing)) + 8;
+                    dc.DrawRectangle(_separatorBrush, null, new Rect(separatorX, y, 1, _lineHeight));
 
-                    var byteData = line.Bytes[i];
-                    DrawAsciiByte(dc, byteData, asciiX, y);
-                    asciiX += AsciiCharWidth;
+                    // Draw ASCII bytes with byte spacers
+                    double asciiX = separatorX + SeparatorWidth;
+                    for (int i = 0; i < line.Bytes.Count; i++)
+                    {
+                        // Draw byte spacer before this byte if needed
+                        if ((ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                             ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel) &&
+                            i % (int)ByteGrouping == 0 && i > 0)
+                        {
+                            DrawByteSpacer(dc, asciiX, y);
+                            asciiX += (int)ByteSpacerWidthTickness;
+                        }
+
+                        var byteData = line.Bytes[i];
+                        DrawAsciiByte(dc, byteData, asciiX, y);
+                        asciiX += AsciiCharWidth;
+                    }
                 }
 
                 y += _lineHeight;

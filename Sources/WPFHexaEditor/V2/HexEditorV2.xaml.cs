@@ -334,9 +334,25 @@ namespace WpfHexaEditor.V2
 
         private static void OnShowOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            // Changing offset visibility would require XAML template modifications
-            // For V1 compatibility, we'll keep it simple and always show offset
-            // Advanced implementations could dynamically modify the DataTemplate
+            if (d is HexEditorV2 editor && e.NewValue is bool showOffset)
+            {
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.ShowOffset = showOffset;
+                    editor.HexViewport.InvalidateVisual();
+                }
+
+                // Also update column header visibility
+                if (editor._hexHeaderStackPanel != null && editor._hexHeaderStackPanel.Children.Count > 0)
+                {
+                    // First child is the offset header TextBlock
+                    var offsetHeader = editor._hexHeaderStackPanel.Parent as Grid;
+                    if (offsetHeader?.Children[0] is TextBlock tb && tb.Text == "Offset")
+                    {
+                        tb.Visibility = showOffset ? Visibility.Visible : Visibility.Collapsed;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -355,9 +371,20 @@ namespace WpfHexaEditor.V2
 
         private static void OnShowAsciiChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            // Changing ASCII visibility would require XAML template modifications
-            // For V1 compatibility, we'll keep it simple and always show ASCII
-            // Advanced implementations could dynamically modify the DataTemplate
+            if (d is HexEditorV2 editor && e.NewValue is bool showAscii)
+            {
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.ShowAscii = showAscii;
+                    editor.HexViewport.InvalidateVisual();
+                }
+
+                // Also update ASCII column header visibility
+                if (editor._asciiHeaderStackPanel != null)
+                {
+                    editor._asciiHeaderStackPanel.Visibility = showAscii ? Visibility.Visible : Visibility.Collapsed;
+                }
+            }
         }
 
         /// <summary>
@@ -1446,10 +1473,12 @@ namespace WpfHexaEditor.V2
             bool isShiftPressed = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
             bool isCtrlPressed = Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
 
-            // Get current position (use SelectionStart if valid, otherwise 0)
-            var currentPos = _viewModel.SelectionStart.IsValid
-                ? _viewModel.SelectionStart
-                : VirtualPosition.Zero;
+            // Get current position:
+            // - If there's a selection: use SelectionStop (the active/cursor end)
+            // - If no selection: use SelectionStart (the cursor position)
+            var currentPos = _viewModel.HasSelection && _viewModel.SelectionStop.IsValid
+                ? _viewModel.SelectionStop
+                : (_viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart : VirtualPosition.Zero);
 
             VirtualPosition newPos = currentPos;
 
