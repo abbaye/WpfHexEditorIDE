@@ -133,7 +133,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid x:Name="BaseGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Column Headers -->
             <RowDefinition Height="*"/>    <!-- Content -->
@@ -144,16 +144,16 @@
         <Border x:Name="HeaderBorder" Grid.Row="0" Background="{StaticResource HeaderBrush}" BorderBrush="#D0D0D0" BorderThickness="0,0,0,1" Padding="0,5,0,5">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="110"/> <!-- Offset -->
-                    <ColumnDefinition Width="Auto"/>   <!-- Hex -->
-                    <ColumnDefinition Width="Auto"/> <!-- Separator -->
-                    <ColumnDefinition Width="Auto"/> <!-- ASCII -->
+                    <ColumnDefinition Width="110"/> <!-- Offset: matches OffsetWidth -->
+                    <ColumnDefinition Width="420"/>   <!-- Hex: 16 * (24 + 2) + margin -->
+                    <ColumnDefinition Width="20"/> <!-- Separator: matches SeparatorWidth -->
+                    <ColumnDefinition Width="180"/> <!-- ASCII: 16 * 10 + margins -->
                     <ColumnDefinition Width="*"/> <!-- Remaining space -->
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="Offset" Style="{StaticResource HeaderTextStyle}" Margin="8,0,0,0"/>
-                <TextBlock Grid.Column="1" Text="Hex" Style="{StaticResource HeaderTextStyle}"/>
-                <Border Grid.Column="2" Width="1" Background="Transparent" Margin="8,0"/>
+                <TextBlock Grid.Column="1" Text="Hex" Style="{StaticResource HeaderTextStyle}" Margin="0,0,0,0"/>
+                <Border Grid.Column="2" Width="1" Background="Transparent" Margin="8,0,8,0"/>
                 <TextBlock Grid.Column="3" Text="ASCII" Style="{StaticResource HeaderTextStyle}" Margin="8,0,0,0"/>
             </Grid>
         </Border>

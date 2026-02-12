@@ -31,6 +31,7 @@ namespace WpfHexaEditor.V2
         private bool _isMouseDown = false;
         private VirtualPosition _mouseDownPosition = VirtualPosition.Invalid;
         private Border _headerBorder;
+        private System.Windows.Controls.Primitives.StatusBar _statusBar;
 
         // Bookmarks (V1 compatible)
         private readonly List<long> _bookmarks = new List<long>();
@@ -51,7 +52,8 @@ namespace WpfHexaEditor.V2
         private Point _lastMousePosition;
         private VirtualPosition _lastAutoScrollPosition = VirtualPosition.Invalid; // Track last position to avoid redundant updates
         private const double AutoScrollEdgeThreshold = 40.0; // Pixels from edge to trigger auto-scroll
-        private const int AutoScrollInterval = 80; // Milliseconds between auto-scroll ticks (optimized for performance)
+        private const int AutoScrollInterval = 40; // Milliseconds between auto-scroll ticks (faster for better UX)
+        private const int AutoScrollSpeed = 2; // Lines to scroll per tick
 
         public HexEditorV2()
         {
@@ -64,11 +66,16 @@ namespace WpfHexaEditor.V2
             };
             _autoScrollTimer.Tick += AutoScrollTimer_Tick;
 
-            // Auto-adjust visible lines when control is resized
-            HexViewport.SizeChanged += HexViewport_SizeChanged;
+            // Auto-adjust visible lines when BaseGrid is resized (V1-style approach)
+            // Use BaseGrid.RowDefinitions[1].ActualHeight like V1 does
+            BaseGrid.SizeChanged += BaseGrid_SizeChanged;
+
+            // Handle mouse wheel scrolling (use PreviewMouseWheel on ScrollViewer to intercept before it scrolls)
+            ContentScroller.PreviewMouseWheel += ContentScroller_PreviewMouseWheel;
 
             // Find XAML elements for display options
             _headerBorder = this.FindName("HeaderBorder") as Border;
+            _statusBar = this.FindName("StatusBar") as System.Windows.Controls.Primitives.StatusBar;
         }
 
         #region Public Events (V1 Compatible)
@@ -729,7 +736,14 @@ namespace WpfHexaEditor.V2
             // Subscribe to property changes
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            // Update scrollbar
+            // Calculate initial visible lines AFTER the control is fully loaded AND layout is complete
+            // Use ApplicationIdle priority to ensure BaseGrid.RowDefinitions[1].ActualHeight is set
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                UpdateVisibleLines();
+            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+
+            // Update scrollbar with initial values
             VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
             VerticalScroll.ViewportSize = _viewModel.VisibleLines;
 
@@ -1263,11 +1277,16 @@ namespace WpfHexaEditor.V2
 
         /// <summary>
         /// Helper method to find the virtual position at mouse coordinates
-        /// Uses direct coordinate calculation with HexViewport layout constants
+        /// Uses HexViewport's precise hit-testing with actual measured dimensions
         /// </summary>
         private VirtualPosition GetVirtualPositionAtMouse(Point mousePosition)
         {
             if (_viewModel == null || _viewModel.Lines.Count == 0)
+                return VirtualPosition.Invalid;
+
+            // Use HexViewport's actual LineHeight (calculated from font metrics)
+            double lineHeight = HexViewport.LineHeight;
+            if (lineHeight <= 0)
                 return VirtualPosition.Invalid;
 
             // Layout constants (must match HexViewport.cs)
@@ -1275,10 +1294,15 @@ namespace WpfHexaEditor.V2
             const double HexByteWidth = 24;
             const double HexByteSpacing = 2;
             const double TopMargin = 2;
-            const double LineHeight = 22; // Approximate: charHeight + padding
+            const double SeparatorWidth = 20;
+            const double AsciiCharWidth = 10;
 
             // Calculate line number from Y coordinate
-            int lineIndex = (int)((mousePosition.Y - TopMargin) / LineHeight);
+            double y = mousePosition.Y - TopMargin;
+            if (y < 0)
+                return VirtualPosition.Invalid;
+
+            int lineIndex = (int)(y / lineHeight);
 
             // Clamp to valid line range
             if (lineIndex < 0 || lineIndex >= _viewModel.Lines.Count)
@@ -1288,20 +1312,47 @@ namespace WpfHexaEditor.V2
             if (line.Bytes.Count == 0)
                 return VirtualPosition.Invalid;
 
+            double x = mousePosition.X;
+
             // Check if clicked in offset area - select first byte
-            if (mousePosition.X < OffsetWidth)
+            if (x < OffsetWidth)
             {
                 return line.Bytes[0].VirtualPos;
             }
 
-            // Calculate byte index from X coordinate
-            double relativeX = mousePosition.X - OffsetWidth;
-            int byteIndex = (int)Math.Round(relativeX / (HexByteWidth + HexByteSpacing));
+            // Check if click is in hex area
+            double hexStartX = OffsetWidth;
+            double hexEndX = OffsetWidth + (_viewModel.BytePerLine * (HexByteWidth + HexByteSpacing));
 
-            // Clamp to valid byte range
-            byteIndex = Math.Max(0, Math.Min(byteIndex, line.Bytes.Count - 1));
+            if (x >= hexStartX && x < hexEndX)
+            {
+                // Click in hex area
+                double relativeX = x - hexStartX;
+                int byteIndex = (int)(relativeX / (HexByteWidth + HexByteSpacing));
 
-            return line.Bytes[byteIndex].VirtualPos;
+                // Clamp to valid byte range
+                byteIndex = Math.Max(0, Math.Min(byteIndex, line.Bytes.Count - 1));
+                return line.Bytes[byteIndex].VirtualPos;
+            }
+
+            // Check if click is in ASCII area
+            double separatorX = OffsetWidth + (_viewModel.BytePerLine * (HexByteWidth + HexByteSpacing)) + 8;
+            double asciiStartX = separatorX + SeparatorWidth;
+            double asciiEndX = asciiStartX + (_viewModel.BytePerLine * AsciiCharWidth);
+
+            if (x >= asciiStartX && x < asciiEndX)
+            {
+                // Click in ASCII area
+                double relativeX = x - asciiStartX;
+                int byteIndex = (int)(relativeX / AsciiCharWidth);
+
+                // Clamp to valid byte range
+                byteIndex = Math.Max(0, Math.Min(byteIndex, line.Bytes.Count - 1));
+                return line.Bytes[byteIndex].VirtualPos;
+            }
+
+            // Click in separator or beyond - select last byte on line
+            return line.Bytes[line.Bytes.Count - 1].VirtualPos;
         }
 
         private void Content_KeyDown(object sender, KeyEventArgs e)
@@ -1532,30 +1583,86 @@ namespace WpfHexaEditor.V2
         }
 
         /// <summary>
-        /// Auto-adjust visible lines when control is resized
+        /// <summary>
+        /// Handle BaseGrid size changes to adjust visible lines (exact V1 approach)
         /// </summary>
-        private void HexViewport_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (_viewModel == null || !e.HeightChanged)
+            // Only react to height changes (like V1's Grid_SizeChanged)
+            if (!e.HeightChanged || _viewModel == null)
                 return;
 
-            // Use the actual line height from HexViewport (dynamically calculated)
+            // Delay UpdateVisibleLines to ensure BaseGrid.RowDefinitions[1].ActualHeight is updated
+            // Use Render priority for better responsiveness while still ensuring layout is complete
+            Dispatcher.BeginInvoke(new Action(() => UpdateVisibleLines()), System.Windows.Threading.DispatcherPriority.Render);
+        }
+
+        /// <summary>
+        /// Handle mouse wheel scrolling on ContentScroller
+        /// </summary>
+        private void ContentScroller_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (_viewModel == null)
+                return;
+
+            // Standard behavior: scroll 3 lines per wheel notch
+            // Delta is typically 120 per notch, so divide by 40 to get 3 lines
+            int linesToScroll = -e.Delta / 40;
+
+            long newScrollPos = _viewModel.ScrollPosition + linesToScroll;
+            long maxScroll = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+
+            // Clamp to valid range
+            newScrollPos = Math.Max(0, Math.Min(maxScroll, newScrollPos));
+
+            if (_viewModel.ScrollPosition != newScrollPos)
+            {
+                _viewModel.ScrollPosition = newScrollPos;
+                VerticalScroll.Value = newScrollPos;
+            }
+
+            // Mark event as handled to prevent ScrollViewer from scrolling
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// Update visible lines based on BaseGrid Row 1 height (exact V1 approach)
+        /// V1 uses: (int)(BaseGrid.RowDefinitions[1].ActualHeight / (LineHeight * ZoomScale)) + 1
+        /// V2 uses: (int)(BaseGrid.RowDefinitions[1].ActualHeight / LineHeight) + 1 (no ZoomScale)
+        /// </summary>
+        private void UpdateVisibleLines()
+        {
+            if (_viewModel == null)
+                return;
+
+            // Get the actual line height from HexViewport
             double lineHeight = HexViewport.LineHeight;
             if (lineHeight <= 0)
                 return; // Not initialized yet
 
-            // Calculate how many lines can fit in the viewport
-            int calculatedLines = (int)(HexViewport.ActualHeight / lineHeight);
+            // Use BaseGrid.RowDefinitions[1].ActualHeight (EXACTLY like V1 does)
+            // Row 0 = Header, Row 1 = Content area, Row 2 = Status bar
+            double actualHeight = BaseGrid.RowDefinitions[1].ActualHeight;
+            if (actualHeight <= 0)
+                return; // Not initialized yet
+
+            // Calculate how many lines fit in the viewport (V1 formula: (int)(actualheight / (LineHeight * ZoomScale)) + 1)
+            // V2 doesn't have ZoomScale, so we just use: (int)(actualheight / lineHeight) + 1
+            int calculatedLines = (int)(actualHeight / lineHeight) + 1;
 
             // Clamp to reasonable range (minimum 5, maximum 100)
             calculatedLines = Math.Max(5, Math.Min(100, calculatedLines));
 
-            // Only update if significantly different (avoid thrashing)
-            if (Math.Abs(_viewModel.VisibleLines - calculatedLines) > 1)
+            // Only update if different (avoid thrashing)
+            if (_viewModel.VisibleLines != calculatedLines)
             {
-                _viewModel.VisibleLines = calculatedLines;
+                _viewModel.VisibleLines = calculatedLines; // Property setter calls RefreshVisibleLines() internally
                 VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
                 VerticalScroll.ViewportSize = _viewModel.VisibleLines;
+
+                // Force full refresh after collection update completes (like V1's RefreshView(true) call)
+                // Use Dispatcher to ensure collection changes are processed before refreshing viewport
+                Dispatcher.BeginInvoke(new Action(() => HexViewport.Refresh()), System.Windows.Threading.DispatcherPriority.Render);
             }
         }
 
@@ -1729,6 +1836,9 @@ namespace WpfHexaEditor.V2
 
             // Update the byte value in the ViewModel temporarily for preview
             _viewModel.UpdateBytePreview(position, previewValue);
+
+            // Force visual refresh to show the change immediately
+            HexViewport.InvalidateVisual();
         }
 
         private void CommitByteEdit()
@@ -1798,8 +1908,8 @@ namespace WpfHexaEditor.V2
                 return;
             }
 
-            // Calculate new scroll position
-            long newScrollPos = _viewModel.ScrollPosition + _autoScrollDirection;
+            // Calculate new scroll position (scroll multiple lines per tick for faster auto-scroll)
+            long newScrollPos = _viewModel.ScrollPosition + (_autoScrollDirection * AutoScrollSpeed);
 
             // Clamp to valid range
             long maxScroll = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);

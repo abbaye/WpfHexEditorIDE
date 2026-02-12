@@ -894,6 +894,27 @@ namespace WpfHexaEditor.V2.ViewModels
                     Lines.RemoveAt(Lines.Count - 1);
                 }
             }
+            else
+            {
+                // newStart == oldStart: viewport size changed (resize), but scroll position unchanged
+                if (newEnd > oldEnd)
+                {
+                    // Viewport got bigger: add lines at bottom
+                    for (long lineNum = oldEnd; lineNum < newEnd; lineNum++)
+                    {
+                        var line = GetOrCreateLine(lineNum);
+                        Lines.Add(line);
+                    }
+                }
+                else if (newEnd < oldEnd)
+                {
+                    // Viewport got smaller: remove lines from bottom
+                    while (Lines.Count > (newEnd - newStart))
+                    {
+                        Lines.RemoveAt(Lines.Count - 1);
+                    }
+                }
+            }
         }
 
         /// <summary>

@@ -248,6 +248,14 @@ namespace WpfHexaEditor.V2.Controls
         /// </summary>
         public double LineHeight => _lineHeight;
 
+        /// <summary>
+        /// Force refresh of cached lines and visual rendering
+        /// </summary>
+        public void Refresh()
+        {
+            UpdateCachedLines();
+        }
+
         #endregion
 
         #region Rendering
@@ -416,8 +424,11 @@ namespace WpfHexaEditor.V2.Controls
             // Calculate width needed for all columns
             double hexWidth = OffsetWidth + (_bytesPerLine * (HexByteWidth + HexByteSpacing)) + SeparatorWidth + (_bytesPerLine * AsciiCharWidth) + 20;
 
-            // Calculate height needed for all lines
-            double height = _linesCached.Count * _lineHeight + TopMargin;
+            // Take all available height (fill the viewport), not just what we need for cached lines
+            // This ensures the control fills the ScrollViewer and triggers proper SizeChanged events
+            double height = double.IsInfinity(availableSize.Height) || availableSize.Height <= 0
+                ? _linesCached.Count * _lineHeight + TopMargin  // Fallback if no constraint
+                : availableSize.Height;  // Fill available space
 
             return new Size(hexWidth, height);
         }
@@ -436,9 +447,73 @@ namespace WpfHexaEditor.V2.Controls
             base.OnMouseDown(e);
             Focus();
 
-            // TODO: Implement mouse selection
-            // Calculate position from mouse coordinates
-            // Raise event for parent to handle
+            // Get mouse position
+            Point mousePos = e.GetPosition(this);
+
+            // Calculate which byte was clicked
+            long? clickedPosition = HitTestByte(mousePos);
+            if (clickedPosition.HasValue)
+            {
+                ByteClicked?.Invoke(this, clickedPosition.Value);
+            }
+        }
+
+        /// <summary>
+        /// Hit test to determine which byte position was clicked
+        /// </summary>
+        private long? HitTestByte(Point mousePos)
+        {
+            if (_linesCached == null || _linesCached.Count == 0)
+                return null;
+
+            // Calculate which line was clicked
+            double y = mousePos.Y - TopMargin;
+            if (y < 0) return null;
+
+            int lineIndex = (int)(y / _lineHeight);
+            if (lineIndex < 0 || lineIndex >= _linesCached.Count)
+                return null;
+
+            var line = _linesCached[lineIndex];
+            if (line.Bytes == null || line.Bytes.Count == 0)
+                return null;
+
+            double x = mousePos.X;
+
+            // Check if click is in hex area
+            double hexStartX = OffsetWidth;
+            double hexEndX = OffsetWidth + (_bytesPerLine * (HexByteWidth + HexByteSpacing));
+
+            if (x >= hexStartX && x < hexEndX)
+            {
+                // Click in hex area
+                double relativeX = x - hexStartX;
+                int byteIndex = (int)(relativeX / (HexByteWidth + HexByteSpacing));
+
+                if (byteIndex >= 0 && byteIndex < line.Bytes.Count)
+                {
+                    return line.Bytes[byteIndex].VirtualPos.Value;
+                }
+            }
+
+            // Check if click is in ASCII area
+            double separatorX = OffsetWidth + (_bytesPerLine * (HexByteWidth + HexByteSpacing)) + 8;
+            double asciiStartX = separatorX + SeparatorWidth;
+            double asciiEndX = asciiStartX + (_bytesPerLine * AsciiCharWidth);
+
+            if (x >= asciiStartX && x < asciiEndX)
+            {
+                // Click in ASCII area
+                double relativeX = x - asciiStartX;
+                int byteIndex = (int)(relativeX / AsciiCharWidth);
+
+                if (byteIndex >= 0 && byteIndex < line.Bytes.Count)
+                {
+                    return line.Bytes[byteIndex].VirtualPos.Value;
+                }
+            }
+
+            return null;
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
