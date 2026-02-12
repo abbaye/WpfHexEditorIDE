@@ -1759,13 +1759,15 @@ namespace WpfHexaEditor.V2
 
                 case nameof(HexEditorViewModel.SelectionStart):
                     UpdatePositionInfo();
-                    // Update HexViewport cursor and selection
-                    HexViewport.CursorPosition = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0;
+                    // Update HexViewport selection anchor
                     HexViewport.SelectionStart = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : -1;
                     break;
 
                 case nameof(HexEditorViewModel.SelectionStop):
-                    // Update HexViewport selection
+                    // Update HexViewport cursor (active end) and selection
+                    // Cursor is at SelectionStop (the end that moves during Shift+navigation)
+                    HexViewport.CursorPosition = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value :
+                                                 (_viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0);
                     HexViewport.SelectionStop = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value : -1;
                     break;
 

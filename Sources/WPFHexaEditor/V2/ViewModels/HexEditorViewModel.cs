@@ -997,12 +997,16 @@ namespace WpfHexaEditor.V2.ViewModels
         /// </summary>
         private void UpdateSelectionState()
         {
+            // Cursor is at SelectionStop (the active end during Shift+navigation)
+            // SelectionStart is the anchor point
+            var cursorPos = _selectionStop.IsValid ? _selectionStop : _selectionStart;
+
             foreach (var line in Lines)
             {
                 foreach (var byteData in line.Bytes)
                 {
                     byteData.IsSelected = IsByteSelected(byteData.VirtualPos);
-                    byteData.IsCursor = _selectionStart.IsValid && byteData.VirtualPos == _selectionStart;
+                    byteData.IsCursor = cursorPos.IsValid && byteData.VirtualPos == cursorPos;
                 }
             }
         }
