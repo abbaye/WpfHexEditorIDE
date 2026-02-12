@@ -296,8 +296,16 @@ namespace WpfHexaEditor.V2.ViewModels
             if (!physicalPos.IsValid) return;
 
             _provider.AddByteModified(newValue, physicalPos.Value);
-            ClearLineCache();
-            RefreshVisibleLines();
+
+            // OPTIMIZATION: Invalidate only the affected line, not the entire cache
+            InvalidateLineAtPosition(virtualPos.Value);
+
+            // Refresh only the affected line if it's currently visible
+            long lineNumber = virtualPos.Value / BytePerLine;
+            if (lineNumber >= ScrollPosition && lineNumber < ScrollPosition + VisibleLines)
+            {
+                RefreshLine(lineNumber);
+            }
         }
 
         /// <summary>
@@ -341,6 +349,8 @@ namespace WpfHexaEditor.V2.ViewModels
             else
                 _insertions[physicalPos.Value] = 1;
 
+            // OPTIMIZATION: Since insert shifts all following bytes, we need full refresh
+            // But we can still use incremental update if scrolling is stable
             ClearLineCache();
             RefreshVisibleLines();
         }
@@ -363,6 +373,8 @@ namespace WpfHexaEditor.V2.ViewModels
             else
                 _deletions[physicalPos.Value] = 1;
 
+            // OPTIMIZATION: Since delete shifts all following bytes, we need full refresh
+            // But we can still use incremental update if scrolling is stable
             ClearLineCache();
             RefreshVisibleLines();
         }
@@ -814,7 +826,7 @@ namespace WpfHexaEditor.V2.ViewModels
 
             // Check if we can do incremental update (small scroll)
             bool canDoIncrementalUpdate = _lastScrollStart >= 0 &&
-                                         Math.Abs(startLine - _lastScrollStart) <= 5 &&
+                                         Math.Abs(startLine - _lastScrollStart) <= 10 && // Increased tolerance
                                          Lines.Count > 0;
 
             if (canDoIncrementalUpdate)
@@ -824,9 +836,10 @@ namespace WpfHexaEditor.V2.ViewModels
             }
             else
             {
-                // Full refresh: clear and rebuild
+                // Full refresh: clear Lines but KEEP cache for reuse
                 Lines.Clear();
-                _lineCache.Clear(); // Clear cache on full refresh
+                // OPTIMIZATION: Don't clear _lineCache here - let GetOrCreateLine use cached lines!
+                // _lineCache.Clear(); // REMOVED - cache is cleared only by ClearLineCache() when data changes
 
                 for (long lineNum = startLine; lineNum < endLine; lineNum++)
                 {
@@ -912,6 +925,50 @@ namespace WpfHexaEditor.V2.ViewModels
             _lineCache.Clear();
             _lastScrollStart = -1;
             _lastScrollEnd = -1;
+        }
+
+        /// <summary>
+        /// Invalidate only the line containing the specified virtual position
+        /// Much faster than ClearLineCache() for single-byte modifications
+        /// </summary>
+        private void InvalidateLineAtPosition(long virtualPos)
+        {
+            long lineNumber = virtualPos / BytePerLine;
+            if (_lineCache.ContainsKey(lineNumber))
+            {
+                _lineCache.Remove(lineNumber);
+            }
+        }
+
+        /// <summary>
+        /// Refresh a specific line by recreating it (but cache is preserved)
+        /// </summary>
+        private void RefreshLine(long lineNumber)
+        {
+            // Find the line in currently displayed Lines collection
+            int lineIndex = -1;
+            for (int i = 0; i < Lines.Count; i++)
+            {
+                if (Lines[i].LineNumber == lineNumber)
+                {
+                    lineIndex = i;
+                    break;
+                }
+            }
+
+            if (lineIndex < 0) return; // Line not currently visible
+
+            // Remove from cache to force recreation
+            if (_lineCache.ContainsKey(lineNumber))
+            {
+                _lineCache.Remove(lineNumber);
+            }
+
+            // Recreate the line
+            var newLine = GetOrCreateLine(lineNumber);
+
+            // Replace in Lines collection
+            Lines[lineIndex] = newLine;
         }
 
         /// <summary>

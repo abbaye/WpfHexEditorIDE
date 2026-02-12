@@ -340,7 +340,7 @@ namespace HexEditorV2.Sample
 
         private void InsertMode_Changed(object sender, RoutedEventArgs e)
         {
-            if (!HexEditor.IsFileLoaded) return;
+            if (HexEditor == null || !HexEditor.IsFileLoaded) return;
 
             HexEditor.EditMode = InsertModeMenuItem.IsChecked
                 ? EditMode.Insert
@@ -351,7 +351,7 @@ namespace HexEditorV2.Sample
 
         private void ReadOnly_Changed(object sender, RoutedEventArgs e)
         {
-            if (!HexEditor.IsFileLoaded) return;
+            if (HexEditor == null || !HexEditor.IsFileLoaded) return;
 
             HexEditor.ReadOnlyMode = ReadOnlyMenuItem.IsChecked;
             ReadOnlyToggle.IsChecked = ReadOnlyMenuItem.IsChecked;
@@ -359,7 +359,7 @@ namespace HexEditorV2.Sample
 
         private void InsertModeToggle_Changed(object sender, RoutedEventArgs e)
         {
-            if (!HexEditor.IsFileLoaded) return;
+            if (HexEditor == null || !HexEditor.IsFileLoaded) return;
 
             InsertModeMenuItem.IsChecked = InsertModeToggle.IsChecked == true;
             HexEditor.EditMode = InsertModeToggle.IsChecked == true
@@ -370,7 +370,7 @@ namespace HexEditorV2.Sample
 
         private void ReadOnlyToggle_Changed(object sender, RoutedEventArgs e)
         {
-            if (!HexEditor.IsFileLoaded) return;
+            if (HexEditor == null || !HexEditor.IsFileLoaded) return;
 
             ReadOnlyMenuItem.IsChecked = ReadOnlyToggle.IsChecked == true;
             HexEditor.ReadOnlyMode = ReadOnlyToggle.IsChecked == true;
@@ -478,13 +478,13 @@ namespace HexEditorV2.Sample
 
         private void ShowStatusBar_Changed(object sender, RoutedEventArgs e)
         {
-            if (!HexEditor.IsFileLoaded) return;
+            if (HexEditor == null || !HexEditor.IsFileLoaded) return;
             HexEditor.ShowStatusBar = ShowStatusBarMenuItem.IsChecked;
         }
 
         private void ShowHeader_Changed(object sender, RoutedEventArgs e)
         {
-            if (!HexEditor.IsFileLoaded) return;
+            if (HexEditor == null || !HexEditor.IsFileLoaded) return;
             HexEditor.ShowHeader = ShowHeaderMenuItem.IsChecked;
         }
 

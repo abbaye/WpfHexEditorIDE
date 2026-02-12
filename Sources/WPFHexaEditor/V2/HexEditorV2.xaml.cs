@@ -65,7 +65,7 @@ namespace WpfHexaEditor.V2
             _autoScrollTimer.Tick += AutoScrollTimer_Tick;
 
             // Auto-adjust visible lines when control is resized
-            LinesControl.SizeChanged += LinesControl_SizeChanged;
+            HexViewport.SizeChanged += HexViewport_SizeChanged;
 
             // Find XAML elements for display options
             _headerBorder = this.FindName("HeaderBorder") as Border;
@@ -719,7 +719,8 @@ namespace WpfHexaEditor.V2
                 throw new ArgumentNullException(nameof(filePath));
 
             _viewModel = HexEditorViewModel.OpenFile(filePath);
-            LinesControl.ItemsSource = _viewModel.Lines;
+            HexViewport.LinesSource = _viewModel.Lines;
+            HexViewport.BytesPerLine = _viewModel.BytePerLine;
 
             // Store file info
             FileName = filePath;
@@ -774,7 +775,7 @@ namespace WpfHexaEditor.V2
             // Raise FileClosed event
             OnFileClosed(EventArgs.Empty);
 
-            LinesControl.ItemsSource = null;
+            HexViewport.LinesSource = null;
             StatusText.Text = "Ready";
             FileSizeText.Text = "Size: -";
             SelectionInfo.Text = "No selection";
@@ -1183,10 +1184,10 @@ namespace WpfHexaEditor.V2
                 return;
 
             // Set keyboard focus to enable keyboard input
-            LinesControl.Focus();
+            HexViewport.Focus();
 
             // Get the virtual position at mouse coordinates
-            var position = GetVirtualPositionAtMouse(e.GetPosition(LinesControl));
+            var position = GetVirtualPositionAtMouse(e.GetPosition(HexViewport));
             if (!position.IsValid)
                 return;
 
@@ -1203,7 +1204,7 @@ namespace WpfHexaEditor.V2
                 _mouseDownPosition = position;
 
                 // Capture mouse for drag operation
-                LinesControl.CaptureMouse();
+                HexViewport.CaptureMouse();
             }
 
             e.Handled = true;
@@ -1217,7 +1218,7 @@ namespace WpfHexaEditor.V2
                 return;
             }
 
-            Point mousePos = e.GetPosition(LinesControl);
+            Point mousePos = e.GetPosition(HexViewport);
             _lastMousePosition = mousePos;
 
             var position = GetVirtualPositionAtMouse(mousePos);
@@ -1228,7 +1229,7 @@ namespace WpfHexaEditor.V2
             }
 
             // Check if mouse is near the top or bottom edge for auto-scroll
-            double viewportHeight = LinesControl.ActualHeight;
+            double viewportHeight = HexViewport.ActualHeight;
 
             if (mousePos.Y < AutoScrollEdgeThreshold)
             {
@@ -1254,7 +1255,7 @@ namespace WpfHexaEditor.V2
             if (e.ChangedButton == MouseButton.Left && _isMouseDown)
             {
                 _isMouseDown = false;
-                LinesControl.ReleaseMouseCapture();
+                HexViewport.ReleaseMouseCapture();
                 StopAutoScroll();
                 e.Handled = true;
             }
@@ -1262,68 +1263,42 @@ namespace WpfHexaEditor.V2
 
         /// <summary>
         /// Helper method to find the virtual position at mouse coordinates
-        /// Uses VisualTreeHelper to hit test the visual tree
-        /// Improved to find the closest byte even when clicking between bytes
+        /// Uses direct coordinate calculation with HexViewport layout constants
         /// </summary>
         private VirtualPosition GetVirtualPositionAtMouse(Point mousePosition)
         {
-            // Hit test at mouse position
-            HitTestResult hitResult = VisualTreeHelper.HitTest(LinesControl, mousePosition);
-            if (hitResult == null)
+            if (_viewModel == null || _viewModel.Lines.Count == 0)
                 return VirtualPosition.Invalid;
 
-            // Walk up the visual tree to find a Border with ByteData DataContext
-            DependencyObject current = hitResult.VisualHit;
-            while (current != null && current != LinesControl)
-            {
-                if (current is FrameworkElement element)
-                {
-                    // Direct hit on a ByteData - return immediately
-                    if (element.DataContext is ByteData byteData)
-                    {
-                        return byteData.VirtualPos;
-                    }
+            // Layout constants (must match HexViewport.cs)
+            const double OffsetWidth = 110;
+            const double HexByteWidth = 24;
+            const double HexByteSpacing = 2;
+            const double TopMargin = 2;
+            const double LineHeight = 22; // Approximate: charHeight + padding
 
-                    // Hit on a HexLine - find the closest byte in that line
-                    if (element.DataContext is HexLine hexLine && hexLine.Bytes.Count > 0)
-                    {
-                        return FindClosestByteInLine(hexLine, element, mousePosition);
-                    }
-                }
+            // Calculate line number from Y coordinate
+            int lineIndex = (int)((mousePosition.Y - TopMargin) / LineHeight);
 
-                current = VisualTreeHelper.GetParent(current);
-            }
+            // Clamp to valid line range
+            if (lineIndex < 0 || lineIndex >= _viewModel.Lines.Count)
+                return VirtualPosition.Invalid;
 
-            return VirtualPosition.Invalid;
-        }
-
-        /// <summary>
-        /// Find the closest byte in a line based on mouse position
-        /// </summary>
-        private VirtualPosition FindClosestByteInLine(HexLine line, FrameworkElement lineElement, Point mousePosition)
-        {
+            var line = _viewModel.Lines[lineIndex];
             if (line.Bytes.Count == 0)
                 return VirtualPosition.Invalid;
 
-            // Get the position relative to the line element
-            Point relativePos = LinesControl.TranslatePoint(mousePosition, lineElement);
-
-            // Simple heuristic: calculate which byte index based on horizontal position
-            // Assuming bytes are evenly distributed across the hex column width
-            double hexColumnStart = 110; // Offset column width
-            double byteWidth = 24; // Width of each byte (22px + 2px margin)
-
-            if (relativePos.X < hexColumnStart)
+            // Check if clicked in offset area - select first byte
+            if (mousePosition.X < OffsetWidth)
             {
-                // Clicked in offset area - select first byte of line
                 return line.Bytes[0].VirtualPos;
             }
 
-            // Calculate byte index based on position
-            double relativeX = relativePos.X - hexColumnStart;
-            int byteIndex = (int)Math.Round(relativeX / byteWidth);
+            // Calculate byte index from X coordinate
+            double relativeX = mousePosition.X - OffsetWidth;
+            int byteIndex = (int)Math.Round(relativeX / (HexByteWidth + HexByteSpacing));
 
-            // Clamp to valid range
+            // Clamp to valid byte range
             byteIndex = Math.Max(0, Math.Min(byteIndex, line.Bytes.Count - 1));
 
             return line.Bytes[byteIndex].VirtualPos;
@@ -1559,21 +1534,24 @@ namespace WpfHexaEditor.V2
         /// <summary>
         /// Auto-adjust visible lines when control is resized
         /// </summary>
-        private void LinesControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void HexViewport_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (_viewModel == null || e.HeightChanged == false)
+            if (_viewModel == null || !e.HeightChanged)
                 return;
 
-            // Calculate how many lines can fit in the viewport
-            // Approximate line height: 20px (18px height + 2px margin)
-            const double lineHeight = 20.0;
-            int calculatedLines = (int)(LinesControl.ActualHeight / lineHeight);
+            // Use the actual line height from HexViewport (dynamically calculated)
+            double lineHeight = HexViewport.LineHeight;
+            if (lineHeight <= 0)
+                return; // Not initialized yet
 
-            // Clamp to reasonable range (minimum 10, maximum 100)
-            calculatedLines = Math.Max(10, Math.Min(100, calculatedLines));
+            // Calculate how many lines can fit in the viewport
+            int calculatedLines = (int)(HexViewport.ActualHeight / lineHeight);
+
+            // Clamp to reasonable range (minimum 5, maximum 100)
+            calculatedLines = Math.Max(5, Math.Min(100, calculatedLines));
 
             // Only update if significantly different (avoid thrashing)
-            if (Math.Abs(_viewModel.VisibleLines - calculatedLines) > 2)
+            if (Math.Abs(_viewModel.VisibleLines - calculatedLines) > 1)
             {
                 _viewModel.VisibleLines = calculatedLines;
                 VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
@@ -1591,6 +1569,14 @@ namespace WpfHexaEditor.V2
 
                 case nameof(HexEditorViewModel.SelectionStart):
                     UpdatePositionInfo();
+                    // Update HexViewport cursor and selection
+                    HexViewport.CursorPosition = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0;
+                    HexViewport.SelectionStart = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : -1;
+                    break;
+
+                case nameof(HexEditorViewModel.SelectionStop):
+                    // Update HexViewport selection
+                    HexViewport.SelectionStop = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value : -1;
                     break;
 
                 case nameof(HexEditorViewModel.TotalLines):
@@ -1603,6 +1589,7 @@ namespace WpfHexaEditor.V2
 
                 case nameof(HexEditorViewModel.BytePerLine):
                     BytesPerLineText.Text = $"Bytes/Line: {_viewModel.BytePerLine}";
+                    HexViewport.BytesPerLine = _viewModel.BytePerLine;
                     break;
             }
         }

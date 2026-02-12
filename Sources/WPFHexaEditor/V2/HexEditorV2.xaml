@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:WpfHexaEditor.V2"
              xmlns:models="clr-namespace:WpfHexaEditor.V2.Models"
              xmlns:converters="clr-namespace:WpfHexaEditor.V2.Converters"
+             xmlns:controls="clr-namespace:WpfHexaEditor.V2.Controls"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Background="White"
@@ -164,29 +165,17 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Lines display -->
+            <!-- Lines display - Custom high-performance rendering -->
             <ScrollViewer Grid.Column="0"
                           x:Name="ContentScroller"
                           VerticalScrollBarVisibility="Hidden"
                           HorizontalScrollBarVisibility="Auto"
-                          CanContentScroll="True">
-                <ItemsControl x:Name="LinesControl"
-                              Background="White"
-                              Focusable="True"
-                              MouseDown="Content_MouseDown"
-                              MouseMove="Content_MouseMove"
-                              MouseUp="Content_MouseUp"
-                              KeyDown="Content_KeyDown"
-                              VirtualizingPanel.IsVirtualizing="True"
-                              VirtualizingPanel.VirtualizationMode="Recycling"
-                              VirtualizingPanel.CacheLength="1,1"
-                              VirtualizingPanel.CacheLengthUnit="Page">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
+                          CanContentScroll="False">
+                <controls:HexViewport x:Name="HexViewport"
+                                      MouseDown="Content_MouseDown"
+                                      MouseMove="Content_MouseMove"
+                                      MouseUp="Content_MouseUp"
+                                      KeyDown="Content_KeyDown"/>
             </ScrollViewer>
 
             <!-- Vertical scrollbar -->
