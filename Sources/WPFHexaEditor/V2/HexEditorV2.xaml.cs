@@ -1823,6 +1823,208 @@ namespace WpfHexaEditor.V2
 
         #endregion
 
+        #region Public Methods - V1 Additional Compatibility
+
+        /// <summary>
+        /// V1: Set position from hex string
+        /// </summary>
+        public void SetPosition(string hexLiteralPosition)
+        {
+            if (string.IsNullOrEmpty(hexLiteralPosition)) return;
+            try
+            {
+                hexLiteralPosition = hexLiteralPosition.Replace("0x", "").Replace("0X", "");
+                long position = Convert.ToInt64(hexLiteralPosition, 16);
+                SetPosition(position);
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// V1: Set position and create selection
+        /// </summary>
+        public void SetPosition(long position, long byteLength)
+        {
+            if (_viewModel == null) return;
+            SelectionStart = position;
+            SelectionStop = position + byteLength - 1;
+            SetPosition(position);
+        }
+
+        /// <summary>
+        /// V1: Submit changes (alias for Save)
+        /// </summary>
+        public void SubmitChanges() => Save();
+
+        /// <summary>
+        /// V1: Submit changes to new file (alias for SaveAs)
+        /// </summary>
+        public void SubmitChanges(string newFilename, bool overwrite)
+        {
+            if (_viewModel == null) return;
+            try
+            {
+                bool success = _viewModel.SaveAs(newFilename, overwrite);
+                if (success)
+                {
+                    FileName = newFilename;
+                    StatusText.Text = $"Saved to {System.IO.Path.GetFileName(newFilename)}";
+                }
+                else
+                {
+                    StatusText.Text = "File already exists";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Failed to save: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// V1: Unselect all
+        /// </summary>
+        public void UnSelectAll(bool cleanFocus = false)
+        {
+            ClearSelection();
+            if (cleanFocus) Keyboard.ClearFocus();
+        }
+
+        /// <summary>
+        /// V1: Undo with repeat count
+        /// </summary>
+        public void Undo(int repeat)
+        {
+            if (_viewModel == null) return;
+            for (int i = 0; i < repeat; i++)
+            {
+                if (_viewModel.CanUndo)
+                    Undo();
+                else
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// V1: Redo with repeat count
+        /// </summary>
+        public void Redo(int repeat)
+        {
+            if (_viewModel == null) return;
+            for (int i = 0; i < repeat; i++)
+            {
+                if (_viewModel.CanRedo)
+                    Redo();
+                else
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// V1: Clear all undo/redo history
+        /// </summary>
+        public void ClearAllChange() => _viewModel?.ClearUndoRedo();
+
+        /// <summary>
+        /// V1: Refresh view with options
+        /// </summary>
+        public void RefreshView(bool controlResize = false, bool refreshData = true)
+        {
+            if (_viewModel == null) return;
+            if (refreshData)
+            {
+                _viewModel.RefreshDisplay();
+                HexViewport?.InvalidateVisual();
+            }
+            if (controlResize)
+            {
+                InvalidateMeasure();
+                InvalidateArrange();
+            }
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// V1: Update visual rendering
+        /// </summary>
+        public void UpdateVisual()
+        {
+            InvalidateVisual();
+            HexViewport?.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// V1: Get line number from position
+        /// </summary>
+        public long GetLineNumber(long position) => _viewModel == null ? 0 : position / BytePerLine;
+
+        /// <summary>
+        /// V1: Get column number from position
+        /// </summary>
+        public long GetColumnNumber(long position) => _viewModel == null ? 0 : position % BytePerLine;
+
+        /// <summary>
+        /// V1: Check if byte position is visible in viewport
+        /// </summary>
+        public bool IsBytePositionAreVisible(long position)
+        {
+            if (_viewModel == null || HexViewport == null) return false;
+            long startLine = _viewModel.ScrollPosition;
+            long endLine = startLine + _viewModel.VisibleLines;
+            long positionLine = position / BytePerLine;
+            return positionLine >= startLine && positionLine < endLine;
+        }
+
+        /// <summary>
+        /// V1: Close provider with option to clear filename
+        /// </summary>
+        public void CloseProvider(bool clearFileName = true)
+        {
+            Close();
+            if (clearFileName)
+                FileName = string.Empty;
+        }
+
+        /// <summary>
+        /// V1: Reset zoom to 100%
+        /// </summary>
+        public void ResetZoom()
+        {
+            if (HexViewport != null)
+                base.FontSize = 14; // Default font size
+        }
+
+        /// <summary>
+        /// V1: Update focus
+        /// </summary>
+        public void UpdateFocus()
+        {
+            HexViewport?.Focus();
+        }
+
+        /// <summary>
+        /// V1: Set focus at selection start
+        /// </summary>
+        public void SetFocusAtSelectionStart()
+        {
+            if (_viewModel != null && SelectionStart >= 0)
+            {
+                SetPosition(SelectionStart);
+                UpdateFocus();
+            }
+        }
+
+        /// <summary>
+        /// V1: Set focus at specific position
+        /// </summary>
+        public void SetFocusAt(long position)
+        {
+            SetPosition(position);
+            UpdateFocus();
+        }
+
+        #endregion
+
         #region Public Methods - TBL Support (V1 Compatible)
 
         /// <summary>

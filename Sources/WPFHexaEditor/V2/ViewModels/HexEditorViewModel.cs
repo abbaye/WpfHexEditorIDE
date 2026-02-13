@@ -262,11 +262,38 @@ namespace WpfHexaEditor.V2.ViewModels
         }
 
         /// <summary>
+        /// Save changes to a new file (V1 compatible)
+        /// </summary>
+        public bool SaveAs(string newFilename, bool overwrite = false)
+        {
+            return _provider.SubmitChanges(newFilename, overwrite);
+        }
+
+        /// <summary>
         /// Close file and cleanup
         /// </summary>
         public void Close()
         {
             _provider?.Close();
+        }
+
+        /// <summary>
+        /// Clear all undo/redo history (V1 compatible)
+        /// </summary>
+        public void ClearUndoRedo()
+        {
+            _undoRedoService.ClearAll(_provider);
+            OnPropertyChanged(nameof(CanUndo));
+            OnPropertyChanged(nameof(CanRedo));
+        }
+
+        /// <summary>
+        /// Refresh display (clear cache and refresh visible lines) (V1 compatible)
+        /// </summary>
+        public void RefreshDisplay()
+        {
+            ClearLineCache();
+            RefreshVisibleLines();
         }
 
         #endregion
