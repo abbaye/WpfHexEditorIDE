@@ -2296,76 +2296,76 @@ namespace WpfHexaEditor.V2
 
         /// <summary>
         /// Select all bytes with specified value (V1 compatible double-click feature)
+        /// V1 ALGORITHM: Expands selection bidirectionally from clicked position
         /// </summary>
         private void SelectAllBytesWith(byte byteValue)
         {
             System.Diagnostics.Debug.WriteLine($"[SELECTALL] SelectAllBytesWith called with byte value 0x{byteValue:X2}");
 
-            if (_viewModel == null || HexViewport == null)
+            if (_viewModel == null)
             {
-                System.Diagnostics.Debug.WriteLine("[SELECTALL] ViewModel or HexViewport is null!");
-                StatusText.Text = "DEBUG: ViewModel or HexViewport is null";
+                System.Diagnostics.Debug.WriteLine("[SELECTALL] ViewModel is null!");
+                StatusText.Text = "DEBUG: ViewModel is null";
                 return;
             }
 
             try
             {
-                // Find all matching bytes in visible region
-                var matchingPositions = new List<long>();
+                // V1 ALGORITHM: Expand selection bidirectionally from current position
+                // Scan backwards and forwards until we hit a different byte value
 
-                // Get visible lines from cache (already loaded for display)
-                var visibleLines = HexViewport.GetVisibleLinesForHighlight();
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Got {visibleLines?.Count ?? 0} visible lines");
+                long startPosition = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0;
+                long stopPosition = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value : startPosition;
 
-                if (visibleLines == null || visibleLines.Count == 0)
+                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Initial range: {startPosition} → {stopPosition}");
+
+                // Scan BACKWARDS from startPosition while byte matches
+                long scanStart = startPosition;
+                while (scanStart > 0)
                 {
-                    System.Diagnostics.Debug.WriteLine("[SELECTALL] No visible lines!");
-                    StatusText.Text = "DEBUG: No visible bytes to search";
-                    return;
+                    var prevPos = new VirtualPosition(scanStart - 1);
+                    if (!prevPos.IsValid || (scanStart - 1) < 0)
+                        break;
+
+                    byte prevByte = _viewModel.GetByteAt(prevPos);
+                    if (prevByte != byteValue)
+                        break;
+
+                    scanStart--;
                 }
 
-                // Scan visible bytes only (fast because already in cache)
-                foreach (var line in visibleLines)
+                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Scanned backwards to: {scanStart}");
+
+                // Scan FORWARDS from stopPosition while byte matches
+                long scanStop = stopPosition;
+                while (scanStop < _viewModel.VirtualLength - 1)
                 {
-                    foreach (var byteData in line.Bytes)
-                    {
-                        if (byteData.Value == byteValue)
-                        {
-                            matchingPositions.Add(byteData.VirtualPos.Value);
-                        }
-                    }
+                    var nextPos = new VirtualPosition(scanStop + 1);
+                    if (!nextPos.IsValid || (scanStop + 1) >= _viewModel.VirtualLength)
+                        break;
+
+                    byte nextByte = _viewModel.GetByteAt(nextPos);
+                    if (nextByte != byteValue)
+                        break;
+
+                    scanStop++;
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Found {matchingPositions.Count} matching bytes");
+                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Scanned forwards to: {scanStop}");
+                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Final range: {scanStart} → {scanStop} ({scanStop - scanStart + 1} bytes)");
 
-                if (matchingPositions.Count == 0)
-                {
-                    System.Diagnostics.Debug.WriteLine("[SELECTALL] No matches found!");
-                    StatusText.Text = $"DEBUG: No bytes with value 0x{byteValue:X2} found in visible region";
-                    return;
-                }
-
-                // Create a selection from first to last matching byte
-                long firstMatch = matchingPositions.Min();
-                long lastMatch = matchingPositions.Max();
-
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Setting selection: {firstMatch} → {lastMatch}");
-
-                // Set SelectionStart and SelectionStop to create a continuous selection
-                _viewModel.SetSelectionRange(new VirtualPosition(firstMatch), new VirtualPosition(lastMatch));
-
-                // Clear visual highlight (we're using real selection now)
-                HexViewport.HighlightedPositions = null;
+                // Set the expanded selection
+                _viewModel.SetSelectionRange(new VirtualPosition(scanStart), new VirtualPosition(scanStop));
 
                 // Update status bar
-                StatusText.Text = $"DEBUG: Selected range {firstMatch}-{lastMatch} with {matchingPositions.Count} matches (0x{byteValue:X2})";
+                StatusText.Text = $"Selected {scanStop - scanStart + 1} consecutive bytes with value 0x{byteValue:X2}";
                 System.Diagnostics.Debug.WriteLine($"[SELECTALL] Success! Status: {StatusText.Text}");
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[SELECTALL] Exception: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"[SELECTALL] Stack: {ex.StackTrace}");
-                StatusText.Text = $"DEBUG: Auto-select failed: {ex.Message}";
+                StatusText.Text = $"Auto-select failed: {ex.Message}";
             }
         }
 
