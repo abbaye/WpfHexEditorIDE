@@ -566,10 +566,10 @@ namespace WpfHexaEditor.V2.Controls
             }
 
             // Draw hex text centered in the cell
-            // V1 compatible: Alternate foreground color every 4 bytes for visual grouping
+            // V1 compatible: Alternate foreground color every 2 bytes for visual grouping
             long bytePosition = byteData.VirtualPos.Value;
             int byteIndexInLine = (int)(bytePosition % _bytesPerLine);
-            bool useAlternateColor = (byteIndexInLine / 4) % 2 == 1; // Groups of 4 bytes alternate
+            bool useAlternateColor = (byteIndexInLine / 2) % 2 == 1; // Groups of 2 bytes alternate
 
             Brush textBrush = useAlternateColor ? _alternateByteBrush : _normalByteBrush;
 
