@@ -85,4 +85,32 @@ namespace WpfHexaEditor.V2.Events
             SelectionLength = selectionLength;
         }
     }
+
+    /// <summary>
+    /// V1 compatible: Event args for byte interaction events (click, scroll)
+    /// </summary>
+    public class ByteEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Byte position (virtual)
+        /// </summary>
+        public long BytePositionInStream { get; set; }
+
+        /// <summary>
+        /// Byte value at position
+        /// </summary>
+        public byte? Byte { get; set; }
+
+        /// <summary>
+        /// Line number
+        /// </summary>
+        public long LineNumber { get; set; }
+
+        public ByteEventArgs(long position, byte? byteValue = null, long lineNumber = 0)
+        {
+            BytePositionInStream = position;
+            Byte = byteValue;
+            LineNumber = lineNumber;
+        }
+    }
 }

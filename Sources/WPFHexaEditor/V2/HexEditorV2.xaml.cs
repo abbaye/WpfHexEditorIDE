@@ -159,6 +159,200 @@ namespace WpfHexaEditor.V2
 
         #endregion
 
+        #region V1 Compatible Events
+
+        /// <summary>
+        /// V1 compatible: Raised when selection start position changes
+        /// </summary>
+        public event EventHandler SelectionStartChanged;
+
+        /// <summary>
+        /// V1 compatible: Raised when selection stop position changes
+        /// </summary>
+        public event EventHandler SelectionStopChanged;
+
+        /// <summary>
+        /// V1 compatible: Raised when selection length changes
+        /// </summary>
+        public event EventHandler SelectionLengthChanged;
+
+        /// <summary>
+        /// V1 compatible: Raised when data is copied to clipboard
+        /// </summary>
+        public event EventHandler DataCopied;
+
+        /// <summary>
+        /// V1 compatible: Raised when character table type changes
+        /// </summary>
+        public event EventHandler TypeOfCharacterTableChanged;
+
+        /// <summary>
+        /// V1 compatible: Raised when a long process progress changes
+        /// </summary>
+        public event EventHandler LongProcessProgressChanged;
+
+        /// <summary>
+        /// V1 compatible: Raised when a long process starts
+        /// </summary>
+        public event EventHandler LongProcessProgressStarted;
+
+        /// <summary>
+        /// V1 compatible: Raised when a long process completes
+        /// </summary>
+        public event EventHandler LongProcessProgressCompleted;
+
+        /// <summary>
+        /// V1 compatible: Raised when a replace byte operation completes
+        /// </summary>
+        public event EventHandler ReplaceByteCompleted;
+
+        /// <summary>
+        /// V1 compatible: Raised when a fill with byte operation completes
+        /// </summary>
+        public event EventHandler FillWithByteCompleted;
+
+        /// <summary>
+        /// V1 compatible: Raised when bytes are deleted
+        /// </summary>
+        public event EventHandler BytesDeleted;
+
+        /// <summary>
+        /// V1 compatible: Raised when an undo operation completes (alias for UndoCompleted)
+        /// </summary>
+        public event EventHandler Undone;
+
+        /// <summary>
+        /// V1 compatible: Raised when a redo operation completes (alias for RedoCompleted)
+        /// </summary>
+        public event EventHandler Redone;
+
+        /// <summary>
+        /// V1 compatible: Raised when a byte is single-clicked
+        /// </summary>
+        public event EventHandler<ByteEventArgs> ByteClick;
+
+        /// <summary>
+        /// V1 compatible: Raised when a byte is double-clicked
+        /// </summary>
+        public event EventHandler<ByteEventArgs> ByteDoubleClick;
+
+        /// <summary>
+        /// V1 compatible: Raised when zoom scale changes
+        /// </summary>
+        public event EventHandler ZoomScaleChanged;
+
+        /// <summary>
+        /// V1 compatible: Raised when vertical scrollbar position changes
+        /// </summary>
+        public event EventHandler<ByteEventArgs> VerticalScrollBarChanged;
+
+        /// <summary>
+        /// V1 compatible: Raised when changes are submitted (saved)
+        /// </summary>
+        public event EventHandler ChangesSubmited;
+
+        /// <summary>
+        /// V1 compatible: Raised when read-only mode changes
+        /// </summary>
+        public event EventHandler ReadOnlyChanged;
+
+        /// <summary>
+        /// Event helper: Raise SelectionStartChanged
+        /// </summary>
+        protected virtual void OnSelectionStartChanged(EventArgs e) => SelectionStartChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise SelectionStopChanged
+        /// </summary>
+        protected virtual void OnSelectionStopChanged(EventArgs e) => SelectionStopChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise SelectionLengthChanged
+        /// </summary>
+        protected virtual void OnSelectionLengthChanged(EventArgs e) => SelectionLengthChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise DataCopied
+        /// </summary>
+        protected virtual void OnDataCopied(EventArgs e) => DataCopied?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise TypeOfCharacterTableChanged
+        /// </summary>
+        protected virtual void OnTypeOfCharacterTableChanged(EventArgs e) => TypeOfCharacterTableChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise LongProcessProgressChanged
+        /// </summary>
+        protected virtual void OnLongProcessProgressChanged(EventArgs e) => LongProcessProgressChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise LongProcessProgressStarted
+        /// </summary>
+        protected virtual void OnLongProcessProgressStarted(EventArgs e) => LongProcessProgressStarted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise LongProcessProgressCompleted
+        /// </summary>
+        protected virtual void OnLongProcessProgressCompleted(EventArgs e) => LongProcessProgressCompleted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ReplaceByteCompleted
+        /// </summary>
+        protected virtual void OnReplaceByteCompleted(EventArgs e) => ReplaceByteCompleted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise FillWithByteCompleted
+        /// </summary>
+        protected virtual void OnFillWithByteCompleted(EventArgs e) => FillWithByteCompleted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise BytesDeleted
+        /// </summary>
+        protected virtual void OnBytesDeleted(EventArgs e) => BytesDeleted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise Undone
+        /// </summary>
+        protected virtual void OnUndone(EventArgs e) => Undone?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise Redone
+        /// </summary>
+        protected virtual void OnRedone(EventArgs e) => Redone?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ByteClick
+        /// </summary>
+        protected virtual void OnByteClick(ByteEventArgs e) => ByteClick?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ByteDoubleClick
+        /// </summary>
+        protected virtual void OnByteDoubleClick(ByteEventArgs e) => ByteDoubleClick?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ZoomScaleChanged
+        /// </summary>
+        protected virtual void OnZoomScaleChanged(EventArgs e) => ZoomScaleChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise VerticalScrollBarChanged
+        /// </summary>
+        protected virtual void OnVerticalScrollBarChanged(ByteEventArgs e) => VerticalScrollBarChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ChangesSubmited
+        /// </summary>
+        protected virtual void OnChangesSubmited(EventArgs e) => ChangesSubmited?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ReadOnlyChanged
+        /// </summary>
+        protected virtual void OnReadOnlyChanged(EventArgs e) => ReadOnlyChanged?.Invoke(this, e);
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>
@@ -253,11 +447,20 @@ namespace WpfHexaEditor.V2
                 {
                     var oldStart = SelectionStart;
                     var oldStop = SelectionStop;
+                    var oldLength = SelectionLength;
                     var stop = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop : new VirtualPosition(value);
                     _viewModel.SetSelectionRange(new VirtualPosition(value), stop);
 
                     if (oldStart != value || oldStop != SelectionStop)
+                    {
                         OnSelectionChanged(new HexSelectionChangedEventArgs(value, SelectionStop, SelectionLength));
+
+                        // V1 compatible events
+                        if (oldStart != value)
+                            OnSelectionStartChanged(EventArgs.Empty);
+                        if (oldLength != SelectionLength)
+                            OnSelectionLengthChanged(EventArgs.Empty);
+                    }
                 }
             }
         }
@@ -274,11 +477,20 @@ namespace WpfHexaEditor.V2
                 {
                     var oldStart = SelectionStart;
                     var oldStop = SelectionStop;
+                    var oldLength = SelectionLength;
                     var start = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart : new VirtualPosition(value);
                     _viewModel.SetSelectionRange(start, new VirtualPosition(value));
 
                     if (oldStop != value || oldStart != SelectionStart)
+                    {
                         OnSelectionChanged(new HexSelectionChangedEventArgs(SelectionStart, value, SelectionLength));
+
+                        // V1 compatible events
+                        if (oldStop != value)
+                            OnSelectionStopChanged(EventArgs.Empty);
+                        if (oldLength != SelectionLength)
+                            OnSelectionLengthChanged(EventArgs.Empty);
+                    }
                 }
             }
         }
@@ -292,7 +504,14 @@ namespace WpfHexaEditor.V2
             set
             {
                 if (_viewModel != null)
+                {
+                    var oldValue = _viewModel.ReadOnlyMode;
                     _viewModel.ReadOnlyMode = value;
+
+                    // V1 compatible event
+                    if (oldValue != value)
+                        OnReadOnlyChanged(EventArgs.Empty);
+                }
             }
         }
 
@@ -343,13 +562,24 @@ namespace WpfHexaEditor.V2
                 }
 
                 // Also update column header visibility
-                if (editor._hexHeaderStackPanel != null && editor._hexHeaderStackPanel.Children.Count > 0)
+                if (editor._headerBorder != null && editor._headerBorder.Child is Grid headerGrid)
                 {
-                    // First child is the offset header TextBlock
-                    var offsetHeader = editor._hexHeaderStackPanel.Parent as Grid;
-                    if (offsetHeader?.Children[0] is TextBlock tb && tb.Text == "Offset")
+                    // Find the offset TextBlock (Grid.Column="0", Text="Offset")
+                    foreach (UIElement child in headerGrid.Children)
                     {
-                        tb.Visibility = showOffset ? Visibility.Visible : Visibility.Collapsed;
+                        if (child is TextBlock tb && tb.Text == "Offset")
+                        {
+                            tb.Visibility = showOffset ? Visibility.Visible : Visibility.Collapsed;
+
+                            // Also adjust the column width to 0 when hidden
+                            if (headerGrid.ColumnDefinitions.Count > 0)
+                            {
+                                headerGrid.ColumnDefinitions[0].Width = showOffset
+                                    ? new GridLength(110)
+                                    : new GridLength(0);
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -384,6 +614,27 @@ namespace WpfHexaEditor.V2
                 {
                     editor._asciiHeaderStackPanel.Visibility = showAscii ? Visibility.Visible : Visibility.Collapsed;
                 }
+
+                // Hide separator and ASCII column in header grid
+                if (editor._headerBorder != null && editor._headerBorder.Child is Grid headerGrid)
+                {
+                    // Separator is Grid.Column="2", ASCII header is Grid.Column="3"
+                    if (headerGrid.ColumnDefinitions.Count > 3)
+                    {
+                        headerGrid.ColumnDefinitions[2].Width = showAscii ? new GridLength(20) : new GridLength(0);
+                        headerGrid.ColumnDefinitions[3].Width = showAscii ? new GridLength(180) : new GridLength(0);
+                    }
+
+                    // Also hide the separator Border
+                    foreach (UIElement child in headerGrid.Children)
+                    {
+                        if (child is Border border && Grid.GetColumn(border) == 2)
+                        {
+                            border.Visibility = showAscii ? Visibility.Visible : Visibility.Collapsed;
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -407,6 +658,21 @@ namespace WpfHexaEditor.V2
 
                     // Refresh column headers to match new BytePerLine
                     RefreshColumnHeader();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Font size for zoom (V1 compatible - use Ctrl+MouseWheel)
+        /// </summary>
+        public new double FontSize
+        {
+            get => HexViewport?.FontSize ?? 14;
+            set
+            {
+                if (HexViewport != null && value >= 6 && value <= 72)
+                {
+                    HexViewport.FontSize = value;
                 }
             }
         }
@@ -503,7 +769,7 @@ namespace WpfHexaEditor.V2
 
         public static readonly DependencyProperty ByteGroupingProperty =
             DependencyProperty.Register(nameof(ByteGrouping), typeof(ByteSpacerGroup), typeof(HexEditorV2),
-                new FrameworkPropertyMetadata(ByteSpacerGroup.EightByte, ByteSpacer_Changed));
+                new FrameworkPropertyMetadata(ByteSpacerGroup.FourByte, ByteSpacer_Changed));
 
         /// <summary>
         /// Get or set the visual of byte spacer (V1 compatible)
@@ -516,7 +782,7 @@ namespace WpfHexaEditor.V2
 
         public static readonly DependencyProperty ByteSpacerVisualStyleProperty =
             DependencyProperty.Register(nameof(ByteSpacerVisualStyle), typeof(ByteSpacerVisual), typeof(HexEditorV2),
-                new FrameworkPropertyMetadata(ByteSpacerVisual.Empty, ByteSpacer_Changed));
+                new FrameworkPropertyMetadata(ByteSpacerVisual.Line, ByteSpacer_Changed));
 
         /// <summary>
         /// Callback when any byte spacer property changes - triggers header and viewport refresh
@@ -748,6 +1014,153 @@ namespace WpfHexaEditor.V2
 
         #endregion
 
+        #region V1 Compatibility - Brush Properties (wrap Color properties)
+
+        /// <summary>
+        /// V1 compatible: Selection first color as Brush. Use SelectionFirstColor (Color) for V2 code.
+        /// </summary>
+        public Brush SelectionFirstColorBrush
+        {
+            get => new SolidColorBrush(SelectionFirstColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    SelectionFirstColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Selection second color as Brush. Use SelectionSecondColor (Color) for V2 code.
+        /// </summary>
+        public Brush SelectionSecondColorBrush
+        {
+            get => new SolidColorBrush(SelectionSecondColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    SelectionSecondColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Modified byte color as Brush. Use ByteModifiedColor (Color) for V2 code.
+        /// </summary>
+        public Brush ByteModifiedColorBrush
+        {
+            get => new SolidColorBrush(ByteModifiedColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ByteModifiedColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Deleted byte color as Brush. Use ByteDeletedColor (Color) for V2 code.
+        /// </summary>
+        public Brush ByteDeletedColorBrush
+        {
+            get => new SolidColorBrush(ByteDeletedColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ByteDeletedColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Added byte color as Brush. Use ByteAddedColor (Color) for V2 code.
+        /// </summary>
+        public Brush ByteAddedColorBrush
+        {
+            get => new SolidColorBrush(ByteAddedColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ByteAddedColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Highlight color as Brush. Use HighLightColor (Color) for V2 code.
+        /// </summary>
+        public Brush HighLightColorBrush
+        {
+            get => new SolidColorBrush(HighLightColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    HighLightColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Mouse over color as Brush. Use MouseOverColor (Color) for V2 code.
+        /// </summary>
+        public Brush MouseOverColorBrush
+        {
+            get => new SolidColorBrush(MouseOverColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    MouseOverColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Foreground second color as Brush. Use ForegroundSecondColor (Color) for V2 code.
+        /// </summary>
+        public Brush ForegroundSecondColorBrush
+        {
+            get => new SolidColorBrush(ForegroundSecondColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ForegroundSecondColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Offset header foreground color as Brush. Use ForegroundOffSetHeaderColor (Color) for V2 code.
+        /// </summary>
+        public Brush ForegroundOffSetHeaderColorBrush
+        {
+            get => new SolidColorBrush(ForegroundOffSetHeaderColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ForegroundOffSetHeaderColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Highlighted offset header foreground color as Brush. Use ForegroundHighLightOffSetHeaderColor (Color) for V2 code.
+        /// </summary>
+        public Brush ForegroundHighLightOffSetHeaderColorBrush
+        {
+            get => new SolidColorBrush(ForegroundHighLightOffSetHeaderColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ForegroundHighLightOffSetHeaderColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Foreground contrast color as Brush. Use ForegroundContrast (Color) for V2 code.
+        /// </summary>
+        public Brush ForegroundContrastBrush
+        {
+            get => new SolidColorBrush(ForegroundContrast);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ForegroundContrast = solidBrush.Color;
+            }
+        }
+
+        #endregion
+
         #region V1 Compatibility - Display Properties
 
         /// <summary>
@@ -817,6 +1230,65 @@ namespace WpfHexaEditor.V2
 
         #endregion
 
+        #region V1 Compatibility - Visibility Properties (wrap bool properties)
+
+        /// <summary>
+        /// V1 compatible: Header visibility. Use ShowHeader (bool) for V2 code.
+        /// </summary>
+        public Visibility HeaderVisibility
+        {
+            get => ShowHeader ? Visibility.Visible : Visibility.Collapsed;
+            set => ShowHeader = (value == Visibility.Visible);
+        }
+
+        /// <summary>
+        /// V1 compatible: Status bar visibility. Use ShowStatusBar (bool) for V2 code.
+        /// </summary>
+        public Visibility StatusBarVisibility
+        {
+            get => ShowStatusBar ? Visibility.Visible : Visibility.Collapsed;
+            set => ShowStatusBar = (value == Visibility.Visible);
+        }
+
+        /// <summary>
+        /// V1 compatible: Line info (offset column) visibility. Use ShowOffset (bool) for V2 code.
+        /// </summary>
+        public Visibility LineInfoVisibility
+        {
+            get => ShowOffset ? Visibility.Visible : Visibility.Collapsed;
+            set => ShowOffset = (value == Visibility.Visible);
+        }
+
+        /// <summary>
+        /// V1 compatible: String data (ASCII) panel visibility. Use ShowAscii (bool) for V2 code.
+        /// </summary>
+        public Visibility StringDataVisibility
+        {
+            get => ShowAscii ? Visibility.Visible : Visibility.Collapsed;
+            set => ShowAscii = (value == Visibility.Visible);
+        }
+
+        /// <summary>
+        /// V1 compatible: Hex data panel visibility. Always Visible in V2 (cannot be hidden).
+        /// </summary>
+        public Visibility HexDataVisibility
+        {
+            get => Visibility.Visible;
+            set { /* V2 does not support hiding hex panel */ }
+        }
+
+        /// <summary>
+        /// V1 compatible: Bar chart panel visibility. Not yet implemented in V2.
+        /// Will be implemented in Phase 7.
+        /// </summary>
+        public Visibility BarChartPanelVisibility
+        {
+            get => Visibility.Collapsed;
+            set { /* Bar chart not yet implemented in V2 */ }
+        }
+
+        #endregion
+
         #endregion
 
         #region Public Methods - File Operations
@@ -878,6 +1350,7 @@ namespace WpfHexaEditor.V2
 
             _viewModel.Save();
             StatusText.Text = "File saved";
+            OnChangesSubmited(EventArgs.Empty); // V1 compatible event
         }
 
         /// <summary>
@@ -919,6 +1392,7 @@ namespace WpfHexaEditor.V2
         {
             _viewModel?.Undo();
             OnUndoCompleted(EventArgs.Empty);
+            OnUndone(EventArgs.Empty); // V1 compatible event
         }
 
         /// <summary>
@@ -928,6 +1402,7 @@ namespace WpfHexaEditor.V2
         {
             _viewModel?.Redo();
             OnRedoCompleted(EventArgs.Empty);
+            OnRedone(EventArgs.Empty); // V1 compatible event
         }
 
         /// <summary>
@@ -981,7 +1456,10 @@ namespace WpfHexaEditor.V2
         /// </summary>
         public bool Copy()
         {
-            return _viewModel?.CopyToClipboard() ?? false;
+            bool result = _viewModel?.CopyToClipboard() ?? false;
+            if (result)
+                OnDataCopied(EventArgs.Empty); // V1 compatible event
+            return result;
         }
 
         /// <summary>
@@ -1110,6 +1588,98 @@ namespace WpfHexaEditor.V2
         {
             if (_viewModel == null) return 0;
             return _viewModel.ReplaceAll(findData, replaceData, truncateLength);
+        }
+
+        #endregion
+
+        #region V1 Compatibility - String Search/Replace (wrap byte[] methods)
+
+        /// <summary>
+        /// V1 compatible: Find first occurrence of string
+        /// </summary>
+        /// <param name="text">Text to search for</param>
+        /// <param name="startPosition">Position to start search from</param>
+        /// <returns>Position of first occurrence, or -1 if not found</returns>
+        public long FindFirst(string text, long startPosition = 0)
+        {
+            if (string.IsNullOrEmpty(text)) return -1;
+            byte[] bytes = GetBytesFromString(text);
+            return FindFirst(bytes, startPosition);
+        }
+
+        /// <summary>
+        /// V1 compatible: Find next occurrence of string
+        /// </summary>
+        /// <param name="text">Text to search for</param>
+        /// <returns>Position of next occurrence, or -1 if not found</returns>
+        public long FindNext(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return -1;
+            byte[] bytes = GetBytesFromString(text);
+            // V1 behavior: FindNext searches from current position + 1
+            long currentPos = Position;
+            return FindNext(bytes, currentPos);
+        }
+
+        /// <summary>
+        /// V1 compatible: Find last occurrence of string
+        /// </summary>
+        /// <param name="text">Text to search for</param>
+        /// <returns>Position of last occurrence, or -1 if not found</returns>
+        public long FindLast(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return -1;
+            byte[] bytes = GetBytesFromString(text);
+            return FindLast(bytes, 0);
+        }
+
+        /// <summary>
+        /// V1 compatible: Replace first occurrence of string
+        /// </summary>
+        public long ReplaceFirst(string findText, string replaceText, long startPosition = 0, bool truncateLength = false)
+        {
+            if (string.IsNullOrEmpty(findText)) return -1;
+            byte[] findBytes = GetBytesFromString(findText);
+            byte[] replaceBytes = GetBytesFromString(replaceText ?? string.Empty);
+            return ReplaceFirst(findBytes, replaceBytes, startPosition, truncateLength);
+        }
+
+        /// <summary>
+        /// V1 compatible: Replace next occurrence of string
+        /// </summary>
+        public long ReplaceNext(string findText, string replaceText, long currentPosition, bool truncateLength = false)
+        {
+            if (string.IsNullOrEmpty(findText)) return -1;
+            byte[] findBytes = GetBytesFromString(findText);
+            byte[] replaceBytes = GetBytesFromString(replaceText ?? string.Empty);
+            return ReplaceNext(findBytes, replaceBytes, currentPosition, truncateLength);
+        }
+
+        /// <summary>
+        /// V1 compatible: Replace all occurrences of string
+        /// </summary>
+        public int ReplaceAll(string findText, string replaceText, bool truncateLength = false)
+        {
+            if (string.IsNullOrEmpty(findText)) return 0;
+            byte[] findBytes = GetBytesFromString(findText);
+            byte[] replaceBytes = GetBytesFromString(replaceText ?? string.Empty);
+            return ReplaceAll(findBytes, replaceBytes, truncateLength);
+        }
+
+        /// <summary>
+        /// Helper: Convert string to bytes using current character table encoding
+        /// </summary>
+        private byte[] GetBytesFromString(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return Array.Empty<byte>();
+
+            // Use encoding based on character table type
+            var encoding = _characterTableType == CharacterTableType.Ascii
+                ? System.Text.Encoding.ASCII
+                : System.Text.Encoding.UTF8;
+
+            return encoding.GetBytes(text);
         }
 
         #endregion
@@ -1627,6 +2197,54 @@ namespace WpfHexaEditor.V2
                     }
                     break;
 
+                // Ctrl+Z: Undo
+                case Key.Z:
+                    if (isCtrlPressed && !_viewModel.ReadOnlyMode)
+                    {
+                        Undo();
+                    }
+                    break;
+
+                // Ctrl+Y: Redo
+                case Key.Y:
+                    if (isCtrlPressed && !_viewModel.ReadOnlyMode)
+                    {
+                        Redo();
+                    }
+                    break;
+
+                // Ctrl+C: Copy
+                case Key.C:
+                    if (isCtrlPressed && _viewModel.HasSelection)
+                    {
+                        Copy();
+                    }
+                    break;
+
+                // Ctrl+X: Cut
+                case Key.X:
+                    if (isCtrlPressed && _viewModel.HasSelection && !_viewModel.ReadOnlyMode)
+                    {
+                        Cut();
+                    }
+                    break;
+
+                // Ctrl+V: Paste
+                case Key.V:
+                    if (isCtrlPressed && !_viewModel.ReadOnlyMode)
+                    {
+                        Paste();
+                    }
+                    break;
+
+                // Ctrl+A: Select all
+                case Key.A:
+                    if (isCtrlPressed)
+                    {
+                        SelectAll();
+                    }
+                    break;
+
                 // Hex input editing (0-9, A-F)
                 default:
                     if (!_viewModel.ReadOnlyMode && TryGetHexValue(e.Key, out byte hexValue))
@@ -1716,6 +2334,16 @@ namespace WpfHexaEditor.V2
         {
             if (_viewModel == null)
                 return;
+
+            // Ctrl+MouseWheel = Zoom (V1 compatible)
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                double delta = e.Delta > 0 ? 1 : -1;
+                double newFontSize = FontSize + delta;
+                FontSize = Math.Max(6, Math.Min(72, newFontSize));
+                e.Handled = true;
+                return;
+            }
 
             // Standard behavior: scroll 3 lines per wheel notch
             // Delta is typically 120 per notch, so divide by 40 to get 3 lines
@@ -2088,7 +2716,7 @@ namespace WpfHexaEditor.V2
                 var headerText = new TextBlock
                 {
                     Text = i.ToString("X2"),
-                    Width = 22, // Match HexByteWidth from HexViewport
+                    Width = 24, // Match HexByteWidth from HexViewport
                     TextAlignment = TextAlignment.Center,
                     FontSize = 11,
                     FontWeight = FontWeights.Normal,
@@ -2099,16 +2727,9 @@ namespace WpfHexaEditor.V2
                 _hexHeaderStackPanel.Children.Add(headerText);
             }
 
-            // Generate ASCII column headers (just spacing placeholders for now, or could show char positions)
+            // Generate ASCII column headers (no byte spacers in ASCII panel)
             for (int i = 0; i < bytesPerLine; i++)
             {
-                // Add byte spacer before this column if needed
-                if (ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                    ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel)
-                {
-                    AddByteSpacer(_asciiHeaderStackPanel, i, forceEmpty: true);
-                }
-
                 // Add placeholder for ASCII column (could show position or just be blank)
                 var headerText = new TextBlock
                 {

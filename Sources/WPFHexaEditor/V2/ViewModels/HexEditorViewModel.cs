@@ -231,6 +231,9 @@ namespace WpfHexaEditor.V2.ViewModels
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
 
+            // Set default copy mode to ASCII string for normal copy/paste operations
+            _clipboardService.DefaultCopyMode = CopyPasteMode.AsciiString;
+
             // Note: ByteProvider doesn't expose DataChanged event
             // RefreshVisibleLines will be called manually after operations
 
@@ -447,27 +450,54 @@ namespace WpfHexaEditor.V2.ViewModels
         /// </summary>
         public bool Paste()
         {
-            if (ReadOnlyMode || !_selectionStart.IsValid) return false;
+            if (ReadOnlyMode) return false;
 
-            // Get data from clipboard
-            string clipboardText = System.Windows.Clipboard.GetText();
-            if (string.IsNullOrEmpty(clipboardText)) return false;
-
-            var startPos = _selectionStart;
-
-            // If we have a selection, delete it first
+            // Determine paste position BEFORE deleting selection
+            long pastePosition;
             if (HasSelection)
             {
+                // Capture the start position before deleting
+                pastePosition = Math.Min(_selectionStart.Value, _selectionStop.Value);
                 DeleteSelection();
-                startPos = new VirtualPosition(Math.Min(_selectionStart.Value, _selectionStop.Value));
             }
+            else
+            {
+                // No selection, paste at current cursor position
+                pastePosition = _selectionStart.IsValid ? _selectionStart.Value : 0;
+            }
+
+            var startPos = new VirtualPosition(pastePosition);
 
             // Convert virtual position to physical
             var physicalStart = VirtualToPhysical(startPos);
             if (!physicalStart.IsValid) return false;
 
-            // Use ByteProvider's paste method
-            // expend=false means don't expand file beyond current length
+            // Try to get binary data from clipboard first (preferred format)
+            var dataObj = System.Windows.Clipboard.GetDataObject();
+            if (dataObj != null && dataObj.GetDataPresent("BinaryData"))
+            {
+                try
+                {
+                    var memStream = dataObj.GetData("BinaryData") as MemoryStream;
+                    if (memStream != null && memStream.Length > 0)
+                    {
+                        byte[] bytes = memStream.ToArray();
+                        _provider.PasteNotInsert(physicalStart.Value, bytes);
+                        ClearLineCache();
+                        RefreshVisibleLines();
+                        return true;
+                    }
+                }
+                catch
+                {
+                    // Fall back to text format
+                }
+            }
+
+            // Fall back to text format
+            string clipboardText = System.Windows.Clipboard.GetText();
+            if (string.IsNullOrEmpty(clipboardText)) return false;
+
             _provider.PasteNotInsert(physicalStart.Value, clipboardText);
 
             ClearLineCache();
@@ -584,11 +614,13 @@ namespace WpfHexaEditor.V2.ViewModels
         /// </summary>
         public void Undo()
         {
-            _undoRedoService.Undo(_provider);
+            long position = _undoRedoService.Undo(_provider);
             ClearLineCache();
             RefreshVisibleLines();
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
+            OnPropertyChanged(nameof(VirtualLength));
+            OnPropertyChanged(nameof(FileLength));
         }
 
         /// <summary>
@@ -596,11 +628,13 @@ namespace WpfHexaEditor.V2.ViewModels
         /// </summary>
         public void Redo()
         {
-            _undoRedoService.Redo(_provider);
+            long position = _undoRedoService.Redo(_provider);
             ClearLineCache();
             RefreshVisibleLines();
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
+            OnPropertyChanged(nameof(VirtualLength));
+            OnPropertyChanged(nameof(FileLength));
         }
 
         #endregion
