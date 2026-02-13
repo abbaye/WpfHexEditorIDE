@@ -353,6 +353,31 @@ namespace WpfHexaEditor.V2
 
         #endregion
 
+        #region V1 Compatibility - Configuration Properties
+
+        // Backing fields
+        private bool _allowContextMenu = true;
+        private bool _allowZoom = true;
+        private MouseWheelSpeed _mouseWheelSpeed = MouseWheelSpeed.Normal;
+        private DataVisualType _dataStringVisual = DataVisualType.Hexadecimal;
+        private DataVisualType _offSetStringVisual = DataVisualType.Hexadecimal;
+        private ByteOrderType _byteOrder = ByteOrderType.LoHi;
+        private ByteSizeType _byteSize = ByteSizeType.Bit8;
+        private System.Text.Encoding _customEncoding = System.Text.Encoding.UTF8;
+        private PreloadByteInEditor _preloadByteInEditorMode = PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad;
+
+        public bool AllowContextMenu { get => _allowContextMenu; set => _allowContextMenu = value; }
+        public bool AllowZoom { get => _allowZoom; set => _allowZoom = value; }
+        public MouseWheelSpeed MouseWheelSpeed { get => _mouseWheelSpeed; set => _mouseWheelSpeed = value; }
+        public DataVisualType DataStringVisual { get => _dataStringVisual; set => _dataStringVisual = value; }
+        public DataVisualType OffSetStringVisual { get => _offSetStringVisual; set => _offSetStringVisual = value; }
+        public ByteOrderType ByteOrder { get => _byteOrder; set => _byteOrder = value; }
+        public ByteSizeType ByteSize { get => _byteSize; set => _byteSize = value; }
+        public System.Text.Encoding CustomEncoding { get => _customEncoding; set => _customEncoding = value ?? System.Text.Encoding.UTF8; }
+        public PreloadByteInEditor PreloadByteInEditorMode { get => _preloadByteInEditorMode; set => _preloadByteInEditorMode = value; }
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>
@@ -663,18 +688,12 @@ namespace WpfHexaEditor.V2
         }
 
         /// <summary>
-        /// Font size for zoom (V1 compatible - use Ctrl+MouseWheel)
+        /// Font size for zoom (V1 compatible - placeholder)
         /// </summary>
         public new double FontSize
         {
-            get => HexViewport?.FontSize ?? 14;
-            set
-            {
-                if (HexViewport != null && value >= 6 && value <= 72)
-                {
-                    HexViewport.FontSize = value;
-                }
-            }
+            get => base.FontSize;
+            set => base.FontSize = value;
         }
 
         /// <summary>
@@ -1801,6 +1820,107 @@ namespace WpfHexaEditor.V2
             }
             return -1;
         }
+
+        #endregion
+
+        #region Public Methods - V1 Additional Compatibility
+
+        /// <summary>
+        /// V1: Set position from hex string
+        /// </summary>
+        public void SetPosition(string hexLiteralPosition)
+        {
+            if (string.IsNullOrEmpty(hexLiteralPosition)) return;
+            try
+            {
+                hexLiteralPosition = hexLiteralPosition.Replace("0x", "").Replace("0X", "");
+                long position = Convert.ToInt64(hexLiteralPosition, 16);
+                SetPosition(position);
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// V1: Set position and create selection
+        /// </summary>
+        public void SetPosition(long position, long byteLength)
+        {
+            if (_viewModel == null) return;
+            SelectionStart = position;
+            SelectionStop = position + byteLength - 1;
+            SetPosition(position);
+        }
+
+        /// <summary>
+        /// V1: Submit changes (alias for Save)
+        /// </summary>
+        public void SubmitChanges() => Save();
+
+        /// <summary>
+        /// V1: Unselect all
+        /// </summary>
+        public void UnSelectAll(bool cleanFocus = false)
+        {
+            ClearSelection();
+            if (cleanFocus) Keyboard.ClearFocus();
+        }
+
+        /// <summary>
+        /// V1: Undo with repeat
+        /// </summary>
+        public void Undo(int repeat)
+        {
+            if (_viewModel == null) return;
+            for (int i = 0; i < repeat; i++)
+                if (_viewModel.CanUndo) Undo();
+                else break;
+        }
+
+        /// <summary>
+        /// V1: Redo with repeat
+        /// </summary>
+        public void Redo(int repeat)
+        {
+            if (_viewModel == null) return;
+            for (int i = 0; i < repeat; i++)
+                if (_viewModel.CanRedo) Redo();
+                else break;
+        }
+
+        /// <summary>
+        /// V1: Clear all undo/redo
+        /// </summary>
+        public void ClearAllChange() => _viewModel?.ClearUndoRedo();
+
+        /// <summary>
+        /// V1: Refresh view
+        /// </summary>
+        public void RefreshView(bool controlResize = false, bool refreshData = true)
+        {
+            if (_viewModel == null) return;
+            if (refreshData) HexViewport?.InvalidateVisual();
+            if (controlResize) { InvalidateMeasure(); InvalidateArrange(); }
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// V1: Update visual
+        /// </summary>
+        public void UpdateVisual()
+        {
+            InvalidateVisual();
+            HexViewport?.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// V1: Get line number
+        /// </summary>
+        public long GetLineNumber(long position) => _viewModel == null ? 0 : position / BytePerLine;
+
+        /// <summary>
+        /// V1: Get column number
+        /// </summary>
+        public long GetColumnNumber(long position) => _viewModel == null ? 0 : position % BytePerLine;
 
         #endregion
 

@@ -637,6 +637,16 @@ namespace WpfHexaEditor.V2.ViewModels
             OnPropertyChanged(nameof(FileLength));
         }
 
+        /// <summary>
+        /// Clear all undo/redo history (V1 compatible)
+        /// </summary>
+        public void ClearUndoRedo()
+        {
+            _undoRedoService.ClearAll(_provider);
+            OnPropertyChanged(nameof(CanUndo));
+            OnPropertyChanged(nameof(CanRedo));
+        }
+
         #endregion
 
         #region Public Methods - Find/Replace (V1 Compatible)
