@@ -64,6 +64,7 @@ namespace WpfHexaEditor.V2.Controls
         private Brush _selectedBrush = new SolidColorBrush(Color.FromArgb(0x66, 0x00, 0x78, 0xD4)); // #0078D4 with 40% opacity
         private Brush _modifiedBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xA5, 0x00)); // Orange
         private Brush _addedBrush = new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50)); // Green
+        private Brush _addedBackgroundBrush = new SolidColorBrush(Color.FromArgb(0x80, 0xC8, 0xE6, 0xC9)); // Light green background for inserted bytes (50% opacity, lighter shade #C8E6C9)
         private Brush _deletedBrush = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36)); // Red
         private Pen _cursorPen;
         private Pen _actionPen;
@@ -77,6 +78,13 @@ namespace WpfHexaEditor.V2.Controls
         private Brush _tblEndBlockBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0x00, 0x00)); // Red
         private Brush _tblEndLineBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xA5, 0x00)); // Orange
         private Brush _tblDefaultBrush = new SolidColorBrush(Colors.White);
+
+        // Auto-highlight (V1 compatible feature)
+        private byte? _autoHighlightByteValue = null; // Byte value to highlight
+        private Brush _autoHighLiteBrush = new SolidColorBrush(Color.FromArgb(0x60, 0xFF, 0xFF, 0x00)); // 40% Yellow
+
+        // Double-click highlight (V1 compatible feature)
+        private Brush _doubleClickHighlightBrush = new SolidColorBrush(Color.FromArgb(0x80, 0x87, 0xCE, 0xFA)); // 50% Light sky blue
 
         #endregion
 
@@ -118,6 +126,7 @@ namespace WpfHexaEditor.V2.Controls
             _selectedBrush.Freeze();
             _modifiedBrush.Freeze();
             _addedBrush.Freeze();
+            _addedBackgroundBrush.Freeze();
             _deletedBrush.Freeze();
             _separatorBrush.Freeze();
             _asciiBrush.Freeze();
@@ -292,6 +301,35 @@ namespace WpfHexaEditor.V2.Controls
         }
 
         /// <summary>
+        /// Auto-highlight byte value (V1 compatible) - All bytes with this value will be highlighted
+        /// </summary>
+        public byte? AutoHighlightByteValue
+        {
+            get => _autoHighlightByteValue;
+            set
+            {
+                if (_autoHighlightByteValue != value)
+                {
+                    _autoHighlightByteValue = value;
+                    InvalidateVisual();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Auto-highlight brush color (V1 compatible)
+        /// </summary>
+        public Brush AutoHighLiteBrush
+        {
+            get => _autoHighLiteBrush;
+            set
+            {
+                _autoHighLiteBrush = value;
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
         /// Gets the actual line height used for rendering
         /// </summary>
         public double LineHeight => _lineHeight;
@@ -332,6 +370,14 @@ namespace WpfHexaEditor.V2.Controls
         public void Refresh()
         {
             UpdateCachedLines();
+        }
+
+        /// <summary>
+        /// Get visible lines for highlighting (used by double-click select feature)
+        /// </summary>
+        public List<HexLine> GetVisibleLinesForHighlight()
+        {
+            return _linesCached ?? new List<HexLine>();
         }
 
         /// <summary>
@@ -537,11 +583,29 @@ namespace WpfHexaEditor.V2.Controls
                 }
             }
 
-            // Draw selection background (on top of custom background)
+            // Auto-highlight matching bytes (V1 compatible feature)
+            if (_autoHighlightByteValue.HasValue && byteData.Value == _autoHighlightByteValue.Value)
+            {
+                dc.DrawRoundedRectangle(_autoHighLiteBrush, null, rect, 2, 2);
+            }
+
+            // Double-click highlighted positions (V1 compatible feature) - light blue background
+            if (_highlightedPositions != null && _highlightedPositions.Contains(byteData.VirtualPos.Value))
+            {
+                dc.DrawRoundedRectangle(_doubleClickHighlightBrush, null, rect, 2, 2);
+            }
+
+            // Draw selection background (on top of custom background and auto-highlight)
             bool isSelected = IsPositionSelected(byteData.VirtualPos.Value);
             if (isSelected)
             {
                 dc.DrawRoundedRectangle(_selectedBrush, null, rect, 2, 2);
+            }
+
+            // Draw added byte background (light green) to make inserted bytes more visible
+            if (byteData.Action == ByteAction.Added)
+            {
+                dc.DrawRoundedRectangle(_addedBackgroundBrush, null, rect, 2, 2);
             }
 
             // Draw action border (slightly inset to show selection underneath)
@@ -566,10 +630,10 @@ namespace WpfHexaEditor.V2.Controls
             }
 
             // Draw hex text centered in the cell
-            // V1 compatible: Alternate foreground color every 2 bytes for visual grouping
+            // V1 compatible: Alternate foreground color every byte for visual grouping
             long bytePosition = byteData.VirtualPos.Value;
             int byteIndexInLine = (int)(bytePosition % _bytesPerLine);
-            bool useAlternateColor = (byteIndexInLine / 2) % 2 == 1; // Groups of 2 bytes alternate
+            bool useAlternateColor = byteIndexInLine % 2 == 1; // Alternate every single byte
 
             Brush textBrush = useAlternateColor ? _alternateByteBrush : _normalByteBrush;
 
@@ -638,11 +702,30 @@ namespace WpfHexaEditor.V2.Controls
                 }
             }
 
-            // Draw selection background (on top of custom background and TBL colors)
+            // Auto-highlight matching bytes (V1 compatible feature)
+            if (_autoHighlightByteValue.HasValue && byteData.Value == _autoHighlightByteValue.Value)
+            {
+                dc.DrawRectangle(_autoHighLiteBrush, null, rect);
+            }
+
+            // Double-click highlighted positions (V1 compatible feature) - light blue background
+            if (_highlightedPositions != null && _highlightedPositions.Contains(byteData.VirtualPos.Value))
+            {
+                var doubleClickBrush = new SolidColorBrush(Color.FromArgb(128, 135, 206, 250)); // Light sky blue, semi-transparent
+                dc.DrawRectangle(doubleClickBrush, null, rect);
+            }
+
+            // Draw selection background (on top of custom background, TBL colors, and auto-highlight)
             bool isSelected = IsPositionSelected(byteData.VirtualPos.Value);
             if (isSelected)
             {
                 dc.DrawRoundedRectangle(_selectedBrush, null, rect, 1, 1);
+            }
+
+            // Draw added byte background (light green) to make inserted bytes more visible
+            if (byteData.Action == ByteAction.Added)
+            {
+                dc.DrawRoundedRectangle(_addedBackgroundBrush, null, rect, 1, 1);
             }
 
             // Draw action border (Modified/Added/Deleted indicator)
@@ -762,7 +845,15 @@ namespace WpfHexaEditor.V2.Controls
             long? clickedPosition = HitTestByte(mousePos);
             if (clickedPosition.HasValue)
             {
-                ByteClicked?.Invoke(this, clickedPosition.Value);
+                // Handle double-click for auto-select same bytes (V1 compatible)
+                if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left)
+                {
+                    ByteDoubleClicked?.Invoke(this, clickedPosition.Value);
+                }
+                else
+                {
+                    ByteClicked?.Invoke(this, clickedPosition.Value);
+                }
             }
         }
 
@@ -919,6 +1010,11 @@ namespace WpfHexaEditor.V2.Controls
         /// Raised when user clicks on a byte
         /// </summary>
         public event EventHandler<long> ByteClicked;
+
+        /// <summary>
+        /// Raised when user double-clicks a byte (V1 compatible)
+        /// </summary>
+        public event EventHandler<long> ByteDoubleClicked;
 
         /// <summary>
         /// Raised when user navigates with keyboard

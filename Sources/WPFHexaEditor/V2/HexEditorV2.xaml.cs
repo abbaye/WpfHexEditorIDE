@@ -96,6 +96,7 @@ namespace WpfHexaEditor.V2
             if (HexViewport != null)
             {
                 HexViewport.ByteRightClick += HexViewport_ByteRightClick;
+                HexViewport.ByteDoubleClicked += HexViewport_ByteDoubleClicked;
             }
 
             // V1 Compatible: Initialize zoom system
@@ -108,6 +109,26 @@ namespace WpfHexaEditor.V2
         private void HexViewport_ByteRightClick(object sender, Controls.ByteRightClickEventArgs e)
         {
             ShowContextMenu(e.Position);
+        }
+
+        /// <summary>
+        /// Handle double-click on byte for auto-select same bytes (V1 compatible)
+        /// </summary>
+        private void HexViewport_ByteDoubleClicked(object sender, long position)
+        {
+            // Only auto-select if feature is enabled
+            if (!AllowAutoSelectSameByteAtDoubleClick || _viewModel == null)
+                return;
+
+            // Get byte value at clicked position
+            var virtualPos = new VirtualPosition(position);
+            if (!virtualPos.IsValid || position >= _viewModel.VirtualLength)
+                return;
+
+            byte byteValue = _viewModel.GetByteAt(virtualPos);
+
+            // Find all positions with this byte value and select them
+            SelectAllBytesWith(byteValue);
         }
 
         #region Public Events (V1 Compatible)
@@ -381,69 +402,169 @@ namespace WpfHexaEditor.V2
         #region V1 Compatibility - Configuration Properties
 
         // Backing fields
-        private bool _allowContextMenu = true;
-        private bool _allowZoom = true;
-        private MouseWheelSpeed _mouseWheelSpeed = MouseWheelSpeed.Normal;
-        private DataVisualType _dataStringVisual = DataVisualType.Hexadecimal;
-        private DataVisualType _offSetStringVisual = DataVisualType.Hexadecimal;
-        private ByteOrderType _byteOrder = ByteOrderType.LoHi;
-        private ByteSizeType _byteSize = ByteSizeType.Bit8;
-        private System.Text.Encoding _customEncoding = System.Text.Encoding.UTF8;
-        private PreloadByteInEditor _preloadByteInEditorMode = PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad;
+        // No more backing fields needed - all converted to DependencyProperty
 
-        public bool AllowContextMenu { get => _allowContextMenu; set => _allowContextMenu = value; }
-        public bool AllowZoom { get => _allowZoom; set => _allowZoom = value; }
-        public MouseWheelSpeed MouseWheelSpeed { get => _mouseWheelSpeed; set => _mouseWheelSpeed = value; }
-        public DataVisualType DataStringVisual { get => _dataStringVisual; set => _dataStringVisual = value; }
-        public DataVisualType OffSetStringVisual { get => _offSetStringVisual; set => _offSetStringVisual = value; }
-        public ByteOrderType ByteOrder { get => _byteOrder; set => _byteOrder = value; }
-        public ByteSizeType ByteSize { get => _byteSize; set => _byteSize = value; }
-        public System.Text.Encoding CustomEncoding { get => _customEncoding; set => _customEncoding = value ?? System.Text.Encoding.UTF8; }
-        public PreloadByteInEditor PreloadByteInEditorMode { get => _preloadByteInEditorMode; set => _preloadByteInEditorMode = value; }
+        /// <summary>
+        /// Allow context menu (V1 compatible) - DependencyProperty
+        /// </summary>
+        public bool AllowContextMenu
+        {
+            get => (bool)GetValue(AllowContextMenuProperty);
+            set => SetValue(AllowContextMenuProperty, value);
+        }
 
-        // TBL Advanced Features (V1 compatible)
-        private bool _tblShowMte = false;
-        private System.Windows.Media.Color _tblDteColor = Colors.Yellow;
-        private System.Windows.Media.Color _tblMteColor = Colors.LightBlue;
-        private System.Windows.Media.Color _tblEndBlockColor = Colors.Red;
-        private System.Windows.Media.Color _tblEndLineColor = Colors.Orange;
-        private System.Windows.Media.Color _tblDefaultColor = Colors.White;
+        /// <summary>
+        /// Allow zoom (V1 compatible) - DependencyProperty
+        /// </summary>
+        public bool AllowZoom
+        {
+            get => (bool)GetValue(AllowZoomProperty);
+            set => SetValue(AllowZoomProperty, value);
+        }
 
-        public bool TblShowMte { get => _tblShowMte; set { _tblShowMte = value; HexViewport?.InvalidateVisual(); } }
-        public System.Windows.Media.Color TblDteColor { get => _tblDteColor; set { _tblDteColor = value; HexViewport?.InvalidateVisual(); } }
-        public System.Windows.Media.Color TblMteColor { get => _tblMteColor; set { _tblMteColor = value; HexViewport?.InvalidateVisual(); } }
-        public System.Windows.Media.Color TblEndBlockColor { get => _tblEndBlockColor; set { _tblEndBlockColor = value; HexViewport?.InvalidateVisual(); } }
-        public System.Windows.Media.Color TblEndLineColor { get => _tblEndLineColor; set { _tblEndLineColor = value; HexViewport?.InvalidateVisual(); } }
-        public System.Windows.Media.Color TblDefaultColor { get => _tblDefaultColor; set { _tblDefaultColor = value; HexViewport?.InvalidateVisual(); } }
+        /// <summary>
+        /// Mouse wheel scroll speed (V1 compatible) - DependencyProperty
+        /// </summary>
+        public MouseWheelSpeed MouseWheelSpeed
+        {
+            get => (MouseWheelSpeed)GetValue(MouseWheelSpeedProperty);
+            set => SetValue(MouseWheelSpeedProperty, value);
+        }
 
-        // Bar Chart Panel color (V1 compatible)
-        private System.Windows.Media.Color _barChartColor = Colors.Blue;
-        public System.Windows.Media.Color BarChartColor { get => _barChartColor; set => _barChartColor = value; }
+        /// <summary>
+        /// Data string display format (Hex/Decimal/Octal/Binary) - DependencyProperty
+        /// </summary>
+        public DataVisualType DataStringVisual
+        {
+            get => (DataVisualType)GetValue(DataStringVisualProperty);
+            set => SetValue(DataStringVisualProperty, value);
+        }
+
+        /// <summary>
+        /// Offset string display format (Hex/Decimal/Octal/Binary) - DependencyProperty
+        /// </summary>
+        public DataVisualType OffSetStringVisual
+        {
+            get => (DataVisualType)GetValue(OffSetStringVisualProperty);
+            set => SetValue(OffSetStringVisualProperty, value);
+        }
+
+        /// <summary>
+        /// Byte order (Lo-Hi / Hi-Lo) - DependencyProperty
+        /// </summary>
+        public ByteOrderType ByteOrder
+        {
+            get => (ByteOrderType)GetValue(ByteOrderProperty);
+            set => SetValue(ByteOrderProperty, value);
+        }
+
+        /// <summary>
+        /// Byte size display (8/16/32-bit) - DependencyProperty
+        /// </summary>
+        public ByteSizeType ByteSize
+        {
+            get => (ByteSizeType)GetValue(ByteSizeProperty);
+            set => SetValue(ByteSizeProperty, value);
+        }
+
+        /// <summary>
+        /// Custom text encoding - DependencyProperty
+        /// </summary>
+        public System.Text.Encoding CustomEncoding
+        {
+            get => (System.Text.Encoding)GetValue(CustomEncodingProperty);
+            set => SetValue(CustomEncodingProperty, value ?? System.Text.Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Preload byte strategy - DependencyProperty
+        /// </summary>
+        public PreloadByteInEditor PreloadByteInEditorMode
+        {
+            get => (PreloadByteInEditor)GetValue(PreloadByteInEditorModeProperty);
+            set => SetValue(PreloadByteInEditorModeProperty, value);
+        }
+
+        // TBL Advanced Features (V1 compatible) - DependencyProperties
+
+        /// <summary>
+        /// Show MTE (Multi-Title Encoding) in TBL - DependencyProperty
+        /// </summary>
+        public bool TblShowMte
+        {
+            get => (bool)GetValue(TblShowMteProperty);
+            set => SetValue(TblShowMteProperty, value);
+        }
+
+        /// <summary>
+        /// DTE (Dual-Tile Encoding) color - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color TblDteColor
+        {
+            get => (System.Windows.Media.Color)GetValue(TblDteColorProperty);
+            set => SetValue(TblDteColorProperty, value);
+        }
+
+        /// <summary>
+        /// MTE (Multi-Title Encoding) color - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color TblMteColor
+        {
+            get => (System.Windows.Media.Color)GetValue(TblMteColorProperty);
+            set => SetValue(TblMteColorProperty, value);
+        }
+
+        /// <summary>
+        /// End block color for TBL - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color TblEndBlockColor
+        {
+            get => (System.Windows.Media.Color)GetValue(TblEndBlockColorProperty);
+            set => SetValue(TblEndBlockColorProperty, value);
+        }
+
+        /// <summary>
+        /// End line color for TBL - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color TblEndLineColor
+        {
+            get => (System.Windows.Media.Color)GetValue(TblEndLineColorProperty);
+            set => SetValue(TblEndLineColorProperty, value);
+        }
+
+        /// <summary>
+        /// Default color for TBL - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color TblDefaultColor
+        {
+            get => (System.Windows.Media.Color)GetValue(TblDefaultColorProperty);
+            set => SetValue(TblDefaultColorProperty, value);
+        }
+
+        // Bar Chart Panel color (V1 compatible) - DependencyProperty
+
+        /// <summary>
+        /// Bar chart color - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color BarChartColor
+        {
+            get => (System.Windows.Media.Color)GetValue(BarChartColorProperty);
+            set => SetValue(BarChartColorProperty, value);
+        }
 
         #endregion
 
         #region V1 Compatibility - Custom Background Blocks
 
         private readonly List<Core.CustomBackgroundBlock> _customBackgroundBlocks = new List<Core.CustomBackgroundBlock>();
-        private bool _allowCustomBackgroundBlock = true;
 
         /// <summary>
-        /// Enable or disable custom background blocks (V1 compatible - Phase 7.1)
+        /// Enable or disable custom background blocks (V1 compatible - Phase 7.1) - DependencyProperty
         /// </summary>
         public bool AllowCustomBackgroundBlock
         {
-            get => _allowCustomBackgroundBlock;
-            set
-            {
-                _allowCustomBackgroundBlock = value;
-
-                // Phase 7.1: Sync with HexViewport - pass blocks if enabled, empty list if disabled
-                if (HexViewport != null)
-                {
-                    HexViewport.CustomBackgroundBlocks = value ? _customBackgroundBlocks : new List<Core.CustomBackgroundBlock>();
-                    HexViewport.InvalidateVisual();
-                }
-            }
+            get => (bool)GetValue(AllowCustomBackgroundBlockProperty);
+            set => SetValue(AllowCustomBackgroundBlockProperty, value);
         }
 
         /// <summary>
@@ -461,19 +582,21 @@ namespace WpfHexaEditor.V2
         public bool IsFileLoaded => _viewModel != null;
 
         /// <summary>
-        /// Current edit mode
+        /// Is a file or stream currently loaded? (V1 compatible, read-only DependencyProperty)
+        /// </summary>
+        public bool IsFileOrStreamLoaded
+        {
+            get => (bool)GetValue(IsFileOrStreamLoadedProperty);
+            private set => SetValue(IsFileOrStreamLoadedPropertyKey, value);
+        }
+
+        /// <summary>
+        /// Current edit mode - DependencyProperty for XAML binding
         /// </summary>
         public EditMode EditMode
         {
-            get => _viewModel?.EditMode ?? EditMode.Overwrite;
-            set
-            {
-                if (_viewModel != null)
-                {
-                    _viewModel.EditMode = value;
-                    StatusText.Text = value == EditMode.Insert ? "Insert mode" : "Overwrite mode";
-                }
-            }
+            get => (EditMode)GetValue(EditModeProperty);
+            set => SetValue(EditModeProperty, value);
         }
 
         /// <summary>
@@ -546,83 +669,30 @@ namespace WpfHexaEditor.V2
         }
 
         /// <summary>
-        /// Selection start position (virtual) - V1 compatible
+        /// Selection start position (virtual) - V1 compatible (DependencyProperty for XAML binding)
         /// </summary>
         public long SelectionStart
         {
-            get => _viewModel?.SelectionStart.Value ?? -1;
-            set
-            {
-                if (_viewModel != null && value >= 0 && value < VirtualLength)
-                {
-                    var oldStart = SelectionStart;
-                    var oldStop = SelectionStop;
-                    var oldLength = SelectionLength;
-                    var stop = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop : new VirtualPosition(value);
-                    _viewModel.SetSelectionRange(new VirtualPosition(value), stop);
-
-                    if (oldStart != value || oldStop != SelectionStop)
-                    {
-                        OnSelectionChanged(new HexSelectionChangedEventArgs(value, SelectionStop, SelectionLength));
-
-                        // V1 compatible events
-                        if (oldStart != value)
-                            OnSelectionStartChanged(EventArgs.Empty);
-                        if (oldLength != SelectionLength)
-                            OnSelectionLengthChanged(EventArgs.Empty);
-                    }
-                }
-            }
+            get => (long)GetValue(SelectionStartProperty);
+            set => SetValue(SelectionStartProperty, value);
         }
 
         /// <summary>
-        /// Selection stop position (virtual) - V1 compatible
+        /// Selection stop position (virtual) - V1 compatible (DependencyProperty for XAML binding)
         /// </summary>
         public long SelectionStop
         {
-            get => _viewModel?.SelectionStop.Value ?? -1;
-            set
-            {
-                if (_viewModel != null && value >= 0 && value < VirtualLength)
-                {
-                    var oldStart = SelectionStart;
-                    var oldStop = SelectionStop;
-                    var oldLength = SelectionLength;
-                    var start = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart : new VirtualPosition(value);
-                    _viewModel.SetSelectionRange(start, new VirtualPosition(value));
-
-                    if (oldStop != value || oldStart != SelectionStart)
-                    {
-                        OnSelectionChanged(new HexSelectionChangedEventArgs(SelectionStart, value, SelectionLength));
-
-                        // V1 compatible events
-                        if (oldStop != value)
-                            OnSelectionStopChanged(EventArgs.Empty);
-                        if (oldLength != SelectionLength)
-                            OnSelectionLengthChanged(EventArgs.Empty);
-                    }
-                }
-            }
+            get => (long)GetValue(SelectionStopProperty);
+            set => SetValue(SelectionStopProperty, value);
         }
 
         /// <summary>
-        /// Read-only mode
+        /// Read-only mode (DependencyProperty for XAML binding)
         /// </summary>
         public bool ReadOnlyMode
         {
-            get => _viewModel?.ReadOnlyMode ?? false;
-            set
-            {
-                if (_viewModel != null)
-                {
-                    var oldValue = _viewModel.ReadOnlyMode;
-                    _viewModel.ReadOnlyMode = value;
-
-                    // V1 compatible event
-                    if (oldValue != value)
-                        OnReadOnlyChanged(EventArgs.Empty);
-                }
-            }
+            get => (bool)GetValue(ReadOnlyModeProperty);
+            set => SetValue(ReadOnlyModeProperty, value);
         }
 
         /// <summary>
@@ -749,27 +819,12 @@ namespace WpfHexaEditor.V2
         }
 
         /// <summary>
-        /// Number of bytes per line (8, 16, 32, etc.)
+        /// Number of bytes per line (8, 16, 32, etc.) - DependencyProperty for XAML binding
         /// </summary>
         public int BytePerLine
         {
-            get => _viewModel?.BytePerLine ?? 16;
-            set
-            {
-                if (_viewModel != null && value > 0)
-                {
-                    _viewModel.BytePerLine = value;
-
-                    // Update scrollbar to reflect new total lines
-                    VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
-
-                    // Update status bar
-                    BytesPerLineText.Text = $"Bytes/Line: {value}";
-
-                    // Refresh column headers to match new BytePerLine
-                    RefreshColumnHeader();
-                }
-            }
+            get => (int)GetValue(BytePerLineProperty);
+            set => SetValue(BytePerLineProperty, value);
         }
 
         /// <summary>
@@ -1169,10 +1224,9 @@ namespace WpfHexaEditor.V2
             _scaler = new ScaleTransform(ZoomScale, ZoomScale);
 
             // Apply scale transform to zoomable elements (like V1)
-            if (_hexHeaderStackPanel != null)
-                _hexHeaderStackPanel.LayoutTransform = _scaler;
-            if (_asciiHeaderStackPanel != null)
-                _asciiHeaderStackPanel.LayoutTransform = _scaler;
+            // Apply to entire header border so all header elements scale together
+            if (_headerBorder != null)
+                _headerBorder.LayoutTransform = _scaler;
             if (HexViewport != null)
                 HexViewport.LayoutTransform = _scaler;
         }
@@ -1270,7 +1324,490 @@ namespace WpfHexaEditor.V2
             if (d is HexEditorV2 editor && e.NewValue is bool readOnly)
             {
                 if (editor._viewModel != null)
+                {
+                    var oldValue = editor._viewModel.ReadOnlyMode;
                     editor._viewModel.ReadOnlyMode = readOnly;
+
+                    // Fire V1 compatible event
+                    if (oldValue != readOnly)
+                        editor.OnReadOnlyChanged(EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// SelectionStart DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty SelectionStartProperty =
+            DependencyProperty.Register(nameof(SelectionStart), typeof(long), typeof(HexEditorV2),
+                new PropertyMetadata(-1L, OnSelectionStartPropertyChanged));
+
+        private static void OnSelectionStartPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is long position)
+            {
+                if (editor._viewModel != null && position >= 0 && position < editor.VirtualLength)
+                {
+                    var oldStart = e.OldValue is long old ? old : -1;
+                    var oldStop = editor.SelectionStop;
+                    var oldLength = editor.SelectionLength;
+
+                    var stop = editor._viewModel.SelectionStop.IsValid ? editor._viewModel.SelectionStop : new VirtualPosition(position);
+                    editor._viewModel.SetSelectionRange(new VirtualPosition(position), stop);
+
+                    // Fire V1 compatible events
+                    if (oldStart != position || oldStop != editor.SelectionStop)
+                    {
+                        editor.OnSelectionChanged(new HexSelectionChangedEventArgs(position, editor.SelectionStop, editor.SelectionLength));
+
+                        if (oldStart != position)
+                            editor.OnSelectionStartChanged(EventArgs.Empty);
+                        if (oldLength != editor.SelectionLength)
+                            editor.OnSelectionLengthChanged(EventArgs.Empty);
+                    }
+
+                    // Update auto-highlight byte value
+                    editor.UpdateAutoHighlightByte();
+                }
+            }
+        }
+
+        /// <summary>
+        /// SelectionStop DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty SelectionStopProperty =
+            DependencyProperty.Register(nameof(SelectionStop), typeof(long), typeof(HexEditorV2),
+                new PropertyMetadata(-1L, OnSelectionStopPropertyChanged));
+
+        private static void OnSelectionStopPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is long position)
+            {
+                if (editor._viewModel != null && position >= 0 && position < editor.VirtualLength)
+                {
+                    var oldStart = editor.SelectionStart;
+                    var oldStop = e.OldValue is long old ? old : -1;
+                    var oldLength = editor.SelectionLength;
+
+                    var start = editor._viewModel.SelectionStart.IsValid ? editor._viewModel.SelectionStart : new VirtualPosition(position);
+                    editor._viewModel.SetSelectionRange(start, new VirtualPosition(position));
+
+                    // Fire V1 compatible events
+                    if (oldStop != position || oldStart != editor.SelectionStart)
+                    {
+                        editor.OnSelectionChanged(new HexSelectionChangedEventArgs(editor.SelectionStart, position, editor.SelectionLength));
+
+                        if (oldStop != position)
+                            editor.OnSelectionStopChanged(EventArgs.Empty);
+                        if (oldLength != editor.SelectionLength)
+                            editor.OnSelectionLengthChanged(EventArgs.Empty);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// BytePerLine DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty BytePerLineProperty =
+            DependencyProperty.Register(nameof(BytePerLine), typeof(int), typeof(HexEditorV2),
+                new PropertyMetadata(16, OnBytePerLinePropertyChanged));
+
+        private static void OnBytePerLinePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is int bytesPerLine && bytesPerLine > 0)
+            {
+                if (editor._viewModel != null)
+                {
+                    editor._viewModel.BytePerLine = bytesPerLine;
+
+                    // Update scrollbar to reflect new total lines
+                    editor.VerticalScroll.Maximum = Math.Max(0, editor._viewModel.TotalLines - editor._viewModel.VisibleLines);
+
+                    // Update status bar
+                    editor.BytesPerLineText.Text = $"Bytes/Line: {bytesPerLine}";
+
+                    // Refresh column headers to match new BytePerLine
+                    editor.RefreshColumnHeader();
+                }
+            }
+        }
+
+        /// <summary>
+        /// EditMode DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty EditModeProperty =
+            DependencyProperty.Register(nameof(EditMode), typeof(Models.EditMode), typeof(HexEditorV2),
+                new PropertyMetadata(Models.EditMode.Overwrite, OnEditModePropertyChanged));
+
+        private static void OnEditModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is Models.EditMode mode)
+            {
+                if (editor._viewModel != null)
+                {
+                    editor._viewModel.EditMode = mode;
+                    // Update status bar
+                    editor.EditModeText.Text = mode == Models.EditMode.Insert ? "Mode: Insert" : "Mode: Overwrite";
+                }
+            }
+        }
+
+        /// <summary>
+        /// IsFileOrStreamLoaded Read-Only DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        private static readonly DependencyPropertyKey IsFileOrStreamLoadedPropertyKey =
+            DependencyProperty.RegisterReadOnly(nameof(IsFileOrStreamLoaded), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(false));
+
+        public static readonly DependencyProperty IsFileOrStreamLoadedProperty =
+            IsFileOrStreamLoadedPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// AllowContextMenu DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowContextMenuProperty =
+            DependencyProperty.Register(nameof(AllowContextMenu), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(true, OnAllowContextMenuChanged));
+
+        private static void OnAllowContextMenuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is bool allowed)
+            {
+                // Enable or disable context menu
+                if (editor.ByteContextMenu != null)
+                    editor.ContextMenu = allowed ? editor.ByteContextMenu : null;
+            }
+        }
+
+        /// <summary>
+        /// AllowZoom DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowZoomProperty =
+            DependencyProperty.Register(nameof(AllowZoom), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(true, OnAllowZoomChanged));
+
+        private static void OnAllowZoomChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is bool allowed)
+            {
+                // Initialize zoom if enabled, or reset to 1.0 if disabled
+                if (allowed)
+                    editor.InitialiseZoom();
+                else if (editor._scaler != null)
+                {
+                    editor._scaler.ScaleX = 1.0;
+                    editor._scaler.ScaleY = 1.0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// MouseWheelSpeed DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty MouseWheelSpeedProperty =
+            DependencyProperty.Register(nameof(MouseWheelSpeed), typeof(MouseWheelSpeed), typeof(HexEditorV2),
+                new PropertyMetadata(Core.MouseWheelSpeed.Normal));
+
+        /// <summary>
+        /// AllowAutoHighLightSelectionByte DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowAutoHighLightSelectionByteProperty =
+            DependencyProperty.Register(nameof(AllowAutoHighLightSelectionByte), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(false, OnAllowAutoHighLightChanged));
+
+        private static void OnAllowAutoHighLightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor)
+            {
+                // Update auto-highlight byte value when feature is toggled
+                editor.UpdateAutoHighlightByte();
+
+                // Refresh viewport to show/hide auto-highlighting
+                editor.HexViewport?.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// AutoHighLiteSelectionByteBrush DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AutoHighLiteSelectionByteBrushProperty =
+            DependencyProperty.Register(nameof(AutoHighLiteSelectionByteBrush), typeof(System.Windows.Media.Color), typeof(HexEditorV2),
+                new PropertyMetadata(Color.FromArgb(0x60, 0xFF, 0xFF, 0x00), OnAutoHighLiteColorChanged)); // 40% Yellow
+
+        private static void OnAutoHighLiteColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is System.Windows.Media.Color color)
+            {
+                // Update HexViewport highlight brush
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.AutoHighLiteBrush = new SolidColorBrush(color);
+                    editor.HexViewport.InvalidateVisual();
+                }
+            }
+        }
+
+        /// <summary>
+        /// AllowAutoSelectSameByteAtDoubleClick DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowAutoSelectSameByteAtDoubleClickProperty =
+            DependencyProperty.Register(nameof(AllowAutoSelectSameByteAtDoubleClick), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(false));
+
+        /// <summary>
+        /// AllowFileDrop DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowFileDropProperty =
+            DependencyProperty.Register(nameof(AllowFileDrop), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(true, OnAllowDropChanged));
+
+        /// <summary>
+        /// AllowTextDrop DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowTextDropProperty =
+            DependencyProperty.Register(nameof(AllowTextDrop), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(false, OnAllowDropChanged));
+
+        private static void OnAllowDropChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor)
+            {
+                // Enable AllowDrop if either file or text drop is allowed
+                editor.AllowDrop = editor.AllowFileDrop || editor.AllowTextDrop;
+            }
+        }
+
+        /// <summary>
+        /// FileDroppingConfirmation DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty FileDroppingConfirmationProperty =
+            DependencyProperty.Register(nameof(FileDroppingConfirmation), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// AllowExtend DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowExtendProperty =
+            DependencyProperty.Register(nameof(AllowExtend), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// AllowDeleteByte DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowDeleteByteProperty =
+            DependencyProperty.Register(nameof(AllowDeleteByte), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// AllowByteCount DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowByteCountProperty =
+            DependencyProperty.Register(nameof(AllowByteCount), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// TblShowMte DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblShowMteProperty =
+            DependencyProperty.Register(nameof(TblShowMte), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(false, OnTblShowMteChanged));
+
+        private static void OnTblShowMteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor)
+                editor.HexViewport?.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// TblDteColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblDteColorProperty =
+            DependencyProperty.Register(nameof(TblDteColor), typeof(System.Windows.Media.Color), typeof(HexEditorV2),
+                new PropertyMetadata(Colors.Yellow, OnTblColorChanged));
+
+        /// <summary>
+        /// TblMteColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblMteColorProperty =
+            DependencyProperty.Register(nameof(TblMteColor), typeof(System.Windows.Media.Color), typeof(HexEditorV2),
+                new PropertyMetadata(Colors.LightBlue, OnTblColorChanged));
+
+        /// <summary>
+        /// TblEndBlockColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblEndBlockColorProperty =
+            DependencyProperty.Register(nameof(TblEndBlockColor), typeof(System.Windows.Media.Color), typeof(HexEditorV2),
+                new PropertyMetadata(Colors.Red, OnTblColorChanged));
+
+        /// <summary>
+        /// TblEndLineColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblEndLineColorProperty =
+            DependencyProperty.Register(nameof(TblEndLineColor), typeof(System.Windows.Media.Color), typeof(HexEditorV2),
+                new PropertyMetadata(Colors.Orange, OnTblColorChanged));
+
+        /// <summary>
+        /// TblDefaultColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblDefaultColorProperty =
+            DependencyProperty.Register(nameof(TblDefaultColor), typeof(System.Windows.Media.Color), typeof(HexEditorV2),
+                new PropertyMetadata(Colors.White, OnTblColorChanged));
+
+        private static void OnTblColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor)
+                editor.HexViewport?.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// BarChartColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty BarChartColorProperty =
+            DependencyProperty.Register(nameof(BarChartColor), typeof(System.Windows.Media.Color), typeof(HexEditorV2),
+                new PropertyMetadata(Colors.Blue));
+
+        /// <summary>
+        /// DataStringVisual DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty DataStringVisualProperty =
+            DependencyProperty.Register(nameof(DataStringVisual), typeof(DataVisualType), typeof(HexEditorV2),
+                new PropertyMetadata(DataVisualType.Hexadecimal));
+
+        /// <summary>
+        /// OffSetStringVisual DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty OffSetStringVisualProperty =
+            DependencyProperty.Register(nameof(OffSetStringVisual), typeof(DataVisualType), typeof(HexEditorV2),
+                new PropertyMetadata(DataVisualType.Hexadecimal));
+
+        /// <summary>
+        /// ByteOrder DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty ByteOrderProperty =
+            DependencyProperty.Register(nameof(ByteOrder), typeof(ByteOrderType), typeof(HexEditorV2),
+                new PropertyMetadata(ByteOrderType.LoHi));
+
+        /// <summary>
+        /// ByteSize DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty ByteSizeProperty =
+            DependencyProperty.Register(nameof(ByteSize), typeof(ByteSizeType), typeof(HexEditorV2),
+                new PropertyMetadata(ByteSizeType.Bit8));
+
+        /// <summary>
+        /// BarChartPanelVisibility DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty BarChartPanelVisibilityProperty =
+            DependencyProperty.Register(nameof(BarChartPanelVisibility), typeof(Visibility), typeof(HexEditorV2),
+                new PropertyMetadata(Visibility.Collapsed, OnBarChartPanelVisibilityChanged));
+
+        private static void OnBarChartPanelVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is Visibility visibility)
+            {
+                if (editor.BarChartBorder != null)
+                    editor.BarChartBorder.Visibility = visibility;
+
+                // Update bar chart data when becoming visible
+                if (visibility == Visibility.Visible)
+                    editor.UpdateBarChart();
+            }
+        }
+
+        /// <summary>
+        /// HideByteDeleted DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty HideByteDeletedProperty =
+            DependencyProperty.Register(nameof(HideByteDeleted), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(false, OnHideByteDeletedChanged));
+
+        private static void OnHideByteDeletedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor)
+            {
+                // Refresh viewport to show/hide deleted bytes
+                editor.HexViewport?.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// DefaultCopyToClipboardMode DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty DefaultCopyToClipboardModeProperty =
+            DependencyProperty.Register(nameof(DefaultCopyToClipboardMode), typeof(CopyPasteMode), typeof(HexEditorV2),
+                new PropertyMetadata(CopyPasteMode.HexaString));
+
+        /// <summary>
+        /// VisualCaretMode DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty VisualCaretModeProperty =
+            DependencyProperty.Register(nameof(VisualCaretMode), typeof(CaretMode), typeof(HexEditorV2),
+                new PropertyMetadata(CaretMode.Insert));
+
+        /// <summary>
+        /// ByteShiftLeft DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty ByteShiftLeftProperty =
+            DependencyProperty.Register(nameof(ByteShiftLeft), typeof(long), typeof(HexEditorV2),
+                new PropertyMetadata(0L, OnByteShiftLeftChanged));
+
+        private static void OnByteShiftLeftChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor)
+            {
+                // Refresh viewport to update offset display
+                editor.HexViewport?.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// AppendNeedConfirmation DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AppendNeedConfirmationProperty =
+            DependencyProperty.Register(nameof(AppendNeedConfirmation), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// CustomEncoding DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty CustomEncodingProperty =
+            DependencyProperty.Register(nameof(CustomEncoding), typeof(System.Text.Encoding), typeof(HexEditorV2),
+                new PropertyMetadata(System.Text.Encoding.UTF8, OnCustomEncodingChanged));
+
+        private static void OnCustomEncodingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is System.Text.Encoding encoding)
+            {
+                // Refresh viewport to update text display with new encoding
+                editor.HexViewport?.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// PreloadByteInEditorMode DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty PreloadByteInEditorModeProperty =
+            DependencyProperty.Register(nameof(PreloadByteInEditorMode), typeof(PreloadByteInEditor), typeof(HexEditorV2),
+                new PropertyMetadata(PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad));
+
+        /// <summary>
+        /// AllowCustomBackgroundBlock DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowCustomBackgroundBlockProperty =
+            DependencyProperty.Register(nameof(AllowCustomBackgroundBlock), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(false, OnAllowCustomBackgroundBlockChanged));
+
+        private static void OnAllowCustomBackgroundBlockChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is bool allowed)
+            {
+                // Phase 7.1: Sync with HexViewport - pass blocks if enabled, empty list if disabled
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.CustomBackgroundBlocks = allowed ? editor._customBackgroundBlocks : new List<Core.CustomBackgroundBlock>();
+                    editor.HexViewport.InvalidateVisual();
+                }
             }
         }
 
@@ -1543,22 +2080,13 @@ namespace WpfHexaEditor.V2
             set { /* V2 does not support hiding hex panel */ }
         }
 
-        private Visibility _barChartPanelVisibility = Visibility.Collapsed;
-
         /// <summary>
-        /// V1 compatible: Bar chart panel visibility (Phase 7.4 - Complete)
+        /// V1 compatible: Bar chart panel visibility (Phase 7.4 - Complete) - DependencyProperty
         /// </summary>
         public Visibility BarChartPanelVisibility
         {
-            get => _barChartPanelVisibility;
-            set
-            {
-                _barChartPanelVisibility = value;
-
-                // Update bar chart when made visible (Phase 7.4)
-                if (value == Visibility.Visible)
-                    UpdateBarChart();
-            }
+            get => (Visibility)GetValue(BarChartPanelVisibilityProperty);
+            set => SetValue(BarChartPanelVisibilityProperty, value);
         }
 
         #endregion
@@ -1692,6 +2220,104 @@ namespace WpfHexaEditor.V2
             catch (Exception ex)
             {
                 StatusText.Text = $"Bar chart update failed: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Update auto-highlight byte value when selection changes
+        /// </summary>
+        private void UpdateAutoHighlightByte()
+        {
+            if (HexViewport == null || _viewModel == null)
+                return;
+
+            // Only update if auto-highlight is enabled
+            if (!AllowAutoHighLightSelectionByte)
+            {
+                HexViewport.AutoHighlightByteValue = null;
+                HexViewport.InvalidateVisual();
+                return;
+            }
+
+            // Get byte value at current selection position or first byte
+            try
+            {
+                VirtualPosition positionToUse;
+
+                // Use selection start if valid, otherwise use position 0
+                if (_viewModel.SelectionStart.IsValid && _viewModel.SelectionStart.Value < _viewModel.VirtualLength)
+                {
+                    positionToUse = _viewModel.SelectionStart;
+                }
+                else if (_viewModel.VirtualLength > 0)
+                {
+                    positionToUse = new VirtualPosition(0);
+                }
+                else
+                {
+                    HexViewport.AutoHighlightByteValue = null;
+                    HexViewport.InvalidateVisual();
+                    return;
+                }
+
+                byte byteValue = _viewModel.GetByteAt(positionToUse);
+                HexViewport.AutoHighlightByteValue = byteValue;
+                HexViewport.InvalidateVisual();
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Auto-highlight error: {ex.Message}";
+                HexViewport.AutoHighlightByteValue = null;
+                HexViewport.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Select all bytes with specified value (V1 compatible double-click feature)
+        /// </summary>
+        private void SelectAllBytesWith(byte byteValue)
+        {
+            if (_viewModel == null || HexViewport == null)
+                return;
+
+            try
+            {
+                // OPTIMIZED: Only search visible region for better performance
+                // For large files, searching everything would be too slow
+                var matchingPositions = new HashSet<long>();
+
+                // Get visible lines from cache (already loaded for display)
+                var visibleLines = HexViewport.GetVisibleLinesForHighlight();
+                if (visibleLines == null || visibleLines.Count == 0)
+                {
+                    StatusText.Text = "No visible bytes to search";
+                    return;
+                }
+
+                // Scan visible bytes only (fast because already in cache)
+                foreach (var line in visibleLines)
+                {
+                    foreach (var byteData in line.Bytes)
+                    {
+                        if (byteData.Value == byteValue)
+                        {
+                            matchingPositions.Add(byteData.VirtualPos.Value);
+                        }
+                    }
+                }
+
+                // Set highlighted positions to mark all matching bytes
+                if (HexViewport != null)
+                {
+                    HexViewport.HighlightedPositions = matchingPositions;
+                }
+
+                // Update status bar
+                StatusText.Text = $"Found {matchingPositions.Count} matching bytes in visible region (value: 0x{byteValue:X2})";
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Auto-select failed: {ex.Message}";
             }
         }
 
@@ -2671,14 +3297,22 @@ namespace WpfHexaEditor.V2
         }
 
         /// <summary>
-        /// Hide bytes that are marked as deleted (V1 compatible)
+        /// Hide bytes that are marked as deleted (V1 compatible) - DependencyProperty
         /// </summary>
-        public bool HideByteDeleted { get; set; } = false;
+        public bool HideByteDeleted
+        {
+            get => (bool)GetValue(HideByteDeletedProperty);
+            set => SetValue(HideByteDeletedProperty, value);
+        }
 
         /// <summary>
-        /// Default clipboard copy/paste mode (V1 compatible)
+        /// Default clipboard copy/paste mode (V1 compatible) - DependencyProperty
         /// </summary>
-        public CopyPasteMode DefaultCopyToClipboardMode { get; set; } = CopyPasteMode.HexaString;
+        public CopyPasteMode DefaultCopyToClipboardMode
+        {
+            get => (CopyPasteMode)GetValue(DefaultCopyToClipboardModeProperty);
+            set => SetValue(DefaultCopyToClipboardModeProperty, value);
+        }
 
         #endregion
 
@@ -2700,81 +3334,134 @@ namespace WpfHexaEditor.V2
         }
 
         /// <summary>
-        /// Visual caret mode for insert/overwrite indication (V1 compatible)
+        /// Visual caret mode for insert/overwrite indication (V1 compatible) - DependencyProperty
         /// </summary>
-        public CaretMode VisualCaretMode { get; set; } = CaretMode.Insert;
+        public CaretMode VisualCaretMode
+        {
+            get => (CaretMode)GetValue(VisualCaretModeProperty);
+            set => SetValue(VisualCaretModeProperty, value);
+        }
 
         /// <summary>
-        /// Byte shift left amount (V1 compatible)
+        /// Byte shift left amount (V1 compatible) - DependencyProperty
         /// Used for adjusting byte position display offset
         /// </summary>
-        public long ByteShiftLeft { get; set; } = 0;
+        public long ByteShiftLeft
+        {
+            get => (long)GetValue(ByteShiftLeftProperty);
+            set => SetValue(ByteShiftLeftProperty, value);
+        }
 
         #endregion
 
         #region Missing V1 Properties - Auto-Highlight
 
         /// <summary>
-        /// Auto-highlight bytes that match the selected byte (V1 compatible)
+        /// Auto-highlight bytes that match the selected byte (V1 compatible) - DependencyProperty
         /// </summary>
-        public bool AllowAutoHighLightSelectionByte { get; set; } = false;
+        public bool AllowAutoHighLightSelectionByte
+        {
+            get => (bool)GetValue(AllowAutoHighLightSelectionByteProperty);
+            set => SetValue(AllowAutoHighLightSelectionByteProperty, value);
+        }
 
         /// <summary>
-        /// Auto-select all same bytes when double-clicking a byte (V1 compatible)
+        /// Auto-highlight brush color for bytes matching selected byte (V1 compatible) - DependencyProperty
         /// </summary>
-        public bool AllowAutoSelectSameByteAtDoubleClick { get; set; } = false;
+        public System.Windows.Media.Color AutoHighLiteSelectionByteBrush
+        {
+            get => (System.Windows.Media.Color)GetValue(AutoHighLiteSelectionByteBrushProperty);
+            set => SetValue(AutoHighLiteSelectionByteBrushProperty, value);
+        }
+
+        /// <summary>
+        /// Auto-select all same bytes when double-clicking a byte (V1 compatible) - DependencyProperty
+        /// </summary>
+        public bool AllowAutoSelectSameByteAtDoubleClick
+        {
+            get => (bool)GetValue(AllowAutoSelectSameByteAtDoubleClickProperty);
+            set => SetValue(AllowAutoSelectSameByteAtDoubleClickProperty, value);
+        }
 
         #endregion
 
         #region Missing V1 Properties - Count/Statistics
 
         /// <summary>
-        /// Enable byte counting feature (V1 compatible)
+        /// Enable byte counting feature (V1 compatible) - DependencyProperty
         /// </summary>
-        public bool AllowByteCount { get; set; } = true;
+        public bool AllowByteCount
+        {
+            get => (bool)GetValue(AllowByteCountProperty);
+            set => SetValue(AllowByteCountProperty, value);
+        }
 
         #endregion
 
         #region Missing V1 Properties - File Drop/Drag
 
         /// <summary>
-        /// Confirm before dropping a file to load it (V1 compatible)
+        /// Confirm before dropping a file to load it (V1 compatible) - DependencyProperty
         /// </summary>
-        public bool FileDroppingConfirmation { get; set; } = true;
+        public bool FileDroppingConfirmation
+        {
+            get => (bool)GetValue(FileDroppingConfirmationProperty);
+            set => SetValue(FileDroppingConfirmationProperty, value);
+        }
 
         /// <summary>
-        /// Allow text drag-drop operations (V1 compatible)
+        /// Allow text drag-drop operations (V1 compatible) - DependencyProperty
         /// </summary>
-        public bool AllowTextDrop { get; set; } = false;
+        public bool AllowTextDrop
+        {
+            get => (bool)GetValue(AllowTextDropProperty);
+            set => SetValue(AllowTextDropProperty, value);
+        }
 
         /// <summary>
-        /// Allow file drag-drop operations (V1 compatible)
+        /// Allow file drag-drop operations (V1 compatible) - DependencyProperty
         /// Note: AllowDrop must also be true for this to work
         /// </summary>
-        public bool AllowFileDrop { get; set; } = true;
+        public bool AllowFileDrop
+        {
+            get => (bool)GetValue(AllowFileDropProperty);
+            set => SetValue(AllowFileDropProperty, value);
+        }
 
         #endregion
 
         #region Missing V1 Properties - Extend/Append
 
         /// <summary>
-        /// Allow extending file at end (V1 compatible)
+        /// Allow extending file at end (V1 compatible) - DependencyProperty
         /// </summary>
-        public bool AllowExtend { get; set; } = true;
+        public bool AllowExtend
+        {
+            get => (bool)GetValue(AllowExtendProperty);
+            set => SetValue(AllowExtendProperty, value);
+        }
 
         /// <summary>
-        /// Confirm before appending bytes (V1 compatible)
+        /// Confirm before appending bytes (V1 compatible) - DependencyProperty
         /// </summary>
-        public bool AppendNeedConfirmation { get; set; } = true;
+        public bool AppendNeedConfirmation
+        {
+            get => (bool)GetValue(AppendNeedConfirmationProperty);
+            set => SetValue(AppendNeedConfirmationProperty, value);
+        }
 
         #endregion
 
         #region Missing V1 Properties - Delete Byte
 
         /// <summary>
-        /// Allow byte deletion (V1 compatible)
+        /// Allow byte deletion (V1 compatible) - DependencyProperty
         /// </summary>
-        public bool AllowDeleteByte { get; set; } = true;
+        public bool AllowDeleteByte
+        {
+            get => (bool)GetValue(AllowDeleteByteProperty);
+            set => SetValue(AllowDeleteByteProperty, value);
+        }
 
         #endregion
 
@@ -3806,8 +4493,8 @@ namespace WpfHexaEditor.V2
 
             // Calculate how many lines fit in the viewport
             // Use Math.Ceiling to ensure we always have enough space for partial lines at bottom
-            // Add 1 extra line to prevent last line from being cut off
-            int calculatedLines = (int)Math.Ceiling(actualHeight / lineHeight) + 1;
+            // Add 2 extra lines to prevent last line from being cut off (increased safety margin)
+            int calculatedLines = (int)Math.Ceiling(actualHeight / lineHeight) + 2;
 
             // Clamp to reasonable range (minimum 5, maximum 100)
             calculatedLines = Math.Max(5, Math.Min(100, calculatedLines));
@@ -3837,6 +4524,8 @@ namespace WpfHexaEditor.V2
                     UpdatePositionInfo();
                     // Update HexViewport selection anchor
                     HexViewport.SelectionStart = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : -1;
+                    // Update auto-highlight to match the byte at the new selection
+                    UpdateAutoHighlightByte();
                     break;
 
                 case nameof(HexEditorViewModel.SelectionStop):
