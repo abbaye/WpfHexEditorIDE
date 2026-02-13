@@ -1613,8 +1613,7 @@ namespace WpfHexaEditor.V2
 
             // Update status bar
             StatusText.Text = $"Loaded: {System.IO.Path.GetFileName(filePath)}";
-            var fileInfo = new System.IO.FileInfo(filePath);
-            FileSizeText.Text = $"Size: {FormatFileSize(fileInfo.Length)}";
+            UpdateFileSizeDisplay();
             BytesPerLineText.Text = $"Bytes/Line: {_viewModel.BytePerLine}";
             EditModeText.Text = $"Mode: {_viewModel.EditMode}";
 
@@ -3805,9 +3804,10 @@ namespace WpfHexaEditor.V2
             if (actualHeight <= 0)
                 return; // Not initialized yet
 
-            // Calculate how many lines fit in the viewport (V1 formula: (int)(actualheight / (LineHeight * ZoomScale)) + 1)
-            // V2 doesn't have ZoomScale, so we just use: (int)(actualheight / lineHeight) + 1
-            int calculatedLines = (int)(actualHeight / lineHeight) + 1;
+            // Calculate how many lines fit in the viewport
+            // Use Math.Ceiling to ensure we always have enough space for partial lines at bottom
+            // Add 1 extra line to prevent last line from being cut off
+            int calculatedLines = (int)Math.Ceiling(actualHeight / lineHeight) + 1;
 
             // Clamp to reasonable range (minimum 5, maximum 100)
             calculatedLines = Math.Max(5, Math.Min(100, calculatedLines));
@@ -3849,6 +3849,8 @@ namespace WpfHexaEditor.V2
 
                 case nameof(HexEditorViewModel.TotalLines):
                     VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+                    // Update file size display (VirtualLength may have changed due to insertions)
+                    UpdateFileSizeDisplay();
                     break;
 
                 case nameof(HexEditorViewModel.EditMode):
@@ -3859,6 +3861,16 @@ namespace WpfHexaEditor.V2
                     BytesPerLineText.Text = $"Bytes/Line: {_viewModel.BytePerLine}";
                     HexViewport.BytesPerLine = _viewModel.BytePerLine;
                     break;
+            }
+        }
+
+        private void UpdateFileSizeDisplay()
+        {
+            if (_viewModel != null)
+            {
+                // Show VirtualLength (includes insertions in Insert mode)
+                long displayLength = _viewModel.VirtualLength;
+                FileSizeText.Text = $"Size: {FormatFileSize(displayLength)} ({displayLength:N0} bytes)";
             }
         }
 
