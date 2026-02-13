@@ -2282,9 +2282,8 @@ namespace WpfHexaEditor.V2
 
             try
             {
-                // OPTIMIZED: Only search visible region for better performance
-                // For large files, searching everything would be too slow
-                var matchingPositions = new HashSet<long>();
+                // Find all matching bytes in visible region
+                var matchingPositions = new List<long>();
 
                 // Get visible lines from cache (already loaded for display)
                 var visibleLines = HexViewport.GetVisibleLinesForHighlight();
@@ -2306,14 +2305,24 @@ namespace WpfHexaEditor.V2
                     }
                 }
 
-                // Set highlighted positions to mark all matching bytes
-                if (HexViewport != null)
+                if (matchingPositions.Count == 0)
                 {
-                    HexViewport.HighlightedPositions = matchingPositions;
+                    StatusText.Text = $"No bytes with value 0x{byteValue:X2} found in visible region";
+                    return;
                 }
 
+                // Create a selection from first to last matching byte
+                long firstMatch = matchingPositions.Min();
+                long lastMatch = matchingPositions.Max();
+
+                // Set SelectionStart and SelectionStop to create a continuous selection
+                _viewModel.SetSelectionRange(new VirtualPosition(firstMatch), new VirtualPosition(lastMatch));
+
+                // Clear visual highlight (we're using real selection now)
+                HexViewport.HighlightedPositions = null;
+
                 // Update status bar
-                StatusText.Text = $"Found {matchingPositions.Count} matching bytes in visible region (value: 0x{byteValue:X2})";
+                StatusText.Text = $"Selected range with {matchingPositions.Count} matching bytes (value: 0x{byteValue:X2})";
             }
             catch (Exception ex)
             {
