@@ -11,6 +11,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexaEditor.Core;
@@ -36,6 +38,7 @@ namespace WpfHexaEditor.V2.Controls
         private List<Core.CustomBackgroundBlock> _customBackgroundBlocks = new();
         private Core.CharacterTable.TblStream _tblStream; // Phase 7.5: TBL for character type detection
         private bool _showByteToolTip = false; // V1 compatible: Show tooltip on byte hover
+        private System.Windows.Controls.ToolTip _byteToolTip; // Custom tooltip that follows mouse
 
         // Cached resources
         private Typeface _typeface;
@@ -96,6 +99,14 @@ namespace WpfHexaEditor.V2.Controls
 
             // Make focusable for keyboard input
             Focusable = true;
+
+            // Initialize custom tooltip that follows mouse
+            _byteToolTip = new System.Windows.Controls.ToolTip
+            {
+                Placement = PlacementMode.Mouse,
+                PlacementTarget = this
+            };
+            ToolTip = _byteToolTip;
 
             // Freeze brushes for performance
             _offsetBrush.Freeze();
@@ -383,12 +394,19 @@ namespace WpfHexaEditor.V2.Controls
         }
 
         /// <summary>
-        /// Show tooltip on byte hover (V1 compatible)
+        /// Show tooltip on byte hover (V1 compatible - tooltip follows mouse)
         /// </summary>
         public bool ShowByteToolTip
         {
             get => _showByteToolTip;
-            set => _showByteToolTip = value;
+            set
+            {
+                _showByteToolTip = value;
+                if (!value && _byteToolTip != null)
+                {
+                    _byteToolTip.IsOpen = false;
+                }
+            }
         }
 
         #endregion
@@ -783,8 +801,8 @@ namespace WpfHexaEditor.V2.Controls
         {
             base.OnMouseMove(e);
 
-            // V1 compatible: Show byte tooltip on hover
-            if (_showByteToolTip)
+            // V1 compatible: Show byte tooltip on hover (follows mouse)
+            if (_showByteToolTip && _byteToolTip != null)
             {
                 var position = HitTestByte(e.GetPosition(this));
                 if (position.HasValue)
@@ -803,17 +821,18 @@ namespace WpfHexaEditor.V2.Controls
                                            $"Value: 0x{byteValue:X2} ({byteValue})\n" +
                                            $"ASCII: '{asciiChar}'";
 
-                        ToolTip = tooltipText;
+                        _byteToolTip.Content = tooltipText;
+                        _byteToolTip.IsOpen = true;
                         return;
                     }
                 }
 
-                // Clear tooltip if not over a byte
-                ToolTip = null;
+                // Close tooltip if not over a byte
+                _byteToolTip.IsOpen = false;
             }
-            else
+            else if (_byteToolTip != null)
             {
-                ToolTip = null;
+                _byteToolTip.IsOpen = false;
             }
 
             // TODO: Implement mouse drag selection
