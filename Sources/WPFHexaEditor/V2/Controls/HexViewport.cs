@@ -63,6 +63,14 @@ namespace WpfHexaEditor.V2.Controls
         private Brush _separatorBrush = new SolidColorBrush(Color.FromRgb(0xE0, 0xE0, 0xE0));
         private Brush _asciiBrush = new SolidColorBrush(Color.FromRgb(0x42, 0x42, 0x42));
 
+        // TBL (Character Table) colors - Phase 7.5 V1 Compatibility
+        private bool _tblShowMte = false;
+        private Brush _tblDteBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0x00)); // Yellow
+        private Brush _tblMteBrush = new SolidColorBrush(Color.FromRgb(0xAD, 0xD8, 0xE6)); // LightBlue
+        private Brush _tblEndBlockBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0x00, 0x00)); // Red
+        private Brush _tblEndLineBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xA5, 0x00)); // Orange
+        private Brush _tblDefaultBrush = new SolidColorBrush(Colors.White);
+
         #endregion
 
         #region Constructor
@@ -95,6 +103,13 @@ namespace WpfHexaEditor.V2.Controls
             _deletedBrush.Freeze();
             _separatorBrush.Freeze();
             _asciiBrush.Freeze();
+
+            // Freeze TBL brushes (Phase 7.5)
+            _tblDteBrush.Freeze();
+            _tblMteBrush.Freeze();
+            _tblEndBlockBrush.Freeze();
+            _tblEndLineBrush.Freeze();
+            _tblDefaultBrush.Freeze();
         }
 
         #endregion
@@ -299,6 +314,60 @@ namespace WpfHexaEditor.V2.Controls
         public void Refresh()
         {
             UpdateCachedLines();
+        }
+
+        /// <summary>
+        /// Show MTE (Multi-Title Encoding) in TBL - Phase 7.5 V1 Compatibility
+        /// </summary>
+        public bool TblShowMte
+        {
+            get => _tblShowMte;
+            set { _tblShowMte = value; InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// DTE (Double Tile Encoding) color - Phase 7.5 V1 Compatibility
+        /// </summary>
+        public Color TblDteColor
+        {
+            get => (_tblDteBrush as SolidColorBrush)?.Color ?? Colors.Yellow;
+            set { _tblDteBrush = new SolidColorBrush(value); _tblDteBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// MTE (Multi-Title Encoding) color - Phase 7.5 V1 Compatibility
+        /// </summary>
+        public Color TblMteColor
+        {
+            get => (_tblMteBrush as SolidColorBrush)?.Color ?? Colors.LightBlue;
+            set { _tblMteBrush = new SolidColorBrush(value); _tblMteBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// TBL End Block color - Phase 7.5 V1 Compatibility
+        /// </summary>
+        public Color TblEndBlockColor
+        {
+            get => (_tblEndBlockBrush as SolidColorBrush)?.Color ?? Colors.Red;
+            set { _tblEndBlockBrush = new SolidColorBrush(value); _tblEndBlockBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// TBL End Line color - Phase 7.5 V1 Compatibility
+        /// </summary>
+        public Color TblEndLineColor
+        {
+            get => (_tblEndLineBrush as SolidColorBrush)?.Color ?? Colors.Orange;
+            set { _tblEndLineBrush = new SolidColorBrush(value); _tblEndLineBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// TBL Default color - Phase 7.5 V1 Compatibility
+        /// </summary>
+        public Color TblDefaultColor
+        {
+            get => (_tblDefaultBrush as SolidColorBrush)?.Color ?? Colors.White;
+            set { _tblDefaultBrush = new SolidColorBrush(value); _tblDefaultBrush.Freeze(); InvalidateVisual(); }
         }
 
         #endregion
