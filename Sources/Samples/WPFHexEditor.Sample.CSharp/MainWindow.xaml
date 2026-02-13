@@ -7,7 +7,8 @@
     x:Class="WPFHexaEditorExample.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:control="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
+    xmlns:control="clr-namespace:WpfHexaEditor.V2;assembly=WPFHexaEditor"
+    xmlns:v1control="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:WPFHexaEditorExample.Properties"
@@ -164,7 +165,7 @@
                     <Separator />
                     <StackPanel Orientation="Horizontal">
                         <Label Width="100" Content="ByteShitLeft" />
-                        <control:HexBox
+                        <v1control:HexBox
                             x:Name="HbBsl"
                             Width="96"
                             Height="22"
@@ -186,7 +187,7 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Width="100" Content="SetPosition" />
-                        <control:HexBox
+                        <v1control:HexBox
                             x:Name="HbSetPosition"
                             Width="96"
                             Height="22" />
@@ -356,29 +357,22 @@
                     </TabControl.Resources>
                 </TabControl>
 
-                <control:HexEditor
+                <control:HexEditorV2
                     x:Name="HexEdit"
                     Grid.Row="1"
                     Width="Auto"
                     Height="Auto"
                     Margin="2"
-                    AllowByteCount="False"
                     AllowCustomBackgroundBlock="True"
                     AllowDrop="True"
-                    AllowExtend="False"
-                    AppendNeedConfirmation="True"
                     BorderThickness="1"
                     ByteGrouping="FourByte"
-                    ByteShiftLeft="{Binding LongValue, ElementName=HbBsl, UpdateSourceTrigger=PropertyChanged}"
                     ByteSpacerPositioning="HexBytePanel"
                     ByteSpacerVisualStyle="Dash"
                     ByteSpacerWidthTickness="Normal"
                     DataStringVisual="Hexadecimal"
-                    DefaultCopyToClipboardMode="HexaString"
-                    ForegroundSecondColor="Blue"
                     OffSetStringVisual="Hexadecimal"
-                    PreloadByteInEditorMode="MaxScreenVisibleLineAtDataLoad"
-                    VisualCaretMode="Overwrite" />
+                    PreloadByteInEditorMode="MaxScreenVisibleLineAtDataLoad" />
 
             </Grid>
 
