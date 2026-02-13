@@ -116,16 +116,38 @@ namespace WpfHexaEditor.V2
         /// </summary>
         private void HexViewport_ByteDoubleClicked(object sender, long position)
         {
+            System.Diagnostics.Debug.WriteLine($"[DOUBLECLICK] ByteDoubleClicked event fired! Position={position}");
+            StatusText.Text = $"DEBUG: Double-click at position {position}";
+
             // Only auto-select if feature is enabled
-            if (!AllowAutoSelectSameByteAtDoubleClick || _viewModel == null)
+            if (!AllowAutoSelectSameByteAtDoubleClick)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DOUBLECLICK] Feature disabled: AllowAutoSelectSameByteAtDoubleClick={AllowAutoSelectSameByteAtDoubleClick}");
+                StatusText.Text = "DEBUG: Double-click feature is disabled";
                 return;
+            }
+
+            if (_viewModel == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[DOUBLECLICK] ViewModel is null!");
+                StatusText.Text = "DEBUG: ViewModel is null";
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[DOUBLECLICK] Feature enabled, ViewModel OK");
 
             // Get byte value at clicked position
             var virtualPos = new VirtualPosition(position);
             if (!virtualPos.IsValid || position >= _viewModel.VirtualLength)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DOUBLECLICK] Invalid position! IsValid={virtualPos.IsValid}, VirtualLength={_viewModel.VirtualLength}");
+                StatusText.Text = $"DEBUG: Invalid position (length={_viewModel.VirtualLength})";
                 return;
+            }
 
             byte byteValue = _viewModel.GetByteAt(virtualPos);
+            System.Diagnostics.Debug.WriteLine($"[DOUBLECLICK] Byte value at position {position} = 0x{byteValue:X2}");
+            StatusText.Text = $"DEBUG: Double-clicked byte value = 0x{byteValue:X2}";
 
             // Find all positions with this byte value and select them
             SelectAllBytesWith(byteValue);
@@ -2277,8 +2299,14 @@ namespace WpfHexaEditor.V2
         /// </summary>
         private void SelectAllBytesWith(byte byteValue)
         {
+            System.Diagnostics.Debug.WriteLine($"[SELECTALL] SelectAllBytesWith called with byte value 0x{byteValue:X2}");
+
             if (_viewModel == null || HexViewport == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[SELECTALL] ViewModel or HexViewport is null!");
+                StatusText.Text = "DEBUG: ViewModel or HexViewport is null";
                 return;
+            }
 
             try
             {
@@ -2287,9 +2315,12 @@ namespace WpfHexaEditor.V2
 
                 // Get visible lines from cache (already loaded for display)
                 var visibleLines = HexViewport.GetVisibleLinesForHighlight();
+                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Got {visibleLines?.Count ?? 0} visible lines");
+
                 if (visibleLines == null || visibleLines.Count == 0)
                 {
-                    StatusText.Text = "No visible bytes to search";
+                    System.Diagnostics.Debug.WriteLine("[SELECTALL] No visible lines!");
+                    StatusText.Text = "DEBUG: No visible bytes to search";
                     return;
                 }
 
@@ -2305,15 +2336,20 @@ namespace WpfHexaEditor.V2
                     }
                 }
 
+                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Found {matchingPositions.Count} matching bytes");
+
                 if (matchingPositions.Count == 0)
                 {
-                    StatusText.Text = $"No bytes with value 0x{byteValue:X2} found in visible region";
+                    System.Diagnostics.Debug.WriteLine("[SELECTALL] No matches found!");
+                    StatusText.Text = $"DEBUG: No bytes with value 0x{byteValue:X2} found in visible region";
                     return;
                 }
 
                 // Create a selection from first to last matching byte
                 long firstMatch = matchingPositions.Min();
                 long lastMatch = matchingPositions.Max();
+
+                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Setting selection: {firstMatch} → {lastMatch}");
 
                 // Set SelectionStart and SelectionStop to create a continuous selection
                 _viewModel.SetSelectionRange(new VirtualPosition(firstMatch), new VirtualPosition(lastMatch));
@@ -2322,11 +2358,14 @@ namespace WpfHexaEditor.V2
                 HexViewport.HighlightedPositions = null;
 
                 // Update status bar
-                StatusText.Text = $"Selected range with {matchingPositions.Count} matching bytes (value: 0x{byteValue:X2})";
+                StatusText.Text = $"DEBUG: Selected range {firstMatch}-{lastMatch} with {matchingPositions.Count} matches (0x{byteValue:X2})";
+                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Success! Status: {StatusText.Text}");
             }
             catch (Exception ex)
             {
-                StatusText.Text = $"Auto-select failed: {ex.Message}";
+                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Exception: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Stack: {ex.StackTrace}");
+                StatusText.Text = $"DEBUG: Auto-select failed: {ex.Message}";
             }
         }
 
