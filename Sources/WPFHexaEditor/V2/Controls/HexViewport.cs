@@ -543,7 +543,9 @@ namespace WpfHexaEditor.V2.Controls
                 for (int i = 0; i < line.Bytes.Count; i++)
                 {
                     // Draw byte spacer before this byte if needed
-                    if ((ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                    // Only draw separators if BytePerLine is large enough to have multiple groups
+                    if (_bytesPerLine >= (int)ByteGrouping &&
+                        (ByteSpacerPositioning == ByteSpacerPosition.Both ||
                          ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel) &&
                         i % (int)ByteGrouping == 0 && i > 0)
                     {
@@ -559,7 +561,9 @@ namespace WpfHexaEditor.V2.Controls
                 // Draw separator and ASCII (if visible)
                 if (ShowAscii)
                 {
-                    double separatorX = (ShowOffset ? OffsetWidth : 0) + (_bytesPerLine * (HexByteWidth + HexByteSpacing)) + 8;
+                    // Use actual hexX position after drawing all bytes (accounts for byte spacers)
+                    // hexX is already at the position after last byte, just add a small margin
+                    double separatorX = hexX + 4;
                     dc.DrawRectangle(_separatorBrush, null, new Rect(separatorX, y, 1, _lineHeight));
 
                     // Draw ASCII bytes with byte spacers
@@ -567,7 +571,9 @@ namespace WpfHexaEditor.V2.Controls
                     for (int i = 0; i < line.Bytes.Count; i++)
                     {
                         // Draw byte spacer before this byte if needed
-                        if ((ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                        // Only draw separators if BytePerLine is large enough to have multiple groups
+                        if (_bytesPerLine >= (int)ByteGrouping &&
+                            (ByteSpacerPositioning == ByteSpacerPosition.Both ||
                              ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel) &&
                             i % (int)ByteGrouping == 0 && i > 0)
                         {
@@ -1074,9 +1080,9 @@ namespace WpfHexaEditor.V2.Controls
         public event EventHandler<long> ByteDoubleClicked;
 
         /// <summary>
-        /// Raised when user navigates with keyboard
+        /// Raised when user navigates with keyboard (not currently used)
         /// </summary>
-        public event EventHandler<Key> NavigationKeyPressed;
+        // public event EventHandler<Key> NavigationKeyPressed;
 
         #endregion
     }

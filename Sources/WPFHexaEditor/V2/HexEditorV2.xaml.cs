@@ -871,7 +871,7 @@ namespace WpfHexaEditor.V2
                 if (_viewModel != null && value > 0)
                 {
                     _viewModel.VisibleLines = value;
-                    VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+                    VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
                     VerticalScroll.ViewportSize = _viewModel.VisibleLines;
                 }
             }
@@ -1450,8 +1450,8 @@ namespace WpfHexaEditor.V2
                 {
                     editor._viewModel.BytePerLine = bytesPerLine;
 
-                    // Update scrollbar to reflect new total lines
-                    editor.VerticalScroll.Maximum = Math.Max(0, editor._viewModel.TotalLines - editor._viewModel.VisibleLines);
+                    // Update scrollbar to reflect new total lines (with +3 margin to access last lines)
+                    editor.VerticalScroll.Maximum = Math.Max(0, editor._viewModel.TotalLines - editor._viewModel.VisibleLines + 3);
                 }
             }
         }
@@ -2176,7 +2176,7 @@ namespace WpfHexaEditor.V2
             }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
 
             // Update scrollbar with initial values
-            VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+            VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
             VerticalScroll.ViewportSize = _viewModel.VisibleLines;
 
             // Raise FileOpened event
@@ -2188,14 +2188,25 @@ namespace WpfHexaEditor.V2
             BytesPerLineText.Text = $"Bytes/Line: {_viewModel.BytePerLine}";
             EditModeText.Text = $"Mode: {_viewModel.EditMode}";
 
-            // Update bar chart panel (Phase 7.4)
-            UpdateBarChart();
+            // STARTUP OPTIMIZATION: Defer expensive operations to background (low priority)
+            // These operations can be done after the control is loaded and visible
 
-            // Update scroll markers (V1 compatible)
+            // Update bar chart panel in background (Phase 7.4)
+            // Bar chart calculation can be slow for large files
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                UpdateBarChart();
+            }), System.Windows.Threading.DispatcherPriority.Background);
+
+            // Update scroll markers in background (V1 compatible)
+            // Scroll markers don't need to be ready immediately
             if (_scrollMarkers != null)
             {
                 _scrollMarkers.FileLength = _viewModel.FileLength;
-                UpdateScrollMarkers();
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    UpdateScrollMarkers();
+                }), System.Windows.Threading.DispatcherPriority.Background);
             }
         }
 
@@ -4193,18 +4204,33 @@ namespace WpfHexaEditor.V2
             const double HexByteWidth = 24;
             const double HexByteSpacing = 2;
             const double SeparatorWidth = 20;
+            const int ByteGrouping = 4;
+            const double ByteSpacerWidthTickness = 6;
 
             double x = mousePosition.X;
 
             // Check if in hex area
             double hexStartX = OffsetWidth;
-            double hexEndX = OffsetWidth + (_viewModel.BytePerLine * (HexByteWidth + HexByteSpacing));
+
+            // Calculate hexEndX accounting for byte spacers
+            int numSpacers = 0;
+            if (_viewModel.BytePerLine >= ByteGrouping)
+            {
+                numSpacers = (_viewModel.BytePerLine / ByteGrouping) - 1;
+                // If not evenly divisible, we have one less spacer
+                if (_viewModel.BytePerLine % ByteGrouping == 0)
+                    numSpacers = (_viewModel.BytePerLine / ByteGrouping) - 1;
+                else
+                    numSpacers = _viewModel.BytePerLine / ByteGrouping;
+            }
+            double spacersWidth = numSpacers * ByteSpacerWidthTickness;
+            double hexEndX = OffsetWidth + (_viewModel.BytePerLine * (HexByteWidth + HexByteSpacing)) + spacersWidth;
 
             if (x >= hexStartX && x < hexEndX)
                 return ClickArea.Hex;
 
             // Check if in ASCII area
-            double separatorX = hexEndX + 8;
+            double separatorX = hexEndX + 4; // Match rendering code (was +8, now +4)
             double asciiStartX = separatorX + SeparatorWidth;
 
             if (x >= asciiStartX)
@@ -4230,6 +4256,8 @@ namespace WpfHexaEditor.V2
             const double TopMargin = 2;
             const double SeparatorWidth = 20;
             const double AsciiCharWidth = 10;
+            const int ByteGrouping = 4;
+            const double ByteSpacerWidthTickness = 6;
 
             // Calculate line number from Y coordinate
             double y = mousePosition.Y - TopMargin;
@@ -4254,15 +4282,46 @@ namespace WpfHexaEditor.V2
                 return line.Bytes[0].VirtualPos;
             }
 
-            // Check if click is in hex area
+            // Calculate hex area dimensions WITH byte spacers
             double hexStartX = OffsetWidth;
-            double hexEndX = OffsetWidth + (_viewModel.BytePerLine * (HexByteWidth + HexByteSpacing));
+            int numSpacers = 0;
+            if (_viewModel.BytePerLine >= ByteGrouping)
+            {
+                numSpacers = (_viewModel.BytePerLine % ByteGrouping == 0)
+                    ? (_viewModel.BytePerLine / ByteGrouping) - 1
+                    : _viewModel.BytePerLine / ByteGrouping;
+            }
+            double spacersWidth = numSpacers * ByteSpacerWidthTickness;
+            double hexEndX = OffsetWidth + (_viewModel.BytePerLine * (HexByteWidth + HexByteSpacing)) + spacersWidth;
 
+            // Check if click is in hex area
             if (x >= hexStartX && x < hexEndX)
             {
-                // Click in hex area
+                // Click in hex area - need to account for byte spacers
                 double relativeX = x - hexStartX;
-                int byteIndex = (int)(relativeX / (HexByteWidth + HexByteSpacing));
+
+                // Calculate byte index accounting for spacers
+                int byteIndex = 0;
+                double currentX = 0;
+
+                for (int i = 0; i < _viewModel.BytePerLine && i < line.Bytes.Count; i++)
+                {
+                    // Add spacer width before this byte if needed
+                    if (_viewModel.BytePerLine >= ByteGrouping && i > 0 && i % ByteGrouping == 0)
+                    {
+                        currentX += ByteSpacerWidthTickness;
+                    }
+
+                    // Check if click is within this byte's bounds
+                    if (relativeX >= currentX && relativeX < currentX + HexByteWidth + HexByteSpacing)
+                    {
+                        byteIndex = i;
+                        break;
+                    }
+
+                    currentX += HexByteWidth + HexByteSpacing;
+                    byteIndex = i;
+                }
 
                 // Clamp to valid byte range
                 byteIndex = Math.Max(0, Math.Min(byteIndex, line.Bytes.Count - 1));
@@ -4270,15 +4329,47 @@ namespace WpfHexaEditor.V2
             }
 
             // Check if click is in ASCII area
-            double separatorX = OffsetWidth + (_viewModel.BytePerLine * (HexByteWidth + HexByteSpacing)) + 8;
+            double separatorX = hexEndX + 4;
             double asciiStartX = separatorX + SeparatorWidth;
-            double asciiEndX = asciiStartX + (_viewModel.BytePerLine * AsciiCharWidth);
+
+            // Calculate ASCII area width WITH spacers
+            int numAsciiSpacers = 0;
+            if (_viewModel.BytePerLine >= ByteGrouping)
+            {
+                numAsciiSpacers = (_viewModel.BytePerLine % ByteGrouping == 0)
+                    ? (_viewModel.BytePerLine / ByteGrouping) - 1
+                    : _viewModel.BytePerLine / ByteGrouping;
+            }
+            double asciiSpacersWidth = numAsciiSpacers * ByteSpacerWidthTickness;
+            double asciiEndX = asciiStartX + (_viewModel.BytePerLine * AsciiCharWidth) + asciiSpacersWidth;
 
             if (x >= asciiStartX && x < asciiEndX)
             {
-                // Click in ASCII area
+                // Click in ASCII area - need to account for byte spacers
                 double relativeX = x - asciiStartX;
-                int byteIndex = (int)(relativeX / AsciiCharWidth);
+
+                // Calculate byte index accounting for spacers
+                int byteIndex = 0;
+                double currentX = 0;
+
+                for (int i = 0; i < _viewModel.BytePerLine && i < line.Bytes.Count; i++)
+                {
+                    // Add spacer width before this byte if needed
+                    if (_viewModel.BytePerLine >= ByteGrouping && i > 0 && i % ByteGrouping == 0)
+                    {
+                        currentX += ByteSpacerWidthTickness;
+                    }
+
+                    // Check if click is within this byte's bounds
+                    if (relativeX >= currentX && relativeX < currentX + AsciiCharWidth)
+                    {
+                        byteIndex = i;
+                        break;
+                    }
+
+                    currentX += AsciiCharWidth;
+                    byteIndex = i;
+                }
 
                 // Clamp to valid byte range
                 byteIndex = Math.Max(0, Math.Min(byteIndex, line.Bytes.Count - 1));
@@ -4666,7 +4757,7 @@ namespace WpfHexaEditor.V2
             if (_viewModel.VisibleLines != calculatedLines)
             {
                 _viewModel.VisibleLines = calculatedLines; // Property setter calls RefreshVisibleLines() internally
-                VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+                VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
                 VerticalScroll.ViewportSize = _viewModel.VisibleLines;
 
                 // Force full refresh after collection update completes (like V1's RefreshView(true) call)
@@ -4700,7 +4791,9 @@ namespace WpfHexaEditor.V2
                     break;
 
                 case nameof(HexEditorViewModel.TotalLines):
-                    VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+                    var newMaximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
+                    System.Diagnostics.Debug.WriteLine($"[SCROLLBAR UPDATE] TotalLines={_viewModel.TotalLines}, VisibleLines={_viewModel.VisibleLines}, Old Maximum={VerticalScroll.Maximum}, New Maximum={newMaximum}");
+                    VerticalScroll.Maximum = newMaximum;
                     // Update file size display (VirtualLength may have changed due to insertions)
                     UpdateFileSizeDisplay();
                     break;

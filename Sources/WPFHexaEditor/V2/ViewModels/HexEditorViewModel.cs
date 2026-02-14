@@ -27,7 +27,7 @@ namespace WpfHexaEditor.V2.ViewModels
     {
         #region Fields
 
-        private readonly ByteProvider _provider;
+        private ByteProvider _provider; // Not readonly - can be reassigned when saving with insertions
         private readonly UndoRedoService _undoRedoService = new();
         private readonly ClipboardService _clipboardService = new();
         private readonly SelectionService _selectionService = new();
@@ -96,6 +96,10 @@ namespace WpfHexaEditor.V2.ViewModels
                 {
                     _bytePerLine = value;
                     OnPropertyChanged();
+
+                    // Force full refresh when BytePerLine changes (line structure completely different)
+                    // Clear cache to prevent incremental update which can cause index errors
+                    ClearLineCache();
                     RefreshVisibleLines();
                 }
             }
@@ -273,7 +277,9 @@ namespace WpfHexaEditor.V2.ViewModels
             // Note: ByteProvider doesn't expose DataChanged event
             // RefreshVisibleLines will be called manually after operations
 
-            RefreshVisibleLines();
+            // STARTUP OPTIMIZATION: Don't call RefreshVisibleLines() here
+            // It will be called later when the control is fully loaded and VisibleLines is properly set
+            // RefreshVisibleLines();
         }
 
         #endregion
@@ -290,11 +296,100 @@ namespace WpfHexaEditor.V2.ViewModels
         }
 
         /// <summary>
-        /// Save changes to file
+        /// Save changes to file (handles insertions in Insert mode)
         /// </summary>
         public void Save()
         {
-            _provider.SubmitChanges();
+            // If no insertions, use standard ByteProvider save
+            if (_insertedBytes.Count == 0)
+            {
+                _provider.SubmitChanges();
+                return;
+            }
+
+            // WITH INSERTIONS: Need to rebuild the file with inserted bytes integrated
+            System.Diagnostics.Debug.WriteLine($"[SAVE] Saving with {_insertedBytes.Count} inserted bytes...");
+
+            string originalFile = _provider.FileName;
+            string tempFile = System.IO.Path.GetTempFileName();
+
+            try
+            {
+                // Write all bytes (file + insertions) to temp file
+                using (var fs = new System.IO.FileStream(tempFile, System.IO.FileMode.Create, System.IO.FileAccess.Write))
+                {
+                    long virtualLength = VirtualLength;
+                    byte[] buffer = new byte[4096]; // 4KB buffer for performance
+                    int bufferIndex = 0;
+
+                    for (long virtualPos = 0; virtualPos < virtualLength; virtualPos++)
+                    {
+                        // Get byte at this virtual position (handles insertions and modifications)
+                        byte b;
+                        if (_insertedBytes.TryGetValue(virtualPos, out byte insertedByte))
+                        {
+                            // Inserted byte
+                            b = insertedByte;
+                        }
+                        else
+                        {
+                            // File byte (may be modified)
+                            var physicalPos = VirtualToPhysical(new VirtualPosition(virtualPos));
+                            if (physicalPos.IsValid)
+                            {
+                                var result = _provider.GetByte(physicalPos.Value);
+                                b = result.singleByte ?? 0;
+                            }
+                            else
+                            {
+                                continue; // Skip invalid positions
+                            }
+                        }
+
+                        // Add to buffer
+                        buffer[bufferIndex++] = b;
+
+                        // Flush buffer when full
+                        if (bufferIndex >= buffer.Length)
+                        {
+                            fs.Write(buffer, 0, bufferIndex);
+                            bufferIndex = 0;
+                        }
+                    }
+
+                    // Flush remaining bytes
+                    if (bufferIndex > 0)
+                    {
+                        fs.Write(buffer, 0, bufferIndex);
+                    }
+                }
+
+                // Close current file
+                _provider.Close();
+
+                // Replace original file with new file
+                System.IO.File.Delete(originalFile);
+                System.IO.File.Move(tempFile, originalFile);
+
+                // Reopen file
+                _provider = new ByteProvider(originalFile);
+
+                // Clear insertions (they're now in the file)
+                _insertedBytes.Clear();
+                _insertions.Clear();
+                _insertUndoStack.Clear();
+                _insertRedoStack.Clear();
+
+                System.Diagnostics.Debug.WriteLine($"[SAVE] File saved successfully with insertions integrated");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[SAVE ERROR] {ex.Message}");
+                // Clean up temp file if it exists
+                if (System.IO.File.Exists(tempFile))
+                    System.IO.File.Delete(tempFile);
+                throw;
+            }
         }
 
         /// <summary>
@@ -1168,8 +1263,8 @@ namespace WpfHexaEditor.V2.ViewModels
                     Lines.Insert((int)(lineNum - newStart), line);
                 }
 
-                // Remove lines from bottom
-                while (Lines.Count > (newEnd - newStart))
+                // Remove lines from bottom (with safety check)
+                while (Lines.Count > 0 && Lines.Count > (newEnd - newStart))
                 {
                     Lines.RemoveAt(Lines.Count - 1);
                 }
@@ -1188,8 +1283,9 @@ namespace WpfHexaEditor.V2.ViewModels
                 }
                 else if (newEnd < oldEnd)
                 {
-                    // Viewport got smaller: remove lines from bottom
-                    while (Lines.Count > (newEnd - newStart))
+                    // Viewport got smaller: remove lines from bottom (with safety check)
+                    System.Diagnostics.Debug.WriteLine($"[REFRESH] Viewport got smaller: remove lines from bottom (Lines.Count={Lines.Count}, newEnd={newEnd}, newStart={newStart}, target={(newEnd - newStart)})");
+                    while (Lines.Count > 0 && Lines.Count > (newEnd - newStart))
                     {
                         Lines.RemoveAt(Lines.Count - 1);
                     }
