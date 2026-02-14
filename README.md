@@ -17,6 +17,8 @@
 | [🏗️ Architecture](#️-architecture) | Service-based design |
 | [📚 Documentation](#-documentation) | Complete documentation index |
 | [🧪 Testing](#-unit-testing) | Unit tests and quality |
+| [🐛 Bug Fixes](#-recent-bug-fixes) | Recent critical fixes (v2.2.1) |
+| [📝 Changelog](CHANGELOG.md) | Version history and changes |
 | [🔧 Frameworks](#-supported-frameworks) | .NET support |
 
 ---
@@ -316,6 +318,10 @@ Insert the control like this in your XAML...:
 
 WPF HexEditor now uses a modern [**service-based architecture**](ARCHITECTURE.md) for improved maintainability and testability.
 
+> **📖 Documentation:**
+> - [ARCHITECTURE.md](ARCHITECTURE.md) - High-level service layer architecture
+> - [ARCHITECTURE_V2.md](ARCHITECTURE_V2.md) - Detailed V2 internals: ByteProvider, LIFO insertions, position mapping, save operations
+
 ### Service Layer (10 Services)
 
 The control is powered by specialized services that handle different aspects of functionality:
@@ -495,7 +501,33 @@ The service-based architecture makes unit testing straightforward - services can
 
 ## 🐛 Recent Bug Fixes
 
-**Critical Fix (2026):**
+### v2.2.1 Critical Fixes (2026-02-14) ✅
+
+**Issue #145 - Insert Mode Hex Input Bug [RESOLVED]**
+- **Problem**: Typing "FF" in Insert mode produced "F0 F0" pattern instead of "FF" bytes
+- **Root Cause**: Critical bug in `PositionMapper.PhysicalToVirtual()` returning wrong virtual position
+- **Fix**: Corrected virtual position calculation to return position AFTER insertions
+- **Impact**: Insert mode now works perfectly in both hex and ASCII panels
+- **Commits**: 405b164, 35b19b5
+- **Documentation**: [ISSUE_145_CLOSURE.md](ISSUE_145_CLOSURE.md), [ISSUE_HexInput_Insert_Mode.md](ISSUE_HexInput_Insert_Mode.md)
+
+**Save Data Loss Bug [PENDING VALIDATION]**
+- **Problem**: Saving files with insertions caused catastrophic data loss (MB → KB)
+- **Root Cause**: Same PositionMapper bug caused ByteReader to read wrong bytes during Save
+- **Fix**: PositionMapper fix resolves root cause; awaiting comprehensive validation tests
+- **Status**: Fixed in code, pending real-world testing with insertions/deletions/mixed edits
+- **Commit**: 405b164
+- **Documentation**: [ISSUE_Save_DataLoss.md](ISSUE_Save_DataLoss.md)
+
+**V2 Architecture Documentation [UPDATED]**
+- **Added**: Complete [ARCHITECTURE_V2.md](ARCHITECTURE_V2.md) with detailed diagrams
+- **Fixed**: All Mermaid diagram rendering errors for GitHub compatibility
+- **Content**: ByteProvider V2, LIFO insertion semantics, position mapping, save operations
+- **Commits**: 3800bd8, 6af1bee, d572de1, 9a31b3f
+
+### v2.2.0 Critical Fixes (2026)
+
+**Search Cache Invalidation Fix**
 - Fixed search cache not being invalidated after data modifications
 - Users now receive accurate search results after editing
 - Cache properly cleared at all 11 modification points
