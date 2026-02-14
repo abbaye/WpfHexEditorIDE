@@ -39,8 +39,9 @@ namespace WpfHexaEditor
         private Controls.BarChartPanel _barChartPanel;
         private Controls.ScrollMarkerPanel _scrollMarkers;
 
-        // Bookmarks 
+        // Bookmarks
         private readonly List<long> _bookmarks = new List<long>();
+        private readonly Services.BookmarkService _bookmarkService = new(); // V2 bookmark service
 
         // Highlights  - stores ranges of highlighted bytes
         private readonly List<(long start, long length)> _highlights = new List<(long, long)>();
@@ -5650,6 +5651,22 @@ namespace WpfHexaEditor
                     }
                     break;
 
+                // F2: Next Bookmark
+                case Key.F2:
+                    if (isShiftPressed)
+                        GoToPreviousBookmark();
+                    else
+                        GoToNextBookmark();
+                    break;
+
+                // Ctrl+B: Toggle Bookmark
+                case Key.B:
+                    if (isCtrlPressed)
+                    {
+                        SetBookmarkMenuItem_Click(null, null);
+                    }
+                    break;
+
                 // Text/Hex input editing
                 default:
                     if (!_viewModel.ReadOnlyMode)
@@ -6587,14 +6604,109 @@ namespace WpfHexaEditor
 
         private void SetBookmarkMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Implement bookmark functionality
-            // For now, just show a message
+            if (_viewModel == null || !_viewModel.SelectionStart.IsValid)
+                return;
+
+            // Add bookmark at current position
+            long position = _viewModel.SelectionStart.Value;
+
+            if (_bookmarkService.HasBookmarkAt(position))
+            {
+                // Toggle: Remove existing bookmark
+                _bookmarkService.RemoveBookmark(position);
+                StatusText.Text = $"Bookmark removed at position 0x{position:X}";
+            }
+            else
+            {
+                // Add new bookmark
+                _bookmarkService.AddBookmark(position, $"Bookmark at 0x{position:X}");
+                StatusText.Text = $"Bookmark added at position 0x{position:X}";
+            }
+
+            // Refresh view to show bookmark indicator
+            _viewModel.RefreshDisplay();
         }
 
         private void ClearBookmarksMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Implement bookmark functionality
-            // For now, just show a message
+            int count = _bookmarkService.ClearAll();
+            StatusText.Text = count > 0
+                ? $"Cleared {count} bookmark(s)"
+                : "No bookmarks to clear";
+
+            // Refresh view to remove bookmark indicators
+            if (count > 0 && _viewModel != null)
+                _viewModel.RefreshDisplay();
+        }
+
+        /// <summary>
+        /// Navigate to next bookmark after current position (F2)
+        /// </summary>
+        public void GoToNextBookmark()
+        {
+            if (_viewModel == null || !_viewModel.SelectionStart.IsValid)
+                return;
+
+            long currentPos = _viewModel.SelectionStart.Value;
+            var nextBookmark = _bookmarkService.GetNextBookmark(currentPos);
+
+            if (nextBookmark != null)
+            {
+                // Navigate to bookmark position
+                _viewModel.SelectionStart = new VirtualPosition(nextBookmark.BytePositionInStream);
+                _viewModel.SelectionStop = new VirtualPosition(nextBookmark.BytePositionInStream);
+
+                // Scroll to ensure bookmark is visible
+                long targetLine = nextBookmark.BytePositionInStream / _viewModel.BytePerLine;
+                if (targetLine < _viewModel.ScrollPosition ||
+                    targetLine >= _viewModel.ScrollPosition + _viewModel.VisibleLines)
+                {
+                    _viewModel.ScrollPosition = Math.Max(0, targetLine - _viewModel.VisibleLines / 2);
+                }
+
+                StatusText.Text = string.IsNullOrEmpty(nextBookmark.Description)
+                    ? $"Jumped to bookmark at 0x{nextBookmark.BytePositionInStream:X}"
+                    : $"Jumped to: {nextBookmark.Description}";
+            }
+            else
+            {
+                StatusText.Text = "No more bookmarks after current position";
+            }
+        }
+
+        /// <summary>
+        /// Navigate to previous bookmark before current position (Shift+F2)
+        /// </summary>
+        public void GoToPreviousBookmark()
+        {
+            if (_viewModel == null || !_viewModel.SelectionStart.IsValid)
+                return;
+
+            long currentPos = _viewModel.SelectionStart.Value;
+            var prevBookmark = _bookmarkService.GetPreviousBookmark(currentPos);
+
+            if (prevBookmark != null)
+            {
+                // Navigate to bookmark position
+                _viewModel.SelectionStart = new VirtualPosition(prevBookmark.BytePositionInStream);
+                _viewModel.SelectionStop = new VirtualPosition(prevBookmark.BytePositionInStream);
+
+                // Scroll to ensure bookmark is visible
+                long targetLine = prevBookmark.BytePositionInStream / _viewModel.BytePerLine;
+                if (targetLine < _viewModel.ScrollPosition ||
+                    targetLine >= _viewModel.ScrollPosition + _viewModel.VisibleLines)
+                {
+                    _viewModel.ScrollPosition = Math.Max(0, targetLine - _viewModel.VisibleLines / 2);
+                }
+
+                StatusText.Text = string.IsNullOrEmpty(prevBookmark.Description)
+                    ? $"Jumped to bookmark at 0x{prevBookmark.BytePositionInStream:X}"
+                    : $"Jumped to: {prevBookmark.Description}";
+            }
+            else
+            {
+                StatusText.Text = "No more bookmarks before current position";
+            }
         }
 
         private void PasteOverwriteMenuItem_Click(object sender, RoutedEventArgs e)
