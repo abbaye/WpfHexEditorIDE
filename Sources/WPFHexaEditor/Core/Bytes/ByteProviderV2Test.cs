@@ -49,6 +49,12 @@ namespace WpfHexaEditor.Core.Bytes
                 Console.WriteLine("Starting Test 7...");
                 TestBatchOperations();
 
+                Console.WriteLine("Starting Test 8...");
+                TestSearchAlgorithms();
+
+                Console.WriteLine("Starting Test 9...");
+                TestComparisonService();
+
                 Console.WriteLine("\n========================================");
                 Console.WriteLine("All tests completed!");
                 Console.WriteLine("========================================");
@@ -336,6 +342,135 @@ namespace WpfHexaEditor.Core.Bytes
             Console.WriteLine($"  {(modifyBytesTime <= batchedTime + 5 ? "✓ PASS" : "✗ WARNING")}");
 
             provider.Dispose();
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Test 8: Search algorithms (Boyer-Moore-Horspool optimization)
+        /// </summary>
+        private static void TestSearchAlgorithms()
+        {
+            Console.WriteLine("Test 8: Search Algorithms (Boyer-Moore-Horspool)");
+            Console.WriteLine("------------------------------------------------");
+
+            var provider = new ByteProvider();
+
+            // Create test data with known pattern
+            var testData = new byte[10000];
+            for (int i = 0; i < testData.Length; i++)
+                testData[i] = (byte)(i % 256);
+
+            // Insert known pattern at specific positions
+            byte[] pattern = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+            Array.Copy(pattern, 0, testData, 1000, pattern.Length);
+            Array.Copy(pattern, 0, testData, 5000, pattern.Length);
+            Array.Copy(pattern, 0, testData, 9000, pattern.Length);
+
+            provider.OpenMemory(testData);
+
+            // Create ViewModel for search methods
+            var viewModel = new ViewModels.HexEditorViewModel(provider);
+
+            // Test FindFirst
+            long firstPos = viewModel.FindFirst(pattern, 0);
+            Console.WriteLine($"  FindFirst: Found at {firstPos} (expected: 1000) - {(firstPos == 1000 ? "✓ PASS" : "✗ FAIL")}");
+
+            // Test FindNext
+            long secondPos = viewModel.FindNext(pattern, firstPos);
+            Console.WriteLine($"  FindNext: Found at {secondPos} (expected: 5000) - {(secondPos == 5000 ? "✓ PASS" : "✗ FAIL")}");
+
+            // Test FindLast
+            long lastPos = viewModel.FindLast(pattern, 0);
+            Console.WriteLine($"  FindLast: Found at {lastPos} (expected: 9000) - {(lastPos == 9000 ? "✓ PASS" : "✗ FAIL")}");
+
+            // Test FindAll
+            var allPositions = viewModel.FindAll(pattern, 0).ToList();
+            Console.WriteLine($"  FindAll: Found {allPositions.Count} occurrences (expected: 3) - {(allPositions.Count == 3 ? "✓ PASS" : "✗ FAIL")}");
+
+            // Test single byte search (optimized path)
+            byte[] singleByte = new byte[] { 0xDE };
+            long singlePos = viewModel.FindFirst(singleByte, 0);
+            Console.WriteLine($"  Single byte search: Found at {singlePos} (expected: 1000) - {(singlePos == 1000 ? "✓ PASS" : "✗ FAIL")}");
+
+            // Test not found case
+            byte[] notFoundPattern = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
+            long notFoundPos = viewModel.FindFirst(notFoundPattern, 0);
+            Console.WriteLine($"  Pattern not found: {notFoundPos} (expected: -1) - {(notFoundPos == -1 ? "✓ PASS" : "✗ FAIL")}");
+
+            // Performance test: Search large pattern near end (Boyer-Moore should be fast)
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            long perfTestPos = viewModel.FindLast(pattern, 0);
+            stopwatch.Stop();
+            Console.WriteLine($"\n  Performance (FindLast): {stopwatch.ElapsedMilliseconds}ms");
+            Console.WriteLine($"  {(stopwatch.ElapsedMilliseconds < 10 ? "✓ PASS (Fast!)" : "⚠ SLOW (but might be okay)")}");
+
+            provider.Dispose();
+            Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Test 9: ComparisonService V2 methods
+        /// </summary>
+        private static void TestComparisonService()
+        {
+            Console.WriteLine("Test 9: ComparisonService V2");
+            Console.WriteLine("----------------------------");
+
+            var service = new Services.ComparisonService();
+
+            // Create two providers with known differences
+            var provider1 = new ByteProvider();
+            var provider2 = new ByteProvider();
+
+            var data1 = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05 };
+            var data2 = new byte[] { 0x00, 0xFF, 0x02, 0xFF, 0x04, 0x05 }; // 2 differences
+
+            provider1.OpenMemory(data1);
+            provider2.OpenMemory(data2);
+
+            // Test Compare
+            var differences = service.Compare(provider1, provider2, 0).ToList();
+            Console.WriteLine($"  Compare: Found {differences.Count} differences (expected: 2) - {(differences.Count == 2 ? "✓ PASS" : "✗ FAIL")}");
+
+            if (differences.Count >= 2)
+            {
+                var diff1 = differences[0];
+                var diff2 = differences[1];
+                bool diff1Correct = diff1.BytePositionInStream == 1 && diff1.Origine == 0x01 && diff1.Destination == 0xFF;
+                bool diff2Correct = diff2.BytePositionInStream == 3 && diff2.Origine == 0x03 && diff2.Destination == 0xFF;
+                Console.WriteLine($"  Difference 1: Pos={diff1.BytePositionInStream}, Orig=0x{diff1.Origine:X2}, Dst=0x{diff1.Destination:X2} - {(diff1Correct ? "✓ PASS" : "✗ FAIL")}");
+                Console.WriteLine($"  Difference 2: Pos={diff2.BytePositionInStream}, Orig=0x{diff2.Origine:X2}, Dst=0x{diff2.Destination:X2} - {(diff2Correct ? "✓ PASS" : "✗ FAIL")}");
+            }
+
+            // Test CountDifferences
+            long diffCount = service.CountDifferences(provider1, provider2);
+            Console.WriteLine($"  CountDifferences: {diffCount} (expected: 2) - {(diffCount == 2 ? "✓ PASS" : "✗ FAIL")}");
+
+            // Test CalculateSimilarity
+            double similarity = service.CalculateSimilarity(provider1, provider2);
+            double expectedSimilarity = (4.0 / 6.0) * 100.0; // 4 matches out of 6 bytes
+            Console.WriteLine($"  CalculateSimilarity: {similarity:F2}% (expected: {expectedSimilarity:F2}%) - {(Math.Abs(similarity - expectedSimilarity) < 0.01 ? "✓ PASS" : "✗ FAIL")}");
+
+            // Test length difference
+            var provider3 = new ByteProvider();
+            var data3 = new byte[] { 0x00, 0x01, 0x02 }; // Shorter
+            provider3.OpenMemory(data3);
+
+            long diffCountLength = service.CountDifferences(provider1, provider3);
+            Console.WriteLine($"  Length difference: {diffCountLength} differences (expected: 3) - {(diffCountLength == 3 ? "✓ PASS" : "✗ FAIL")}");
+
+            // Test identical files
+            var provider4 = new ByteProvider();
+            provider4.OpenMemory(data1); // Same as provider1
+
+            long identicalCount = service.CountDifferences(provider1, provider4);
+            double identicalSimilarity = service.CalculateSimilarity(provider1, provider4);
+            Console.WriteLine($"  Identical files: {identicalCount} differences, {identicalSimilarity:F2}% similarity - {(identicalCount == 0 && identicalSimilarity == 100.0 ? "✓ PASS" : "✗ FAIL")}");
+
+            provider1.Dispose();
+            provider2.Dispose();
+            provider3.Dispose();
+            provider4.Dispose();
             Console.WriteLine();
         }
 
