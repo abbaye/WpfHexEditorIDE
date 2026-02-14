@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:v2="clr-namespace:WpfHexaEditor.V2;assembly=WPFHexaEditor"
+        xmlns:v2="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
         mc:Ignorable="d"
         Title="HexEditorV2 Sample - New Architecture with Native Insert Mode"
         Height="600" Width="1000"

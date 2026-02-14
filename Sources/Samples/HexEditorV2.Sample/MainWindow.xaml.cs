@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
-using WpfHexaEditor.V2.Models;
+using WpfHexaEditor.Models;
 
 namespace HexEditorV2.Sample
 {
@@ -1429,7 +1429,7 @@ namespace HexEditorV2.Sample
                     try
                     {
                         // Run all ByteProvider V2 tests
-                        WpfHexaEditor.V2.ByteProvider.ByteProviderV2Test.RunAllTests();
+                        WpfHexaEditor.Core.Bytes.ByteProviderV2Test.RunAllTests();
                         return writer.ToString();
                     }
                     finally
