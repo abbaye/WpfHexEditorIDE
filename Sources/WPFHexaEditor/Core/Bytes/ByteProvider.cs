@@ -5,7 +5,9 @@
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace WpfHexaEditor.Core.Bytes
 {
@@ -876,6 +878,86 @@ namespace WpfHexaEditor.Core.Bytes
                 return Core.ByteAction.Modified;
 
             return Core.ByteAction.Nothing;
+        }
+
+        /// <summary>
+        /// Get all byte modifications matching the specified action (V1 compatibility).
+        /// Returns dictionary with virtual positions as keys.
+        /// </summary>
+        /// <param name="action">ByteAction to filter by, or ByteAction.All for all modifications</param>
+        /// <returns>Dictionary of ByteModified objects keyed by virtual position</returns>
+        public IDictionary<long, ByteModified> GetByteModifieds(Core.ByteAction action)
+        {
+            var result = new Dictionary<long, ByteModified>();
+
+            // Process modified bytes
+            if (action == Core.ByteAction.All || action == Core.ByteAction.Modified)
+            {
+                foreach (var kvp in _editsManager.GetAllModifiedPositions()
+                    .Where(pos => _editsManager.GetModifiedByte(pos).exists))
+                {
+                    long physicalPos = kvp;
+                    var (value, exists) = _editsManager.GetModifiedByte(physicalPos);
+                    if (!exists) continue;
+
+                    // Convert physical to virtual position
+                    long virtualPos = _positionMapper.PhysicalToVirtual(physicalPos, PhysicalLength);
+
+                    result[virtualPos] = new ByteModified
+                    {
+                        Byte = value,
+                        Action = Core.ByteAction.Modified,
+                        BytePositionInStream = virtualPos,
+                        Length = 1
+                    };
+                }
+            }
+
+            // Process inserted bytes
+            if (action == Core.ByteAction.All || action == Core.ByteAction.Added)
+            {
+                foreach (var physicalPos in _editsManager.GetAllModifiedPositions()
+                    .Where(pos => _editsManager.HasInsertionsAt(pos)))
+                {
+                    var insertions = _editsManager.GetInsertedBytesAt(physicalPos);
+                    foreach (var insertion in insertions)
+                    {
+                        // Calculate virtual position for this inserted byte
+                        long virtualPos = _positionMapper.PhysicalToVirtual(physicalPos, PhysicalLength) + insertion.VirtualOffset;
+
+                        result[virtualPos] = new ByteModified
+                        {
+                            Byte = insertion.Value,
+                            Action = Core.ByteAction.Added,
+                            BytePositionInStream = virtualPos,
+                            Length = 1
+                        };
+                    }
+                }
+            }
+
+            // Process deleted bytes
+            if (action == Core.ByteAction.All || action == Core.ByteAction.Deleted)
+            {
+                foreach (var physicalPos in _editsManager.GetAllModifiedPositions()
+                    .Where(pos => _editsManager.IsDeleted(pos)))
+                {
+                    // For deleted bytes, virtual position is where they would be if not deleted
+                    // This is a bit tricky in V2 architecture - deleted bytes don't have a virtual position
+                    // We'll use the physical position as an approximation
+                    long virtualPos = _positionMapper.PhysicalToVirtual(physicalPos, PhysicalLength);
+
+                    result[virtualPos] = new ByteModified
+                    {
+                        Byte = null, // Deleted bytes have no value
+                        Action = Core.ByteAction.Deleted,
+                        BytePositionInStream = physicalPos, // Use physical pos for deleted
+                        Length = 1
+                    };
+                }
+            }
+
+            return result;
         }
 
         #endregion

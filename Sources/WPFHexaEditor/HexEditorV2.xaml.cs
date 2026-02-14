@@ -3252,6 +3252,19 @@ namespace WpfHexaEditor
             }
         }
 
+        /// <summary>
+        /// V1 compatible: Get all byte modifications matching the specified action
+        /// </summary>
+        /// <param name="action">ByteAction to filter by (Modified, Added, Deleted, or All)</param>
+        /// <returns>Dictionary of ByteModified objects keyed by position, or null if no provider</returns>
+        public IDictionary<long, ByteModified> GetByteModifieds(ByteAction action)
+        {
+            if (_viewModel?.Provider == null)
+                return null;
+
+            return _viewModel.Provider.GetByteModifieds(action);
+        }
+
         #endregion
 
         #region Public Methods - Bookmarks (V1 Compatible)
