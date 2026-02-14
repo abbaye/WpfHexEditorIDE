@@ -7,7 +7,7 @@
 using System;
 using System.IO;
 
-namespace WpfHexaEditor.V2.ByteProvider
+namespace WpfHexaEditor.Core.Bytes
 {
     /// <summary>
     /// ByteProvider - Ultra-optimized byte provider with proper separation of responsibilities.

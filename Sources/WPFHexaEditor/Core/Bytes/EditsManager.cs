@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WpfHexaEditor.V2.ByteProvider
+namespace WpfHexaEditor.Core.Bytes
 {
     /// <summary>
     /// Represents an inserted byte at a specific virtual offset from a physical position.

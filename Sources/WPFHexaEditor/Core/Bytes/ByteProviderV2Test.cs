@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace WpfHexaEditor.V2.ByteProvider
+namespace WpfHexaEditor.Core.Bytes
 {
     /// <summary>
     /// Test suite for ByteProvider V2 - validates architecture and performance.

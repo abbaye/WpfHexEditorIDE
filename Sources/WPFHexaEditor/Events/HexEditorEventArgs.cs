@@ -6,7 +6,7 @@
 using System;
 using WpfHexaEditor.Core;
 
-namespace WpfHexaEditor.V2.Events
+namespace WpfHexaEditor.Events
 {
     /// <summary>
     /// Event args for byte modification events

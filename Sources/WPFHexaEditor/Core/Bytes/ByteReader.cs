@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WpfHexaEditor.V2.ByteProvider
+namespace WpfHexaEditor.Core.Bytes
 {
     /// <summary>
     /// ByteReader - Intelligent byte reading service that combines FileProvider, EditsManager, and PositionMapper.

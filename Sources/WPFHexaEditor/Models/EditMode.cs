@@ -4,7 +4,7 @@
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
-namespace WpfHexaEditor.V2.Models
+namespace WpfHexaEditor.Models
 {
     /// <summary>
     /// Edit mode for HexEditorV2

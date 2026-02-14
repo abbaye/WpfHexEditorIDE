@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace WpfHexaEditor.V2.Controls
+namespace WpfHexaEditor.Controls
 {
     /// <summary>
     /// Panel that displays markers on top of the scrollbar

@@ -15,9 +15,9 @@ using WpfHexaEditor.Core;
 using WpfHexaEditor.Core.Bytes;
 using WpfHexaEditor.Core.CharacterTable;
 using WpfHexaEditor.Services;
-using WpfHexaEditor.V2.Models;
+using WpfHexaEditor.Models;
 
-namespace WpfHexaEditor.V2.ViewModels
+namespace WpfHexaEditor.ViewModels
 {
     /// <summary>
     /// ViewModel for HexEditorV2 - handles all business logic
@@ -27,7 +27,7 @@ namespace WpfHexaEditor.V2.ViewModels
     {
         #region Fields
 
-        private WpfHexaEditor.V2.ByteProvider.ByteProvider _provider; // Not readonly - can be reassigned when saving with insertions
+        private WpfHexaEditor.Core.Bytes.ByteProvider _provider; // Not readonly - can be reassigned when saving with insertions
         private readonly UndoRedoService _undoRedoService = new();
         private readonly ClipboardService _clipboardService = new();
         private readonly SelectionService _selectionService = new();
@@ -36,7 +36,7 @@ namespace WpfHexaEditor.V2.ViewModels
         /// <summary>
         /// Expose ByteProvider V2 for external configuration
         /// </summary>
-        public WpfHexaEditor.V2.ByteProvider.ByteProvider Provider => _provider;
+        public WpfHexaEditor.Core.Bytes.ByteProvider Provider => _provider;
 
         // ByteProvider V2 handles insertions/deletions internally - no manual tracking needed!
 
@@ -251,7 +251,7 @@ namespace WpfHexaEditor.V2.ViewModels
 
         #region Constructor
 
-        public HexEditorViewModel(WpfHexaEditor.V2.ByteProvider.ByteProvider provider)
+        public HexEditorViewModel(WpfHexaEditor.Core.Bytes.ByteProvider provider)
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
 
@@ -275,7 +275,7 @@ namespace WpfHexaEditor.V2.ViewModels
         /// </summary>
         public static HexEditorViewModel OpenFile(string filePath)
         {
-            var provider = new WpfHexaEditor.V2.ByteProvider.ByteProvider();
+            var provider = new WpfHexaEditor.Core.Bytes.ByteProvider();
             provider.OpenFile(filePath);
             return new HexEditorViewModel(provider);
         }

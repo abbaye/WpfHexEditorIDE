@@ -15,7 +15,7 @@ namespace WpfHexaEditor.Dialog
     {
         private MemoryStream _findMs = new(1);
         private readonly HexEditor _parentV1;
-        private readonly V2.HexEditorV2 _parentV2;
+        private readonly HexEditorV2 _parentV2;
 
         /// <summary>
         /// Constructor accepting V1 HexEditor
@@ -33,7 +33,7 @@ namespace WpfHexaEditor.Dialog
         /// <summary>
         /// Constructor accepting V2 HexEditorV2 (Phase 13 - 100% compatibility)
         /// </summary>
-        public FindWindow(V2.HexEditorV2 parent, byte[] findData = null)
+        public FindWindow(HexEditorV2 parent, byte[] findData = null)
         {
             InitializeComponent();
 

@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(dotnet build:*)",
+      "Bash(git reset:*)",
+      "Bash(git checkout:*)",
+      "Bash(git stash:*)",
+      "Bash(git merge:*)",
+      "Bash(ls:*)",
+      "Bash(msbuild:*)",
+      "Bash(Select-Object -Last 30)",
+      "Bash(dir:*)",
+      "Bash(Select-Object -First 50)",
+      "Bash(cd:*)",
+      "Bash(find:*)",
+      "Bash(taskkill:*)",
+      "Bash(Select-String -Pattern \"\\(error|warning CS\\\\d{4}:|Compilación|Build\\)\")",
+      "Bash(gh issue create:*)",
+      "Bash(where:*)",
+      "Bash(winget install:*)",
+      "Bash(gh:*)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" --version)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" auth login)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" issue create --repo abbaye/WPFHexEditorControl --title \"Double-click byte selection not working in HexEditorV2\" --body-file \"docs/ISSUE_DOUBLE_CLICK_BUG.md\" --label \"bug,V1-compatibility,HexEditorV2\")",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" issue create --repo abbaye/WPFHexEditorControl --title \"Double-click byte selection not working in HexEditorV2\" --body-file \"docs/ISSUE_DOUBLE_CLICK_BUG.md\" --label \"bug\")",
+      "Bash(/tmp/missing_methods.txt << 'EOF'\nMÉTHODES UTILISÉES PAR HexEditorViewModel:\n1. SubmitChanges\\(\\) → Save\\(\\)\n2. SubmitChanges\\(string, bool\\) → SaveAs\\(string, bool\\) ✓\n3. FileName property → FilePath ✓\n4. GetByte\\(long\\) ✓\n5. Close\\(\\) ✓\n6. Length property → VirtualLength\n7. Position property \\(get/set\\) ✗ MANQUANT\n8. ReadByte\\(\\) ✗ MANQUANT\n9. AddByteModified\\(byte, long\\) → ModifyByte\\(long, byte\\)\n10. AddByteDeleted\\(long, long\\) → DeleteBytes\\(long, long\\) ✓\n11. Paste\\(long, byte[], bool\\) ✗ MANQUANT\n12. FillWithByte\\(long, long, byte\\) ✗ MANQUANT\n13. CheckIfIsByteModified\\(long, ByteAction\\) ✗ MANQUANT\nEOF)",
+      "Bash(Select-String -Pattern \"error|warning\")"
+    ]
+  }
+}

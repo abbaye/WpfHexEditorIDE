@@ -15,11 +15,11 @@ using System.Windows.Threading;
 using WpfHexaEditor.Core;
 using WpfHexaEditor.Core.Bytes;
 using WpfHexaEditor.Core.CharacterTable;
-using WpfHexaEditor.V2.Events;
-using WpfHexaEditor.V2.Models;
-using WpfHexaEditor.V2.ViewModels;
+using WpfHexaEditor.Events;
+using WpfHexaEditor.Models;
+using WpfHexaEditor.ViewModels;
 
-namespace WpfHexaEditor.V2
+namespace WpfHexaEditor
 {
     /// <summary>
     /// HexEditorV2 - Modern WPF hex editor with native insert mode support

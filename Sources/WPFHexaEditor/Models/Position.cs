@@ -6,7 +6,7 @@
 
 using System;
 
-namespace WpfHexaEditor.V2.Models
+namespace WpfHexaEditor.Models
 {
     /// <summary>
     /// Virtual position in the edited view (includes inserted bytes, excludes deleted bytes when hidden)

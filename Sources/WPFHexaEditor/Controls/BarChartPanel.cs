@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
-namespace WpfHexaEditor.V2.Controls
+namespace WpfHexaEditor.Controls
 {
     /// <summary>
     /// Bar chart panel displaying byte frequency distribution (0x00-0xFF).

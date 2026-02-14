@@ -9,7 +9,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexaEditor.Core;
 
-namespace WpfHexaEditor.V2.Models
+namespace WpfHexaEditor.Models
 {
     /// <summary>
     /// Represents a single line in the hex editor display

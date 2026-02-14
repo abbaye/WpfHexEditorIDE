@@ -16,9 +16,9 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexaEditor.Core;
-using WpfHexaEditor.V2.Models;
+using WpfHexaEditor.Models;
 
-namespace WpfHexaEditor.V2.Controls
+namespace WpfHexaEditor.Controls
 {
     /// <summary>
     /// High-performance custom rendering viewport that draws hex bytes directly using DrawingContext.
