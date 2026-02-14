@@ -30,6 +30,116 @@ namespace WpfHexaEditor.Services
     /// </example>
     public class ComparisonService
     {
+        #region ByteProvider V2 Methods
+
+        /// <summary>
+        /// Compare two ByteProvider V2 instances and return all differences
+        /// </summary>
+        /// <param name="original">First ByteProvider (original)</param>
+        /// <param name="compare">Second ByteProvider (to compare against)</param>
+        /// <param name="maxDifferences">Maximum number of differences to return (0 = unlimited)</param>
+        /// <returns>Enumerable of byte differences</returns>
+        public IEnumerable<ByteDifference> Compare(ByteProvider original, ByteProvider compare, long maxDifferences = 0)
+        {
+            if (original == null || compare == null || !original.IsOpen || !compare.IsOpen)
+                yield break;
+
+            long minLength = System.Math.Min(original.VirtualLength, compare.VirtualLength);
+            long differencesFound = 0;
+
+            // Compare bytes up to the minimum length
+            for (long position = 0; position < minLength; position++)
+            {
+                var (originalByte, originalSuccess) = original.GetByte(position);
+                var (compareByte, compareSuccess) = compare.GetByte(position);
+
+                if (!originalSuccess || !compareSuccess)
+                    continue;
+
+                if (originalByte != compareByte)
+                {
+                    yield return new ByteDifference(
+                        originalByte,
+                        compareByte,
+                        position);
+
+                    differencesFound++;
+                    if (maxDifferences > 0 && differencesFound >= maxDifferences)
+                        yield break;
+                }
+            }
+
+            // Report length difference as virtual differences (if files have different lengths)
+            if (original.VirtualLength != compare.VirtualLength)
+            {
+                long maxLength = System.Math.Max(original.VirtualLength, compare.VirtualLength);
+                bool originalIsLonger = original.VirtualLength > compare.VirtualLength;
+
+                for (long position = minLength; position < maxLength; position++)
+                {
+                    byte origine = originalIsLonger ? original.GetByte(position).value : (byte)0;
+                    byte destination = originalIsLonger ? (byte)0 : compare.GetByte(position).value;
+
+                    yield return new ByteDifference(origine, destination, position);
+
+                    differencesFound++;
+                    if (maxDifferences > 0 && differencesFound >= maxDifferences)
+                        yield break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Count total number of differences between two ByteProvider V2 instances (faster than enumerating all)
+        /// </summary>
+        public long CountDifferences(ByteProvider original, ByteProvider compare)
+        {
+            if (original == null || compare == null || !original.IsOpen || !compare.IsOpen)
+                return 0;
+
+            long differences = 0;
+            long minLength = System.Math.Min(original.VirtualLength, compare.VirtualLength);
+
+            for (long position = 0; position < minLength; position++)
+            {
+                var (originalByte, originalSuccess) = original.GetByte(position);
+                var (compareByte, compareSuccess) = compare.GetByte(position);
+
+                if (originalSuccess && compareSuccess && originalByte != compareByte)
+                    differences++;
+            }
+
+            // Add length difference
+            if (original.VirtualLength != compare.VirtualLength)
+            {
+                differences += System.Math.Abs(original.VirtualLength - compare.VirtualLength);
+            }
+
+            return differences;
+        }
+
+        /// <summary>
+        /// Calculate similarity percentage between two ByteProvider V2 instances (0.0 - 100.0)
+        /// </summary>
+        public double CalculateSimilarity(ByteProvider original, ByteProvider compare)
+        {
+            if (original == null || compare == null || !original.IsOpen || !compare.IsOpen)
+                return 0.0;
+
+            long maxLength = System.Math.Max(original.VirtualLength, compare.VirtualLength);
+            if (maxLength == 0)
+                return 100.0;
+
+            long differences = CountDifferences(original, compare);
+            long matches = maxLength - differences;
+
+            return (matches / (double)maxLength) * 100.0;
+        }
+
+        #endregion
+
+        #region ByteProviderLegacy V1 Methods
+
         /// <summary>
         /// Compare two Core.Bytes.ByteProviderLegacys and return all differences
         /// </summary>
@@ -176,5 +286,7 @@ namespace WpfHexaEditor.Services
 
             return (matches / (double)maxLength) * 100.0;
         }
+
+        #endregion
     }
 }

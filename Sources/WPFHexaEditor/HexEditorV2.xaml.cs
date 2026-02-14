@@ -3700,10 +3700,8 @@ namespace WpfHexaEditor
             if (other == null || _viewModel?.Provider == null || other._viewModel?.Provider == null)
                 return Enumerable.Empty<ByteDifference>();
 
-            // TODO: Implement comparison for ByteProvider V2
-            // ComparisonService needs to be updated to work with ByteProvider V2
-            var differences = new List<ByteDifference>(); // Stub for now
-            // var differences = _comparisonService.Compare(_viewModel.Provider, other._viewModel.Provider, maxDifferences).ToList();
+            // Compare using ByteProvider V2
+            var differences = _comparisonService.Compare(_viewModel.Provider, other._viewModel.Provider, maxDifferences).ToList();
             _comparisonResults = differences;
 
             if (highlightDifferences && differences.Any())
@@ -3739,10 +3737,10 @@ namespace WpfHexaEditor
             if (provider == null || _viewModel?.Provider == null)
                 return Enumerable.Empty<ByteDifference>();
 
-            // TODO: Implement comparison between ByteProvider V2 and ByteProviderLegacy
-            // ComparisonService needs to be updated
-            var differences = new List<ByteDifference>(); // Stub for now
-            // var differences = _comparisonService.Compare(_viewModel.Provider, provider, maxDifferences).ToList();
+            // Note: Cross-version comparison (V2 vs V1) is not supported
+            // ByteProvider V2 uses virtual positions while ByteProviderLegacy uses physical positions
+            // For comparison, use two editors with the same provider version
+            var differences = new List<ByteDifference>();
             _comparisonResults = differences;
 
             if (highlightDifferences && differences.Any())
@@ -4105,15 +4103,10 @@ namespace WpfHexaEditor
             if (_viewModel == null || provider == null)
                 return Enumerable.Empty<Core.Bytes.ByteDifference>();
 
-            // TODO: Implement comparison between ByteProvider V2 and ByteProviderLegacy
-            // Can't create HexEditorViewModel with ByteProviderLegacy anymore
-            return Enumerable.Empty<Core.Bytes.ByteDifference>(); // Stub for now
-
-            // Old code:
-            // var tempViewModel = new ViewModels.HexEditorViewModel(provider);
-            // var result = CompareProviders(_viewModel, tempViewModel);
-            // tempViewModel.Close();
-            // return result;
+            // Cross-version comparison (V2 vs V1) is not supported
+            // ByteProvider V2 uses virtual positions; ByteProviderLegacy uses physical positions
+            // For backward compatibility, this method returns empty results
+            return Enumerable.Empty<Core.Bytes.ByteDifference>();
         }
 
         /// <summary>
