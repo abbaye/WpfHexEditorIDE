@@ -5949,6 +5949,9 @@ namespace WpfHexaEditor
                     System.Diagnostics.Debug.WriteLine($"[HEXINPUT] HIGH NIBBLE - INSERT MODE: Inserting byte IMMEDIATELY with value 0x{_editingValue:X2}");
                     _viewModel.InsertByte(_editingPosition, _editingValue);
                     // Don't move to next byte yet - wait for low nibble to modify this inserted byte
+                    // CRITICAL: Keep cursor at editing position to allow low nibble input
+                    _viewModel.SetSelection(_editingPosition);
+                    System.Diagnostics.Debug.WriteLine($"[HEXINPUT] HIGH NIBBLE - Cursor locked at position {_editingPosition.Value} for low nibble");
                 }
                 else
                 {
