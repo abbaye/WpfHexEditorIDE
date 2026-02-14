@@ -24,6 +24,8 @@ namespace WpfHexaEditor.Controls
         private long _fileLength = 0;
         private HashSet<long> _bookmarkPositions = new();
         private HashSet<long> _modifiedPositions = new();
+        private HashSet<long> _insertedPositions = new();
+        private HashSet<long> _deletedPositions = new();
         private HashSet<long> _searchResultPositions = new();
         private Dictionary<long, Brush> _customMarkers = new();
 
@@ -110,6 +112,32 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
+        /// Inserted byte positions to display (green markers)
+        /// </summary>
+        public HashSet<long> InsertedPositions
+        {
+            get => _insertedPositions;
+            set
+            {
+                _insertedPositions = value ?? new HashSet<long>();
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Deleted byte positions to display (red markers)
+        /// </summary>
+        public HashSet<long> DeletedPositions
+        {
+            get => _deletedPositions;
+            set
+            {
+                _deletedPositions = value ?? new HashSet<long>();
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
         /// Current selection start position (-1 if no selection)
         /// </summary>
         public long SelectionStart { get; set; } = -1;
@@ -177,6 +205,8 @@ namespace WpfHexaEditor.Controls
         {
             _bookmarkPositions.Clear();
             _modifiedPositions.Clear();
+            _insertedPositions.Clear();
+            _deletedPositions.Clear();
             _searchResultPositions.Clear();
             _customMarkers.Clear();
             InvalidateVisual();
@@ -211,13 +241,25 @@ namespace WpfHexaEditor.Controls
                 DrawMarker(dc, marker.Key, marker.Value, panelHeight, panelWidth);
             }
 
-            // Modified positions
+            // Modified positions (orange)
             foreach (var position in _modifiedPositions)
             {
                 DrawMarker(dc, position, _modifiedBrush, panelHeight, panelWidth);
             }
 
-            // Search results
+            // Inserted positions (green)
+            foreach (var position in _insertedPositions)
+            {
+                DrawMarker(dc, position, _addedBrush, panelHeight, panelWidth);
+            }
+
+            // Deleted positions (red)
+            foreach (var position in _deletedPositions)
+            {
+                DrawMarker(dc, position, _deletedBrush, panelHeight, panelWidth);
+            }
+
+            // Search results (yellow)
             foreach (var position in _searchResultPositions)
             {
                 DrawMarker(dc, position, _searchBrush, panelHeight, panelWidth);

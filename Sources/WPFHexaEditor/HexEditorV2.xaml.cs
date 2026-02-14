@@ -2683,7 +2683,7 @@ namespace WpfHexaEditor
         /// </summary>
         private void UpdateScrollMarkers()
         {
-            if (_scrollMarkers == null || _viewModel == null)
+            if (_scrollMarkers == null || _viewModel == null || _viewModel.Provider == null)
                 return;
 
             try
@@ -2691,9 +2691,15 @@ namespace WpfHexaEditor
                 // Update bookmarks
                 _scrollMarkers.BookmarkPositions = new HashSet<long>(_bookmarks);
 
-                // Update modified positions from ViewModel
-                var modifiedPositions = new HashSet<long>(_viewModel.GetModifiedPositions());
-                _scrollMarkers.ModifiedPositions = modifiedPositions;
+                // Get modifications by type from Provider
+                var modifiedDict = _viewModel.Provider.GetByteModifieds(Core.ByteAction.Modified);
+                var insertedDict = _viewModel.Provider.GetByteModifieds(Core.ByteAction.Added);
+                var deletedDict = _viewModel.Provider.GetByteModifieds(Core.ByteAction.Deleted);
+
+                // Update scroll markers with separate positions by type
+                _scrollMarkers.ModifiedPositions = modifiedDict != null ? new HashSet<long>(modifiedDict.Keys) : new HashSet<long>();
+                _scrollMarkers.InsertedPositions = insertedDict != null ? new HashSet<long>(insertedDict.Keys) : new HashSet<long>();
+                _scrollMarkers.DeletedPositions = deletedDict != null ? new HashSet<long>(deletedDict.Keys) : new HashSet<long>();
 
                 // Search results would be updated separately when FindAll is called
                 // (we'll add that later)
