@@ -975,6 +975,27 @@ namespace WpfHexaEditor.Core.Bytes
             return result;
         }
 
+        /// <summary>
+        /// Get all virtual positions with modifications (for scroll markers)
+        /// Returns combined set of all modified, inserted, and deleted positions
+        /// </summary>
+        public IEnumerable<long> GetAllModifiedVirtualPositions()
+        {
+            var positions = new HashSet<long>();
+
+            // Use GetByteModifieds to get all modifications
+            var allModifications = GetByteModifieds(Core.ByteAction.All);
+            if (allModifications != null)
+            {
+                foreach (var kvp in allModifications)
+                {
+                    positions.Add(kvp.Key); // Key is already the virtual position
+                }
+            }
+
+            return positions;
+        }
+
         #endregion
 
         #region IDisposable

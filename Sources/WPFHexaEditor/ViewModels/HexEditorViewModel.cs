@@ -204,19 +204,9 @@ namespace WpfHexaEditor.ViewModels
             if (_provider == null)
                 return Enumerable.Empty<long>();
 
-            // Collect modified positions from all cached lines
-            var modifiedPositions = new List<long>();
-            foreach (var line in Lines)
-            {
-                foreach (var byteData in line.Bytes)
-                {
-                    if (byteData.Action != ByteAction.Nothing && byteData.VirtualPos.IsValid)
-                    {
-                        modifiedPositions.Add(byteData.VirtualPos.Value);
-                    }
-                }
-            }
-            return modifiedPositions;
+            // Get ALL modified positions from ByteProvider (not just visible ones)
+            // This is used for scroll markers to show modifications across entire file
+            return _provider.GetAllModifiedVirtualPositions();
         }
 
         /// <summary>
