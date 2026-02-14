@@ -779,130 +779,53 @@ namespace WpfHexaEditor.ViewModels
         /// <summary>
         /// Find first occurrence of byte array using Boyer-Moore-Horspool algorithm.
         /// Performance: O(n/m) average case, O(n*m) worst case (better than naive O(n*m)).
+        /// Delegates to ByteProvider.FindFirst() for implementation.
         /// </summary>
         public long FindFirst(byte[] data, long startPosition = 0)
         {
-            if (data == null || data.Length == 0) return -1;
-            if (startPosition < 0) startPosition = 0;
-
-            long virtualLength = VirtualLength;
-            int patternLength = data.Length;
-
-            // For single byte, use simple search
-            if (patternLength == 1)
-            {
-                byte searchByte = data[0];
-                for (long searchPos = startPosition; searchPos < virtualLength; searchPos++)
-                {
-                    if (GetByteAt(new VirtualPosition(searchPos)) == searchByte)
-                        return searchPos;
-                }
+            if (_provider == null || !_provider.IsOpen)
                 return -1;
-            }
 
-            // Build bad character skip table (Boyer-Moore-Horspool)
-            int[] badCharSkip = new int[256];
-            for (int i = 0; i < 256; i++)
-                badCharSkip[i] = patternLength;
-            for (int i = 0; i < patternLength - 1; i++)
-                badCharSkip[data[i]] = patternLength - 1 - i;
-
-            // Search using Boyer-Moore-Horspool
-            long pos = startPosition;
-            while (pos <= virtualLength - patternLength)
-            {
-                // Check pattern from right to left
-                int i = patternLength - 1;
-                while (i >= 0 && GetByteAt(new VirtualPosition(pos + i)) == data[i])
-                    i--;
-
-                if (i < 0)
-                    return pos; // Match found
-
-                // Skip using bad character rule
-                byte mismatchByte = GetByteAt(new VirtualPosition(pos + patternLength - 1));
-                pos += badCharSkip[mismatchByte];
-            }
-
-            return -1;
+            return _provider.FindFirst(data, startPosition);
         }
 
         /// <summary>
-        /// Find next occurrence from current position
+        /// Find next occurrence from current position.
+        /// Delegates to ByteProvider.FindNext() for implementation.
         /// </summary>
         public long FindNext(byte[] data, long currentPosition)
         {
-            return FindFirst(data, currentPosition + 1);
+            if (_provider == null || !_provider.IsOpen)
+                return -1;
+
+            return _provider.FindNext(data, currentPosition);
         }
 
         /// <summary>
         /// Find last occurrence of byte array by searching backwards from end.
         /// Performance: O(n/m) average with Boyer-Moore, much faster than forward search + tracking.
+        /// Delegates to ByteProvider.FindLast() for implementation.
         /// </summary>
         public long FindLast(byte[] data, long startPosition = 0)
         {
-            if (data == null || data.Length == 0) return -1;
-            if (startPosition < 0) startPosition = 0;
-
-            long virtualLength = VirtualLength;
-            int patternLength = data.Length;
-            if (virtualLength < patternLength) return -1;
-
-            // For single byte, search backwards
-            if (patternLength == 1)
-            {
-                byte searchByte = data[0];
-                for (long searchPos = virtualLength - 1; searchPos >= startPosition; searchPos--)
-                {
-                    if (GetByteAt(new VirtualPosition(searchPos)) == searchByte)
-                        return searchPos;
-                }
+            if (_provider == null || !_provider.IsOpen)
                 return -1;
-            }
 
-            // Build bad character skip table for backwards search
-            int[] badCharSkip = new int[256];
-            for (int i = 0; i < 256; i++)
-                badCharSkip[i] = patternLength;
-            for (int i = 1; i < patternLength; i++) // Note: skip first character for backwards
-                badCharSkip[data[i]] = i;
-
-            // Search backwards using modified Boyer-Moore
-            long pos = virtualLength - patternLength;
-            while (pos >= startPosition)
-            {
-                // Check pattern from left to right
-                int i = 0;
-                while (i < patternLength && GetByteAt(new VirtualPosition(pos + i)) == data[i])
-                    i++;
-
-                if (i == patternLength)
-                    return pos; // Match found
-
-                // Skip using bad character rule (backwards)
-                if (pos == startPosition)
-                    break;
-
-                byte mismatchByte = GetByteAt(new VirtualPosition(pos));
-                long skip = badCharSkip[mismatchByte];
-                pos -= (skip > 0 ? skip : 1);
-            }
-
-            return -1;
+            return _provider.FindLast(data, startPosition);
         }
 
         /// <summary>
-        /// Find all occurrences of byte array
+        /// Find all occurrences of byte array.
+        /// Delegates to ByteProvider.FindAll() for implementation.
         /// </summary>
         public IEnumerable<long> FindAll(byte[] data, long startPosition = 0)
         {
-            if (data == null || data.Length == 0) yield break;
+            if (_provider == null || !_provider.IsOpen)
+                yield break;
 
-            long pos = startPosition;
-            while ((pos = FindFirst(data, pos)) != -1)
+            foreach (var position in _provider.FindAll(data, startPosition))
             {
-                yield return pos;
-                pos++;
+                yield return position;
             }
         }
 

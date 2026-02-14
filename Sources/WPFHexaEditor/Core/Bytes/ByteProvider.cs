@@ -1555,6 +1555,206 @@ namespace WpfHexaEditor.Core.Bytes
 
         #endregion
 
+        #region Search Methods (Boyer-Moore-Horspool)
+
+        /// <summary>
+        /// Find first occurrence of byte pattern using Boyer-Moore-Horspool algorithm.
+        /// Performance: O(n/m) average case, O(n*m) worst case (better than naive O(n*m)).
+        /// </summary>
+        /// <param name="pattern">Byte pattern to search for</param>
+        /// <param name="startPosition">Virtual position to start search from</param>
+        /// <returns>Virtual position of first match, or -1 if not found</returns>
+        public long FindFirst(byte[] pattern, long startPosition = 0)
+        {
+            if (pattern == null || pattern.Length == 0) return -1;
+            if (startPosition < 0) startPosition = 0;
+
+            long virtualLength = VirtualLength;
+            int patternLength = pattern.Length;
+
+            // For single byte, use simple search
+            if (patternLength == 1)
+            {
+                byte searchByte = pattern[0];
+                for (long searchPos = startPosition; searchPos < virtualLength; searchPos++)
+                {
+                    var (byteValue, success) = GetByte(searchPos);
+                    if (success && byteValue == searchByte)
+                        return searchPos;
+                }
+                return -1;
+            }
+
+            // Build bad character skip table (Boyer-Moore-Horspool)
+            int[] badCharSkip = new int[256];
+            for (int i = 0; i < 256; i++)
+                badCharSkip[i] = patternLength;
+            for (int i = 0; i < patternLength - 1; i++)
+                badCharSkip[pattern[i]] = patternLength - 1 - i;
+
+            // Search using Boyer-Moore-Horspool
+            long pos = startPosition;
+            while (pos <= virtualLength - patternLength)
+            {
+                // Check pattern from right to left
+                int i = patternLength - 1;
+                bool match = true;
+
+                while (i >= 0)
+                {
+                    var (byteValue, success) = GetByte(pos + i);
+                    if (!success || byteValue != pattern[i])
+                    {
+                        match = false;
+                        break;
+                    }
+                    i--;
+                }
+
+                if (match)
+                    return pos; // Match found
+
+                // Skip using bad character rule
+                var (mismatchByte, mismatchSuccess) = GetByte(pos + patternLength - 1);
+                if (mismatchSuccess)
+                    pos += badCharSkip[mismatchByte];
+                else
+                    pos++; // Fallback if byte read fails
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Find next occurrence from current position.
+        /// </summary>
+        /// <param name="pattern">Byte pattern to search for</param>
+        /// <param name="currentPosition">Current virtual position</param>
+        /// <returns>Virtual position of next match, or -1 if not found</returns>
+        public long FindNext(byte[] pattern, long currentPosition)
+        {
+            return FindFirst(pattern, currentPosition + 1);
+        }
+
+        /// <summary>
+        /// Find last occurrence of byte pattern by searching backwards from end.
+        /// Performance: O(n/m) average with Boyer-Moore, much faster than forward search + tracking.
+        /// </summary>
+        /// <param name="pattern">Byte pattern to search for</param>
+        /// <param name="startPosition">Virtual position to start search from (searches from end backwards to this position)</param>
+        /// <returns>Virtual position of last match, or -1 if not found</returns>
+        public long FindLast(byte[] pattern, long startPosition = 0)
+        {
+            if (pattern == null || pattern.Length == 0) return -1;
+            if (startPosition < 0) startPosition = 0;
+
+            long virtualLength = VirtualLength;
+            int patternLength = pattern.Length;
+            if (virtualLength < patternLength) return -1;
+
+            // For single byte, search backwards
+            if (patternLength == 1)
+            {
+                byte searchByte = pattern[0];
+                for (long searchPos = virtualLength - 1; searchPos >= startPosition; searchPos--)
+                {
+                    var (byteValue, success) = GetByte(searchPos);
+                    if (success && byteValue == searchByte)
+                        return searchPos;
+                }
+                return -1;
+            }
+
+            // Build bad character skip table for backwards search
+            int[] badCharSkip = new int[256];
+            for (int i = 0; i < 256; i++)
+                badCharSkip[i] = patternLength;
+            for (int i = 1; i < patternLength; i++) // Note: skip first character for backwards
+                badCharSkip[pattern[i]] = i;
+
+            // Search backwards using modified Boyer-Moore
+            long pos = virtualLength - patternLength;
+            while (pos >= startPosition)
+            {
+                // Check pattern from left to right
+                int i = 0;
+                bool match = true;
+
+                while (i < patternLength)
+                {
+                    var (byteValue, success) = GetByte(pos + i);
+                    if (!success || byteValue != pattern[i])
+                    {
+                        match = false;
+                        break;
+                    }
+                    i++;
+                }
+
+                if (match)
+                    return pos; // Match found
+
+                // Skip using bad character rule (backwards)
+                if (pos == startPosition)
+                    break;
+
+                var (mismatchByte, mismatchSuccess) = GetByte(pos);
+                if (mismatchSuccess)
+                {
+                    long skip = badCharSkip[mismatchByte];
+                    pos -= (skip > 0 ? skip : 1);
+                }
+                else
+                {
+                    pos--; // Fallback if byte read fails
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Find all occurrences of byte pattern.
+        /// </summary>
+        /// <param name="pattern">Byte pattern to search for</param>
+        /// <param name="startPosition">Virtual position to start search from</param>
+        /// <returns>Enumerable of virtual positions where pattern is found</returns>
+        public IEnumerable<long> FindAll(byte[] pattern, long startPosition = 0)
+        {
+            if (pattern == null || pattern.Length == 0) yield break;
+
+            long pos = startPosition;
+            while ((pos = FindFirst(pattern, pos)) != -1)
+            {
+                yield return pos;
+                pos += 1; // Move to next position
+            }
+        }
+
+        /// <summary>
+        /// Count total occurrences of byte pattern without allocating positions.
+        /// Faster than FindAll().Count() when you only need the count.
+        /// </summary>
+        /// <param name="pattern">Byte pattern to search for</param>
+        /// <param name="startPosition">Virtual position to start search from</param>
+        /// <returns>Number of occurrences</returns>
+        public int CountOccurrences(byte[] pattern, long startPosition = 0)
+        {
+            if (pattern == null || pattern.Length == 0) return 0;
+
+            int count = 0;
+            long pos = startPosition;
+            while ((pos = FindFirst(pattern, pos)) != -1)
+            {
+                count++;
+                pos += 1; // Move to next position
+            }
+
+            return count;
+        }
+
+        #endregion
+
         #region IDisposable
 
         private bool _disposed = false;
