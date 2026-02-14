@@ -14,6 +14,16 @@ using System.Windows.Media;
 namespace WpfHexaEditor.Controls
 {
     /// <summary>
+    /// Horizontal position for scroll markers
+    /// </summary>
+    public enum MarkerPosition
+    {
+        Left,
+        Center,
+        Right
+    }
+
+    /// <summary>
     /// Panel that displays markers on top of the scrollbar
     /// Markers indicate bookmarks, modifications, search results, etc.
     /// </summary>
@@ -37,9 +47,18 @@ namespace WpfHexaEditor.Controls
         private Brush _deletedBrush = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));  // Red
 
         // Marker dimensions
-        private const double MarkerWidth = 4;
-        private const double MarkerMinHeight = 2;
+        private const double MarkerWidth = 8;
+        private const double MarkerMinHeight = 4;
         private const double MarkerMaxHeight = 6;
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// Raised when a marker is clicked, providing the file position to navigate to
+        /// </summary>
+        public event EventHandler<long> MarkerClicked;
 
         #endregion
 
@@ -47,9 +66,14 @@ namespace WpfHexaEditor.Controls
 
         public ScrollMarkerPanel()
         {
-            // Make sure we're transparent for click-through to scrollbar
-            Background = Brushes.Transparent;
-            IsHitTestVisible = false; // Don't intercept mouse events
+            // CRITICAL: Use null background (not Transparent!) to allow click-through
+            // - Background = null → only drawn visuals are hit-testable (markers)
+            // - Background = Transparent → entire panel captures mouse events (blocks scrollbar)
+            Background = null;
+            IsHitTestVisible = true; // Enable mouse events on drawn markers
+
+            // Handle mouse clicks
+            MouseLeftButtonDown += ScrollMarkerPanel_MouseLeftButtonDown;
         }
 
         #endregion
@@ -148,6 +172,40 @@ namespace WpfHexaEditor.Controls
         public long SelectionStop { get; set; } = -1;
 
         /// <summary>
+        /// Enable or disable marker click navigation (default: enabled)
+        /// </summary>
+        public bool AllowMarkerClickNavigation { get; set; } = true;
+
+        #region Marker Customization Properties
+
+        // Modified markers (orange)
+        public double ModifiedMarkerWidth { get; set; } = 8;
+        public double ModifiedMarkerHeight { get; set; } = 3;
+        public MarkerPosition ModifiedMarkerPosition { get; set; } = MarkerPosition.Center;
+
+        // Added/Inserted markers (green)
+        public double AddedMarkerWidth { get; set; } = 8;
+        public double AddedMarkerHeight { get; set; } = 3;
+        public MarkerPosition AddedMarkerPosition { get; set; } = MarkerPosition.Left;
+
+        // Deleted markers (red)
+        public double DeletedMarkerWidth { get; set; } = 8;
+        public double DeletedMarkerHeight { get; set; } = 3;
+        public MarkerPosition DeletedMarkerPosition { get; set; } = MarkerPosition.Right;
+
+        // Bookmark markers (blue)
+        public double BookmarkMarkerWidth { get; set; } = 8;
+        public double BookmarkMarkerHeight { get; set; } = 3;
+        public MarkerPosition BookmarkMarkerPosition { get; set; } = MarkerPosition.Center;
+
+        // Search result markers (yellow)
+        public double SearchMarkerWidth { get; set; } = 8;
+        public double SearchMarkerHeight { get; set; } = 3;
+        public MarkerPosition SearchMarkerPosition { get; set; } = MarkerPosition.Center;
+
+        #endregion
+
+        /// <summary>
         /// Update selection range
         /// </summary>
         public void SetSelection(long start, long stop)
@@ -216,6 +274,20 @@ namespace WpfHexaEditor.Controls
 
         #region Rendering
 
+        /// <summary>
+        /// Calculate X position based on marker position and width
+        /// </summary>
+        private double GetMarkerX(MarkerPosition position, double markerWidth, double panelWidth)
+        {
+            return position switch
+            {
+                MarkerPosition.Left => 0,
+                MarkerPosition.Center => (panelWidth - markerWidth) / 2,
+                MarkerPosition.Right => panelWidth - markerWidth,
+                _ => (panelWidth - markerWidth) / 2
+            };
+        }
+
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
@@ -232,49 +304,92 @@ namespace WpfHexaEditor.Controls
                 DrawSelectionBar(dc, panelHeight, panelWidth);
             }
 
-            // Draw markers for each type
-            // Order: Custom → Modified → Search → Bookmarks (bookmarks on top)
+            // Track which (Y, X) pixel positions have been drawn to avoid duplicates
+            // This improves performance by not drawing multiple markers at the same pixel
+            var drawnPositions = new HashSet<(int y, int x)>();
 
-            // Custom markers
-            foreach (var marker in _customMarkers)
-            {
-                DrawMarker(dc, marker.Key, marker.Value, panelHeight, panelWidth);
-            }
+            // Draw markers for each type with configurable size and position
 
-            // Modified positions (orange)
-            foreach (var position in _modifiedPositions)
-            {
-                DrawMarker(dc, position, _modifiedBrush, panelHeight, panelWidth);
-            }
-
-            // Inserted positions (green)
+            // Inserted positions (green) - configurable position
+            double addedX = GetMarkerX(AddedMarkerPosition, AddedMarkerWidth, panelWidth);
             foreach (var position in _insertedPositions)
             {
-                DrawMarker(dc, position, _addedBrush, panelHeight, panelWidth);
+                DrawMarkerWithDedup(dc, position, _addedBrush, panelHeight, addedX, AddedMarkerWidth, AddedMarkerHeight, drawnPositions);
             }
 
-            // Deleted positions (red)
+            // Modified positions (orange) - configurable position
+            double modifiedX = GetMarkerX(ModifiedMarkerPosition, ModifiedMarkerWidth, panelWidth);
+            foreach (var position in _modifiedPositions)
+            {
+                DrawMarkerWithDedup(dc, position, _modifiedBrush, panelHeight, modifiedX, ModifiedMarkerWidth, ModifiedMarkerHeight, drawnPositions);
+            }
+
+            // Deleted positions (red) - configurable position
+            double deletedX = GetMarkerX(DeletedMarkerPosition, DeletedMarkerWidth, panelWidth);
             foreach (var position in _deletedPositions)
             {
-                DrawMarker(dc, position, _deletedBrush, panelHeight, panelWidth);
+                DrawMarkerWithDedup(dc, position, _deletedBrush, panelHeight, deletedX, DeletedMarkerWidth, DeletedMarkerHeight, drawnPositions);
             }
 
-            // Search results (yellow)
+            // Search results (yellow) - configurable position
+            double searchX = GetMarkerX(SearchMarkerPosition, SearchMarkerWidth, panelWidth);
             foreach (var position in _searchResultPositions)
             {
-                DrawMarker(dc, position, _searchBrush, panelHeight, panelWidth);
+                DrawMarkerWithDedup(dc, position, _searchBrush, panelHeight, searchX, SearchMarkerWidth, SearchMarkerHeight, drawnPositions);
             }
 
-            // Bookmarks (drawn last so they're on top)
+            // Bookmarks (blue) - drawn on exterior left of scrollbar (more distinctive)
+            // Position bookmarks outside the panel bounds on the left side
+            double bookmarkX = -BookmarkMarkerWidth - 1; // 1 pixel gap from panel edge
             foreach (var position in _bookmarkPositions)
             {
-                DrawMarker(dc, position, _bookmarkBrush, panelHeight, panelWidth);
+                DrawMarkerWithDedup(dc, position, _bookmarkBrush, panelHeight, bookmarkX, BookmarkMarkerWidth, BookmarkMarkerHeight, drawnPositions);
+            }
+
+            // Custom markers - CENTER (default)
+            double customX = (panelWidth - MarkerWidth) / 2;
+            foreach (var marker in _customMarkers)
+            {
+                DrawMarkerWithDedup(dc, marker.Key, marker.Value, panelHeight, customX, MarkerWidth, MarkerMinHeight, drawnPositions);
             }
         }
 
         /// <summary>
-        /// Draw a single marker at the specified position
+        /// Draw a single marker at the specified position with deduplication
+        /// Avoids drawing multiple markers at the same pixel position for better performance
         /// </summary>
+        private void DrawMarkerWithDedup(DrawingContext dc, long position, Brush brush, double panelHeight,
+            double x, double width, double height, HashSet<(int, int)> drawnPositions)
+        {
+            if (_fileLength == 0)
+                return;
+
+            // Calculate vertical position proportional to file position
+            double ratio = (double)position / _fileLength;
+            double y = ratio * panelHeight;
+
+            // Clamp to visible area
+            y = Math.Max(0, Math.Min(panelHeight - height, y));
+
+            // Round to integer pixel coordinates for deduplication
+            int yPixel = (int)Math.Round(y);
+            int xPixel = (int)Math.Round(x);
+
+            // Check if already drawn at this (Y, X) position
+            if (!drawnPositions.Add((yPixel, xPixel)))
+            {
+                return; // Already drawn at this pixel, skip for performance
+            }
+
+            // Draw marker rectangle at specified position with custom size
+            var rect = new Rect(x, y, width, height);
+            dc.DrawRectangle(brush, null, rect);
+        }
+
+        /// <summary>
+        /// Draw a single marker at the specified position (legacy method, right-aligned)
+        /// </summary>
+        [Obsolete("Use DrawMarkerWithDedup for better performance")]
         private void DrawMarker(DrawingContext dc, long position, Brush brush, double panelHeight, double panelWidth)
         {
             if (_fileLength == 0)
@@ -325,6 +440,100 @@ namespace WpfHexaEditor.Controls
             var rect = new Rect(0, startY, panelWidth, height);
 
             dc.DrawRectangle(selectionBrush, null, rect);
+        }
+
+        #endregion
+
+        #region Mouse Event Handlers
+
+        /// <summary>
+        /// Handle mouse click to navigate to the nearest marker
+        /// With Background=null, this only fires when clicking on an actual drawn marker
+        /// </summary>
+        private void ScrollMarkerPanel_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Check if marker click navigation is enabled
+            if (!AllowMarkerClickNavigation)
+                return;
+
+            if (_fileLength == 0 || ActualHeight < 10)
+                return;
+
+            // Get mouse position relative to panel
+            Point mousePos = e.GetPosition(this);
+            double clickY = mousePos.Y;
+            double panelHeight = ActualHeight;
+
+            // Find the closest marker to the click position
+            // Since Background=null, this event only fires when clicking on a drawn marker,
+            // so we can use a reasonable tolerance for finding the closest one
+            var closestPosition = FindClosestMarker(clickY, panelHeight);
+
+            if (closestPosition.HasValue)
+            {
+                // Raise event to notify parent control
+                MarkerClicked?.Invoke(this, closestPosition.Value);
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Find the marker position closest to the given Y coordinate
+        /// </summary>
+        private long? FindClosestMarker(double clickY, double panelHeight)
+        {
+            var (position, _) = FindClosestMarkerWithDistance(clickY, panelHeight);
+            return position;
+        }
+
+        /// <summary>
+        /// Find the marker position closest to the given Y coordinate and return distance
+        /// </summary>
+        private (long? position, double distance) FindClosestMarkerWithDistance(double clickY, double panelHeight)
+        {
+            long? closestPos = null;
+            double closestDistance = double.MaxValue;
+
+            // Check all marker types
+            CheckMarkerDistance(_insertedPositions, clickY, panelHeight, ref closestPos, ref closestDistance);
+            CheckMarkerDistance(_modifiedPositions, clickY, panelHeight, ref closestPos, ref closestDistance);
+            CheckMarkerDistance(_deletedPositions, clickY, panelHeight, ref closestPos, ref closestDistance);
+            CheckMarkerDistance(_searchResultPositions, clickY, panelHeight, ref closestPos, ref closestDistance);
+            CheckMarkerDistance(_bookmarkPositions, clickY, panelHeight, ref closestPos, ref closestDistance);
+
+            // Check custom markers
+            foreach (var marker in _customMarkers)
+            {
+                double markerY = ((double)marker.Key / _fileLength) * panelHeight;
+                double distance = Math.Abs(markerY - clickY);
+
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestPos = marker.Key;
+                }
+            }
+
+            return (closestPos, closestDistance);
+        }
+
+        /// <summary>
+        /// Helper method to check distance from click to markers in a set
+        /// </summary>
+        private void CheckMarkerDistance(HashSet<long> positions, double clickY, double panelHeight,
+            ref long? closestPos, ref double closestDistance)
+        {
+            foreach (var position in positions)
+            {
+                double markerY = ((double)position / _fileLength) * panelHeight;
+                double distance = Math.Abs(markerY - clickY);
+
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestPos = position;
+                }
+            }
         }
 
         #endregion

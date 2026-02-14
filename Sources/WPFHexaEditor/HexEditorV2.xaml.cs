@@ -94,6 +94,12 @@ namespace WpfHexaEditor
             _barChartPanel = this.FindName("BarChartPanel") as Controls.BarChartPanel;
             _scrollMarkers = this.FindName("ScrollMarkers") as Controls.ScrollMarkerPanel;
 
+            // Subscribe to scroll marker click event for navigation
+            if (_scrollMarkers != null)
+            {
+                _scrollMarkers.MarkerClicked += ScrollMarkers_MarkerClicked;
+            }
+
             // Initialize column headers with byte position numbers
             this.Loaded += (s, e) => RefreshColumnHeader();
 
@@ -109,7 +115,36 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Handle right-click on byte for context menu 
+        /// Handle scroll marker click to navigate to that position
+        /// </summary>
+        private void ScrollMarkers_MarkerClicked(object sender, long position)
+        {
+            if (_viewModel == null || _viewModel.VirtualLength == 0)
+                return;
+
+            // Navigate to the clicked position
+            _viewModel.SelectionStart = new VirtualPosition(position);
+            _viewModel.SelectionStop = new VirtualPosition(position);
+
+            // Calculate the line number for this position
+            long lineNumber = position / _viewModel.BytePerLine;
+
+            // Center the position on screen by scrolling to a few lines before
+            long scrollToLine = Math.Max(0, lineNumber - (_viewModel.VisibleLines / 2));
+            long maxScroll = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+            scrollToLine = Math.Min(scrollToLine, maxScroll);
+
+            // Update scroll position
+            _viewModel.ScrollPosition = scrollToLine;
+            VerticalScroll.Value = scrollToLine;
+
+            // Update UI
+            UpdateSelectionInfo();
+            UpdatePositionInfo();
+        }
+
+        /// <summary>
+        /// Handle right-click on byte for context menu
         /// </summary>
         private void HexViewport_ByteRightClick(object sender, Controls.ByteRightClickEventArgs e)
         {
@@ -117,7 +152,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Handle double-click on byte for auto-select same bytes 
+        /// Handle double-click on byte for auto-select same bytes
         /// </summary>
         private void HexViewport_ByteDoubleClicked(object sender, long position)
         {
@@ -1815,6 +1850,22 @@ namespace WpfHexaEditor
                 new PropertyMetadata(false));
 
         /// <summary>
+        /// AllowMarkerClickNavigation DependencyProperty for XAML binding
+        /// Enables/disables navigation when clicking on scroll markers (default: true)
+        /// </summary>
+        public static readonly DependencyProperty AllowMarkerClickNavigationProperty =
+            DependencyProperty.Register(nameof(AllowMarkerClickNavigation), typeof(bool), typeof(HexEditorV2),
+                new PropertyMetadata(true, OnAllowMarkerClickNavigationChanged));
+
+        private static void OnAllowMarkerClickNavigationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && editor._scrollMarkers != null)
+            {
+                editor._scrollMarkers.AllowMarkerClickNavigation = (bool)e.NewValue;
+            }
+        }
+
+        /// <summary>
         /// AllowFileDrop DependencyProperty for XAML binding
         /// </summary>
         public static readonly DependencyProperty AllowFileDropProperty =
@@ -2434,11 +2485,12 @@ namespace WpfHexaEditor
                 UpdateBarChart();
             }), System.Windows.Threading.DispatcherPriority.Background);
 
-            // Update scroll markers in background 
+            // Update scroll markers in background
             // Scroll markers don't need to be ready immediately
             if (_scrollMarkers != null)
             {
-                _scrollMarkers.FileLength = _viewModel.FileLength;
+                // Use VirtualLength for correct marker positioning (includes insertions)
+                _scrollMarkers.FileLength = _viewModel.VirtualLength;
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     UpdateScrollMarkers();
@@ -4278,6 +4330,15 @@ namespace WpfHexaEditor
             set => SetValue(AllowAutoSelectSameByteAtDoubleClickProperty, value);
         }
 
+        /// <summary>
+        /// Enable or disable navigation when clicking on scroll markers (default: enabled) - DependencyProperty
+        /// </summary>
+        public bool AllowMarkerClickNavigation
+        {
+            get => (bool)GetValue(AllowMarkerClickNavigationProperty);
+            set => SetValue(AllowMarkerClickNavigationProperty, value);
+        }
+
         #endregion
 
         #region Missing V1 Properties - Count/Statistics
@@ -5687,6 +5748,19 @@ namespace WpfHexaEditor
                     VerticalScroll.Maximum = newMaximum;
                     // Update file size display (VirtualLength may have changed due to insertions)
                     UpdateFileSizeDisplay();
+                    break;
+
+                case nameof(HexEditorViewModel.VirtualLength):
+                    // VirtualLength changed due to insertions/deletions
+                    // Update scroll markers FileLength and refresh markers
+                    if (_scrollMarkers != null)
+                    {
+                        _scrollMarkers.FileLength = _viewModel.VirtualLength;
+                    }
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        UpdateScrollMarkers();
+                    }), System.Windows.Threading.DispatcherPriority.Background);
                     break;
 
                 case nameof(HexEditorViewModel.EditMode):
