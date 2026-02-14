@@ -633,6 +633,65 @@ namespace WpfHexaEditor
         public bool CanRedo => _viewModel?.CanRedo ?? false;
 
         /// <summary>
+        /// V1 compatible: Number of undo operations available
+        /// </summary>
+        public long UndoCount => _viewModel?.Provider?.UndoCount ?? 0;
+
+        /// <summary>
+        /// V1 compatible: Number of redo operations available
+        /// </summary>
+        public long RedoCount => _viewModel?.Provider?.RedoCount ?? 0;
+
+        /// <summary>
+        /// V1 compatible: Can copy selection to clipboard?
+        /// </summary>
+        public bool CanCopy => HasSelection && !ReadOnlyMode;
+
+        /// <summary>
+        /// V1 compatible: Can delete selection?
+        /// </summary>
+        public bool CanDelete => HasSelection && !ReadOnlyMode;
+
+        /// <summary>
+        /// V1 compatible: Is the file locked (read-only)?
+        /// </summary>
+        public bool IsLockedFile
+        {
+            get
+            {
+                if (_viewModel?.Provider == null)
+                    return false;
+
+                // Check if file is read-only
+                return _viewModel.Provider.IsReadOnly;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Is selection start position visible in viewport?
+        /// </summary>
+        public bool SelectionStartIsVisible
+        {
+            get
+            {
+                if (_viewModel == null || !_viewModel.HasSelection)
+                    return false;
+
+                var selectionLine = SelectionLine;
+                var scrollPos = _viewModel.ScrollPosition;
+                var visibleLines = _viewModel.VisibleLines;
+
+                return selectionLine >= scrollPos && selectionLine < scrollPos + visibleLines;
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Is caret visible?
+        /// Always true in V2 when there's a selection
+        /// </summary>
+        public bool IsCaretVisible => HasSelection;
+
+        /// <summary>
         /// Has active selection?
         /// </summary>
         public bool HasSelection => _viewModel?.HasSelection ?? false;

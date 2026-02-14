@@ -96,6 +96,16 @@ namespace WpfHexaEditor.Core.Bytes
         /// </summary>
         public bool CanRedo => _undoRedoManager.CanRedo;
 
+        /// <summary>
+        /// Gets the number of undo operations available (V1 compatible).
+        /// </summary>
+        public int UndoCount => _undoRedoManager.UndoStackCount;
+
+        /// <summary>
+        /// Gets the number of redo operations available (V1 compatible).
+        /// </summary>
+        public int RedoCount => _undoRedoManager.RedoStackCount;
+
         #endregion
 
         #region Constructor
