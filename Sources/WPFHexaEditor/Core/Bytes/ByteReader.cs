@@ -78,15 +78,22 @@ namespace WpfHexaEditor.Core.Bytes
                 // Find the inserted byte at this virtual position
                 var insertions = _editsManager.GetInsertedBytesAt(physicalPos.Value);
 
-                // Calculate which inserted byte this is
+                // CRITICAL FIX: Insertions are stored in LIFO order with VirtualOffset
+                // We must search for the byte with matching VirtualOffset, NOT use array index
                 long virtualStart = _positionMapper.PhysicalToVirtual(physicalPos.Value, physicalFileLength);
-                long insertionIndex = virtualPosition - virtualStart;
+                long targetOffset = virtualPosition - virtualStart;
 
-                if (insertionIndex >= 0 && insertionIndex < insertions.Count)
+                // Search for inserted byte with matching VirtualOffset
+                for (int i = 0; i < insertions.Count; i++)
                 {
-                    return (insertions[(int)insertionIndex].Value, true);
+                    if (insertions[i].VirtualOffset == targetOffset)
+                    {
+                        return (insertions[i].Value, true);
+                    }
                 }
 
+                // Not found - this shouldn't happen if position mapper is correct
+                System.Diagnostics.Debug.WriteLine($"[ByteReader] ERROR: Could not find inserted byte at virtual {virtualPosition}, offset {targetOffset}");
                 return (0, false);
             }
 
