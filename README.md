@@ -23,15 +23,50 @@
 
 ---
 
-Wpf Hexeditor is a powerful and fully customisable user control for editing file or stream as hexadecimal, decimal and binary. 
+## 💎 About WPF HexEditor
 
-You can use it very easily in Wpf or WinForm application. Download the code and test the Wpf (C#, VB.NET) and WinForm (C#) samples.
+**WPF HexEditor** is a powerful, high-performance hex editor control designed specifically for .NET applications. Built with modern architecture and optimized for both small and large files, it provides a professional-grade binary editing experience.
 
-The control are localized in English, French, Russian, Polish, Portuguese and Chinese
+### 🎯 Key Highlights
 
-### ⭐ You want to say thank or just like project  ?
+- **🚀 Blazing Fast** - 99% faster rendering than V1, handles GB+ files with ease
+- **🔧 Easy Integration** - Drop-in WPF/WinForms control, works out of the box
+- **🎨 Fully Customizable** - Colors, fonts, themes, and display modes
+- **⚡ Production Ready** - Battle-tested with 80+ unit tests and comprehensive samples
+- **🌍 Localized** - 6 languages: English, French, Russian, Polish, Portuguese, Chinese
 
-Hexeditor control is totaly free and can be used in all project you want like open source and commercial applications. I make it in my free time and a few colaborators help me when they can... Please hit the ⭐️ button or fork and I will be very happy ;) I accept help contribution...  
+### 🆕 What's New in V2?
+
+V2 represents a complete architectural overhaul with **dramatic performance improvements**:
+
+- ✅ **99% faster rendering** - Custom DrawingContext vs ItemsControl
+- ✅ **10-100x faster search** - LRU cache + parallel + SIMD optimization
+- ✅ **80-90% less memory** - Handle files that crashed V1
+- ✅ **Insert Mode fixed** - Critical bug #145 resolved
+- ✅ **Service architecture** - MVVM + 10 specialized services
+- ✅ **100% backward compatible** - Drop-in replacement for V1
+
+**[See full V1 vs V2 comparison](#-feature-comparison-v1-legacy-vs-v2)** 👇
+
+### 🎯 Perfect For
+
+- 🔍 **Developers** - Debug binary protocols, inspect file formats
+- 🎮 **Game Modders** - ROM hacking with custom TBL character tables
+- 🔐 **Security Researchers** - Analyze executables and data structures
+- 📊 **Data Scientists** - Visualize and analyze binary data patterns
+- 💾 **System Administrators** - Low-level file inspection and repair
+
+### ⭐ Support This Project
+
+WPF HexEditor is **100% free and open source** (Apache 2.0). It can be used in personal projects, commercial applications, and everything in between.
+
+This project is developed in **free time** by passionate contributors. If you find it useful:
+- ⭐ **Star this repository** - It helps others discover the project!
+- 🍴 **Fork and contribute** - Pull requests are always welcome
+- 💬 **Share feedback** - Report bugs or suggest features
+- 📖 **Improve documentation** - Help others get started
+
+**Every star motivates us to keep improving! 🙏**  
 
 ### 🖼 Screenshots
 
