@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -4320,6 +4321,111 @@ namespace WpfHexaEditor
                 Clipboard.SetText(sb.ToString());
                 StatusText.Text = $"Copied {bytes.Length} bytes as C# code";
             }
+        }
+
+        /// <summary>
+        /// Copy current selection to a stream (V1 compatible)
+        /// </summary>
+        /// <param name="output">Output stream to write to</param>
+        /// <param name="copyChange">True to include uncommitted changes, false for committed data only</param>
+        public void CopyToStream(Stream output, bool copyChange)
+        {
+            if (_viewModel == null || !_viewModel.HasSelection)
+                return;
+
+            var selStart = _viewModel.SelectionStart.Value;
+            var selLength = _viewModel.SelectionLength;
+
+            CopyToStream(output, selStart, selStart + selLength - 1, copyChange);
+        }
+
+        /// <summary>
+        /// Copy specified range to a stream (V1 compatible)
+        /// </summary>
+        /// <param name="output">Output stream to write to</param>
+        /// <param name="selectionStart">Start position (inclusive)</param>
+        /// <param name="selectionStop">Stop position (inclusive)</param>
+        /// <param name="copyChange">True to include uncommitted changes, false for committed data only.
+        /// NOTE: Currently always includes all edits (copyChange parameter ignored in V2 architecture).</param>
+        public void CopyToStream(Stream output, long selectionStart, long selectionStop, bool copyChange)
+        {
+            if (_viewModel?.Provider == null || output == null)
+                return;
+
+            if (selectionStart < 0 || selectionStop < selectionStart)
+                return;
+
+            var length = selectionStop - selectionStart + 1;
+            if (length <= 0)
+                return;
+
+            // Read bytes from provider (V2 always returns current state with all edits)
+            var buffer = new byte[Math.Min(length, 4096)]; // Use buffer for large copies
+            long remaining = length;
+            long currentPos = selectionStart;
+
+            while (remaining > 0)
+            {
+                var bytesToRead = (int)Math.Min(remaining, buffer.Length);
+                var bytesRead = 0;
+
+                for (int i = 0; i < bytesToRead; i++)
+                {
+                    var (value, success) = _viewModel.Provider.GetByte(currentPos + i);
+                    if (success)
+                    {
+                        buffer[i] = value;
+                        bytesRead++;
+                    }
+                    else
+                    {
+                        break; // Stop if we hit end of stream
+                    }
+                }
+
+                if (bytesRead > 0)
+                {
+                    output.Write(buffer, 0, bytesRead);
+                    currentPos += bytesRead;
+                    remaining -= bytesRead;
+                }
+                else
+                {
+                    break; // No more bytes to read
+                }
+            }
+
+            output.Flush();
+        }
+
+        /// <summary>
+        /// Get copy data as byte array for specified range (V1 compatible)
+        /// </summary>
+        /// <param name="selectionStart">Start position (inclusive)</param>
+        /// <param name="selectionStop">Stop position (inclusive)</param>
+        /// <param name="copyChange">True to include uncommitted changes, false for committed data only.
+        /// NOTE: Currently always includes all edits (copyChange parameter ignored in V2 architecture).</param>
+        /// <returns>Byte array containing the data, or null if invalid range</returns>
+        public byte[] GetCopyData(long selectionStart, long selectionStop, bool copyChange)
+        {
+            if (_viewModel?.Provider == null)
+                return null;
+
+            if (selectionStart < 0 || selectionStop < selectionStart)
+                return null;
+
+            var length = selectionStop - selectionStart + 1;
+            if (length <= 0 || length > int.MaxValue)
+                return null;
+
+            // Use GetBytes for efficiency instead of reading byte by byte
+            var result = _viewModel.Provider.GetBytes(selectionStart, (int)length);
+
+            // GetBytes returns empty array if read fails, check length
+            if (result.Length != length)
+                return null;
+
+            return result;
         }
 
         #endregion
