@@ -1,10 +1,12 @@
-<img src="Images/Logo.png?raw=true" width="420" height="100" /> 
-  
-[![NuGet](https://img.shields.io/badge/Nuget-v2.2.0-red.svg)](https://www.nuget.org/packages/WPFHexaEditor/)
-[![NetFramework](https://img.shields.io/badge/.Net%20Framework-4.8-green.svg)](https://www.microsoft.com/net/download/windows)
-[![NetFramework](https://img.shields.io/badge/.Net%208.0--windows-green.svg)](https://dotnet.microsoft.com/download)
-[![NetFramework](https://img.shields.io/badge/Language-C%23%20preview-orange.svg)](https://learn.microsoft.com/en-us/dotnet/csharp/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/abbaye/WpfHexEditorControl/blob/master/LICENSE)
+<img src="Images/Logo.png?raw=true" width="420" height="100" />
+
+[![NuGet](https://img.shields.io/nuget/v/WPFHexaEditor?color=blue&label=NuGet&logo=nuget)](https://www.nuget.org/packages/WPFHexaEditor/)
+[![.NET Multi-Target](https://img.shields.io/badge/.NET-net48%20%7C%20net8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorControl)
+[![C#](https://img.shields.io/badge/C%23-12.0-239120?logo=csharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![V2 Architecture](https://img.shields.io/badge/Architecture-V2%20MVVM-orange?logo=github)](https://github.com/abbaye/WpfHexEditorControl/wiki)
+[![Performance](https://img.shields.io/badge/Performance-99%25%20Faster-success?logo=lightning)](https://github.com/abbaye/WpfHexEditorControl#-performance)
 
 ## 📑 Quick Navigation
 
@@ -599,8 +601,36 @@ See [Services Documentation](Sources/WPFHexaEditor/Services/README.md) for detai
 
 ## 🔧 Supported Frameworks
 
-- ✅ .NET Framework 4.8
-- ✅ .NET 8.0-windows
+WPF HexEditor uses **multi-targeting** to support both legacy and modern .NET platforms:
+
+### 📦 Target Frameworks
+
+| Framework | Version | Description | Use Case |
+|-----------|---------|-------------|----------|
+| **net48** | .NET Framework 4.8 | Legacy Windows desktop platform | Existing WPF/WinForms applications |
+| **net8.0-windows** | .NET 8 (LTS) | Modern cross-platform .NET | New applications, better performance |
+
+### ✨ Benefits of Multi-Targeting
+
+- ✅ **Single NuGet Package** - Works in both old and new projects
+- ✅ **Zero Breaking Changes** - Drop-in replacement for existing apps
+- ✅ **Future-Proof** - Ready for .NET Core migration
+- ✅ **Best Performance** - Modern .NET gets latest optimizations (Span&lt;T&gt;, SIMD)
+- ✅ **Same API** - Identical code works on both platforms
+
+### 🚀 Usage
+
+```xml
+<!-- .NET Framework 4.8 project -->
+<TargetFramework>net48</TargetFramework>
+<PackageReference Include="WPFHexaEditor" Version="2.2.0" />
+
+<!-- .NET 8.0 project -->
+<TargetFramework>net8.0-windows</TargetFramework>
+<PackageReference Include="WPFHexaEditor" Version="2.2.0" />
+```
+
+Both scenarios use the **exact same NuGet package** - the correct binary is automatically selected!
 
 ## 🧪 Unit Testing
 
