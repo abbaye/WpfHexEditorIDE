@@ -13,13 +13,13 @@ namespace WpfHexaEditor.Dialog
     /// </summary>
     public partial class FindReplaceWindow
     {
-        private readonly HexEditor _parentV1;
-        private readonly HexEditorV2 _parentV2;
+        private readonly HexEditorLegacy _parentV1;
+        private readonly HexEditor _parentV2;
 
         /// <summary>
-        /// Constructor accepting V1 HexEditor
+        /// Constructor accepting V1 HexEditorLegacy (legacy control)
         /// </summary>
-        public FindReplaceWindow(HexEditor parent, byte[] findData = null)
+        public FindReplaceWindow(HexEditorLegacy parent, byte[] findData = null)
         {
             InitializeComponent();
 
@@ -31,9 +31,9 @@ namespace WpfHexaEditor.Dialog
         }
 
         /// <summary>
-        /// Constructor accepting V2 HexEditorV2 (Phase 13 - 100% compatibility)
+        /// Constructor accepting V2 HexEditor (main control - Phase 13 - 100% compatibility)
         /// </summary>
-        public FindReplaceWindow(HexEditorV2 parent, byte[] findData = null)
+        public FindReplaceWindow(HexEditor parent, byte[] findData = null)
         {
             InitializeComponent();
 
@@ -126,7 +126,7 @@ namespace WpfHexaEditor.Dialog
         /// <summary>
         /// Initialize stream and hexeditor
         /// </summary>
-        private void InitializeMStream(HexEditor hexeditor, byte[] findData = null)
+        private void InitializeMStream(HexEditorLegacy hexeditor, byte[] findData = null)
         {
             hexeditor.CloseProvider();
 

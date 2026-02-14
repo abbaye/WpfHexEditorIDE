@@ -32,7 +32,7 @@ namespace WpfHexaEditor
 
         #region Contructor
 
-        public StringByte(HexEditor parent, bool barChart, double desiredWidth) : base(parent)
+        public StringByte(HexEditorLegacy parent, bool barChart, double desiredWidth) : base(parent)
         {
             _barchart = barChart;
             _width = desiredWidth;

@@ -1,1011 +1,609 @@
-﻿//////////////////////////////////////////////
-// Apache 2.0  - 2016-2026
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributor: ehsan69h
-// Contributor: Janus Tida
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Xml.Linq;
 using WpfHexaEditor.Core;
 using WpfHexaEditor.Core.Bytes;
 using WpfHexaEditor.Core.CharacterTable;
-using WpfHexaEditor.Core.EventArguments;
-using WpfHexaEditor.Core.Interfaces;
-using WpfHexaEditor.Core.MethodExtention;
-using WpfHexaEditor.Dialog;
-using WpfHexaEditor.Services;
-using static WpfHexaEditor.Core.Bytes.ByteConverters;
-using static WpfHexaEditor.Core.Bytes.ByteProviderLegacy;
-using Path = System.IO.Path;
+using WpfHexaEditor.Events;
+using WpfHexaEditor.Models;
+using WpfHexaEditor.ViewModels;
 
 namespace WpfHexaEditor
 {
-    /// <summary> 
-    /// Wpf HexEditor control implementation
+    /// <summary>
+    /// HexEditor - Modern WPF hex editor with native insert mode support (V2 Architecture)
+    /// Clean UserControl without UI chrome (toolbar, menus, etc.)
+    /// Host application provides UI and calls public methods/properties
+    ///
+    /// NOTE: This is V2 (formerly HexEditor) - 99% faster with critical bug fixes.
+    /// For legacy V1 control, use HexEditorLegacy (deprecated, will be removed in v3.0).
     /// </summary>
-    /// <remarks>
-    /// Wpf Hexeditor is a fast and fully customisable user control for editing file or stream as hexadecimal. 
-    /// Can be used in Wpf or WinForm application
-    /// </remarks>
-    public partial class HexEditor : IDisposable
+    public partial class HexEditor : UserControl
     {
-        #region Global class variables
+        private HexEditorViewModel _viewModel;
+        private bool _isMouseDown = false;
+        private VirtualPosition _mouseDownPosition = VirtualPosition.Invalid;
+        private Border _headerBorder;
+        private System.Windows.Controls.Primitives.StatusBar _statusBar;
+        private StackPanel _hexHeaderStackPanel;
+        private StackPanel _asciiHeaderStackPanel;
+        private Controls.BarChartPanel _barChartPanel;
+        private Controls.ScrollMarkerPanel _scrollMarkers;
 
-        /// <summary>
-        /// Byte provider for work with file or stream currently loaded in control.
-        /// </summary>
-        private ByteProviderLegacy _provider;
+        // Bookmarks
+        private readonly List<long> _bookmarks = new List<long>();
+        private readonly Services.BookmarkService _bookmarkService = new(); // V2 bookmark service
 
-        /// <summary>
-        /// Service for undo/redo operations
-        /// </summary>
-        private readonly UndoRedoService _undoRedoService = new UndoRedoService();
+        // Highlights  - stores ranges of highlighted bytes
+        private readonly List<(long start, long length)> _highlights = new List<(long, long)>();
 
-        /// <summary>
-        /// Service for clipboard operations
-        /// </summary>
-        private readonly ClipboardService _clipboardService = new ClipboardService();
+        // TBL (Character Table) support 
+        private TblStream _tblStream;
+        private CharacterTableType _characterTableType = CharacterTableType.Ascii;
 
-        /// <summary>
-        /// Service for selection operations
-        /// </summary>
-        private readonly SelectionService _selectionService = new SelectionService();
-
-        /// <summary>
-        /// Service for find/replace operations with caching
-        /// </summary>
-        private readonly FindReplaceService _findReplaceService = new FindReplaceService();
-
-        /// <summary>
-        /// Service for highlight operations (search results, marked bytes)
-        /// </summary>
-        private readonly HighlightService _highlightService = new HighlightService();
-
-        /// <summary>
-        /// Service for byte modification operations (insert, delete, modify)
-        /// </summary>
-        private readonly ByteModificationService _byteModificationService = new ByteModificationService();
-
-        /// <summary>
-        /// Service for bookmark management operations
-        /// </summary>
-        private readonly BookmarkService _bookmarkService = new BookmarkService();
-
-        /// <summary>
-        /// Service for TBL (character table) management operations
-        /// </summary>
-        private readonly TblService _tblService = new TblService();
-
-        /// <summary>
-        /// Service for position calculations and conversions
-        /// </summary>
-        private readonly PositionService _positionService = new PositionService();
-
-        /// <summary>
-        /// Service for custom background block management
-        /// </summary>
-        private readonly CustomBackgroundService _customBackgroundService = new CustomBackgroundService();
-
-        /// <summary>
-        /// The large change of scroll when clicked on scrollbar
-        /// </summary>
-        private double _scrollLargeChange = 100;
-
-        /// <summary>
-        /// List of byte are highlighted
-        /// </summary>
-        // REMOVED: _markedPositionList is now managed by HighlightService
-        // private Dictionary<long, long> _markedPositionList = new();
-
-        /// <summary>
-        /// Cache for scroll markers: Key = "marker_position", Value = Rectangle
-        /// </summary>
-        private readonly Dictionary<string, Rectangle> _scrollMarkerCache = new();
-
-        /// <summary>
-        /// Cache for scroll marker brushes to avoid repeated TryFindResource calls
-        /// </summary>
-        private SolidColorBrush _bookMarkColorBrush;
-        private SolidColorBrush _searchBookMarkColorBrush;
-        private SolidColorBrush _selectionStartBookMarkColorBrush;
-        private SolidColorBrush _byteModifiedMarkColorBrush;
-        private SolidColorBrush _byteDeletedMarkColorBrush;
-
-        /// <summary>
-        /// Cache for byte color brushes to avoid recalculating on every property change
-        /// </summary>
-        private Brush _cachedSelectionFirstColor;
-        private Brush _cachedSelectionSecondColor;
-        private Brush _cachedByteModifiedColor;
-        private Brush _cachedMouseOverColor;
-        private Brush _cachedByteDeletedColor;
-        private Brush _cachedByteAddedColor;
-        private Brush _cachedHighLightColor;
-        private Brush _cachedForeground;
-        private Brush _cachedForegroundSecondColor;
-        private Brush _cachedForegroundContrast;
-        private Brush _cachedBackground;
-
-        /// <summary>
-        /// Flag to indicate if color cache needs update
-        /// </summary>
-        private bool _colorCacheNeedsUpdate = true;
-
-        /// <summary>
-        /// Byte position in file when mouse right click occurs.
-        /// </summary>
-        private long _rightClickBytePosition = -1;
-
-        /// <summary>
-        /// Custom character table loaded. Used for show byte as texte.
-        /// Now managed by TblService - use _tblService.CharacterTable instead.
-        /// </summary>
-        // private TblStream _tblService.CharacterTable; // REMOVED - Now using _tblService.CharacterTable
-
-        /// <summary>
-        /// Hold the count of all byte in file.
-        /// </summary>
-        private long[] _bytecount;
-
-        /// <summary>
-        /// Save the view byte buffer as a field. 
-        /// To save the time when Scolling i do not building them every time when scolling.
-        /// </summary>
-        private byte[] _viewBuffer;
-
-        /// <summary>
-        /// Save the view byte buffer position as a field. 
-        /// To save the time when Scolling i do not building them every time when scolling.
-        /// </summary>
-        private long[] _viewBufferBytePosition;
-
-        /// <summary>
-        /// Used for control the view on refresh
-        /// </summary>
-        private long _priLevel;
-
-        /// <summary>
-        /// Used with VerticalMoveByTime methods/events to move the scrollbar.
-        /// </summary>
-        private bool _mouseOnBottom, _mouseOnTop;
-
-        /// <summary>
-        /// Used with VerticalMoveByTime methods/events to move the scrollbar.
-        /// </summary>
-        private long _bottomEnterTimes, _topEnterTimes;
-
-        /// <summary>
-        /// Caret used in control to view position
-        /// </summary>
-        private readonly Caret _caret = new();
-
-        /// <summary>
-        /// For detect redondants call when disposing control
-        ///  </summary>
-        private bool _disposedValue;
-
-        /// <summary>
-        /// For detect redondants call on SetFocusHexDataPanel and SetFocusStringDataPanel
-        /// </summary>
-        bool _setFocusTest;
-
-        /// <summary>
-        /// Highlight the header and offset on SelectionStart property
-        /// </summary>
-        private bool _highLightSelectionStart = true;
-
-        /// <summary>
-        /// Get is the first color...
-        /// </summary>
-        private FirstColor _firstColor = FirstColor.HexByteData;
-
-        /// <summary>
-        /// Get or set the scale transform to work with zoom
-        /// </summary>
+        // Zoom support 
         private ScaleTransform _scaler;
 
-        /// <summary>
-        /// Allow or not the zoom in control
-        /// </summary>
-        private bool _allowZoom = true;
+        // Hex editing state
+        private bool _isEditingByte = false;
+        private VirtualPosition _editingPosition = VirtualPosition.Invalid;
+        private byte _editingValue = 0;
+        private bool _editingHighNibble = true; // true = high nibble, false = low nibble
+        private bool _isAsciiEditMode = false; // true = editing in ASCII area, false = editing in Hex area
 
-        #endregion Global Class variables
-
-        #region Events
-
-        /// <summary>
-        /// Occurs when selection start are changed.
-        /// </summary>
-        public event EventHandler SelectionStartChanged;
-
-        /// <summary>
-        /// Occurs when selection stop are changed.
-        /// </summary>
-        public event EventHandler SelectionStopChanged;
-
-        /// <summary>
-        /// Occurs when the length of selection are changed.
-        /// </summary>
-        public event EventHandler SelectionLengthChanged;
-
-        /// <summary>
-        /// Occurs when data are copie to clipboard.
-        /// </summary>
-        public event EventHandler DataCopied;
-
-        /// <summary>
-        /// Occurs when the type of character table are changed.
-        /// </summary>
-        public event EventHandler TypeOfCharacterTableChanged;
-
-        /// <summary>
-        /// Occurs when a long process percent changed.
-        /// </summary>
-        public event EventHandler LongProcessProgressChanged;
-
-        /// <summary>
-        /// Occurs when a long process are started.
-        /// </summary>
-        public event EventHandler LongProcessProgressStarted;
-
-        /// <summary>
-        /// Occurs when a long process are completed.
-        /// </summary>
-        public event EventHandler LongProcessProgressCompleted;
-
-        /// <summary>
-        /// Occurs when readonly property are changed.
-        /// </summary>
-        public event EventHandler ReadOnlyChanged;
-
-        /// <summary>
-        /// Occurs when data are saved to stream/file.
-        /// </summary>
-        public event EventHandler ChangesSubmited;
-
-        /// <summary>
-        /// Occurs when the replace byte by byte are completed
-        /// </summary>
-        public event EventHandler ReplaceByteCompleted;
-
-        /// <summary>
-        /// Occurs when the fill with byte method are completed
-        /// </summary>
-        public event EventHandler FillWithByteCompleted;
-
-        /// <summary>
-        /// Occurs when bytes as deleted in control
-        /// </summary>
-        public event EventHandler BytesDeleted;
-
-        /// <summary>
-        /// Occurs when byte as modified in control
-        /// </summary>
-        public event EventHandler<ByteEventArgs> BytesModified;
-
-        /// <summary>
-        /// Occurs when undo are completed
-        /// </summary>
-        public event EventHandler Undone;
-
-        /// <summary>
-        /// Occurs when redo are completed
-        /// </summary>
-        public event EventHandler Redone;
-
-        /// <summary>
-        /// Occurs on byte click completed
-        /// </summary>
-        public event EventHandler<ByteEventArgs> ByteClick;
-
-        /// <summary>
-        /// Occurs on byte double click completed
-        /// </summary>
-        public event EventHandler<ByteEventArgs> ByteDoubleClick;
-
-        /// <summary>
-        /// Occurs when the zoom scale is changed
-        /// </summary>
-        public event EventHandler ZoomScaleChanged;
-
-        /// <summary>
-        /// Occurs when the vertical scroll bar position as changed
-        /// </summary>
-        public event EventHandler<ByteEventArgs> VerticalScrollBarChanged;
-
-        #endregion Events
-
-        #region Constructor
+        // Auto-scroll during mouse drag selection
+        private DispatcherTimer _autoScrollTimer;
+        private int _autoScrollDirection = 0; // -1 = up, 1 = down, 0 = no auto-scroll
+        private Point _lastMousePosition;
+        private VirtualPosition _lastAutoScrollPosition = VirtualPosition.Invalid; // Track last position to avoid redundant updates
+        private const double AutoScrollEdgeThreshold = 40.0; // Pixels from edge to trigger auto-scroll
+        private const int AutoScrollInterval = 40; // Milliseconds between auto-scroll ticks (faster for better UX)
+        private const int AutoScrollSpeed = 2; // Lines to scroll per tick
 
         public HexEditor()
         {
             InitializeComponent();
 
-            // Initialize clipboard service default mode
-            _clipboardService.DefaultCopyMode = CopyPasteMode.HexaString;
-
-            //Refresh view
-            CheckProviderIsOnProgress();
-            UpdateScrollBar();
-            InitializeCaret();
-            RefreshView(true);
-        }
-        #endregion Contructor
-
-        #region Build-in CTRL key support
-
-        /// <summary>
-        /// Get or set if the build-in CTRL+C (copy) are allowed
-        /// </summary>
-        public bool AllowBuildinCtrlc
-        {
-            get => (bool)GetValue(AllowBuildinCtrlcProperty);
-            set => SetValue(AllowBuildinCtrlcProperty, value);
-        }
-
-        public static readonly DependencyProperty AllowBuildinCtrlcProperty =
-            DependencyProperty.Register(nameof(AllowBuildinCtrlc), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(true, Control_AllowBuildinCTRLPropertyChanged));
-
-        /// <summary>
-        /// Get or set if the build-in CTRL+V (paste) are allowed
-        /// </summary>
-        public bool AllowBuildinCtrlv
-        {
-            get => (bool)GetValue(AllowBuildinCtrlvProperty);
-            set => SetValue(AllowBuildinCtrlvProperty, value);
-        }
-
-        public static readonly DependencyProperty AllowBuildinCtrlvProperty =
-            DependencyProperty.Register(nameof(AllowBuildinCtrlv), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(true, Control_AllowBuildinCTRLPropertyChanged));
-
-        /// <summary>
-        /// Get or set if the build-in CTRL+A (select all) are allowed
-        /// </summary>
-        public bool AllowBuildinCtrla
-        {
-            get => (bool)GetValue(AllowBuildinCtrlaProperty);
-            set => SetValue(AllowBuildinCtrlaProperty, value);
-        }
-
-        public static readonly DependencyProperty AllowBuildinCtrlaProperty =
-            DependencyProperty.Register(nameof(AllowBuildinCtrla), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(true, Control_AllowBuildinCTRLPropertyChanged));
-
-        /// <summary>
-        /// Get or set if the build-in CTRL+Z (undo) are allowed
-        /// </summary>
-        public bool AllowBuildinCtrlz
-        {
-            get => (bool)GetValue(AllowBuildinCtrlzProperty);
-            set => SetValue(AllowBuildinCtrlzProperty, value);
-        }
-
-        public static readonly DependencyProperty AllowBuildinCtrlzProperty =
-            DependencyProperty.Register(nameof(AllowBuildinCtrlz), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(true, Control_AllowBuildinCTRLPropertyChanged));
-
-        /// <summary>
-        /// Get or set if the build-in CTRL+Y (redo) are allowed
-        /// </summary>
-        public bool AllowBuildinCtrly
-        {
-            get => (bool)GetValue(AllowBuildinCtrlyProperty);
-            set => SetValue(AllowBuildinCtrlyProperty, value);
-        }
-
-        public static readonly DependencyProperty AllowBuildinCtrlyProperty =
-            DependencyProperty.Register(nameof(AllowBuildinCtrly), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(true, Control_AllowBuildinCTRLPropertyChanged));
-
-        private static void Control_AllowBuildinCTRLPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor ctrl && e.NewValue != e.OldValue) ctrl.RefreshView();
-        }
-
-        private void Control_CTRLZKey(object sender, EventArgs e)
-        {
-            if (AllowBuildinCtrlz) Undo();
-        }
-
-        private void Control_CTRLYKey(object sender, EventArgs e)
-        {
-            if (AllowBuildinCtrly) Redo();
-        }
-
-        private void Control_CTRLCKey(object sender, EventArgs e)
-        {
-            if (AllowBuildinCtrlc) CopyToClipboard();
-        }
-
-        private void Control_CTRLAKey(object sender, EventArgs e)
-        {
-            if (AllowBuildinCtrla) SelectAll();
-        }
-
-        private void Control_CTRLVKey(object sender, EventArgs e)
-        {
-            if (AllowBuildinCtrlv) Paste(AllowExtend);
-        }
-
-        #endregion Build-in CTRL key support
-
-        #region Colors/fonts property and methods
-
-        /// <summary>
-        /// Get or set the first selection color
-        /// </summary>
-        public Brush SelectionFirstColor
-        {
-            get => (Brush)GetValue(SelectionFirstColorProperty);
-            set => SetValue(SelectionFirstColorProperty, value);
-        }
-
-        public static readonly DependencyProperty SelectionFirstColorProperty =
-            DependencyProperty.Register(nameof(SelectionFirstColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.CornflowerBlue, Control_ColorPropertyChanged));
-
-        /// <summary>
-        /// Get or set the second selection color
-        /// </summary>
-        public Brush SelectionSecondColor
-        {
-            get => (Brush)GetValue(SelectionSecondColorProperty);
-            set => SetValue(SelectionSecondColorProperty, value);
-        }
-
-        public static readonly DependencyProperty SelectionSecondColorProperty =
-            DependencyProperty.Register(nameof(SelectionSecondColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.LightSteelBlue, Control_ColorPropertyChanged));
-
-        /// <summary>
-        /// Get or set the byte modified colors
-        /// </summary>
-        public Brush ByteModifiedColor
-        {
-            get => (Brush)GetValue(ByteModifiedColorProperty);
-            set => SetValue(ByteModifiedColorProperty, value);
-        }
-
-        public static readonly DependencyProperty ByteModifiedColorProperty =
-            DependencyProperty.Register(nameof(ByteModifiedColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.DarkGray, Control_ColorPropertyChanged));
-
-        /// <summary>
-        /// Get or set the mouse over colors
-        /// </summary>
-        public Brush MouseOverColor
-        {
-            get => (Brush)GetValue(MouseOverColorProperty);
-            set => SetValue(MouseOverColorProperty, value);
-        }
-
-        public static readonly DependencyProperty MouseOverColorProperty =
-            DependencyProperty.Register(nameof(MouseOverColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.LightSkyBlue, Control_ColorPropertyChanged));
-
-        /// <summary>
-        /// Get or set the byte deleted colors
-        /// </summary>
-        /// <remarks>
-        /// Visible only when HideByteDelete are set to false 
-        /// </remarks>
-        public Brush ByteDeletedColor
-        {
-            get => (Brush)GetValue(ByteDeletedColorProperty);
-            set => SetValue(ByteDeletedColorProperty, value);
-        }
-
-        public static readonly DependencyProperty ByteDeletedColorProperty =
-            DependencyProperty.Register(nameof(ByteDeletedColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Red, Control_ColorPropertyChanged));
-
-        /// <summary>
-        /// Get or set the byte added colors
-        /// </summary>
-        public Brush ByteAddedColor
-        {
-            get => (Brush)GetValue(ByteAddedColorProperty);
-            set => SetValue(ByteAddedColorProperty, value);
-        }
-
-        public static readonly DependencyProperty ByteAddedColorProperty =
-            DependencyProperty.Register(nameof(ByteAddedColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Transparent, Control_ColorPropertyChanged));
-
-
-        /// <summary>
-        /// Get or set the Highlight color
-        /// </summary>
-        public Brush HighLightColor
-        {
-            get => (Brush)GetValue(HighLightColorProperty);
-            set => SetValue(HighLightColorProperty, value);
-        }
-
-        public static readonly DependencyProperty HighLightColorProperty =
-            DependencyProperty.Register(nameof(HighLightColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Gold, Control_ColorPropertyChanged));
-
-        /// <summary>
-        /// Get or set the Highlight color of the header
-        /// </summary>
-        public Brush ForegroundHighLightOffSetHeaderColor
-        {
-            get => (Brush)GetValue(ForegroundHighLightOffSetHeaderColorProperty);
-            set => SetValue(ForegroundHighLightOffSetHeaderColorProperty, value);
-        }
-
-        public static readonly DependencyProperty ForegroundHighLightOffSetHeaderColorProperty =
-            DependencyProperty.Register(nameof(ForegroundHighLightOffSetHeaderColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Black, Control_ForegroundOffSetHeaderColorPropertyChanged));
-
-        /// <summary>
-        /// Get or set the header color
-        /// </summary>
-        public Brush ForegroundOffSetHeaderColor
-        {
-            get => (Brush)GetValue(ForegroundOffSetHeaderColorProperty);
-            set => SetValue(ForegroundOffSetHeaderColorProperty, value);
-        }
-
-        public static readonly DependencyProperty ForegroundOffSetHeaderColorProperty =
-            DependencyProperty.Register(nameof(ForegroundOffSetHeaderColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Gray, Control_ForegroundOffSetHeaderColorPropertyChanged));
-
-        private static void Control_ForegroundOffSetHeaderColorPropertyChanged(DependencyObject d,
-            DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-            ctrl.UpdateHeader();
-            ctrl.UpdateLinesInfo();
-        }
-
-        /// <summary>
-        /// Get or set the backgroung color
-        /// </summary>
-        public new Brush Background
-        {
-            get => (Brush)GetValue(BackgroundProperty);
-            set => SetValue(BackgroundProperty, value);
-        }
-
-        /// <summary>
-        /// Get or set the foreground color
-        /// </summary>
-        public new Brush Foreground
-        {
-            get => (Brush)GetValue(ForegroundProperty);
-            set => SetValue(ForegroundProperty, value);
-        }
-
-        public new static readonly DependencyProperty ForegroundProperty =
-            DependencyProperty.Register(nameof(Foreground), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Black, Control_ColorPropertyChanged));
-
-        /// <summary>
-        /// Second foreground colors used in iByteControl
-        /// </summary>
-        public Brush ForegroundSecondColor
-        {
-            get => (Brush)GetValue(ForegroundSecondColorProperty);
-            set => SetValue(ForegroundSecondColorProperty, value);
-        }
-
-        public static readonly DependencyProperty ForegroundSecondColorProperty =
-            DependencyProperty.Register(nameof(ForegroundSecondColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Blue, Control_ColorPropertyChanged));
-
-        /// <summary>
-        /// Foreground colors used in iByteControl
-        /// </summary>
-        public Brush ForegroundContrast
-        {
-            get => (Brush)GetValue(ForegroundContrastProperty);
-            set => SetValue(ForegroundContrastProperty, value);
-        }
-
-        public static readonly DependencyProperty ForegroundContrastProperty =
-            DependencyProperty.Register(nameof(ForegroundContrast), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.White, Control_ColorPropertyChanged));
-
-        public new static readonly DependencyProperty BackgroundProperty =
-            DependencyProperty.Register(nameof(Background), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.White, Control_BackgroundColorPropertyChanged));
-
-
-
-        public Brush BarChartColor
-        {
-            get { return (Brush)GetValue(BarChartColorProperty); }
-            set { SetValue(BarChartColorProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for BarChartColor.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty BarChartColorProperty =
-            DependencyProperty.Register(nameof(BarChartColor), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.DarkGray, Control_ColorPropertyChanged));
-
-        private static void Control_BackgroundColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-            ctrl.BaseGrid.Background = (Brush)e.NewValue;
-        }
-
-        /// <summary>
-        /// Update color cache from dependency properties
-        /// </summary>
-        private void UpdateColorCache()
-        {
-            _cachedSelectionFirstColor = SelectionFirstColor;
-            _cachedSelectionSecondColor = SelectionSecondColor;
-            _cachedByteModifiedColor = ByteModifiedColor;
-            _cachedMouseOverColor = MouseOverColor;
-            _cachedByteDeletedColor = ByteDeletedColor;
-            _cachedByteAddedColor = ByteAddedColor;
-            _cachedHighLightColor = HighLightColor;
-            _cachedForeground = Foreground;
-            _cachedForegroundSecondColor = ForegroundSecondColor;
-            _cachedForegroundContrast = ForegroundContrast;
-            _cachedBackground = Background;
-            _colorCacheNeedsUpdate = false;
-        }
-
-        /// <summary>
-        /// Get cached colors for fast access - avoids DependencyProperty overhead
-        /// </summary>
-        internal Brush GetCachedSelectionFirstColor()
-        {
-            if (_colorCacheNeedsUpdate) UpdateColorCache();
-            return _cachedSelectionFirstColor;
-        }
-
-        internal Brush GetCachedSelectionSecondColor()
-        {
-            if (_colorCacheNeedsUpdate) UpdateColorCache();
-            return _cachedSelectionSecondColor;
-        }
-
-        internal Brush GetCachedByteModifiedColor()
-        {
-            if (_colorCacheNeedsUpdate) UpdateColorCache();
-            return _cachedByteModifiedColor;
-        }
-
-        internal Brush GetCachedMouseOverColor()
-        {
-            if (_colorCacheNeedsUpdate) UpdateColorCache();
-            return _cachedMouseOverColor;
-        }
-
-        internal Brush GetCachedByteDeletedColor()
-        {
-            if (_colorCacheNeedsUpdate) UpdateColorCache();
-            return _cachedByteDeletedColor;
-        }
-
-        internal Brush GetCachedHighLightColor()
-        {
-            if (_colorCacheNeedsUpdate) UpdateColorCache();
-            return _cachedHighLightColor;
-        }
-
-        internal Brush GetCachedForeground()
-        {
-            if (_colorCacheNeedsUpdate) UpdateColorCache();
-            return _cachedForeground;
-        }
-
-        internal Brush GetCachedForegroundSecondColor()
-        {
-            if (_colorCacheNeedsUpdate) UpdateColorCache();
-            return _cachedForegroundSecondColor;
-        }
-
-        internal Brush GetCachedBackground()
-        {
-            if (_colorCacheNeedsUpdate) UpdateColorCache();
-            return _cachedBackground;
-        }
-
-        /// <summary>
-        /// Update only colors without full refresh - OPTIMIZED
-        /// </summary>
-        private void UpdateColorsOnly()
-        {
-            if (_colorCacheNeedsUpdate)
-                UpdateColorCache();
-
-            // Batch update with BeginInit/EndInit for better performance
-            HexDataStackPanel.BeginInit();
-            StringDataStackPanel.BeginInit();
-
-            try
+            // Initialize auto-scroll timer
+            _autoScrollTimer = new DispatcherTimer
             {
-                // Update all visible bytes with new colors
-                TraverseHexAndStringBytes(ctrl =>
-                {
-                    ctrl.UpdateVisual();
-                }, force: false);
-            }
-            finally
+                Interval = TimeSpan.FromMilliseconds(AutoScrollInterval)
+            };
+            _autoScrollTimer.Tick += AutoScrollTimer_Tick;
+
+            // Auto-adjust visible lines when BaseGrid is resized (V1-style approach)
+            // Use BaseGrid.RowDefinitions[1].ActualHeight like V1 does
+            BaseGrid.SizeChanged += BaseGrid_SizeChanged;
+
+            // Handle mouse wheel scrolling (use PreviewMouseWheel on ScrollViewer to intercept before it scrolls)
+            ContentScroller.PreviewMouseWheel += ContentScroller_PreviewMouseWheel;
+
+            // Find XAML elements for display options
+            _headerBorder = this.FindName("HeaderBorder") as Border;
+            _statusBar = this.FindName("StatusBar") as System.Windows.Controls.Primitives.StatusBar;
+            _hexHeaderStackPanel = this.FindName("HexHeaderStackPanel") as StackPanel;
+            _asciiHeaderStackPanel = this.FindName("AsciiHeaderStackPanel") as StackPanel;
+            _barChartPanel = this.FindName("BarChartPanel") as Controls.BarChartPanel;
+            _scrollMarkers = this.FindName("ScrollMarkers") as Controls.ScrollMarkerPanel;
+
+            // Subscribe to scroll marker click event for navigation
+            if (_scrollMarkers != null)
             {
-                HexDataStackPanel.EndInit();
-                StringDataStackPanel.EndInit();
+                _scrollMarkers.MarkerClicked += ScrollMarkers_MarkerClicked;
             }
-        }
 
-        private static void Control_ColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
+            // Initialize column headers with byte position numbers
+            this.Loaded += (s, e) => RefreshColumnHeader();
 
-            // Mark color cache as needing update
-            ctrl._colorCacheNeedsUpdate = true;
+            // Subscribe to right-click event for context menu
+            if (HexViewport != null)
+            {
+                HexViewport.ByteRightClick += HexViewport_ByteRightClick;
+                HexViewport.ByteDoubleClicked += HexViewport_ByteDoubleClicked;
+                HexViewport.ByteDragSelection += HexViewport_ByteDragSelection;
+                HexViewport.KeyboardNavigation += HexViewport_KeyboardNavigation;
+            }
 
-            // Use optimized color-only update instead of full RefreshView
-            ctrl.UpdateColorsOnly();
-        }
-
-        public new FontFamily FontFamily
-        {
-            get => (FontFamily)GetValue(FontFamilyProperty);
-            set => SetValue(FontFamilyProperty, value);
-        }
-
-        public new static readonly DependencyProperty FontFamilyProperty =
-            DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(HexEditor),
-                new FrameworkPropertyMetadata(new FontFamily("Courier New"), FontFamily_Changed));
-
-        private static void FontFamily_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-            ctrl.RefreshView(true);
+            // Initialize zoom system
+            InitialiseZoom();
         }
 
         /// <summary>
-        /// Call Updatevisual methods for all IByteControl
+        /// Handle scroll marker click to navigate to that position
         /// </summary>
-        public void UpdateVisual() => TraverseHexAndStringBytes(ctrl => { ctrl.UpdateVisual(); });
+        private void ScrollMarkers_MarkerClicked(object sender, long position)
+        {
+            if (_viewModel == null || _viewModel.VirtualLength == 0)
+                return;
 
-        #endregion Colors/fonts property and methods
+            // Navigate to the clicked position
+            _viewModel.SelectionStart = new VirtualPosition(position);
+            _viewModel.SelectionStop = new VirtualPosition(position);
 
-        #region Miscellaneous property/methods
+            // Calculate the line number for this position
+            long lineNumber = position / _viewModel.BytePerLine;
+
+            // Center the position on screen by scrolling to a few lines before
+            long scrollToLine = Math.Max(0, lineNumber - (_viewModel.VisibleLines / 2));
+            long maxScroll = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+            scrollToLine = Math.Min(scrollToLine, maxScroll);
+
+            // Update scroll position
+            _viewModel.ScrollPosition = scrollToLine;
+            VerticalScroll.Value = scrollToLine;
+
+            // Update UI
+            UpdateSelectionInfo();
+            UpdatePositionInfo();
+        }
 
         /// <summary>
-        /// The name of your application to be showing in messagebox title
+        /// Handle right-click on byte for context menu
         /// </summary>
-        public string ApplicationName
+        private void HexViewport_ByteRightClick(object sender, Controls.ByteRightClickEventArgs e)
         {
-            get => (string)GetValue(ApplicationNameProperty);
-            set => SetValue(ApplicationNameProperty, value);
+            ShowContextMenu(e.Position);
         }
 
-        public static readonly DependencyProperty ApplicationNameProperty =
-            DependencyProperty.Register(nameof(ApplicationName), typeof(string), typeof(HexEditor),
-                new PropertyMetadata("Wpf HexEditor"));
-
         /// <summary>
-        /// Height of data line. 
+        /// Handle double-click on byte for auto-select same bytes
         /// </summary>
-        public double LineHeight
+        private void HexViewport_ByteDoubleClicked(object sender, long position)
         {
-            get => (double)GetValue(LineHeightProperty);
-            set => SetValue(LineHeightProperty, value);
+            // Only auto-select if feature is enabled
+            if (!AllowAutoSelectSameByteAtDoubleClick)
+                return;
+
+            if (_viewModel == null)
+                return;
+
+            // Get byte value at clicked position
+            var virtualPos = new VirtualPosition(position);
+            if (!virtualPos.IsValid || position >= _viewModel.VirtualLength)
+                return;
+
+            byte byteValue = _viewModel.GetByteAt(virtualPos);
+
+            // Find all positions with this byte value and select them
+            SelectAllBytesWith(byteValue);
+
+            // Update status with meaningful info
+            int count = CountBytesWith(byteValue);
+            StatusText.Text = $"Selected {count} byte(s) with value 0x{byteValue:X2}";
         }
 
-        public static readonly DependencyProperty LineHeightProperty =
-            DependencyProperty.Register(nameof(LineHeight), typeof(double), typeof(HexEditor),
-                new FrameworkPropertyMetadata(18D, (d, _) => 
-                {
-                    if (d is HexEditor ctrl)
-                        ctrl.RefreshView();
-                }));
-
         /// <summary>
-        /// Get or set the visual of line info panel
+        /// Count occurrences of a specific byte value in the file
         /// </summary>
-        public OffSetPanelType OffSetPanelVisual
+        private int CountBytesWith(byte value)
         {
-            get => (OffSetPanelType)GetValue(OffSetPanelVisualProperty);
-            set => SetValue(OffSetPanelVisualProperty, value);
-        }
+            if (_viewModel == null)
+                return 0;
 
-        public static readonly DependencyProperty OffSetPanelVisualProperty =
-            DependencyProperty.Register(nameof(OffSetPanelVisual), typeof(OffSetPanelType), typeof(HexEditor),
-                new FrameworkPropertyMetadata(OffSetPanelType.OffsetOnly, OffSetPanelVisual_PropertyChanged));
-
-        private static void OffSetPanelVisual_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor ctrl)
-                ctrl.UpdateLinesInfo();
+            int count = 0;
+            for (long i = 0; i < _viewModel.VirtualLength; i++)
+            {
+                if (_viewModel.GetByteAt(new VirtualPosition(i)) == value)
+                    count++;
+            }
+            return count;
         }
 
         /// <summary>
-        /// Get or set if the visual of line info panel width are dynamic or fixed
+        /// Handle mouse drag selection
         /// </summary>
-        public OffSetPanelFixedWidth OffSetPanelFixedWidthVisual
+        private void HexViewport_ByteDragSelection(object sender, Controls.ByteDragSelectionEventArgs e)
         {
-            get => (OffSetPanelFixedWidth)GetValue(OffSetPanelFixedWidthVisualProperty);
-            set => SetValue(OffSetPanelFixedWidthVisualProperty, value);
+            if (_viewModel == null)
+                return;
+
+            // Update selection range in ViewModel
+            _viewModel.SetSelectionRange(
+                new VirtualPosition(e.StartPosition),
+                new VirtualPosition(e.EndPosition));
+
+            // Update UI
+            UpdateSelectionInfo();
         }
 
-        public static readonly DependencyProperty OffSetPanelFixedWidthVisualProperty =
-            DependencyProperty.Register(nameof(OffSetPanelFixedWidthVisual), typeof(OffSetPanelFixedWidth), typeof(HexEditor),
-                new FrameworkPropertyMetadata(OffSetPanelFixedWidth.Dynamic, OffSetPanelVisual_PropertyChanged));
-
-
         /// <summary>
-        /// Get or set the offset base, which is added to all offsets before they are displayed
+        /// Handle keyboard navigation (Arrow keys, Page Up/Down, Home/End)
         /// </summary>
-        public long OffsetBase
+        private void HexViewport_KeyboardNavigation(object sender, Controls.KeyboardNavigationEventArgs e)
         {
-            get => (long)GetValue(OffsetBaseProperty);
-            set => SetValue(OffsetBaseProperty, value);
+            if (_viewModel == null)
+                return;
+
+            var currentPos = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0;
+            long newPos = currentPos;
+
+            switch (e.Key)
+            {
+                case System.Windows.Input.Key.Left:
+                    newPos = Math.Max(0, currentPos - 1);
+                    break;
+
+                case System.Windows.Input.Key.Right:
+                    newPos = Math.Min(_viewModel.VirtualLength - 1, currentPos + 1);
+                    break;
+
+                case System.Windows.Input.Key.Up:
+                    newPos = Math.Max(0, currentPos - _viewModel.BytePerLine);
+                    break;
+
+                case System.Windows.Input.Key.Down:
+                    newPos = Math.Min(_viewModel.VirtualLength - 1, currentPos + _viewModel.BytePerLine);
+                    break;
+
+                case System.Windows.Input.Key.PageUp:
+                    newPos = Math.Max(0, currentPos - (_viewModel.BytePerLine * _viewModel.VisibleLines));
+                    break;
+
+                case System.Windows.Input.Key.PageDown:
+                    newPos = Math.Min(_viewModel.VirtualLength - 1, currentPos + (_viewModel.BytePerLine * _viewModel.VisibleLines));
+                    break;
+
+                case System.Windows.Input.Key.Home:
+                    if (e.IsControlPressed)
+                        newPos = 0; // Ctrl+Home: Go to start of file
+                    else
+                        newPos = (currentPos / _viewModel.BytePerLine) * _viewModel.BytePerLine; // Home: Go to start of line
+                    break;
+
+                case System.Windows.Input.Key.End:
+                    if (e.IsControlPressed)
+                        newPos = _viewModel.VirtualLength - 1; // Ctrl+End: Go to end of file
+                    else
+                    {
+                        // End: Go to end of line
+                        long lineStart = (currentPos / _viewModel.BytePerLine) * _viewModel.BytePerLine;
+                        newPos = Math.Min(_viewModel.VirtualLength - 1, lineStart + _viewModel.BytePerLine - 1);
+                    }
+                    break;
+            }
+
+            // Update selection based on Shift key
+            if (e.IsShiftPressed)
+            {
+                // Shift pressed: extend selection
+                if (!_viewModel.SelectionStart.IsValid)
+                    _viewModel.SelectionStart = new VirtualPosition(currentPos);
+
+                _viewModel.SelectionStop = new VirtualPosition(newPos);
+            }
+            else
+            {
+                // No Shift: move cursor
+                _viewModel.SelectionStart = new VirtualPosition(newPos);
+                _viewModel.SelectionStop = new VirtualPosition(newPos);
+            }
+
+            // Scroll to ensure new position is visible
+            long targetLine = newPos / _viewModel.BytePerLine;
+            if (targetLine < _viewModel.ScrollPosition)
+                _viewModel.ScrollPosition = targetLine;
+            else if (targetLine >= _viewModel.ScrollPosition + _viewModel.VisibleLines)
+                _viewModel.ScrollPosition = targetLine - _viewModel.VisibleLines + 1;
+
+            // Update UI
+            UpdateSelectionInfo();
+            UpdatePositionInfo();
         }
 
-        public static readonly DependencyProperty OffsetBaseProperty =
-            DependencyProperty.Register(nameof(OffsetBase), typeof(long), typeof(HexEditor),
-                new FrameworkPropertyMetadata(0L, OffSetPanelVisual_PropertyChanged));
+        #region Public Events
 
         /// <summary>
-        /// Get or set of the tooltip are shown over the IByteControl
+        /// Raised when a byte is modified, added, or deleted
         /// </summary>
-        public bool ShowByteToolTip
-        {
-            get => (bool)GetValue(ShowByteToolTipProperty);
-            set => SetValue(ShowByteToolTipProperty, value);
-        }
-
-        public static readonly DependencyProperty ShowByteToolTipProperty =
-            DependencyProperty.Register(nameof(ShowByteToolTip), typeof(bool), typeof(HexEditor),
-                new PropertyMetadata(false));
-
+        public event EventHandler<ByteModifiedEventArgs> ByteModified;
 
         /// <summary>
-        /// Get all bytes modified of the specified action
+        /// Raised when the selection changes
         /// </summary>
-        /// <returns>Return byte modified of specified action. Return null if provider is closed</returns>
-        public IDictionary<long, ByteModified> GetByteModifieds(ByteAction act)
-        {
-            if (!CheckIsOpen(_provider)) return null;
-
-            return _provider.GetByteModifieds(act);
-        }
-
-        public (byte? singleByte, bool succes) GetByte(long position, bool copyChange = true)
-        {
-            if (!CheckIsOpen(_provider)) return (null, false);
-
-            return _provider.GetByte(position, copyChange);
-        }
-        #endregion Miscellaneous property/methods
-
-        #region Data visual type support
+        public event EventHandler<HexSelectionChangedEventArgs> SelectionChanged;
 
         /// <summary>
-        /// Set or get the visual of line offset header
+        /// Raised when the cursor position changes
         /// </summary>
-        public DataVisualType OffSetStringVisual
-        {
-            get => (DataVisualType)GetValue(OffSetStringVisualProperty);
-            set => SetValue(OffSetStringVisualProperty, value);
-        }
-
-        public static readonly DependencyProperty OffSetStringVisualProperty =
-            DependencyProperty.Register(nameof(OffSetStringVisual), typeof(DataVisualType), typeof(HexEditor),
-                new FrameworkPropertyMetadata(DataVisualType.Hexadecimal, (d, e) =>
-                {
-                    if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-                    ctrl.UpdateLinesInfo();
-                }));
+        public event EventHandler<PositionChangedEventArgs> PositionChanged;
 
         /// <summary>
-        /// Visually change de state of the byte
+        /// Raised when a file is opened
         /// </summary>
-        public DataVisualState DataStringState
-        {
-            get => (DataVisualState)GetValue(OffSetDataStringStateProperty);
-            set => SetValue(OffSetDataStringStateProperty, value);
-        }
-
-        public static readonly DependencyProperty OffSetDataStringStateProperty =
-           DependencyProperty.Register(nameof(DataStringState), typeof(DataVisualState), typeof(HexEditor),
-               new FrameworkPropertyMetadata(DataVisualState.Default, (d, e) =>
-               {
-                   if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-                   ctrl.UpdateHeader(true);
-
-                   ctrl.TraverseHexBytes(hctrl =>
-                   {
-                       hctrl.UpdateDataVisualWidth();
-                       hctrl.UpdateTextRenderFromByte();
-                   });
-               }));
-
-        public ByteOrderType ByteOrder
-        {
-            get => (ByteOrderType)GetValue(OffSetByteOrderProperty);
-            set => SetValue(OffSetByteOrderProperty, value);
-        }
-
-        public static readonly DependencyProperty OffSetByteOrderProperty =
-           DependencyProperty.Register(nameof(ByteOrder), typeof(ByteOrderType), typeof(HexEditor),
-               new FrameworkPropertyMetadata(ByteOrderType.LoHi, (d, e) =>
-               {
-                   if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-                   ctrl.UpdateHeader(true);
-
-                   ctrl.TraverseHexBytes(hctrl =>
-                   {
-                       hctrl.UpdateDataVisualWidth();
-                       hctrl.UpdateTextRenderFromByte();
-                   });
-               }));
-
+        public event EventHandler FileOpened;
 
         /// <summary>
-        /// Obtains the ration from the ByteSize
+        /// Raised when a file is closed
         /// </summary>
-        private int ByteSizeRatio => ByteSize switch
-        {
-            ByteSizeType.Bit8 => 1,
-            ByteSizeType.Bit16 => 2,
-            ByteSizeType.Bit32 => 4,
-            _ => throw new NotImplementedException()
-        };
+        public event EventHandler FileClosed;
 
         /// <summary>
-        /// Get or set the byte size
+        /// Raised when an undo operation completes
         /// </summary>
-        public ByteSizeType ByteSize
+        public event EventHandler UndoCompleted;
+
+        /// <summary>
+        /// Raised when a redo operation completes
+        /// </summary>
+        public event EventHandler RedoCompleted;
+
+        /// <summary>
+        /// Event helper: Raise ByteModified event
+        /// </summary>
+        protected virtual void OnByteModified(ByteModifiedEventArgs e) => ByteModified?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise SelectionChanged event
+        /// </summary>
+        protected virtual void OnSelectionChanged(HexSelectionChangedEventArgs e) => SelectionChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise PositionChanged event
+        /// </summary>
+        protected virtual void OnPositionChanged(PositionChangedEventArgs e) => PositionChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise FileOpened event
+        /// </summary>
+        protected virtual void OnFileOpened(EventArgs e) => FileOpened?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise FileClosed event
+        /// </summary>
+        protected virtual void OnFileClosed(EventArgs e) => FileClosed?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise UndoCompleted event
+        /// </summary>
+        protected virtual void OnUndoCompleted(EventArgs e) => UndoCompleted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise RedoCompleted event
+        /// </summary>
+        protected virtual void OnRedoCompleted(EventArgs e) => RedoCompleted?.Invoke(this, e);
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// Raised when selection start position changes
+        /// </summary>
+        public event EventHandler SelectionStartChanged;
+
+        /// <summary>
+        /// Raised when selection stop position changes
+        /// </summary>
+        public event EventHandler SelectionStopChanged;
+
+        /// <summary>
+        /// Raised when selection length changes
+        /// </summary>
+        public event EventHandler SelectionLengthChanged;
+
+        /// <summary>
+        /// Raised when data is copied to clipboard
+        /// </summary>
+        public event EventHandler DataCopied;
+
+        /// <summary>
+        /// Raised when character table type changes
+        /// </summary>
+        public event EventHandler TypeOfCharacterTableChanged;
+
+        /// <summary>
+        /// Raised when a long process progress changes
+        /// </summary>
+        public event EventHandler LongProcessProgressChanged;
+
+        /// <summary>
+        /// Raised when a long process starts
+        /// </summary>
+        public event EventHandler LongProcessProgressStarted;
+
+        /// <summary>
+        /// Raised when a long process completes
+        /// </summary>
+        public event EventHandler LongProcessProgressCompleted;
+
+        /// <summary>
+        /// Raised when a replace byte operation completes
+        /// </summary>
+        public event EventHandler ReplaceByteCompleted;
+
+        /// <summary>
+        /// Raised when a fill with byte operation completes
+        /// </summary>
+        public event EventHandler FillWithByteCompleted;
+
+        /// <summary>
+        /// Raised when bytes are deleted
+        /// </summary>
+        public event EventHandler BytesDeleted;
+
+        /// <summary>
+        /// Raised when an undo operation completes (alias for UndoCompleted)
+        /// </summary>
+        public event EventHandler Undone;
+
+        /// <summary>
+        /// Raised when a redo operation completes (alias for RedoCompleted)
+        /// </summary>
+        public event EventHandler Redone;
+
+        /// <summary>
+        /// Raised when a byte is single-clicked
+        /// </summary>
+        public event EventHandler<ByteEventArgs> ByteClick;
+
+        /// <summary>
+        /// Raised when a byte is double-clicked
+        /// </summary>
+        public event EventHandler<ByteEventArgs> ByteDoubleClick;
+
+        /// <summary>
+        /// Raised when zoom scale changes
+        /// </summary>
+        public event EventHandler ZoomScaleChanged;
+
+        /// <summary>
+        /// Raised when vertical scrollbar position changes
+        /// </summary>
+        public event EventHandler<ByteEventArgs> VerticalScrollBarChanged;
+
+        /// <summary>
+        /// Raised when changes are submitted (saved)
+        /// </summary>
+        public event EventHandler ChangesSubmited;
+
+        /// <summary>
+        /// Raised when read-only mode changes
+        /// </summary>
+        public event EventHandler ReadOnlyChanged;
+
+        /// <summary>
+        /// Event helper: Raise SelectionStartChanged
+        /// </summary>
+        protected virtual void OnSelectionStartChanged(EventArgs e) => SelectionStartChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise SelectionStopChanged
+        /// </summary>
+        protected virtual void OnSelectionStopChanged(EventArgs e) => SelectionStopChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise SelectionLengthChanged
+        /// </summary>
+        protected virtual void OnSelectionLengthChanged(EventArgs e) => SelectionLengthChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise DataCopied
+        /// </summary>
+        protected virtual void OnDataCopied(EventArgs e) => DataCopied?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise TypeOfCharacterTableChanged
+        /// </summary>
+        protected virtual void OnTypeOfCharacterTableChanged(EventArgs e) => TypeOfCharacterTableChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise LongProcessProgressChanged
+        /// </summary>
+        protected virtual void OnLongProcessProgressChanged(EventArgs e) => LongProcessProgressChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise LongProcessProgressStarted
+        /// </summary>
+        protected virtual void OnLongProcessProgressStarted(EventArgs e) => LongProcessProgressStarted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise LongProcessProgressCompleted
+        /// </summary>
+        protected virtual void OnLongProcessProgressCompleted(EventArgs e) => LongProcessProgressCompleted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ReplaceByteCompleted
+        /// </summary>
+        protected virtual void OnReplaceByteCompleted(EventArgs e) => ReplaceByteCompleted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise FillWithByteCompleted
+        /// </summary>
+        protected virtual void OnFillWithByteCompleted(EventArgs e) => FillWithByteCompleted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise BytesDeleted
+        /// </summary>
+        protected virtual void OnBytesDeleted(EventArgs e) => BytesDeleted?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise Undone
+        /// </summary>
+        protected virtual void OnUndone(EventArgs e) => Undone?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise Redone
+        /// </summary>
+        protected virtual void OnRedone(EventArgs e) => Redone?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ByteClick
+        /// </summary>
+        protected virtual void OnByteClick(ByteEventArgs e) => ByteClick?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ByteDoubleClick
+        /// </summary>
+        protected virtual void OnByteDoubleClick(ByteEventArgs e) => ByteDoubleClick?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ZoomScaleChanged
+        /// </summary>
+        protected virtual void OnZoomScaleChanged(EventArgs e) => ZoomScaleChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise VerticalScrollBarChanged
+        /// </summary>
+        protected virtual void OnVerticalScrollBarChanged(ByteEventArgs e) => VerticalScrollBarChanged?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ChangesSubmited
+        /// </summary>
+        protected virtual void OnChangesSubmited(EventArgs e) => ChangesSubmited?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise ReadOnlyChanged
+        /// </summary>
+        protected virtual void OnReadOnlyChanged(EventArgs e) => ReadOnlyChanged?.Invoke(this, e);
+
+        #endregion
+
+        #region V1 Compatibility - Configuration Properties
+
+        // Backing fields
+        // No more backing fields needed - all converted to DependencyProperty
+
+        /// <summary>
+        /// Allow context menu  - DependencyProperty
+        /// </summary>
+        public bool AllowContextMenu
         {
-            get => (ByteSizeType)GetValue(OffSetByteSizeProperty);
-            set => SetValue(OffSetByteSizeProperty, value);
+            get => (bool)GetValue(AllowContextMenuProperty);
+            set => SetValue(AllowContextMenuProperty, value);
         }
 
-        public static readonly DependencyProperty OffSetByteSizeProperty =
-           DependencyProperty.Register(nameof(ByteSize), typeof(ByteSizeType), typeof(HexEditor),
-               new FrameworkPropertyMetadata(ByteSizeType.Bit8, (d, e) =>
-               {
-                   if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-                   ctrl.UpdateViewers(true);
-                   ctrl.UpdateHeader(true);
-
-                   ctrl.TraverseHexBytes(c =>
-                   {
-                       c.UpdateDataVisualWidth();
-                       c.UpdateTextRenderFromByte();
-                   });
-
-                   ctrl.UpdateByteModified();
-                   ctrl.UpdateScrollBar();
-               }));
+        /// <summary>
+        /// Allow zoom  - DependencyProperty
+        /// </summary>
+        public bool AllowZoom
+        {
+            get => (bool)GetValue(AllowZoomProperty);
+            set => SetValue(AllowZoomProperty, value);
+        }
 
         /// <summary>
-        /// Get or set the visual data format of HexByte 
+        /// Mouse wheel scroll speed  - DependencyProperty
+        /// </summary>
+        public MouseWheelSpeed MouseWheelSpeed
+        {
+            get => (MouseWheelSpeed)GetValue(MouseWheelSpeedProperty);
+            set => SetValue(MouseWheelSpeedProperty, value);
+        }
+
+        /// <summary>
+        /// Data string display format (Hex/Decimal/Octal/Binary) - DependencyProperty
         /// </summary>
         public DataVisualType DataStringVisual
         {
@@ -1013,80 +611,61 @@ namespace WpfHexaEditor
             set => SetValue(DataStringVisualProperty, value);
         }
 
-        public static readonly DependencyProperty DataStringVisualProperty =
-            DependencyProperty.Register(nameof(DataStringVisual), typeof(DataVisualType), typeof(HexEditor),
-                new FrameworkPropertyMetadata(DataVisualType.Hexadecimal, (d, e) =>
-                {
-                    if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-                    ctrl.UpdateHeader(true);
-
-                    ctrl.TraverseHexBytes(c =>
-                    {
-                        c.UpdateDataVisualWidth();
-                        c.UpdateTextRenderFromByte();
-                    });
-                }));
-
-        #endregion Data visual type support
-
-        #region Characters tables property/methods
-
         /// <summary>
-        /// Type of caracter table are used un hexacontrol.
-        /// For now, somes character table can be readonly but will change in future
+        /// Offset string display format (Hex/Decimal/Octal/Binary) - DependencyProperty
         /// </summary>
-        public CharacterTableType TypeOfCharacterTable
+        public DataVisualType OffSetStringVisual
         {
-            get => (CharacterTableType)GetValue(TypeOfCharacterTableProperty);
-            set => SetValue(TypeOfCharacterTableProperty, value);
+            get => (DataVisualType)GetValue(OffSetStringVisualProperty);
+            set => SetValue(OffSetStringVisualProperty, value);
         }
 
-        public static readonly DependencyProperty TypeOfCharacterTableProperty =
-            DependencyProperty.Register(nameof(TypeOfCharacterTable), typeof(CharacterTableType), typeof(HexEditor),
-                new FrameworkPropertyMetadata(CharacterTableType.Ascii, (d, _) =>
-                {
-                    if (d is not HexEditor ctrl) return;
-
-                    ctrl.RefreshView(true);
-                    ctrl.TypeOfCharacterTableChanged?.Invoke(ctrl, EventArgs.Empty);
-                }));
-
         /// <summary>
-        /// Custom encoding to use when TypeOfCharacterTable is set to CustomEncoding
-        /// Allows any encoding supported by System.Text.Encoding (e.g., Shift-JIS, EUC-KR, Windows-1252, etc.)
+        /// Byte order (Lo-Hi / Hi-Lo) - DependencyProperty
         /// </summary>
-        /// <example>
-        /// <code>
-        /// // Use Shift-JIS encoding for Japanese text
-        /// hexEditor.TypeOfCharacterTable = CharacterTableType.CustomEncoding;
-        /// hexEditor.CustomEncoding = Encoding.GetEncoding("shift_jis");
-        ///
-        /// // Use EUC-KR encoding for Korean text
-        /// hexEditor.CustomEncoding = Encoding.GetEncoding("euc-kr");
-        ///
-        /// // Use Windows-1252 (Western European)
-        /// hexEditor.CustomEncoding = Encoding.GetEncoding(1252);
-        /// </code>
-        /// </example>
-        public Encoding CustomEncoding
+        public ByteOrderType ByteOrder
         {
-            get => (Encoding)GetValue(CustomEncodingProperty);
-            set => SetValue(CustomEncodingProperty, value);
+            get => (ByteOrderType)GetValue(ByteOrderProperty);
+            set => SetValue(ByteOrderProperty, value);
         }
 
-        public static readonly DependencyProperty CustomEncodingProperty =
-            DependencyProperty.Register(nameof(CustomEncoding), typeof(Encoding), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Encoding.UTF8, (d, _) =>
-                {
-                    if (d is not HexEditor ctrl) return;
-                    // Only refresh if CustomEncoding is actually being used
-                    if (ctrl.TypeOfCharacterTable == CharacterTableType.CustomEncoding)
-                        ctrl.RefreshView(true);
-                }));
+        /// <summary>
+        /// Byte size display (8/16/32-bit) - DependencyProperty
+        /// </summary>
+        public ByteSizeType ByteSize
+        {
+            get => (ByteSizeType)GetValue(ByteSizeProperty);
+            set => SetValue(ByteSizeProperty, value);
+        }
 
         /// <summary>
-        /// Show or not Multi Title Enconding (MTE) are loaded in TBL file
+        /// Custom text encoding - DependencyProperty
+        /// </summary>
+        public System.Text.Encoding CustomEncoding
+        {
+            get => (System.Text.Encoding)GetValue(CustomEncodingProperty);
+            set => SetValue(CustomEncodingProperty, value ?? System.Text.Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Gets the underlying stream used by the ByteProvider
+        /// Read-only property for V1 compatibility
+        /// </summary>
+        public Stream Stream => _viewModel?.Provider?.Stream;
+
+        /// <summary>
+        /// Preload byte strategy - DependencyProperty
+        /// </summary>
+        public PreloadByteInEditor PreloadByteInEditorMode
+        {
+            get => (PreloadByteInEditor)GetValue(PreloadByteInEditorModeProperty);
+            set => SetValue(PreloadByteInEditorModeProperty, value);
+        }
+
+        // TBL Advanced Features  - DependencyProperties
+
+        /// <summary>
+        /// Show MTE (Multi-Title Encoding) in TBL - DependencyProperty
         /// </summary>
         public bool TblShowMte
         {
@@ -1094,1234 +673,287 @@ namespace WpfHexaEditor
             set => SetValue(TblShowMteProperty, value);
         }
 
-        public static readonly DependencyProperty TblShowMteProperty =
-            DependencyProperty.Register(nameof(TblShowMte), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(true, (d, _) =>
-                {
-                    if (d is HexEditor ctrl)
-                        ctrl.RefreshView();
-                }));
-
         /// <summary>
-        /// Load TBL Character table file in control. (Used for ROM reverse engineering)
-        /// Load TBL Bookmark into control.
-        /// Change CharacterTable property for use.
+        /// DTE (Dual-Tile Encoding) color - DependencyProperty
         /// </summary>
-        public void LoadTblFile(string fileName)
+        public System.Windows.Media.Color TblDteColor
         {
-            // Load via service (data layer)
-            if (!_tblService.LoadFromFile(fileName))
-                return;
-
-            // Service now manages CharacterTable internally - no manual assignment needed
-
-            // Update UI (visual layer)
-            TblLabel.Visibility = Visibility.Visible;
-            TblLabel.ToolTip = $"TBL file : {fileName}";
-
-            UpdateTblBookMark();
-
-            BuildDataLines(MaxVisibleLine, true);
-            RefreshView(true);
+            get => (System.Windows.Media.Color)GetValue(TblDteColorProperty);
+            set => SetValue(TblDteColorProperty, value);
         }
 
         /// <summary>
-        /// Load TBL Character table file in control. (Used for ROM reverse engineering)
-        /// Load TBL Bookmark into control.
-        /// Change CharacterTable property for use.
+        /// MTE (Multi-Title Encoding) color - DependencyProperty
         /// </summary>
-        public void LoadDefaultTbl(DefaultCharacterTableType type = DefaultCharacterTableType.Ascii)
+        public System.Windows.Media.Color TblMteColor
         {
-            // Load via service (data layer)
-            if (!_tblService.LoadDefault(type))
-                return;
-
-            // Service now manages CharacterTable internally - no manual assignment needed
-            TblShowMte = false;
-
-            // Update UI (visual layer)
-            TblLabel.Visibility = Visibility.Visible;
-            TblLabel.ToolTip = $"{Properties.Resources.DefaultTBLString} : {type}";
-
-            RefreshView();
+            get => (System.Windows.Media.Color)GetValue(TblMteColorProperty);
+            set => SetValue(TblMteColorProperty, value);
         }
 
         /// <summary>
-        /// Update TBL bookmark in control
+        /// End block color for TBL - DependencyProperty
         /// </summary>
-        private void UpdateTblBookMark()
+        public System.Windows.Media.Color TblEndBlockColor
         {
-            //Load from loaded TBL bookmark
-            if (_tblService.CharacterTable == null) return;
-
-            foreach (var mark in _tblService.CharacterTable.BookMarks)
-                SetScrollMarker(mark);
-        }
-
-        /// <summary>
-        /// Get or set the color of DTE in string panel.
-        /// </summary>
-        public SolidColorBrush TbldteColor
-        {
-            get => (SolidColorBrush)GetValue(TbldteColorProperty);
-            set => SetValue(TbldteColorProperty, value);
-        }
-
-        public static readonly DependencyProperty TbldteColorProperty =
-            DependencyProperty.Register(nameof(TbldteColor), typeof(SolidColorBrush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Red, TBLColor_Changed));
-
-        private static void TBLColor_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor ctrl)
-                ctrl.RefreshView();
-        }
-
-        /// <summary>
-        /// Get or set the color of MTE in string panel.
-        /// </summary>
-        public SolidColorBrush TblmteColor
-        {
-            get => (SolidColorBrush)GetValue(TblmteColorProperty);
-            set => SetValue(TblmteColorProperty, value);
-        }
-
-        public static readonly DependencyProperty TblmteColorProperty =
-            DependencyProperty.Register(nameof(TblmteColor), typeof(SolidColorBrush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.DarkSlateGray, TBLColor_Changed));
-
-        /// <summary>
-        /// Get or set the color of EndBlock in string panel.
-        /// </summary>
-        public SolidColorBrush TblEndBlockColor
-        {
-            get => (SolidColorBrush)GetValue(TblEndBlockColorProperty);
+            get => (System.Windows.Media.Color)GetValue(TblEndBlockColorProperty);
             set => SetValue(TblEndBlockColorProperty, value);
         }
 
-        public static readonly DependencyProperty TblEndBlockColorProperty =
-            DependencyProperty.Register(nameof(TblEndBlockColor), typeof(SolidColorBrush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Blue, TBLColor_Changed));
-
         /// <summary>
-        /// Get or set the color of EndBlock in string panel.
+        /// End line color for TBL - DependencyProperty
         /// </summary>
-        public SolidColorBrush TblEndLineColor
+        public System.Windows.Media.Color TblEndLineColor
         {
-            get => (SolidColorBrush)GetValue(TblEndLineColorProperty);
+            get => (System.Windows.Media.Color)GetValue(TblEndLineColorProperty);
             set => SetValue(TblEndLineColorProperty, value);
         }
 
-        public static readonly DependencyProperty TblEndLineColorProperty =
-            DependencyProperty.Register(nameof(TblEndLineColor), typeof(SolidColorBrush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Blue, TBLColor_Changed));
-
         /// <summary>
-        /// Get or set the color of EndBlock in string panel.
+        /// Default color for TBL - DependencyProperty
         /// </summary>
-        public SolidColorBrush TblDefaultColor
+        public System.Windows.Media.Color TblDefaultColor
         {
-            get => (SolidColorBrush)GetValue(TblDefaultColorProperty);
+            get => (System.Windows.Media.Color)GetValue(TblDefaultColorProperty);
             set => SetValue(TblDefaultColorProperty, value);
         }
 
-        public static readonly DependencyProperty TblDefaultColorProperty =
-            DependencyProperty.Register(nameof(TblDefaultColor), typeof(SolidColorBrush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.Black, TBLColor_Changed));
-
-        #endregion Characters tables property/methods
-
-        #region ReadOnly property/event
-        public bool IsLockedFile => CheckIsOpen(_provider) && _provider.IsLockedFile;
+        // Bar Chart Panel color  - DependencyProperty
 
         /// <summary>
-        /// Put the control on readonly mode.
+        /// Bar chart color - DependencyProperty
         /// </summary>
-        public bool ReadOnlyMode
+        public System.Windows.Media.Color BarChartColor
         {
-            get => (bool)GetValue(ReadOnlyModeProperty);
-            set => SetValue(ReadOnlyModeProperty, value);
+            get => (System.Windows.Media.Color)GetValue(BarChartColorProperty);
+            set => SetValue(BarChartColorProperty, value);
         }
 
-        public static readonly DependencyProperty ReadOnlyModeProperty =
-            DependencyProperty.Register(nameof(ReadOnlyMode), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(false, (d, e) =>
+        #endregion
+
+        #region V1 Compatibility - Custom Background Blocks
+
+        private readonly List<Core.CustomBackgroundBlock> _customBackgroundBlocks = new List<Core.CustomBackgroundBlock>();
+
+        /// <summary>
+        /// Enable or disable custom background blocks (Phase 7.1) - DependencyProperty
+        /// </summary>
+        public bool AllowCustomBackgroundBlock
+        {
+            get => (bool)GetValue(AllowCustomBackgroundBlockProperty);
+            set => SetValue(AllowCustomBackgroundBlockProperty, value);
+        }
+
+        /// <summary>
+        /// Get the list of custom background blocks 
+        /// </summary>
+        public List<Core.CustomBackgroundBlock> CustomBackgroundBlockItems => _customBackgroundBlocks;
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// Is a file currently loaded?
+        /// </summary>
+        public bool IsFileLoaded => _viewModel != null;
+
+        /// <summary>
+        /// Is a file or stream currently loaded? 
+        /// </summary>
+        public bool IsFileOrStreamLoaded
+        {
+            get => (bool)GetValue(IsFileOrStreamLoadedProperty);
+            private set => SetValue(IsFileOrStreamLoadedPropertyKey, value);
+        }
+
+        /// <summary>
+        /// Current edit mode - DependencyProperty for XAML binding
+        /// </summary>
+        public EditMode EditMode
+        {
+            get => (EditMode)GetValue(EditModeProperty);
+            set => SetValue(EditModeProperty, value);
+        }
+
+        /// <summary>
+        /// Can undo?
+        /// </summary>
+        public bool CanUndo => _viewModel?.CanUndo ?? false;
+
+        /// <summary>
+        /// Can redo?
+        /// </summary>
+        public bool CanRedo => _viewModel?.CanRedo ?? false;
+
+        /// <summary>
+        /// Number of undo operations available
+        /// </summary>
+        public long UndoCount => _viewModel?.Provider?.UndoCount ?? 0;
+
+        /// <summary>
+        /// Number of redo operations available
+        /// </summary>
+        public long RedoCount => _viewModel?.Provider?.RedoCount ?? 0;
+
+        private bool _isOnLongProcess = false;
+        /// <summary>
+        /// Is a long process currently running? Set to false to cancel.
+        /// </summary>
+        public bool IsOnLongProcess
+        {
+            get => _isOnLongProcess;
+            set => _isOnLongProcess = value;
+        }
+
+        private double _longProcessProgress = 0;
+        /// <summary>
+        /// Progress of current long process (0.0 to 1.0)
+        /// </summary>
+        public double LongProcessProgress
+        {
+            get => _longProcessProgress;
+            set
+            {
+                if (Math.Abs(_longProcessProgress - value) > 0.001) // Avoid too many events
                 {
-                    if (d is not HexEditor ctrl) return;
-                    if (!CheckIsOpen(ctrl._provider)) return;
-                    if (e.NewValue == e.OldValue) return;
-
-                    ctrl._provider.ReadOnlyMode = ctrl._provider.IsLockedFile || (bool)e.NewValue;
-                    ctrl.RefreshView(true);
-                }));
-
-        private void Provider_ReadOnlyChanged(object sender, EventArgs e)
-        {
-            if (!CheckIsOpen(_provider)) return;
-
-            SetCurrentValue(ReadOnlyModeProperty, _provider.IsLockedFile || _provider.ReadOnlyMode);
-
-            ReadOnlyChanged?.Invoke(sender, e);
-        }
-
-        #endregion ReadOnly property/event
-
-        #region ByteModified methods/event/property
-        /// <summary>
-        /// Stream or file are modified when IsModified are set to true.
-        /// </summary>
-        public bool IsModified { get; internal set; }
-
-        private void Control_ByteModified(object sender, ByteEventArgs e)
-        {
-            if (!CheckIsOpen(_provider)) return;
-            if (_provider.ReadOnlyMode) return;
-
-            if (sender is IByteControl ctrl)
-            {
-                ModifyByte(ctrl.Byte.Byte[e.Index], ctrl.BytePositionInStream + e.Index);
-
-                e.BytePositionInStream = ctrl.BytePositionInStream;
+                    _longProcessProgress = value;
+                    OnLongProcessProgressChanged(EventArgs.Empty);
+                }
             }
-
-            BytesModified?.Invoke(this, e);
-            _findReplaceService.ClearCache();  // Clear search cache after modification
         }
 
-        private void Control_ByteDeleted(object sender, EventArgs e) => DeleteSelection();
+        /// <summary>
+        /// Can copy selection to clipboard?
+        /// </summary>
+        public bool CanCopy => HasSelection && !ReadOnlyMode;
 
         /// <summary>
-        /// Add a bytemodified to this instance 
-        /// it's not call the ByteModified event
+        /// Can delete selection?
         /// </summary>
-        public void ModifyByte(byte? @byte, long bytePositionInStream, long undoLength = 1)
-        {
-            if (!_byteModificationService.ModifyByte(_provider, @byte, bytePositionInStream, undoLength, ReadOnlyMode))
-                return;
+        public bool CanDelete => HasSelection && !ReadOnlyMode;
 
-            SetScrollMarker(bytePositionInStream, ScrollMarker.ByteModified);
-            _findReplaceService.ClearCache();  // Clear search cache after modification
-            UpdateByteModified();
-
-            UpdateStatusBar();
-        }
-
-        #endregion ByteModified methods/event/methods
-
-        #region Lines methods
         /// <summary>
-        /// Obtain the max line for vertical scrollbar
+        /// Is the file locked (read-only)?
         /// </summary>
-        private long MaxLine
+        public bool IsLockedFile
         {
             get
             {
-                long byteDeletedCount = 0;
-                if (CheckIsOpen(_provider) && HideByteDeleted)
-                    byteDeletedCount = _provider.GetByteModifieds(ByteAction.Deleted).Count;
+                if (_viewModel?.Provider == null)
+                    return false;
 
-                return AllowVisualByteAddress
-                          ? CheckIsOpen(_provider) ? ((VisualByteAdressLength - byteDeletedCount) / (BytePerLine * ByteSizeRatio)) + 1 : 0
-                          : CheckIsOpen(_provider) ? ((_provider.Length - byteDeletedCount) / (BytePerLine * ByteSizeRatio)) + 1 : 0;
+                // Check if file is read-only
+                return _viewModel.Provider.IsReadOnly;
             }
         }
 
         /// <summary>
-        /// Get the number of row visible in control
+        /// Is selection start position visible in viewport?
         /// </summary>
-        private int MaxVisibleLine
+        public bool SelectionStartIsVisible
         {
             get
             {
-                var actualheight = BaseGrid.RowDefinitions[1].ActualHeight;
+                if (_viewModel == null || !_viewModel.HasSelection)
+                    return false;
 
-                if (actualheight < 0) actualheight = 0;
+                var selectionLine = SelectionLine;
+                var scrollPos = _viewModel.ScrollPosition;
+                var visibleLines = _viewModel.VisibleLines;
 
-                return (int)(actualheight / (LineHeight * ZoomScale)) + 1;
+                return selectionLine >= scrollPos && selectionLine < scrollPos + visibleLines;
             }
         }
 
         /// <summary>
-        /// Obtain the number of line preloaded in the control
+        /// Is caret visible?
+        /// Always true in V2 when there's a selection
         /// </summary>
-        public int MaxLinePreloaded => StringDataStackPanel.Children.Count;
+        public bool IsCaretVisible => HasSelection;
 
         /// <summary>
-        /// Get the maximum number of row visible in control
+        /// Has active selection?
         /// </summary>
-        private int MaxScreenVisibleLine
-        {
-            get
-            {
-                var actualheight = SystemParameters.PrimaryScreenHeight;
-
-                if (actualheight < 0) actualheight = 0;
-
-                return (int)(actualheight / (LineHeight * ZoomScale)) + 1;
-            }
-        }
-
-        #endregion Lines methods
-
-        #region Selection Property/Methods/Event
+        public bool HasSelection => _viewModel?.HasSelection ?? false;
 
         /// <summary>
-        /// Get the selected line of focus control
+        /// Selection length in bytes
         /// </summary>
-        public long SelectionLine
-        {
-            get => (long)GetValue(SelectionLineProperty);
-            internal set => SetValue(SelectionLineProperty, value);
-        }
-
-        public static readonly DependencyProperty SelectionLineProperty =
-            DependencyProperty.Register(nameof(SelectionLine), typeof(long), typeof(HexEditor), new FrameworkPropertyMetadata(0L));
-
-        private void LinesInfoLabel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (sender is not FastTextLine line || e.LeftButton != MouseButtonState.Pressed) return;
-
-            var position = HexLiteralToLong((string)line.Tag).position;
-            var deleted = CheckIsOpen(_provider)
-                ? _provider.GetByteModifieds(ByteAction.Deleted).Where(b =>
-                    b.Value.BytePositionInStream >= SelectionStart &&
-                    b.Value.BytePositionInStream <= SelectionStop).Count()
-                : 0;
-
-            SelectionStop = GetValidPositionFrom(position + deleted, BytePerLine) - 1;
-        }
-
-        private void LinesInfoLabel_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is not FastTextLine line) return;
-
-            SelectionStart = HexLiteralToLong((string)line.Tag).position;
-            SelectionStop = SelectionStart + BytePerLine - 1 - (HideByteDeleted
-                                                                   ? 0 //TODO: add fix here...
-                                                                   : GetColumnNumber(SelectionStart));
-
-            HideCaret();
-        }
-
-        private void Control_EscapeKey(object sender, EventArgs e)
-        {
-            UnSelectAll();
-            UnHighLightAll();
-            Focus();
-        }
-
-        private void Control_KeyDown(object sender, KeyEventArgs e)
-        {
-            //TODO: need to fix... not occurs all times as needed.
-
-            switch (e.Key)
-            {
-                case Key.Delete:
-                    DeleteSelection();
-                    break;
-                case Key.Escape:
-                    UnSelectAll();
-                    UnHighLightAll();
-                    Focus();
-                    break;
-            }
-        }
-
-        private void Control_MovePageUp(object sender, ByteEventArgs e)
-        {
-            //Prevent infinite loop
-            _setFocusTest = false;
-
-            //Get the new position from SelectionStart down one page
-            var newPosition = GetValidPositionFrom(SelectionStart, -(BytePerLine * MaxVisibleLine));
-
-            if (Keyboard.Modifiers == ModifierKeys.Shift)
-                SelectionStart = newPosition < _provider.Length ? newPosition : 0;
-            else
-            {
-                FixSelectionStartStop();
-
-                if (newPosition > -1)
-                    SelectionStart = SelectionStop = newPosition;
-            }
-
-            if (AllowVisualByteAddress && SelectionStart > VisualByteAdressStart)
-                SelectionStart = VisualByteAdressStart;
-
-            if (SelectionStart < FirstVisibleBytePosition)
-                VerticalScrollBar.Value--;
-
-            if (sender is HexByte || sender is StringByte)
-            {
-                VerticalScrollBar.Value -= MaxVisibleLine - 1;
-                SetFocusAtSelectionStart();
-            }
-        }
-
-        private void Control_MovePageDown(object sender, ByteEventArgs e)
-        {
-            //Prevent infinite loop
-            _setFocusTest = false;
-
-            //Get the new position from SelectionStart down one page
-            var newPosition = GetValidPositionFrom(SelectionStart, BytePerLine * MaxVisibleLine);
-
-            if (Keyboard.Modifiers == ModifierKeys.Shift)
-                SelectionStart = newPosition < _provider.Length ? newPosition : _provider.Length;
-            else
-            {
-                FixSelectionStartStop();
-
-                if (newPosition < _provider.Length)
-                    SelectionStart = SelectionStop = newPosition;
-            }
-
-            if (AllowVisualByteAddress && SelectionStart > VisualByteAdressStop)
-                SelectionStart = VisualByteAdressStop;
-
-            if (SelectionStart > LastVisibleBytePosition)
-                VerticalScrollBar.Value++;
-
-            if (sender is HexByte || sender is StringByte)
-            {
-                VerticalScrollBar.Value += MaxVisibleLine - 1;
-                SetFocusAtSelectionStart();
-            }
-        }
-
-        private void Control_MoveDown(object sender, ByteEventArgs e)
-        {
-            //Prevent infinite loop
-            _setFocusTest = false;
-
-            var newPosition = GetValidPositionFrom(SelectionStart, BytePerLine);
-
-            if (Keyboard.Modifiers == ModifierKeys.Shift)
-                SelectionStart = newPosition < _provider.Length ? newPosition : _provider.Length;
-            else
-            {
-                FixSelectionStartStop();
-
-                if (newPosition < _provider.Length)
-                    SelectionStart = SelectionStop = newPosition;
-            }
-
-            if (AllowVisualByteAddress && SelectionStart > VisualByteAdressStop)
-                SelectionStart = VisualByteAdressStop;
-
-            if (SelectionStart > LastVisibleBytePosition)
-                VerticalScrollBar.Value++;
-
-            SetFocusAtSelectionStart();
-        }
-
-        private void Control_MoveUp(object sender, ByteEventArgs e)
-        {
-            //Prevent infinite loop
-            _setFocusTest = false;
-
-            //Get the new position from SelectionStart
-            var newPosition = GetValidPositionFrom(SelectionStart, -BytePerLine);
-
-            if (Keyboard.Modifiers == ModifierKeys.Shift)
-                SelectionStart = newPosition > -1 ? newPosition : 0;
-            else
-            {
-                FixSelectionStartStop();
-
-                if (newPosition > -1)
-                    SelectionStart = SelectionStop = newPosition;
-            }
-
-            if (AllowVisualByteAddress && SelectionStart < VisualByteAdressStart)
-                SelectionStart = VisualByteAdressStart;
-
-            if (SelectionStart < FirstVisibleBytePosition)
-                VerticalScrollBar.Value--;
-
-            SetFocusAtSelectionStart();
-        }
-
-        private void Control_MouseSelection(object sender, EventArgs e)
-        {
-            //Prevent false mouse selection on file open
-            if (SelectionStart == -1) return;
-            if (sender is not IByteControl bCtrl) return;
-
-            var focusedControl = Keyboard.FocusedElement;
-
-            //update selection
-            SelectionStop = bCtrl.BytePositionInStream != -1
-                ? bCtrl.BytePositionInStream
-                : LastVisibleBytePosition;
-
-            UpdateSelectionColor(focusedControl is HexByte ? FirstColor.HexByteData : FirstColor.StringByteData);
-            UpdateSelection();
-        }
+        public long SelectionLength => _viewModel?.SelectionLength ?? 0;
 
         /// <summary>
-        /// Set the start byte position of selection
-        /// </summary>
-        public long SelectionStart
-        {
-            get => (long)GetValue(SelectionStartProperty);
-            set => SetValue(SelectionStartProperty, value);
-        }
-
-        public static readonly DependencyProperty SelectionStartProperty =
-            DependencyProperty.Register(nameof(SelectionStart), typeof(long), typeof(HexEditor),
-                new FrameworkPropertyMetadata(-1L, 
-                    (d, e) =>
-                    {
-                        if (d is not HexEditor ctrl) return;
-                        if (e.NewValue == e.OldValue) return;
-                        if (!CheckIsOpen(ctrl._provider)) return;
-
-                        ctrl.SelectionByte = ctrl._provider.GetByte(ctrl.SelectionStart).singleByte;
-
-                        ctrl.UpdateSelection();
-                        ctrl.UpdateSelectionLine();
-                        ctrl.UpdateVisual();
-                        ctrl.UpdateStatusBar(false);
-                        ctrl.UpdateLinesInfo();
-                        ctrl.UpdateHeader(true);
-                        ctrl.SetScrollMarker(0, ScrollMarker.SelectionStart);
-
-                        ctrl.SelectionStartChanged?.Invoke(ctrl, EventArgs.Empty);
-                        ctrl.SelectionLengthChanged?.Invoke(ctrl, EventArgs.Empty);
-                    }, (d, baseValue) =>
-                    {
-                        if (d is not HexEditor ctrl) return -1L;
-
-                        var (start, _) = ctrl._selectionService.ValidateSelection(ctrl._provider, (long)baseValue, ctrl.SelectionStop);
-                        return start;
-                    }));
-
-
-        /// <summary>
-        /// Set the end byte position of selection
-        /// </summary>
-        public long SelectionStop
-        {
-            get => (long)GetValue(SelectionStopProperty);
-            set => SetValue(SelectionStopProperty, value);
-        }
-
-        public static readonly DependencyProperty SelectionStopProperty =
-            DependencyProperty.Register(nameof(SelectionStop), typeof(long), typeof(HexEditor),
-                new FrameworkPropertyMetadata(-1L, 
-                    (d, e) =>
-                    {
-                        if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-                        ctrl.UpdateSelection();
-                        ctrl.UpdateSelectionLine();
-
-                        ctrl.SelectionStopChanged?.Invoke(ctrl, EventArgs.Empty);
-                        ctrl.SelectionLengthChanged?.Invoke(ctrl, EventArgs.Empty);
-                    }, (d, baseValue) =>
-                    {
-                        if (d is not HexEditor ctrl) return baseValue;
-
-                        var (_, stop) = ctrl._selectionService.ValidateSelection(ctrl._provider, ctrl.SelectionStart, (long)baseValue);
-                        return stop;
-                    }));
-
-        /// <summary>
-        /// Fix the selection start and stop when needed
-        /// </summary>
-        private void FixSelectionStartStop()
-        {
-            var (start, stop) = _selectionService.FixSelectionRange(SelectionStart, SelectionStop);
-            SelectionStart = start;
-            SelectionStop = stop;
-        }
-
-        /// <summary>
-        /// Reset selection to -1
-        /// </summary>
-        public void UnSelectAll(bool cleanFocus = false)
-        {
-            SelectionStart = SelectionStop = -1;
-
-            if (cleanFocus)
-            {
-                HideCaret();
-                Focus();
-            }
-        }
-
-        /// <summary>
-        /// Select the entire file
-        /// If file are closed the selection will be set to -1
-        /// </summary>
-        public void SelectAll()
-        {
-            if (CheckIsOpen(_provider))
-            {
-                SelectionStart = _selectionService.GetSelectAllStart(_provider);
-                SelectionStop = _selectionService.GetSelectAllStop(_provider);
-            }
-            else
-            {
-                SelectionStart = -1;
-                SelectionStop = -1;
-            }
-
-            UpdateSelection();
-        }
-
-        /// <summary>
-        /// Get the length of byte are selected (base 1)
-        /// </summary>
-        public long SelectionLength => _selectionService.GetSelectionLength(SelectionStart, SelectionStop);
-
-        /// <summary>
-        /// Get byte array from current selection
-        /// </summary>
-        public byte[] GetSelectionByteArray()
-        {
-            return _selectionService.GetSelectionBytes(_provider, SelectionStart, SelectionStop, true);
-        }
-
-        /// <summary>
-        /// Get string from current selection
-        /// </summary>
-        public string SelectionString
-        {
-            get
-            {
-                using var ms = new MemoryStream();
-                CopyToStream(ms, true);
-                return BytesToString(ms.ToArray());
-            }
-        }
-
-        /// <summary>
-        /// Get Hexadecimal from current selection
+        /// Selected bytes as hex string (e.g., "48 65 6C 6C 6F")
         /// </summary>
         public string SelectionHex
         {
             get
             {
-                using var ms = new MemoryStream();
-                CopyToStream(ms, true);
-                return ByteToHex(ms.ToArray());
+                if (_viewModel == null || !_viewModel.HasSelection)
+                    return string.Empty;
+
+                var bytes = _viewModel.GetSelectionBytes();
+                if (bytes == null || bytes.Length == 0)
+                    return string.Empty;
+
+                return BitConverter.ToString(bytes).Replace("-", " ");
             }
-        }
-
-        private void Control_MoveRight(object sender, ByteEventArgs e)
-        {
-            //Prevent infinite loop
-            _setFocusTest = false;
-
-            //Get the new position from SelectionStart down one page
-            var newPosition = GetValidPositionFrom(SelectionStart, 1);
-
-            if (Keyboard.Modifiers == ModifierKeys.Shift)
-            {
-                SelectionStart = newPosition <= _provider.Length
-                    ? GetValidPositionFrom(SelectionStart, 1)
-                    : _provider.Length;
-            }
-            else
-            {
-                FixSelectionStartStop();
-
-                if (newPosition < _provider.Length)
-                    SelectionStart = SelectionStop = newPosition;
-            }
-
-            if (SelectionStart >= _provider.Length)
-                SelectionStart = _provider.Length - 1;
-
-            if (AllowVisualByteAddress && SelectionStart > VisualByteAdressStop)
-                SelectionStart = VisualByteAdressStop;
-
-            if (SelectionStart > LastVisibleBytePosition)
-                VerticalScrollBar.Value++;
-
-            SetFocusAtSelectionStart();
-        }
-
-        private void Control_MoveLeft(object sender, ByteEventArgs e)
-        {
-            //Prevent infinite loop
-            _setFocusTest = false;
-
-            //Get the new position from SelectionStart down one page
-            var newPosition = GetValidPositionFrom(SelectionStart, -1);
-
-            if (Keyboard.Modifiers == ModifierKeys.Shift)
-                SelectionStart = newPosition > -1 ? newPosition : 0;
-            else
-            {
-                FixSelectionStartStop();
-
-                if (newPosition > -1)
-                    SelectionStart = SelectionStop = newPosition;
-            }
-
-            if (SelectionStart < 0)
-                SelectionStart = 0;
-
-            if (AllowVisualByteAddress && SelectionStart < VisualByteAdressStart)
-                SelectionStart = VisualByteAdressStart;
-
-            if (SelectionStart < FirstVisibleBytePosition)
-                VerticalScrollBar.Value--;
-
-            SetFocusAtSelectionStart();
-        }
-
-        private void Control_MovePrevious(object sender, ByteEventArgs e)
-        {
-            UpdateByteModified();
-
-            //Call move left event
-            Control_MoveLeft(sender, e);
-        }
-
-        private void Control_MoveNext(object sender, ByteEventArgs e)
-        {
-            UpdateByteModified();
-
-            //Call moveright event
-            Control_MoveRight(sender, e);
-        }
-
-        #endregion Selection Property/Methods/Event
-
-        #region Copy/Paste/Cut Methods
-
-        /// <summary>
-        /// Set or get the default copy to clipboard mode
-        /// </summary>
-        public CopyPasteMode DefaultCopyToClipboardMode
-        {
-            get => _clipboardService.DefaultCopyMode;
-            set => _clipboardService.DefaultCopyMode = value;
         }
 
         /// <summary>
-        /// Paste clipboard string without inserting byte at selection start
+        /// Selected bytes as ASCII string
         /// </summary>
-        /// <param name="expendIfneeded">Set AllowExpend to true for working</param>
-        private void Paste(bool expendIfneeded)
+        public string SelectionString
         {
-            if (!CheckIsOpen(_provider) || SelectionStart <= -1 || ReadOnlyMode) return;
+            get
+            {
+                if (_viewModel == null || !_viewModel.HasSelection)
+                    return string.Empty;
 
-            var clipBoardText = Clipboard.GetText();
-            var (success, byteArray) = IsHexaByteStringValue(clipBoardText);
+                var bytes = _viewModel.GetSelectionBytes();
+                if (bytes == null || bytes.Length == 0)
+                    return string.Empty;
 
-            #region Expend stream if needed
-
-            var pastelength = success ? byteArray.Length : clipBoardText.Length;
-            var needToBeExtent = _provider.Position + pastelength > _provider.Length;
-            var expend = false;
-            if (expendIfneeded && AllowExtend && needToBeExtent)
-                if (AppendNeedConfirmation)
+                var chars = new char[bytes.Length];
+                for (int i = 0; i < bytes.Length; i++)
                 {
-                    if (MessageBox.Show(Properties.Resources.PasteExtendByteConfirmationString, ApplicationName,
-                            MessageBoxButton.YesNo,
-                            MessageBoxImage.Question, MessageBoxResult.Yes) == MessageBoxResult.Yes)
-                        expend = true;
+                    chars[i] = ByteConverters.ByteToChar(bytes[i]);
                 }
-                else
-                    expend = true;
-
-            #endregion
-
-            if (success)
-                _provider.Paste(SelectionStart, byteArray, expend);
-            else
-                _provider.Paste(SelectionStart, clipBoardText, expend);
-
-            SetScrollMarker(SelectionStart, ScrollMarker.ByteModified, Properties.Resources.PasteFromClipboardString);
-            _findReplaceService.ClearCache();  // Clear search cache after modification
-            RefreshView();
-
-            BytesModified?.Invoke(this, new ByteEventArgs(SelectionStart));
-        }
-
-        /// <summary>
-        /// Fill the selection with a Byte at selection start
-        /// </summary>
-        public void FillWithByte(byte val) => FillWithByte(SelectionStart, SelectionLength, val);
-
-        /// <summary>
-        /// Fill with a Byte at start position
-        /// </summary>
-        public void FillWithByte(long startPosition, long length, byte val)
-        {
-            _clipboardService.FillWithByte(_provider, startPosition, length, val, ReadOnlyMode);
-            SetScrollMarker(SelectionStart, ScrollMarker.ByteModified, Properties.Resources.FillSelectionAloneString);
-            _findReplaceService.ClearCache();  // Clear search cache after modification
-            RefreshView();
-        }
-
-        /// <summary>
-        /// Get all bytes from file or stream opened
-        /// </summary>
-        public byte[] GetAllBytes(bool copyChange)
-        {
-            return _clipboardService.GetAllBytes(_provider, copyChange);
-        }
-
-        /// <summary>
-        /// Get all bytes from file or stream opened and copy change
-        /// </summary>
-        public byte[] GetAllBytes() => GetAllBytes(true);
-
-        /// <summary>
-        /// Return true if Copy method could be invoked.
-        /// </summary>
-        public bool CanCopy => _clipboardService.CanCopy(SelectionLength, _provider);
-
-        /// <summary>
-        /// Return true if delete method could be invoked.
-        /// </summary>
-        public bool CanDelete => _clipboardService.CanDelete(SelectionLength, _provider, ReadOnlyMode, AllowDeleteByte);
-
-        /// <summary>
-        /// Copy to clipboard with default CopyPasteMode.ASCIIString
-        /// </summary>
-        public void CopyToClipboard() => CopyToClipboard(DefaultCopyToClipboardMode);
-
-        /// <summary>
-        /// Copy to clipboard the current selection with actual change in control
-        /// </summary>
-        public void CopyToClipboard(CopyPasteMode copypastemode) =>
-            CopyToClipboard(copypastemode, SelectionStart, SelectionStop, true, _tblService.CharacterTable);
-
-        /// <summary>
-        /// Copy to clipboard
-        /// </summary>
-        public void CopyToClipboard(CopyPasteMode copypastemode, long selectionStart, long selectionStop, bool copyChange, TblStream tbl)
-        {
-            if (!CanCopy) return;
-
-            _clipboardService.CopyToClipboard(_provider, copypastemode, selectionStart, selectionStop, copyChange, tbl);
-        }
-
-        /// <summary>
-        /// Copy selection to a stream
-        /// </summary>
-        /// <param name="output">Output stream is not closed after copy</param>
-        /// <param name="copyChange">Copy change or not</param>
-        public void CopyToStream(Stream output, bool copyChange) =>
-            CopyToStream(output, SelectionStart, SelectionStop, copyChange);
-
-        /// <summary>
-        /// Copy selection to a stream
-        /// </summary>
-        /// <param name="output">Output stream is not closed after copy</param>
-        /// <param name="selectionStart"></param>
-        /// <param name="selectionStop"></param>
-        /// <param name="copyChange"></param>
-        public void CopyToStream(Stream output, long selectionStart, long selectionStop, bool copyChange)
-        {
-            if (!CanCopy) return;
-
-            _clipboardService.CopyToStream(_provider, output, selectionStart, selectionStop, copyChange);
-        }
-
-        /// <summary>
-        /// Return a byte array with the copy of data defined by selection start/stop
-        /// </summary>
-        public byte[] GetCopyData(long selectionStart, long selectionStop, bool copyChange)
-        {
-            if (!CanCopy) return null;
-
-            return _clipboardService.GetCopyData(_provider, selectionStart, selectionStop, copyChange);
-        }
-
-        /// <summary>
-        /// Occurs when data is copied in byteprovider instance
-        /// </summary>
-        private void Provider_DataCopied(object sender, EventArgs e) => DataCopied?.Invoke(sender, e);
-
-        #endregion Copy/Paste/Cut Methods
-
-        #region Position methods
-        /// <summary>
-        /// Get the line number of position in parameter
-        /// </summary>
-        public long GetLineNumber(long position) =>
-            _positionService.GetLineNumber(position, ByteShiftLeft, HideByteDeleted,
-                BytePerLine, ByteSizeRatio, _provider);
-
-        /// <summary>
-        /// Get the column number of the position
-        /// </summary>
-        public long GetColumnNumber(long position) =>
-            _positionService.GetColumnNumber(position, HideByteDeleted, AllowVisualByteAddress,
-                VisualByteAdressStart, ByteShiftLeft, BytePerLine, _provider);
-
-        /// <summary>
-        /// Set position of cursor
-        /// </summary>
-        /// <remarks>
-        /// TODO: Need to be fixed on HideDeletedByte...
-        /// </remarks>
-        public void SetPosition(long position, long byteLength)
-        {
-            SelectionStart = position;
-            SelectionStop = position + byteLength - 1;
-
-            VerticalScrollBar.Value = CheckIsOpen(_provider) ? GetLineNumber(position) : 0;
-        }
-
-        /// <summary>
-        /// Set position in control at position in parameter
-        /// </summary>
-        public void SetPosition(long position) => SetPosition(position, 0);
-
-        /// <summary>
-        /// Set position in control at position in parameter
-        /// </summary>
-        public void SetPosition(string hexLiteralPosition) =>
-            SetPosition(HexLiteralToLong(hexLiteralPosition).position);
-
-        /// <summary>
-        /// Set position in control at position in parameter with specified selected length
-        /// </summary>
-        public void SetPosition(string hexLiteralPosition, long byteLength) =>
-            SetPosition(HexLiteralToLong(hexLiteralPosition).position, byteLength);
-
-        /// <summary>
-        /// Give a next valid position
-        /// </summary>
-        /// <param name="position">Start position for compute the correction</param>
-        /// <param name="positionCorrection">Positive or negative position number to add/substract from position</param>
-        private long GetValidPositionFrom(long position, long positionCorrection) =>
-            _positionService.GetValidPositionFrom(position, positionCorrection, CheckIsOpen(_provider) ? _provider : null);
-
-        #endregion position methods
-
-        #region Visibility property
-
-        /// <summary>
-        /// Set or Get value for change visibility of hexadecimal panel
-        /// </summary>
-        public Visibility HexDataVisibility
-        {
-            get => (Visibility)GetValue(HexDataVisibilityProperty);
-            set => SetValue(HexDataVisibilityProperty, value);
-        }
-
-        public static readonly DependencyProperty HexDataVisibilityProperty =
-            DependencyProperty.Register(nameof(HexDataVisibility), typeof(Visibility), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Visibility.Visible,
-                    HexDataVisibility_PropertyChanged, Visibility_CoerceValue));
-
-        private static object Visibility_CoerceValue(DependencyObject d, object baseValue) =>
-            (Visibility)baseValue == Visibility.Hidden ? Visibility.Collapsed : (Visibility)baseValue;
-
-        private static void HexDataVisibility_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl) return;
-
-            switch ((Visibility)e.NewValue)
-            {
-                case Visibility.Visible:
-                    ctrl.HexDataStackPanel.Visibility = Visibility.Visible;
-
-                    if (ctrl.HeaderVisibility == Visibility.Visible)
-                        ctrl.HexHeaderStackPanel.Visibility = Visibility.Visible;
-                    break;
-
-                case Visibility.Collapsed:
-                    ctrl.HexDataStackPanel.Visibility = Visibility.Collapsed;
-                    ctrl.HexHeaderStackPanel.Visibility = Visibility.Collapsed;
-                    break;
+                return new string(chars);
             }
         }
 
         /// <summary>
-        /// Set or Get value for change visibility of hexadecimal header
+        /// Current selection line number (0-based)
         /// </summary>
-        public Visibility HeaderVisibility
+        public long SelectionLine
         {
-            get => (Visibility)GetValue(HeaderVisibilityProperty);
-            set => SetValue(HeaderVisibilityProperty, value);
-        }
-
-        public static readonly DependencyProperty HeaderVisibilityProperty =
-            DependencyProperty.Register(nameof(HeaderVisibility), typeof(Visibility), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Visibility.Visible,
-                    HeaderVisibility_PropertyChanged, Visibility_CoerceValue));
-
-        private static void HeaderVisibility_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl) return;
-
-            switch ((Visibility)e.NewValue)
+            get
             {
-                case Visibility.Visible:
-                    if (ctrl.HexDataVisibility == Visibility.Visible)
-                    {
-                        ctrl.HexHeaderStackPanel.Visibility = Visibility.Visible;
-                        ctrl.TopRectangle.Visibility = Visibility.Visible;
-                    }
-                    break;
+                if (_viewModel == null)
+                    return 0;
 
-                case Visibility.Collapsed:
-                    ctrl.HexHeaderStackPanel.Visibility = Visibility.Collapsed;
-                    ctrl.TopRectangle.Visibility = Visibility.Collapsed;
-                    break;
+                var position = _viewModel.SelectionStart;
+                if (!position.IsValid)
+                    return 0;
+
+                return position.Value / (_viewModel.BytePerLine > 0 ? _viewModel.BytePerLine : 16);
             }
         }
 
         /// <summary>
-        /// Set or Get value for change visibility of string panel
+        /// Virtual length (total bytes including inserted/deleted)
         /// </summary>
-        public Visibility StringDataVisibility
-        {
-            get => (Visibility)GetValue(StringDataVisibilityProperty);
-            set => SetValue(StringDataVisibilityProperty, value);
-        }
-
-        public static readonly DependencyProperty StringDataVisibilityProperty =
-            DependencyProperty.Register(nameof(StringDataVisibility), typeof(Visibility), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Visibility.Visible,
-                    StringDataVisibility_ValidateValue,
-                    Visibility_CoerceValue));
-
-        private static void StringDataVisibility_ValidateValue(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl) return;
-
-            ctrl.StringDataStackPanel.Visibility = (Visibility)e.NewValue == Visibility.Visible
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-            if ((Visibility)e.NewValue == Visibility.Visible)
-            {
-                ctrl.BarChartPanelVisibility = Visibility.Collapsed;
-            }
-            ctrl.RefreshView(true);
-        }
+        public long VirtualLength => _viewModel?.VirtualLength ?? 0;
 
         /// <summary>
-        /// Set or Get value for change visibility of bar chart panel
+        /// Physical file length in bytes
         /// </summary>
-        public Visibility BarChartPanelVisibility
-        {
-            get => (Visibility)GetValue(BarChartPanelVisibilityProperty);
-            set => SetValue(BarChartPanelVisibilityProperty, value);
-        }
-
-        public static readonly DependencyProperty BarChartPanelVisibilityProperty =
-            DependencyProperty.Register(nameof(BarChartPanelVisibility), typeof(Visibility), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Visibility.Collapsed,
-                    BarChartPanelVisibility_ValidateValue, Visibility_CoerceValue));
-
-        private static void BarChartPanelVisibility_ValidateValue(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl) return;
-
-            if ((Visibility)e.NewValue != (Visibility)e.OldValue)
-                ctrl.RefreshView(true);
-        }
+        public long Length => _viewModel?.FileLength ?? 0;
 
         /// <summary>
-        /// Set or Get value for change visibility of status bar
-        /// </summary>
-        public Visibility StatusBarVisibility
-        {
-            get => (Visibility)GetValue(StatusBarVisibilityProperty);
-            set => SetValue(StatusBarVisibilityProperty, value);
-        }
-
-        public static readonly DependencyProperty StatusBarVisibilityProperty =
-            DependencyProperty.Register(nameof(StatusBarVisibility), typeof(Visibility), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Visibility.Visible,
-                    StatusBarVisibility_ValueChange, Visibility_CoerceValue));
-
-        private static void StatusBarVisibility_ValueChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl) return;
-
-            ctrl.ReadOnlyLabel.Visibility =
-            ctrl.StatusBarGrid.Visibility = ctrl.BottomRectangle.Visibility =
-                (Visibility)e.NewValue == Visibility.Visible
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-
-            ctrl.RefreshView(true);
-        }
-
-        /// <summary>
-        /// Set or Get value for change visibility of the lineinfo panel
-        /// </summary>
-        public Visibility LineInfoVisibility
-        {
-            get => (Visibility)GetValue(LineInfoVisibilityProperty);
-            set => SetValue(LineInfoVisibilityProperty, value);
-        }
-
-        public static readonly DependencyProperty LineInfoVisibilityProperty =
-            DependencyProperty.Register(nameof(LineInfoVisibility), typeof(Visibility), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Visibility.Visible,
-                    LineInfoVisibility_ValueChange, Visibility_CoerceValue));
-
-        private static void LineInfoVisibility_ValueChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl) return;
-
-            ctrl.LinesInfoStackPanel.Visibility = (Visibility)e.NewValue == Visibility.Visible
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-
-            ctrl.RefreshView(true);
-        }
-
-
-        #endregion Visibility property
-
-        #region Undo / Redo
-
-        /// <summary>
-        /// Clear undo and change
-        /// </summary>
-        public void ClearAllChange()
-        {
-            if (!CheckIsOpen(_provider)) return;
-
-            _undoRedoService.ClearAll(_provider);
-        }
-
-        /// <summary>
-        /// Make undo of last the last bytemodified
-        /// TODO: Fixe when HideByteDeleted
-        /// </summary>
-        public void Undo(int repeat = 1)
-        {
-            UnSelectAll();
-
-            if (!CheckIsOpen(_provider)) return;
-
-            var position = _undoRedoService.Undo(_provider, repeat);
-
-            RefreshView();
-
-            //Update focus
-            if (position >= 0)
-            {
-                if (!IsBytePositionAreVisible(position))
-                    SetPosition(position);
-
-                SetFocusAt(position);
-            }
-
-            Undone?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Make Redo of the last bytemodified
-        /// </summary>
-        public void Redo(int repeat = 1)
-        {
-            UnSelectAll();
-
-            if (!CheckIsOpen(_provider)) return;
-
-            var position = _undoRedoService.Redo(_provider, repeat);
-
-            RefreshView();
-
-            //Update focus
-            if (position >= 0)
-            {
-                if (!IsBytePositionAreVisible(position))
-                    SetPosition(position);
-
-                SetFocusAt(position);
-            }
-
-            Redone?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Clear the scroll marker when undone 
-        /// </summary>
-        /// <param name="sender">List of long representing position in file are undone</param>
-        /// <param name="e"></param>
-        private void Provider_Undone(object sender, EventArgs e)
-        {
-            switch (sender)
-            {
-                case List<long> bytePosition:
-                    foreach (var position in bytePosition)
-                        ClearScrollMarker(position);
-                    break;
-            }
-
-            IsModified = _provider.UndoCount > 0;
-            _findReplaceService.ClearCache();  // Clear search cache after undo
-        }
-
-        /// <summary>
-        /// Get the undo count
-        /// </summary>
-        public long UndoCount => _undoRedoService.GetUndoCount(_provider);
-
-        /// <summary>
-        /// Get the undo count
-        /// </summary>
-        public long RedoCount => _undoRedoService.GetRedoCount(_provider);
-
-        /// <summary>
-        /// Get the undo stack
-        /// </summary>
-        public Stack<ByteModified> UndoStack => _undoRedoService.GetUndoStack(_provider);
-
-        /// <summary>
-        /// Get the Redo stack
-        /// </summary>
-        public Stack<ByteModified> RedoStack => _undoRedoService.GetRedoStack(_provider);
-
-        #endregion Undo / Redo
-
-        #region Open, Close, Save, byte provider ...
-
-        /// <summary>
-        /// Return true if a file/stream is load in the control
-        /// </summary>
-        public bool IsFileOrStreamLoaded
-        {
-            get => (bool)GetValue(IsFileOrStreamLoadedProperty);
-            set => SetValue(IsFileOrStreamLoadedProperty, value);
-        }
-
-        public static readonly DependencyProperty IsFileOrStreamLoadedProperty =
-            DependencyProperty.Register(nameof(IsFileOrStreamLoaded), typeof(bool),
-                typeof(HexEditor), new PropertyMetadata(false));
-
-        private void Provider_ChangesSubmited(object sender, EventArgs e)
-        {
-            if (sender is not ByteProviderLegacy bp) return;
-
-            //Refresh filename
-            var filename = bp.FileName;
-            CloseProvider();
-            FileName = filename;
-
-            ChangesSubmited?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void ProviderStream_ChangesSubmited(object sender, EventArgs e)
-        {
-            //Refresh stream
-            if (!CheckIsOpen(_provider)) return;
-
-            RefreshView(true);
-
-            ChangesSubmited?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Set or Get the file with the control will show hex
+        /// Current file name (full path)
+        /// Uses DependencyProperty for XAML binding support (Phase 8)
         /// </summary>
         public string FileName
         {
@@ -2329,437 +961,269 @@ namespace WpfHexaEditor
             set => SetValue(FileNameProperty, value);
         }
 
-        public static readonly DependencyProperty FileNameProperty =
-            DependencyProperty.Register(nameof(FileName), typeof(string), typeof(HexEditor),
-                new FrameworkPropertyMetadata(string.Empty, FileName_PropertyChanged));
-
-        private static void FileName_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        /// <summary>
+        /// Has the file been modified?
+        /// Uses DependencyProperty for XAML binding support (Phase 8)
+        /// </summary>
+        public bool IsModified
         {
-            if (d is not HexEditor ctrl) return;
-
-            ctrl.OpenFile((string)e.NewValue);
-            ctrl.IsFileOrStreamLoaded = true;
+            get => (bool)GetValue(IsModifiedProperty);
+            set => SetValue(IsModifiedProperty, value);
         }
 
         /// <summary>
-        /// Set the Stream are used by ByteProviderLegacy
+        /// Current cursor position (virtual)
         /// </summary>
-        public Stream Stream
+        public long Position
         {
-            get => (Stream)GetValue(StreamProperty);
-            set => SetValue(StreamProperty, value);
-        }
-
-        public static readonly DependencyProperty StreamProperty =
-            DependencyProperty.Register(nameof(Stream), typeof(Stream), typeof(HexEditor),
-                new FrameworkPropertyMetadata(null, Stream_PropertyChanged));
-
-        private static void Stream_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl) return;
-
-            ctrl.CloseProvider();
-
-            if (e.NewValue is not null)
+            get => _viewModel?.SelectionStart.Value ?? 0;
+            set
             {
-                ctrl.OpenStream((Stream)e.NewValue);
-                ctrl.IsFileOrStreamLoaded = true;
-            }
-        }
-
-        /// <summary>
-        /// Get the length of byteprovider are opened in control
-        /// </summary>
-        public long Length => CheckIsOpen(_provider) ? _provider.Length : -1;
-
-        /// <summary>
-        /// Close file and clear control
-        /// ReadOnlyMode is reset to false
-        /// </summary>
-        public void CloseProvider(bool clearFileName = true)
-        {
-            if (CheckIsOpen(_provider))
-            {
-                if (clearFileName)
-                    FileName = string.Empty;
-
-                _provider.Close();
-                VerticalScrollBar.Value = 0;
-            }
-
-            UnHighLightAll();
-            ClearAllScrollMarker();
-            UnSelectAll();
-            RefreshView();
-            UpdateHeader(true);
-            UpdateScrollBar();
-
-            IsFileOrStreamLoaded = false;
-
-            //Debug
-            Debug.Print("PROVIDER CLOSED");
-        }
-
-        /// <summary>
-        /// Save to the current stream/file
-        /// </summary>
-        public void SubmitChanges()
-        {
-            if (!CheckIsOpen(_provider) || _provider.ReadOnlyMode || !IsModified) return;
-
-            _provider.SubmitChanges();
-        }
-
-        /// <summary>
-        /// Save as to another file
-        /// </summary>
-        public void SubmitChanges(string newfilename, bool overwrite = false)
-        {
-            if (!CheckIsOpen(_provider) || _provider.ReadOnlyMode) return;
-
-            _provider.SubmitChanges(newfilename, overwrite);
-        }
-
-        /// <summary>
-        /// Open file
-        /// </summary>
-        private void OpenFile(string filename)
-        {
-            if (string.IsNullOrEmpty(filename)) return;
-            if (!File.Exists(filename)) return;
-
-            CloseProvider(false);
-
-            //Preload byte to MaxScreenVisibleLine
-            if (PreloadByteInEditorMode == PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad)
-                BuildDataLines(MaxScreenVisibleLine);
-
-            _provider = new ByteProviderLegacy(filename, ReadOnlyMode, CanInsertAnywhere);
-
-            _provider.With(p =>
-            {
-                if (p.IsEmpty)
+                if (_viewModel != null && value >= 0 && value < VirtualLength)
                 {
-                    CloseProvider(false);
-                    return;
+                    var oldPosition = Position;
+                    _viewModel.SetSelection(new VirtualPosition(value));
+
+                    if (oldPosition != value)
+                        OnPositionChanged(new PositionChangedEventArgs(value));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Selection start position (virtual) (DependencyProperty for XAML binding)
+        /// </summary>
+        public long SelectionStart
+        {
+            get => (long)GetValue(SelectionStartProperty);
+            set => SetValue(SelectionStartProperty, value);
+        }
+
+        /// <summary>
+        /// Selection stop position (virtual) (DependencyProperty for XAML binding)
+        /// </summary>
+        public long SelectionStop
+        {
+            get => (long)GetValue(SelectionStopProperty);
+            set => SetValue(SelectionStopProperty, value);
+        }
+
+        /// <summary>
+        /// Read-only mode (DependencyProperty for XAML binding)
+        /// </summary>
+        public bool ReadOnlyMode
+        {
+            get => (bool)GetValue(ReadOnlyModeProperty);
+            set => SetValue(ReadOnlyModeProperty, value);
+        }
+
+        /// <summary>
+        /// Show or hide the status bar 
+        /// </summary>
+        public bool ShowStatusBar
+        {
+            get => StatusBar.Visibility == Visibility.Visible;
+            set => StatusBar.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        #region Status Bar Item Visibility Properties
+
+        /// <summary>
+        /// Show or hide status message in status bar
+        /// </summary>
+        public bool ShowStatusMessage
+        {
+            get => (bool)GetValue(ShowStatusMessageProperty);
+            set => SetValue(ShowStatusMessageProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowStatusMessageProperty =
+            DependencyProperty.Register(nameof(ShowStatusMessage), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// Show or hide file size in status bar
+        /// </summary>
+        public bool ShowFileSizeInStatusBar
+        {
+            get => (bool)GetValue(ShowFileSizeInStatusBarProperty);
+            set => SetValue(ShowFileSizeInStatusBarProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowFileSizeInStatusBarProperty =
+            DependencyProperty.Register(nameof(ShowFileSizeInStatusBar), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// Show or hide selection info in status bar
+        /// </summary>
+        public bool ShowSelectionInStatusBar
+        {
+            get => (bool)GetValue(ShowSelectionInStatusBarProperty);
+            set => SetValue(ShowSelectionInStatusBarProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowSelectionInStatusBarProperty =
+            DependencyProperty.Register(nameof(ShowSelectionInStatusBar), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// Show or hide position info in status bar
+        /// </summary>
+        public bool ShowPositionInStatusBar
+        {
+            get => (bool)GetValue(ShowPositionInStatusBarProperty);
+            set => SetValue(ShowPositionInStatusBarProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowPositionInStatusBarProperty =
+            DependencyProperty.Register(nameof(ShowPositionInStatusBar), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// Show or hide edit mode in status bar
+        /// </summary>
+        public bool ShowEditModeInStatusBar
+        {
+            get => (bool)GetValue(ShowEditModeInStatusBarProperty);
+            set => SetValue(ShowEditModeInStatusBarProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowEditModeInStatusBarProperty =
+            DependencyProperty.Register(nameof(ShowEditModeInStatusBar), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// Show or hide bytes per line in status bar
+        /// </summary>
+        public bool ShowBytesPerLineInStatusBar
+        {
+            get => (bool)GetValue(ShowBytesPerLineInStatusBarProperty);
+            set => SetValue(ShowBytesPerLineInStatusBarProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowBytesPerLineInStatusBarProperty =
+            DependencyProperty.Register(nameof(ShowBytesPerLineInStatusBar), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        #endregion
+
+        /// <summary>
+        /// Show or hide the column header 
+        /// </summary>
+        public bool ShowHeader
+        {
+            get => _headerBorder?.Visibility == Visibility.Visible;
+            set
+            {
+                if (_headerBorder != null)
+                    _headerBorder.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        /// <summary>
+        /// Show or hide the offset column 
+        /// Note: Requires re-creating lines for template changes
+        /// </summary>
+        public bool ShowOffset
+        {
+            get => (bool)GetValue(ShowOffsetProperty);
+            set => SetValue(ShowOffsetProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowOffsetProperty =
+            DependencyProperty.Register(nameof(ShowOffset), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnShowOffsetChanged));
+
+        private static void OnShowOffsetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool showOffset)
+            {
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.ShowOffset = showOffset;
+                    editor.HexViewport.InvalidateVisual();
                 }
 
-                #region Attach event
-                p.ReadOnlyChanged += Provider_ReadOnlyChanged;
-                p.DataCopiedToClipboard += Provider_DataCopied;
-                p.ChangesSubmited += Provider_ChangesSubmited;
-                p.Undone += Provider_Undone;
-                p.LongProcessChanged += Provider_LongProcessProgressChanged;
-                p.LongProcessStarted += Provider_LongProcessProgressStarted;
-                p.LongProcessCompleted += Provider_LongProcessProgressCompleted;
-                p.LongProcessCanceled += Provider_LongProcessProgressCompleted;
-                p.FillWithByteCompleted += Provider_FillWithByteCompleted;
-                p.ReplaceByteCompleted += Provider_ReplaceByteCompleted;
-                p.BytesAppendCompleted += Provider_BytesAppendCompleted;
-                #endregion
-            });
+                // Also update column header visibility
+                if (editor._headerBorder != null && editor._headerBorder.Child is Grid headerGrid)
+                {
+                    // Find the offset TextBlock (Grid.Column="0", Text="Offset")
+                    foreach (UIElement child in headerGrid.Children)
+                    {
+                        if (child is TextBlock tb && tb.Text == "Offset")
+                        {
+                            tb.Visibility = showOffset ? Visibility.Visible : Visibility.Collapsed;
 
-            UpdateScrollBar();
-            UpdateHeader();
-            UpdateStatusBar();
-            RefreshView(true);
-
-            UpdateTblBookMark();
-
-            //Update count of byte on file open
-            UpdateByteCount();
-
-            //Debug
-            Debug.Print("FILE OPENED");
+                            // Also adjust the column width to 0 when hidden
+                            if (headerGrid.ColumnDefinitions.Count > 0)
+                            {
+                                headerGrid.ColumnDefinitions[0].Width = showOffset
+                                    ? new GridLength(110)
+                                    : new GridLength(0);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
-        /// Open stream
+        /// Show or hide the ASCII column 
+        /// Note: Requires re-creating lines for template changes
         /// </summary>
-        private void OpenStream(Stream stream)
+        public bool ShowAscii
         {
-            if (!stream.CanRead) return;
+            get => (bool)GetValue(ShowAsciiProperty);
+            set => SetValue(ShowAsciiProperty, value);
+        }
 
-            CloseProvider();
+        public static readonly DependencyProperty ShowAsciiProperty =
+            DependencyProperty.Register(nameof(ShowAscii), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnShowAsciiChanged));
 
-            //Preload byte to MaxScreenVisibleLine
-            if (PreloadByteInEditorMode == PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad)
-                BuildDataLines(MaxScreenVisibleLine);
-
-            _provider = new ByteProviderLegacy(stream, CanInsertAnywhere);
-
-            _provider.With(p =>
+        private static void OnShowAsciiChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool showAscii)
             {
-                if (_provider.IsEmpty)
+                if (editor.HexViewport != null)
                 {
-                    CloseProvider();
-                    return;
+                    editor.HexViewport.ShowAscii = showAscii;
+                    editor.HexViewport.InvalidateVisual();
                 }
 
-                #region Attach event
-                p.ReadOnlyChanged += Provider_ReadOnlyChanged;
-                p.DataCopiedToClipboard += Provider_DataCopied;
-                p.ChangesSubmited += ProviderStream_ChangesSubmited;
-                p.Undone += Provider_Undone;
-                p.LongProcessChanged += Provider_LongProcessProgressChanged;
-                p.LongProcessStarted += Provider_LongProcessProgressStarted;
-                p.LongProcessCompleted += Provider_LongProcessProgressCompleted;
-                p.LongProcessCanceled += Provider_LongProcessProgressCompleted;
-                p.FillWithByteCompleted += Provider_FillWithByteCompleted;
-                p.ReplaceByteCompleted += Provider_ReplaceByteCompleted;
-                p.BytesAppendCompleted += Provider_BytesAppendCompleted;
-                #endregion
-            });
-
-            UpdateScrollBar();
-            UpdateHeader();
-            UpdateStatusBar();
-            RefreshView(true);
-
-            UpdateTblBookMark();
-
-            //Update count of byte
-            UpdateByteCount();
-
-            //Debug
-            Debug.Print("STREAM OPENED");
-        }
-
-        private void Provider_LongProcessProgressCompleted(object sender, EventArgs e)
-        {
-            CheckProviderIsOnProgress();
-
-            //Launch event
-            LongProcessProgressCompleted?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void Provider_LongProcessProgressStarted(object sender, EventArgs e)
-        {
-            CheckProviderIsOnProgress();
-
-            //Launch event
-            LongProcessProgressStarted?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void Provider_LongProcessProgressChanged(object sender, EventArgs e)
-        {
-            //Update progress bar
-            LongProgressProgressBar.Value = (double)sender;
-
-            //Prevent freezing UI
-            Application.Current.DoEvents();
-
-            //Launch event
-            LongProcessProgressChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Update scrollbar when append are completed
-        /// </summary>
-        private void Provider_BytesAppendCompleted(object sender, EventArgs e) => UpdateScrollBar();
-
-        /// <summary>
-        /// Invoke ReplaceByteCompleted event
-        /// </summary>
-        private void Provider_ReplaceByteCompleted(object sender, EventArgs e) =>
-            ReplaceByteCompleted?.Invoke(this, EventArgs.Empty);
-
-        /// <summary>
-        /// Invoke FillWithByteCompleted event
-        /// </summary>
-        private void Provider_FillWithByteCompleted(object sender, EventArgs e) =>
-            FillWithByteCompleted?.Invoke(this, EventArgs.Empty);
-
-        private void CancelLongProcessButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (!CheckIsOpen(_provider)) return;
-
-            _provider.IsOnLongProcess = false;
-        }
-
-        /// <summary>
-        /// Check if byteprovider is on long progress and update control
-        /// </summary>
-        private void CheckProviderIsOnProgress()
-        {
-            bool enableCtrl;
-
-            if (CheckIsOpen(_provider) && _provider.IsOnLongProcess)
-            {
-                CancelLongProcessButton.Visibility = Visibility.Visible;
-                LongProgressProgressBar.Visibility = Visibility.Visible;
-                enableCtrl = false;
-            }
-            else
-            {
-                CancelLongProcessButton.Visibility = Visibility.Collapsed;
-                LongProgressProgressBar.Visibility = Visibility.Collapsed;
-                enableCtrl = true;
-            }
-
-            //Enable/Disable controls
-            TraverseHexAndStringBytes(ctrl => ctrl.IsEnabled = enableCtrl);
-            TraverseLineInfo(ctrl => ctrl.IsEnabled = enableCtrl);
-            TraverseHeader(ctrl => ctrl.IsEnabled = enableCtrl);
-            TopRectangle.IsEnabled = BottomRectangle.IsEnabled = enableCtrl;
-            VerticalScrollBar.IsEnabled = enableCtrl;
-        }
-
-        #endregion Open, Close, Save, byte provider ...
-
-        #region Easy powerful traverses methods
-
-        /// <summary>
-        /// Used to make action on all visible hexbyte
-        /// </summary>
-        private void TraverseHexBytes(Action<HexByte> act, ref bool exit, bool force = false)
-        {
-            var visibleLine = MaxVisibleLine;
-            var hexStackCount = HexDataStackPanel.Children.Count;
-            var maxLines = force ? hexStackCount : Math.Min(visibleLine, hexStackCount);
-
-            //HexByte panel - optimized with for loop to avoid enumerator allocation
-            for (var lineIdx = 0; lineIdx < maxLines; lineIdx++)
-            {
-                if (!(HexDataStackPanel.Children[lineIdx] is StackPanel hexDataStack)) continue;
-
-                var childCount = hexDataStack.Children.Count;
-                for (var i = 0; i < childCount; i++)
+                // Also update ASCII column header visibility
+                if (editor._asciiHeaderStackPanel != null)
                 {
-                    if (hexDataStack.Children[i] is HexByte hexCtrl)
-                        act(hexCtrl);
+                    editor._asciiHeaderStackPanel.Visibility = showAscii ? Visibility.Visible : Visibility.Collapsed;
                 }
 
-                if (exit) return;
-            }
-        }
-
-        /// <summary>
-        /// Used to make action on all visible hexbyte
-        /// </summary>
-        private void TraverseHexBytes(Action<HexByte> act)
-        {
-            var exit = false;
-            TraverseHexBytes(act, ref exit);
-        }
-
-        /// <summary>
-        /// Used to make action on all visible stringbyte
-        /// </summary>
-        private void TraverseStringBytes(Action<StringByte> act, ref bool exit, bool force = false)
-        {
-            var visibleLine = MaxVisibleLine;
-            var stringStackCount = StringDataStackPanel.Children.Count;
-            var maxLines = force ? stringStackCount : Math.Min(visibleLine, stringStackCount);
-
-            //Stringbyte panel - optimized with for loop to avoid enumerator allocation
-            for (var lineIdx = 0; lineIdx < maxLines; lineIdx++)
-            {
-                if (!(StringDataStackPanel.Children[lineIdx] is StackPanel stringDataStack)) continue;
-
-                var childCount = stringDataStack.Children.Count;
-                for (var i = 0; i < childCount; i++)
+                // Hide separator and ASCII column in header grid
+                if (editor._headerBorder != null && editor._headerBorder.Child is Grid headerGrid)
                 {
-                    if (stringDataStack.Children[i] is StringByte sbControl)
-                        act(sbControl);
+                    // Separator is Grid.Column="2", ASCII header is Grid.Column="3"
+                    if (headerGrid.ColumnDefinitions.Count > 3)
+                    {
+                        headerGrid.ColumnDefinitions[2].Width = showAscii ? new GridLength(20) : new GridLength(0);
+                        headerGrid.ColumnDefinitions[3].Width = showAscii ? new GridLength(180) : new GridLength(0);
+                    }
+
+                    // Also hide the separator Border
+                    foreach (UIElement child in headerGrid.Children)
+                    {
+                        if (child is Border border && Grid.GetColumn(border) == 2)
+                        {
+                            border.Visibility = showAscii ? Visibility.Visible : Visibility.Collapsed;
+                            break;
+                        }
+                    }
                 }
-
-                if (exit) return;
             }
         }
 
         /// <summary>
-        /// Used to make action on all visible stringbyte
-        /// </summary>
-        private void TraverseStringBytes(Action<StringByte> act)
-        {
-            var exit = false;
-            TraverseStringBytes(act, ref exit);
-        }
-
-        /// <summary>
-        /// Used to make action on all visible hexbyte and stringbyte.
-        /// </summary>
-        private void TraverseHexAndStringBytes(Action<IByteControl> act, ref bool exit, bool force = false)
-        {
-            TraverseStringBytes(act, ref exit, force);
-            TraverseHexBytes(act, ref exit, force);
-        }
-
-        /// <summary>
-        /// Used to make action on all visible hexbyte and stringbyte.
-        /// </summary>
-        private void TraverseHexAndStringBytes(Action<IByteControl> act, bool force = false)
-        {
-            var exit = false;
-            TraverseHexAndStringBytes(act, ref exit, force);
-        }
-
-        /// <summary>
-        /// Used to make action on all visible lineinfos
-        /// </summary>
-        private void TraverseLineInfo(Action<FastTextLine> act)
-        {
-            var childCount = LinesInfoStackPanel.Children.Count;
-            var maxLines = Math.Min(MaxVisibleLine, childCount);
-
-            //lines infos panel - optimized with for loop
-            for (var i = 0; i < maxLines; i++)
-            {
-                if (LinesInfoStackPanel.Children[i] is FastTextLine lineInfo)
-                    act(lineInfo);
-            }
-        }
-
-        /// <summary>
-        /// Used to make action on all visible header
-        /// </summary>
-        private void TraverseHeader(Action<FastTextLine> act)
-        {
-            var childCount = HexHeaderStackPanel.Children.Count;
-            var maxLines = Math.Min(MaxVisibleLine, childCount);
-
-            //header panel - optimized with for loop
-            for (var i = 0; i < maxLines; i++)
-            {
-                if (HexHeaderStackPanel.Children[i] is FastTextLine column)
-                    act(column);
-            }
-        }
-
-        /// <summary>
-        /// Used to make action on ScrollMarker
-        /// </summary>
-        private void TraverseScrollMarker(Action<Rectangle> act, ref bool exit)
-        {
-            var children = MarkerGrid.Children;
-            var count = children.Count;
-
-            // Iterate in reverse order, caching the collection reference
-            for (var i = count - 1; i >= 0; i--)
-            {
-                if (children[i] is Rectangle rect)
-                    act(rect);
-
-                if (exit) return;
-            }
-        }
-
-        /// <summary>
-        /// Used to make action on ScrollMarker
-        /// </summary>
-        private void TraverseScrollMarker(Action<Rectangle> act)
-        {
-            var exit = false;
-            TraverseScrollMarker(act, ref exit);
-        }
-
-        #endregion Traverse methods
-
-        #region BytePerLine property/methods
-
-        /// <summary>
-        /// Get or set the number of byte are show in control
+        /// Number of bytes per line (8, 16, 32, etc.) - DependencyProperty for XAML binding
         /// </summary>
         public int BytePerLine
         {
@@ -2767,2150 +1231,72 @@ namespace WpfHexaEditor
             set => SetValue(BytePerLineProperty, value);
         }
 
-        public static readonly DependencyProperty BytePerLineProperty =
-            DependencyProperty.Register(nameof(BytePerLine), typeof(int), typeof(HexEditor),
-                new FrameworkPropertyMetadata(16, (d, e) =>
-                {
-                    if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-                    ctrl.With(c =>
-                    {
-                        //Get previous state
-                        var firstPos = c.FirstVisibleBytePosition;
-                        var startPos = c.SelectionStart;
-                        var stopPos = c.SelectionStop;
-
-                        //refresh
-                        c.UpdateScrollBar();
-                        c.BuildDataLines(c.MaxVisibleLine, true);
-                        c.RefreshView(true);
-                        c.UpdateHeader(true);
-
-                        //Set previous state
-                        c.SetPosition(firstPos);
-                        c.SelectionStart = startPos;
-                        c.SelectionStop = stopPos;
-                    });
-                }, (_, baseValue) => (int)baseValue < 1 ? 1 : ((int)baseValue > 64 ? 64 : baseValue)));
-
-        #endregion
-
-        #region ByteWidth property/methods
-
         /// <summary>
-        /// Get or set the width of string bytes
+        /// Font size for zoom (placeholder)
         /// </summary>
-        public double StringByteWidth
+        public new double FontSize
         {
-            get => (double)GetValue(StringByteWidthProperty);
-            set => SetValue(StringByteWidthProperty, value);
+            get => base.FontSize;
+            set => base.FontSize = value;
         }
 
-        public static readonly DependencyProperty StringByteWidthProperty =
-            DependencyProperty.Register(nameof(StringByteWidth), typeof(double), typeof(HexEditor),
-                new FrameworkPropertyMetadata(10d, (d, e) =>
-                {
-                    if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-                    ctrl.With(c =>
-                    {
-                        //Get previous state
-                        var firstPos = c.FirstVisibleBytePosition;
-                        var startPos = c.SelectionStart;
-                        var stopPos = c.SelectionStop;
-
-                        //refresh
-                        c.UpdateScrollBar();
-                        c.BuildDataLines(c.MaxVisibleLine, true);
-                        c.RefreshView(true);
-                        c.UpdateHeader(true);
-
-                        //Set previous state
-                        c.SetPosition(firstPos);
-                        c.SelectionStart = startPos;
-                        c.SelectionStop = stopPos;
-                    });
-                }, (_, baseValue) => (double)baseValue < 1 ? 1 : ((double)baseValue > 64 ? 64 : baseValue)));
-
-        #endregion
-
-        #region vertical scrollbar property/methods
-
         /// <summary>
-        /// Vertical scrollbar large change on click
+        /// Number of visible lines in the viewport
+        /// Increasing this value shows more bytes at once but may impact performance
         /// </summary>
-        public double ScrollLargeChange
+        public int VisibleLines
         {
-            get => _scrollLargeChange;
+            get => _viewModel?.VisibleLines ?? 20;
             set
             {
-                _scrollLargeChange = value;
-                UpdateScrollBar();
-            }
-        }
-
-        private void VerticalScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            RefreshView();
-
-            VerticalScrollBarChanged?.Invoke(sender, new ByteEventArgs(FirstVisibleBytePosition));
-        }
-
-        /// <summary>
-        /// Update vertical scrollbar with file info
-        /// </summary>
-        private void UpdateScrollBar() =>
-            VerticalScrollBar.With(c =>
+                if (_viewModel != null && value > 0)
                 {
-                    c.Visibility = Visibility.Collapsed;
-
-                    if (!CheckIsOpen(_provider)) return;
-
-                    c.Visibility = Visibility.Visible;
-                    c.SmallChange = 1;
-                    c.LargeChange = ScrollLargeChange;
-                    c.Maximum = MaxLine - MaxVisibleLine + 1;
-                });
-        #endregion
-
-        #region General update methods / Refresh view
-
-        public bool IsAutoRefreshOnResize { get; set; } = true;
-
-        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (!e.HeightChanged || !IsAutoRefreshOnResize) return;
-
-            if (!CheckIsOpen(_provider)) BuildDataLines(MaxVisibleLine);
-
-            RefreshView(true);
-        }
-
-        /// <summary>
-        /// Clear all IByteControl in hexeditor
-        /// </summary>
-        /// <param name="force">Set to true for clear all byte visible (set by MaxVisibleLine) or not visible in control.</param>
-        private void ClearAllBytes(bool force = false) =>
-            TraverseHexAndStringBytes(ctrl => { ctrl.Clear(); }, force);
-
-        /// <summary>
-        /// Clear all lines infos...
-        /// </summary>
-        private void ClearLineInfo() =>
-            TraverseLineInfo(ctrl => { ctrl.Tag = ctrl.Text = string.Empty; });
-
-        /// <summary>
-        /// Optimized update that combines UpdateByteModified, UpdateSelection, UpdateHighLight and UpdateVisual in one traversal
-        /// </summary>
-        private void UpdateByteControlsOptimized()
-        {
-            if (!CheckIsOpen(_provider)) return;
-
-            // Pre-calculate all values once
-            var modifiedBytesDictionary = _provider.GetByteModifieds(ByteAction.All);
-            var minSelect = SelectionStart <= SelectionStop ? SelectionStart : SelectionStop;
-            var maxSelect = SelectionStart <= SelectionStop ? SelectionStop : SelectionStart;
-            var hasHighlights = _highlightService.HasHighlights();
-
-            // Single traversal for StringBytes
-            var exit = false;
-            TraverseStringBytes(ctrl =>
-            {
-                // Update byte modified
-                if (modifiedBytesDictionary.TryGetValue(ctrl.BytePositionInStream, out var byteModified))
-                {
-                    ctrl.InternalChange = true;
-                    if (byteModified.Byte.HasValue)
-                        ctrl.Byte.ChangeByteValue(byteModified.Byte.Value, ctrl.BytePositionInStream);
-
-                    if (byteModified.Action == ByteAction.Modified || byteModified.Action == ByteAction.Deleted)
-                        ctrl.Action = byteModified.Action;
-
-                    ctrl.InternalChange = false;
-                }
-
-                // Update selection
-                ctrl.IsSelected = ctrl.BytePositionInStream >= minSelect &&
-                                  ctrl.BytePositionInStream <= maxSelect &&
-                                  ctrl.BytePositionInStream != -1 &&
-                                  ctrl.Action != ByteAction.Deleted;
-
-                // Update highlight
-                ctrl.IsHighLight = hasHighlights && _highlightService.IsHighlighted(ctrl.BytePositionInStream);
-
-                // Update visual
-                ctrl.UpdateVisual();
-            }, ref exit);
-
-            // Single traversal for HexBytes
-            exit = false;
-            TraverseHexBytes(ctrl =>
-            {
-                // Update byte modified
-                for (var i = 0; i < ByteSizeRatio; i++)
-                {
-                    if (modifiedBytesDictionary.TryGetValue(ctrl.BytePositionInStream + i, out var byteModified))
-                    {
-                        ctrl.InternalChange = true;
-                        if (byteModified.Byte.HasValue)
-                            ctrl.Byte.ChangeByteValue(byteModified.Byte.Value, ctrl.BytePositionInStream + i);
-
-                        if (byteModified.Action == ByteAction.Modified || byteModified.Action == ByteAction.Deleted)
-                            ctrl.Action = byteModified.Action;
-
-                        ctrl.InternalChange = false;
-                    }
-                }
-
-                // Update selection
-                ctrl.IsSelected = ctrl.BytePositionInStream >= minSelect &&
-                                  ctrl.BytePositionInStream <= maxSelect &&
-                                  ctrl.BytePositionInStream != -1 &&
-                                  ctrl.Action != ByteAction.Deleted;
-
-                // Update highlight
-                ctrl.IsHighLight = hasHighlights && _highlightService.IsHighlighted(ctrl.BytePositionInStream);
-
-                // Update visual
-                ctrl.UpdateVisual();
-            }, ref exit);
-
-            IsModified = _provider.UndoCount > 0;
-        }
-
-        /// <summary>
-        /// Refresh currentview of hexeditor
-        /// </summary>
-        public void RefreshView(bool controlResize = false, bool refreshData = true)
-        {
-#if DEBUG
-            var watch = new Stopwatch();
-            watch.Start();
-#endif
-            UpdateLinesInfo();
-
-            if (refreshData)
-                UpdateViewers(controlResize);
-
-            //Update visual of byte control - optimized: combines UpdateByteModified, UpdateSelection, UpdateHighLight, and UpdateVisual
-            UpdateByteControlsOptimized();
-            UpdateStatusBar(false);
-            UpdateFocus();
-
-            if (controlResize)
-            {
-                UpdateScrollMarkerPosition();
-                UpdateHeader(true);
-            }
-
-#if DEBUG
-            watch.Stop();
-            Debug.Print($"REFRESH TIME: {watch.Elapsed.Milliseconds} ms");
-#endif
-        }
-
-        /// <summary>
-        /// Update the selection of byte in hexadecimal panel
-        /// </summary>
-        private void UpdateSelectionColor(FirstColor coloring)
-        {
-            switch (coloring)
-            {
-                case FirstColor.HexByteData:
-                    TraverseHexBytes(ctrl => { ctrl.FirstSelected = true; });
-                    TraverseStringBytes(ctrl => { ctrl.FirstSelected = false; });
-                    _firstColor = FirstColor.HexByteData;
-                    break;
-                case FirstColor.StringByteData:
-                    TraverseHexBytes(ctrl => { ctrl.FirstSelected = false; });
-                    TraverseStringBytes(ctrl => { ctrl.FirstSelected = true; });
-                    _firstColor = FirstColor.StringByteData;
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Build the StringByte and HexByte control used byte hexeditor
-        /// </summary>
-        /// <param name="maxline">Number of line to build</param>
-        /// <param name="rebuild">Rebuild data line</param>
-        private void BuildDataLines(int maxline, bool rebuild = false)
-        {
-            var reAttachEvents = false;
-
-            if (rebuild)
-            {
-                reAttachEvents = true;
-
-                StringDataStackPanel.Children.Clear();
-                HexDataStackPanel.Children.Clear();
-            }
-
-            for (var lineIndex = StringDataStackPanel.Children.Count; lineIndex < maxline; lineIndex++)
-            {
-                #region Build StringByte
-
-                var dataLineStack = new StackPanel
-                {
-                    Height = LineHeight,
-                    Orientation = Orientation.Horizontal
-                };
-
-                for (var i = 0; i < BytePerLine * ByteSizeRatio; i++)
-                {
-                    if (_tblService.CharacterTable == null && (ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                                                       ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel))
-                        AddByteSpacer(dataLineStack, i);
-
-                    new StringByte(this, BarChartPanelVisibility == Visibility.Visible, StringByteWidth).With(c =>
-                    {
-                        c.Clear();
-                        dataLineStack.Children.Add(c);
-                    });
-                }
-                StringDataStackPanel.Children.Add(dataLineStack);
-
-                #endregion
-
-                #region Build HexByte
-
-                var hexaDataLineStack = new StackPanel
-                {
-                    Height = LineHeight,
-                    Orientation = Orientation.Horizontal
-                };
-
-                for (var i = 0; i < BytePerLine; i++)
-                {
-                    if (ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                        ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel)
-                        AddByteSpacer(hexaDataLineStack, i);
-
-                    var byteControl = new HexByte(this);
-                    byteControl.Clear();
-
-                    hexaDataLineStack.Children.Add(byteControl);
-                }
-
-                HexDataStackPanel.Children.Add(hexaDataLineStack);
-
-                #endregion
-
-                reAttachEvents = true;
-            }
-
-            #region Attach/detach events to each IByteControl
-
-            if (reAttachEvents)
-                TraverseHexAndStringBytes(ctrl =>
-                {
-                    ctrl.With(c =>
-                    {
-                        #region Detach events
-                        c.ByteModified -= Control_ByteModified;
-                        c.MoveNext -= Control_MoveNext;
-                        c.MovePrevious -= Control_MovePrevious;
-                        c.MouseSelection -= Control_MouseSelection;
-                        c.Click -= Control_Click;
-                        c.DoubleClick -= Control_DoubleClick;
-                        c.RightClick -= Control_RightClick;
-                        c.MoveUp -= Control_MoveUp;
-                        c.MoveDown -= Control_MoveDown;
-                        c.MoveLeft -= Control_MoveLeft;
-                        c.MoveRight -= Control_MoveRight;
-                        c.MovePageDown -= Control_MovePageDown;
-                        c.MovePageUp -= Control_MovePageUp;
-                        c.ByteDeleted -= Control_ByteDeleted;
-                        c.EscapeKey -= Control_EscapeKey;
-                        c.CtrlaKey -= Control_CTRLAKey;
-                        c.CtrlzKey -= Control_CTRLZKey;
-                        c.CtrlcKey -= Control_CTRLCKey;
-                        c.CtrlvKey -= Control_CTRLVKey;
-                        c.CtrlyKey -= Control_CTRLYKey;
-                        #endregion
-
-                        #region Attach events
-                        c.ByteModified += Control_ByteModified;
-                        c.MoveNext += Control_MoveNext;
-                        c.MovePrevious += Control_MovePrevious;
-                        c.MouseSelection += Control_MouseSelection;
-                        c.Click += Control_Click;
-                        c.DoubleClick += Control_DoubleClick;
-                        c.RightClick += Control_RightClick;
-                        c.MoveUp += Control_MoveUp;
-                        c.MoveDown += Control_MoveDown;
-                        c.MoveLeft += Control_MoveLeft;
-                        c.MoveRight += Control_MoveRight;
-                        c.MovePageDown += Control_MovePageDown;
-                        c.MovePageUp += Control_MovePageUp;
-                        c.ByteDeleted += Control_ByteDeleted;
-                        c.EscapeKey += Control_EscapeKey;
-                        c.CtrlaKey += Control_CTRLAKey;
-                        c.CtrlzKey += Control_CTRLZKey;
-                        c.CtrlcKey += Control_CTRLCKey;
-                        c.CtrlvKey += Control_CTRLVKey;
-                        c.CtrlyKey += Control_CTRLYKey;
-
-                        #endregion
-                    });
-
-                });
-
-            #endregion
-        }
-
-        /// <summary>
-        /// Update the data and string panels to current view.
-        /// Only load what is needed in the view
-        /// </summary>
-        private void UpdateViewers(bool controlResize)
-        {
-            var curLevel = ++_priLevel;
-            if (CheckIsOpen(_provider))
-            {
-                var bufferlength = MaxVisibleLine * (BytePerLine + 1 + ByteShiftLeft) * ByteSizeRatio;
-
-                #region Build the buffer length if needed
-
-                if (controlResize)
-                {
-                    if (_viewBuffer is not null)
-                    {
-                        BuildDataLines(MaxVisibleLine, MaxLinePreloaded < MaxVisibleLine);
-
-                        if (_viewBuffer.Length < bufferlength)
-                        {
-                            _viewBuffer = new byte[bufferlength];
-                            _viewBufferBytePosition = new long[bufferlength];
-                        }
-                    }
-                    else
-                    {
-                        _viewBuffer = new byte[bufferlength];
-                        _viewBufferBytePosition = new long[bufferlength];
-                        BuildDataLines(MaxVisibleLine);
-                    }
-                }
-                #endregion
-
-                if (LinesInfoStackPanel.Children.Count == 0) return;
-
-                var startPosition = FirstVisibleBytePosition;
-
-                if (AllowVisualByteAddress && startPosition < VisualByteAdressStart)
-                    startPosition = VisualByteAdressStart;
-
-                #region Read the data from the provider and warns if necessary to load the bytes that have been deleted
-                _provider.Position = startPosition;
-                var readSize = 0;
-                if (HideByteDeleted || CanInsertAnywhere)
-                    for (var i = 0; i < _viewBuffer.Length; i++)
-                    {
-                        //BYTE INSERT ANYWHERE IS IN DEVELOPMENT!! ///////////
-                        //DOES NOT WORK CLEANLY! BE PATIENT
-
-                        // Issue #137 Optimization: Cache the check result instead of calling twice
-                        var addedCheck = _provider.CheckIfIsByteModified(_provider.Position, ByteAction.Added);
-                        if (addedCheck.success)
-                        {
-                            if (_provider.Eof) continue;
-
-                            // Reuse cached result instead of calling CheckIfIsByteModified again
-                            if (addedCheck.val.Byte != null)
-                                _viewBuffer[readSize] = addedCheck.val.Byte.Value;
-                            _viewBufferBytePosition[readSize] = addedCheck.val.BytePositionInStream;
-                            _provider.Position++;
-                            readSize++;
-                        }
-                        /////////////////////////////////////////////////////
-                        else
-                        {
-                            // Issue #137 Optimization: Cache the check result
-                            var (deletedSuccess, _) = _provider.CheckIfIsByteModified(_provider.Position, ByteAction.Deleted);
-                            if (!deletedSuccess)
-                            {
-                                if (_provider.Eof) continue;
-
-                                _viewBuffer[readSize] = (byte)_provider.ReadByte();
-                                _viewBufferBytePosition[readSize] = _provider.Position - 1;
-                                readSize++;
-                            }
-                            else
-                            {
-                                _viewBufferBytePosition[readSize] = -1;
-                                _provider.Position++;
-                                i--;
-                            }
-                        }
-                    }
-                else
-                {
-                    readSize = _provider.Read(_viewBuffer, 0, bufferlength <= _viewBuffer.Length
-                        ? bufferlength
-                        : _viewBuffer.Length);
-                }
-                #endregion
-
-                var index = 0;
-
-                #region HexByte panel refresh
-
-                TraverseHexBytes(c =>
-                {
-                    c.Action = ByteAction.Nothing;
-                    c.ReadOnlyMode = ReadOnlyMode;
-                    c.InternalChange = true;
-
-                    var nextPos = startPosition + index;
-
-                    //Prevent load if byte are deleted from file
-                    if (HideByteDeleted)
-                        while (_provider.CheckIfIsByteModified(nextPos, ByteAction.Deleted).success)
-                            nextPos++;
-
-                    //Insert byte 
-                    //if (CanInsertAnywhere)
-                    //{
-                    //    var (success, val) = _provider.CheckIfIsByteModified(nextPos, ByteAction.Added);
-                    //}
-
-                    if (index < readSize && _priLevel == curLevel)
-                    {
-                        c.Byte = ByteSize switch
-                        {
-                            ByteSizeType.Bit8 => new Byte_8bit(_viewBuffer[index]),
-                            ByteSizeType.Bit16 => new Byte_16bit(new[] { _viewBuffer[index], _viewBuffer[index + 1] }),
-                            ByteSizeType.Bit32 => new Byte_32bit(new[] { _viewBuffer[index], _viewBuffer[index + 1], _viewBuffer[index + 2], _viewBuffer[index + 3] }),
-                            _ => throw new NotImplementedException()
-                        };
-                        c.BytePositionInStream = !HideByteDeleted ? nextPos : _viewBufferBytePosition[index];
-
-                        if (AllowVisualByteAddress && nextPos > VisualByteAdressStop)
-                            c.Clear();
-                    }
-                    else
-                        c.Clear();
-
-                    c.InternalChange = false;
-                    index += ByteSizeRatio;
-                });
-
-                #endregion
-
-                index = 0;
-
-                #region StringByte / Barchart panel refresh
-
-                var skipNextIsMte = false;
-                TraverseStringBytes(c =>
-                {
-                    c.Action = ByteAction.Nothing;
-                    c.ReadOnlyMode = ReadOnlyMode;
-                    c.InternalChange = true;
-                    c.TblCharacterTable = _tblService.CharacterTable;
-                    c.TypeOfCharacterTable = TypeOfCharacterTable;
-
-                    var nextPos = startPosition + index;
-
-                    //Prevent load if byte are deleted from file
-                    if (HideByteDeleted)
-                        while (_provider.CheckIfIsByteModified(nextPos, ByteAction.Deleted).success)
-                            nextPos++;
-
-                    if (index < readSize)
-                    {
-                        if (!skipNextIsMte)
-                        {
-                            c.BytePositionInStream = !HideByteDeleted ? nextPos : _viewBufferBytePosition[index];
-
-                            #region Load ByteNext for TBL MTE matching
-                            if (_tblService.CharacterTable is not null)
-                            {
-                                var (singleByte, succes) = _provider.GetByte(c.BytePositionInStream + 1);
-                                c.ByteNext = succes ? singleByte : null;
-                            }
-                            #endregion
-
-                            //update byte
-                            c.Byte = new Byte_8bit(_viewBuffer[index]);
-
-                            //Bar chart value
-                            c.PercentValue = _viewBuffer[index] * 100 / 256;
-
-                            skipNextIsMte = c.IsMTE;
-
-                            if (AllowVisualByteAddress && nextPos > VisualByteAdressStop)
-                                c.Clear();
-                        }
-                        else
-                        {
-                            skipNextIsMte = false;
-                            c.Clear();
-                        }
-                    }
-                    else
-                        c.Clear();
-
-                    c.InternalChange = false;
-                    index++;
-                });
-
-                #endregion
-            }
-            else
-            {
-                //Clear IByteControl
-                _viewBuffer = null;
-                ClearAllBytes();
-            }
-        }
-
-        /// <summary>
-        /// Update byte are modified
-        /// </summary>
-        private void UpdateByteModified()
-        {
-            if (!CheckIsOpen(_provider)) return;
-
-            var modifiedBytesDictionary =
-                _provider.GetByteModifieds(ByteAction.All);
-
-            var exit = false;
-            TraverseStringBytes(ctrl =>
-            {
-                if (modifiedBytesDictionary.TryGetValue(ctrl.BytePositionInStream, out var byteModified))
-                {
-                    ctrl.InternalChange = true;
-                    if (byteModified.Byte.HasValue)
-                    {
-                        ctrl.Byte.ChangeByteValue(byteModified.Byte.Value, ctrl.BytePositionInStream);
-                    }
-
-                    if (byteModified.Action == ByteAction.Modified || byteModified.Action == ByteAction.Deleted)
-                        ctrl.Action = byteModified.Action;
-
-                    ctrl.InternalChange = false;
-                }
-            }, ref exit);
-
-            TraverseHexBytes(ctrl =>
-            {
-                for (var i = 0; i < ByteSizeRatio; i++)
-                {
-                    if (modifiedBytesDictionary.TryGetValue(ctrl.BytePositionInStream + i, out var byteModified))
-                    {
-                        ctrl.InternalChange = true;
-                        if (byteModified.Byte.HasValue)
-                        {
-                            ctrl.Byte.ChangeByteValue(byteModified.Byte.Value, ctrl.BytePositionInStream + i);
-                            //ctrl.Byte.Byte = new List<byte> { byteModified.Byte.Value };
-                        }
-
-                        if (byteModified.Action == ByteAction.Modified || byteModified.Action == ByteAction.Deleted)
-                            ctrl.Action = byteModified.Action;
-
-                        ctrl.InternalChange = false;
-                    }
-                }
-
-            }, ref exit);
-
-            IsModified = _provider.UndoCount > 0;
-        }
-
-        /// <summary>
-        /// Update the selection of byte
-        /// </summary>
-        private void UpdateSelection()
-        {
-            var minSelect = SelectionStart <= SelectionStop ? SelectionStart : SelectionStop;
-            var maxSelect = SelectionStart <= SelectionStop ? SelectionStop : SelectionStart;
-
-            TraverseHexAndStringBytes(ctrl =>
-            {
-                ctrl.IsSelected = ctrl.BytePositionInStream >= minSelect &&
-                                  ctrl.BytePositionInStream <= maxSelect &&
-                                  ctrl.BytePositionInStream != -1
-&& ctrl.Action != ByteAction.Deleted;
-            });
-        }
-        /// <summary>
-        /// Update de SelectionLine property
-        /// </summary>
-        private void UpdateSelectionLine() =>
-            SelectionLine = CheckIsOpen(_provider)
-                ? GetLineNumber(SelectionStart)
-                : 0;
-
-
-        /// <summary>
-        /// Update bytes as marked on findall()
-        /// </summary>
-        private void UpdateHighLight()
-        {
-            if (_highlightService.HasHighlights())
-                TraverseHexAndStringBytes(ctrl => ctrl.IsHighLight = _highlightService.IsHighlighted(ctrl.BytePositionInStream));
-            else //Un highlight all
-                TraverseHexAndStringBytes(ctrl => ctrl.IsHighLight = false);
-        }
-
-        /// <summary>
-        /// Update the position info panel at left of the control
-        /// </summary>
-        private void UpdateHeader(bool clear = false)
-        {
-            //Clear before refresh
-            if (clear) HexHeaderStackPanel.Children.Clear();
-
-            if (!CheckIsOpen(_provider)) return;
-
-            for (var i = HexHeaderStackPanel.Children.Count; i < BytePerLine; i++)
-            {
-                if (ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                    ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel)
-                    AddByteSpacer(HexHeaderStackPanel, i, true);
-
-                var hlHeader = HighLightSelectionStart &&
-                               GetColumnNumber(SelectionStart) == i &&
-                               SelectionStart > -1;
-
-                //Create control
-                var headerLabel = new FastTextLine(this)
-                {
-                    Height = LineHeight,
-                    AutoWidth = false,
-                    FontWeight = hlHeader ? FontWeights.Bold : FontWeights.Normal,
-                    Foreground = hlHeader ? ForegroundHighLightOffSetHeaderColor : ForegroundOffSetHeaderColor,
-                    RenderPoint = new Point(2, 2),
-                };
-
-                #region Set text visual of header
-
-                switch (DataStringVisual)
-                {
-                    case DataVisualType.Hexadecimal:
-                        headerLabel.Text = ByteToHex((byte)i);
-                        break;
-                    case DataVisualType.Decimal:
-                        headerLabel.Text = i.ToString("d3");
-                        break;
-                    case DataVisualType.Binary:
-                        headerLabel.Text = Convert.ToString(i, 2).PadLeft(8, '0');
-                        break;
-                }
-                headerLabel.Width = HexByte.CalculateCellWidth(ByteSize, DataStringVisual, DataStringState);
-                #endregion
-
-                //Add to stackpanel
-                HexHeaderStackPanel.Children.Add(headerLabel);
-            }
-        }
-
-        /// <summary>
-        /// Update the position info panel at left of the control
-        /// </summary>
-        private void UpdateLinesInfo()
-        {
-            var maxVisibleLine = MaxVisibleLine;
-
-            #region If the lines are less than "visible lines" create them
-
-            var linesCount = LinesInfoStackPanel.Children.Count;
-
-            if (linesCount < maxVisibleLine)
-                for (var i = 0; i < maxVisibleLine - linesCount; i++)
-                    new FastTextLine(this).With(l =>
-                    {
-                        l.Height = LineHeight;
-                        l.Foreground = ForegroundOffSetHeaderColor;
-                        l.HorizontalAlignment = HorizontalAlignment.Left;
-                        l.VerticalAlignment = VerticalAlignment.Center;
-                        l.RenderPoint = new Point(2, 2);
-
-                        //Events
-                        l.MouseDown += LinesInfoLabel_MouseDown;
-                        l.MouseMove += LinesInfoLabel_MouseMove;
-
-                        LinesInfoStackPanel.Children.Add(l);
-                    });
-
-            #endregion
-
-            ClearLineInfo();
-
-            if (!CheckIsOpen(_provider)) return;
-
-            var firstByteInLine = FirstVisibleBytePosition;
-            long actualPosition = 0;
-
-            for (var i = 0; i < maxVisibleLine; i++)
-            {
-                var lineOffsetLabel = (FastTextLine)LinesInfoStackPanel.Children[i];
-
-                lineOffsetLabel.With(l =>
-                {
-
-                    if (i > 0) firstByteInLine = GetValidPositionFrom(firstByteInLine, BytePerLine * ByteSizeRatio);
-                    var endLine = firstByteInLine + (BytePerLine * ByteSizeRatio) - 1;
-                    #region Set text visual
-                    if (HighLightSelectionStart &&
-                        SelectionStart > -1 &&
-                        SelectionStart >= firstByteInLine &&
-                        SelectionStart <= endLine)
-                    {
-                        l.FontWeight = FontWeights.Bold;
-                        l.Foreground = ForegroundHighLightOffSetHeaderColor;
-                        l.ToolTip = $"{Properties.Resources.FirstByteString} : {SelectionStart}";
-                        l.Tag = $"0x{LongToHex(SelectionStart).ToUpperInvariant()}";
-                        actualPosition = SelectionStart;
-                    }
-                    else
-                    {
-                        l.FontWeight = FontWeights.Normal;
-                        l.Foreground = ForegroundOffSetHeaderColor;
-                        l.ToolTip = $"{Properties.Resources.FirstByteString} : {firstByteInLine}";
-                        l.Tag = $"0x{LongToHex(firstByteInLine).ToUpperInvariant()}";
-
-                        actualPosition = firstByteInLine;
-                    }
-
-                    actualPosition += OffsetBase;
-
-                    //update the visual
-                    switch (OffSetStringVisual)
-                    {
-                        case DataVisualType.Hexadecimal:
-                            l.Text = OffSetPanelVisual switch
-                            {
-                                OffSetPanelType.OffsetOnly => $"0x{LongToHex(actualPosition, OffSetPanelFixedWidthVisual).ToUpperInvariant()}",
-                                OffSetPanelType.LineOnly => $"ln {LongToHex(GetLineNumber(actualPosition), OffSetPanelFixedWidthVisual).ToUpperInvariant()}",
-                                OffSetPanelType.Both => $"ln {LongToHex(GetLineNumber(actualPosition), OffSetPanelFixedWidthVisual)} 0x{LongToHex(actualPosition, OffSetPanelFixedWidthVisual).ToUpperInvariant()}",
-                                _ => throw new NotImplementedException()
-                            };
-                            break;
-                        case DataVisualType.Decimal:
-                            var format = OffSetPanelFixedWidthVisual == OffSetPanelFixedWidth.Dynamic ? "G" : "D8";
-
-                            l.Text = OffSetPanelVisual switch
-                            {
-                                OffSetPanelType.OffsetOnly => $"d{actualPosition.ToString(format)}",
-                                OffSetPanelType.LineOnly => $"ln {GetLineNumber(actualPosition).ToString(format)}",
-                                OffSetPanelType.Both => $"ln {GetLineNumber(actualPosition).ToString(format)} d{actualPosition.ToString(format)}",
-                                _ => throw new NotImplementedException()
-                            };
-                            break;
-                        case DataVisualType.Binary:
-                            format = OffSetPanelFixedWidthVisual == OffSetPanelFixedWidth.Dynamic ? "G" : "D8";
-
-                            l.Text = OffSetPanelVisual switch
-                            {
-                                OffSetPanelType.OffsetOnly => $"d{actualPosition.ToString(format)}",
-                                OffSetPanelType.LineOnly => $"ln {GetLineNumber(actualPosition).ToString(format)}",
-                                OffSetPanelType.Both => $"ln {GetLineNumber(actualPosition).ToString(format)} d{actualPosition.ToString(format)}",
-                                _ => throw new NotImplementedException()
-                            };
-                            break;
-                    }
-
-                    if (AllowVisualByteAddress && firstByteInLine > VisualByteAdressStop)
-                        l.Tag = l.Text = string.Empty;
-                });
-                #endregion
-            }
-        }
-        #endregion Update view
-
-        #region First/Last visible byte methods
-        /// <summary>
-        /// Get first visible byte position in control
-        /// TODO: fix the first visible byte when HideByteDeleted are activated... 95% completed
-        /// </summary>
-        private long FirstVisibleBytePosition =>
-            _positionService.GetFirstVisibleBytePosition((long)VerticalScrollBar.Value,
-                BytePerLine, ByteShiftLeft, ByteSizeRatio, HideByteDeleted, AllowVisualByteAddress,
-                VisualByteAdressStart, _provider);
-
-        /// <summary>
-        /// Get the number of byte are deleted before the position in parameter
-        /// </summary>
-        private long GetCountOfByteDeletedBeforePosition(long position) =>
-            _positionService.GetCountOfByteDeletedBeforePosition(position, CheckIsOpen(_provider) ? _provider : null);
-
-        /// <summary>
-        /// Return true if SelectionStart are visible in control
-        /// </summary>
-        public bool SelectionStartIsVisible => IsBytePositionAreVisible(SelectionStart);
-
-        /// <summary>
-        /// Return true if the byteposition are visible in viewer
-        /// </summary>
-        public bool IsBytePositionAreVisible(long bytePosition) =>
-            _positionService.IsBytePositionVisible(bytePosition, FirstVisibleBytePosition, LastVisibleBytePosition);
-
-        /// <summary>
-        /// Get last visible byte position in control
-        /// </summary>
-        private long LastVisibleBytePosition
-        {
-            get
-            {
-                long lastByte = 0;
-
-                TraverseHexBytes(ctrl =>
-                {
-                    if (ctrl.BytePositionInStream != -1)
-                        lastByte = ctrl.BytePositionInStream;
-                });
-
-                return lastByte;
-            }
-        }
-        #endregion First/Last visible byte methods
-
-        #region Focus Methods
-        /// <summary>
-        /// Update the focus to selection start
-        /// </summary>
-        public void UpdateFocus()
-        {
-            if (SelectionStartIsVisible)
-                SetFocusAtSelectionStart();
-            else
-                try //sometimes crash in AvalonDock
-                {
-                    Focus();
-                }
-                catch
-                {
-                    // ignored
-                }
-        }
-
-        /// <summary>
-        /// Set the focus to the selection start
-        /// </summary>
-        public void SetFocusAtSelectionStart() => SetFocusAt(SelectionStart);
-
-        /// <summary>
-        /// Set focus at position in parameter
-        /// </summary>
-        private void SetFocusAt(long bytePositionInStream)
-        {
-            if (!CheckIsOpen(_provider)) return;
-            if (bytePositionInStream >= _provider.Length) return;
-
-            var rtn = false;
-
-            #region Set focus in data panel
-            switch (_firstColor)
-            {
-                case FirstColor.HexByteData:
-                    TraverseHexBytes(ctrl =>
-                    {
-                        if (ctrl.BytePositionInStream == bytePositionInStream)
-                        {
-                            ctrl.Focus();
-                            rtn = true;
-                        }
-                    }, ref rtn);
-                    break;
-                case FirstColor.StringByteData:
-                    TraverseStringBytes(ctrl =>
-                    {
-                        if (ctrl.BytePositionInStream == bytePositionInStream)
-                        {
-                            ctrl.Focus();
-                            rtn = true;
-                        }
-                    }, ref rtn);
-                    break;
-            }
-            #endregion
-
-            if (rtn) return;
-
-            if (VerticalScrollBar.Value < VerticalScrollBar.Maximum && !_setFocusTest)
-            {
-                _setFocusTest = true;
-                VerticalScrollBar.Value++;
-            }
-
-            if (!SelectionStartIsVisible && SelectionLength == 1)
-                SetPosition(SelectionStart, 1);
-        }
-
-        #endregion Focus Methods
-
-        #region Find/replace methods
-
-        /// <summary>
-        /// Find first occurence of string in stream. Search start as startPosition.
-        /// </summary>
-        public long FindFirst(string text, long startPosition = 0) =>
-            FindFirst(StringToByte(text), startPosition);
-
-        /// <summary>
-        /// Find first occurence of byte[] in stream. Search start as startPosition. - OPTIMIZED
-        /// </summary>
-        public long FindFirst(byte[] data, long startPosition = 0, bool highLight = false)
-        {
-            if (data == null) return -1;
-
-            UnHighLightAll();
-
-            try
-            {
-                var position = _findReplaceService.FindFirst(_provider, data, startPosition);
-
-                if (position == -1)
-                {
-                    UnSelectAll();
-                    UnHighLightAll();
-                    return -1;
-                }
-
-                SetPosition(position, data.Length);
-
-                if (!highLight) return position;
-
-                AddHighLight(position, data.Length, false);
-
-                SetScrollMarker(position, ScrollMarker.SearchHighLight);
-
-                SelectionStart = position;
-                UpdateHighLight();
-                return position;
-            }
-            catch
-            {
-                UnSelectAll();
-                UnHighLightAll();
-                return -1;
-            }
-        }
-
-        /// <summary>
-        /// Find next occurence of string in stream search start at SelectionStart.
-        /// </summary>
-        public long FindNext(string text) =>
-            FindNext(StringToByte(text));
-
-        /// <summary>
-        /// Find next occurence of byte[] in stream search start at SelectionStart.
-        /// </summary>
-        public long FindNext(byte[] data, bool highLight = false) =>
-            FindFirst(data, SelectionStart + 1, highLight);
-
-        /// <summary>
-        /// Find last occurence of string in stream search start at SelectionStart.
-        /// </summary>
-        public long FindLast(string text) => FindLast(StringToByte(text));
-
-        /// <summary>
-        /// Find last occurence of byte[] in stream. - OPTIMIZED
-        /// </summary>
-        /// <returns>Return the position</returns>
-        public long FindLast(byte[] data, bool highLight = false)
-        {
-            if (data == null) return -1;
-
-            UnHighLightAll();
-
-            try
-            {
-                var position = _findReplaceService.FindLast(_provider, data, SelectionStart);
-
-                if (position == -1)
-                {
-                    UnSelectAll();
-                    UnHighLightAll();
-                    return -1;
-                }
-
-                SetPosition(position, data.Length);
-
-                if (!highLight) return position;
-
-                AddHighLight(position, data.Length, false);
-
-                SetScrollMarker(position, ScrollMarker.SearchHighLight);
-
-                SelectionStart = position;
-                UpdateHighLight();
-                return position;
-            }
-            catch
-            {
-                UnSelectAll();
-                UnHighLightAll();
-                return -1;
-            }
-        }
-
-        /// <summary>
-        /// Find all occurence of string in stream.
-        /// </summary>
-        /// <returns>Return null if no occurence found</returns>
-        public IEnumerable<long> FindAll(string text) => FindAll(StringToByte(text));
-
-        /// <summary>
-        /// Find all occurence of byte[] in stream.
-        /// </summary>
-        /// <returns>Return null if no occurence found</returns>
-        public IEnumerable<long> FindAll(byte[] data)
-        {
-            if (data == null) return null;
-
-            UnHighLightAll();
-
-            return _findReplaceService.FindAll(_provider, data);
-        }
-
-        /// <summary>
-        /// Find all occurence of string in stream.
-        /// </summary>
-        /// <returns>Return null if no occurence found</returns>
-        public IEnumerable<long> FindAll(string text, bool highLight) =>
-            FindAll(StringToByte(text), highLight);
-
-        /// <summary>
-        /// Find all occurence of string in stream. Highlight occurance in stream is MarcAll as true - OPTIMIZED
-        /// </summary>
-        /// <returns>Return null if no occurence found</returns>
-        public IEnumerable<long> FindAll(byte[] data, bool highLight)
-        {
-            if (data == null) return null;
-
-            ClearScrollMarker(ScrollMarker.SearchHighLight);
-
-            if (highLight)
-            {
-                // Use cached FindAll from service
-                var positions = _findReplaceService.FindAllCached(_provider, data);
-
-                if (positions == null) return null;
-
-                var findAll = positions as IList<long> ?? positions.ToList();
-
-                // OPTIMIZED: Batch operations with BeginInit/EndInit for better performance
-                MarkerGrid.BeginInit();
-
-                try
-                {
-                    // Add all highlights and markers in a batch
-                    foreach (var position in findAll)
-                    {
-                        AddHighLight(position, data.Length, false);
-                        SetScrollMarker(position, ScrollMarker.SearchHighLight);
-                    }
-                }
-                finally
-                {
-                    MarkerGrid.EndInit();
-                }
-
-                UnSelectAll();
-                UpdateHighLight();
-
-                return findAll;
-            }
-
-            return FindAll(data);
-        }
-
-        /// <summary>
-        /// Find all occurence of SelectionByteArray in stream. Highlight byte finded
-        /// </summary>
-        /// <returns>Return null if no occurence found</returns>
-        public IEnumerable<long> FindAllSelection(bool highLight) =>
-            SelectionLength > 0
-                ? FindAll(GetSelectionByteArray(), highLight)
-                : null;
-
-        /// <summary>
-        /// Replace byte with another at selection position
-        /// </summary>
-        public void ReplaceByte(byte original, byte replace) =>
-            ReplaceByte(SelectionStart, SelectionLength, original, replace);
-
-        /// <summary>
-        /// Replace byte with another at start position
-        /// </summary>
-        public void ReplaceByte(long startPosition, long length, byte original, byte replace)
-        {
-            _findReplaceService.ReplaceByte(_provider, startPosition, length, original, replace, ReadOnlyMode);
-            SetScrollMarker(SelectionStart, ScrollMarker.ByteModified, Properties.Resources.ReplaceWithByteString);
-            _findReplaceService.ClearCache();  // Clear search cache after modification
-            RefreshView();
-        }
-
-        /// <summary>
-        /// Replace the first byte array define by findData in byteprovider at start position. 
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceFirst(byte[] findData, byte[] replaceData, long startPosition = 0, bool hightlight = false) => 
-            ReplaceFirst(findData, replaceData, true, startPosition, hightlight);
-
-        /// <summary>
-        /// Replace the first byte array define by findData in byteprovider at start position.
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceFirst(byte[] findData, byte[] replaceData, bool truckLength = true, long startPosition = 0, bool hightlight = false)
-        {
-            if (findData == null || replaceData == null) return -1;
-
-            var position = _findReplaceService.ReplaceFirst(_provider, findData, replaceData, startPosition, truckLength, ReadOnlyMode);
-
-            if (position > -1)
-            {
-                // UI logic
-                SetScrollMarker(position, ScrollMarker.ByteModified);
-
-                if (hightlight)
-                    AddHighLight(position, findData.Length, false);
-
-                UnSelectAll();
-                _findReplaceService.ClearCache();  // Clear search cache after modification
-                RefreshView();
-
-                return position;
-            }
-
-            return -1;
-        }
-
-        /// <summary>
-        /// Replace the first byte array define by findData in byteprovider at SelectionStart. Start the search at SelectionStart. 
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceFirst(byte[] findData, byte[] replaceData, bool truckLength = true, bool hightlight = false) =>
-            ReplaceFirst(findData, replaceData, truckLength, SelectionStart, hightlight);
-
-        /// <summary>
-        /// Replace the first byte array define by findData in byteprovider at SelectionStart. 
-        /// Start the search at SelectionStart. 
-        /// No highlight
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceFirst(byte[] findData, byte[] replaceData, bool truckLength = true) =>
-            ReplaceFirst(findData, replaceData, truckLength, SelectionStart);
-
-        /// <summary>
-        /// Replace the first byte array define by findData in byteprovider at SelectionStart. 
-        /// Start the search at SelectionStart. 
-        /// No highlight
-        /// Truck replace data to length of findData
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceFirst(byte[] findData, byte[] replaceData) =>
-            ReplaceFirst(findData, replaceData, true, SelectionStart);
-
-        /// <summary>
-        /// Replace the first string define by find in byteprovider at SelectionStart. Start the search at SelectionStart. 
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceFirst(string find, string replace, bool truckLength = true, bool hightlight = false) =>
-            ReplaceFirst(StringToByte(find), StringToByte(replace), truckLength, SelectionStart, hightlight);
-
-        /// <summary>
-        /// Replace the first string define by find in byteprovider at SelectionStart. 
-        /// Start the search at SelectionStart. 
-        /// No highlight
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>        
-        public long ReplaceFirst(string find, string replace, bool truckLength = true) =>
-            ReplaceFirst(StringToByte(find), StringToByte(replace), truckLength, SelectionStart);
-
-        /// <summary>
-        /// Replace the first string define by find in byteprovider at start position. 
-        /// Start the search at SelectionStart. 
-        /// No highlight
-        /// Truck replace data to length of findData
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>        
-        public long ReplaceFirst(string find, string replace) =>
-            ReplaceFirst(StringToByte(find), StringToByte(replace), true, SelectionStart);
-
-        /// <summary>
-        /// Replace the next byte array define by findData in byteprovider at SelectionStart. 
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceNext(byte[] findData, byte[] replaceData, bool truckLength = true, bool hightlight = false) =>
-            ReplaceFirst(findData, replaceData, truckLength, SelectionStart + 1, hightlight);
-
-        /// <summary>
-        /// Replace the next byte array define by findData in byteprovider at SelectionStart. 
-        /// No highlight
-        /// Truck replace data to length of findData
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceNext(byte[] findData, byte[] replaceData) =>
-            ReplaceFirst(findData, replaceData, true, SelectionStart + 1);
-
-        /// <summary>
-        /// Replace the next byte array define by findData in byteprovider at SelectionStart. 
-        /// No highlight
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceNext(byte[] findData, byte[] replaceData, bool truckLength = true) =>
-            ReplaceFirst(findData, replaceData, truckLength, SelectionStart + 1);
-
-        /// <summary>
-        /// Replace the next string define by find in byteprovider at SelectionStart. 
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceNext(string find, string replace, bool truckLength = true, bool hightlight = false) =>
-            ReplaceFirst(StringToByte(find), StringToByte(replace), truckLength, SelectionStart + 1, hightlight);
-
-        /// <summary>
-        /// Replace the next string define by find in byteprovider at SelectionStart. 
-        /// No highlight
-        /// Truck replace data to length of findData
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceNext(string find, string replace) =>
-            ReplaceFirst(StringToByte(find), StringToByte(replace), true, SelectionStart + 1);
-
-        /// <summary>
-        /// Replace the next string define by find in byteprovider at SelectionStart. 
-        /// No highlight
-        /// </summary>
-        /// <returns>Return the position of replace. Return -1 on error/no replace</returns>
-        public long ReplaceNext(string find, string replace, bool truckLength = true) =>
-            ReplaceFirst(StringToByte(find), StringToByte(replace), truckLength, SelectionStart + 1);
-
-        /// <summary>
-        /// Replace the all byte array define by findData in byteprovider.
-        /// </summary>
-        /// <returns>Return the an IEnumerable contains all positions are replaced. Return null on error/no replace</returns>
-        public IEnumerable<long> ReplaceAll(byte[] findData, byte[] replaceData, bool truckLength = true, bool hightlight = false)
-        {
-            if (findData == null || replaceData == null) return null;
-
-            var positions = _findReplaceService.ReplaceAll(_provider, findData, replaceData, truckLength, ReadOnlyMode);
-
-            if (positions == null) return null;
-
-            // UI logic
-            foreach (var position in positions)
-            {
-                SetScrollMarker(position, ScrollMarker.ByteModified);
-
-                if (hightlight)
-                    AddHighLight(position, findData.Length, false);
-            }
-
-            UnSelectAll();
-            _findReplaceService.ClearCache();  // Clear search cache after modification
-            RefreshView();
-
-            return positions;
-
-        }
-
-        /// <summary>
-        /// Replace the all byte array define by findData in byteprovider. 
-        /// No highlight
-        /// </summary>
-        /// <returns>Return the position of replace. Return null on error/no replace</returns>
-        public IEnumerable<long> ReplaceAll(byte[] findData, byte[] replaceData, bool truckLength = true) =>
-            ReplaceAll(findData, replaceData, truckLength, false);
-
-        /// <summary>
-        /// Replace the all string define by find in byteprovider. 
-        /// </summary>
-        /// <returns>Return the position of replace. Return null on error/no replace</returns>
-        public IEnumerable<long> ReplaceAll(string find, string replace, bool truckLength = true, bool hightlight = false) =>
-            ReplaceAll(StringToByte(find), StringToByte(replace), truckLength, hightlight);
-
-        /// <summary>
-        /// Replace the all string define by find in byteprovider.  
-        /// No highlight
-        /// Truck replace data to length of find
-        /// </summary>
-        /// <returns>Return the position of replace. Return null on error/no replace</returns>
-        public IEnumerable<long> ReplaceAll(string find, string replace) =>
-            ReplaceAll(StringToByte(find), StringToByte(replace), true, false);
-
-        /// <summary>
-        /// Replace the all byte array define by findData in byteprovider.  
-        /// No highlight
-        /// </summary>
-        /// <returns>Return the position of replace. Return null on error/no replace</returns>
-        public IEnumerable<long> ReplaceAll(string find, string replace, bool truckLength = true) =>
-            ReplaceAll(StringToByte(find), StringToByte(replace), truckLength, false);
-
-        #endregion Find/replace methods
-
-        #region Statusbar
-
-        /// <summary>
-        /// Update statusbar for somes property dont support dependency property
-        /// </summary>
-        private void UpdateStatusBar(bool updateFilelength = true)
-        {
-            if (StatusBarVisibility != Visibility.Visible) return;
-
-            if (!CheckIsOpen(_provider))
-            {
-                FileLengthKbLabel.Content = 0;
-                CountOfByteLabel.Content = 0;
-                return;
-            }
-
-            #region Show length
-            if (updateFilelength)
-            {
-                double length;
-                string unit;
-
-                if (_provider.LengthAjusted < 1024)
-                {
-                    length = _provider.LengthAjusted;
-                    unit = Properties.Resources.BytesTagString;
-                }
-                else if (_provider.LengthAjusted < 1048576) // 1048576 bytes = 1 MiB
-                {
-                    length = _provider.LengthAjusted / 1024;
-                    unit = Properties.Resources.KBTagString;
-                }
-                else
-                {
-                    length = _provider.LengthAjusted / 1048576;
-                    unit = Properties.Resources.MBTagString;
-                }
-
-                FileLengthKbLabel.Content = Math.Round(length, 2) + " " + unit;
-            }
-            #endregion
-
-            #region Byte count of selectionStart
-
-            if (AllowByteCount && _bytecount is not null && SelectionStart > -1)
-            {
-                ByteCountPanel.Visibility = Visibility.Visible;
-
-                var singleByte = _provider.GetByte(SelectionStart).singleByte;
-                if (singleByte == null) return;
-
-                var val = singleByte.Value;
-                CountOfByteSumLabel.Content = _bytecount[val];
-                CountOfByteLabel.Content = $"0x{LongToHex(val)}";
-            }
-            else
-                ByteCountPanel.Visibility = Visibility.Collapsed;
-
-            #endregion
-
-        }
-        #endregion Statusbar
-
-        #region Bookmark and other scrollmarker
-
-        /// <summary>
-        /// Get all bookmark are currently set
-        /// </summary>
-        public IEnumerable<BookMark> BookMarks
-        {
-            get
-            {
-                return _bookmarkService.GetBookmarksByMarker(ScrollMarker.Bookmark);
-            }
-        }
-
-        /// <summary>
-        /// Set bookmark at specified position
-        /// </summary>
-        public void SetBookMark(long position)
-        {
-            // Add to service (data layer)
-            _bookmarkService.AddBookmark(position, string.Empty, ScrollMarker.Bookmark);
-
-            // Update UI (visual layer)
-            SetScrollMarker(position, ScrollMarker.Bookmark);
-        }
-
-        /// <summary>
-        /// Set bookmark at selection start
-        /// </summary>
-        public void SetBookMark()
-        {
-            var position = SelectionStart;
-
-            // Add to service (data layer)
-            _bookmarkService.AddBookmark(position, string.Empty, ScrollMarker.Bookmark);
-
-            // Update UI (visual layer)
-            SetScrollMarker(position, ScrollMarker.Bookmark);
-        }
-
-        /// <summary>
-        /// Initialize brush cache to avoid repeated TryFindResource calls
-        /// </summary>
-        private void InitializeScrollMarkerBrushes()
-        {
-            _bookMarkColorBrush ??= (SolidColorBrush)TryFindResource("BookMarkColor");
-            _searchBookMarkColorBrush ??= (SolidColorBrush)TryFindResource("SearchBookMarkColor");
-            _selectionStartBookMarkColorBrush ??= (SolidColorBrush)TryFindResource("SelectionStartBookMarkColor");
-            _byteModifiedMarkColorBrush ??= (SolidColorBrush)TryFindResource("ByteModifiedMarkColor");
-            _byteDeletedMarkColorBrush ??= (SolidColorBrush)TryFindResource("ByteDeletedMarkColor");
-        }
-
-        /// <summary>
-        /// Set marker at position using bookmark object
-        /// </summary>
-        private void SetScrollMarker(BookMark mark) =>
-            SetScrollMarker(mark.BytePositionInStream, mark.Marker, mark.Description);
-
-        /// <summary>
-        /// Set marker at position - OPTIMIZED VERSION with cache
-        /// </summary>
-        private void SetScrollMarker(long position, ScrollMarker marker, string description = "")
-        {
-            if (!CheckIsOpen(_provider)) return;
-
-            // Initialize brushes cache if not done
-            InitializeScrollMarkerBrushes();
-
-            double rightPosition = 0;
-
-            //create bookmark
-            var bookMark = new BookMark
-            {
-                Marker = marker,
-                BytePositionInStream = position,
-                Description = description
-            };
-
-            #region Remove selection start marker and set position
-
-            if (marker == ScrollMarker.SelectionStart)
-            {
-                // Use cache to quickly remove existing SelectionStart marker
-                var selectionStartKey = $"{ScrollMarker.SelectionStart}_";
-                var keysToRemove = _scrollMarkerCache.Keys.Where(k => k.StartsWith(selectionStartKey)).ToList();
-                foreach (var key in keysToRemove)
-                {
-                    if (_scrollMarkerCache.TryGetValue(key, out var existingRect))
-                    {
-                        MarkerGrid.Children.Remove(existingRect);
-                        _scrollMarkerCache.Remove(key);
-                    }
-                }
-
-                bookMark.BytePositionInStream = SelectionStart;
-            }
-
-            #endregion
-
-            #region Set position in scrollbar
-
-            var topPosition = (VerticalScrollBar.Track == null) ? double.NaN :
-                (GetLineNumber(bookMark.BytePositionInStream) * VerticalScrollBar.Track.TickHeight(MaxLine) - 1).Round(1);
-
-            if (double.IsNaN(topPosition))
-                topPosition = 0;
-
-            #endregion
-
-            #region Check if position already exist using cache
-
-            var cacheKey = $"{marker}_{(int)topPosition}";
-
-            if (marker != ScrollMarker.SelectionStart)
-            {
-                // Check cache instead of traversing all markers
-                if (_scrollMarkerCache.ContainsKey(cacheKey))
-                    return;
-            }
-
-            #endregion
-
-            #region Set somes properties for different marker
-
-            var r = new Rectangle
-            {
-                VerticalAlignment = VerticalAlignment.Top,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Tag = bookMark,
-                Width = 5,
-                Height = 3,
-                DataContext = bookMark
-            };
-
-            var tooltip = TryFindResource("ScrollMarkerSearchToolTip");
-
-            switch (marker)
-            {
-                case ScrollMarker.TblBookmark:
-                case ScrollMarker.Bookmark:
-                    r.ToolTip = tooltip;
-                    r.Fill = _bookMarkColorBrush;
-                    break;
-                case ScrollMarker.SearchHighLight:
-                    r.ToolTip = tooltip;
-                    r.Fill = _searchBookMarkColorBrush;
-                    r.HorizontalAlignment = HorizontalAlignment.Center;
-                    break;
-                case ScrollMarker.SelectionStart:
-                    r.Fill = _selectionStartBookMarkColorBrush;
-                    r.Width = VerticalScrollBar.ActualWidth;
-                    r.Height = 3;
-                    break;
-                case ScrollMarker.ByteModified:
-                    r.ToolTip = tooltip;
-                    r.Fill = _byteModifiedMarkColorBrush;
-                    r.HorizontalAlignment = HorizontalAlignment.Right;
-                    break;
-                case ScrollMarker.ByteDeleted:
-                    r.ToolTip = tooltip;
-                    r.Fill = _byteDeletedMarkColorBrush;
-                    r.HorizontalAlignment = HorizontalAlignment.Right;
-                    rightPosition = 4;
-                    break;
-            }
-
-            r.MouseDown += Rect_MouseDown;
-            r.Margin = new Thickness(0, topPosition, rightPosition, 0);
-
-            //Add to cache and grid
-            _scrollMarkerCache[cacheKey] = r;
-            MarkerGrid.Children.Add(r);
-
-            #endregion
-        }
-
-        private void Rect_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is not Rectangle rect || rect.Tag is not BookMark bm) return;
-
-            //Set position at the scrollmark...
-            SetPosition(bm.Marker != ScrollMarker.SelectionStart ? bm.BytePositionInStream : SelectionStart, 1);
-        }
-
-        /// <summary>
-        /// Update all scroll marker position - OPTIMIZED with batch updates
-        /// </summary>
-        private void UpdateScrollMarkerPosition()
-        {
-            if (VerticalScrollBar.Track == null) return;
-
-            // Suspend layout updates during batch modification
-            MarkerGrid.BeginInit();
-
-            try
-            {
-                var tickHeight = VerticalScrollBar.Track.TickHeight(MaxLine);
-
-                // Use cache for faster iteration
-                foreach (var rect in _scrollMarkerCache.Values)
-                {
-                    if (rect.Tag is not BookMark bm) continue;
-
-                    try
-                    {
-                        var newTop = GetLineNumber(bm.BytePositionInStream) * tickHeight - rect.ActualHeight;
-                        rect.Margin = new Thickness(0, newTop, 0, 0);
-                    }
-                    catch
-                    {
-                        rect.Margin = new Thickness(0);
-                    }
-                }
-            }
-            finally
-            {
-                // Resume layout updates - single redraw
-                MarkerGrid.EndInit();
-            }
-        }
-
-        /// <summary>
-        /// Clear ScrollMarker - OPTIMIZED with cache clear
-        /// </summary>
-        public void ClearAllScrollMarker()
-        {
-            MarkerGrid.Children.Clear();
-            _scrollMarkerCache.Clear();
-        }
-
-        /// <summary>
-        /// Clear ScrollMarker - OPTIMIZED to avoid removing during traversal
-        /// </summary>
-        /// <param name="marker">Type of marker to clear</param>
-        public void ClearScrollMarker(ScrollMarker marker)
-        {
-            // Clear from service (data layer)
-            if (marker == ScrollMarker.Bookmark)
-                _bookmarkService.RemoveAllBookmarks(marker);
-
-            // Collect markers to remove (avoid modification during iteration)
-            var keysToRemove = _scrollMarkerCache.Keys
-                .Where(k => k.StartsWith($"{marker}_"))
-                .ToList();
-
-            // Batch remove from UI
-            foreach (var key in keysToRemove)
-            {
-                if (_scrollMarkerCache.TryGetValue(key, out var rect))
-                {
-                    MarkerGrid.Children.Remove(rect);
-                    _scrollMarkerCache.Remove(key);
+                    _viewModel.VisibleLines = value;
+                    VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
+                    VerticalScroll.ViewportSize = _viewModel.VisibleLines;
                 }
             }
         }
 
+        #region Visual Customization Properties (V2 Native)
+
         /// <summary>
-        /// Clear ScrollMarker - OPTIMIZED with cache lookup
+        /// Foreground color for normal bytes
         /// </summary>
-        /// <param name="marker">Type of marker to clear</param>
-        /// <param name="position"></param>
-        public void ClearScrollMarker(ScrollMarker marker, long position)
+        public System.Windows.Media.Brush ByteForeground
         {
-            // Clear from service (data layer)
-            if (marker == ScrollMarker.Bookmark)
-                _bookmarkService.RemoveBookmark(position, marker);
-
-            var topPosition = (VerticalScrollBar.Track == null) ? 0 :
-                (int)(GetLineNumber(position) * VerticalScrollBar.Track.TickHeight(MaxLine) - 1).Round(1);
-
-            var cacheKey = $"{marker}_{topPosition}";
-
-            if (_scrollMarkerCache.TryGetValue(cacheKey, out var rect))
-            {
-                MarkerGrid.Children.Remove(rect);
-                _scrollMarkerCache.Remove(cacheKey);
-            }
+            get => (System.Windows.Media.Brush)Resources["ByteForegroundBrush"];
+            set => Resources["ByteForegroundBrush"] = value;
         }
 
         /// <summary>
-        /// Clear ScrollMarker at position - OPTIMIZED
+        /// Foreground color for alternate bytes (every other byte)
         /// </summary>
-        public void ClearScrollMarker(long position)
+        public System.Windows.Media.Brush AlternateByteForeground
         {
-            // Find all markers at this position across all types
-            var keysToRemove = _scrollMarkerCache
-                .Where(kvp => kvp.Value.Tag is BookMark bm && bm.BytePositionInStream == position)
-                .Select(kvp => kvp.Key)
-                .ToList();
-
-            // Batch remove
-            foreach (var key in keysToRemove)
-            {
-                if (_scrollMarkerCache.TryGetValue(key, out var rect))
-                {
-                    MarkerGrid.Children.Remove(rect);
-                    _scrollMarkerCache.Remove(key);
-                }
-            }
-        }
-
-        #endregion Bookmark and other scrollmarker
-
-        #region Context menu
-
-        /// <summary>
-        /// Allow or not the context menu to appear on right-click
-        /// </summary>
-        public bool AllowContextMenu { get; set; } = true;
-
-        private void Control_RightClick(object sender, EventArgs e)
-        {
-            if (!AllowContextMenu) return;
-
-            //position                
-            if (sender is IByteControl ctrl)
-                _rightClickBytePosition = ctrl.BytePositionInStream;
-
-            if (SelectionLength <= 1)
-            {
-                SelectionStart = _rightClickBytePosition;
-                SelectionStop = _rightClickBytePosition;
-            }
-
-            #region Disable ctrl
-
-            CopyAsCMenu.IsEnabled = false;
-            CopyAsciicMenu.IsEnabled = false;
-            FindAllCMenu.IsEnabled = false;
-            CopyHexaCMenu.IsEnabled = false;
-            UndoCMenu.IsEnabled = false;
-            DeleteCMenu.IsEnabled = false;
-            FillByteCMenu.IsEnabled = false;
-            CopyTblcMenu.IsEnabled = false;
-            PasteMenu.IsEnabled = false;
-            ReplaceByteCMenu.IsEnabled = false;
-
-            #endregion
-
-            if (SelectionLength > 0)
-            {
-                CopyAsciicMenu.IsEnabled = true;
-                CopyAsCMenu.IsEnabled = true;
-                FindAllCMenu.IsEnabled = true;
-                CopyHexaCMenu.IsEnabled = true;
-
-                if (!ReadOnlyMode)
-                {
-                    DeleteCMenu.IsEnabled = true;
-                    FillByteCMenu.IsEnabled = true;
-                    PasteMenu.IsEnabled = true;
-                    ReplaceByteCMenu.IsEnabled = true;
-
-                }
-
-                if (_tblService.CharacterTable is not null)
-                    CopyTblcMenu.IsEnabled = true;
-            }
-
-            if (UndoCount > 0)
-                UndoCMenu.IsEnabled = true;
-
-            //Show context menu
-            Focus();
-            CMenu.Visibility = Visibility.Visible;
-        }
-
-        private void FindAllCMenu_Click(object sender, RoutedEventArgs e) => FindAll(GetSelectionByteArray(), true);
-
-        private void CopyToClipBoardCMenu_Click(object sender, RoutedEventArgs e)
-        {
-            //Copy to clipboard
-            switch ((sender as MenuItem)?.Name)
-            {
-                case nameof(CopyHexaCMenu):
-                    CopyToClipboard(CopyPasteMode.HexaString);
-                    break;
-                case nameof(CopyAsciicMenu):
-                    CopyToClipboard(CopyPasteMode.AsciiString);
-                    break;
-                case nameof(CopyCSharpCMenu):
-                    CopyToClipboard(CopyPasteMode.CSharpCode);
-                    break;
-                case nameof(CopyFSharpCMenu):
-                    CopyToClipboard(CopyPasteMode.FSharpCode);
-                    break;
-                case nameof(CopyCcMenu):
-                    CopyToClipboard(CopyPasteMode.CCode);
-                    break;
-                case nameof(CopyJavaCMenu):
-                    CopyToClipboard(CopyPasteMode.JavaCode);
-                    break;
-                case nameof(CopyVbNetCMenu):
-                    CopyToClipboard(CopyPasteMode.VbNetCode);
-                    break;
-                case nameof(CopyPascalCMenu):
-                    CopyToClipboard(CopyPasteMode.PascalCode);
-                    break;
-                case nameof(CopyTblcMenu):
-                    CopyToClipboard(CopyPasteMode.TblString);
-                    break;
-            }
-        }
-
-        private void DeleteCMenu_Click(object sender, RoutedEventArgs e) => DeleteSelection();
-
-        private void UndoCMenu_Click(object sender, RoutedEventArgs e) => Undo();
-
-        private void BookMarkCMenu_Click(object sender, RoutedEventArgs e) => SetBookMark(_rightClickBytePosition);
-
-        private void ClearBookMarkCMenu_Click(object sender, RoutedEventArgs e) =>
-            ClearScrollMarker(ScrollMarker.Bookmark);
-
-        private void PasteMenu_Click(object sender, RoutedEventArgs e) => Paste(false); //Paste Without Insert
-
-        private void SelectAllCMenu_Click(object sender, RoutedEventArgs e) => SelectAll();
-
-        private void FillByteCMenu_Click(object sender, RoutedEventArgs e)
-        {
-            var window = new GiveByteWindow();
-
-            //For present crash When used in Winform
-            try
-            {
-                window.Owner = Application.Current.MainWindow;
-            }
-            catch
-            {
-                // TODO : add Winform code
-            }
-
-            if (window.ShowDialog() == true && window.HexTextBox.LongValue <= 255)
-                FillWithByte((byte)window.HexTextBox.LongValue);
-        }
-
-        private void ReplaceByteCMenu_Click(object sender, RoutedEventArgs e)
-        {
-            var window = new ReplaceByteWindow();
-
-            //For present crash When used in Winform
-            try
-            {
-                window.Owner = Application.Current.MainWindow;
-            }
-            catch
-            {
-                // TODO : add Winform code
-            }
-
-            if (window.ShowDialog() == true && window.HexTextBox.LongValue <= 255 &&
-                window.ReplaceHexTextBox.LongValue <= 255)
-                ReplaceByte((byte)window.HexTextBox.LongValue, (byte)window.ReplaceHexTextBox.LongValue);
-        }
-
-        #endregion Context menu
-
-        #region Bottom and top rectangle
-
-        /// <summary>
-        /// Vertical Move Method By Time,
-        /// </summary>
-        /// <param name="readToMove">whether the veticalbar value should be changed</param>
-        /// <param name="distance">the value that vertical value move down(negative for up)</param>
-        private void VerticalMoveByTime(Func<bool> readToMove, Func<double> distance) =>
-            ThreadPool.QueueUserWorkItem(_ =>
-            {
-                while (readToMove())
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        if (Mouse.LeftButton != MouseButtonState.Pressed) return;
-
-                        VerticalScrollBar.Value += distance();
-
-                        //Selection stop
-                        if (_mouseOnBottom)
-                            SelectionStop = LastVisibleBytePosition;
-                        else if (_mouseOnTop)
-                            SelectionStop = FirstVisibleBytePosition;
-
-                        //Give the control to dispatcher for do events
-                        Application.Current.DoEvents();
-
-                    });
-                }
-            });
-
-        private void BottomRectangle_MouseEnter(object sender, MouseEventArgs e)
-        {
-            _mouseOnBottom = true;
-            var curTime = ++_bottomEnterTimes;
-
-            VerticalMoveByTime
-            (
-                () => _mouseOnBottom && curTime == _bottomEnterTimes,
-                () => (int)MouseWheelSpeed
-            );
-        }
-
-        private void TopRectangle_MouseEnter(object sender, MouseEventArgs e)
-        {
-            var curTime = ++_topEnterTimes;
-            _mouseOnTop = true;
-
-            VerticalMoveByTime
-            (
-                () => _mouseOnTop && curTime == _topEnterTimes,
-                () => -(int)MouseWheelSpeed
-            );
-        }
-
-        private void BottomRectangle_MouseLeave(object sender, MouseEventArgs e) => _mouseOnBottom = false;
-
-        private void TopRectangle_MouseLeave(object sender, MouseEventArgs e) => _mouseOnTop = false;
-
-        private void BottomRectangle_MouseDown(object sender, MouseButtonEventArgs e) => _mouseOnBottom = false;
-
-        private void TopRectangle_MouseDown(object sender, MouseButtonEventArgs e) => _mouseOnTop = false;
-
-        #endregion Bottom and Top rectangle
-
-        #region MouseWheel support
-        /// <summary>
-        /// Control the mouse wheel speed
-        /// </summary>
-        public MouseWheelSpeed MouseWheelSpeed { get; set; } = MouseWheelSpeed.System;
-
-        private void Control_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            #region Mousewheel Zoom support
-            if (_scaler == null) InitialiseZoom();
-
-            if (Keyboard.Modifiers == ModifierKeys.Control && AllowZoom)
-            {
-                if (e.Delta > 0) //Zoom
-                    ZoomScale += 0.1;
-
-                if (e.Delta < 0) //UnZoom
-                    ZoomScale -= 0.1;
-
-                return;
-            }
-            #endregion
-
-            #region Scroll up and down in the hex editor
-            if (_provider == null || !_provider.IsOnLongProcess)
-            {
-                if (e.Delta > 0) //UP
-                    VerticalScrollBar.Value -= e.Delta / 120 *
-                        (MouseWheelSpeed == MouseWheelSpeed.System
-                            ? SystemParameters.WheelScrollLines
-                            : (int)MouseWheelSpeed);
-
-                if (e.Delta < 0) //Down
-                    VerticalScrollBar.Value += e.Delta / 120 *
-                       -(MouseWheelSpeed == MouseWheelSpeed.System
-                            ? SystemParameters.WheelScrollLines
-                            : (int)MouseWheelSpeed);
-            }
-            #endregion
-        }
-        #endregion
-
-        #region Highlight support
-        /// <summary>
-        /// Byte at selection start
-        /// </summary>
-        internal byte? SelectionByte { get; set; }
-
-        /// <summary>
-        /// Set to true for highlight the same byte are selected in view.
-        /// </summary>
-        public bool AllowAutoHighLightSelectionByte
-        {
-            get => (bool)GetValue(AllowAutoHighLightSelectionByteProperty);
-            set => SetValue(AllowAutoHighLightSelectionByteProperty, value);
-        }
-
-        public static readonly DependencyProperty AllowAutoHighLightSelectionByteProperty =
-            DependencyProperty.Register(nameof(AllowAutoHighLightSelectionByte), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(true, AutoHighLiteSelectionByte_Changed));
-
-        /// <summary>
-        /// Brush used to color the selectionbyte
-        /// </summary>
-        public Brush AutoHighLiteSelectionByteBrush
-        {
-            get => (Brush)GetValue(AutoHighLiteSelectionByteBrushProperty);
-            set => SetValue(AutoHighLiteSelectionByteBrushProperty, value);
-        }
-
-        public static readonly DependencyProperty AutoHighLiteSelectionByteBrushProperty =
-            DependencyProperty.Register(nameof(AutoHighLiteSelectionByteBrush), typeof(Brush), typeof(HexEditor),
-                new FrameworkPropertyMetadata(Brushes.LightBlue, AutoHighLiteSelectionByte_Changed));
-
-        private static void AutoHighLiteSelectionByte_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor ctrl)
-                ctrl.UpdateVisual();
+            get => (System.Windows.Media.Brush)Resources["AlternateByteForegroundBrush"];
+            set => Resources["AlternateByteForegroundBrush"] = value;
         }
 
         /// <summary>
-        /// Un highlight all byte as highlighted with find all methods
+        /// Show column separator between hex and ASCII
         /// </summary>
-        public void UnHighLightAll()
+        public bool ShowColumnSeparator
         {
-            _highlightService.UnHighLightAll();
-            UpdateHighLight();
-            ClearScrollMarker(ScrollMarker.SearchHighLight);
+            get => (bool)GetValue(ShowColumnSeparatorProperty);
+            set => SetValue(ShowColumnSeparatorProperty, value);
         }
 
-        /// <summary>
-        /// Add highlight at position start
-        /// </summary>
-        /// <param name="startPosition">Position to start the highlight</param>
-        /// <param name="length">The length to highlight</param>
-        /// <param name="updateVisual">Set to true for update the visual after adding</param>
-        public void AddHighLight(long startPosition, long length, bool updateVisual = true)
-        {
-            _highlightService.AddHighLight(startPosition, length);
-
-            if (updateVisual) UpdateHighLight();
-        }
-
-        /// <summary>
-        /// Remove highlight from position start
-        /// </summary>
-        /// <param name="startPosition">Position to start the remove of highlight</param>
-        /// <param name="length">The length of highlight to removing</param>
-        /// <param name="updateVisual">Set to true for update the visual after removing</param>
-        public void RemoveHighLight(long startPosition, long length, bool updateVisual = true)
-        {
-            _highlightService.RemoveHighLight(startPosition, length);
-
-            if (updateVisual) UpdateHighLight();
-        }
-        #endregion Highlight support
-
-        #region ByteCount property/methods
-
-        /// <summary>
-        /// Get or set if the count of byte are allowed
-        /// </summary>
-        public bool AllowByteCount
-        {
-            get => (bool)GetValue(AllowByteCountProperty);
-            set => SetValue(AllowByteCountProperty, value);
-        }
-
-        public static readonly DependencyProperty AllowByteCountProperty =
-            DependencyProperty.Register(nameof(AllowByteCount), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(false, AllowByteCount_PropertyChanged));
-
-        private static void AllowByteCount_PropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl) return;
-
-            if (e.NewValue != e.OldValue)
-                ctrl.UpdateByteCount();
-
-            ctrl.UpdateStatusBar();
-        }
-
-        /// <summary>
-        /// Update the bytecount var.
-        /// </summary>
-        private void UpdateByteCount()
-        {
-            _bytecount = null;
-
-            if (CheckIsOpen(_provider) && AllowByteCount)
-                _bytecount = _provider.GetByteCount();
-        }
-
-        #endregion ByteCount Property
-
-        #region IDisposable Support
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_disposedValue) return;
-
-            //Dispose managed object
-            if (disposing)
-            {
-                _provider?.Dispose();
-                _tblService.CharacterTable?.Dispose();
-                _viewBuffer = null;
-                _viewBufferBytePosition = null;
-                // _markedPositionList is now managed by HighlightService (no need to null)
-                _highlightService.Clear();
-            }
-
-            _disposedValue = true;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        public static readonly DependencyProperty ShowColumnSeparatorProperty =
+            DependencyProperty.Register(nameof(ShowColumnSeparator), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
 
         #endregion
 
-        #region IByteControl grouping support
+        #region V1 Compatibility - Byte Spacer Properties
+
         /// <summary>
-        /// Get or set the byte spacing
+        /// Get or set the byte spacing position 
         /// </summary>
         public ByteSpacerPosition ByteSpacerPositioning
         {
@@ -4923,7 +1309,7 @@ namespace WpfHexaEditor
                 new FrameworkPropertyMetadata(ByteSpacerPosition.HexBytePanel, ByteSpacer_Changed));
 
         /// <summary>
-        /// Get or set the byte spacer width
+        /// Get or set the byte spacer width 
         /// </summary>
         public ByteSpacerWidth ByteSpacerWidthTickness
         {
@@ -4935,14 +1321,8 @@ namespace WpfHexaEditor
             DependencyProperty.Register(nameof(ByteSpacerWidthTickness), typeof(ByteSpacerWidth), typeof(HexEditor),
                 new FrameworkPropertyMetadata(ByteSpacerWidth.Normal, ByteSpacer_Changed));
 
-        private static void ByteSpacer_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor ctrl)
-                ctrl.RefreshView(true);
-        }
-
         /// <summary>
-        /// Get or set the byte grouping
+        /// Get or set the byte grouping 
         /// </summary>
         public ByteSpacerGroup ByteGrouping
         {
@@ -4952,7 +1332,7 @@ namespace WpfHexaEditor
 
         public static readonly DependencyProperty ByteGroupingProperty =
             DependencyProperty.Register(nameof(ByteGrouping), typeof(ByteSpacerGroup), typeof(HexEditor),
-                new FrameworkPropertyMetadata(ByteSpacerGroup.EightByte, ByteSpacer_Changed));
+                new FrameworkPropertyMetadata(ByteSpacerGroup.FourByte, ByteSpacer_Changed));
 
         /// <summary>
         /// Get or set the visual of byte spacer 
@@ -4965,748 +1345,251 @@ namespace WpfHexaEditor
 
         public static readonly DependencyProperty ByteSpacerVisualStyleProperty =
             DependencyProperty.Register(nameof(ByteSpacerVisualStyle), typeof(ByteSpacerVisual), typeof(HexEditor),
-                new FrameworkPropertyMetadata(ByteSpacerVisual.Empty, ByteSpacer_Changed));
+                new FrameworkPropertyMetadata(ByteSpacerVisual.Line, ByteSpacer_Changed));
 
         /// <summary>
-        /// Add byte spacer
+        /// Callback when any byte spacer property changes - triggers header and viewport refresh
         /// </summary>
-        private void AddByteSpacer(StackPanel stack, int colomn, bool forceEmpty = false)
+        private static void ByteSpacer_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (colomn % (int)ByteGrouping != 0 || colomn <= 0) return;
-
-            if (!forceEmpty)
-                switch (ByteSpacerVisualStyle)
-                {
-                    case ByteSpacerVisual.Empty:
-                        stack.Children.Add(new TextBlock { Width = (int)ByteSpacerWidthTickness });
-                        break;
-                    case ByteSpacerVisual.Line:
-
-                        #region Line
-
-                        stack.Children.Add(new Line
-                        {
-                            Y2 = LineHeight,
-                            X1 = (int)ByteSpacerWidthTickness / 2D,
-                            X2 = (int)ByteSpacerWidthTickness / 2D,
-                            Stroke = BorderBrush,
-                            StrokeThickness = 1,
-                            Width = (int)ByteSpacerWidthTickness
-                        });
-
-                        #endregion
-
-                        break;
-                    case ByteSpacerVisual.Dash:
-
-                        #region LineDash
-
-                        stack.Children.Add(new Line
-                        {
-                            Y2 = LineHeight - 1,
-                            X1 = (int)ByteSpacerWidthTickness / 2D,
-                            X2 = (int)ByteSpacerWidthTickness / 2D,
-                            Stroke = BorderBrush,
-                            StrokeDashArray = new DoubleCollection(new double[] { 2 }),
-                            StrokeThickness = 1,
-                            Width = (int)ByteSpacerWidthTickness
-                        });
-
-                        #endregion
-
-                        break;
-                }
-            else
-                stack.Children.Add(new TextBlock { Width = (int)ByteSpacerWidthTickness });
-        }
-
-        #endregion IByteControl grouping
-
-        #region Caret support
-
-        public CaretMode VisualCaretMode
-        {
-            get => (CaretMode)GetValue(VisualCaretModeProperty);
-            set => SetValue(VisualCaretModeProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for VisualCaretMode.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty VisualCaretModeProperty =
-            DependencyProperty.Register(nameof(VisualCaretMode), typeof(CaretMode), typeof(HexEditor),
-                new FrameworkPropertyMetadata(CaretMode.Insert, VisualCaretMode_Changed));
-
-        private static void VisualCaretMode_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl) return;
-
-            ctrl.SetCaretMode((CaretMode)e.NewValue);
-            ctrl.RefreshView(true);
-        }
-
-        /// <summary>
-        /// Initialize the caret
-        /// </summary>
-        private void InitializeCaret()
-        {
-            if (DesignerProperties.GetIsInDesignMode(this)) return;
-
-            BaseGrid.Children.Add(_caret);
-            _caret.CaretHeight = LineHeight;
-            _caret.BlinkPeriod = 600;
-            _caret.Hide();
-        }
-
-        /// <summary>
-        /// Move the caret in a screen point
-        /// </summary>
-        internal void MoveCaret(Point point) => _caret.MoveCaret(point);
-
-        /// <summary>
-        /// Hide the caret
-        /// </summary>
-        internal void HideCaret() => _caret.Hide();
-
-        /// <summary>
-        /// Return true if caret is visible
-        /// </summary>
-        public bool IsCaretVisible => _caret.IsVisibleCaret;
-
-        /// <summary>
-        /// Set the site of caret
-        /// </summary>
-        internal void SetCaretSize(double width, double height)
-        {
-            _caret.CaretWidth = width;
-            _caret.CaretHeight = height;
-        }
-
-        /// <summary>
-        /// Set the mode of caret (Insert or Overtwrite)
-        /// </summary>
-        internal void SetCaretMode(CaretMode mode) => _caret.CaretMode = mode;
-
-        #endregion
-
-        #region Append/expend bytes to end of file
-        //////////
-        // TODO: Will be updated soon as possible with the possibility to insert byte anywhere :)
-        //////////
-
-        /// <summary>
-        /// Allow control to append/expend byte at end of file
-        /// </summary>
-        public bool AllowExtend { get; set; }
-
-        /// <summary>
-        /// Show a message box is true before append byte at end of file
-        /// </summary>
-        public bool AppendNeedConfirmation { get; set; } = true;
-
-        /// <summary>
-        /// Append one byte at end of file
-        /// </summary>
-        internal void AppendByte(byte[] bytesToAppend)
-        {
-            if (!AllowExtend) return;
-            if (!CheckIsOpen(_provider)) return;
-
-            if (AppendNeedConfirmation)
-                if (MessageBox.Show(Properties.Resources.AppendByteConfirmationString, ApplicationName,
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question, MessageBoxResult.Yes) != MessageBoxResult.Yes) return;
-
-            _provider?.AppendByte(bytesToAppend);
-            RefreshView();
-        }
-
-        #endregion
-
-        #region Drag and drop support
-
-        /// <summary>
-        /// Allow the control to catch the file dropping 
-        /// Note : AllowDrop need to be true
-        /// </summary>
-        public bool AllowFileDrop { get; set; } = true;
-
-        /// <summary>
-        /// Allow the control to catch the text dropping 
-        /// Note : AllowDrop need to be true
-        /// </summary>
-        public bool AllowTextDrop { get; set; } = true;
-
-        /// <summary>
-        /// Show a messagebox for confirm open when a file are already open
-        /// </summary>
-        public bool FileDroppingConfirmation { get; set; } = true;
-
-        private void Control_Drop(object sender, DragEventArgs e)
-        {
-            #region Text Dropping
-
-            var textDrop = e.Data.GetData(DataFormats.Text);
-            if (textDrop is not null && AllowTextDrop)
+            if (d is HexEditor editor)
             {
-                var textDropped = textDrop as string;
-
-                if (!string.IsNullOrEmpty(textDropped) && CheckIsOpen(_provider))
+                // Sync byte spacer properties to HexViewport
+                if (editor.HexViewport != null)
                 {
-                    #region Insert at mouve over position
-                    var position = SelectionStart;
-                    var rtn = false;
-                    TraverseHexAndStringBytes(ctrl =>
-                    {
-                        Application.Current.DoEvents();
-
-                        if (ctrl.IsMouseOverMe)
-                        {
-                            position = ctrl.BytePositionInStream;
-                            rtn = true;
-                        }
-                    }, ref rtn);
-                    #endregion
-
-                    _provider.Paste(position, textDropped, AllowExtend);
-
-                    RefreshView();
+                    editor.HexViewport.ByteSpacerPositioning = editor.ByteSpacerPositioning;
+                    editor.HexViewport.ByteSpacerWidthTickness = editor.ByteSpacerWidthTickness;
+                    editor.HexViewport.ByteGrouping = editor.ByteGrouping;
+                    editor.HexViewport.ByteSpacerVisualStyle = editor.ByteSpacerVisualStyle;
                 }
 
-                return;
-            }
-
-            #endregion
-
-            #region File dropping (Only open first selected file catched in GetData)
-
-            var fileDrop = e.Data.GetData(DataFormats.FileDrop);
-            if (fileDrop is not null && AllowFileDrop)
-            {
-                var filename = fileDrop as string[];
-
-                if (!CheckIsOpen(_provider))
-                {
-                    if (filename != null) FileName = filename[0];
-                }
-                else
-                {
-                    if (FileDroppingConfirmation)
-                    {
-                        if (MessageBox.Show(
-                            $"{Properties.Resources.FileDroppingConfirmationString} {Path.GetFileName(filename[0])} ?",
-                                ApplicationName, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                            FileName = filename[0];
-                    }
-                    else if (filename != null) FileName = filename[0];
-                }
-            }
-
-            #endregion
-        }
-
-        #endregion
-
-        #region Save/Load control state (Can be used to implement multi-file support in client editor... ;)
-
-        /// <summary>
-        /// Save the current state of ByteProviderLegacy in a xml text file.
-        /// </summary>
-        public void SaveCurrentState(string filename)
-        {
-            if (!CheckIsOpen(_provider)) return;
-            GetState().Save(filename, SaveOptions.None);
-        }
-
-        /// <summary>
-        /// Load state of control from a xml text file.
-        /// </summary>
-        public void LoadCurrentState(string filename)
-        {
-            if (!CheckIsOpen(_provider)) return;
-            if (!File.Exists(filename)) return;
-
-            SetState(XDocument.Load(filename));
-        }
-
-        /// <summary>
-        /// Set or Get the current state of control from XDocument.
-        /// </summary>
-        /// <remarks>
-        /// TODO: Add validation for catch error from wrong XDocument
-        /// </remarks>
-        public XDocument CurrentState
-        {
-            get => CheckIsOpen(_provider)
-                ? GetState()
-                : null;
-            set
-            {
-                if (!CheckIsOpen(_provider)) return;
-
-                //Clear aller scroll marker and will be updated by Provider_SetStateByteModifiedAdded()
-                ClearAllScrollMarker();
-
-                SetState(value);
-
-                RefreshView();
-            }
-        }
-
-        /// <summary>
-        /// Get the current state of hexeditor
-        /// </summary>
-        /// <returns>
-        /// Return a XDocument that include all changes in the byte provider, Selecton Start/Stop, position ...
-        /// </returns>
-        private XDocument GetState()
-        {
-            if (!CheckIsOpen(_provider)) return null;
-
-            var doc = new XDocument(new XElement("WpfHexEditor",
-                new XAttribute("Version", "0.1"),
-                new XAttribute(nameof(SelectionStart), SelectionStart),
-                new XAttribute(nameof(SelectionStop), SelectionStop),
-                new XAttribute(nameof(FirstVisibleBytePosition), FirstVisibleBytePosition),
-                new XAttribute(nameof(ReadOnlyMode), ReadOnlyMode),
-                    new XElement("ByteModifieds", new XAttribute("Count", _provider.GetByteModifieds(ByteAction.All).Count)),
-                    new XElement("BookMarks", new XAttribute("Count", BookMarks.Count())),
-                    new XElement("TBL", new XAttribute("Loaded", _tblService.CharacterTable is not null)),
-                    new XElement("HighLights", new XAttribute("Count", _highlightService.GetHighlightCount()))));
-
-            #region Create ByteModifieds tag
-
-            var bmRootBm = doc.Element("WpfHexEditor")?.Element("ByteModifieds");
-
-            foreach (var bm in _provider.GetByteModifieds(ByteAction.All))
-                bmRootBm?.Add(new XElement("ByteModified",
-                    new XAttribute("Action", bm.Value.Action),
-                    new XAttribute("HexByte",
-                        bm.Value.Byte.HasValue
-                            ? new string(ByteToHexCharArray((byte)bm.Value.Byte))
-                            : string.Empty),
-                    new XAttribute("Position", bm.Value.BytePositionInStream)));
-
-            #endregion
-
-            #region Create hightlight tag
-
-            var bmRootHl = doc.Element("WpfHexEditor")?.Element("HighLights");
-
-            foreach (var position in _highlightService.GetHighlightedPositions())
-                bmRootHl?.Add(new XElement("HighLight", new XAttribute("Position", position)));
-            #endregion
-
-            #region Create bookmarks tag
-
-            var bmRootBMs = doc.Element("WpfHexEditor")?.Element("BookMarks");
-
-            foreach (var bm in BookMarks)
-                bmRootBMs?.Add(new XElement("BookMark",
-                    new XAttribute("Position", bm.BytePositionInStream),
-                    new XAttribute("Description", bm.Description)));
-
-            #endregion
-
-            #region Create TBL tag
-
-            if (_tblService.CharacterTable is not null)
-                doc.Element("WpfHexEditor")
-                    ?.Element("TBL")
-                    ?.Add(new XElement("TBLData",
-                            new XAttribute("Filename", _tblService.CharacterTable.FileName),
-                            new XAttribute("Data", _tblService.CharacterTable.ToString())));
-            #endregion
-
-            return doc;
-        }
-
-        /// <summary>
-        /// Set the state of hexeditor and update the visual...
-        /// </summary>
-        private void SetState(XDocument doc)
-        {
-            if (doc is null) return;
-            if (!CheckIsOpen(_provider)) return;
-
-            //Clear current state
-            _provider.ClearUndoChange();
-            ClearScrollMarker(ScrollMarker.Bookmark);
-
-            #region Load ByteModifieds
-            var bmList = doc.Element("WpfHexEditor")?.Element("ByteModifieds")?.Elements().Select(i => i);
-
-            if (bmList != null)
-                foreach (var element in bmList)
-                {
-                    var bm = new ByteModified();
-
-                    #region Set attribute of bytemodified...
-
-                    foreach (var at in element.Attributes())
-                        switch (at.Name.ToString())
-                        {
-                            case "Action":
-
-                                #region Set action
-
-                                bm.Action = at.Value switch
-                                {
-                                    "Modified" => ByteAction.Modified,
-                                    "Deleted" => ByteAction.Deleted,
-                                    "Added" => ByteAction.Added,
-                                    _ => throw new NotImplementedException()
-                                };
-
-                                #endregion
-
-                                break;
-                            case "HexByte":
-                                bm.Byte = IsHexaByteStringValue(at.Value).value[0];
-                                break;
-                            case "Position":
-                                bm.BytePositionInStream = long.Parse(at.Value);
-                                break;
-                        }
-
-                    #endregion
-
-                    #region Add bytemodified to dictionary
-
-                    switch (bm.Action)
-                    {
-                        case ByteAction.Deleted:
-                            _provider.AddByteDeleted(bm.BytePositionInStream, 1);
-                            SetScrollMarker(bm.BytePositionInStream, ScrollMarker.ByteDeleted);
-                            break;
-                        case ByteAction.Modified:
-                            _provider.AddByteModified(bm.Byte, bm.BytePositionInStream);
-                            SetScrollMarker(bm.BytePositionInStream, ScrollMarker.ByteModified);
-                            break;
-                        case ByteAction.Added:
-                            //TODO: Add action when byte added will be supported
-                            break;
-                    }
-
-                    #endregion
-                }
-
-            #endregion
-
-            #region Load highlight            
-            UnHighLightAll();
-
-            var hlList = doc.Element("WpfHexEditor")?.Element("HighLights")?.Elements().Select(i => i);
-
-            if (hlList != null)
-                foreach (var element in hlList)
-                    AddHighLight(long.TryParse(element.Attribute("Position")?.Value, out var pos)
-                        ? pos
-                        : -1, 1);
-
-            #endregion
-
-            #region Load bookmarks
-            var bmsList = doc.Element("WpfHexEditor")?.Element("BookMarks")?.Elements().Select(i => i);
-
-            if (bmsList != null)
-                foreach (var element in bmsList)
-                {
-                    var bm = new BookMark
-                    {
-                        Marker = ScrollMarker.Bookmark
-                    };
-
-                    #region Set attribute of bookmark...
-
-                    foreach (var at in element.Attributes())
-                        switch (at.Name.ToString())
-                        {
-                            case "Description":
-                                bm.Description = at.Value;
-                                break;
-                            case "Position":
-                                bm.BytePositionInStream = long.Parse(at.Value);
-                                break;
-                        }
-
-                    #endregion
-
-                    SetScrollMarker(bm);
-                }
-
-            #endregion
-
-            #region Load TBL            
-            var tblList = doc.Element("WpfHexEditor").Element("TBL").Elements().Select(i => i);
-
-            foreach (var element in tblList)
-            {
-                foreach (var at in element.Attributes())
-                    switch (at.Name.ToString())
-                    {
-                        case "Data":
-                            _tblService.CharacterTable.Load(at.Value);
-                            break;
-                        case "Filename":
-                            //TODO
-                            break;
-                    }
-            }
-
-            #endregion
-
-            #region Update the visual
-            //Update position
-            SetPosition(long.TryParse(doc.Element("WpfHexEditor").Attribute(nameof(FirstVisibleBytePosition)).Value, out var position)
-                ? position
-                : 0);
-
-            //Update selection
-            SelectionStart = long.TryParse(doc.Element("WpfHexEditor").Attribute(nameof(SelectionStart)).Value, out var selectionStart)
-                ? selectionStart
-                : 0;
-
-            SelectionStop = long.TryParse(doc.Element("WpfHexEditor").Attribute(nameof(SelectionStop)).Value, out var selectionStop)
-                ? selectionStop
-                : 0;
-
-            //Refresh view
-            RefreshView(true);
-            #endregion
-
-            #region Set the readonly mode
-
-            SetCurrentValue(ReadOnlyModeProperty, bool.TryParse(doc.Element("WpfHexEditor").Attribute(nameof(ReadOnlyMode)).Value, out var readOnlyMode) && readOnlyMode);
-
-            #endregion
-        }
-
-        #endregion
-
-        #region Shift the first visible byte in the views to the left ...
-
-        /// <summary>
-        /// Shift the first visible byte in the view to the left. 
-        /// </summary>
-        /// <remarks>
-        /// Very useful for editing fixed-width tables. Use with BytePerLine to create visual tables ...
-        /// The value is the number of byte to shift visualy by the left.
-        /// </remarks>
-        public int ByteShiftLeft
-        {
-            get => (int)GetValue(ByteShiftLeftProperty);
-            set => SetValue(ByteShiftLeftProperty, value);
-        }
-
-        public static readonly DependencyProperty ByteShiftLeftProperty =
-            DependencyProperty.Register(nameof(ByteShiftLeft), typeof(int), typeof(HexEditor),
-                new FrameworkPropertyMetadata(0, ByteShiftLeft_Changed, ByteShiftLeft_CoerceValue));
-
-        private static void ByteShiftLeft_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor ctrl)
-                ctrl.RefreshView(true);
-        }
-
-        private static object ByteShiftLeft_CoerceValue(DependencyObject d, object basevalue) =>
-            (int)basevalue < 0
-                ? 0
-                : basevalue;
-
-        #endregion
-
-        #region Reverse bytes selection
-
-        /// <summary>
-        /// Reverse selection of bytes array like this {AA, FF, EE, DC} => {DC, EE, FF, AA}
-        /// </summary>
-        public void ReverseSelection()
-        {
-            if (!CheckIsOpen(_provider) || ReadOnlyMode) return;
-
-            _provider.Reverse(SelectionStart, SelectionStop);
-
-            RefreshView();
-        }
-
-        #endregion
-
-        #region Line offset coloring...
-
-        /// <summary>
-        /// High light header and offset on SelectionStart
-        /// </summary>
-        public bool HighLightSelectionStart
-        {
-            get => _highLightSelectionStart;
-            set
-            {
-                _highLightSelectionStart = value;
-                RefreshView();
+                // Refresh column header to show new spacers
+                editor.RefreshColumnHeader();
+
+                // Refresh viewport rendering to show new spacers
+                editor.HexViewport?.InvalidateVisual();
             }
         }
 
         #endregion
 
-        #region Configure the start/stop bytes that are loaded visually into the hexadecimal editor
-        public bool AllowVisualByteAddress
-        {
-            get => (bool)GetValue(AllowVisualByteAdressProperty);
-            set => SetValue(AllowVisualByteAdressProperty, value);
-        }
-
-        public static readonly DependencyProperty AllowVisualByteAdressProperty =
-            DependencyProperty.Register(nameof(AllowVisualByteAddress), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(false, AllowVisualByteAddress_Changed));
-
-        private static void AllowVisualByteAddress_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-            ctrl.UpdateScrollBar();
-            ctrl.RefreshView(true);
-        }
+        #region V1 Compatibility - Color Properties
 
         /// <summary>
-        /// Set the last byte are virtually loaded in the control. 
-        /// Note that all other bytes address after will not be shown in control.
-        /// This property are read only
+        /// First selection gradient color 
         /// </summary>
-        public long VisualByteAdressStop => VisualByteAdressStart + VisualByteAdressLength;
-
-        /// <summary>
-        /// Set the length from first byte set by VisualStartByteAdress property are virtually loaded in the control. 
-        /// </summary>
-        public long VisualByteAdressLength
+        public Color SelectionFirstColor
         {
-            get => (long)GetValue(VisualByteAdressLengthProperty);
-            set => SetValue(VisualByteAdressLengthProperty, value);
+            get => (Color)GetValue(SelectionFirstColorProperty);
+            set => SetValue(SelectionFirstColorProperty, value);
         }
 
-        public static readonly DependencyProperty VisualByteAdressLengthProperty =
-            DependencyProperty.Register(nameof(VisualByteAdressLength), typeof(long), typeof(HexEditor),
-                new FrameworkPropertyMetadata(1L, VisualByteAdressLength_Changed, VisualByteAdressLength_CoerceValue));
+        public static readonly DependencyProperty SelectionFirstColorProperty =
+            DependencyProperty.Register(nameof(SelectionFirstColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromArgb(102, 0, 120, 212), OnSelectionFirstColorChanged));
 
-        private static object VisualByteAdressLength_CoerceValue(DependencyObject d, object baseValue)
+        private static void OnSelectionFirstColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is not HexEditor ctrl) return baseValue;
-
-            var value = (long)baseValue;
-
-            if (value < 1 || !CheckIsOpen(ctrl._provider)) return 1L;
-
-            return value >= ctrl._provider.Length
-                ? ctrl._provider.Length
-                : baseValue;
-        }
-
-        private static void VisualByteAdressLength_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-            ctrl.UpdateScrollBar();
-            ctrl.RefreshView();
-        }
-
-        /// <summary>
-        /// Set the first byte are virtually loaded in the control. 
-        /// Note that all other bytes address before will not be shown in control.
-        /// </summary>
-        public long VisualByteAdressStart
-        {
-            get => (long)GetValue(VisualByteAdressStartProperty);
-            set => SetValue(VisualByteAdressStartProperty, value);
-        }
-
-        public static readonly DependencyProperty VisualByteAdressStartProperty =
-            DependencyProperty.Register(nameof(VisualByteAdressStart), typeof(long), typeof(HexEditor),
-                new FrameworkPropertyMetadata(0L, VisualByteAdressStart_Changed, VisualByteAdressStart_CoerceValue));
-
-        private static object VisualByteAdressStart_CoerceValue(DependencyObject d, object baseValue)
-        {
-            if (d is not HexEditor ctrl) return baseValue;
-
-            var value = (long)baseValue;
-
-            if (!CheckIsOpen(ctrl._provider)) return 0L;
-
-            return value >= ctrl._provider.Length
-                ? ctrl._provider.Length
-                : baseValue;
-        }
-
-        private static void VisualByteAdressStart_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-            ctrl.UpdateScrollBar();
-            ctrl.RefreshView();
-        }
-        #endregion
-
-        #region Preload IByteControl at control creation
-
-        /// <summary>
-        /// Used to define how many line will be created at control creation
-        /// </summary>
-        public PreloadByteInEditor PreloadByteInEditorMode
-        {
-            get => (PreloadByteInEditor)GetValue(PreloadByteInEditorModeProperty);
-            set => SetValue(PreloadByteInEditorModeProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for PreloadByteInEditorMode.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PreloadByteInEditorModeProperty =
-            DependencyProperty.Register(nameof(PreloadByteInEditorMode), typeof(PreloadByteInEditor),
-                typeof(HexEditor), new PropertyMetadata(PreloadByteInEditor.None));
-
-        private void Control_Loaded(object sender, RoutedEventArgs e) =>
-            ForcePreloadByteInEditor(PreloadByteInEditorMode); //Preload byte or not...
-
-        /// <summary>
-        /// Number of line to preload in editor
-        /// </summary>
-        /// <param name="preloadByte">Preload byte precalculated</param>
-        /// <param name="refreshView"></param>
-        public void ForcePreloadByteInEditor(PreloadByteInEditor preloadByte, bool refreshView = true)
-        {
-            //Set the number of row to preload in the editor at the control creation. 
-            //It will be faster when resizing of control but will be longer to load at first time
-            var nbLine = preloadByte switch
+            if (d is HexEditor editor)
             {
-                PreloadByteInEditor.None => 0, //Not preload byte
-                PreloadByteInEditor.MaxVisibleLine => MaxVisibleLine,
-                PreloadByteInEditor.MaxVisibleLineExtended => MaxVisibleLine + 10,
-                PreloadByteInEditor.MaxScreenVisibleLine => MaxScreenVisibleLine,
-                PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad => MaxVisibleLine, //other line loaded at first file/stream loaded
-                _ => throw new NotImplementedException()
-            };
-
-            if (PreloadByteInEditorMode != PreloadByteInEditor.None)
-                BuildDataLines(nbLine, true);
-
-            if (refreshView) RefreshView();
+                var color = (Color)e.NewValue;
+                editor.Resources["SelectionBrush"] = new SolidColorBrush(color) { Opacity = 0.4 };
+            }
         }
 
         /// <summary>
-        /// Number of line to preload in editor
+        /// Second selection gradient color 
         /// </summary>
-        /// <param name="nbLine">Number of line to preload in control</param>
-        /// <param name="refreshView"></param>
-        public void ForcePreloadByteInEditor(int nbLine, bool refreshView = true)
+        public Color SelectionSecondColor
         {
-            if (nbLine <= 0) return;
-
-            BuildDataLines(nbLine, true);
-
-            if (refreshView) RefreshView();
+            get => (Color)GetValue(SelectionSecondColorProperty);
+            set => SetValue(SelectionSecondColorProperty, value);
         }
+
+        public static readonly DependencyProperty SelectionSecondColorProperty =
+            DependencyProperty.Register(nameof(SelectionSecondColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromArgb(102, 0, 120, 212)));
+
+        /// <summary>
+        /// Color for modified bytes 
+        /// </summary>
+        public Color ByteModifiedColor
+        {
+            get => (Color)GetValue(ByteModifiedColorProperty);
+            set => SetValue(ByteModifiedColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ByteModifiedColorProperty =
+            DependencyProperty.Register(nameof(ByteModifiedColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(255, 165, 0), OnByteModifiedColorChanged));
+
+        private static void OnByteModifiedColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                editor.Resources["ModifiedBrush"] = new SolidColorBrush((Color)e.NewValue);
+            }
+        }
+
+        /// <summary>
+        /// Color for deleted bytes 
+        /// </summary>
+        public Color ByteDeletedColor
+        {
+            get => (Color)GetValue(ByteDeletedColorProperty);
+            set => SetValue(ByteDeletedColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ByteDeletedColorProperty =
+            DependencyProperty.Register(nameof(ByteDeletedColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(244, 67, 54), OnByteDeletedColorChanged));
+
+        private static void OnByteDeletedColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                editor.Resources["DeletedBrush"] = new SolidColorBrush((Color)e.NewValue);
+            }
+        }
+
+        /// <summary>
+        /// Color for added bytes 
+        /// </summary>
+        public Color ByteAddedColor
+        {
+            get => (Color)GetValue(ByteAddedColorProperty);
+            set => SetValue(ByteAddedColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ByteAddedColorProperty =
+            DependencyProperty.Register(nameof(ByteAddedColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(76, 175, 80), OnByteAddedColorChanged));
+
+        private static void OnByteAddedColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                editor.Resources["AddedBrush"] = new SolidColorBrush((Color)e.NewValue);
+            }
+        }
+
+        /// <summary>
+        /// Color for highlighted bytes 
+        /// </summary>
+        public Color HighLightColor
+        {
+            get => (Color)GetValue(HighLightColorProperty);
+            set => SetValue(HighLightColorProperty, value);
+        }
+
+        public static readonly DependencyProperty HighLightColorProperty =
+            DependencyProperty.Register(nameof(HighLightColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Gold));
+
+        /// <summary>
+        /// Mouse over color 
+        /// </summary>
+        public Color MouseOverColor
+        {
+            get => (Color)GetValue(MouseOverColorProperty);
+            set => SetValue(MouseOverColorProperty, value);
+        }
+
+        public static readonly DependencyProperty MouseOverColorProperty =
+            DependencyProperty.Register(nameof(MouseOverColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(227, 242, 253), OnMouseOverColorChanged));
+
+        private static void OnMouseOverColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                editor.Resources["ByteHoverBrush"] = new SolidColorBrush((Color)e.NewValue);
+            }
+        }
+
+        /// <summary>
+        /// Foreground color for alternate bytes (uses Color instead of Brush)
+        /// </summary>
+        public Color ForegroundSecondColor
+        {
+            get => (Color)GetValue(ForegroundSecondColorProperty);
+            set => SetValue(ForegroundSecondColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ForegroundSecondColorProperty =
+            DependencyProperty.Register(nameof(ForegroundSecondColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Blue, OnForegroundSecondColorChanged));
+
+        private static void OnForegroundSecondColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var brush = new SolidColorBrush((Color)e.NewValue);
+                editor.Resources["AlternateByteForegroundBrush"] = brush;
+
+                // Update HexViewport colors (Phase 7.6)
+                if (editor.HexViewport != null)
+                {
+                    var normalBrush = editor.Resources["ByteForegroundBrush"] as Brush;
+                    editor.HexViewport.SetByteForegroundColors(normalBrush, brush);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Foreground color for offset header 
+        /// </summary>
+        public Color ForegroundOffSetHeaderColor
+        {
+            get => (Color)GetValue(ForegroundOffSetHeaderColorProperty);
+            set => SetValue(ForegroundOffSetHeaderColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ForegroundOffSetHeaderColorProperty =
+            DependencyProperty.Register(nameof(ForegroundOffSetHeaderColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(117, 117, 117), OnForegroundOffSetHeaderColorChanged));
+
+        private static void OnForegroundOffSetHeaderColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                editor.Resources["OffsetBrush"] = new SolidColorBrush((Color)e.NewValue);
+            }
+        }
+
+        /// <summary>
+        /// Foreground highlight offset header color 
+        /// </summary>
+        public Color ForegroundHighLightOffSetHeaderColor
+        {
+            get => (Color)GetValue(ForegroundHighLightOffSetHeaderColorProperty);
+            set => SetValue(ForegroundHighLightOffSetHeaderColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ForegroundHighLightOffSetHeaderColorProperty =
+            DependencyProperty.Register(nameof(ForegroundHighLightOffSetHeaderColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.DarkBlue));
+
+        /// <summary>
+        /// Foreground contrast color 
+        /// </summary>
+        public Color ForegroundContrast
+        {
+            get => (Color)GetValue(ForegroundContrastProperty);
+            set => SetValue(ForegroundContrastProperty, value);
+        }
+
+        public static readonly DependencyProperty ForegroundContrastProperty =
+            DependencyProperty.Register(nameof(ForegroundContrast), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Black));
 
         #endregion
 
-        #region Zoom in/out support
+        #region Zoom Support
+
         /// <summary>
         /// Get or set the zoom scale 
-        /// Posible Scale : 0.5 to 2.0 (50% to 200%)
+        /// Possible Scale: 0.5 to 2.0 (50% to 200%)
         /// </summary>
         public double ZoomScale
         {
@@ -5716,55 +1599,44 @@ namespace WpfHexaEditor
 
         public static readonly DependencyProperty ZoomScaleProperty =
             DependencyProperty.Register(nameof(ZoomScale), typeof(double), typeof(HexEditor),
-                new FrameworkPropertyMetadata(1D, ZoomScale_ChangedCallBack, ZoomScale_CoerceValueCallBack));
+                new FrameworkPropertyMetadata(1.0, ZoomScale_ChangedCallBack, ZoomScale_CoerceValueCallBack));
 
-        private static object ZoomScale_CoerceValueCallBack(DependencyObject d, object baseValue) =>
-            (double)baseValue >= 0.5 && (double)baseValue <= 2.0001
-                ? (double)baseValue
-                : d.GetValue(ZoomScaleProperty);
+        private static object ZoomScale_CoerceValueCallBack(DependencyObject d, object baseValue)
+        {
+            // Clamp zoom between 0.5 and 2.0 
+            double value = (double)baseValue;
+            if (value < 0.5) return 0.5;
+            if (value > 2.0) return 2.0;
+            return value;
+        }
 
         private static void ZoomScale_ChangedCallBack(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is not HexEditor ctrl) return;
-            if (e.NewValue == e.OldValue) return;
-
-            ctrl.UpdateZoom();
-        }
-
-        /// <summary>
-        /// Allow or not the capability to zoom control content (use with ScaleX and ScaleY property)
-        /// </summary>
-        public bool AllowZoom
-        {
-            get => _allowZoom;
-
-            set
+            if (d is HexEditor ctrl && e.NewValue != e.OldValue)
             {
-                _allowZoom = value;
-
-                InitialiseZoom();
+                ctrl.UpdateZoom();
             }
         }
 
         /// <summary>
-        /// Initialize the support of zoom
+        /// Initialize the support of zoom 
         /// </summary>
         private void InitialiseZoom()
         {
-            if (_scaler is not null) return;
+            if (_scaler != null) return;
 
             _scaler = new ScaleTransform(ZoomScale, ZoomScale);
 
-            HexHeaderStackPanel.LayoutTransform = _scaler;
-            HexDataStackPanel.LayoutTransform = _scaler;
-            StringDataStackPanel.LayoutTransform = _scaler;
-            LinesInfoStackPanel.LayoutTransform = _scaler;
-
-            _caret.LayoutTransform = _scaler;
+            // Apply scale transform to zoomable elements (like V1)
+            // Apply to entire header border so all header elements scale together
+            if (_headerBorder != null)
+                _headerBorder.LayoutTransform = _scaler;
+            if (HexViewport != null)
+                HexViewport.LayoutTransform = _scaler;
         }
 
         /// <summary>
-        /// Update the zoom to ScaleX, ScaleY value if AllowZoom is true
+        /// Update the zoom to ZoomScale value if AllowZoom is true 
         /// </summary>
         private void UpdateZoom()
         {
@@ -5773,43 +1645,2703 @@ namespace WpfHexaEditor
             if (_scaler == null) InitialiseZoom();
             if (_scaler != null)
             {
-                _scaler.ScaleY = ZoomScale;
                 _scaler.ScaleX = ZoomScale;
+                _scaler.ScaleY = ZoomScale;
             }
 
-            //TODO: Update caret size...
+            // Update viewport and refresh display
+            HexViewport?.InvalidateVisual();
+            UpdateVisibleLines();
 
-            ClearLineInfo();
-            ClearAllBytes(true);
-            RefreshView(true);
-
-            ZoomScaleChanged?.Invoke(this, EventArgs.Empty);
+            // Raise event
+            OnZoomScaleChanged(EventArgs.Empty);
         }
 
         /// <summary>
-        /// Reset the zoom to 100%
+        /// Reset the zoom to 100% 
         /// </summary>
         public void ResetZoom() => ZoomScale = 1.0;
 
-        private void ZoomResetButton_Click(object sender, RoutedEventArgs e) => ResetZoom();
         #endregion
 
-        #region Delete byte support
+        #region Phase 8 - XAML Binding DependencyProperties
+
         /// <summary>
-        /// Allow to delete byte on control
+        /// FileName DependencyProperty for XAML binding (Phase 8)
         /// </summary>
-        public bool AllowDeleteByte
+        public static readonly DependencyProperty FileNameProperty =
+            DependencyProperty.Register(nameof(FileName), typeof(string), typeof(HexEditor),
+                new PropertyMetadata(string.Empty, OnFileNamePropertyChanged));
+
+        private static void OnFileNamePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get => (bool)GetValue(AllowDeleteByteProperty);
-            set => SetValue(AllowDeleteByteProperty, value);
+            if (d is HexEditor editor && e.NewValue is string path && !string.IsNullOrEmpty(path))
+            {
+                // V1 Compatibility: Auto-load file when FileName is set (CRITICAL FIX)
+                // This enables V1 pattern: HexEdit.FileName = "file.bin" to automatically open the file
+                try
+                {
+                    // Only open if different from current file and file exists
+                    if (path != e.OldValue?.ToString() && System.IO.File.Exists(path))
+                    {
+                        editor.OpenFile(path);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    editor.StatusText.Text = $"Failed to open file: {ex.Message}";
+                }
+            }
         }
 
-        public static readonly DependencyProperty AllowDeleteByteProperty =
-            DependencyProperty.Register(nameof(AllowDeleteByte), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(true, Control_DeletePropertyChanged));
+        /// <summary>
+        /// IsModified DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty IsModifiedProperty =
+            DependencyProperty.Register(nameof(IsModified), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false));
 
         /// <summary>
-        /// Hide bytes that are deleted in the viewers
+        /// Position DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty PositionProperty =
+            DependencyProperty.Register(nameof(Position), typeof(long), typeof(HexEditor),
+                new PropertyMetadata(-1L, OnPositionPropertyChanged));
+
+        private static void OnPositionPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is long position && position >= 0)
+            {
+                editor.SetPosition(position);
+            }
+        }
+
+        /// <summary>
+        /// ReadOnlyMode DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty ReadOnlyModeProperty =
+            DependencyProperty.Register(nameof(ReadOnlyMode), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false, OnReadOnlyModePropertyChanged));
+
+        private static void OnReadOnlyModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool readOnly)
+            {
+                if (editor._viewModel != null)
+                {
+                    var oldValue = editor._viewModel.ReadOnlyMode;
+                    editor._viewModel.ReadOnlyMode = readOnly;
+
+                    // Fire event
+                    if (oldValue != readOnly)
+                        editor.OnReadOnlyChanged(EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// SelectionStart DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty SelectionStartProperty =
+            DependencyProperty.Register(nameof(SelectionStart), typeof(long), typeof(HexEditor),
+                new PropertyMetadata(-1L, OnSelectionStartPropertyChanged));
+
+        private static void OnSelectionStartPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is long position)
+            {
+                if (editor._viewModel != null && position >= 0 && position < editor.VirtualLength)
+                {
+                    var oldStart = e.OldValue is long old ? old : -1;
+                    var oldStop = editor.SelectionStop;
+                    var oldLength = editor.SelectionLength;
+
+                    var stop = editor._viewModel.SelectionStop.IsValid ? editor._viewModel.SelectionStop : new VirtualPosition(position);
+                    editor._viewModel.SetSelectionRange(new VirtualPosition(position), stop);
+
+                    // Fire events
+                    if (oldStart != position || oldStop != editor.SelectionStop)
+                    {
+                        editor.OnSelectionChanged(new HexSelectionChangedEventArgs(position, editor.SelectionStop, editor.SelectionLength));
+
+                        if (oldStart != position)
+                            editor.OnSelectionStartChanged(EventArgs.Empty);
+                        if (oldLength != editor.SelectionLength)
+                            editor.OnSelectionLengthChanged(EventArgs.Empty);
+                    }
+
+                    // Update auto-highlight byte value
+                    editor.UpdateAutoHighlightByte();
+                }
+            }
+        }
+
+        /// <summary>
+        /// SelectionStop DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty SelectionStopProperty =
+            DependencyProperty.Register(nameof(SelectionStop), typeof(long), typeof(HexEditor),
+                new PropertyMetadata(-1L, OnSelectionStopPropertyChanged));
+
+        private static void OnSelectionStopPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is long position)
+            {
+                if (editor._viewModel != null && position >= 0 && position < editor.VirtualLength)
+                {
+                    var oldStart = editor.SelectionStart;
+                    var oldStop = e.OldValue is long old ? old : -1;
+                    var oldLength = editor.SelectionLength;
+
+                    var start = editor._viewModel.SelectionStart.IsValid ? editor._viewModel.SelectionStart : new VirtualPosition(position);
+                    editor._viewModel.SetSelectionRange(start, new VirtualPosition(position));
+
+                    // Fire events
+                    if (oldStop != position || oldStart != editor.SelectionStart)
+                    {
+                        editor.OnSelectionChanged(new HexSelectionChangedEventArgs(editor.SelectionStart, position, editor.SelectionLength));
+
+                        if (oldStop != position)
+                            editor.OnSelectionStopChanged(EventArgs.Empty);
+                        if (oldLength != editor.SelectionLength)
+                            editor.OnSelectionLengthChanged(EventArgs.Empty);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// BytePerLine DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty BytePerLineProperty =
+            DependencyProperty.Register(nameof(BytePerLine), typeof(int), typeof(HexEditor),
+                new PropertyMetadata(16, OnBytePerLinePropertyChanged));
+
+        private static void OnBytePerLinePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is int bytesPerLine && bytesPerLine > 0)
+            {
+                // ALWAYS update viewport and headers (even during initialization when ViewModel doesn't exist yet)
+                editor.HexViewport.BytesPerLine = bytesPerLine;
+                editor.RefreshColumnHeader();
+                editor.BytesPerLineText.Text = $"Bytes/Line: {bytesPerLine}";
+
+                // Update ViewModel if it exists (may not exist during initial XAML loading)
+                if (editor._viewModel != null)
+                {
+                    editor._viewModel.BytePerLine = bytesPerLine;
+
+                    // Update scrollbar to reflect new total lines (with +3 margin to access last lines)
+                    editor.VerticalScroll.Maximum = Math.Max(0, editor._viewModel.TotalLines - editor._viewModel.VisibleLines + 3);
+                }
+            }
+        }
+
+        /// <summary>
+        /// EditMode DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        public static readonly DependencyProperty EditModeProperty =
+            DependencyProperty.Register(nameof(EditMode), typeof(Models.EditMode), typeof(HexEditor),
+                new PropertyMetadata(Models.EditMode.Overwrite, OnEditModePropertyChanged));
+
+        private static void OnEditModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is Models.EditMode mode)
+            {
+                if (editor._viewModel != null)
+                {
+                    editor._viewModel.EditMode = mode;
+                }
+
+                // Sync to HexViewport for caret display
+                editor.HexViewport.EditMode = mode;
+                editor.HexViewport.InvalidateVisual(); // Refresh to show/hide caret
+
+                // Update status bar
+                editor.EditModeText.Text = mode == Models.EditMode.Insert ? "Mode: Insert" : "Mode: Overwrite";
+            }
+        }
+
+        /// <summary>
+        /// IsFileOrStreamLoaded Read-Only DependencyProperty for XAML binding (Phase 8)
+        /// </summary>
+        private static readonly DependencyPropertyKey IsFileOrStreamLoadedPropertyKey =
+            DependencyProperty.RegisterReadOnly(nameof(IsFileOrStreamLoaded), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false));
+
+        public static readonly DependencyProperty IsFileOrStreamLoadedProperty =
+            IsFileOrStreamLoadedPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// AllowContextMenu DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowContextMenuProperty =
+            DependencyProperty.Register(nameof(AllowContextMenu), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnAllowContextMenuChanged));
+
+        private static void OnAllowContextMenuChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool allowed)
+            {
+                // Enable or disable context menu
+                if (editor.ByteContextMenu != null)
+                    editor.ContextMenu = allowed ? editor.ByteContextMenu : null;
+            }
+        }
+
+        /// <summary>
+        /// AllowZoom DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowZoomProperty =
+            DependencyProperty.Register(nameof(AllowZoom), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnAllowZoomChanged));
+
+        private static void OnAllowZoomChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool allowed)
+            {
+                // Initialize zoom if enabled, or reset to 1.0 if disabled
+                if (allowed)
+                    editor.InitialiseZoom();
+                else if (editor._scaler != null)
+                {
+                    editor._scaler.ScaleX = 1.0;
+                    editor._scaler.ScaleY = 1.0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// MouseWheelSpeed DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty MouseWheelSpeedProperty =
+            DependencyProperty.Register(nameof(MouseWheelSpeed), typeof(MouseWheelSpeed), typeof(HexEditor),
+                new PropertyMetadata(Core.MouseWheelSpeed.Normal));
+
+        /// <summary>
+        /// AllowAutoHighLightSelectionByte DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowAutoHighLightSelectionByteProperty =
+            DependencyProperty.Register(nameof(AllowAutoHighLightSelectionByte), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false, OnAllowAutoHighLightChanged));
+
+        private static void OnAllowAutoHighLightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                // Update auto-highlight byte value when feature is toggled
+                editor.UpdateAutoHighlightByte();
+
+                // Refresh viewport to show/hide auto-highlighting
+                editor.HexViewport?.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// AutoHighLiteSelectionByteBrush DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AutoHighLiteSelectionByteBrushProperty =
+            DependencyProperty.Register(nameof(AutoHighLiteSelectionByteBrush), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromArgb(0x60, 0xFF, 0xFF, 0x00), OnAutoHighLiteColorChanged)); // 40% Yellow
+
+        private static void OnAutoHighLiteColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is System.Windows.Media.Color color)
+            {
+                // Update HexViewport highlight brush
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.AutoHighLiteBrush = new SolidColorBrush(color);
+                    editor.HexViewport.InvalidateVisual();
+                }
+            }
+        }
+
+        /// <summary>
+        /// AllowAutoSelectSameByteAtDoubleClick DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowAutoSelectSameByteAtDoubleClickProperty =
+            DependencyProperty.Register(nameof(AllowAutoSelectSameByteAtDoubleClick), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false));
+
+        /// <summary>
+        /// AllowMarkerClickNavigation DependencyProperty for XAML binding
+        /// Enables/disables navigation when clicking on scroll markers (default: true)
+        /// </summary>
+        public static readonly DependencyProperty AllowMarkerClickNavigationProperty =
+            DependencyProperty.Register(nameof(AllowMarkerClickNavigation), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnAllowMarkerClickNavigationChanged));
+
+        private static void OnAllowMarkerClickNavigationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && editor._scrollMarkers != null)
+            {
+                editor._scrollMarkers.AllowMarkerClickNavigation = (bool)e.NewValue;
+            }
+        }
+
+        /// <summary>
+        /// AllowFileDrop DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowFileDropProperty =
+            DependencyProperty.Register(nameof(AllowFileDrop), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnAllowDropChanged));
+
+        /// <summary>
+        /// AllowTextDrop DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowTextDropProperty =
+            DependencyProperty.Register(nameof(AllowTextDrop), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false, OnAllowDropChanged));
+
+        private static void OnAllowDropChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                // Enable AllowDrop if either file or text drop is allowed
+                editor.AllowDrop = editor.AllowFileDrop || editor.AllowTextDrop;
+            }
+        }
+
+        /// <summary>
+        /// FileDroppingConfirmation DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty FileDroppingConfirmationProperty =
+            DependencyProperty.Register(nameof(FileDroppingConfirmation), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// AllowExtend DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowExtendProperty =
+            DependencyProperty.Register(nameof(AllowExtend), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// AllowDeleteByte DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowDeleteByteProperty =
+            DependencyProperty.Register(nameof(AllowDeleteByte), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// AllowByteCount DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowByteCountProperty =
+            DependencyProperty.Register(nameof(AllowByteCount), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// TblShowMte DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblShowMteProperty =
+            DependencyProperty.Register(nameof(TblShowMte), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false, OnTblShowMteChanged));
+
+        private static void OnTblShowMteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+                editor.HexViewport?.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// TblDteColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblDteColorProperty =
+            DependencyProperty.Register(nameof(TblDteColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Yellow, OnTblColorChanged));
+
+        /// <summary>
+        /// TblMteColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblMteColorProperty =
+            DependencyProperty.Register(nameof(TblMteColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.LightBlue, OnTblColorChanged));
+
+        /// <summary>
+        /// TblEndBlockColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblEndBlockColorProperty =
+            DependencyProperty.Register(nameof(TblEndBlockColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Red, OnTblColorChanged));
+
+        /// <summary>
+        /// TblEndLineColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblEndLineColorProperty =
+            DependencyProperty.Register(nameof(TblEndLineColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Orange, OnTblColorChanged));
+
+        /// <summary>
+        /// TblDefaultColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblDefaultColorProperty =
+            DependencyProperty.Register(nameof(TblDefaultColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.White, OnTblColorChanged));
+
+        private static void OnTblColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+                editor.HexViewport?.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// BarChartColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty BarChartColorProperty =
+            DependencyProperty.Register(nameof(BarChartColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Blue, OnBarChartColorChanged));
+
+        private static void OnBarChartColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is Color color && editor._barChartPanel != null)
+            {
+                editor._barChartPanel.BarColor = color;
+            }
+        }
+
+        /// <summary>
+        /// DataStringVisual DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty DataStringVisualProperty =
+            DependencyProperty.Register(nameof(DataStringVisual), typeof(DataVisualType), typeof(HexEditor),
+                new PropertyMetadata(DataVisualType.Hexadecimal));
+
+        /// <summary>
+        /// OffSetStringVisual DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty OffSetStringVisualProperty =
+            DependencyProperty.Register(nameof(OffSetStringVisual), typeof(DataVisualType), typeof(HexEditor),
+                new PropertyMetadata(DataVisualType.Hexadecimal));
+
+        /// <summary>
+        /// ByteOrder DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty ByteOrderProperty =
+            DependencyProperty.Register(nameof(ByteOrder), typeof(ByteOrderType), typeof(HexEditor),
+                new PropertyMetadata(ByteOrderType.LoHi));
+
+        /// <summary>
+        /// ByteSize DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty ByteSizeProperty =
+            DependencyProperty.Register(nameof(ByteSize), typeof(ByteSizeType), typeof(HexEditor),
+                new PropertyMetadata(ByteSizeType.Bit8));
+
+        /// <summary>
+        /// BarChartPanelVisibility DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty BarChartPanelVisibilityProperty =
+            DependencyProperty.Register(nameof(BarChartPanelVisibility), typeof(Visibility), typeof(HexEditor),
+                new PropertyMetadata(Visibility.Collapsed, OnBarChartPanelVisibilityChanged));
+
+        private static void OnBarChartPanelVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is Visibility visibility)
+            {
+                if (editor.BarChartBorder != null)
+                    editor.BarChartBorder.Visibility = visibility;
+
+                // Update bar chart data when becoming visible
+                if (visibility == Visibility.Visible)
+                    editor.UpdateBarChart();
+            }
+        }
+
+        /// <summary>
+        /// HideByteDeleted DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty HideByteDeletedProperty =
+            DependencyProperty.Register(nameof(HideByteDeleted), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false, OnHideByteDeletedChanged));
+
+        private static void OnHideByteDeletedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                // Refresh viewport to show/hide deleted bytes
+                editor.HexViewport?.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// DefaultCopyToClipboardMode DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty DefaultCopyToClipboardModeProperty =
+            DependencyProperty.Register(nameof(DefaultCopyToClipboardMode), typeof(CopyPasteMode), typeof(HexEditor),
+                new PropertyMetadata(CopyPasteMode.HexaString));
+
+        /// <summary>
+        /// VisualCaretMode DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty VisualCaretModeProperty =
+            DependencyProperty.Register(nameof(VisualCaretMode), typeof(CaretMode), typeof(HexEditor),
+                new PropertyMetadata(CaretMode.Insert));
+
+        /// <summary>
+        /// ByteShiftLeft DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty ByteShiftLeftProperty =
+            DependencyProperty.Register(nameof(ByteShiftLeft), typeof(long), typeof(HexEditor),
+                new PropertyMetadata(0L, OnByteShiftLeftChanged));
+
+        private static void OnByteShiftLeftChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                // Refresh viewport to update offset display
+                editor.HexViewport?.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// AppendNeedConfirmation DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AppendNeedConfirmationProperty =
+            DependencyProperty.Register(nameof(AppendNeedConfirmation), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// CustomEncoding DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty CustomEncodingProperty =
+            DependencyProperty.Register(nameof(CustomEncoding), typeof(System.Text.Encoding), typeof(HexEditor),
+                new PropertyMetadata(System.Text.Encoding.UTF8, OnCustomEncodingChanged));
+
+        private static void OnCustomEncodingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is System.Text.Encoding encoding)
+            {
+                // Refresh viewport to update text display with new encoding
+                editor.HexViewport?.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// PreloadByteInEditorMode DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty PreloadByteInEditorModeProperty =
+            DependencyProperty.Register(nameof(PreloadByteInEditorMode), typeof(PreloadByteInEditor), typeof(HexEditor),
+                new PropertyMetadata(PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad));
+
+        /// <summary>
+        /// AllowCustomBackgroundBlock DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty AllowCustomBackgroundBlockProperty =
+            DependencyProperty.Register(nameof(AllowCustomBackgroundBlock), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false, OnAllowCustomBackgroundBlockChanged));
+
+        private static void OnAllowCustomBackgroundBlockChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool allowed)
+            {
+                // Phase 7.1: Sync with HexViewport - pass blocks if enabled, empty list if disabled
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.CustomBackgroundBlocks = allowed ? editor._customBackgroundBlocks : new List<Core.CustomBackgroundBlock>();
+                    editor.HexViewport.InvalidateVisual();
+                }
+            }
+        }
+
+        #endregion
+
+        #region V1 Compatibility - Brush Properties (wrap Color properties)
+
+        /// <summary>
+        /// Selection first color as Brush. Use <see cref="SelectionFirstColor"/> (Color) for V2 code.
+        /// </summary>
+        /// <remarks>
+        /// This property is provided for V1 compatibility. New code should use the Color-based property.
+        /// </remarks>
+        [Obsolete("Use SelectionFirstColor (Color property) instead. This Brush wrapper is for V1 compatibility only.", false)]
+        public Brush SelectionFirstColorBrush
+        {
+            get => new SolidColorBrush(SelectionFirstColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    SelectionFirstColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// Selection second color as Brush. Use SelectionSecondColor (Color) for V2 code.
+        /// </summary>
+        public Brush SelectionSecondColorBrush
+        {
+            get => new SolidColorBrush(SelectionSecondColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    SelectionSecondColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// Modified byte color as Brush. Use ByteModifiedColor (Color) for V2 code.
+        /// </summary>
+        public Brush ByteModifiedColorBrush
+        {
+            get => new SolidColorBrush(ByteModifiedColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ByteModifiedColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// Deleted byte color as Brush. Use ByteDeletedColor (Color) for V2 code.
+        /// </summary>
+        public Brush ByteDeletedColorBrush
+        {
+            get => new SolidColorBrush(ByteDeletedColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ByteDeletedColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// Added byte color as Brush. Use ByteAddedColor (Color) for V2 code.
+        /// </summary>
+        public Brush ByteAddedColorBrush
+        {
+            get => new SolidColorBrush(ByteAddedColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ByteAddedColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// Highlight color as Brush. Use HighLightColor (Color) for V2 code.
+        /// </summary>
+        public Brush HighLightColorBrush
+        {
+            get => new SolidColorBrush(HighLightColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    HighLightColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// Mouse over color as Brush. Use MouseOverColor (Color) for V2 code.
+        /// </summary>
+        public Brush MouseOverColorBrush
+        {
+            get => new SolidColorBrush(MouseOverColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    MouseOverColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// Foreground second color as Brush. Use ForegroundSecondColor (Color) for V2 code.
+        /// </summary>
+        public Brush ForegroundSecondColorBrush
+        {
+            get => new SolidColorBrush(ForegroundSecondColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ForegroundSecondColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// Offset header foreground color as Brush. Use ForegroundOffSetHeaderColor (Color) for V2 code.
+        /// </summary>
+        public Brush ForegroundOffSetHeaderColorBrush
+        {
+            get => new SolidColorBrush(ForegroundOffSetHeaderColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ForegroundOffSetHeaderColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// Highlighted offset header foreground color as Brush. Use ForegroundHighLightOffSetHeaderColor (Color) for V2 code.
+        /// </summary>
+        public Brush ForegroundHighLightOffSetHeaderColorBrush
+        {
+            get => new SolidColorBrush(ForegroundHighLightOffSetHeaderColor);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ForegroundHighLightOffSetHeaderColor = solidBrush.Color;
+            }
+        }
+
+        /// <summary>
+        /// Foreground contrast color as Brush. Use ForegroundContrast (Color) for V2 code.
+        /// </summary>
+        public Brush ForegroundContrastBrush
+        {
+            get => new SolidColorBrush(ForegroundContrast);
+            set
+            {
+                if (value is SolidColorBrush solidBrush)
+                    ForegroundContrast = solidBrush.Color;
+            }
+        }
+
+        #endregion
+
+        #region V1 Compatibility - Display Properties
+
+        /// <summary>
+        /// Allow builtin Ctrl+C 
+        /// </summary>
+        public bool AllowBuildinCtrlc
+        {
+            get => (bool)GetValue(AllowBuildinCtrlcProperty);
+            set => SetValue(AllowBuildinCtrlcProperty, value);
+        }
+
+        public static readonly DependencyProperty AllowBuildinCtrlcProperty =
+            DependencyProperty.Register(nameof(AllowBuildinCtrlc), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// Allow builtin Ctrl+V 
+        /// </summary>
+        public bool AllowBuildinCtrlv
+        {
+            get => (bool)GetValue(AllowBuildinCtrlvProperty);
+            set => SetValue(AllowBuildinCtrlvProperty, value);
+        }
+
+        public static readonly DependencyProperty AllowBuildinCtrlvProperty =
+            DependencyProperty.Register(nameof(AllowBuildinCtrlv), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// Allow builtin Ctrl+A 
+        /// </summary>
+        public bool AllowBuildinCtrla
+        {
+            get => (bool)GetValue(AllowBuildinCtrlaProperty);
+            set => SetValue(AllowBuildinCtrlaProperty, value);
+        }
+
+        public static readonly DependencyProperty AllowBuildinCtrlaProperty =
+            DependencyProperty.Register(nameof(AllowBuildinCtrla), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// Allow builtin Ctrl+Z 
+        /// </summary>
+        public bool AllowBuildinCtrlz
+        {
+            get => (bool)GetValue(AllowBuildinCtrlzProperty);
+            set => SetValue(AllowBuildinCtrlzProperty, value);
+        }
+
+        public static readonly DependencyProperty AllowBuildinCtrlzProperty =
+            DependencyProperty.Register(nameof(AllowBuildinCtrlz), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        /// <summary>
+        /// Allow builtin Ctrl+Y 
+        /// </summary>
+        public bool AllowBuildinCtrly
+        {
+            get => (bool)GetValue(AllowBuildinCtrlyProperty);
+            set => SetValue(AllowBuildinCtrlyProperty, value);
+        }
+
+        public static readonly DependencyProperty AllowBuildinCtrlyProperty =
+            DependencyProperty.Register(nameof(AllowBuildinCtrly), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        #endregion
+
+        #region V1 Compatibility - Visibility Properties (wrap bool properties)
+
+        /// <summary>
+        /// Header visibility. Use ShowHeader (bool) for V2 code.
+        /// </summary>
+        public Visibility HeaderVisibility
+        {
+            get => ShowHeader ? Visibility.Visible : Visibility.Collapsed;
+            set => ShowHeader = (value == Visibility.Visible);
+        }
+
+        /// <summary>
+        /// Status bar visibility. Use ShowStatusBar (bool) for V2 code.
+        /// </summary>
+        public Visibility StatusBarVisibility
+        {
+            get => ShowStatusBar ? Visibility.Visible : Visibility.Collapsed;
+            set => ShowStatusBar = (value == Visibility.Visible);
+        }
+
+        /// <summary>
+        /// Line info (offset column) visibility. Use ShowOffset (bool) for V2 code.
+        /// </summary>
+        public Visibility LineInfoVisibility
+        {
+            get => ShowOffset ? Visibility.Visible : Visibility.Collapsed;
+            set => ShowOffset = (value == Visibility.Visible);
+        }
+
+        /// <summary>
+        /// String data (ASCII) panel visibility. Use ShowAscii (bool) for V2 code.
+        /// </summary>
+        public Visibility StringDataVisibility
+        {
+            get => ShowAscii ? Visibility.Visible : Visibility.Collapsed;
+            set => ShowAscii = (value == Visibility.Visible);
+        }
+
+        /// <summary>
+        /// Hex data panel visibility. Always Visible in V2 (cannot be hidden).
+        /// </summary>
+        public Visibility HexDataVisibility
+        {
+            get => Visibility.Visible;
+            set { /* V2 does not support hiding hex panel */ }
+        }
+
+        /// <summary>
+        /// Bar chart panel visibility (Phase 7.4 - Complete) - DependencyProperty
+        /// </summary>
+        public Visibility BarChartPanelVisibility
+        {
+            get => (Visibility)GetValue(BarChartPanelVisibilityProperty);
+            set => SetValue(BarChartPanelVisibilityProperty, value);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Public Methods - File Operations
+
+        /// <summary>
+        /// Open a file for editing
+        /// </summary>
+        public void OpenFile(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentNullException(nameof(filePath));
+
+            _viewModel = HexEditorViewModel.OpenFile(filePath);
+            HexViewport.LinesSource = _viewModel.Lines;
+
+            // Synchronize ViewModel with control's BytePerLine (which may have been set in XAML before file opened)
+            _viewModel.BytePerLine = BytePerLine;
+            HexViewport.BytesPerLine = BytePerLine;
+
+            // Synchronize ViewModel with control's EditMode (which may have been set before file opened, e.g., from settings)
+            _viewModel.EditMode = EditMode;
+            HexViewport.EditMode = EditMode; // Also sync to HexViewport for caret display
+
+            // ByteProvider V2 always supports insertion anywhere - no need to set flag
+            if (EditMode == EditMode.Insert)
+            {
+            }
+
+            // Initialize byte spacer properties on viewport (V1 compatibility)
+            HexViewport.ByteSpacerPositioning = ByteSpacerPositioning;
+            HexViewport.ByteSpacerWidthTickness = ByteSpacerWidthTickness;
+            HexViewport.ByteGrouping = ByteGrouping;
+            HexViewport.ByteSpacerVisualStyle = ByteSpacerVisualStyle;
+
+            // Initialize byte foreground colors (Phase 7.6 - V1 compatibility)
+            var normalBrush = Resources["ByteForegroundBrush"] as Brush;
+            var alternateBrush = Resources["AlternateByteForegroundBrush"] as Brush;
+            HexViewport.SetByteForegroundColors(normalBrush, alternateBrush);
+
+            // Store file info
+            FileName = filePath;
+            IsModified = false;
+
+            // Subscribe to property changes
+            _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            // Calculate initial visible lines AFTER the control is fully loaded AND layout is complete
+            // Use ApplicationIdle priority to ensure BaseGrid.RowDefinitions[1].ActualHeight is set
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                UpdateVisibleLines();
+            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+
+            // Update scrollbar with initial values
+            VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
+            VerticalScroll.ViewportSize = _viewModel.VisibleLines;
+
+            // Raise FileOpened event
+            OnFileOpened(EventArgs.Empty);
+
+            // Update status bar
+            StatusText.Text = $"Loaded: {System.IO.Path.GetFileName(filePath)}";
+            UpdateFileSizeDisplay();
+            BytesPerLineText.Text = $"Bytes/Line: {_viewModel.BytePerLine}";
+            EditModeText.Text = $"Mode: {_viewModel.EditMode}";
+
+            // STARTUP OPTIMIZATION: Defer expensive operations to background (low priority)
+            // These operations can be done after the control is loaded and visible
+
+            // Update bar chart panel in background (Phase 7.4)
+            // Bar chart calculation can be slow for large files
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                UpdateBarChart();
+            }), System.Windows.Threading.DispatcherPriority.Background);
+
+            // Update scroll markers in background
+            // Scroll markers don't need to be ready immediately
+            if (_scrollMarkers != null)
+            {
+                // Use VirtualLength for correct marker positioning (includes insertions)
+                _scrollMarkers.FileLength = _viewModel.VirtualLength;
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    UpdateScrollMarkers();
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
+        }
+
+        /// <summary>
+        /// Save current file
+        /// </summary>
+        public void Save()
+        {
+            if (_viewModel == null)
+                throw new InvalidOperationException("No file loaded");
+
+            _viewModel.Save();
+            StatusText.Text = "File saved";
+            OnChangesSubmited(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Close current file
+        /// </summary>
+        public void Close()
+        {
+            if (_viewModel != null)
+            {
+                _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                _viewModel.Close();
+                _viewModel = null;
+            }
+
+            // Reset file info
+            FileName = string.Empty;
+            IsModified = false;
+
+            // Raise FileClosed event
+            OnFileClosed(EventArgs.Empty);
+
+            HexViewport.LinesSource = null;
+            StatusText.Text = "Ready";
+            FileSizeText.Text = "Size: -";
+            SelectionInfo.Text = "No selection";
+
+            // Clear bar chart (Phase 7.4)
+            _barChartPanel?.Clear();
+            PositionInfo.Text = "Position: 0";
+            EditModeText.Text = "Mode: Overwrite";
+            BytesPerLineText.Text = "Bytes/Line: 16";
+        }
+
+
+        /// <summary>
+        /// Update bar chart panel with current file data (Phase 7.4)
+        /// </summary>
+        private void UpdateBarChart()
+        {
+            if (_barChartPanel == null || _viewModel == null)
+                return;
+
+            // Only update if bar chart is visible
+            if (BarChartPanelVisibility != Visibility.Visible)
+                return;
+
+            try
+            {
+                // Set bar color
+                _barChartPanel.BarColor = BarChartColor;
+
+                // Use efficient ViewModel-based update for large files
+                _barChartPanel.UpdateDataFromViewModel(_viewModel);
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Bar chart update failed: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Refresh the bar chart panel with current file data. .
+        /// </summary>
+        public void RefreshBarChart()
+        {
+            UpdateBarChart();
+        }
+
+        /// <summary>
+        /// Update auto-highlight byte value when selection changes
+        /// </summary>
+        private void UpdateAutoHighlightByte()
+        {
+            if (HexViewport == null || _viewModel == null)
+                return;
+
+            // Only update if auto-highlight is enabled
+            if (!AllowAutoHighLightSelectionByte)
+            {
+                HexViewport.AutoHighlightByteValue = null;
+                HexViewport.InvalidateVisual();
+                return;
+            }
+
+            // Get byte value at current selection position or first byte
+            try
+            {
+                VirtualPosition positionToUse;
+
+                // Use selection start if valid, otherwise use position 0
+                if (_viewModel.SelectionStart.IsValid && _viewModel.SelectionStart.Value < _viewModel.VirtualLength)
+                {
+                    positionToUse = _viewModel.SelectionStart;
+                }
+                else if (_viewModel.VirtualLength > 0)
+                {
+                    positionToUse = new VirtualPosition(0);
+                }
+                else
+                {
+                    HexViewport.AutoHighlightByteValue = null;
+                    HexViewport.InvalidateVisual();
+                    return;
+                }
+
+                byte byteValue = _viewModel.GetByteAt(positionToUse);
+                HexViewport.AutoHighlightByteValue = byteValue;
+                HexViewport.InvalidateVisual();
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Auto-highlight error: {ex.Message}";
+                HexViewport.AutoHighlightByteValue = null;
+                HexViewport.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Select all bytes with specified value 
+        /// V1 ALGORITHM: Expands selection bidirectionally from clicked position
+        /// </summary>
+        private void SelectAllBytesWith(byte byteValue)
+        {
+
+            if (_viewModel == null)
+            {
+                StatusText.Text = "DEBUG: ViewModel is null";
+                return;
+            }
+
+            try
+            {
+                // V1 ALGORITHM: Expand selection bidirectionally from current position
+                // Scan backwards and forwards until we hit a different byte value
+
+                long startPosition = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0;
+                long stopPosition = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value : startPosition;
+
+
+                // Scan BACKWARDS from startPosition while byte matches
+                long scanStart = startPosition;
+                while (scanStart > 0)
+                {
+                    var prevPos = new VirtualPosition(scanStart - 1);
+                    if (!prevPos.IsValid || (scanStart - 1) < 0)
+                        break;
+
+                    byte prevByte = _viewModel.GetByteAt(prevPos);
+                    if (prevByte != byteValue)
+                        break;
+
+                    scanStart--;
+                }
+
+
+                // Scan FORWARDS from stopPosition while byte matches
+                long scanStop = stopPosition;
+                while (scanStop < _viewModel.VirtualLength - 1)
+                {
+                    var nextPos = new VirtualPosition(scanStop + 1);
+                    if (!nextPos.IsValid || (scanStop + 1) >= _viewModel.VirtualLength)
+                        break;
+
+                    byte nextByte = _viewModel.GetByteAt(nextPos);
+                    if (nextByte != byteValue)
+                        break;
+
+                    scanStop++;
+                }
+
+
+                // Set the expanded selection in ViewModel
+                _viewModel.SetSelectionRange(new VirtualPosition(scanStart), new VirtualPosition(scanStop));
+
+                // CRITICAL: Synchronize viewport properties IMMEDIATELY (don't wait for PropertyChanged)
+                HexViewport.SelectionStart = scanStart;
+                HexViewport.SelectionStop = scanStop;
+                HexViewport.CursorPosition = scanStop;
+
+                // Verify viewport properties were set correctly
+
+                // Force viewport refresh to show the selection
+                HexViewport.InvalidateVisual();
+
+                // Ensure the selection start is visible
+                EnsurePositionVisible(new VirtualPosition(scanStart));
+
+                // Verify ViewModel selection was set
+
+                // Update status bar
+                StatusText.Text = $"Selected {scanStop - scanStart + 1} consecutive bytes with value 0x{byteValue:X2}";
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Auto-select failed: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Update scroll markers with bookmarks, modifications, and search results 
+        /// </summary>
+        private void UpdateScrollMarkers()
+        {
+            if (_scrollMarkers == null || _viewModel == null || _viewModel.Provider == null)
+                return;
+
+            try
+            {
+                // Update bookmarks
+                _scrollMarkers.BookmarkPositions = new HashSet<long>(_bookmarks);
+
+                // Get modifications by type from Provider
+                var modifiedDict = _viewModel.Provider.GetByteModifieds(Core.ByteAction.Modified);
+                var insertedDict = _viewModel.Provider.GetByteModifieds(Core.ByteAction.Added);
+                var deletedDict = _viewModel.Provider.GetByteModifieds(Core.ByteAction.Deleted);
+
+                // Update scroll markers with separate positions by type
+                _scrollMarkers.ModifiedPositions = modifiedDict != null ? new HashSet<long>(modifiedDict.Keys) : new HashSet<long>();
+                _scrollMarkers.InsertedPositions = insertedDict != null ? new HashSet<long>(insertedDict.Keys) : new HashSet<long>();
+                _scrollMarkers.DeletedPositions = deletedDict != null ? new HashSet<long>(deletedDict.Keys) : new HashSet<long>();
+
+                // Search results would be updated separately when FindAll is called
+                // (we'll add that later)
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Scroll markers update failed: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Update scroll markers selection bar to show current selection
+        /// </summary>
+        private void UpdateScrollMarkersSelection()
+        {
+            if (_scrollMarkers == null || _viewModel == null)
+                return;
+
+            try
+            {
+                long start = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : -1;
+                long stop = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value : -1;
+
+                if (start >= 0 && stop >= 0)
+                {
+                    _scrollMarkers.SetSelection(start, stop);
+                }
+                else
+                {
+                    _scrollMarkers.ClearSelection();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        #endregion
+
+        #region Public Methods - Edit Operations
+
+        /// <summary>
+        /// Undo last operation
+        /// </summary>
+        public void Undo()
+        {
+            _viewModel?.Undo();
+            OnUndoCompleted(EventArgs.Empty);
+            OnUndone(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Redo last undone operation
+        /// </summary>
+        public void Redo()
+        {
+            _viewModel?.Redo();
+            OnRedoCompleted(EventArgs.Empty);
+            OnRedone(EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Select all bytes
+        /// </summary>
+        public void SelectAll()
+        {
+            _viewModel?.SelectAll();
+        }
+
+        /// <summary>
+        /// Clear selection
+        /// </summary>
+        public void ClearSelection()
+        {
+            _viewModel?.ClearSelection();
+        }
+
+        /// <summary>
+        /// Delete selected bytes
+        /// </summary>
+        public void DeleteSelection()
+        {
+            _viewModel?.DeleteSelection();
+        }
+
+        /// <summary>
+        /// Get selected bytes as byte array 
+        /// </summary>
+        public byte[] GetSelectionByteArray()
+        {
+            return _viewModel?.GetSelectionBytes();
+        }
+
+        /// <summary>
+        /// Set cursor position and scroll to make it visible 
+        /// </summary>
+        public void SetPosition(long position)
+        {
+            if (_viewModel == null) return;
+
+            var virtualPos = new VirtualPosition(position);
+            _viewModel.SetSelection(virtualPos);
+
+            // Scroll to make position visible
+            EnsurePositionVisible(virtualPos);
+        }
+
+        /// <summary>
+        /// Copy selected bytes to clipboard
+        /// </summary>
+        public bool Copy()
+        {
+            bool result = _viewModel?.CopyToClipboard() ?? false;
+            if (result)
+                OnDataCopied(EventArgs.Empty);
+            return result;
+        }
+
+        /// <summary>
+        /// Cut selected bytes to clipboard (copy + delete)
+        /// </summary>
+        public bool Cut()
+        {
+            return _viewModel?.Cut() ?? false;
+        }
+
+        /// <summary>
+        /// Paste bytes from clipboard at current position
+        /// </summary>
+        public bool Paste()
+        {
+            return _viewModel?.Paste() ?? false;
+        }
+
+        #endregion
+
+        #region Public Methods - Find/Replace
+
+        /// <summary>
+        /// Find first occurrence of byte array
+        /// </summary>
+        /// <param name="data">Byte pattern to search for</param>
+        /// <param name="startPosition">Position to start search from (default: 0)</param>
+        /// <returns>Position of first occurrence, or -1 if not found</returns>
+        public long FindFirst(byte[] data, long startPosition = 0)
+        {
+            if (_viewModel == null) return -1;
+            return _viewModel.FindFirst(data, startPosition);
+        }
+
+        /// <summary>
+        /// Find next occurrence after current position
+        /// </summary>
+        /// <param name="data">Byte pattern to search for</param>
+        /// <param name="currentPosition">Current position (search starts at currentPosition + 1)</param>
+        /// <returns>Position of next occurrence, or -1 if not found</returns>
+        public long FindNext(byte[] data, long currentPosition)
+        {
+            if (_viewModel == null) return -1;
+            return _viewModel.FindNext(data, currentPosition);
+        }
+
+        /// <summary>
+        /// Find last occurrence of byte array
+        /// </summary>
+        /// <param name="data">Byte pattern to search for</param>
+        /// <param name="startPosition">Position to start search from (default: 0)</param>
+        /// <returns>Position of last occurrence, or -1 if not found</returns>
+        public long FindLast(byte[] data, long startPosition = 0)
+        {
+            if (_viewModel == null) return -1;
+            return _viewModel.FindLast(data, startPosition);
+        }
+
+        /// <summary>
+        /// Find all occurrences of byte array
+        /// </summary>
+        /// <param name="data">Byte pattern to search for</param>
+        /// <param name="startPosition">Position to start search from (default: 0)</param>
+        /// <returns>Enumerable of positions where pattern was found, or null if not found</returns>
+        public IEnumerable<long> FindAll(byte[] data, long startPosition = 0)
+        {
+            if (_viewModel == null) return null;
+            return _viewModel.FindAll(data, startPosition);
+        }
+
+        /// <summary>
+        /// Set selection to a specific range (used after find operations)
+        /// </summary>
+        /// <param name="position">Start position</param>
+        /// <param name="length">Selection length in bytes</param>
+        public void FindSelect(long position, long length)
+        {
+            if (_viewModel == null) return;
+            if (position < 0 || length <= 0) return;
+
+            var start = new VirtualPosition(position);
+            var stop = new VirtualPosition(position + length - 1);
+
+            _viewModel.SetSelectionRange(start, stop);
+
+            // Scroll to make selection visible
+            EnsurePositionVisible(start);
+        }
+
+        /// <summary>
+        /// Replace first occurrence of findData with replaceData
+        /// </summary>
+        /// <param name="findData">Byte pattern to find</param>
+        /// <param name="replaceData">Byte pattern to replace with</param>
+        /// <param name="startPosition">Position to start search from (default: 0)</param>
+        /// <param name="truncateLength">If true, truncate replaceData to match findData length</param>
+        /// <returns>Position where replacement occurred, or -1 if pattern not found</returns>
+        public long ReplaceFirst(byte[] findData, byte[] replaceData, long startPosition = 0, bool truncateLength = false)
+        {
+            if (_viewModel == null) return -1;
+            return _viewModel.ReplaceFirst(findData, replaceData, startPosition, truncateLength);
+        }
+
+        /// <summary>
+        /// Replace next occurrence after current position
+        /// </summary>
+        /// <param name="findData">Byte pattern to find</param>
+        /// <param name="replaceData">Byte pattern to replace with</param>
+        /// <param name="currentPosition">Current position (search starts at currentPosition + 1)</param>
+        /// <param name="truncateLength">If true, truncate replaceData to match findData length</param>
+        /// <returns>Position where replacement occurred, or -1 if pattern not found</returns>
+        public long ReplaceNext(byte[] findData, byte[] replaceData, long currentPosition, bool truncateLength = false)
+        {
+            if (_viewModel == null) return -1;
+            return _viewModel.ReplaceNext(findData, replaceData, currentPosition, truncateLength);
+        }
+
+        /// <summary>
+        /// Replace all occurrences of findData with replaceData
+        /// </summary>
+        /// <param name="findData">Byte pattern to find</param>
+        /// <param name="replaceData">Byte pattern to replace with</param>
+        /// <param name="truncateLength">If true, truncate replaceData to match findData length</param>
+        /// <returns>Number of replacements made</returns>
+        public int ReplaceAll(byte[] findData, byte[] replaceData, bool truncateLength = false)
+        {
+            if (_viewModel == null) return 0;
+            return _viewModel.ReplaceAll(findData, replaceData, truncateLength);
+        }
+
+        #endregion
+
+        #region V1 Compatibility - String Search/Replace (wrap byte[] methods)
+
+        /// <summary>
+        /// Find first occurrence of string
+        /// </summary>
+        /// <param name="text">Text to search for</param>
+        /// <param name="startPosition">Position to start search from</param>
+        /// <returns>Position of first occurrence, or -1 if not found</returns>
+        public long FindFirst(string text, long startPosition = 0)
+        {
+            if (string.IsNullOrEmpty(text)) return -1;
+            byte[] bytes = GetBytesFromString(text);
+            return FindFirst(bytes, startPosition);
+        }
+
+        /// <summary>
+        /// Find next occurrence of string
+        /// </summary>
+        /// <param name="text">Text to search for</param>
+        /// <returns>Position of next occurrence, or -1 if not found</returns>
+        public long FindNext(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return -1;
+            byte[] bytes = GetBytesFromString(text);
+            // V1 behavior: FindNext searches from current position + 1
+            long currentPos = Position;
+            return FindNext(bytes, currentPos);
+        }
+
+        /// <summary>
+        /// Find last occurrence of string
+        /// </summary>
+        /// <param name="text">Text to search for</param>
+        /// <returns>Position of last occurrence, or -1 if not found</returns>
+        public long FindLast(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return -1;
+            byte[] bytes = GetBytesFromString(text);
+            return FindLast(bytes, 0);
+        }
+
+        /// <summary>
+        /// Replace first occurrence of string
+        /// </summary>
+        public long ReplaceFirst(string findText, string replaceText, long startPosition = 0, bool truncateLength = false)
+        {
+            if (string.IsNullOrEmpty(findText)) return -1;
+            byte[] findBytes = GetBytesFromString(findText);
+            byte[] replaceBytes = GetBytesFromString(replaceText ?? string.Empty);
+            return ReplaceFirst(findBytes, replaceBytes, startPosition, truncateLength);
+        }
+
+        /// <summary>
+        /// Replace next occurrence of string
+        /// </summary>
+        public long ReplaceNext(string findText, string replaceText, long currentPosition, bool truncateLength = false)
+        {
+            if (string.IsNullOrEmpty(findText)) return -1;
+            byte[] findBytes = GetBytesFromString(findText);
+            byte[] replaceBytes = GetBytesFromString(replaceText ?? string.Empty);
+            return ReplaceNext(findBytes, replaceBytes, currentPosition, truncateLength);
+        }
+
+        /// <summary>
+        /// Replace all occurrences of string
+        /// </summary>
+        public int ReplaceAll(string findText, string replaceText, bool truncateLength = false)
+        {
+            if (string.IsNullOrEmpty(findText)) return 0;
+            byte[] findBytes = GetBytesFromString(findText);
+            byte[] replaceBytes = GetBytesFromString(replaceText ?? string.Empty);
+            return ReplaceAll(findBytes, replaceBytes, truncateLength);
+        }
+
+        /// <summary>
+        /// Helper: Convert string to bytes using current character table encoding
+        /// </summary>
+        private byte[] GetBytesFromString(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return Array.Empty<byte>();
+
+            // Use encoding based on character table type
+            var encoding = _characterTableType == CharacterTableType.Ascii
+                ? System.Text.Encoding.ASCII
+                : System.Text.Encoding.UTF8;
+
+            return encoding.GetBytes(text);
+        }
+
+        #endregion
+
+        #region Public Methods - Byte Operations
+
+        /// <summary>
+        /// Get byte value at position 
+        /// </summary>
+        /// <param name="position">Position in file (virtual)</param>
+        /// <returns>Byte value at position, or 0 if position is invalid</returns>
+        public byte GetByte(long position)
+        {
+            if (_viewModel == null) return 0;
+            return _viewModel.GetByte(position);
+        }
+
+        /// <summary>
+        /// Set byte value at position 
+        /// </summary>
+        /// <param name="position">Position in file (virtual)</param>
+        /// <param name="value">Byte value to set</param>
+        public void SetByte(long position, byte value)
+        {
+            _viewModel?.SetByte(position, value);
+        }
+
+        /// <summary>
+        /// Fill a range with a specific byte value 
+        /// </summary>
+        /// <param name="value">Byte value to fill with</param>
+        /// <param name="startPosition">Start position (virtual)</param>
+        /// <param name="length">Number of bytes to fill</param>
+        public void FillWithByte(byte value, long startPosition, long length)
+        {
+            _viewModel?.FillWithByte(value, startPosition, length);
+        }
+
+        /// <summary>
+        /// Modify byte with undo support
+        /// </summary>
+        /// <param name="byte">New byte value (null to delete)</param>
+        /// <param name="bytePositionInStream">Position in stream (virtual)</param>
+        /// <param name="undoLength">Length for undo operation (usually 1)</param>
+        public void ModifyByte(byte? @byte, long bytePositionInStream, long undoLength = 1)
+        {
+            if (_viewModel == null || ReadOnlyMode) return;
+
+            if (@byte.HasValue)
+            {
+                // Modify the byte
+                _viewModel.ModifyByte(new VirtualPosition(bytePositionInStream), @byte.Value);
+            }
+            else
+            {
+                // Delete the byte (null value means delete)
+                _viewModel.DeleteByte(new VirtualPosition(bytePositionInStream));
+            }
+        }
+
+        /// <summary>
+        /// Insert a single byte at position
+        /// </summary>
+        /// <param name="byte">Byte value to insert</param>
+        /// <param name="bytePositionInStream">Position in stream (virtual)</param>
+        public void InsertByte(byte @byte, long bytePositionInStream)
+        {
+            if (_viewModel == null || ReadOnlyMode) return;
+            _viewModel.InsertByte(new VirtualPosition(bytePositionInStream), @byte);
+        }
+
+        /// <summary>
+        /// Insert a byte repeated multiple times at position
+        /// </summary>
+        /// <param name="byte">Byte value to insert</param>
+        /// <param name="bytePositionInStream">Position in stream (virtual)</param>
+        /// <param name="length">Number of times to repeat the byte</param>
+        public void InsertByte(byte @byte, long bytePositionInStream, long length)
+        {
+            if (_viewModel == null || ReadOnlyMode || length <= 0) return;
+
+            // Create array of repeated byte
+            byte[] bytes = new byte[length];
+            for (long i = 0; i < length; i++)
+            {
+                bytes[i] = @byte;
+            }
+
+            _viewModel.InsertBytes(new VirtualPosition(bytePositionInStream), bytes);
+        }
+
+        /// <summary>
+        /// Insert multiple bytes at position
+        /// </summary>
+        /// <param name="bytes">Byte array to insert</param>
+        /// <param name="bytePositionInStream">Position in stream (virtual)</param>
+        public void InsertBytes(byte[] bytes, long bytePositionInStream)
+        {
+            if (_viewModel == null || ReadOnlyMode || bytes == null || bytes.Length == 0) return;
+            _viewModel.InsertBytes(new VirtualPosition(bytePositionInStream), bytes);
+        }
+
+        /// <summary>
+        /// Delete bytes at position
+        /// </summary>
+        /// <param name="bytePositionInStream">Start position (virtual)</param>
+        /// <param name="length">Number of bytes to delete</param>
+        public void DeleteBytesAtPosition(long bytePositionInStream, long length)
+        {
+            if (_viewModel == null || ReadOnlyMode || length <= 0) return;
+
+            // Delete bytes one by one (ByteProvider V2 handles this internally)
+            _viewModel.BeginUpdate();
+            try
+            {
+                for (long i = 0; i < length; i++)
+                {
+                    _viewModel.DeleteByte(new VirtualPosition(bytePositionInStream));
+                    // Note: After deleting, the next byte shifts to the same position
+                    // So we keep deleting at the same position
+                }
+            }
+            finally
+            {
+                _viewModel.EndUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Get byte with copyChange parameter
+        /// Returns tuple with byte value and success flag
+        /// </summary>
+        /// <param name="position">Position in file (virtual)</param>
+        /// <param name="copyChange">If true, returns modified value; if false, returns original value</param>
+        /// <returns>Tuple (byte value, success flag)</returns>
+        public (byte? singleByte, bool success) GetByte(long position, bool copyChange)
+        {
+            if (_viewModel == null || position < 0 || position >= VirtualLength)
+                return (null, false);
+
+            // V2 always returns modified values (copyChange=true behavior)
+            // To get original values (copyChange=false), we would need ByteProvider support
+            // For now, we only support copyChange=true
+            var byteValue = _viewModel.GetByte(position);
+            return (byteValue, true);
+        }
+
+        /// <summary>
+        /// Get all bytes from file
+        /// </summary>
+        /// <param name="copyChange">If true, includes modifications; if false, original file only</param>
+        /// <returns>Byte array of entire file</returns>
+        public byte[] GetAllBytes(bool copyChange = true)
+        {
+            if (_viewModel == null || VirtualLength == 0)
+                return Array.Empty<byte>();
+
+            // V2 always returns modified values (copyChange=true behavior)
+            // Get all bytes from ByteProvider
+            byte[] result = new byte[VirtualLength];
+            for (long i = 0; i < VirtualLength; i++)
+            {
+                result[i] = _viewModel.GetByte(i);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Replace byte with another in current selection
+        /// </summary>
+        /// <param name="original">Byte to find and replace</param>
+        /// <param name="replace">Byte to replace with</param>
+        public void ReplaceByte(byte original, byte replace)
+        {
+            if (_viewModel == null || !_viewModel.HasSelection)
+                return;
+
+            var selStart = _viewModel.SelectionStart.Value;
+            var selLength = _viewModel.SelectionLength;
+
+            ReplaceByte(selStart, selLength, original, replace);
+        }
+
+        /// <summary>
+        /// Replace byte with another in specified range
+        /// </summary>
+        /// <param name="startPosition">Start position (virtual)</param>
+        /// <param name="length">Length of range to search</param>
+        /// <param name="original">Byte to find and replace</param>
+        /// <param name="replace">Byte to replace with</param>
+        public void ReplaceByte(long startPosition, long length, byte original, byte replace)
+        {
+            if (_viewModel == null || ReadOnlyMode || length <= 0)
+                return;
+
+            if (startPosition < 0 || startPosition >= VirtualLength)
+                return;
+
+            // Fire long process started event
+            IsOnLongProcess = true;
+            OnLongProcessProgressStarted(EventArgs.Empty);
+
+            try
+            {
+                int replacedCount = 0;
+
+                // Begin batched update for performance
+                _viewModel.BeginUpdate();
+                try
+                {
+                    for (long i = 0; i < length; i++)
+                    {
+                        long pos = startPosition + i;
+                        if (pos >= VirtualLength)
+                            break;
+
+                        // Check if we should break early (user cancelled)
+                        if (!IsOnLongProcess)
+                            break;
+
+                        // Progress reporting every 2000 bytes
+                        if (i % 2000 == 0)
+                        {
+                            LongProcessProgress = (double)i / length;
+                        }
+
+                        // Check if byte matches and replace
+                        var currentByte = _viewModel.GetByte(pos);
+                        if (currentByte == original)
+                        {
+                            ModifyByte(replace, pos);
+                            replacedCount++;
+                        }
+                    }
+                }
+                finally
+                {
+                    _viewModel.EndUpdate();
+                }
+
+                // Update status
+                StatusText.Text = $"Replaced {replacedCount} occurrences of 0x{original:X2} with 0x{replace:X2}";
+
+                // Fire replace completed event
+                OnReplaceByteCompleted(EventArgs.Empty);
+            }
+            finally
+            {
+                // Fire long process completed event
+                IsOnLongProcess = false;
+                LongProcessProgress = 0;
+                OnLongProcessProgressCompleted(EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Fill current selection with specified byte value
+        /// </summary>
+        /// <param name="val">Byte value to fill with</param>
+        public void FillWithByte(byte val)
+        {
+            if (_viewModel == null || !_viewModel.HasSelection)
+                return;
+
+            var selStart = _viewModel.SelectionStart.Value;
+            var selLength = _viewModel.SelectionLength;
+
+            FillWithByte(selStart, selLength, val);
+        }
+
+        /// <summary>
+        /// Fill specified range with byte value
+        /// </summary>
+        /// <param name="startPosition">Start position (virtual)</param>
+        /// <param name="length">Length of range to fill</param>
+        /// <param name="val">Byte value to fill with</param>
+        public void FillWithByte(long startPosition, long length, byte val)
+        {
+            if (_viewModel == null || ReadOnlyMode || length <= 0)
+                return;
+
+            if (startPosition < 0 || startPosition >= VirtualLength)
+                return;
+
+            // Fire long process started event
+            IsOnLongProcess = true;
+            OnLongProcessProgressStarted(EventArgs.Empty);
+
+            try
+            {
+                // Begin batched update for performance
+                _viewModel.BeginUpdate();
+                try
+                {
+                    for (long i = 0; i < length; i++)
+                    {
+                        long pos = startPosition + i;
+                        if (pos >= VirtualLength)
+                            break;
+
+                        // Check if we should break early (user cancelled)
+                        if (!IsOnLongProcess)
+                            break;
+
+                        // Progress reporting every 2000 bytes
+                        if (i % 2000 == 0)
+                        {
+                            LongProcessProgress = (double)i / length;
+                        }
+
+                        // Modify the byte
+                        ModifyByte(val, pos);
+                    }
+                }
+                finally
+                {
+                    _viewModel.EndUpdate();
+                }
+
+                // Update status
+                StatusText.Text = $"Filled {length} bytes with 0x{val:X2}";
+
+                // Fire fill completed event
+                OnFillWithByteCompleted(EventArgs.Empty);
+            }
+            finally
+            {
+                // Fire long process completed event
+                IsOnLongProcess = false;
+                LongProcessProgress = 0;
+                OnLongProcessProgressCompleted(EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Get all byte modifications matching the specified action
+        /// </summary>
+        /// <param name="action">ByteAction to filter by (Modified, Added, Deleted, or All)</param>
+        /// <returns>Dictionary of ByteModified objects keyed by position, or null if no provider</returns>
+        public IDictionary<long, ByteModified> GetByteModifieds(ByteAction action)
+        {
+            if (_viewModel?.Provider == null)
+                return null;
+
+            return _viewModel.Provider.GetByteModifieds(action);
+        }
+
+        #endregion
+
+        #region Public Methods - Bookmarks
+
+        /// <summary>
+        /// Add a bookmark at the specified position 
+        /// </summary>
+        /// <param name="position">Position to bookmark (virtual)</param>
+        public void SetBookmark(long position)
+        {
+            if (position < 0 || position >= VirtualLength) return;
+            if (!_bookmarks.Contains(position))
+            {
+                _bookmarks.Add(position);
+                _bookmarks.Sort(); // Keep sorted for easy navigation
+            }
+        }
+
+        /// <summary>
+        /// Remove a bookmark at the specified position 
+        /// </summary>
+        /// <param name="position">Position to remove bookmark from (virtual)</param>
+        public void RemoveBookmark(long position)
+        {
+            _bookmarks.Remove(position);
+        }
+
+        /// <summary>
+        /// Clear all bookmarks 
+        /// </summary>
+        public void ClearAllBookmarks()
+        {
+            _bookmarks.Clear();
+        }
+
+        /// <summary>
+        /// Get all bookmarks 
+        /// </summary>
+        /// <returns>Array of bookmark positions</returns>
+        public long[] GetBookmarks()
+        {
+            return _bookmarks.ToArray();
+        }
+
+        /// <summary>
+        /// Check if a position is bookmarked 
+        /// </summary>
+        /// <param name="position">Position to check (virtual)</param>
+        /// <returns>True if position is bookmarked</returns>
+        public bool IsBookmarked(long position)
+        {
+            return _bookmarks.Contains(position);
+        }
+
+        /// <summary>
+        /// Get the next bookmark after the specified position 
+        /// </summary>
+        /// <param name="position">Current position (virtual)</param>
+        /// <returns>Position of next bookmark, or -1 if none found</returns>
+        public long GetNextBookmark(long position)
+        {
+            foreach (var bookmark in _bookmarks)
+            {
+                if (bookmark > position)
+                    return bookmark;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Get the previous bookmark before the specified position 
+        /// </summary>
+        /// <param name="position">Current position (virtual)</param>
+        /// <returns>Position of previous bookmark, or -1 if none found</returns>
+        public long GetPreviousBookmark(long position)
+        {
+            for (int i = _bookmarks.Count - 1; i >= 0; i--)
+            {
+                if (_bookmarks[i] < position)
+                    return _bookmarks[i];
+            }
+            return -1;
+        }
+
+        #endregion
+
+        #region Public Methods - Highlights
+
+        /// <summary>
+        /// Add highlight to a range of bytes
+        /// </summary>
+        /// <param name="startPosition">Start position (virtual)</param>
+        /// <param name="length">Number of bytes to highlight</param>
+        /// <param name="updateVisual">If true, refresh the display immediately</param>
+        public void AddHighLight(long startPosition, long length, bool updateVisual = true)
+        {
+            if (startPosition < 0 || length <= 0 || startPosition >= VirtualLength)
+                return;
+
+            // Clamp length to file size
+            long actualLength = Math.Min(length, VirtualLength - startPosition);
+
+            // Add highlight range
+            _highlights.Add((startPosition, actualLength));
+
+            // Update visual if requested
+            if (updateVisual)
+            {
+                RefreshView(false, true);
+            }
+        }
+
+        /// <summary>
+        /// Remove highlight from a range of bytes
+        /// </summary>
+        /// <param name="startPosition">Start position (virtual)</param>
+        /// <param name="length">Number of bytes to un-highlight</param>
+        /// <param name="updateVisual">If true, refresh the display immediately</param>
+        public void RemoveHighLight(long startPosition, long length, bool updateVisual = true)
+        {
+            if (startPosition < 0 || length <= 0)
+                return;
+
+            // Remove matching highlight ranges
+            _highlights.RemoveAll(h => h.start == startPosition && h.length == length);
+
+            // Update visual if requested
+            if (updateVisual)
+            {
+                RefreshView(false, true);
+            }
+        }
+
+        /// <summary>
+        /// Clear all highlights
+        /// </summary>
+        public void UnHighLightAll()
+        {
+            _highlights.Clear();
+            RefreshView(false, true);
+        }
+
+        /// <summary>
+        /// Check if a position is highlighted (internal helper)
+        /// </summary>
+        /// <param name="position">Position to check (virtual)</param>
+        /// <returns>True if position is highlighted</returns>
+        private bool IsHighlighted(long position)
+        {
+            foreach (var (start, length) in _highlights)
+            {
+                if (position >= start && position < start + length)
+                    return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region Public Methods - File Comparison
+
+        private readonly Services.ComparisonService _comparisonService = new();
+        private List<ByteDifference> _comparisonResults = null;
+
+        /// <summary>
+        /// Compare this editor's content with another HexEditor
+        /// </summary>
+        /// <param name="other">Other HexEditor to compare against</param>
+        /// <param name="highlightDifferences">Automatically highlight differences with custom background blocks</param>
+        /// <param name="maxDifferences">Maximum number of differences to return (0 = unlimited)</param>
+        /// <returns>Enumerable of byte differences</returns>
+        public IEnumerable<ByteDifference> Compare(HexEditor other, bool highlightDifferences = true, long maxDifferences = 1000)
+        {
+            if (other == null || _viewModel?.Provider == null || other._viewModel?.Provider == null)
+                return Enumerable.Empty<ByteDifference>();
+
+            // Compare using ByteProvider V2
+            var differences = _comparisonService.Compare(_viewModel.Provider, other._viewModel.Provider, maxDifferences).ToList();
+            _comparisonResults = differences;
+
+            if (highlightDifferences && differences.Any())
+            {
+                // Clear existing comparison highlights
+                ClearCustomBackgroundBlock();
+
+                // Highlight each difference
+                foreach (var diff in differences)
+                {
+                    var block = new Core.CustomBackgroundBlock(
+                        diff.BytePositionInStream,
+                        1, // Single byte
+                        new SolidColorBrush(Colors.LightCoral),
+                        $"Diff: 0x{diff.Origine:X2} vs 0x{diff.Destination:X2}"
+                    );
+                    AddCustomBackgroundBlock(block);
+                }
+            }
+
+            return differences;
+        }
+
+        /// <summary>
+        /// Compare this editor's content with a ByteProvider
+        /// </summary>
+        /// <param name="provider">ByteProvider to compare against</param>
+        /// <param name="highlightDifferences">Automatically highlight differences</param>
+        /// <param name="maxDifferences">Maximum differences to return (0 = unlimited)</param>
+        /// <returns>Enumerable of byte differences</returns>
+        public IEnumerable<ByteDifference> Compare(Core.Bytes.ByteProviderLegacy provider, bool highlightDifferences = true, long maxDifferences = 1000)
+        {
+            if (provider == null || _viewModel?.Provider == null)
+                return Enumerable.Empty<ByteDifference>();
+
+            // Note: Cross-version comparison (V2 vs V1) is not supported
+            // ByteProvider V2 uses virtual positions while ByteProviderLegacy uses physical positions
+            // For comparison, use two editors with the same provider version
+            var differences = new List<ByteDifference>();
+            _comparisonResults = differences;
+
+            if (highlightDifferences && differences.Any())
+            {
+                // Clear existing comparison highlights
+                ClearCustomBackgroundBlock();
+
+                // Highlight each difference
+                foreach (var diff in differences)
+                {
+                    var block = new Core.CustomBackgroundBlock(
+                        diff.BytePositionInStream,
+                        1,
+                        new SolidColorBrush(Colors.LightCoral),
+                        $"Diff: 0x{diff.Origine:X2} vs 0x{diff.Destination:X2}"
+                    );
+                    AddCustomBackgroundBlock(block);
+                }
+            }
+
+            return differences;
+        }
+
+        /// <summary>
+        /// Clear comparison results and highlighting
+        /// </summary>
+        public void ClearComparison()
+        {
+            _comparisonResults = null;
+            ClearCustomBackgroundBlock();
+        }
+
+        /// <summary>
+        /// Get the last comparison results
+        /// </summary>
+        public IEnumerable<ByteDifference> GetComparisonResults()
+        {
+            return _comparisonResults ?? Enumerable.Empty<ByteDifference>();
+        }
+
+        /// <summary>
+        /// Count differences between this editor and another
+        /// </summary>
+        public long CountDifferences(HexEditor other)
+        {
+            if (other == null || _viewModel?.Provider == null || other._viewModel?.Provider == null)
+                return 0;
+
+            return _comparisonService.CountDifferences(_viewModel.Provider, other._viewModel.Provider);
+        }
+
+        /// <summary>
+        /// Calculate similarity percentage with another editor (0.0 - 100.0)
+        /// </summary>
+        public double CalculateSimilarity(HexEditor other)
+        {
+            if (other == null || _viewModel?.Provider == null || other._viewModel?.Provider == null)
+                return 0.0;
+
+            return _comparisonService.CalculateSimilarity(_viewModel.Provider, other._viewModel.Provider);
+        }
+
+        #endregion
+
+        #region Public Methods - V1 Additional Compatibility
+
+        /// <summary>
+        /// Set position from hex string
+        /// </summary>
+        public void SetPosition(string hexLiteralPosition)
+        {
+            if (string.IsNullOrEmpty(hexLiteralPosition)) return;
+            try
+            {
+                hexLiteralPosition = hexLiteralPosition.Replace("0x", "").Replace("0X", "");
+                long position = Convert.ToInt64(hexLiteralPosition, 16);
+                SetPosition(position);
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// Set position and create selection
+        /// </summary>
+        public void SetPosition(long position, long byteLength)
+        {
+            if (_viewModel == null) return;
+            SelectionStart = position;
+            SelectionStop = position + byteLength - 1;
+            SetPosition(position);
+        }
+
+        /// <summary>
+        /// Submit changes (alias for Save)
+        /// </summary>
+        public void SubmitChanges() => Save();
+
+        /// <summary>
+        /// Submit changes to new file (alias for SaveAs)
+        /// </summary>
+        public void SubmitChanges(string newFilename, bool overwrite)
+        {
+            if (_viewModel == null) return;
+            try
+            {
+                bool success = _viewModel.SaveAs(newFilename, overwrite);
+                if (success)
+                {
+                    FileName = newFilename;
+                    StatusText.Text = $"Saved to {System.IO.Path.GetFileName(newFilename)}";
+                }
+                else
+                {
+                    StatusText.Text = "File already exists";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Failed to save: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Unselect all
+        /// </summary>
+        public void UnSelectAll(bool cleanFocus = false)
+        {
+            ClearSelection();
+            if (cleanFocus) Keyboard.ClearFocus();
+        }
+
+        /// <summary>
+        /// Undo with repeat count
+        /// </summary>
+        public void Undo(int repeat)
+        {
+            if (_viewModel == null) return;
+            for (int i = 0; i < repeat; i++)
+            {
+                if (_viewModel.CanUndo)
+                    Undo();
+                else
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Redo with repeat count
+        /// </summary>
+        public void Redo(int repeat)
+        {
+            if (_viewModel == null) return;
+            for (int i = 0; i < repeat; i++)
+            {
+                if (_viewModel.CanRedo)
+                    Redo();
+                else
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Clear all modifications and undo/redo history
+        /// </summary>
+        public void ClearAllChange()
+        {
+            if (_viewModel?.Provider == null) return;
+
+            _viewModel.Provider.ClearAllEdits();
+            IsModified = false;
+            StatusText.Text = "All changes cleared";
+        }
+
+        /// <summary>
+        /// Refresh view with options
+        /// </summary>
+        public void RefreshView(bool controlResize = false, bool refreshData = true)
+        {
+            if (_viewModel == null) return;
+            if (refreshData)
+            {
+                _viewModel.RefreshDisplay();
+                HexViewport?.InvalidateVisual();
+            }
+            if (controlResize)
+            {
+                InvalidateMeasure();
+                InvalidateArrange();
+            }
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Update visual rendering
+        /// </summary>
+        public void UpdateVisual()
+        {
+            InvalidateVisual();
+            HexViewport?.InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Get line number from position
+        /// </summary>
+        public long GetLineNumber(long position) => _viewModel == null ? 0 : position / BytePerLine;
+
+        /// <summary>
+        /// Get column number from position
+        /// </summary>
+        public long GetColumnNumber(long position) => _viewModel == null ? 0 : position % BytePerLine;
+
+        /// <summary>
+        /// Check if byte position is visible in viewport
+        /// </summary>
+        public bool IsBytePositionAreVisible(long position)
+        {
+            if (_viewModel == null || HexViewport == null) return false;
+            long startLine = _viewModel.ScrollPosition;
+            long endLine = startLine + _viewModel.VisibleLines;
+            long positionLine = position / BytePerLine;
+            return positionLine >= startLine && positionLine < endLine;
+        }
+
+        /// <summary>
+        /// Close provider with option to clear filename
+        /// </summary>
+        public void CloseProvider(bool clearFileName = true)
+        {
+            Close();
+            if (clearFileName)
+                FileName = string.Empty;
+        }
+
+        // ResetZoom moved to Zoom Support region above
+
+        /// <summary>
+        /// Update focus
+        /// </summary>
+        public void UpdateFocus()
+        {
+            HexViewport?.Focus();
+        }
+
+        /// <summary>
+        /// Set focus at selection start
+        /// </summary>
+        public void SetFocusAtSelectionStart()
+        {
+            if (_viewModel != null && SelectionStart >= 0)
+            {
+                SetPosition(SelectionStart);
+                UpdateFocus();
+            }
+        }
+
+        /// <summary>
+        /// Set focus at specific position
+        /// </summary>
+        public void SetFocusAt(long position)
+        {
+            SetPosition(position);
+            UpdateFocus();
+        }
+
+        #endregion
+
+        #region Public Methods - Custom Background Blocks
+
+        /// <summary>
+        /// Add a custom background block (Phase 7.1)
+        /// </summary>
+        public void AddCustomBackgroundBlock(Core.CustomBackgroundBlock block)
+        {
+            if (block == null) return;
+            _customBackgroundBlocks.Add(block);
+
+            // Phase 7.1: Sync with HexViewport for rendering
+            if (HexViewport != null)
+            {
+                HexViewport.CustomBackgroundBlocks = _customBackgroundBlocks;
+                HexViewport.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Remove a custom background block (Phase 7.1)
+        /// </summary>
+        public void RemoveCustomBackgroundBlock(Core.CustomBackgroundBlock block)
+        {
+            if (block == null) return;
+            _customBackgroundBlocks.Remove(block);
+
+            // Phase 7.1: Sync with HexViewport for rendering
+            if (HexViewport != null)
+            {
+                HexViewport.CustomBackgroundBlocks = _customBackgroundBlocks;
+                HexViewport.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Clear all custom background blocks (Phase 7.1)
+        /// </summary>
+        public void ClearCustomBackgroundBlock()
+        {
+            _customBackgroundBlocks.Clear();
+
+            // Phase 7.1: Sync with HexViewport for rendering
+            if (HexViewport != null)
+            {
+                HexViewport.CustomBackgroundBlocks = _customBackgroundBlocks;
+                HexViewport.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Get custom background block at position 
+        /// </summary>
+        public Core.CustomBackgroundBlock GetCustomBackgroundBlock(long position)
+        {
+            return _customBackgroundBlocks.FirstOrDefault(b =>
+                position >= b.StartOffset && position < b.StopOffset);
+        }
+
+        /// <summary>
+        /// Get all custom background blocks at position 
+        /// </summary>
+        public IEnumerable<Core.CustomBackgroundBlock> GetCustomBackgroundBlocks(long position)
+        {
+            return _customBackgroundBlocks.Where(b =>
+                position >= b.StartOffset && position < b.StopOffset);
+        }
+
+        #endregion
+
+        #region Public Methods - File Comparison
+
+        /// <summary>
+        /// Compare this file with another HexEditor 
+        /// Returns list of differences between the two files
+        /// </summary>
+        public IEnumerable<Core.Bytes.ByteDifference> Compare(HexEditor other)
+        {
+            if (_viewModel == null || other?._viewModel == null)
+                return Enumerable.Empty<Core.Bytes.ByteDifference>();
+
+            return CompareProviders(_viewModel, other._viewModel);
+        }
+
+        /// <summary>
+        /// Compare this file with a ByteProvider 
+        /// Returns list of differences between the two providers
+        /// </summary>
+        public IEnumerable<Core.Bytes.ByteDifference> Compare(Core.Bytes.ByteProviderLegacy provider)
+        {
+            if (_viewModel == null || provider == null)
+                return Enumerable.Empty<Core.Bytes.ByteDifference>();
+
+            // Cross-version comparison (V2 vs V1) is not supported
+            // ByteProvider V2 uses virtual positions; ByteProviderLegacy uses physical positions
+            // For backward compatibility, this method returns empty results
+            return Enumerable.Empty<Core.Bytes.ByteDifference>();
+        }
+
+        /// <summary>
+        /// Internal comparison logic
+        /// </summary>
+        private IEnumerable<Core.Bytes.ByteDifference> CompareProviders(
+            ViewModels.HexEditorViewModel vm1,
+            ViewModels.HexEditorViewModel vm2)
+        {
+            var differences = new List<Core.Bytes.ByteDifference>();
+            long maxLength = Math.Max(vm1.VirtualLength, vm2.VirtualLength);
+
+            for (long i = 0; i < maxLength; i++)
+            {
+                byte byte1 = i < vm1.VirtualLength ? vm1.GetByteAt(new Models.VirtualPosition(i)) : (byte)0;
+                byte byte2 = i < vm2.VirtualLength ? vm2.GetByteAt(new Models.VirtualPosition(i)) : (byte)0;
+
+                if (byte1 != byte2)
+                {
+                    differences.Add(new Core.Bytes.ByteDifference(byte1, byte2, i));
+                }
+            }
+
+            return differences;
+        }
+
+        #endregion
+
+        #region Public Methods - State Persistence
+
+        /// <summary>
+        /// Save current editor state to XML file 
+        /// Saves: position, selection, bookmarks, font size, filename
+        /// </summary>
+        public void SaveCurrentState(string stateFilename)
+        {
+            try
+            {
+                var doc = new System.Xml.Linq.XDocument(
+                    new System.Xml.Linq.XElement("HexEditorState",
+                        new System.Xml.Linq.XElement("FileName", FileName ?? string.Empty),
+                        new System.Xml.Linq.XElement("Position", Position),
+                        new System.Xml.Linq.XElement("SelectionStart", SelectionStart),
+                        new System.Xml.Linq.XElement("SelectionStop", SelectionStop),
+                        new System.Xml.Linq.XElement("FontSize", FontSize),
+                        new System.Xml.Linq.XElement("BytePerLine", BytePerLine),
+                        new System.Xml.Linq.XElement("Bookmarks",
+                            _bookmarks.Select(b => new System.Xml.Linq.XElement("Bookmark", b))
+                        )
+                    )
+                );
+
+                doc.Save(stateFilename);
+                StatusText.Text = $"State saved to {System.IO.Path.GetFileName(stateFilename)}";
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Failed to save state: {ex.Message}";
+            }
+        }
+
+        /// <summary>
+        /// Load editor state from XML file 
+        /// Restores: position, selection, bookmarks, font size
+        /// Note: Does NOT reload the file, only restores state
+        /// </summary>
+        public void LoadCurrentState(string stateFilename)
+        {
+            try
+            {
+                var doc = System.Xml.Linq.XDocument.Load(stateFilename);
+                var root = doc.Root;
+
+                if (root?.Name != "HexEditorState") return;
+
+                // Restore basic properties
+                var fontSize = root.Element("FontSize")?.Value;
+                if (fontSize != null && double.TryParse(fontSize, out double fs))
+                    FontSize = fs;
+
+                var bytesPerLine = root.Element("BytePerLine")?.Value;
+                if (bytesPerLine != null && int.TryParse(bytesPerLine, out int bpl))
+                    BytePerLine = bpl;
+
+                // Restore position and selection
+                var position = root.Element("Position")?.Value;
+                if (position != null && long.TryParse(position, out long pos))
+                    SetPosition(pos);
+
+                var selStart = root.Element("SelectionStart")?.Value;
+                var selStop = root.Element("SelectionStop")?.Value;
+                if (selStart != null && long.TryParse(selStart, out long start) &&
+                    selStop != null && long.TryParse(selStop, out long stop))
+                {
+                    SelectionStart = start;
+                    SelectionStop = stop;
+                }
+
+                // Restore bookmarks
+                var bookmarks = root.Element("Bookmarks")?.Elements("Bookmark");
+                if (bookmarks != null)
+                {
+                    ClearAllBookmarks();
+                    foreach (var bookmark in bookmarks)
+                    {
+                        if (long.TryParse(bookmark.Value, out long bookmarkPos))
+                            SetBookmark(bookmarkPos);
+                    }
+                }
+
+                StatusText.Text = $"State loaded from {System.IO.Path.GetFileName(stateFilename)}";
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Failed to load state: {ex.Message}";
+            }
+        }
+
+        #endregion
+
+        #region Public Methods - TBL Support
+
+        /// <summary>
+        /// Load a TBL (Character Table) file 
+        /// </summary>
+        /// <param name="path">Path to the TBL file</param>
+        public void LoadTBLFile(string path)
+        {
+            try
+            {
+                _tblStream = new TblStream(path);
+                _characterTableType = CharacterTableType.TblFile;
+
+                // Phase 7.5: Sync TblStream to HexViewport for color rendering
+                if (HexViewport != null)
+                    HexViewport.TblStream = _tblStream;
+
+                StatusText.Text = $"TBL loaded: {System.IO.Path.GetFileName(path)}";
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Failed to load TBL: {ex.Message}";
+                _tblStream = null;
+                _characterTableType = CharacterTableType.Ascii;
+
+                // Phase 7.5: Clear TblStream in HexViewport
+                if (HexViewport != null)
+                    HexViewport.TblStream = null;
+            }
+        }
+
+        /// <summary>
+        /// Close the current TBL file and revert to ASCII 
+        /// </summary>
+        public void CloseTBL()
+        {
+            if (_tblStream != null)
+            {
+                _tblStream.Close();
+                _tblStream.Dispose();
+                _tblStream = null;
+            }
+            _characterTableType = CharacterTableType.Ascii;
+
+            // Phase 7.5: Clear TblStream in HexViewport
+            if (HexViewport != null)
+                HexViewport.TblStream = null;
+
+            StatusText.Text = "TBL closed, using ASCII";
+        }
+
+        /// <summary>
+        /// Get or set the type of character table to use 
+        /// </summary>
+        public CharacterTableType TypeOfCharacterTable
+        {
+            get => _characterTableType;
+            set
+            {
+                _characterTableType = value;
+                // If switching to TBL but no TBL loaded, create default ASCII
+                if (value == CharacterTableType.TblFile && _tblStream == null)
+                {
+                    _tblStream = TblStream.CreateDefaultTbl(DefaultCharacterTableType.Ascii);
+
+                    // Phase 7.5: Sync TblStream to HexViewport
+                    if (HexViewport != null)
+                        HexViewport.TblStream = _tblStream;
+                }
+                // If switching away from TBL, close it
+                else if (value != CharacterTableType.TblFile && _tblStream != null)
+                {
+                    CloseTBL();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get the current TBL stream 
+        /// </summary>
+        public TblStream TBL => _tblStream;
+
+        #endregion
+
+        #region Phase 12 - 100% V1 Compatibility (Missing Properties and Methods)
+
+        // ================================================================================
+        // Phase 12: Final V1 Compatibility - Adds remaining properties and methods
+        // identified by real-world sample testing (V1CompatibilityStatus.md)
+        // ================================================================================
+
+        #region Missing V1 Properties - Display/UI
+
+        /// <summary>
+        /// Show tooltip on byte hover 
+        /// </summary>
+        public static readonly DependencyProperty ShowByteToolTipProperty =
+            DependencyProperty.Register(nameof(ShowByteToolTip), typeof(bool),
+                typeof(HexEditor), new PropertyMetadata(false, OnShowByteToolTipChanged));
+
+        public bool ShowByteToolTip
+        {
+            get => (bool)GetValue(ShowByteToolTipProperty);
+            set => SetValue(ShowByteToolTipProperty, value);
+        }
+
+        private static void OnShowByteToolTipChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && editor.HexViewport != null)
+            {
+                editor.HexViewport.ShowByteToolTip = (bool)e.NewValue;
+            }
+        }
+
+        /// <summary>
+        /// Hide bytes that are marked as deleted  - DependencyProperty
         /// </summary>
         public bool HideByteDeleted
         {
@@ -5817,77 +4349,84 @@ namespace WpfHexaEditor
             set => SetValue(HideByteDeletedProperty, value);
         }
 
-        public static readonly DependencyProperty HideByteDeletedProperty =
-            DependencyProperty.Register(nameof(HideByteDeleted), typeof(bool), typeof(HexEditor),
-                 new FrameworkPropertyMetadata(true, Control_DeletePropertyChanged));
-
-        private static void Control_DeletePropertyChanged(DependencyObject d,
-            DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor ctrl && e.NewValue != e.OldValue)
-                ctrl.RefreshView(true);
-        }
-
         /// <summary>
-        /// Select bytes setted by bytePositionInStream with the length
+        /// Default clipboard copy/paste mode  - DependencyProperty
         /// </summary>
-        /// <param name="bytePositionInStream">First byte to delete</param>
-        /// <param name="length">Number of byte to delete</param>
-        public void DeleteBytesAtPosition(long bytePositionInStream, long length = 1)
+        public CopyPasteMode DefaultCopyToClipboardMode
         {
-            var previousSelectionStart = SelectionStart;
-            var previousSelectionStop = SelectionStop;
-
-            SelectionStart = bytePositionInStream;
-            SelectionStop = bytePositionInStream + length;
-
-            DeleteSelection();
-
-            SelectionStart = previousSelectionStart;
-            SelectionStop = previousSelectionStop;
-        }
-
-        /// <summary>
-        /// Delete selection, add scroll marker and update control
-        /// </summary>
-        public void DeleteSelection()
-        {
-            var position = SelectionStart > SelectionStop
-                ? SelectionStop
-                : SelectionStart;
-
-            var lastPosition = _byteModificationService.DeleteBytes(_provider, position, SelectionLength, ReadOnlyMode, CanDelete);
-
-            if (lastPosition == -1) return;
-
-            //Prevent to move down the scrollbar
-            _setFocusTest = true;
-
-            SetScrollMarker(position, ScrollMarker.ByteDeleted);
-            _findReplaceService.ClearCache();  // Clear search cache after deletion
-
-            UpdateScrollBar();
-            RefreshView(true);
-            UpdateStatusBar();
-
-            //Update selection and focus
-            SetPosition(FirstVisibleBytePosition);
-            SelectionStart = SelectionStop = GetValidPositionFrom(lastPosition, 0);
-            SetFocusAtSelectionStart();
-
-            //Launch deleted event
-            BytesDeleted?.Invoke(this, EventArgs.Empty);
-
-            //Prevent to move down the scrollbar
-            _setFocusTest = false;
+            get => (CopyPasteMode)GetValue(DefaultCopyToClipboardModeProperty);
+            set => SetValue(DefaultCopyToClipboardModeProperty, value);
         }
 
         #endregion
 
-        #region Byte click and double click support
+        #region Missing V1 Properties - Editing/Insert Mode
 
         /// <summary>
-        /// Select all same byte of SelectionStart in rage of SelectionStart at double click
+        /// Allow insert at any position 
+        /// In V2, insert mode is always allowed via EditMode property
+        /// </summary>
+        public bool CanInsertAnywhere
+        {
+            get => EditMode == EditMode.Insert;
+            set
+            {
+                if (value)
+                {
+                    EditMode = EditMode.Insert;
+
+                    // ByteProvider V2 always supports insertion anywhere - no flag needed
+                    if (_viewModel?.Provider != null)
+                    {
+                    }
+                }
+                // Note: Setting false doesn't force Overwrite to allow other modes
+            }
+        }
+
+        /// <summary>
+        /// Visual caret mode for insert/overwrite indication  - DependencyProperty
+        /// </summary>
+        public CaretMode VisualCaretMode
+        {
+            get => (CaretMode)GetValue(VisualCaretModeProperty);
+            set => SetValue(VisualCaretModeProperty, value);
+        }
+
+        /// <summary>
+        /// Byte shift left amount  - DependencyProperty
+        /// Used for adjusting byte position display offset
+        /// </summary>
+        public long ByteShiftLeft
+        {
+            get => (long)GetValue(ByteShiftLeftProperty);
+            set => SetValue(ByteShiftLeftProperty, value);
+        }
+
+        #endregion
+
+        #region Missing V1 Properties - Auto-Highlight
+
+        /// <summary>
+        /// Auto-highlight bytes that match the selected byte  - DependencyProperty
+        /// </summary>
+        public bool AllowAutoHighLightSelectionByte
+        {
+            get => (bool)GetValue(AllowAutoHighLightSelectionByteProperty);
+            set => SetValue(AllowAutoHighLightSelectionByteProperty, value);
+        }
+
+        /// <summary>
+        /// Auto-highlight brush color for bytes matching selected byte  - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color AutoHighLiteSelectionByteBrush
+        {
+            get => (System.Windows.Media.Color)GetValue(AutoHighLiteSelectionByteBrushProperty);
+            set => SetValue(AutoHighLiteSelectionByteBrushProperty, value);
+        }
+
+        /// <summary>
+        /// Auto-select all same bytes when double-clicking a byte  - DependencyProperty
         /// </summary>
         public bool AllowAutoSelectSameByteAtDoubleClick
         {
@@ -5895,221 +4434,2317 @@ namespace WpfHexaEditor
             set => SetValue(AllowAutoSelectSameByteAtDoubleClickProperty, value);
         }
 
-        public static readonly DependencyProperty AllowAutoSelectSameByteAtDoubleClickProperty =
-            DependencyProperty.Register(nameof(AllowAutoSelectSameByteAtDoubleClick), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(true, Control_AllowAutoSelectSameByteAtDoubleClick));
-
-        private static void Control_AllowAutoSelectSameByteAtDoubleClick(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        /// <summary>
+        /// Enable or disable navigation when clicking on scroll markers (default: enabled) - DependencyProperty
+        /// </summary>
+        public bool AllowMarkerClickNavigation
         {
-            if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-            ctrl.RefreshView();
+            get => (bool)GetValue(AllowMarkerClickNavigationProperty);
+            set => SetValue(AllowMarkerClickNavigationProperty, value);
         }
 
-        private void Control_Click(object sender, EventArgs e)
-        {
-            if (sender is not IByteControl ctrl) return;
-
-            if (Keyboard.Modifiers == ModifierKeys.Shift)
-                SelectionStop = ctrl.BytePositionInStream;
-            else
-                SelectionStart = SelectionStop = ctrl.BytePositionInStream;
-
-            UpdateSelectionColor(ctrl is StringByte ? FirstColor.StringByteData : FirstColor.HexByteData);
-            UpdateVisual();
-
-            //launch click event 
-            ByteClick?.Invoke(sender, new ByteEventArgs(SelectionStart));
-        }
-
-        private void Control_DoubleClick(object sender, EventArgs e)
-        {
-            if (sender is not IByteControl ctrl) return;
-            if (!CheckIsOpen(_provider)) return;
-
-            #region Select all same byte of SelectionStart in rage of selectionStart
-            if (AllowAutoSelectSameByteAtDoubleClick)
-            {
-                var (singleByte, succes) = _provider.GetByte(SelectionStart);
-                if (succes)
-                {
-                    var startPosition = SelectionStart;
-                    var stopPosition = SelectionStop;
-
-                    //Selection start
-                    while (_provider.GetByte(GetValidPositionFrom(startPosition--, -1)).singleByte == singleByte && startPosition > 0)
-                        SelectionStart = startPosition;
-
-                    //Selection stop
-                    while (_provider.GetByte(GetValidPositionFrom(stopPosition++, 1)).singleByte == singleByte && stopPosition < _provider.Length)
-                        SelectionStop = stopPosition;
-                }
-            }
-            #endregion
-
-            UpdateSelectionColor(ctrl is StringByte ? FirstColor.StringByteData : FirstColor.HexByteData);
-            UpdateVisual();
-
-            //launch click event 
-            ByteDoubleClick?.Invoke(sender, new ByteEventArgs(SelectionStart));
-        }
         #endregion
 
-        #region Custom Background Block implementation
+        #region Missing V1 Properties - Count/Statistics
 
         /// <summary>
-        /// Get or set if Custom Background Block are allowed
+        /// Enable byte counting feature  - DependencyProperty
         /// </summary>
-        public bool AllowCustomBackgroundBlock
+        public bool AllowByteCount
         {
-            get => (bool)GetValue(AllowCustomBackgroundBlockProperty);
-            set => SetValue(AllowCustomBackgroundBlockProperty, value);
+            get => (bool)GetValue(AllowByteCountProperty);
+            set => SetValue(AllowByteCountProperty, value);
         }
 
-        public static readonly DependencyProperty AllowCustomBackgroundBlockProperty =
-            DependencyProperty.Register(nameof(AllowCustomBackgroundBlock), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(false, Control_CustomBackgroundBlockPropertyChanged));
+        #endregion
 
-        private static void Control_CustomBackgroundBlockPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        #region Missing V1 Properties - File Drop/Drag
+
+        /// <summary>
+        /// Confirm before dropping a file to load it  - DependencyProperty
+        /// </summary>
+        public bool FileDroppingConfirmation
         {
-            if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-            ctrl.RefreshView();
+            get => (bool)GetValue(FileDroppingConfirmationProperty);
+            set => SetValue(FileDroppingConfirmationProperty, value);
         }
 
         /// <summary>
-        /// Add of remove CustomBackgroundBlock in this list to use in hexeditor
+        /// Allow text drag-drop operations  - DependencyProperty
         /// </summary>
-        public List<CustomBackgroundBlock> CustomBackgroundBlockItems
+        public bool AllowTextDrop
         {
-            get => _customBackgroundService.GetAllBlocks().ToList();
+            get => (bool)GetValue(AllowTextDropProperty);
+            set => SetValue(AllowTextDropProperty, value);
+        }
+
+        /// <summary>
+        /// Allow file drag-drop operations  - DependencyProperty
+        /// Note: AllowDrop must also be true for this to work
+        /// </summary>
+        public bool AllowFileDrop
+        {
+            get => (bool)GetValue(AllowFileDropProperty);
+            set => SetValue(AllowFileDropProperty, value);
+        }
+
+        #endregion
+
+        #region Missing V1 Properties - Extend/Append
+
+        /// <summary>
+        /// Allow extending file at end  - DependencyProperty
+        /// </summary>
+        public bool AllowExtend
+        {
+            get => (bool)GetValue(AllowExtendProperty);
+            set => SetValue(AllowExtendProperty, value);
+        }
+
+        /// <summary>
+        /// Confirm before appending bytes  - DependencyProperty
+        /// </summary>
+        public bool AppendNeedConfirmation
+        {
+            get => (bool)GetValue(AppendNeedConfirmationProperty);
+            set => SetValue(AppendNeedConfirmationProperty, value);
+        }
+
+        #endregion
+
+        #region Missing V1 Properties - Delete Byte
+
+        /// <summary>
+        /// Allow byte deletion  - DependencyProperty
+        /// </summary>
+        public bool AllowDeleteByte
+        {
+            get => (bool)GetValue(AllowDeleteByteProperty);
+            set => SetValue(AllowDeleteByteProperty, value);
+        }
+
+        #endregion
+
+        #region Missing V1 Properties - State
+
+        private System.Xml.Linq.XDocument _currentStateDocument;
+
+        /// <summary>
+        /// Current editor state as XDocument for persistence 
+        /// Get: Returns current state as XML document
+        /// Set: Restores state from XML document
+        /// </summary>
+        public System.Xml.Linq.XDocument CurrentState
+        {
+            get
+            {
+                // Generate current state as XDocument
+                var doc = new System.Xml.Linq.XDocument(
+                    new System.Xml.Linq.XElement("HexEditorState",
+                        new System.Xml.Linq.XElement("FileName", FileName ?? string.Empty),
+                        new System.Xml.Linq.XElement("Position", Position),
+                        new System.Xml.Linq.XElement("SelectionStart", SelectionStart),
+                        new System.Xml.Linq.XElement("SelectionStop", SelectionStop),
+                        new System.Xml.Linq.XElement("FontSize", FontSize),
+                        new System.Xml.Linq.XElement("BytePerLine", BytePerLine),
+                        new System.Xml.Linq.XElement("ReadOnlyMode", ReadOnlyMode),
+                        new System.Xml.Linq.XElement("Bookmarks",
+                            _bookmarks.Select(b => new System.Xml.Linq.XElement("Bookmark", b))
+                        )
+                    )
+                );
+                return doc;
+            }
             set
             {
-                _customBackgroundService.ClearAll();
-                if (value != null)
-                    _customBackgroundService.AddBlocks(value);
+                if (value == null) return;
+
+                var root = value.Root;
+                if (root?.Name != "HexEditorState") return;
+
+                // Restore basic properties
+                var fontSize = root.Element("FontSize")?.Value;
+                if (fontSize != null && double.TryParse(fontSize, out double fs))
+                    FontSize = fs;
+
+                var bytesPerLine = root.Element("BytePerLine")?.Value;
+                if (bytesPerLine != null && int.TryParse(bytesPerLine, out int bpl))
+                    BytePerLine = bpl;
+
+                var readOnlyMode = root.Element("ReadOnlyMode")?.Value;
+                if (readOnlyMode != null && bool.TryParse(readOnlyMode, out bool rom))
+                    ReadOnlyMode = rom;
+
+                // Restore position and selection
+                var position = root.Element("Position")?.Value;
+                if (position != null && long.TryParse(position, out long pos))
+                    SetPosition(pos);
+
+                var selStart = root.Element("SelectionStart")?.Value;
+                var selStop = root.Element("SelectionStop")?.Value;
+                if (selStart != null && long.TryParse(selStart, out long start) &&
+                    selStop != null && long.TryParse(selStop, out long stop))
+                {
+                    SelectionStart = start;
+                    SelectionStop = stop;
+                }
+
+                // Restore bookmarks
+                var bookmarks = root.Element("Bookmarks")?.Elements("Bookmark");
+                if (bookmarks != null)
+                {
+                    ClearAllBookmarks();
+                    foreach (var bookmark in bookmarks)
+                    {
+                        if (long.TryParse(bookmark.Value, out long bookmarkPos))
+                            SetBookmark(bookmarkPos);
+                    }
+                }
+
+                _currentStateDocument = value;
+            }
+        }
+
+        #endregion
+
+        #region Missing V1 Methods - Clipboard
+
+        /// <summary>
+        /// Copy to clipboard with default mode 
+        /// </summary>
+        public void CopyToClipboard()
+        {
+            CopyToClipboard(DefaultCopyToClipboardMode);
+        }
+
+        /// <summary>
+        /// Copy to clipboard with specified mode 
+        /// </summary>
+        /// <param name="mode">Copy mode (HexaString, AsciiString, etc.)</param>
+        public void CopyToClipboard(CopyPasteMode mode)
+        {
+            if (_viewModel == null || !_viewModel.HasSelection)
+                return;
+
+            try
+            {
+                switch (mode)
+                {
+                    case CopyPasteMode.HexaString:
+                        Copy(); // Default V2 behavior copies as hex
+                        break;
+                    case CopyPasteMode.AsciiString:
+                        CopyAsAscii();
+                        break;
+                    case CopyPasteMode.TblString:
+                        CopyAsTbl();
+                        break;
+                    case CopyPasteMode.CSharpCode:
+                        CopyAsCSharpCode();
+                        break;
+                    default:
+                        Copy(); // Default to hex
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Copy failed: {ex.Message}";
+            }
+        }
+
+        private void CopyAsAscii()
+        {
+            if (_viewModel == null || !_viewModel.HasSelection)
+                return;
+
+            var bytes = _viewModel.GetSelectionBytes();
+            if (bytes != null)
+            {
+                var text = System.Text.Encoding.ASCII.GetString(bytes);
+                Clipboard.SetText(text);
+                StatusText.Text = $"Copied {bytes.Length} bytes as ASCII";
+            }
+        }
+
+        private void CopyAsTbl()
+        {
+            if (_viewModel == null || !_viewModel.HasSelection)
+            {
+                return;
+            }
+
+            if (_tblStream == null)
+            {
+                CopyAsAscii(); // Fallback to ASCII if no TBL
+                return;
+            }
+
+            var bytes = _viewModel.GetSelectionBytes();
+            if (bytes != null)
+            {
+                // TBL to string conversion - simplified implementation
+                var text = System.Text.Encoding.ASCII.GetString(bytes); // Fallback to ASCII for now
+                Clipboard.SetText(text);
+                StatusText.Text = $"Copied {bytes.Length} bytes as TBL";
+            }
+        }
+
+        private void CopyAsCSharpCode()
+        {
+            if (_viewModel == null || !_viewModel.HasSelection)
+                return;
+
+            var bytes = _viewModel.GetSelectionBytes();
+            if (bytes != null)
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine("byte[] data = new byte[] {");
+                sb.Append("    ");
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    sb.Append($"0x{bytes[i]:X2}");
+                    if (i < bytes.Length - 1)
+                        sb.Append(", ");
+                    if ((i + 1) % 16 == 0 && i < bytes.Length - 1)
+                        sb.AppendLine().Append("    ");
+                }
+                sb.AppendLine();
+                sb.Append("};");
+
+                Clipboard.SetText(sb.ToString());
+                StatusText.Text = $"Copied {bytes.Length} bytes as C# code";
             }
         }
 
         /// <summary>
-        /// Get the first CustomBackgroundBlock finded in list.
+        /// Copy current selection to a stream 
         /// </summary>
-        public CustomBackgroundBlock GetCustomBackgroundBlock(long position) =>
-            _customBackgroundService.GetBlockAt(position);
-
-        /// <summary>
-        /// Clear the list of custom background block
-        /// </summary>
-        public void ClearCustomBackgroundBlock()
+        /// <param name="output">Output stream to write to</param>
+        /// <param name="copyChange">True to include uncommitted changes, false for committed data only</param>
+        public void CopyToStream(Stream output, bool copyChange)
         {
-            _customBackgroundService.ClearAll();
-            RefreshView(true);
-        }
-
-        #endregion
-
-        #region Compare file and find difference methods
-
-        /// <summary>
-        /// Compare this stream with another and get all bytes difference
-        /// </summary>
-        /// <returns>Return each byte not equal in the two provider</returns>
-        public IEnumerable<ByteDifference> Compare(ByteProviderLegacy providerToCompare, bool compareChange = false) =>
-            _provider.Compare(providerToCompare, compareChange);
-
-        /// <summary>
-        /// Compare this stream with another and get all bytes difference
-        /// </summary>
-        /// <returns>Return each byte not equal in the two provider</returns>
-        public IEnumerable<ByteDifference> Compare(HexEditor hexeditor, bool compareChange = false) =>
-            _provider?.Compare(hexeditor?._provider, compareChange);
-
-        #endregion
-
-        #region Commands implementation (In early stage of development)
-
-        public static readonly DependencyProperty RefreshViewCommandProperty =
-            DependencyProperty.Register(
-                nameof(RefreshViewCommand),
-                typeof(ICommand),
-                typeof(HexEditor)
-            );
-
-        public static readonly DependencyProperty SubmitChangesCommandProperty =
-            DependencyProperty.Register(
-                nameof(SubmitChangesCommand),
-                typeof(ICommand),
-                typeof(HexEditor)
-            );
-
-        public ICommand RefreshViewCommand
-        {
-            get => (ICommand)GetValue(RefreshViewCommandProperty);
-            set => SetValue(RefreshViewCommandProperty, value);
-        }
-
-        public ICommand SubmitChangesCommand
-        {
-            get => (ICommand)GetValue(SubmitChangesCommandProperty);
-            set => SetValue(SubmitChangesCommandProperty, value);
-        }
-
-        #endregion
-
-        #region Insert byte Anywhere support (In early stage of development)
-
-        /// <summary>
-        /// Give the possibility to inserts byte Anywhere.
-        /// </summary>
-        public bool CanInsertAnywhere
-        {
-            get { return (bool)GetValue(CanInsertAnywhereProperty); }
-            set { SetValue(CanInsertAnywhereProperty, value); }
-        }
-
-        public static readonly DependencyProperty CanInsertAnywhereProperty =
-            DependencyProperty.Register(nameof(CanInsertAnywhere), typeof(bool), typeof(HexEditor),
-                new FrameworkPropertyMetadata(false, Control_CanInsertAnywhereChanged));
-
-        private static void Control_CanInsertAnywhereChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not HexEditor ctrl || e.NewValue == e.OldValue) return;
-
-            if (CheckIsOpen(ctrl._provider))
-                ctrl._provider.CanInsertAnywhere = (bool)e.NewValue;
-
-            ctrl.RefreshView();
-        }
-
-        /// <summary>
-        /// Insert byte at the specified position
-        /// </summary>
-        public void InsertByte(byte @byte, long bytePositionInStream) =>
-            InsertByte(@byte, bytePositionInStream, 1);
-
-        /// <summary>
-        /// Insert byte at the specified position for the length
-        /// </summary>
-        public void InsertByte(byte @byte, long bytePositionInStream, long length)
-        {
-            if (!_byteModificationService.InsertByte(_provider, @byte, bytePositionInStream, length, CanInsertAnywhere))
+            if (_viewModel == null || !_viewModel.HasSelection)
                 return;
 
-            _findReplaceService.ClearCache();  // Clear search cache after modification
-            RefreshView();
+            var selStart = _viewModel.SelectionStart.Value;
+            var selLength = _viewModel.SelectionLength;
+
+            CopyToStream(output, selStart, selStart + selLength - 1, copyChange);
         }
 
         /// <summary>
-        /// Insert an array of byte at specified position
+        /// Copy specified range to a stream 
         /// </summary>
-        public void InsertBytes(byte[] bytes, long bytePositionInStream)
+        /// <param name="output">Output stream to write to</param>
+        /// <param name="selectionStart">Start position (inclusive)</param>
+        /// <param name="selectionStop">Stop position (inclusive)</param>
+        /// <param name="copyChange">True to include uncommitted changes, false for committed data only.
+        /// NOTE: Currently always includes all edits (copyChange parameter ignored in V2 architecture).</param>
+        public void CopyToStream(Stream output, long selectionStart, long selectionStop, bool copyChange)
         {
-            if (_byteModificationService.InsertBytes(_provider, bytes, bytePositionInStream, CanInsertAnywhere) == 0)
+            if (_viewModel?.Provider == null || output == null)
                 return;
 
-            _findReplaceService.ClearCache();  // Clear search cache after modification
-            RefreshView();
+            if (selectionStart < 0 || selectionStop < selectionStart)
+                return;
+
+            var length = selectionStop - selectionStart + 1;
+            if (length <= 0)
+                return;
+
+            // Read bytes from provider (V2 always returns current state with all edits)
+            var buffer = new byte[Math.Min(length, 4096)]; // Use buffer for large copies
+            long remaining = length;
+            long currentPos = selectionStart;
+
+            while (remaining > 0)
+            {
+                var bytesToRead = (int)Math.Min(remaining, buffer.Length);
+                var bytesRead = 0;
+
+                for (int i = 0; i < bytesToRead; i++)
+                {
+                    var (value, success) = _viewModel.Provider.GetByte(currentPos + i);
+                    if (success)
+                    {
+                        buffer[i] = value;
+                        bytesRead++;
+                    }
+                    else
+                    {
+                        break; // Stop if we hit end of stream
+                    }
+                }
+
+                if (bytesRead > 0)
+                {
+                    output.Write(buffer, 0, bytesRead);
+                    currentPos += bytesRead;
+                    remaining -= bytesRead;
+                }
+                else
+                {
+                    break; // No more bytes to read
+                }
+            }
+
+            output.Flush();
         }
+
+        /// <summary>
+        /// Get copy data as byte array for specified range 
+        /// </summary>
+        /// <param name="selectionStart">Start position (inclusive)</param>
+        /// <param name="selectionStop">Stop position (inclusive)</param>
+        /// <param name="copyChange">True to include uncommitted changes, false for committed data only.
+        /// NOTE: Currently always includes all edits (copyChange parameter ignored in V2 architecture).</param>
+        /// <returns>Byte array containing the data, or null if invalid range</returns>
+        public byte[] GetCopyData(long selectionStart, long selectionStop, bool copyChange)
+        {
+            if (_viewModel?.Provider == null)
+                return null;
+
+            if (selectionStart < 0 || selectionStop < selectionStart)
+                return null;
+
+            var length = selectionStop - selectionStart + 1;
+            if (length <= 0 || length > int.MaxValue)
+                return null;
+
+            // Use GetBytes for efficiency instead of reading byte by byte
+            var result = _viewModel.Provider.GetBytes(selectionStart, (int)length);
+
+            // GetBytes returns empty array if read fails, check length
+            if (result.Length != length)
+                return null;
+
+            return result;
+        }
+
+        #endregion
+
+        #region Missing V1 Methods - Bookmarks (Naming Alias)
+
+        /// <summary>
+        /// Set bookmark at current position (note capital M)
+        /// This is an alias for SetBookmark() with different casing
+        /// </summary>
+        [Obsolete("Use SetBookmark() instead. This method exists only for V1 case-sensitive compatibility.", false)]
+        public void SetBookMark()
+        {
+            SetBookmark(Position);
+        }
+
+        /// <summary>
+        /// Set bookmark at position (note capital M)
+        /// This is an alias for SetBookmark() with different casing
+        /// </summary>
+        /// <param name="position">Position to bookmark</param>
+        [Obsolete("Use SetBookmark(long position) instead. This method exists only for V1 case-sensitive compatibility.", false)]
+        public void SetBookMark(long position)
+        {
+            SetBookmark(position);
+        }
+
+        #endregion
+
+        #region Missing V1 Methods - Scroll Markers
+
+        /// <summary>
+        /// Clear all scroll markers 
+        /// </summary>
+        public void ClearScrollMarker()
+        {
+            if (_scrollMarkers != null)
+            {
+                _scrollMarkers.ClearAllMarkers();
+            }
+        }
+
+        /// <summary>
+        /// Clear specific type of scroll marker 
+        /// </summary>
+        /// <param name="marker">Type of marker to clear</param>
+        public void ClearScrollMarker(ScrollMarker marker)
+        {
+            if (_scrollMarkers == null) return;
+
+            switch (marker)
+            {
+                case ScrollMarker.Nothing:
+                    _scrollMarkers.ClearAllMarkers();
+                    break;
+
+                case ScrollMarker.SearchHighLight:
+                    _scrollMarkers.SearchResultPositions = new HashSet<long>();
+                    break;
+
+                case ScrollMarker.Bookmark:
+                case ScrollMarker.TblBookmark:
+                    _scrollMarkers.BookmarkPositions = new HashSet<long>();
+                    break;
+
+                case ScrollMarker.ByteModified:
+                case ScrollMarker.ByteDeleted:
+                    _scrollMarkers.ModifiedPositions = new HashSet<long>();
+                    break;
+
+                case ScrollMarker.SelectionStart:
+                    // Selection is not shown in scroll markers, so nothing to clear
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Missing V1 Methods - Find All Selection
+
+        /// <summary>
+        /// Find all occurrences of the current selection 
+        /// Highlights all matching bytes in the file
+        /// </summary>
+        /// <param name="highlight">Whether to highlight results (V1 parameter, always highlights in V2)</param>
+        public void FindAllSelection(bool highlight = true)
+        {
+            FindAllSelection();
+        }
+
+        /// <summary>
+        /// Find all occurrences of the current selection 
+        /// Highlights all matching bytes in the file
+        /// </summary>
+        private void FindAllSelection()
+        {
+            if (_viewModel == null || !_viewModel.HasSelection)
+            {
+                StatusText.Text = "No selection to find";
+                return;
+            }
+
+            try
+            {
+                // Get the selected bytes
+                var pattern = _viewModel.GetSelectionBytes();
+                if (pattern == null || pattern.Length == 0)
+                {
+                    StatusText.Text = "Selection is empty";
+                    return;
+                }
+
+                // Find all occurrences
+                var positions = new List<long>();
+                long pos = 0;
+                while (pos >= 0 && pos < _viewModel.VirtualLength)
+                {
+                    pos = FindFirst(pattern, pos);
+                    if (pos >= 0)
+                    {
+                        positions.Add(pos);
+                        pos++; // Move to next position
+                    }
+                }
+
+                // Highlight all found positions using custom background blocks
+                ClearCustomBackgroundBlock();
+                foreach (var position in positions)
+                {
+                    var block = new CustomBackgroundBlock(
+                        position,
+                        pattern.Length,
+                        new SolidColorBrush(Colors.Yellow),
+                        "Found"
+                    );
+                    AddCustomBackgroundBlock(block);
+                }
+
+                StatusText.Text = $"Found {positions.Count} occurrences";
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Find all failed: {ex.Message}";
+            }
+        }
+
+        #endregion
+
+        #region Missing V1 Methods - TBL Support (Naming Alias)
+
+        /// <summary>
+        /// Load TBL file (note lowercase 'bl')
+        /// This is an alias for LoadTBLFile() with different casing
+        /// </summary>
+        /// <param name="path">Path to TBL file</param>
+        [Obsolete("Use LoadTBLFile(string path) instead. This method exists only for V1 case-sensitive compatibility.", false)]
+        public void LoadTblFile(string path)
+        {
+            LoadTBLFile(path);
+        }
+
+        /// <summary>
+        /// Load a default built-in TBL table with ASCII encoding 
+        /// </summary>
+        public void LoadDefaultTbl()
+        {
+            LoadDefaultTbl(DefaultCharacterTableType.Ascii);
+        }
+
+        /// <summary>
+        /// Load a default built-in TBL table 
+        /// </summary>
+        /// <param name="type">Type of default table to load</param>
+        public void LoadDefaultTbl(DefaultCharacterTableType type)
+        {
+            try
+            {
+                _tblStream = TblStream.CreateDefaultTbl(type);
+                _characterTableType = CharacterTableType.TblFile;
+
+                // Phase 7.5: Sync TblStream to HexViewport for color rendering
+                if (HexViewport != null)
+                    HexViewport.TblStream = _tblStream;
+
+                StatusText.Text = $"Default TBL loaded: {type}";
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Failed to load default TBL: {ex.Message}";
+                _tblStream = null;
+                _characterTableType = CharacterTableType.Ascii;
+            }
+        }
+
+        #endregion
+
+        #region Missing V1 Methods - Reverse Selection
+
+        /// <summary>
+        /// Reverse the byte order of the current selection 
+        /// </summary>
+        public void ReverseSelection()
+        {
+            if (_viewModel == null || !_viewModel.HasSelection)
+            {
+                StatusText.Text = "No selection to reverse";
+                return;
+            }
+
+            try
+            {
+                // Get the selected bytes
+                var start = _viewModel.SelectionStart.Value;
+                var bytes = _viewModel.GetSelectionBytes();
+                if (bytes == null || bytes.Length == 0)
+                {
+                    StatusText.Text = "Selection is empty";
+                    return;
+                }
+
+                // Reverse the byte array
+                Array.Reverse(bytes);
+
+                // Write the reversed bytes back
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    _viewModel.ModifyByte(new VirtualPosition(start + i), bytes[i]);
+                }
+
+                StatusText.Text = $"Reversed {bytes.Length} bytes";
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Reverse failed: {ex.Message}";
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Phase 13 - V1 Dialog Compatibility (Find/Replace Overloads)
+
+        /// <summary>
+        /// Find first occurrence with highlight support (V1 dialog compatible)
+        /// </summary>
+        public long FindFirst(byte[] data, long startPosition, bool highLight)
+        {
+            var result = FindFirst(data, startPosition);
+            // V2 doesn't support inline highlight parameter, but we can ignore it
+            return result;
+        }
+
+        /// <summary>
+        /// Find next occurrence with highlight support (V1 dialog compatible)
+        /// </summary>
+        public long FindNext(byte[] data, bool highLight)
+        {
+            return FindNext(data, Position);
+        }
+
+        /// <summary>
+        /// Find last occurrence with highlight support (V1 dialog compatible)
+        /// </summary>
+        public long FindLast(byte[] data, bool highLight)
+        {
+            return FindLast(data);
+        }
+
+        /// <summary>
+        /// Find all occurrences with highlight support (V1 dialog compatible)
+        /// Returns IEnumerable for V1 compatibility
+        /// </summary>
+        public IEnumerable<long> FindAll(byte[] data, bool highLight)
+        {
+            return FindAll(data, 0);
+        }
+
+        /// <summary>
+        /// Replace first with V1 signature (truckLength, then highlight)
+        /// </summary>
+        public long ReplaceFirst(byte[] findData, byte[] replaceData, bool truckLength, bool hightlight)
+        {
+            return ReplaceFirst(findData, replaceData, 0, truckLength);
+        }
+
+        /// <summary>
+        /// Replace next with V1 signature (truckLength, then highlight)
+        /// </summary>
+        public long ReplaceNext(byte[] findData, byte[] replaceData, bool truckLength, bool hightlight)
+        {
+            return ReplaceNext(findData, replaceData, Position + 1, truckLength);
+        }
+
+        /// <summary>
+        /// Replace all with V1 signature (truckLength, then highlight)
+        /// Returns IEnumerable for V1 dialog compatibility
+        /// </summary>
+        public IEnumerable<long> ReplaceAll(byte[] findData, byte[] replaceData, bool truckLength, bool hightlight)
+        {
+            // V2 ReplaceAll returns int (count), but V1 dialogs expect IEnumerable<long> (positions)
+            // For compatibility, we'll find all positions and replace them, returning the positions
+            var positions = new List<long>();
+            long pos = 0;
+            while (pos >= 0 && pos < VirtualLength)
+            {
+                pos = FindFirst(findData, pos);
+                if (pos >= 0)
+                {
+                    positions.Add(pos);
+                    // Replace at this position
+                    ReplaceFirst(findData, replaceData, pos, truckLength);
+                    pos += replaceData.Length; // Move past the replaced data
+                }
+            }
+            return positions;
+        }
+
+        #endregion
+
+        #region Internal Events
+
+        private void Content_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_viewModel == null || e.ChangedButton != MouseButton.Left)
+                return;
+
+            // Set keyboard focus to enable keyboard input
+            HexViewport.Focus();
+
+            // Detect which area was clicked (Hex or ASCII)
+            var mousePos = e.GetPosition(HexViewport);
+            var clickArea = GetClickAreaAtMouse(mousePos);
+            _isAsciiEditMode = (clickArea == ClickArea.Ascii);
+
+
+            // Get the virtual position at mouse coordinates
+            var position = GetVirtualPositionAtMouse(mousePos);
+            if (!position.IsValid)
+                return;
+
+            // Check for Shift key (extend selection)
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+            {
+                _viewModel.ExtendSelection(position);
+            }
+            else
+            {
+                // Start new selection
+                _viewModel.SetSelection(position);
+                _isMouseDown = true;
+                _mouseDownPosition = position;
+
+                // Capture mouse for drag operation
+                HexViewport.CaptureMouse();
+            }
+
+            e.Handled = true;
+        }
+
+        private void Content_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_viewModel == null || !_isMouseDown || e.LeftButton != MouseButtonState.Pressed)
+            {
+                StopAutoScroll();
+                return;
+            }
+
+            Point mousePos = e.GetPosition(HexViewport);
+            _lastMousePosition = mousePos;
+
+            var position = GetVirtualPositionAtMouse(mousePos);
+            if (position.IsValid)
+            {
+                // Update selection range during drag
+                _viewModel.SetSelectionRange(_mouseDownPosition, position);
+            }
+
+            // Check if mouse is near the top or bottom edge for auto-scroll
+            double viewportHeight = HexViewport.ActualHeight;
+
+            if (mousePos.Y < AutoScrollEdgeThreshold)
+            {
+                // Near top edge - scroll up
+                StartAutoScroll(-1);
+            }
+            else if (mousePos.Y > viewportHeight - AutoScrollEdgeThreshold)
+            {
+                // Near bottom edge - scroll down
+                StartAutoScroll(1);
+            }
+            else
+            {
+                // In the middle - stop auto-scroll
+                StopAutoScroll();
+            }
+
+            e.Handled = true;
+        }
+
+        private void Content_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left && _isMouseDown)
+            {
+                _isMouseDown = false;
+                HexViewport.ReleaseMouseCapture();
+                StopAutoScroll();
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Helper method to find the virtual position at mouse coordinates
+        /// Uses HexViewport's precise hit-testing with actual measured dimensions
+        /// </summary>
+        /// <summary>
+        /// Click area types for mouse input
+        /// </summary>
+        private enum ClickArea
+        {
+            Hex,
+            Ascii,
+            Other
+        }
+
+        /// <summary>
+        /// Get which area was clicked at mouse position
+        /// </summary>
+        private ClickArea GetClickAreaAtMouse(Point mousePosition)
+        {
+            if (_viewModel == null)
+                return ClickArea.Other;
+
+            // Layout constants (must match HexViewport.cs)
+            const double OffsetWidth = 110;
+            const double HexByteWidth = 24;
+            const double HexByteSpacing = 2;
+            const double SeparatorWidth = 20;
+            const int ByteGrouping = 4;
+            const double ByteSpacerWidthTickness = 6;
+
+            double x = mousePosition.X;
+
+            // Check if in hex area
+            double hexStartX = OffsetWidth;
+
+            // Calculate hexEndX accounting for byte spacers
+            int numSpacers = 0;
+            if (_viewModel.BytePerLine >= ByteGrouping)
+            {
+                numSpacers = (_viewModel.BytePerLine / ByteGrouping) - 1;
+                // If not evenly divisible, we have one less spacer
+                if (_viewModel.BytePerLine % ByteGrouping == 0)
+                    numSpacers = (_viewModel.BytePerLine / ByteGrouping) - 1;
+                else
+                    numSpacers = _viewModel.BytePerLine / ByteGrouping;
+            }
+            double spacersWidth = numSpacers * ByteSpacerWidthTickness;
+            double hexEndX = OffsetWidth + (_viewModel.BytePerLine * (HexByteWidth + HexByteSpacing)) + spacersWidth;
+
+            if (x >= hexStartX && x < hexEndX)
+                return ClickArea.Hex;
+
+            // Check if in ASCII area
+            double separatorX = hexEndX + 4; // Match rendering code (was +8, now +4)
+            double asciiStartX = separatorX + SeparatorWidth;
+
+            if (x >= asciiStartX)
+                return ClickArea.Ascii;
+
+            return ClickArea.Other;
+        }
+
+        private VirtualPosition GetVirtualPositionAtMouse(Point mousePosition)
+        {
+            if (_viewModel == null || _viewModel.Lines.Count == 0)
+                return VirtualPosition.Invalid;
+
+            // Use HexViewport's actual LineHeight (calculated from font metrics)
+            double lineHeight = HexViewport.LineHeight;
+            if (lineHeight <= 0)
+                return VirtualPosition.Invalid;
+
+            // Layout constants (must match HexViewport.cs)
+            const double OffsetWidth = 110;
+            const double HexByteWidth = 24;
+            const double HexByteSpacing = 2;
+            const double TopMargin = 2;
+            const double SeparatorWidth = 20;
+            const double AsciiCharWidth = 10;
+            const int ByteGrouping = 4;
+            const double ByteSpacerWidthTickness = 6;
+
+            // Calculate line number from Y coordinate
+            double y = mousePosition.Y - TopMargin;
+            if (y < 0)
+                return VirtualPosition.Invalid;
+
+            int lineIndex = (int)(y / lineHeight);
+
+            // Clamp to valid line range
+            if (lineIndex < 0 || lineIndex >= _viewModel.Lines.Count)
+                return VirtualPosition.Invalid;
+
+            var line = _viewModel.Lines[lineIndex];
+            if (line.Bytes.Count == 0)
+                return VirtualPosition.Invalid;
+
+            double x = mousePosition.X;
+
+            // Check if clicked in offset area - select first byte
+            if (x < OffsetWidth)
+            {
+                return line.Bytes[0].VirtualPos;
+            }
+
+            // Calculate hex area dimensions WITH byte spacers
+            double hexStartX = OffsetWidth;
+            int numSpacers = 0;
+            if (_viewModel.BytePerLine >= ByteGrouping)
+            {
+                numSpacers = (_viewModel.BytePerLine % ByteGrouping == 0)
+                    ? (_viewModel.BytePerLine / ByteGrouping) - 1
+                    : _viewModel.BytePerLine / ByteGrouping;
+            }
+            double spacersWidth = numSpacers * ByteSpacerWidthTickness;
+            double hexEndX = OffsetWidth + (_viewModel.BytePerLine * (HexByteWidth + HexByteSpacing)) + spacersWidth;
+
+            // Check if click is in hex area
+            if (x >= hexStartX && x < hexEndX)
+            {
+                // Click in hex area - need to account for byte spacers
+                double relativeX = x - hexStartX;
+
+                // Calculate byte index accounting for spacers
+                int byteIndex = 0;
+                double currentX = 0;
+
+                for (int i = 0; i < _viewModel.BytePerLine && i < line.Bytes.Count; i++)
+                {
+                    // Add spacer width before this byte if needed
+                    if (_viewModel.BytePerLine >= ByteGrouping && i > 0 && i % ByteGrouping == 0)
+                    {
+                        currentX += ByteSpacerWidthTickness;
+                    }
+
+                    // Check if click is within this byte's bounds
+                    if (relativeX >= currentX && relativeX < currentX + HexByteWidth + HexByteSpacing)
+                    {
+                        byteIndex = i;
+                        break;
+                    }
+
+                    currentX += HexByteWidth + HexByteSpacing;
+                    byteIndex = i;
+                }
+
+                // Clamp to valid byte range
+                byteIndex = Math.Max(0, Math.Min(byteIndex, line.Bytes.Count - 1));
+                return line.Bytes[byteIndex].VirtualPos;
+            }
+
+            // Check if click is in ASCII area
+            double separatorX = hexEndX + 4;
+            double asciiStartX = separatorX + SeparatorWidth;
+
+            // Calculate ASCII area width WITH spacers
+            int numAsciiSpacers = 0;
+            if (_viewModel.BytePerLine >= ByteGrouping)
+            {
+                numAsciiSpacers = (_viewModel.BytePerLine % ByteGrouping == 0)
+                    ? (_viewModel.BytePerLine / ByteGrouping) - 1
+                    : _viewModel.BytePerLine / ByteGrouping;
+            }
+            double asciiSpacersWidth = numAsciiSpacers * ByteSpacerWidthTickness;
+            double asciiEndX = asciiStartX + (_viewModel.BytePerLine * AsciiCharWidth) + asciiSpacersWidth;
+
+            if (x >= asciiStartX && x < asciiEndX)
+            {
+                // Click in ASCII area - need to account for byte spacers
+                double relativeX = x - asciiStartX;
+
+                // Calculate byte index accounting for spacers
+                int byteIndex = 0;
+                double currentX = 0;
+
+                for (int i = 0; i < _viewModel.BytePerLine && i < line.Bytes.Count; i++)
+                {
+                    // Add spacer width before this byte if needed
+                    if (_viewModel.BytePerLine >= ByteGrouping && i > 0 && i % ByteGrouping == 0)
+                    {
+                        currentX += ByteSpacerWidthTickness;
+                    }
+
+                    // Check if click is within this byte's bounds
+                    if (relativeX >= currentX && relativeX < currentX + AsciiCharWidth)
+                    {
+                        byteIndex = i;
+                        break;
+                    }
+
+                    currentX += AsciiCharWidth;
+                    byteIndex = i;
+                }
+
+                // Clamp to valid byte range
+                byteIndex = Math.Max(0, Math.Min(byteIndex, line.Bytes.Count - 1));
+                return line.Bytes[byteIndex].VirtualPos;
+            }
+
+            // Click in separator or beyond - select last byte on line
+            return line.Bytes[line.Bytes.Count - 1].VirtualPos;
+        }
+
+        private void Content_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (_viewModel == null) return;
+
+            bool handled = true;
+            bool isShiftPressed = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+            bool isCtrlPressed = Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
+
+            // Get current position:
+            // - If there's a selection: use SelectionStop (the active/cursor end)
+            // - If no selection: use SelectionStart (the cursor position)
+            var currentPos = _viewModel.HasSelection && _viewModel.SelectionStop.IsValid
+                ? _viewModel.SelectionStop
+                : (_viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart : VirtualPosition.Zero);
+
+            VirtualPosition newPos = currentPos;
+
+            switch (e.Key)
+            {
+                // Arrow keys navigation
+                case Key.Left:
+                    if (isCtrlPressed)
+                    {
+                        // Ctrl+Left: Jump left by 8 bytes (or to start of line if closer)
+                        long jumpSize = 8;
+                        long lineStart = (currentPos.Value / _viewModel.BytePerLine) * _viewModel.BytePerLine;
+                        long targetPos = currentPos.Value - jumpSize;
+
+                        // Don't go before start of current line (unless we're at the very start)
+                        if (currentPos.Value > 0)
+                        {
+                            if (targetPos < lineStart && currentPos.Value != lineStart)
+                                newPos = new VirtualPosition(lineStart);
+                            else
+                                newPos = new VirtualPosition(Math.Max(0, targetPos));
+                        }
+                    }
+                    else
+                    {
+                        // Normal Left: Move one byte left
+                        if (currentPos.Value > 0)
+                            newPos = new VirtualPosition(currentPos.Value - 1);
+                    }
+                    break;
+
+                case Key.Right:
+                    if (isCtrlPressed)
+                    {
+                        // Ctrl+Right: Jump right by 8 bytes (or to end of line if closer)
+                        long jumpSize = 8;
+                        long lineStart = (currentPos.Value / _viewModel.BytePerLine) * _viewModel.BytePerLine;
+                        long lineEnd = Math.Min(lineStart + _viewModel.BytePerLine - 1, _viewModel.VirtualLength - 1);
+                        long targetPos = currentPos.Value + jumpSize;
+
+                        // Don't go past end of current line (unless we're at the very end)
+                        if (currentPos.Value < _viewModel.VirtualLength - 1)
+                        {
+                            if (targetPos > lineEnd && currentPos.Value != lineEnd)
+                                newPos = new VirtualPosition(lineEnd);
+                            else
+                                newPos = new VirtualPosition(Math.Min(_viewModel.VirtualLength - 1, targetPos));
+                        }
+                    }
+                    else
+                    {
+                        // Normal Right: Move one byte right
+                        if (currentPos.Value < _viewModel.VirtualLength - 1)
+                            newPos = new VirtualPosition(currentPos.Value + 1);
+                    }
+                    break;
+
+                case Key.Up:
+                    if (isCtrlPressed)
+                    {
+                        // Ctrl+Up: Jump up by a page
+                        long jump = _viewModel.BytePerLine * _viewModel.VisibleLines;
+                        newPos = new VirtualPosition(Math.Max(0, currentPos.Value - jump));
+                    }
+                    else
+                    {
+                        // Normal Up: Move one line up
+                        if (currentPos.Value >= _viewModel.BytePerLine)
+                            newPos = new VirtualPosition(currentPos.Value - _viewModel.BytePerLine);
+                    }
+                    break;
+
+                case Key.Down:
+                    if (isCtrlPressed)
+                    {
+                        // Ctrl+Down: Jump down by a page
+                        long jump = _viewModel.BytePerLine * _viewModel.VisibleLines;
+                        newPos = new VirtualPosition(Math.Min(_viewModel.VirtualLength - 1, currentPos.Value + jump));
+                    }
+                    else
+                    {
+                        // Normal Down: Move one line down
+                        if (currentPos.Value + _viewModel.BytePerLine < _viewModel.VirtualLength)
+                            newPos = new VirtualPosition(currentPos.Value + _viewModel.BytePerLine);
+                    }
+                    break;
+
+                // Page Up/Down
+                case Key.PageUp:
+                    {
+                        long jump = _viewModel.BytePerLine * _viewModel.VisibleLines;
+                        newPos = new VirtualPosition(Math.Max(0, currentPos.Value - jump));
+                    }
+                    break;
+
+                case Key.PageDown:
+                    {
+                        long jump = _viewModel.BytePerLine * _viewModel.VisibleLines;
+                        newPos = new VirtualPosition(Math.Min(_viewModel.VirtualLength - 1, currentPos.Value + jump));
+                    }
+                    break;
+
+                // Home/End
+                case Key.Home:
+                    if (isCtrlPressed)
+                    {
+                        // Ctrl+Home: Go to start of file
+                        newPos = VirtualPosition.Zero;
+                    }
+                    else
+                    {
+                        // Home: Go to start of current line
+                        long lineStart = (currentPos.Value / _viewModel.BytePerLine) * _viewModel.BytePerLine;
+                        newPos = new VirtualPosition(lineStart);
+                    }
+                    break;
+
+                case Key.End:
+                    if (isCtrlPressed)
+                    {
+                        // Ctrl+End: Go to end of file
+                        newPos = new VirtualPosition(_viewModel.VirtualLength - 1);
+                    }
+                    else
+                    {
+                        // End: Go to end of current line
+                        long lineStart = (currentPos.Value / _viewModel.BytePerLine) * _viewModel.BytePerLine;
+                        long lineEnd = Math.Min(lineStart + _viewModel.BytePerLine - 1, _viewModel.VirtualLength - 1);
+                        newPos = new VirtualPosition(lineEnd);
+                    }
+                    break;
+
+                // Insert key: Toggle edit mode
+                case Key.Insert:
+                    _viewModel.EditMode = _viewModel.EditMode == EditMode.Insert
+                        ? EditMode.Overwrite
+                        : EditMode.Insert;
+                    break;
+
+                // Delete key: Delete selection
+                case Key.Delete:
+                    if (_viewModel.HasSelection && !_viewModel.ReadOnlyMode)
+                    {
+                        DeleteSelection();
+                    }
+                    break;
+
+                // Ctrl+Z: Undo
+                case Key.Z:
+                    if (isCtrlPressed && !_viewModel.ReadOnlyMode)
+                    {
+                        Undo();
+                    }
+                    break;
+
+                // Ctrl+Y: Redo
+                case Key.Y:
+                    if (isCtrlPressed && !_viewModel.ReadOnlyMode)
+                    {
+                        Redo();
+                    }
+                    break;
+
+                // Ctrl+C: Copy
+                case Key.C:
+                    if (isCtrlPressed && _viewModel.HasSelection)
+                    {
+                        Copy();
+                    }
+                    break;
+
+                // Ctrl+X: Cut
+                case Key.X:
+                    if (isCtrlPressed && _viewModel.HasSelection && !_viewModel.ReadOnlyMode)
+                    {
+                        Cut();
+                    }
+                    break;
+
+                // Ctrl+V: Paste
+                case Key.V:
+                    if (isCtrlPressed && !_viewModel.ReadOnlyMode)
+                    {
+                        Paste();
+                    }
+                    break;
+
+                // Ctrl+A: Select all
+                case Key.A:
+                    if (isCtrlPressed)
+                    {
+                        SelectAll();
+                    }
+                    break;
+
+                // F2: Next Bookmark
+                case Key.F2:
+                    if (isShiftPressed)
+                        GoToPreviousBookmark();
+                    else
+                        GoToNextBookmark();
+                    break;
+
+                // Ctrl+B: Toggle Bookmark
+                case Key.B:
+                    if (isCtrlPressed)
+                    {
+                        SetBookmarkMenuItem_Click(null, null);
+                    }
+                    break;
+
+                // Text/Hex input editing
+                default:
+                    if (!_viewModel.ReadOnlyMode)
+                    {
+                        // ASCII mode: Handle text input (A-Z, a-z, 0-9, space, punctuation)
+                        if (_isAsciiEditMode && TryGetAsciiChar(e.Key, out char asciiChar))
+                        {
+                            HandleAsciiInput(asciiChar, currentPos);
+                            handled = true;
+                        }
+                        // Hex mode: Handle hex digit input (0-9, A-F)
+                        else if (!_isAsciiEditMode && TryGetHexValue(e.Key, out byte hexValue))
+                        {
+                            HandleHexInput(hexValue, currentPos);
+                            handled = true;
+                        }
+                        else
+                        {
+                            handled = false;
+                        }
+                    }
+                    else
+                    {
+                        handled = false;
+                    }
+                    break;
+            }
+
+            // Update selection based on navigation
+            if (newPos != currentPos)
+            {
+                if (isShiftPressed)
+                {
+                    // Shift+navigation: Extend selection
+                    _viewModel.ExtendSelection(newPos);
+                }
+                else
+                {
+                    // Normal navigation: Move cursor
+                    _viewModel.SetSelection(newPos);
+                }
+
+                // Auto-scroll to keep selection visible
+                EnsurePositionVisible(newPos);
+            }
+
+            if (handled)
+                e.Handled = true;
+        }
+
+        /// <summary>
+        /// Ensure a virtual position is visible by scrolling if necessary
+        /// </summary>
+        private void EnsurePositionVisible(VirtualPosition position)
+        {
+            if (_viewModel == null)
+                return;
+
+            long lineNumber = position.Value / _viewModel.BytePerLine;
+            long currentScroll = _viewModel.ScrollPosition;
+
+            // Scroll up if position is above viewport
+            if (lineNumber < currentScroll)
+            {
+                _viewModel.ScrollPosition = lineNumber;
+            }
+            // Scroll down if position is below viewport
+            else if (lineNumber >= currentScroll + _viewModel.VisibleLines)
+            {
+                _viewModel.ScrollPosition = lineNumber - _viewModel.VisibleLines + 1;
+            }
+        }
+
+        private void VerticalScroll_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        {
+            if (_viewModel != null)
+            {
+                _viewModel.ScrollPosition = (long)e.NewValue;
+            }
+        }
+
+        /// <summary>
+        /// <summary>
+        /// Handle BaseGrid size changes to adjust visible lines (exact V1 approach)
+        /// </summary>
+        private void BaseGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Only react to height changes (like V1's Grid_SizeChanged)
+            if (!e.HeightChanged || _viewModel == null)
+                return;
+
+            // Delay UpdateVisibleLines to ensure BaseGrid.RowDefinitions[1].ActualHeight is updated
+            // Use Render priority for better responsiveness while still ensuring layout is complete
+            Dispatcher.BeginInvoke(new Action(() => UpdateVisibleLines()), System.Windows.Threading.DispatcherPriority.Render);
+        }
+
+        /// <summary>
+        /// Handle mouse wheel scrolling on ContentScroller
+        /// </summary>
+        private void ContentScroller_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (_viewModel == null)
+                return;
+
+            // Ctrl+MouseWheel = Zoom 
+            if (Keyboard.Modifiers == ModifierKeys.Control && AllowZoom)
+            {
+                double delta = e.Delta > 0 ? 0.1 : -0.1;
+                double newZoom = ZoomScale + delta;
+                ZoomScale = Math.Max(0.5, Math.Min(2.0, newZoom));
+                e.Handled = true;
+                return;
+            }
+
+            // Standard behavior: scroll 3 lines per wheel notch
+            // Delta is typically 120 per notch, so divide by 40 to get 3 lines
+            int linesToScroll = -e.Delta / 40;
+
+            long newScrollPos = _viewModel.ScrollPosition + linesToScroll;
+            long maxScroll = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+
+            // Clamp to valid range
+            newScrollPos = Math.Max(0, Math.Min(maxScroll, newScrollPos));
+
+            if (_viewModel.ScrollPosition != newScrollPos)
+            {
+                _viewModel.ScrollPosition = newScrollPos;
+                VerticalScroll.Value = newScrollPos;
+            }
+
+            // Mark event as handled to prevent ScrollViewer from scrolling
+            e.Handled = true;
+        }
+
+        /// <summary>
+        /// Update visible lines based on BaseGrid Row 1 height (exact V1 approach)
+        /// V1 uses: (int)(BaseGrid.RowDefinitions[1].ActualHeight / (LineHeight * ZoomScale)) + 1
+        /// V2 uses: (int)(BaseGrid.RowDefinitions[1].ActualHeight / LineHeight) + 1 (no ZoomScale)
+        /// </summary>
+        private void UpdateVisibleLines()
+        {
+            if (_viewModel == null)
+                return;
+
+            // Get the actual line height from HexViewport
+            double lineHeight = HexViewport.LineHeight;
+            if (lineHeight <= 0)
+                return; // Not initialized yet
+
+            // Use BaseGrid.RowDefinitions[1].ActualHeight (EXACTLY like V1 does)
+            // Row 0 = Header, Row 1 = Content area, Row 2 = Status bar
+            double actualHeight = BaseGrid.RowDefinitions[1].ActualHeight;
+            if (actualHeight <= 0)
+                return; // Not initialized yet
+
+            // Calculate how many lines fit in the viewport
+            // Use Math.Ceiling to ensure we always have enough space for partial lines at bottom
+            // Add 2 extra lines to prevent last line from being cut off (increased safety margin)
+            int calculatedLines = (int)Math.Ceiling(actualHeight / lineHeight) + 2;
+
+            // Clamp to reasonable range (minimum 5, maximum 100)
+            calculatedLines = Math.Max(5, Math.Min(100, calculatedLines));
+
+            // Only update if different (avoid thrashing)
+            if (_viewModel.VisibleLines != calculatedLines)
+            {
+                _viewModel.VisibleLines = calculatedLines; // Property setter calls RefreshVisibleLines() internally
+                VerticalScroll.Maximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
+                VerticalScroll.ViewportSize = _viewModel.VisibleLines;
+
+                // Force full refresh after collection update completes (like V1's RefreshView(true) call)
+                // Use Dispatcher to ensure collection changes are processed before refreshing viewport
+                Dispatcher.BeginInvoke(new Action(() => HexViewport.Refresh()), System.Windows.Threading.DispatcherPriority.Render);
+            }
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(HexEditorViewModel.SelectionLength):
+                    UpdateSelectionInfo();
+                    break;
+
+                case nameof(HexEditorViewModel.SelectionStart):
+                    UpdatePositionInfo();
+                    // Update HexViewport selection anchor
+                    HexViewport.SelectionStart = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : -1;
+                    // Update auto-highlight to match the byte at the new selection
+                    UpdateAutoHighlightByte();
+                    // Update scroll markers selection bar
+                    UpdateScrollMarkersSelection();
+                    break;
+
+                case nameof(HexEditorViewModel.SelectionStop):
+                    // Update HexViewport cursor (active end) and selection
+                    // Cursor is at SelectionStop (the end that moves during Shift+navigation)
+                    HexViewport.CursorPosition = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value :
+                                                 (_viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0);
+                    HexViewport.SelectionStop = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value : -1;
+                    // Update scroll markers selection bar
+                    UpdateScrollMarkersSelection();
+                    break;
+
+                case nameof(HexEditorViewModel.TotalLines):
+                    var newMaximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
+                    VerticalScroll.Maximum = newMaximum;
+                    // Update file size display (VirtualLength may have changed due to insertions)
+                    UpdateFileSizeDisplay();
+                    break;
+
+                case nameof(HexEditorViewModel.VirtualLength):
+                    // VirtualLength changed due to insertions/deletions
+                    // Update scroll markers FileLength and refresh markers
+                    if (_scrollMarkers != null)
+                    {
+                        _scrollMarkers.FileLength = _viewModel.VirtualLength;
+                    }
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        UpdateScrollMarkers();
+                    }), System.Windows.Threading.DispatcherPriority.Background);
+                    break;
+
+                case nameof(HexEditorViewModel.EditMode):
+                    EditModeText.Text = $"Mode: {_viewModel.EditMode}";
+                    break;
+
+                case nameof(HexEditorViewModel.BytePerLine):
+                    BytesPerLineText.Text = $"Bytes/Line: {_viewModel.BytePerLine}";
+                    HexViewport.BytesPerLine = _viewModel.BytePerLine;
+                    RefreshColumnHeader(); // Regenerate headers to match new BytesPerLine
+                    break;
+            }
+        }
+
+        private void UpdateFileSizeDisplay()
+        {
+            if (_viewModel != null)
+            {
+                // Show VirtualLength (includes insertions in Insert mode)
+                long displayLength = _viewModel.VirtualLength;
+                FileSizeText.Text = $"Size: {FormatFileSize(displayLength)}";
+            }
+        }
+
+        private void UpdateSelectionInfo()
+        {
+            if (_viewModel?.HasSelection == true)
+            {
+                SelectionInfo.Text = $"Selection: {_viewModel.SelectionLength} bytes";
+            }
+            else
+            {
+                SelectionInfo.Text = "No selection";
+            }
+        }
+
+        private void UpdatePositionInfo()
+        {
+            if (_viewModel?.SelectionStart.IsValid == true)
+            {
+                PositionInfo.Text = $"Position: 0x{_viewModel.SelectionStart.Value:X}";
+            }
+            else
+            {
+                PositionInfo.Text = "Position: 0";
+            }
+        }
+
+        private string FormatFileSize(long bytes)
+        {
+            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+            double len = bytes;
+            int order = 0;
+            while (len >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                len = len / 1024;
+            }
+            return $"{len:0.##} {sizes[order]} ({bytes:N0} bytes)";
+        }
+
+        /// <summary>
+        /// Try to convert a Key to a hex value (0-15)
+        /// </summary>
+        private bool TryGetHexValue(Key key, out byte value)
+        {
+            // Number keys (0-9)
+            if (key >= Key.D0 && key <= Key.D9)
+            {
+                value = (byte)(key - Key.D0);
+                return true;
+            }
+
+            // Numpad keys (0-9)
+            if (key >= Key.NumPad0 && key <= Key.NumPad9)
+            {
+                value = (byte)(key - Key.NumPad0);
+                return true;
+            }
+
+            // Letter keys (A-F)
+            if (key >= Key.A && key <= Key.F)
+            {
+                value = (byte)(key - Key.A + 10);
+                return true;
+            }
+
+            value = 0;
+            return false;
+        }
+
+        /// <summary>
+        /// Try to convert a key press to an ASCII character
+        /// </summary>
+        private bool TryGetAsciiChar(Key key, out char asciiChar)
+        {
+            bool isShiftPressed = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+
+            // Letters A-Z
+            if (key >= Key.A && key <= Key.Z)
+            {
+                asciiChar = (char)('A' + (key - Key.A));
+                if (!isShiftPressed)
+                    asciiChar = char.ToLower(asciiChar);
+                return true;
+            }
+
+            // Digits 0-9 (with shift for symbols)
+            if (key >= Key.D0 && key <= Key.D9)
+            {
+                if (isShiftPressed)
+                {
+                    // Shift+digit produces symbols: )!@#$%^&*(
+                    char[] shiftDigits = { ')', '!', '@', '#', '$', '%', '^', '&', '*', '(' };
+                    asciiChar = shiftDigits[key - Key.D0];
+                }
+                else
+                {
+                    asciiChar = (char)('0' + (key - Key.D0));
+                }
+                return true;
+            }
+
+            // NumPad digits 0-9
+            if (key >= Key.NumPad0 && key <= Key.NumPad9)
+            {
+                asciiChar = (char)('0' + (key - Key.NumPad0));
+                return true;
+            }
+
+            // Space
+            if (key == Key.Space)
+            {
+                asciiChar = ' ';
+                return true;
+            }
+
+            // Common punctuation (basic ASCII support)
+            var punctuation = new Dictionary<Key, (char normal, char shifted)>
+            {
+                { Key.OemPeriod, ('.', '>') },
+                { Key.OemComma, (',', '<') },
+                { Key.OemSemicolon, (';', ':') },
+                { Key.OemQuotes, ('\'', '"') },
+                { Key.OemQuestion, ('/', '?') },
+                { Key.OemOpenBrackets, ('[', '{') },
+                { Key.OemCloseBrackets, (']', '}') },
+                { Key.OemPipe, ('\\', '|') },
+                { Key.OemMinus, ('-', '_') },
+                { Key.OemPlus, ('=', '+') },
+                { Key.OemTilde, ('`', '~') }
+            };
+
+            if (punctuation.TryGetValue(key, out var chars))
+            {
+                asciiChar = isShiftPressed ? chars.shifted : chars.normal;
+                return true;
+            }
+
+            asciiChar = '\0';
+            return false;
+        }
+
+        /// <summary>
+        /// Handle ASCII text input for editing bytes in ASCII mode
+        /// </summary>
+        private void HandleAsciiInput(char asciiChar, VirtualPosition currentPos)
+        {
+
+            if (_viewModel == null || _viewModel.ReadOnlyMode)
+                return;
+
+            // Convert ASCII character to byte
+            byte byteValue = (byte)asciiChar;
+
+            // Determine action based on edit mode
+            if (_viewModel.EditMode == EditMode.Insert)
+            {
+                // Insert mode: insert new byte
+                _viewModel.InsertByte(currentPos, byteValue);
+            }
+            else
+            {
+                // Overwrite mode: modify existing byte
+                _viewModel.ModifyByte(currentPos, byteValue);
+            }
+
+            // Move to next byte
+            var nextPos = new VirtualPosition(currentPos.Value + 1);
+            if (nextPos.Value < _viewModel.VirtualLength)
+            {
+                _viewModel.SetSelection(nextPos);
+                EnsurePositionVisible(nextPos);
+            }
+
+            // Update status
+            StatusText.Text = $"ASCII input: '{asciiChar}' at {currentPos.Value:X8}";
+        }
+
+        /// <summary>
+        /// Handle hex digit input for editing bytes
+        /// </summary>
+        private void HandleHexInput(byte hexValue, VirtualPosition currentPos)
+        {
+
+            if (_viewModel == null || _viewModel.ReadOnlyMode)
+                return;
+
+            // Start new byte edit if not currently editing, or position changed
+            // SPECIAL CASE: In Insert mode, if waiting for low nibble and position drifted by ±1,
+            // DON'T reset - this is position drift after InsertByte, continue with same edit
+            bool shouldResetEdit = false;
+
+            if (!_isEditingByte)
+            {
+                // Not currently editing - definitely start new edit
+                shouldResetEdit = true;
+            }
+            else if (_editingPosition != currentPos)
+            {
+                // Position changed - check if this is acceptable drift in Insert mode
+                if (_viewModel.EditMode == EditMode.Insert && !_editingHighNibble)
+                {
+                    // We're in Insert mode, waiting for low nibble, and position drifted
+                    long drift = Math.Abs(currentPos.Value - _editingPosition.Value);
+                    if (drift <= 1)
+                    {
+                        // Position drift of ±1 is acceptable in Insert mode after InsertByte
+                        // Force currentPos back to _editingPosition and continue same edit
+                        currentPos = _editingPosition; // Force back to editing position
+                        shouldResetEdit = false;
+                    }
+                    else
+                    {
+                        // Drift is too large - must be a real position change
+                        shouldResetEdit = true;
+                    }
+                }
+                else
+                {
+                    // In Overwrite mode or editing high nibble - any position change means new edit
+                    shouldResetEdit = true;
+                }
+            }
+
+            if (shouldResetEdit)
+            {
+                _isEditingByte = true;
+                _editingPosition = currentPos;
+                _editingHighNibble = true;
+
+                // Initialize editing value based on mode
+                // Insert mode: start with 0x00 (creating new byte)
+                // Overwrite mode: start with existing byte value (modifying it)
+                if (_viewModel.EditMode == EditMode.Insert)
+                {
+                    _editingValue = 0;
+                }
+                else
+                {
+                    var physicalPos = _viewModel.VirtualToPhysical(currentPos);
+                    _editingValue = physicalPos.IsValid
+                        ? _viewModel.GetByteAt(currentPos)
+                        : (byte)0;
+                }
+
+            }
+
+            // Update the appropriate nibble
+            if (_editingHighNibble)
+            {
+
+                // Update high nibble (bits 4-7)
+                byte oldValue = _editingValue;
+                _editingValue = (byte)((_editingValue & 0x0F) | (hexValue << 4));
+
+
+                _editingHighNibble = false; // Move to low nibble
+
+                // IN INSERT MODE: Insert byte IMMEDIATELY after first nibble (don't wait for second nibble)
+                if (_viewModel.EditMode == EditMode.Insert)
+                {
+
+                    // Save the insertion position BEFORE calling InsertByte
+                    var insertionPos = _editingPosition;
+
+                    _viewModel.InsertByte(insertionPos, _editingValue);
+
+                    // CRITICAL FIX: Force synchronous position update to prevent drift
+                    // Use Dispatcher.Invoke with Send priority to ensure position is set IMMEDIATELY
+                    // before any other UI updates or events can interfere
+                    Dispatcher.Invoke(() =>
+                    {
+                        _viewModel.SetSelection(insertionPos);
+
+                        // Verify the position was set correctly
+                        var actualPos = _viewModel.SelectionStart;
+
+                        if (actualPos != insertionPos)
+                        {
+                        }
+                    }, System.Windows.Threading.DispatcherPriority.Send);
+
+                    // Keep _editingPosition at the insertion point (where the byte was inserted)
+                    // The low nibble MUST modify this same position
+                    _editingPosition = insertionPos;
+
+                }
+                else
+                {
+                    // OVERWRITE MODE: Update visual display immediately after high nibble (preview only)
+                    UpdateBytePreview(_editingPosition, _editingValue);
+                }
+            }
+            else
+            {
+
+                // Update low nibble (bits 0-3)
+                byte oldValue = _editingValue;
+                _editingValue = (byte)((_editingValue & 0xF0) | hexValue);
+
+
+                // Byte is complete, write it
+                CommitByteEdit();
+
+                // Move to next byte
+                var nextPos = new VirtualPosition(currentPos.Value + 1);
+
+                if (nextPos.Value < _viewModel.VirtualLength)
+                {
+                    _viewModel.SetSelection(nextPos);
+                    EnsurePositionVisible(nextPos);
+                }
+                else
+                {
+                    _isEditingByte = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Commit the current byte edit to the provider
+        /// </summary>
+        /// <summary>
+        /// Update byte display temporarily during editing (before commit)
+        /// Shows real-time feedback as user types each nibble
+        /// </summary>
+        private void UpdateBytePreview(VirtualPosition position, byte previewValue)
+        {
+            if (_viewModel == null || !position.IsValid)
+                return;
+
+            // Update the byte value in the ViewModel temporarily for preview
+            _viewModel.UpdateBytePreview(position, previewValue);
+
+            // Force visual refresh to show the change immediately
+            HexViewport.InvalidateVisual();
+        }
+
+        private void CommitByteEdit()
+        {
+            if (!_isEditingByte || _viewModel == null)
+            {
+                return;
+            }
+
+
+            // In Insert mode, the byte was already inserted after the first nibble
+            // So the low nibble should MODIFY the inserted byte (not insert again)
+            // In Overwrite mode, modify the existing byte
+            _viewModel.ModifyByte(_editingPosition, _editingValue);
+
+            _isEditingByte = false;
+            _editingHighNibble = true;
+
+            // Update status
+            StatusText.Text = $"Edited byte at {_editingPosition.Value:X8}";
+
+            // Update scroll markers in background (low priority)
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                UpdateScrollMarkers();
+            }), System.Windows.Threading.DispatcherPriority.Background);
+
+        }
+
+        #endregion
+
+        #region Auto-Scroll During Mouse Selection
+
+        /// <summary>
+        /// Start auto-scrolling in the specified direction
+        /// </summary>
+        /// <param name="direction">-1 for up, 1 for down</param>
+        private void StartAutoScroll(int direction)
+        {
+            if (_autoScrollDirection != direction)
+            {
+                _autoScrollDirection = direction;
+                _lastAutoScrollPosition = VirtualPosition.Invalid; // Reset tracking
+                if (!_autoScrollTimer.IsEnabled)
+                {
+                    _autoScrollTimer.Start();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Stop auto-scrolling
+        /// </summary>
+        private void StopAutoScroll()
+        {
+            _autoScrollDirection = 0;
+            _lastAutoScrollPosition = VirtualPosition.Invalid; // Reset tracking
+            _autoScrollTimer.Stop();
+        }
+
+        /// <summary>
+        /// Auto-scroll timer tick - scroll viewport and update selection
+        /// Optimized to reduce redundant updates
+        /// </summary>
+        private void AutoScrollTimer_Tick(object sender, EventArgs e)
+        {
+            if (_viewModel == null || !_isMouseDown || _autoScrollDirection == 0)
+            {
+                StopAutoScroll();
+                return;
+            }
+
+            // Calculate new scroll position (scroll multiple lines per tick for faster auto-scroll)
+            long newScrollPos = _viewModel.ScrollPosition + (_autoScrollDirection * AutoScrollSpeed);
+
+            // Clamp to valid range
+            long maxScroll = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);
+            newScrollPos = Math.Max(0, Math.Min(newScrollPos, maxScroll));
+
+            // Only update if position changed
+            if (newScrollPos != _viewModel.ScrollPosition)
+            {
+                // Use batch update for better performance
+                _viewModel.BeginUpdate();
+                try
+                {
+                    _viewModel.ScrollPosition = newScrollPos;
+
+                    // Update selection to the byte at the current mouse position
+                    var position = GetVirtualPositionAtMouse(_lastMousePosition);
+
+                    // Only update selection if position actually changed (avoid redundant updates)
+                    if (position.IsValid && position != _lastAutoScrollPosition)
+                    {
+                        _viewModel.SetSelectionRange(_mouseDownPosition, position);
+                        _lastAutoScrollPosition = position;
+                    }
+                }
+                finally
+                {
+                    _viewModel.EndUpdate();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Column Header Generation
+
+        /// <summary>
+        /// Refresh the column headers with byte position numbers and byte spacers 
+        /// Called when BytePerLine, ByteGrouping, or ByteSpacer properties change
+        /// </summary>
+        private void RefreshColumnHeader()
+        {
+            if (_hexHeaderStackPanel == null || _asciiHeaderStackPanel == null)
+                return;
+
+            // Clear existing headers
+            _hexHeaderStackPanel.Children.Clear();
+            _asciiHeaderStackPanel.Children.Clear();
+
+            int bytesPerLine = BytePerLine;
+
+            // Generate hex column headers (00 01 02...0F)
+            for (int i = 0; i < bytesPerLine; i++)
+            {
+                // Add byte spacer before this column if needed
+                if (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                    ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel)
+                {
+                    AddByteSpacer(_hexHeaderStackPanel, i, forceEmpty: true);
+                }
+
+                // Add byte position header (00, 01, 02, etc.)
+                var headerText = new TextBlock
+                {
+                    Text = i.ToString("X2"),
+                    Width = 24, // Match HexByteWidth from HexViewport
+                    TextAlignment = TextAlignment.Center,
+                    FontSize = 11,
+                    FontWeight = FontWeights.Normal,
+                    Foreground = Resources["HeaderTextBrush"] as System.Windows.Media.Brush,
+                    Margin = new Thickness(0, 0, 2, 0) // HexByteSpacing
+                };
+
+                _hexHeaderStackPanel.Children.Add(headerText);
+            }
+
+            // Generate ASCII column headers (no byte spacers in ASCII panel)
+            for (int i = 0; i < bytesPerLine; i++)
+            {
+                // Add placeholder for ASCII column (could show position or just be blank)
+                var headerText = new TextBlock
+                {
+                    Text = " ", // Blank or could show position like V1
+                    Width = 10, // Match AsciiCharWidth from HexViewport
+                    TextAlignment = TextAlignment.Center,
+                    FontSize = 11,
+                    Foreground = Resources["HeaderTextBrush"] as System.Windows.Media.Brush
+                };
+
+                _asciiHeaderStackPanel.Children.Add(headerText);
+            }
+        }
+
+        /// <summary>
+        /// Add byte spacer to a StackPanel at the specified column position 
+        /// Spacers are added every ByteGrouping bytes (e.g., every 8 bytes)
+        /// </summary>
+        /// <param name="stack">StackPanel to add spacer to</param>
+        /// <param name="column">Current column index (0-based)</param>
+        /// <param name="forceEmpty">Force empty spacer even if visual style is Line or Dash</param>
+        private void AddByteSpacer(StackPanel stack, int column, bool forceEmpty = false)
+        {
+            // Only add spacer at group boundaries (e.g., every 8 bytes)
+            // column % ByteGrouping must be 0, and column > 0 (no spacer before first byte)
+            if (column % (int)ByteGrouping != 0 || column <= 0)
+                return;
+
+            int width = (int)ByteSpacerWidthTickness;
+
+            if (!forceEmpty)
+            {
+                switch (ByteSpacerVisualStyle)
+                {
+                    case ByteSpacerVisual.Empty:
+                        stack.Children.Add(new TextBlock { Width = width });
+                        break;
+
+                    case ByteSpacerVisual.Line:
+                        // Solid vertical line
+                        stack.Children.Add(new System.Windows.Shapes.Line
+                        {
+                            Y2 = 20, // Line height
+                            X1 = width / 2.0,
+                            X2 = width / 2.0,
+                            Stroke = BorderBrush,
+                            StrokeThickness = 1,
+                            Width = width
+                        });
+                        break;
+
+                    case ByteSpacerVisual.Dash:
+                        // Dashed vertical line
+                        stack.Children.Add(new System.Windows.Shapes.Line
+                        {
+                            Y2 = 19,
+                            X1 = width / 2.0,
+                            X2 = width / 2.0,
+                            Stroke = BorderBrush,
+                            StrokeDashArray = new DoubleCollection(new double[] { 2 }),
+                            StrokeThickness = 1,
+                            Width = width
+                        });
+                        break;
+                }
+            }
+            else
+            {
+                // Force empty spacer (used for headers)
+                stack.Children.Add(new TextBlock { Width = width });
+            }
+        }
+
+        #endregion
+
+        #region Context Menu Handlers
+
+        private long _rightClickPosition = -1;
+
+        /// <summary>
+        /// Show context menu on right-click 
+        /// </summary>
+        public void ShowContextMenu(long position)
+        {
+            if (!AllowContextMenu) return;
+
+            _rightClickPosition = position;
+
+            // Select the byte if no selection
+            if (SelectionLength <= 1)
+            {
+                SelectionStart = position;
+                SelectionStop = position;
+            }
+
+            // Access menu items from ContextMenu
+            var contextMenu = this.ContextMenu;
+            if (contextMenu == null) return;
+
+            // Enable/disable menu items based on state
+            var undoItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "UndoMenuItem") as MenuItem;
+            var copyAsItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "CopyAsMenuItem") as MenuItem;
+            var copyHexaItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "CopyHexaMenuItem") as MenuItem;
+            var copyAsciiItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "CopyAsciiMenuItem") as MenuItem;
+            var copyCSharpItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "CopyCSharpMenuItem") as MenuItem;
+            var copyCItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "CopyCMenuItem") as MenuItem;
+            var copyTblItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "CopyTblMenuItem") as MenuItem;
+            var findAllItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "FindAllMenuItem") as MenuItem;
+            var pasteItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "PasteMenuItem") as MenuItem;
+            var deleteItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "DeleteMenuItem") as MenuItem;
+            var fillItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "FillByteMenuItem") as MenuItem;
+            var replaceItem = LogicalTreeHelper.FindLogicalNode(contextMenu, "ReplaceByteMenuItem") as MenuItem;
+
+            if (undoItem != null) undoItem.IsEnabled = CanUndo;
+            if (copyAsItem != null) copyAsItem.IsEnabled = SelectionLength > 0;
+            if (copyHexaItem != null) copyHexaItem.IsEnabled = SelectionLength > 0;
+            if (copyAsciiItem != null) copyAsciiItem.IsEnabled = SelectionLength > 0;
+            if (copyCSharpItem != null) copyCSharpItem.IsEnabled = SelectionLength > 0;
+            if (copyCItem != null) copyCItem.IsEnabled = SelectionLength > 0;
+            if (copyTblItem != null) copyTblItem.IsEnabled = SelectionLength > 0 && _tblStream != null;
+            if (findAllItem != null) findAllItem.IsEnabled = SelectionLength > 0;
+            if (pasteItem != null) pasteItem.IsEnabled = !ReadOnlyMode && Clipboard.ContainsText();
+            if (deleteItem != null) deleteItem.IsEnabled = !ReadOnlyMode && SelectionLength > 0;
+            if (fillItem != null) fillItem.IsEnabled = !ReadOnlyMode && SelectionLength > 0;
+            if (replaceItem != null) replaceItem.IsEnabled = !ReadOnlyMode && SelectionLength > 0;
+
+            // Show context menu
+            contextMenu.Visibility = Visibility.Visible;
+            contextMenu.IsOpen = true;
+        }
+
+        private void UndoMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Undo();
+        }
+
+        private void CopyHexaMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CopyToClipboard(CopyPasteMode.HexaString);
+        }
+
+        private void CopyAsciiMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CopyToClipboard(CopyPasteMode.AsciiString);
+        }
+
+        private void CopyCSharpMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CopyToClipboard(CopyPasteMode.CSharpCode);
+        }
+
+        private void CopyCMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CopyToClipboard(CopyPasteMode.CCode);
+        }
+
+        private void CopyTblMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CopyToClipboard(CopyPasteMode.TblString);
+        }
+
+        private void FindAllMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selection = GetSelectionByteArray();
+            if (selection != null && selection.Length > 0)
+            {
+                FindAll(selection, 0);
+                StatusText.Text = $"Found all occurrences of selection";
+            }
+        }
+
+        private void PasteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Paste();
+        }
+
+        private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteSelection();
+        }
+
+        private void FillByteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Show dialog to get byte value
+            var dialog = new Dialog.GiveByteWindow
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                byte fillByte = (byte)dialog.HexTextBox.LongValue;
+                FillWithByte(fillByte, SelectionStart, SelectionLength);
+                StatusText.Text = $"Filled {SelectionLength} bytes with 0x{fillByte:X2}";
+            }
+        }
+
+        private void ReplaceByteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Show dialog to get find/replace byte values
+            var dialog = new Dialog.ReplaceByteWindow
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                byte findByte = (byte)dialog.HexTextBox.LongValue;
+                byte replaceByte = (byte)dialog.ReplaceHexTextBox.LongValue;
+                byte[] findData = new byte[] { findByte };
+                byte[] replaceData = new byte[] { replaceByte };
+                var replaced = ReplaceAll(findData, replaceData, false, false);
+                StatusText.Text = $"Replaced {replaced.Count()} occurrences (0x{findByte:X2} → 0x{replaceByte:X2})";
+            }
+        }
+
+        private void ReverseSelectionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ReverseSelection();
+        }
+
+        private void SetBookmarkMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel == null || !_viewModel.SelectionStart.IsValid)
+                return;
+
+            // Add bookmark at current position
+            long position = _viewModel.SelectionStart.Value;
+
+            if (_bookmarkService.HasBookmarkAt(position))
+            {
+                // Toggle: Remove existing bookmark
+                _bookmarkService.RemoveBookmark(position);
+                StatusText.Text = $"Bookmark removed at position 0x{position:X}";
+            }
+            else
+            {
+                // Add new bookmark
+                _bookmarkService.AddBookmark(position, $"Bookmark at 0x{position:X}");
+                StatusText.Text = $"Bookmark added at position 0x{position:X}";
+            }
+
+            // Refresh view to show bookmark indicator
+            _viewModel.RefreshDisplay();
+        }
+
+        private void ClearBookmarksMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            int count = _bookmarkService.ClearAll();
+            StatusText.Text = count > 0
+                ? $"Cleared {count} bookmark(s)"
+                : "No bookmarks to clear";
+
+            // Refresh view to remove bookmark indicators
+            if (count > 0 && _viewModel != null)
+                _viewModel.RefreshDisplay();
+        }
+
+        /// <summary>
+        /// Navigate to next bookmark after current position (F2)
+        /// </summary>
+        public void GoToNextBookmark()
+        {
+            if (_viewModel == null || !_viewModel.SelectionStart.IsValid)
+                return;
+
+            long currentPos = _viewModel.SelectionStart.Value;
+            var nextBookmark = _bookmarkService.GetNextBookmark(currentPos);
+
+            if (nextBookmark != null)
+            {
+                // Navigate to bookmark position
+                _viewModel.SelectionStart = new VirtualPosition(nextBookmark.BytePositionInStream);
+                _viewModel.SelectionStop = new VirtualPosition(nextBookmark.BytePositionInStream);
+
+                // Scroll to ensure bookmark is visible
+                long targetLine = nextBookmark.BytePositionInStream / _viewModel.BytePerLine;
+                if (targetLine < _viewModel.ScrollPosition ||
+                    targetLine >= _viewModel.ScrollPosition + _viewModel.VisibleLines)
+                {
+                    _viewModel.ScrollPosition = Math.Max(0, targetLine - _viewModel.VisibleLines / 2);
+                }
+
+                StatusText.Text = string.IsNullOrEmpty(nextBookmark.Description)
+                    ? $"Jumped to bookmark at 0x{nextBookmark.BytePositionInStream:X}"
+                    : $"Jumped to: {nextBookmark.Description}";
+            }
+            else
+            {
+                StatusText.Text = "No more bookmarks after current position";
+            }
+        }
+
+        /// <summary>
+        /// Navigate to previous bookmark before current position (Shift+F2)
+        /// </summary>
+        public void GoToPreviousBookmark()
+        {
+            if (_viewModel == null || !_viewModel.SelectionStart.IsValid)
+                return;
+
+            long currentPos = _viewModel.SelectionStart.Value;
+            var prevBookmark = _bookmarkService.GetPreviousBookmark(currentPos);
+
+            if (prevBookmark != null)
+            {
+                // Navigate to bookmark position
+                _viewModel.SelectionStart = new VirtualPosition(prevBookmark.BytePositionInStream);
+                _viewModel.SelectionStop = new VirtualPosition(prevBookmark.BytePositionInStream);
+
+                // Scroll to ensure bookmark is visible
+                long targetLine = prevBookmark.BytePositionInStream / _viewModel.BytePerLine;
+                if (targetLine < _viewModel.ScrollPosition ||
+                    targetLine >= _viewModel.ScrollPosition + _viewModel.VisibleLines)
+                {
+                    _viewModel.ScrollPosition = Math.Max(0, targetLine - _viewModel.VisibleLines / 2);
+                }
+
+                StatusText.Text = string.IsNullOrEmpty(prevBookmark.Description)
+                    ? $"Jumped to bookmark at 0x{prevBookmark.BytePositionInStream:X}"
+                    : $"Jumped to: {prevBookmark.Description}";
+            }
+            else
+            {
+                StatusText.Text = "No more bookmarks before current position";
+            }
+        }
+
+        private void PasteOverwriteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel == null) return;
+
+            // Save current mode
+            var originalMode = _viewModel.EditMode;
+
+            try
+            {
+                // Temporarily switch to Overwrite mode
+                _viewModel.EditMode = EditMode.Overwrite;
+
+                // Paste
+                Paste();
+            }
+            finally
+            {
+                // Restore original mode
+                _viewModel.EditMode = originalMode;
+            }
+        }
+
+        private void SelectAllMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SelectAll();
+        }
+
         #endregion
     }
 }

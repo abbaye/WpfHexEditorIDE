@@ -31,7 +31,8 @@
       "Bash(Select-String -Pattern \"\\(error|warning|Build succeeded|Build FAILED\\)\" -Context 0,2)",
       "Bash(git push:*)",
       "Bash(test:*)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(wc:*)"
     ]
   }
 }

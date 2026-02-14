@@ -30,7 +30,7 @@ namespace WpfHexaEditor
 
         #region Constructor
 
-        public HexByte(HexEditor parent) : base(parent)
+        public HexByte(HexEditorLegacy parent) : base(parent)
         {
             //Update width
             UpdateDataVisualWidth();

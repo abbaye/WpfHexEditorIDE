@@ -7,7 +7,7 @@
 namespace WpfHexaEditor.Models
 {
     /// <summary>
-    /// Edit mode for HexEditorV2
+    /// Edit mode for HexEditor (V2 architecture)
     /// </summary>
     public enum EditMode
     {

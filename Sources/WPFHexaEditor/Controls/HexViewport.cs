@@ -2,7 +2,7 @@
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.5
-// High-performance custom rendering viewport for HexEditorV2
+// High-performance custom rendering viewport for HexEditor (V2 architecture)
 //////////////////////////////////////////////
 
 using System;
@@ -1226,7 +1226,7 @@ namespace WpfHexaEditor.Controls
             base.OnKeyDown(e);
 
             // Keyboard navigation - raise event for parent to handle
-            // Parent (HexEditorV2) will update ViewModel selection/cursor
+            // Parent (HexEditor) will update ViewModel selection/cursor
             if (e.Key == Key.Up || e.Key == Key.Down ||
                 e.Key == Key.Left || e.Key == Key.Right ||
                 e.Key == Key.PageUp || e.Key == Key.PageDown ||

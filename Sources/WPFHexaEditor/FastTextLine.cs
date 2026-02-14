@@ -16,11 +16,11 @@ namespace WpfHexaEditor
     /// </summary>
     internal class FastTextLine : FrameworkElement
     {
-        private readonly HexEditor _parent;
+        private readonly HexEditorLegacy _parent;
 
         #region Constructor
 
-        public FastTextLine(HexEditor parent)
+        public FastTextLine(HexEditorLegacy parent)
         {
             //Parent hexeditor
             _parent = parent ?? throw new ArgumentNullException(nameof(parent));

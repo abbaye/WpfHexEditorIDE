@@ -27,7 +27,7 @@ namespace WpfHexaEditor
     abstract class BaseByte : FrameworkElement, IByteControl
     {
         #region Global class variables
-        protected readonly HexEditor _parent;
+        protected readonly HexEditorLegacy _parent;
         private bool _isSelected;
         private ByteAction _action = ByteAction.Nothing;
         private IByte _byte;
@@ -68,7 +68,7 @@ namespace WpfHexaEditor
 
         #region Constructor
 
-        protected BaseByte(HexEditor parent)
+        protected BaseByte(HexEditorLegacy parent)
         {
             //Parent hexeditor
             _parent = parent ?? throw new ArgumentNullException(nameof(parent));

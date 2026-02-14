@@ -20,7 +20,7 @@ using WpfHexaEditor.Models;
 namespace WpfHexaEditor.ViewModels
 {
     /// <summary>
-    /// ViewModel for HexEditorV2 - handles all business logic
+    /// ViewModel for HexEditor (V2 architecture) - handles all business logic
     /// Architecture: Virtual positions (display) ↔ Physical positions (file)
     /// </summary>
     public class HexEditorViewModel : INotifyPropertyChanged

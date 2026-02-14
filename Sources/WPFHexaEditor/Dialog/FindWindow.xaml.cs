@@ -14,13 +14,13 @@ namespace WpfHexaEditor.Dialog
     public partial class FindWindow
     {
         private MemoryStream _findMs = new(1);
-        private readonly HexEditor _parentV1;
-        private readonly HexEditorV2 _parentV2;
+        private readonly HexEditorLegacy _parentV1;
+        private readonly HexEditor _parentV2;
 
         /// <summary>
-        /// Constructor accepting V1 HexEditor
+        /// Constructor accepting V1 HexEditorLegacy (legacy control)
         /// </summary>
-        public FindWindow(HexEditor parent, byte[] findData = null)
+        public FindWindow(HexEditorLegacy parent, byte[] findData = null)
         {
             InitializeComponent();
 
@@ -31,9 +31,9 @@ namespace WpfHexaEditor.Dialog
         }
 
         /// <summary>
-        /// Constructor accepting V2 HexEditorV2 (Phase 13 - 100% compatibility)
+        /// Constructor accepting V2 HexEditor (main control - Phase 13 - 100% compatibility)
         /// </summary>
-        public FindWindow(HexEditorV2 parent, byte[] findData = null)
+        public FindWindow(HexEditor parent, byte[] findData = null)
         {
             InitializeComponent();
 

@@ -71,7 +71,7 @@
             IsCancel="True"
             TabIndex="10" />
 
-        <wpfHexaEditor:HexEditor
+        <wpfHexaEditor:HexEditorLegacy
             x:Name="FindHexEdit"
             Height="110"
             Margin="10,41,129,0"
@@ -119,7 +119,7 @@
             Content="{x:Static p:Resources.ReplaceAllString}"
             TabIndex="9" />
 
-        <wpfHexaEditor:HexEditor
+        <wpfHexaEditor:HexEditorLegacy
             x:Name="ReplaceHexEdit"
             Margin="10,187,129,10"
             AllowAutoHighLightSelectionByte="False"

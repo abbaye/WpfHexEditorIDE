@@ -48,7 +48,7 @@
             IsCancel="True"
             TabIndex="6" />
 
-        <wpfHexaEditor:HexEditor
+        <wpfHexaEditor:HexEditorLegacy
             x:Name="FindHexEdit"
             Margin="10,41,129,21"
             AllowAutoHighLightSelectionByte="False"
