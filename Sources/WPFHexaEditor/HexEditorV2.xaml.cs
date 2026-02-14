@@ -121,37 +121,31 @@ namespace WpfHexaEditor
         /// </summary>
         private void HexViewport_ByteDoubleClicked(object sender, long position)
         {
-            System.Diagnostics.Debug.WriteLine($"[DOUBLECLICK] ByteDoubleClicked event fired! Position={position}");
             StatusText.Text = $"DEBUG: Double-click at position {position}";
 
             // Only auto-select if feature is enabled
             if (!AllowAutoSelectSameByteAtDoubleClick)
             {
-                System.Diagnostics.Debug.WriteLine($"[DOUBLECLICK] Feature disabled: AllowAutoSelectSameByteAtDoubleClick={AllowAutoSelectSameByteAtDoubleClick}");
                 StatusText.Text = "DEBUG: Double-click feature is disabled";
                 return;
             }
 
             if (_viewModel == null)
             {
-                System.Diagnostics.Debug.WriteLine("[DOUBLECLICK] ViewModel is null!");
                 StatusText.Text = "DEBUG: ViewModel is null";
                 return;
             }
 
-            System.Diagnostics.Debug.WriteLine("[DOUBLECLICK] Feature enabled, ViewModel OK");
 
             // Get byte value at clicked position
             var virtualPos = new VirtualPosition(position);
             if (!virtualPos.IsValid || position >= _viewModel.VirtualLength)
             {
-                System.Diagnostics.Debug.WriteLine($"[DOUBLECLICK] Invalid position! IsValid={virtualPos.IsValid}, VirtualLength={_viewModel.VirtualLength}");
                 StatusText.Text = $"DEBUG: Invalid position (length={_viewModel.VirtualLength})";
                 return;
             }
 
             byte byteValue = _viewModel.GetByteAt(virtualPos);
-            System.Diagnostics.Debug.WriteLine($"[DOUBLECLICK] Byte value at position {position} = 0x{byteValue:X2}");
             StatusText.Text = $"DEBUG: Double-clicked byte value = 0x{byteValue:X2}";
 
             // Find all positions with this byte value and select them
@@ -2386,12 +2380,10 @@ namespace WpfHexaEditor
             // Synchronize ViewModel with control's EditMode (which may have been set before file opened, e.g., from settings)
             _viewModel.EditMode = EditMode;
             HexViewport.EditMode = EditMode; // Also sync to HexViewport for caret display
-            System.Diagnostics.Debug.WriteLine($"[OPENFILE] EditMode synchronized: Control={EditMode}, ViewModel={_viewModel.EditMode}, HexViewport={HexViewport.EditMode}");
 
             // ByteProvider V2 always supports insertion anywhere - no need to set flag
             if (EditMode == EditMode.Insert)
             {
-                System.Diagnostics.Debug.WriteLine($"[OPENFILE] Edit mode is INSERT");
             }
 
             // Initialize byte spacer properties on viewport (V1 compatibility)
@@ -2588,11 +2580,9 @@ namespace WpfHexaEditor
         /// </summary>
         private void SelectAllBytesWith(byte byteValue)
         {
-            System.Diagnostics.Debug.WriteLine($"[SELECTALL] SelectAllBytesWith called with byte value 0x{byteValue:X2}");
 
             if (_viewModel == null)
             {
-                System.Diagnostics.Debug.WriteLine("[SELECTALL] ViewModel is null!");
                 StatusText.Text = "DEBUG: ViewModel is null";
                 return;
             }
@@ -2605,7 +2595,6 @@ namespace WpfHexaEditor
                 long startPosition = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0;
                 long stopPosition = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value : startPosition;
 
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Initial range: {startPosition} → {stopPosition}");
 
                 // Scan BACKWARDS from startPosition while byte matches
                 long scanStart = startPosition;
@@ -2622,7 +2611,6 @@ namespace WpfHexaEditor
                     scanStart--;
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Scanned backwards to: {scanStart}");
 
                 // Scan FORWARDS from stopPosition while byte matches
                 long scanStop = stopPosition;
@@ -2639,8 +2627,6 @@ namespace WpfHexaEditor
                     scanStop++;
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Scanned forwards to: {scanStop}");
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Final range: {scanStart} → {scanStop} ({scanStop - scanStart + 1} bytes)");
 
                 // Set the expanded selection in ViewModel
                 _viewModel.SetSelectionRange(new VirtualPosition(scanStart), new VirtualPosition(scanStop));
@@ -2651,9 +2637,6 @@ namespace WpfHexaEditor
                 HexViewport.CursorPosition = scanStop;
 
                 // Verify viewport properties were set correctly
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] HexViewport.SelectionStart set to: {HexViewport.SelectionStart}");
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] HexViewport.SelectionStop set to: {HexViewport.SelectionStop}");
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] HexViewport.CursorPosition set to: {HexViewport.CursorPosition}");
 
                 // Force viewport refresh to show the selection
                 HexViewport.InvalidateVisual();
@@ -2662,18 +2645,12 @@ namespace WpfHexaEditor
                 EnsurePositionVisible(new VirtualPosition(scanStart));
 
                 // Verify ViewModel selection was set
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] ViewModel.SelectionStart after set: {_viewModel.SelectionStart.Value}");
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] ViewModel.SelectionStop after set: {_viewModel.SelectionStop.Value}");
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] ViewModel.HasSelection: {_viewModel.HasSelection}");
 
                 // Update status bar
                 StatusText.Text = $"Selected {scanStop - scanStart + 1} consecutive bytes with value 0x{byteValue:X2}";
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Success! Status: {StatusText.Text}");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Exception: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"[SELECTALL] Stack: {ex.StackTrace}");
                 StatusText.Text = $"Auto-select failed: {ex.Message}";
             }
         }
@@ -2734,7 +2711,6 @@ namespace WpfHexaEditor
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[SCROLLMARKERS] Selection update failed: {ex.Message}");
             }
         }
 
@@ -4246,7 +4222,6 @@ namespace WpfHexaEditor
                     // ByteProvider V2 always supports insertion anywhere - no flag needed
                     if (_viewModel?.Provider != null)
                     {
-                        System.Diagnostics.Debug.WriteLine($"[CANINSERT] ByteProvider V2 supports insertion");
                     }
                 }
                 // Note: Setting false doesn't force Overwrite to allow other modes
@@ -5015,7 +4990,6 @@ namespace WpfHexaEditor
             var clickArea = GetClickAreaAtMouse(mousePos);
             _isAsciiEditMode = (clickArea == ClickArea.Ascii);
 
-            System.Diagnostics.Debug.WriteLine($"[CLICK] Area={clickArea}, AsciiEditMode={_isAsciiEditMode}");
 
             // Get the virtual position at mouse coordinates
             var position = GetVirtualPositionAtMouse(mousePos);
@@ -5710,7 +5684,6 @@ namespace WpfHexaEditor
 
                 case nameof(HexEditorViewModel.TotalLines):
                     var newMaximum = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines + 3);
-                    System.Diagnostics.Debug.WriteLine($"[SCROLLBAR UPDATE] TotalLines={_viewModel.TotalLines}, VisibleLines={_viewModel.VisibleLines}, Old Maximum={VerticalScroll.Maximum}, New Maximum={newMaximum}");
                     VerticalScroll.Maximum = newMaximum;
                     // Update file size display (VirtualLength may have changed due to insertions)
                     UpdateFileSizeDisplay();
@@ -5784,7 +5757,6 @@ namespace WpfHexaEditor
             if (key >= Key.D0 && key <= Key.D9)
             {
                 value = (byte)(key - Key.D0);
-                System.Diagnostics.Debug.WriteLine($"[HEXPARSE] Key {key} → value={value}");
                 return true;
             }
 
@@ -5792,7 +5764,6 @@ namespace WpfHexaEditor
             if (key >= Key.NumPad0 && key <= Key.NumPad9)
             {
                 value = (byte)(key - Key.NumPad0);
-                System.Diagnostics.Debug.WriteLine($"[HEXPARSE] Key {key} → value={value}");
                 return true;
             }
 
@@ -5800,12 +5771,10 @@ namespace WpfHexaEditor
             if (key >= Key.A && key <= Key.F)
             {
                 value = (byte)(key - Key.A + 10);
-                System.Diagnostics.Debug.WriteLine($"[HEXPARSE] Key {key} → value={value} (Letter A-F)");
                 return true;
             }
 
             value = 0;
-            System.Diagnostics.Debug.WriteLine($"[HEXPARSE] Key {key} → NOT a hex key");
             return false;
         }
 
@@ -5822,7 +5791,6 @@ namespace WpfHexaEditor
                 asciiChar = (char)('A' + (key - Key.A));
                 if (!isShiftPressed)
                     asciiChar = char.ToLower(asciiChar);
-                System.Diagnostics.Debug.WriteLine($"[ASCIIPARSE] Key {key} + Shift={isShiftPressed} → '{asciiChar}' (0x{(byte)asciiChar:X2})");
                 return true;
             }
 
@@ -5839,7 +5807,6 @@ namespace WpfHexaEditor
                 {
                     asciiChar = (char)('0' + (key - Key.D0));
                 }
-                System.Diagnostics.Debug.WriteLine($"[ASCIIPARSE] Key {key} + Shift={isShiftPressed} → '{asciiChar}' (0x{(byte)asciiChar:X2})");
                 return true;
             }
 
@@ -5847,7 +5814,6 @@ namespace WpfHexaEditor
             if (key >= Key.NumPad0 && key <= Key.NumPad9)
             {
                 asciiChar = (char)('0' + (key - Key.NumPad0));
-                System.Diagnostics.Debug.WriteLine($"[ASCIIPARSE] Key {key} (NumPad) → '{asciiChar}' (0x{(byte)asciiChar:X2})");
                 return true;
             }
 
@@ -5855,7 +5821,6 @@ namespace WpfHexaEditor
             if (key == Key.Space)
             {
                 asciiChar = ' ';
-                System.Diagnostics.Debug.WriteLine($"[ASCIIPARSE] Key {key} → ' ' (0x20)");
                 return true;
             }
 
@@ -5878,11 +5843,9 @@ namespace WpfHexaEditor
             if (punctuation.TryGetValue(key, out var chars))
             {
                 asciiChar = isShiftPressed ? chars.shifted : chars.normal;
-                System.Diagnostics.Debug.WriteLine($"[ASCIIPARSE] Key {key} + Shift={isShiftPressed} → '{asciiChar}' (0x{(byte)asciiChar:X2})");
                 return true;
             }
 
-            System.Diagnostics.Debug.WriteLine($"[ASCIIPARSE] Key {key} → NOT an ASCII key");
             asciiChar = '\0';
             return false;
         }
@@ -5892,9 +5855,6 @@ namespace WpfHexaEditor
         /// </summary>
         private void HandleAsciiInput(char asciiChar, VirtualPosition currentPos)
         {
-            System.Diagnostics.Debug.WriteLine($"[ASCIIINPUT] === HandleAsciiInput called ===");
-            System.Diagnostics.Debug.WriteLine($"[ASCIIINPUT] char='{asciiChar}' (0x{(byte)asciiChar:X2}), currentPos={currentPos.Value}");
-            System.Diagnostics.Debug.WriteLine($"[ASCIIINPUT] EditMode={_viewModel?.EditMode}");
 
             if (_viewModel == null || _viewModel.ReadOnlyMode)
                 return;
@@ -5906,13 +5866,11 @@ namespace WpfHexaEditor
             if (_viewModel.EditMode == EditMode.Insert)
             {
                 // Insert mode: insert new byte
-                System.Diagnostics.Debug.WriteLine($"[ASCIIINPUT] Inserting byte 0x{byteValue:X2} ('{asciiChar}') at position {currentPos.Value}");
                 _viewModel.InsertByte(currentPos, byteValue);
             }
             else
             {
                 // Overwrite mode: modify existing byte
-                System.Diagnostics.Debug.WriteLine($"[ASCIIINPUT] Modifying byte at position {currentPos.Value} to 0x{byteValue:X2} ('{asciiChar}')");
                 _viewModel.ModifyByte(currentPos, byteValue);
             }
 
@@ -5921,7 +5879,6 @@ namespace WpfHexaEditor
             if (nextPos.Value < _viewModel.VirtualLength)
             {
                 _viewModel.SetSelection(nextPos);
-                System.Diagnostics.Debug.WriteLine($"[ASCIIINPUT] Moved to next position: {nextPos.Value}");
                 EnsurePositionVisible(nextPos);
             }
 
@@ -5934,9 +5891,6 @@ namespace WpfHexaEditor
         /// </summary>
         private void HandleHexInput(byte hexValue, VirtualPosition currentPos)
         {
-            System.Diagnostics.Debug.WriteLine($"[HEXINPUT] === HandleHexInput called ===");
-            System.Diagnostics.Debug.WriteLine($"[HEXINPUT] hexValue={hexValue} (0x{hexValue:X2}), currentPos={currentPos.Value}");
-            System.Diagnostics.Debug.WriteLine($"[HEXINPUT] EditMode={_viewModel?.EditMode}");
 
             if (_viewModel == null || _viewModel.ReadOnlyMode)
                 return;
@@ -5950,7 +5904,6 @@ namespace WpfHexaEditor
             {
                 // Not currently editing - definitely start new edit
                 shouldResetEdit = true;
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] Not editing - will start new byte edit");
             }
             else if (_editingPosition != currentPos)
             {
@@ -5963,8 +5916,6 @@ namespace WpfHexaEditor
                     {
                         // Position drift of ±1 is acceptable in Insert mode after InsertByte
                         // Force currentPos back to _editingPosition and continue same edit
-                        System.Diagnostics.Debug.WriteLine($"[HEXINPUT] INSERT MODE DRIFT TOLERANCE: currentPos={currentPos.Value}, _editingPosition={_editingPosition.Value}, drift={drift}");
-                        System.Diagnostics.Debug.WriteLine($"[HEXINPUT] Continuing with same byte edit at _editingPosition={_editingPosition.Value}");
                         currentPos = _editingPosition; // Force back to editing position
                         shouldResetEdit = false;
                     }
@@ -5972,14 +5923,12 @@ namespace WpfHexaEditor
                     {
                         // Drift is too large - must be a real position change
                         shouldResetEdit = true;
-                        System.Diagnostics.Debug.WriteLine($"[HEXINPUT] Position changed by {drift} - starting new byte edit");
                     }
                 }
                 else
                 {
                     // In Overwrite mode or editing high nibble - any position change means new edit
                     shouldResetEdit = true;
-                    System.Diagnostics.Debug.WriteLine($"[HEXINPUT] Position changed - starting new byte edit");
                 }
             }
 
@@ -6004,28 +5953,22 @@ namespace WpfHexaEditor
                         : (byte)0;
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] Starting new byte edit at pos {currentPos.Value}");
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] EditMode={_viewModel.EditMode}, Initial _editingValue: 0x{_editingValue:X2} ({_editingValue})");
             }
 
             // Update the appropriate nibble
             if (_editingHighNibble)
             {
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] HIGH NIBBLE - Before: _editingValue=0x{_editingValue:X2}");
 
                 // Update high nibble (bits 4-7)
                 byte oldValue = _editingValue;
                 _editingValue = (byte)((_editingValue & 0x0F) | (hexValue << 4));
 
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] HIGH NIBBLE - Calculation: (0x{oldValue:X2} & 0x0F) | (0x{hexValue:X2} << 4)");
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] HIGH NIBBLE - Result: 0x{_editingValue:X2} ({_editingValue})");
 
                 _editingHighNibble = false; // Move to low nibble
 
                 // IN INSERT MODE: Insert byte IMMEDIATELY after first nibble (don't wait for second nibble)
                 if (_viewModel.EditMode == EditMode.Insert)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[HEXINPUT] HIGH NIBBLE - INSERT MODE: Inserting byte IMMEDIATELY with value 0x{_editingValue:X2}");
 
                     // Save the insertion position BEFORE calling InsertByte
                     var insertionPos = _editingPosition;
@@ -6041,11 +5984,9 @@ namespace WpfHexaEditor
 
                         // Verify the position was set correctly
                         var actualPos = _viewModel.SelectionStart;
-                        System.Diagnostics.Debug.WriteLine($"[HEXINPUT] HIGH NIBBLE - After forced SetSelection: cursor at {actualPos.Value}, expected {insertionPos.Value}");
 
                         if (actualPos != insertionPos)
                         {
-                            System.Diagnostics.Debug.WriteLine($"[HEXINPUT] HIGH NIBBLE - WARNING: Position drift detected even after forced update!");
                         }
                     }, System.Windows.Threading.DispatcherPriority.Send);
 
@@ -6053,7 +5994,6 @@ namespace WpfHexaEditor
                     // The low nibble MUST modify this same position
                     _editingPosition = insertionPos;
 
-                    System.Diagnostics.Debug.WriteLine($"[HEXINPUT] HIGH NIBBLE - Cursor locked at position {_editingPosition.Value} for low nibble");
                 }
                 else
                 {
@@ -6063,34 +6003,26 @@ namespace WpfHexaEditor
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] LOW NIBBLE - Before: _editingValue=0x{_editingValue:X2}");
 
                 // Update low nibble (bits 0-3)
                 byte oldValue = _editingValue;
                 _editingValue = (byte)((_editingValue & 0xF0) | hexValue);
 
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] LOW NIBBLE - Calculation: (0x{oldValue:X2} & 0xF0) | 0x{hexValue:X2}");
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] LOW NIBBLE - Result: 0x{_editingValue:X2} ({_editingValue})");
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] LOW NIBBLE - Committing final value 0x{_editingValue:X2} in {_viewModel.EditMode} mode");
 
                 // Byte is complete, write it
                 CommitByteEdit();
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] CommitByteEdit() completed, _isEditingByte={_isEditingByte}");
 
                 // Move to next byte
                 var nextPos = new VirtualPosition(currentPos.Value + 1);
-                System.Diagnostics.Debug.WriteLine($"[HEXINPUT] Moving to next position: {currentPos.Value} → {nextPos.Value}");
 
                 if (nextPos.Value < _viewModel.VirtualLength)
                 {
                     _viewModel.SetSelection(nextPos);
-                    System.Diagnostics.Debug.WriteLine($"[HEXINPUT] Selection moved to: {nextPos.Value}, VirtualLength={_viewModel.VirtualLength}");
                     EnsurePositionVisible(nextPos);
                 }
                 else
                 {
                     _isEditingByte = false;
-                    System.Diagnostics.Debug.WriteLine($"[HEXINPUT] Reached end of data, stopped editing");
                 }
             }
         }
@@ -6118,19 +6050,14 @@ namespace WpfHexaEditor
         {
             if (!_isEditingByte || _viewModel == null)
             {
-                System.Diagnostics.Debug.WriteLine($"[COMMIT] Skipped: _isEditingByte={_isEditingByte}, _viewModel={(_viewModel != null ? "OK" : "NULL")}");
                 return;
             }
 
-            System.Diagnostics.Debug.WriteLine($"[COMMIT] === CommitByteEdit START ===");
-            System.Diagnostics.Debug.WriteLine($"[COMMIT] Position={_editingPosition.Value}, Value=0x{_editingValue:X2}, EditMode={_viewModel.EditMode}");
 
             // In Insert mode, the byte was already inserted after the first nibble
             // So the low nibble should MODIFY the inserted byte (not insert again)
             // In Overwrite mode, modify the existing byte
-            System.Diagnostics.Debug.WriteLine($"[COMMIT] Calling ModifyByte(pos={_editingPosition.Value}, value=0x{_editingValue:X2})");
             _viewModel.ModifyByte(_editingPosition, _editingValue);
-            System.Diagnostics.Debug.WriteLine($"[COMMIT] ModifyByte completed");
 
             _isEditingByte = false;
             _editingHighNibble = true;
@@ -6144,7 +6071,6 @@ namespace WpfHexaEditor
                 UpdateScrollMarkers();
             }), System.Windows.Threading.DispatcherPriority.Background);
 
-            System.Diagnostics.Debug.WriteLine($"[COMMIT] === CommitByteEdit END === (_isEditingByte now false)");
         }
 
         #endregion
@@ -6478,14 +6404,12 @@ namespace WpfHexaEditor
         {
             // TODO: Implement bookmark functionality
             // For now, just show a message
-            System.Diagnostics.Debug.WriteLine("[BOOKMARK] Set bookmark requested");
         }
 
         private void ClearBookmarksMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // TODO: Implement bookmark functionality
             // For now, just show a message
-            System.Diagnostics.Debug.WriteLine("[BOOKMARK] Clear all bookmarks requested");
         }
 
         private void PasteOverwriteMenuItem_Click(object sender, RoutedEventArgs e)

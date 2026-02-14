@@ -809,7 +809,6 @@ namespace WpfHexaEditor.Controls
                 // Debug: Log action borders (only for Added/Modified, not every frame)
                 if ((byteData.Action == ByteAction.Added || byteData.Action == ByteAction.Modified) && _debugRenderCount++ % 60 == 0)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[RENDER] Drawing {byteData.Action} border at pos {byteData.VirtualPos.Value}: 0x{byteData.Value:X2}");
                 }
             }
 
@@ -824,13 +823,11 @@ namespace WpfHexaEditor.Controls
                 {
                     _caret.MoveCaret(x, y);
                     _caret.CaretMode = CaretMode.Insert; // Vertical line
-                    System.Diagnostics.Debug.WriteLine($"[CARET] Positioned at x={x}, y={y}, EditMode=Insert, IsEnable={_caret.IsEnable}, IsVisibleCaret={_caret.IsVisibleCaret}");
                 }
                 else if (_caret != null)
                 {
                     // In Overwrite mode, use block caret or hide it (V1 shows block)
                     _caret.Hide();
-                    System.Diagnostics.Debug.WriteLine($"[CARET] Hidden (EditMode={EditMode}, _caret!=null={_caret != null})");
                 }
             }
 

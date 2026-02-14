@@ -49,7 +49,6 @@ namespace WpfHexaEditor.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"SaveState failed: {ex.Message}");
                 return false;
             }
         }
@@ -75,7 +74,6 @@ namespace WpfHexaEditor.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"LoadState failed: {ex.Message}");
                 return null;
             }
         }

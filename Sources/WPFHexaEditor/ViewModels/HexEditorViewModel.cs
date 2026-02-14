@@ -265,7 +265,6 @@ namespace WpfHexaEditor.ViewModels
         /// </summary>
         private void OnProviderChangesCleared(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("[HexEditorViewModel] ChangesCleared event received - clearing cache and refreshing view");
 
             // CRITICAL: Clear the line cache BEFORE refresh
             // Cached lines contain old modification status (GetByteAction results)
@@ -298,7 +297,6 @@ namespace WpfHexaEditor.ViewModels
             // ByteProvider V2 handles everything internally
             _provider.SubmitChanges();
 
-            System.Diagnostics.Debug.WriteLine($"[SAVE] File saved successfully");
         }
 
         /// <summary>
@@ -361,7 +359,6 @@ namespace WpfHexaEditor.ViewModels
 
             // ByteProvider V2 handles all modifications internally
             _provider.ModifyByte(virtualPos.Value, newValue);
-            System.Diagnostics.Debug.WriteLine($"[MODIFYBYTE] Modified byte at virtual pos {virtualPos.Value}: 0x{newValue:X2}");
 
             // Notify Undo/Redo state changed (ByteProvider handles undo for modifications)
             OnPropertyChanged(nameof(CanUndo));
@@ -408,7 +405,6 @@ namespace WpfHexaEditor.ViewModels
         {
             if (ReadOnlyMode || EditMode != EditMode.Insert) return;
 
-            System.Diagnostics.Debug.WriteLine($"[INSERTBYTE] Inserting 0x{value:X2} at virtualPos={virtualPos.Value}");
 
             // ByteProvider V2 handles insertions internally with proper LIFO (stack-like) behavior
             _provider.InsertByte(virtualPos.Value, value);
@@ -418,13 +414,11 @@ namespace WpfHexaEditor.ViewModels
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
 
-            System.Diagnostics.Debug.WriteLine($"[INSERTBYTE] VirtualLength before refresh: {VirtualLength}");
 
             // OPTIMIZATION: Since insert shifts all following bytes, we need full refresh
             ClearLineCache();
             RefreshVisibleLines();
 
-            System.Diagnostics.Debug.WriteLine($"[INSERTBYTE] VirtualLength after refresh: {VirtualLength}");
         }
 
         /// <summary>
@@ -435,7 +429,6 @@ namespace WpfHexaEditor.ViewModels
         {
             if (ReadOnlyMode || EditMode != EditMode.Insert || bytes == null || bytes.Length == 0) return;
 
-            System.Diagnostics.Debug.WriteLine($"[INSERTBYTES] === Batch insert START === {bytes.Length} bytes at pos {startVirtualPos.Value}");
 
             // ByteProvider V2 handles all insertion logic internally
             _provider.InsertBytes(startVirtualPos.Value, bytes);
@@ -448,7 +441,6 @@ namespace WpfHexaEditor.ViewModels
             ClearLineCache();
             RefreshVisibleLines();
 
-            System.Diagnostics.Debug.WriteLine($"[INSERTBYTES] === Batch insert END === VirtualLength: {VirtualLength}");
         }
 
         /// <summary>
@@ -618,7 +610,6 @@ namespace WpfHexaEditor.ViewModels
                 // Use optimized batch insert (MUCH faster than individual InsertByte() calls)
                 var startVirtualPos = new VirtualPosition(pastePosition);
                 InsertBytes(startVirtualPos, bytesToPaste);
-                System.Diagnostics.Debug.WriteLine($"[PASTE INSERT] Batch inserted {bytesToPaste.Length} bytes at virtual pos {pastePosition} (green borders)");
             }
             else
             {
@@ -628,7 +619,6 @@ namespace WpfHexaEditor.ViewModels
                 {
                     ModifyByte(new VirtualPosition(pastePosition + i), bytesToPaste[i]);
                 }
-                System.Diagnostics.Debug.WriteLine($"[PASTE OVERWRITE] Modified {bytesToPaste.Length} bytes at virtual pos {pastePosition} (orange borders)");
 
                 // Refresh for overwrite mode (Insert mode already refreshes in InsertBytes)
                 ClearLineCache();
@@ -1108,7 +1098,6 @@ namespace WpfHexaEditor.ViewModels
                 else if (newEnd < oldEnd)
                 {
                     // Viewport got smaller: remove lines from bottom (with safety check)
-                    System.Diagnostics.Debug.WriteLine($"[REFRESH] Viewport got smaller: remove lines from bottom (Lines.Count={Lines.Count}, newEnd={newEnd}, newStart={newStart}, target={(newEnd - newStart)})");
                     while (Lines.Count > 0 && Lines.Count > (newEnd - newStart))
                     {
                         Lines.RemoveAt(Lines.Count - 1);

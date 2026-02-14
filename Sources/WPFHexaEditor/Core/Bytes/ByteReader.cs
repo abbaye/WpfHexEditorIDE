@@ -96,41 +96,21 @@ namespace WpfHexaEditor.Core.Bytes
                 // relativePosition = N-1 means LAST inserted byte (newest, LIFO offset 0)
                 long relativePosition = virtualPosition - firstInsertedVirtualPos;
 
-                // DETAILED DIAGNOSTICS: Log every calculation to understand workaround trigger
-                System.Diagnostics.Debug.WriteLine($"[ByteReader.ReadByte] virtualPos={virtualPosition}, physicalPos={physicalPos.Value}, " +
-                    $"physByteVirtPos={physicalByteVirtualPos}, firstInsVirtPos={firstInsertedVirtualPos}, " +
-                    $"relativePos={relativePosition}, totalIns={totalInsertions}");
-
-                // Show insertion list details
-                System.Diagnostics.Debug.WriteLine($"[ByteReader.ReadByte] Insertions at phys {physicalPos.Value}:");
-                for (int i = 0; i < insertions.Count; i++)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[ByteReader.ReadByte]   [{i}] VirtualOffset={insertions[i].VirtualOffset}, Value=0x{insertions[i].Value:X2}");
-                }
-
                 if (relativePosition < 0 || relativePosition >= insertions.Count)
                 {
                     // WORKAROUND BUG: VirtualToPhysical incorrectly returned isInserted=true
                     // but position is outside insertion range. This is a bug in VirtualToPhysical.
                     // Workaround: try reading as physical byte instead
-                    System.Diagnostics.Debug.WriteLine(
-                        $"[ByteReader] BUG WORKAROUND: VirtualToPhysical returned isInserted=true for virtualPos={virtualPosition}, " +
-                        $"but relativePosition={relativePosition} is outside insertion range [0, {insertions.Count}). " +
-                        $"Attempting to read as physical byte instead (physicalPos={physicalPos.Value}).");
-
-                    // Try to read directly from physical file
                     if (physicalPos.HasValue && physicalPos.Value >= 0 && physicalPos.Value < physicalFileLength)
                     {
                         var (physByte, success) = _fileProvider.ReadByte(physicalPos.Value);
                         if (success)
                         {
-                            System.Diagnostics.Debug.WriteLine($"[ByteReader] Workaround successful: read byte 0x{physByte:X2} from physical position {physicalPos.Value}");
                             return (physByte, true);
                         }
                     }
 
                     // If workaround fails, return error
-                    System.Diagnostics.Debug.WriteLine($"[ByteReader] Workaround FAILED - returning 0");
                     return (0, false);
                 }
 

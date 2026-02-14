@@ -287,16 +287,8 @@ namespace WpfHexaEditor.Core.Bytes
                     // Convert to LIFO array offset
                     int virtualOffset = totalInsertions - 1 - (int)relativePosition;
 
-                    System.Diagnostics.Debug.WriteLine($"[ByteProvider] ModifyInserted: virtual={virtualPosition}, physical={physicalPos.Value}, physByteVirtPos={physicalByteVirtualPos}, firstInsertedVirtPos={firstInsertedVirtualPos}, relativePos={relativePosition}, total={totalInsertions}, offset={virtualOffset}");
-
                     // Update the inserted byte's value
-                    bool success = _editsManager.ModifyInsertedByte(physicalPos.Value, virtualOffset, value);
-
-                    if (!success)
-                    {
-                        // This shouldn't happen, but log for debugging
-                        System.Diagnostics.Debug.WriteLine($"[ByteProvider] Failed to modify inserted byte at virtual pos {virtualPosition}, physical pos {physicalPos.Value}, offset {virtualOffset}");
-                    }
+                    _editsManager.ModifyInsertedByte(physicalPos.Value, virtualOffset, value);
                 }
             }
             else if (physicalPos.HasValue)
@@ -502,8 +494,6 @@ namespace WpfHexaEditor.Core.Bytes
             {
                 // FAST PATH: Write only modified bytes in-place
                 // 10-100x faster for files with only byte modifications
-                System.Diagnostics.Debug.WriteLine($"[ByteProvider] FAST SAVE: {_editsManager.ModifiedCount} modified bytes (no insertions/deletions)");
-
                 foreach (var kvp in _editsManager.GetAllModifiedBytes())
                 {
                     long physicalPos = kvp.Key;
@@ -520,13 +510,10 @@ namespace WpfHexaEditor.Core.Bytes
                 // Clear edits AND undo/redo history after successful save
                 // ClearAllEdits also calls OnChangesCleared() to refresh view
                 ClearAllEdits();
-
-                System.Diagnostics.Debug.WriteLine("[ByteProvider] FAST SAVE complete");
             }
             else
             {
                 // FULL REWRITE: Needed for insertions/deletions
-                System.Diagnostics.Debug.WriteLine($"[ByteProvider] FULL SAVE: {_editsManager.TotalInsertedBytesCount} insertions, {_editsManager.DeletedCount} deletions");
                 SaveAs(FilePath, true);
                 // Note: OnChangesCleared() is called inside OpenFile() at the end of SaveAs
             }
