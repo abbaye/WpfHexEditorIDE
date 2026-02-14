@@ -1775,7 +1775,15 @@ namespace WpfHexaEditor.V2
         /// </summary>
         public static readonly DependencyProperty BarChartColorProperty =
             DependencyProperty.Register(nameof(BarChartColor), typeof(System.Windows.Media.Color), typeof(HexEditorV2),
-                new PropertyMetadata(Colors.Blue));
+                new PropertyMetadata(Colors.Blue, OnBarChartColorChanged));
+
+        private static void OnBarChartColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditorV2 editor && e.NewValue is Color color && editor._barChartPanel != null)
+            {
+                editor._barChartPanel.BarColor = color;
+            }
+        }
 
         /// <summary>
         /// DataStringVisual DependencyProperty for XAML binding
@@ -2336,6 +2344,7 @@ namespace WpfHexaEditor.V2
             BytesPerLineText.Text = "Bytes/Line: 16";
         }
 
+
         /// <summary>
         /// Update bar chart panel with current file data (Phase 7.4)
         /// </summary>
@@ -2350,6 +2359,9 @@ namespace WpfHexaEditor.V2
 
             try
             {
+                // Set bar color
+                _barChartPanel.BarColor = BarChartColor;
+
                 // Use efficient ViewModel-based update for large files
                 _barChartPanel.UpdateDataFromViewModel(_viewModel);
             }
@@ -2357,6 +2369,14 @@ namespace WpfHexaEditor.V2
             {
                 StatusText.Text = $"Bar chart update failed: {ex.Message}";
             }
+        }
+
+        /// <summary>
+        /// Refresh the bar chart panel with current file data. V1 compatible method.
+        /// </summary>
+        public void RefreshBarChart()
+        {
+            UpdateBarChart();
         }
 
         /// <summary>
@@ -2949,6 +2969,124 @@ namespace WpfHexaEditor.V2
                     return _bookmarks[i];
             }
             return -1;
+        }
+
+        #endregion
+
+        #region Public Methods - File Comparison (V1 Compatible)
+
+        private readonly Services.ComparisonService _comparisonService = new();
+        private List<ByteDifference> _comparisonResults = null;
+
+        /// <summary>
+        /// Compare this editor's content with another HexEditorV2
+        /// </summary>
+        /// <param name="other">Other HexEditorV2 to compare against</param>
+        /// <param name="highlightDifferences">Automatically highlight differences with custom background blocks</param>
+        /// <param name="maxDifferences">Maximum number of differences to return (0 = unlimited)</param>
+        /// <returns>Enumerable of byte differences</returns>
+        public IEnumerable<ByteDifference> Compare(HexEditorV2 other, bool highlightDifferences = true, long maxDifferences = 1000)
+        {
+            if (other == null || _viewModel?.Provider == null || other._viewModel?.Provider == null)
+                return Enumerable.Empty<ByteDifference>();
+
+            var differences = _comparisonService.Compare(_viewModel.Provider, other._viewModel.Provider, maxDifferences).ToList();
+            _comparisonResults = differences;
+
+            if (highlightDifferences && differences.Any())
+            {
+                // Clear existing comparison highlights
+                ClearCustomBackgroundBlock();
+
+                // Highlight each difference
+                foreach (var diff in differences)
+                {
+                    var block = new Core.CustomBackgroundBlock(
+                        diff.BytePositionInStream,
+                        1, // Single byte
+                        new SolidColorBrush(Colors.LightCoral),
+                        $"Diff: 0x{diff.Origine:X2} vs 0x{diff.Destination:X2}"
+                    );
+                    AddCustomBackgroundBlock(block);
+                }
+            }
+
+            return differences;
+        }
+
+        /// <summary>
+        /// Compare this editor's content with a ByteProvider
+        /// </summary>
+        /// <param name="provider">ByteProvider to compare against</param>
+        /// <param name="highlightDifferences">Automatically highlight differences</param>
+        /// <param name="maxDifferences">Maximum differences to return (0 = unlimited)</param>
+        /// <returns>Enumerable of byte differences</returns>
+        public IEnumerable<ByteDifference> Compare(Core.Bytes.ByteProvider provider, bool highlightDifferences = true, long maxDifferences = 1000)
+        {
+            if (provider == null || _viewModel?.Provider == null)
+                return Enumerable.Empty<ByteDifference>();
+
+            var differences = _comparisonService.Compare(_viewModel.Provider, provider, maxDifferences).ToList();
+            _comparisonResults = differences;
+
+            if (highlightDifferences && differences.Any())
+            {
+                // Clear existing comparison highlights
+                ClearCustomBackgroundBlock();
+
+                // Highlight each difference
+                foreach (var diff in differences)
+                {
+                    var block = new Core.CustomBackgroundBlock(
+                        diff.BytePositionInStream,
+                        1,
+                        new SolidColorBrush(Colors.LightCoral),
+                        $"Diff: 0x{diff.Origine:X2} vs 0x{diff.Destination:X2}"
+                    );
+                    AddCustomBackgroundBlock(block);
+                }
+            }
+
+            return differences;
+        }
+
+        /// <summary>
+        /// Clear comparison results and highlighting
+        /// </summary>
+        public void ClearComparison()
+        {
+            _comparisonResults = null;
+            ClearCustomBackgroundBlock();
+        }
+
+        /// <summary>
+        /// Get the last comparison results
+        /// </summary>
+        public IEnumerable<ByteDifference> GetComparisonResults()
+        {
+            return _comparisonResults ?? Enumerable.Empty<ByteDifference>();
+        }
+
+        /// <summary>
+        /// Count differences between this editor and another
+        /// </summary>
+        public long CountDifferences(HexEditorV2 other)
+        {
+            if (other == null || _viewModel?.Provider == null || other._viewModel?.Provider == null)
+                return 0;
+
+            return _comparisonService.CountDifferences(_viewModel.Provider, other._viewModel.Provider);
+        }
+
+        /// <summary>
+        /// Calculate similarity percentage with another editor (0.0 - 100.0)
+        /// </summary>
+        public double CalculateSimilarity(HexEditorV2 other)
+        {
+            if (other == null || _viewModel?.Provider == null || other._viewModel?.Provider == null)
+                return 0.0;
+
+            return _comparisonService.CalculateSimilarity(_viewModel.Provider, other._viewModel.Provider);
         }
 
         #endregion

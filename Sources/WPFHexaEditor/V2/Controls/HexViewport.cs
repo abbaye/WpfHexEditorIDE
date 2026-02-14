@@ -525,6 +525,9 @@ namespace WpfHexaEditor.V2.Controls
             // Draw white background
             dc.DrawRectangle(Brushes.White, null, new Rect(0, 0, ActualWidth, ActualHeight));
 
+            // Draw custom background blocks (before drawing bytes)
+            DrawCustomBackgroundBlocks(dc);
+
             double y = TopMargin;
 
             foreach (var line in _linesCached)
@@ -584,6 +587,145 @@ namespace WpfHexaEditor.V2.Controls
                         var byteData = line.Bytes[i];
                         DrawAsciiByte(dc, byteData, asciiX, y);
                         asciiX += AsciiCharWidth;
+                    }
+                }
+
+                y += _lineHeight;
+            }
+        }
+
+        private void DrawCustomBackgroundBlocks(DrawingContext dc)
+        {
+            // Use existing custom background blocks from HexViewport
+            if (_customBackgroundBlocks == null || _customBackgroundBlocks.Count == 0 || _linesCached == null || _linesCached.Count == 0)
+                return;
+
+            var blocks = _customBackgroundBlocks;
+
+            // Calculate visible range
+            long firstVisiblePos = _linesCached[0].Bytes[0].VirtualPos;
+            long lastVisiblePos = _linesCached[_linesCached.Count - 1].Bytes[_linesCached[_linesCached.Count - 1].Bytes.Count - 1].VirtualPos;
+
+            foreach (var block in blocks)
+            {
+                // Skip blocks outside visible range (manual overlap check)
+                if (block.StartOffset >= lastVisiblePos + 1 || block.StopOffset <= firstVisiblePos)
+                    continue;
+
+                // Draw block (may span multiple lines)
+                DrawCustomBackgroundBlock(dc, block, firstVisiblePos, lastVisiblePos);
+            }
+        }
+
+        private void DrawCustomBackgroundBlock(DrawingContext dc, Core.CustomBackgroundBlock block, long firstVisiblePos, long lastVisiblePos)
+        {
+            double y = TopMargin;
+            double hexStartX = ShowOffset ? OffsetWidth : 0;
+            double asciiStartX = hexStartX + (_bytesPerLine * (HexByteWidth + HexByteSpacing)) + 4 + SeparatorWidth;
+
+            // Calculate byte spacers width
+            int numSpacers = 0;
+            if (_bytesPerLine >= (int)ByteGrouping)
+            {
+                numSpacers = (_bytesPerLine % (int)ByteGrouping == 0)
+                    ? (_bytesPerLine / (int)ByteGrouping) - 1
+                    : _bytesPerLine / (int)ByteGrouping;
+            }
+            double spacersWidth = numSpacers * (int)ByteSpacerWidthTickness;
+            asciiStartX += spacersWidth;
+
+            // Clone brush and make semi-transparent
+            var brush = block.Color.Clone();
+            brush.Opacity = 0.3; // Semi-transparent
+
+            foreach (var line in _linesCached)
+            {
+                if (line.Bytes == null || line.Bytes.Count == 0)
+                {
+                    y += _lineHeight;
+                    continue;
+                }
+
+                long lineStartPos = line.Bytes[0].VirtualPos;
+                long lineEndPos = line.Bytes[line.Bytes.Count - 1].VirtualPos;
+
+                // Check if block overlaps with this line (manual check)
+                if (block.StartOffset < lineEndPos + 1 && block.StopOffset > lineStartPos)
+                {
+                    // Calculate which bytes in this line are part of the block
+                    int startByteIndex = 0;
+                    int endByteIndex = line.Bytes.Count - 1;
+
+                    for (int i = 0; i < line.Bytes.Count; i++)
+                    {
+                        if (line.Bytes[i].VirtualPos >= block.StartOffset)
+                        {
+                            startByteIndex = i;
+                            break;
+                        }
+                    }
+
+                    for (int i = line.Bytes.Count - 1; i >= 0; i--)
+                    {
+                        if (line.Bytes[i].VirtualPos < block.StopOffset)
+                        {
+                            endByteIndex = i;
+                            break;
+                        }
+                    }
+
+                    // Draw background for hex bytes
+                    double hexX = hexStartX;
+                    // Account for byte spacers before start byte
+                    for (int i = 0; i < startByteIndex; i++)
+                    {
+                        if (_bytesPerLine >= (int)ByteGrouping && i > 0 && i % (int)ByteGrouping == 0)
+                        {
+                            hexX += (int)ByteSpacerWidthTickness;
+                        }
+                        hexX += HexByteWidth + HexByteSpacing;
+                    }
+
+                    double blockStartX = hexX;
+                    double blockWidth = 0;
+
+                    for (int i = startByteIndex; i <= endByteIndex; i++)
+                    {
+                        if (_bytesPerLine >= (int)ByteGrouping && i > 0 && i % (int)ByteGrouping == 0)
+                        {
+                            blockWidth += (int)ByteSpacerWidthTickness;
+                        }
+                        blockWidth += HexByteWidth + HexByteSpacing;
+                    }
+
+                    dc.DrawRectangle(brush, null, new Rect(blockStartX, y, blockWidth, _lineHeight));
+
+                    // Draw background for ASCII bytes (if visible)
+                    if (ShowAscii)
+                    {
+                        double asciiX = asciiStartX;
+                        for (int i = 0; i < startByteIndex; i++)
+                        {
+                            if (_bytesPerLine >= (int)ByteGrouping && i > 0 && i % (int)ByteGrouping == 0)
+                            {
+                                asciiX += (int)ByteSpacerWidthTickness;
+                            }
+                            asciiX += AsciiCharWidth;
+                        }
+
+                        double asciiBlockStartX = asciiX;
+                        double asciiBlockWidth = 0;
+
+                        for (int i = startByteIndex; i <= endByteIndex; i++)
+                        {
+                            if (_bytesPerLine >= (int)ByteGrouping && i > 0 && i % (int)ByteGrouping == 0)
+                            {
+                                asciiBlockWidth += (int)ByteSpacerWidthTickness;
+                            }
+                            asciiBlockWidth += AsciiCharWidth;
+                        }
+
+                        dc.DrawRectangle(brush, null, new Rect(asciiBlockStartX, y, asciiBlockWidth, _lineHeight));
                     }
                 }
 
