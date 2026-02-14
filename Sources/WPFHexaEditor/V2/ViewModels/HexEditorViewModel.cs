@@ -355,19 +355,32 @@ namespace WpfHexaEditor.V2.ViewModels
 
         /// <summary>
         /// Modify byte at virtual position
+        /// Handles both inserted bytes (_insertedBytes) and file bytes (ByteProvider)
         /// </summary>
         public void ModifyByte(VirtualPosition virtualPos, byte newValue)
         {
             if (ReadOnlyMode) return;
 
-            var physicalPos = VirtualToPhysical(virtualPos);
-            if (!physicalPos.IsValid) return;
+            // Check if this is an inserted byte (stored in ViewModel)
+            if (_insertedBytes.ContainsKey(virtualPos.Value))
+            {
+                // Update the inserted byte directly
+                _insertedBytes[virtualPos.Value] = newValue;
+                System.Diagnostics.Debug.WriteLine($"[MODIFYBYTE] Updated inserted byte at virtual pos {virtualPos.Value}: 0x{newValue:X2}");
+            }
+            else
+            {
+                // Modify file byte via ByteProvider
+                var physicalPos = VirtualToPhysical(virtualPos);
+                if (!physicalPos.IsValid) return;
 
-            _provider.AddByteModified(newValue, physicalPos.Value);
+                _provider.AddByteModified(newValue, physicalPos.Value);
+                System.Diagnostics.Debug.WriteLine($"[MODIFYBYTE] Modified file byte at physical pos {physicalPos.Value}: 0x{newValue:X2}");
 
-            // Notify Undo/Redo state changed
-            OnPropertyChanged(nameof(CanUndo));
-            OnPropertyChanged(nameof(CanRedo));
+                // Notify Undo/Redo state changed (ByteProvider handles undo for modifications)
+                OnPropertyChanged(nameof(CanUndo));
+                OnPropertyChanged(nameof(CanRedo));
+            }
 
             // OPTIMIZATION: Invalidate only the affected line, not the entire cache
             InvalidateLineAtPosition(virtualPos.Value);

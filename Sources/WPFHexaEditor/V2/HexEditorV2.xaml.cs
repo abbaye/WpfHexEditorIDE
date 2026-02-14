@@ -4970,8 +4970,18 @@ namespace WpfHexaEditor.V2
 
                 _editingHighNibble = false; // Move to low nibble
 
-                // Update visual display immediately after high nibble
-                UpdateBytePreview(_editingPosition, _editingValue);
+                // IN INSERT MODE: Insert byte IMMEDIATELY after first nibble (don't wait for second nibble)
+                if (_viewModel.EditMode == EditMode.Insert)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[HEXINPUT] HIGH NIBBLE - INSERT MODE: Inserting byte IMMEDIATELY with value 0x{_editingValue:X2}");
+                    _viewModel.InsertByte(_editingPosition, _editingValue);
+                    // Don't move to next byte yet - wait for low nibble to modify this inserted byte
+                }
+                else
+                {
+                    // OVERWRITE MODE: Update visual display immediately after high nibble (preview only)
+                    UpdateBytePreview(_editingPosition, _editingValue);
+                }
             }
             else
             {
@@ -5037,21 +5047,12 @@ namespace WpfHexaEditor.V2
             System.Diagnostics.Debug.WriteLine($"[COMMIT] === CommitByteEdit START ===");
             System.Diagnostics.Debug.WriteLine($"[COMMIT] Position={_editingPosition.Value}, Value=0x{_editingValue:X2}, EditMode={_viewModel.EditMode}");
 
-            // Determine action based on edit mode
-            if (_viewModel.EditMode == EditMode.Insert)
-            {
-                // Insert mode: insert new byte
-                System.Diagnostics.Debug.WriteLine($"[COMMIT] Calling InsertByte(pos={_editingPosition.Value}, value=0x{_editingValue:X2})");
-                _viewModel.InsertByte(_editingPosition, _editingValue);
-                System.Diagnostics.Debug.WriteLine($"[COMMIT] InsertByte completed");
-            }
-            else
-            {
-                // Overwrite mode: modify existing byte
-                System.Diagnostics.Debug.WriteLine($"[COMMIT] Calling ModifyByte(pos={_editingPosition.Value}, value=0x{_editingValue:X2})");
-                _viewModel.ModifyByte(_editingPosition, _editingValue);
-                System.Diagnostics.Debug.WriteLine($"[COMMIT] ModifyByte completed");
-            }
+            // In Insert mode, the byte was already inserted after the first nibble
+            // So the low nibble should MODIFY the inserted byte (not insert again)
+            // In Overwrite mode, modify the existing byte
+            System.Diagnostics.Debug.WriteLine($"[COMMIT] Calling ModifyByte(pos={_editingPosition.Value}, value=0x{_editingValue:X2})");
+            _viewModel.ModifyByte(_editingPosition, _editingValue);
+            System.Diagnostics.Debug.WriteLine($"[COMMIT] ModifyByte completed");
 
             _isEditingByte = false;
             _editingHighNibble = true;
