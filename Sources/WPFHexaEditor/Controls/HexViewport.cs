@@ -92,6 +92,10 @@ namespace WpfHexaEditor.Controls
         // Caret for Insert mode (flashing vertical line)
         private Caret _caret;
 
+        // Mouse drag selection support
+        private bool _isMouseDown = false;
+        private long? _dragStartPosition = null;
+
         #endregion
 
         #region Constructor
@@ -1054,6 +1058,11 @@ namespace WpfHexaEditor.Controls
                 }
                 else
                 {
+                    // Single click - start selection drag
+                    _isMouseDown = true;
+                    _dragStartPosition = clickedPosition.Value;
+                    CaptureMouse();
+
                     ByteClicked?.Invoke(this, clickedPosition.Value);
                 }
             }
@@ -1160,7 +1169,18 @@ namespace WpfHexaEditor.Controls
                 _byteToolTip.IsOpen = false;
             }
 
-            // TODO: Implement mouse drag selection
+            // Mouse drag selection
+            if (_isMouseDown && _dragStartPosition.HasValue)
+            {
+                var currentPosition = HitTestByte(e.GetPosition(this));
+                if (currentPosition.HasValue)
+                {
+                    // Raise event for parent to handle selection extension
+                    ByteDragSelection?.Invoke(this, new ByteDragSelectionEventArgs(
+                        _dragStartPosition.Value,
+                        currentPosition.Value));
+                }
+            }
         }
 
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
@@ -1179,7 +1199,13 @@ namespace WpfHexaEditor.Controls
         {
             base.OnMouseUp(e);
 
-            // TODO: Implement selection end
+            // End drag selection
+            if (_isMouseDown)
+            {
+                _isMouseDown = false;
+                _dragStartPosition = null;
+                ReleaseMouseCapture();
+            }
         }
 
         #endregion
@@ -1199,9 +1225,18 @@ namespace WpfHexaEditor.Controls
         {
             base.OnKeyDown(e);
 
-            // TODO: Implement keyboard navigation
-            // Arrow keys, Page Up/Down, Home/End
-            // Raise events for parent to handle
+            // Keyboard navigation - raise event for parent to handle
+            // Parent (HexEditorV2) will update ViewModel selection/cursor
+            if (e.Key == Key.Up || e.Key == Key.Down ||
+                e.Key == Key.Left || e.Key == Key.Right ||
+                e.Key == Key.PageUp || e.Key == Key.PageDown ||
+                e.Key == Key.Home || e.Key == Key.End)
+            {
+                KeyboardNavigation?.Invoke(this, new KeyboardNavigationEventArgs(e.Key,
+                    Keyboard.Modifiers.HasFlag(ModifierKeys.Shift),
+                    Keyboard.Modifiers.HasFlag(ModifierKeys.Control)));
+                e.Handled = true;
+            }
         }
 
         #endregion
@@ -1219,9 +1254,14 @@ namespace WpfHexaEditor.Controls
         public event EventHandler<long> ByteDoubleClicked;
 
         /// <summary>
-        /// Raised when user navigates with keyboard (not currently used)
+        /// Raised when user drags to select multiple bytes
         /// </summary>
-        // public event EventHandler<Key> NavigationKeyPressed;
+        public event EventHandler<ByteDragSelectionEventArgs> ByteDragSelection;
+
+        /// <summary>
+        /// Raised when user navigates with keyboard
+        /// </summary>
+        public event EventHandler<KeyboardNavigationEventArgs> KeyboardNavigation;
 
         #endregion
     }
@@ -1236,6 +1276,38 @@ namespace WpfHexaEditor.Controls
         public ByteRightClickEventArgs(long position)
         {
             Position = position;
+        }
+    }
+
+    /// <summary>
+    /// Event args for ByteDragSelection event (mouse drag selection)
+    /// </summary>
+    public class ByteDragSelectionEventArgs : EventArgs
+    {
+        public long StartPosition { get; }
+        public long EndPosition { get; }
+
+        public ByteDragSelectionEventArgs(long startPosition, long endPosition)
+        {
+            StartPosition = startPosition;
+            EndPosition = endPosition;
+        }
+    }
+
+    /// <summary>
+    /// Event args for KeyboardNavigation event
+    /// </summary>
+    public class KeyboardNavigationEventArgs : EventArgs
+    {
+        public Key Key { get; }
+        public bool IsShiftPressed { get; }
+        public bool IsControlPressed { get; }
+
+        public KeyboardNavigationEventArgs(Key key, bool isShiftPressed, bool isControlPressed)
+        {
+            Key = key;
+            IsShiftPressed = isShiftPressed;
+            IsControlPressed = isControlPressed;
         }
     }
 }

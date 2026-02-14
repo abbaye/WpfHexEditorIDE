@@ -227,13 +227,11 @@ namespace WpfHexaEditor.ViewModels
 
         /// <summary>
         /// Can undo? (ByteProvider V2 handles undo internally)
-        /// TODO: Implement undo/redo properly for ByteProvider V2
         /// </summary>
         public bool CanUndo => _provider?.CanUndo ?? false;
 
         /// <summary>
         /// Can redo? (ByteProvider V2 handles redo internally)
-        /// TODO: Implement undo/redo properly for ByteProvider V2
         /// </summary>
         public bool CanRedo => _provider?.CanRedo ?? false;
 
@@ -320,8 +318,7 @@ namespace WpfHexaEditor.ViewModels
         /// </summary>
         public void ClearUndoRedo()
         {
-            // TODO: ByteProvider V2 needs undo/redo implementation
-            // _undoRedoService.ClearAll(_provider); // Needs ByteProvider V2 support
+            _provider?.ClearUndoRedoHistory();
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
         }
@@ -409,8 +406,7 @@ namespace WpfHexaEditor.ViewModels
             // ByteProvider V2 handles insertions internally with proper LIFO (stack-like) behavior
             _provider.InsertByte(virtualPos.Value, value);
 
-            // TODO: Undo/Redo for insertions (needs to be reimplemented for ByteProvider V2)
-            // For now, insertions are not undoable
+            // Notify Undo/Redo state changed (ByteProvider V2 handles undo for insertions)
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
 
@@ -433,7 +429,7 @@ namespace WpfHexaEditor.ViewModels
             // ByteProvider V2 handles all insertion logic internally
             _provider.InsertBytes(startVirtualPos.Value, bytes);
 
-            // TODO: Undo/Redo for insertions (needs to be reimplemented for ByteProvider V2)
+            // Notify Undo/Redo state changed (ByteProvider V2 handles undo for insertions)
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
 

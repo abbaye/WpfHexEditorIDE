@@ -108,6 +108,8 @@ namespace WpfHexaEditor
             {
                 HexViewport.ByteRightClick += HexViewport_ByteRightClick;
                 HexViewport.ByteDoubleClicked += HexViewport_ByteDoubleClicked;
+                HexViewport.ByteDragSelection += HexViewport_ByteDragSelection;
+                HexViewport.KeyboardNavigation += HexViewport_KeyboardNavigation;
             }
 
             // Initialize zoom system
@@ -156,35 +158,144 @@ namespace WpfHexaEditor
         /// </summary>
         private void HexViewport_ByteDoubleClicked(object sender, long position)
         {
-            StatusText.Text = $"DEBUG: Double-click at position {position}";
-
             // Only auto-select if feature is enabled
             if (!AllowAutoSelectSameByteAtDoubleClick)
-            {
-                StatusText.Text = "DEBUG: Double-click feature is disabled";
                 return;
-            }
 
             if (_viewModel == null)
-            {
-                StatusText.Text = "DEBUG: ViewModel is null";
                 return;
-            }
-
 
             // Get byte value at clicked position
             var virtualPos = new VirtualPosition(position);
             if (!virtualPos.IsValid || position >= _viewModel.VirtualLength)
-            {
-                StatusText.Text = $"DEBUG: Invalid position (length={_viewModel.VirtualLength})";
                 return;
-            }
 
             byte byteValue = _viewModel.GetByteAt(virtualPos);
-            StatusText.Text = $"DEBUG: Double-clicked byte value = 0x{byteValue:X2}";
 
             // Find all positions with this byte value and select them
             SelectAllBytesWith(byteValue);
+
+            // Update status with meaningful info
+            int count = CountBytesWith(byteValue);
+            StatusText.Text = $"Selected {count} byte(s) with value 0x{byteValue:X2}";
+        }
+
+        /// <summary>
+        /// Count occurrences of a specific byte value in the file
+        /// </summary>
+        private int CountBytesWith(byte value)
+        {
+            if (_viewModel == null)
+                return 0;
+
+            int count = 0;
+            for (long i = 0; i < _viewModel.VirtualLength; i++)
+            {
+                if (_viewModel.GetByteAt(new VirtualPosition(i)) == value)
+                    count++;
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Handle mouse drag selection
+        /// </summary>
+        private void HexViewport_ByteDragSelection(object sender, Controls.ByteDragSelectionEventArgs e)
+        {
+            if (_viewModel == null)
+                return;
+
+            // Update selection range in ViewModel
+            _viewModel.SetSelectionRange(
+                new VirtualPosition(e.StartPosition),
+                new VirtualPosition(e.EndPosition));
+
+            // Update UI
+            UpdateSelectionInfo();
+        }
+
+        /// <summary>
+        /// Handle keyboard navigation (Arrow keys, Page Up/Down, Home/End)
+        /// </summary>
+        private void HexViewport_KeyboardNavigation(object sender, Controls.KeyboardNavigationEventArgs e)
+        {
+            if (_viewModel == null)
+                return;
+
+            var currentPos = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0;
+            long newPos = currentPos;
+
+            switch (e.Key)
+            {
+                case System.Windows.Input.Key.Left:
+                    newPos = Math.Max(0, currentPos - 1);
+                    break;
+
+                case System.Windows.Input.Key.Right:
+                    newPos = Math.Min(_viewModel.VirtualLength - 1, currentPos + 1);
+                    break;
+
+                case System.Windows.Input.Key.Up:
+                    newPos = Math.Max(0, currentPos - _viewModel.BytePerLine);
+                    break;
+
+                case System.Windows.Input.Key.Down:
+                    newPos = Math.Min(_viewModel.VirtualLength - 1, currentPos + _viewModel.BytePerLine);
+                    break;
+
+                case System.Windows.Input.Key.PageUp:
+                    newPos = Math.Max(0, currentPos - (_viewModel.BytePerLine * _viewModel.VisibleLines));
+                    break;
+
+                case System.Windows.Input.Key.PageDown:
+                    newPos = Math.Min(_viewModel.VirtualLength - 1, currentPos + (_viewModel.BytePerLine * _viewModel.VisibleLines));
+                    break;
+
+                case System.Windows.Input.Key.Home:
+                    if (e.IsControlPressed)
+                        newPos = 0; // Ctrl+Home: Go to start of file
+                    else
+                        newPos = (currentPos / _viewModel.BytePerLine) * _viewModel.BytePerLine; // Home: Go to start of line
+                    break;
+
+                case System.Windows.Input.Key.End:
+                    if (e.IsControlPressed)
+                        newPos = _viewModel.VirtualLength - 1; // Ctrl+End: Go to end of file
+                    else
+                    {
+                        // End: Go to end of line
+                        long lineStart = (currentPos / _viewModel.BytePerLine) * _viewModel.BytePerLine;
+                        newPos = Math.Min(_viewModel.VirtualLength - 1, lineStart + _viewModel.BytePerLine - 1);
+                    }
+                    break;
+            }
+
+            // Update selection based on Shift key
+            if (e.IsShiftPressed)
+            {
+                // Shift pressed: extend selection
+                if (!_viewModel.SelectionStart.IsValid)
+                    _viewModel.SelectionStart = new VirtualPosition(currentPos);
+
+                _viewModel.SelectionStop = new VirtualPosition(newPos);
+            }
+            else
+            {
+                // No Shift: move cursor
+                _viewModel.SelectionStart = new VirtualPosition(newPos);
+                _viewModel.SelectionStop = new VirtualPosition(newPos);
+            }
+
+            // Scroll to ensure new position is visible
+            long targetLine = newPos / _viewModel.BytePerLine;
+            if (targetLine < _viewModel.ScrollPosition)
+                _viewModel.ScrollPosition = targetLine;
+            else if (targetLine >= _viewModel.ScrollPosition + _viewModel.VisibleLines)
+                _viewModel.ScrollPosition = targetLine - _viewModel.VisibleLines + 1;
+
+            // Update UI
+            UpdateSelectionInfo();
+            UpdatePositionInfo();
         }
 
         #region Public Events

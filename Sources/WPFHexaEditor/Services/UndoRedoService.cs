@@ -10,29 +10,28 @@ using WpfHexaEditor.Core.Bytes;
 namespace WpfHexaEditor.Services
 {
     /// <summary>
-    /// Service responsible for undo/redo operations
+    /// Service responsible for undo/redo operations.
+    /// Supports both ByteProviderLegacy (V1) and ByteProvider (V2).
     /// </summary>
     /// <example>
-    /// Basic usage:
+    /// Basic usage with ByteProvider V2:
     /// <code>
     /// var service = new UndoRedoService();
+    /// var provider = new ByteProvider();
     ///
     /// // Perform undo
     /// if (service.CanUndo(provider))
     /// {
-    ///     long position = service.Undo(provider);
-    ///     Console.WriteLine($"Undone to position {position}");
+    ///     service.Undo(provider);
+    ///     Console.WriteLine("Undone");
     /// }
     ///
     /// // Perform redo
     /// if (service.CanRedo(provider))
     /// {
-    ///     long position = service.Redo(provider);
-    ///     Console.WriteLine($"Redone to position {position}");
+    ///     service.Redo(provider);
+    ///     Console.WriteLine("Redone");
     /// }
-    ///
-    /// // Undo multiple times
-    /// service.Undo(provider, repeat: 5); // Undo last 5 operations
     ///
     /// // Clear history
     /// service.ClearAll(provider);
@@ -41,13 +40,96 @@ namespace WpfHexaEditor.Services
     /// int undoCount = service.GetUndoCount(provider);
     /// int redoCount = service.GetRedoCount(provider);
     /// </code>
+    ///
+    /// Basic usage with ByteProviderLegacy (V1):
+    /// <code>
+    /// var service = new UndoRedoService();
+    /// var legacyProvider = new ByteProviderLegacy();
+    ///
+    /// // Perform undo
+    /// if (service.CanUndo(legacyProvider))
+    /// {
+    ///     long position = service.Undo(legacyProvider);
+    ///     Console.WriteLine($"Undone to position {position}");
+    /// }
+    ///
+    /// // Undo multiple times
+    /// service.Undo(legacyProvider, repeat: 5); // Undo last 5 operations
+    /// </code>
     /// </example>
     public class UndoRedoService
     {
-        #region Undo Methods
+        #region Undo Methods - ByteProvider V2
 
         /// <summary>
-        /// Perform undo operation(s)
+        /// Perform undo operation (ByteProvider V2)
+        /// </summary>
+        /// <param name="provider">ByteProvider V2 instance</param>
+        /// <returns>True if undo was performed</returns>
+        public bool Undo(ByteProvider provider)
+        {
+            if (provider == null || !provider.IsOpen || !provider.CanUndo)
+                return false;
+
+            provider.Undo();
+            return true;
+        }
+
+        /// <summary>
+        /// Perform redo operation (ByteProvider V2)
+        /// </summary>
+        /// <param name="provider">ByteProvider V2 instance</param>
+        /// <returns>True if redo was performed</returns>
+        public bool Redo(ByteProvider provider)
+        {
+            if (provider == null || !provider.IsOpen || !provider.CanRedo)
+                return false;
+
+            provider.Redo();
+            return true;
+        }
+
+        #endregion
+
+        #region Clear Methods - ByteProvider V2
+
+        /// <summary>
+        /// Clear all undo and redo history (ByteProvider V2)
+        /// </summary>
+        public void ClearAll(ByteProvider provider)
+        {
+            if (provider == null || !provider.IsOpen)
+                return;
+
+            provider.ClearUndoRedoHistory();
+        }
+
+        #endregion
+
+        #region Query Methods - ByteProvider V2
+
+        /// <summary>
+        /// Check if undo is possible (ByteProvider V2)
+        /// </summary>
+        public bool CanUndo(ByteProvider provider)
+        {
+            return provider != null && provider.IsOpen && provider.CanUndo;
+        }
+
+        /// <summary>
+        /// Check if redo is possible (ByteProvider V2)
+        /// </summary>
+        public bool CanRedo(ByteProvider provider)
+        {
+            return provider != null && provider.IsOpen && provider.CanRedo;
+        }
+
+        #endregion
+
+        #region Undo Methods - ByteProviderLegacy (V1)
+
+        /// <summary>
+        /// Perform undo operation(s) (ByteProviderLegacy V1)
         /// </summary>
         /// <param name="provider">ByteProviderLegacy instance</param>
         /// <param name="repeat">Number of undo operations to perform</param>
@@ -71,7 +153,7 @@ namespace WpfHexaEditor.Services
         }
 
         /// <summary>
-        /// Perform redo operation(s)
+        /// Perform redo operation(s) (ByteProviderLegacy V1)
         /// </summary>
         /// <param name="provider">ByteProviderLegacy instance</param>
         /// <param name="repeat">Number of redo operations to perform</param>
@@ -96,10 +178,10 @@ namespace WpfHexaEditor.Services
 
         #endregion
 
-        #region Clear Methods
+        #region Clear Methods - ByteProviderLegacy (V1)
 
         /// <summary>
-        /// Clear all undo and redo history
+        /// Clear all undo and redo history (ByteProviderLegacy V1)
         /// </summary>
         public void ClearAll(ByteProviderLegacy provider)
         {
@@ -111,7 +193,7 @@ namespace WpfHexaEditor.Services
         }
 
         /// <summary>
-        /// Clear only undo history
+        /// Clear only undo history (ByteProviderLegacy V1)
         /// </summary>
         public void ClearUndo(ByteProviderLegacy provider)
         {
@@ -122,7 +204,7 @@ namespace WpfHexaEditor.Services
         }
 
         /// <summary>
-        /// Clear only redo history
+        /// Clear only redo history (ByteProviderLegacy V1)
         /// </summary>
         public void ClearRedo(ByteProviderLegacy provider)
         {
@@ -134,10 +216,10 @@ namespace WpfHexaEditor.Services
 
         #endregion
 
-        #region Query Methods
+        #region Query Methods - ByteProviderLegacy (V1)
 
         /// <summary>
-        /// Check if undo is possible
+        /// Check if undo is possible (ByteProviderLegacy V1)
         /// </summary>
         public bool CanUndo(ByteProviderLegacy provider)
         {
@@ -145,7 +227,7 @@ namespace WpfHexaEditor.Services
         }
 
         /// <summary>
-        /// Check if redo is possible
+        /// Check if redo is possible (ByteProviderLegacy V1)
         /// </summary>
         public bool CanRedo(ByteProviderLegacy provider)
         {
@@ -153,7 +235,7 @@ namespace WpfHexaEditor.Services
         }
 
         /// <summary>
-        /// Get undo count
+        /// Get undo count (ByteProviderLegacy V1)
         /// </summary>
         public long GetUndoCount(ByteProviderLegacy provider)
         {
@@ -161,7 +243,7 @@ namespace WpfHexaEditor.Services
         }
 
         /// <summary>
-        /// Get redo count
+        /// Get redo count (ByteProviderLegacy V1)
         /// </summary>
         public long GetRedoCount(ByteProviderLegacy provider)
         {
@@ -169,7 +251,7 @@ namespace WpfHexaEditor.Services
         }
 
         /// <summary>
-        /// Get undo stack
+        /// Get undo stack (ByteProviderLegacy V1)
         /// </summary>
         public Stack<ByteModified> GetUndoStack(ByteProviderLegacy provider)
         {
@@ -177,7 +259,7 @@ namespace WpfHexaEditor.Services
         }
 
         /// <summary>
-        /// Get redo stack
+        /// Get redo stack (ByteProviderLegacy V1)
         /// </summary>
         public Stack<ByteModified> GetRedoStack(ByteProviderLegacy provider)
         {
