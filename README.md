@@ -91,12 +91,41 @@ Hexeditor control is totaly free and can be used in all project you want like op
 
 </details>
 
-## 🧾 What is TBL (custom character table)
-The TBL are small plaintext .tbl files that link every hexadecimal value with a character, which proves most useful when reading and changing text data. Wpf HexEditor support .tbl and you can define your custom character table as you want.
+<details>
+<summary>🧾 <b>What is TBL (custom character table)?</b> - Click to learn more</summary>
 
-Unicode TBL are supported. For use put value at the right of equal (=) like this (0401=塞西尔) or (42=Д) in you plaintext .tbl file.
+<br/>
 
-![example](Images/TBLExplain.png?raw=true)
+The TBL are small plaintext `.tbl` files that link every hexadecimal value with a character, which proves most useful when reading and changing text data. WPF HexEditor supports `.tbl` files and you can define your custom character table as you want.
+
+**Common Use Cases:**
+- 🎮 **Game ROM hacking** - Translate game text using custom character mappings
+- 📝 **Retro computing** - Work with non-standard character encodings
+- 🔤 **Custom encodings** - Define application-specific character sets
+
+**Unicode TBL Support:**
+Unicode characters are fully supported. Place the value to the right of the equal sign (=) in your plaintext `.tbl` file:
+
+```
+0401=塞西尔
+42=Д
+01=[START]
+02=[END]
+```
+
+**Example TBL File Structure:**
+
+![TBL Example](Images/TBLExplain.png?raw=true)
+
+**How to Use:**
+1. Create a `.tbl` file with your character mappings
+2. Load it in the hex editor: `HexEditor.LoadTBLFile("path/to/file.tbl")`
+3. The editor will display bytes using your custom character table
+4. Switch between ASCII and TBL modes on-the-fly
+
+**Supported in both V1 and V2** ✅
+
+</details>
 
 ### 🛒 Feature Comparison: V1 (Legacy) vs V2
 
