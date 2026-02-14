@@ -39,17 +39,17 @@ namespace WpfHexaEditor
         private Controls.BarChartPanel _barChartPanel;
         private Controls.ScrollMarkerPanel _scrollMarkers;
 
-        // Bookmarks (V1 compatible)
+        // Bookmarks 
         private readonly List<long> _bookmarks = new List<long>();
 
-        // Highlights (V1 compatible) - stores ranges of highlighted bytes
+        // Highlights  - stores ranges of highlighted bytes
         private readonly List<(long start, long length)> _highlights = new List<(long, long)>();
 
-        // TBL (Character Table) support (V1 compatible)
+        // TBL (Character Table) support 
         private TblStream _tblStream;
         private CharacterTableType _characterTableType = CharacterTableType.Ascii;
 
-        // Zoom support (V1 compatible)
+        // Zoom support 
         private ScaleTransform _scaler;
 
         // Hex editing state
@@ -97,19 +97,19 @@ namespace WpfHexaEditor
             // Initialize column headers with byte position numbers
             this.Loaded += (s, e) => RefreshColumnHeader();
 
-            // V1 Compatible: Subscribe to right-click event for context menu
+            // Subscribe to right-click event for context menu
             if (HexViewport != null)
             {
                 HexViewport.ByteRightClick += HexViewport_ByteRightClick;
                 HexViewport.ByteDoubleClicked += HexViewport_ByteDoubleClicked;
             }
 
-            // V1 Compatible: Initialize zoom system
+            // Initialize zoom system
             InitialiseZoom();
         }
 
         /// <summary>
-        /// Handle right-click on byte for context menu (V1 compatible)
+        /// Handle right-click on byte for context menu 
         /// </summary>
         private void HexViewport_ByteRightClick(object sender, Controls.ByteRightClickEventArgs e)
         {
@@ -117,7 +117,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Handle double-click on byte for auto-select same bytes (V1 compatible)
+        /// Handle double-click on byte for auto-select same bytes 
         /// </summary>
         private void HexViewport_ByteDoubleClicked(object sender, long position)
         {
@@ -158,7 +158,7 @@ namespace WpfHexaEditor
             SelectAllBytesWith(byteValue);
         }
 
-        #region Public Events (V1 Compatible)
+        #region Public Events
 
         /// <summary>
         /// Raised when a byte is modified, added, or deleted
@@ -232,100 +232,100 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region V1 Compatible Events
+        #region Events
 
         /// <summary>
-        /// V1 compatible: Raised when selection start position changes
+        /// Raised when selection start position changes
         /// </summary>
         public event EventHandler SelectionStartChanged;
 
         /// <summary>
-        /// V1 compatible: Raised when selection stop position changes
+        /// Raised when selection stop position changes
         /// </summary>
         public event EventHandler SelectionStopChanged;
 
         /// <summary>
-        /// V1 compatible: Raised when selection length changes
+        /// Raised when selection length changes
         /// </summary>
         public event EventHandler SelectionLengthChanged;
 
         /// <summary>
-        /// V1 compatible: Raised when data is copied to clipboard
+        /// Raised when data is copied to clipboard
         /// </summary>
         public event EventHandler DataCopied;
 
         /// <summary>
-        /// V1 compatible: Raised when character table type changes
+        /// Raised when character table type changes
         /// </summary>
         public event EventHandler TypeOfCharacterTableChanged;
 
         /// <summary>
-        /// V1 compatible: Raised when a long process progress changes
+        /// Raised when a long process progress changes
         /// </summary>
         public event EventHandler LongProcessProgressChanged;
 
         /// <summary>
-        /// V1 compatible: Raised when a long process starts
+        /// Raised when a long process starts
         /// </summary>
         public event EventHandler LongProcessProgressStarted;
 
         /// <summary>
-        /// V1 compatible: Raised when a long process completes
+        /// Raised when a long process completes
         /// </summary>
         public event EventHandler LongProcessProgressCompleted;
 
         /// <summary>
-        /// V1 compatible: Raised when a replace byte operation completes
+        /// Raised when a replace byte operation completes
         /// </summary>
         public event EventHandler ReplaceByteCompleted;
 
         /// <summary>
-        /// V1 compatible: Raised when a fill with byte operation completes
+        /// Raised when a fill with byte operation completes
         /// </summary>
         public event EventHandler FillWithByteCompleted;
 
         /// <summary>
-        /// V1 compatible: Raised when bytes are deleted
+        /// Raised when bytes are deleted
         /// </summary>
         public event EventHandler BytesDeleted;
 
         /// <summary>
-        /// V1 compatible: Raised when an undo operation completes (alias for UndoCompleted)
+        /// Raised when an undo operation completes (alias for UndoCompleted)
         /// </summary>
         public event EventHandler Undone;
 
         /// <summary>
-        /// V1 compatible: Raised when a redo operation completes (alias for RedoCompleted)
+        /// Raised when a redo operation completes (alias for RedoCompleted)
         /// </summary>
         public event EventHandler Redone;
 
         /// <summary>
-        /// V1 compatible: Raised when a byte is single-clicked
+        /// Raised when a byte is single-clicked
         /// </summary>
         public event EventHandler<ByteEventArgs> ByteClick;
 
         /// <summary>
-        /// V1 compatible: Raised when a byte is double-clicked
+        /// Raised when a byte is double-clicked
         /// </summary>
         public event EventHandler<ByteEventArgs> ByteDoubleClick;
 
         /// <summary>
-        /// V1 compatible: Raised when zoom scale changes
+        /// Raised when zoom scale changes
         /// </summary>
         public event EventHandler ZoomScaleChanged;
 
         /// <summary>
-        /// V1 compatible: Raised when vertical scrollbar position changes
+        /// Raised when vertical scrollbar position changes
         /// </summary>
         public event EventHandler<ByteEventArgs> VerticalScrollBarChanged;
 
         /// <summary>
-        /// V1 compatible: Raised when changes are submitted (saved)
+        /// Raised when changes are submitted (saved)
         /// </summary>
         public event EventHandler ChangesSubmited;
 
         /// <summary>
-        /// V1 compatible: Raised when read-only mode changes
+        /// Raised when read-only mode changes
         /// </summary>
         public event EventHandler ReadOnlyChanged;
 
@@ -432,7 +432,7 @@ namespace WpfHexaEditor
         // No more backing fields needed - all converted to DependencyProperty
 
         /// <summary>
-        /// Allow context menu (V1 compatible) - DependencyProperty
+        /// Allow context menu  - DependencyProperty
         /// </summary>
         public bool AllowContextMenu
         {
@@ -441,7 +441,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Allow zoom (V1 compatible) - DependencyProperty
+        /// Allow zoom  - DependencyProperty
         /// </summary>
         public bool AllowZoom
         {
@@ -450,7 +450,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Mouse wheel scroll speed (V1 compatible) - DependencyProperty
+        /// Mouse wheel scroll speed  - DependencyProperty
         /// </summary>
         public MouseWheelSpeed MouseWheelSpeed
         {
@@ -512,7 +512,7 @@ namespace WpfHexaEditor
             set => SetValue(PreloadByteInEditorModeProperty, value);
         }
 
-        // TBL Advanced Features (V1 compatible) - DependencyProperties
+        // TBL Advanced Features  - DependencyProperties
 
         /// <summary>
         /// Show MTE (Multi-Title Encoding) in TBL - DependencyProperty
@@ -568,7 +568,7 @@ namespace WpfHexaEditor
             set => SetValue(TblDefaultColorProperty, value);
         }
 
-        // Bar Chart Panel color (V1 compatible) - DependencyProperty
+        // Bar Chart Panel color  - DependencyProperty
 
         /// <summary>
         /// Bar chart color - DependencyProperty
@@ -586,7 +586,7 @@ namespace WpfHexaEditor
         private readonly List<Core.CustomBackgroundBlock> _customBackgroundBlocks = new List<Core.CustomBackgroundBlock>();
 
         /// <summary>
-        /// Enable or disable custom background blocks (V1 compatible - Phase 7.1) - DependencyProperty
+        /// Enable or disable custom background blocks (Phase 7.1) - DependencyProperty
         /// </summary>
         public bool AllowCustomBackgroundBlock
         {
@@ -595,7 +595,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Get the list of custom background blocks (V1 compatible)
+        /// Get the list of custom background blocks 
         /// </summary>
         public List<Core.CustomBackgroundBlock> CustomBackgroundBlockItems => _customBackgroundBlocks;
 
@@ -609,7 +609,7 @@ namespace WpfHexaEditor
         public bool IsFileLoaded => _viewModel != null;
 
         /// <summary>
-        /// Is a file or stream currently loaded? (V1 compatible, read-only DependencyProperty)
+        /// Is a file or stream currently loaded? 
         /// </summary>
         public bool IsFileOrStreamLoaded
         {
@@ -637,18 +637,18 @@ namespace WpfHexaEditor
         public bool CanRedo => _viewModel?.CanRedo ?? false;
 
         /// <summary>
-        /// V1 compatible: Number of undo operations available
+        /// Number of undo operations available
         /// </summary>
         public long UndoCount => _viewModel?.Provider?.UndoCount ?? 0;
 
         /// <summary>
-        /// V1 compatible: Number of redo operations available
+        /// Number of redo operations available
         /// </summary>
         public long RedoCount => _viewModel?.Provider?.RedoCount ?? 0;
 
         private bool _isOnLongProcess = false;
         /// <summary>
-        /// V1 compatible: Is a long process currently running? Set to false to cancel.
+        /// Is a long process currently running? Set to false to cancel.
         /// </summary>
         public bool IsOnLongProcess
         {
@@ -658,7 +658,7 @@ namespace WpfHexaEditor
 
         private double _longProcessProgress = 0;
         /// <summary>
-        /// V1 compatible: Progress of current long process (0.0 to 1.0)
+        /// Progress of current long process (0.0 to 1.0)
         /// </summary>
         public double LongProcessProgress
         {
@@ -674,17 +674,17 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Can copy selection to clipboard?
+        /// Can copy selection to clipboard?
         /// </summary>
         public bool CanCopy => HasSelection && !ReadOnlyMode;
 
         /// <summary>
-        /// V1 compatible: Can delete selection?
+        /// Can delete selection?
         /// </summary>
         public bool CanDelete => HasSelection && !ReadOnlyMode;
 
         /// <summary>
-        /// V1 compatible: Is the file locked (read-only)?
+        /// Is the file locked (read-only)?
         /// </summary>
         public bool IsLockedFile
         {
@@ -699,7 +699,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Is selection start position visible in viewport?
+        /// Is selection start position visible in viewport?
         /// </summary>
         public bool SelectionStartIsVisible
         {
@@ -717,7 +717,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Is caret visible?
+        /// Is caret visible?
         /// Always true in V2 when there's a selection
         /// </summary>
         public bool IsCaretVisible => HasSelection;
@@ -733,7 +733,7 @@ namespace WpfHexaEditor
         public long SelectionLength => _viewModel?.SelectionLength ?? 0;
 
         /// <summary>
-        /// V1 compatible: Selected bytes as hex string (e.g., "48 65 6C 6C 6F")
+        /// Selected bytes as hex string (e.g., "48 65 6C 6C 6F")
         /// </summary>
         public string SelectionHex
         {
@@ -751,7 +751,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Selected bytes as ASCII string
+        /// Selected bytes as ASCII string
         /// </summary>
         public string SelectionString
         {
@@ -774,7 +774,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Current selection line number (0-based)
+        /// Current selection line number (0-based)
         /// </summary>
         public long SelectionLine
         {
@@ -792,17 +792,17 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Virtual length (total bytes including inserted/deleted) - V1 compatible
+        /// Virtual length (total bytes including inserted/deleted)
         /// </summary>
         public long VirtualLength => _viewModel?.VirtualLength ?? 0;
 
         /// <summary>
-        /// Physical file length in bytes - V1 compatible
+        /// Physical file length in bytes
         /// </summary>
         public long Length => _viewModel?.FileLength ?? 0;
 
         /// <summary>
-        /// Current file name (full path) - V1 compatible
+        /// Current file name (full path)
         /// Uses DependencyProperty for XAML binding support (Phase 8)
         /// </summary>
         public string FileName
@@ -812,7 +812,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Has the file been modified? - V1 compatible
+        /// Has the file been modified?
         /// Uses DependencyProperty for XAML binding support (Phase 8)
         /// </summary>
         public bool IsModified
@@ -822,7 +822,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Current cursor position (virtual) - V1 compatible
+        /// Current cursor position (virtual)
         /// </summary>
         public long Position
         {
@@ -841,7 +841,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Selection start position (virtual) - V1 compatible (DependencyProperty for XAML binding)
+        /// Selection start position (virtual) (DependencyProperty for XAML binding)
         /// </summary>
         public long SelectionStart
         {
@@ -850,7 +850,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Selection stop position (virtual) - V1 compatible (DependencyProperty for XAML binding)
+        /// Selection stop position (virtual) (DependencyProperty for XAML binding)
         /// </summary>
         public long SelectionStop
         {
@@ -868,7 +868,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Show or hide the status bar (V1 compatible)
+        /// Show or hide the status bar 
         /// </summary>
         public bool ShowStatusBar
         {
@@ -959,7 +959,7 @@ namespace WpfHexaEditor
         #endregion
 
         /// <summary>
-        /// Show or hide the column header (V1 compatible)
+        /// Show or hide the column header 
         /// </summary>
         public bool ShowHeader
         {
@@ -972,7 +972,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Show or hide the offset column (V1 compatible)
+        /// Show or hide the offset column 
         /// Note: Requires re-creating lines for template changes
         /// </summary>
         public bool ShowOffset
@@ -1020,7 +1020,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Show or hide the ASCII column (V1 compatible)
+        /// Show or hide the ASCII column 
         /// Note: Requires re-creating lines for template changes
         /// </summary>
         public bool ShowAscii
@@ -1082,7 +1082,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Font size for zoom (V1 compatible - placeholder)
+        /// Font size for zoom (placeholder)
         /// </summary>
         public new double FontSize
         {
@@ -1146,7 +1146,7 @@ namespace WpfHexaEditor
         #region V1 Compatibility - Byte Spacer Properties
 
         /// <summary>
-        /// Get or set the byte spacing position (V1 compatible)
+        /// Get or set the byte spacing position 
         /// </summary>
         public ByteSpacerPosition ByteSpacerPositioning
         {
@@ -1159,7 +1159,7 @@ namespace WpfHexaEditor
                 new FrameworkPropertyMetadata(ByteSpacerPosition.Both, ByteSpacer_Changed));
 
         /// <summary>
-        /// Get or set the byte spacer width (V1 compatible)
+        /// Get or set the byte spacer width 
         /// </summary>
         public ByteSpacerWidth ByteSpacerWidthTickness
         {
@@ -1172,7 +1172,7 @@ namespace WpfHexaEditor
                 new FrameworkPropertyMetadata(ByteSpacerWidth.Normal, ByteSpacer_Changed));
 
         /// <summary>
-        /// Get or set the byte grouping (V1 compatible)
+        /// Get or set the byte grouping 
         /// </summary>
         public ByteSpacerGroup ByteGrouping
         {
@@ -1185,7 +1185,7 @@ namespace WpfHexaEditor
                 new FrameworkPropertyMetadata(ByteSpacerGroup.FourByte, ByteSpacer_Changed));
 
         /// <summary>
-        /// Get or set the visual of byte spacer (V1 compatible)
+        /// Get or set the visual of byte spacer 
         /// </summary>
         public ByteSpacerVisual ByteSpacerVisualStyle
         {
@@ -1226,7 +1226,7 @@ namespace WpfHexaEditor
         #region V1 Compatibility - Color Properties
 
         /// <summary>
-        /// First selection gradient color (V1 compatible)
+        /// First selection gradient color 
         /// </summary>
         public Color SelectionFirstColor
         {
@@ -1248,7 +1248,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Second selection gradient color (V1 compatible)
+        /// Second selection gradient color 
         /// </summary>
         public Color SelectionSecondColor
         {
@@ -1261,7 +1261,7 @@ namespace WpfHexaEditor
                 new PropertyMetadata(Color.FromArgb(102, 0, 120, 212)));
 
         /// <summary>
-        /// Color for modified bytes (V1 compatible)
+        /// Color for modified bytes 
         /// </summary>
         public Color ByteModifiedColor
         {
@@ -1282,7 +1282,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Color for deleted bytes (V1 compatible)
+        /// Color for deleted bytes 
         /// </summary>
         public Color ByteDeletedColor
         {
@@ -1303,7 +1303,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Color for added bytes (V1 compatible)
+        /// Color for added bytes 
         /// </summary>
         public Color ByteAddedColor
         {
@@ -1324,7 +1324,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Color for highlighted bytes (V1 compatible)
+        /// Color for highlighted bytes 
         /// </summary>
         public Color HighLightColor
         {
@@ -1337,7 +1337,7 @@ namespace WpfHexaEditor
                 new PropertyMetadata(Colors.Gold));
 
         /// <summary>
-        /// Mouse over color (V1 compatible)
+        /// Mouse over color 
         /// </summary>
         public Color MouseOverColor
         {
@@ -1358,7 +1358,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Foreground color for alternate bytes - V1 compatible (uses Color instead of Brush)
+        /// Foreground color for alternate bytes (uses Color instead of Brush)
         /// </summary>
         public Color ForegroundSecondColor
         {
@@ -1387,7 +1387,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Foreground color for offset header (V1 compatible)
+        /// Foreground color for offset header 
         /// </summary>
         public Color ForegroundOffSetHeaderColor
         {
@@ -1408,7 +1408,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Foreground highlight offset header color (V1 compatible)
+        /// Foreground highlight offset header color 
         /// </summary>
         public Color ForegroundHighLightOffSetHeaderColor
         {
@@ -1421,7 +1421,7 @@ namespace WpfHexaEditor
                 new PropertyMetadata(Colors.DarkBlue));
 
         /// <summary>
-        /// Foreground contrast color (V1 compatible)
+        /// Foreground contrast color 
         /// </summary>
         public Color ForegroundContrast
         {
@@ -1435,10 +1435,10 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Zoom Support (V1 Compatible)
+        #region Zoom Support
 
         /// <summary>
-        /// Get or set the zoom scale (V1 compatible)
+        /// Get or set the zoom scale 
         /// Possible Scale: 0.5 to 2.0 (50% to 200%)
         /// </summary>
         public double ZoomScale
@@ -1453,7 +1453,7 @@ namespace WpfHexaEditor
 
         private static object ZoomScale_CoerceValueCallBack(DependencyObject d, object baseValue)
         {
-            // Clamp zoom between 0.5 and 2.0 (V1 compatible range)
+            // Clamp zoom between 0.5 and 2.0 
             double value = (double)baseValue;
             if (value < 0.5) return 0.5;
             if (value > 2.0) return 2.0;
@@ -1469,7 +1469,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Initialize the support of zoom (V1 compatible)
+        /// Initialize the support of zoom 
         /// </summary>
         private void InitialiseZoom()
         {
@@ -1486,7 +1486,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Update the zoom to ZoomScale value if AllowZoom is true (V1 compatible)
+        /// Update the zoom to ZoomScale value if AllowZoom is true 
         /// </summary>
         private void UpdateZoom()
         {
@@ -1503,12 +1503,12 @@ namespace WpfHexaEditor
             HexViewport?.InvalidateVisual();
             UpdateVisibleLines();
 
-            // Raise V1 compatible event
+            // Raise event
             OnZoomScaleChanged(EventArgs.Empty);
         }
 
         /// <summary>
-        /// Reset the zoom to 100% (V1 compatible)
+        /// Reset the zoom to 100% 
         /// </summary>
         public void ResetZoom() => ZoomScale = 1.0;
 
@@ -1582,7 +1582,7 @@ namespace WpfHexaEditor
                     var oldValue = editor._viewModel.ReadOnlyMode;
                     editor._viewModel.ReadOnlyMode = readOnly;
 
-                    // Fire V1 compatible event
+                    // Fire event
                     if (oldValue != readOnly)
                         editor.OnReadOnlyChanged(EventArgs.Empty);
                 }
@@ -1609,7 +1609,7 @@ namespace WpfHexaEditor
                     var stop = editor._viewModel.SelectionStop.IsValid ? editor._viewModel.SelectionStop : new VirtualPosition(position);
                     editor._viewModel.SetSelectionRange(new VirtualPosition(position), stop);
 
-                    // Fire V1 compatible events
+                    // Fire events
                     if (oldStart != position || oldStop != editor.SelectionStop)
                     {
                         editor.OnSelectionChanged(new HexSelectionChangedEventArgs(position, editor.SelectionStop, editor.SelectionLength));
@@ -1646,7 +1646,7 @@ namespace WpfHexaEditor
                     var start = editor._viewModel.SelectionStart.IsValid ? editor._viewModel.SelectionStart : new VirtualPosition(position);
                     editor._viewModel.SetSelectionRange(start, new VirtualPosition(position));
 
-                    // Fire V1 compatible events
+                    // Fire events
                     if (oldStop != position || oldStart != editor.SelectionStart)
                     {
                         editor.OnSelectionChanged(new HexSelectionChangedEventArgs(editor.SelectionStart, position, editor.SelectionLength));
@@ -2083,7 +2083,7 @@ namespace WpfHexaEditor
         #region V1 Compatibility - Brush Properties (wrap Color properties)
 
         /// <summary>
-        /// V1 compatible: Selection first color as Brush. Use <see cref="SelectionFirstColor"/> (Color) for V2 code.
+        /// Selection first color as Brush. Use <see cref="SelectionFirstColor"/> (Color) for V2 code.
         /// </summary>
         /// <remarks>
         /// This property is provided for V1 compatibility. New code should use the Color-based property.
@@ -2100,7 +2100,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Selection second color as Brush. Use SelectionSecondColor (Color) for V2 code.
+        /// Selection second color as Brush. Use SelectionSecondColor (Color) for V2 code.
         /// </summary>
         public Brush SelectionSecondColorBrush
         {
@@ -2113,7 +2113,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Modified byte color as Brush. Use ByteModifiedColor (Color) for V2 code.
+        /// Modified byte color as Brush. Use ByteModifiedColor (Color) for V2 code.
         /// </summary>
         public Brush ByteModifiedColorBrush
         {
@@ -2126,7 +2126,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Deleted byte color as Brush. Use ByteDeletedColor (Color) for V2 code.
+        /// Deleted byte color as Brush. Use ByteDeletedColor (Color) for V2 code.
         /// </summary>
         public Brush ByteDeletedColorBrush
         {
@@ -2139,7 +2139,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Added byte color as Brush. Use ByteAddedColor (Color) for V2 code.
+        /// Added byte color as Brush. Use ByteAddedColor (Color) for V2 code.
         /// </summary>
         public Brush ByteAddedColorBrush
         {
@@ -2152,7 +2152,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Highlight color as Brush. Use HighLightColor (Color) for V2 code.
+        /// Highlight color as Brush. Use HighLightColor (Color) for V2 code.
         /// </summary>
         public Brush HighLightColorBrush
         {
@@ -2165,7 +2165,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Mouse over color as Brush. Use MouseOverColor (Color) for V2 code.
+        /// Mouse over color as Brush. Use MouseOverColor (Color) for V2 code.
         /// </summary>
         public Brush MouseOverColorBrush
         {
@@ -2178,7 +2178,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Foreground second color as Brush. Use ForegroundSecondColor (Color) for V2 code.
+        /// Foreground second color as Brush. Use ForegroundSecondColor (Color) for V2 code.
         /// </summary>
         public Brush ForegroundSecondColorBrush
         {
@@ -2191,7 +2191,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Offset header foreground color as Brush. Use ForegroundOffSetHeaderColor (Color) for V2 code.
+        /// Offset header foreground color as Brush. Use ForegroundOffSetHeaderColor (Color) for V2 code.
         /// </summary>
         public Brush ForegroundOffSetHeaderColorBrush
         {
@@ -2204,7 +2204,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Highlighted offset header foreground color as Brush. Use ForegroundHighLightOffSetHeaderColor (Color) for V2 code.
+        /// Highlighted offset header foreground color as Brush. Use ForegroundHighLightOffSetHeaderColor (Color) for V2 code.
         /// </summary>
         public Brush ForegroundHighLightOffSetHeaderColorBrush
         {
@@ -2217,7 +2217,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Foreground contrast color as Brush. Use ForegroundContrast (Color) for V2 code.
+        /// Foreground contrast color as Brush. Use ForegroundContrast (Color) for V2 code.
         /// </summary>
         public Brush ForegroundContrastBrush
         {
@@ -2234,7 +2234,7 @@ namespace WpfHexaEditor
         #region V1 Compatibility - Display Properties
 
         /// <summary>
-        /// Allow builtin Ctrl+C (V1 compatible)
+        /// Allow builtin Ctrl+C 
         /// </summary>
         public bool AllowBuildinCtrlc
         {
@@ -2247,7 +2247,7 @@ namespace WpfHexaEditor
                 new PropertyMetadata(true));
 
         /// <summary>
-        /// Allow builtin Ctrl+V (V1 compatible)
+        /// Allow builtin Ctrl+V 
         /// </summary>
         public bool AllowBuildinCtrlv
         {
@@ -2260,7 +2260,7 @@ namespace WpfHexaEditor
                 new PropertyMetadata(true));
 
         /// <summary>
-        /// Allow builtin Ctrl+A (V1 compatible)
+        /// Allow builtin Ctrl+A 
         /// </summary>
         public bool AllowBuildinCtrla
         {
@@ -2273,7 +2273,7 @@ namespace WpfHexaEditor
                 new PropertyMetadata(true));
 
         /// <summary>
-        /// Allow builtin Ctrl+Z (V1 compatible)
+        /// Allow builtin Ctrl+Z 
         /// </summary>
         public bool AllowBuildinCtrlz
         {
@@ -2286,7 +2286,7 @@ namespace WpfHexaEditor
                 new PropertyMetadata(true));
 
         /// <summary>
-        /// Allow builtin Ctrl+Y (V1 compatible)
+        /// Allow builtin Ctrl+Y 
         /// </summary>
         public bool AllowBuildinCtrly
         {
@@ -2303,7 +2303,7 @@ namespace WpfHexaEditor
         #region V1 Compatibility - Visibility Properties (wrap bool properties)
 
         /// <summary>
-        /// V1 compatible: Header visibility. Use ShowHeader (bool) for V2 code.
+        /// Header visibility. Use ShowHeader (bool) for V2 code.
         /// </summary>
         public Visibility HeaderVisibility
         {
@@ -2312,7 +2312,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Status bar visibility. Use ShowStatusBar (bool) for V2 code.
+        /// Status bar visibility. Use ShowStatusBar (bool) for V2 code.
         /// </summary>
         public Visibility StatusBarVisibility
         {
@@ -2321,7 +2321,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Line info (offset column) visibility. Use ShowOffset (bool) for V2 code.
+        /// Line info (offset column) visibility. Use ShowOffset (bool) for V2 code.
         /// </summary>
         public Visibility LineInfoVisibility
         {
@@ -2330,7 +2330,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: String data (ASCII) panel visibility. Use ShowAscii (bool) for V2 code.
+        /// String data (ASCII) panel visibility. Use ShowAscii (bool) for V2 code.
         /// </summary>
         public Visibility StringDataVisibility
         {
@@ -2339,7 +2339,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Hex data panel visibility. Always Visible in V2 (cannot be hidden).
+        /// Hex data panel visibility. Always Visible in V2 (cannot be hidden).
         /// </summary>
         public Visibility HexDataVisibility
         {
@@ -2348,7 +2348,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Bar chart panel visibility (Phase 7.4 - Complete) - DependencyProperty
+        /// Bar chart panel visibility (Phase 7.4 - Complete) - DependencyProperty
         /// </summary>
         public Visibility BarChartPanelVisibility
         {
@@ -2436,7 +2436,7 @@ namespace WpfHexaEditor
                 UpdateBarChart();
             }), System.Windows.Threading.DispatcherPriority.Background);
 
-            // Update scroll markers in background (V1 compatible)
+            // Update scroll markers in background 
             // Scroll markers don't need to be ready immediately
             if (_scrollMarkers != null)
             {
@@ -2458,7 +2458,7 @@ namespace WpfHexaEditor
 
             _viewModel.Save();
             StatusText.Text = "File saved";
-            OnChangesSubmited(EventArgs.Empty); // V1 compatible event
+            OnChangesSubmited(EventArgs.Empty);
         }
 
         /// <summary>
@@ -2520,7 +2520,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Refresh the bar chart panel with current file data. V1 compatible method.
+        /// Refresh the bar chart panel with current file data. .
         /// </summary>
         public void RefreshBarChart()
         {
@@ -2577,7 +2577,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Select all bytes with specified value (V1 compatible double-click feature)
+        /// Select all bytes with specified value 
         /// V1 ALGORITHM: Expands selection bidirectionally from clicked position
         /// </summary>
         private void SelectAllBytesWith(byte byteValue)
@@ -2673,7 +2673,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Update scroll markers with bookmarks, modifications, and search results (V1 compatible)
+        /// Update scroll markers with bookmarks, modifications, and search results 
         /// </summary>
         private void UpdateScrollMarkers()
         {
@@ -2709,7 +2709,7 @@ namespace WpfHexaEditor
         {
             _viewModel?.Undo();
             OnUndoCompleted(EventArgs.Empty);
-            OnUndone(EventArgs.Empty); // V1 compatible event
+            OnUndone(EventArgs.Empty);
         }
 
         /// <summary>
@@ -2719,7 +2719,7 @@ namespace WpfHexaEditor
         {
             _viewModel?.Redo();
             OnRedoCompleted(EventArgs.Empty);
-            OnRedone(EventArgs.Empty); // V1 compatible event
+            OnRedone(EventArgs.Empty);
         }
 
         /// <summary>
@@ -2747,7 +2747,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Get selected bytes as byte array (V1 compatible)
+        /// Get selected bytes as byte array 
         /// </summary>
         public byte[] GetSelectionByteArray()
         {
@@ -2755,7 +2755,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Set cursor position and scroll to make it visible (V1 compatible)
+        /// Set cursor position and scroll to make it visible 
         /// </summary>
         public void SetPosition(long position)
         {
@@ -2775,7 +2775,7 @@ namespace WpfHexaEditor
         {
             bool result = _viewModel?.CopyToClipboard() ?? false;
             if (result)
-                OnDataCopied(EventArgs.Empty); // V1 compatible event
+                OnDataCopied(EventArgs.Empty);
             return result;
         }
 
@@ -2797,7 +2797,7 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Public Methods - Find/Replace (V1 Compatible)
+        #region Public Methods - Find/Replace
 
         /// <summary>
         /// Find first occurrence of byte array
@@ -2848,7 +2848,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Set selection to a specific range (used after find operations) - V1 compatible
+        /// Set selection to a specific range (used after find operations)
         /// </summary>
         /// <param name="position">Start position</param>
         /// <param name="length">Selection length in bytes</param>
@@ -2912,7 +2912,7 @@ namespace WpfHexaEditor
         #region V1 Compatibility - String Search/Replace (wrap byte[] methods)
 
         /// <summary>
-        /// V1 compatible: Find first occurrence of string
+        /// Find first occurrence of string
         /// </summary>
         /// <param name="text">Text to search for</param>
         /// <param name="startPosition">Position to start search from</param>
@@ -2925,7 +2925,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Find next occurrence of string
+        /// Find next occurrence of string
         /// </summary>
         /// <param name="text">Text to search for</param>
         /// <returns>Position of next occurrence, or -1 if not found</returns>
@@ -2939,7 +2939,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Find last occurrence of string
+        /// Find last occurrence of string
         /// </summary>
         /// <param name="text">Text to search for</param>
         /// <returns>Position of last occurrence, or -1 if not found</returns>
@@ -2951,7 +2951,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Replace first occurrence of string
+        /// Replace first occurrence of string
         /// </summary>
         public long ReplaceFirst(string findText, string replaceText, long startPosition = 0, bool truncateLength = false)
         {
@@ -2962,7 +2962,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Replace next occurrence of string
+        /// Replace next occurrence of string
         /// </summary>
         public long ReplaceNext(string findText, string replaceText, long currentPosition, bool truncateLength = false)
         {
@@ -2973,7 +2973,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Replace all occurrences of string
+        /// Replace all occurrences of string
         /// </summary>
         public int ReplaceAll(string findText, string replaceText, bool truncateLength = false)
         {
@@ -3001,10 +3001,10 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Public Methods - Byte Operations (V1 Compatible)
+        #region Public Methods - Byte Operations
 
         /// <summary>
-        /// Get byte value at position (V1 compatible)
+        /// Get byte value at position 
         /// </summary>
         /// <param name="position">Position in file (virtual)</param>
         /// <returns>Byte value at position, or 0 if position is invalid</returns>
@@ -3015,7 +3015,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Set byte value at position (V1 compatible)
+        /// Set byte value at position 
         /// </summary>
         /// <param name="position">Position in file (virtual)</param>
         /// <param name="value">Byte value to set</param>
@@ -3025,7 +3025,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Fill a range with a specific byte value (V1 compatible)
+        /// Fill a range with a specific byte value 
         /// </summary>
         /// <param name="value">Byte value to fill with</param>
         /// <param name="startPosition">Start position (virtual)</param>
@@ -3036,7 +3036,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Modify byte with undo support
+        /// Modify byte with undo support
         /// </summary>
         /// <param name="byte">New byte value (null to delete)</param>
         /// <param name="bytePositionInStream">Position in stream (virtual)</param>
@@ -3058,7 +3058,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Insert a single byte at position
+        /// Insert a single byte at position
         /// </summary>
         /// <param name="byte">Byte value to insert</param>
         /// <param name="bytePositionInStream">Position in stream (virtual)</param>
@@ -3069,7 +3069,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Insert a byte repeated multiple times at position
+        /// Insert a byte repeated multiple times at position
         /// </summary>
         /// <param name="byte">Byte value to insert</param>
         /// <param name="bytePositionInStream">Position in stream (virtual)</param>
@@ -3089,7 +3089,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Insert multiple bytes at position
+        /// Insert multiple bytes at position
         /// </summary>
         /// <param name="bytes">Byte array to insert</param>
         /// <param name="bytePositionInStream">Position in stream (virtual)</param>
@@ -3100,7 +3100,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Delete bytes at position
+        /// Delete bytes at position
         /// </summary>
         /// <param name="bytePositionInStream">Start position (virtual)</param>
         /// <param name="length">Number of bytes to delete</param>
@@ -3126,7 +3126,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Get byte with copyChange parameter
+        /// Get byte with copyChange parameter
         /// Returns tuple with byte value and success flag
         /// </summary>
         /// <param name="position">Position in file (virtual)</param>
@@ -3145,7 +3145,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Get all bytes from file
+        /// Get all bytes from file
         /// </summary>
         /// <param name="copyChange">If true, includes modifications; if false, original file only</param>
         /// <returns>Byte array of entire file</returns>
@@ -3165,7 +3165,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Replace byte with another in current selection
+        /// Replace byte with another in current selection
         /// </summary>
         /// <param name="original">Byte to find and replace</param>
         /// <param name="replace">Byte to replace with</param>
@@ -3181,7 +3181,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Replace byte with another in specified range
+        /// Replace byte with another in specified range
         /// </summary>
         /// <param name="startPosition">Start position (virtual)</param>
         /// <param name="length">Length of range to search</param>
@@ -3253,7 +3253,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Fill current selection with specified byte value
+        /// Fill current selection with specified byte value
         /// </summary>
         /// <param name="val">Byte value to fill with</param>
         public void FillWithByte(byte val)
@@ -3268,7 +3268,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Fill specified range with byte value
+        /// Fill specified range with byte value
         /// </summary>
         /// <param name="startPosition">Start position (virtual)</param>
         /// <param name="length">Length of range to fill</param>
@@ -3332,7 +3332,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Get all byte modifications matching the specified action
+        /// Get all byte modifications matching the specified action
         /// </summary>
         /// <param name="action">ByteAction to filter by (Modified, Added, Deleted, or All)</param>
         /// <returns>Dictionary of ByteModified objects keyed by position, or null if no provider</returns>
@@ -3346,10 +3346,10 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Public Methods - Bookmarks (V1 Compatible)
+        #region Public Methods - Bookmarks
 
         /// <summary>
-        /// Add a bookmark at the specified position (V1 compatible)
+        /// Add a bookmark at the specified position 
         /// </summary>
         /// <param name="position">Position to bookmark (virtual)</param>
         public void SetBookmark(long position)
@@ -3363,7 +3363,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Remove a bookmark at the specified position (V1 compatible)
+        /// Remove a bookmark at the specified position 
         /// </summary>
         /// <param name="position">Position to remove bookmark from (virtual)</param>
         public void RemoveBookmark(long position)
@@ -3372,7 +3372,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Clear all bookmarks (V1 compatible)
+        /// Clear all bookmarks 
         /// </summary>
         public void ClearAllBookmarks()
         {
@@ -3380,7 +3380,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Get all bookmarks (V1 compatible)
+        /// Get all bookmarks 
         /// </summary>
         /// <returns>Array of bookmark positions</returns>
         public long[] GetBookmarks()
@@ -3389,7 +3389,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Check if a position is bookmarked (V1 compatible)
+        /// Check if a position is bookmarked 
         /// </summary>
         /// <param name="position">Position to check (virtual)</param>
         /// <returns>True if position is bookmarked</returns>
@@ -3399,7 +3399,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Get the next bookmark after the specified position (V1 compatible)
+        /// Get the next bookmark after the specified position 
         /// </summary>
         /// <param name="position">Current position (virtual)</param>
         /// <returns>Position of next bookmark, or -1 if none found</returns>
@@ -3414,7 +3414,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Get the previous bookmark before the specified position (V1 compatible)
+        /// Get the previous bookmark before the specified position 
         /// </summary>
         /// <param name="position">Current position (virtual)</param>
         /// <returns>Position of previous bookmark, or -1 if none found</returns>
@@ -3430,10 +3430,10 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Public Methods - Highlights (V1 Compatible)
+        #region Public Methods - Highlights
 
         /// <summary>
-        /// V1 compatible: Add highlight to a range of bytes
+        /// Add highlight to a range of bytes
         /// </summary>
         /// <param name="startPosition">Start position (virtual)</param>
         /// <param name="length">Number of bytes to highlight</param>
@@ -3457,7 +3457,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Remove highlight from a range of bytes
+        /// Remove highlight from a range of bytes
         /// </summary>
         /// <param name="startPosition">Start position (virtual)</param>
         /// <param name="length">Number of bytes to un-highlight</param>
@@ -3478,7 +3478,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1 compatible: Clear all highlights
+        /// Clear all highlights
         /// </summary>
         public void UnHighLightAll()
         {
@@ -3503,7 +3503,7 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Public Methods - File Comparison (V1 Compatible)
+        #region Public Methods - File Comparison
 
         private readonly Services.ComparisonService _comparisonService = new();
         private List<ByteDifference> _comparisonResults = null;
@@ -3634,7 +3634,7 @@ namespace WpfHexaEditor
         #region Public Methods - V1 Additional Compatibility
 
         /// <summary>
-        /// V1: Set position from hex string
+        /// Set position from hex string
         /// </summary>
         public void SetPosition(string hexLiteralPosition)
         {
@@ -3649,7 +3649,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Set position and create selection
+        /// Set position and create selection
         /// </summary>
         public void SetPosition(long position, long byteLength)
         {
@@ -3660,12 +3660,12 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Submit changes (alias for Save)
+        /// Submit changes (alias for Save)
         /// </summary>
         public void SubmitChanges() => Save();
 
         /// <summary>
-        /// V1: Submit changes to new file (alias for SaveAs)
+        /// Submit changes to new file (alias for SaveAs)
         /// </summary>
         public void SubmitChanges(string newFilename, bool overwrite)
         {
@@ -3690,7 +3690,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Unselect all
+        /// Unselect all
         /// </summary>
         public void UnSelectAll(bool cleanFocus = false)
         {
@@ -3699,7 +3699,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Undo with repeat count
+        /// Undo with repeat count
         /// </summary>
         public void Undo(int repeat)
         {
@@ -3714,7 +3714,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Redo with repeat count
+        /// Redo with repeat count
         /// </summary>
         public void Redo(int repeat)
         {
@@ -3729,7 +3729,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Clear all modifications and undo/redo history
+        /// Clear all modifications and undo/redo history
         /// </summary>
         public void ClearAllChange()
         {
@@ -3741,7 +3741,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Refresh view with options
+        /// Refresh view with options
         /// </summary>
         public void RefreshView(bool controlResize = false, bool refreshData = true)
         {
@@ -3760,7 +3760,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Update visual rendering
+        /// Update visual rendering
         /// </summary>
         public void UpdateVisual()
         {
@@ -3769,17 +3769,17 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Get line number from position
+        /// Get line number from position
         /// </summary>
         public long GetLineNumber(long position) => _viewModel == null ? 0 : position / BytePerLine;
 
         /// <summary>
-        /// V1: Get column number from position
+        /// Get column number from position
         /// </summary>
         public long GetColumnNumber(long position) => _viewModel == null ? 0 : position % BytePerLine;
 
         /// <summary>
-        /// V1: Check if byte position is visible in viewport
+        /// Check if byte position is visible in viewport
         /// </summary>
         public bool IsBytePositionAreVisible(long position)
         {
@@ -3791,7 +3791,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Close provider with option to clear filename
+        /// Close provider with option to clear filename
         /// </summary>
         public void CloseProvider(bool clearFileName = true)
         {
@@ -3803,7 +3803,7 @@ namespace WpfHexaEditor
         // ResetZoom moved to Zoom Support region above
 
         /// <summary>
-        /// V1: Update focus
+        /// Update focus
         /// </summary>
         public void UpdateFocus()
         {
@@ -3811,7 +3811,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Set focus at selection start
+        /// Set focus at selection start
         /// </summary>
         public void SetFocusAtSelectionStart()
         {
@@ -3823,7 +3823,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// V1: Set focus at specific position
+        /// Set focus at specific position
         /// </summary>
         public void SetFocusAt(long position)
         {
@@ -3833,10 +3833,10 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Public Methods - Custom Background Blocks (V1 Compatible)
+        #region Public Methods - Custom Background Blocks
 
         /// <summary>
-        /// Add a custom background block (V1 compatible - Phase 7.1)
+        /// Add a custom background block (Phase 7.1)
         /// </summary>
         public void AddCustomBackgroundBlock(Core.CustomBackgroundBlock block)
         {
@@ -3852,7 +3852,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Remove a custom background block (V1 compatible - Phase 7.1)
+        /// Remove a custom background block (Phase 7.1)
         /// </summary>
         public void RemoveCustomBackgroundBlock(Core.CustomBackgroundBlock block)
         {
@@ -3868,7 +3868,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Clear all custom background blocks (V1 compatible - Phase 7.1)
+        /// Clear all custom background blocks (Phase 7.1)
         /// </summary>
         public void ClearCustomBackgroundBlock()
         {
@@ -3883,7 +3883,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Get custom background block at position (V1 compatible)
+        /// Get custom background block at position 
         /// </summary>
         public Core.CustomBackgroundBlock GetCustomBackgroundBlock(long position)
         {
@@ -3892,7 +3892,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Get all custom background blocks at position (V1 compatible)
+        /// Get all custom background blocks at position 
         /// </summary>
         public IEnumerable<Core.CustomBackgroundBlock> GetCustomBackgroundBlocks(long position)
         {
@@ -3902,10 +3902,10 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Public Methods - File Comparison (V1 Compatible)
+        #region Public Methods - File Comparison
 
         /// <summary>
-        /// Compare this file with another HexEditorV2 (V1 compatible)
+        /// Compare this file with another HexEditorV2 
         /// Returns list of differences between the two files
         /// </summary>
         public IEnumerable<Core.Bytes.ByteDifference> Compare(HexEditorV2 other)
@@ -3917,7 +3917,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Compare this file with a ByteProvider (V1 compatible)
+        /// Compare this file with a ByteProvider 
         /// Returns list of differences between the two providers
         /// </summary>
         public IEnumerable<Core.Bytes.ByteDifference> Compare(Core.Bytes.ByteProviderLegacy provider)
@@ -3962,10 +3962,10 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Public Methods - State Persistence (V1 Compatible)
+        #region Public Methods - State Persistence
 
         /// <summary>
-        /// Save current editor state to XML file (V1 compatible)
+        /// Save current editor state to XML file 
         /// Saves: position, selection, bookmarks, font size, filename
         /// </summary>
         public void SaveCurrentState(string stateFilename)
@@ -3996,7 +3996,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Load editor state from XML file (V1 compatible)
+        /// Load editor state from XML file 
         /// Restores: position, selection, bookmarks, font size
         /// Note: Does NOT reload the file, only restores state
         /// </summary>
@@ -4054,10 +4054,10 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Public Methods - TBL Support (V1 Compatible)
+        #region Public Methods - TBL Support
 
         /// <summary>
-        /// Load a TBL (Character Table) file (V1 compatible)
+        /// Load a TBL (Character Table) file 
         /// </summary>
         /// <param name="path">Path to the TBL file</param>
         public void LoadTBLFile(string path)
@@ -4086,7 +4086,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Close the current TBL file and revert to ASCII (V1 compatible)
+        /// Close the current TBL file and revert to ASCII 
         /// </summary>
         public void CloseTBL()
         {
@@ -4106,7 +4106,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Get or set the type of character table to use (V1 compatible)
+        /// Get or set the type of character table to use 
         /// </summary>
         public CharacterTableType TypeOfCharacterTable
         {
@@ -4132,7 +4132,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Get the current TBL stream (V1 compatible)
+        /// Get the current TBL stream 
         /// </summary>
         public TblStream TBL => _tblStream;
 
@@ -4148,7 +4148,7 @@ namespace WpfHexaEditor
         #region Missing V1 Properties - Display/UI
 
         /// <summary>
-        /// Show tooltip on byte hover (V1 compatible)
+        /// Show tooltip on byte hover 
         /// </summary>
         public static readonly DependencyProperty ShowByteToolTipProperty =
             DependencyProperty.Register(nameof(ShowByteToolTip), typeof(bool),
@@ -4169,7 +4169,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Hide bytes that are marked as deleted (V1 compatible) - DependencyProperty
+        /// Hide bytes that are marked as deleted  - DependencyProperty
         /// </summary>
         public bool HideByteDeleted
         {
@@ -4178,7 +4178,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Default clipboard copy/paste mode (V1 compatible) - DependencyProperty
+        /// Default clipboard copy/paste mode  - DependencyProperty
         /// </summary>
         public CopyPasteMode DefaultCopyToClipboardMode
         {
@@ -4191,7 +4191,7 @@ namespace WpfHexaEditor
         #region Missing V1 Properties - Editing/Insert Mode
 
         /// <summary>
-        /// Allow insert at any position (V1 compatible)
+        /// Allow insert at any position 
         /// In V2, insert mode is always allowed via EditMode property
         /// </summary>
         public bool CanInsertAnywhere
@@ -4214,7 +4214,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Visual caret mode for insert/overwrite indication (V1 compatible) - DependencyProperty
+        /// Visual caret mode for insert/overwrite indication  - DependencyProperty
         /// </summary>
         public CaretMode VisualCaretMode
         {
@@ -4223,7 +4223,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Byte shift left amount (V1 compatible) - DependencyProperty
+        /// Byte shift left amount  - DependencyProperty
         /// Used for adjusting byte position display offset
         /// </summary>
         public long ByteShiftLeft
@@ -4237,7 +4237,7 @@ namespace WpfHexaEditor
         #region Missing V1 Properties - Auto-Highlight
 
         /// <summary>
-        /// Auto-highlight bytes that match the selected byte (V1 compatible) - DependencyProperty
+        /// Auto-highlight bytes that match the selected byte  - DependencyProperty
         /// </summary>
         public bool AllowAutoHighLightSelectionByte
         {
@@ -4246,7 +4246,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Auto-highlight brush color for bytes matching selected byte (V1 compatible) - DependencyProperty
+        /// Auto-highlight brush color for bytes matching selected byte  - DependencyProperty
         /// </summary>
         public System.Windows.Media.Color AutoHighLiteSelectionByteBrush
         {
@@ -4255,7 +4255,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Auto-select all same bytes when double-clicking a byte (V1 compatible) - DependencyProperty
+        /// Auto-select all same bytes when double-clicking a byte  - DependencyProperty
         /// </summary>
         public bool AllowAutoSelectSameByteAtDoubleClick
         {
@@ -4268,7 +4268,7 @@ namespace WpfHexaEditor
         #region Missing V1 Properties - Count/Statistics
 
         /// <summary>
-        /// Enable byte counting feature (V1 compatible) - DependencyProperty
+        /// Enable byte counting feature  - DependencyProperty
         /// </summary>
         public bool AllowByteCount
         {
@@ -4281,7 +4281,7 @@ namespace WpfHexaEditor
         #region Missing V1 Properties - File Drop/Drag
 
         /// <summary>
-        /// Confirm before dropping a file to load it (V1 compatible) - DependencyProperty
+        /// Confirm before dropping a file to load it  - DependencyProperty
         /// </summary>
         public bool FileDroppingConfirmation
         {
@@ -4290,7 +4290,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Allow text drag-drop operations (V1 compatible) - DependencyProperty
+        /// Allow text drag-drop operations  - DependencyProperty
         /// </summary>
         public bool AllowTextDrop
         {
@@ -4299,7 +4299,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Allow file drag-drop operations (V1 compatible) - DependencyProperty
+        /// Allow file drag-drop operations  - DependencyProperty
         /// Note: AllowDrop must also be true for this to work
         /// </summary>
         public bool AllowFileDrop
@@ -4313,7 +4313,7 @@ namespace WpfHexaEditor
         #region Missing V1 Properties - Extend/Append
 
         /// <summary>
-        /// Allow extending file at end (V1 compatible) - DependencyProperty
+        /// Allow extending file at end  - DependencyProperty
         /// </summary>
         public bool AllowExtend
         {
@@ -4322,7 +4322,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Confirm before appending bytes (V1 compatible) - DependencyProperty
+        /// Confirm before appending bytes  - DependencyProperty
         /// </summary>
         public bool AppendNeedConfirmation
         {
@@ -4335,7 +4335,7 @@ namespace WpfHexaEditor
         #region Missing V1 Properties - Delete Byte
 
         /// <summary>
-        /// Allow byte deletion (V1 compatible) - DependencyProperty
+        /// Allow byte deletion  - DependencyProperty
         /// </summary>
         public bool AllowDeleteByte
         {
@@ -4350,7 +4350,7 @@ namespace WpfHexaEditor
         private System.Xml.Linq.XDocument _currentStateDocument;
 
         /// <summary>
-        /// Current editor state as XDocument for persistence (V1 compatible)
+        /// Current editor state as XDocument for persistence 
         /// Get: Returns current state as XML document
         /// Set: Restores state from XML document
         /// </summary>
@@ -4430,7 +4430,7 @@ namespace WpfHexaEditor
         #region Missing V1 Methods - Clipboard
 
         /// <summary>
-        /// Copy to clipboard with default mode (V1 compatible)
+        /// Copy to clipboard with default mode 
         /// </summary>
         public void CopyToClipboard()
         {
@@ -4438,7 +4438,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Copy to clipboard with specified mode (V1 compatible)
+        /// Copy to clipboard with specified mode 
         /// </summary>
         /// <param name="mode">Copy mode (HexaString, AsciiString, etc.)</param>
         public void CopyToClipboard(CopyPasteMode mode)
@@ -4538,7 +4538,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Copy current selection to a stream (V1 compatible)
+        /// Copy current selection to a stream 
         /// </summary>
         /// <param name="output">Output stream to write to</param>
         /// <param name="copyChange">True to include uncommitted changes, false for committed data only</param>
@@ -4554,7 +4554,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Copy specified range to a stream (V1 compatible)
+        /// Copy specified range to a stream 
         /// </summary>
         /// <param name="output">Output stream to write to</param>
         /// <param name="selectionStart">Start position (inclusive)</param>
@@ -4613,7 +4613,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Get copy data as byte array for specified range (V1 compatible)
+        /// Get copy data as byte array for specified range 
         /// </summary>
         /// <param name="selectionStart">Start position (inclusive)</param>
         /// <param name="selectionStop">Stop position (inclusive)</param>
@@ -4647,7 +4647,7 @@ namespace WpfHexaEditor
         #region Missing V1 Methods - Bookmarks (Naming Alias)
 
         /// <summary>
-        /// Set bookmark at current position (V1 compatible - note capital M)
+        /// Set bookmark at current position (note capital M)
         /// This is an alias for SetBookmark() with different casing
         /// </summary>
         [Obsolete("Use SetBookmark() instead. This method exists only for V1 case-sensitive compatibility.", false)]
@@ -4657,7 +4657,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Set bookmark at position (V1 compatible - note capital M)
+        /// Set bookmark at position (note capital M)
         /// This is an alias for SetBookmark() with different casing
         /// </summary>
         /// <param name="position">Position to bookmark</param>
@@ -4672,7 +4672,7 @@ namespace WpfHexaEditor
         #region Missing V1 Methods - Scroll Markers
 
         /// <summary>
-        /// Clear all scroll markers (V1 compatible)
+        /// Clear all scroll markers 
         /// </summary>
         public void ClearScrollMarker()
         {
@@ -4683,7 +4683,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Clear specific type of scroll marker (V1 compatible)
+        /// Clear specific type of scroll marker 
         /// </summary>
         /// <param name="marker">Type of marker to clear</param>
         public void ClearScrollMarker(ScrollMarker marker)
@@ -4721,7 +4721,7 @@ namespace WpfHexaEditor
         #region Missing V1 Methods - Find All Selection
 
         /// <summary>
-        /// Find all occurrences of the current selection (V1 compatible)
+        /// Find all occurrences of the current selection 
         /// Highlights all matching bytes in the file
         /// </summary>
         /// <param name="highlight">Whether to highlight results (V1 parameter, always highlights in V2)</param>
@@ -4731,7 +4731,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Find all occurrences of the current selection (V1 compatible)
+        /// Find all occurrences of the current selection 
         /// Highlights all matching bytes in the file
         /// </summary>
         private void FindAllSelection()
@@ -4791,7 +4791,7 @@ namespace WpfHexaEditor
         #region Missing V1 Methods - TBL Support (Naming Alias)
 
         /// <summary>
-        /// Load TBL file (V1 compatible - note lowercase 'bl')
+        /// Load TBL file (note lowercase 'bl')
         /// This is an alias for LoadTBLFile() with different casing
         /// </summary>
         /// <param name="path">Path to TBL file</param>
@@ -4802,7 +4802,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Load a default built-in TBL table with ASCII encoding (V1 compatible)
+        /// Load a default built-in TBL table with ASCII encoding 
         /// </summary>
         public void LoadDefaultTbl()
         {
@@ -4810,7 +4810,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Load a default built-in TBL table (V1 compatible)
+        /// Load a default built-in TBL table 
         /// </summary>
         /// <param name="type">Type of default table to load</param>
         public void LoadDefaultTbl(DefaultCharacterTableType type)
@@ -4839,7 +4839,7 @@ namespace WpfHexaEditor
         #region Missing V1 Methods - Reverse Selection
 
         /// <summary>
-        /// Reverse the byte order of the current selection (V1 compatible)
+        /// Reverse the byte order of the current selection 
         /// </summary>
         public void ReverseSelection()
         {
@@ -5569,7 +5569,7 @@ namespace WpfHexaEditor
             if (_viewModel == null)
                 return;
 
-            // Ctrl+MouseWheel = Zoom (V1 compatible)
+            // Ctrl+MouseWheel = Zoom 
             if (Keyboard.Modifiers == ModifierKeys.Control && AllowZoom)
             {
                 double delta = e.Delta > 0 ? 0.1 : -0.1;
@@ -6108,10 +6108,10 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Column Header Generation (V1 Compatible)
+        #region Column Header Generation
 
         /// <summary>
-        /// Refresh the column headers with byte position numbers and byte spacers (V1 compatible)
+        /// Refresh the column headers with byte position numbers and byte spacers 
         /// Called when BytePerLine, ByteGrouping, or ByteSpacer properties change
         /// </summary>
         private void RefreshColumnHeader()
@@ -6168,7 +6168,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Add byte spacer to a StackPanel at the specified column position (V1 compatible)
+        /// Add byte spacer to a StackPanel at the specified column position 
         /// Spacers are added every ByteGrouping bytes (e.g., every 8 bytes)
         /// </summary>
         /// <param name="stack">StackPanel to add spacer to</param>
@@ -6228,12 +6228,12 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Context Menu Handlers (V1 Compatible)
+        #region Context Menu Handlers
 
         private long _rightClickPosition = -1;
 
         /// <summary>
-        /// Show context menu on right-click (V1 compatible)
+        /// Show context menu on right-click 
         /// </summary>
         public void ShowContextMenu(long position)
         {
@@ -6336,7 +6336,7 @@ namespace WpfHexaEditor
 
         private void FillByteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            // V1 Compatible: Fill selection with 0x00 (simplified - V1 would show dialog)
+            // Fill selection with 0x00 (simplified - V1 would show dialog)
             // TODO: Add proper input dialog for .NET Core compatibility
             FillWithByte(0x00, SelectionStart, SelectionLength);
             StatusText.Text = $"Filled {SelectionLength} bytes with 0x00";
@@ -6344,7 +6344,7 @@ namespace WpfHexaEditor
 
         private void ReplaceByteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            // V1 Compatible: Replace 0x00 with 0xFF in selection (simplified - V1 would show dialog)
+            // Replace 0x00 with 0xFF in selection (simplified - V1 would show dialog)
             // TODO: Add proper input dialog for .NET Core compatibility
             byte[] findData = new byte[] { 0x00 };
             byte[] replaceData = new byte[] { 0xFF };
