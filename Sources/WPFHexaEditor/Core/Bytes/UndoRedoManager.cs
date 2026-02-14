@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace WpfHexaEditor.Core.Bytes
 {
     /// <summary>
