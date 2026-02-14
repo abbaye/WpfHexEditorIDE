@@ -239,13 +239,13 @@ namespace WpfHexaEditor.V2.ViewModels
         /// Can undo? (ByteProvider V2 handles undo internally)
         /// TODO: Implement undo/redo properly for ByteProvider V2
         /// </summary>
-        public bool CanUndo => _provider?.HasChanges ?? false;
+        public bool CanUndo => _provider?.CanUndo ?? false;
 
         /// <summary>
         /// Can redo? (ByteProvider V2 handles redo internally)
         /// TODO: Implement undo/redo properly for ByteProvider V2
         /// </summary>
-        public bool CanRedo => false; // Not implemented yet for ByteProvider V2
+        public bool CanRedo => _provider?.CanRedo ?? false;
 
         #endregion
 
@@ -735,19 +735,20 @@ namespace WpfHexaEditor.V2.ViewModels
 
         /// <summary>
         /// Undo last operation
-        /// TODO: ByteProvider V2 needs undo/redo implementation
         /// </summary>
         public void Undo()
         {
-            // TODO: Implement undo/redo for ByteProvider V2
-            // ByteProvider V2 doesn't have undo/redo methods yet
-            System.Diagnostics.Debug.WriteLine($"[UNDO] Not implemented for ByteProvider V2 yet");
+            if (_provider == null || !CanUndo)
+                return;
 
-            // For now, do nothing
-            // When implemented, this should:
-            // 1. Call _provider.Undo()
-            // 2. Refresh the display
+            // Call ByteProvider's Undo method
+            _provider.Undo();
 
+            // Refresh the display
+            ClearLineCache();
+            RefreshVisibleLines();
+
+            // Notify properties changed
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
             OnPropertyChanged(nameof(VirtualLength));
@@ -756,19 +757,20 @@ namespace WpfHexaEditor.V2.ViewModels
 
         /// <summary>
         /// Redo last undone operation
-        /// TODO: ByteProvider V2 needs undo/redo implementation
         /// </summary>
         public void Redo()
         {
-            // TODO: Implement undo/redo for ByteProvider V2
-            // ByteProvider V2 doesn't have undo/redo methods yet
-            System.Diagnostics.Debug.WriteLine($"[REDO] Not implemented for ByteProvider V2 yet");
+            if (_provider == null || !CanRedo)
+                return;
 
-            // For now, do nothing
-            // When implemented, this should:
-            // 1. Call _provider.Redo()
-            // 2. Refresh the display
+            // Call ByteProvider's Redo method
+            _provider.Redo();
 
+            // Refresh the display
+            ClearLineCache();
+            RefreshVisibleLines();
+
+            // Notify properties changed
             OnPropertyChanged(nameof(CanUndo));
             OnPropertyChanged(nameof(CanRedo));
             OnPropertyChanged(nameof(VirtualLength));

@@ -36,10 +36,14 @@ namespace WpfHexaEditor.V2.ByteProvider
         private readonly EditsManager _editsManager;
         private readonly PositionMapper _positionMapper;
         private readonly ByteReader _byteReader;
+        private readonly UndoRedoManager _undoRedoManager;
 
         // Batching support to avoid repeated cache invalidations
         private bool _batchMode = false;
         private bool _batchDirty = false;
+
+        // Undo/Redo recording control
+        private bool _recordUndo = true;
 
         #endregion
 
@@ -82,6 +86,16 @@ namespace WpfHexaEditor.V2.ByteProvider
         public (int modified, int inserted, int deleted) ModificationStats =>
             (_editsManager.ModifiedCount, _editsManager.TotalInsertedBytesCount, _editsManager.DeletedCount);
 
+        /// <summary>
+        /// Gets whether undo is available.
+        /// </summary>
+        public bool CanUndo => _undoRedoManager.CanUndo;
+
+        /// <summary>
+        /// Gets whether redo is available.
+        /// </summary>
+        public bool CanRedo => _undoRedoManager.CanRedo;
+
         #endregion
 
         #region Constructor
@@ -92,6 +106,7 @@ namespace WpfHexaEditor.V2.ByteProvider
             _editsManager = new EditsManager();
             _positionMapper = new PositionMapper(_editsManager);
             _byteReader = new ByteReader(_fileProvider, _editsManager, _positionMapper);
+            _undoRedoManager = new UndoRedoManager();
 
             // Enable caching for maximum performance
             _positionMapper.EnableCache();
@@ -184,6 +199,17 @@ namespace WpfHexaEditor.V2.ByteProvider
         /// </summary>
         public void ModifyByte(long virtualPosition, byte value)
         {
+            if (_recordUndo)
+            {
+                // Read old value for undo
+                var (oldValue, success) = GetByte(virtualPosition);
+                if (!success)
+                    return; // Can't modify invalid position
+
+                // Record undo operation
+                _undoRedoManager.RecordModify(virtualPosition, new[] { oldValue }, new[] { value });
+            }
+
             ModifyByteInternal(virtualPosition, value);
             InvalidateCaches();
         }
@@ -237,6 +263,15 @@ namespace WpfHexaEditor.V2.ByteProvider
             if (values == null || values.Length == 0)
                 return;
 
+            if (_recordUndo)
+            {
+                // Read old values for undo
+                byte[] oldValues = GetBytes(startVirtualPosition, values.Length);
+
+                // Record undo operation
+                _undoRedoManager.RecordModify(startVirtualPosition, oldValues, values);
+            }
+
             // Batch modify without invalidating cache each time
             for (int i = 0; i < values.Length; i++)
             {
@@ -257,6 +292,12 @@ namespace WpfHexaEditor.V2.ByteProvider
 
             if (bytes == null || bytes.Length == 0)
                 return;
+
+            if (_recordUndo)
+            {
+                // Record undo operation
+                _undoRedoManager.RecordInsert(virtualPosition, bytes);
+            }
 
             // Convert to physical position
             var (physicalPos, _) = _positionMapper.VirtualToPhysical(virtualPosition, _fileProvider.Length);
@@ -286,6 +327,17 @@ namespace WpfHexaEditor.V2.ByteProvider
         {
             if (IsReadOnly)
                 throw new InvalidOperationException("File is read-only");
+
+            if (_recordUndo)
+            {
+                // Read old value for undo
+                var (oldValue, success) = GetByte(virtualPosition);
+                if (!success)
+                    return; // Can't delete invalid position
+
+                // Record undo operation
+                _undoRedoManager.RecordDelete(virtualPosition, new[] { oldValue });
+            }
 
             // Convert to physical position
             var (physicalPos, isInserted) = _positionMapper.VirtualToPhysical(virtualPosition, _fileProvider.Length);
@@ -319,6 +371,15 @@ namespace WpfHexaEditor.V2.ByteProvider
 
             if (count <= 0)
                 return;
+
+            if (_recordUndo)
+            {
+                // Read old values for undo
+                byte[] oldValues = GetBytes(startVirtualPosition, (int)count);
+
+                // Record undo operation
+                _undoRedoManager.RecordDelete(startVirtualPosition, oldValues);
+            }
 
             // Batch delete without invalidating cache each time
             for (long i = 0; i < count; i++)
@@ -428,10 +489,12 @@ namespace WpfHexaEditor.V2.ByteProvider
 
         /// <summary>
         /// Clear all modifications (revert to original file).
+        /// Also clears undo/redo history.
         /// </summary>
         public void ClearAllEdits()
         {
             _editsManager.ClearAll();
+            _undoRedoManager.ClearAll();
             InvalidateCaches();
         }
 
@@ -460,6 +523,112 @@ namespace WpfHexaEditor.V2.ByteProvider
         {
             _editsManager.ClearDeletions();
             InvalidateCaches();
+        }
+
+        #endregion
+
+        #region Undo/Redo Operations
+
+        /// <summary>
+        /// Undo the last operation.
+        /// </summary>
+        public void Undo()
+        {
+            if (!CanUndo)
+                return;
+
+            // Pop operation from undo stack
+            var operation = _undoRedoManager.PopUndo();
+
+            // Disable undo recording while we reverse the operation
+            _recordUndo = false;
+
+            try
+            {
+                switch (operation.Type)
+                {
+                    case UndoOperationType.Modify:
+                        // Restore old values
+                        if (operation.OldValues != null)
+                        {
+                            ModifyBytes(operation.VirtualPosition, operation.OldValues);
+                        }
+                        break;
+
+                    case UndoOperationType.Insert:
+                        // Delete the inserted bytes
+                        DeleteBytes(operation.VirtualPosition, operation.Count);
+                        break;
+
+                    case UndoOperationType.Delete:
+                        // Re-insert the deleted bytes
+                        if (operation.OldValues != null)
+                        {
+                            InsertBytes(operation.VirtualPosition, operation.OldValues);
+                        }
+                        break;
+                }
+            }
+            finally
+            {
+                // Re-enable undo recording
+                _recordUndo = true;
+            }
+        }
+
+        /// <summary>
+        /// Redo the last undone operation.
+        /// </summary>
+        public void Redo()
+        {
+            if (!CanRedo)
+                return;
+
+            // Pop operation from redo stack
+            var operation = _undoRedoManager.PopRedo();
+
+            // Disable undo recording while we re-apply the operation
+            _recordUndo = false;
+
+            try
+            {
+                switch (operation.Type)
+                {
+                    case UndoOperationType.Modify:
+                        // Reapply new values
+                        if (operation.NewValues != null)
+                        {
+                            ModifyBytes(operation.VirtualPosition, operation.NewValues);
+                        }
+                        break;
+
+                    case UndoOperationType.Insert:
+                        // Re-insert the bytes
+                        if (operation.NewValues != null)
+                        {
+                            InsertBytes(operation.VirtualPosition, operation.NewValues);
+                        }
+                        break;
+
+                    case UndoOperationType.Delete:
+                        // Re-delete the bytes
+                        DeleteBytes(operation.VirtualPosition, operation.Count);
+                        break;
+                }
+            }
+            finally
+            {
+                // Re-enable undo recording
+                _recordUndo = true;
+            }
+        }
+
+        /// <summary>
+        /// Clear all undo/redo history.
+        /// </summary>
+        public void ClearUndoRedoHistory()
+        {
+            _undoRedoManager.ClearAll();
         }
 
         #endregion
