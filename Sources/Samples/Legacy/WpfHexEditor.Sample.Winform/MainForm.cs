@@ -13,7 +13,7 @@ namespace WpfHexEditor.Winform.Sample
             InitializeComponent();
 
             hexEditor.PreloadByteInEditorMode = PreloadByteInEditor.MaxScreenVisibleLineAtDataLoad;
-            hexEditor.ForegroundSecondColor = Brushes.Blue;
+            hexEditor.ForegroundSecondColor = Colors.Blue;
         }
 
         private void OpenFileButton_Click(object sender, EventArgs e)

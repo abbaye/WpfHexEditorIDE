@@ -16,8 +16,8 @@ namespace WpfHexEditor.Sample.Performance
 {
     public partial class MainWindow : Window
     {
-        private ByteProvider? _spanDemoProvider;
-        private ByteProvider? _asyncDemoProvider;
+        private ByteProviderLegacy? _spanDemoProvider;
+        private ByteProviderLegacy? _asyncDemoProvider;
         private CancellationTokenSource? _asyncCts;
         private VirtualizationService _virtualizationService;
         private int _responsiveClickCount = 0;
@@ -46,7 +46,7 @@ namespace WpfHexEditor.Sample.Performance
 
             if (openDialog.ShowDialog() == true)
             {
-                _spanDemoProvider = new ByteProvider(openDialog.FileName);
+                _spanDemoProvider = new ByteProviderLegacy(openDialog.FileName);
 
                 FileSizeSpanText.Text = FormatFileSize(_spanDemoProvider.Length);
                 RunTraditionalButton.IsEnabled = true;
@@ -194,7 +194,7 @@ namespace WpfHexEditor.Sample.Performance
 
             if (openDialog.ShowDialog() == true)
             {
-                _asyncDemoProvider = new ByteProvider(openDialog.FileName);
+                _asyncDemoProvider = new ByteProviderLegacy(openDialog.FileName);
 
                 RunSyncSearchButton.IsEnabled = true;
                 RunAsyncSearchButton.IsEnabled = true;
@@ -407,7 +407,7 @@ namespace WpfHexEditor.Sample.Performance
                     new Random(42).NextBytes(testData); // Deterministic random data
                     File.WriteAllBytes(tempFile, testData);
 
-                    var provider = new ByteProvider(tempFile);
+                    var provider = new ByteProviderLegacy(tempFile);
 
                     results.AppendLine($"✅ File created: {FormatFileSize(provider.Length)}");
                     results.AppendLine();

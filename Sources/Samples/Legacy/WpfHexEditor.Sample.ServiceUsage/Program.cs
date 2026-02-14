@@ -35,7 +35,7 @@ namespace WpfHexEditor.Sample.ServiceUsage
             CreateSampleFile(testFile);
 
             // Initialize ByteProvider (automatically opens the file)
-            using (var provider = new ByteProvider(testFile))
+            using (var provider = new ByteProviderLegacy(testFile))
             {
                 Console.WriteLine($"Opened file: {testFile}");
                 Console.WriteLine($"File size: {provider.Length} bytes");
@@ -99,7 +99,7 @@ namespace WpfHexEditor.Sample.ServiceUsage
             File.WriteAllBytes(path, data);
         }
 
-        static void Demo1_SelectionService(ByteProvider provider)
+        static void Demo1_SelectionService(ByteProviderLegacy provider)
         {
             Console.WriteLine("--- Demo 1: SelectionService ---");
 
@@ -134,7 +134,7 @@ namespace WpfHexEditor.Sample.ServiceUsage
             Console.WriteLine();
         }
 
-        static void Demo2_FindReplaceService(ByteProvider provider)
+        static void Demo2_FindReplaceService(ByteProviderLegacy provider)
         {
             Console.WriteLine("--- Demo 2: FindReplaceService ---");
 
@@ -172,7 +172,7 @@ namespace WpfHexEditor.Sample.ServiceUsage
             Console.WriteLine();
         }
 
-        static void Demo3_ClipboardService(ByteProvider provider)
+        static void Demo3_ClipboardService(ByteProviderLegacy provider)
         {
             Console.WriteLine("--- Demo 3: ClipboardService ---");
 
@@ -242,7 +242,7 @@ namespace WpfHexEditor.Sample.ServiceUsage
             Console.WriteLine();
         }
 
-        static void Demo5_ByteModificationService(ByteProvider provider)
+        static void Demo5_ByteModificationService(ByteProviderLegacy provider)
         {
             Console.WriteLine("--- Demo 5: ByteModificationService ---");
 
@@ -282,7 +282,7 @@ namespace WpfHexEditor.Sample.ServiceUsage
             Console.WriteLine();
         }
 
-        static void Demo6_UndoRedoService(ByteProvider provider)
+        static void Demo6_UndoRedoService(ByteProviderLegacy provider)
         {
             Console.WriteLine("--- Demo 6: UndoRedoService ---");
 
@@ -400,7 +400,7 @@ namespace WpfHexEditor.Sample.ServiceUsage
             Console.WriteLine();
         }
 
-        static void Demo9_PositionService(ByteProvider provider)
+        static void Demo9_PositionService(ByteProviderLegacy provider)
         {
             Console.WriteLine("--- Demo 9: PositionService ---");
 

@@ -32,7 +32,7 @@
 
 
         <Grid Grid.Row="1" Margin="5,0,5,0">
-            <hex:HexEditor
+            <hex:HexEditorLegacy
                 x:Name="FirstFile"
                 Margin="0,26,0,0"
                 AllowAutoHighLightSelectionByte="False"
@@ -53,7 +53,7 @@
                 Height="26"
                 VerticalAlignment="Top"
                 Content="{Binding ElementName=SecondFile, Path=FileName, UpdateSourceTrigger=PropertyChanged}" />
-            <hex:HexEditor
+            <hex:HexEditorLegacy
                 x:Name="SecondFile"
                 Margin="0,26,0,0"
                 AllowAutoHighLightSelectionByte="False"

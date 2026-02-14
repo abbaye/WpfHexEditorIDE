@@ -104,7 +104,7 @@ namespace WpfHexEditor.Sample.BinaryFilesDifference
 
         #region Various methods
 
-        private void OpenFile(HexEditor hexEditor)
+        private void OpenFile(HexEditorLegacy hexEditor)
         {
             ClearUI();
 
