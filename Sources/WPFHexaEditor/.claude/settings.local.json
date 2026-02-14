@@ -32,7 +32,15 @@
       "Bash(git push:*)",
       "Bash(test:*)",
       "Bash(git mv:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(done)",
+      "Bash(grep:*)",
+      "Bash(git restore:*)",
+      "Bash(dotnet nuget push:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(powershell:*)",
+      "Bash(for file in WpfHexEditor.Sample.BinaryFilesDifference/WpfHexEditor.Sample.BinaryFilesDifference.csproj WPFHexEditor.Sample.CSharp/WpfHexEditor.Sample.csproj WpfHexEditor.Sample.InsertByteAnywhere/WpfHexEditor.Sample.InsertByteAnywhere.csproj WpfHexEditor.Sample.Performance/WpfHexEditor.Sample.Performance.csproj WpfHexEditor.Sample.ServiceUsage/WpfHexEditor.Sample.ServiceUsage.csproj)",
+      "Bash(do sed -i 's|Include=\"\"\\\\\\\\.\\\\\\\\.\\\\\\\\\\\\\\\\\\\\\\\\.\\\\\\\\.\\\\\\\\\\\\\\\\WPFHexaEditor|Include=\"\"..\\\\\\\\..\\\\\\\\..\\\\\\\\WPFHexaEditor|g' \"$file\")"
     ]
   }
 }
