@@ -123,11 +123,18 @@ namespace WpfHexaEditor.Core.Bytes
             if (bytes == null || bytes.Length == 0)
                 return;
 
+            System.Diagnostics.Debug.WriteLine($"[EditsManager] InsertBytes: physical={physicalPosition}, count={bytes.Length}, values={BitConverter.ToString(bytes).Replace("-", " ")}");
+
             // Get or create insertion list for this position
             if (!_insertedBytes.TryGetValue(physicalPosition, out var insertions))
             {
                 insertions = new List<InsertedByte>(bytes.Length);
                 _insertedBytes[physicalPosition] = insertions;
+                System.Diagnostics.Debug.WriteLine($"[EditsManager]   Created new insertion list");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[EditsManager]   Existing insertions: {insertions.Count}");
             }
 
             // LIFO (stack-like) behavior: last inserted appears first
@@ -135,13 +142,21 @@ namespace WpfHexaEditor.Core.Bytes
             for (int i = 0; i < insertions.Count; i++)
             {
                 var existing = insertions[i];
+                System.Diagnostics.Debug.WriteLine($"[EditsManager]   Incrementing existing [{i}]: offset {existing.VirtualOffset} → {existing.VirtualOffset + bytes.Length}");
                 insertions[i] = new InsertedByte(existing.Value, existing.VirtualOffset + bytes.Length);
             }
 
             // Insert new bytes at the BEGINNING with VirtualOffset 0, 1, 2, ...
             for (int i = 0; i < bytes.Length; i++)
             {
+                System.Diagnostics.Debug.WriteLine($"[EditsManager]   Inserting new byte at index {i}: value=0x{bytes[i]:X2}, offset={i}");
                 insertions.Insert(i, new InsertedByte(bytes[i], i));
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[EditsManager]   Final insertion list ({insertions.Count} total):");
+            for (int i = 0; i < insertions.Count; i++)
+            {
+                System.Diagnostics.Debug.WriteLine($"[EditsManager]     [{i}] offset={insertions[i].VirtualOffset}, value=0x{insertions[i].Value:X2}");
             }
         }
 
@@ -190,19 +205,29 @@ namespace WpfHexaEditor.Core.Bytes
         public bool ModifyInsertedByte(long physicalPosition, int virtualOffset, byte newValue)
         {
             if (!_insertedBytes.TryGetValue(physicalPosition, out var insertions))
+            {
+                System.Diagnostics.Debug.WriteLine($"[EditsManager] ModifyInsertedByte FAILED: No insertions at physical pos {physicalPosition}");
                 return false;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[EditsManager] ModifyInsertedByte: physical={physicalPosition}, targetOffset={virtualOffset}, newValue=0x{newValue:X2}");
+            System.Diagnostics.Debug.WriteLine($"[EditsManager]   Insertions count: {insertions.Count}");
 
             // Find the inserted byte with the matching virtual offset
             for (int i = 0; i < insertions.Count; i++)
             {
+                System.Diagnostics.Debug.WriteLine($"[EditsManager]   [{i}] offset={insertions[i].VirtualOffset}, value=0x{insertions[i].Value:X2}");
+
                 if (insertions[i].VirtualOffset == virtualOffset)
                 {
                     // Replace with new value, keeping the same offset
+                    System.Diagnostics.Debug.WriteLine($"[EditsManager]   MATCH FOUND at index {i}! Updating 0x{insertions[i].Value:X2} → 0x{newValue:X2}");
                     insertions[i] = new InsertedByte(newValue, virtualOffset);
                     return true;
                 }
             }
 
+            System.Diagnostics.Debug.WriteLine($"[EditsManager]   NO MATCH - virtualOffset {virtualOffset} not found!");
             return false;
         }
 

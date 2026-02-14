@@ -277,8 +277,11 @@ namespace WpfHexaEditor.Core.Bytes
 
                 if (physicalPosition == segment.PhysicalPos)
                 {
-                    // Exact match - use segment's virtual offset
-                    virtualPos = segment.VirtualOffset;
+                    // CRITICAL FIX: VirtualOffset points to FIRST inserted byte (oldest in LIFO)
+                    // Physical byte at this position is AFTER all inserted bytes
+                    // Virtual layout: [Insert0, Insert1, ..., InsertN-1, PhysicalByte]
+                    //                  ^VirtualOffset                      ^PhysicalByte position
+                    virtualPos = segment.VirtualOffset + segment.InsertedCount;
 
                     if (_cacheValid)
                     {

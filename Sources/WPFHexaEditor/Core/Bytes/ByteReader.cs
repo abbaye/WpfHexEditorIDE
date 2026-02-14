@@ -79,17 +79,34 @@ namespace WpfHexaEditor.Core.Bytes
                 // Find the inserted byte at this virtual position
                 var insertions = _editsManager.GetInsertedBytesAt(physicalPos.Value);
 
-                // CORRECT LAYOUT: Insertions come BEFORE the physical byte in virtual space!
-                // PhysicalToVirtual(P) returns the position where insertions START (first inserted byte)
+                // CORRECTED UNDERSTANDING: PhysicalToVirtual returns position of PHYSICAL byte, NOT first inserted byte!
                 // Virtual layout: [Insert0_oldest, Insert1, ..., InsertN-1_newest, PhysicalByte]
-                // So: virtualStart = position of FIRST inserted byte (oldest in LIFO array[N-1])
-                //     virtualStart + N = position of physical byte
-                long virtualStart = _positionMapper.PhysicalToVirtual(physicalPos.Value, physicalFileLength);
+                // If PhysicalToVirtual(P) = V, then:
+                //   - First inserted byte (oldest) is at V - N
+                //   - Last inserted byte (newest) is at V - 1
+                //   - Physical byte is at V
+                long physicalByteVirtualPos = _positionMapper.PhysicalToVirtual(physicalPos.Value, physicalFileLength);
+                int totalInsertions = insertions.Count;
+
+                // Calculate position of FIRST inserted byte
+                long firstInsertedVirtualPos = physicalByteVirtualPos - totalInsertions;
 
                 // Calculate offset within the inserted bytes range
-                // relativePosition = 0 means FIRST inserted byte (oldest, LIFO index N-1)
-                // relativePosition = N-1 means LAST inserted byte (newest, LIFO index 0)
-                long relativePosition = virtualPosition - virtualStart;
+                // relativePosition = 0 means FIRST inserted byte (oldest, LIFO offset N-1)
+                // relativePosition = N-1 means LAST inserted byte (newest, LIFO offset 0)
+                long relativePosition = virtualPosition - firstInsertedVirtualPos;
+
+                // DETAILED DIAGNOSTICS: Log every calculation to understand workaround trigger
+                System.Diagnostics.Debug.WriteLine($"[ByteReader.ReadByte] virtualPos={virtualPosition}, physicalPos={physicalPos.Value}, " +
+                    $"physByteVirtPos={physicalByteVirtualPos}, firstInsVirtPos={firstInsertedVirtualPos}, " +
+                    $"relativePos={relativePosition}, totalIns={totalInsertions}");
+
+                // Show insertion list details
+                System.Diagnostics.Debug.WriteLine($"[ByteReader.ReadByte] Insertions at phys {physicalPos.Value}:");
+                for (int i = 0; i < insertions.Count; i++)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ByteReader.ReadByte]   [{i}] VirtualOffset={insertions[i].VirtualOffset}, Value=0x{insertions[i].Value:X2}");
+                }
 
                 if (relativePosition < 0 || relativePosition >= insertions.Count)
                 {
@@ -117,8 +134,6 @@ namespace WpfHexaEditor.Core.Bytes
                     return (0, false);
                 }
 
-                int totalInsertions = insertions.Count;
-
                 // Convert relative position to LIFO array index
                 // Insertions stored in LIFO: [newest at 0, ..., oldest at N-1]
                 // Virtual positions: [oldest at virtualStart+0, ..., newest at virtualStart+N-1]
@@ -144,7 +159,8 @@ namespace WpfHexaEditor.Core.Bytes
                     $"CRITICAL: Insertion lookup failed at virtual position 0x{virtualPosition:X}.\n" +
                     $"Details:\n" +
                     $"  Physical Position: 0x{physicalPos.Value:X}\n" +
-                    $"  Virtual Start (PhysicalToVirtual): 0x{virtualStart:X}\n" +
+                    $"  Physical Byte Virtual Pos: 0x{physicalByteVirtualPos:X}\n" +
+                    $"  First Inserted Virtual Pos: 0x{firstInsertedVirtualPos:X}\n" +
                     $"  Relative Position: {relativePosition}\n" +
                     $"  Total Insertions: {totalInsertions}\n" +
                     $"  Target Offset (calculated): {targetOffset}\n" +

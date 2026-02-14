@@ -266,21 +266,28 @@ namespace WpfHexaEditor.Core.Bytes
                 // Modifying an inserted byte - update the byte in EditsManager's insertion list
                 if (physicalPos.HasValue)
                 {
-                    // CRITICAL FIX: Insertions are stored in LIFO (stack) order
-                    // The NEWEST insertion has offset 0, OLDEST has highest offset
-                    // Virtual positions increase with insertion order, but offsets are inverted
+                    // CRITICAL FIX: Understand the virtual space layout correctly!
+                    // PhysicalToVirtual returns the position of the PHYSICAL byte, NOT the first inserted byte
+                    // Virtual layout: [Insert0_oldest, Insert1, ..., InsertN-1_newest, PhysicalByte]
+                    // So if PhysicalToVirtual(P) = V, then:
+                    //   - First inserted byte (oldest) is at V - N
+                    //   - Physical byte is at V
 
-                    long virtualStart = _positionMapper.PhysicalToVirtual(physicalPos.Value, _fileProvider.Length);
+                    long physicalByteVirtualPos = _positionMapper.PhysicalToVirtual(physicalPos.Value, _fileProvider.Length);
                     int totalInsertions = _editsManager.GetInsertionCountAt(physicalPos.Value);
 
-                    // Invert the offset calculation to account for LIFO storage
-                    // If we have 3 insertions at physical pos 102:
-                    //   virtual 102 → offset 2 (oldest, last in list)
-                    //   virtual 103 → offset 1 (middle)
-                    //   virtual 104 → offset 0 (newest, first in list)
-                    int virtualOffset = totalInsertions - 1 - (int)(virtualPosition - virtualStart);
+                    // Calculate position of FIRST inserted byte (oldest in LIFO, highest offset)
+                    long firstInsertedVirtualPos = physicalByteVirtualPos - totalInsertions;
 
-                    System.Diagnostics.Debug.WriteLine($"[ByteProvider] ModifyInserted: virtual={virtualPosition}, physical={physicalPos.Value}, virtualStart={virtualStart}, total={totalInsertions}, offset={virtualOffset}");
+                    // Calculate offset within inserted bytes range
+                    // relativePosition = 0 means first inserted byte (oldest, LIFO offset N-1)
+                    // relativePosition = N-1 means last inserted byte (newest, LIFO offset 0)
+                    long relativePosition = virtualPosition - firstInsertedVirtualPos;
+
+                    // Convert to LIFO array offset
+                    int virtualOffset = totalInsertions - 1 - (int)relativePosition;
+
+                    System.Diagnostics.Debug.WriteLine($"[ByteProvider] ModifyInserted: virtual={virtualPosition}, physical={physicalPos.Value}, physByteVirtPos={physicalByteVirtualPos}, firstInsertedVirtPos={firstInsertedVirtualPos}, relativePos={relativePosition}, total={totalInsertions}, offset={virtualOffset}");
 
                     // Update the inserted byte's value
                     bool success = _editsManager.ModifyInsertedByte(physicalPos.Value, virtualOffset, value);
