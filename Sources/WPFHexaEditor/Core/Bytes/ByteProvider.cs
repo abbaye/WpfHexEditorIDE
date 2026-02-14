@@ -905,8 +905,18 @@ namespace WpfHexaEditor.Core.Bytes
                     var (value, exists) = _editsManager.GetModifiedByte(physicalPos);
                     if (!exists) continue;
 
+                    // Skip if this position is deleted (deleted takes precedence)
+                    if (_editsManager.IsDeleted(physicalPos))
+                        continue;
+
                     // Convert physical to virtual position
                     long virtualPos = _positionMapper.PhysicalToVirtual(physicalPos, PhysicalLength);
+
+                    // Important: Only add if this virtual position is NOT an inserted byte
+                    // Check by converting back - if it's inserted, skip it
+                    var (checkPhys, isInserted) = _positionMapper.VirtualToPhysical(virtualPos, PhysicalLength);
+                    if (isInserted)
+                        continue; // This is actually an inserted byte that was modified, handle it in Added section
 
                     result[virtualPos] = new ByteModified
                     {
