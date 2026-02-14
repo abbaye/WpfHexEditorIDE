@@ -6352,6 +6352,11 @@ namespace WpfHexaEditor
             StatusText.Text = $"Replaced {replaced.Count()} occurrences";
         }
 
+        private void ReverseSelectionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ReverseSelection();
+        }
+
         #endregion
     }
 }

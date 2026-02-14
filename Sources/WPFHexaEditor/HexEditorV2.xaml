@@ -212,6 +212,13 @@
                     <TextBlock Text="🔄" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
+
+            <!-- Reverse Selection -->
+            <MenuItem x:Name="ReverseSelectionMenuItem" Header="Reverse Selection" Click="ReverseSelectionMenuItem_Click">
+                <MenuItem.Icon>
+                    <TextBlock Text="⇄" FontSize="14"/>
+                </MenuItem.Icon>
+            </MenuItem>
         </ContextMenu>
     </UserControl.ContextMenu>
 
