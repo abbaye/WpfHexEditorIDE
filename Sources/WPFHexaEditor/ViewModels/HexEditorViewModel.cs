@@ -971,13 +971,14 @@ namespace WpfHexaEditor.ViewModels
 
         /// <summary>
         /// Convert virtual position to physical position
-        /// NOTE: ByteProvider V2 handles virtual/physical mapping internally.
-        /// This method is kept for compatibility but may not be needed.
+        /// NOTE: ByteProvider V2 handles virtual/physical mapping internally and doesn't expose it publicly.
+        /// This method is kept for V1 API compatibility. For V2, returns 1:1 mapping as placeholder.
+        /// External code should not rely on physical positions with V2 architecture.
         /// </summary>
         public PhysicalPosition VirtualToPhysical(VirtualPosition virtualPos)
         {
-            // TODO: ByteProvider V2 integration - determine if this is still needed
-            // For now, return the same position (1:1 mapping as placeholder)
+            // V2 doesn't expose position mapping externally - it's an internal implementation detail
+            // Return 1:1 mapping for compatibility (matches V2's virtual position philosophy)
             if (!virtualPos.IsValid) return PhysicalPosition.Invalid;
             return new PhysicalPosition(virtualPos.Value);
         }
@@ -985,12 +986,15 @@ namespace WpfHexaEditor.ViewModels
         /// <summary>
         /// Convert physical position to virtual position
         /// NOTE: ByteProvider V2 handles virtual/physical mapping internally.
-        /// This method is kept for compatibility but may not be needed.
+        /// This method provides external access to the mapping.
+        /// NOTE: ByteProvider V2 handles virtual/physical mapping internally and doesn't expose it publicly.
+        /// This method is kept for V1 API compatibility. For V2, returns 1:1 mapping as placeholder.
+        /// External code should not rely on physical positions with V2 architecture.
         /// </summary>
         public VirtualPosition PhysicalToVirtual(PhysicalPosition physicalPos)
         {
-            // TODO: ByteProvider V2 integration - determine if this is still needed
-            // For now, return the same position (1:1 mapping as placeholder)
+            // V2 doesn't expose position mapping externally - it's an internal implementation detail
+            // Return 1:1 mapping for compatibility (matches V2's virtual position philosophy)
             if (!physicalPos.IsValid) return VirtualPosition.Invalid;
             return new VirtualPosition(physicalPos.Value);
         }

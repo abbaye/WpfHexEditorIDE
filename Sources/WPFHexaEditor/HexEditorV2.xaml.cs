@@ -3789,9 +3789,7 @@ namespace WpfHexaEditor
             if (other == null || _viewModel?.Provider == null || other._viewModel?.Provider == null)
                 return 0;
 
-            // TODO: Implement for ByteProvider V2
-            return 0; // Stub
-            // return _comparisonService.CountDifferences(_viewModel.Provider, other._viewModel.Provider);
+            return _comparisonService.CountDifferences(_viewModel.Provider, other._viewModel.Provider);
         }
 
         /// <summary>
@@ -3802,9 +3800,7 @@ namespace WpfHexaEditor
             if (other == null || _viewModel?.Provider == null || other._viewModel?.Provider == null)
                 return 0.0;
 
-            // TODO: Implement for ByteProvider V2
-            return 0.0; // Stub
-            // return _comparisonService.CalculateSimilarity(_viewModel.Provider, other._viewModel.Provider);
+            return _comparisonService.CalculateSimilarity(_viewModel.Provider, other._viewModel.Provider);
         }
 
         #endregion
