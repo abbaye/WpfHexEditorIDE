@@ -327,14 +327,14 @@
         <!-- Bar Chart Panel (Phase 7.4 - V1 compatible feature) -->
         <Border x:Name="BarChartBorder" Grid.Row="2"
                 BorderBrush="#D0D0D0" BorderThickness="0,1,0,0"
-                Visibility="{Binding BarChartPanelVisibility, RelativeSource={RelativeSource AncestorType=local:HexEditorV2}}">
+                Visibility="{Binding BarChartPanelVisibility, RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
             <controls:BarChartPanel x:Name="BarChartPanel"
                                      Height="150"
                                      Margin="5"/>
         </Border>
 
         <!-- Status bar -->
-        <StatusBar x:Name="StatusBar" Grid.Row="3" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:HexEditorV2}}">
+        <StatusBar x:Name="StatusBar" Grid.Row="3" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
             <StatusBar.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                     <MenuItem Header="Status Message" IsCheckable="True" IsChecked="{Binding ShowStatusMessage, Mode=TwoWay}"/>

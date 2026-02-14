@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace HexEditor.Sample
+namespace WpfHexEditor.Sample.Main
 {
     public partial class App : Application
     {

@@ -5,8 +5,8 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
-    <AssemblyName>HexEditor.Sample</AssemblyName>
-    <RootNamespace>HexEditor.Sample</RootNamespace>
+    <AssemblyName>WpfHexEditor.Sample.Main</AssemblyName>
+    <RootNamespace>WpfHexEditor.Sample.Main</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

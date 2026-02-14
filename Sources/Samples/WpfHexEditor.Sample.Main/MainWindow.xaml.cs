@@ -6,7 +6,7 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexaEditor.Models;
 
-namespace HexEditor.Sample
+namespace WpfHexEditor.Sample.Main
 {
     public partial class MainWindow : Window
     {

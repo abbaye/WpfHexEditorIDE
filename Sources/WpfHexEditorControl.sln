@@ -18,7 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Sample.Service
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Sample.Performance", "Samples\Legacy\WpfHexEditor.Sample.Performance\WpfHexEditor.Sample.Performance.csproj", "{7D2B8C5A-037E-4A5D-8687-505850EC2A54}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HexEditorV2.Sample", "Samples\HexEditorV2.Sample\HexEditorV2.Sample.csproj", "{B1A2C3D4-E5F6-7890-A1B2-C3D4E5F67890}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Sample.Main", "Samples\WpfHexEditor.Sample.Main\WpfHexEditor.Sample.Main.csproj", "{B1A2C3D4-E5F6-7890-A1B2-C3D4E5F67890}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Legacy", "Legacy", "{D4570CC0-C655-47B8-AF9E-68F2F7F0B447}"
 EndProject
