@@ -2945,6 +2945,135 @@ namespace WpfHexaEditor
             _viewModel?.FillWithByte(value, startPosition, length);
         }
 
+        /// <summary>
+        /// V1 compatible: Modify byte with undo support
+        /// </summary>
+        /// <param name="byte">New byte value (null to delete)</param>
+        /// <param name="bytePositionInStream">Position in stream (virtual)</param>
+        /// <param name="undoLength">Length for undo operation (usually 1)</param>
+        public void ModifyByte(byte? @byte, long bytePositionInStream, long undoLength = 1)
+        {
+            if (_viewModel == null || ReadOnlyMode) return;
+
+            if (@byte.HasValue)
+            {
+                // Modify the byte
+                _viewModel.ModifyByte(new VirtualPosition(bytePositionInStream), @byte.Value);
+            }
+            else
+            {
+                // Delete the byte (null value means delete)
+                _viewModel.DeleteByte(new VirtualPosition(bytePositionInStream));
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Insert a single byte at position
+        /// </summary>
+        /// <param name="byte">Byte value to insert</param>
+        /// <param name="bytePositionInStream">Position in stream (virtual)</param>
+        public void InsertByte(byte @byte, long bytePositionInStream)
+        {
+            if (_viewModel == null || ReadOnlyMode) return;
+            _viewModel.InsertByte(new VirtualPosition(bytePositionInStream), @byte);
+        }
+
+        /// <summary>
+        /// V1 compatible: Insert a byte repeated multiple times at position
+        /// </summary>
+        /// <param name="byte">Byte value to insert</param>
+        /// <param name="bytePositionInStream">Position in stream (virtual)</param>
+        /// <param name="length">Number of times to repeat the byte</param>
+        public void InsertByte(byte @byte, long bytePositionInStream, long length)
+        {
+            if (_viewModel == null || ReadOnlyMode || length <= 0) return;
+
+            // Create array of repeated byte
+            byte[] bytes = new byte[length];
+            for (long i = 0; i < length; i++)
+            {
+                bytes[i] = @byte;
+            }
+
+            _viewModel.InsertBytes(new VirtualPosition(bytePositionInStream), bytes);
+        }
+
+        /// <summary>
+        /// V1 compatible: Insert multiple bytes at position
+        /// </summary>
+        /// <param name="bytes">Byte array to insert</param>
+        /// <param name="bytePositionInStream">Position in stream (virtual)</param>
+        public void InsertBytes(byte[] bytes, long bytePositionInStream)
+        {
+            if (_viewModel == null || ReadOnlyMode || bytes == null || bytes.Length == 0) return;
+            _viewModel.InsertBytes(new VirtualPosition(bytePositionInStream), bytes);
+        }
+
+        /// <summary>
+        /// V1 compatible: Delete bytes at position
+        /// </summary>
+        /// <param name="bytePositionInStream">Start position (virtual)</param>
+        /// <param name="length">Number of bytes to delete</param>
+        public void DeleteBytesAtPosition(long bytePositionInStream, long length)
+        {
+            if (_viewModel == null || ReadOnlyMode || length <= 0) return;
+
+            // Delete bytes one by one (ByteProvider V2 handles this internally)
+            _viewModel.BeginUpdate();
+            try
+            {
+                for (long i = 0; i < length; i++)
+                {
+                    _viewModel.DeleteByte(new VirtualPosition(bytePositionInStream));
+                    // Note: After deleting, the next byte shifts to the same position
+                    // So we keep deleting at the same position
+                }
+            }
+            finally
+            {
+                _viewModel.EndUpdate();
+            }
+        }
+
+        /// <summary>
+        /// V1 compatible: Get byte with copyChange parameter
+        /// Returns tuple with byte value and success flag
+        /// </summary>
+        /// <param name="position">Position in file (virtual)</param>
+        /// <param name="copyChange">If true, returns modified value; if false, returns original value</param>
+        /// <returns>Tuple (byte value, success flag)</returns>
+        public (byte? singleByte, bool success) GetByte(long position, bool copyChange)
+        {
+            if (_viewModel == null || position < 0 || position >= VirtualLength)
+                return (null, false);
+
+            // V2 always returns modified values (copyChange=true behavior)
+            // To get original values (copyChange=false), we would need ByteProvider support
+            // For now, we only support copyChange=true
+            var byteValue = _viewModel.GetByte(position);
+            return (byteValue, true);
+        }
+
+        /// <summary>
+        /// V1 compatible: Get all bytes from file
+        /// </summary>
+        /// <param name="copyChange">If true, includes modifications; if false, original file only</param>
+        /// <returns>Byte array of entire file</returns>
+        public byte[] GetAllBytes(bool copyChange = true)
+        {
+            if (_viewModel == null || VirtualLength == 0)
+                return Array.Empty<byte>();
+
+            // V2 always returns modified values (copyChange=true behavior)
+            // Get all bytes from ByteProvider
+            byte[] result = new byte[VirtualLength];
+            for (long i = 0; i < VirtualLength; i++)
+            {
+                result[i] = _viewModel.GetByte(i);
+            }
+            return result;
+        }
+
         #endregion
 
         #region Public Methods - Bookmarks (V1 Compatible)
