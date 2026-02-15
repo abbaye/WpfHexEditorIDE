@@ -476,16 +476,27 @@ namespace WpfHexaEditor.Core.Bytes
             const long MaxReasonableInsertions = 100_000_000; // 100 MB
             if (insertedCount > MaxReasonableInsertions)
             {
+                // DIAGNOSTIC: Find which physical position has massive insertions
+                var insertionsByPosition = _editsManager.GetInsertionPositionsWithCounts();
+                var largestPosition = insertionsByPosition.OrderByDescending(kvp => kvp.Value).FirstOrDefault();
+
                 // Validate insertion integrity
                 var (isValid, errorMsg) = _editsManager.ValidateInsertionIntegrity();
                 if (!isValid)
                 {
                     throw new InvalidOperationException(
                         $"CRITICAL: Insertion list corrupted! {errorMsg} " +
-                        $"This indicates a bug in RemoveSpecificInsertion(). " +
                         $"TotalInsertedBytesCount={insertedCount}, DeletedCount={deletedCount}, " +
                         $"PhysicalLength={physicalFileLength}, CalculatedVirtualLength={virtualLength}");
                 }
+
+                // Even if integrity check passes, this is still a problem!
+                throw new InvalidOperationException(
+                    $"CRITICAL: Abnormal number of insertions detected! " +
+                    $"TotalInsertedBytesCount={insertedCount} (>{MaxReasonableInsertions}). " +
+                    $"Largest insertion at PhysicalPos={largestPosition.Key} has {largestPosition.Value} bytes. " +
+                    $"This indicates a bug causing insertions to accumulate without being cleaned up. " +
+                    $"DeletedCount={deletedCount}, PhysicalLength={physicalFileLength}");
             }
 
             // Validate result is reasonable

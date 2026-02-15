@@ -446,6 +446,15 @@ namespace WpfHexaEditor.Core.Bytes
             return (true, null);
         }
 
+        /// <summary>
+        /// DIAGNOSTIC: Get insertion counts per physical position for debugging.
+        /// Returns dictionary of PhysicalPosition → InsertionCount.
+        /// </summary>
+        public Dictionary<long, int> GetInsertionPositionsWithCounts()
+        {
+            return _insertedBytes.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Count);
+        }
+
         #endregion
     }
 }
