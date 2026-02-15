@@ -17,12 +17,12 @@ namespace WpfHexaEditor
     /// </summary>
     public partial class HexEditor
     {
-        #region V1 Compatibility - Custom Background Blocks
+        #region Custom Background Blocks
 
         private readonly List<Core.CustomBackgroundBlock> _customBackgroundBlocks = new List<Core.CustomBackgroundBlock>();
 
         /// <summary>
-        /// Enable or disable custom background blocks (Phase 7.1) - DependencyProperty
+        /// Enable or disable custom background blocks
         /// </summary>
         public bool AllowCustomBackgroundBlock
         {
@@ -40,14 +40,14 @@ namespace WpfHexaEditor
         #region Public Methods - Custom Background Blocks
 
         /// <summary>
-        /// Add a custom background block (Phase 7.1)
+        /// Add a custom background block
         /// </summary>
         public void AddCustomBackgroundBlock(Core.CustomBackgroundBlock block)
         {
             if (block == null) return;
             _customBackgroundBlocks.Add(block);
 
-            // Phase 7.1: Sync with HexViewport for rendering
+            // Sync with HexViewport for rendering
             if (HexViewport != null)
             {
                 HexViewport.CustomBackgroundBlocks = _customBackgroundBlocks;
@@ -56,14 +56,14 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Remove a custom background block (Phase 7.1)
+        /// Remove a custom background block
         /// </summary>
         public void RemoveCustomBackgroundBlock(Core.CustomBackgroundBlock block)
         {
             if (block == null) return;
             _customBackgroundBlocks.Remove(block);
 
-            // Phase 7.1: Sync with HexViewport for rendering
+            // Sync with HexViewport for rendering
             if (HexViewport != null)
             {
                 HexViewport.CustomBackgroundBlocks = _customBackgroundBlocks;
@@ -72,13 +72,13 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Clear all custom background blocks (Phase 7.1)
+        /// Clear all custom background blocks
         /// </summary>
         public void ClearCustomBackgroundBlock()
         {
             _customBackgroundBlocks.Clear();
 
-            // Phase 7.1: Sync with HexViewport for rendering
+            // Sync with HexViewport for rendering
             if (HexViewport != null)
             {
                 HexViewport.CustomBackgroundBlocks = _customBackgroundBlocks;

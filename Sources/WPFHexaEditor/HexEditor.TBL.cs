@@ -29,7 +29,7 @@ namespace WpfHexaEditor
                 _tblStream = new TblStream(path);
                 _characterTableType = CharacterTableType.TblFile;
 
-                // Phase 7.5: Sync TblStream to HexViewport for color rendering
+                // Sync TblStream to HexViewport for color rendering
                 if (HexViewport != null)
                     HexViewport.TblStream = _tblStream;
 
@@ -41,7 +41,7 @@ namespace WpfHexaEditor
                 _tblStream = null;
                 _characterTableType = CharacterTableType.Ascii;
 
-                // Phase 7.5: Clear TblStream in HexViewport
+                // Clear TblStream in HexViewport
                 if (HexViewport != null)
                     HexViewport.TblStream = null;
             }
@@ -60,7 +60,7 @@ namespace WpfHexaEditor
             }
             _characterTableType = CharacterTableType.Ascii;
 
-            // Phase 7.5: Clear TblStream in HexViewport
+            // Clear TblStream in HexViewport
             if (HexViewport != null)
                 HexViewport.TblStream = null;
 
@@ -81,7 +81,7 @@ namespace WpfHexaEditor
                 {
                     _tblStream = TblStream.CreateDefaultTbl(DefaultCharacterTableType.Ascii);
 
-                    // Phase 7.5: Sync TblStream to HexViewport
+                    // Sync TblStream to HexViewport
                     if (HexViewport != null)
                         HexViewport.TblStream = _tblStream;
                 }

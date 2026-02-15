@@ -18,7 +18,7 @@ namespace WpfHexaEditor
     /// </summary>
     public partial class HexEditor
     {
-        #region V1 Compatibility - String Search/Replace (wrap byte[] methods)
+        #region String Search/Replace Methods
 
         /// <summary>
         /// Find first occurrence of string
@@ -180,7 +180,7 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Phase 13 - V1 Dialog Compatibility (Find/Replace Overloads)
+        #region Find/Replace Dialog Overloads
 
         /// <summary>
         /// Find first occurrence with highlight support (V1 dialog compatible)

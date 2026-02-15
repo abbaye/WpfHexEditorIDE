@@ -52,7 +52,7 @@ namespace WpfHexaEditor
             HexViewport.ByteGrouping = ByteGrouping;
             HexViewport.ByteSpacerVisualStyle = ByteSpacerVisualStyle;
 
-            // Initialize byte foreground colors (Phase 7.6 - V1 compatibility)
+            // Initialize byte foreground colors
             var normalBrush = Resources["ByteForegroundBrush"] as Brush;
             var alternateBrush = Resources["AlternateByteForegroundBrush"] as Brush;
             HexViewport.SetByteForegroundColors(normalBrush, alternateBrush);
@@ -87,7 +87,7 @@ namespace WpfHexaEditor
             // STARTUP OPTIMIZATION: Defer expensive operations to background (low priority)
             // These operations can be done after the control is loaded and visible
 
-            // Update bar chart panel in background (Phase 7.4)
+            // Update bar chart panel in background
             // Bar chart calculation can be slow for large files
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -144,7 +144,7 @@ namespace WpfHexaEditor
             FileSizeText.Text = "Size: -";
             SelectionInfo.Text = "No selection";
 
-            // Clear bar chart (Phase 7.4)
+            // Clear bar chart
             _barChartPanel?.Clear();
             PositionInfo.Text = "Position: 0";
             EditModeText.Text = "Mode: Overwrite";
@@ -153,7 +153,7 @@ namespace WpfHexaEditor
 
 
         /// <summary>
-        /// Update bar chart panel with current file data (Phase 7.4)
+        /// Update bar chart panel with current file data
         /// </summary>
         private void UpdateBarChart()
         {

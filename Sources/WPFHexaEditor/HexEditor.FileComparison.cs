@@ -147,7 +147,7 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region Public Methods - File Comparison (V1 Compatibility)
+        #region Public Methods - File Comparison
 
         /// <summary>
         /// Compare this file with another HexEditor

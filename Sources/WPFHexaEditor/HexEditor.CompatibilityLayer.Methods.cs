@@ -324,7 +324,7 @@ namespace WpfHexaEditor
                 _tblStream = TblStream.CreateDefaultTbl(type);
                 _characterTableType = CharacterTableType.TblFile;
 
-                // Phase 7.5: Sync TblStream to HexViewport for color rendering
+                // Sync TblStream to HexViewport for color rendering
                 if (HexViewport != null)
                     HexViewport.TblStream = _tblStream;
 

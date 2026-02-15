@@ -570,10 +570,7 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region V1 Compatibility - Configuration Properties
-
-        // Backing fields
-        // No more backing fields needed - all converted to DependencyProperty
+        #region Configuration Properties
 
         /// <summary>
         /// Allow context menu  - DependencyProperty
@@ -934,7 +931,7 @@ namespace WpfHexaEditor
 
         /// <summary>
         /// Current file name (full path)
-        /// Uses DependencyProperty for XAML binding support (Phase 8)
+        /// Uses DependencyProperty for XAML binding support
         /// </summary>
         public string FileName
         {
@@ -944,7 +941,7 @@ namespace WpfHexaEditor
 
         /// <summary>
         /// Has the file been modified?
-        /// Uses DependencyProperty for XAML binding support (Phase 8)
+        /// Uses DependencyProperty for XAML binding support
         /// </summary>
         public bool IsModified
         {
@@ -1274,7 +1271,7 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region V1 Compatibility - Byte Spacer Properties
+        #region Byte Spacer Properties
 
         /// <summary>
         /// Get or set the byte spacing position 
@@ -1354,7 +1351,7 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region V1 Compatibility - Color Properties
+        #region Color Properties
 
         /// <summary>
         /// First selection gradient color 
@@ -1508,7 +1505,7 @@ namespace WpfHexaEditor
                 var brush = new SolidColorBrush((Color)e.NewValue);
                 editor.Resources["AlternateByteForegroundBrush"] = brush;
 
-                // Update HexViewport colors (Phase 7.6)
+                // Update HexViewport colors
                 if (editor.HexViewport != null)
                 {
                     var normalBrush = editor.Resources["ByteForegroundBrush"] as Brush;
@@ -1567,10 +1564,10 @@ namespace WpfHexaEditor
         #endregion
 
 
-        #region Phase 8 - XAML Binding DependencyProperties
+        #region Dependency Properties
 
         /// <summary>
-        /// FileName DependencyProperty for XAML binding (Phase 8)
+        /// FileName DependencyProperty for XAML binding
         /// </summary>
         public static readonly DependencyProperty FileNameProperty =
             DependencyProperty.Register(nameof(FileName), typeof(string), typeof(HexEditor),
@@ -1580,8 +1577,8 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor && e.NewValue is string path && !string.IsNullOrEmpty(path))
             {
-                // V1 Compatibility: Auto-load file when FileName is set (CRITICAL FIX)
-                // This enables V1 pattern: HexEdit.FileName = "file.bin" to automatically open the file
+                // Auto-load file when FileName is set
+                // This enables the pattern: HexEdit.FileName = "file.bin" to automatically open the file
                 try
                 {
                     // Only open if different from current file and file exists
@@ -1598,14 +1595,14 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// IsModified DependencyProperty for XAML binding (Phase 8)
+        /// IsModified DependencyProperty for XAML binding
         /// </summary>
         public static readonly DependencyProperty IsModifiedProperty =
             DependencyProperty.Register(nameof(IsModified), typeof(bool), typeof(HexEditor),
                 new PropertyMetadata(false));
 
         /// <summary>
-        /// Position DependencyProperty for XAML binding (Phase 8)
+        /// Position DependencyProperty for XAML binding 
         /// </summary>
         public static readonly DependencyProperty PositionProperty =
             DependencyProperty.Register(nameof(Position), typeof(long), typeof(HexEditor),
@@ -1620,7 +1617,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// ReadOnlyMode DependencyProperty for XAML binding (Phase 8)
+        /// ReadOnlyMode DependencyProperty for XAML binding 
         /// </summary>
         public static readonly DependencyProperty ReadOnlyModeProperty =
             DependencyProperty.Register(nameof(ReadOnlyMode), typeof(bool), typeof(HexEditor),
@@ -1643,7 +1640,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// SelectionStart DependencyProperty for XAML binding (Phase 8)
+        /// SelectionStart DependencyProperty for XAML binding 
         /// </summary>
         public static readonly DependencyProperty SelectionStartProperty =
             DependencyProperty.Register(nameof(SelectionStart), typeof(long), typeof(HexEditor),
@@ -1680,7 +1677,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// SelectionStop DependencyProperty for XAML binding (Phase 8)
+        /// SelectionStop DependencyProperty for XAML binding 
         /// </summary>
         public static readonly DependencyProperty SelectionStopProperty =
             DependencyProperty.Register(nameof(SelectionStop), typeof(long), typeof(HexEditor),
@@ -1714,7 +1711,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// BytePerLine DependencyProperty for XAML binding (Phase 8)
+        /// BytePerLine DependencyProperty for XAML binding 
         /// </summary>
         public static readonly DependencyProperty BytePerLineProperty =
             DependencyProperty.Register(nameof(BytePerLine), typeof(int), typeof(HexEditor),
@@ -1741,7 +1738,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// EditMode DependencyProperty for XAML binding (Phase 8)
+        /// EditMode DependencyProperty for XAML binding 
         /// </summary>
         public static readonly DependencyProperty EditModeProperty =
             DependencyProperty.Register(nameof(EditMode), typeof(Models.EditMode), typeof(HexEditor),
@@ -1766,7 +1763,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// IsFileOrStreamLoaded Read-Only DependencyProperty for XAML binding (Phase 8)
+        /// IsFileOrStreamLoaded Read-Only DependencyProperty for XAML binding 
         /// </summary>
         private static readonly DependencyPropertyKey IsFileOrStreamLoadedPropertyKey =
             DependencyProperty.RegisterReadOnly(nameof(IsFileOrStreamLoaded), typeof(bool), typeof(HexEditor),
@@ -2138,7 +2135,7 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor && e.NewValue is bool allowed)
             {
-                // Phase 7.1: Sync with HexViewport - pass blocks if enabled, empty list if disabled
+                // Sync with HexViewport - pass blocks if enabled, empty list if disabled
                 if (editor.HexViewport != null)
                 {
                     editor.HexViewport.CustomBackgroundBlocks = allowed ? editor._customBackgroundBlocks : new List<Core.CustomBackgroundBlock>();
@@ -2149,7 +2146,7 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region V1 Compatibility - Brush Properties (wrap Color properties)
+        #region Brush Properties (Color Wrappers)
 
         /// <summary>
         /// Selection first color as Brush. Use <see cref="SelectionFirstColor"/> (Color) for V2 code.
@@ -2300,7 +2297,7 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region V1 Compatibility - Display Properties
+        #region Keyboard Shortcuts Properties
 
         /// <summary>
         /// Allow builtin Ctrl+C 
@@ -2369,7 +2366,7 @@ namespace WpfHexaEditor
 
         #endregion
 
-        #region V1 Compatibility - Visibility Properties (wrap bool properties)
+        #region Visibility Properties
 
         /// <summary>
         /// Header visibility. Use ShowHeader (bool) for V2 code.
@@ -2417,7 +2414,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Bar chart panel visibility (Phase 7.4 - Complete) - DependencyProperty
+        /// Bar chart panel visibility
         /// </summary>
         public Visibility BarChartPanelVisibility
         {
@@ -2428,46 +2425,6 @@ namespace WpfHexaEditor
         #endregion
 
         #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        #region Phase 12 - 100% V1 Compatibility (Missing Properties and Methods)
-
-        // ================================================================================
-        // Phase 12: Final V1 Compatibility - Adds remaining properties and methods
-        // identified by real-world sample testing (V1CompatibilityStatus.md)
-        // ================================================================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        #endregion
-
-
-
-
 
     }
 }
