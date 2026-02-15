@@ -229,16 +229,39 @@ namespace WpfHexaEditor.Core.Bytes
 
             if (segmentIndex == -1)
             {
-                // Virtual position is before all segments (in initial unmodified region)
-                if (virtualPosition >= physicalFileLength)
-                    return (null, false);
+                // Virtual position is before all segments
+                // CRITICAL FIX: Must scan from 0, skipping deleted bytes!
+                // Cannot assume 1:1 mapping if there are deleted bytes before first segment
+                long scanVirtual = 0;
+                long scanPhysical = 0;
 
-                if (_cacheValid)
+                while (scanPhysical < physicalFileLength && scanVirtual <= virtualPosition)
                 {
-                    _virtualToPhysicalCache[virtualPosition] = (virtualPosition, false);
-                    _physicalToVirtualCache[virtualPosition] = virtualPosition;
+                    // Check if this physical position is deleted
+                    bool isDeleted = _editsManager.IsDeleted(scanPhysical);
+
+                    if (!isDeleted)
+                    {
+                        // This is a valid (non-deleted) byte
+                        if (scanVirtual == virtualPosition)
+                        {
+                            // Found it!
+                            if (_cacheValid)
+                            {
+                                _virtualToPhysicalCache[virtualPosition] = (scanPhysical, false);
+                                _physicalToVirtualCache[scanPhysical] = virtualPosition;
+                            }
+                            return (scanPhysical, false);
+                        }
+                        scanVirtual++;
+                    }
+                    // else: deleted byte, don't increment scanVirtual
+
+                    scanPhysical++;
                 }
-                return (virtualPosition, false);
+
+                // Beyond end of file
+                return (null, false);
             }
 
             // Calculate virtual/physical positions up to the found segment
