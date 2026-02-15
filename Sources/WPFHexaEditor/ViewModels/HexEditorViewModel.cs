@@ -485,9 +485,20 @@ namespace WpfHexaEditor.ViewModels
 
             // UX IMPROVEMENT: Position cursor at the byte after deletion (or at end if deleted last bytes)
             // This keeps the cursor in a useful position instead of clearing the selection
-            long newPosition = Math.Min(start, Math.Max(0, VirtualLength - 1));
 
-            if (VirtualLength > 0)
+            // CRITICAL VALIDATION: Ensure VirtualLength is sane before positioning cursor
+            long virtualLen = VirtualLength;
+            if (virtualLen < 0 || virtualLen > 1_000_000_000) // 1GB max sanity check
+            {
+                throw new InvalidOperationException(
+                    $"CRITICAL BUG: VirtualLength is corrupted after deletion! " +
+                    $"VirtualLength={virtualLen}, Expected around {start} or less. " +
+                    $"This indicates RemoveSpecificInsertion failed to reindex VirtualOffsets.");
+            }
+
+            long newPosition = Math.Min(start, Math.Max(0, virtualLen - 1));
+
+            if (virtualLen > 0)
             {
                 SelectionStart = new VirtualPosition(newPosition);
                 SelectionStop = VirtualPosition.Invalid; // Clear selection range

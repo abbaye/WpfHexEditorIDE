@@ -287,8 +287,26 @@ namespace WpfHexaEditor.Core.Bytes
                     // Convert to LIFO array offset
                     int virtualOffset = totalInsertions - 1 - (int)relativePosition;
 
+                    // CRITICAL VALIDATION: Check if calculation is sane
+                    if (virtualOffset < 0 || virtualOffset >= totalInsertions)
+                    {
+                        throw new InvalidOperationException(
+                            $"BUG: ModifyByte calculated invalid virtualOffset={virtualOffset} for totalInsertions={totalInsertions}. " +
+                            $"VirtualPos={virtualPosition}, PhysicalPos={physicalPos.Value}, " +
+                            $"PhysicalByteVirtualPos={physicalByteVirtualPos}, RelativePosition={relativePosition}");
+                    }
+
                     // Update the inserted byte's value
-                    _editsManager.ModifyInsertedByte(physicalPos.Value, virtualOffset, value);
+                    bool success = _editsManager.ModifyInsertedByte(physicalPos.Value, virtualOffset, value);
+
+                    // CRITICAL VALIDATION: If modify failed, VirtualOffsets might be corrupted
+                    if (!success)
+                    {
+                        var (isValid, errorMsg) = _editsManager.ValidateInsertionIntegrity();
+                        throw new InvalidOperationException(
+                            $"BUG: ModifyInsertedByte failed! VirtualOffset={virtualOffset} not found at PhysicalPos={physicalPos.Value}. " +
+                            $"TotalInsertions={totalInsertions}. Integrity check: {(isValid ? "PASSED" : $"FAILED - {errorMsg}")}");
+                    }
                 }
             }
             else if (physicalPos.HasValue)
@@ -403,8 +421,33 @@ namespace WpfHexaEditor.Core.Bytes
                     // Convert to LIFO array offset
                     long virtualOffset = totalInsertions - 1 - relativePosition;
 
+                    // CRITICAL VALIDATION: Check if calculation is sane
+                    if (virtualOffset < 0 || virtualOffset >= totalInsertions)
+                    {
+                        throw new InvalidOperationException(
+                            $"BUG: DeleteByte calculated invalid virtualOffset={virtualOffset} for totalInsertions={totalInsertions}. " +
+                            $"VirtualPos={virtualPosition}, PhysicalPos={physicalPos.Value}, " +
+                            $"PhysicalByteVirtualPos={physicalByteVirtualPos}, RelativePosition={relativePosition}");
+                    }
+
                     // Remove the specific insertion
-                    _editsManager.RemoveSpecificInsertion(physicalPos.Value, virtualOffset);
+                    bool success = _editsManager.RemoveSpecificInsertion(physicalPos.Value, virtualOffset);
+
+                    // CRITICAL VALIDATION: Verify removal succeeded and VirtualOffsets are still contiguous
+                    if (!success)
+                    {
+                        throw new InvalidOperationException(
+                            $"BUG: RemoveSpecificInsertion failed! VirtualOffset={virtualOffset} not found at PhysicalPos={physicalPos.Value}. " +
+                            $"TotalInsertions={totalInsertions}");
+                    }
+
+                    // Validate insertion integrity after removal
+                    var (isValid, errorMsg) = _editsManager.ValidateInsertionIntegrity();
+                    if (!isValid)
+                    {
+                        throw new InvalidOperationException(
+                            $"BUG: RemoveSpecificInsertion corrupted VirtualOffsets! {errorMsg}");
+                    }
                 }
             }
             else if (physicalPos.HasValue)
