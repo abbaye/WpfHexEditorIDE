@@ -231,7 +231,21 @@ namespace WpfHexaEditor.Core.Bytes
             int index = insertions.FindIndex(ib => ib.VirtualOffset == virtualOffset);
             if (index >= 0)
             {
+                long removedOffset = insertions[index].VirtualOffset;
                 insertions.RemoveAt(index);
+
+                // CRITICAL FIX: Reindex all VirtualOffsets after the removed byte
+                // This maintains the invariant that VirtualOffsets are contiguous (0,1,2,...)
+                // Without this, VirtualOffsets become sparse (0,1,3,4,...) which corrupts position mapping
+                for (int i = 0; i < insertions.Count; i++)
+                {
+                    var existing = insertions[i];
+                    if (existing.VirtualOffset > removedOffset)
+                    {
+                        // Decrement VirtualOffset to fill the gap
+                        insertions[i] = new InsertedByte(existing.Value, existing.VirtualOffset - 1);
+                    }
+                }
 
                 // If no more insertions at this position, remove the entire entry
                 if (insertions.Count == 0)
@@ -398,6 +412,38 @@ namespace WpfHexaEditor.Core.Bytes
             int deleted = _deletedPositions.Count(p => p >= startPhysical && p <= endPhysical);
 
             return (modified, inserted, deleted);
+        }
+
+        /// <summary>
+        /// Validate the integrity of insertion VirtualOffsets.
+        /// Returns (isValid, errorMessage) - isValid=false if corruption detected.
+        /// </summary>
+        public (bool isValid, string errorMessage) ValidateInsertionIntegrity()
+        {
+            foreach (var kvp in _insertedBytes)
+            {
+                long physicalPos = kvp.Key;
+                var insertions = kvp.Value;
+
+                if (insertions.Count == 0)
+                    continue;
+
+                // Check that VirtualOffsets are contiguous starting from 0
+                var offsets = insertions.Select(ib => ib.VirtualOffset).OrderBy(o => o).ToList();
+
+                for (int i = 0; i < offsets.Count; i++)
+                {
+                    if (offsets[i] != i)
+                    {
+                        return (false,
+                            $"CORRUPTION DETECTED at physical position {physicalPos}: " +
+                            $"Expected VirtualOffset={i} but found {offsets[i]}. " +
+                            $"VirtualOffsets should be contiguous [0,1,2,...,{offsets.Count-1}].");
+                    }
+                }
+            }
+
+            return (true, null);
         }
 
         #endregion

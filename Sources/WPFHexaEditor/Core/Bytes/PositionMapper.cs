@@ -463,10 +463,38 @@ namespace WpfHexaEditor.Core.Bytes
             long virtualLength = physicalFileLength;
 
             // Add inserted bytes
-            virtualLength += _editsManager.TotalInsertedBytesCount;
+            int insertedCount = _editsManager.TotalInsertedBytesCount;
+            virtualLength += insertedCount;
 
             // Subtract deleted bytes
-            virtualLength -= _editsManager.DeletedCount;
+            int deletedCount = _editsManager.DeletedCount;
+            virtualLength -= deletedCount;
+
+            // CRITICAL VALIDATION: Detect corruption early
+            // VirtualLength should never be wildly different from physical length
+            // A reasonable upper bound is physical + 100MB of insertions
+            const long MaxReasonableInsertions = 100_000_000; // 100 MB
+            if (insertedCount > MaxReasonableInsertions)
+            {
+                // Validate insertion integrity
+                var (isValid, errorMsg) = _editsManager.ValidateInsertionIntegrity();
+                if (!isValid)
+                {
+                    throw new InvalidOperationException(
+                        $"CRITICAL: Insertion list corrupted! {errorMsg} " +
+                        $"This indicates a bug in RemoveSpecificInsertion(). " +
+                        $"TotalInsertedBytesCount={insertedCount}, DeletedCount={deletedCount}, " +
+                        $"PhysicalLength={physicalFileLength}, CalculatedVirtualLength={virtualLength}");
+                }
+            }
+
+            // Validate result is reasonable
+            if (virtualLength < 0)
+            {
+                throw new InvalidOperationException(
+                    $"CRITICAL: VirtualLength calculation resulted in negative value: {virtualLength}. " +
+                    $"PhysicalLength={physicalFileLength}, InsertedCount={insertedCount}, DeletedCount={deletedCount}");
+            }
 
             // Cache result
             if (_cacheValid)
