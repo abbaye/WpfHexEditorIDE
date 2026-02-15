@@ -201,6 +201,18 @@ namespace WpfHexaEditor.Core.Bytes
             // Try cache first (now enhanced to store isInserted flag)
             if (_cacheValid && _virtualToPhysicalCache.TryGetValue(virtualPosition, out var cached))
             {
+                // DIAGNOSTIC: Verify cached value is not deleted!
+                if (!cached.isInserted && _editsManager.IsDeleted(cached.physicalPos))
+                {
+                    // CACHE CORRUPTION: Cached position is now deleted!
+                    // This means cache wasn't invalidated after deletion
+                    throw new InvalidOperationException(
+                        $"CACHE BUG! Cached position is DELETED!\n" +
+                        $"Virtual Position: {virtualPosition}\n" +
+                        $"Cached Physical Position: {cached.physicalPos}\n" +
+                        $"IsInserted (cached): {cached.isInserted}\n" +
+                        $"This means InvalidateCache() was not called after deletion, or cache was re-populated with stale data!");
+                }
                 return (cached.physicalPos, cached.isInserted);
             }
 
