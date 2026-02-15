@@ -473,6 +473,21 @@ namespace WpfHexaEditor.Core.Bytes
             int deletedCount = _editsManager.DeletedCount;
             virtualLength -= deletedCount;
 
+            // NUCLEAR TEST: Always throw to see if GetVirtualLength is even called!
+            if (virtualLength > 1_000_000) // Only trigger if suspicious
+            {
+                var insertionsByPosition = _editsManager.GetInsertionPositionsWithCounts();
+                var largestPosition = insertionsByPosition.OrderByDescending(kvp => kvp.Value).FirstOrDefault();
+
+                throw new InvalidOperationException(
+                    $"NUCLEAR TEST: GetVirtualLength WAS CALLED! " +
+                    $"PhysicalLength={physicalFileLength}, " +
+                    $"InsertedCount={insertedCount}, " +
+                    $"DeletedCount={deletedCount}, " +
+                    $"CalculatedVirtualLength={virtualLength}, " +
+                    $"LargestInsertionAt PhysicalPos={largestPosition.Key} has {largestPosition.Value} bytes.");
+            }
+
             // CRITICAL VALIDATION: Detect corruption early
             // VirtualLength should never be wildly different from physical length
             // A reasonable upper bound is physical + 1MB of insertions
