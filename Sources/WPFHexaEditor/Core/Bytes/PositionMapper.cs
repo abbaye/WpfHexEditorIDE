@@ -198,11 +198,13 @@ namespace WpfHexaEditor.Core.Bytes
             if (virtualPosition < 0)
                 return (null, false);
 
-            // Try cache first (now enhanced to store isInserted flag)
-            if (_cacheValid && _virtualToPhysicalCache.TryGetValue(virtualPosition, out var cached))
-            {
-                return (cached.physicalPos, cached.isInserted);
-            }
+            // TEMPORARY WORKAROUND: Disable cache until scan logic bug is fixed
+            // Cache invalidation in DeleteBytes() is now correct, but scan logic still has a bug
+            // TODO: Fix the scan logic that returns deleted positions
+            //if (_cacheValid && _virtualToPhysicalCache.TryGetValue(virtualPosition, out var cached))
+            //{
+            //    return (cached.physicalPos, cached.isInserted);
+            //}
 
             // Build segment map if needed
             BuildSegmentMap(physicalFileLength);
