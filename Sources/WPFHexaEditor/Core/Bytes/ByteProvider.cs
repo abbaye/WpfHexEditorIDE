@@ -492,7 +492,9 @@ namespace WpfHexaEditor.Core.Bytes
                 _undoRedoManager.RecordDelete(startVirtualPosition, oldValues);
             }
 
-            // Batch delete without invalidating cache each time
+            // CRITICAL FIX: Must invalidate cache after EACH deletion, not just at the end
+            // Each deletion changes virtual→physical mapping, so cache becomes stale immediately
+            // Without this, VirtualToPhysical() returns obsolete positions from cache for subsequent deletions
             for (long i = 0; i < count; i++)
             {
                 long virtualPos = startVirtualPosition + i;
@@ -512,10 +514,21 @@ namespace WpfHexaEditor.Core.Bytes
                 {
                     _editsManager.DeleteByte(physicalPos.Value);
                 }
+
+                // CRITICAL: Invalidate position mapper cache immediately after each deletion
+                // This ensures next iteration gets correct virtual→physical mapping
+                _positionMapper.InvalidateCache();
             }
 
-            // Invalidate caches ONCE at the end
-            InvalidateCaches();
+            // Invalidate other caches at the end
+            if (!_batchMode)
+            {
+                _byteReader.ClearLineCache();
+            }
+            else
+            {
+                _batchDirty = true;
+            }
         }
 
         #endregion
