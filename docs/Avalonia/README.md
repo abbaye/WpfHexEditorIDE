@@ -138,6 +138,25 @@ Complete Git workflow for implementing Avalonia support safely.
 
 ---
 
+### 8. [GitHub Project Setup](./GITHUB_PROJECT_SETUP.md) 📊
+**Official GitHub Project configuration guide**
+
+Complete guide for creating and managing the GitHub Project board.
+
+**Contains:**
+- Project creation steps
+- Board configuration (columns, fields)
+- All issues to create (Phase 1-8)
+- Milestones setup (v3.0.0-alpha, beta, release, v4.0.0)
+- Labels to create (type, phase, component, priority)
+- Project views configuration
+- Automation suggestions
+- Progress tracking metrics
+
+**Perfect for:** Project maintainers, tracking implementation progress
+
+---
+
 ## 🎯 Quick Links by Role
 
 ### I'm a Developer Using the Control
