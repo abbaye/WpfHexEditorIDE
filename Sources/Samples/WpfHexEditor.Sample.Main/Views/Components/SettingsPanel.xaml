@@ -31,7 +31,7 @@
                 <TextBlock Text="{DynamicResource Settings_Title}"
                           FontSize="22"
                           FontWeight="Bold"
-                          Foreground="{StaticResource ForegroundBrush}"
+                          Foreground="{DynamicResource ForegroundBrush}"
                           VerticalAlignment="Center"/>
             </StackPanel>
 
@@ -41,7 +41,7 @@
                     <TextBlock Text="{DynamicResource Settings_Theme_Title}"
                               FontSize="16"
                               FontWeight="SemiBold"
-                              Foreground="{StaticResource ForegroundBrush}"
+                              Foreground="{DynamicResource ForegroundBrush}"
                               Margin="0,0,0,12"/>
 
                     <ItemsControl ItemsSource="{Binding AvailableThemes}">
@@ -60,8 +60,8 @@
                                     <RadioButton.Template>
                                         <ControlTemplate TargetType="RadioButton">
                                             <Border x:Name="ThemeBorder"
-                                                   Background="{StaticResource SurfaceBrush}"
-                                                   BorderBrush="{StaticResource BorderBrush}"
+                                                   Background="{DynamicResource SurfaceBrush}"
+                                                   BorderBrush="{DynamicResource BorderBrush}"
                                                    BorderThickness="2"
                                                    CornerRadius="8"
                                                    Padding="16,12"
@@ -70,20 +70,20 @@
                                                     <TextBlock Text="{Binding DisplayName}"
                                                              FontSize="14"
                                                              FontWeight="SemiBold"
-                                                             Foreground="{StaticResource ForegroundBrush}"/>
+                                                             Foreground="{DynamicResource ForegroundBrush}"/>
                                                     <TextBlock Text="{Binding Description}"
                                                              FontSize="11"
-                                                             Foreground="{StaticResource ForegroundSecondaryBrush}"
+                                                             Foreground="{DynamicResource ForegroundSecondaryBrush}"
                                                              Margin="0,4,0,0"/>
                                                 </StackPanel>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsChecked" Value="True">
-                                                    <Setter TargetName="ThemeBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
-                                                    <Setter TargetName="ThemeBorder" Property="Background" Value="{StaticResource SurfaceElevatedBrush}"/>
+                                                    <Setter TargetName="ThemeBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                    <Setter TargetName="ThemeBorder" Property="Background" Value="{DynamicResource SurfaceElevatedBrush}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="ThemeBorder" Property="Background" Value="{StaticResource SurfaceElevatedBrush}"/>
+                                                    <Setter TargetName="ThemeBorder" Property="Background" Value="{DynamicResource SurfaceElevatedBrush}"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -101,7 +101,7 @@
                     <TextBlock Text="{DynamicResource Settings_Language_Title}"
                               FontSize="16"
                               FontWeight="SemiBold"
-                              Foreground="{StaticResource ForegroundBrush}"
+                              Foreground="{DynamicResource ForegroundBrush}"
                               Margin="0,0,0,12"/>
 
                     <ComboBox ItemsSource="{Binding AvailableLanguages}"
@@ -110,9 +110,9 @@
                              DisplayMemberPath="DisplayName"
                              Height="40"
                              FontSize="14"
-                             Background="{StaticResource SurfaceElevatedBrush}"
-                             Foreground="{StaticResource ForegroundBrush}"
-                             BorderBrush="{StaticResource BorderBrush}"/>
+                             Background="{DynamicResource SurfaceElevatedBrush}"
+                             Foreground="{DynamicResource ForegroundBrush}"
+                             BorderBrush="{DynamicResource BorderBrush}"/>
                 </StackPanel>
             </Border>
 
@@ -122,28 +122,28 @@
                     <TextBlock Text="{DynamicResource Settings_Search_Title}"
                               FontSize="16"
                               FontWeight="SemiBold"
-                              Foreground="{StaticResource ForegroundBrush}"
+                              Foreground="{DynamicResource ForegroundBrush}"
                               Margin="0,0,0,12"/>
 
                     <CheckBox Content="{DynamicResource Settings_Search_EnableParallel}"
                              IsChecked="{Binding EnableParallelSearch}"
-                             Foreground="{StaticResource ForegroundBrush}"
+                             Foreground="{DynamicResource ForegroundBrush}"
                              Margin="0,0,0,8"/>
 
                     <CheckBox Content="{DynamicResource Settings_Search_UseWildcard}"
                              IsChecked="{Binding UseWildcardSearch}"
-                             Foreground="{StaticResource ForegroundBrush}"
+                             Foreground="{DynamicResource ForegroundBrush}"
                              Margin="0,0,0,8"/>
 
                     <CheckBox Content="{DynamicResource Settings_Search_HighlightMatches}"
                              IsChecked="{Binding HighlightAllMatches}"
-                             Foreground="{StaticResource ForegroundBrush}"
+                             Foreground="{DynamicResource ForegroundBrush}"
                              Margin="0,0,0,12"/>
 
                     <StackPanel Margin="0,0,0,0">
                         <TextBlock Text="{DynamicResource Settings_Search_ResultLimit}"
                                   FontSize="12"
-                                  Foreground="{StaticResource ForegroundSecondaryBrush}"
+                                  Foreground="{DynamicResource ForegroundSecondaryBrush}"
                                   Margin="0,0,0,8"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -161,7 +161,7 @@
                                       Text="{Binding SearchResultLimit}"
                                       FontSize="14"
                                       FontWeight="Bold"
-                                      Foreground="{StaticResource AccentBrush}"
+                                      Foreground="{DynamicResource AccentBrush}"
                                       Margin="12,0,0,0"
                                       MinWidth="60"
                                       TextAlignment="Right"
@@ -177,28 +177,28 @@
                     <TextBlock Text="{DynamicResource Settings_Display_Title}"
                               FontSize="16"
                               FontWeight="SemiBold"
-                              Foreground="{StaticResource ForegroundBrush}"
+                              Foreground="{DynamicResource ForegroundBrush}"
                               Margin="0,0,0,12"/>
 
                     <CheckBox Content="{DynamicResource Settings_Display_ShowLineNumbers}"
                              IsChecked="{Binding ShowLineNumbers}"
-                             Foreground="{StaticResource ForegroundBrush}"
+                             Foreground="{DynamicResource ForegroundBrush}"
                              Margin="0,0,0,8"/>
 
                     <CheckBox Content="{DynamicResource Settings_Display_ShowScrollMarkers}"
                              IsChecked="{Binding ShowScrollMarkers}"
-                             Foreground="{StaticResource ForegroundBrush}"
+                             Foreground="{DynamicResource ForegroundBrush}"
                              Margin="0,0,0,8"/>
 
                     <CheckBox Content="{DynamicResource Settings_Display_ShowStatusBar}"
                              IsChecked="{Binding ShowStatusBar}"
-                             Foreground="{StaticResource ForegroundBrush}"
+                             Foreground="{DynamicResource ForegroundBrush}"
                              Margin="0,0,0,12"/>
 
                     <StackPanel>
                         <TextBlock Text="{DynamicResource Settings_Display_BytesPerLine}"
                                   FontSize="12"
-                                  Foreground="{StaticResource ForegroundSecondaryBrush}"
+                                  Foreground="{DynamicResource ForegroundSecondaryBrush}"
                                   Margin="0,0,0,8"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <RadioButton Content="8" IsChecked="{Binding BytesPerLine, Converter={StaticResource IntToBoolConverter}, ConverterParameter=8}" Margin="0,0,12,0"/>
@@ -216,10 +216,10 @@
                     <TextBlock Text="{DynamicResource Settings_Performance_Title}"
                               FontSize="16"
                               FontWeight="SemiBold"
-                              Foreground="{StaticResource ForegroundBrush}"
+                              Foreground="{DynamicResource ForegroundBrush}"
                               Margin="0,0,0,12"/>
 
-                    <Border Background="{StaticResource AccentBrush}"
+                    <Border Background="{DynamicResource AccentBrush}"
                            CornerRadius="8"
                            Padding="12,8"
                            Margin="0,0,0,8">
@@ -232,15 +232,15 @@
 
                     <TextBlock Text="{DynamicResource Settings_Performance_Feature1}"
                               FontSize="11"
-                              Foreground="{StaticResource ForegroundSecondaryBrush}"
+                              Foreground="{DynamicResource ForegroundSecondaryBrush}"
                               Margin="0,0,0,4"/>
                     <TextBlock Text="{DynamicResource Settings_Performance_Feature2}"
                               FontSize="11"
-                              Foreground="{StaticResource ForegroundSecondaryBrush}"
+                              Foreground="{DynamicResource ForegroundSecondaryBrush}"
                               Margin="0,0,0,4"/>
                     <TextBlock Text="{DynamicResource Settings_Performance_Feature3}"
                               FontSize="11"
-                              Foreground="{StaticResource ForegroundSecondaryBrush}"/>
+                              Foreground="{DynamicResource ForegroundSecondaryBrush}"/>
                 </StackPanel>
             </Border>
 

@@ -478,6 +478,30 @@
     <value>Please restart the application after changing the language.</value>
     <comment>Options dialog - Language change warning message</comment>
   </data>
+  <data name="Options_Theme_Instructions" xml:space="preserve">
+    <value>Select a theme to instantly change the application's appearance</value>
+    <comment>Options dialog - Theme selection instructions</comment>
+  </data>
+  <data name="Options_Theme_CurrentLabel" xml:space="preserve">
+    <value>Current Theme</value>
+    <comment>Options dialog - Current theme label</comment>
+  </data>
+  <data name="Options_Theme_ColumnIcon" xml:space="preserve">
+    <value>Icon</value>
+    <comment>Options dialog - Theme ListView column header for Icon</comment>
+  </data>
+  <data name="Options_Theme_ColumnName" xml:space="preserve">
+    <value>Name</value>
+    <comment>Options dialog - Theme ListView column header for Name</comment>
+  </data>
+  <data name="Options_Theme_ColumnDescription" xml:space="preserve">
+    <value>Description</value>
+    <comment>Options dialog - Theme ListView column header for Description</comment>
+  </data>
+  <data name="Options_Theme_InstantInfo" xml:space="preserve">
+    <value>Theme changes apply instantly - no restart required! 🎨</value>
+    <comment>Options dialog - Theme change info message</comment>
+  </data>
   <data name="Options_ComingSoon" xml:space="preserve">
     <value>Coming soon...</value>
     <comment>Options dialog - Coming soon placeholder text</comment>

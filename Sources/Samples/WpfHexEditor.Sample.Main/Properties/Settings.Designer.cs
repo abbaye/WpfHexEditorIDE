@@ -34,5 +34,17 @@ namespace WpfHexEditor.Sample.Main.Properties {
                 this["PreferredCulture"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Office")]
+        public string PreferredTheme {
+            get {
+                return ((string)(this["PreferredTheme"]));
+            }
+            set {
+                this["PreferredTheme"] = value;
+            }
+        }
     }
 }

@@ -63,8 +63,8 @@ namespace WpfHexEditor.Sample.Main.Views
             // Wire up theme changes
             _viewModel.SettingsViewModel.ThemeChanged += OnThemeChanged;
 
-            // Load default theme
-            LoadTheme(_viewModel.SettingsViewModel.SelectedTheme);
+            // Sync HexEditor colors with current theme (theme loaded by ThemeManager.Initialize())
+            Services.ThemeManager.SyncHexEditorColors(HexEditorControl);
         }
 
         private void OnFileOpenRequested(object sender, string filePath)
@@ -101,35 +101,9 @@ namespace WpfHexEditor.Sample.Main.Views
 
         private void OnThemeChanged(object sender, string themeName)
         {
-            LoadTheme(themeName);
-        }
-
-        private void LoadTheme(string themeName)
-        {
-            try
-            {
-                // Clear existing theme
-                var existingTheme = Application.Current.Resources.MergedDictionaries
-                    .FirstOrDefault(d => d.Source != null && d.Source.OriginalString.Contains("/Themes/"));
-
-                if (existingTheme != null)
-                {
-                    Application.Current.Resources.MergedDictionaries.Remove(existingTheme);
-                }
-
-                // Load new theme
-                var themeUri = new Uri($"pack://application:,,,/WpfHexEditor.Sample.Main;component/Resources/Themes/{themeName}.xaml", UriKind.Absolute);
-                var themeDictionary = new ResourceDictionary { Source = themeUri };
-                Application.Current.Resources.MergedDictionaries.Add(themeDictionary);
-
-                // Force refresh of all bindings
-                InvalidateVisual();
-                UpdateLayout();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Failed to load theme {themeName}: {ex.Message}");
-            }
+            // Theme loading is now handled by ThemeManager
+            // Just sync HexEditor colors with the new theme
+            Services.ThemeManager.SyncHexEditorColors(HexEditorControl);
         }
 
         private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
@@ -142,7 +116,7 @@ namespace WpfHexEditor.Sample.Main.Views
             if (sender is System.Windows.Controls.Ribbon.RibbonMenuItem menuItem &&
                 menuItem.Tag is string themeName)
             {
-                LoadTheme(themeName);
+                Services.ThemeManager.ChangeTheme(themeName, persistent: true);
             }
         }
 

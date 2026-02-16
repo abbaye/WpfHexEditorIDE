@@ -12,7 +12,7 @@
                 <services:LocalizedResourceDictionary/>
                 <!-- HexEditor Control Localization Resources -->
                 <hexServices:LocalizedResourceDictionary/>
-                <!-- Default Theme: Office (Light - Professional) -->
+                <!-- Default Theme: Office (ThemeManager will switch if user has different preference) -->
                 <ResourceDictionary Source="Resources/Themes/Office.xaml"/>
                 <!-- Ribbon Vector Icons -->
                 <ResourceDictionary Source="Resources/RibbonIcons.xaml"/>

@@ -49,6 +49,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
         /// </summary>
         public List<ThemeOption> AvailableThemes { get; } = new List<ThemeOption>
         {
+            new ThemeOption { Name = "Office", DisplayName = "Office", Description = "Light professional office theme" },
             new ThemeOption { Name = "VisualStudio", DisplayName = "Visual Studio", Description = "Professional clean theme inspired by VS 2022" },
             new ThemeOption { Name = "Light", DisplayName = "Light", Description = "Clean professional light theme" },
             new ThemeOption { Name = "DarkGlass", DisplayName = "Dark Glass", Description = "Modern glassmorphism dark theme" },
@@ -81,7 +82,11 @@ namespace WpfHexEditor.Sample.Main.ViewModels
                 {
                     _selectedTheme = value;
                     OnPropertyChanged(nameof(SelectedTheme));
-                    ThemeChanged?.Invoke(this, value);
+
+                    // Change theme instantly via ThemeManager
+                    Services.ThemeManager.ChangeTheme(value, persistent: true);
+
+                    ThemeChanged?.Invoke(this, value); // Keep event for backward compatibility
                 }
             }
         }
@@ -222,6 +227,9 @@ namespace WpfHexEditor.Sample.Main.ViewModels
         {
             ResetToDefaultsCommand = new RelayCommand(ResetToDefaults);
             SaveSettingsCommand = new RelayCommand(SaveSettings);
+
+            // Initialize theme from ThemeManager
+            _selectedTheme = Services.ThemeManager.CurrentTheme;
 
             // Set initial language
             ApplyLanguage(SelectedLanguage);

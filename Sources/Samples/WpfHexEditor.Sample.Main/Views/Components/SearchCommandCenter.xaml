@@ -36,8 +36,8 @@
 
             <!-- Search Box -->
             <Border Grid.Column="0"
-                    Background="{StaticResource SurfaceElevatedBrush}"
-                    BorderBrush="{StaticResource BorderBrush}"
+                    Background="{DynamicResource SurfaceElevatedBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
                     BorderThickness="1"
                     CornerRadius="3"
                     Height="32"
@@ -67,8 +67,8 @@
                             FontFamily="Segoe UI"
                             BorderThickness="0"
                             Background="Transparent"
-                            Foreground="{StaticResource ForegroundBrush}"
-                            CaretBrush="{StaticResource AccentBrush}"
+                            Foreground="{DynamicResource ForegroundBrush}"
+                            CaretBrush="{DynamicResource AccentBrush}"
                             VerticalAlignment="Center"
                             VerticalContentAlignment="Center">
                         <TextBox.InputBindings>
@@ -82,7 +82,7 @@
                              SelectedIndex="0"
                              BorderThickness="0"
                              Background="Transparent"
-                             Foreground="{StaticResource ForegroundSecondaryBrush}"
+                             Foreground="{DynamicResource ForegroundSecondaryBrush}"
                              FontSize="11"
                              VerticalAlignment="Center"
                              Margin="4,0">
@@ -142,7 +142,7 @@
                    Visibility="{Binding HasResults, Converter={StaticResource BoolToVisibilityConverter}}">
 
             <TextBlock FontSize="11"
-                      Foreground="{StaticResource ForegroundSecondaryBrush}"
+                      Foreground="{DynamicResource ForegroundSecondaryBrush}"
                       VerticalAlignment="Center">
                 <Run Text="{Binding ResultCount, Mode=OneWay}"/>
                 <Run Text="{DynamicResource Search_Matches}"/>
@@ -150,25 +150,25 @@
 
             <TextBlock Text="•"
                       FontSize="11"
-                      Foreground="{StaticResource ForegroundTertiaryBrush}"
+                      Foreground="{DynamicResource ForegroundTertiaryBrush}"
                       Margin="8,0"/>
 
             <TextBlock Text="{Binding SearchDurationMs, StringFormat={}{0:F1}ms}"
                       FontSize="11"
-                      Foreground="{StaticResource SuccessBrush}"
+                      Foreground="{DynamicResource SuccessBrush}"
                       VerticalAlignment="Center"/>
 
             <TextBlock Text="•"
                       FontSize="11"
-                      Foreground="{StaticResource ForegroundTertiaryBrush}"
+                      Foreground="{DynamicResource ForegroundTertiaryBrush}"
                       Margin="8,0"/>
 
             <TextBlock Text="{Binding SearchSpeedMBps, StringFormat={}{0:F0} MB/s}"
                       FontSize="11"
-                      Foreground="{StaticResource InfoBrush}"
+                      Foreground="{DynamicResource InfoBrush}"
                       VerticalAlignment="Center"/>
 
-            <Border Background="{StaticResource SuccessBrush}"
+            <Border Background="{DynamicResource SuccessBrush}"
                    CornerRadius="2"
                    Padding="4,2"
                    Margin="12,0,0,0"
@@ -185,7 +185,7 @@
                     Height="1"
                     VerticalAlignment="Bottom"
                     IsIndeterminate="True"
-                    Foreground="{StaticResource AccentBrush}"
+                    Foreground="{DynamicResource AccentBrush}"
                     Background="Transparent"
                     BorderThickness="0"
                     Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>

@@ -43,22 +43,42 @@
     <Color x:Key="PressedColor">#007ACC</Color>
     <Color x:Key="SelectedColor">#094771</Color>
 
+    <!-- ==================== HEXEDITOR COLORS ==================== -->
+
+    <!-- HexEditor Control Colors for Visual Studio Theme -->
+    <Color x:Key="HexEditor_SelectionFirstColor">#66007ACC</Color>         <!-- VS Blue with 40% opacity -->
+    <Color x:Key="HexEditor_SelectionSecondColor">#66007ACC</Color>        <!-- VS Blue with 40% opacity -->
+    <Color x:Key="HexEditor_ByteModifiedColor">#FFCC00</Color>             <!-- Yellow -->
+    <Color x:Key="HexEditor_ByteDeletedColor">#F48771</Color>              <!-- Salmon Red -->
+    <Color x:Key="HexEditor_ByteAddedColor">#4EC9B0</Color>                <!-- Teal Green -->
+    <Color x:Key="HexEditor_HighLightColor">#FFCC00</Color>                <!-- Yellow -->
+    <Color x:Key="HexEditor_MouseOverColor">#094771</Color>                <!-- Dark Blue -->
+    <Color x:Key="HexEditor_ForegroundSecondColor">#1C97EA</Color>         <!-- Light Blue -->
+    <Color x:Key="HexEditor_ForegroundOffSetHeaderColor">#CCCCCC</Color>   <!-- Light Gray -->
+    <Color x:Key="HexEditor_ForegroundHighLightOffSetHeaderColor">#1C97EA</Color> <!-- Bright Blue -->
+    <Color x:Key="HexEditor_ForegroundContrast">#FFFFFF</Color>            <!-- White -->
+    <Color x:Key="HexEditor_AutoHighLiteSelectionByteBrush">#007ACC</Color> <!-- VS Blue -->
+    <Color x:Key="HexEditor_TblDteColor">#F48771</Color>                   <!-- Salmon Red -->
+    <Color x:Key="HexEditor_TblMteColor">#4EC9B0</Color>                   <!-- Teal Green -->
+    <Color x:Key="HexEditor_TblEndBlockColor">#FFCC00</Color>              <!-- Yellow -->
+    <Color x:Key="HexEditor_TblEndLineColor">#FFCC00</Color>               <!-- Yellow -->
+
     <!-- ==================== BRUSHES ==================== -->
 
-    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
-    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
-    <SolidColorBrush x:Key="SurfaceElevatedBrush" Color="{StaticResource SurfaceElevatedColor}"/>
-    <SolidColorBrush x:Key="ForegroundBrush" Color="{StaticResource ForegroundColor}"/>
-    <SolidColorBrush x:Key="ForegroundSecondaryBrush" Color="{StaticResource ForegroundSecondaryColor}"/>
-    <SolidColorBrush x:Key="ForegroundTertiaryBrush" Color="{StaticResource ForegroundTertiaryColor}"/>
-    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
-    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{DynamicResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{DynamicResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="SurfaceElevatedBrush" Color="{DynamicResource SurfaceElevatedColor}"/>
+    <SolidColorBrush x:Key="ForegroundBrush" Color="{DynamicResource ForegroundColor}"/>
+    <SolidColorBrush x:Key="ForegroundSecondaryBrush" Color="{DynamicResource ForegroundSecondaryColor}"/>
+    <SolidColorBrush x:Key="ForegroundTertiaryBrush" Color="{DynamicResource ForegroundTertiaryColor}"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource AccentColor}"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="{DynamicResource BorderColor}"/>
 
     <!-- Semantic Color Brushes -->
-    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
-    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
-    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
-    <SolidColorBrush x:Key="InfoBrush" Color="{StaticResource InfoColor}"/>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource SuccessColor}"/>
+    <SolidColorBrush x:Key="WarningBrush" Color="{DynamicResource WarningColor}"/>
+    <SolidColorBrush x:Key="ErrorBrush" Color="{DynamicResource ErrorColor}"/>
+    <SolidColorBrush x:Key="InfoBrush" Color="{DynamicResource InfoColor}"/>
 
     <!-- Glass Brush (Very Subtle) -->
     <SolidColorBrush x:Key="GlassBrush" Color="Transparent"/>
@@ -104,14 +124,14 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background">
                                 <Setter.Value>
-                                    <SolidColorBrush Color="{StaticResource HoverColor}"/>
+                                    <SolidColorBrush Color="{DynamicResource HoverColor}"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background">
                                 <Setter.Value>
-                                    <SolidColorBrush Color="{StaticResource PressedColor}"/>
+                                    <SolidColorBrush Color="{DynamicResource PressedColor}"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
@@ -164,7 +184,7 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background">
                                 <Setter.Value>
-                                    <SolidColorBrush Color="{StaticResource SurfaceElevatedColor}"/>
+                                    <SolidColorBrush Color="{DynamicResource SurfaceElevatedColor}"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
@@ -214,7 +234,7 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background">
                                 <Setter.Value>
-                                    <SolidColorBrush Color="{StaticResource HoverColor}"/>
+                                    <SolidColorBrush Color="{DynamicResource HoverColor}"/>
                                 </Setter.Value>
                             </Setter>
                         </Trigger>

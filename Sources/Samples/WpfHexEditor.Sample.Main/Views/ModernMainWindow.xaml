@@ -19,7 +19,7 @@
         Title="{Binding WindowTitle}"
         Height="900" Width="1600"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource BackgroundBrush}">
+        Background="{DynamicResource BackgroundBrush}">
 
     <ribbon:RibbonWindow.Resources>
         <components:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -45,8 +45,8 @@
         <!-- Professional Microsoft Ribbon -->
         <ribbon:Ribbon Grid.Row="0"
                       x:Name="MainRibbon"
-                      Background="{StaticResource BackgroundBrush}"
-                      Foreground="{StaticResource ForegroundBrush}">
+                      Background="{DynamicResource BackgroundBrush}"
+                      Foreground="{DynamicResource ForegroundBrush}">
 
             <!-- Application Menu (File Button) -->
             <ribbon:Ribbon.ApplicationMenu>
@@ -331,14 +331,14 @@
             <!-- HexEditor FULLSCREEN -->
             <hexEditor:HexEditor Grid.Column="0"
                                 x:Name="HexEditorControl"
-                                Background="{StaticResource BackgroundBrush}"
-                                Foreground="{StaticResource ForegroundBrush}"/>
+                                Background="{DynamicResource BackgroundBrush}"
+                                Foreground="{DynamicResource ForegroundBrush}"/>
 
             <!-- Right: Settings Panel (Slide-out) -->
             <Border Grid.Column="1"
                    Width="420"
-                   Background="{StaticResource SurfaceBrush}"
-                   BorderBrush="{StaticResource BorderBrush}"
+                   Background="{DynamicResource SurfaceBrush}"
+                   BorderBrush="{DynamicResource BorderBrush}"
                    BorderThickness="1,0,0,0"
                    Visibility="{Binding IsSettingsPanelVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                 <components:HexEditorSettings x:Name="HexEditorSettingsPanel"/>

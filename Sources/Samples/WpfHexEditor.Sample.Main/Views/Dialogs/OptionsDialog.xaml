@@ -226,20 +226,137 @@
                 </Grid>
             </TabItem>
 
-            <!-- Appearance Tab (Coming Soon) -->
-            <TabItem IsEnabled="False">
+            <!-- Appearance Tab -->
+            <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="🎨" FontSize="16" Margin="0,0,5,0"/>
                         <TextBlock Text="{DynamicResource Options_AppearanceTab}" FontSize="13"/>
                     </StackPanel>
                 </TabItem.Header>
-                <Grid>
-                    <TextBlock Text="{DynamicResource Options_ComingSoon}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontSize="16"
-                               Foreground="#999999"/>
+
+                <Grid Margin="0,15,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Instructions -->
+                    <TextBlock Grid.Row="0"
+                               Text="{DynamicResource Options_Theme_Instructions}"
+                               FontSize="14"
+                               Foreground="#333333"
+                               Margin="0,0,0,15"/>
+
+                    <!-- Current Theme Card -->
+                    <Border Grid.Row="1"
+                            Style="{StaticResource CardBorder}"
+                            Background="#E3F2FD"
+                            BorderBrush="#2196F3"
+                            Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Options_Theme_CurrentLabel}"
+                                       FontSize="12"
+                                       Foreground="#666666"
+                                       FontWeight="SemiBold"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock x:Name="CurrentThemeIcon"
+                                           Text="📄"
+                                           FontSize="24"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock x:Name="CurrentThemeText"
+                                           Text="Office"
+                                           FontSize="16"
+                                           Foreground="#333333"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Theme List -->
+                    <Border Grid.Row="2"
+                            Style="{StaticResource CardBorder}"
+                            Padding="0"
+                            MinHeight="200">
+                        <ListView x:Name="ThemeListView"
+                                  SelectionMode="Single"
+                                  BorderThickness="0"
+                                  Background="Transparent"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Padding" Value="10"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#E3F2FD"/>
+                                            <Setter Property="BorderBrush" Value="#2196F3"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F5F5F5"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="80">
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="{DynamicResource Options_Theme_ColumnIcon}"/>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Icon}" FontSize="24" HorizontalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="150">
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="{DynamicResource Options_Theme_ColumnName}"/>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding DisplayName}" FontSize="13" FontWeight="Medium"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="250">
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="{DynamicResource Options_Theme_ColumnDescription}"/>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Description}" FontSize="11" Foreground="#666666" TextWrapping="Wrap"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Border>
+
+                    <!-- Info Message -->
+                    <Border Grid.Row="3"
+                            Background="#E3F2FD"
+                            BorderBrush="#2196F3"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="12"
+                            Margin="0,15,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="✨" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource Options_Theme_InstantInfo}"
+                                       FontSize="12"
+                                       Foreground="#1976D2"
+                                       TextWrapping="Wrap"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </TabItem>
 

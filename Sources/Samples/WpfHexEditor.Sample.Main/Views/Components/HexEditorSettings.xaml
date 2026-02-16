@@ -22,7 +22,7 @@
             <TextBlock Text="{DynamicResource HexSettings_Title}"
                       FontSize="16"
                       FontWeight="Bold"
-                      Foreground="{StaticResource ForegroundBrush}"
+                      Foreground="{DynamicResource ForegroundBrush}"
                       Margin="0,0,0,16"/>
 
             <!-- Display Settings -->

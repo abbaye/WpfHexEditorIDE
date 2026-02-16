@@ -13,7 +13,7 @@
              mc:Ignorable="d"
              d:DesignHeight="32" d:DesignWidth="200">
 
-    <Border BorderBrush="{StaticResource BorderBrush}"
+    <Border BorderBrush="{DynamicResource BorderBrush}"
             BorderThickness="1"
             CornerRadius="3"
             Height="28"
@@ -34,14 +34,14 @@
 
             <!-- Hex Color Display -->
             <Border Grid.Column="1"
-                   Background="{StaticResource SurfaceElevatedBrush}"
+                   Background="{DynamicResource SurfaceElevatedBrush}"
                    Padding="8,0"
                    CornerRadius="0,2,2,0">
                 <TextBlock x:Name="HexColorText"
                           Text="#4040FF"
                           FontSize="11"
                           FontFamily="Consolas"
-                          Foreground="{StaticResource ForegroundBrush}"
+                          Foreground="{DynamicResource ForegroundBrush}"
                           VerticalAlignment="Center"/>
             </Border>
         </Grid>

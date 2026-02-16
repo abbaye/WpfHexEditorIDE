@@ -20,9 +20,13 @@ namespace WpfHexEditor.Sample.Main.Views.Dialogs
             // No need to restore culture here - it's handled globally by DynamicResourceManager
             InitializeComponent();
             LoadLanguages();
+            LoadThemes();
 
             // Subscribe to selection changes for instant language switching
             LanguageListView.SelectionChanged += LanguageListView_SelectionChanged;
+
+            // Subscribe to selection changes for instant theme switching
+            ThemeListView.SelectionChanged += ThemeListView_SelectionChanged;
         }
 
         private void LoadLanguages()
@@ -84,6 +88,61 @@ namespace WpfHexEditor.Sample.Main.Views.Dialogs
             // Update current language display
             CurrentLanguageFlag.Text = currentLang.Flag;
             CurrentLanguageText.Text = $"{currentLang.Name} - {currentLang.NativeName}";
+        }
+
+        private void LoadThemes()
+        {
+            // All 6 themes supported in V2
+            var themes = new List<ThemeInfo>
+            {
+                new ThemeInfo { Icon = "📄", Name = "Office", DisplayName = "Office", Description = "Light professional office theme" },
+                new ThemeInfo { Icon = "🎨", Name = "VisualStudio", DisplayName = "Visual Studio", Description = "Professional clean theme inspired by VS 2022" },
+                new ThemeInfo { Icon = "☀️", Name = "Light", DisplayName = "Light", Description = "Clean professional light theme" },
+                new ThemeInfo { Icon = "🌙", Name = "DarkGlass", DisplayName = "Dark Glass", Description = "Modern glassmorphism dark theme" },
+                new ThemeInfo { Icon = "⚪", Name = "Minimal", DisplayName = "Minimal", Description = "Ultra-clean minimalist theme" },
+                new ThemeInfo { Icon = "🌆", Name = "Cyberpunk", DisplayName = "Cyberpunk", Description = "Vibrant neon cyberpunk theme" }
+            };
+
+            ThemeListView.ItemsSource = themes;
+
+            // Select current theme
+            var currentTheme = ThemeManager.CurrentTheme;
+            System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadThemes] Current Theme: {currentTheme}");
+
+            var currentThemeInfo = themes.FirstOrDefault(t => t.Name == currentTheme) ?? themes.First();
+            System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadThemes] Matched theme: {currentThemeInfo.Name}");
+
+            ThemeListView.SelectedItem = currentThemeInfo;
+
+            // Update current theme display
+            CurrentThemeIcon.Text = currentThemeInfo.Icon;
+            CurrentThemeText.Text = $"{currentThemeInfo.DisplayName} - {currentThemeInfo.Description}";
+        }
+
+        /// <summary>
+        /// Handles instant theme switching when user selects a theme from the list.
+        /// </summary>
+        private void ThemeListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (ThemeListView.SelectedItem is ThemeInfo selected)
+            {
+                var oldTheme = ThemeManager.CurrentTheme;
+
+                // Only change if it's actually different
+                if (selected.Name != oldTheme)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.ThemeListView_SelectionChanged] Instantly changing theme from '{oldTheme}' to '{selected.Name}'");
+
+                    // Change theme instantly - no confirmation needed!
+                    ThemeManager.ChangeTheme(selected.Name, persistent: true);
+
+                    // Update the current theme display immediately
+                    CurrentThemeIcon.Text = selected.Icon;
+                    CurrentThemeText.Text = $"{selected.DisplayName} - {selected.Description}";
+
+                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.ThemeListView_SelectionChanged] Theme changed instantly! UI updated in real-time.");
+                }
+            }
         }
 
         /// <summary>
@@ -162,5 +221,31 @@ namespace WpfHexEditor.Sample.Main.Views.Dialogs
         /// Native name of the language
         /// </summary>
         public string NativeName { get; set; }
+    }
+
+    /// <summary>
+    /// Represents a theme option with icon, name, and description
+    /// </summary>
+    public class ThemeInfo
+    {
+        /// <summary>
+        /// Icon emoji for the theme
+        /// </summary>
+        public string Icon { get; set; }
+
+        /// <summary>
+        /// Theme name (e.g., "Office", "DarkGlass", "Cyberpunk")
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Display name of the theme
+        /// </summary>
+        public string DisplayName { get; set; }
+
+        /// <summary>
+        /// Description of the theme
+        /// </summary>
+        public string Description { get; set; }
     }
 }

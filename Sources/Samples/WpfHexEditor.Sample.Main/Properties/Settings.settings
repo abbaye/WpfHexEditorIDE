@@ -5,5 +5,8 @@
     <Setting Name="PreferredCulture" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="PreferredTheme" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Office</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
