@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+
+    <!-- Package Info -->
+    <PackageId>WpfHexaEditor.Core</PackageId>
+    <Version>3.0.0-alpha.1</Version>
+    <Authors>Derek Tremblay, Contributors</Authors>
+    <Company>WpfHexaEditor</Company>
+    <Description>
+      Platform-agnostic core library for WPF and Avalonia Hex Editor controls.
+      Contains business logic, services, and platform abstractions.
+    </Description>
+    <PackageTags>hex;editor;core;portable;netstandard</PackageTags>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorControl</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <!-- Documentation -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\WpfHexaEditor.Core.xml</DocumentationFile>
+
+    <!-- Symbols -->
+    <DebugType>embedded</DebugType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- No dependencies - this is the base library -->
+  </ItemGroup>
+</Project>
