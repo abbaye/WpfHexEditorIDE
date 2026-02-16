@@ -1,64 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -117,59 +58,61 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+
+  <!-- Chinese (Simplified) -->
   <data name="AppendByteConfirmationString" xml:space="preserve">
-    <value>已到达文件末尾，你想要追加一个字节吗？ 继续将无法取消此操作。</value>
+    <value>您已到达文件末尾。是否要追加一个字节？如果继续，此操作将无法取消。</value>
   </data>
   <data name="BookmarksString" xml:space="preserve">
-    <value>标记</value>
+    <value>书签</value>
   </data>
   <data name="ByteActionString" xml:space="preserve">
-    <value>状态</value>
+    <value>字节操作</value>
   </data>
   <data name="ByteString" xml:space="preserve">
-    <value>值(字节)</value>
+    <value>字节</value>
   </data>
   <data name="CancelLongProcessString" xml:space="preserve">
-    <value>取消当前工作</value>
+    <value>取消长时间进程</value>
   </data>
   <data name="CancelLongProcessToolTipString" xml:space="preserve">
-    <value>点击以取消当前的工作</value>
+    <value>单击以取消长时间进程。</value>
   </data>
   <data name="CancelString" xml:space="preserve">
     <value>取消</value>
   </data>
   <data name="ClearBookMarkString" xml:space="preserve">
-    <value>清除标记</value>
+    <value>清除书签</value>
   </data>
   <data name="ClearString" xml:space="preserve">
-    <value>明确</value>
+    <value>清除</value>
   </data>
   <data name="ClickToGoAtPositionString" xml:space="preserve">
-    <value>点击以跳转</value>
+    <value>单击以转到位置。</value>
   </data>
   <data name="CloseString" xml:space="preserve">
     <value>关闭</value>
   </data>
   <data name="CopyAsASCIIString" xml:space="preserve">
-    <value>ASCII</value>
+    <value>复制为 ASCII</value>
   </data>
   <data name="CopyAsDecimalString" xml:space="preserve">
-    <value>十进制</value>
+    <value>复制为十进制</value>
   </data>
   <data name="CopyAsHexadecimalString" xml:space="preserve">
-    <value>十六进制</value>
+    <value>复制为十六进制</value>
   </data>
   <data name="CopyAsTBLString" xml:space="preserve">
-    <value>TBL (需加载TBL文件)</value>
+    <value>TBL 字符串（已加载字符文件）</value>
   </data>
   <data name="CopySelectionAsString" xml:space="preserve">
-    <value>复制选中内容为...</value>
+    <value>将选择复制为...</value>
   </data>
   <data name="CountOfString" xml:space="preserve">
-    <value>字节数</value>
+    <value>计数</value>
   </data>
   <data name="DefaultTBLString" xml:space="preserve">
-    <value>默认TBL</value>
+    <value>默认 TBL</value>
   </data>
   <data name="DeleteString" xml:space="preserve">
     <value>删除</value>
@@ -178,31 +121,31 @@
     <value>描述</value>
   </data>
   <data name="EndTagString" xml:space="preserve">
-    <value>&lt;end&gt;</value>
+    <value>&lt;结束&gt;</value>
   </data>
   <data name="EnterHexValueMsgString" xml:space="preserve">
-    <value>请输入十六进制值</value>
+    <value>输入十六进制值...</value>
   </data>
   <data name="FileDroppingConfirmationString" xml:space="preserve">
-    <value>你想关闭当前文件并打开：</value>
+    <value>是否要关闭当前文件并打开：</value>
   </data>
   <data name="FillSelectionAloneString" xml:space="preserve">
-    <value>填充选定区域(字节)</value>
+    <value>用字节填充选择</value>
   </data>
   <data name="FillSelectionString" xml:space="preserve">
-    <value>填充选定区域(字节)</value>
+    <value>用字节填充选择...</value>
   </data>
   <data name="FindAllString" xml:space="preserve">
-    <value>找到所有</value>
+    <value>查找全部</value>
   </data>
   <data name="FindAndReplaceString" xml:space="preserve">
     <value>查找和替换</value>
   </data>
   <data name="FindByteString" xml:space="preserve">
-    <value>搜索的字节值</value>
+    <value>要查找的字节</value>
   </data>
   <data name="FindFirstString" xml:space="preserve">
-    <value>查找首个</value>
+    <value>查找第一个</value>
   </data>
   <data name="FindLastString" xml:space="preserve">
     <value>查找最后一个</value>
@@ -211,28 +154,25 @@
     <value>查找下一个</value>
   </data>
   <data name="FindSelectionString" xml:space="preserve">
-    <value>查找选定的字符串</value>
+    <value>查找选择的所有出现</value>
   </data>
   <data name="FindString" xml:space="preserve">
     <value>查找</value>
   </data>
   <data name="FindWhatString" xml:space="preserve">
-    <value>查找：</value>
+    <value>查找内容：</value>
   </data>
   <data name="FirstByteString" xml:space="preserve">
-    <value>首字节</value>
+    <value>第一个字节</value>
   </data>
   <data name="HexString" xml:space="preserve">
-    <value>十六进制</value>
-  </data>
-  <data name="HighLightSettingString" xml:space="preserve">
-    <value>突出显示所有数据查找</value>
+    <value>Hex</value>
   </data>
   <data name="KBTagString" xml:space="preserve">
     <value>KB</value>
   </data>
   <data name="LengthString" xml:space="preserve">
-    <value>字节长度</value>
+    <value>长度</value>
   </data>
   <data name="LineStatusBarTagString" xml:space="preserve">
     <value>行</value>
@@ -241,7 +181,7 @@
     <value>&lt;ln&gt;</value>
   </data>
   <data name="LongString" xml:space="preserve">
-    <value>长度</value>
+    <value>Long</value>
   </data>
   <data name="MBTagString" xml:space="preserve">
     <value>MB</value>
@@ -249,17 +189,14 @@
   <data name="OkString" xml:space="preserve">
     <value>确定</value>
   </data>
-  <data name="OpenAsReadOnlyString" xml:space="preserve">
-    <value>该文件被锁定。 您要以只读模式打开它吗？</value>
-  </data>
   <data name="PasteExtendByteConfirmationString" xml:space="preserve">
-    <value>粘贴操作到达文件的末尾。 你想扩展文件的完整操作吗？ 继续将无法取消此操作。</value>
+    <value>粘贴操作已到达文件末尾。是否要扩展文件以完成操作？如果继续，此操作将无法取消。</value>
   </data>
   <data name="PasteFromClipboardString" xml:space="preserve">
     <value>从剪贴板粘贴</value>
   </data>
   <data name="PasteNotInsertString" xml:space="preserve">
-    <value>粘贴(替换)</value>
+    <value>粘贴而不插入</value>
   </data>
   <data name="PositionString" xml:space="preserve">
     <value>位置</value>
@@ -268,58 +205,127 @@
     <value>全部替换</value>
   </data>
   <data name="ReplaceByByteString" xml:space="preserve">
-    <value>替换字节</value>
+    <value>用字节替换</value>
   </data>
   <data name="ReplaceNextString" xml:space="preserve">
     <value>替换下一个</value>
   </data>
   <data name="ReplaceSelectionString" xml:space="preserve">
-    <value>替换选中的字符串</value>
+    <value>替换选择中的字节...</value>
   </data>
   <data name="ReplaceString" xml:space="preserve">
-    <value>更替</value>
-  </data>
-  <data name="ReplaceTrimSettingString" xml:space="preserve">
-    <value>更换时修剪查找长度的数据</value>
+    <value>替换</value>
   </data>
   <data name="ReplaceWithByteString" xml:space="preserve">
-    <value>用字节替换</value>
+    <value>替换为字节</value>
   </data>
   <data name="ReplaceWithString" xml:space="preserve">
-    <value>用字符串替换：</value>
+    <value>替换为：</value>
   </data>
   <data name="SelectAllString" xml:space="preserve">
     <value>全选</value>
   </data>
   <data name="SetBookMarkString" xml:space="preserve">
-    <value>标记</value>
+    <value>设置书签</value>
   </data>
   <data name="TBLString" xml:space="preserve">
     <value>TBL</value>
   </data>
   <data name="ThisStringAreNotHexString" xml:space="preserve">
-    <value>非有效的十六进制格式</value>
+    <value>此字符串不是十六进制</value>
   </data>
   <data name="UndoString" xml:space="preserve">
-    <value>撤销</value>
+    <value>撤消</value>
   </data>
   <data name="ValueString" xml:space="preserve">
     <value>值</value>
   </data>
   <data name="WritingErrorExeptionString" xml:space="preserve">
-    <value>写入错误</value>
+    <value>写入时发生错误。</value>
+  </data>
+  <data name="HighLightSettingString" xml:space="preserve">
+    <value>高亮显示所有找到的数据</value>
+  </data>
+  <data name="ReplaceTrimSettingString" xml:space="preserve">
+    <value>替换时将数据修剪到查找长度</value>
   </data>
   <data name="ZoomResetString" xml:space="preserve">
-    <value>将缩放重置为100％</value>
+    <value>将缩放重置为 100%</value>
   </data>
   <data name="ZoomString" xml:space="preserve">
-    <value>放大</value>
+    <value>缩放</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>无法将此字符串转换为 long</value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>文件已锁定。是否要以只读模式打开它？</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>字节</value>
+  </data>
+  <data name="SearchCommandCenterString" xml:space="preserve">
+    <value>搜索命令中心</value>
+  </data>
+  <data name="SearchTextModeString" xml:space="preserve">
+    <value>文本</value>
+  </data>
+  <data name="SearchHexModeString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="SearchRegexModeString" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="SearchWildcardModeString" xml:space="preserve">
+    <value>通配符</value>
+  </data>
+  <data name="SearchPreviousString" xml:space="preserve">
+    <value>上一个</value>
+  </data>
+  <data name="SearchNextString" xml:space="preserve">
+    <value>下一个</value>
+  </data>
+  <data name="SearchFindAllString" xml:space="preserve">
+    <value>查找全部</value>
+  </data>
+  <data name="SearchMatchesString" xml:space="preserve">
+    <value>匹配项</value>
+  </data>
+  <data name="SearchInString" xml:space="preserve">
+    <value>在</value>
+  </data>
+  <data name="SearchNoMatchesString" xml:space="preserve">
+    <value>未找到匹配项</value>
+  </data>
+  <data name="SearchV2BadgeString" xml:space="preserve">
+    <value>V2 快 99%</value>
+  </data>
+  <data name="ClearSearchString" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>命令面板</value>
+  </data>
+  <data name="PerformanceDashboardString" xml:space="preserve">
+    <value>性能仪表板</value>
+  </data>
+  <data name="ThemeDarkGlassString" xml:space="preserve">
+    <value>深色玻璃</value>
+  </data>
+  <data name="ThemeLightString" xml:space="preserve">
+    <value>浅色</value>
+  </data>
+  <data name="ThemeCyberpunkString" xml:space="preserve">
+    <value>赛博朋克</value>
+  </data>
+  <data name="ThemeMinimalString" xml:space="preserve">
+    <value>简约</value>
   </data>
   <data name="CopyAsCSharpCodeString" xml:space="preserve">
-    <value>复制为C#代码</value>
+    <value>复制为 C# 代码</value>
   </data>
   <data name="CopyAsCCodeString" xml:space="preserve">
-    <value>复制为C代码</value>
+    <value>复制为 C 代码</value>
   </data>
   <data name="PasteString" xml:space="preserve">
     <value>粘贴</value>
@@ -362,5 +368,236 @@
   </data>
   <data name="ModeOverwriteString" xml:space="preserve">
     <value>模式：覆盖</value>
+  </data>
+  <data name="FindAndReplaceDialogTitle" xml:space="preserve">
+    <value>查找和替换</value>
+  </data>
+  <data name="FindGroupHeader" xml:space="preserve">
+    <value>查找</value>
+  </data>
+  <data name="ReplaceGroupHeader" xml:space="preserve">
+    <value>替换</value>
+  </data>
+  <data name="ResultsGroupHeader" xml:space="preserve">
+    <value>结果</value>
+  </data>
+  <data name="FindTextLabel" xml:space="preserve">
+    <value>查找：</value>
+  </data>
+  <data name="ReplaceTextLabel" xml:space="preserve">
+    <value>替换为：</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>上一个</value>
+  </data>
+  <data name="FindNextButton" xml:space="preserve">
+    <value>下一个</value>
+  </data>
+  <data name="FindAllButton" xml:space="preserve">
+    <value>查找全部</value>
+  </data>
+  <data name="ReplaceButton" xml:space="preserve">
+    <value>替换</value>
+  </data>
+  <data name="ReplaceAllButton" xml:space="preserve">
+    <value>全部替换</value>
+  </data>
+  <data name="CaseSensitiveCheckbox" xml:space="preserve">
+    <value>区分大小写</value>
+  </data>
+  <data name="WholeWordCheckbox" xml:space="preserve">
+    <value>全字匹配</value>
+  </data>
+  <data name="UseRegexCheckbox" xml:space="preserve">
+    <value>使用正则表达式</value>
+  </data>
+  <data name="SearchInSelectionCheckbox" xml:space="preserve">
+    <value>仅在选择中搜索</value>
+  </data>
+  <data name="HighlightAllCheckbox" xml:space="preserve">
+    <value>高亮显示所有匹配项</value>
+  </data>
+  <data name="CloseDialogButton" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="NoResultsFound" xml:space="preserve">
+    <value>未找到结果</value>
+  </data>
+  <data name="MatchesFoundFormat" xml:space="preserve">
+    <value>找到 {0} 个匹配项</value>
+  </data>
+  <data name="ReplacedFormat" xml:space="preserve">
+    <value>已替换 {0} 个</value>
+  </data>
+  <data name="SearchPanelTitle" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="SearchFindLabel" xml:space="preserve">
+    <value>查找：</value>
+  </data>
+  <data name="SearchModePlaceholder" xml:space="preserve">
+    <value>输入搜索文本...</value>
+  </data>
+  <data name="TextModeLabel" xml:space="preserve">
+    <value>文本</value>
+  </data>
+  <data name="HexModeLabel" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="RegexModeLabel" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WildcardModeLabel" xml:space="preserve">
+    <value>通配符</value>
+  </data>
+  <data name="MatchCaseLabel" xml:space="preserve">
+    <value>区分大小写</value>
+  </data>
+  <data name="WholeWordLabel" xml:space="preserve">
+    <value>全字匹配</value>
+  </data>
+  <data name="SearchOptionsLabel" xml:space="preserve">
+    <value>选项</value>
+  </data>
+  <data name="SearchResultsLabel" xml:space="preserve">
+    <value>结果</value>
+  </data>
+  <data name="CurrentMatchLabel" xml:space="preserve">
+    <value>当前匹配</value>
+  </data>
+  <data name="TotalMatchesLabel" xml:space="preserve">
+    <value>匹配总数</value>
+  </data>
+  <data name="QuickSearchTooltip" xml:space="preserve">
+    <value>快速搜索 (Ctrl+F)</value>
+  </data>
+  <data name="PreviousMatchTooltip" xml:space="preserve">
+    <value>上一个匹配 (Shift+F3)</value>
+  </data>
+  <data name="NextMatchTooltip" xml:space="preserve">
+    <value>下一个匹配 (F3)</value>
+  </data>
+  <data name="CloseSearchTooltip" xml:space="preserve">
+    <value>关闭搜索 (Esc)</value>
+  </data>
+  <data name="SearchOptionsTooltip" xml:space="preserve">
+    <value>搜索选项</value>
+  </data>
+  <data name="StatusSearching" xml:space="preserve">
+    <value>搜索中...</value>
+  </data>
+  <data name="StatusSearchComplete" xml:space="preserve">
+    <value>搜索完成</value>
+  </data>
+  <data name="StatusFoundMatchesFormat" xml:space="preserve">
+    <value>在 {1} 毫秒内找到 {0} 个匹配项</value>
+  </data>
+  <data name="StatusMatchFoundAtFormat" xml:space="preserve">
+    <value>在位置 0x{0:X8} 找到匹配项</value>
+  </data>
+  <data name="StatusNoMoreMatches" xml:space="preserve">
+    <value>未找到更多匹配项</value>
+  </data>
+  <data name="StatusReachedEndOfFile" xml:space="preserve">
+    <value>已到达文件末尾</value>
+  </data>
+  <data name="StatusReachedStartOfFile" xml:space="preserve">
+    <value>已到达文件开头</value>
+  </data>
+  <data name="StatusReplacing" xml:space="preserve">
+    <value>替换中...</value>
+  </data>
+  <data name="StatusReplaceComplete" xml:space="preserve">
+    <value>替换完成</value>
+  </data>
+  <data name="StatusReplacedFormat" xml:space="preserve">
+    <value>已替换 {0} 处</value>
+  </data>
+  <data name="StatusInvalidSearchPattern" xml:space="preserve">
+    <value>无效的搜索模式</value>
+  </data>
+  <data name="StatusInvalidRegex" xml:space="preserve">
+    <value>无效的正则表达式</value>
+  </data>
+  <data name="StatusSearchCancelled" xml:space="preserve">
+    <value>搜索已取消</value>
+  </data>
+  <data name="StatusReplaceCancelled" xml:space="preserve">
+    <value>替换已取消</value>
+  </data>
+  <data name="StatusCancelling" xml:space="preserve">
+    <value>正在取消...</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>错误：{0}</value>
+  </data>
+  <data name="StatusFoundMatchesWithSpeedFormat" xml:space="preserve">
+    <value>在 {1} 毫秒内找到 {0} 个匹配项 ({2:F2} MB/s)</value>
+  </data>
+  <data name="StatusMatchFoundAtWrappedFormat" xml:space="preserve">
+    <value>在位置 0x{0:X8} 找到匹配项（已回绕）</value>
+  </data>
+  <data name="StatusNoPreviousMatches" xml:space="preserve">
+    <value>未找到上一个匹配项</value>
+  </data>
+  <data name="StatusMatchOfTotalFormat" xml:space="preserve">
+    <value>匹配项 {0}（共 {1} 个）位于位置 0x{2:X8}</value>
+  </data>
+  <data name="StatusReplacedAtFormat" xml:space="preserve">
+    <value>在位置 0x{0:X8} 已替换（总计：{1}）</value>
+  </data>
+  <data name="StatusReplaceError" xml:space="preserve">
+    <value>替换错误：{0}</value>
+  </data>
+  <data name="StatusNoMatchesToReplace" xml:space="preserve">
+    <value>没有要替换的匹配项</value>
+  </data>
+  <data name="StatusInvalidReplacementPattern" xml:space="preserve">
+    <value>无效的替换模式</value>
+  </data>
+  <data name="StatusReplacedOccurrencesFormat" xml:space="preserve">
+    <value>已替换 {0} 处。总替换次数：{1}</value>
+  </data>
+  <data name="StatusReplaceAllError" xml:space="preserve">
+    <value>全部替换错误：{0}</value>
+  </data>
+  <data name="StatusNoMoreBookmarksAfter" xml:space="preserve">
+    <value>当前位置后没有更多书签</value>
+  </data>
+  <data name="StatusNoMoreBookmarksBefore" xml:space="preserve">
+    <value>当前位置前没有更多书签</value>
+  </data>
+  <data name="BookmarkSetFormat" xml:space="preserve">
+    <value>在 0x{0:X8} 设置书签</value>
+  </data>
+  <data name="BookmarkClearedFormat" xml:space="preserve">
+    <value>在 0x{0:X8} 清除书签</value>
+  </data>
+  <data name="BookmarkNavigatedFormat" xml:space="preserve">
+    <value>导航到位于 0x{0:X8} 的书签</value>
+  </data>
+  <data name="BookmarkAllCleared" xml:space="preserve">
+    <value>所有书签已清除</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>复制选择</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>剪切选择</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>插入字节...</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>删除字节</value>
+  </data>
+  <data name="DeleteSelectionString" xml:space="preserve">
+    <value>删除选择</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>转到偏移...</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>属性</value>
   </data>
 </root>

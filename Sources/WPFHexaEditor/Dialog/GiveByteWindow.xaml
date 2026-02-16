@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:p="clr-namespace:WpfHexaEditor.Properties"
-    Title="{x:Static p:Resources.EnterHexValueMsgString}"
+    Title="{DynamicResource EnterHexValueMsgString}"
     Width="359"
     Height="121"
     x:ClassModifier="internal"
@@ -24,7 +24,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Click="OKButton_Click"
-            Content="{x:Static p:Resources.OkString}"
+            Content="{DynamicResource OkString}"
             IsDefault="True"
             TabIndex="2" />
 
@@ -34,7 +34,7 @@
             Margin="0,0,10,10"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Content="{x:Static p:Resources.CancelString}"
+            Content="{DynamicResource CancelString}"
             IsCancel="True"
             TabIndex="3" />
 
@@ -42,7 +42,7 @@
             Margin="10,18,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Content="{x:Static p:Resources.FindByteString}" />
+            Content="{DynamicResource FindByteString}" />
 
         <control:HexBox
             x:Name="HexTextBox"

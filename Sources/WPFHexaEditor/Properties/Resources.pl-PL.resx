@@ -1,64 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -117,14 +58,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+
+  <!-- Polish -->
   <data name="AppendByteConfirmationString" xml:space="preserve">
-    <value>Osiągnąłeś koniec pliku. Czy chcesz dołączyć jeden bajt? Ta operacja nie może zostać anulowana, jeśli kontynuujesz.</value>
+    <value>Osiągnięto koniec pliku. Czy chcesz dołączyć jeden bajt? Tej operacji nie można cofnąć, jeśli kontynuujesz.</value>
   </data>
   <data name="BookmarksString" xml:space="preserve">
     <value>Zakładki</value>
   </data>
   <data name="ByteActionString" xml:space="preserve">
-    <value>Byte action</value>
+    <value>Akcja bajtu</value>
   </data>
   <data name="ByteString" xml:space="preserve">
     <value>Bajt</value>
@@ -139,74 +82,67 @@
     <value>Anuluj</value>
   </data>
   <data name="ClearBookMarkString" xml:space="preserve">
-    <value>Wyczyść zakładki</value>
+    <value>Wyczyść zakładkę</value>
   </data>
   <data name="ClearString" xml:space="preserve">
-    <value>Clear</value>
+    <value>Wyczyść</value>
   </data>
   <data name="ClickToGoAtPositionString" xml:space="preserve">
     <value>Kliknij, aby przejść do pozycji.</value>
   </data>
   <data name="CloseString" xml:space="preserve">
-    <value>Close</value>
+    <value>Zamknij</value>
   </data>
   <data name="CopyAsASCIIString" xml:space="preserve">
-    <value>Skopiuj jako ASCII</value>
+    <value>Kopiuj jako ASCII</value>
   </data>
   <data name="CopyAsDecimalString" xml:space="preserve">
     <value>Kopiuj jako dziesiętny</value>
   </data>
   <data name="CopyAsHexadecimalString" xml:space="preserve">
-    <value>Skopiuj jako szesnastkowy</value>
+    <value>Kopiuj jako heksadecymalny</value>
   </data>
   <data name="CopyAsTBLString" xml:space="preserve">
-    <value>Ciąg TBL (plik z załadowanymi znakami)</value>
+    <value>Ciąg TBL (załadowano plik znaków)</value>
   </data>
   <data name="CopySelectionAsString" xml:space="preserve">
-    <value>Skopiuj zaznaczenie jako ...</value>
+    <value>Kopiuj zaznaczenie jako...</value>
   </data>
   <data name="CountOfString" xml:space="preserve">
-    <value>Liczyć</value>
+    <value>Liczba</value>
   </data>
   <data name="DefaultTBLString" xml:space="preserve">
     <value>Domyślny TBL</value>
   </data>
   <data name="DeleteString" xml:space="preserve">
-    <value>Kasować</value>
+    <value>Usuń</value>
   </data>
   <data name="DescriptionString" xml:space="preserve">
     <value>Opis</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="EBCDIC" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\EBCDIC.tbl;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;us-ascii</value>
-  </data>
-  <data name="EBCDICNoSpecialChar" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\EBCDIC-NoSpecialChar.tbl;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="EndTagString" xml:space="preserve">
-    <value>&lt;end&gt;</value>
+    <value>&lt;koniec&gt;</value>
   </data>
   <data name="EnterHexValueMsgString" xml:space="preserve">
-    <value>Wprowadź wartość szesnastkową ...</value>
+    <value>Wprowadź wartość heksadecymalną...</value>
   </data>
   <data name="FileDroppingConfirmationString" xml:space="preserve">
-    <value>Czy chcesz zamknąć bieżący plik i otworzyć:</value>
+    <value>Czy chcesz zamknąć bieżący plik i otworzyć: </value>
   </data>
   <data name="FillSelectionAloneString" xml:space="preserve">
-    <value>Wypełnij wybór bajtem</value>
+    <value>Wypełnij zaznaczenie bajtem</value>
   </data>
   <data name="FillSelectionString" xml:space="preserve">
-    <value>Wypełnij bajt wyboru ...</value>
+    <value>Wypełnij zaznaczenie bajtem...</value>
   </data>
   <data name="FindAllString" xml:space="preserve">
-    <value>Znajdź wszystko</value>
+    <value>Znajdź wszystkie</value>
   </data>
   <data name="FindAndReplaceString" xml:space="preserve">
     <value>Znajdź i zamień</value>
   </data>
   <data name="FindByteString" xml:space="preserve">
-    <value>Byte to search</value>
+    <value>Bajt do wyszukania</value>
   </data>
   <data name="FindFirstString" xml:space="preserve">
     <value>Znajdź pierwszy</value>
@@ -221,7 +157,7 @@
     <value>Znajdź wszystkie wystąpienia zaznaczenia</value>
   </data>
   <data name="FindString" xml:space="preserve">
-    <value>Odnaleźć</value>
+    <value>Znajdź</value>
   </data>
   <data name="FindWhatString" xml:space="preserve">
     <value>Znajdź co:</value>
@@ -232,11 +168,8 @@
   <data name="HexString" xml:space="preserve">
     <value>Hex</value>
   </data>
-  <data name="HighLightSettingString" xml:space="preserve">
-    <value>Zaznacz wszystkie znalezione dane</value>
-  </data>
   <data name="KBTagString" xml:space="preserve">
-    <value>Kb</value>
+    <value>KB</value>
   </data>
   <data name="LengthString" xml:space="preserve">
     <value>Długość</value>
@@ -248,19 +181,16 @@
     <value>&lt;ln&gt;</value>
   </data>
   <data name="LongString" xml:space="preserve">
-    <value>Długie</value>
+    <value>Long</value>
   </data>
   <data name="MBTagString" xml:space="preserve">
-    <value>Mb</value>
+    <value>MB</value>
   </data>
   <data name="OkString" xml:space="preserve">
-    <value>Ok</value>
-  </data>
-  <data name="OpenAsReadOnlyString" xml:space="preserve">
-    <value>O arquivo está bloqueado. Você deseja abri-lo no modo somente leitura?</value>
+    <value>OK</value>
   </data>
   <data name="PasteExtendByteConfirmationString" xml:space="preserve">
-    <value>Wklej dotarł do końca pliku. Czy chcesz przedłużyć plik do pełnej pracy? Ta operacja nie może zostać anulowana, jeśli kontynuujesz.</value>
+    <value>Operacja wklejania osiągnęła koniec pliku. Czy chcesz rozszerzyć plik, aby ukończyć operację? Tej operacji nie można cofnąć, jeśli kontynuujesz.</value>
   </data>
   <data name="PasteFromClipboardString" xml:space="preserve">
     <value>Wklej ze schowka</value>
@@ -272,28 +202,25 @@
     <value>Pozycja</value>
   </data>
   <data name="ReplaceAllString" xml:space="preserve">
-    <value>Zmień wszystko</value>
+    <value>Zamień wszystkie</value>
   </data>
   <data name="ReplaceByByteString" xml:space="preserve">
-    <value>Wymień bajt</value>
+    <value>Zamień przez bajt</value>
   </data>
   <data name="ReplaceNextString" xml:space="preserve">
-    <value>Zamień na następny</value>
+    <value>Zamień następny</value>
   </data>
   <data name="ReplaceSelectionString" xml:space="preserve">
-    <value>Zastąp bajt w zaznaczeniu ...</value>
+    <value>Zamień bajt w zaznaczeniu...</value>
   </data>
   <data name="ReplaceString" xml:space="preserve">
-    <value>Zastąpić</value>
-  </data>
-  <data name="ReplaceTrimSettingString" xml:space="preserve">
-    <value>Przytnij dane na długości wyszukiwania po wymianie</value>
+    <value>Zamień</value>
   </data>
   <data name="ReplaceWithByteString" xml:space="preserve">
-    <value>Zmień na bajt</value>
+    <value>Zamień na bajt</value>
   </data>
   <data name="ReplaceWithString" xml:space="preserve">
-    <value>zastąpić:</value>
+    <value>Zamień na:</value>
   </data>
   <data name="SelectAllString" xml:space="preserve">
     <value>Zaznacz wszystko</value>
@@ -305,7 +232,7 @@
     <value>TBL</value>
   </data>
   <data name="ThisStringAreNotHexString" xml:space="preserve">
-    <value>Ten ciąg nie jest szesnastkowy</value>
+    <value>Ten ciąg nie jest heksadecymalny</value>
   </data>
   <data name="UndoString" xml:space="preserve">
     <value>Cofnij</value>
@@ -314,13 +241,85 @@
     <value>Wartość</value>
   </data>
   <data name="WritingErrorExeptionString" xml:space="preserve">
-    <value>Wystąpił błąd podczas pisania.</value>
+    <value>Wystąpił błąd podczas zapisu.</value>
+  </data>
+  <data name="HighLightSettingString" xml:space="preserve">
+    <value>Podświetl wszystkie znalezione dane</value>
+  </data>
+  <data name="ReplaceTrimSettingString" xml:space="preserve">
+    <value>Przytnij dane do długości wyszukiwania podczas zamiany</value>
   </data>
   <data name="ZoomResetString" xml:space="preserve">
-    <value>Zresetuj zoom do 100%</value>
+    <value>Zresetuj powiększenie do 100%</value>
   </data>
   <data name="ZoomString" xml:space="preserve">
     <value>Powiększenie</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Nie można przekonwertować tego ciągu na long</value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Plik jest zablokowany. Czy chcesz otworzyć go w trybie tylko do odczytu?</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Bajtów</value>
+  </data>
+  <data name="SearchCommandCenterString" xml:space="preserve">
+    <value>CENTRUM POLECEŃ WYSZUKIWANIA</value>
+  </data>
+  <data name="SearchTextModeString" xml:space="preserve">
+    <value>Tekst</value>
+  </data>
+  <data name="SearchHexModeString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="SearchRegexModeString" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="SearchWildcardModeString" xml:space="preserve">
+    <value>Symbol wieloznaczny</value>
+  </data>
+  <data name="SearchPreviousString" xml:space="preserve">
+    <value>Poprzedni</value>
+  </data>
+  <data name="SearchNextString" xml:space="preserve">
+    <value>Następny</value>
+  </data>
+  <data name="SearchFindAllString" xml:space="preserve">
+    <value>Znajdź wszystkie</value>
+  </data>
+  <data name="SearchMatchesString" xml:space="preserve">
+    <value>dopasowań</value>
+  </data>
+  <data name="SearchInString" xml:space="preserve">
+    <value>w</value>
+  </data>
+  <data name="SearchNoMatchesString" xml:space="preserve">
+    <value>Nie znaleziono dopasowań</value>
+  </data>
+  <data name="SearchV2BadgeString" xml:space="preserve">
+    <value>99% SZYBCIEJ Z V2</value>
+  </data>
+  <data name="ClearSearchString" xml:space="preserve">
+    <value>Wyczyść</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Paleta poleceń</value>
+  </data>
+  <data name="PerformanceDashboardString" xml:space="preserve">
+    <value>Panel wydajności</value>
+  </data>
+  <data name="ThemeDarkGlassString" xml:space="preserve">
+    <value>Ciemne szkło</value>
+  </data>
+  <data name="ThemeLightString" xml:space="preserve">
+    <value>Jasny</value>
+  </data>
+  <data name="ThemeCyberpunkString" xml:space="preserve">
+    <value>Cyberpunk</value>
+  </data>
+  <data name="ThemeMinimalString" xml:space="preserve">
+    <value>Minimalistyczny</value>
   </data>
   <data name="CopyAsCSharpCodeString" xml:space="preserve">
     <value>Kopiuj jako kod C#</value>
@@ -341,7 +340,7 @@
     <value>Odwróć zaznaczenie</value>
   </data>
   <data name="StatusMessageString" xml:space="preserve">
-    <value>Komunikat statusu</value>
+    <value>Komunikat o stanie</value>
   </data>
   <data name="FileSizeString" xml:space="preserve">
     <value>Rozmiar pliku</value>
@@ -369,5 +368,236 @@
   </data>
   <data name="ModeOverwriteString" xml:space="preserve">
     <value>Tryb: Nadpisywanie</value>
+  </data>
+  <data name="FindAndReplaceDialogTitle" xml:space="preserve">
+    <value>Znajdź i zamień</value>
+  </data>
+  <data name="FindGroupHeader" xml:space="preserve">
+    <value>Znajdź</value>
+  </data>
+  <data name="ReplaceGroupHeader" xml:space="preserve">
+    <value>Zamień</value>
+  </data>
+  <data name="ResultsGroupHeader" xml:space="preserve">
+    <value>Wyniki</value>
+  </data>
+  <data name="FindTextLabel" xml:space="preserve">
+    <value>Znajdź:</value>
+  </data>
+  <data name="ReplaceTextLabel" xml:space="preserve">
+    <value>Zamień na:</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Poprzedni</value>
+  </data>
+  <data name="FindNextButton" xml:space="preserve">
+    <value>Następny</value>
+  </data>
+  <data name="FindAllButton" xml:space="preserve">
+    <value>Znajdź wszystkie</value>
+  </data>
+  <data name="ReplaceButton" xml:space="preserve">
+    <value>Zamień</value>
+  </data>
+  <data name="ReplaceAllButton" xml:space="preserve">
+    <value>Zamień wszystkie</value>
+  </data>
+  <data name="CaseSensitiveCheckbox" xml:space="preserve">
+    <value>Rozróżniaj wielkość liter</value>
+  </data>
+  <data name="WholeWordCheckbox" xml:space="preserve">
+    <value>Całe słowo</value>
+  </data>
+  <data name="UseRegexCheckbox" xml:space="preserve">
+    <value>Użyj wyrażeń regularnych</value>
+  </data>
+  <data name="SearchInSelectionCheckbox" xml:space="preserve">
+    <value>Szukaj tylko w zaznaczeniu</value>
+  </data>
+  <data name="HighlightAllCheckbox" xml:space="preserve">
+    <value>Podświetl wszystkie dopasowania</value>
+  </data>
+  <data name="CloseDialogButton" xml:space="preserve">
+    <value>Zamknij</value>
+  </data>
+  <data name="NoResultsFound" xml:space="preserve">
+    <value>Nie znaleziono wyników</value>
+  </data>
+  <data name="MatchesFoundFormat" xml:space="preserve">
+    <value>Znaleziono {0} dopasowań</value>
+  </data>
+  <data name="ReplacedFormat" xml:space="preserve">
+    <value>Zamieniono {0}</value>
+  </data>
+  <data name="SearchPanelTitle" xml:space="preserve">
+    <value>Wyszukiwanie</value>
+  </data>
+  <data name="SearchFindLabel" xml:space="preserve">
+    <value>Znajdź:</value>
+  </data>
+  <data name="SearchModePlaceholder" xml:space="preserve">
+    <value>Wprowadź tekst wyszukiwania...</value>
+  </data>
+  <data name="TextModeLabel" xml:space="preserve">
+    <value>Tekst</value>
+  </data>
+  <data name="HexModeLabel" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="RegexModeLabel" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WildcardModeLabel" xml:space="preserve">
+    <value>Symbol wieloznaczny</value>
+  </data>
+  <data name="MatchCaseLabel" xml:space="preserve">
+    <value>Uwzględnij wielkość liter</value>
+  </data>
+  <data name="WholeWordLabel" xml:space="preserve">
+    <value>Całe słowo</value>
+  </data>
+  <data name="SearchOptionsLabel" xml:space="preserve">
+    <value>Opcje</value>
+  </data>
+  <data name="SearchResultsLabel" xml:space="preserve">
+    <value>Wyniki</value>
+  </data>
+  <data name="CurrentMatchLabel" xml:space="preserve">
+    <value>Bieżące dopasowanie</value>
+  </data>
+  <data name="TotalMatchesLabel" xml:space="preserve">
+    <value>Łącznie dopasowań</value>
+  </data>
+  <data name="QuickSearchTooltip" xml:space="preserve">
+    <value>Szybkie wyszukiwanie (Ctrl+F)</value>
+  </data>
+  <data name="PreviousMatchTooltip" xml:space="preserve">
+    <value>Poprzednie dopasowanie (Shift+F3)</value>
+  </data>
+  <data name="NextMatchTooltip" xml:space="preserve">
+    <value>Następne dopasowanie (F3)</value>
+  </data>
+  <data name="CloseSearchTooltip" xml:space="preserve">
+    <value>Zamknij wyszukiwanie (Esc)</value>
+  </data>
+  <data name="SearchOptionsTooltip" xml:space="preserve">
+    <value>Opcje wyszukiwania</value>
+  </data>
+  <data name="StatusSearching" xml:space="preserve">
+    <value>Wyszukiwanie...</value>
+  </data>
+  <data name="StatusSearchComplete" xml:space="preserve">
+    <value>Wyszukiwanie zakończone</value>
+  </data>
+  <data name="StatusFoundMatchesFormat" xml:space="preserve">
+    <value>Znaleziono {0} dopasowań w {1}ms</value>
+  </data>
+  <data name="StatusMatchFoundAtFormat" xml:space="preserve">
+    <value>Znaleziono dopasowanie w pozycji 0x{0:X8}</value>
+  </data>
+  <data name="StatusNoMoreMatches" xml:space="preserve">
+    <value>Nie znaleziono więcej dopasowań</value>
+  </data>
+  <data name="StatusReachedEndOfFile" xml:space="preserve">
+    <value>Osiągnięto koniec pliku</value>
+  </data>
+  <data name="StatusReachedStartOfFile" xml:space="preserve">
+    <value>Osiągnięto początek pliku</value>
+  </data>
+  <data name="StatusReplacing" xml:space="preserve">
+    <value>Zastępowanie...</value>
+  </data>
+  <data name="StatusReplaceComplete" xml:space="preserve">
+    <value>Zastępowanie zakończone</value>
+  </data>
+  <data name="StatusReplacedFormat" xml:space="preserve">
+    <value>Zastąpiono {0} wystąpień</value>
+  </data>
+  <data name="StatusInvalidSearchPattern" xml:space="preserve">
+    <value>Nieprawidłowy wzorzec wyszukiwania</value>
+  </data>
+  <data name="StatusInvalidRegex" xml:space="preserve">
+    <value>Nieprawidłowe wyrażenie regularne</value>
+  </data>
+  <data name="StatusSearchCancelled" xml:space="preserve">
+    <value>Wyszukiwanie anulowane</value>
+  </data>
+  <data name="StatusReplaceCancelled" xml:space="preserve">
+    <value>Zastępowanie anulowane</value>
+  </data>
+  <data name="StatusCancelling" xml:space="preserve">
+    <value>Anulowanie...</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Błąd: {0}</value>
+  </data>
+  <data name="StatusFoundMatchesWithSpeedFormat" xml:space="preserve">
+    <value>Znaleziono {0} dopasowań w {1}ms ({2:F2} MB/s)</value>
+  </data>
+  <data name="StatusMatchFoundAtWrappedFormat" xml:space="preserve">
+    <value>Znaleziono dopasowanie w pozycji 0x{0:X8} (zawinięte)</value>
+  </data>
+  <data name="StatusNoPreviousMatches" xml:space="preserve">
+    <value>Nie znaleziono poprzednich dopasowań</value>
+  </data>
+  <data name="StatusMatchOfTotalFormat" xml:space="preserve">
+    <value>Dopasowanie {0} z {1} w pozycji 0x{2:X8}</value>
+  </data>
+  <data name="StatusReplacedAtFormat" xml:space="preserve">
+    <value>Zastąpiono w pozycji 0x{0:X8} (Razem: {1})</value>
+  </data>
+  <data name="StatusReplaceError" xml:space="preserve">
+    <value>Błąd zastępowania: {0}</value>
+  </data>
+  <data name="StatusNoMatchesToReplace" xml:space="preserve">
+    <value>Brak dopasowań do zastąpienia</value>
+  </data>
+  <data name="StatusInvalidReplacementPattern" xml:space="preserve">
+    <value>Nieprawidłowy wzorzec zastępowania</value>
+  </data>
+  <data name="StatusReplacedOccurrencesFormat" xml:space="preserve">
+    <value>Zastąpiono {0} wystąpień. Łącznie zastąpień: {1}</value>
+  </data>
+  <data name="StatusReplaceAllError" xml:space="preserve">
+    <value>Błąd zastępowania wszystkich: {0}</value>
+  </data>
+  <data name="StatusNoMoreBookmarksAfter" xml:space="preserve">
+    <value>Brak więcej zakładek po bieżącej pozycji</value>
+  </data>
+  <data name="StatusNoMoreBookmarksBefore" xml:space="preserve">
+    <value>Brak więcej zakładek przed bieżącą pozycją</value>
+  </data>
+  <data name="BookmarkSetFormat" xml:space="preserve">
+    <value>Zakładka ustawiona na 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkClearedFormat" xml:space="preserve">
+    <value>Zakładka wyczyszczona na 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkNavigatedFormat" xml:space="preserve">
+    <value>Przejście do zakładki na 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkAllCleared" xml:space="preserve">
+    <value>Wszystkie zakładki wyczyszczone</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Kopiuj zaznaczenie</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Wytnij zaznaczenie</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Wstaw bajt...</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Usuń bajt</value>
+  </data>
+  <data name="DeleteSelectionString" xml:space="preserve">
+    <value>Usuń zaznaczenie</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Przejdź do przesunięcia...</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Właściwości</value>
   </data>
 </root>

@@ -11,7 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:p="clr-namespace:WpfHexaEditor.Properties"
     xmlns:wpfHexaEditor="clr-namespace:WpfHexaEditor"
-    Title="{x:Static p:Resources.FindString}"
+    Title="{DynamicResource FindString}"
     Width="193"
     Height="190"
     MinWidth="550"
@@ -34,7 +34,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="FindNextButton_Click"
-            Content="{x:Static p:Resources.FindNextString}"
+            Content="{DynamicResource FindNextString}"
             TabIndex="3" />
 
         <Button
@@ -44,7 +44,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Click="CloseButton_Click"
-            Content="{x:Static p:Resources.CloseString}"
+            Content="{DynamicResource CloseString}"
             IsCancel="True"
             TabIndex="6" />
 
@@ -70,7 +70,7 @@
             Margin="10,10,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Content="{x:Static p:Resources.FindWhatString}" />
+            Content="{DynamicResource FindWhatString}" />
 
         <Button
             x:Name="FindAllButton"
@@ -80,7 +80,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="FindAllButton_Click"
-            Content="{x:Static p:Resources.FindAllString}"
+            Content="{DynamicResource FindAllString}"
             TabIndex="5" />
 
         <Button
@@ -91,7 +91,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="FindFirstButton_Click"
-            Content="{x:Static p:Resources.FindFirstString}"
+            Content="{DynamicResource FindFirstString}"
             TabIndex="2" />
 
         <Button
@@ -102,7 +102,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="FindLastButton_Click"
-            Content="{x:Static p:Resources.FindLastString}"
+            Content="{DynamicResource FindLastString}"
             TabIndex="4" />
 
         <Button
@@ -112,7 +112,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="ClearButton_Click"
-            Content="{x:Static p:Resources.ClearString}"
+            Content="{DynamicResource ClearString}"
             TabIndex="1" />
     </Grid>
 </Window>

@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
 
-  <!-- French (Canada) -->
+  <!-- French (France) -->
   <data name="AppendByteConfirmationString" xml:space="preserve">
     <value>Vous avez atteint la fin du fichier. Voulez-vous ajouter un octet ? Cette opération ne peut pas être annulée si vous continuez.</value>
   </data>
@@ -250,7 +250,7 @@
     <value>Tronquer les données à la longueur de recherche lors du remplacement</value>
   </data>
   <data name="ZoomResetString" xml:space="preserve">
-    <value>Réinitialiser le zoom à 100 %</value>
+    <value>Réinitialiser le zoom à 100%</value>
   </data>
   <data name="ZoomString" xml:space="preserve">
     <value>Zoom</value>
@@ -298,7 +298,7 @@
     <value>Aucune correspondance trouvée</value>
   </data>
   <data name="SearchV2BadgeString" xml:space="preserve">
-    <value>99 % PLUS RAPIDE AVEC V2</value>
+    <value>99% PLUS RAPIDE AVEC V2</value>
   </data>
   <data name="ClearSearchString" xml:space="preserve">
     <value>Effacer</value>
@@ -490,7 +490,7 @@
     <value>Recherche terminée</value>
   </data>
   <data name="StatusFoundMatchesFormat" xml:space="preserve">
-    <value>{0} correspondances trouvées en {1} ms</value>
+    <value>{0} correspondances trouvées en {1}ms</value>
   </data>
   <data name="StatusMatchFoundAtFormat" xml:space="preserve">
     <value>Correspondance trouvée à la position 0x{0:X8}</value>
@@ -532,7 +532,7 @@
     <value>Erreur : {0}</value>
   </data>
   <data name="StatusFoundMatchesWithSpeedFormat" xml:space="preserve">
-    <value>{0} correspondances trouvées en {1} ms ({2:F2} Mo/s)</value>
+    <value>{0} correspondances trouvées en {1}ms ({2:F2} Mo/s)</value>
   </data>
   <data name="StatusMatchFoundAtWrappedFormat" xml:space="preserve">
     <value>Correspondance trouvée à la position 0x{0:X8} (bouclée)</value>

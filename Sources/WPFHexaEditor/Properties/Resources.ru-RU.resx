@@ -1,64 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -117,14 +58,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+
+  <!-- Russian -->
   <data name="AppendByteConfirmationString" xml:space="preserve">
-    <value>Достигнут конец файла. Добавить байт? Эта операция не может быть отменена.</value>
+    <value>Вы достигли конца файла. Хотите добавить один байт? Эту операцию нельзя отменить, если вы продолжите.</value>
   </data>
   <data name="BookmarksString" xml:space="preserve">
     <value>Закладки</value>
   </data>
   <data name="ByteActionString" xml:space="preserve">
-    <value>Байт действия</value>
+    <value>Действие байта</value>
   </data>
   <data name="ByteString" xml:space="preserve">
     <value>Байт</value>
@@ -145,31 +88,31 @@
     <value>Очистить</value>
   </data>
   <data name="ClickToGoAtPositionString" xml:space="preserve">
-    <value>Нажмите, чтобы перейти на позицию.</value>
+    <value>Нажмите, чтобы перейти к позиции.</value>
   </data>
   <data name="CloseString" xml:space="preserve">
     <value>Закрыть</value>
   </data>
   <data name="CopyAsASCIIString" xml:space="preserve">
-    <value>Скопировать как ASCII</value>
+    <value>Копировать как ASCII</value>
   </data>
   <data name="CopyAsDecimalString" xml:space="preserve">
-    <value>Копировать как десятичное число</value>
+    <value>Копировать как десятичное</value>
   </data>
   <data name="CopyAsHexadecimalString" xml:space="preserve">
-    <value>Копировать как шестнадцатеричное число</value>
+    <value>Копировать как шестнадцатеричное</value>
   </data>
   <data name="CopyAsTBLString" xml:space="preserve">
-    <value>TBL (загруженный файл символов)</value>
+    <value>Строка TBL (загружен файл символов)</value>
   </data>
   <data name="CopySelectionAsString" xml:space="preserve">
-    <value>Копировать выделенное как...</value>
+    <value>Копировать выделение как...</value>
   </data>
   <data name="CountOfString" xml:space="preserve">
     <value>Количество</value>
   </data>
   <data name="DefaultTBLString" xml:space="preserve">
-    <value>По умолчанию TBL</value>
+    <value>TBL по умолчанию</value>
   </data>
   <data name="DeleteString" xml:space="preserve">
     <value>Удалить</value>
@@ -178,22 +121,22 @@
     <value>Описание</value>
   </data>
   <data name="EndTagString" xml:space="preserve">
-    <value>&lt;End&gt;</value>
+    <value>&lt;конец&gt;</value>
   </data>
   <data name="EnterHexValueMsgString" xml:space="preserve">
     <value>Введите шестнадцатеричное значение...</value>
   </data>
   <data name="FileDroppingConfirmationString" xml:space="preserve">
-    <value>Вы хотите закрыть текущий файл и открыть:</value>
+    <value>Вы хотите закрыть текущий файл и открыть: </value>
   </data>
   <data name="FillSelectionAloneString" xml:space="preserve">
-    <value>Заполните выбор байтом</value>
+    <value>Заполнить выделение байтом</value>
   </data>
   <data name="FillSelectionString" xml:space="preserve">
-    <value>Заполните выбор байтом...</value>
+    <value>Заполнить выделение байтом...</value>
   </data>
   <data name="FindAllString" xml:space="preserve">
-    <value>Bce</value>
+    <value>Найти все</value>
   </data>
   <data name="FindAndReplaceString" xml:space="preserve">
     <value>Найти и заменить</value>
@@ -211,13 +154,13 @@
     <value>Найти следующий</value>
   </data>
   <data name="FindSelectionString" xml:space="preserve">
-    <value>Найти все случаи отбора</value>
+    <value>Найти все вхождения выделения</value>
   </data>
   <data name="FindString" xml:space="preserve">
     <value>Найти</value>
   </data>
   <data name="FindWhatString" xml:space="preserve">
-    <value>Найти:</value>
+    <value>Найти что:</value>
   </data>
   <data name="FirstByteString" xml:space="preserve">
     <value>Первый байт</value>
@@ -225,17 +168,14 @@
   <data name="HexString" xml:space="preserve">
     <value>Hex</value>
   </data>
-  <data name="HighLightSettingString" xml:space="preserve">
-    <value>Выделить все найденные данные</value>
-  </data>
   <data name="KBTagString" xml:space="preserve">
-    <value>Kb</value>
+    <value>КБ</value>
   </data>
   <data name="LengthString" xml:space="preserve">
-    <value>Длинна</value>
+    <value>Длина</value>
   </data>
   <data name="LineStatusBarTagString" xml:space="preserve">
-    <value>Ln</value>
+    <value>Стр</value>
   </data>
   <data name="LineTagString" xml:space="preserve">
     <value>&lt;ln&gt;</value>
@@ -244,16 +184,13 @@
     <value>Long</value>
   </data>
   <data name="MBTagString" xml:space="preserve">
-    <value>Mb</value>
+    <value>МБ</value>
   </data>
   <data name="OkString" xml:space="preserve">
-    <value>ОК</value>
-  </data>
-  <data name="OpenAsReadOnlyString" xml:space="preserve">
-    <value>Файл заблокирован. Вы хотите открыть его в режиме только для чтения?</value>
+    <value>OK</value>
   </data>
   <data name="PasteExtendByteConfirmationString" xml:space="preserve">
-    <value>Операция вставки достигла конца файла. Расширить файл для завершения операции? Эта операция не может быть отменена.</value>
+    <value>Операция вставки достигла конца файла. Хотите расширить файл для завершения операции? Эту операцию нельзя отменить, если вы продолжите.</value>
   </data>
   <data name="PasteFromClipboardString" xml:space="preserve">
     <value>Вставить из буфера обмена</value>
@@ -265,28 +202,25 @@
     <value>Позиция</value>
   </data>
   <data name="ReplaceAllString" xml:space="preserve">
-    <value>Заменить всe</value>
+    <value>Заменить все</value>
   </data>
   <data name="ReplaceByByteString" xml:space="preserve">
     <value>Заменить байтом</value>
   </data>
   <data name="ReplaceNextString" xml:space="preserve">
-    <value>Заменить следующие</value>
+    <value>Заменить следующий</value>
   </data>
   <data name="ReplaceSelectionString" xml:space="preserve">
-    <value>Заменить байт в выборе...</value>
+    <value>Заменить байт в выделении...</value>
   </data>
   <data name="ReplaceString" xml:space="preserve">
     <value>Заменить</value>
   </data>
-  <data name="ReplaceTrimSettingString" xml:space="preserve">
-    <value>Обрезать данные по длине нахождения при замене</value>
-  </data>
   <data name="ReplaceWithByteString" xml:space="preserve">
-    <value>Заменить байт</value>
+    <value>Заменить на байт</value>
   </data>
   <data name="ReplaceWithString" xml:space="preserve">
-    <value>Заменить:</value>
+    <value>Заменить на:</value>
   </data>
   <data name="SelectAllString" xml:space="preserve">
     <value>Выделить все</value>
@@ -307,13 +241,85 @@
     <value>Значение</value>
   </data>
   <data name="WritingErrorExeptionString" xml:space="preserve">
-    <value>При записи произошла ошибка.</value>
+    <value>Произошла ошибка при записи.</value>
+  </data>
+  <data name="HighLightSettingString" xml:space="preserve">
+    <value>Выделить все найденные данные</value>
+  </data>
+  <data name="ReplaceTrimSettingString" xml:space="preserve">
+    <value>Обрезать данные до длины поиска при замене</value>
   </data>
   <data name="ZoomResetString" xml:space="preserve">
     <value>Сбросить масштаб до 100%</value>
   </data>
   <data name="ZoomString" xml:space="preserve">
-    <value>Увеличить</value>
+    <value>Масштаб</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Невозможно преобразовать эту строку в long</value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Файл заблокирован. Хотите открыть его в режиме только для чтения?</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Байт</value>
+  </data>
+  <data name="SearchCommandCenterString" xml:space="preserve">
+    <value>ЦЕНТР КОМАНД ПОИСКА</value>
+  </data>
+  <data name="SearchTextModeString" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="SearchHexModeString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="SearchRegexModeString" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="SearchWildcardModeString" xml:space="preserve">
+    <value>Подстановочный знак</value>
+  </data>
+  <data name="SearchPreviousString" xml:space="preserve">
+    <value>Предыдущий</value>
+  </data>
+  <data name="SearchNextString" xml:space="preserve">
+    <value>Следующий</value>
+  </data>
+  <data name="SearchFindAllString" xml:space="preserve">
+    <value>Найти все</value>
+  </data>
+  <data name="SearchMatchesString" xml:space="preserve">
+    <value>совпадений</value>
+  </data>
+  <data name="SearchInString" xml:space="preserve">
+    <value>в</value>
+  </data>
+  <data name="SearchNoMatchesString" xml:space="preserve">
+    <value>Совпадений не найдено</value>
+  </data>
+  <data name="SearchV2BadgeString" xml:space="preserve">
+    <value>НА 99% БЫСТРЕЕ С V2</value>
+  </data>
+  <data name="ClearSearchString" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Палитра команд</value>
+  </data>
+  <data name="PerformanceDashboardString" xml:space="preserve">
+    <value>Панель производительности</value>
+  </data>
+  <data name="ThemeDarkGlassString" xml:space="preserve">
+    <value>Темное стекло</value>
+  </data>
+  <data name="ThemeLightString" xml:space="preserve">
+    <value>Светлый</value>
+  </data>
+  <data name="ThemeCyberpunkString" xml:space="preserve">
+    <value>Киберпанк</value>
+  </data>
+  <data name="ThemeMinimalString" xml:space="preserve">
+    <value>Минималистичный</value>
   </data>
   <data name="CopyAsCSharpCodeString" xml:space="preserve">
     <value>Копировать как код C#</value>
@@ -334,7 +340,7 @@
     <value>Обратить выделение</value>
   </data>
   <data name="StatusMessageString" xml:space="preserve">
-    <value>Сообщение о статусе</value>
+    <value>Сообщение о состоянии</value>
   </data>
   <data name="FileSizeString" xml:space="preserve">
     <value>Размер файла</value>
@@ -346,7 +352,7 @@
     <value>Режим редактирования</value>
   </data>
   <data name="BytesPerLineString" xml:space="preserve">
-    <value>Байтов на строку</value>
+    <value>Байт на строку</value>
   </data>
   <data name="RefreshTimeString" xml:space="preserve">
     <value>Время обновления</value>
@@ -362,5 +368,236 @@
   </data>
   <data name="ModeOverwriteString" xml:space="preserve">
     <value>Режим: Перезапись</value>
+  </data>
+  <data name="FindAndReplaceDialogTitle" xml:space="preserve">
+    <value>Найти и заменить</value>
+  </data>
+  <data name="FindGroupHeader" xml:space="preserve">
+    <value>Найти</value>
+  </data>
+  <data name="ReplaceGroupHeader" xml:space="preserve">
+    <value>Заменить</value>
+  </data>
+  <data name="ResultsGroupHeader" xml:space="preserve">
+    <value>Результаты</value>
+  </data>
+  <data name="FindTextLabel" xml:space="preserve">
+    <value>Найти:</value>
+  </data>
+  <data name="ReplaceTextLabel" xml:space="preserve">
+    <value>Заменить на:</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Предыдущий</value>
+  </data>
+  <data name="FindNextButton" xml:space="preserve">
+    <value>Следующий</value>
+  </data>
+  <data name="FindAllButton" xml:space="preserve">
+    <value>Найти все</value>
+  </data>
+  <data name="ReplaceButton" xml:space="preserve">
+    <value>Заменить</value>
+  </data>
+  <data name="ReplaceAllButton" xml:space="preserve">
+    <value>Заменить все</value>
+  </data>
+  <data name="CaseSensitiveCheckbox" xml:space="preserve">
+    <value>Учитывать регистр</value>
+  </data>
+  <data name="WholeWordCheckbox" xml:space="preserve">
+    <value>Целое слово</value>
+  </data>
+  <data name="UseRegexCheckbox" xml:space="preserve">
+    <value>Использовать регулярные выражения</value>
+  </data>
+  <data name="SearchInSelectionCheckbox" xml:space="preserve">
+    <value>Искать только в выделении</value>
+  </data>
+  <data name="HighlightAllCheckbox" xml:space="preserve">
+    <value>Выделить все совпадения</value>
+  </data>
+  <data name="CloseDialogButton" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="NoResultsFound" xml:space="preserve">
+    <value>Результатов не найдено</value>
+  </data>
+  <data name="MatchesFoundFormat" xml:space="preserve">
+    <value>Найдено {0} совпадений</value>
+  </data>
+  <data name="ReplacedFormat" xml:space="preserve">
+    <value>Заменено {0}</value>
+  </data>
+  <data name="SearchPanelTitle" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="SearchFindLabel" xml:space="preserve">
+    <value>Найти:</value>
+  </data>
+  <data name="SearchModePlaceholder" xml:space="preserve">
+    <value>Введите текст для поиска...</value>
+  </data>
+  <data name="TextModeLabel" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="HexModeLabel" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="RegexModeLabel" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WildcardModeLabel" xml:space="preserve">
+    <value>Подстановочный знак</value>
+  </data>
+  <data name="MatchCaseLabel" xml:space="preserve">
+    <value>Учитывать регистр</value>
+  </data>
+  <data name="WholeWordLabel" xml:space="preserve">
+    <value>Целое слово</value>
+  </data>
+  <data name="SearchOptionsLabel" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="SearchResultsLabel" xml:space="preserve">
+    <value>Результаты</value>
+  </data>
+  <data name="CurrentMatchLabel" xml:space="preserve">
+    <value>Текущее совпадение</value>
+  </data>
+  <data name="TotalMatchesLabel" xml:space="preserve">
+    <value>Всего совпадений</value>
+  </data>
+  <data name="QuickSearchTooltip" xml:space="preserve">
+    <value>Быстрый поиск (Ctrl+F)</value>
+  </data>
+  <data name="PreviousMatchTooltip" xml:space="preserve">
+    <value>Предыдущее совпадение (Shift+F3)</value>
+  </data>
+  <data name="NextMatchTooltip" xml:space="preserve">
+    <value>Следующее совпадение (F3)</value>
+  </data>
+  <data name="CloseSearchTooltip" xml:space="preserve">
+    <value>Закрыть поиск (Esc)</value>
+  </data>
+  <data name="SearchOptionsTooltip" xml:space="preserve">
+    <value>Параметры поиска</value>
+  </data>
+  <data name="StatusSearching" xml:space="preserve">
+    <value>Поиск...</value>
+  </data>
+  <data name="StatusSearchComplete" xml:space="preserve">
+    <value>Поиск завершен</value>
+  </data>
+  <data name="StatusFoundMatchesFormat" xml:space="preserve">
+    <value>Найдено {0} совпадений за {1}мс</value>
+  </data>
+  <data name="StatusMatchFoundAtFormat" xml:space="preserve">
+    <value>Совпадение найдено в позиции 0x{0:X8}</value>
+  </data>
+  <data name="StatusNoMoreMatches" xml:space="preserve">
+    <value>Больше совпадений не найдено</value>
+  </data>
+  <data name="StatusReachedEndOfFile" xml:space="preserve">
+    <value>Достигнут конец файла</value>
+  </data>
+  <data name="StatusReachedStartOfFile" xml:space="preserve">
+    <value>Достигнуто начало файла</value>
+  </data>
+  <data name="StatusReplacing" xml:space="preserve">
+    <value>Замена...</value>
+  </data>
+  <data name="StatusReplaceComplete" xml:space="preserve">
+    <value>Замена завершена</value>
+  </data>
+  <data name="StatusReplacedFormat" xml:space="preserve">
+    <value>Заменено {0} вхождений</value>
+  </data>
+  <data name="StatusInvalidSearchPattern" xml:space="preserve">
+    <value>Недопустимый шаблон поиска</value>
+  </data>
+  <data name="StatusInvalidRegex" xml:space="preserve">
+    <value>Недопустимое регулярное выражение</value>
+  </data>
+  <data name="StatusSearchCancelled" xml:space="preserve">
+    <value>Поиск отменен</value>
+  </data>
+  <data name="StatusReplaceCancelled" xml:space="preserve">
+    <value>Замена отменена</value>
+  </data>
+  <data name="StatusCancelling" xml:space="preserve">
+    <value>Отмена...</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Ошибка: {0}</value>
+  </data>
+  <data name="StatusFoundMatchesWithSpeedFormat" xml:space="preserve">
+    <value>Найдено {0} совпадений за {1}мс ({2:F2} МБ/с)</value>
+  </data>
+  <data name="StatusMatchFoundAtWrappedFormat" xml:space="preserve">
+    <value>Совпадение найдено в позиции 0x{0:X8} (с переносом)</value>
+  </data>
+  <data name="StatusNoPreviousMatches" xml:space="preserve">
+    <value>Предыдущих совпадений не найдено</value>
+  </data>
+  <data name="StatusMatchOfTotalFormat" xml:space="preserve">
+    <value>Совпадение {0} из {1} в позиции 0x{2:X8}</value>
+  </data>
+  <data name="StatusReplacedAtFormat" xml:space="preserve">
+    <value>Заменено в позиции 0x{0:X8} (Всего: {1})</value>
+  </data>
+  <data name="StatusReplaceError" xml:space="preserve">
+    <value>Ошибка замены: {0}</value>
+  </data>
+  <data name="StatusNoMatchesToReplace" xml:space="preserve">
+    <value>Нет совпадений для замены</value>
+  </data>
+  <data name="StatusInvalidReplacementPattern" xml:space="preserve">
+    <value>Недопустимый шаблон замены</value>
+  </data>
+  <data name="StatusReplacedOccurrencesFormat" xml:space="preserve">
+    <value>Заменено {0} вхождений. Всего замен: {1}</value>
+  </data>
+  <data name="StatusReplaceAllError" xml:space="preserve">
+    <value>Ошибка замены всех: {0}</value>
+  </data>
+  <data name="StatusNoMoreBookmarksAfter" xml:space="preserve">
+    <value>Больше нет закладок после текущей позиции</value>
+  </data>
+  <data name="StatusNoMoreBookmarksBefore" xml:space="preserve">
+    <value>Больше нет закладок до текущей позиции</value>
+  </data>
+  <data name="BookmarkSetFormat" xml:space="preserve">
+    <value>Закладка установлена в 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkClearedFormat" xml:space="preserve">
+    <value>Закладка очищена в 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkNavigatedFormat" xml:space="preserve">
+    <value>Переход к закладке в 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkAllCleared" xml:space="preserve">
+    <value>Все закладки очищены</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Копировать выделение</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Вырезать выделение</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Вставить байт...</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Удалить байт</value>
+  </data>
+  <data name="DeleteSelectionString" xml:space="preserve">
+    <value>Удалить выделение</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Перейти к смещению...</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Свойства</value>
   </data>
 </root>

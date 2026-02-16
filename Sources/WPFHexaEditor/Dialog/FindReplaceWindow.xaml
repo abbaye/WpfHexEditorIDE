@@ -11,7 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:p="clr-namespace:WpfHexaEditor.Properties"
     xmlns:wpfHexaEditor="clr-namespace:WpfHexaEditor"
-    Title="{x:Static p:Resources.FindAndReplaceString}"
+    Title="{DynamicResource FindAndReplaceString}"
     Width="193"
     Height="340"
     MinWidth="550"
@@ -36,13 +36,13 @@
                 <MenuItem
                     x:Name="HighlightMenuItem"
                     Click="SettingMenuItem_Click"
-                    Header="{x:Static p:Resources.ReplaceTrimSettingString}"
+                    Header="{DynamicResource ReplaceTrimSettingString}"
                     IsCheckable="True"
                     IsChecked="True" />
                 <MenuItem
                     x:Name="TrimMenuItem"
                     Click="SettingMenuItem_Click"
-                    Header="{x:Static p:Resources.HighLightSettingString}"
+                    Header="{DynamicResource HighLightSettingString}"
                     IsCheckable="True"
                     IsChecked="True" />
             </StackPanel>
@@ -57,7 +57,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="FindNextButton_Click"
-            Content="{x:Static p:Resources.FindNextString}"
+            Content="{DynamicResource FindNextString}"
             TabIndex="3" />
 
         <Button
@@ -67,7 +67,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Click="CloseButton_Click"
-            Content="{x:Static p:Resources.CloseString}"
+            Content="{DynamicResource CloseString}"
             IsCancel="True"
             TabIndex="10" />
 
@@ -95,7 +95,7 @@
             Margin="10,10,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Content="{x:Static p:Resources.FindWhatString}" />
+            Content="{DynamicResource FindWhatString}" />
 
         <Button
             x:Name="ReplaceButton"
@@ -105,7 +105,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="ReplaceButton_Click"
-            Content="{x:Static p:Resources.ReplaceString}"
+            Content="{DynamicResource ReplaceString}"
             TabIndex="6" />
 
         <Button
@@ -116,7 +116,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="ReplaceAllButton_Click"
-            Content="{x:Static p:Resources.ReplaceAllString}"
+            Content="{DynamicResource ReplaceAllString}"
             TabIndex="9" />
 
         <wpfHexaEditor:HexEditorLegacy
@@ -142,7 +142,7 @@
             Margin="10,156,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Content="{x:Static p:Resources.ReplaceWithString}" />
+            Content="{DynamicResource ReplaceWithString}" />
 
         <Button
             x:Name="FindAllButton"
@@ -152,7 +152,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="FindAllButton_Click"
-            Content="{x:Static p:Resources.FindAllString}"
+            Content="{DynamicResource FindAllString}"
             TabIndex="5" />
 
         <Button
@@ -163,7 +163,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="FindFirstButton_Click"
-            Content="{x:Static p:Resources.FindFirstString}"
+            Content="{DynamicResource FindFirstString}"
             TabIndex="2" />
 
         <Button
@@ -174,7 +174,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="FindLastButton_Click"
-            Content="{x:Static p:Resources.FindLastString}"
+            Content="{DynamicResource FindLastString}"
             TabIndex="4" />
 
         <Button
@@ -184,7 +184,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="ClearButton_Click"
-            Content="{x:Static p:Resources.ClearString}"
+            Content="{DynamicResource ClearString}"
             TabIndex="1" />
 
         <Button
@@ -194,7 +194,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="ClearReplaceButton_Click"
-            Content="{x:Static p:Resources.ClearString}"
+            Content="{DynamicResource ClearString}"
             TabIndex="11" />
 
         <Button
@@ -205,7 +205,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="ReplaceNextButton_Click"
-            Content="{x:Static p:Resources.ReplaceNextString}"
+            Content="{DynamicResource ReplaceNextString}"
             TabIndex="7" />
 
         <Button

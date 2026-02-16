@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Threading;
 using System.Windows;
+using WpfHexaEditor.Services;
 
 namespace WpfHexEditor.Sample.Main.Services
 {
@@ -55,6 +56,10 @@ namespace WpfHexEditor.Sample.Main.Services
             }
 
             System.Diagnostics.Debug.WriteLine($"[DynamicResourceManager] Changed culture from '{oldCulture.Name}' to '{newCulture.Name}'");
+
+            // Synchronize with HexEditor control's LocalizedResourceDictionary
+            WpfHexaEditor.Services.LocalizedResourceDictionary.ChangeCulture(newCulture);
+            System.Diagnostics.Debug.WriteLine($"[DynamicResourceManager] Synchronized HexEditor control culture to '{newCulture.Name}'");
 
             // Notify all subscribers that culture has changed
             CultureChanged?.Invoke(null, new CultureChangedEventArgs(oldCulture, newCulture));

@@ -40,18 +40,18 @@
             <MenuItem
                 x:Name="UndoCMenu"
                 Click="UndoCMenu_Click"
-                Header="{x:Static p:Resources.UndoString}">
+                Header="{DynamicResource UndoString}">
                 <MenuItem.Icon>
                     <Image Source="/WPFHexaEditor;component/Resources/Icon/Undo-Icon.ico" />
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="{x:Static p:Resources.BookmarksString}">
+            <MenuItem Header="{DynamicResource BookmarksString}">
                 <MenuItem
                     x:Name="BookMarkCMenu"
                     Width="Auto"
                     Click="BookMarkCMenu_Click"
-                    Header="{x:Static p:Resources.SetBookMarkString}">
+                    Header="{DynamicResource SetBookMarkString}">
                     <MenuItem.Icon>
                         <Image Source="/WPFHexaEditor;component/Resources/Icon/Add-Bookmark-Icon.ico" />
                     </MenuItem.Icon>
@@ -61,7 +61,7 @@
                     x:Name="ClearBookMarkCMenu"
                     Width="Auto"
                     Click="ClearBookMarkCMenu_Click"
-                    Header="{x:Static p:Resources.ClearBookMarkString}">
+                    Header="{DynamicResource ClearBookMarkString}">
                     <MenuItem.Icon>
                         <Image Source="/WPFHexaEditor;component/Resources/Icon/Clear-Bookmark-Icon.ico" />
                     </MenuItem.Icon>
@@ -71,7 +71,7 @@
             <MenuItem
                 x:Name="CopyHexaCMenu"
                 Click="CopyToClipBoardCMenu_Click"
-                Header="{x:Static p:Resources.CopyAsHexadecimalString}">
+                Header="{DynamicResource CopyAsHexadecimalString}">
                 <MenuItem.Icon>
                     <Image Source="/WPFHexaEditor;component/Resources/Icon/Copy-Icon.ico" />
                 </MenuItem.Icon>
@@ -79,12 +79,12 @@
             <MenuItem
                 x:Name="CopyAsciicMenu"
                 Click="CopyToClipBoardCMenu_Click"
-                Header="{x:Static p:Resources.CopyAsASCIIString}">
+                Header="{DynamicResource CopyAsASCIIString}">
                 <MenuItem.Icon>
                     <Image Source="/WPFHexaEditor;component/Resources/Icon/Copy-Icon.ico" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem x:Name="CopyAsCMenu" Header="{x:Static p:Resources.CopySelectionAsString}">
+            <MenuItem x:Name="CopyAsCMenu" Header="{DynamicResource CopySelectionAsString}">
                 <MenuItem
                     x:Name="CopyCcMenu"
                     Click="CopyToClipBoardCMenu_Click"
@@ -112,13 +112,13 @@
                 <MenuItem
                     x:Name="CopyTblcMenu"
                     Click="CopyToClipBoardCMenu_Click"
-                    Header="{x:Static p:Resources.CopyAsTBLString}" />
+                    Header="{DynamicResource CopyAsTBLString}" />
             </MenuItem>
             <Separator />
             <MenuItem
                 x:Name="PasteMenu"
                 Click="PasteMenu_Click"
-                Header="{x:Static p:Resources.PasteNotInsertString}">
+                Header="{DynamicResource PasteNotInsertString}">
                 <MenuItem.Icon>
                     <Image Source="/WPFHexaEditor;component/Resources/Icon/Paste-Icon.ico" />
                 </MenuItem.Icon>
@@ -127,7 +127,7 @@
             <MenuItem
                 x:Name="FillByteCMenu"
                 Click="FillByteCMenu_Click"
-                Header="{x:Static p:Resources.FillSelectionString}">
+                Header="{DynamicResource FillSelectionString}">
                 <MenuItem.Icon>
                     <Image Source="/WPFHexaEditor;component/Resources/Icon/0x-Icon.ico" />
                 </MenuItem.Icon>
@@ -135,7 +135,7 @@
             <MenuItem
                 x:Name="ReplaceByteCMenu"
                 Click="ReplaceByteCMenu_Click"
-                Header="{x:Static p:Resources.ReplaceSelectionString}">
+                Header="{DynamicResource ReplaceSelectionString}">
                 <MenuItem.Icon>
                     <Image Source="/WPFHexaEditor;component/Resources/Icon/0x-Icon.ico" />
                 </MenuItem.Icon>
@@ -144,7 +144,7 @@
             <MenuItem
                 x:Name="DeleteCMenu"
                 Click="DeleteCMenu_Click"
-                Header="{x:Static p:Resources.DeleteString}">
+                Header="{DynamicResource DeleteString}">
                 <MenuItem.Icon>
                     <Image Source="/WPFHexaEditor;component/Resources/Icon/Delete-Icon.ico" />
                 </MenuItem.Icon>
@@ -153,7 +153,7 @@
             <MenuItem
                 x:Name="FindAllCMenu"
                 Click="FindAllCMenu_Click"
-                Header="{x:Static p:Resources.FindSelectionString}">
+                Header="{DynamicResource FindSelectionString}">
                 <MenuItem.Icon>
                     <Image Source="/WPFHexaEditor;component/Resources/Icon/Find-Icon.ico" />
                 </MenuItem.Icon>
@@ -162,7 +162,7 @@
             <MenuItem
                 x:Name="SelectAllCMenu"
                 Click="SelectAllCMenu_Click"
-                Header="{x:Static p:Resources.SelectAllString}" />
+                Header="{DynamicResource SelectAllString}" />
         </ContextMenu>
     </UserControl.ContextMenu>
     <!--#endregion-->
@@ -237,13 +237,13 @@
                             Width="40"
                             Content="{Binding Path=ZoomScale, RelativeSource={RelativeSource AncestorType={x:Type local:HexEditor}}, UpdateSourceTrigger=PropertyChanged}"
                             ContentStringFormat="P0"
-                            ToolTip="{x:Static p:Resources.ZoomString}" />
+                            ToolTip="{DynamicResource ZoomString}" />
                         <Button
                             BorderThickness="0"
                             Click="ZoomResetButton_Click"
                             Content="X"
                             FontWeight="Bold"
-                            ToolTip="{x:Static p:Resources.ZoomResetString}" />
+                            ToolTip="{DynamicResource ZoomResetString}" />
                     </StackPanel>
                 </StatusBarItem>
                 <Separator />
@@ -251,7 +251,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Label
                             Padding="5,5,0,5"
-                            Content="{x:Static p:Resources.LineStatusBarTagString}"
+                            Content="{DynamicResource LineStatusBarTagString}"
                             FontWeight="Bold" />
                         <Label Content="{Binding Path=SelectionLine, RelativeSource={RelativeSource AncestorType={x:Type local:HexEditor}}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource LongHexConverter}}" />
                     </StackPanel>
@@ -261,7 +261,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Label
                             Padding="5,5,0,5"
-                            Content="{x:Static p:Resources.PositionString}"
+                            Content="{DynamicResource PositionString}"
                             FontWeight="Bold" />
                         <Label Content="{Binding Path=SelectionStart, RelativeSource={RelativeSource AncestorType={x:Type local:HexEditor}}, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource LongHexConverter}}" />
                     </StackPanel>
@@ -271,7 +271,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Label
                             Padding="5,5,0,5"
-                            Content="{x:Static p:Resources.LengthString}"
+                            Content="{DynamicResource LengthString}"
                             FontWeight="Bold" />
                         <Label x:Name="FileLengthKbLabel" ContentStringFormat="N0" />
                     </StackPanel>
@@ -284,7 +284,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Label
                             Padding="5,5,0,5"
-                            Content="{x:Static p:Resources.CountOfString}"
+                            Content="{DynamicResource CountOfString}"
                             FontWeight="Bold" />
                         <Label x:Name="CountOfByteLabel" ToolTip="Byte at position start" />
                         <Label Padding="0,5" Content=":" />
@@ -385,10 +385,10 @@
                 VerticalContentAlignment="Center"
                 BorderThickness="0"
                 Click="CancelLongProcessButton_Click"
-                Content="{x:Static p:Resources.CancelLongProcessString}"
+                Content="{DynamicResource CancelLongProcessString}"
                 FontWeight="Bold"
                 Opacity="0.9"
-                ToolTip="{x:Static p:Resources.CancelLongProcessToolTipString}" />
+                ToolTip="{DynamicResource CancelLongProcessToolTipString}" />
         </Border>
 
         <Label
@@ -399,7 +399,7 @@
             Grid.ColumnSpan="2"
             Margin="0,1,05,1"
             HorizontalAlignment="Right"
-            Content="{x:Static p:Resources.TBLString}"
+            Content="{DynamicResource TBLString}"
             FontWeight="Bold"
             Visibility="Collapsed" />
         <!--#endregion-->

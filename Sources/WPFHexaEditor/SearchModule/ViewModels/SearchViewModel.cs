@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WpfHexaEditor.Core.Bytes;
+using WpfHexaEditor.Properties;
 using WpfHexaEditor.SearchModule.Models;
 
 namespace WpfHexaEditor.SearchModule.ViewModels
@@ -39,7 +40,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
         private bool _wrapAround = true;
         private bool _isSearching = false;
         private int _currentMatchIndex = -1;
-        private string _statusMessage = "Ready";
+        private string _statusMessage = string.Empty;
         private SearchResult _lastSearchResult;
 
         #endregion
@@ -262,7 +263,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
             get
             {
                 if (SearchResults.Count == 0)
-                    return "No matches";
+                    return Resources.SearchNoMatchesString;
 
                 if (CurrentMatchIndex >= 0 && CurrentMatchIndex < SearchResults.Count)
                     return $"{CurrentMatchIndex + 1} of {SearchResults.Count}";
@@ -324,7 +325,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
             if (!CanSearch) return;
 
             IsSearching = true;
-            StatusMessage = "Searching...";
+            StatusMessage = Properties.Resources.StatusSearching;
             SearchResults.Clear();
             CurrentMatchIndex = -1;
 
@@ -347,27 +348,27 @@ namespace WpfHexaEditor.SearchModule.ViewModels
                     }
 
                     CurrentMatchIndex = 0;
-                    StatusMessage = $"Found {result.Count} matches in {result.DurationMs}ms ({result.SpeedMBps:F2} MB/s)";
+                    StatusMessage = string.Format(Properties.Resources.StatusFoundMatchesWithSpeedFormat, result.Count, result.DurationMs, result.SpeedMBps);
 
                     // Navigate to first match
                     OnMatchFound?.Invoke(this, SearchResults[0]);
                 }
                 else if (result.WasCancelled)
                 {
-                    StatusMessage = "Search cancelled";
+                    StatusMessage = Properties.Resources.StatusSearchCancelled;
                 }
                 else if (!string.IsNullOrEmpty(result.ErrorMessage))
                 {
-                    StatusMessage = $"Error: {result.ErrorMessage}";
+                    StatusMessage = string.Format(Properties.Resources.StatusError, result.ErrorMessage);
                 }
                 else
                 {
-                    StatusMessage = "No matches found";
+                    StatusMessage = Properties.Resources.SearchNoMatchesString;
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Error: {ex.Message}";
+                StatusMessage = string.Format(Properties.Resources.StatusError, ex.Message);
             }
             finally
             {
@@ -385,7 +386,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
             if (!CanSearch) return;
 
             IsSearching = true;
-            StatusMessage = "Searching...";
+            StatusMessage = Properties.Resources.StatusSearching;
 
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -412,7 +413,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
                             CurrentMatchIndex = index;
                     }
 
-                    StatusMessage = $"Match found at position 0x{match.Position:X8}";
+                    StatusMessage = string.Format(Properties.Resources.StatusMatchFoundAtFormat, match.Position);
                     OnMatchFound?.Invoke(this, match);
                 }
                 else if (WrapAround && startPosition.HasValue && startPosition.Value > 0)
@@ -423,12 +424,12 @@ namespace WpfHexaEditor.SearchModule.ViewModels
                 }
                 else
                 {
-                    StatusMessage = "No more matches found";
+                    StatusMessage = Properties.Resources.StatusNoMoreMatches;
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Error: {ex.Message}";
+                StatusMessage = string.Format(Properties.Resources.StatusError, ex.Message);
             }
             finally
             {
@@ -446,7 +447,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
             if (!CanSearch) return;
 
             IsSearching = true;
-            StatusMessage = "Searching...";
+            StatusMessage = Properties.Resources.StatusSearching;
 
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -474,7 +475,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
                             CurrentMatchIndex = index;
                     }
 
-                    StatusMessage = $"Match found at position 0x{match.Position:X8}";
+                    StatusMessage = string.Format(Properties.Resources.StatusMatchFoundAtFormat, match.Position);
                     OnMatchFound?.Invoke(this, match);
                 }
                 else if (WrapAround)
@@ -490,22 +491,22 @@ namespace WpfHexaEditor.SearchModule.ViewModels
                     if (wrapResult.Success && wrapResult.Matches.Count > 0)
                     {
                         var match = wrapResult.Matches[0];
-                        StatusMessage = $"Match found at position 0x{match.Position:X8} (wrapped)";
+                        StatusMessage = string.Format(Properties.Resources.StatusMatchFoundAtFormat, match.Position);
                         OnMatchFound?.Invoke(this, match);
                     }
                     else
                     {
-                        StatusMessage = "No matches found";
+                        StatusMessage = Properties.Resources.SearchNoMatchesString;
                     }
                 }
                 else
                 {
-                    StatusMessage = "No previous matches found";
+                    StatusMessage = Properties.Resources.StatusNoMoreMatches;
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Error: {ex.Message}";
+                StatusMessage = string.Format(Properties.Resources.StatusError, ex.Message);
             }
             finally
             {
@@ -521,7 +522,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
         public void CancelSearch()
         {
             _cancellationTokenSource?.Cancel();
-            StatusMessage = "Cancelling...";
+            StatusMessage = Properties.Resources.StatusSearchCancelled;
         }
 
         /// <summary>
@@ -531,7 +532,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
         {
             SearchResults.Clear();
             CurrentMatchIndex = -1;
-            StatusMessage = "Ready";
+            StatusMessage = Properties.Resources.ReadyString;
             _lastSearchResult = null;
         }
 

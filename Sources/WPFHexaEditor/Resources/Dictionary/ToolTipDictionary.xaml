@@ -21,34 +21,34 @@
             <StackPanel Orientation="Horizontal">
                 <Label
                     Width="120"
-                    Content="{x:Static p:Resources.ValueString}"
+                    Content="{DynamicResource ValueString}"
                     FontWeight="Bold" />
                 <Label
                     Width="50"
-                    Content="{x:Static p:Resources.ByteString}"
+                    Content="{DynamicResource ByteString}"
                     FontWeight="Bold" />
                 <Label Width="70" Content="{Binding Byte.LongText, UpdateSourceTrigger=PropertyChanged}" />
-                <Label Content="{x:Static p:Resources.HexString}" FontWeight="Bold" />
+                <Label Content="{DynamicResource HexString}" FontWeight="Bold" />
                 <Label Content="{Binding Byte.LongText, Converter={StaticResource LongHexConverter}, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Label
                     Width="120"
-                    Content="{x:Static p:Resources.PositionString}"
+                    Content="{DynamicResource PositionString}"
                     FontWeight="Bold" />
                 <Label
                     Width="50"
-                    Content="{x:Static p:Resources.LongString}"
+                    Content="{DynamicResource LongString}"
                     FontWeight="Bold" />
                 <Label Width="70" Content="{Binding BytePositionInStream, UpdateSourceTrigger=PropertyChanged}" />
-                <Label Content="{x:Static p:Resources.HexString}" FontWeight="Bold" />
+                <Label Content="{DynamicResource HexString}" FontWeight="Bold" />
                 <Label Content="{Binding BytePositionInStream, Converter={StaticResource LongHexConverter}, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <Separator />
             <StackPanel Orientation="Horizontal">
                 <Label
                     Width="120"
-                    Content="{x:Static p:Resources.ByteActionString}"
+                    Content="{DynamicResource ByteActionString}"
                     FontWeight="Bold" />
                 <Label Content="{Binding Action, UpdateSourceTrigger=PropertyChanged}" />
                 <Label Content="{Binding OriginByte, UpdateSourceTrigger=PropertyChanged}" />
@@ -57,7 +57,7 @@
             <StackPanel Orientation="Horizontal">
                 <Label
                     Width="120"
-                    Content="{x:Static p:Resources.DescriptionString}"
+                    Content="{DynamicResource DescriptionString}"
                     FontWeight="Bold" />
                 <Label Content="{Binding Description, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
@@ -70,23 +70,23 @@
             <StackPanel Orientation="Horizontal">
                 <Label
                     Width="120"
-                    Content="{x:Static p:Resources.PositionString}"
+                    Content="{DynamicResource PositionString}"
                     FontWeight="Bold" />
-                <Label Content="{x:Static p:Resources.LongString}" FontWeight="Bold" />
+                <Label Content="{DynamicResource LongString}" FontWeight="Bold" />
                 <Label Content="{Binding BytePositionInStream, UpdateSourceTrigger=PropertyChanged}" />
-                <Label Content="{x:Static p:Resources.HexString}" FontWeight="Bold" />
+                <Label Content="{DynamicResource HexString}" FontWeight="Bold" />
                 <Label Content="{Binding BytePositionInStream, Converter={StaticResource LongHexConverter}, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Label
                     Width="120"
-                    Content="{x:Static p:Resources.DescriptionString}"
+                    Content="{DynamicResource DescriptionString}"
                     FontWeight="Bold" />
                 <Label Content="{Binding Description, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
             <Separator />
             <StackPanel Orientation="Horizontal">
-                <Label Content="{x:Static p:Resources.ClickToGoAtPositionString}" FontWeight="Bold" />
+                <Label Content="{DynamicResource ClickToGoAtPositionString}" FontWeight="Bold" />
             </StackPanel>
         </StackPanel>
     </ToolTip>

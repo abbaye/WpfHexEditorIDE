@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using WpfHexaEditor.Core;
 using WpfHexaEditor.Models;
+using WpfHexaEditor.Properties;
 
 namespace WpfHexaEditor
 {
@@ -310,7 +311,7 @@ namespace WpfHexaEditor
             if (selection != null && selection.Length > 0)
             {
                 FindAll(selection, 0);
-                StatusText.Text = $"Found all occurrences of selection";
+                StatusText.Text = Properties.Resources.StatusSearchComplete;
             }
         }
 
@@ -432,7 +433,7 @@ namespace WpfHexaEditor
             }
             else
             {
-                StatusText.Text = "No more bookmarks after current position";
+                StatusText.Text = Properties.Resources.StatusNoMoreBookmarksAfter;
             }
         }
 
@@ -467,7 +468,7 @@ namespace WpfHexaEditor
             }
             else
             {
-                StatusText.Text = "No more bookmarks before current position";
+                StatusText.Text = Properties.Resources.StatusNoMoreBookmarksBefore;
             }
         }
 

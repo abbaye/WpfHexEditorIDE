@@ -433,4 +433,242 @@
   <data name="ModeOverwriteString" xml:space="preserve">
     <value>Mode: Overwrite</value>
   </data>
+  <!-- Find & Replace Dialog -->
+  <data name="FindAndReplaceDialogTitle" xml:space="preserve">
+    <value>Find and Replace</value>
+  </data>
+  <data name="FindGroupHeader" xml:space="preserve">
+    <value>Find</value>
+  </data>
+  <data name="ReplaceGroupHeader" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="ResultsGroupHeader" xml:space="preserve">
+    <value>Results</value>
+  </data>
+  <data name="FindTextLabel" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="ReplaceTextLabel" xml:space="preserve">
+    <value>Replace with:</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="FindNextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="FindAllButton" xml:space="preserve">
+    <value>Find All</value>
+  </data>
+  <data name="ReplaceButton" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="ReplaceAllButton" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="CaseSensitiveCheckbox" xml:space="preserve">
+    <value>Case sensitive</value>
+  </data>
+  <data name="WholeWordCheckbox" xml:space="preserve">
+    <value>Whole word</value>
+  </data>
+  <data name="UseRegexCheckbox" xml:space="preserve">
+    <value>Use regular expressions</value>
+  </data>
+  <data name="SearchInSelectionCheckbox" xml:space="preserve">
+    <value>Search in selection only</value>
+  </data>
+  <data name="HighlightAllCheckbox" xml:space="preserve">
+    <value>Highlight all matches</value>
+  </data>
+  <data name="CloseDialogButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="NoResultsFound" xml:space="preserve">
+    <value>No results found</value>
+  </data>
+  <data name="MatchesFoundFormat" xml:space="preserve">
+    <value>{0} matches found</value>
+  </data>
+  <data name="ReplacedFormat" xml:space="preserve">
+    <value>{0} replaced</value>
+  </data>
+  <!-- Search Panel -->
+  <data name="SearchPanelTitle" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SearchFindLabel" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="SearchModePlaceholder" xml:space="preserve">
+    <value>Enter search text...</value>
+  </data>
+  <data name="TextModeLabel" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="HexModeLabel" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="RegexModeLabel" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WildcardModeLabel" xml:space="preserve">
+    <value>Wildcard</value>
+  </data>
+  <data name="MatchCaseLabel" xml:space="preserve">
+    <value>Match case</value>
+  </data>
+  <data name="WholeWordLabel" xml:space="preserve">
+    <value>Whole word</value>
+  </data>
+  <data name="SearchOptionsLabel" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="SearchResultsLabel" xml:space="preserve">
+    <value>Results</value>
+  </data>
+  <data name="CurrentMatchLabel" xml:space="preserve">
+    <value>Current match</value>
+  </data>
+  <data name="TotalMatchesLabel" xml:space="preserve">
+    <value>Total matches</value>
+  </data>
+  <!-- Quick Search Bar -->
+  <data name="QuickSearchTooltip" xml:space="preserve">
+    <value>Quick search (Ctrl+F)</value>
+  </data>
+  <data name="PreviousMatchTooltip" xml:space="preserve">
+    <value>Previous match (Shift+F3)</value>
+  </data>
+  <data name="NextMatchTooltip" xml:space="preserve">
+    <value>Next match (F3)</value>
+  </data>
+  <data name="CloseSearchTooltip" xml:space="preserve">
+    <value>Close search (Esc)</value>
+  </data>
+  <data name="SearchOptionsTooltip" xml:space="preserve">
+    <value>Search options</value>
+  </data>
+  <!-- Status Messages -->
+  <data name="StatusSearching" xml:space="preserve">
+    <value>Searching...</value>
+  </data>
+  <data name="StatusSearchComplete" xml:space="preserve">
+    <value>Search complete</value>
+  </data>
+  <data name="StatusFoundMatchesFormat" xml:space="preserve">
+    <value>Found {0} matches in {1}ms</value>
+  </data>
+  <data name="StatusMatchFoundAtFormat" xml:space="preserve">
+    <value>Match found at position 0x{0:X8}</value>
+  </data>
+  <data name="StatusNoMoreMatches" xml:space="preserve">
+    <value>No more matches found</value>
+  </data>
+  <data name="StatusReachedEndOfFile" xml:space="preserve">
+    <value>Reached end of file</value>
+  </data>
+  <data name="StatusReachedStartOfFile" xml:space="preserve">
+    <value>Reached start of file</value>
+  </data>
+  <data name="StatusReplacing" xml:space="preserve">
+    <value>Replacing...</value>
+  </data>
+  <data name="StatusReplaceComplete" xml:space="preserve">
+    <value>Replace complete</value>
+  </data>
+  <data name="StatusReplacedFormat" xml:space="preserve">
+    <value>Replaced {0} occurrences</value>
+  </data>
+  <data name="StatusInvalidSearchPattern" xml:space="preserve">
+    <value>Invalid search pattern</value>
+  </data>
+  <data name="StatusInvalidRegex" xml:space="preserve">
+    <value>Invalid regular expression</value>
+  </data>
+  <data name="StatusSearchCancelled" xml:space="preserve">
+    <value>Search cancelled</value>
+  </data>
+  <data name="StatusReplaceCancelled" xml:space="preserve">
+    <value>Replace cancelled</value>
+  </data>
+  <data name="StatusCancelling" xml:space="preserve">
+    <value>Cancelling...</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+  <data name="StatusFoundMatchesWithSpeedFormat" xml:space="preserve">
+    <value>Found {0} matches in {1}ms ({2:F2} MB/s)</value>
+  </data>
+  <data name="StatusMatchFoundAtWrappedFormat" xml:space="preserve">
+    <value>Match found at position 0x{0:X8} (wrapped)</value>
+  </data>
+  <data name="StatusNoPreviousMatches" xml:space="preserve">
+    <value>No previous matches found</value>
+  </data>
+  <data name="StatusMatchOfTotalFormat" xml:space="preserve">
+    <value>Match {0} of {1} at position 0x{2:X8}</value>
+  </data>
+  <data name="StatusReplacedAtFormat" xml:space="preserve">
+    <value>Replaced at position 0x{0:X8} (Total: {1})</value>
+  </data>
+  <data name="StatusReplaceError" xml:space="preserve">
+    <value>Replace error: {0}</value>
+  </data>
+  <data name="StatusNoMatchesToReplace" xml:space="preserve">
+    <value>No matches to replace</value>
+  </data>
+  <data name="StatusInvalidReplacementPattern" xml:space="preserve">
+    <value>Invalid replacement pattern</value>
+  </data>
+  <data name="StatusReplacedOccurrencesFormat" xml:space="preserve">
+    <value>Replaced {0} occurrence(s). Total replacements: {1}</value>
+  </data>
+  <data name="StatusReplaceAllError" xml:space="preserve">
+    <value>Replace all error: {0}</value>
+  </data>
+  <data name="StatusNoMoreBookmarksAfter" xml:space="preserve">
+    <value>No more bookmarks after current position</value>
+  </data>
+  <data name="StatusNoMoreBookmarksBefore" xml:space="preserve">
+    <value>No more bookmarks before current position</value>
+  </data>
+  <!-- Bookmark Messages -->
+  <data name="BookmarkSetFormat" xml:space="preserve">
+    <value>Bookmark set at 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkClearedFormat" xml:space="preserve">
+    <value>Bookmark cleared at 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkNavigatedFormat" xml:space="preserve">
+    <value>Navigated to bookmark at 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkAllCleared" xml:space="preserve">
+    <value>All bookmarks cleared</value>
+  </data>
+  <!-- Copy Menu Items -->
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Copy Selection</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Cut Selection</value>
+  </data>
+  <!-- Additional Context Menu -->
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Insert Byte...</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Delete Byte</value>
+  </data>
+  <data name="DeleteSelectionString" xml:space="preserve">
+    <value>Delete Selection</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Go to Offset...</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Properties</value>
+  </data>
 </root>

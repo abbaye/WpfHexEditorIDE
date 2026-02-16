@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WpfHexaEditor.Core.Bytes;
+using WpfHexaEditor.Properties;
 using WpfHexaEditor.SearchModule.Models;
 
 namespace WpfHexaEditor.SearchModule.ViewModels
@@ -159,7 +160,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
                         PerformReplace(match.Position, match.Length, replaceBytes);
                         ReplaceCount++;
 
-                        StatusMessage = $"Replaced at position 0x{match.Position:X8} (Total: {ReplaceCount})";
+                        StatusMessage = string.Format(Properties.Resources.StatusReplacedAtFormat, match.Position, ReplaceCount);
 
                         // Remove this match from results since it's been replaced
                         SearchResults.RemoveAt(CurrentMatchIndex);
@@ -174,7 +175,7 @@ namespace WpfHexaEditor.SearchModule.ViewModels
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Replace error: {ex.Message}";
+                StatusMessage = string.Format(Properties.Resources.StatusReplaceError, ex.Message);
             }
         }
 
@@ -192,14 +193,14 @@ namespace WpfHexaEditor.SearchModule.ViewModels
 
                 if (SearchResults.Count == 0)
                 {
-                    StatusMessage = "No matches to replace";
+                    StatusMessage = Properties.Resources.StatusNoMatchesToReplace;
                     return;
                 }
 
                 var replaceBytes = GetReplacementBytes();
                 if (replaceBytes == null || replaceBytes.Length == 0)
                 {
-                    StatusMessage = "Invalid replacement pattern";
+                    StatusMessage = Properties.Resources.StatusInvalidReplacementPattern;
                     return;
                 }
 
@@ -236,11 +237,11 @@ namespace WpfHexaEditor.SearchModule.ViewModels
                 SearchResults.Clear();
                 CurrentMatchIndex = -1;
 
-                StatusMessage = $"Replaced {replacedCount} occurrence(s). Total replacements: {ReplaceCount}";
+                StatusMessage = string.Format(Properties.Resources.StatusReplacedOccurrencesFormat, replacedCount, ReplaceCount);
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Replace all error: {ex.Message}";
+                StatusMessage = string.Format(Properties.Resources.StatusReplaceAllError, ex.Message);
             }
         }
 

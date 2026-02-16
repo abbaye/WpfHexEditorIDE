@@ -83,10 +83,10 @@
                 <ContextMenu>
                     <MenuItem
                         Command="{Binding CopyHexCommand}"
-                        Header="{x:Static p:Resources.CopyAsHexadecimalString}" />
+                        Header="{DynamicResource CopyAsHexadecimalString}" />
                     <MenuItem
                         Command="{Binding CopyDecimalCommand}"
-                        Header="{x:Static p:Resources.CopyAsDecimalString}" />
+                        Header="{DynamicResource CopyAsDecimalString}" />
                 </ContextMenu>
             </TextBox.ContextMenu>
         </TextBox>
