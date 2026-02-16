@@ -372,4 +372,52 @@
   <data name="ThemeMinimalString" xml:space="preserve">
     <value>Minimal</value>
   </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Copier comme code C#</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Copier comme code C</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Coller</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Remplir avec un octet...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Remplacer l'octet...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Inverser la sélection</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Message d'état</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Taille du fichier</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Info de sélection</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Mode d'édition</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Octets par ligne</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Temps de rafraîchissement</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Décalage</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Prêt</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>Aucune sélection</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Mode : Écraser</value>
+  </data>
 </root>

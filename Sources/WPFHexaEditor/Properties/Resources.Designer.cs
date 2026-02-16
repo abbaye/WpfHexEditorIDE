@@ -830,5 +830,149 @@ namespace WpfHexaEditor.Properties {
                 return ResourceManager.GetString("ZoomString", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy as C# Code.
+        /// </summary>
+        public static string CopyAsCSharpCodeString {
+            get {
+                return ResourceManager.GetString("CopyAsCSharpCodeString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy as C Code.
+        /// </summary>
+        public static string CopyAsCCodeString {
+            get {
+                return ResourceManager.GetString("CopyAsCCodeString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Paste.
+        /// </summary>
+        public static string PasteString {
+            get {
+                return ResourceManager.GetString("PasteString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Fill with Byte....
+        /// </summary>
+        public static string FillWithByteString {
+            get {
+                return ResourceManager.GetString("FillWithByteString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace Byte....
+        /// </summary>
+        public static string ReplaceByteMenuString {
+            get {
+                return ResourceManager.GetString("ReplaceByteMenuString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reverse Selection.
+        /// </summary>
+        public static string ReverseSelectionString {
+            get {
+                return ResourceManager.GetString("ReverseSelectionString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Status Message.
+        /// </summary>
+        public static string StatusMessageString {
+            get {
+                return ResourceManager.GetString("StatusMessageString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to File Size.
+        /// </summary>
+        public static string FileSizeString {
+            get {
+                return ResourceManager.GetString("FileSizeString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Selection Info.
+        /// </summary>
+        public static string SelectionInfoString {
+            get {
+                return ResourceManager.GetString("SelectionInfoString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Mode.
+        /// </summary>
+        public static string EditModeString {
+            get {
+                return ResourceManager.GetString("EditModeString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bytes Per Line.
+        /// </summary>
+        public static string BytesPerLineString {
+            get {
+                return ResourceManager.GetString("BytesPerLineString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh Time.
+        /// </summary>
+        public static string RefreshTimeString {
+            get {
+                return ResourceManager.GetString("RefreshTimeString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Offset.
+        /// </summary>
+        public static string OffsetString {
+            get {
+                return ResourceManager.GetString("OffsetString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Ready.
+        /// </summary>
+        public static string ReadyString {
+            get {
+                return ResourceManager.GetString("ReadyString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No selection.
+        /// </summary>
+        public static string NoSelectionString {
+            get {
+                return ResourceManager.GetString("NoSelectionString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mode: Overwrite.
+        /// </summary>
+        public static string ModeOverwriteString {
+            get {
+                return ResourceManager.GetString("ModeOverwriteString", resourceCulture);
+            }
+        }
     }
 }

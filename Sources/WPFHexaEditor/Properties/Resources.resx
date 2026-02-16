@@ -385,4 +385,52 @@
   <data name="ThemeMinimalString" xml:space="preserve">
     <value>Minimal</value>
   </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Copy as C# Code</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Copy as C Code</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Fill with Byte...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Replace Byte...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Reverse Selection</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Status Message</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>File Size</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Selection Info</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Edit Mode</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Bytes Per Line</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Refresh Time</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>No selection</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Mode: Overwrite</value>
+  </data>
 </root>

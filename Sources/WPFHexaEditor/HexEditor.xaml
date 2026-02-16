@@ -7,6 +7,7 @@
              xmlns:models="clr-namespace:WpfHexaEditor.Models"
              xmlns:converters="clr-namespace:WpfHexaEditor.Converters"
              xmlns:controls="clr-namespace:WpfHexaEditor.Controls"
+             xmlns:prop="clr-namespace:WpfHexaEditor.Properties"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Background="White"
@@ -138,7 +139,7 @@
     <UserControl.ContextMenu>
         <ContextMenu x:Name="ByteContextMenu" Visibility="Collapsed">
             <!-- Undo -->
-            <MenuItem x:Name="UndoMenuItem" Header="Undo" Click="UndoMenuItem_Click">
+            <MenuItem x:Name="UndoMenuItem" Header="{x:Static prop:Resources.UndoString}" Click="UndoMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="↶" FontSize="16" Foreground="#0078D4"/>
                 </MenuItem.Icon>
@@ -146,13 +147,13 @@
             <Separator/>
 
             <!-- Bookmarks -->
-            <MenuItem x:Name="BookmarksMenuItem" Header="Bookmarks">
-                <MenuItem x:Name="SetBookmarkMenuItem" Header="Set Bookmark" Click="SetBookmarkMenuItem_Click">
+            <MenuItem x:Name="BookmarksMenuItem" Header="{x:Static prop:Resources.BookmarksString}">
+                <MenuItem x:Name="SetBookmarkMenuItem" Header="{x:Static prop:Resources.SetBookMarkString}" Click="SetBookmarkMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="📌" FontSize="14"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="ClearBookmarksMenuItem" Header="Clear All Bookmarks" Click="ClearBookmarksMenuItem_Click">
+                <MenuItem x:Name="ClearBookmarksMenuItem" Header="{x:Static prop:Resources.ClearBookMarkString}" Click="ClearBookmarksMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="🗑️" FontSize="14"/>
                     </MenuItem.Icon>
@@ -161,28 +162,28 @@
             <Separator/>
 
             <!-- Copy submenu -->
-            <MenuItem x:Name="CopyAsMenuItem" Header="Copy As...">
-                <MenuItem x:Name="CopyHexaMenuItem" Header="Copy as Hexadecimal" Click="CopyHexaMenuItem_Click">
+            <MenuItem x:Name="CopyAsMenuItem" Header="{x:Static prop:Resources.CopySelectionAsString}">
+                <MenuItem x:Name="CopyHexaMenuItem" Header="{x:Static prop:Resources.CopyAsHexadecimalString}" Click="CopyHexaMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="📋" FontSize="14"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="CopyAsciiMenuItem" Header="Copy as ASCII" Click="CopyAsciiMenuItem_Click">
+                <MenuItem x:Name="CopyAsciiMenuItem" Header="{x:Static prop:Resources.CopyAsASCIIString}" Click="CopyAsciiMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="📋" FontSize="14"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="CopyCSharpMenuItem" Header="Copy as C# Code" Click="CopyCSharpMenuItem_Click">
+                <MenuItem x:Name="CopyCSharpMenuItem" Header="{x:Static prop:Resources.CopyAsCSharpCodeString}" Click="CopyCSharpMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="📋" FontSize="14"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="CopyCMenuItem" Header="Copy as C Code" Click="CopyCMenuItem_Click">
+                <MenuItem x:Name="CopyCMenuItem" Header="{x:Static prop:Resources.CopyAsCCodeString}" Click="CopyCMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="📋" FontSize="14"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem x:Name="CopyTblMenuItem" Header="Copy as TBL String" Click="CopyTblMenuItem_Click">
+                <MenuItem x:Name="CopyTblMenuItem" Header="{x:Static prop:Resources.CopyAsTBLString}" Click="CopyTblMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="📋" FontSize="14"/>
                     </MenuItem.Icon>
@@ -192,7 +193,7 @@
             <Separator/>
 
             <!-- Find All -->
-            <MenuItem x:Name="FindAllMenuItem" Header="Find All" Click="FindAllMenuItem_Click">
+            <MenuItem x:Name="FindAllMenuItem" Header="{x:Static prop:Resources.FindAllString}" Click="FindAllMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="🔍" FontSize="14"/>
                 </MenuItem.Icon>
@@ -201,42 +202,42 @@
             <Separator/>
 
             <!-- Paste -->
-            <MenuItem x:Name="PasteMenuItem" Header="Paste" Click="PasteMenuItem_Click">
+            <MenuItem x:Name="PasteMenuItem" Header="{x:Static prop:Resources.PasteString}" Click="PasteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="📄" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Paste without inserting (Overwrite mode) -->
-            <MenuItem x:Name="PasteOverwriteMenuItem" Header="Paste without inserting" Click="PasteOverwriteMenuItem_Click">
+            <MenuItem x:Name="PasteOverwriteMenuItem" Header="{x:Static prop:Resources.PasteNotInsertString}" Click="PasteOverwriteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="📝" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Delete -->
-            <MenuItem x:Name="DeleteMenuItem" Header="Delete" Click="DeleteMenuItem_Click">
+            <MenuItem x:Name="DeleteMenuItem" Header="{x:Static prop:Resources.DeleteString}" Click="DeleteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="🗑️" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Fill -->
-            <MenuItem x:Name="FillByteMenuItem" Header="Fill with Byte..." Click="FillByteMenuItem_Click">
+            <MenuItem x:Name="FillByteMenuItem" Header="{x:Static prop:Resources.FillWithByteString}" Click="FillByteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="🎨" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Replace -->
-            <MenuItem x:Name="ReplaceByteMenuItem" Header="Replace Byte..." Click="ReplaceByteMenuItem_Click">
+            <MenuItem x:Name="ReplaceByteMenuItem" Header="{x:Static prop:Resources.ReplaceByteMenuString}" Click="ReplaceByteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="🔄" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Reverse Selection -->
-            <MenuItem x:Name="ReverseSelectionMenuItem" Header="Reverse Selection" Click="ReverseSelectionMenuItem_Click">
+            <MenuItem x:Name="ReverseSelectionMenuItem" Header="{x:Static prop:Resources.ReverseSelectionString}" Click="ReverseSelectionMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="⇄" FontSize="14"/>
                 </MenuItem.Icon>
@@ -245,7 +246,7 @@
             <Separator/>
 
             <!-- Select All -->
-            <MenuItem x:Name="SelectAllMenuItem" Header="Select all" Click="SelectAllMenuItem_Click">
+            <MenuItem x:Name="SelectAllMenuItem" Header="{x:Static prop:Resources.SelectAllString}" Click="SelectAllMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="▦" FontSize="14"/>
                 </MenuItem.Icon>
@@ -272,7 +273,7 @@
                     <ColumnDefinition Width="*"/> <!-- Remaining space -->
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="Offset" Style="{StaticResource HeaderTextStyle}" Margin="8,0,0,0"/>
+                <TextBlock Grid.Column="0" Text="{x:Static prop:Resources.OffsetString}" Style="{StaticResource HeaderTextStyle}" Margin="8,0,0,0"/>
 
                 <!-- Dynamic hex column headers (00 01 02...0F) with byte spacers -->
                 <StackPanel x:Name="HexHeaderStackPanel" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,0"/>
@@ -337,13 +338,13 @@
         <StatusBar x:Name="StatusBar" Grid.Row="3" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
             <StatusBar.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                    <MenuItem Header="Status Message" IsCheckable="True" IsChecked="{Binding ShowStatusMessage, Mode=TwoWay}"/>
-                    <MenuItem Header="File Size" IsCheckable="True" IsChecked="{Binding ShowFileSizeInStatusBar, Mode=TwoWay}"/>
-                    <MenuItem Header="Selection Info" IsCheckable="True" IsChecked="{Binding ShowSelectionInStatusBar, Mode=TwoWay}"/>
-                    <MenuItem Header="Position" IsCheckable="True" IsChecked="{Binding ShowPositionInStatusBar, Mode=TwoWay}"/>
-                    <MenuItem Header="Edit Mode" IsCheckable="True" IsChecked="{Binding ShowEditModeInStatusBar, Mode=TwoWay}"/>
-                    <MenuItem Header="Bytes Per Line" IsCheckable="True" IsChecked="{Binding ShowBytesPerLineInStatusBar, Mode=TwoWay}"/>
-                    <MenuItem Header="Refresh Time" IsCheckable="True" IsChecked="{Binding ShowRefreshTimeInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{x:Static prop:Resources.StatusMessageString}" IsCheckable="True" IsChecked="{Binding ShowStatusMessage, Mode=TwoWay}"/>
+                    <MenuItem Header="{x:Static prop:Resources.FileSizeString}" IsCheckable="True" IsChecked="{Binding ShowFileSizeInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{x:Static prop:Resources.SelectionInfoString}" IsCheckable="True" IsChecked="{Binding ShowSelectionInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{x:Static prop:Resources.PositionString}" IsCheckable="True" IsChecked="{Binding ShowPositionInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{x:Static prop:Resources.EditModeString}" IsCheckable="True" IsChecked="{Binding ShowEditModeInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{x:Static prop:Resources.BytesPerLineString}" IsCheckable="True" IsChecked="{Binding ShowBytesPerLineInStatusBar, Mode=TwoWay}"/>
+                    <MenuItem Header="{x:Static prop:Resources.RefreshTimeString}" IsCheckable="True" IsChecked="{Binding ShowRefreshTimeInStatusBar, Mode=TwoWay}"/>
                 </ContextMenu>
             </StatusBar.ContextMenu>
 

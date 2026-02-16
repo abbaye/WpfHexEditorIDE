@@ -322,4 +322,52 @@
   <data name="ZoomString" xml:space="preserve">
     <value>Zoom</value>
   </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Copiar como código C#</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Copiar como código C</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Colar</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Preencher com byte...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Substituir byte...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Inverter seleção</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Mensagem de status</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Tamanho do arquivo</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Info da seleção</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Modo de edição</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Bytes por linha</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Tempo de atualização</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Deslocamento</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Pronto</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>Nenhuma seleção</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Modo: Sobrescrever</value>
+  </data>
 </root>

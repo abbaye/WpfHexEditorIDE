@@ -322,4 +322,52 @@
   <data name="ZoomString" xml:space="preserve">
     <value>Powiększenie</value>
   </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Kopiuj jako kod C#</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Kopiuj jako kod C</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Wklej</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Wypełnij bajtem...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Zamień bajt...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Odwróć zaznaczenie</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Komunikat statusu</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Rozmiar pliku</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Informacje o zaznaczeniu</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Tryb edycji</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Bajtów na linię</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Czas odświeżania</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Przesunięcie</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Gotowy</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>Brak zaznaczenia</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Tryb: Nadpisywanie</value>
+  </data>
 </root>

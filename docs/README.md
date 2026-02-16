@@ -13,6 +13,7 @@ Complete documentation for the WPF HexEditor control project.
 - **[Solution Architecture](architecture/Solution_Architecture.md)** - Overall solution structure, services layer
 - **[HexEditor Architecture](architecture/HexEditorArchitecture.md)** - V2 MVVM architecture with partial class organization
 - **[Architecture Overview](architecture/Overview.md)** - Component layers and data flow
+- **[Multilingual System](architecture/Multilingual_System.md)** - Localization architecture and 6-language support
 
 ## ⚡ Performance
 
@@ -50,5 +51,5 @@ See the [issues/](../issues/) folder for detailed issue tracking:
 
 ---
 
-**Last Updated**: 2026-02-14
+**Last Updated**: 2026-02-15
 **Maintained by**: WPF HexEditor Team

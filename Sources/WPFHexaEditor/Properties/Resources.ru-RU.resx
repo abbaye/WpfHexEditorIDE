@@ -315,4 +315,52 @@
   <data name="ZoomString" xml:space="preserve">
     <value>Увеличить</value>
   </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Копировать как код C#</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Копировать как код C</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Вставить</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Заполнить байтом...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Заменить байт...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Обратить выделение</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Сообщение о статусе</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Размер файла</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Информация о выделении</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Режим редактирования</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Байтов на строку</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Время обновления</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Смещение</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>Нет выделения</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Режим: Перезапись</value>
+  </data>
 </root>

@@ -315,4 +315,52 @@
   <data name="ZoomString" xml:space="preserve">
     <value>放大</value>
   </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>复制为C#代码</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>复制为C代码</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>粘贴</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>用字节填充...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>替换字节...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>反转选择</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>状态消息</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>文件大小</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>选择信息</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>编辑模式</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>每行字节数</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>刷新时间</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>偏移</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>无选择</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>模式：覆盖</value>
+  </data>
 </root>

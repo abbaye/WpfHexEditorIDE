@@ -14,6 +14,7 @@ This document provides visual diagrams and detailed architecture documentation f
 
 ## 📚 Related Documentation
 
+- **[Multilingual System](Multilingual_System.md)** - Localization architecture and 6-language support
 - **[Performance Guide](PERFORMANCE_GUIDE.md)** - Comprehensive performance optimization guide with benchmarking
 - [Main README](README.md) - Project overview and quick start
 - [Services Documentation](Sources/WPFHexaEditor/Services/README.md) - Service layer details
@@ -48,6 +49,7 @@ graph TB
                 TBL[Character Tables]
                 Interfaces[Interfaces]
                 Converters[Converters]
+                Resources[Resources<br/>6 Languages]
             end
 
             subgraph "UI Layer"
@@ -248,6 +250,7 @@ graph TB
             Const[Constants<br/>Default Values]
             KV[KeyValidator<br/>Input Validation]
             Conv[WPF Converters<br/>Data Binding]
+            Res[Resources<br/>6 Languages<br/>EN, FR, PL, PT, RU, ZH]
         end
     end
 
@@ -829,6 +832,12 @@ graph TB
    - Supports files > 1GB
    - Maintains 60fps scrolling
 
+6. **Multilingual Support**
+   - 6 languages: EN, FR-CA, PL, PT-BR, RU, ZH-CN
+   - .NET Resources system (.resx files)
+   - Automatic culture detection
+   - See [Multilingual System](Multilingual_System.md) for details
+
 ### Migration Path
 
 **Completed:**
@@ -852,6 +861,7 @@ graph TB
 - ✅ Add 53 unit tests for performance optimizations (Completed 2026)
 - ✅ Add comprehensive performance guide (Completed 2026)
 - ✅ Add UI virtualization service (Completed 2026)
+- ✅ Implement complete multilingual system with 6 languages (Completed Feb 2026)
 - 📋 Consider event system for service state changes
 
 ---

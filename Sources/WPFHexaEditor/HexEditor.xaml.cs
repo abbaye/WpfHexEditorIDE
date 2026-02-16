@@ -295,8 +295,10 @@ namespace WpfHexaEditor
             long targetLine = newPos / _viewModel.BytePerLine;
             if (targetLine < _viewModel.ScrollPosition)
                 _viewModel.ScrollPosition = targetLine;
-            else if (targetLine >= _viewModel.ScrollPosition + _viewModel.VisibleLines)
-                _viewModel.ScrollPosition = targetLine - _viewModel.VisibleLines + 1;
+            // VisibleLines has +2 safety margin (see HexEditor.Events.cs line 710)
+            // Scroll when cursor reaches actual visible area boundary (VisibleLines - 2)
+            else if (targetLine >= _viewModel.ScrollPosition + _viewModel.VisibleLines - 2)
+                _viewModel.ScrollPosition = targetLine - _viewModel.VisibleLines + 3;
 
             // Update UI
             UpdateSelectionInfo();
