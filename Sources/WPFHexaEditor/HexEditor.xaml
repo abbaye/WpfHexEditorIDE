@@ -349,37 +349,37 @@
             </StatusBar.ContextMenu>
 
             <StatusBarItem Visibility="{Binding ShowStatusMessage, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="StatusText" Text="Ready"/>
+                <TextBlock x:Name="StatusText" Text="{x:Static prop:Resources.ReadyString}"/>
             </StatusBarItem>
             <Separator Visibility="{Binding ShowStatusMessage, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             <StatusBarItem Visibility="{Binding ShowFileSizeInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="FileSizeText" Text="Size: -"/>
+                <TextBlock x:Name="FileSizeText"/>
             </StatusBarItem>
             <Separator Visibility="{Binding ShowFileSizeInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             <StatusBarItem Visibility="{Binding ShowSelectionInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="SelectionInfo" Text="No selection"/>
+                <TextBlock x:Name="SelectionInfo" Text="{x:Static prop:Resources.NoSelectionString}"/>
             </StatusBarItem>
             <Separator Visibility="{Binding ShowSelectionInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             <StatusBarItem Visibility="{Binding ShowPositionInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="PositionInfo" Text="Position: 0"/>
+                <TextBlock x:Name="PositionInfo"/>
             </StatusBarItem>
             <Separator Visibility="{Binding ShowPositionInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             <StatusBarItem Visibility="{Binding ShowEditModeInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="EditModeText" Text="Mode: Overwrite"/>
+                <TextBlock x:Name="EditModeText" Text="{x:Static prop:Resources.ModeOverwriteString}"/>
             </StatusBarItem>
             <Separator Visibility="{Binding ShowEditModeInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             <StatusBarItem Visibility="{Binding ShowBytesPerLineInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="BytesPerLineText" Text="Bytes/Line: 16"/>
+                <TextBlock x:Name="BytesPerLineText"/>
             </StatusBarItem>
             <Separator Visibility="{Binding ShowBytesPerLineInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
             <StatusBarItem Visibility="{Binding ShowRefreshTimeInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="RefreshTimeText" Text="Refresh: 0 ms"/>
+                <TextBlock x:Name="RefreshTimeText"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

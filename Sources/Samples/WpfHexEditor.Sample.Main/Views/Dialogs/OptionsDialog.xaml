@@ -1,0 +1,285 @@
+<Window x:Class="WpfHexEditor.Sample.Main.Views.Dialogs.OptionsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:properties="clr-namespace:WpfHexEditor.Sample.Main.Properties"
+        Title="{x:Static properties:Resources.Options_Title}" Height="700" Width="580"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        MinHeight="600" MinWidth="550"
+        Background="#F5F5F5"
+        WindowStyle="SingleBorderWindow">
+
+    <Window.Resources>
+        <!-- Modern Card Style -->
+        <Style x:Key="CardBorder" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.1" BlurRadius="8"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#0078D4"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#005A9E"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#004578"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Cancel Button Style -->
+        <Style x:Key="CancelButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background" Value="#E0E0E0"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#D0D0D0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="{x:Static properties:Resources.Options_Header_Title}"
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       Foreground="#333333"/>
+            <TextBlock Text="{x:Static properties:Resources.Options_Header_Subtitle}"
+                       FontSize="13"
+                       Foreground="#666666"
+                       Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Tabs -->
+        <TabControl Grid.Row="1" BorderThickness="0" Background="Transparent">
+            <!-- Language Tab -->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🌍" FontSize="16" Margin="0,0,5,0"/>
+                        <TextBlock Text="{x:Static properties:Resources.Options_LanguageTab}" FontSize="13"/>
+                    </StackPanel>
+                </TabItem.Header>
+
+                <Grid Margin="0,15,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Instructions -->
+                    <TextBlock Grid.Row="0"
+                               Text="{x:Static properties:Resources.Options_Language_Instructions}"
+                               FontSize="14"
+                               Foreground="#333333"
+                               Margin="0,0,0,15"/>
+
+                    <!-- Current Language Card -->
+                    <Border Grid.Row="1"
+                            Style="{StaticResource CardBorder}"
+                            Background="#E3F2FD"
+                            BorderBrush="#2196F3"
+                            Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static properties:Resources.Options_Language_CurrentLabel}"
+                                       FontSize="12"
+                                       Foreground="#666666"
+                                       FontWeight="SemiBold"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <TextBlock x:Name="CurrentLanguageFlag"
+                                           Text="🇺🇸"
+                                           FontSize="24"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock x:Name="CurrentLanguageText"
+                                           Text="English (United States)"
+                                           FontSize="16"
+                                           Foreground="#333333"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Language List -->
+                    <Border Grid.Row="2"
+                            Style="{StaticResource CardBorder}"
+                            Padding="0"
+                            MinHeight="200">
+                        <ListView x:Name="LanguageListView"
+                                  SelectionMode="Single"
+                                  BorderThickness="0"
+                                  Background="Transparent"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Padding" Value="10"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#E3F2FD"/>
+                                            <Setter Property="BorderBrush" Value="#2196F3"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F5F5F5"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="50">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Flag}" FontSize="24" HorizontalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="180">
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="{x:Static properties:Resources.Options_Language_ColumnLanguage}"/>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Medium"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="180">
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="{x:Static properties:Resources.Options_Language_ColumnNativeName}"/>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding NativeName}" FontSize="13" Foreground="#666666"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="70">
+                                        <GridViewColumn.Header>
+                                            <TextBlock Text="{x:Static properties:Resources.Options_Language_ColumnCode}"/>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Code}" FontSize="11" Foreground="#999999" FontFamily="Consolas"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Border>
+
+                    <!-- Warning -->
+                    <Border Grid.Row="3"
+                            Background="#FFF3E0"
+                            BorderBrush="#FF9800"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="12"
+                            Margin="0,15,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⚠️" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Static properties:Resources.Options_Language_RestartWarning}"
+                                       FontSize="12"
+                                       Foreground="#E65100"
+                                       TextWrapping="Wrap"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- Appearance Tab (Coming Soon) -->
+            <TabItem IsEnabled="False">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🎨" FontSize="16" Margin="0,0,5,0"/>
+                        <TextBlock Text="{x:Static properties:Resources.Options_AppearanceTab}" FontSize="13"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <TextBlock Text="{x:Static properties:Resources.Options_ComingSoon}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="16"
+                               Foreground="#999999"/>
+                </Grid>
+            </TabItem>
+
+            <!-- Performance Tab (Coming Soon) -->
+            <TabItem IsEnabled="False">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="⚡" FontSize="16" Margin="0,0,5,0"/>
+                        <TextBlock Text="{x:Static properties:Resources.Options_PerformanceTab}" FontSize="13"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <TextBlock Text="{x:Static properties:Resources.Options_ComingSoon}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="16"
+                               Foreground="#999999"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,20,0,0">
+            <Button Content="{x:Static properties:Resources.Options_Button_OK}"
+                    Width="90"
+                    Height="34"
+                    Margin="0,0,10,0"
+                    Click="OkButton_Click"
+                    IsDefault="True"
+                    Style="{StaticResource ModernButton}"/>
+            <Button Content="{x:Static properties:Resources.Options_Button_Cancel}"
+                    Width="90"
+                    Height="34"
+                    Click="CancelButton_Click"
+                    IsCancel="True"
+                    Style="{StaticResource CancelButton}"/>
+        </StackPanel>
+    </Grid>
+</Window>

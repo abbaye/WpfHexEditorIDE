@@ -1,0 +1,1052 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" use="preserve" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ==== APPLICATION MENU ==== -->
+  <data name="Menu_File_Open" xml:space="preserve">
+    <value>Open</value>
+    <comment>File menu - Open file command</comment>
+  </data>
+  <data name="Menu_File_Save" xml:space="preserve">
+    <value>Save</value>
+    <comment>File menu - Save file command</comment>
+  </data>
+  <data name="Menu_File_SaveAs" xml:space="preserve">
+    <value>Save As...</value>
+    <comment>File menu - Save As command</comment>
+  </data>
+  <data name="Menu_File_Close" xml:space="preserve">
+    <value>Close</value>
+    <comment>File menu - Close file command</comment>
+  </data>
+  <data name="Menu_File_Exit" xml:space="preserve">
+    <value>Exit</value>
+    <comment>File menu - Exit application command</comment>
+  </data>
+
+  <!-- ==== RIBBON - QUICK ACCESS TOOLBAR ==== -->
+  <data name="QAT_Save_Label" xml:space="preserve">
+    <value>Save</value>
+    <comment>Quick Access Toolbar - Save button label</comment>
+  </data>
+  <data name="QAT_Save_Tooltip" xml:space="preserve">
+    <value>Save (Ctrl+S)</value>
+    <comment>Quick Access Toolbar - Save button tooltip</comment>
+  </data>
+  <data name="QAT_Undo_Label" xml:space="preserve">
+    <value>Undo</value>
+    <comment>Quick Access Toolbar - Undo button label</comment>
+  </data>
+  <data name="QAT_Undo_Tooltip" xml:space="preserve">
+    <value>Undo (Ctrl+Z)</value>
+    <comment>Quick Access Toolbar - Undo button tooltip</comment>
+  </data>
+  <data name="QAT_Redo_Label" xml:space="preserve">
+    <value>Redo</value>
+    <comment>Quick Access Toolbar - Redo button label</comment>
+  </data>
+  <data name="QAT_Redo_Tooltip" xml:space="preserve">
+    <value>Redo (Ctrl+Y)</value>
+    <comment>Quick Access Toolbar - Redo button tooltip</comment>
+  </data>
+
+  <!-- ==== RIBBON - HOME TAB ==== -->
+  <data name="Ribbon_Home_Tab" xml:space="preserve">
+    <value>Home</value>
+    <comment>Ribbon - Home tab header</comment>
+  </data>
+  <data name="Ribbon_Home_Clipboard_Group" xml:space="preserve">
+    <value>Clipboard</value>
+    <comment>Ribbon - Home tab - Clipboard group</comment>
+  </data>
+  <data name="Ribbon_Home_Paste" xml:space="preserve">
+    <value>Paste</value>
+    <comment>Ribbon - Home tab - Paste command</comment>
+  </data>
+  <data name="Ribbon_Home_Cut" xml:space="preserve">
+    <value>Cut</value>
+    <comment>Ribbon - Home tab - Cut command</comment>
+  </data>
+  <data name="Ribbon_Home_Copy" xml:space="preserve">
+    <value>Copy</value>
+    <comment>Ribbon - Home tab - Copy command</comment>
+  </data>
+  <data name="Ribbon_Home_Edit_Group" xml:space="preserve">
+    <value>Edit</value>
+    <comment>Ribbon - Home tab - Edit group</comment>
+  </data>
+  <data name="Ribbon_Home_Undo" xml:space="preserve">
+    <value>Undo</value>
+    <comment>Ribbon - Home tab - Undo command</comment>
+  </data>
+  <data name="Ribbon_Home_Redo" xml:space="preserve">
+    <value>Redo</value>
+    <comment>Ribbon - Home tab - Redo command</comment>
+  </data>
+  <data name="Ribbon_Home_Selection_Group" xml:space="preserve">
+    <value>Selection</value>
+    <comment>Ribbon - Home tab - Selection group</comment>
+  </data>
+  <data name="Ribbon_Home_SelectAll" xml:space="preserve">
+    <value>Select All</value>
+    <comment>Ribbon - Home tab - Select All command</comment>
+  </data>
+  <data name="Ribbon_Home_Clear" xml:space="preserve">
+    <value>Clear</value>
+    <comment>Ribbon - Home tab - Clear command</comment>
+  </data>
+  <data name="Ribbon_Home_Display_Group" xml:space="preserve">
+    <value>Display</value>
+    <comment>Ribbon - Home tab - Display group</comment>
+  </data>
+  <data name="Ribbon_Home_16BytesPerLine" xml:space="preserve">
+    <value>16 Bytes/Line</value>
+    <comment>Ribbon - Home tab - 16 Bytes per line display option</comment>
+  </data>
+
+  <!-- ==== RIBBON - EDIT TAB ==== -->
+  <data name="Ribbon_Edit_Tab" xml:space="preserve">
+    <value>Edit</value>
+    <comment>Ribbon - Edit tab header</comment>
+  </data>
+  <data name="Ribbon_Edit_Find_Group" xml:space="preserve">
+    <value>Find</value>
+    <comment>Ribbon - Edit tab - Find group</comment>
+  </data>
+  <data name="Ribbon_Edit_Find" xml:space="preserve">
+    <value>Find</value>
+    <comment>Ribbon - Edit tab - Find command</comment>
+  </data>
+  <data name="Ribbon_Edit_Navigate_Group" xml:space="preserve">
+    <value>Navigate</value>
+    <comment>Ribbon - Edit tab - Navigate group</comment>
+  </data>
+  <data name="Ribbon_Edit_GoTo" xml:space="preserve">
+    <value>Go To</value>
+    <comment>Ribbon - Edit tab - Go To command</comment>
+  </data>
+  <data name="Ribbon_Edit_Bookmarks" xml:space="preserve">
+    <value>Bookmarks</value>
+    <comment>Ribbon - Edit tab - Bookmarks command</comment>
+  </data>
+  <data name="Ribbon_Edit_Modify_Group" xml:space="preserve">
+    <value>Modify</value>
+    <comment>Ribbon - Edit tab - Modify group</comment>
+  </data>
+  <data name="Ribbon_Edit_InsertByte" xml:space="preserve">
+    <value>Insert Byte</value>
+    <comment>Ribbon - Edit tab - Insert Byte command</comment>
+  </data>
+  <data name="Ribbon_Edit_DeleteByte" xml:space="preserve">
+    <value>Delete Byte</value>
+    <comment>Ribbon - Edit tab - Delete Byte command</comment>
+  </data>
+  <data name="Ribbon_Edit_FillSelection" xml:space="preserve">
+    <value>Fill Selection</value>
+    <comment>Ribbon - Edit tab - Fill Selection command</comment>
+  </data>
+  <data name="Ribbon_Edit_Mode_Group" xml:space="preserve">
+    <value>Mode</value>
+    <comment>Ribbon - Edit tab - Mode group</comment>
+  </data>
+  <data name="Ribbon_Edit_Overwrite" xml:space="preserve">
+    <value>Overwrite</value>
+    <comment>Ribbon - Edit tab - Overwrite mode</comment>
+  </data>
+  <data name="Ribbon_Edit_Insert" xml:space="preserve">
+    <value>Insert</value>
+    <comment>Ribbon - Edit tab - Insert mode</comment>
+  </data>
+  <data name="Ribbon_Edit_ReadOnly" xml:space="preserve">
+    <value>Read Only</value>
+    <comment>Ribbon - Edit tab - Read Only mode</comment>
+  </data>
+
+  <!-- ==== RIBBON - VIEW TAB ==== -->
+  <data name="Ribbon_View_Tab" xml:space="preserve">
+    <value>View</value>
+    <comment>Ribbon - View tab header</comment>
+  </data>
+  <data name="Ribbon_View_Zoom_Group" xml:space="preserve">
+    <value>Zoom</value>
+    <comment>Ribbon - View tab - Zoom group</comment>
+  </data>
+  <data name="Ribbon_View_ZoomIn" xml:space="preserve">
+    <value>Zoom In</value>
+    <comment>Ribbon - View tab - Zoom In command</comment>
+  </data>
+  <data name="Ribbon_View_ZoomOut" xml:space="preserve">
+    <value>Zoom Out</value>
+    <comment>Ribbon - View tab - Zoom Out command</comment>
+  </data>
+  <data name="Ribbon_View_Zoom100" xml:space="preserve">
+    <value>100%</value>
+    <comment>Ribbon - View tab - Reset zoom to 100%</comment>
+  </data>
+  <data name="Ribbon_View_DisplayOptions_Group" xml:space="preserve">
+    <value>Display Options</value>
+    <comment>Ribbon - View tab - Display Options group</comment>
+  </data>
+  <data name="Ribbon_View_ShowTooltip" xml:space="preserve">
+    <value>Show Tooltip</value>
+    <comment>Ribbon - View tab - Show Tooltip checkbox</comment>
+  </data>
+  <data name="Ribbon_View_HideDeleted" xml:space="preserve">
+    <value>Hide Deleted</value>
+    <comment>Ribbon - View tab - Hide Deleted checkbox</comment>
+  </data>
+  <data name="Ribbon_View_HighlightMatches" xml:space="preserve">
+    <value>Highlight Matches</value>
+    <comment>Ribbon - View tab - Highlight Matches checkbox</comment>
+  </data>
+  <data name="Ribbon_View_Themes_Group" xml:space="preserve">
+    <value>Themes</value>
+    <comment>Ribbon - View tab - Themes group</comment>
+  </data>
+  <data name="Ribbon_View_SelectTheme" xml:space="preserve">
+    <value>Select Theme</value>
+    <comment>Ribbon - View tab - Select Theme menu button</comment>
+  </data>
+  <data name="Ribbon_View_Theme_Office" xml:space="preserve">
+    <value>Office (Light)</value>
+    <comment>Ribbon - View tab - Office Light theme option</comment>
+  </data>
+  <data name="Ribbon_View_Theme_DarkGlass" xml:space="preserve">
+    <value>Dark Glass</value>
+    <comment>Ribbon - View tab - Dark Glass theme option</comment>
+  </data>
+  <data name="Ribbon_View_Theme_VisualStudio" xml:space="preserve">
+    <value>Visual Studio</value>
+    <comment>Ribbon - View tab - Visual Studio theme option</comment>
+  </data>
+  <data name="Ribbon_View_Theme_Minimal" xml:space="preserve">
+    <value>Minimal</value>
+    <comment>Ribbon - View tab - Minimal theme option</comment>
+  </data>
+  <data name="Ribbon_View_Panels_Group" xml:space="preserve">
+    <value>Panels</value>
+    <comment>Ribbon - View tab - Panels group</comment>
+  </data>
+  <data name="Ribbon_View_SettingsPanel" xml:space="preserve">
+    <value>Settings Panel</value>
+    <comment>Ribbon - View tab - Settings Panel checkbox</comment>
+  </data>
+
+  <!-- ==== RIBBON - DATA TAB ==== -->
+  <data name="Ribbon_Data_Tab" xml:space="preserve">
+    <value>Data</value>
+    <comment>Ribbon - Data tab header</comment>
+  </data>
+  <data name="Ribbon_Data_Export_Group" xml:space="preserve">
+    <value>Export</value>
+    <comment>Ribbon - Data tab - Export group</comment>
+  </data>
+  <data name="Ribbon_Data_Export" xml:space="preserve">
+    <value>Export</value>
+    <comment>Ribbon - Data tab - Export command</comment>
+  </data>
+  <data name="Ribbon_Data_ExportAs" xml:space="preserve">
+    <value>Export As</value>
+    <comment>Ribbon - Data tab - Export As menu button</comment>
+  </data>
+  <data name="Ribbon_Data_ExportAs_CSharpByteArray" xml:space="preserve">
+    <value>C# Byte Array</value>
+    <comment>Ribbon - Data tab - Export as C# Byte Array option</comment>
+  </data>
+  <data name="Ribbon_Data_ExportAs_CCode" xml:space="preserve">
+    <value>C Code</value>
+    <comment>Ribbon - Data tab - Export as C Code option</comment>
+  </data>
+  <data name="Ribbon_Data_ExportAs_JavaCode" xml:space="preserve">
+    <value>Java Code</value>
+    <comment>Ribbon - Data tab - Export as Java Code option</comment>
+  </data>
+  <data name="Ribbon_Data_ExportAs_HexString" xml:space="preserve">
+    <value>Hex String</value>
+    <comment>Ribbon - Data tab - Export as Hex String option</comment>
+  </data>
+  <data name="Ribbon_Data_Compare_Group" xml:space="preserve">
+    <value>Compare</value>
+    <comment>Ribbon - Data tab - Compare group</comment>
+  </data>
+  <data name="Ribbon_Data_CompareFiles" xml:space="preserve">
+    <value>Compare Files</value>
+    <comment>Ribbon - Data tab - Compare Files command</comment>
+  </data>
+  <data name="Ribbon_Data_Statistics_Group" xml:space="preserve">
+    <value>Statistics</value>
+    <comment>Ribbon - Data tab - Statistics group</comment>
+  </data>
+  <data name="Ribbon_Data_ByteCount" xml:space="preserve">
+    <value>Byte Count</value>
+    <comment>Ribbon - Data tab - Byte Count command</comment>
+  </data>
+  <data name="Ribbon_Data_Statistics" xml:space="preserve">
+    <value>Statistics</value>
+    <comment>Ribbon - Data tab - Statistics command</comment>
+  </data>
+  <data name="Ribbon_Data_Entropy" xml:space="preserve">
+    <value>Entropy</value>
+    <comment>Ribbon - Data tab - Entropy command</comment>
+  </data>
+  <data name="Ribbon_Data_Advanced_Group" xml:space="preserve">
+    <value>Advanced</value>
+    <comment>Ribbon - Data tab - Advanced group</comment>
+  </data>
+  <data name="Ribbon_Data_Checksum" xml:space="preserve">
+    <value>Checksum</value>
+    <comment>Ribbon - Data tab - Checksum command</comment>
+  </data>
+  <data name="Ribbon_Data_Hash" xml:space="preserve">
+    <value>Hash (MD5/SHA)</value>
+    <comment>Ribbon - Data tab - Hash (MD5/SHA) command</comment>
+  </data>
+
+  <!-- ==== RIBBON - TOOLS TAB ==== -->
+  <data name="Ribbon_Tools_Tab" xml:space="preserve">
+    <value>Tools</value>
+    <comment>Ribbon - Tools tab header</comment>
+  </data>
+  <data name="Ribbon_Tools_Options_Group" xml:space="preserve">
+    <value>Options</value>
+    <comment>Ribbon - Tools tab - Options group</comment>
+  </data>
+  <data name="Ribbon_Tools_Settings" xml:space="preserve">
+    <value>Settings</value>
+    <comment>Ribbon - Tools tab - Settings command</comment>
+  </data>
+  <data name="Ribbon_Tools_Language_Group" xml:space="preserve">
+    <value>Language</value>
+    <comment>Ribbon - Tools tab - Language group</comment>
+  </data>
+  <data name="Ribbon_Tools_Language" xml:space="preserve">
+    <value>Language</value>
+    <comment>Ribbon - Tools tab - Language command</comment>
+  </data>
+  <data name="Ribbon_Tools_Language_Tooltip" xml:space="preserve">
+    <value>Change application display language</value>
+    <comment>Ribbon - Tools tab - Language button tooltip</comment>
+  </data>
+  <data name="Ribbon_Tools_Help_Group" xml:space="preserve">
+    <value>Help</value>
+    <comment>Ribbon - Tools tab - Help group</comment>
+  </data>
+  <data name="Ribbon_Tools_Documentation" xml:space="preserve">
+    <value>Documentation</value>
+    <comment>Ribbon - Tools tab - Documentation command</comment>
+  </data>
+  <data name="Ribbon_Tools_About" xml:space="preserve">
+    <value>About</value>
+    <comment>Ribbon - Tools tab - About command</comment>
+  </data>
+
+  <!-- ==== OPTIONS DIALOG ==== -->
+  <data name="Options_Title" xml:space="preserve">
+    <value>Options</value>
+    <comment>Options dialog - Window title</comment>
+  </data>
+  <data name="Options_Header_Title" xml:space="preserve">
+    <value>⚙️ Application Options</value>
+    <comment>Options dialog - Main header text</comment>
+  </data>
+  <data name="Options_Header_Subtitle" xml:space="preserve">
+    <value>Configure your hex editor preferences</value>
+    <comment>Options dialog - Subtitle text</comment>
+  </data>
+  <data name="Options_LanguageTab" xml:space="preserve">
+    <value>Language</value>
+    <comment>Options dialog - Language tab header</comment>
+  </data>
+  <data name="Options_Tab_Language" xml:space="preserve">
+    <value>Language</value>
+    <comment>Options dialog - Language tab header</comment>
+  </data>
+  <data name="Options_AppearanceTab" xml:space="preserve">
+    <value>Appearance</value>
+    <comment>Options dialog - Appearance tab header</comment>
+  </data>
+  <data name="Options_Tab_Appearance" xml:space="preserve">
+    <value>Appearance</value>
+    <comment>Options dialog - Appearance tab header</comment>
+  </data>
+  <data name="Options_PerformanceTab" xml:space="preserve">
+    <value>Performance</value>
+    <comment>Options dialog - Performance tab header</comment>
+  </data>
+  <data name="Options_Tab_Performance" xml:space="preserve">
+    <value>Performance</value>
+    <comment>Options dialog - Performance tab header</comment>
+  </data>
+  <data name="Options_Language_Instructions" xml:space="preserve">
+    <value>Select your preferred display language:</value>
+    <comment>Options dialog - Language selection instructions</comment>
+  </data>
+  <data name="Options_Language_CurrentLabel" xml:space="preserve">
+    <value>Current Language</value>
+    <comment>Options dialog - Current language label</comment>
+  </data>
+  <data name="Options_Language_CurrentLanguage" xml:space="preserve">
+    <value>Current Language</value>
+    <comment>Options dialog - Current language label</comment>
+  </data>
+  <data name="Options_Language_ColumnLanguage" xml:space="preserve">
+    <value>Language</value>
+    <comment>Options dialog - ListView column header for Language</comment>
+  </data>
+  <data name="Options_Language_ListView_Header_Language" xml:space="preserve">
+    <value>Language</value>
+    <comment>Options dialog - ListView column header for Language</comment>
+  </data>
+  <data name="Options_Language_ColumnNativeName" xml:space="preserve">
+    <value>Native Name</value>
+    <comment>Options dialog - ListView column header for Native Name</comment>
+  </data>
+  <data name="Options_Language_ListView_Header_NativeName" xml:space="preserve">
+    <value>Native Name</value>
+    <comment>Options dialog - ListView column header for Native Name</comment>
+  </data>
+  <data name="Options_Language_ColumnCode" xml:space="preserve">
+    <value>Code</value>
+    <comment>Options dialog - ListView column header for Code</comment>
+  </data>
+  <data name="Options_Language_ListView_Header_Code" xml:space="preserve">
+    <value>Code</value>
+    <comment>Options dialog - ListView column header for Code</comment>
+  </data>
+  <data name="Options_Language_RestartWarning" xml:space="preserve">
+    <value>Please restart the application after changing the language.</value>
+    <comment>Options dialog - Language change warning message</comment>
+  </data>
+  <data name="Options_Language_Warning" xml:space="preserve">
+    <value>Please restart the application after changing the language.</value>
+    <comment>Options dialog - Language change warning message</comment>
+  </data>
+  <data name="Options_ComingSoon" xml:space="preserve">
+    <value>Coming soon...</value>
+    <comment>Options dialog - Coming soon placeholder text</comment>
+  </data>
+  <data name="Options_Button_OK" xml:space="preserve">
+    <value>OK</value>
+    <comment>Options dialog - OK button</comment>
+  </data>
+  <data name="Options_Button_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>Options dialog - Cancel button</comment>
+  </data>
+
+  <!-- ==== SETTINGS PANEL ==== -->
+  <data name="Settings_Title" xml:space="preserve">
+    <value>SETTINGS</value>
+    <comment>Settings panel - Main header</comment>
+  </data>
+  <data name="Settings_Header" xml:space="preserve">
+    <value>SETTINGS</value>
+    <comment>Settings panel - Main header</comment>
+  </data>
+  <data name="Settings_Theme_Title" xml:space="preserve">
+    <value>🎨 Theme</value>
+    <comment>Settings panel - Theme section header</comment>
+  </data>
+  <data name="Settings_Theme_Header" xml:space="preserve">
+    <value>🎨 Theme</value>
+    <comment>Settings panel - Theme section header</comment>
+  </data>
+  <data name="Settings_Language_Title" xml:space="preserve">
+    <value>🌐 Language</value>
+    <comment>Settings panel - Language section header</comment>
+  </data>
+  <data name="Settings_Language_Header" xml:space="preserve">
+    <value>🌐 Language</value>
+    <comment>Settings panel - Language section header</comment>
+  </data>
+  <data name="Settings_Search_Title" xml:space="preserve">
+    <value>🔍 Search Options</value>
+    <comment>Settings panel - Search Options section header</comment>
+  </data>
+  <data name="Settings_SearchOptions_Header" xml:space="preserve">
+    <value>🔍 Search Options</value>
+    <comment>Settings panel - Search Options section header</comment>
+  </data>
+  <data name="Settings_Search_EnableParallel" xml:space="preserve">
+    <value>Enable parallel search (faster for large files)</value>
+    <comment>Settings panel - Enable parallel search checkbox</comment>
+  </data>
+  <data name="Settings_SearchOptions_ParallelSearch" xml:space="preserve">
+    <value>Enable parallel search (faster for large files)</value>
+    <comment>Settings panel - Enable parallel search checkbox</comment>
+  </data>
+  <data name="Settings_Search_UseWildcard" xml:space="preserve">
+    <value>Use wildcard search (?? notation)</value>
+    <comment>Settings panel - Use wildcard search checkbox</comment>
+  </data>
+  <data name="Settings_SearchOptions_WildcardSearch" xml:space="preserve">
+    <value>Use wildcard search (?? notation)</value>
+    <comment>Settings panel - Use wildcard search checkbox</comment>
+  </data>
+  <data name="Settings_Search_HighlightMatches" xml:space="preserve">
+    <value>Highlight all matches</value>
+    <comment>Settings panel - Highlight all matches checkbox</comment>
+  </data>
+  <data name="Settings_SearchOptions_HighlightMatches" xml:space="preserve">
+    <value>Highlight all matches</value>
+    <comment>Settings panel - Highlight all matches checkbox</comment>
+  </data>
+  <data name="Settings_Search_ResultLimit" xml:space="preserve">
+    <value>Search result limit:</value>
+    <comment>Settings panel - Search result limit label</comment>
+  </data>
+  <data name="Settings_SearchOptions_ResultLimit" xml:space="preserve">
+    <value>Search result limit:</value>
+    <comment>Settings panel - Search result limit label</comment>
+  </data>
+  <data name="Settings_Display_Title" xml:space="preserve">
+    <value>📺 Display Options</value>
+    <comment>Settings panel - Display Options section header</comment>
+  </data>
+  <data name="Settings_DisplayOptions_Header" xml:space="preserve">
+    <value>📺 Display Options</value>
+    <comment>Settings panel - Display Options section header</comment>
+  </data>
+  <data name="Settings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Show line numbers</value>
+    <comment>Settings panel - Show line numbers checkbox</comment>
+  </data>
+  <data name="Settings_DisplayOptions_LineNumbers" xml:space="preserve">
+    <value>Show line numbers</value>
+    <comment>Settings panel - Show line numbers checkbox</comment>
+  </data>
+  <data name="Settings_Display_ShowScrollMarkers" xml:space="preserve">
+    <value>Show scroll markers</value>
+    <comment>Settings panel - Show scroll markers checkbox</comment>
+  </data>
+  <data name="Settings_DisplayOptions_ScrollMarkers" xml:space="preserve">
+    <value>Show scroll markers</value>
+    <comment>Settings panel - Show scroll markers checkbox</comment>
+  </data>
+  <data name="Settings_Display_ShowStatusBar" xml:space="preserve">
+    <value>Show status bar</value>
+    <comment>Settings panel - Show status bar checkbox</comment>
+  </data>
+  <data name="Settings_DisplayOptions_StatusBar" xml:space="preserve">
+    <value>Show status bar</value>
+    <comment>Settings panel - Show status bar checkbox</comment>
+  </data>
+  <data name="Settings_Display_BytesPerLine" xml:space="preserve">
+    <value>Bytes per line:</value>
+    <comment>Settings panel - Bytes per line label</comment>
+  </data>
+  <data name="Settings_DisplayOptions_BytesPerLine" xml:space="preserve">
+    <value>Bytes per line:</value>
+    <comment>Settings panel - Bytes per line label</comment>
+  </data>
+  <data name="Settings_Performance_Title" xml:space="preserve">
+    <value>⚡ Performance</value>
+    <comment>Settings panel - Performance section header</comment>
+  </data>
+  <data name="Settings_Performance_Header" xml:space="preserve">
+    <value>⚡ Performance</value>
+    <comment>Settings panel - Performance section header</comment>
+  </data>
+  <data name="Settings_Performance_V2Active" xml:space="preserve">
+    <value>V2 ENGINE ACTIVE</value>
+    <comment>Settings panel - V2 engine active badge</comment>
+  </data>
+  <data name="Settings_Performance_Feature1" xml:space="preserve">
+    <value>• Boyer-Moore-Horspool algorithm</value>
+    <comment>Settings panel - Performance feature 1</comment>
+  </data>
+  <data name="Settings_Performance_BoyerMoore" xml:space="preserve">
+    <value>• Boyer-Moore-Horspool algorithm</value>
+    <comment>Settings panel - Performance feature 1</comment>
+  </data>
+  <data name="Settings_Performance_Feature2" xml:space="preserve">
+    <value>• Parallel processing support</value>
+    <comment>Settings panel - Performance feature 2</comment>
+  </data>
+  <data name="Settings_Performance_Parallel" xml:space="preserve">
+    <value>• Parallel processing support</value>
+    <comment>Settings panel - Performance feature 2</comment>
+  </data>
+  <data name="Settings_Performance_Feature3" xml:space="preserve">
+    <value>• Up to 99% faster than V1</value>
+    <comment>Settings panel - Performance feature 3</comment>
+  </data>
+  <data name="Settings_Performance_Faster" xml:space="preserve">
+    <value>• Up to 99% faster than V1</value>
+    <comment>Settings panel - Performance feature 3</comment>
+  </data>
+  <data name="Settings_Button_ResetDefaults" xml:space="preserve">
+    <value>Reset to Defaults</value>
+    <comment>Settings panel - Reset to Defaults button</comment>
+  </data>
+  <data name="Settings_Button_SaveSettings" xml:space="preserve">
+    <value>Save Settings</value>
+    <comment>Settings panel - Save Settings button</comment>
+  </data>
+  <data name="Settings_Button_Save" xml:space="preserve">
+    <value>Save Settings</value>
+    <comment>Settings panel - Save Settings button</comment>
+  </data>
+
+  <!-- ==== HEX EDITOR SETTINGS ==== -->
+  <data name="HexSettings_Title" xml:space="preserve">
+    <value>HEX EDITOR SETTINGS</value>
+    <comment>Hex editor settings - Main header</comment>
+  </data>
+  <data name="HexSettings_Header" xml:space="preserve">
+    <value>HEX EDITOR SETTINGS</value>
+    <comment>Hex editor settings - Main header</comment>
+  </data>
+  <data name="HexSettings_Display_Title" xml:space="preserve">
+    <value>📺 Display Options</value>
+    <comment>Hex editor settings - Display Options expander header</comment>
+  </data>
+  <data name="HexSettings_Display_Header" xml:space="preserve">
+    <value>📺 Display Options</value>
+    <comment>Hex editor settings - Display Options expander header</comment>
+  </data>
+  <data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Show Line Numbers (placeholder)</value>
+    <comment>Hex editor settings - Show line numbers (disabled)</comment>
+  </data>
+  <data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+    <value>This feature is not yet available in V2</value>
+    <comment>Hex editor settings - Line numbers tooltip</comment>
+  </data>
+  <data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>Show Line Numbers (placeholder)</value>
+    <comment>Hex editor settings - Show line numbers (disabled)</comment>
+  </data>
+  <data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>This feature is not yet available in V2</value>
+    <comment>Hex editor settings - Line numbers tooltip</comment>
+  </data>
+  <data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+    <value>Show Byte Tooltip</value>
+    <comment>Hex editor settings - Show byte tooltip checkbox</comment>
+  </data>
+  <data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>Show Byte Tooltip</value>
+    <comment>Hex editor settings - Show byte tooltip checkbox</comment>
+  </data>
+  <data name="HexSettings_Display_HideDeleted" xml:space="preserve">
+    <value>Hide Deleted Bytes</value>
+    <comment>Hex editor settings - Hide deleted bytes checkbox</comment>
+  </data>
+  <data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>Bytes Per Line:</value>
+    <comment>Hex editor settings - Bytes per line label</comment>
+  </data>
+  <data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>Zoom Scale:</value>
+    <comment>Hex editor settings - Zoom scale label</comment>
+  </data>
+  <data name="HexSettings_Editing_Title" xml:space="preserve">
+    <value>✏️ Editing Options</value>
+    <comment>Hex editor settings - Editing Options expander header</comment>
+  </data>
+  <data name="HexSettings_Editing_Header" xml:space="preserve">
+    <value>✏️ Editing Options</value>
+    <comment>Hex editor settings - Editing Options expander header</comment>
+  </data>
+  <data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>Read Only Mode</value>
+    <comment>Hex editor settings - Read only mode checkbox</comment>
+  </data>
+  <data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+    <value>Allow Insert Anywhere</value>
+    <comment>Hex editor settings - Allow insert anywhere checkbox</comment>
+  </data>
+  <data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>Allow Insert Anywhere</value>
+    <comment>Hex editor settings - Allow insert anywhere checkbox</comment>
+  </data>
+  <data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+    <value>Allow Delete Byte</value>
+    <comment>Hex editor settings - Allow delete byte checkbox</comment>
+  </data>
+  <data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>Allow Delete Byte</value>
+    <comment>Hex editor settings - Allow delete byte checkbox</comment>
+  </data>
+  <data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+    <value>Allow Extend File</value>
+    <comment>Hex editor settings - Allow extend file checkbox</comment>
+  </data>
+  <data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>Allow Extend File</value>
+    <comment>Hex editor settings - Allow extend file checkbox</comment>
+  </data>
+  <data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+    <value>Append Needs Confirmation</value>
+    <comment>Hex editor settings - Append needs confirmation checkbox</comment>
+  </data>
+  <data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>Append Needs Confirmation</value>
+    <comment>Hex editor settings - Append needs confirmation checkbox</comment>
+  </data>
+  <data name="HexSettings_Editing_EditMode" xml:space="preserve">
+    <value>Edit Mode:</value>
+    <comment>Hex editor settings - Edit mode label</comment>
+  </data>
+  <data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>Overwrite</value>
+    <comment>Hex editor settings - Overwrite mode option</comment>
+  </data>
+  <data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>Insert</value>
+    <comment>Hex editor settings - Insert mode option</comment>
+  </data>
+  <data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+    <value>Caret Mode:</value>
+    <comment>Hex editor settings - Caret mode label</comment>
+  </data>
+  <data name="HexSettings_Clipboard_Title" xml:space="preserve">
+    <value>📋 Clipboard Options</value>
+    <comment>Hex editor settings - Clipboard Options expander header</comment>
+  </data>
+  <data name="HexSettings_Clipboard_Header" xml:space="preserve">
+    <value>📋 Clipboard Options</value>
+    <comment>Hex editor settings - Clipboard Options expander header</comment>
+  </data>
+  <data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+    <value>Default Copy Mode:</value>
+    <comment>Hex editor settings - Default copy mode label</comment>
+  </data>
+  <data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>Hex String</value>
+    <comment>Hex editor settings - Hex string copy mode option</comment>
+  </data>
+  <data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>Byte Array</value>
+    <comment>Hex editor settings - Byte array copy mode option</comment>
+  </data>
+  <data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>C# Code</value>
+    <comment>Hex editor settings - C# code copy mode option</comment>
+  </data>
+  <data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>VB Code</value>
+    <comment>Hex editor settings - VB code copy mode option</comment>
+  </data>
+  <data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>C Code</value>
+    <comment>Hex editor settings - C code copy mode option</comment>
+  </data>
+  <data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>Java Code</value>
+    <comment>Hex editor settings - Java code copy mode option</comment>
+  </data>
+  <data name="HexSettings_DragDrop_Title" xml:space="preserve">
+    <value>📎 Drag &amp; Drop Options</value>
+    <comment>Hex editor settings - Drag &amp; Drop Options expander header</comment>
+  </data>
+  <data name="HexSettings_DragDrop_Header" xml:space="preserve">
+    <value>📎 Drag &amp; Drop Options</value>
+    <comment>Hex editor settings - Drag &amp; Drop Options expander header</comment>
+  </data>
+  <data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+    <value>Allow File Drop</value>
+    <comment>Hex editor settings - Allow file drop checkbox</comment>
+  </data>
+  <data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>Allow File Drop</value>
+    <comment>Hex editor settings - Allow file drop checkbox</comment>
+  </data>
+  <data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+    <value>File Dropping Confirmation</value>
+    <comment>Hex editor settings - File dropping confirmation checkbox</comment>
+  </data>
+  <data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>File Dropping Confirmation</value>
+    <comment>Hex editor settings - File dropping confirmation checkbox</comment>
+  </data>
+  <data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+    <value>Allow Text Drop</value>
+    <comment>Hex editor settings - Allow text drop checkbox</comment>
+  </data>
+  <data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>Allow Text Drop</value>
+    <comment>Hex editor settings - Allow text drop checkbox</comment>
+  </data>
+  <data name="HexSettings_Highlight_Title" xml:space="preserve">
+    <value>🎨 Highlight &amp; Selection</value>
+    <comment>Hex editor settings - Highlight &amp; Selection expander header</comment>
+  </data>
+  <data name="HexSettings_Highlight_Header" xml:space="preserve">
+    <value>🎨 Highlight &amp; Selection</value>
+    <comment>Hex editor settings - Highlight &amp; Selection expander header</comment>
+  </data>
+  <data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>Auto-Highlight Selection Byte</value>
+    <comment>Hex editor settings - Auto-highlight selection byte checkbox</comment>
+  </data>
+  <data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+    <value>Auto-Select Same Byte (Double-Click)</value>
+    <comment>Hex editor settings - Auto-select same byte on double-click checkbox</comment>
+  </data>
+  <data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>Auto-Select Same Byte (Double-Click)</value>
+    <comment>Hex editor settings - Auto-select same byte on double-click checkbox</comment>
+  </data>
+  <data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+    <value>Allow Marker Click Navigation</value>
+    <comment>Hex editor settings - Allow marker click navigation checkbox</comment>
+  </data>
+  <data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>Allow Marker Click Navigation</value>
+    <comment>Hex editor settings - Allow marker click navigation checkbox</comment>
+  </data>
+  <data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+    <value>Auto-Highlight Color:</value>
+    <comment>Hex editor settings - Auto-highlight color label</comment>
+  </data>
+  <data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>Auto-Highlight Color:</value>
+    <comment>Hex editor settings - Auto-highlight color label</comment>
+  </data>
+  <data name="HexSettings_Search_Title" xml:space="preserve">
+    <value>🔍 Search Options</value>
+    <comment>Hex editor settings - Search Options expander header</comment>
+  </data>
+  <data name="HexSettings_Search_Header" xml:space="preserve">
+    <value>🔍 Search Options</value>
+    <comment>Hex editor settings - Search Options expander header</comment>
+  </data>
+  <data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+    <value>Enable Parallel Search</value>
+    <comment>Hex editor settings - Enable parallel search checkbox</comment>
+  </data>
+  <data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>Enable Parallel Search</value>
+    <comment>Hex editor settings - Enable parallel search checkbox</comment>
+  </data>
+  <data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+    <value>Use Wildcard Search (??)</value>
+    <comment>Hex editor settings - Use wildcard search checkbox</comment>
+  </data>
+  <data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>Use Wildcard Search (??)</value>
+    <comment>Hex editor settings - Use wildcard search checkbox</comment>
+  </data>
+  <data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>Highlight All Matches</value>
+    <comment>Hex editor settings - Highlight all matches checkbox</comment>
+  </data>
+  <data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>Search Result Limit:</value>
+    <comment>Hex editor settings - Search result limit label</comment>
+  </data>
+  <data name="HexSettings_Statistics_Title" xml:space="preserve">
+    <value>📊 Statistics</value>
+    <comment>Hex editor settings - Statistics expander header</comment>
+  </data>
+  <data name="HexSettings_Statistics_Header" xml:space="preserve">
+    <value>📊 Statistics</value>
+    <comment>Hex editor settings - Statistics expander header</comment>
+  </data>
+  <data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+    <value>Allow Byte Count</value>
+    <comment>Hex editor settings - Allow byte count checkbox</comment>
+  </data>
+  <data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+    <value>Allow Byte Count</value>
+    <comment>Hex editor settings - Allow byte count checkbox</comment>
+  </data>
+  <data name="HexSettings_Advanced_Title" xml:space="preserve">
+    <value>⚙️ Advanced Options</value>
+    <comment>Hex editor settings - Advanced Options expander header</comment>
+  </data>
+  <data name="HexSettings_Advanced_Header" xml:space="preserve">
+    <value>⚙️ Advanced Options</value>
+    <comment>Hex editor settings - Advanced Options expander header</comment>
+  </data>
+  <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+    <value>Byte Shift Left:</value>
+    <comment>Hex editor settings - Byte shift left label</comment>
+  </data>
+  <data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+    <value>Byte Shift Left:</value>
+    <comment>Hex editor settings - Byte shift left label</comment>
+  </data>
+  <data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>Save Current State</value>
+    <comment>Hex editor settings - Save current state button</comment>
+  </data>
+  <data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>Load Saved State</value>
+    <comment>Hex editor settings - Load saved state button</comment>
+  </data>
+  <data name="HexSettings_ResetButton" xml:space="preserve">
+    <value>🔄 Reset All to Defaults</value>
+    <comment>Hex editor settings - Reset all to defaults button</comment>
+  </data>
+  <data name="HexSettings_Button_Reset" xml:space="preserve">
+    <value>🔄 Reset All to Defaults</value>
+    <comment>Hex editor settings - Reset all to defaults button</comment>
+  </data>
+
+  <!-- ==== SEARCH COMMAND CENTER ==== -->
+  <data name="Search_Mode_Text" xml:space="preserve">
+    <value>Text</value>
+    <comment>Search command center - Text mode option</comment>
+  </data>
+  <data name="Search_Mode_Hex" xml:space="preserve">
+    <value>Hex</value>
+    <comment>Search command center - Hex mode option</comment>
+  </data>
+  <data name="Search_Mode_Regex" xml:space="preserve">
+    <value>Regex</value>
+    <comment>Search command center - Regex mode option</comment>
+  </data>
+  <data name="Search_Clear_ToolTip" xml:space="preserve">
+    <value>Clear</value>
+    <comment>Search command center - Clear button tooltip</comment>
+  </data>
+  <data name="Search_Button_Clear" xml:space="preserve">
+    <value>Clear</value>
+    <comment>Search command center - Clear button tooltip</comment>
+  </data>
+  <data name="Search_Previous_ToolTip" xml:space="preserve">
+    <value>Previous (Shift+F3)</value>
+    <comment>Search command center - Previous button tooltip</comment>
+  </data>
+  <data name="Search_Button_Previous" xml:space="preserve">
+    <value>Previous (Shift+F3)</value>
+    <comment>Search command center - Previous button tooltip</comment>
+  </data>
+  <data name="Search_Next_ToolTip" xml:space="preserve">
+    <value>Next (F3)</value>
+    <comment>Search command center - Next button tooltip</comment>
+  </data>
+  <data name="Search_Button_Next" xml:space="preserve">
+    <value>Next (F3)</value>
+    <comment>Search command center - Next button tooltip</comment>
+  </data>
+  <data name="Search_FindAll" xml:space="preserve">
+    <value>Find All</value>
+    <comment>Search command center - Find All button text</comment>
+  </data>
+  <data name="Search_Button_FindAll" xml:space="preserve">
+    <value>Find All</value>
+    <comment>Search command center - Find All button text</comment>
+  </data>
+  <data name="Search_FindAll_ToolTip" xml:space="preserve">
+    <value>Find All Occurrences</value>
+    <comment>Search command center - Find All button tooltip</comment>
+  </data>
+  <data name="Search_Button_FindAll_Tooltip" xml:space="preserve">
+    <value>Find All Occurrences</value>
+    <comment>Search command center - Find All button tooltip</comment>
+  </data>
+  <data name="Search_Matches" xml:space="preserve">
+    <value>matches</value>
+    <comment>Search command center - Matches label (e.g., "5 matches")</comment>
+  </data>
+  <data name="Search_Results_Matches" xml:space="preserve">
+    <value>matches</value>
+    <comment>Search command center - Matches label (e.g., "5 matches")</comment>
+  </data>
+  <data name="Search_Results_V2Badge" xml:space="preserve">
+    <value>V2</value>
+    <comment>Search command center - V2 engine badge</comment>
+  </data>
+
+  <!-- ==== MESSAGE BOX STRINGS (from code-behind) ==== -->
+  <data name="Message_FileOpenError" xml:space="preserve">
+    <value>Failed to open file: {0}</value>
+    <comment>Error message when file open fails</comment>
+  </data>
+  <data name="Message_FileSaveError" xml:space="preserve">
+    <value>Failed to save file: {0}</value>
+    <comment>Error message when file save fails</comment>
+  </data>
+  <data name="Message_ErrorTitle" xml:space="preserve">
+    <value>Error</value>
+    <comment>Error message box title</comment>
+  </data>
+  <data name="Message_LanguageUnchanged_Title" xml:space="preserve">
+    <value>Language Unchanged</value>
+    <comment>Language unchanged message box title</comment>
+  </data>
+  <data name="Message_LanguageUnchanged_Text" xml:space="preserve">
+    <value>Language is already set to {0}.</value>
+    <comment>Language unchanged message text</comment>
+  </data>
+  <data name="Message_LanguageChanged_Title" xml:space="preserve">
+    <value>Language Changed - Restart Required</value>
+    <comment>Language changed message box title</comment>
+  </data>
+  <data name="Message_LanguageChanged_Text" xml:space="preserve">
+    <value>Language changed to {0}.
+
+Please restart the application to apply the new language.</value>
+    <comment>Language changed message text</comment>
+  </data>
+  <data name="Message_NoLanguageSelected_Title" xml:space="preserve">
+    <value>No Language Selected</value>
+    <comment>No language selected message box title</comment>
+  </data>
+  <data name="Message_NoLanguageSelected_Text" xml:space="preserve">
+    <value>Please select a language before clicking OK.</value>
+    <comment>No language selected message text</comment>
+  </data>
+
+</root>

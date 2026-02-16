@@ -12,6 +12,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:components="clr-namespace:WpfHexEditor.Sample.Main.Views.Components"
+             xmlns:properties="clr-namespace:WpfHexEditor.Sample.Main.Properties"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="400">
 
@@ -19,27 +20,27 @@
         <StackPanel Margin="16">
 
             <!-- Header -->
-            <TextBlock Text="HEX EDITOR SETTINGS"
+            <TextBlock Text="{x:Static properties:Resources.HexSettings_Title}"
                       FontSize="16"
                       FontWeight="Bold"
                       Foreground="{StaticResource ForegroundBrush}"
                       Margin="0,0,0,16"/>
 
             <!-- Display Settings -->
-            <Expander Header="📺 Display Options" IsExpanded="True" Margin="0,0,0,8">
+            <Expander Header="{x:Static properties:Resources.HexSettings_Display_Title}" IsExpanded="True" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
-                    <CheckBox Content="Show Line Numbers (placeholder)"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Display_ShowLineNumbers}"
                              IsEnabled="False"
-                             ToolTip="This feature is not yet available in V2"
+                             ToolTip="{x:Static properties:Resources.HexSettings_Display_ShowLineNumbers_ToolTip}"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Show Byte Tooltip"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Display_ShowByteTooltip}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=ShowByteToolTip, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Hide Deleted Bytes"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Display_HideDeleted}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=HideByteDeleted, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
 
-                    <TextBlock Text="Bytes Per Line:" FontSize="11" Margin="0,8,0,4"/>
+                    <TextBlock Text="{x:Static properties:Resources.HexSettings_Display_BytesPerLine}" FontSize="11" Margin="0,8,0,4"/>
                     <ComboBox x:Name="BytesPerLineComboBox"
                              SelectedIndex="1"
                              Margin="0,0,0,8"
@@ -50,7 +51,7 @@
                         <ComboBoxItem Content="64" Tag="64"/>
                     </ComboBox>
 
-                    <TextBlock Text="Zoom Scale:" FontSize="11" Margin="0,8,0,4"/>
+                    <TextBlock Text="{x:Static properties:Resources.HexSettings_Display_ZoomScale}" FontSize="11" Margin="0,8,0,4"/>
                     <Slider x:Name="ZoomSlider"
                            Minimum="0.5"
                            Maximum="3"
@@ -61,111 +62,111 @@
             </Expander>
 
             <!-- Editing Options -->
-            <Expander Header="✏️ Editing Options" Margin="0,0,0,8">
+            <Expander Header="{x:Static properties:Resources.HexSettings_Editing_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
-                    <CheckBox Content="Read Only Mode"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Editing_ReadOnly}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=ReadOnlyMode, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Allow Insert Anywhere"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Editing_AllowInsertAnywhere}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=CanInsertAnywhere, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Allow Delete Byte"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Editing_AllowDeleteByte}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=AllowDeleteByte, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Allow Extend File"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Editing_AllowExtendFile}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=AllowExtend, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Append Needs Confirmation"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Editing_AppendNeedsConfirmation}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=AppendNeedConfirmation, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
 
-                    <TextBlock Text="Edit Mode:" FontSize="11" Margin="0,8,0,4"/>
+                    <TextBlock Text="{x:Static properties:Resources.HexSettings_Editing_EditMode}" FontSize="11" Margin="0,8,0,4"/>
                     <ComboBox x:Name="EditModeComboBox"
                              SelectedIndex="0"
                              Margin="0,0,0,8"
                              SelectionChanged="EditModeComboBox_SelectionChanged">
-                        <ComboBoxItem Content="Overwrite" Tag="Overwrite"/>
-                        <ComboBoxItem Content="Insert" Tag="Insert"/>
+                        <ComboBoxItem Content="{x:Static properties:Resources.HexSettings_Editing_Overwrite}" Tag="Overwrite"/>
+                        <ComboBoxItem Content="{x:Static properties:Resources.HexSettings_Editing_Insert}" Tag="Insert"/>
                     </ComboBox>
 
-                    <TextBlock Text="Caret Mode:" FontSize="11" Margin="0,8,0,4"/>
+                    <TextBlock Text="{x:Static properties:Resources.HexSettings_Editing_CaretMode}" FontSize="11" Margin="0,8,0,4"/>
                     <ComboBox x:Name="CaretModeComboBox"
                              SelectedIndex="0"
                              SelectionChanged="CaretModeComboBox_SelectionChanged">
-                        <ComboBoxItem Content="Insert" Tag="Insert"/>
-                        <ComboBoxItem Content="Overwrite" Tag="Overwrite"/>
+                        <ComboBoxItem Content="{x:Static properties:Resources.HexSettings_Editing_Insert}" Tag="Insert"/>
+                        <ComboBoxItem Content="{x:Static properties:Resources.HexSettings_Editing_Overwrite}" Tag="Overwrite"/>
                     </ComboBox>
                 </StackPanel>
             </Expander>
 
             <!-- Clipboard Options -->
-            <Expander Header="📋 Clipboard Options" Margin="0,0,0,8">
+            <Expander Header="{x:Static properties:Resources.HexSettings_Clipboard_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
-                    <TextBlock Text="Default Copy Mode:" FontSize="11" Margin="0,0,0,4"/>
+                    <TextBlock Text="{x:Static properties:Resources.HexSettings_Clipboard_DefaultCopyMode}" FontSize="11" Margin="0,0,0,4"/>
                     <ComboBox x:Name="CopyModeComboBox"
                              SelectedIndex="0"
                              Margin="0,0,0,8"
                              SelectionChanged="CopyModeComboBox_SelectionChanged">
-                        <ComboBoxItem Content="Hex String" Tag="HexaString"/>
-                        <ComboBoxItem Content="Byte Array" Tag="ByteArray"/>
-                        <ComboBoxItem Content="C# Code" Tag="CSharpCode"/>
-                        <ComboBoxItem Content="VB Code" Tag="VBCode"/>
-                        <ComboBoxItem Content="C Code" Tag="CCode"/>
-                        <ComboBoxItem Content="Java Code" Tag="JavaCode"/>
+                        <ComboBoxItem Content="{x:Static properties:Resources.HexSettings_Clipboard_HexString}" Tag="HexaString"/>
+                        <ComboBoxItem Content="{x:Static properties:Resources.HexSettings_Clipboard_ByteArray}" Tag="ByteArray"/>
+                        <ComboBoxItem Content="{x:Static properties:Resources.HexSettings_Clipboard_CSharpCode}" Tag="CSharpCode"/>
+                        <ComboBoxItem Content="{x:Static properties:Resources.HexSettings_Clipboard_VBCode}" Tag="VBCode"/>
+                        <ComboBoxItem Content="{x:Static properties:Resources.HexSettings_Clipboard_CCode}" Tag="CCode"/>
+                        <ComboBoxItem Content="{x:Static properties:Resources.HexSettings_Clipboard_JavaCode}" Tag="JavaCode"/>
                     </ComboBox>
                 </StackPanel>
             </Expander>
 
             <!-- Drag &amp; Drop Options -->
-            <Expander Header="📎 Drag &amp; Drop Options" Margin="0,0,0,8">
+            <Expander Header="{x:Static properties:Resources.HexSettings_DragDrop_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
-                    <CheckBox Content="Allow File Drop"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_DragDrop_AllowFileDrop}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=AllowFileDrop, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="File Dropping Confirmation"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_DragDrop_FileDropConfirmation}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=FileDroppingConfirmation, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Allow Text Drop"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_DragDrop_AllowTextDrop}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=AllowTextDrop, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                 </StackPanel>
             </Expander>
 
             <!-- Highlight &amp; Selection -->
-            <Expander Header="🎨 Highlight &amp; Selection" Margin="0,0,0,8">
+            <Expander Header="{x:Static properties:Resources.HexSettings_Highlight_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
-                    <CheckBox Content="Auto-Highlight Selection Byte"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Highlight_AutoHighlight}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=AllowAutoHighLightSelectionByte, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Auto-Select Same Byte (Double-Click)"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Highlight_AutoSelectDoubleClick}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=AllowAutoSelectSameByteAtDoubleClick, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Allow Marker Click Navigation"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Highlight_AllowMarkerClick}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=AllowMarkerClickNavigation, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
 
-                    <TextBlock Text="Auto-Highlight Color:" FontSize="11" Margin="0,8,0,4"/>
+                    <TextBlock Text="{x:Static properties:Resources.HexSettings_Highlight_AutoHighlightColor}" FontSize="11" Margin="0,8,0,4"/>
                     <components:ColorPicker x:Name="AutoHighlightColorPicker"
                                            ColorChanged="AutoHighlightColorPicker_ColorChanged"/>
                 </StackPanel>
             </Expander>
 
             <!-- Search Options -->
-            <Expander Header="🔍 Search Options" Margin="0,0,0,8">
+            <Expander Header="{x:Static properties:Resources.HexSettings_Search_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
-                    <CheckBox Content="Enable Parallel Search"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Search_EnableParallel}"
                              x:Name="ParallelSearchCheckBox"
                              IsChecked="True"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Use Wildcard Search (??)"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Search_UseWildcard}"
                              x:Name="WildcardSearchCheckBox"
                              Margin="0,0,0,8"/>
-                    <CheckBox Content="Highlight All Matches"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Search_HighlightMatches}"
                              x:Name="HighlightMatchesCheckBox"
                              IsChecked="True"
                              Margin="0,0,0,8"/>
 
-                    <TextBlock Text="Search Result Limit:" FontSize="11" Margin="0,8,0,4"/>
+                    <TextBlock Text="{x:Static properties:Resources.HexSettings_Search_ResultLimit}" FontSize="11" Margin="0,8,0,4"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -187,30 +188,30 @@
             </Expander>
 
             <!-- Statistics & Counting -->
-            <Expander Header="📊 Statistics" Margin="0,0,0,8">
+            <Expander Header="{x:Static properties:Resources.HexSettings_Statistics_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
-                    <CheckBox Content="Allow Byte Count"
+                    <CheckBox Content="{x:Static properties:Resources.HexSettings_Statistics_AllowByteCount}"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=AllowByteCount, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                 </StackPanel>
             </Expander>
 
             <!-- Advanced Options -->
-            <Expander Header="⚙️ Advanced Options" Margin="0,0,0,8">
+            <Expander Header="{x:Static properties:Resources.HexSettings_Advanced_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
-                    <TextBlock Text="Byte Shift Left:" FontSize="11" Margin="0,0,0,4"/>
+                    <TextBlock Text="{x:Static properties:Resources.HexSettings_Advanced_ByteShiftLeft}" FontSize="11" Margin="0,0,0,4"/>
                     <TextBox x:Name="ByteShiftLeftTextBox"
                             Text="0"
                             Style="{StaticResource ModernTextBoxStyle}"
                             TextChanged="ByteShiftLeftTextBox_TextChanged"
                             Margin="0,0,0,12"/>
 
-                    <Button Content="Save Current State"
+                    <Button Content="{x:Static properties:Resources.HexSettings_Advanced_SaveState}"
                            x:Name="SaveStateButton"
                            Click="SaveStateButton_Click"
                            Style="{StaticResource ModernButtonStyle}"
                            Margin="0,0,0,8"/>
-                    <Button Content="Load Saved State"
+                    <Button Content="{x:Static properties:Resources.HexSettings_Advanced_LoadState}"
                            x:Name="LoadStateButton"
                            Click="LoadStateButton_Click"
                            Style="{StaticResource ModernButtonStyle}"/>
@@ -218,7 +219,7 @@
             </Expander>
 
             <!-- Reset Button -->
-            <Button Content="🔄 Reset All to Defaults"
+            <Button Content="{x:Static properties:Resources.HexSettings_ResetButton}"
                    x:Name="ResetButton"
                    Click="ResetButton_Click"
                    Style="{StaticResource ModernButtonStyle}"
