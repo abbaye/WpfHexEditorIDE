@@ -86,10 +86,69 @@ This roadmap details the complete implementation plan for Avalonia support using
 
 ---
 
+## 🌿 Git Workflow Strategy
+
+### ⚠️ IMPORTANT: Work in Feature Branches
+
+**All Avalonia development will be done in feature branches, NOT directly on `master`.**
+
+### Branch Structure
+
+```
+master (stable - v2.x, protected)
+  │
+  ├─ feature/avalonia-support (main development branch)
+  │   │
+  │   ├─ feature/avalonia-core (Phase 1)
+  │   ├─ feature/avalonia-wpf-refactor (Phase 2)
+  │   ├─ feature/avalonia-facade (Phase 3)
+  │   ├─ feature/avalonia-platform (Phase 4)
+  │   ├─ feature/avalonia-controls (Phase 4)
+  │   ├─ feature/avalonia-samples (Phase 5)
+  │   └─ feature/avalonia-ci (Phase 7)
+  │
+  └─ (merge to master only when v3.0 is complete and tested)
+```
+
+### Workflow
+
+1. **Create main dev branch:**
+   ```bash
+   git checkout -b feature/avalonia-support
+   git push -u origin feature/avalonia-support
+   ```
+
+2. **For each phase, create feature branch:**
+   ```bash
+   git checkout feature/avalonia-support
+   git checkout -b feature/avalonia-<phase-name>
+   # Work, commit, push
+   # Create PR: feature/avalonia-<phase-name> → feature/avalonia-support
+   ```
+
+3. **Merge to master only at release:**
+   ```bash
+   # When all phases complete and tested
+   git checkout master
+   git merge --no-ff feature/avalonia-support
+   git tag v3.0.0
+   ```
+
+### Key Protections
+- ✅ `master` is **protected** (no direct commits)
+- ✅ All merges require **Pull Request** + code review
+- ✅ Status checks must pass (build, tests)
+- ✅ Clear commit history with meaningful messages
+
+**📚 Complete Git workflow guide:** [GIT_WORKFLOW.md](./GIT_WORKFLOW.md)
+
+---
+
 ## 🗓️ Complete Implementation Timeline
 
 ### **Phase 0: Preparation** (Week 0 - Current)
 **Status:** ✅ Complete
+**Branch:** `master` (documentation only)
 
 - [x] Codebase analysis (40,940 lines)
 - [x] Architecture design
@@ -98,8 +157,12 @@ This roadmap details the complete implementation plan for Avalonia support using
   - [x] AVALONIA_PORTING_PLAN.md
   - [x] INTEGRATION_GUIDE.md
   - [x] COMPATIBILITY_STRATEGY.md
+  - [x] GIT_WORKFLOW.md (NEW)
+  - [x] IMPLEMENTATION_ROADMAP.md
 - [x] Community consultation (Issue #153)
 - [x] Strategy selection (Strategy C)
+
+**Next Step:** Create `feature/avalonia-support` branch
 
 ---
 

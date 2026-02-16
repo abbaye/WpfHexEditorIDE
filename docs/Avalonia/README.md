@@ -112,8 +112,29 @@ Detailed 11-week implementation plan with multi-platform NuGet strategy.
 - Sample app creation plan
 - CI/CD pipeline configuration
 - Success metrics and risk mitigation
+- **Git workflow strategy** (feature branches)
 
 **Perfect for:** Project managers, implementation teams
+
+---
+
+### 7. [Git Workflow](./GIT_WORKFLOW.md) 🌿
+**Git branch strategy and development workflow**
+
+Complete Git workflow for implementing Avalonia support safely.
+
+**Contains:**
+- Branch structure (feature/avalonia-support + sub-branches)
+- Phase-by-phase Git workflow
+- Pull Request process
+- Branch protection rules
+- Commit message conventions
+- Merge strategies
+- Quick reference commands
+
+**Important:** All development in feature branches, NOT master!
+
+**Perfect for:** All contributors, ensures clean Git history
 
 ---
 
