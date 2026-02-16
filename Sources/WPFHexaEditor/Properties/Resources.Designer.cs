@@ -974,5 +974,671 @@ namespace WpfHexaEditor.Properties {
                 return ResourceManager.GetString("ModeOverwriteString", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Case sensitive.
+        /// </summary>
+        public static string CaseSensitiveCheckbox {
+            get {
+                return ResourceManager.GetString("CaseSensitiveCheckbox", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string CloseDialogButton {
+            get {
+                return ResourceManager.GetString("CloseDialogButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close search (Esc).
+        /// </summary>
+        public static string CloseSearchTooltip {
+            get {
+                return ResourceManager.GetString("CloseSearchTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy Selection.
+        /// </summary>
+        public static string CopySelectionString {
+            get {
+                return ResourceManager.GetString("CopySelectionString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Current match.
+        /// </summary>
+        public static string CurrentMatchLabel {
+            get {
+                return ResourceManager.GetString("CurrentMatchLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cut Selection.
+        /// </summary>
+        public static string CutSelectionString {
+            get {
+                return ResourceManager.GetString("CutSelectionString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Byte.
+        /// </summary>
+        public static string DeleteByteString {
+            get {
+                return ResourceManager.GetString("DeleteByteString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Selection.
+        /// </summary>
+        public static string DeleteSelectionString {
+            get {
+                return ResourceManager.GetString("DeleteSelectionString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Find All.
+        /// </summary>
+        public static string FindAllButton {
+            get {
+                return ResourceManager.GetString("FindAllButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Find and Replace.
+        /// </summary>
+        public static string FindAndReplaceDialogTitle {
+            get {
+                return ResourceManager.GetString("FindAndReplaceDialogTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Find.
+        /// </summary>
+        public static string FindGroupHeader {
+            get {
+                return ResourceManager.GetString("FindGroupHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string FindNextButton {
+            get {
+                return ResourceManager.GetString("FindNextButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Previous.
+        /// </summary>
+        public static string FindPreviousButton {
+            get {
+                return ResourceManager.GetString("FindPreviousButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Find:.
+        /// </summary>
+        public static string FindTextLabel {
+            get {
+                return ResourceManager.GetString("FindTextLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Go to Offset....
+        /// </summary>
+        public static string GoToOffsetString {
+            get {
+                return ResourceManager.GetString("GoToOffsetString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Hex.
+        /// </summary>
+        public static string HexModeLabel {
+            get {
+                return ResourceManager.GetString("HexModeLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Highlight all matches.
+        /// </summary>
+        public static string HighlightAllCheckbox {
+            get {
+                return ResourceManager.GetString("HighlightAllCheckbox", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Insert Byte....
+        /// </summary>
+        public static string InsertByteString {
+            get {
+                return ResourceManager.GetString("InsertByteString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Match case.
+        /// </summary>
+        public static string MatchCaseLabel {
+            get {
+                return ResourceManager.GetString("MatchCaseLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} matches found.
+        /// </summary>
+        public static string MatchesFoundFormat {
+            get {
+                return ResourceManager.GetString("MatchesFoundFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Next match (F3).
+        /// </summary>
+        public static string NextMatchTooltip {
+            get {
+                return ResourceManager.GetString("NextMatchTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No results found.
+        /// </summary>
+        public static string NoResultsFound {
+            get {
+                return ResourceManager.GetString("NoResultsFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Previous match (Shift+F3).
+        /// </summary>
+        public static string PreviousMatchTooltip {
+            get {
+                return ResourceManager.GetString("PreviousMatchTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        public static string PropertiesString {
+            get {
+                return ResourceManager.GetString("PropertiesString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Quick search (Ctrl+F).
+        /// </summary>
+        public static string QuickSearchTooltip {
+            get {
+                return ResourceManager.GetString("QuickSearchTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Regex.
+        /// </summary>
+        public static string RegexModeLabel {
+            get {
+                return ResourceManager.GetString("RegexModeLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace All.
+        /// </summary>
+        public static string ReplaceAllButton {
+            get {
+                return ResourceManager.GetString("ReplaceAllButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace.
+        /// </summary>
+        public static string ReplaceButton {
+            get {
+                return ResourceManager.GetString("ReplaceButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace.
+        /// </summary>
+        public static string ReplaceGroupHeader {
+            get {
+                return ResourceManager.GetString("ReplaceGroupHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace with:.
+        /// </summary>
+        public static string ReplaceTextLabel {
+            get {
+                return ResourceManager.GetString("ReplaceTextLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} replaced.
+        /// </summary>
+        public static string ReplacedFormat {
+            get {
+                return ResourceManager.GetString("ReplacedFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Results.
+        /// </summary>
+        public static string ResultsGroupHeader {
+            get {
+                return ResourceManager.GetString("ResultsGroupHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Find:.
+        /// </summary>
+        public static string SearchFindLabel {
+            get {
+                return ResourceManager.GetString("SearchFindLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search in selection only.
+        /// </summary>
+        public static string SearchInSelectionCheckbox {
+            get {
+                return ResourceManager.GetString("SearchInSelectionCheckbox", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter search text....
+        /// </summary>
+        public static string SearchModePlaceholder {
+            get {
+                return ResourceManager.GetString("SearchModePlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No matches found.
+        /// </summary>
+        public static string SearchNoMatchesString {
+            get {
+                return ResourceManager.GetString("SearchNoMatchesString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string SearchOptionsLabel {
+            get {
+                return ResourceManager.GetString("SearchOptionsLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search options.
+        /// </summary>
+        public static string SearchOptionsTooltip {
+            get {
+                return ResourceManager.GetString("SearchOptionsTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string SearchPanelTitle {
+            get {
+                return ResourceManager.GetString("SearchPanelTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Results.
+        /// </summary>
+        public static string SearchResultsLabel {
+            get {
+                return ResourceManager.GetString("SearchResultsLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelling....
+        /// </summary>
+        public static string StatusCancelling {
+            get {
+                return ResourceManager.GetString("StatusCancelling", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Error: {0}.
+        /// </summary>
+        public static string StatusError {
+            get {
+                return ResourceManager.GetString("StatusError", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Found {0} matches in {1}ms.
+        /// </summary>
+        public static string StatusFoundMatchesFormat {
+            get {
+                return ResourceManager.GetString("StatusFoundMatchesFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Found {0} matches in {1}ms ({2:F2} MB/s).
+        /// </summary>
+        public static string StatusFoundMatchesWithSpeedFormat {
+            get {
+                return ResourceManager.GetString("StatusFoundMatchesWithSpeedFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid regular expression.
+        /// </summary>
+        public static string StatusInvalidRegex {
+            get {
+                return ResourceManager.GetString("StatusInvalidRegex", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid replacement pattern.
+        /// </summary>
+        public static string StatusInvalidReplacementPattern {
+            get {
+                return ResourceManager.GetString("StatusInvalidReplacementPattern", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid search pattern.
+        /// </summary>
+        public static string StatusInvalidSearchPattern {
+            get {
+                return ResourceManager.GetString("StatusInvalidSearchPattern", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Match found at position 0x{0:X8}.
+        /// </summary>
+        public static string StatusMatchFoundAtFormat {
+            get {
+                return ResourceManager.GetString("StatusMatchFoundAtFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Match found at position 0x{0:X8} (wrapped).
+        /// </summary>
+        public static string StatusMatchFoundAtWrappedFormat {
+            get {
+                return ResourceManager.GetString("StatusMatchFoundAtWrappedFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Match {0} of {1} at position 0x{2:X8}.
+        /// </summary>
+        public static string StatusMatchOfTotalFormat {
+            get {
+                return ResourceManager.GetString("StatusMatchOfTotalFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No matches to replace.
+        /// </summary>
+        public static string StatusNoMatchesToReplace {
+            get {
+                return ResourceManager.GetString("StatusNoMatchesToReplace", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No more bookmarks after current position.
+        /// </summary>
+        public static string StatusNoMoreBookmarksAfter {
+            get {
+                return ResourceManager.GetString("StatusNoMoreBookmarksAfter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No more bookmarks before current position.
+        /// </summary>
+        public static string StatusNoMoreBookmarksBefore {
+            get {
+                return ResourceManager.GetString("StatusNoMoreBookmarksBefore", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No more matches found.
+        /// </summary>
+        public static string StatusNoMoreMatches {
+            get {
+                return ResourceManager.GetString("StatusNoMoreMatches", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No previous matches found.
+        /// </summary>
+        public static string StatusNoPreviousMatches {
+            get {
+                return ResourceManager.GetString("StatusNoPreviousMatches", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reached end of file.
+        /// </summary>
+        public static string StatusReachedEndOfFile {
+            get {
+                return ResourceManager.GetString("StatusReachedEndOfFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reached start of file.
+        /// </summary>
+        public static string StatusReachedStartOfFile {
+            get {
+                return ResourceManager.GetString("StatusReachedStartOfFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace all error: {0}.
+        /// </summary>
+        public static string StatusReplaceAllError {
+            get {
+                return ResourceManager.GetString("StatusReplaceAllError", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace cancelled.
+        /// </summary>
+        public static string StatusReplaceCancelled {
+            get {
+                return ResourceManager.GetString("StatusReplaceCancelled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace complete.
+        /// </summary>
+        public static string StatusReplaceComplete {
+            get {
+                return ResourceManager.GetString("StatusReplaceComplete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace error: {0}.
+        /// </summary>
+        public static string StatusReplaceError {
+            get {
+                return ResourceManager.GetString("StatusReplaceError", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replaced at position 0x{0:X8} (Total: {1}).
+        /// </summary>
+        public static string StatusReplacedAtFormat {
+            get {
+                return ResourceManager.GetString("StatusReplacedAtFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replaced {0} occurrences.
+        /// </summary>
+        public static string StatusReplacedFormat {
+            get {
+                return ResourceManager.GetString("StatusReplacedFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replaced {0} occurrence(s). Total replacements: {1}.
+        /// </summary>
+        public static string StatusReplacedOccurrencesFormat {
+            get {
+                return ResourceManager.GetString("StatusReplacedOccurrencesFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replacing....
+        /// </summary>
+        public static string StatusReplacing {
+            get {
+                return ResourceManager.GetString("StatusReplacing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search cancelled.
+        /// </summary>
+        public static string StatusSearchCancelled {
+            get {
+                return ResourceManager.GetString("StatusSearchCancelled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search complete.
+        /// </summary>
+        public static string StatusSearchComplete {
+            get {
+                return ResourceManager.GetString("StatusSearchComplete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Searching....
+        /// </summary>
+        public static string StatusSearching {
+            get {
+                return ResourceManager.GetString("StatusSearching", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Text.
+        /// </summary>
+        public static string TextModeLabel {
+            get {
+                return ResourceManager.GetString("TextModeLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Total matches.
+        /// </summary>
+        public static string TotalMatchesLabel {
+            get {
+                return ResourceManager.GetString("TotalMatchesLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use regular expressions.
+        /// </summary>
+        public static string UseRegexCheckbox {
+            get {
+                return ResourceManager.GetString("UseRegexCheckbox", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Whole word.
+        /// </summary>
+        public static string WholeWordCheckbox {
+            get {
+                return ResourceManager.GetString("WholeWordCheckbox", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Whole word.
+        /// </summary>
+        public static string WholeWordLabel {
+            get {
+                return ResourceManager.GetString("WholeWordLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wildcard.
+        /// </summary>
+        public static string WildcardModeLabel {
+            get {
+                return ResourceManager.GetString("WildcardModeLabel", resourceCulture);
+            }
+        }
     }
 }
