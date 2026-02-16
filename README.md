@@ -51,6 +51,23 @@ V2 represents a complete architectural overhaul with **dramatic performance impr
 
 **[See full V1 vs V2 comparison](#-feature-comparison-v1-legacy-vs-v2)** 👇
 
+### 🌐 Cross-Platform Architecture (Preview)
+
+**NEW**: Core library is now platform-agnostic! The business logic has been extracted to `netstandard2.0`, enabling support for multiple UI frameworks:
+
+- ✅ **WpfHexaEditor.Core** - Platform-agnostic business logic (netstandard2.0)
+- ✅ **WpfHexaEditor.Wpf** - WPF platform implementation (net48, net8.0-windows)
+- ✅ **WpfHexaEditor.Avalonia** - Avalonia platform implementation (net8.0)
+- 🚧 **Future**: MAUI, Uno Platform, Console applications
+
+**Key Benefits:**
+- 📱 **True Cross-Platform** - Same Core works on Windows (WPF), Linux, macOS, Web (Avalonia)
+- 🧪 **Testable** - Business logic tested without UI frameworks (46 unit tests ✓)
+- 🔌 **Zero Dependencies** - Core has no UI framework dependencies
+- ⚡ **Same Performance** - Full SIMD/parallel optimizations maintained
+
+**Status:** Preview - Core library complete with tests and examples. See [ARCHITECTURE.md](Sources/ARCHITECTURE.md) for details.
+
 ### 🎯 Perfect For
 
 - 🔍 **Developers** - Debug binary protocols, inspect file formats
