@@ -13,7 +13,7 @@ using WpfHexaEditor.Core.MethodExtention;
 namespace WpfHexaEditor.Core.Bytes
 {
     /// <summary>
-    /// High-performance extensions for ByteProviderLegacy using Span&lt;byte&gt; and ArrayPool
+    /// High-performance extensions for ByteProvider using Span&lt;byte&gt; and ArrayPool
     /// to reduce memory allocations and improve performance
     /// </summary>
     public static class ByteProviderSpanExtensions
@@ -22,7 +22,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// Gets bytes as a ReadOnlySpan using ArrayPool to avoid allocations.
         /// IMPORTANT: The returned span is only valid within the using block scope.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="position">Start position</param>
         /// <param name="count">Number of bytes to read</param>
         /// <param name="buffer">Rented buffer from ArrayPool - MUST be returned after use</param>
@@ -40,7 +40,7 @@ namespace WpfHexaEditor.Core.Bytes
         ///         ArrayPool&lt;byte&gt;.Shared.Return(rentedBuffer);
         /// }
         /// </example>
-        public static ReadOnlySpan<byte> GetBytesSpan(this ByteProviderLegacy provider, long position, int count, out byte[] buffer)
+        public static ReadOnlySpan<byte> GetBytesSpan(this ByteProvider provider, long position, int count, out byte[] buffer)
         {
             if (provider == null) throw new ArgumentNullException(nameof(provider));
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
@@ -72,12 +72,12 @@ namespace WpfHexaEditor.Core.Bytes
         /// Gets bytes as a Span for modification operations.
         /// The span points to a rented buffer that MUST be returned to the ArrayPool.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="position">Start position</param>
         /// <param name="count">Number of bytes to read</param>
         /// <param name="buffer">Rented buffer from ArrayPool - MUST be returned after use</param>
         /// <returns>Span pointing to the rented buffer data</returns>
-        public static Span<byte> GetBytesSpanMutable(this ByteProviderLegacy provider, long position, int count, out byte[] buffer)
+        public static Span<byte> GetBytesSpanMutable(this ByteProvider provider, long position, int count, out byte[] buffer)
         {
             if (provider == null) throw new ArgumentNullException(nameof(provider));
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
@@ -105,13 +105,13 @@ namespace WpfHexaEditor.Core.Bytes
         }
 
         /// <summary>
-        /// Writes span data to the ByteProviderLegacy.
+        /// Writes span data to the ByteProvider.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="position">Start position</param>
         /// <param name="data">Data to write</param>
         /// <returns>Number of bytes written</returns>
-        public static int WriteBytesSpan(this ByteProviderLegacy provider, long position, ReadOnlySpan<byte> data)
+        public static int WriteBytesSpan(this ByteProvider provider, long position, ReadOnlySpan<byte> data)
         {
             if (provider == null) throw new ArgumentNullException(nameof(provider));
             if (provider.ReadOnlyMode) return 0;
@@ -134,11 +134,11 @@ namespace WpfHexaEditor.Core.Bytes
         /// High-performance buffer helper for reading large chunks.
         /// Automatically handles ArrayPool rental and disposal.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="position">Start position</param>
         /// <param name="count">Number of bytes</param>
         /// <returns>PooledBuffer that MUST be disposed</returns>
-        public static PooledBuffer GetBytesPooled(this ByteProviderLegacy provider, long position, int count)
+        public static PooledBuffer GetBytesPooled(this ByteProvider provider, long position, int count)
         {
             return new PooledBuffer(provider, position, count);
         }
@@ -146,11 +146,11 @@ namespace WpfHexaEditor.Core.Bytes
         /// <summary>
         /// Compares two byte sequences for equality using Span (faster than array comparison).
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="position">Position to start comparison</param>
         /// <param name="pattern">Pattern to compare against</param>
         /// <returns>True if sequences match</returns>
-        public static bool SequenceEqualAt(this ByteProviderLegacy provider, long position, ReadOnlySpan<byte> pattern)
+        public static bool SequenceEqualAt(this ByteProvider provider, long position, ReadOnlySpan<byte> pattern)
         {
             if (provider == null) return false;
             if (pattern.Length == 0) return false;
@@ -172,7 +172,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// HIGH-PERFORMANCE: Find all occurrences of pattern using Span&lt;byte&gt; and ArrayPool.
         /// This method is 2-5x faster than FindIndexOf() and allocates 90% less memory.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="pattern">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <param name="chunkSize">Size of chunks to read (default 64KB, optimal for most files)</param>
@@ -197,7 +197,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// // For large files, use bigger chunks
         /// var positions = provider.FindIndexOfOptimized(pattern, 0, chunkSize: 1024 * 1024).ToList();
         /// </example>
-        public static IEnumerable<long> FindIndexOfOptimized(this ByteProviderLegacy provider, byte[] pattern,
+        public static IEnumerable<long> FindIndexOfOptimized(this ByteProvider provider, byte[] pattern,
             long startPosition = 0, int chunkSize = 65536)
         {
             // Validation
@@ -251,12 +251,12 @@ namespace WpfHexaEditor.Core.Bytes
         /// HIGH-PERFORMANCE: Find first occurrence of pattern using Span&lt;byte&gt; and ArrayPool.
         /// Stops as soon as first match is found (faster than FindIndexOfOptimized().FirstOrDefault()).
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="pattern">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <param name="chunkSize">Size of chunks to read (default 64KB)</param>
         /// <returns>Position of first match, or -1 if not found</returns>
-        public static long FindFirstOptimized(this ByteProviderLegacy provider, byte[] pattern,
+        public static long FindFirstOptimized(this ByteProvider provider, byte[] pattern,
             long startPosition = 0, int chunkSize = 65536)
         {
             // Validation
@@ -305,12 +305,12 @@ namespace WpfHexaEditor.Core.Bytes
         /// HIGH-PERFORMANCE: Count occurrences of pattern without allocating result list.
         /// Fastest way to count matches when you don't need the positions.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="pattern">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <param name="chunkSize">Size of chunks to read (default 64KB)</param>
         /// <returns>Number of occurrences</returns>
-        public static int CountOccurrencesOptimized(this ByteProviderLegacy provider, byte[] pattern,
+        public static int CountOccurrencesOptimized(this ByteProvider provider, byte[] pattern,
             long startPosition = 0, int chunkSize = 65536)
         {
             if (provider == null) return 0;
@@ -367,7 +367,7 @@ namespace WpfHexaEditor.Core.Bytes
         private readonly byte[] _buffer;
         private readonly int _length;
 
-        internal PooledBuffer(ByteProviderLegacy provider, long position, int count)
+        internal PooledBuffer(ByteProvider provider, long position, int count)
         {
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
 

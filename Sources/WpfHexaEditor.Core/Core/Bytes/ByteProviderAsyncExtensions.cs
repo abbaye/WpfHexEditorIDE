@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace WpfHexaEditor.Core.Bytes
 {
     /// <summary>
-    /// Async/await extensions for ByteProviderLegacy to enable non-blocking I/O operations.
+    /// Async/await extensions for ByteProvider to enable non-blocking I/O operations.
     /// Keeps UI responsive during long-running operations on large files.
     /// </summary>
     public static class ByteProviderAsyncExtensions
@@ -24,12 +24,12 @@ namespace WpfHexaEditor.Core.Bytes
         /// <summary>
         /// Asynchronously reads a single byte from the provider.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="position">Position to read from</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Tuple of (byte value, success)</returns>
         public static Task<(byte? value, bool success)> GetByteAsync(
-            this ByteProviderLegacy provider,
+            this ByteProvider provider,
             long position,
             CancellationToken cancellationToken = default)
         {
@@ -40,13 +40,13 @@ namespace WpfHexaEditor.Core.Bytes
         /// Asynchronously reads multiple bytes from the provider.
         /// Uses ArrayPool internally to reduce allocations.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="position">Start position</param>
         /// <param name="count">Number of bytes to read</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Array of bytes read</returns>
         public static async Task<byte[]> GetBytesAsync(
-            this ByteProviderLegacy provider,
+            this ByteProvider provider,
             long position,
             int count,
             CancellationToken cancellationToken = default)
@@ -73,7 +73,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// Asynchronously reads bytes into a pre-allocated buffer.
         /// More efficient than GetBytesAsync when you can reuse buffers.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="position">Start position</param>
         /// <param name="buffer">Buffer to read into</param>
         /// <param name="offset">Offset in buffer</param>
@@ -81,7 +81,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Number of bytes actually read</returns>
         public static async Task<int> ReadBytesAsync(
-            this ByteProviderLegacy provider,
+            this ByteProvider provider,
             long position,
             byte[] buffer,
             int offset,
@@ -118,13 +118,13 @@ namespace WpfHexaEditor.Core.Bytes
         /// Asynchronously finds first occurrence of a byte pattern.
         /// Allows UI to remain responsive during long searches.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="pattern">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Position of first match, or -1 if not found</returns>
         public static async Task<long> FindFirstAsync(
-            this ByteProviderLegacy provider,
+            this ByteProvider provider,
             byte[] pattern,
             long startPosition = 0,
             CancellationToken cancellationToken = default)
@@ -146,14 +146,14 @@ namespace WpfHexaEditor.Core.Bytes
         /// Asynchronously finds all occurrences of a byte pattern.
         /// Reports progress during the search based on bytes scanned.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="pattern">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <param name="progress">Progress reporter (0-100)</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>List of all match positions</returns>
         public static async Task<List<long>> FindAllAsync(
-            this ByteProviderLegacy provider,
+            this ByteProvider provider,
             byte[] pattern,
             long startPosition = 0,
             IProgress<int> progress = null,
@@ -257,13 +257,13 @@ namespace WpfHexaEditor.Core.Bytes
         /// <summary>
         /// Asynchronously writes bytes to the provider.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="position">Position to write at</param>
         /// <param name="data">Data to write</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Task that completes when write is done</returns>
         public static async Task WriteBytesAsync(
-            this ByteProviderLegacy provider,
+            this ByteProvider provider,
             long position,
             byte[] data,
             CancellationToken cancellationToken = default)
@@ -286,7 +286,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// Asynchronously replaces all occurrences of a pattern with replacement data.
         /// Reports progress during the operation.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="searchPattern">Pattern to search for</param>
         /// <param name="replacePattern">Pattern to replace with</param>
         /// <param name="startPosition">Position to start search</param>
@@ -294,7 +294,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Number of replacements made</returns>
         public static async Task<int> ReplaceAllAsync(
-            this ByteProviderLegacy provider,
+            this ByteProvider provider,
             byte[] searchPattern,
             byte[] replacePattern,
             long startPosition = 0,
@@ -334,14 +334,14 @@ namespace WpfHexaEditor.Core.Bytes
         /// Asynchronously calculates hash of a byte range.
         /// Useful for integrity verification.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="position">Start position</param>
         /// <param name="length">Number of bytes</param>
         /// <param name="progress">Progress reporter (0-100)</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Simple checksum (for demo - use proper hash in production)</returns>
         public static async Task<long> CalculateChecksumAsync(
-            this ByteProviderLegacy provider,
+            this ByteProvider provider,
             long position,
             long length,
             IProgress<int> progress = null,

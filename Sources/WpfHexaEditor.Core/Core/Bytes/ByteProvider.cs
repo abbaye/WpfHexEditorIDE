@@ -13,9 +13,9 @@ namespace WpfHexaEditor.Core.Bytes
 {
     /// <summary>
     /// ByteProvider - Ultra-optimized byte provider with proper separation of responsibilities.
-    /// This is the modern V2 implementation. Legacy V1 code should use ByteProviderLegacy.
+    /// This is the modern V2 implementation. Legacy V1 code should use ByteProvider.
     ///
-    /// Key improvements over ByteProviderLegacy:
+    /// Key improvements over ByteProvider:
     /// - Separate storage for Modified/Inserted/Deleted (fixes insertion bugs)
     /// - Clear Virtual vs Physical position separation
     /// - Multi-layer caching (file cache 64KB + line cache + position cache)
@@ -28,7 +28,7 @@ namespace WpfHexaEditor.Core.Bytes
     /// - PositionMapper: Virtual↔Physical conversion with cache
     /// - ByteReader: Intelligent byte reading with multi-layer caching
     ///
-    /// ByteProviderLegacy (Core.Bytes.ByteProviderLegacy) remains intact for V1 compatibility.
+    /// ByteProvider (Core.Bytes.ByteProvider) remains intact for V1 compatibility.
     /// </summary>
     public sealed partial class ByteProvider : IDisposable
     {
@@ -1321,7 +1321,7 @@ namespace WpfHexaEditor.Core.Bytes
 
         #region V1 Compatibility Layer
 
-        // These properties/methods provide V1 (ByteProviderLegacy) compatibility
+        // These properties/methods provide V1 (ByteProvider) compatibility
         // to allow HexEditorViewModel to work with V2 without major refactoring.
 
         /// <summary>

@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 using WpfHexaEditor.Core.Interfaces;
-using System.Windows.Input;
+using WpfHexaEditor.Core.Platform.Input;
 
 namespace WpfHexaEditor.Core.Bytes
 {
@@ -116,7 +116,7 @@ namespace WpfHexaEditor.Core.Bytes
             del_ByteOnChange?.Invoke(Byte, index);
         }
 
-        public (ByteAction, bool) Update(DataVisualType type, Key _key, ByteOrderType byteOrder, ref KeyDownLabel _keyDownLabel)
+        public (ByteAction, bool) Update(DataVisualType type, PlatformKey _key, ByteOrderType byteOrder, ref KeyDownLabel _keyDownLabel)
         {
             var Action = ByteAction.Nothing;
             var isLastChar = false;

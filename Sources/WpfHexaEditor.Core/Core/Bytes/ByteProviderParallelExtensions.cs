@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace WpfHexaEditor.Core.Bytes
 {
     /// <summary>
-    /// Parallel search extensions for ByteProviderLegacy using Parallel.For.
+    /// Parallel search extensions for ByteProvider using Parallel.For.
     /// Designed for large files (> 100MB) to utilize all available CPU cores.
     /// For smaller files, overhead of parallelization outweighs benefits - use standard methods instead.
     /// </summary>
@@ -31,7 +31,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// ULTRA HIGH-PERFORMANCE: Find all occurrences using parallel search for large files.
         /// Automatically uses all CPU cores. 2-4x faster than single-threaded for files > 100MB.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="pattern">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <param name="progress">Progress reporter (0-100)</param>
@@ -45,7 +45,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// // Files < 100MB: Falls back to standard search (avoids overhead)
         /// </example>
         public static List<long> FindAllParallel(
-            this ByteProviderLegacy provider,
+            this ByteProvider provider,
             byte[] pattern,
             long startPosition = 0,
             IProgress<int> progress = null,
@@ -70,7 +70,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// Divides file into chunks and searches in parallel using Parallel.For.
         /// </summary>
         private static List<long> FindAllParallelInternal(
-            ByteProviderLegacy provider,
+            ByteProvider provider,
             byte[] pattern,
             long startPosition,
             IProgress<int> progress,
@@ -197,13 +197,13 @@ namespace WpfHexaEditor.Core.Bytes
         /// ULTRA HIGH-PERFORMANCE: Count occurrences using parallel search for large files.
         /// 2-4x faster than single-threaded for files > 100MB.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="pattern">Pattern to count</param>
         /// <param name="startPosition">Position to start search</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Number of occurrences</returns>
         public static int CountOccurrencesParallel(
-            this ByteProviderLegacy provider,
+            this ByteProvider provider,
             byte[] pattern,
             long startPosition = 0,
             CancellationToken cancellationToken = default)

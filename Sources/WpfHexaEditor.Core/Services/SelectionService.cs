@@ -79,7 +79,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Validate and clamp selection to provider bounds
         /// </summary>
-        public (long start, long stop) ValidateSelection(ByteProviderLegacy provider, long selectionStart, long selectionStop)
+        public (long start, long stop) ValidateSelection(ByteProvider provider, long selectionStart, long selectionStop)
         {
             if (provider == null || !provider.IsOpen)
                 return (-1, -1);
@@ -99,7 +99,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Get byte array from selection
         /// </summary>
-        public byte[] GetSelectionBytes(ByteProviderLegacy provider, long selectionStart, long selectionStop, bool copyChange = true)
+        public byte[] GetSelectionBytes(ByteProvider provider, long selectionStart, long selectionStop, bool copyChange = true)
         {
             if (provider == null || !provider.IsOpen)
                 return null;
@@ -115,7 +115,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Get all bytes from provider
         /// </summary>
-        public byte[] GetAllBytes(ByteProviderLegacy provider, bool copyChange = true)
+        public byte[] GetAllBytes(ByteProvider provider, bool copyChange = true)
         {
             if (provider == null || !provider.IsOpen)
                 return null;
@@ -126,7 +126,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Calculate selection start position for "Select All"
         /// </summary>
-        public long GetSelectAllStart(ByteProviderLegacy provider)
+        public long GetSelectAllStart(ByteProvider provider)
         {
             if (provider == null || !provider.IsOpen)
                 return -1;
@@ -137,7 +137,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Calculate selection stop position for "Select All"
         /// </summary>
-        public long GetSelectAllStop(ByteProviderLegacy provider)
+        public long GetSelectAllStop(ByteProvider provider)
         {
             if (provider == null || !provider.IsOpen)
                 return -1;
@@ -148,7 +148,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Check if entire file is selected
         /// </summary>
-        public bool IsAllSelected(ByteProviderLegacy provider, long selectionStart, long selectionStop)
+        public bool IsAllSelected(ByteProvider provider, long selectionStart, long selectionStop)
         {
             if (provider == null || !provider.IsOpen)
                 return false;
@@ -167,7 +167,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Extend selection by offset
         /// </summary>
-        public long ExtendSelection(ByteProviderLegacy provider, long currentPosition, long offset, long visualStart = -1, long visualStop = -1)
+        public long ExtendSelection(ByteProvider provider, long currentPosition, long offset, long visualStart = -1, long visualStop = -1)
         {
             if (provider == null || !provider.IsOpen)
                 return currentPosition;
@@ -193,7 +193,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Get selection byte at specific position
         /// </summary>
-        public byte? GetSelectionByte(ByteProviderLegacy provider, long position)
+        public byte? GetSelectionByte(ByteProvider provider, long position)
         {
             if (provider == null || !provider.IsOpen)
                 return null;

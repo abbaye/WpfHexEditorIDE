@@ -5,7 +5,7 @@
 //////////////////////////////////////////////
 
 using System.Collections.Generic;
-using System.Windows.Input;
+using WpfHexaEditor.Core.Platform.Input;
 
 namespace WpfHexaEditor.Core.Interfaces
 {
@@ -22,7 +22,7 @@ namespace WpfHexaEditor.Core.Interfaces
 
         public bool IsEqual(byte[] bytes);
 
-        public (ByteAction, bool) Update(DataVisualType type, Key _key, ByteOrderType byteOrder, ref KeyDownLabel _keyDownLabel);
+        public (ByteAction, bool) Update(DataVisualType type, PlatformKey _key, ByteOrderType byteOrder, ref KeyDownLabel _keyDownLabel);
 
         public void ChangeByteValue(byte newValue, long position);
 

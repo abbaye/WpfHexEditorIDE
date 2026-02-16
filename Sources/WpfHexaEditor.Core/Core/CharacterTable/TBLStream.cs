@@ -341,9 +341,9 @@ namespace WpfHexaEditor.Core.CharacterTable
         public int Length => _dteList.Count;
 
         /// <summary>
-        /// Get of set bookmarks
-        /// </summary>
-        public List<BookMark> BookMarks { get; set; } = new();
+//         /// Get of set bookmarks
+//         /// </summary>
+// // TODO: UI-specific -         public List<BookMark> BookMarks { get; set; } = new();
 
         public int TotalDte => _dteList.Count(l => l.Value.Type == DteType.DualTitleEncoding);
         public int TotalMte => _dteList.Count(l => l.Value.Type == DteType.MultipleTitleEncoding);

@@ -6,7 +6,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Media;
+using WpfHexaEditor.Core.Platform.Media;
 using System.Xml.Serialization;
 
 namespace WpfHexaEditor.Models
@@ -149,21 +149,21 @@ namespace WpfHexaEditor.Models
         public string EditorVersion { get; set; } = "2.2.0";
 
         /// <summary>
-        /// Helper method to convert Color to ARGB hex string.
+        /// Helper method to convert PlatformColor to ARGB hex string.
         /// </summary>
-        public static string ColorToString(Color color)
+        public static string ColorToString(PlatformColor color)
         {
             return $"#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}";
         }
 
         /// <summary>
-        /// Helper method to convert ARGB hex string to Color.
+        /// Helper method to convert ARGB hex string to PlatformColor.
         /// </summary>
-        public static Color StringToColor(string argb)
+        public static PlatformColor StringToColor(string argb)
         {
             try
             {
-                return (Color)ColorConverter.ConvertFromString(argb);
+                return (PlatformColor)ColorConverter.ConvertFromString(argb);
             }
             catch
             {

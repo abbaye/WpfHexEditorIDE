@@ -71,7 +71,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Find first occurrence of byte array in provider
         /// </summary>
-        public long FindFirst(ByteProviderLegacy provider, byte[] data, long startPosition = 0)
+        public long FindFirst(ByteProvider provider, byte[] data, long startPosition = 0)
         {
             if (data == null || provider == null || !provider.IsOpen)
                 return -1;
@@ -95,11 +95,11 @@ namespace WpfHexaEditor.Services
         /// HIGH-PERFORMANCE: Find first occurrence using Span&lt;byte&gt; and ArrayPool.
         /// 2-5x faster than FindFirst() with 90% less memory allocation.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="data">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <returns>Position of first occurrence, or -1 if not found</returns>
-        public long FindFirstOptimized(ByteProviderLegacy provider, byte[] data, long startPosition = 0)
+        public long FindFirstOptimized(ByteProvider provider, byte[] data, long startPosition = 0)
         {
             if (data == null || provider == null || !provider.IsOpen)
                 return -1;
@@ -117,7 +117,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Find next occurrence (search from current position + 1)
         /// </summary>
-        public long FindNext(ByteProviderLegacy provider, byte[] data, long currentPosition)
+        public long FindNext(ByteProvider provider, byte[] data, long currentPosition)
         {
             return FindFirst(provider, data, currentPosition + 1);
         }
@@ -125,7 +125,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Find last occurrence of byte array in provider
         /// </summary>
-        public long FindLast(ByteProviderLegacy provider, byte[] data, long startPosition = 0)
+        public long FindLast(ByteProvider provider, byte[] data, long startPosition = 0)
         {
             if (data == null || provider == null || !provider.IsOpen)
                 return -1;
@@ -150,7 +150,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Find all occurrences of byte array in provider
         /// </summary>
-        public IEnumerable<long> FindAll(ByteProviderLegacy provider, byte[] data, long startPosition = 0)
+        public IEnumerable<long> FindAll(ByteProvider provider, byte[] data, long startPosition = 0)
         {
             if (data == null || provider == null || !provider.IsOpen)
                 return null;
@@ -161,7 +161,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Find all occurrences with caching support
         /// </summary>
-        public IEnumerable<long> FindAllCached(ByteProviderLegacy provider, byte[] data, long startPosition = 0)
+        public IEnumerable<long> FindAllCached(ByteProvider provider, byte[] data, long startPosition = 0)
         {
             if (data == null || provider == null || !provider.IsOpen)
                 return null;
@@ -174,11 +174,11 @@ namespace WpfHexaEditor.Services
         /// 2-5x faster than FindAll() with 90% less memory allocation.
         /// Recommended for large files or frequent searches.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="data">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <returns>Enumerable of positions where pattern is found</returns>
-        public IEnumerable<long> FindAllOptimized(ByteProviderLegacy provider, byte[] data, long startPosition = 0)
+        public IEnumerable<long> FindAllOptimized(ByteProvider provider, byte[] data, long startPosition = 0)
         {
             if (data == null || provider == null || !provider.IsOpen)
                 return null;
@@ -192,7 +192,7 @@ namespace WpfHexaEditor.Services
         /// Cache automatically evicts least recently used results when capacity is reached.
         /// ULTRA FAST: Automatically uses parallel search for files > 100MB (2-4x faster).
         /// </summary>
-        public IEnumerable<long> FindAllCachedOptimized(ByteProviderLegacy provider, byte[] data, long startPosition = 0)
+        public IEnumerable<long> FindAllCachedOptimized(ByteProvider provider, byte[] data, long startPosition = 0)
         {
             if (data == null || provider == null || !provider.IsOpen)
                 return null;
@@ -220,11 +220,11 @@ namespace WpfHexaEditor.Services
         /// Fastest way to count matches when you don't need the positions.
         /// ULTRA FAST: Automatically uses parallel counting for files > 100MB (2-4x faster).
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="data">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <returns>Number of occurrences</returns>
-        public int CountOccurrences(ByteProviderLegacy provider, byte[] data, long startPosition = 0)
+        public int CountOccurrences(ByteProvider provider, byte[] data, long startPosition = 0)
         {
             if (data == null || provider == null || !provider.IsOpen)
                 return 0;
@@ -243,14 +243,14 @@ namespace WpfHexaEditor.Services
         /// ASYNC: Find first occurrence without blocking UI.
         /// UI stays responsive during long searches on large files.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="data">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <param name="progress">Progress reporter (0-100%)</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Position of first occurrence, or -1 if not found</returns>
         public async Task<long> FindFirstAsync(
-            ByteProviderLegacy provider,
+            ByteProvider provider,
             byte[] data,
             long startPosition = 0,
             IProgress<int> progress = null,
@@ -279,7 +279,7 @@ namespace WpfHexaEditor.Services
         /// Provides real-time progress updates and supports cancellation.
         /// Perfect for large files where users need to see progress.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="data">Pattern to search for</param>
         /// <param name="startPosition">Position to start search</param>
         /// <param name="progress">Progress reporter (0-100%)</param>
@@ -302,7 +302,7 @@ namespace WpfHexaEditor.Services
         /// }
         /// </example>
         public async Task<List<long>> FindAllAsync(
-            ByteProviderLegacy provider,
+            ByteProvider provider,
             byte[] data,
             long startPosition = 0,
             IProgress<int> progress = null,
@@ -329,14 +329,14 @@ namespace WpfHexaEditor.Services
         /// ASYNC: Count occurrences without blocking UI.
         /// Shows real-time progress as file is scanned.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="data">Pattern to count</param>
         /// <param name="startPosition">Position to start search</param>
         /// <param name="progress">Progress reporter (0-100%)</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Number of occurrences</returns>
         public async Task<int> CountOccurrencesAsync(
-            ByteProviderLegacy provider,
+            ByteProvider provider,
             byte[] data,
             long startPosition = 0,
             IProgress<int> progress = null,
@@ -367,7 +367,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Replace byte with another in a range
         /// </summary>
-        public void ReplaceByte(ByteProviderLegacy provider, long startPosition, long length, byte original, byte replace, bool readOnlyMode)
+        public void ReplaceByte(ByteProvider provider, long startPosition, long length, byte original, byte replace, bool readOnlyMode)
         {
             if (provider == null || !provider.IsOpen) return;
             if (startPosition < 0 || length <= 0) return;
@@ -379,7 +379,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Replace first occurrence of findData with replaceData
         /// </summary>
-        public long ReplaceFirst(ByteProviderLegacy provider, byte[] findData, byte[] replaceData,
+        public long ReplaceFirst(ByteProvider provider, byte[] findData, byte[] replaceData,
             long startPosition, bool truncateLength, bool readOnlyMode)
         {
             if (findData == null || replaceData == null) return -1;
@@ -404,7 +404,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Replace next occurrence (from current position + 1)
         /// </summary>
-        public long ReplaceNext(ByteProviderLegacy provider, byte[] findData, byte[] replaceData,
+        public long ReplaceNext(ByteProvider provider, byte[] findData, byte[] replaceData,
             long currentPosition, bool truncateLength, bool readOnlyMode)
         {
             return ReplaceFirst(provider, findData, replaceData, currentPosition + 1, truncateLength, readOnlyMode);
@@ -413,7 +413,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Replace all occurrences of findData with replaceData
         /// </summary>
-        public IEnumerable<long> ReplaceAll(ByteProviderLegacy provider, byte[] findData, byte[] replaceData,
+        public IEnumerable<long> ReplaceAll(ByteProvider provider, byte[] findData, byte[] replaceData,
             bool truncateLength, bool readOnlyMode)
         {
             if (findData == null || replaceData == null) return null;
@@ -445,7 +445,7 @@ namespace WpfHexaEditor.Services
         /// Shows real-time progress: find phase (0-50%), replace phase (50-100%).
         /// User can cancel at any time with CancellationToken.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="findData">Pattern to find</param>
         /// <param name="replaceData">Data to replace with</param>
         /// <param name="truncateLength">If true, truncate replace data to match find data length</param>
@@ -477,7 +477,7 @@ namespace WpfHexaEditor.Services
         /// }
         /// </example>
         public async Task<int> ReplaceAllAsync(
-            ByteProviderLegacy provider,
+            ByteProvider provider,
             byte[] findData,
             byte[] replaceData,
             bool truncateLength,
@@ -545,7 +545,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Get cached results or perform fresh search using LRU cache
         /// </summary>
-        private IEnumerable<long> GetCachedOrFreshResults(ByteProviderLegacy provider, byte[] data, long startPosition)
+        private IEnumerable<long> GetCachedOrFreshResults(ByteProvider provider, byte[] data, long startPosition)
         {
             // Create cache key
             var cacheKey = new SearchCacheKey(data, startPosition, provider.Length);

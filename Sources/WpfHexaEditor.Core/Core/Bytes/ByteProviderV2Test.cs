@@ -13,7 +13,7 @@ namespace WpfHexaEditor.Core.Bytes
 {
     /// <summary>
     /// Test suite for ByteProvider V2 - validates architecture and performance.
-    /// Run this to verify V2 improvements over ByteProviderLegacy.
+    /// Run this to verify V2 improvements over ByteProvider.
     /// </summary>
     public static class ByteProviderV2Test
     {
