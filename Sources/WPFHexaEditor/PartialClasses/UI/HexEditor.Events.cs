@@ -475,7 +475,7 @@ namespace WpfHexaEditor
 
                         // CRITICAL UX FIX: After deletion, position cursor (with scroll) and restore focus
                         // This ensures immediate keyboard responsiveness and visibility
-                        if (_viewModel.SelectionStart != null && _viewModel.SelectionStart.IsValid)
+                        if (_viewModel.SelectionStart.IsValid)
                         {
                             SetPosition(_viewModel.SelectionStart.Value);
                         }

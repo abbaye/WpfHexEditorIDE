@@ -370,7 +370,7 @@ namespace WpfHexaEditor
                     _scrollMarkers.ClearSelection();
                 }
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
             }
         }
