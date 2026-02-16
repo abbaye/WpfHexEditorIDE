@@ -24,7 +24,24 @@ Side-by-side comparison showing how to integrate the HexEditor control in WPF vs
 
 ---
 
-### 2. [Visual Architecture](./AVALONIA_ARCHITECTURE.md) 📐
+### 2. [Compatibility Strategy](./COMPATIBILITY_STRATEGY.md) ⚠️
+**Important: Read this if you have existing WPF projects**
+
+Detailed analysis of backward compatibility and migration strategies.
+
+**Contains:**
+- Impact on existing WPF projects
+- Three compatibility strategies (A, B, C)
+- Recommended approach (Transition Period)
+- Migration guide for each strategy
+- Timeline and deprecation plan
+- Community vote information
+
+**Perfect for:** Current WPFHexaEditor users, project maintainers
+
+---
+
+### 3. [Visual Architecture](./AVALONIA_ARCHITECTURE.md) 📐
 **Start here to understand the technical architecture**
 
 Comprehensive visual design with 11 interactive Mermaid diagrams.
@@ -44,7 +61,7 @@ Comprehensive visual design with 11 interactive Mermaid diagrams.
 
 ---
 
-### 3. [Implementation Plan (English)](./AVALONIA_PORTING_PLAN.md) 📋
+### 4. [Implementation Plan (English)](./AVALONIA_PORTING_PLAN.md) 📋
 **Start here if you're implementing the port**
 
 Detailed 9-phase implementation plan for porting to Avalonia.
@@ -63,7 +80,7 @@ Detailed 9-phase implementation plan for porting to Avalonia.
 
 ---
 
-### 4. [Plan Complet (Français)](./AVALONIA_PORTAGE_PLAN.md) 📋
+### 5. [Plan Complet (Français)](./AVALONIA_PORTAGE_PLAN.md) 📋
 **Version française du plan d'implémentation**
 
 Plan détaillé en français pour le portage vers Avalonia.
