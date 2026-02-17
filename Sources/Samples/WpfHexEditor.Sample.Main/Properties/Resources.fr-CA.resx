@@ -60,21 +60,6 @@
   </resheader>
 
   <!-- ==== MENU APPLICATION ==== -->
-  <data name="Menu_File_Open" xml:space="preserve">
-    <value>Ouvrir</value>
-  </data>
-  <data name="Menu_File_Save" xml:space="preserve">
-    <value>Enregistrer</value>
-  </data>
-  <data name="Menu_File_SaveAs" xml:space="preserve">
-    <value>Enregistrer sous...</value>
-  </data>
-  <data name="Menu_File_Close" xml:space="preserve">
-    <value>Fermer</value>
-  </data>
-  <data name="Menu_File_Exit" xml:space="preserve">
-    <value>Quitter</value>
-  </data>
 
   <!-- ==== RUBAN - BARRE D'ACCÈS RAPIDE ==== -->
   <data name="QAT_Save_Label" xml:space="preserve">
@@ -878,4 +863,257 @@
     <value>Les changements de langue s'appliquent instantanément - aucun redémarrage requis ! 🚀</value>
   </data>
 
+
+  <data name="Menu_File_Open" xml:space="preserve">
+    <value>Ouvrir</value>
+  </data>
+  
+  <data name="Menu_File_Save" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  
+  <data name="Menu_File_SaveAs" xml:space="preserve">
+    <value>Enregistrer sous...</value>
+  </data>
+  
+  <data name="Menu_File_Close" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  
+  <data name="Menu_File_Exit" xml:space="preserve">
+    <value>Quitter</value>
+  </data>
+
+  
+  
+  <data name="Menu_Edit" xml:space="preserve">
+    <value>_Édition</value>
+  </data>
+  
+  <data name="Menu_Edit_Undo" xml:space="preserve">
+    <value>_Annuler</value>
+  </data>
+  
+  <data name="Menu_Edit_Redo" xml:space="preserve">
+    <value>_Rétablir</value>
+  </data>
+  
+  <data name="Menu_Edit_Find" xml:space="preserve">
+    <value>_Rechercher...</value>
+  </data>
+  
+  <data name="Menu_Edit_FindReplace" xml:space="preserve">
+    <value>Rechercher et _remplacer...</value>
+  </data>
+  
+  <data name="Menu_Edit_Copy" xml:space="preserve">
+    <value>Copier</value>
+  </data>
+  
+  <data name="Menu_Edit_Paste" xml:space="preserve">
+    <value>Coller</value>
+  </data>
+  
+  <data name="Menu_Edit_DeleteSelection" xml:space="preserve">
+    <value>Supprimer la sélection</value>
+  </data>
+  
+  <data name="Menu_Edit_SelectAll" xml:space="preserve">
+    <value>_Sélectionner tout</value>
+  </data>
+  
+  <data name="Menu_Edit_ClearSelection" xml:space="preserve">
+    <value>_Effacer la sélection</value>
+  </data>
+  
+  <data name="Menu_Edit_Bookmarks" xml:space="preserve">
+    <value>_Signets</value>
+  </data>
+  
+  <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
+    <value>Activer/Désactiver le signet</value>
+  </data>
+  
+  <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
+    <value>_Effacer tous les signets</value>
+  </data>
+
+  
+  
+  <data name="Menu_Search" xml:space="preserve">
+    <value>_Recherche</value>
+  </data>
+  
+  <data name="Menu_Search_FindNext" xml:space="preserve">
+    <value>Rechercher le _suivant</value>
+  </data>
+  
+  <data name="Menu_Search_FindPrevious" xml:space="preserve">
+    <value>Rechercher le _précédent</value>
+  </data>
+
+  
+  
+  <data name="Menu_Tools" xml:space="preserve">
+    <value>_Outils</value>
+  </data>
+  
+  <data name="Menu_Tools_Bookmarks" xml:space="preserve">
+    <value>_Signets</value>
+  </data>
+  
+  <data name="Menu_Tools_NextBookmark" xml:space="preserve">
+    <value>Signet _suivant</value>
+  </data>
+  
+  <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
+    <value>Signet _précédent</value>
+  </data>
+  
+  <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
+    <value>_Afficher tous les signets...</value>
+  </data>
+
+  
+  
+  <data name="Menu_Position" xml:space="preserve">
+    <value>_Position</value>
+  </data>
+  
+  <data name="Menu_Position_GoTo" xml:space="preserve">
+    <value>_Aller à la position...</value>
+  </data>
+
+  
+  
+  <data name="Menu_View" xml:space="preserve">
+    <value>_Affichage</value>
+  </data>
+  
+  <data name="Menu_View_DisplayOptions" xml:space="preserve">
+    <value>Options d'affichage</value>
+  </data>
+  
+  <data name="Menu_View_ShowStatusBar" xml:space="preserve">
+    <value>Afficher la barre d'état</value>
+  </data>
+  
+  <data name="Menu_View_ShowHeader" xml:space="preserve">
+    <value>Afficher l'en-tête</value>
+  </data>
+  
+  <data name="Menu_View_ShowOffset" xml:space="preserve">
+    <value>Afficher le décalage</value>
+  </data>
+  
+  <data name="Menu_View_ShowASCII" xml:space="preserve">
+    <value>Afficher ASCII</value>
+  </data>
+  
+  <data name="Menu_View_BytesPerLine" xml:space="preserve">
+    <value>Octets par ligne</value>
+  </data>
+
+  
+  
+  <data name="Menu_Options" xml:space="preserve">
+    <value>_Options</value>
+  </data>
+  
+  <data name="Menu_Options_SettingsPanel" xml:space="preserve">
+    <value>_Panneau de paramètres...</value>
+  </data>
+  
+  <data name="Menu_Options_Advanced" xml:space="preserve">
+    <value>Options _avancées (Thème, Langue)...</value>
+  </data>
+  
+  <data name="Menu_Options_ContextMenu" xml:space="preserve">
+    <value>Menu contextuel</value>
+  </data>
+  
+  <data name="Menu_Options_ShowByteToolTip" xml:space="preserve">
+    <value>Afficher l'info-bulle d'octet</value>
+  </data>
+  
+  <data name="Menu_Options_AutoHighlight" xml:space="preserve">
+    <value>Mise en surbrillance automatique</value>
+  </data>
+  
+  <data name="Menu_Options_CountSelected" xml:space="preserve">
+    <value>Compter les octets sélectionnés</value>
+  </data>
+
+  
+  
+  <data name="Menu_Help" xml:space="preserve">
+    <value>_Aide</value>
+  </data>
+  
+  <data name="Menu_Help_About" xml:space="preserve">
+    <value>_À propos</value>
+  </data>
+  
+  <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
+    <value>_Raccourcis clavier</value>
+  </data>
+
+  
+  
+  <data name="Menu_File" xml:space="preserve">
+    <value>_Fichier</value>
+  </data>
+
+  
+  
+  <data name="Toolbar_Open" xml:space="preserve">
+    <value>📂 Ouvrir</value>
+  </data>
+  
+  <data name="Toolbar_Open_ToolTip" xml:space="preserve">
+    <value>Ouvrir un fichier (Ctrl+O)</value>
+  </data>
+  
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>💾 Enregistrer</value>
+  </data>
+  
+  <data name="Toolbar_Save_ToolTip" xml:space="preserve">
+    <value>Enregistrer le fichier (Ctrl+S)</value>
+  </data>
+  
+  <data name="Toolbar_Undo" xml:space="preserve">
+    <value>↶ Annuler</value>
+  </data>
+  
+  <data name="Toolbar_Undo_ToolTip" xml:space="preserve">
+    <value>Annuler (Ctrl+Z)</value>
+  </data>
+  
+  <data name="Toolbar_Redo" xml:space="preserve">
+    <value>↷ Rétablir</value>
+  </data>
+  
+  <data name="Toolbar_Redo_ToolTip" xml:space="preserve">
+    <value>Rétablir (Ctrl+Y)</value>
+  </data>
+  
+  <data name="Toolbar_Insert" xml:space="preserve">
+    <value>INS</value>
+  </data>
+  
+  <data name="Toolbar_Insert_ToolTip" xml:space="preserve">
+    <value>Basculer mode Insertion/Écrasement (Touche Insertion)</value>
+  </data>
+  
+  <data name="Toolbar_ReadOnly" xml:space="preserve">
+    <value>🔒 LEC</value>
+  </data>
+  
+  <data name="Toolbar_ReadOnly_ToolTip" xml:space="preserve">
+    <value>Basculer mode Lecture seule</value>
+  </data>
+
+  
+  
 </root>

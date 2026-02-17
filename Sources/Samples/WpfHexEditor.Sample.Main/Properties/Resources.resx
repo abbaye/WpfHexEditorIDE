@@ -81,6 +81,236 @@
     <comment>File menu - Exit application command</comment>
   </data>
 
+  <!-- Edit Menu -->
+  <data name="Menu_Edit" xml:space="preserve">
+    <value>_Edit</value>
+    <comment>Edit menu header</comment>
+  </data>
+  <data name="Menu_Edit_Undo" xml:space="preserve">
+    <value>_Undo</value>
+    <comment>Edit menu - Undo command</comment>
+  </data>
+  <data name="Menu_Edit_Redo" xml:space="preserve">
+    <value>_Redo</value>
+    <comment>Edit menu - Redo command</comment>
+  </data>
+  <data name="Menu_Edit_Find" xml:space="preserve">
+    <value>_Find...</value>
+    <comment>Edit menu - Find command</comment>
+  </data>
+  <data name="Menu_Edit_FindReplace" xml:space="preserve">
+    <value>Find and _Replace...</value>
+    <comment>Edit menu - Find and Replace command</comment>
+  </data>
+  <data name="Menu_Edit_Copy" xml:space="preserve">
+    <value>Copy</value>
+    <comment>Edit menu - Copy command</comment>
+  </data>
+  <data name="Menu_Edit_Paste" xml:space="preserve">
+    <value>Paste</value>
+    <comment>Edit menu - Paste command</comment>
+  </data>
+  <data name="Menu_Edit_DeleteSelection" xml:space="preserve">
+    <value>Delete Selection</value>
+    <comment>Edit menu - Delete Selection command</comment>
+  </data>
+  <data name="Menu_Edit_SelectAll" xml:space="preserve">
+    <value>Select _All</value>
+    <comment>Edit menu - Select All command</comment>
+  </data>
+  <data name="Menu_Edit_ClearSelection" xml:space="preserve">
+    <value>_Clear Selection</value>
+    <comment>Edit menu - Clear Selection command</comment>
+  </data>
+  <data name="Menu_Edit_Bookmarks" xml:space="preserve">
+    <value>_Bookmarks</value>
+    <comment>Edit menu - Bookmarks submenu</comment>
+  </data>
+  <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
+    <value>Toggle Bookmark</value>
+    <comment>Edit menu - Toggle Bookmark command</comment>
+  </data>
+  <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
+    <value>_Clear All Bookmarks</value>
+    <comment>Edit menu - Clear All Bookmarks command</comment>
+  </data>
+
+  <!-- Search Menu -->
+  <data name="Menu_Search" xml:space="preserve">
+    <value>_Search</value>
+    <comment>Search menu header</comment>
+  </data>
+  <data name="Menu_Search_FindNext" xml:space="preserve">
+    <value>Find _Next</value>
+    <comment>Search menu - Find Next command</comment>
+  </data>
+  <data name="Menu_Search_FindPrevious" xml:space="preserve">
+    <value>Find _Previous</value>
+    <comment>Search menu - Find Previous command</comment>
+  </data>
+
+  <!-- Tools Menu -->
+  <data name="Menu_Tools" xml:space="preserve">
+    <value>_Tools</value>
+    <comment>Tools menu header</comment>
+  </data>
+  <data name="Menu_Tools_Bookmarks" xml:space="preserve">
+    <value>_Bookmarks</value>
+    <comment>Tools menu - Bookmarks submenu</comment>
+  </data>
+  <data name="Menu_Tools_NextBookmark" xml:space="preserve">
+    <value>_Next Bookmark</value>
+    <comment>Tools menu - Next Bookmark command</comment>
+  </data>
+  <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
+    <value>_Previous Bookmark</value>
+    <comment>Tools menu - Previous Bookmark command</comment>
+  </data>
+  <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
+    <value>_Show All Bookmarks...</value>
+    <comment>Tools menu - Show All Bookmarks command</comment>
+  </data>
+
+  <!-- Position Menu -->
+  <data name="Menu_Position" xml:space="preserve">
+    <value>_Position</value>
+    <comment>Position menu header</comment>
+  </data>
+  <data name="Menu_Position_GoTo" xml:space="preserve">
+    <value>_Go to Position...</value>
+    <comment>Position menu - Go to Position command</comment>
+  </data>
+
+  <!-- View Menu -->
+  <data name="Menu_View" xml:space="preserve">
+    <value>_View</value>
+    <comment>View menu header</comment>
+  </data>
+  <data name="Menu_View_DisplayOptions" xml:space="preserve">
+    <value>Display Options</value>
+    <comment>View menu - Display Options submenu</comment>
+  </data>
+  <data name="Menu_View_ShowStatusBar" xml:space="preserve">
+    <value>Show Status Bar</value>
+    <comment>View menu - Show Status Bar checkbox</comment>
+  </data>
+  <data name="Menu_View_ShowHeader" xml:space="preserve">
+    <value>Show Header</value>
+    <comment>View menu - Show Header checkbox</comment>
+  </data>
+  <data name="Menu_View_ShowOffset" xml:space="preserve">
+    <value>Show Offset</value>
+    <comment>View menu - Show Offset checkbox</comment>
+  </data>
+  <data name="Menu_View_ShowASCII" xml:space="preserve">
+    <value>Show ASCII</value>
+    <comment>View menu - Show ASCII checkbox</comment>
+  </data>
+  <data name="Menu_View_BytesPerLine" xml:space="preserve">
+    <value>Bytes Per Line</value>
+    <comment>View menu - Bytes Per Line submenu</comment>
+  </data>
+
+  <!-- Options Menu -->
+  <data name="Menu_Options" xml:space="preserve">
+    <value>_Options</value>
+    <comment>Options menu header</comment>
+  </data>
+  <data name="Menu_Options_SettingsPanel" xml:space="preserve">
+    <value>_Settings Panel...</value>
+    <comment>Options menu - Settings Panel command</comment>
+  </data>
+  <data name="Menu_Options_Advanced" xml:space="preserve">
+    <value>_Advanced Options (Theme, Language)...</value>
+    <comment>Options menu - Advanced Options command</comment>
+  </data>
+  <data name="Menu_Options_ContextMenu" xml:space="preserve">
+    <value>Context Menu</value>
+    <comment>Options menu - Context Menu checkbox</comment>
+  </data>
+  <data name="Menu_Options_ShowByteToolTip" xml:space="preserve">
+    <value>Show Byte ToolTip</value>
+    <comment>Options menu - Show Byte ToolTip checkbox</comment>
+  </data>
+  <data name="Menu_Options_AutoHighlight" xml:space="preserve">
+    <value>Auto-Highlight Selection Byte</value>
+    <comment>Options menu - Auto-Highlight Selection Byte checkbox</comment>
+  </data>
+  <data name="Menu_Options_CountSelected" xml:space="preserve">
+    <value>Count Selected Bytes</value>
+    <comment>Options menu - Count Selected Bytes checkbox</comment>
+  </data>
+
+  <!-- Help Menu -->
+  <data name="Menu_Help" xml:space="preserve">
+    <value>_Help</value>
+    <comment>Help menu header</comment>
+  </data>
+  <data name="Menu_Help_About" xml:space="preserve">
+    <value>_About</value>
+    <comment>Help menu - About command</comment>
+  </data>
+  <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
+    <value>_Keyboard Shortcuts</value>
+    <comment>Help menu - Keyboard Shortcuts command</comment>
+  </data>
+
+  <!-- File Menu (adding missing header) -->
+  <data name="Menu_File" xml:space="preserve">
+    <value>_File</value>
+    <comment>File menu header</comment>
+  </data>
+
+  <!-- ==== TOOLBAR ==== -->
+  <data name="Toolbar_Open" xml:space="preserve">
+    <value>📂 Open</value>
+    <comment>Toolbar - Open button</comment>
+  </data>
+  <data name="Toolbar_Open_ToolTip" xml:space="preserve">
+    <value>Open file (Ctrl+O)</value>
+    <comment>Toolbar - Open button tooltip</comment>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>💾 Save</value>
+    <comment>Toolbar - Save button</comment>
+  </data>
+  <data name="Toolbar_Save_ToolTip" xml:space="preserve">
+    <value>Save file (Ctrl+S)</value>
+    <comment>Toolbar - Save button tooltip</comment>
+  </data>
+  <data name="Toolbar_Undo" xml:space="preserve">
+    <value>↶ Undo</value>
+    <comment>Toolbar - Undo button</comment>
+  </data>
+  <data name="Toolbar_Undo_ToolTip" xml:space="preserve">
+    <value>Undo (Ctrl+Z)</value>
+    <comment>Toolbar - Undo button tooltip</comment>
+  </data>
+  <data name="Toolbar_Redo" xml:space="preserve">
+    <value>↷ Redo</value>
+    <comment>Toolbar - Redo button</comment>
+  </data>
+  <data name="Toolbar_Redo_ToolTip" xml:space="preserve">
+    <value>Redo (Ctrl+Y)</value>
+    <comment>Toolbar - Redo button tooltip</comment>
+  </data>
+  <data name="Toolbar_Insert" xml:space="preserve">
+    <value>INS</value>
+    <comment>Toolbar - Insert mode toggle</comment>
+  </data>
+  <data name="Toolbar_Insert_ToolTip" xml:space="preserve">
+    <value>Toggle Insert/Overwrite mode (Insert key)</value>
+    <comment>Toolbar - Insert mode tooltip</comment>
+  </data>
+  <data name="Toolbar_ReadOnly" xml:space="preserve">
+    <value>🔒 RO</value>
+    <comment>Toolbar - Read-Only mode toggle</comment>
+  </data>
+  <data name="Toolbar_ReadOnly_ToolTip" xml:space="preserve">
+    <value>Toggle Read-Only mode</value>
+    <comment>Toolbar - Read-Only mode tooltip</comment>
+  </data>
+
   <!-- ==== RIBBON - QUICK ACCESS TOOLBAR ==== -->
   <data name="QAT_Save_Label" xml:space="preserve">
     <value>Save</value>

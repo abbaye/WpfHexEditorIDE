@@ -20,6 +20,10 @@
         WindowStartupLocation="CenterScreen"
         Background="#F0F0F0">
 
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+
     <Window.InputBindings>
         <!-- Keyboard shortcuts -->
         <KeyBinding Key="N" Modifiers="Control" Command="{Binding NewFileCommand}"/>
@@ -44,119 +48,119 @@
 
         <!-- Menu Bar (Original Structure) -->
         <Menu Grid.Row="0">
-            <MenuItem Header="_File">
-                <MenuItem Header="_Open..." Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O"/>
-                <MenuItem Header="_Save" Command="{Binding SaveFileCommand}" InputGestureText="Ctrl+S"/>
-                <MenuItem Header="Save _As..." Command="{Binding SaveAsFileCommand}"/>
+            <MenuItem Header="{DynamicResource Menu_File}">
+                <MenuItem Header="{DynamicResource Menu_File_Open}" Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="{DynamicResource Menu_File_Save}" Command="{Binding SaveFileCommand}" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="{DynamicResource Menu_File_SaveAs}" Command="{Binding SaveAsFileCommand}"/>
                 <Separator/>
-                <MenuItem Header="_Close" Command="{Binding CloseFileCommand}"/>
+                <MenuItem Header="{DynamicResource Menu_File_Close}" Command="{Binding CloseFileCommand}"/>
                 <Separator/>
-                <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
+                <MenuItem Header="{DynamicResource Menu_File_Exit}" Command="{Binding ExitCommand}"/>
             </MenuItem>
 
-            <MenuItem Header="_Edit">
-                <MenuItem Header="_Undo" Command="{Binding UndoCommand}" InputGestureText="Ctrl+Z"/>
-                <MenuItem Header="_Redo" Command="{Binding RedoCommand}" InputGestureText="Ctrl+Y"/>
+            <MenuItem Header="{DynamicResource Menu_Edit}">
+                <MenuItem Header="{DynamicResource Menu_Edit_Undo}" Command="{Binding UndoCommand}" InputGestureText="Ctrl+Z"/>
+                <MenuItem Header="{DynamicResource Menu_Edit_Redo}" Command="{Binding RedoCommand}" InputGestureText="Ctrl+Y"/>
                 <Separator/>
-                <MenuItem Header="_Find..." Command="{Binding ToggleSearchPanelCommand}" InputGestureText="Ctrl+F"/>
-                <MenuItem Header="Find and _Replace..." Command="{Binding ToggleSearchPanelCommand}" InputGestureText="Ctrl+H"/>
+                <MenuItem Header="{DynamicResource Menu_Edit_Find}" Command="{Binding ToggleSearchPanelCommand}" InputGestureText="Ctrl+F"/>
+                <MenuItem Header="{DynamicResource Menu_Edit_FindReplace}" Command="{Binding ToggleSearchPanelCommand}" InputGestureText="Ctrl+H"/>
                 <Separator/>
-                <MenuItem Header="Copy" Command="{Binding CopyCommand}" InputGestureText="Ctrl+C"/>
-                <MenuItem Header="Paste" Command="{Binding PasteCommand}" InputGestureText="Ctrl+V"/>
-                <MenuItem Header="Delete Selection" Command="{Binding DeleteSelectionCommand}" InputGestureText="Del"/>
+                <MenuItem Header="{DynamicResource Menu_Edit_Copy}" Command="{Binding CopyCommand}" InputGestureText="Ctrl+C"/>
+                <MenuItem Header="{DynamicResource Menu_Edit_Paste}" Command="{Binding PasteCommand}" InputGestureText="Ctrl+V"/>
+                <MenuItem Header="{DynamicResource Menu_Edit_DeleteSelection}" Command="{Binding DeleteSelectionCommand}" InputGestureText="Del"/>
                 <Separator/>
-                <MenuItem Header="Select _All" Command="{Binding SelectAllCommand}" InputGestureText="Ctrl+A"/>
-                <MenuItem Header="_Clear Selection" Command="{Binding ClearSelectionCommand}"/>
+                <MenuItem Header="{DynamicResource Menu_Edit_SelectAll}" Command="{Binding SelectAllCommand}" InputGestureText="Ctrl+A"/>
+                <MenuItem Header="{DynamicResource Menu_Edit_ClearSelection}" Command="{Binding ClearSelectionCommand}"/>
                 <Separator/>
-                <MenuItem Header="_Bookmarks">
-                    <MenuItem Header="Toggle Bookmark" Command="{Binding ToggleBookmarkCommand}" InputGestureText="Ctrl+B"/>
-                    <MenuItem Header="_Clear All Bookmarks" Command="{Binding ClearBookmarksCommand}"/>
+                <MenuItem Header="{DynamicResource Menu_Edit_Bookmarks}">
+                    <MenuItem Header="{DynamicResource Menu_Edit_ToggleBookmark}" Command="{Binding ToggleBookmarkCommand}" InputGestureText="Ctrl+B"/>
+                    <MenuItem Header="{DynamicResource Menu_Edit_ClearAllBookmarks}" Command="{Binding ClearBookmarksCommand}"/>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="_Search">
-                <MenuItem Header="Find _Next" Command="{Binding FindNextCommand}" InputGestureText="F3"/>
-                <MenuItem Header="Find _Previous" Command="{Binding FindPreviousCommand}" InputGestureText="Shift+F3"/>
+            <MenuItem Header="{DynamicResource Menu_Search}">
+                <MenuItem Header="{DynamicResource Menu_Search_FindNext}" Command="{Binding FindNextCommand}" InputGestureText="F3"/>
+                <MenuItem Header="{DynamicResource Menu_Search_FindPrevious}" Command="{Binding FindPreviousCommand}" InputGestureText="Shift+F3"/>
             </MenuItem>
 
-            <MenuItem Header="_Tools">
-                <MenuItem Header="_Bookmarks">
-                    <MenuItem Header="Toggle Bookmark" Command="{Binding ToggleBookmarkCommand}" InputGestureText="Ctrl+B"/>
-                    <MenuItem Header="_Clear All Bookmarks" Command="{Binding ClearBookmarksCommand}"/>
+            <MenuItem Header="{DynamicResource Menu_Tools}">
+                <MenuItem Header="{DynamicResource Menu_Tools_Bookmarks}">
+                    <MenuItem Header="{DynamicResource Menu_Edit_ToggleBookmark}" Command="{Binding ToggleBookmarkCommand}" InputGestureText="Ctrl+B"/>
+                    <MenuItem Header="{DynamicResource Menu_Edit_ClearAllBookmarks}" Command="{Binding ClearBookmarksCommand}"/>
                     <Separator/>
-                    <MenuItem Header="_Next Bookmark" Command="{Binding NextBookmarkCommand}" InputGestureText="Ctrl+N"/>
-                    <MenuItem Header="_Previous Bookmark" Command="{Binding PreviousBookmarkCommand}" InputGestureText="Ctrl+P"/>
+                    <MenuItem Header="{DynamicResource Menu_Tools_NextBookmark}" Command="{Binding NextBookmarkCommand}" InputGestureText="Ctrl+N"/>
+                    <MenuItem Header="{DynamicResource Menu_Tools_PreviousBookmark}" Command="{Binding PreviousBookmarkCommand}" InputGestureText="Ctrl+P"/>
                     <Separator/>
-                    <MenuItem Header="_Show All Bookmarks..." Command="{Binding ShowBookmarksCommand}"/>
+                    <MenuItem Header="{DynamicResource Menu_Tools_ShowAllBookmarks}" Command="{Binding ShowBookmarksCommand}"/>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="_Position">
-                <MenuItem Header="_Go to Position..." Command="{Binding GoToPositionCommand}" InputGestureText="Ctrl+G"/>
+            <MenuItem Header="{DynamicResource Menu_Position}">
+                <MenuItem Header="{DynamicResource Menu_Position_GoTo}" Command="{Binding GoToPositionCommand}" InputGestureText="Ctrl+G"/>
             </MenuItem>
 
-            <MenuItem Header="_View">
-                <MenuItem Header="Display Options">
-                    <MenuItem Header="Show Status Bar" IsCheckable="True" IsChecked="True"/>
-                    <MenuItem Header="Show Header" IsCheckable="True" IsChecked="True"/>
-                    <MenuItem Header="Show Offset" IsCheckable="True" IsChecked="True"/>
-                    <MenuItem Header="Show ASCII" IsCheckable="True" IsChecked="True"/>
+            <MenuItem Header="{DynamicResource Menu_View}">
+                <MenuItem Header="{DynamicResource Menu_View_DisplayOptions}">
+                    <MenuItem Header="{DynamicResource Menu_View_ShowStatusBar}" IsCheckable="True" IsChecked="True"/>
+                    <MenuItem Header="{DynamicResource Menu_View_ShowHeader}" IsCheckable="True" IsChecked="True"/>
+                    <MenuItem Header="{DynamicResource Menu_View_ShowOffset}" IsCheckable="True" IsChecked="True"/>
+                    <MenuItem Header="{DynamicResource Menu_View_ShowASCII}" IsCheckable="True" IsChecked="True"/>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Bytes Per Line">
+                <MenuItem Header="{DynamicResource Menu_View_BytesPerLine}">
                     <MenuItem Header="8" Tag="8"/>
                     <MenuItem Header="16" Tag="16" IsChecked="True"/>
                     <MenuItem Header="32" Tag="32"/>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="_Options">
-                <MenuItem Header="_Panneau de Paramètres..." Command="{Binding ToggleSettingsPanelCommand}" InputGestureText="Ctrl+,">
+            <MenuItem Header="{DynamicResource Menu_Options}">
+                <MenuItem Header="{DynamicResource Menu_Options_SettingsPanel}" Command="{Binding ToggleSettingsPanelCommand}" InputGestureText="Ctrl+,">
                     <MenuItem.Icon>
                         <TextBlock Text="⚙️" FontSize="16"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Options _avancées (Thème, Langue)..." Click="ShowOptionsDialog_Click">
+                <MenuItem Header="{DynamicResource Menu_Options_Advanced}" Click="ShowOptionsDialog_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="🔧" FontSize="16"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Context Menu" IsCheckable="True" IsChecked="True"/>
-                <MenuItem Header="Show Byte ToolTip" IsCheckable="True"/>
+                <MenuItem Header="{DynamicResource Menu_Options_ContextMenu}" IsCheckable="True" IsChecked="True"/>
+                <MenuItem Header="{DynamicResource Menu_Options_ShowByteToolTip}" IsCheckable="True"/>
                 <Separator/>
-                <MenuItem Header="Auto-Highlight Selection Byte" IsCheckable="True"/>
-                <MenuItem Header="Count Selected Bytes" IsCheckable="True"/>
+                <MenuItem Header="{DynamicResource Menu_Options_AutoHighlight}" IsCheckable="True"/>
+                <MenuItem Header="{DynamicResource Menu_Options_CountSelected}" IsCheckable="True"/>
             </MenuItem>
 
-            <MenuItem Header="_Help">
-                <MenuItem Header="_About" Command="{Binding ShowAboutCommand}"/>
-                <MenuItem Header="_Keyboard Shortcuts" Command="{Binding ShowKeyboardShortcutsCommand}"/>
+            <MenuItem Header="{DynamicResource Menu_Help}">
+                <MenuItem Header="{DynamicResource Menu_Help_About}" Command="{Binding ShowAboutCommand}"/>
+                <MenuItem Header="{DynamicResource Menu_Help_KeyboardShortcuts}" Command="{Binding ShowKeyboardShortcutsCommand}"/>
             </MenuItem>
         </Menu>
 
         <!-- Toolbar (Original Structure) -->
         <ToolBar Grid.Row="1">
-            <Button Command="{Binding OpenFileCommand}" ToolTip="Open file (Ctrl+O)">
-                <TextBlock Text="📂 Open" FontSize="12"/>
+            <Button Command="{Binding OpenFileCommand}" ToolTip="{DynamicResource Toolbar_Open_ToolTip}">
+                <TextBlock Text="{DynamicResource Toolbar_Open}" FontSize="12"/>
             </Button>
-            <Button Command="{Binding SaveFileCommand}" ToolTip="Save file (Ctrl+S)">
-                <TextBlock Text="💾 Save" FontSize="12"/>
-            </Button>
-            <Separator/>
-            <Button Command="{Binding UndoCommand}" ToolTip="Undo (Ctrl+Z)">
-                <TextBlock Text="↶ Undo" FontSize="12"/>
-            </Button>
-            <Button Command="{Binding RedoCommand}" ToolTip="Redo (Ctrl+Y)">
-                <TextBlock Text="↷ Redo" FontSize="12"/>
+            <Button Command="{Binding SaveFileCommand}" ToolTip="{DynamicResource Toolbar_Save_ToolTip}">
+                <TextBlock Text="{DynamicResource Toolbar_Save}" FontSize="12"/>
             </Button>
             <Separator/>
-            <ToggleButton ToolTip="Toggle Insert/Overwrite mode (Insert key)">
-                <TextBlock Text="INS" FontSize="12" FontWeight="Bold"/>
+            <Button Command="{Binding UndoCommand}" ToolTip="{DynamicResource Toolbar_Undo_ToolTip}">
+                <TextBlock Text="{DynamicResource Toolbar_Undo}" FontSize="12"/>
+            </Button>
+            <Button Command="{Binding RedoCommand}" ToolTip="{DynamicResource Toolbar_Redo_ToolTip}">
+                <TextBlock Text="{DynamicResource Toolbar_Redo}" FontSize="12"/>
+            </Button>
+            <Separator/>
+            <ToggleButton ToolTip="{DynamicResource Toolbar_Insert_ToolTip}">
+                <TextBlock Text="{DynamicResource Toolbar_Insert}" FontSize="12" FontWeight="Bold"/>
             </ToggleButton>
-            <ToggleButton ToolTip="Toggle Read-Only mode">
-                <TextBlock Text="🔒 RO" FontSize="12"/>
+            <ToggleButton ToolTip="{DynamicResource Toolbar_ReadOnly_ToolTip}">
+                <TextBlock Text="{DynamicResource Toolbar_ReadOnly}" FontSize="12"/>
             </ToggleButton>
         </ToolBar>
 
@@ -175,8 +179,18 @@
             <!-- Settings Panel (Slide-in from right) -->
             <components:HexEditorSettings x:Name="HexEditorSettingsPanel"
                                          Grid.Column="1"
-                                         Width="0"
-                                         Visibility="Collapsed"/>
+                                         Visibility="{Binding IsSettingsPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <components:HexEditorSettings.Style>
+                    <Style TargetType="components:HexEditorSettings">
+                        <Setter Property="Width" Value="0"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSettingsPanelVisible}" Value="True">
+                                <Setter Property="Width" Value="350"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </components:HexEditorSettings.Style>
+            </components:HexEditorSettings>
 
         </Grid>
 
