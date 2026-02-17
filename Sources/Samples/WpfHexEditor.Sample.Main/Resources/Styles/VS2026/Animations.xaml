@@ -1,0 +1,81 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Fade In Animation -->
+    <Storyboard x:Key="FadeInAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                        From="0" To="1"
+                        Duration="0:0:0.3"
+                        EasingFunction="{StaticResource EaseOut}"/>
+    </Storyboard>
+
+    <!-- Slide Down Animation -->
+    <Storyboard x:Key="SlideDownAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="(TranslateTransform.Y)"
+                        From="-20" To="0"
+                        Duration="0:0:0.4"
+                        EasingFunction="{StaticResource EaseOut}"/>
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                        From="0" To="1"
+                        Duration="0:0:0.3"/>
+    </Storyboard>
+
+    <!-- Scale Up Animation (Button Press) -->
+    <Storyboard x:Key="ScaleUpAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                        From="1" To="1.05"
+                        Duration="0:0:0.1"
+                        AutoReverse="True"/>
+        <DoubleAnimation Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
+                        From="1" To="1.05"
+                        Duration="0:0:0.1"
+                        AutoReverse="True"/>
+    </Storyboard>
+
+    <!-- Glow Pulse Animation -->
+    <Storyboard x:Key="GlowPulseAnimation" RepeatBehavior="Forever">
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                        From="0.6" To="1"
+                        Duration="0:0:1.5"
+                        AutoReverse="True"
+                        EasingFunction="{StaticResource EaseInOut}"/>
+    </Storyboard>
+
+    <!-- Easing Functions -->
+    <CubicEase x:Key="EaseOut" EasingMode="EaseOut"/>
+    <CubicEase x:Key="EaseIn" EasingMode="EaseIn"/>
+    <CubicEase x:Key="EaseInOut" EasingMode="EaseInOut"/>
+    <BackEase x:Key="BackEaseOut" EasingMode="EaseOut" Amplitude="0.3"/>
+
+    <!-- Width Collapse Animation -->
+    <Storyboard x:Key="CollapseWidthAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Width"
+                        To="0"
+                        Duration="0:0:0.3"
+                        EasingFunction="{StaticResource EaseOut}"/>
+    </Storyboard>
+
+    <!-- Width Expand Animation -->
+    <Storyboard x:Key="ExpandWidthAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="Width"
+                        To="60"
+                        Duration="0:0:0.3"
+                        EasingFunction="{StaticResource BackEaseOut}"/>
+    </Storyboard>
+
+    <!-- Ripple Effect (Click Feedback) -->
+    <Storyboard x:Key="RippleAnimation">
+        <DoubleAnimation Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                        From="0" To="2"
+                        Duration="0:0:0.6"
+                        EasingFunction="{StaticResource EaseOut}"/>
+        <DoubleAnimation Storyboard.TargetProperty="(ScaleTransform.ScaleY)"
+                        From="0" To="2"
+                        Duration="0:0:0.6"
+                        EasingFunction="{StaticResource EaseOut}"/>
+        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                        From="0.5" To="0"
+                        Duration="0:0:0.6"/>
+    </Storyboard>
+
+</ResourceDictionary>

@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:services="clr-namespace:WpfHexEditor.Sample.Main.Services"
              xmlns:hexServices="clr-namespace:WpfHexaEditor.Services;assembly=WPFHexaEditor"
-             StartupUri="Views/ModernMainWindow.xaml">
-    <!-- Modern 2026 UI is now active! Change back to "MainWindow.xaml" for legacy UI -->
+             StartupUri="Views/VS2026MainWindow.xaml">
+    <!-- VS 2026 Preview UI (minimal version with inline styles) -->
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,9 +12,9 @@
                 <services:LocalizedResourceDictionary/>
                 <!-- HexEditor Control Localization Resources -->
                 <hexServices:LocalizedResourceDictionary/>
-                <!-- Default Theme: Office (ThemeManager will switch if user has different preference) -->
+                <!-- Office Theme (needed for existing dialogs like Options/Paramètres) -->
                 <ResourceDictionary Source="Resources/Themes/Office.xaml"/>
-                <!-- Ribbon Vector Icons -->
+                <!-- Ribbon Vector Icons (Temporary - will be removed when Ribbon is deleted) -->
                 <ResourceDictionary Source="Resources/RibbonIcons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

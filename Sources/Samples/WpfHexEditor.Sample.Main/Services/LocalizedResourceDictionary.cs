@@ -43,6 +43,7 @@ namespace WpfHexEditor.Sample.Main.Services
 
         /// <summary>
         /// Populates the ResourceDictionary with all localized strings from the current culture.
+        /// Uses proper fallback chain to parent cultures.
         /// </summary>
         private void UpdateResources()
         {
@@ -51,28 +52,38 @@ namespace WpfHexEditor.Sample.Main.Services
 
             try
             {
-                // Get the resource set for the current culture
                 var culture = DynamicResourceManager.CurrentCulture;
-                var resourceSet = _resourceManager.GetResourceSet(culture, createIfNotExists: true, tryParents: true);
 
-                if (resourceSet != null)
+                // IMPORTANT: Get the resource set from the INVARIANT culture to get ALL possible keys
+                // This ensures we have a complete list of resource keys
+                var invariantResourceSet = _resourceManager.GetResourceSet(
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    createIfNotExists: true,
+                    tryParents: false);
+
+                if (invariantResourceSet != null)
                 {
                     int count = 0;
-                    // Add all resources to the dictionary
-                    foreach (DictionaryEntry entry in resourceSet)
+                    // For each key in the invariant culture, use GetString() which properly handles fallback
+                    foreach (DictionaryEntry entry in invariantResourceSet)
                     {
-                        if (entry.Key is string key && entry.Value is string value)
+                        if (entry.Key is string key)
                         {
-                            this[key] = value;
-                            count++;
+                            // GetString() with the specific culture will automatically fall back to parent cultures
+                            var value = _resourceManager.GetString(key, culture);
+                            if (!string.IsNullOrEmpty(value))
+                            {
+                                this[key] = value;
+                                count++;
+                            }
                         }
                     }
 
-                    System.Diagnostics.Debug.WriteLine($"[LocalizedResourceDictionary] Loaded {count} resources for culture '{culture.Name}'");
+                    System.Diagnostics.Debug.WriteLine($"[LocalizedResourceDictionary] Loaded {count} resources for culture '{culture.Name}' (with fallback)");
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine($"[LocalizedResourceDictionary] WARNING: No resource set found for culture '{culture.Name}'");
+                    System.Diagnostics.Debug.WriteLine($"[LocalizedResourceDictionary] WARNING: No invariant resource set found");
                 }
             }
             catch (Exception ex)

@@ -1,0 +1,58 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Glassmorphism Effect -->
+    <Style x:Key="GlassmorphicPanel" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource VS2026_GlassBlurBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource VS2026_GlassBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000"
+                                BlurRadius="20"
+                                ShadowDepth="8"
+                                Opacity="0.3"
+                                Direction="270"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Padding" Value="16"/>
+    </Style>
+
+    <!-- Card with Elevation -->
+    <Style x:Key="ElevatedCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource VS2026_CardBackgroundBrush}"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000"
+                                BlurRadius="12"
+                                ShadowDepth="4"
+                                Opacity="0.4"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Floating Panel Shadow -->
+    <DropShadowEffect x:Key="FloatingShadow"
+                      Color="#000000"
+                      BlurRadius="24"
+                      ShadowDepth="12"
+                      Opacity="0.5"/>
+
+    <!-- Glow Effect for Hover -->
+    <DropShadowEffect x:Key="NeonGlow"
+                      Color="{StaticResource VS2026_NeonBlue}"
+                      BlurRadius="16"
+                      ShadowDepth="0"
+                      Opacity="0.6"/>
+
+    <!-- Subtle Inner Shadow -->
+    <DropShadowEffect x:Key="InnerShadow"
+                      Color="#000000"
+                      BlurRadius="8"
+                      ShadowDepth="0"
+                      Opacity="0.2"
+                      Direction="90"/>
+
+</ResourceDictionary>

@@ -60,26 +60,6 @@
   </resheader>
 
   <!-- ==== APPLICATION MENU ==== -->
-  <data name="Menu_File_Open" xml:space="preserve">
-    <value>Открыть</value>
-    <comment>File menu - Open file command</comment>
-  </data>
-  <data name="Menu_File_Save" xml:space="preserve">
-    <value>Сохранить</value>
-    <comment>File menu - Save file command</comment>
-  </data>
-  <data name="Menu_File_SaveAs" xml:space="preserve">
-    <value>Сохранить как...</value>
-    <comment>File menu - Save As command</comment>
-  </data>
-  <data name="Menu_File_Close" xml:space="preserve">
-    <value>Закрыть</value>
-    <comment>File menu - Close file command</comment>
-  </data>
-  <data name="Menu_File_Exit" xml:space="preserve">
-    <value>Выход</value>
-    <comment>File menu - Exit application command</comment>
-  </data>
 
   <!-- ==== RIBBON - QUICK ACCESS TOOLBAR ==== -->
   <data name="QAT_Save_Label" xml:space="preserve">
@@ -403,7 +383,7 @@
     <comment>Options dialog - Window title</comment>
   </data>
   <data name="Options_Header_Title" xml:space="preserve">
-    <value>⚙️ Параметры приложения</value>
+    <value>Параметры приложения</value>
     <comment>Options dialog - Main header text</comment>
   </data>
   <data name="Options_Header_Subtitle" xml:space="preserve">
@@ -711,7 +691,7 @@
     <comment>Hex editor settings - Allow byte count checkbox</comment>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>⚙️ Дополнительные параметры</value>
+    <value>Дополнительные параметры</value>
     <comment>Hex editor settings - Advanced Options expander header</comment>
   </data>
   <data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
@@ -959,7 +939,7 @@
     <value>Разрешить подсчет байтов</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>⚙️ Расширенные параметры</value>
+    <value>Расширенные параметры</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>Сдвиг байта влево:</value>
@@ -1062,4 +1042,179 @@
     <value>Изменения языка применяются мгновенно - перезагрузка не требуется! 🚀</value>
   </data>
 
+
+  <data name="Menu_File" xml:space="preserve">
+    <value>_Файл</value>
+  </data>
+  <data name="Menu_File_Open" xml:space="preserve">
+    <value>_Открыть</value>
+  </data>
+  <data name="Menu_File_Save" xml:space="preserve">
+    <value>_Сохранить</value>
+  </data>
+  <data name="Menu_File_SaveAs" xml:space="preserve">
+    <value>Сохранить _как...</value>
+  </data>
+  <data name="Menu_File_Close" xml:space="preserve">
+    <value>_Закрыть</value>
+  </data>
+  <data name="Menu_File_Exit" xml:space="preserve">
+    <value>В_ыход</value>
+  </data>
+  <data name="Menu_Edit" xml:space="preserve">
+    <value>_Правка</value>
+  </data>
+  <data name="Menu_Edit_Undo" xml:space="preserve">
+    <value>_Отменить</value>
+  </data>
+  <data name="Menu_Edit_Redo" xml:space="preserve">
+    <value>_Повторить</value>
+  </data>
+  <data name="Menu_Edit_Find" xml:space="preserve">
+    <value>_Найти...</value>
+  </data>
+  <data name="Menu_Edit_FindReplace" xml:space="preserve">
+    <value>Найти и _заменить...</value>
+  </data>
+  <data name="Menu_Edit_Copy" xml:space="preserve">
+    <value>_Копировать</value>
+  </data>
+  <data name="Menu_Edit_Paste" xml:space="preserve">
+    <value>_Вставить</value>
+  </data>
+  <data name="Menu_Edit_DeleteSelection" xml:space="preserve">
+    <value>_Удалить выделение</value>
+  </data>
+  <data name="Menu_Edit_SelectAll" xml:space="preserve">
+    <value>Выделить _всё</value>
+  </data>
+  <data name="Menu_Edit_ClearSelection" xml:space="preserve">
+    <value>_Очистить выделение</value>
+  </data>
+  <data name="Menu_Edit_Bookmarks" xml:space="preserve">
+    <value>_Закладки</value>
+  </data>
+  <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
+    <value>_Переключить закладку</value>
+  </data>
+  <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
+    <value>Очистить _все закладки</value>
+  </data>
+  <data name="Menu_Search" xml:space="preserve">
+    <value>_Поиск</value>
+  </data>
+  <data name="Menu_Search_FindNext" xml:space="preserve">
+    <value>Найти _следующее</value>
+  </data>
+  <data name="Menu_Search_FindPrevious" xml:space="preserve">
+    <value>Найти _предыдущее</value>
+  </data>
+  <data name="Menu_Tools" xml:space="preserve">
+    <value>_Инструменты</value>
+  </data>
+  <data name="Menu_Tools_Bookmarks" xml:space="preserve">
+    <value>_Закладки</value>
+  </data>
+  <data name="Menu_Tools_NextBookmark" xml:space="preserve">
+    <value>_Следующая закладка</value>
+  </data>
+  <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
+    <value>_Предыдущая закладка</value>
+  </data>
+  <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
+    <value>_Показать все закладки</value>
+  </data>
+  <data name="Menu_Position" xml:space="preserve">
+    <value>_Позиция</value>
+  </data>
+  <data name="Menu_Position_GoTo" xml:space="preserve">
+    <value>_Перейти к...</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>_Вид</value>
+  </data>
+  <data name="Menu_View_DisplayOptions" xml:space="preserve">
+    <value>_Параметры отображения</value>
+  </data>
+  <data name="Menu_View_ShowStatusBar" xml:space="preserve">
+    <value>Показать строку _состояния</value>
+  </data>
+  <data name="Menu_View_ShowHeader" xml:space="preserve">
+    <value>Показать _заголовок</value>
+  </data>
+  <data name="Menu_View_ShowOffset" xml:space="preserve">
+    <value>Показать _смещение</value>
+  </data>
+  <data name="Menu_View_ShowASCII" xml:space="preserve">
+    <value>Показать _ASCII</value>
+  </data>
+  <data name="Menu_View_BytesPerLine" xml:space="preserve">
+    <value>_Байтов в строке</value>
+  </data>
+  <data name="Menu_Options" xml:space="preserve">
+    <value>_Параметры</value>
+  </data>
+  <data name="Menu_Options_SettingsPanel" xml:space="preserve">
+    <value>Панель _настроек</value>
+  </data>
+  <data name="Menu_Options_Advanced" xml:space="preserve">
+    <value>_Дополнительно...</value>
+  </data>
+  <data name="Menu_Options_ContextMenu" xml:space="preserve">
+    <value>_Контекстное меню</value>
+  </data>
+  <data name="Menu_Options_ShowByteToolTip" xml:space="preserve">
+    <value>Показать подсказку _байта</value>
+  </data>
+  <data name="Menu_Options_AutoHighlight" xml:space="preserve">
+    <value>_Автоподсветка</value>
+  </data>
+  <data name="Menu_Options_CountSelected" xml:space="preserve">
+    <value>_Подсчет выделенных</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>_Справка</value>
+  </data>
+  <data name="Menu_Help_About" xml:space="preserve">
+    <value>_О программе...</value>
+  </data>
+  <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
+    <value>_Горячие клавиши</value>
+  </data>
+  <data name="Toolbar_Open" xml:space="preserve">
+    <value>📂 Открыть</value>
+  </data>
+  <data name="Toolbar_Open_ToolTip" xml:space="preserve">
+    <value>Открыть файл (Ctrl+O)</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>💾 Сохранить</value>
+  </data>
+  <data name="Toolbar_Save_ToolTip" xml:space="preserve">
+    <value>Сохранить файл (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Undo" xml:space="preserve">
+    <value>↶ Отменить</value>
+  </data>
+  <data name="Toolbar_Undo_ToolTip" xml:space="preserve">
+    <value>Отменить (Ctrl+Z)</value>
+  </data>
+  <data name="Toolbar_Redo" xml:space="preserve">
+    <value>↷ Повторить</value>
+  </data>
+  <data name="Toolbar_Redo_ToolTip" xml:space="preserve">
+    <value>Повторить (Ctrl+Y)</value>
+  </data>
+  <data name="Toolbar_Insert" xml:space="preserve">
+    <value>INS</value>
+  </data>
+  <data name="Toolbar_Insert_ToolTip" xml:space="preserve">
+    <value>Режим вставки</value>
+  </data>
+  <data name="Toolbar_ReadOnly" xml:space="preserve">
+    <value>RO</value>
+  </data>
+  <data name="Toolbar_ReadOnly_ToolTip" xml:space="preserve">
+    <value>Только чтение</value>
+  </data>
 </root>

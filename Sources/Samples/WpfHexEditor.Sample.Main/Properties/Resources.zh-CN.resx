@@ -60,26 +60,6 @@
   </resheader>
 
   <!-- ==== APPLICATION MENU ==== -->
-  <data name="Menu_File_Open" xml:space="preserve">
-    <value>打开</value>
-    <comment>File menu - Open file command</comment>
-  </data>
-  <data name="Menu_File_Save" xml:space="preserve">
-    <value>保存</value>
-    <comment>File menu - Save file command</comment>
-  </data>
-  <data name="Menu_File_SaveAs" xml:space="preserve">
-    <value>另存为...</value>
-    <comment>File menu - Save As command</comment>
-  </data>
-  <data name="Menu_File_Close" xml:space="preserve">
-    <value>关闭</value>
-    <comment>File menu - Close file command</comment>
-  </data>
-  <data name="Menu_File_Exit" xml:space="preserve">
-    <value>退出</value>
-    <comment>File menu - Exit application command</comment>
-  </data>
 
   <!-- ==== RIBBON - QUICK ACCESS TOOLBAR ==== -->
   <data name="QAT_Save_Label" xml:space="preserve">
@@ -403,7 +383,7 @@
     <comment>Options dialog - Window title</comment>
   </data>
   <data name="Options_Header_Title" xml:space="preserve">
-    <value>⚙️ 应用程序选项</value>
+    <value>应用程序选项</value>
     <comment>Options dialog - Main header text</comment>
   </data>
   <data name="Options_Header_Subtitle" xml:space="preserve">
@@ -711,7 +691,7 @@
     <comment>Hex editor settings - Allow byte count checkbox</comment>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>⚙️ 高级选项</value>
+    <value>高级选项</value>
     <comment>Hex editor settings - Advanced Options expander header</comment>
   </data>
   <data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
@@ -959,7 +939,7 @@
     <value>允许字节计数</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>⚙️ 高级选项</value>
+    <value>高级选项</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>字节左移：</value>
@@ -1062,4 +1042,179 @@
     <value>语言更改立即生效 - 无需重启！🚀</value>
   </data>
 
+
+  <data name="Menu_File" xml:space="preserve">
+    <value>文件(_F)</value>
+  </data>
+  <data name="Menu_File_Open" xml:space="preserve">
+    <value>打开(_O)</value>
+  </data>
+  <data name="Menu_File_Save" xml:space="preserve">
+    <value>保存(_S)</value>
+  </data>
+  <data name="Menu_File_SaveAs" xml:space="preserve">
+    <value>另存为(_A)...</value>
+  </data>
+  <data name="Menu_File_Close" xml:space="preserve">
+    <value>关闭(_C)</value>
+  </data>
+  <data name="Menu_File_Exit" xml:space="preserve">
+    <value>退出(_X)</value>
+  </data>
+  <data name="Menu_Edit" xml:space="preserve">
+    <value>编辑(_E)</value>
+  </data>
+  <data name="Menu_Edit_Undo" xml:space="preserve">
+    <value>撤消(_U)</value>
+  </data>
+  <data name="Menu_Edit_Redo" xml:space="preserve">
+    <value>重做(_R)</value>
+  </data>
+  <data name="Menu_Edit_Find" xml:space="preserve">
+    <value>查找(_F)...</value>
+  </data>
+  <data name="Menu_Edit_FindReplace" xml:space="preserve">
+    <value>查找和替换(_H)...</value>
+  </data>
+  <data name="Menu_Edit_Copy" xml:space="preserve">
+    <value>复制(_C)</value>
+  </data>
+  <data name="Menu_Edit_Paste" xml:space="preserve">
+    <value>粘贴(_V)</value>
+  </data>
+  <data name="Menu_Edit_DeleteSelection" xml:space="preserve">
+    <value>删除选择(_D)</value>
+  </data>
+  <data name="Menu_Edit_SelectAll" xml:space="preserve">
+    <value>全选(_A)</value>
+  </data>
+  <data name="Menu_Edit_ClearSelection" xml:space="preserve">
+    <value>清除选择(_L)</value>
+  </data>
+  <data name="Menu_Edit_Bookmarks" xml:space="preserve">
+    <value>书签(_B)</value>
+  </data>
+  <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
+    <value>切换书签(_T)</value>
+  </data>
+  <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
+    <value>清除所有书签(_A)</value>
+  </data>
+  <data name="Menu_Search" xml:space="preserve">
+    <value>搜索(_S)</value>
+  </data>
+  <data name="Menu_Search_FindNext" xml:space="preserve">
+    <value>查找下一个(_N)</value>
+  </data>
+  <data name="Menu_Search_FindPrevious" xml:space="preserve">
+    <value>查找上一个(_P)</value>
+  </data>
+  <data name="Menu_Tools" xml:space="preserve">
+    <value>工具(_T)</value>
+  </data>
+  <data name="Menu_Tools_Bookmarks" xml:space="preserve">
+    <value>书签(_B)</value>
+  </data>
+  <data name="Menu_Tools_NextBookmark" xml:space="preserve">
+    <value>下一个书签(_N)</value>
+  </data>
+  <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
+    <value>上一个书签(_P)</value>
+  </data>
+  <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
+    <value>显示所有书签(_S)</value>
+  </data>
+  <data name="Menu_Position" xml:space="preserve">
+    <value>位置(_P)</value>
+  </data>
+  <data name="Menu_Position_GoTo" xml:space="preserve">
+    <value>转到(_G)...</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>查看(_V)</value>
+  </data>
+  <data name="Menu_View_DisplayOptions" xml:space="preserve">
+    <value>显示选项(_D)</value>
+  </data>
+  <data name="Menu_View_ShowStatusBar" xml:space="preserve">
+    <value>显示状态栏(_S)</value>
+  </data>
+  <data name="Menu_View_ShowHeader" xml:space="preserve">
+    <value>显示标题(_H)</value>
+  </data>
+  <data name="Menu_View_ShowOffset" xml:space="preserve">
+    <value>显示偏移(_O)</value>
+  </data>
+  <data name="Menu_View_ShowASCII" xml:space="preserve">
+    <value>显示 ASCII(_A)</value>
+  </data>
+  <data name="Menu_View_BytesPerLine" xml:space="preserve">
+    <value>每行字节数(_B)</value>
+  </data>
+  <data name="Menu_Options" xml:space="preserve">
+    <value>选项(_O)</value>
+  </data>
+  <data name="Menu_Options_SettingsPanel" xml:space="preserve">
+    <value>设置面板(_S)</value>
+  </data>
+  <data name="Menu_Options_Advanced" xml:space="preserve">
+    <value>高级(_A)...</value>
+  </data>
+  <data name="Menu_Options_ContextMenu" xml:space="preserve">
+    <value>上下文菜单(_C)</value>
+  </data>
+  <data name="Menu_Options_ShowByteToolTip" xml:space="preserve">
+    <value>显示字节提示(_B)</value>
+  </data>
+  <data name="Menu_Options_AutoHighlight" xml:space="preserve">
+    <value>自动高亮(_H)</value>
+  </data>
+  <data name="Menu_Options_CountSelected" xml:space="preserve">
+    <value>计数选择(_C)</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>帮助(_H)</value>
+  </data>
+  <data name="Menu_Help_About" xml:space="preserve">
+    <value>关于(_A)...</value>
+  </data>
+  <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
+    <value>键盘快捷键(_K)</value>
+  </data>
+  <data name="Toolbar_Open" xml:space="preserve">
+    <value>📂 打开</value>
+  </data>
+  <data name="Toolbar_Open_ToolTip" xml:space="preserve">
+    <value>打开文件 (Ctrl+O)</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>💾 保存</value>
+  </data>
+  <data name="Toolbar_Save_ToolTip" xml:space="preserve">
+    <value>保存文件 (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Undo" xml:space="preserve">
+    <value>↶ 撤消</value>
+  </data>
+  <data name="Toolbar_Undo_ToolTip" xml:space="preserve">
+    <value>撤消 (Ctrl+Z)</value>
+  </data>
+  <data name="Toolbar_Redo" xml:space="preserve">
+    <value>↷ 重做</value>
+  </data>
+  <data name="Toolbar_Redo_ToolTip" xml:space="preserve">
+    <value>重做 (Ctrl+Y)</value>
+  </data>
+  <data name="Toolbar_Insert" xml:space="preserve">
+    <value>INS</value>
+  </data>
+  <data name="Toolbar_Insert_ToolTip" xml:space="preserve">
+    <value>插入模式</value>
+  </data>
+  <data name="Toolbar_ReadOnly" xml:space="preserve">
+    <value>RO</value>
+  </data>
+  <data name="Toolbar_ReadOnly_ToolTip" xml:space="preserve">
+    <value>只读</value>
+  </data>
 </root>

@@ -60,26 +60,6 @@
   </resheader>
 
   <!-- ==== APPLICATION MENU ==== -->
-  <data name="Menu_File_Open" xml:space="preserve">
-    <value>Otwórz</value>
-    <comment>File menu - Open file command</comment>
-  </data>
-  <data name="Menu_File_Save" xml:space="preserve">
-    <value>Zapisz</value>
-    <comment>File menu - Save file command</comment>
-  </data>
-  <data name="Menu_File_SaveAs" xml:space="preserve">
-    <value>Zapisz jako...</value>
-    <comment>File menu - Save As command</comment>
-  </data>
-  <data name="Menu_File_Close" xml:space="preserve">
-    <value>Zamknij</value>
-    <comment>File menu - Close file command</comment>
-  </data>
-  <data name="Menu_File_Exit" xml:space="preserve">
-    <value>Wyjście</value>
-    <comment>File menu - Exit application command</comment>
-  </data>
 
   <!-- ==== RIBBON - QUICK ACCESS TOOLBAR ==== -->
   <data name="QAT_Save_Label" xml:space="preserve">
@@ -403,7 +383,7 @@
     <comment>Options dialog - Window title</comment>
   </data>
   <data name="Options_Header_Title" xml:space="preserve">
-    <value>⚙️ Opcje aplikacji</value>
+    <value>Opcje aplikacji</value>
     <comment>Options dialog - Main header text</comment>
   </data>
   <data name="Options_Header_Subtitle" xml:space="preserve">
@@ -711,7 +691,7 @@
     <comment>Hex editor settings - Allow byte count checkbox</comment>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>⚙️ Opcje zaawansowane</value>
+    <value>Opcje zaawansowane</value>
     <comment>Hex editor settings - Advanced Options expander header</comment>
   </data>
   <data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
@@ -871,7 +851,7 @@
     <value>Zezwól na liczenie bajtów</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>⚙️ Opcje zaawansowane</value>
+    <value>Opcje zaawansowane</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>Przesunięcie bajtu w lewo:</value>
@@ -1006,4 +986,179 @@
     <comment>No language selected message text</comment>
   </data>
 
+
+  <data name="Menu_File" xml:space="preserve">
+    <value>_Plik</value>
+  </data>
+  <data name="Menu_File_Open" xml:space="preserve">
+    <value>_Otwórz</value>
+  </data>
+  <data name="Menu_File_Save" xml:space="preserve">
+    <value>_Zapisz</value>
+  </data>
+  <data name="Menu_File_SaveAs" xml:space="preserve">
+    <value>Zapisz _jako...</value>
+  </data>
+  <data name="Menu_File_Close" xml:space="preserve">
+    <value>_Zamknij</value>
+  </data>
+  <data name="Menu_File_Exit" xml:space="preserve">
+    <value>Za_kończ</value>
+  </data>
+  <data name="Menu_Edit" xml:space="preserve">
+    <value>_Edycja</value>
+  </data>
+  <data name="Menu_Edit_Undo" xml:space="preserve">
+    <value>_Cofnij</value>
+  </data>
+  <data name="Menu_Edit_Redo" xml:space="preserve">
+    <value>_Ponów</value>
+  </data>
+  <data name="Menu_Edit_Find" xml:space="preserve">
+    <value>_Znajdź...</value>
+  </data>
+  <data name="Menu_Edit_FindReplace" xml:space="preserve">
+    <value>Znajdź i _zamień...</value>
+  </data>
+  <data name="Menu_Edit_Copy" xml:space="preserve">
+    <value>_Kopiuj</value>
+  </data>
+  <data name="Menu_Edit_Paste" xml:space="preserve">
+    <value>_Wklej</value>
+  </data>
+  <data name="Menu_Edit_DeleteSelection" xml:space="preserve">
+    <value>_Usuń zaznaczenie</value>
+  </data>
+  <data name="Menu_Edit_SelectAll" xml:space="preserve">
+    <value>Zaznacz _wszystko</value>
+  </data>
+  <data name="Menu_Edit_ClearSelection" xml:space="preserve">
+    <value>_Wyczyść zaznaczenie</value>
+  </data>
+  <data name="Menu_Edit_Bookmarks" xml:space="preserve">
+    <value>_Zakładki</value>
+  </data>
+  <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
+    <value>_Przełącz zakładkę</value>
+  </data>
+  <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
+    <value>Wyczyść _wszystkie zakładki</value>
+  </data>
+  <data name="Menu_Search" xml:space="preserve">
+    <value>_Szukaj</value>
+  </data>
+  <data name="Menu_Search_FindNext" xml:space="preserve">
+    <value>Znajdź _następny</value>
+  </data>
+  <data name="Menu_Search_FindPrevious" xml:space="preserve">
+    <value>Znajdź _poprzedni</value>
+  </data>
+  <data name="Menu_Tools" xml:space="preserve">
+    <value>_Narzędzia</value>
+  </data>
+  <data name="Menu_Tools_Bookmarks" xml:space="preserve">
+    <value>_Zakładki</value>
+  </data>
+  <data name="Menu_Tools_NextBookmark" xml:space="preserve">
+    <value>_Następna zakładka</value>
+  </data>
+  <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
+    <value>_Poprzednia zakładka</value>
+  </data>
+  <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
+    <value>_Pokaż wszystkie zakładki</value>
+  </data>
+  <data name="Menu_Position" xml:space="preserve">
+    <value>_Pozycja</value>
+  </data>
+  <data name="Menu_Position_GoTo" xml:space="preserve">
+    <value>_Przejdź do...</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>_Widok</value>
+  </data>
+  <data name="Menu_View_DisplayOptions" xml:space="preserve">
+    <value>_Opcje wyświetlania</value>
+  </data>
+  <data name="Menu_View_ShowStatusBar" xml:space="preserve">
+    <value>Pokaż pasek _stanu</value>
+  </data>
+  <data name="Menu_View_ShowHeader" xml:space="preserve">
+    <value>Pokaż _nagłówek</value>
+  </data>
+  <data name="Menu_View_ShowOffset" xml:space="preserve">
+    <value>Pokaż _przesunięcie</value>
+  </data>
+  <data name="Menu_View_ShowASCII" xml:space="preserve">
+    <value>Pokaż _ASCII</value>
+  </data>
+  <data name="Menu_View_BytesPerLine" xml:space="preserve">
+    <value>_Bajtów na linię</value>
+  </data>
+  <data name="Menu_Options" xml:space="preserve">
+    <value>_Opcje</value>
+  </data>
+  <data name="Menu_Options_SettingsPanel" xml:space="preserve">
+    <value>Panel _ustawień</value>
+  </data>
+  <data name="Menu_Options_Advanced" xml:space="preserve">
+    <value>_Zaawansowane...</value>
+  </data>
+  <data name="Menu_Options_ContextMenu" xml:space="preserve">
+    <value>Menu _kontekstowe</value>
+  </data>
+  <data name="Menu_Options_ShowByteToolTip" xml:space="preserve">
+    <value>Pokaż podpowiedź _bajtu</value>
+  </data>
+  <data name="Menu_Options_AutoHighlight" xml:space="preserve">
+    <value>_Automatyczne podświetlanie</value>
+  </data>
+  <data name="Menu_Options_CountSelected" xml:space="preserve">
+    <value>_Liczenie zaznaczonych</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>Po_moc</value>
+  </data>
+  <data name="Menu_Help_About" xml:space="preserve">
+    <value>_O programie...</value>
+  </data>
+  <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
+    <value>Skróty _klawiszowe</value>
+  </data>
+  <data name="Toolbar_Open" xml:space="preserve">
+    <value>📂 Otwórz</value>
+  </data>
+  <data name="Toolbar_Open_ToolTip" xml:space="preserve">
+    <value>Otwórz plik (Ctrl+O)</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>💾 Zapisz</value>
+  </data>
+  <data name="Toolbar_Save_ToolTip" xml:space="preserve">
+    <value>Zapisz plik (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Undo" xml:space="preserve">
+    <value>↶ Cofnij</value>
+  </data>
+  <data name="Toolbar_Undo_ToolTip" xml:space="preserve">
+    <value>Cofnij (Ctrl+Z)</value>
+  </data>
+  <data name="Toolbar_Redo" xml:space="preserve">
+    <value>↷ Ponów</value>
+  </data>
+  <data name="Toolbar_Redo_ToolTip" xml:space="preserve">
+    <value>Ponów (Ctrl+Y)</value>
+  </data>
+  <data name="Toolbar_Insert" xml:space="preserve">
+    <value>INS</value>
+  </data>
+  <data name="Toolbar_Insert_ToolTip" xml:space="preserve">
+    <value>Tryb wstawiania</value>
+  </data>
+  <data name="Toolbar_ReadOnly" xml:space="preserve">
+    <value>RO</value>
+  </data>
+  <data name="Toolbar_ReadOnly_ToolTip" xml:space="preserve">
+    <value>Tylko do odczytu</value>
+  </data>
 </root>
