@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:services="clr-namespace:WpfHexEditor.Sample.Main.Services"
              xmlns:hexServices="clr-namespace:WpfHexaEditor.Services;assembly=WPFHexaEditor"
-             StartupUri="Views/ModernMainWindow.xaml">
-    <!-- Modern 2026 UI is now active! Change back to "MainWindow.xaml" for legacy UI -->
+             StartupUri="Views/VS2026MainWindow.xaml">
+    <!-- VS 2026 Preview UI is now active! Change back to "ModernMainWindow.xaml" or "MainWindow.xaml" for legacy UI -->
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
