@@ -124,13 +124,30 @@ namespace WpfHexEditor.Sample.Main.ViewModels
 
         public ICommand OpenFileCommand { get; }
         public ICommand SaveFileCommand { get; }
+        public ICommand SaveAsFileCommand { get; }
         public ICommand CloseFileCommand { get; }
+        public ICommand ExitCommand { get; }
         public ICommand UndoCommand { get; }
         public ICommand RedoCommand { get; }
+        public ICommand CopyCommand { get; }
+        public ICommand CutCommand { get; }
+        public ICommand PasteCommand { get; }
+        public ICommand DeleteSelectionCommand { get; }
+        public ICommand SelectAllCommand { get; }
+        public ICommand ClearSelectionCommand { get; }
+        public ICommand FindNextCommand { get; }
+        public ICommand FindPreviousCommand { get; }
+        public ICommand GoToPositionCommand { get; }
+        public ICommand ToggleBookmarkCommand { get; }
+        public ICommand ClearBookmarksCommand { get; }
+        public ICommand NextBookmarkCommand { get; }
+        public ICommand PreviousBookmarkCommand { get; }
+        public ICommand ShowBookmarksCommand { get; }
         public ICommand SearchCommand { get; }
         public ICommand ToggleSettingsPanelCommand { get; }
         public ICommand ToggleSearchPanelCommand { get; }
         public ICommand ShowAboutCommand { get; }
+        public ICommand ShowKeyboardShortcutsCommand { get; }
 
         #endregion
 
@@ -148,13 +165,30 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             // Commands
             OpenFileCommand = new RelayCommand(OpenFile);
             SaveFileCommand = new RelayCommand(SaveFile, () => IsFileLoaded);
+            SaveAsFileCommand = new RelayCommand(SaveAsFile);
             CloseFileCommand = new RelayCommand(CloseFile, () => IsFileLoaded);
+            ExitCommand = new RelayCommand(Exit);
             UndoCommand = new RelayCommand(Undo, () => IsFileLoaded);
             RedoCommand = new RelayCommand(Redo, () => IsFileLoaded);
+            CopyCommand = new RelayCommand(Copy, () => IsFileLoaded);
+            CutCommand = new RelayCommand(Cut, () => IsFileLoaded);
+            PasteCommand = new RelayCommand(Paste, () => IsFileLoaded);
+            DeleteSelectionCommand = new RelayCommand(DeleteSelection, () => IsFileLoaded);
+            SelectAllCommand = new RelayCommand(SelectAll, () => IsFileLoaded);
+            ClearSelectionCommand = new RelayCommand(ClearSelection, () => IsFileLoaded);
+            FindNextCommand = new RelayCommand(FindNext, () => IsFileLoaded);
+            FindPreviousCommand = new RelayCommand(FindPrevious, () => IsFileLoaded);
+            GoToPositionCommand = new RelayCommand(GoToPosition, () => IsFileLoaded);
+            ToggleBookmarkCommand = new RelayCommand(ToggleBookmark, () => IsFileLoaded);
+            ClearBookmarksCommand = new RelayCommand(ClearBookmarks, () => IsFileLoaded);
+            NextBookmarkCommand = new RelayCommand(NextBookmark, () => IsFileLoaded);
+            PreviousBookmarkCommand = new RelayCommand(PreviousBookmark, () => IsFileLoaded);
+            ShowBookmarksCommand = new RelayCommand(ShowBookmarks, () => IsFileLoaded);
             SearchCommand = new RelayCommand(Search, () => IsFileLoaded && !string.IsNullOrWhiteSpace(SearchQuery));
             ToggleSettingsPanelCommand = new RelayCommand(ToggleSettingsPanel);
             ToggleSearchPanelCommand = new RelayCommand(ToggleSearchPanel);
             ShowAboutCommand = new RelayCommand(ShowAbout);
+            ShowKeyboardShortcutsCommand = new RelayCommand(ShowKeyboardShortcuts);
         }
 
         #endregion
@@ -194,12 +228,40 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             StatusMessage = "File saved";
         }
 
+        private void SaveAsFile()
+        {
+            var dialog = new SaveFileDialog
+            {
+                Title = "Save File As",
+                Filter = "All Files (*.*)|*.*"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    _hexEditor?.SubmitChanges(dialog.FileName, true);
+                    CurrentFilePath = dialog.FileName;
+                    StatusMessage = $"Saved as: {System.IO.Path.GetFileName(dialog.FileName)}";
+                }
+                catch (Exception ex)
+                {
+                    StatusMessage = $"Save failed: {ex.Message}";
+                }
+            }
+        }
+
         private void CloseFile()
         {
             _hexEditor?.Close();
             CurrentFilePath = null;
             IsFileLoaded = false;
             StatusMessage = "File closed";
+        }
+
+        private void Exit()
+        {
+            Application.Current.Shutdown();
         }
 
         private void Undo()
@@ -226,6 +288,310 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             {
                 StatusMessage = $"Redo failed: {ex.Message}";
             }
+        }
+
+        private void Copy()
+        {
+            System.Diagnostics.Debug.WriteLine("=== Copy() called ===");
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"_hexEditor is null: {_hexEditor == null}");
+                if (_hexEditor != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"HasSelection: {_hexEditor.HasSelection}");
+                    System.Diagnostics.Debug.WriteLine($"SelectionStart: {_hexEditor.SelectionStart}");
+                    System.Diagnostics.Debug.WriteLine($"SelectionLength: {_hexEditor.SelectionLength}");
+                }
+
+                if (_hexEditor == null || !_hexEditor.HasSelection)
+                {
+                    StatusMessage = "No selection to copy";
+                    System.Diagnostics.Debug.WriteLine("No selection to copy - returning");
+                    return;
+                }
+
+                System.Diagnostics.Debug.WriteLine("Calling _hexEditor.Copy()...");
+                bool copyResult = _hexEditor.Copy();
+                System.Diagnostics.Debug.WriteLine($"Copy() returned: {copyResult}");
+
+                if (copyResult)
+                {
+                    StatusMessage = "Copied to clipboard";
+                }
+                else
+                {
+                    StatusMessage = "Copy failed";
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in Copy(): {ex}");
+                StatusMessage = $"Copy failed: {ex.Message}";
+            }
+            System.Diagnostics.Debug.WriteLine("=== Copy() finished ===");
+        }
+
+        private void Cut()
+        {
+            System.Diagnostics.Debug.WriteLine("=== Cut() called ===");
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"_hexEditor is null: {_hexEditor == null}");
+                if (_hexEditor != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"HasSelection: {_hexEditor.HasSelection}");
+                }
+
+                if (_hexEditor == null || !_hexEditor.HasSelection)
+                {
+                    StatusMessage = "No selection to cut";
+                    System.Diagnostics.Debug.WriteLine("No selection to cut - returning");
+                    return;
+                }
+
+                // Save the start position before any operation
+                var startPos = _hexEditor.SelectionStart;
+                System.Diagnostics.Debug.WriteLine($"Start position: {startPos}");
+
+                // Copy first (like old MainWindow does)
+                System.Diagnostics.Debug.WriteLine("Calling _hexEditor.Copy()...");
+                bool copyResult = _hexEditor.Copy();
+                System.Diagnostics.Debug.WriteLine($"Copy() returned: {copyResult}");
+
+                if (copyResult)
+                {
+                    System.Diagnostics.Debug.WriteLine("Calling DeleteSelection()...");
+                    _hexEditor.DeleteSelection();
+
+                    System.Diagnostics.Debug.WriteLine($"Calling SetPosition({startPos})...");
+                    _hexEditor.SetPosition(startPos);
+
+                    StatusMessage = "Cut to clipboard";
+                }
+                else
+                {
+                    StatusMessage = "Cut failed - copy to clipboard failed";
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Exception in Cut(): {ex}");
+                StatusMessage = $"Cut failed: {ex.Message}";
+            }
+            System.Diagnostics.Debug.WriteLine("=== Cut() finished ===");
+        }
+
+        private void Paste()
+        {
+            try
+            {
+                _hexEditor?.Paste();
+                StatusMessage = "Pasted from clipboard";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Paste failed: {ex.Message}";
+            }
+        }
+
+        private void DeleteSelection()
+        {
+            try
+            {
+                _hexEditor?.DeleteSelection();
+                StatusMessage = "Selection deleted";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Delete failed: {ex.Message}";
+            }
+        }
+
+        private void SelectAll()
+        {
+            try
+            {
+                _hexEditor?.SelectAll();
+                StatusMessage = "All selected";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Select all failed: {ex.Message}";
+            }
+        }
+
+        private void ClearSelection()
+        {
+            try
+            {
+                _hexEditor?.ClearSelection();
+                StatusMessage = "Selection cleared";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Clear selection failed: {ex.Message}";
+            }
+        }
+
+        private void FindNext()
+        {
+            try
+            {
+                if (SearchViewModel != null && SearchViewModel.FindNextCommand.CanExecute(null))
+                {
+                    SearchViewModel.FindNextCommand.Execute(null);
+                    StatusMessage = "Finding next match";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Find next failed: {ex.Message}";
+            }
+        }
+
+        private void FindPrevious()
+        {
+            try
+            {
+                if (SearchViewModel != null && SearchViewModel.FindPreviousCommand.CanExecute(null))
+                {
+                    SearchViewModel.FindPreviousCommand.Execute(null);
+                    StatusMessage = "Finding previous match";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Find previous failed: {ex.Message}";
+            }
+        }
+
+        private void GoToPosition()
+        {
+            // TODO: Implement Go To Position dialog
+            StatusMessage = "Go to position - Not implemented yet";
+        }
+
+        private void ToggleBookmark()
+        {
+            try
+            {
+                if (_hexEditor == null) return;
+
+                var currentPos = _hexEditor.SelectionStart;
+                if (_hexEditor.IsBookmarked(currentPos))
+                {
+                    _hexEditor.RemoveBookmark(currentPos);
+                    StatusMessage = "Bookmark removed";
+                }
+                else
+                {
+                    _hexEditor.SetBookmark(currentPos);
+                    StatusMessage = "Bookmark added";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Toggle bookmark failed: {ex.Message}";
+            }
+        }
+
+        private void ClearBookmarks()
+        {
+            try
+            {
+                _hexEditor?.ClearAllBookmarks();
+                StatusMessage = "All bookmarks cleared";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Clear bookmarks failed: {ex.Message}";
+            }
+        }
+
+        private void NextBookmark()
+        {
+            try
+            {
+                if (_hexEditor == null) return;
+
+                var currentPos = _hexEditor.SelectionStart;
+                var nextPos = _hexEditor.GetNextBookmark(currentPos);
+                if (nextPos >= 0)
+                {
+                    _hexEditor.SetPosition(nextPos);
+                    StatusMessage = $"Jumped to bookmark at {nextPos:X}";
+                }
+                else
+                {
+                    StatusMessage = "No more bookmarks ahead";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Next bookmark failed: {ex.Message}";
+            }
+        }
+
+        private void PreviousBookmark()
+        {
+            try
+            {
+                if (_hexEditor == null) return;
+
+                var currentPos = _hexEditor.SelectionStart;
+                var prevPos = _hexEditor.GetPreviousBookmark(currentPos);
+                if (prevPos >= 0)
+                {
+                    _hexEditor.SetPosition(prevPos);
+                    StatusMessage = $"Jumped to bookmark at {prevPos:X}";
+                }
+                else
+                {
+                    StatusMessage = "No more bookmarks before";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Previous bookmark failed: {ex.Message}";
+            }
+        }
+
+        private void ShowBookmarks()
+        {
+            // TODO: Implement Show All Bookmarks dialog
+            StatusMessage = "Show bookmarks - Not implemented yet";
+        }
+
+        private void ShowKeyboardShortcuts()
+        {
+            MessageBox.Show(
+                "Keyboard Shortcuts:\n\n" +
+                "File Operations:\n" +
+                "  Ctrl+O - Open File\n" +
+                "  Ctrl+S - Save File\n" +
+                "  Ctrl+W - Close File\n\n" +
+                "Edit Operations:\n" +
+                "  Ctrl+Z - Undo\n" +
+                "  Ctrl+Y - Redo\n" +
+                "  Ctrl+C - Copy\n" +
+                "  Ctrl+V - Paste\n" +
+                "  Del - Delete Selection\n" +
+                "  Ctrl+A - Select All\n\n" +
+                "Search:\n" +
+                "  Ctrl+F - Find\n" +
+                "  Ctrl+H - Find & Replace\n" +
+                "  F3 - Find Next\n" +
+                "  Shift+F3 - Find Previous\n\n" +
+                "Navigation:\n" +
+                "  Ctrl+G - Go To Position\n" +
+                "  Ctrl+B - Toggle Bookmark\n" +
+                "  Ctrl+N - Next Bookmark\n" +
+                "  Ctrl+P - Previous Bookmark\n\n" +
+                "View:\n" +
+                "  Ctrl+, - Toggle Settings Panel",
+                "Keyboard Shortcuts",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
         }
 
         private void Search()

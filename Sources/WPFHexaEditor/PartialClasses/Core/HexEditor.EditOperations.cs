@@ -84,22 +84,22 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Copy selected bytes to clipboard
+        /// Copy selected bytes to clipboard (as Hex or ASCII depending on current edit mode)
         /// </summary>
         public bool Copy()
         {
-            bool result = _viewModel?.CopyToClipboard() ?? false;
+            bool result = _viewModel?.CopyToClipboard(_isAsciiEditMode) ?? false;
             if (result)
                 OnDataCopied(EventArgs.Empty);
             return result;
         }
 
         /// <summary>
-        /// Cut selected bytes to clipboard (copy + delete)
+        /// Cut selected bytes to clipboard (copy + delete, clears selection after)
         /// </summary>
         public bool Cut()
         {
-            return _viewModel?.Cut() ?? false;
+            return _viewModel?.Cut(_isAsciiEditMode) ?? false;
         }
 
         /// <summary>

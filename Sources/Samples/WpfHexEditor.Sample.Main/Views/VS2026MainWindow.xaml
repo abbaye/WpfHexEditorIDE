@@ -34,6 +34,9 @@
         <KeyBinding Key="F" Modifiers="Control" Command="{Binding ToggleSearchPanelCommand}"/>
         <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
         <KeyBinding Key="Y" Modifiers="Control" Command="{Binding RedoCommand}"/>
+        <KeyBinding Key="C" Modifiers="Control" Command="{Binding CopyCommand}"/>
+        <KeyBinding Key="X" Modifiers="Control" Command="{Binding CutCommand}"/>
+        <KeyBinding Key="V" Modifiers="Control" Command="{Binding PasteCommand}"/>
         <KeyBinding Key="A" Modifiers="Control" Command="{Binding SelectAllCommand}"/>
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding GoToPositionCommand}"/>
         <KeyBinding Key="B" Modifiers="Control" Command="{Binding ToggleBookmarkCommand}"/>

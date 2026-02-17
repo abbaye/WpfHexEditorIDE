@@ -530,7 +530,7 @@ namespace WpfHexaEditor.ViewModels
         /// <summary>
         /// Copy selected bytes to clipboard
         /// </summary>
-        public bool CopyToClipboard()
+        public bool CopyToClipboard(bool copyAsAscii = false)
         {
             if (!HasSelection) return false;
 
@@ -545,14 +545,20 @@ namespace WpfHexaEditor.ViewModels
                 bytes[i] = GetByteAt(new VirtualPosition(start + i));
             }
 
-            // Copy to clipboard (simple implementation - can be enhanced later)
+            // Copy to clipboard as text (hex or ASCII depending on mode)
             try
             {
-                using (var ms = new MemoryStream(bytes))
+                if (copyAsAscii)
                 {
-                    var dataObj = new System.Windows.DataObject();
-                    dataObj.SetData("BinaryData", ms);
-                    System.Windows.Clipboard.SetDataObject(dataObj, true);
+                    // Convert bytes to ASCII string
+                    var asciiString = System.Text.Encoding.ASCII.GetString(bytes);
+                    System.Windows.Clipboard.SetText(asciiString);
+                }
+                else
+                {
+                    // Convert bytes to hex string format (e.g., "48 65 6C 6C 6F")
+                    var hexString = BitConverter.ToString(bytes).Replace("-", " ");
+                    System.Windows.Clipboard.SetText(hexString);
                 }
                 return true;
             }
@@ -565,15 +571,19 @@ namespace WpfHexaEditor.ViewModels
         /// <summary>
         /// Cut selected bytes to clipboard (copy + delete)
         /// </summary>
-        public bool Cut()
+        public bool Cut(bool copyAsAscii = false)
         {
             if (!HasSelection || ReadOnlyMode) return false;
 
-            // Copy first
-            if (!CopyToClipboard()) return false;
+            // Copy first (as hex or ASCII depending on mode)
+            if (!CopyToClipboard(copyAsAscii)) return false;
 
             // Then delete
             DeleteSelection();
+
+            // Clear selection after cut
+            ClearSelection();
+
             return true;
         }
 
