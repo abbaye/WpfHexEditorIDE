@@ -16,8 +16,8 @@
                 <ResourceDictionary Source="Resources/Styles/VS2026Theme.xaml"/>
                 <!-- Default Theme: Office (ThemeManager will switch if user has different preference) -->
                 <ResourceDictionary Source="Resources/Themes/Office.xaml"/>
-                <!-- Ribbon Vector Icons (Commented out - will be replaced by VS 2026 icons) -->
-                <!--<ResourceDictionary Source="Resources/RibbonIcons.xaml"/>-->
+                <!-- Ribbon Vector Icons (Temporary - will be removed when Ribbon is deleted) -->
+                <ResourceDictionary Source="Resources/RibbonIcons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
