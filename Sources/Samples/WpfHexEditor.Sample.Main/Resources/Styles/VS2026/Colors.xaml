@@ -1,0 +1,65 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- VS 2026 Preview - Dark Theme (Default) -->
+
+    <!-- Base Colors -->
+    <Color x:Key="VS2026_DeepSpace">#0A0E27</Color>
+    <Color x:Key="VS2026_DarkSurface">#1A1D35</Color>
+    <Color x:Key="VS2026_CardBackground">#252842</Color>
+
+    <!-- Accent Colors -->
+    <Color x:Key="VS2026_NeonBlue">#00D9FF</Color>
+    <Color x:Key="VS2026_ElectricPurple">#BD00FF</Color>
+    <Color x:Key="VS2026_CyberGreen">#00FF88</Color>
+    <Color x:Key="VS2026_HologramWhite">#E8F4FF</Color>
+
+    <!-- Glassmorphism -->
+    <Color x:Key="VS2026_GlassBlur">#40FFFFFF</Color>
+    <Color x:Key="VS2026_GlassBorder">#60FFFFFF</Color>
+    <Color x:Key="VS2026_GlassHover">#50FFFFFF</Color>
+
+    <!-- Text Colors -->
+    <Color x:Key="VS2026_TextPrimary">#FFFFFF</Color>
+    <Color x:Key="VS2026_TextSecondary">#B4B9D8</Color>
+    <Color x:Key="VS2026_TextDisabled">#6B7099</Color>
+
+    <!-- Functional Colors -->
+    <Color x:Key="VS2026_Success">#00FF88</Color>
+    <Color x:Key="VS2026_Warning">#FFB800</Color>
+    <Color x:Key="VS2026_Error">#FF4757</Color>
+    <Color x:Key="VS2026_Info">#00D9FF</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="VS2026_DeepSpaceBrush" Color="{StaticResource VS2026_DeepSpace}"/>
+    <SolidColorBrush x:Key="VS2026_DarkSurfaceBrush" Color="{StaticResource VS2026_DarkSurface}"/>
+    <SolidColorBrush x:Key="VS2026_CardBackgroundBrush" Color="{StaticResource VS2026_CardBackground}"/>
+
+    <SolidColorBrush x:Key="VS2026_NeonBlueBrush" Color="{StaticResource VS2026_NeonBlue}"/>
+    <SolidColorBrush x:Key="VS2026_ElectricPurpleBrush" Color="{StaticResource VS2026_ElectricPurple}"/>
+    <SolidColorBrush x:Key="VS2026_CyberGreenBrush" Color="{StaticResource VS2026_CyberGreen}"/>
+
+    <SolidColorBrush x:Key="VS2026_GlassBlurBrush" Color="{StaticResource VS2026_GlassBlur}"/>
+    <SolidColorBrush x:Key="VS2026_GlassBorderBrush" Color="{StaticResource VS2026_GlassBorder}"/>
+
+    <SolidColorBrush x:Key="VS2026_TextPrimaryBrush" Color="{StaticResource VS2026_TextPrimary}"/>
+    <SolidColorBrush x:Key="VS2026_TextSecondaryBrush" Color="{StaticResource VS2026_TextSecondary}"/>
+
+    <!-- Gradient Brushes -->
+    <LinearGradientBrush x:Key="VS2026_HeroGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource VS2026_ElectricPurple}" Offset="0"/>
+        <GradientStop Color="{StaticResource VS2026_NeonBlue}" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="VS2026_SuccessGradient" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource VS2026_CyberGreen}" Offset="0"/>
+        <GradientStop Color="{StaticResource VS2026_NeonBlue}" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Radial Gradient for Glow Effects -->
+    <RadialGradientBrush x:Key="VS2026_GlowBrush" Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+        <GradientStop Color="#80BD00FF" Offset="0"/>
+        <GradientStop Color="#00BD00FF" Offset="1"/>
+    </RadialGradientBrush>
+
+</ResourceDictionary>
