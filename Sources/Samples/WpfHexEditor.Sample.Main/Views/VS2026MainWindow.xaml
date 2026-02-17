@@ -111,19 +111,15 @@
             </MenuItem>
 
             <MenuItem Header="_Options">
-                <MenuItem Header="_Paramètres..." Command="{Binding ToggleSettingsPanelCommand}" InputGestureText="Ctrl+,">
+                <MenuItem Header="_Panneau de Paramètres..." Command="{Binding ToggleSettingsPanelCommand}" InputGestureText="Ctrl+,">
                     <MenuItem.Icon>
                         <TextBlock Text="⚙️" FontSize="16"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Thème" Command="{Binding ToggleThemeCommand}">
+                <Separator/>
+                <MenuItem Header="Options _avancées (Thème, Langue)..." Click="ShowOptionsDialog_Click">
                     <MenuItem.Icon>
-                        <TextBlock Text="🎨" FontSize="16"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="_Langue" Command="{Binding ToggleLanguageCommand}">
-                    <MenuItem.Icon>
-                        <TextBlock Text="🌐" FontSize="16"/>
+                        <TextBlock Text="🔧" FontSize="16"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
@@ -177,10 +173,10 @@
                                 Margin="4"/>
 
             <!-- Settings Panel (Slide-in from right) -->
-            <components:SettingsPanel x:Name="HexEditorSettingsPanel"
-                                     Grid.Column="1"
-                                     Width="0"
-                                     Visibility="Collapsed"/>
+            <components:HexEditorSettings x:Name="HexEditorSettingsPanel"
+                                         Grid.Column="1"
+                                         Width="0"
+                                         Visibility="Collapsed"/>
 
         </Grid>
 

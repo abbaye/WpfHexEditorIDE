@@ -52,6 +52,9 @@ namespace WpfHexEditor.Sample.Main.Views
             // Wire up components
             _viewModel.SetHexEditor(HexEditorControl);
 
+            // Connect HexEditor to Settings Panel for property bindings
+            HexEditorSettingsPanel.HexEditorControl = HexEditorControl;
+
             // Wire up file operations
             _viewModel.FileOpenRequested += OnFileOpenRequested;
             _viewModel.FileSaveRequested += OnFileSaveRequested;
@@ -59,8 +62,34 @@ namespace WpfHexEditor.Sample.Main.Views
             // Wire up theme changes
             _viewModel.SettingsViewModel.ThemeChanged += OnThemeChanged;
 
+            // Wire up language changes to open Options dialog
+            _viewModel.SettingsViewModel.LanguageChanged += OnLanguageChanged;
+
             // Sync HexEditor colors with current theme (theme loaded by ThemeManager.Initialize())
             Services.ThemeManager.SyncHexEditorColors(HexEditorControl);
+        }
+
+        private void OnLanguageChanged(object sender, string languageCode)
+        {
+            // Open the Options dialog for language selection
+            ShowOptionsDialog();
+        }
+
+        private void ShowOptionsDialog_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // Event handler for menu item click
+            ShowOptionsDialog();
+        }
+
+        private void ShowOptionsDialog()
+        {
+            // Open the Options dialog (Thème, Langue)
+            // Changes happen instantly when user selects from the lists
+            var dialog = new OptionsDialog
+            {
+                Owner = this
+            };
+            dialog.ShowDialog();
         }
 
         private void OnFileOpenRequested(object sender, string filePath)
