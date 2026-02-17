@@ -49,7 +49,8 @@
       "Bash(Select-String -Pattern \"error|succeeded|FAILED\")",
       "Bash(Select-Object -Last 20)",
       "Bash(start WpfHexEditor.Sample.Main.exe)",
-      "Bash(returned a DELETED physical position\" errors that occurred during deletion operations.\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(returned a DELETED physical position\" errors that occurred during deletion operations.\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git ls-tree:*)"
     ]
   }
 }
