@@ -38,7 +38,7 @@
 - **🚀 Blazing Fast** - 99% faster rendering than V1, handles GB+ files with ease
 - **🔧 Easy Integration** - Drop-in WPF/WinForms control, works out of the box
 - **🎨 Fully Customizable** - Colors, fonts, themes, and display modes
-- **⚡ Production Ready** - Battle-tested with 80+ unit tests and comprehensive samples
+- **⚡ Production Ready** - Battle-tested with comprehensive samples and core functionality validated
 - **🌍 Multilingual** - 9 languages with instant switching: 🇺🇸 English, 🇪🇸 Spanish (ES/LATAM), 🇫🇷 French (FR/CA), 🇵🇱 Polish, 🇧🇷 Portuguese, 🇷🇺 Russian, 🇨🇳 Chinese
 
 </details>
@@ -189,8 +189,8 @@ Unicode characters are fully supported. Place the value to the right of the equa
 | 📊 **BarChart View** | ❌ | ✅ 🆕 | **New feature** | Visual byte frequency distribution (0x00-0xFF) |
 | 📍 **Scrollbar Markers** | ❌ | ✅ 🆕 | **New feature** | Visual markers for search/bookmarks/changes |
 | 🪟 **AvalonDock Support** | ❌ | ✅ 🆕 | **New feature** | Dockable panels for IDE-like interface |
-| 🏗️ **Architecture** | Monolithic | MVVM + Services 🆕 | **15 specialized services** | Clean separation, 80+ unit tests |
-| 🧪 **Unit Tests** | ❌ | ✅ 🆕 | **80+ tests** | xUnit test suite with service coverage |
+| 🏗️ **Architecture** | Monolithic | MVVM + Services 🆕 | **15 specialized services** | Clean separation, core ByteProvider tests |
+| 🧪 **Unit Tests** | ❌ | ⚠️ 🆕 | **Limited coverage** | ByteProvider V2 tested, UI features need validation |
 | ⏱️ **Async Operations** | ❌ | ✅ 🆕⚡ | **100% UI responsive** | IProgress&lt;int&gt; + CancellationToken support |
 | 🎯 **SIMD Search** | ❌ | ✅ 🆕⚡ | **4-8x faster** | AVX2/SSE2 vectorization (.NET 5.0+) |
 | 🔍 **Binary Search Fix** | ⚠️ O(m) | ✅ O(log m) ⚡ | **100-5,882x faster** | True binary search in position mapping |
@@ -281,14 +281,14 @@ Unicode characters are fully supported. Place the value to the right of the equa
 | **AvalonDock Support** | ❌ | ✅ 🆕 | **New feature** | Dockable panels for professional IDE interface |
 | **Scrollbar Markers** | ❌ | ✅ 🆕 | **New feature** | Visual markers: Bookmarks (Blue), Modified (Orange), Search (Bright Orange), Added (Green), Deleted (Red) |
 | Byte grouping (2/4/6/8/16 bytes) | ✅ | ✅ | - | Configurable visual byte grouping |
-| Multiple encodings (20+ encodings) | ✅ | ✅ | - | ASCII, UTF-8, UTF-16, EBCDIC, Shift-JIS, EUC-KR, Windows-1252, etc. |
-| Custom TBL support | ✅ | ✅ | - | Game ROM character tables with DTE/MTE |
-| Unicode TBL | ✅ | ✅ | - | Multi-byte character support in TBL |
-| Zoom (50%-200%) | ✅ | ✅ | - | Font scaling with Ctrl+MouseWheel |
+| Multiple encodings (20+ encodings) | ✅ | ⚠️ | **Interface only** | ASCII, UTF-8, UTF-16, EBCDIC, Shift-JIS, EUC-KR (untested in V2) |
+| Custom TBL support | ✅ | ⚠️ | **Interface only** | Game ROM character tables with DTE/MTE (untested in V2) |
+| Unicode TBL | ✅ | ⚠️ | **Interface only** | Multi-byte character support in TBL (untested in V2) |
+| Zoom (50%-200%) | ✅ | ⚠️ | **Interface only** | Font scaling with Ctrl+MouseWheel (untested in V2) |
 | Show deleted bytes | ✅ | ✅ | - | Visual diff with strikethrough |
 | Line addressing (Hex/Dec offsets) | ✅ | ✅ | - | Configurable offset display format |
 | Offset modes (Hex/Decimal) | ✅ | ✅ | - | Number format choice for addresses |
-| Custom background blocks | ✅ | ✅ | - | Highlight file sections with colors |
+| Custom background blocks | ✅ | ⚠️ | **Interface only** | Highlight file sections with colors (untested in V2) |
 | Highlight colors (10+ customizable) | ✅ | ✅ | - | SelectionFirstColor, SelectionSecondColor, ByteModifiedColor, etc. |
 | Font customization | ✅ | ✅ | - | Font family, size (default: Courier New) |
 
@@ -327,7 +327,7 @@ Unicode characters are fully supported. Place the value to the right of the equa
 |---------|:---------:|:---------:|----------------|-------|
 | **Architecture Pattern** | Monolithic | MVVM + Services 🆕 | **Service-based design** | 15 specialized services, clean separation of concerns |
 | **Service Layer** | ❌ | ✅ 🆕 | **15 services** | ClipboardService, FindReplaceService, UndoRedoService, SelectionService, etc. |
-| **Unit Tests** | ❌ | ✅ 🆕 | **80+ tests** | xUnit test suite with service coverage, automated CI |
+| **Unit Tests** | ❌ | ⚠️ 🆕 | **Limited coverage** | ByteProvider V2 tested, UI features need validation |
 | **ByteProvider Architecture** | V1 | V2 Enhanced 🆕 | **Virtual positions** | EditsManager + PositionMapper for insert/delete support |
 | **MVVM Support** | ⚠️ Limited | ✅ Full | **True MVVM** | HexEditorViewModel, RelayCommand&lt;T&gt;, INotifyPropertyChanged |
 | **Dependency Injection Ready** | ❌ | ✅ 🆕 | **DI-friendly** | Services can be injected and tested in isolation |
@@ -365,16 +365,16 @@ Unicode characters are fully supported. Place the value to the right of the equa
 
 | Feature | V1 Legacy | V2 Modern | Notes |
 |---------|:---------:|:---------:|-------|
-| TypeOfCharacterTable (ASCII/EBCDIC/UTF8/etc.) | ✅ | ✅ | 20+ encoding types supported |
-| CustomEncoding property | ✅ | ✅ | Shift-JIS, EUC-KR, Windows-1252, ISO-8859-1, etc. |
-| TBL file loading | ✅ | ✅ | LoadTBLFile(path) for custom character mappings |
-| Unicode TBL support | ✅ | ✅ | Multi-byte character support (DTE/MTE) |
-| TBL color customization | ✅ | ✅ | TbldteColor, TblmteColor, TblEndBlockColor, TblEndLineColor |
-| TBL MTE display toggle | ✅ | ✅ | TblShowMte property |
-| ASCII/TBL mode switching | ✅ | ✅ | CloseTBL() to revert to ASCII |
-| Default TBL presets | ✅ | ✅ | LoadDefaultTbl(type) |
-| TBL bidirectional mapping | ✅ | ✅ | Byte ↔ character conversion |
-| TBL string copy mode | ✅ | ✅ | CopyToClipboard(CopyPasteMode.TblString) |
+| TypeOfCharacterTable (ASCII/EBCDIC/UTF8/etc.) | ✅ | ⚠️ | 20+ encoding types (interface compatible, untested in V2) |
+| CustomEncoding property | ✅ | ⚠️ | Shift-JIS, EUC-KR, Windows-1252, ISO-8859-1 (untested in V2) |
+| TBL file loading | ✅ | ⚠️ | LoadTBLFile(path) - interface compatible, untested in V2 |
+| Unicode TBL support | ✅ | ⚠️ | Multi-byte character support (DTE/MTE) (untested in V2) |
+| TBL color customization | ✅ | ⚠️ | TbldteColor, TblmteColor, TblEndBlockColor, TblEndLineColor (untested) |
+| TBL MTE display toggle | ✅ | ⚠️ | TblShowMte property (untested in V2) |
+| ASCII/TBL mode switching | ✅ | ⚠️ | CloseTBL() to revert to ASCII (untested in V2) |
+| Default TBL presets | ✅ | ⚠️ | LoadDefaultTbl(type) (untested in V2) |
+| TBL bidirectional mapping | ✅ | ⚠️ | Byte ↔ character conversion (untested in V2) |
+| TBL string copy mode | ✅ | ⚠️ | CopyToClipboard(CopyPasteMode.TblString) (untested in V2) |
 
 </details>
 
@@ -389,7 +389,7 @@ Unicode characters are fully supported. Place the value to the right of the equa
 | Dependency properties (60+) | ✅ | ✅ | - | XAML data binding support |
 | **MVVM compatible** | ⚠️ Limited | ✅ Full | **True MVVM** | ViewModel layer with INotifyPropertyChanged |
 | Sample applications (7+) | ✅ | ✅ | - | C#, VB.NET, WinForms, AvalonDock, BarChart, etc. |
-| **Unit tests** | ❌ | ✅ 🆕 | **80+ tests** | xUnit test suite with service coverage |
+| **Unit tests** | ❌ | ⚠️ 🆕 | **Limited coverage** | ByteProvider V2 tested, UI features need validation |
 | **Benchmarks** | ❌ | ✅ 🆕 | **BenchmarkDotNet** | Performance benchmarking suite |
 | Localization (9 languages) | ✅ | ✅ | ⚡ **Dynamic** | Runtime language switching without restart |
 | **Service Usage Sample** | ❌ | ✅ 🆕 | **Headless usage** | Console app using services without UI |
@@ -408,7 +408,7 @@ Unicode characters are fully supported. Place the value to the right of the equa
 | Feature | V1 Legacy | V2 Modern | Notes |
 |---------|:---------:|:---------:|-------|
 | Color properties (14 brushes) | ✅ | ✅ | SelectionFirstColor, ByteModifiedColor, MouseOverColor, etc. |
-| Custom backgrounds | ✅ | ✅ | AddCustomBackgroundBlock() |
+| Custom backgrounds | ✅ | ⚠️ | AddCustomBackgroundBlock() - interface compatible, untested in V2 |
 | Font customization | ✅ | ✅ | FontFamily property (default: Courier New) |
 | Border styles | ✅ | ✅ | Configurable border appearance |
 | Status bar visibility | ✅ | ✅ | StatusBarVisibility property |
@@ -416,7 +416,7 @@ Unicode characters are fully supported. Place the value to the right of the equa
 | Panel visibility toggles | ✅ | ✅ | HexDataVisibility, StringDataVisibility, LineInfoVisibility |
 | BytePerLine (1-64 bytes) | ✅ | ✅ | Configurable bytes per row |
 | Byte spacer customization | ✅ | ✅ | Position, width, grouping, visual style |
-| Zoom support (50%-200%) | ✅ | ✅ | Ctrl+MouseWheel scaling |
+| Zoom support (50%-200%) | ✅ | ⚠️ | Ctrl+MouseWheel scaling (interface compatible, untested in V2) |
 | Context menus | ✅ | ✅ | Right-click menu with commands |
 | Dual-color selection | ❌ | ✅ 🆕 | Active/inactive panel distinction |
 | Bold SelectionStart indicator | ❌ | ✅ 🆕 | Visual emphasis on selection start |
@@ -449,7 +449,7 @@ Unicode characters are fully supported. Place the value to the right of the equa
 | Page Up/Down | ✅ | ✅ | Fast scrolling |
 | Home/End | ✅ | ✅ | Line start/end navigation |
 | Ctrl+Home/End | ✅ | ✅ | File start/end navigation |
-| Ctrl+MouseWheel | ✅ | ✅ | Zoom in/out |
+| Ctrl+MouseWheel | ✅ | ⚠️ | Zoom in/out (untested in V2) |
 
 All shortcuts are configurable via AllowBuildin* properties.
 
@@ -470,7 +470,7 @@ All shortcuts are configurable via AllowBuildin* properties.
 | DataCopied | ✅ | ✅ | Fires when data copied to clipboard |
 | ByteModified | ✅ | ✅ | Fires when byte modified (with ByteEventArgs) |
 | BytesDeleted | ✅ | ✅ | Fires when bytes deleted |
-| TypeOfCharacterTableChanged | ✅ | ✅ | Fires when character encoding changes |
+| TypeOfCharacterTableChanged | ✅ | ⚠️ | Fires when character encoding changes (untested in V2) |
 | LongProcessProgressChanged | ✅ | ✅ | Progress reporting (0-100%) |
 | LongProcessProgressStarted | ✅ | ✅ | Long operation started |
 | LongProcessProgressCompleted | ✅ | ✅ | Long operation completed |
@@ -481,7 +481,7 @@ All shortcuts are configurable via AllowBuildin* properties.
 | UndoCompleted / RedoCompleted | ❌ | ✅ 🆕 | More granular undo/redo events |
 | ByteClick | ✅ | ✅ | Byte clicked (with position) |
 | ByteDoubleClick | ✅ | ✅ | Byte double-clicked |
-| ZoomScaleChanged | ✅ | ✅ | Zoom level changed |
+| ZoomScaleChanged | ✅ | ⚠️ | Zoom level changed (untested in V2) |
 | VerticalScrollBarChanged | ✅ | ✅ | Scrollbar position changed |
 | ChangesSubmited | ✅ | ✅ | Changes saved to file/stream |
 | ReadOnlyChanged | ✅ | ✅ | Read-only mode toggled |
@@ -496,18 +496,18 @@ All shortcuts are configurable via AllowBuildin* properties.
 
 | Feature | V1 Legacy | V2 Modern | V2 Enhancement | Notes |
 |---------|:---------:|:---------:|----------------|-------|
-| Bookmarks | ✅ | ✅ | - | SetBookmark(), GetNextBookmark(), GetPreviousBookmark() |
+| Bookmarks | ✅ | ⚠️ | **Interface only** | SetBookmark(), GetNextBookmark(), GetPreviousBookmark() (untested in V2) |
 | **Binary file comparison** | ⚠️ | ✅ | 🆕 **3 variants** | Basic, Parallel, SIMD comparison services |
 | **Similarity calculation** | ❌ | ✅ 🆕 | **Percentage** | CalculateSimilarity() returns 0-100% match |
 | **Difference counting** | ❌ | ✅ 🆕 | **Byte-level** | CountDifferences() with SIMD optimization |
-| **State persistence** | ✅ | ✅ | ⚡ **Enhanced** | SaveState() / LoadState() with XML serialization |
+| **State persistence** | ✅ | ⚠️ | **Interface only** | SaveState() / LoadState() with XML serialization (untested in V2) |
 | **Virtual position system** | ❌ | ✅ 🆕 | **Insert/delete** | PositionMapper handles virtual↔physical conversion |
 | **EditsManager** | ❌ | ✅ 🆕 | **Non-destructive** | Track insertions/deletions without modifying source |
 | Auto-highlight same bytes | ⚠️ | ✅ | 🔧 **Enhanced** | AllowAutoHighLightSelectionByte on double-click |
 | Byte frequency analysis | ❌ | ✅ 🆕 | **BarChart** | Visual distribution of byte values |
-| Drag & drop support | ✅ | ✅ | - | AllowFileDrop, AllowTextDrop properties |
-| Tooltip byte preview | ✅ | ✅ | - | ShowByteToolTip property |
-| Visual byte addressing | ✅ | ✅ | - | AllowVisualByteAddress property |
+| Drag & drop support | ✅ | ⚠️ | 🔧 **Properties only** | AllowFileDrop, AllowTextDrop properties exist but event handlers not implemented |
+| Tooltip byte preview | ✅ | ⚠️ | **Interface only** | ShowByteToolTip property (untested in V2) |
+| Visual byte addressing | ✅ | ⚠️ | **Interface only** | AllowVisualByteAddress property (untested in V2) |
 
 </details>
 
@@ -891,8 +891,8 @@ See [Services Documentation](Sources/WPFHexaEditor/Services/README.md) for detai
 ### 🧪 Testing & Quality
 
 **[Unit Tests](Sources/WPFHexaEditor.Tests/README.md)** - Test suite documentation
-- 80+ unit tests with xUnit
-- Service layer test coverage
+- ByteProvider V2 core tests with xUnit
+- Limited test coverage (UI features untested)
 - Test patterns and best practices
 - Running tests and CI/CD integration
 
@@ -1000,7 +1000,7 @@ Every major folder in the project contains comprehensive README documentation:
 │   │       └── 📄 README.md .................... Find/Replace dialogs
 │   │
 │   ├── 📂 WPFHexaEditor.Tests/
-│   │   └── 📄 README.md ........................ 80+ unit tests
+│   │   └── 📄 README.md ........................ ByteProvider V2 tests
 │   │
 │   ├── 📂 Samples/
 │   │   ├── 📄 README.md ........................ Samples overview
