@@ -119,6 +119,9 @@ namespace WpfHexaEditor
                 // Initialize selection brushes
                 HexViewport.SelectionActiveBrush = SelectionActiveBrush;
                 HexViewport.SelectionInactiveBrush = SelectionInactiveBrush;
+
+                // Initialize mouse hover brush
+                HexViewport.MouseHoverBrush = new SolidColorBrush(MouseOverColor);
             }
 
             // Initialize zoom system
@@ -1528,9 +1531,16 @@ namespace WpfHexaEditor
 
         private static void OnMouseOverColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is HexEditor editor)
+            if (d is HexEditor editor && e.NewValue is Color color)
             {
-                editor.Resources["ByteHoverBrush"] = new SolidColorBrush((Color)e.NewValue);
+                editor.Resources["ByteHoverBrush"] = new SolidColorBrush(color);
+
+                // Update HexViewport hover brush for V2
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.MouseHoverBrush = new SolidColorBrush(color);
+                    editor.HexViewport.InvalidateVisual();
+                }
             }
         }
 

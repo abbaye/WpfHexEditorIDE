@@ -108,6 +108,10 @@ namespace WpfHexaEditor.Controls
         // Active panel tracking for dual-color selection
         private ActivePanelType _activePanel = ActivePanelType.Hex;
 
+        // Mouse hover preview (shows which byte will be selected)
+        private long _mouseHoverPosition = -1; // Position of byte under mouse cursor
+        private Brush _mouseHoverBrush = new SolidColorBrush(Color.FromArgb(0x40, 0xE3, 0xF2, 0xFD)); // Light blue hover
+
         // Refresh time tracking
         private System.Diagnostics.Stopwatch _refreshStopwatch = new System.Diagnostics.Stopwatch();
         private long _lastRefreshTimeMs = 0;
@@ -447,6 +451,15 @@ namespace WpfHexaEditor.Controls
         /// Brush for selection in the inactive panel
         /// </summary>
         public Brush SelectionInactiveBrush { get; set; }
+
+        /// <summary>
+        /// Brush for mouse hover preview (shows which byte will be selected)
+        /// </summary>
+        public Brush MouseHoverBrush
+        {
+            get => _mouseHoverBrush;
+            set { _mouseHoverBrush = value; InvalidateVisual(); }
+        }
 
         /// <summary>
         /// Force refresh of cached lines and visual rendering
@@ -862,6 +875,12 @@ namespace WpfHexaEditor.Controls
                 dc.DrawRoundedRectangle(_doubleClickHighlightBrush, null, rect, 2, 2);
             }
 
+            // Draw mouse hover preview (shows which byte will be selected on click)
+            if (_mouseHoverPosition >= 0 && byteData.VirtualPos.Value == _mouseHoverPosition)
+            {
+                dc.DrawRoundedRectangle(_mouseHoverBrush, null, rect, 2, 2);
+            }
+
             // Draw selection background (on top of custom background and auto-highlight)
             bool isSelected = IsPositionSelected(byteData.VirtualPos.Value);
             if (isSelected)
@@ -1002,6 +1021,12 @@ namespace WpfHexaEditor.Controls
             {
                 var doubleClickBrush = new SolidColorBrush(Color.FromArgb(128, 135, 206, 250)); // Light sky blue, semi-transparent
                 dc.DrawRectangle(doubleClickBrush, null, rect);
+            }
+
+            // Draw mouse hover preview (shows which byte will be selected on click)
+            if (_mouseHoverPosition >= 0 && byteData.VirtualPos.Value == _mouseHoverPosition)
+            {
+                dc.DrawRectangle(_mouseHoverBrush, null, rect);
             }
 
             // Draw selection background (on top of custom background, TBL colors, and auto-highlight)
@@ -1228,6 +1253,14 @@ namespace WpfHexaEditor.Controls
             // Show arrow cursor in empty area to indicate it's not interactive
             this.Cursor = position.HasValue ? Cursors.IBeam : Cursors.Arrow;
 
+            // Update mouse hover position for visual preview (Legacy compatible)
+            long newHoverPosition = position.HasValue ? position.Value : -1;
+            if (_mouseHoverPosition != newHoverPosition)
+            {
+                _mouseHoverPosition = newHoverPosition;
+                InvalidateVisual(); // Redraw to show/hide hover highlight
+            }
+
             // V1 compatible: Show byte tooltip on hover (follows mouse)
             if (_showByteToolTip && _byteToolTip != null)
             {
@@ -1302,6 +1335,18 @@ namespace WpfHexaEditor.Controls
                 _isMouseDown = false;
                 _dragStartPosition = null;
                 ReleaseMouseCapture();
+            }
+        }
+
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+
+            // Clear hover highlight when mouse leaves control
+            if (_mouseHoverPosition != -1)
+            {
+                _mouseHoverPosition = -1;
+                InvalidateVisual();
             }
         }
 
