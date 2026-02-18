@@ -1159,24 +1159,29 @@ namespace WpfHexaEditor.Controls
             base.OnMouseDown(e);
             Focus();
 
-            // Use the mouse hover position for click detection
-            // This ensures the byte shown during mouseover is exactly the byte that gets clicked
-            if (_mouseHoverPosition >= 0)
+            // Double-check the click position to ensure we're not clicking on a ByteSpacer or empty area
+            var mousePos = e.GetPosition(this);
+            var hitTestResult = HitTestByteWithArea(mousePos);
+
+            // Only process click if we have a valid byte position (not on ByteSpacer or empty area)
+            if (hitTestResult.Position.HasValue)
             {
+                long clickedPosition = hitTestResult.Position.Value;
+
                 // Handle double-click for auto-select same bytes (V1 compatible)
                 if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left)
                 {
-                    ByteDoubleClicked?.Invoke(this, _mouseHoverPosition);
+                    ByteDoubleClicked?.Invoke(this, clickedPosition);
                 }
                 else if (e.ChangedButton == MouseButton.Left)
                 {
                     // Single LEFT click only - start selection drag
                     // Right-click is handled separately in OnMouseRightButtonDown to preserve selection
                     _isMouseDown = true;
-                    _dragStartPosition = _mouseHoverPosition;
+                    _dragStartPosition = clickedPosition;
                     CaptureMouse();
 
-                    ByteClicked?.Invoke(this, _mouseHoverPosition);
+                    ByteClicked?.Invoke(this, clickedPosition);
                 }
             }
         }
@@ -1213,39 +1218,68 @@ namespace WpfHexaEditor.Controls
             double x = mousePos.X;
 
             // Check if click is in hex area
-            double hexStartX = OffsetWidth;
-            double hexEndX = OffsetWidth + (_bytesPerLine * (HexByteWidth + HexByteSpacing));
+            // Must account for ByteSpacers to get accurate byte position
+            double hexX = OffsetWidth;
 
-            if (x >= hexStartX && x < hexEndX)
+            for (int i = 0; i < line.Bytes.Count; i++)
             {
-                // Click in hex area
-                double relativeX = x - hexStartX;
-                int byteIndex = (int)(relativeX / (HexByteWidth + HexByteSpacing));
-
-                if (byteIndex >= 0 && byteIndex < line.Bytes.Count)
+                // Add ByteSpacer width if needed (matches drawing logic)
+                if (_bytesPerLine >= (int)ByteGrouping &&
+                    (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                     ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel) &&
+                    i % (int)ByteGrouping == 0 && i > 0)
                 {
-                    return (line.Bytes[byteIndex].VirtualPos.Value, true);
+                    hexX += (int)ByteSpacerWidthTickness;
                 }
+
+                // Check if click is within this byte's rect (matches DrawHexByte logic)
+                double byteWidth = HexByteWidth - HexByteSpacing;
+                if (x >= hexX && x < hexX + byteWidth)
+                {
+                    // Click is within this byte's visual rect
+                    return (line.Bytes[i].VirtualPos.Value, true);
+                }
+
+                hexX += HexByteWidth + HexByteSpacing;
             }
 
             // Check if click is in ASCII area
-            double separatorX = OffsetWidth + (_bytesPerLine * (HexByteWidth + HexByteSpacing)) + 8;
-            double asciiStartX = separatorX + SeparatorWidth;
-
-            // Calculate actual end based on real byte count, not max bytes per line
-            // This prevents clicks in empty space from being processed
-            double actualAsciiEndX = asciiStartX + (line.Bytes.Count * AsciiCharWidth);
-
-            if (x >= asciiStartX && x < actualAsciiEndX)
+            // Must account for ByteSpacers to get accurate byte position
+            // Calculate number of spacers in the hex area
+            int numSpacers = 0;
+            if (_bytesPerLine >= (int)ByteGrouping &&
+                (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                 ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel))
             {
-                // Click in ASCII area
-                double relativeX = x - asciiStartX;
-                int byteIndex = (int)(relativeX / AsciiCharWidth);
+                numSpacers = ByteSpacerPositioning == ByteSpacerPosition.Both
+                    ? (_bytesPerLine / (int)ByteGrouping) - 1
+                    : _bytesPerLine / (int)ByteGrouping;
+            }
+            double hexSpacersWidth = numSpacers * (int)ByteSpacerWidthTickness;
 
-                if (byteIndex >= 0 && byteIndex < line.Bytes.Count)
+            double separatorX = OffsetWidth + (_bytesPerLine * (HexByteWidth + HexByteSpacing)) + hexSpacersWidth + 8;
+            double asciiX = separatorX + SeparatorWidth;
+
+            // Iterate through bytes in ASCII area (spacers added in loop, not pre-calculated)
+            for (int i = 0; i < line.Bytes.Count; i++)
+            {
+                // Add ByteSpacer width if needed (matches drawing logic)
+                if (_bytesPerLine >= (int)ByteGrouping &&
+                    (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                     ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel) &&
+                    i % (int)ByteGrouping == 0 && i > 0)
                 {
-                    return (line.Bytes[byteIndex].VirtualPos.Value, false);
+                    asciiX += (int)ByteSpacerWidthTickness;
                 }
+
+                // Check if click is within this ASCII character's rect
+                if (x >= asciiX && x < asciiX + AsciiCharWidth)
+                {
+                    // Click is within this ASCII character's visual rect
+                    return (line.Bytes[i].VirtualPos.Value, false);
+                }
+
+                asciiX += AsciiCharWidth;
             }
 
             return (null, true);
@@ -1327,10 +1361,14 @@ namespace WpfHexaEditor.Controls
         {
             base.OnMouseRightButtonDown(e);
 
-            // Use the mouse hover position for right-click detection (ensures consistency with visual feedback)
-            if (_mouseHoverPosition >= 0)
+            // Double-check the click position to ensure we're not clicking on a ByteSpacer or empty area
+            var mousePos = e.GetPosition(this);
+            var hitTestResult = HitTestByteWithArea(mousePos);
+
+            // Only process right-click if we have a valid byte position (not on ByteSpacer or empty area)
+            if (hitTestResult.Position.HasValue)
             {
-                ByteRightClick?.Invoke(this, new ByteRightClickEventArgs(_mouseHoverPosition));
+                ByteRightClick?.Invoke(this, new ByteRightClickEventArgs(hitTestResult.Position.Value));
                 e.Handled = true; // Prevent event from bubbling up
             }
         }
