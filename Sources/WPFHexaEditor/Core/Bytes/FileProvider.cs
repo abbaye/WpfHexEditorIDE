@@ -131,6 +131,9 @@ namespace WpfHexaEditor.Core.Bytes
             if (IsInCache(physicalPosition))
             {
                 int cacheOffset = (int)(physicalPosition - _cachePosition);
+                // Defensive bounds check (race condition protection)
+                if (cacheOffset < 0 || cacheOffset >= _cacheLength)
+                    return (0, false);
                 return (_cache[cacheOffset], true);
             }
 
@@ -143,6 +146,9 @@ namespace WpfHexaEditor.Core.Bytes
                 return (0, false);
 
             int offset = (int)(physicalPosition - _cachePosition);
+            // Defensive bounds check (race condition protection)
+            if (offset < 0 || offset >= _cacheLength)
+                return (0, false);
             return (_cache[offset], true);
         }
 
