@@ -47,7 +47,8 @@ namespace WpfHexaEditor.Core
         CCode,
         FSharpCode,
         PascalCode,
-        FormattedView
+        FormattedView,
+        Auto
     }
 
     /// <summary>

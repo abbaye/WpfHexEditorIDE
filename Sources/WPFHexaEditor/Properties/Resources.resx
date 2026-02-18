@@ -394,6 +394,9 @@
   <data name="CopyAsFormattedViewString" xml:space="preserve">
     <value>Copy as Formatted View</value>
   </data>
+  <data name="CopyAsAutoString" xml:space="preserve">
+    <value>Copy (Auto)</value>
+  </data>
   <data name="PasteString" xml:space="preserve">
     <value>Paste</value>
   </data>

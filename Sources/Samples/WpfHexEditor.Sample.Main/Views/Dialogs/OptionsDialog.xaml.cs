@@ -207,6 +207,7 @@ namespace WpfHexEditor.Sample.Main.Views.Dialogs
             // All supported copy modes
             var copyModes = new List<CopyModeInfo>
             {
+                new CopyModeInfo { Icon = "🔄", Mode = CopyPasteMode.Auto, DisplayName = "Auto (Default)", Description = "Automatically selects format based on context" },
                 new CopyModeInfo { Icon = "📋", Mode = CopyPasteMode.HexaString, DisplayName = "Hexadecimal", Description = "Copy as hexadecimal string (e.g., \"48656C6C6F\")" },
                 new CopyModeInfo { Icon = "📝", Mode = CopyPasteMode.AsciiString, DisplayName = "ASCII", Description = "Copy as ASCII text string" },
                 new CopyModeInfo { Icon = "📊", Mode = CopyPasteMode.FormattedView, DisplayName = "Formatted View", Description = "Copy with offsets, hex bytes, and ASCII columns" },
@@ -217,8 +218,8 @@ namespace WpfHexEditor.Sample.Main.Views.Dialogs
 
             CopyModeListView.ItemsSource = copyModes;
 
-            // Select current copy mode (default to HexaString if not set)
-            var currentMode = CopyPasteMode.HexaString; // TODO: Load from settings
+            // Select current copy mode (default to Auto if not set)
+            var currentMode = CopyPasteMode.Auto; // TODO: Load from settings
             System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadCopyModes] Current Copy Mode: {currentMode}");
 
             var currentModeInfo = copyModes.FirstOrDefault(m => m.Mode == currentMode) ?? copyModes.First();

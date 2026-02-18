@@ -2096,7 +2096,7 @@ namespace WpfHexaEditor
         /// </summary>
         public static readonly DependencyProperty DefaultCopyToClipboardModeProperty =
             DependencyProperty.Register(nameof(DefaultCopyToClipboardMode), typeof(CopyPasteMode), typeof(HexEditor),
-                new PropertyMetadata(CopyPasteMode.HexaString));
+                new PropertyMetadata(CopyPasteMode.Auto));
 
         /// <summary>
         /// VisualCaretMode DependencyProperty for XAML binding

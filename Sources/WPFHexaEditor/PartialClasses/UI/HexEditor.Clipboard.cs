@@ -59,6 +59,11 @@ namespace WpfHexaEditor
                     case CopyPasteMode.FormattedView:
                         CopyAsFormattedView();
                         break;
+                    case CopyPasteMode.Auto:
+                        // Auto mode: default to hex for now
+                        // TODO: Could detect which panel (hex/ascii) was last clicked
+                        Copy();
+                        break;
                     default:
                         Copy(); // Default to hex
                         break;
@@ -180,48 +185,52 @@ namespace WpfHexaEditor
             long startOffset = startLine * bytesPerLine;
             int startByteInLine = (int)(selStart - startOffset);
 
-            // Process each line
             int byteIndex = 0;
+            bool isFirstLine = true;
+
             while (byteIndex < bytes.Length)
             {
-                long currentLineOffset = startOffset + ((byteIndex + startByteInLine) / bytesPerLine) * bytesPerLine;
+                // Calculate how many bytes to show on this line
+                int bytesToShow = Math.Min(bytesPerLine, bytes.Length - byteIndex);
+                if (isFirstLine)
+                    bytesToShow = Math.Min(bytesPerLine - startByteInLine, bytes.Length);
+
+                // Calculate line offset
+                long lineOffset;
+                if (isFirstLine)
+                    lineOffset = startOffset;
+                else
+                    lineOffset = startOffset + ((byteIndex + startByteInLine) / bytesPerLine) * bytesPerLine;
 
                 // Offset column
-                sb.Append($"0x{currentLineOffset:X8}");
+                sb.Append($"0x{lineOffset:X8}");
                 sb.Append("  ");
 
-                // Hex bytes section
-                int bytesInThisLine = Math.Min(bytesPerLine, bytes.Length - byteIndex + startByteInLine);
-                if (byteIndex == 0)
-                    bytesInThisLine = Math.Min(bytesPerLine - startByteInLine, bytes.Length);
-
-                // Add leading spaces for first line if selection doesn't start at line beginning
-                if (byteIndex == 0 && startByteInLine > 0)
+                // Add leading spaces for first line if needed
+                if (isFirstLine && startByteInLine > 0)
                 {
                     for (int i = 0; i < startByteInLine; i++)
                     {
-                        sb.Append("   "); // 3 spaces for each byte (2 hex digits + 1 space)
+                        sb.Append("   ");
                         if ((i + 1) % byteGrouping == 0 && i < bytesPerLine - 1)
-                            sb.Append(" "); // Extra space for byte grouping
+                            sb.Append(" ");
                     }
                 }
 
                 // Add hex bytes
-                for (int i = 0; i < bytesInThisLine - (byteIndex == 0 ? startByteInLine : 0); i++)
+                for (int i = 0; i < bytesToShow; i++)
                 {
-                    int bytePos = (byteIndex == 0 && startByteInLine > 0) ? i : i;
-                    int linePos = (byteIndex == 0) ? startByteInLine + i : i;
-
                     sb.Append($"{bytes[byteIndex + i]:X2}");
                     sb.Append(" ");
 
-                    if ((linePos + 1) % byteGrouping == 0 && linePos < bytesPerLine - 1)
+                    int currentColumn = isFirstLine ? startByteInLine + i + 1 : i + 1;
+                    if (currentColumn % byteGrouping == 0 && currentColumn < bytesPerLine)
                         sb.Append(" ");
                 }
 
-                // Pad remaining bytes in line with spaces
-                int remainingBytes = bytesPerLine - (byteIndex == 0 ? startByteInLine : 0) - bytesInThisLine + (byteIndex == 0 ? startByteInLine : 0);
-                for (int i = bytesInThisLine; i < bytesPerLine; i++)
+                // Pad remaining bytes in line
+                int bytesShown = isFirstLine ? startByteInLine + bytesToShow : bytesToShow;
+                for (int i = bytesShown; i < bytesPerLine; i++)
                 {
                     sb.Append("   ");
                     if ((i + 1) % byteGrouping == 0 && i < bytesPerLine - 1)
@@ -230,21 +239,23 @@ namespace WpfHexaEditor
 
                 sb.Append("  ");
 
-                // ASCII section
-                if (byteIndex == 0 && startByteInLine > 0)
+                // ASCII section - add leading spaces if first line
+                if (isFirstLine && startByteInLine > 0)
                 {
                     for (int i = 0; i < startByteInLine; i++)
                         sb.Append(" ");
                 }
 
-                for (int i = 0; i < bytesInThisLine - (byteIndex == 0 ? startByteInLine : 0); i++)
+                // ASCII characters
+                for (int i = 0; i < bytesToShow; i++)
                 {
                     byte b = bytes[byteIndex + i];
                     char c = (b >= 32 && b < 127) ? (char)b : '.';
                     sb.Append(c);
                 }
 
-                byteIndex += bytesInThisLine - (byteIndex == 0 ? startByteInLine : 0);
+                byteIndex += bytesToShow;
+                isFirstLine = false;
 
                 if (byteIndex < bytes.Length)
                     sb.AppendLine();
