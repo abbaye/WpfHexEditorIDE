@@ -51,7 +51,9 @@
       "Bash(start WpfHexEditor.Sample.Main.exe)",
       "Bash(returned a DELETED physical position\" errors that occurred during deletion operations.\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git ls-tree:*)",
-      "Bash(dotnet run:*)"
+      "Bash(dotnet run:*)",
+      "Bash(collections must have exclusive access\"\n\nSolution:\n- Replace Dictionary with ConcurrentDictionary\n- ConcurrentDictionary is thread-safe for concurrent reads/writes\n- No locking required, better performance than manual locks\n- All existing code \\(TryGetValue, indexer, Clear\\) works the same\n\nImpact:\n- Fixes crashes during async Find All operations\n- Enables safe parallel/async operations on ByteProvider\n- No performance regression \\(ConcurrentDictionary optimized for concurrent access\\)\n\nThis bug was introduced by the async operations feature implementation.\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git pull:*)"
     ]
   }
 }

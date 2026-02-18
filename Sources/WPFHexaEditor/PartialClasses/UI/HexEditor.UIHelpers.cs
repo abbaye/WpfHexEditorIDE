@@ -388,6 +388,69 @@ namespace WpfHexaEditor
             }
         }
 
+        /// <summary>
+        /// Context menu handler for Find All (Async) - shows progress overlay
+        /// </summary>
+        private async void FindAllMenuItemAsync_Click(object sender, RoutedEventArgs e)
+        {
+            var selection = GetSelectionByteArray();
+            if (selection != null && selection.Length > 0)
+            {
+                try
+                {
+                    // Find all occurrences asynchronously with progress overlay
+                    var positionsList = await FindAllAsync(selection, 0);
+
+                    if (positionsList != null && positionsList.Count > 0)
+                    {
+                        // Clear existing search markers and highlights
+                        if (_scrollMarkers != null)
+                        {
+                            _scrollMarkers.ClearMarkers(ScrollMarkerType.SearchResult);
+                        }
+
+                        // Add scroll marker for each result (orange markers)
+                        if (_scrollMarkers != null)
+                        {
+                            foreach (var position in positionsList)
+                            {
+                                _scrollMarkers.AddMarker(position, ScrollMarkerType.SearchResult);
+                            }
+
+                            // Make scrollbar lighter when markers are active for better visibility
+                            VerticalScroll.Opacity = 0.3;
+                        }
+
+                        // Highlight found bytes in the hex view (yellow background)
+                        // Need to highlight ALL bytes in each match, not just the first one
+                        if (HexViewport != null)
+                        {
+                            var highlightPositions = new HashSet<long>();
+                            foreach (var startPos in positionsList)
+                            {
+                                // Add all bytes from this match (startPos to startPos + selection.Length - 1)
+                                for (int i = 0; i < selection.Length; i++)
+                                {
+                                    highlightPositions.Add(startPos + i);
+                                }
+                            }
+                            HexViewport.HighlightedPositions = highlightPositions;
+                        }
+
+                        StatusText.Text = $"Found {positionsList.Count} occurrence(s). Press ESC to clear.";
+                    }
+                    else
+                    {
+                        StatusText.Text = "No matches found.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    StatusText.Text = $"Search failed: {ex.Message}";
+                }
+            }
+        }
+
         private void PasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Paste();

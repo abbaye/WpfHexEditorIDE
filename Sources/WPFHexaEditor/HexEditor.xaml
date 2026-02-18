@@ -204,8 +204,8 @@
 
             <Separator/>
 
-            <!-- Find All -->
-            <MenuItem x:Name="FindAllMenuItem" Header="{DynamicResource FindAllString}" Click="FindAllMenuItem_Click">
+            <!-- Find All (Async with Progress) -->
+            <MenuItem x:Name="FindAllMenuItem" Header="{DynamicResource FindAllString}" Click="FindAllMenuItemAsync_Click" ToolTip="Search for all occurrences with progress overlay">
                 <MenuItem.Icon>
                     <TextBlock Text="🔍" FontSize="14"/>
                 </MenuItem.Icon>
