@@ -100,10 +100,11 @@ namespace WpfHexaEditor
             _scrollMarkers = this.FindName("ScrollMarkers") as Controls.ScrollMarkerPanel;
 
             // Subscribe to scroll marker click event for navigation
-            if (_scrollMarkers != null)
-            {
-                _scrollMarkers.MarkerClicked += ScrollMarkers_MarkerClicked;
-            }
+            // Disabled: clicking on markers complicates navigation
+            //if (_scrollMarkers != null)
+            //{
+            //    _scrollMarkers.MarkerClicked += ScrollMarkers_MarkerClicked;
+            //}
 
             // Initialize column headers with byte position numbers
             this.Loaded += (s, e) => RefreshColumnHeader();
@@ -144,7 +145,17 @@ namespace WpfHexaEditor
                 {
                     _scrollMarkers.ClearMarkers(ScrollMarkerType.SearchResult);
                     StatusText.Text = "Search markers cleared.";
+
+                    // Restore scrollbar to normal opacity
+                    VerticalScroll.Opacity = 1.0;
                 }
+
+                // Clear highlighted bytes in hex view
+                if (HexViewport != null)
+                {
+                    HexViewport.HighlightedPositions = new HashSet<long>();
+                }
+
                 e.Handled = true;
             }
         }

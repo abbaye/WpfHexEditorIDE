@@ -54,7 +54,7 @@ namespace WpfHexaEditor.Controls
         // Marker colors (V1 compatible)
         private Brush _bookmarkBrush = new SolidColorBrush(Color.FromRgb(0x00, 0x78, 0xD4)); // Blue
         private Brush _modifiedBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xA5, 0x00)); // Orange
-        private Brush _searchBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0x00));   // Yellow
+        private Brush _searchBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0x66, 0x00));   // Bright orange
         private Brush _addedBrush = new SolidColorBrush(Color.FromRgb(0x4C, 0xAF, 0x50));    // Green
         private Brush _deletedBrush = new SolidColorBrush(Color.FromRgb(0xF4, 0x43, 0x36));  // Red
 
@@ -82,10 +82,10 @@ namespace WpfHexaEditor.Controls
             // - Background = null → only drawn visuals are hit-testable (markers)
             // - Background = Transparent → entire panel captures mouse events (blocks scrollbar)
             Background = null;
-            IsHitTestVisible = true; // Enable mouse events on drawn markers
+            IsHitTestVisible = false; // Disable mouse events - markers are purely visual
 
-            // Handle mouse clicks
-            MouseLeftButtonDown += ScrollMarkerPanel_MouseLeftButtonDown;
+            // Handle mouse clicks - DISABLED: clicking on markers complicates navigation
+            //MouseLeftButtonDown += ScrollMarkerPanel_MouseLeftButtonDown;
         }
 
         #endregion
@@ -368,6 +368,10 @@ namespace WpfHexaEditor.Controls
                 DrawSelectionBar(dc, panelHeight, panelWidth);
             }
 
+            // Create a white border pen for better marker visibility
+            var borderPen = new Pen(Brushes.White, 0.5);
+            borderPen.Freeze(); // Freeze for performance
+
             // Track which (Y, X) pixel positions have been drawn to avoid duplicates
             // This improves performance by not drawing multiple markers at the same pixel
             var drawnPositions = new HashSet<(int y, int x)>();
@@ -378,28 +382,28 @@ namespace WpfHexaEditor.Controls
             double addedX = GetMarkerX(AddedMarkerPosition, AddedMarkerWidth, panelWidth);
             foreach (var position in _insertedPositions)
             {
-                DrawMarkerWithDedup(dc, position, _addedBrush, panelHeight, addedX, AddedMarkerWidth, AddedMarkerHeight, drawnPositions);
+                DrawMarkerWithDedup(dc, position, _addedBrush, panelHeight, addedX, AddedMarkerWidth, AddedMarkerHeight, drawnPositions, borderPen);
             }
 
             // Modified positions (orange) - configurable position
             double modifiedX = GetMarkerX(ModifiedMarkerPosition, ModifiedMarkerWidth, panelWidth);
             foreach (var position in _modifiedPositions)
             {
-                DrawMarkerWithDedup(dc, position, _modifiedBrush, panelHeight, modifiedX, ModifiedMarkerWidth, ModifiedMarkerHeight, drawnPositions);
+                DrawMarkerWithDedup(dc, position, _modifiedBrush, panelHeight, modifiedX, ModifiedMarkerWidth, ModifiedMarkerHeight, drawnPositions, borderPen);
             }
 
             // Deleted positions (red) - configurable position
             double deletedX = GetMarkerX(DeletedMarkerPosition, DeletedMarkerWidth, panelWidth);
             foreach (var position in _deletedPositions)
             {
-                DrawMarkerWithDedup(dc, position, _deletedBrush, panelHeight, deletedX, DeletedMarkerWidth, DeletedMarkerHeight, drawnPositions);
+                DrawMarkerWithDedup(dc, position, _deletedBrush, panelHeight, deletedX, DeletedMarkerWidth, DeletedMarkerHeight, drawnPositions, borderPen);
             }
 
             // Search results (yellow) - configurable position
             double searchX = GetMarkerX(SearchMarkerPosition, SearchMarkerWidth, panelWidth);
             foreach (var position in _searchResultPositions)
             {
-                DrawMarkerWithDedup(dc, position, _searchBrush, panelHeight, searchX, SearchMarkerWidth, SearchMarkerHeight, drawnPositions);
+                DrawMarkerWithDedup(dc, position, _searchBrush, panelHeight, searchX, SearchMarkerWidth, SearchMarkerHeight, drawnPositions, borderPen);
             }
 
             // Bookmarks (blue) - drawn on exterior left of scrollbar (more distinctive)
@@ -407,14 +411,14 @@ namespace WpfHexaEditor.Controls
             double bookmarkX = -BookmarkMarkerWidth - 1; // 1 pixel gap from panel edge
             foreach (var position in _bookmarkPositions)
             {
-                DrawMarkerWithDedup(dc, position, _bookmarkBrush, panelHeight, bookmarkX, BookmarkMarkerWidth, BookmarkMarkerHeight, drawnPositions);
+                DrawMarkerWithDedup(dc, position, _bookmarkBrush, panelHeight, bookmarkX, BookmarkMarkerWidth, BookmarkMarkerHeight, drawnPositions, borderPen);
             }
 
             // Custom markers - CENTER (default)
             double customX = (panelWidth - MarkerWidth) / 2;
             foreach (var marker in _customMarkers)
             {
-                DrawMarkerWithDedup(dc, marker.Key, marker.Value, panelHeight, customX, MarkerWidth, MarkerMinHeight, drawnPositions);
+                DrawMarkerWithDedup(dc, marker.Key, marker.Value, panelHeight, customX, MarkerWidth, MarkerMinHeight, drawnPositions, borderPen);
             }
         }
 
@@ -423,7 +427,7 @@ namespace WpfHexaEditor.Controls
         /// Avoids drawing multiple markers at the same pixel position for better performance
         /// </summary>
         private void DrawMarkerWithDedup(DrawingContext dc, long position, Brush brush, double panelHeight,
-            double x, double width, double height, HashSet<(int, int)> drawnPositions)
+            double x, double width, double height, HashSet<(int, int)> drawnPositions, Pen borderPen = null)
         {
             if (_fileLength == 0)
                 return;
@@ -445,9 +449,9 @@ namespace WpfHexaEditor.Controls
                 return; // Already drawn at this pixel, skip for performance
             }
 
-            // Draw marker rectangle at specified position with custom size
+            // Draw marker rectangle at specified position with custom size and optional border
             var rect = new Rect(x, y, width, height);
-            dc.DrawRectangle(brush, null, rect);
+            dc.DrawRectangle(brush, borderPen, rect);
         }
 
         /// <summary>

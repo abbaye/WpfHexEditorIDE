@@ -95,8 +95,8 @@ namespace WpfHexaEditor.Controls
         private byte? _autoHighlightByteValue = null; // Byte value to highlight
         private Brush _autoHighLiteBrush = new SolidColorBrush(Color.FromArgb(0x60, 0xFF, 0xFF, 0x00)); // 40% Yellow
 
-        // Double-click highlight (V1 compatible feature)
-        private Brush _doubleClickHighlightBrush = new SolidColorBrush(Color.FromArgb(0x80, 0x87, 0xCE, 0xFA)); // 50% Light sky blue
+        // Search results highlight (yellow for better visibility)
+        private Brush _doubleClickHighlightBrush = new SolidColorBrush(Color.FromArgb(0x80, 0xFF, 0xFF, 0x00)); // 50% Yellow
 
         // Caret for Insert mode (flashing vertical line)
         private Caret _caret;

@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -341,18 +342,40 @@ namespace WpfHexaEditor
                 {
                     var positionsList = positions.ToList();
 
-                    // Clear existing search markers
+                    // Clear existing search markers and highlights
                     if (_scrollMarkers != null)
                     {
                         _scrollMarkers.ClearMarkers(ScrollMarkerType.SearchResult);
                     }
 
-                    // Add scroll marker for each result (yellow markers)
-                    if (_scrollMarkers != null && positionsList.Count > 0)
+                    if (positionsList.Count > 0)
                     {
-                        foreach (var position in positionsList)
+                        // Add scroll marker for each result (orange markers)
+                        if (_scrollMarkers != null)
                         {
-                            _scrollMarkers.AddMarker(position, ScrollMarkerType.SearchResult);
+                            foreach (var position in positionsList)
+                            {
+                                _scrollMarkers.AddMarker(position, ScrollMarkerType.SearchResult);
+                            }
+
+                            // Make scrollbar lighter when markers are active for better visibility
+                            VerticalScroll.Opacity = 0.3;
+                        }
+
+                        // Highlight found bytes in the hex view (yellow background)
+                        // Need to highlight ALL bytes in each match, not just the first one
+                        if (HexViewport != null)
+                        {
+                            var highlightPositions = new HashSet<long>();
+                            foreach (var startPos in positionsList)
+                            {
+                                // Add all bytes from this match (startPos to startPos + selection.Length - 1)
+                                for (int i = 0; i < selection.Length; i++)
+                                {
+                                    highlightPositions.Add(startPos + i);
+                                }
+                            }
+                            HexViewport.HighlightedPositions = highlightPositions;
                         }
                     }
 
