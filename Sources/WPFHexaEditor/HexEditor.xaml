@@ -335,6 +335,13 @@
                                          Width="18"
                                          HorizontalAlignment="Right"
                                          Margin="0,18,0,18"/>
+
+            <!-- Progress overlay for long-running operations -->
+            <controls:ProgressOverlay x:Name="ProgressOverlay"
+                                      Grid.Column="0"
+                                      Grid.ColumnSpan="2"
+                                      Panel.ZIndex="10"
+                                      Visibility="Collapsed"/>
         </Grid>
 
         <!-- Bar Chart Panel (Phase 7.4 - V1 compatible feature) -->

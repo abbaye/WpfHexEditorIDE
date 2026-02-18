@@ -47,6 +47,9 @@ namespace WpfHexaEditor
         private readonly List<long> _bookmarks = new List<long>();
         private readonly Services.BookmarkService _bookmarkService = new(); // V2 bookmark service
 
+        // Long-running operations
+        private readonly Services.LongRunningOperationService _longRunningService = new();
+
         // Highlights  - stores ranges of highlighted bytes
         private readonly List<(long start, long length)> _highlights = new List<(long, long)>();
 
@@ -128,6 +131,17 @@ namespace WpfHexaEditor
 
             // Subscribe to PreviewKeyDown for Escape key (clear search markers)
             this.PreviewKeyDown += HexEditor_PreviewKeyDown;
+
+            // Subscribe to long-running operation events
+            _longRunningService.OperationStarted += LongRunningService_OperationStarted;
+            _longRunningService.OperationProgress += LongRunningService_OperationProgress;
+            _longRunningService.OperationCompleted += LongRunningService_OperationCompleted;
+
+            // Wire up cancel button to service
+            if (ProgressOverlay != null)
+            {
+                ProgressOverlay.ViewModel.CancelRequested += (s, e) => _longRunningService.CancelCurrentOperation();
+            }
 
             // Initialize zoom system
             InitialiseZoom();
@@ -2566,6 +2580,67 @@ namespace WpfHexaEditor
         {
             get => (Visibility)GetValue(BarChartPanelVisibilityProperty);
             set => SetValue(BarChartPanelVisibilityProperty, value);
+        }
+
+        #endregion
+
+        #region Long-Running Operations Event Handlers
+
+        /// <summary>
+        /// Handle operation started event
+        /// </summary>
+        private void LongRunningService_OperationStarted(object sender, Events.OperationProgressEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // Show progress overlay
+                ProgressOverlay.Visibility = Visibility.Visible;
+                ProgressOverlay.ViewModel.OperationTitle = e.OperationTitle;
+                ProgressOverlay.ViewModel.StatusMessage = e.StatusMessage;
+                ProgressOverlay.ViewModel.ProgressPercentage = e.ProgressPercentage;
+                ProgressOverlay.ViewModel.IsIndeterminate = e.IsIndeterminate;
+                ProgressOverlay.ViewModel.CanCancel = e.CanCancel;
+
+                // Change cursor to Wait
+                Mouse.OverrideCursor = Cursors.Wait;
+            });
+        }
+
+        /// <summary>
+        /// Handle operation progress event
+        /// </summary>
+        private void LongRunningService_OperationProgress(object sender, Events.OperationProgressEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // Update progress
+                ProgressOverlay.ViewModel.ProgressPercentage = e.ProgressPercentage;
+                ProgressOverlay.ViewModel.StatusMessage = e.StatusMessage;
+            });
+        }
+
+        /// <summary>
+        /// Handle operation completed event
+        /// </summary>
+        private void LongRunningService_OperationCompleted(object sender, Events.OperationCompletedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // Hide progress overlay
+                ProgressOverlay.Visibility = Visibility.Collapsed;
+
+                // Restore cursor
+                Mouse.OverrideCursor = null;
+
+                // Update status bar
+                if (!e.Success)
+                {
+                    if (e.WasCancelled)
+                        StatusText.Text = "Operation cancelled";
+                    else
+                        StatusText.Text = $"Operation failed: {e.ErrorMessage}";
+                }
+            });
         }
 
         #endregion
