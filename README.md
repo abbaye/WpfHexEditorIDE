@@ -51,18 +51,6 @@ V2 represents a complete architectural overhaul with **dramatic performance impr
 
 **[See full V1 vs V2 comparison](#-feature-comparison-v1-legacy-vs-v2)** 👇
 
-### ⭐ Support This Project
-
-WPF HexEditor is **100% free and open source** (Apache 2.0). It can be used in personal projects, commercial applications, and everything in between.
-
-This project is developed in **free time** by passionate contributors. If you find it useful:
-- ⭐ **Star this repository** - It helps others discover the project!
-- 🍴 **Fork and contribute** - Pull requests are always welcome
-- 💬 **Share feedback** - Report bugs or suggest features
-- 📖 **Improve documentation** - Help others get started
-
-**Every star motivates us to keep improving! 🙏**  
-
 ### 🖼 Screenshots
 
 <table>
