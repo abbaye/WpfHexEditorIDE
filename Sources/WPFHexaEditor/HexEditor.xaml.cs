@@ -159,9 +159,31 @@ namespace WpfHexaEditor
 
         /// <summary>
         /// Handle right-click on byte for context menu
+        /// Text-editor-like behavior: if clicking outside selection, create new selection at click position
         /// </summary>
         private void HexViewport_ByteRightClick(object sender, Controls.ByteRightClickEventArgs e)
         {
+            if (_viewModel == null)
+            {
+                ShowContextMenu(e.Position);
+                return;
+            }
+
+            // Check if clicked position is within current selection
+            bool isInSelection = false;
+            if (_viewModel.HasSelection && _viewModel.SelectionStart.IsValid && _viewModel.SelectionStop.IsValid)
+            {
+                long start = Math.Min(_viewModel.SelectionStart.Value, _viewModel.SelectionStop.Value);
+                long stop = Math.Max(_viewModel.SelectionStart.Value, _viewModel.SelectionStop.Value);
+                isInSelection = (e.Position >= start && e.Position <= stop);
+            }
+
+            // If clicked outside selection, create new selection at click position (text-editor behavior)
+            if (!isInSelection)
+            {
+                _viewModel.SetSelection(new VirtualPosition(e.Position));
+            }
+
             ShowContextMenu(e.Position);
         }
 
