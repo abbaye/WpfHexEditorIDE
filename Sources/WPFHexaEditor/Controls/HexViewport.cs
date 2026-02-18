@@ -110,6 +110,7 @@ namespace WpfHexaEditor.Controls
 
         // Mouse hover preview (shows which byte will be selected)
         private long _mouseHoverPosition = -1; // Position of byte under mouse cursor
+        private bool _mouseHoverInHexArea = true; // True if hovering in hex area, false if in ASCII area
         private Brush _mouseHoverBrush = new SolidColorBrush(Color.FromArgb(0x40, 0xE3, 0xF2, 0xFD)); // Light blue hover
 
         // Refresh time tracking
@@ -876,7 +877,8 @@ namespace WpfHexaEditor.Controls
             }
 
             // Draw mouse hover preview (shows which byte will be selected on click)
-            if (_mouseHoverPosition >= 0 && byteData.VirtualPos.Value == _mouseHoverPosition)
+            // Only show in hex area if mouse is hovering in hex area (matches Legacy behavior)
+            if (_mouseHoverPosition >= 0 && _mouseHoverInHexArea && byteData.VirtualPos.Value == _mouseHoverPosition)
             {
                 dc.DrawRoundedRectangle(_mouseHoverBrush, null, rect, 2, 2);
             }
@@ -1024,7 +1026,8 @@ namespace WpfHexaEditor.Controls
             }
 
             // Draw mouse hover preview (shows which byte will be selected on click)
-            if (_mouseHoverPosition >= 0 && byteData.VirtualPos.Value == _mouseHoverPosition)
+            // Only show in ASCII area if mouse is hovering in ASCII area (matches Legacy behavior)
+            if (_mouseHoverPosition >= 0 && !_mouseHoverInHexArea && byteData.VirtualPos.Value == _mouseHoverPosition)
             {
                 dc.DrawRectangle(_mouseHoverBrush, null, rect);
             }
@@ -1156,27 +1159,24 @@ namespace WpfHexaEditor.Controls
             base.OnMouseDown(e);
             Focus();
 
-            // Get mouse position
-            Point mousePos = e.GetPosition(this);
-
-            // Calculate which byte was clicked
-            long? clickedPosition = HitTestByte(mousePos);
-            if (clickedPosition.HasValue)
+            // Use the mouse hover position for click detection
+            // This ensures the byte shown during mouseover is exactly the byte that gets clicked
+            if (_mouseHoverPosition >= 0)
             {
                 // Handle double-click for auto-select same bytes (V1 compatible)
                 if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left)
                 {
-                    ByteDoubleClicked?.Invoke(this, clickedPosition.Value);
+                    ByteDoubleClicked?.Invoke(this, _mouseHoverPosition);
                 }
                 else if (e.ChangedButton == MouseButton.Left)
                 {
                     // Single LEFT click only - start selection drag
                     // Right-click is handled separately in OnMouseRightButtonDown to preserve selection
                     _isMouseDown = true;
-                    _dragStartPosition = clickedPosition.Value;
+                    _dragStartPosition = _mouseHoverPosition;
                     CaptureMouse();
 
-                    ByteClicked?.Invoke(this, clickedPosition.Value);
+                    ByteClicked?.Invoke(this, _mouseHoverPosition);
                 }
             }
         }
@@ -1186,20 +1186,29 @@ namespace WpfHexaEditor.Controls
         /// </summary>
         private long? HitTestByte(Point mousePos)
         {
+            var result = HitTestByteWithArea(mousePos);
+            return result.Position;
+        }
+
+        /// <summary>
+        /// Hit test to determine which byte position was clicked and which area (hex or ASCII)
+        /// </summary>
+        private (long? Position, bool IsHexArea) HitTestByteWithArea(Point mousePos)
+        {
             if (_linesCached == null || _linesCached.Count == 0)
-                return null;
+                return (null, true);
 
             // Calculate which line was clicked
             double y = mousePos.Y - TopMargin;
-            if (y < 0) return null;
+            if (y < 0) return (null, true);
 
             int lineIndex = (int)(y / _lineHeight);
             if (lineIndex < 0 || lineIndex >= _linesCached.Count)
-                return null;
+                return (null, true);
 
             var line = _linesCached[lineIndex];
             if (line.Bytes == null || line.Bytes.Count == 0)
-                return null;
+                return (null, true);
 
             double x = mousePos.X;
 
@@ -1215,7 +1224,7 @@ namespace WpfHexaEditor.Controls
 
                 if (byteIndex >= 0 && byteIndex < line.Bytes.Count)
                 {
-                    return line.Bytes[byteIndex].VirtualPos.Value;
+                    return (line.Bytes[byteIndex].VirtualPos.Value, true);
                 }
             }
 
@@ -1235,11 +1244,11 @@ namespace WpfHexaEditor.Controls
 
                 if (byteIndex >= 0 && byteIndex < line.Bytes.Count)
                 {
-                    return line.Bytes[byteIndex].VirtualPos.Value;
+                    return (line.Bytes[byteIndex].VirtualPos.Value, false);
                 }
             }
 
-            return null;
+            return (null, true);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1247,17 +1256,19 @@ namespace WpfHexaEditor.Controls
             base.OnMouseMove(e);
 
             var mousePos = e.GetPosition(this);
-            var position = HitTestByte(mousePos);
+            var hitTestResult = HitTestByteWithArea(mousePos);
+            var position = hitTestResult.Position;
+            var isHexArea = hitTestResult.IsHexArea;
 
-            // Update cursor based on whether mouse is over valid byte area
-            // Show arrow cursor in empty area to indicate it's not interactive
-            this.Cursor = position.HasValue ? Cursors.IBeam : Cursors.Arrow;
+            // Always show standard arrow cursor in editing area (user preference)
+            this.Cursor = Cursors.Arrow;
 
-            // Update mouse hover position for visual preview (Legacy compatible)
+            // Update mouse hover position and area for visual preview (Legacy compatible)
             long newHoverPosition = position.HasValue ? position.Value : -1;
-            if (_mouseHoverPosition != newHoverPosition)
+            if (_mouseHoverPosition != newHoverPosition || _mouseHoverInHexArea != isHexArea)
             {
                 _mouseHoverPosition = newHoverPosition;
+                _mouseHoverInHexArea = isHexArea;
                 InvalidateVisual(); // Redraw to show/hide hover highlight
             }
 
@@ -1316,11 +1327,10 @@ namespace WpfHexaEditor.Controls
         {
             base.OnMouseRightButtonDown(e);
 
-            // Get position at mouse click for context menu
-            var position = HitTestByte(e.GetPosition(this));
-            if (position.HasValue)
+            // Use the mouse hover position for right-click detection (ensures consistency with visual feedback)
+            if (_mouseHoverPosition >= 0)
             {
-                ByteRightClick?.Invoke(this, new ByteRightClickEventArgs(position.Value));
+                ByteRightClick?.Invoke(this, new ByteRightClickEventArgs(_mouseHoverPosition));
                 e.Handled = true; // Prevent event from bubbling up
             }
         }
