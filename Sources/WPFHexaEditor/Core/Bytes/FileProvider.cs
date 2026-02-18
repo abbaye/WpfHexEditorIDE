@@ -138,6 +138,10 @@ namespace WpfHexaEditor.Core.Bytes
             if (!FillCache(physicalPosition))
                 return (0, false);
 
+            // Verify position is now in cache (handles edge cases like EOF)
+            if (!IsInCache(physicalPosition))
+                return (0, false);
+
             int offset = (int)(physicalPosition - _cachePosition);
             return (_cache[offset], true);
         }
