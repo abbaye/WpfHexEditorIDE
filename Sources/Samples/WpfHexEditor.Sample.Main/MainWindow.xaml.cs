@@ -112,6 +112,71 @@ namespace WpfHexEditor.Sample.Main
             Close();
         }
 
+        private async void OpenAsync_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Title = "Open file (Async)",
+                Filter = "All files (*.*)|*.*"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    bool success = await HexEditor.OpenFileAsync(dialog.FileName);
+                    if (success)
+                    {
+                        _currentFilePath = dialog.FileName;
+                        Title = $"HexEditor - {System.IO.Path.GetFileName(dialog.FileName)}";
+                        UpdateUIState();
+                        MessageBox.Show("File opened successfully", "Success",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("File opening was cancelled or failed", "Information",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to open file: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private async void SaveAsync_Click(object sender, RoutedEventArgs e)
+        {
+            if (!HexEditor.IsFileLoaded)
+            {
+                MessageBox.Show("No file loaded", "Warning",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                bool success = await HexEditor.SaveAsync();
+                if (success)
+                {
+                    MessageBox.Show("File saved successfully", "Success",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("File saving failed", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to save file: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         #endregion
 
         #region Edit Menu
@@ -1330,6 +1395,7 @@ namespace WpfHexEditor.Sample.Main
             // File menu
             SaveMenuItem.IsEnabled = fileLoaded;
             SaveAsMenuItem.IsEnabled = fileLoaded;
+            SaveAsyncMenuItem.IsEnabled = fileLoaded;
             CloseMenuItem.IsEnabled = fileLoaded;
 
             // Edit menu
@@ -1348,6 +1414,9 @@ namespace WpfHexEditor.Sample.Main
             FindNextMenuItem.IsEnabled = fileLoaded && _lastFindData != null;
             FindPreviousMenuItem.IsEnabled = fileLoaded && _lastFindData != null;
             ReplaceMenuItem.IsEnabled = fileLoaded && !isReadOnly;
+            FindAllOccurrenceMenuItem.IsEnabled = fileLoaded;
+            FindAllAsyncMenuItem.IsEnabled = fileLoaded;
+            ReplaceAllAsyncMenuItem.IsEnabled = fileLoaded && !isReadOnly;
 
             // Tools > Byte Operations
             FillWithByteMenuItem.IsEnabled = fileLoaded && !isReadOnly;
@@ -1457,6 +1526,183 @@ namespace WpfHexEditor.Sample.Main
             // TODO: Implement find all occurrence functionality
             MessageBox.Show("Find all occurrence functionality will be implemented in a future version.",
                 "Not Implemented", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private async void FindAllAsync_Click(object sender, RoutedEventArgs e)
+        {
+            if (!HexEditor.IsFileLoaded)
+            {
+                MessageBox.Show("No file loaded", "Warning",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Prompt user for search pattern
+            var inputDialog = new Window
+            {
+                Title = "Find All (Async)",
+                Width = 400,
+                Height = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this,
+                ResizeMode = ResizeMode.NoResize
+            };
+
+            var stackPanel = new StackPanel { Margin = new Thickness(10) };
+            var label = new TextBlock { Text = "Enter hex pattern to search (e.g., 48 65 6C 6C 6F):", Margin = new Thickness(0, 0, 0, 5) };
+            var textBox = new TextBox { Margin = new Thickness(0, 0, 0, 10) };
+            var buttonPanel = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+            var okButton = new Button { Content = "OK", Width = 75, Margin = new Thickness(0, 0, 5, 0), IsDefault = true };
+            var cancelButton = new Button { Content = "Cancel", Width = 75, IsCancel = true };
+
+            okButton.Click += (s, args) => inputDialog.DialogResult = true;
+            cancelButton.Click += (s, args) => inputDialog.DialogResult = false;
+
+            buttonPanel.Children.Add(okButton);
+            buttonPanel.Children.Add(cancelButton);
+            stackPanel.Children.Add(label);
+            stackPanel.Children.Add(textBox);
+            stackPanel.Children.Add(buttonPanel);
+            inputDialog.Content = stackPanel;
+
+            if (inputDialog.ShowDialog() == true && !string.IsNullOrWhiteSpace(textBox.Text))
+            {
+                try
+                {
+                    // Parse hex pattern
+                    var hexValues = textBox.Text.Split(new[] { ' ', ',', '-' }, StringSplitOptions.RemoveEmptyEntries);
+                    byte[] searchPattern = hexValues.Select(h => Convert.ToByte(h, 16)).ToArray();
+
+                    if (searchPattern.Length == 0)
+                    {
+                        MessageBox.Show("Invalid search pattern", "Error",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Execute async search with progress overlay
+                    var results = await HexEditor.FindAllAsync(searchPattern, 0);
+
+                    // Display results
+                    MessageBox.Show($"Found {results.Count} occurrences of pattern: {textBox.Text}\n\n" +
+                        $"Note: This is a demo. Results are not highlighted in the editor yet.",
+                        "Search Results",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Invalid hex format. Use format like: 48 65 6C 6C 6F", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Search failed: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private async void ReplaceAllAsync_Click(object sender, RoutedEventArgs e)
+        {
+            if (!HexEditor.IsFileLoaded)
+            {
+                MessageBox.Show("No file loaded", "Warning",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (HexEditor.ReadOnlyMode)
+            {
+                MessageBox.Show("Cannot replace in read-only mode", "Warning",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Prompt user for find and replace patterns
+            var inputDialog = new Window
+            {
+                Title = "Replace All (Async)",
+                Width = 400,
+                Height = 200,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = this,
+                ResizeMode = ResizeMode.NoResize
+            };
+
+            var stackPanel = new StackPanel { Margin = new Thickness(10) };
+            var findLabel = new TextBlock { Text = "Find hex pattern (e.g., 48 65 6C 6C 6F):", Margin = new Thickness(0, 0, 0, 5) };
+            var findTextBox = new TextBox { Margin = new Thickness(0, 0, 0, 10) };
+            var replaceLabel = new TextBlock { Text = "Replace with hex pattern:", Margin = new Thickness(0, 0, 0, 5) };
+            var replaceTextBox = new TextBox { Margin = new Thickness(0, 0, 0, 10) };
+            var buttonPanel = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+            var okButton = new Button { Content = "OK", Width = 75, Margin = new Thickness(0, 0, 5, 0), IsDefault = true };
+            var cancelButton = new Button { Content = "Cancel", Width = 75, IsCancel = true };
+
+            okButton.Click += (s, args) => inputDialog.DialogResult = true;
+            cancelButton.Click += (s, args) => inputDialog.DialogResult = false;
+
+            buttonPanel.Children.Add(okButton);
+            buttonPanel.Children.Add(cancelButton);
+            stackPanel.Children.Add(findLabel);
+            stackPanel.Children.Add(findTextBox);
+            stackPanel.Children.Add(replaceLabel);
+            stackPanel.Children.Add(replaceTextBox);
+            stackPanel.Children.Add(buttonPanel);
+            inputDialog.Content = stackPanel;
+
+            if (inputDialog.ShowDialog() == true &&
+                !string.IsNullOrWhiteSpace(findTextBox.Text) &&
+                !string.IsNullOrWhiteSpace(replaceTextBox.Text))
+            {
+                try
+                {
+                    // Parse hex patterns
+                    var findHexValues = findTextBox.Text.Split(new[] { ' ', ',', '-' }, StringSplitOptions.RemoveEmptyEntries);
+                    byte[] findPattern = findHexValues.Select(h => Convert.ToByte(h, 16)).ToArray();
+
+                    var replaceHexValues = replaceTextBox.Text.Split(new[] { ' ', ',', '-' }, StringSplitOptions.RemoveEmptyEntries);
+                    byte[] replacePattern = replaceHexValues.Select(h => Convert.ToByte(h, 16)).ToArray();
+
+                    if (findPattern.Length == 0 || replacePattern.Length == 0)
+                    {
+                        MessageBox.Show("Invalid pattern(s)", "Error",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Confirm operation
+                    var confirmResult = MessageBox.Show(
+                        $"Replace all occurrences of:\n{findTextBox.Text}\nwith:\n{replaceTextBox.Text}\n\nThis operation cannot be cancelled once started.",
+                        "Confirm Replace All",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
+
+                    if (confirmResult != MessageBoxResult.Yes)
+                        return;
+
+                    // Execute async replace with progress overlay
+                    int replacementCount = await HexEditor.ReplaceAllAsync(findPattern, replacePattern, false);
+
+                    // Display results
+                    MessageBox.Show($"Replaced {replacementCount} occurrences successfully.",
+                        "Replace Results",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+
+                    UpdateUIState();
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Invalid hex format. Use format like: 48 65 6C 6C 6F", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Replace failed: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         #endregion

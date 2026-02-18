@@ -32,6 +32,9 @@
                 <MenuItem Header="_Save" x:Name="SaveMenuItem" Click="Save_Click" InputGestureText="Ctrl+S" IsEnabled="False"/>
                 <MenuItem Header="Save _As..." x:Name="SaveAsMenuItem" Click="SaveAs_Click" IsEnabled="False"/>
                 <Separator/>
+                <MenuItem Header="Open (Async)..." x:Name="OpenAsyncMenuItem" Click="OpenAsync_Click" ToolTip="Open file with progress overlay"/>
+                <MenuItem Header="Save (Async)" x:Name="SaveAsyncMenuItem" Click="SaveAsync_Click" IsEnabled="False" ToolTip="Save file with progress overlay"/>
+                <Separator/>
                 <MenuItem Header="_Close" x:Name="CloseMenuItem" Click="Close_Click" IsEnabled="False"/>
                 <Separator/>
                 <MenuItem Header="E_xit" Click="Exit_Click"/>
@@ -43,6 +46,9 @@
                 <MenuItem Header="_Find..." x:Name="FindMenuItem" Click="Find_Click" InputGestureText="Ctrl+F" IsEnabled="False"/>
                 <MenuItem Header="Find and _Replace..." x:Name="ReplaceMenuItem" Click="Replace_Click" InputGestureText="Ctrl+H" IsEnabled="False"/>
                 <MenuItem Header="Find All Occurrence of Selection" x:Name="FindAllOccurrenceMenuItem" Click="FindAllOccurrence_Click" IsEnabled="False"/>
+                <Separator/>
+                <MenuItem Header="Find All (Async)..." x:Name="FindAllAsyncMenuItem" Click="FindAllAsync_Click" IsEnabled="False" ToolTip="Search with progress overlay and cancellation support"/>
+                <MenuItem Header="Replace All (Async)..." x:Name="ReplaceAllAsyncMenuItem" Click="ReplaceAllAsync_Click" IsEnabled="False" ToolTip="Replace with progress overlay"/>
                 <Separator/>
                 <MenuItem Header="Reverse Selection" x:Name="ReverseSelectionMenuItem" Click="ReverseSelection_Click" IsEnabled="False"/>
                 <Separator/>
