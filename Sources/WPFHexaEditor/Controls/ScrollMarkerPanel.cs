@@ -24,6 +24,18 @@ namespace WpfHexaEditor.Controls
     }
 
     /// <summary>
+    /// Type of scroll marker
+    /// </summary>
+    public enum ScrollMarkerType
+    {
+        Bookmark,
+        Modified,
+        Inserted,
+        Deleted,
+        SearchResult
+    }
+
+    /// <summary>
     /// Panel that displays markers on top of the scrollbar
     /// Markers indicate bookmarks, modifications, search results, etc.
     /// </summary>
@@ -267,6 +279,58 @@ namespace WpfHexaEditor.Controls
             _deletedPositions.Clear();
             _searchResultPositions.Clear();
             _customMarkers.Clear();
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Add a marker of specific type at position
+        /// </summary>
+        public void AddMarker(long position, ScrollMarkerType markerType)
+        {
+            switch (markerType)
+            {
+                case ScrollMarkerType.Bookmark:
+                    _bookmarkPositions.Add(position);
+                    break;
+                case ScrollMarkerType.Modified:
+                    _modifiedPositions.Add(position);
+                    break;
+                case ScrollMarkerType.Inserted:
+                    _insertedPositions.Add(position);
+                    break;
+                case ScrollMarkerType.Deleted:
+                    _deletedPositions.Add(position);
+                    break;
+                case ScrollMarkerType.SearchResult:
+                    _searchResultPositions.Add(position);
+                    break;
+            }
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Clear markers of specific type
+        /// </summary>
+        public void ClearMarkers(ScrollMarkerType markerType)
+        {
+            switch (markerType)
+            {
+                case ScrollMarkerType.Bookmark:
+                    _bookmarkPositions.Clear();
+                    break;
+                case ScrollMarkerType.Modified:
+                    _modifiedPositions.Clear();
+                    break;
+                case ScrollMarkerType.Inserted:
+                    _insertedPositions.Clear();
+                    break;
+                case ScrollMarkerType.Deleted:
+                    _deletedPositions.Clear();
+                    break;
+                case ScrollMarkerType.SearchResult:
+                    _searchResultPositions.Clear();
+                    break;
+            }
             InvalidateVisual();
         }
 

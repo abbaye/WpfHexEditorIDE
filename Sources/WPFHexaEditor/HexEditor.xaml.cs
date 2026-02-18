@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexaEditor.Controls;
 using WpfHexaEditor.Core;
 using WpfHexaEditor.Core.Bytes;
 using WpfHexaEditor.Core.CharacterTable;
@@ -124,8 +125,28 @@ namespace WpfHexaEditor
                 HexViewport.MouseHoverBrush = new SolidColorBrush(MouseOverColor);
             }
 
+            // Subscribe to PreviewKeyDown for Escape key (clear search markers)
+            this.PreviewKeyDown += HexEditor_PreviewKeyDown;
+
             // Initialize zoom system
             InitialiseZoom();
+        }
+
+        /// <summary>
+        /// Handle Escape key to clear search markers (Find All results)
+        /// </summary>
+        private void HexEditor_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                // Clear search result markers
+                if (_scrollMarkers != null)
+                {
+                    _scrollMarkers.ClearMarkers(ScrollMarkerType.SearchResult);
+                    StatusText.Text = "Search markers cleared.";
+                }
+                e.Handled = true;
+            }
         }
 
         /// <summary>

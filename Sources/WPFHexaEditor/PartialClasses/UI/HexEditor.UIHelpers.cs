@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using WpfHexaEditor.Controls;
 using WpfHexaEditor.Core;
 using WpfHexaEditor.Models;
 using WpfHexaEditor.Properties;
@@ -334,8 +335,33 @@ namespace WpfHexaEditor
             var selection = GetSelectionByteArray();
             if (selection != null && selection.Length > 0)
             {
-                FindAll(selection, 0);
-                StatusText.Text = Properties.Resources.StatusSearchComplete;
+                // Find all occurrences
+                var positions = FindAll(selection, 0);
+                if (positions != null)
+                {
+                    var positionsList = positions.ToList();
+
+                    // Clear existing search markers
+                    if (_scrollMarkers != null)
+                    {
+                        _scrollMarkers.ClearMarkers(ScrollMarkerType.SearchResult);
+                    }
+
+                    // Add scroll marker for each result (yellow markers)
+                    if (_scrollMarkers != null && positionsList.Count > 0)
+                    {
+                        foreach (var position in positionsList)
+                        {
+                            _scrollMarkers.AddMarker(position, ScrollMarkerType.SearchResult);
+                        }
+                    }
+
+                    StatusText.Text = $"Found {positionsList.Count} occurrence(s). Press ESC to clear.";
+                }
+                else
+                {
+                    StatusText.Text = "No matches found.";
+                }
             }
         }
 
