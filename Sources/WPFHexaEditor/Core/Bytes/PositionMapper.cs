@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,10 +36,10 @@ namespace WpfHexaEditor.Core.Bytes
         private List<PositionSegment> _segments;
         private bool _segmentMapValid = false;
 
-        // Caches for bidirectional mapping
+        // Caches for bidirectional mapping (Thread-safe for async operations)
         // Enhanced: Virtual → (Physical, IsInserted) to properly cache inserted byte flag
-        private readonly Dictionary<long, (long physicalPos, bool isInserted)> _virtualToPhysicalCache = new();
-        private readonly Dictionary<long, long> _physicalToVirtualCache = new();
+        private readonly ConcurrentDictionary<long, (long physicalPos, bool isInserted)> _virtualToPhysicalCache = new();
+        private readonly ConcurrentDictionary<long, long> _physicalToVirtualCache = new();
 
         // Cache metadata
         private bool _cacheValid = false;
