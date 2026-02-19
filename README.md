@@ -346,12 +346,12 @@ See [LICENSE](LICENSE) file for details.
     <sub>A powerful, well-documented hex editor control for .NET</sub>
   </p>
   <p>
-    <sub>Created by Derek Tremblay<br/>
+    <sub>Created by Derek Tremblay (abbaye)<br/>
     V2 Contributor: Claude Sonnet 4.5<br/>
     V1 (Legacy) Contributors: ehsan69h, Janus Tida</sub>
   </p>
   <p>
-    <sub>Coded with ❤️ for the community! 😊🤟</sub>
+    <sub>Coded with ❤️ for the community! 😊🤟 (with a touch of AI magic ✨)</sub>
   </p>
   <br/>
 
