@@ -208,15 +208,31 @@ namespace WpfHexaEditor
         /// </summary>
         public void Close()
         {
-            // 1. Dispose ViewModel and Provider
-            if (_viewModel != null)
-            {
-                _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
-                _viewModel.Close();
-                _viewModel = null;
-            }
+            // 0. CRITICAL: Set closing flag FIRST to prevent async operations from accessing resources
+            _isClosing = true;
 
-            // 2. Clear viewport data source
+            try
+            {
+                // 1. CRITICAL: Cancel any ongoing async operations before closing (prevents crashes on shutdown)
+                if (_longRunningService != null)
+                {
+                    _longRunningService.CancelCurrentOperation();
+
+                    // CRITICAL: Give async operation time to see cancellation and stop gracefully
+                    // This prevents race condition where operation tries to read bytes after file is closed
+                    // 1 second should be enough for even large chunks (256KB) to complete reading
+                    System.Threading.Thread.Sleep(1000);
+                }
+
+                // 2. Dispose ViewModel and Provider
+                if (_viewModel != null)
+                {
+                    _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
+                    _viewModel.Close();
+                    _viewModel = null;
+                }
+
+                // 3. Clear viewport data source
             if (HexViewport != null)
             {
                 HexViewport.LinesSource = null;
@@ -238,11 +254,17 @@ namespace WpfHexaEditor
             // 7. Clear bar chart
             _barChartPanel?.Clear();
 
-            // 8. Reset status bar to initial state
-            ResetStatusBar();
+                // 8. Reset status bar to initial state
+                ResetStatusBar();
 
-            // 9. Raise FileClosed event
-            OnFileClosed(EventArgs.Empty);
+                // 9. Raise FileClosed event
+                OnFileClosed(EventArgs.Empty);
+            }
+            finally
+            {
+                // CRITICAL: Always reset closing flag, even if Close() throws
+                _isClosing = false;
+            }
         }
 
 

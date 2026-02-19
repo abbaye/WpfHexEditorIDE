@@ -203,13 +203,28 @@ namespace WpfHexaEditor
                             if (cancellationToken.IsCancellationRequested)
                                 return false;
 
+                            // CRITICAL: Check if control is being closed (prevents crash on shutdown)
+                            if (_isClosing)
+                                return false;
+
                             // Calculate chunk size
                             long remainingBytes = fileLength - currentPos;
                             int chunkSize = (int)Math.Min(CHUNK_SIZE, remainingBytes);
                             int bufferSize = (int)Math.Min(chunkSize + pattern.Length - 1, remainingBytes);
 
                             // Read chunk using GetBytes (respects virtual positions)
-                            byte[] buffer = provider.GetBytes(currentPos, bufferSize);
+                            byte[] buffer;
+                            try
+                            {
+                                buffer = provider.GetBytes(currentPos, bufferSize);
+                            }
+                            catch (Exception ex)
+                            {
+                                // CRITICAL: Provider might be closed/disposed during shutdown
+                                System.Diagnostics.Debug.WriteLine($"GetBytes failed (likely closing): {ex.Message}");
+                                return false; // Stop gracefully
+                            }
+
                             if (buffer == null || buffer.Length == 0)
                                 break;
 

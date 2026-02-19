@@ -53,6 +53,9 @@ namespace WpfHexaEditor
         // File opening re-entrancy guard (prevents infinite recursion in OnFileNamePropertyChanged)
         private bool _isOpeningFile = false;
 
+        // CRITICAL: Closing flag to prevent async operations from accessing disposed resources
+        private volatile bool _isClosing = false;
+
         // Highlights  - stores ranges of highlighted bytes
         private readonly List<(long start, long length)> _highlights = new List<(long, long)>();
 
@@ -409,6 +412,13 @@ namespace WpfHexaEditor
         public event EventHandler FileClosed;
 
         /// <summary>
+        /// Raised when an async operation state changes (starts or completes).
+        /// Use IsOperationActive property to check current state.
+        /// Parent applications can use this to disable UI elements during long-running operations.
+        /// </summary>
+        public event EventHandler<OperationStateChangedEventArgs> OperationStateChanged;
+
+        /// <summary>
         /// Raised when an undo operation completes
         /// </summary>
         public event EventHandler UndoCompleted;
@@ -442,6 +452,11 @@ namespace WpfHexaEditor
         /// Event helper: Raise FileClosed event
         /// </summary>
         protected virtual void OnFileClosed(EventArgs e) => FileClosed?.Invoke(this, e);
+
+        /// <summary>
+        /// Event helper: Raise OperationStateChanged event
+        /// </summary>
+        protected virtual void OnOperationStateChanged(OperationStateChangedEventArgs e) => OperationStateChanged?.Invoke(this, e);
 
         /// <summary>
         /// Event helper: Raise UndoCompleted event
@@ -834,12 +849,23 @@ namespace WpfHexaEditor
         public bool IsFileLoaded => _viewModel != null;
 
         /// <summary>
-        /// Is a file or stream currently loaded? 
+        /// Is a file or stream currently loaded?
         /// </summary>
         public bool IsFileOrStreamLoaded
         {
             get => (bool)GetValue(IsFileOrStreamLoadedProperty);
             private set => SetValue(IsFileOrStreamLoadedPropertyKey, value);
+        }
+
+        /// <summary>
+        /// Indicates whether a long-running async operation is currently active.
+        /// When true, commands and menu items should be disabled to prevent concurrent operations.
+        /// This property is automatically set by the LongRunningOperationService.
+        /// </summary>
+        public bool IsOperationActive
+        {
+            get => (bool)GetValue(IsOperationActiveProperty);
+            private set => SetValue(IsOperationActivePropertyKey, value);
         }
 
         /// <summary>
@@ -1885,7 +1911,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// IsFileOrStreamLoaded Read-Only DependencyProperty for XAML binding 
+        /// IsFileOrStreamLoaded Read-Only DependencyProperty for XAML binding
         /// </summary>
         private static readonly DependencyPropertyKey IsFileOrStreamLoadedPropertyKey =
             DependencyProperty.RegisterReadOnly(nameof(IsFileOrStreamLoaded), typeof(bool), typeof(HexEditor),
@@ -1893,6 +1919,45 @@ namespace WpfHexaEditor
 
         public static readonly DependencyProperty IsFileOrStreamLoadedProperty =
             IsFileOrStreamLoadedPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// IsOperationActive Read-Only DependencyProperty for XAML binding
+        /// </summary>
+        private static readonly DependencyPropertyKey IsOperationActivePropertyKey =
+            DependencyProperty.RegisterReadOnly(
+                nameof(IsOperationActive),
+                typeof(bool),
+                typeof(HexEditor),
+                new PropertyMetadata(false, OnIsOperationActiveChanged));
+
+        public static readonly DependencyProperty IsOperationActiveProperty =
+            IsOperationActivePropertyKey.DependencyProperty;
+
+        private static void OnIsOperationActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool isActive)
+            {
+                try
+                {
+                    // CRITICAL: Check if control is still loaded (prevents crashes during app shutdown)
+                    if (!editor.IsLoaded)
+                        return;
+
+                    // Notify CommandManager to re-evaluate all ICommand bindings
+                    CommandManager.InvalidateRequerySuggested();
+
+                    // Raise event for parent applications
+                    editor.OnOperationStateChanged(new OperationStateChangedEventArgs(isActive));
+
+                    // Update menu items enabled state
+                    editor.UpdateMenuItemsEnabled(!isActive);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"OnIsOperationActiveChanged error: {ex.Message}");
+                }
+            }
+        }
 
         /// <summary>
         /// AllowContextMenu DependencyProperty for XAML binding
@@ -2611,19 +2676,37 @@ namespace WpfHexaEditor
         /// </summary>
         private void LongRunningService_OperationStarted(object sender, Events.OperationProgressEventArgs e)
         {
+            // Check if dispatcher is valid (control might be disposed)
+            if (Dispatcher == null || !Dispatcher.CheckAccess() && Dispatcher.HasShutdownStarted)
+                return;
+
             // Use BeginInvoke for non-blocking UI updates
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                // Show progress overlay
-                ProgressOverlay.Visibility = Visibility.Visible;
-                ProgressOverlay.ViewModel.OperationTitle = e.OperationTitle;
-                ProgressOverlay.ViewModel.StatusMessage = e.StatusMessage;
-                ProgressOverlay.ViewModel.ProgressPercentage = e.ProgressPercentage;
-                ProgressOverlay.ViewModel.IsIndeterminate = e.IsIndeterminate;
-                ProgressOverlay.ViewModel.CanCancel = e.CanCancel;
+                // CRITICAL: Check if control is still loaded (prevents crashes during app shutdown)
+                if (!IsLoaded || ProgressOverlay == null)
+                    return;
 
-                // Change cursor to Wait
-                Mouse.OverrideCursor = Cursors.Wait;
+                try
+                {
+                    // Set operation active flag (disables commands and menu items)
+                    IsOperationActive = true;
+
+                    // Show progress overlay
+                    ProgressOverlay.Visibility = Visibility.Visible;
+                    ProgressOverlay.ViewModel.OperationTitle = e.OperationTitle;
+                    ProgressOverlay.ViewModel.StatusMessage = e.StatusMessage;
+                    ProgressOverlay.ViewModel.ProgressPercentage = e.ProgressPercentage;
+                    ProgressOverlay.ViewModel.IsIndeterminate = e.IsIndeterminate;
+                    ProgressOverlay.ViewModel.CanCancel = e.CanCancel;
+
+                    // Change cursor to Wait
+                    Mouse.OverrideCursor = Cursors.Wait;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"OperationStarted error: {ex.Message}");
+                }
             }), System.Windows.Threading.DispatcherPriority.Normal);
         }
 
@@ -2632,12 +2715,27 @@ namespace WpfHexaEditor
         /// </summary>
         private void LongRunningService_OperationProgress(object sender, Events.OperationProgressEventArgs e)
         {
+            // Check if dispatcher is valid (control might be disposed)
+            if (Dispatcher == null || !Dispatcher.CheckAccess() && Dispatcher.HasShutdownStarted)
+                return;
+
             // Use BeginInvoke for non-blocking UI updates
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                // Update progress
-                ProgressOverlay.ViewModel.ProgressPercentage = e.ProgressPercentage;
-                ProgressOverlay.ViewModel.StatusMessage = e.StatusMessage;
+                // CRITICAL: Check if control is still loaded (prevents crashes during app shutdown)
+                if (!IsLoaded || ProgressOverlay == null)
+                    return;
+
+                try
+                {
+                    // Update progress
+                    ProgressOverlay.ViewModel.ProgressPercentage = e.ProgressPercentage;
+                    ProgressOverlay.ViewModel.StatusMessage = e.StatusMessage;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"OperationProgress error: {ex.Message}");
+                }
             }), System.Windows.Threading.DispatcherPriority.Normal);
         }
 
@@ -2646,24 +2744,143 @@ namespace WpfHexaEditor
         /// </summary>
         private void LongRunningService_OperationCompleted(object sender, Events.OperationCompletedEventArgs e)
         {
+            // Check if dispatcher is valid (control might be disposed)
+            if (Dispatcher == null || !Dispatcher.CheckAccess() && Dispatcher.HasShutdownStarted)
+                return;
+
             // Use BeginInvoke for non-blocking UI updates
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                // Hide progress overlay
-                ProgressOverlay.Visibility = Visibility.Collapsed;
+                // CRITICAL: Check if control is still loaded (prevents crashes during app shutdown)
+                if (!IsLoaded)
+                    return;
 
-                // Restore cursor
-                Mouse.OverrideCursor = null;
-
-                // Update status bar
-                if (!e.Success)
+                try
                 {
-                    if (e.WasCancelled)
-                        StatusText.Text = "Operation cancelled";
-                    else
-                        StatusText.Text = $"Operation failed: {e.ErrorMessage}";
+                    // Clear operation active flag (re-enables commands and menu items)
+                    IsOperationActive = false;
+
+                    // Hide progress overlay
+                    if (ProgressOverlay != null)
+                        ProgressOverlay.Visibility = Visibility.Collapsed;
+
+                    // Restore cursor
+                    Mouse.OverrideCursor = null;
+
+                    // Update status bar
+                    if (!e.Success && StatusText != null)
+                    {
+                        if (e.WasCancelled)
+                            StatusText.Text = "Operation cancelled";
+                        else
+                            StatusText.Text = $"Operation failed: {e.ErrorMessage}";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"OperationCompleted error: {ex.Message}");
                 }
             }), System.Windows.Threading.DispatcherPriority.Normal);
+        }
+
+        /// <summary>
+        /// Enable or disable menu items based on operation state.
+        /// Read-only operations (Copy, SelectAll) remain enabled.
+        /// </summary>
+        /// <param name="enabled">True to enable menu items, false to disable</param>
+        private void UpdateMenuItemsEnabled(bool enabled)
+        {
+            // CRITICAL: Check if control is still loaded (prevents crashes during app shutdown)
+            if (!IsLoaded || ByteContextMenu == null)
+            {
+                System.Diagnostics.Debug.WriteLine("UpdateMenuItemsEnabled: Control not loaded or ByteContextMenu is NULL");
+                return;
+            }
+
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"UpdateMenuItemsEnabled: enabled={enabled}, Items count={ByteContextMenu.Items.Count}");
+
+                foreach (var item in ByteContextMenu.Items)
+                {
+                    if (item is MenuItem menuItem)
+                    {
+                        UpdateMenuItemEnabledRecursive(menuItem, enabled);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"UpdateMenuItemsEnabled error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Recursively update menu item and its children
+        /// </summary>
+        private void UpdateMenuItemEnabledRecursive(MenuItem menuItem, bool enabled)
+        {
+            if (menuItem == null)
+                return;
+
+            try
+            {
+                // Keep read-only operations always enabled
+                if (ShouldAlwaysBeEnabled(menuItem))
+                {
+                    System.Diagnostics.Debug.WriteLine($"  MenuItem '{menuItem.Name}' ALWAYS enabled (read-only)");
+                    menuItem.IsEnabled = true;
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"  MenuItem '{menuItem.Name}' set to {enabled}");
+                    menuItem.IsEnabled = enabled;
+                }
+
+                // Recursively update submenu items
+                foreach (var subItem in menuItem.Items)
+                {
+                    if (subItem is MenuItem subMenuItem)
+                    {
+                        UpdateMenuItemEnabledRecursive(subMenuItem, enabled);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"UpdateMenuItemEnabledRecursive error for '{menuItem?.Name}': {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Determines if a menu item should always be enabled (read-only operations).
+        /// </summary>
+        /// <param name="menuItem">The menu item to check</param>
+        /// <returns>True if the item should stay enabled during operations</returns>
+        private bool ShouldAlwaysBeEnabled(MenuItem menuItem)
+        {
+            if (menuItem == null)
+                return false;
+
+            // Debug: Check if our field references are null
+            if (CopyMenuItem == null)
+                System.Diagnostics.Debug.WriteLine("WARNING: CopyMenuItem field is NULL!");
+            if (SelectAllMenuItem == null)
+                System.Diagnostics.Debug.WriteLine("WARNING: SelectAllMenuItem field is NULL!");
+
+            // Copy commands are read-only and safe
+            bool isReadOnly = menuItem == CopyMenuItem ||
+                   menuItem == CopyAsMenuItem ||
+                   menuItem == CopyHexaMenuItem ||
+                   menuItem == CopyAsciiMenuItem ||
+                   menuItem == CopyCSharpMenuItem ||
+                   menuItem == CopyCMenuItem ||
+                   menuItem == CopyTblMenuItem ||
+                   menuItem == CopyFormattedViewMenuItem ||
+                   menuItem == SelectAllMenuItem;
+
+            System.Diagnostics.Debug.WriteLine($"    ShouldAlwaysBeEnabled('{menuItem.Name ?? menuItem.Header?.ToString()}') = {isReadOnly}");
+            return isReadOnly;
         }
 
         #endregion

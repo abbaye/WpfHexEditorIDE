@@ -22,6 +22,7 @@ namespace WpfHexaEditor.Services
         private bool _isOperationActive;
         private bool _disposed;
         private DateTime _lastProgressUpdate;
+        private Task<bool> _currentTask; // Track current operation for graceful shutdown
 
         /// <summary>
         /// Minimum interval in milliseconds between progress updates (default: 33ms = ~30 updates/second)
@@ -143,6 +144,7 @@ namespace WpfHexaEditor.Services
                 _currentCts?.Dispose();
                 _currentCts = null;
                 _isOperationActive = false;
+                _currentTask = null; // Clear task reference
             }
         }
 
@@ -292,6 +294,45 @@ namespace WpfHexaEditor.Services
             if (_isOperationActive && _currentCts != null && !_currentCts.IsCancellationRequested)
             {
                 _currentCts.Cancel();
+            }
+        }
+
+        /// <summary>
+        /// Cancel current operation and wait for it to complete (with timeout)
+        /// CRITICAL: Use this before disposing resources to prevent crashes
+        /// </summary>
+        /// <param name="timeoutMs">Maximum time to wait in milliseconds (default: 2000ms)</param>
+        /// <returns>True if operation completed within timeout</returns>
+        public async Task<bool> CancelAndWaitAsync(int timeoutMs = 2000)
+        {
+            if (!_isOperationActive || _currentTask == null)
+                return true; // No operation running
+
+            // Cancel the operation
+            CancelCurrentOperation();
+
+            // Wait for completion with timeout
+            try
+            {
+                var timeoutTask = Task.Delay(timeoutMs);
+                var completedTask = await Task.WhenAny(_currentTask, timeoutTask);
+
+                if (completedTask == _currentTask)
+                {
+                    // Operation completed within timeout
+                    return true;
+                }
+                else
+                {
+                    // Timeout - operation still running
+                    System.Diagnostics.Debug.WriteLine($"WARNING: Operation did not complete within {timeoutMs}ms timeout");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"CancelAndWaitAsync error: {ex.Message}");
+                return false;
             }
         }
 
