@@ -346,7 +346,7 @@ See [LICENSE](LICENSE) file for details.
     <sub>A powerful, well-documented hex editor control for .NET</sub>
   </p>
   <p>
-    <sub>Created by Derek Tremblay • Contributors: ehsan69h, Janus Tida, Claude Sonnet 4.5</sub>
+    <sub>Created by Derek Tremblay • V1 (Legacy) Contributors: ehsan69h, Janus Tida • V2 Contributor: Claude Sonnet 4.5</sub>
   </p>
   <p>
     <sub>Coded with ❤️ for the community! 😊🤟</sub>
