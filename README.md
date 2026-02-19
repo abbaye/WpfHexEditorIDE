@@ -9,7 +9,7 @@
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorControl)
   [![C#](https://img.shields.io/badge/C%23-12.0-239120?logo=csharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-  [![Languages](https://img.shields.io/badge/Languages-9-success?logo=googletranslate&logoColor=white)](#-why-choose-v2)
+  [![Languages](https://img.shields.io/badge/Languages-19-success?logo=googletranslate&logoColor=white)](#-why-choose-v2)
   [![V2 Architecture](https://img.shields.io/badge/Architecture-V2%20MVVM-orange?logo=github)](ARCHITECTURE.md)
 
   <br/>
@@ -111,7 +111,7 @@ dotnet add package WPFHexaEditor
 <td width="33%">
 
 ### 🌍 Multilingual
-- **9 languages**
+- **19 languages**
 - **Instant switching**
 - **No restart** needed
 - **Extensible**
