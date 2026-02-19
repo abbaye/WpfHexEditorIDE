@@ -2,11 +2,7 @@
   <img src="Images/Logo.png?raw=true" width="420" height="100" />
   <br/><br/>
 
-  <h3>⚡ The Fastest Hex Editor Control for .NET ⚡</h3>
-
-  <p>
-    <b>99% faster rendering</b> • <b>10-100x faster search</b> • <b>100% backward compatible</b>
-  </p>
+  <h3>⚡ The Fastest Wpf Hex Editor Control for .NET ⚡</h3>
 
   [![NuGet](https://img.shields.io/nuget/v/WPFHexaEditor?color=blue&label=NuGet&logo=nuget)](https://www.nuget.org/packages/WPFHexaEditor/)
   [![.NET Multi-Target](https://img.shields.io/badge/.NET-net48%20%7C%20net8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
@@ -15,11 +11,12 @@
   [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
   [![Languages](https://img.shields.io/badge/Languages-9-success?logo=googletranslate&logoColor=white)](#-why-choose-v2)
   [![V2 Architecture](https://img.shields.io/badge/Architecture-V2%20MVVM-orange?logo=github)](ARCHITECTURE.md)
-  [![Performance](https://img.shields.io/badge/Performance-99%25%20Faster-success?logo=lightning)](PERFORMANCE_GUIDE.md)
 
   <br/>
 
   <img src="Images/Sample11-NOTBL.png?raw=true" alt="WPF HexEditor V2" width="700"/>
+  <br/>
+  <sub><i>Screenshot from V1 (Legacy)</i></sub>
 
   <p>
     <a href="#-quick-start"><b>Quick Start</b></a> •
@@ -142,6 +139,8 @@ dotnet add package WPFHexaEditor
 ---
 
 ## 📸 Screenshots
+
+> **Note:** The screenshots below are from V1 (Legacy). V2 screenshots will be added soon.
 
 <table>
 <tr>
