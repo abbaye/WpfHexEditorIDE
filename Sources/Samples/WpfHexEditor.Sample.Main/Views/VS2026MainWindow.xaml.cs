@@ -67,6 +67,24 @@ namespace WpfHexEditor.Sample.Main.Views
 
             // Sync HexEditor colors with current theme (theme loaded by ThemeManager.Initialize())
             Services.ThemeManager.SyncHexEditorColors(HexEditorControl);
+
+            // CRITICAL: Subscribe to operation state changes to disable UI during async operations
+            Loaded += VS2026MainWindow_Loaded;
+        }
+
+        private void VS2026MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Subscribe to HexEditor operation state changes
+            if (HexEditorControl != null)
+            {
+                HexEditorControl.OperationStateChanged += HexEditor_OperationStateChanged;
+            }
+        }
+
+        private void HexEditor_OperationStateChanged(object sender, WpfHexaEditor.Events.OperationStateChangedEventArgs e)
+        {
+            // Notify ViewModel to update command states
+            _viewModel?.OnOperationStateChanged(e.IsActive);
         }
 
         private void OnLanguageChanged(object sender, string languageCode)

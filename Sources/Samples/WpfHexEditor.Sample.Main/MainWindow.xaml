@@ -27,7 +27,7 @@
 
         <!-- Menu -->
         <Menu Grid.Row="0">
-            <MenuItem Header="_File">
+            <MenuItem Header="_File" SubmenuOpened="Menu_SubmenuOpened">
                 <MenuItem Header="_Open..." Click="Open_Click" InputGestureText="Ctrl+O"/>
                 <MenuItem Header="_Save" x:Name="SaveMenuItem" Click="Save_Click" InputGestureText="Ctrl+S" IsEnabled="False"/>
                 <MenuItem Header="Save _As..." x:Name="SaveAsMenuItem" Click="SaveAs_Click" IsEnabled="False"/>
@@ -39,7 +39,7 @@
                 <Separator/>
                 <MenuItem Header="E_xit" Click="Exit_Click"/>
             </MenuItem>
-            <MenuItem Header="_Edit">
+            <MenuItem Header="_Edit" SubmenuOpened="Menu_SubmenuOpened">
                 <MenuItem Header="_Undo" x:Name="UndoMenuItem" Click="Undo_Click" InputGestureText="Ctrl+Z" IsEnabled="False"/>
                 <MenuItem Header="_Redo" x:Name="RedoMenuItem" Click="Redo_Click" InputGestureText="Ctrl+Y" IsEnabled="False"/>
                 <Separator/>
@@ -83,11 +83,11 @@
                     </MenuItem>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="_Search">
+            <MenuItem Header="_Search" SubmenuOpened="Menu_SubmenuOpened">
                 <MenuItem Header="Find _Next" x:Name="FindNextMenuItem" Click="FindNext_Click" InputGestureText="F3" IsEnabled="False"/>
                 <MenuItem Header="Find _Previous" x:Name="FindPreviousMenuItem" Click="FindPrevious_Click" InputGestureText="Shift+F3" IsEnabled="False"/>
             </MenuItem>
-            <MenuItem Header="_Tools">
+            <MenuItem Header="_Tools" SubmenuOpened="Menu_SubmenuOpened">
                 <MenuItem Header="_Byte Operations">
                     <MenuItem Header="_Fill with Byte..." x:Name="FillWithByteMenuItem" Click="FillWithByte_Click" IsEnabled="False"/>
                     <MenuItem Header="_Get Byte at Position..." x:Name="GetByteMenuItem" Click="GetByte_Click" IsEnabled="False"/>
@@ -117,10 +117,10 @@
                 <Separator/>
                 <MenuItem Header="🧪 _Test ByteProvider V2" Click="TestByteProviderV2_Click"/>
             </MenuItem>
-            <MenuItem Header="_Position">
+            <MenuItem Header="_Position" SubmenuOpened="Menu_SubmenuOpened">
                 <MenuItem Header="_Go to Position..." x:Name="GoToPositionMenuItem" Click="GoToPosition_Click" InputGestureText="Ctrl+G" IsEnabled="False"/>
             </MenuItem>
-            <MenuItem Header="_View">
+            <MenuItem Header="_View" SubmenuOpened="Menu_SubmenuOpened">
                 <MenuItem Header="_Insert Mode" IsCheckable="True"
                           x:Name="InsertModeMenuItem"
                           Checked="InsertMode_Changed"

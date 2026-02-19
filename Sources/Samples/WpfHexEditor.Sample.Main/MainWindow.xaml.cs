@@ -15,6 +15,22 @@ namespace WpfHexEditor.Sample.Main
         public MainWindow()
         {
             InitializeComponent();
+
+            // CRITICAL: Subscribe to operation state changes to disable UI during async operations
+            Loaded += MainWindow_Loaded;
+
+            UpdateUIState();
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Subscribe to HexEditor operation state changes
+            HexEditor.OperationStateChanged += HexEditor_OperationStateChanged;
+        }
+
+        private void HexEditor_OperationStateChanged(object sender, WpfHexaEditor.Events.OperationStateChangedEventArgs e)
+        {
+            // When operation state changes, update UI (will disable/enable menu items AND toolbar)
             UpdateUIState();
         }
 
@@ -1384,6 +1400,15 @@ namespace WpfHexEditor.Sample.Main
 
         #region UI State Management
 
+        /// <summary>
+        /// Called when any main menu opens - forces UI state refresh before menu items are displayed
+        /// </summary>
+        private void Menu_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            // Force update UI state when menu opens to reflect current HexEditor state
+            UpdateUIState();
+        }
+
         private void UpdateUIState()
         {
             bool fileLoaded = HexEditor.IsFileLoaded;
@@ -1391,30 +1416,35 @@ namespace WpfHexEditor.Sample.Main
             bool canUndo = HexEditor.CanUndo;
             bool canRedo = HexEditor.CanRedo;
             bool isReadOnly = HexEditor.ReadOnlyMode;
+            bool isOperationActive = HexEditor.IsOperationActive; // NEW: Check if async operation is running
+
+            // CRITICAL: Disable dangerous operations during async work
+            bool canModify = !isOperationActive && !isReadOnly;
+            bool canPerformFileOp = !isOperationActive;
 
             // File menu
-            SaveMenuItem.IsEnabled = fileLoaded;
-            SaveAsMenuItem.IsEnabled = fileLoaded;
-            SaveAsyncMenuItem.IsEnabled = fileLoaded;
-            CloseMenuItem.IsEnabled = fileLoaded;
+            SaveMenuItem.IsEnabled = fileLoaded && canPerformFileOp;
+            SaveAsMenuItem.IsEnabled = fileLoaded && canPerformFileOp;
+            SaveAsyncMenuItem.IsEnabled = fileLoaded && canPerformFileOp;
+            CloseMenuItem.IsEnabled = fileLoaded && canPerformFileOp;
 
             // Edit menu
-            UndoMenuItem.IsEnabled = canUndo;
-            RedoMenuItem.IsEnabled = canRedo;
-            SelectAllMenuItem.IsEnabled = fileLoaded;
-            ClearSelectionMenuItem.IsEnabled = hasSelection;
-            DeleteSelectionMenuItem.IsEnabled = hasSelection && !isReadOnly;
-            CopyMenuItem.IsEnabled = hasSelection;
-            CopyHexMenuItem.IsEnabled = hasSelection;
-            CopyAsciiMenuItem.IsEnabled = hasSelection;
-            PasteMenuItem.IsEnabled = fileLoaded && !isReadOnly;
+            UndoMenuItem.IsEnabled = canUndo && canModify;
+            RedoMenuItem.IsEnabled = canRedo && canModify;
+            SelectAllMenuItem.IsEnabled = fileLoaded; // Read-only, always enabled
+            ClearSelectionMenuItem.IsEnabled = hasSelection; // Read-only, always enabled
+            DeleteSelectionMenuItem.IsEnabled = hasSelection && canModify;
+            CopyMenuItem.IsEnabled = hasSelection; // Read-only, always enabled
+            CopyHexMenuItem.IsEnabled = hasSelection; // Read-only, always enabled
+            CopyAsciiMenuItem.IsEnabled = hasSelection; // Read-only, always enabled
+            PasteMenuItem.IsEnabled = fileLoaded && canModify;
 
             // Search menu
-            FindMenuItem.IsEnabled = fileLoaded;
-            FindNextMenuItem.IsEnabled = fileLoaded && _lastFindData != null;
-            FindPreviousMenuItem.IsEnabled = fileLoaded && _lastFindData != null;
-            ReplaceMenuItem.IsEnabled = fileLoaded && !isReadOnly;
-            FindAllOccurrenceMenuItem.IsEnabled = fileLoaded;
+            FindMenuItem.IsEnabled = fileLoaded && canPerformFileOp;
+            FindNextMenuItem.IsEnabled = fileLoaded && _lastFindData != null && canPerformFileOp;
+            FindPreviousMenuItem.IsEnabled = fileLoaded && _lastFindData != null && canPerformFileOp;
+            ReplaceMenuItem.IsEnabled = fileLoaded && canModify;
+            FindAllOccurrenceMenuItem.IsEnabled = fileLoaded && canPerformFileOp;
             FindAllAsyncMenuItem.IsEnabled = fileLoaded;
             ReplaceAllAsyncMenuItem.IsEnabled = fileLoaded && !isReadOnly;
 
@@ -1445,12 +1475,12 @@ namespace WpfHexEditor.Sample.Main
             ShowOffsetMenuItem.IsEnabled = fileLoaded;
             ShowAsciiMenuItem.IsEnabled = fileLoaded;
 
-            // Toolbar
-            SaveButton.IsEnabled = fileLoaded;
-            UndoButton.IsEnabled = canUndo;
-            RedoButton.IsEnabled = canRedo;
-            InsertModeToggle.IsEnabled = fileLoaded;
-            ReadOnlyToggle.IsEnabled = fileLoaded;
+            // Toolbar (also respect operation state)
+            SaveButton.IsEnabled = fileLoaded && canPerformFileOp;
+            UndoButton.IsEnabled = canUndo && canModify;
+            RedoButton.IsEnabled = canRedo && canModify;
+            InsertModeToggle.IsEnabled = fileLoaded && canPerformFileOp;
+            ReadOnlyToggle.IsEnabled = fileLoaded && canPerformFileOp;
         }
 
         #endregion

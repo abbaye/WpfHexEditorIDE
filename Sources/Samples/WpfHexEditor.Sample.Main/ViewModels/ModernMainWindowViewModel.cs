@@ -24,6 +24,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
         private bool _isSettingsPanelVisible = false;
         private bool _isSearchPanelVisible = true;
         private bool _isFileLoaded = false;
+        private bool _isOperationActive = false;
         private string _currentFilePath;
         private string _statusMessage = "Ready";
         private string _searchQuery = "";
@@ -71,6 +72,26 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             {
                 _isFileLoaded = value;
                 OnPropertyChanged(nameof(IsFileLoaded));
+            }
+        }
+
+        /// <summary>
+        /// Indicates whether a long-running async operation is currently active
+        /// </summary>
+        public bool IsOperationActive
+        {
+            get => _isOperationActive;
+            set
+            {
+                _isOperationActive = value;
+                OnPropertyChanged(nameof(IsOperationActive));
+
+                // CRITICAL: Must invoke on UI thread for WPF CommandManager
+                System.Windows.Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    // Force re-evaluation of all command CanExecute methods
+                    System.Windows.Input.CommandManager.InvalidateRequerySuggested();
+                }));
             }
         }
 
@@ -163,28 +184,37 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             SettingsViewModel.LanguageChanged += OnLanguageChanged;
 
             // Commands
-            OpenFileCommand = new RelayCommand(OpenFile);
-            SaveFileCommand = new RelayCommand(SaveFile, () => IsFileLoaded);
-            SaveAsFileCommand = new RelayCommand(SaveAsFile);
-            CloseFileCommand = new RelayCommand(CloseFile, () => IsFileLoaded);
+            // File operations - block during async work
+            OpenFileCommand = new RelayCommand(OpenFile, () => !IsOperationActive);
+            SaveFileCommand = new RelayCommand(SaveFile, () => IsFileLoaded && !IsOperationActive);
+            SaveAsFileCommand = new RelayCommand(SaveAsFile, () => IsFileLoaded && !IsOperationActive);
+            CloseFileCommand = new RelayCommand(CloseFile, () => IsFileLoaded && !IsOperationActive);
             ExitCommand = new RelayCommand(Exit);
-            UndoCommand = new RelayCommand(Undo, () => IsFileLoaded);
-            RedoCommand = new RelayCommand(Redo, () => IsFileLoaded);
-            CopyCommand = new RelayCommand(Copy, () => IsFileLoaded);
-            CutCommand = new RelayCommand(Cut, () => IsFileLoaded);
-            PasteCommand = new RelayCommand(Paste, () => IsFileLoaded);
-            DeleteSelectionCommand = new RelayCommand(DeleteSelection, () => IsFileLoaded);
-            SelectAllCommand = new RelayCommand(SelectAll, () => IsFileLoaded);
-            ClearSelectionCommand = new RelayCommand(ClearSelection, () => IsFileLoaded);
-            FindNextCommand = new RelayCommand(FindNext, () => IsFileLoaded);
-            FindPreviousCommand = new RelayCommand(FindPrevious, () => IsFileLoaded);
-            GoToPositionCommand = new RelayCommand(GoToPosition, () => IsFileLoaded);
+
+            // Edit operations - block modifications during async work
+            UndoCommand = new RelayCommand(Undo, () => IsFileLoaded && !IsOperationActive);
+            RedoCommand = new RelayCommand(Redo, () => IsFileLoaded && !IsOperationActive);
+            CopyCommand = new RelayCommand(Copy, () => IsFileLoaded); // Read-only, always enabled
+            CutCommand = new RelayCommand(Cut, () => IsFileLoaded && !IsOperationActive);
+            PasteCommand = new RelayCommand(Paste, () => IsFileLoaded && !IsOperationActive);
+            DeleteSelectionCommand = new RelayCommand(DeleteSelection, () => IsFileLoaded && !IsOperationActive);
+            SelectAllCommand = new RelayCommand(SelectAll, () => IsFileLoaded); // Read-only, always enabled
+            ClearSelectionCommand = new RelayCommand(ClearSelection, () => IsFileLoaded); // Read-only, always enabled
+
+            // Search/navigation - block during async work
+            FindNextCommand = new RelayCommand(FindNext, () => IsFileLoaded && !IsOperationActive);
+            FindPreviousCommand = new RelayCommand(FindPrevious, () => IsFileLoaded && !IsOperationActive);
+            GoToPositionCommand = new RelayCommand(GoToPosition, () => IsFileLoaded && !IsOperationActive);
+
+            // Bookmarks - allow during async (metadata only)
             ToggleBookmarkCommand = new RelayCommand(ToggleBookmark, () => IsFileLoaded);
             ClearBookmarksCommand = new RelayCommand(ClearBookmarks, () => IsFileLoaded);
             NextBookmarkCommand = new RelayCommand(NextBookmark, () => IsFileLoaded);
             PreviousBookmarkCommand = new RelayCommand(PreviousBookmark, () => IsFileLoaded);
             ShowBookmarksCommand = new RelayCommand(ShowBookmarks, () => IsFileLoaded);
-            SearchCommand = new RelayCommand(Search, () => IsFileLoaded && !string.IsNullOrWhiteSpace(SearchQuery));
+
+            // Search - block during async work
+            SearchCommand = new RelayCommand(Search, () => IsFileLoaded && !IsOperationActive && !string.IsNullOrWhiteSpace(SearchQuery));
             ToggleSettingsPanelCommand = new RelayCommand(ToggleSettingsPanel);
             ToggleSearchPanelCommand = new RelayCommand(ToggleSearchPanel);
             ShowAboutCommand = new RelayCommand(ShowAbout);
@@ -671,6 +701,14 @@ namespace WpfHexEditor.Sample.Main.ViewModels
         {
             IsFileLoaded = false;
             SearchViewModel.ByteProvider = null;
+        }
+
+        /// <summary>
+        /// Called when HexEditor operation state changes (async operation starts/completes)
+        /// </summary>
+        public void OnOperationStateChanged(bool isActive)
+        {
+            IsOperationActive = isActive;
         }
 
         protected void OnPropertyChanged(string propertyName)
