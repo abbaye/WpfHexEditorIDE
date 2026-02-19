@@ -1,4 +1,4 @@
-# HexEditorV2 - Features Roadmap
+# HexEditor - Features Roadmap
 
 ## ✅ Phase 1: Core Architecture (DONE)
 - [x] MVVM architecture (ViewModel + View)
