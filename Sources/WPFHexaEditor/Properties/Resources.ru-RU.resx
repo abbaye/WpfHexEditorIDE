@@ -606,4 +606,52 @@
   <data name="PropertiesString" xml:space="preserve">
     <value>Свойства</value>
   </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>Файл успешно открыт</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>Файл успешно сохранен</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>Поиск совпадений...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesFormat" xml:space="preserve">
+    <value>Найдено {0} совпадений</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>Загрузка данных файла...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>Открытие потока файла...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>Подготовка к сохранению...</value>
+  </data>
+  <data name="ProgressMessageReplacedFormat" xml:space="preserve">
+    <value>Заменено {0} вхождений</value>
+  </data>
+  <data name="ProgressMessageReplacingFormat" xml:space="preserve">
+    <value>Найдено {0} совпадений. Замена...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundFormat" xml:space="preserve">
+    <value>Поиск... найдено {0}</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>Начало поиска...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>Открытие файла</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>Замена</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>Сохранение файла</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
 </root>

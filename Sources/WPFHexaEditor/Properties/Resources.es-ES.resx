@@ -608,4 +608,52 @@
   <data name="PropertiesString" xml:space="preserve">
     <value>Propiedades</value>
   </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>Archivo abierto correctamente</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>Archivo guardado correctamente</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>Buscando coincidencias...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesFormat" xml:space="preserve">
+    <value>{0} coincidencias encontradas</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>Cargando datos del archivo...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>Abriendo flujo de archivo...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>Preparando para guardar...</value>
+  </data>
+  <data name="ProgressMessageReplacedFormat" xml:space="preserve">
+    <value>{0} ocurrencias reemplazadas</value>
+  </data>
+  <data name="ProgressMessageReplacingFormat" xml:space="preserve">
+    <value>{0} coincidencias encontradas. Reemplazando...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundFormat" xml:space="preserve">
+    <value>Buscando... {0} encontradas</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>Iniciando búsqueda...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>Abriendo archivo</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>Reemplazando</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>Guardando archivo</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>Buscando</value>
+  </data>
 </root>

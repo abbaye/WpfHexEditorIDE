@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using WpfHexaEditor.Controls;
 using WpfHexaEditor.Models;
 using WpfHexaEditor.ViewModels;
 
@@ -24,13 +25,26 @@ namespace WpfHexaEditor
 
         /// <summary>
         /// Open a file for editing
+        /// Automatically closes current file if one is already open
         /// </summary>
         public void OpenFile(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentNullException(nameof(filePath));
 
-            _viewModel = HexEditorViewModel.OpenFile(filePath);
+            // CRITICAL: Set flag to prevent infinite recursion in OnFileNamePropertyChanged
+            _isOpeningFile = true;
+
+            try
+            {
+                // CRITICAL: Close previous file properly to reset all state
+                // This prevents crashes and memory leaks from stale state
+                if (_viewModel != null)
+                {
+                    Close();
+                }
+
+                _viewModel = HexEditorViewModel.OpenFile(filePath);
             HexViewport.LinesSource = _viewModel.Lines;
 
             // Synchronize ViewModel with control's BytePerLine (which may have been set in XAML before file opened)
@@ -105,6 +119,12 @@ namespace WpfHexaEditor
                     UpdateScrollMarkers();
                 }), System.Windows.Threading.DispatcherPriority.Background);
             }
+            }
+            finally
+            {
+                // CRITICAL: Always reset flag to allow future opens
+                _isOpeningFile = false;
+            }
         }
 
         /// <summary>
@@ -121,10 +141,74 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Close current file
+        /// Clear all modification-related state (markers for modified, inserted, deleted bytes)
+        /// </summary>
+        private void ClearModificationState()
+        {
+            try
+            {
+                if (_scrollMarkers != null)
+                {
+                    _scrollMarkers.ClearMarkers(ScrollMarkerType.Modified);
+                    _scrollMarkers.ClearMarkers(ScrollMarkerType.Inserted);
+                    _scrollMarkers.ClearMarkers(ScrollMarkerType.Deleted);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ClearModificationState error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Clear selection state in viewport and markers
+        /// </summary>
+        private void ClearSelectionState()
+        {
+            try
+            {
+                if (HexViewport != null)
+                {
+                    HexViewport.SelectionStart = -1;
+                    HexViewport.SelectionStop = -1;
+                    HexViewport.CursorPosition = 0;
+                }
+
+                _scrollMarkers?.ClearSelection();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ClearSelectionState error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Reset status bar to initial state
+        /// </summary>
+        private void ResetStatusBar()
+        {
+            try
+            {
+                if (StatusText != null) StatusText.Text = "Ready";
+                if (FileSizeText != null) FileSizeText.Text = "Size: -";
+                if (SelectionInfo != null) SelectionInfo.Text = "No selection";
+                if (PositionInfo != null) PositionInfo.Text = "Position: 0";
+                if (EditModeText != null) EditModeText.Text = "Mode: Overwrite";
+                if (BytesPerLineText != null) BytesPerLineText.Text = "Bytes/Line: 16";
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ResetStatusBar error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Close current file and reset control to initial state
+        /// Clears all state: ViewModel, search results, modifications, selection, UI
         /// </summary>
         public void Close()
         {
+            // 1. Dispose ViewModel and Provider
             if (_viewModel != null)
             {
                 _viewModel.PropertyChanged -= ViewModel_PropertyChanged;
@@ -132,23 +216,33 @@ namespace WpfHexaEditor
                 _viewModel = null;
             }
 
-            // Reset file info
+            // 2. Clear viewport data source
+            if (HexViewport != null)
+            {
+                HexViewport.LinesSource = null;
+            }
+
+            // 3. Clear search state (highlights, search markers, scrollbar opacity)
+            ClearSearchState();
+
+            // 4. Clear modification state (modification markers)
+            ClearModificationState();
+
+            // 5. Clear selection state (selection, cursor position)
+            ClearSelectionState();
+
+            // 6. Reset file info
             FileName = string.Empty;
             IsModified = false;
 
-            // Raise FileClosed event
-            OnFileClosed(EventArgs.Empty);
-
-            HexViewport.LinesSource = null;
-            StatusText.Text = "Ready";
-            FileSizeText.Text = "Size: -";
-            SelectionInfo.Text = "No selection";
-
-            // Clear bar chart
+            // 7. Clear bar chart
             _barChartPanel?.Clear();
-            PositionInfo.Text = "Position: 0";
-            EditModeText.Text = "Mode: Overwrite";
-            BytesPerLineText.Text = "Bytes/Line: 16";
+
+            // 8. Reset status bar to initial state
+            ResetStatusBar();
+
+            // 9. Raise FileClosed event
+            OnFileClosed(EventArgs.Empty);
         }
 
 
@@ -372,6 +466,47 @@ namespace WpfHexaEditor
             }
             catch (Exception _)
             {
+            }
+        }
+
+        /// <summary>
+        /// Clear all search-related state (highlights, markers, scrollbar opacity)
+        /// MUST be called before opening a new file to prevent crashes from stale state
+        /// </summary>
+        private void ClearSearchState()
+        {
+            try
+            {
+                // Clear highlighted search positions in viewport
+                if (HexViewport != null)
+                {
+                    HexViewport.HighlightedPositions = null;
+                    HexViewport.InvalidateVisual();
+                }
+
+                // Clear search result markers in scroll bar
+                if (_scrollMarkers != null)
+                {
+                    _scrollMarkers.ClearMarkers(ScrollMarkerType.SearchResult);
+                    _scrollMarkers.ClearSelection();
+                }
+
+                // Restore scrollbar normal opacity (was set to 0.3 when markers were visible)
+                if (VerticalScroll != null)
+                {
+                    VerticalScroll.Opacity = 1.0;
+                }
+
+                // Update status bar to remove "Press ESC to clear" message
+                if (StatusText != null && StatusText.Text.Contains("Press ESC to clear"))
+                {
+                    StatusText.Text = "Ready";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log but don't crash - this is defensive cleanup
+                System.Diagnostics.Debug.WriteLine($"ClearSearchState error: {ex.Message}");
             }
         }
 

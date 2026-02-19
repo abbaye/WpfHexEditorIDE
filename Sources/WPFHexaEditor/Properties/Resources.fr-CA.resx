@@ -606,4 +606,52 @@
   <data name="PropertiesString" xml:space="preserve">
     <value>Propriétés</value>
   </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>Fichier ouvert avec succès</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>Fichier enregistré avec succès</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>Recherche des correspondances...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesFormat" xml:space="preserve">
+    <value>{0} correspondances trouvées</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>Chargement des données du fichier...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>Ouverture du flux de fichier...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>Préparation de l'enregistrement...</value>
+  </data>
+  <data name="ProgressMessageReplacedFormat" xml:space="preserve">
+    <value>{0} occurrences remplacées</value>
+  </data>
+  <data name="ProgressMessageReplacingFormat" xml:space="preserve">
+    <value>{0} correspondances trouvées. Remplacement...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundFormat" xml:space="preserve">
+    <value>Recherche... {0} trouvées</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>Début de la recherche...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>Ouverture du fichier</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>Remplacement</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>Enregistrement du fichier</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>Recherche</value>
+  </data>
 </root>

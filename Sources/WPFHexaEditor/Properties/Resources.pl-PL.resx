@@ -606,4 +606,52 @@
   <data name="PropertiesString" xml:space="preserve">
     <value>Właściwości</value>
   </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>Plik otwarty pomyślnie</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>Plik zapisany pomyślnie</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>Wyszukiwanie dopasowań...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesFormat" xml:space="preserve">
+    <value>Znaleziono {0} dopasowań</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>Ładowanie danych pliku...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>Otwieranie strumienia pliku...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>Przygotowywanie do zapisu...</value>
+  </data>
+  <data name="ProgressMessageReplacedFormat" xml:space="preserve">
+    <value>Zastąpiono {0} wystąpień</value>
+  </data>
+  <data name="ProgressMessageReplacingFormat" xml:space="preserve">
+    <value>Znaleziono {0} dopasowań. Zastępowanie...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundFormat" xml:space="preserve">
+    <value>Wyszukiwanie... znaleziono {0}</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>Rozpoczynanie wyszukiwania...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>Otwieranie pliku</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>Zastępowanie</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>Zapisywanie pliku</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>Wyszukiwanie</value>
+  </data>
 </root>

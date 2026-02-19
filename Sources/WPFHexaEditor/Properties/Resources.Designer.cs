@@ -1640,5 +1640,149 @@ namespace WpfHexaEditor.Properties {
                 return ResourceManager.GetString("WildcardModeLabel", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string ProgressButtonCancel {
+            get {
+                return ResourceManager.GetString("ProgressButtonCancel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to File opened successfully.
+        /// </summary>
+        public static string ProgressMessageFileOpenedSuccessfully {
+            get {
+                return ResourceManager.GetString("ProgressMessageFileOpenedSuccessfully", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to File saved successfully.
+        /// </summary>
+        public static string ProgressMessageFileSavedSuccessfully {
+            get {
+                return ResourceManager.GetString("ProgressMessageFileSavedSuccessfully", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Finding matches....
+        /// </summary>
+        public static string ProgressMessageFindingMatches {
+            get {
+                return ResourceManager.GetString("ProgressMessageFindingMatches", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Found {0} matches.
+        /// </summary>
+        public static string ProgressMessageFoundMatchesFormat {
+            get {
+                return ResourceManager.GetString("ProgressMessageFoundMatchesFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Loading file data....
+        /// </summary>
+        public static string ProgressMessageLoadingFileData {
+            get {
+                return ResourceManager.GetString("ProgressMessageLoadingFileData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Opening file stream....
+        /// </summary>
+        public static string ProgressMessageOpeningFileStream {
+            get {
+                return ResourceManager.GetString("ProgressMessageOpeningFileStream", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Preparing to save....
+        /// </summary>
+        public static string ProgressMessagePreparingToSave {
+            get {
+                return ResourceManager.GetString("ProgressMessagePreparingToSave", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replaced {0} occurrences.
+        /// </summary>
+        public static string ProgressMessageReplacedFormat {
+            get {
+                return ResourceManager.GetString("ProgressMessageReplacedFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Found {0} matches. Replacing....
+        /// </summary>
+        public static string ProgressMessageReplacingFormat {
+            get {
+                return ResourceManager.GetString("ProgressMessageReplacingFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Searching... {0} found.
+        /// </summary>
+        public static string ProgressMessageSearchingFoundFormat {
+            get {
+                return ResourceManager.GetString("ProgressMessageSearchingFoundFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Starting search....
+        /// </summary>
+        public static string ProgressMessageStartingSearch {
+            get {
+                return ResourceManager.GetString("ProgressMessageStartingSearch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Opening file.
+        /// </summary>
+        public static string ProgressTitleOpeningFile {
+            get {
+                return ResourceManager.GetString("ProgressTitleOpeningFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replacing.
+        /// </summary>
+        public static string ProgressTitleReplacing {
+            get {
+                return ResourceManager.GetString("ProgressTitleReplacing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Saving file.
+        /// </summary>
+        public static string ProgressTitleSavingFile {
+            get {
+                return ResourceManager.GetString("ProgressTitleSavingFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Searching.
+        /// </summary>
+        public static string ProgressTitleSearching {
+            get {
+                return ResourceManager.GetString("ProgressTitleSearching", resourceCulture);
+            }
+        }
     }
 }

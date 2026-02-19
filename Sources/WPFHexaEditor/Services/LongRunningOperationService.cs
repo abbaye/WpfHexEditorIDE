@@ -22,7 +22,13 @@ namespace WpfHexaEditor.Services
         private bool _isOperationActive;
         private bool _disposed;
         private DateTime _lastProgressUpdate;
-        private const int MinProgressIntervalMs = 100; // Throttle to 10 updates/second
+
+        /// <summary>
+        /// Minimum interval in milliseconds between progress updates (default: 33ms = ~30 updates/second)
+        /// Lower values = smoother animation but more UI updates
+        /// Higher values = less CPU usage but choppier animation
+        /// </summary>
+        public int MinProgressIntervalMs { get; set; } = 33;
 
         #region Events
 

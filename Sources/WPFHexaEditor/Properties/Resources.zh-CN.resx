@@ -606,4 +606,52 @@
   <data name="PropertiesString" xml:space="preserve">
     <value>属性</value>
   </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>文件已成功打开</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>文件已成功保存</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>正在查找匹配项...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesFormat" xml:space="preserve">
+    <value>找到 {0} 个匹配项</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>正在加载文件数据...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>正在打开文件流...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>正在准备保存...</value>
+  </data>
+  <data name="ProgressMessageReplacedFormat" xml:space="preserve">
+    <value>已替换 {0} 处</value>
+  </data>
+  <data name="ProgressMessageReplacingFormat" xml:space="preserve">
+    <value>找到 {0} 个匹配项。正在替换...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundFormat" xml:space="preserve">
+    <value>搜索中... 已找到 {0}</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>开始搜索...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>打开文件</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>替换</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>保存文件</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>搜索</value>
+  </data>
 </root>

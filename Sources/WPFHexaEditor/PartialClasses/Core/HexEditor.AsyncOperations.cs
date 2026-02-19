@@ -24,6 +24,7 @@ namespace WpfHexaEditor
 
         /// <summary>
         /// Open a file asynchronously with progress reporting
+        /// Automatically closes current file if one is already open
         /// </summary>
         /// <param name="filePath">Path to the file to open</param>
         /// <returns>True if file was opened successfully</returns>
@@ -32,10 +33,22 @@ namespace WpfHexaEditor
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentNullException(nameof(filePath));
 
-            HexEditorViewModel viewModel = null;
+            // CRITICAL: Set flag to prevent infinite recursion in OnFileNamePropertyChanged
+            _isOpeningFile = true;
 
-            bool success = await _longRunningService.ExecuteOperationAsync(
-                "Opening file",
+            try
+            {
+                // CRITICAL: Close previous file on UI thread before async operation
+                // This prevents crashes and memory leaks from stale state
+                if (_viewModel != null)
+                {
+                    Dispatcher.Invoke(() => Close());
+                }
+
+                HexEditorViewModel viewModel = null;
+
+                bool success = await _longRunningService.ExecuteOperationAsync(
+                Properties.Resources.ProgressTitleOpeningFile,
                 true, // Can cancel
                 async (progress, cancellationToken) =>
                 {
@@ -44,7 +57,7 @@ namespace WpfHexaEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 10,
-                            Message = "Opening file stream..."
+                            Message = Properties.Resources.ProgressMessageOpeningFileStream
                         });
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -54,30 +67,36 @@ namespace WpfHexaEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 50,
-                            Message = "Loading file data..."
+                            Message = Properties.Resources.ProgressMessageLoadingFileData
                         });
                         cancellationToken.ThrowIfCancellationRequested();
 
                         progress.Report(new OperationProgress
                         {
                             Percentage = 100,
-                            Message = "File opened successfully"
+                            Message = Properties.Resources.ProgressMessageFileOpenedSuccessfully
                         });
 
                         return true;
                     }, cancellationToken);
                 });
 
-            if (success && viewModel != null)
-            {
-                // Complete the file opening on UI thread
-                Dispatcher.Invoke(() =>
+                if (success && viewModel != null)
                 {
-                    CompleteFileOpen(viewModel, filePath);
-                });
-            }
+                    // Complete the file opening on UI thread
+                    Dispatcher.Invoke(() =>
+                    {
+                        CompleteFileOpen(viewModel, filePath);
+                    });
+                }
 
-            return success;
+                return success;
+            }
+            finally
+            {
+                // CRITICAL: Always reset flag to allow future opens
+                _isOpeningFile = false;
+            }
         }
 
         /// <summary>
@@ -90,7 +109,7 @@ namespace WpfHexaEditor
                 throw new InvalidOperationException("No file loaded");
 
             bool success = await _longRunningService.ExecuteOperationAsync(
-                "Saving file",
+                Properties.Resources.ProgressTitleSavingFile,
                 false, // Cannot cancel (data integrity)
                 async (progress, cancellationToken) =>
                 {
@@ -99,7 +118,7 @@ namespace WpfHexaEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 10,
-                            Message = "Preparing to save..."
+                            Message = Properties.Resources.ProgressMessagePreparingToSave
                         });
 
                         // Save via ViewModel
@@ -108,7 +127,7 @@ namespace WpfHexaEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 100,
-                            Message = "File saved successfully"
+                            Message = Properties.Resources.ProgressMessageFileSavedSuccessfully
                         });
 
                         return true;
@@ -145,7 +164,7 @@ namespace WpfHexaEditor
             List<long> results = new List<long>();
 
             await _longRunningService.ExecuteOperationAsync(
-                "Searching",
+                Properties.Resources.ProgressTitleSearching,
                 true, // Can cancel
                 async (progress, cancellationToken) =>
                 {
@@ -153,28 +172,46 @@ namespace WpfHexaEditor
                     {
                         progress.Report(new OperationProgress
                         {
-                            Percentage = 10,
-                            Message = "Starting search..."
+                            Percentage = 0,
+                            Message = Properties.Resources.ProgressMessageStartingSearch
                         });
                         cancellationToken.ThrowIfCancellationRequested();
 
-                        // Use ByteProvider V2's FindAll method
-                        var matches = _viewModel.Provider.FindAll(pattern, startPosition);
+                        // Manual search with progress reporting
+                        long fileLength = _viewModel.VirtualLength;
+                        long currentPos = startPosition;
+                        int lastProgressPercent = 0;
 
-                        progress.Report(new OperationProgress
+                        while (true)
                         {
-                            Percentage = 50,
-                            Message = "Processing matches..."
-                        });
-                        cancellationToken.ThrowIfCancellationRequested();
+                            cancellationToken.ThrowIfCancellationRequested();
 
-                        // Convert IEnumerable to List
-                        results = matches.ToList();
+                            // Find next occurrence
+                            long foundPos = _viewModel.Provider.FindFirst(pattern, currentPos);
+
+                            if (foundPos == -1)
+                                break; // No more matches
+
+                            results.Add(foundPos);
+                            currentPos = foundPos + 1;
+
+                            // Report progress based on search position
+                            int progressPercent = fileLength > 0 ? (int)((currentPos * 100) / fileLength) : 100;
+                            if (progressPercent != lastProgressPercent)
+                            {
+                                progress.Report(new OperationProgress
+                                {
+                                    Percentage = progressPercent,
+                                    Message = string.Format(Properties.Resources.ProgressMessageSearchingFoundFormat, results.Count)
+                                });
+                                lastProgressPercent = progressPercent;
+                            }
+                        }
 
                         progress.Report(new OperationProgress
                         {
                             Percentage = 100,
-                            Message = $"Found {results.Count} matches"
+                            Message = string.Format(Properties.Resources.ProgressMessageFoundMatchesFormat, results.Count)
                         });
 
                         return true;
@@ -205,7 +242,7 @@ namespace WpfHexaEditor
             int replacementCount = 0;
 
             await _longRunningService.ExecuteOperationAsync(
-                "Replacing",
+                Properties.Resources.ProgressTitleReplacing,
                 false, // Cannot cancel (data integrity)
                 async (progress, cancellationToken) =>
                 {
@@ -214,7 +251,7 @@ namespace WpfHexaEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 10,
-                            Message = "Finding matches..."
+                            Message = Properties.Resources.ProgressMessageFindingMatches
                         });
 
                         // Phase 1: Find all occurrences
@@ -223,7 +260,7 @@ namespace WpfHexaEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 50,
-                            Message = $"Found {matches.Count} matches. Replacing..."
+                            Message = string.Format(Properties.Resources.ProgressMessageReplacingFormat, matches.Count)
                         });
 
                         if (matches.Count == 0)
@@ -253,7 +290,7 @@ namespace WpfHexaEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 100,
-                            Message = $"Replaced {replacementCount} occurrences"
+                            Message = string.Format(Properties.Resources.ProgressMessageReplacedFormat, replacementCount)
                         });
 
                         return true;
@@ -269,6 +306,7 @@ namespace WpfHexaEditor
 
         /// <summary>
         /// Complete file open operation on UI thread (separated from async OpenFile to avoid dispatcher issues)
+        /// Note: Close() was already called before async operation, so state is clean
         /// </summary>
         private void CompleteFileOpen(HexEditorViewModel viewModel, string filePath)
         {

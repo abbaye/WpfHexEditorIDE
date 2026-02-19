@@ -50,6 +50,9 @@ namespace WpfHexaEditor
         // Long-running operations
         private readonly Services.LongRunningOperationService _longRunningService = new();
 
+        // File opening re-entrancy guard (prevents infinite recursion in OnFileNamePropertyChanged)
+        private bool _isOpeningFile = false;
+
         // Highlights  - stores ranges of highlighted bytes
         private readonly List<(long start, long length)> _highlights = new List<(long, long)>();
 
@@ -154,22 +157,9 @@ namespace WpfHexaEditor
         {
             if (e.Key == Key.Escape)
             {
-                // Clear search result markers
-                if (_scrollMarkers != null)
-                {
-                    _scrollMarkers.ClearMarkers(ScrollMarkerType.SearchResult);
-                    StatusText.Text = "Search markers cleared.";
-
-                    // Restore scrollbar to normal opacity
-                    VerticalScroll.Opacity = 1.0;
-                }
-
-                // Clear highlighted bytes in hex view
-                if (HexViewport != null)
-                {
-                    HexViewport.HighlightedPositions = new HashSet<long>();
-                }
-
+                // Use centralized method to clear all search state
+                ClearSearchState();
+                StatusText.Text = "Search markers cleared.";
                 e.Handled = true;
             }
         }
@@ -1704,6 +1694,11 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor && e.NewValue is string path && !string.IsNullOrEmpty(path))
             {
+                // CRITICAL: Prevent infinite recursion
+                // OpenFile sets FileName, which triggers this callback, which would call OpenFile again
+                if (editor._isOpeningFile)
+                    return;
+
                 // Auto-load file when FileName is set
                 // This enables the pattern: HexEdit.FileName = "file.bin" to automatically open the file
                 try
@@ -2301,6 +2296,31 @@ namespace WpfHexaEditor
                     editor.HexViewport.CustomBackgroundBlocks = allowed ? editor._customBackgroundBlocks : new List<Core.CustomBackgroundBlock>();
                     editor.HexViewport.InvalidateVisual();
                 }
+            }
+        }
+
+        /// <summary>
+        /// ProgressRefreshRate DependencyProperty for configuring progress bar update frequency
+        /// </summary>
+        public static readonly DependencyProperty ProgressRefreshRateProperty =
+            DependencyProperty.Register(nameof(ProgressRefreshRate), typeof(Models.ProgressRefreshRate), typeof(HexEditor),
+                new PropertyMetadata(Models.ProgressRefreshRate.Fast, OnProgressRefreshRateChanged));
+
+        /// <summary>
+        /// Progress bar refresh rate for long-running operations (Open, Save, Find, Replace)
+        /// </summary>
+        public Models.ProgressRefreshRate ProgressRefreshRate
+        {
+            get => (Models.ProgressRefreshRate)GetValue(ProgressRefreshRateProperty);
+            set => SetValue(ProgressRefreshRateProperty, value);
+        }
+
+        private static void OnProgressRefreshRateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is Models.ProgressRefreshRate rate)
+            {
+                // Update the long-running operation service with new refresh interval
+                editor._longRunningService.MinProgressIntervalMs = (int)rate;
             }
         }
 

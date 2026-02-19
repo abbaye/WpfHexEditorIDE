@@ -23,6 +23,7 @@ namespace WpfHexaEditor.Core.Bytes
         private int _cacheLength = 0;
         private const int CACHE_SIZE = 64 * 1024; // 64KB cache for sequential reads
         private bool _disposed = false;
+        private readonly object _cacheLock = new object(); // Thread-safety for cache access
 
         /// <summary>
         /// Gets the file path (if opened from file).
@@ -119,6 +120,7 @@ namespace WpfHexaEditor.Core.Bytes
         /// <summary>
         /// Read a single byte at a physical position.
         /// Uses cache for performance.
+        /// Thread-safe for concurrent reads.
         /// </summary>
         /// <param name="physicalPosition">Physical file offset</param>
         /// <returns>Byte value and success flag</returns>
@@ -127,34 +129,39 @@ namespace WpfHexaEditor.Core.Bytes
             if (!IsOpen || physicalPosition < 0 || physicalPosition >= Length)
                 return (0, false);
 
-            // Check if byte is in cache
-            if (IsInCache(physicalPosition))
+            // CRITICAL: Lock cache access for thread-safety during async operations
+            lock (_cacheLock)
             {
-                int cacheOffset = (int)(physicalPosition - _cachePosition);
-                // Defensive bounds check (race condition protection)
-                if (cacheOffset < 0 || cacheOffset >= _cacheLength)
+                // Check if byte is in cache
+                if (IsInCache(physicalPosition))
+                {
+                    int cacheOffset = (int)(physicalPosition - _cachePosition);
+                    // Defensive bounds check (race condition protection)
+                    if (cacheOffset < 0 || cacheOffset >= _cacheLength)
+                        return (0, false);
+                    return (_cache[cacheOffset], true);
+                }
+
+                // Cache miss - read new block
+                if (!FillCache(physicalPosition))
                     return (0, false);
-                return (_cache[cacheOffset], true);
+
+                // Verify position is now in cache (handles edge cases like EOF)
+                if (!IsInCache(physicalPosition))
+                    return (0, false);
+
+                int offset = (int)(physicalPosition - _cachePosition);
+                // Defensive bounds check (race condition protection)
+                if (offset < 0 || offset >= _cacheLength)
+                    return (0, false);
+                return (_cache[offset], true);
             }
-
-            // Cache miss - read new block
-            if (!FillCache(physicalPosition))
-                return (0, false);
-
-            // Verify position is now in cache (handles edge cases like EOF)
-            if (!IsInCache(physicalPosition))
-                return (0, false);
-
-            int offset = (int)(physicalPosition - _cachePosition);
-            // Defensive bounds check (race condition protection)
-            if (offset < 0 || offset >= _cacheLength)
-                return (0, false);
-            return (_cache[offset], true);
         }
 
         /// <summary>
         /// Read multiple bytes starting at a physical position.
         /// Optimized for sequential and batch reads.
+        /// Thread-safe for concurrent reads.
         /// </summary>
         /// <param name="physicalPosition">Starting physical offset</param>
         /// <param name="count">Number of bytes to read</param>
@@ -172,52 +179,56 @@ namespace WpfHexaEditor.Core.Bytes
             count = (int)Math.Min(count, available);
             var result = new byte[count];
 
-            // Try to read from cache first
-            if (IsInCache(physicalPosition))
+            // CRITICAL: Lock cache and stream access for thread-safety
+            lock (_cacheLock)
             {
-                int cacheOffset = (int)(physicalPosition - _cachePosition);
-                int availableInCache = _cacheLength - cacheOffset;
-
-                if (count <= availableInCache)
+                // Try to read from cache first
+                if (IsInCache(physicalPosition))
                 {
-                    // Fully in cache
-                    Array.Copy(_cache, cacheOffset, result, 0, count);
-                    return result;
-                }
-                else
-                {
-                    // Partially in cache
-                    Array.Copy(_cache, cacheOffset, result, 0, availableInCache);
+                    int cacheOffset = (int)(physicalPosition - _cachePosition);
+                    int availableInCache = _cacheLength - cacheOffset;
 
-                    // Read remainder directly from stream
-                    _stream.Position = physicalPosition + availableInCache;
-                    int remaining = count - availableInCache;
-                    int bytesRead = _stream.Read(result, availableInCache, remaining);
-
-                    if (bytesRead < remaining)
+                    if (count <= availableInCache)
                     {
-                        // Resize if couldn't read all bytes
-                        Array.Resize(ref result, availableInCache + bytesRead);
+                        // Fully in cache
+                        Array.Copy(_cache, cacheOffset, result, 0, count);
+                        return result;
                     }
+                    else
+                    {
+                        // Partially in cache
+                        Array.Copy(_cache, cacheOffset, result, 0, availableInCache);
 
-                    // Update cache with new data
-                    FillCache(physicalPosition + availableInCache);
-                    return result;
+                        // Read remainder directly from stream
+                        _stream.Position = physicalPosition + availableInCache;
+                        int remaining = count - availableInCache;
+                        int bytesRead = _stream.Read(result, availableInCache, remaining);
+
+                        if (bytesRead < remaining)
+                        {
+                            // Resize if couldn't read all bytes
+                            Array.Resize(ref result, availableInCache + bytesRead);
+                        }
+
+                        // Update cache with new data
+                        FillCache(physicalPosition + availableInCache);
+                        return result;
+                    }
                 }
+
+                // Not in cache - read directly
+                _stream.Position = physicalPosition;
+                int totalRead = _stream.Read(result, 0, count);
+
+                if (totalRead < count)
+                    Array.Resize(ref result, totalRead);
+
+                // Update cache if read was small enough
+                if (count <= CACHE_SIZE)
+                    FillCache(physicalPosition);
+
+                return result;
             }
-
-            // Not in cache - read directly
-            _stream.Position = physicalPosition;
-            int totalRead = _stream.Read(result, 0, count);
-
-            if (totalRead < count)
-                Array.Resize(ref result, totalRead);
-
-            // Update cache if read was small enough
-            if (count <= CACHE_SIZE)
-                FillCache(physicalPosition);
-
-            return result;
         }
 
         /// <summary>
