@@ -66,6 +66,33 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
+        /// Count occurrences of byte pattern without storing positions (memory efficient)
+        /// </summary>
+        /// <param name="data">Byte pattern to count</param>
+        /// <param name="startPosition">Position to start search from (default: 0)</param>
+        /// <returns>Number of occurrences found</returns>
+        /// <remarks>
+        /// This method is more memory-efficient than FindAll().Count() for large files,
+        /// as it counts occurrences without storing all their positions.
+        ///
+        /// Example:
+        /// <code>
+        /// var pattern = new byte[] { 0xFF, 0xFE };
+        /// int count = hexEditor.CountOccurrences(pattern);
+        /// Console.WriteLine($"Found {count} occurrences of pattern");
+        /// </code>
+        ///
+        /// Performance comparison for large files (1GB with 100K matches):
+        /// - FindAll().Count(): ~800KB memory allocated
+        /// - CountOccurrences(): ~0KB memory allocated
+        /// </remarks>
+        public int CountOccurrences(byte[] data, long startPosition = 0)
+        {
+            if (_viewModel?.Provider == null || data == null || data.Length == 0) return 0;
+            return _viewModel.Provider.CountOccurrences(data, startPosition);
+        }
+
+        /// <summary>
         /// Set selection to a specific range (used after find operations)
         /// </summary>
         /// <param name="position">Start position</param>
