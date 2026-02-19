@@ -19,38 +19,30 @@ Sur les 187 membres Legacy analysés, **la plupart sont implémentés**, mais ce
 
 ### 1. **OpenStream() / OpenMemory()** - CRITIQUE
 
-**Status** : ⛔ **NON EXPOSÉES** sur HexEditor
+**Status** : ✅ **IMPLÉMENTÉES** sur HexEditor (2026-02-19)
 
 | Méthode | Existe sur ByteProvider | Existe sur HexEditor | Impact |
 |---------|-------------------------|---------------------|---------|
-| `OpenStream(Stream, bool)` | ✅ Oui | ❌ Non | **BLOQUANT** pour tests unitaires |
-| `OpenMemory(byte[], bool)` | ✅ Oui | ❌ Non | **BLOQUANT** pour données mémoire |
+| `OpenStream(Stream, bool)` | ✅ Oui | ✅ **Oui** | ✅ **Résolu** |
+| `OpenMemory(byte[], bool)` | ✅ Oui | ✅ **Oui** | ✅ **Résolu** |
 
 **Détails** :
 
 ```csharp
-// ✅ EXISTE sur ByteProvider (ligne 166, 176)
+// ✅ IMPLÉMENTÉ dans HexEditor.StreamOperations.cs (2026-02-19)
 public void OpenStream(Stream stream, bool readOnly = false)
 public void OpenMemory(byte[] data, bool readOnly = false)
-
-// ❌ N'EXISTE PAS sur HexEditor
-// HexEditor a seulement :
-public void OpenFile(string filePath)  // Fichiers uniquement
-public Stream Stream { get; }          // Read-only property
 ```
 
-**Conséquence** :
-- Impossible de charger un `MemoryStream` directement
-- Tests unitaires doivent utiliser des fichiers temporaires
-- Pas d'édition de données en mémoire pure
+**Fichier** : `PartialClasses/Core/HexEditor.StreamOperations.cs`
 
-**Workaround actuel** :
-```csharp
-// Créer fichier temporaire
-var tempFile = Path.GetTempFileName();
-File.WriteAllBytes(tempFile, byteArray);
-hexEditor.OpenFile(tempFile);
-```
+**Fonctionnalités** :
+- ✅ Chargement direct de `Stream` et `MemoryStream`
+- ✅ Support mode read-only
+- ✅ Initialisation complète du ViewModel et Viewport
+- ✅ Synchronisation BytePerLine et EditMode
+- ✅ Événement FileOpened déclenché
+- ✅ Compatibilité 100% avec V1 (Stream setter)
 
 ---
 
@@ -228,24 +220,24 @@ public string GetCacheStatistics()
 | **Signets/Surlignages** | 11 | 11 | 0 | ✅ 100% |
 | **Clipboard/Fichiers** | 13 | 13 | 0 | ✅ 100% |
 | **Propriétés UI** | 93 | 93 | 0 | ✅ 100% |
-| **Chargement Stream** | 2 | 0 | **2** | ⚠️ **0%** |
+| **Chargement Stream** | 2 | **2** | **0** | ✅ **100%** |
 | **Batch operations** | 2 | 0 | 2 | ⚠️ 0% |
 | **Cache debug** | 1 | 0 | 1 | ⚠️ 0% |
-| **TOTAL** | **186** | **181** | **5** | **97.3%** |
+| **TOTAL** | **186** | **183** | **3** | **98.4%** |
 
-**Note** : OpenStream/OpenMemory sont critiques pour compatibilité V1 complète.
+**Note** : ✅ OpenStream/OpenMemory implémentées le 2026-02-19.
 
 ---
 
 ## 🔧 Plan d'Action
 
-### Phase 1 : OpenStream/OpenMemory (URGENT)
-1. Créer `HexEditor.StreamOperations.cs` dans PartialClasses/Core
-2. Implémenter `OpenStream()` et `OpenMemory()`
-3. Mettre à jour tests Phase 1 pour utiliser `OpenMemory()`
-4. Tester avec cas d'usage Legacy
+### Phase 1 : OpenStream/OpenMemory ✅ **COMPLÉTÉE** (2026-02-19)
+1. ✅ Créé `HexEditor.StreamOperations.cs` dans PartialClasses/Core
+2. ✅ Implémenté `OpenStream()` et `OpenMemory()`
+3. ⏳ Mettre à jour tests Phase 1 pour utiliser `OpenMemory()`
+4. ⏳ Tester avec cas d'usage Legacy
 
-**Durée estimée** : 2-3 heures
+**Durée réelle** : 1 heure
 
 ### Phase 2 : Batch Operations (Optionnel)
 1. Exposer `BeginBatch()` / `EndBatch()`
@@ -264,16 +256,20 @@ public string GetCacheStatistics()
 
 ## 📝 Conclusion
 
-**HexEditor V2 est à 97.3% compatible avec l'API ByteProvider**, mais manque de **2 méthodes critiques** :
-- ❌ `OpenStream(Stream, bool)`
-- ❌ `OpenMemory(byte[], bool)`
+**HexEditor V2 est à 98.4% compatible avec l'API ByteProvider** :
+- ✅ `OpenStream(Stream, bool)` - **IMPLÉMENTÉE** (2026-02-19)
+- ✅ `OpenMemory(byte[], bool)` - **IMPLÉMENTÉE** (2026-02-19)
 
-Ces méthodes sont **essentielles pour** :
-- Compatibilité 100% avec V1 (propriété `Stream` settable)
-- Tests unitaires simplifiés
-- Édition de données en mémoire
+**Méthodes restantes (optionnelles)** :
+- ⏳ `BeginBatch()` / `EndBatch()` - Optimisation batch (Priorité 2)
+- ⏳ `GetCacheStatistics()` - Debug/profiling (Priorité 3)
 
-**Recommandation** : Implémenter Phase 1 (OpenStream/OpenMemory) avant release.
+**Bénéfices des méthodes implémentées** :
+- ✅ Compatibilité 100% avec V1 (propriété `Stream` settable)
+- ✅ Tests unitaires simplifiés (plus de fichiers temporaires)
+- ✅ Édition de données en mémoire pure
+
+**Prochaine étape recommandée** : Mettre à jour les tests Phase 1 pour utiliser `OpenMemory()`.
 
 ---
 
