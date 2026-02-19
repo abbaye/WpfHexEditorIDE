@@ -20,14 +20,14 @@ HexBox.xaml.cs (UserControl)
 ```
 
 ### Fichiers Existants
-- [HexBox.xaml](Sources/WPFHexaEditor/HexBox.xaml) - 87 lignes
-- [HexBox.xaml.cs](Sources/WPFHexaEditor/HexBox.xaml.cs) - 170 lignes
+- [HexBox.xaml](../Sources/WPFHexaEditor/HexBox.xaml) - 87 lignes
+- [HexBox.xaml.cs](../Sources/WPFHexaEditor/HexBox.xaml.cs) - 170 lignes
 - Dépendances: `ByteConverters`, `KeyValidator`
 
 ### Architecture V2 Existante (Référence)
 Le projet a déjà:
-- ✅ [HexEditorViewModel.cs](Sources/WPFHexaEditor/ViewModels/HexEditorViewModel.cs) - Architecture MVVM complète
-- ✅ [Models/](Sources/WPFHexaEditor/Models/) - HexLine, ByteData, Position, EditMode
+- ✅ [HexEditorViewModel.cs](../Sources/WPFHexaEditor/ViewModels/HexEditorViewModel.cs) - Architecture MVVM complète
+- ✅ [Models/](../Sources/WPFHexaEditor/Models/) - HexLine, ByteData, Position, EditMode
 - ✅ SearchModule avec ViewModels
 - ✅ Pattern INotifyPropertyChanged
 - ✅ Services (UndoRedoService, ClipboardService, etc.)

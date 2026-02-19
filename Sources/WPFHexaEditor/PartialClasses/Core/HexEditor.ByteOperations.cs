@@ -117,6 +117,44 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
+        /// Modify multiple consecutive bytes at position
+        /// </summary>
+        /// <param name="bytePositionInStream">Starting position in stream (virtual)</param>
+        /// <param name="bytes">Array of byte values to write</param>
+        /// <remarks>
+        /// This method is more efficient than calling ModifyByte() in a loop.
+        /// It modifies existing bytes without changing file size.
+        ///
+        /// Example:
+        /// <code>
+        /// var newData = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD };
+        /// hexEditor.ModifyBytes(100, newData);
+        /// // Modifies bytes at positions 100, 101, 102, 103
+        /// </code>
+        ///
+        /// For best performance with many modifications, use within BeginBatch/EndBatch:
+        /// <code>
+        /// hexEditor.BeginBatch();
+        /// try
+        /// {
+        ///     hexEditor.ModifyBytes(0, data1);
+        ///     hexEditor.ModifyBytes(1000, data2);
+        /// }
+        /// finally
+        /// {
+        ///     hexEditor.EndBatch();
+        /// }
+        /// </code>
+        /// </remarks>
+        public void ModifyBytes(long bytePositionInStream, byte[] bytes)
+        {
+            if (_viewModel?.Provider == null || ReadOnlyMode || bytes == null || bytes.Length == 0) return;
+
+            _viewModel.Provider.ModifyBytes(bytePositionInStream, bytes);
+            UpdateVisibleLines();
+        }
+
+        /// <summary>
         /// Delete bytes at position
         /// </summary>
         /// <param name="bytePositionInStream">Start position (virtual)</param>

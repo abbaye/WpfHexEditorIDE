@@ -110,6 +110,69 @@ namespace WpfHexaEditor
             return _viewModel?.Paste() ?? false;
         }
 
+        /// <summary>
+        /// Clear only byte modifications (keep insertions and deletions)
+        /// </summary>
+        /// <remarks>
+        /// This method provides granular control over clearing edits.
+        /// Most use cases should use ClearAllChange() instead.
+        ///
+        /// Example use case:
+        /// <code>
+        /// // User wants to keep structural changes (insertions/deletions)
+        /// // but reset all byte value modifications
+        /// hexEditor.ClearModifications();
+        /// </code>
+        /// </remarks>
+        public void ClearModifications()
+        {
+            if (_viewModel?.Provider == null) return;
+            _viewModel.Provider.ClearModifications();
+            UpdateVisibleLines();
+        }
+
+        /// <summary>
+        /// Clear only byte insertions (keep modifications and deletions)
+        /// </summary>
+        /// <remarks>
+        /// This method provides granular control over clearing edits.
+        /// Most use cases should use ClearAllChange() instead.
+        ///
+        /// Example use case:
+        /// <code>
+        /// // User wants to keep byte modifications and deletions
+        /// // but remove all insertions
+        /// hexEditor.ClearInsertions();
+        /// </code>
+        /// </remarks>
+        public void ClearInsertions()
+        {
+            if (_viewModel?.Provider == null) return;
+            _viewModel.Provider.ClearInsertions();
+            UpdateVisibleLines();
+        }
+
+        /// <summary>
+        /// Clear only byte deletions (keep modifications and insertions)
+        /// </summary>
+        /// <remarks>
+        /// This method provides granular control over clearing edits.
+        /// Most use cases should use ClearAllChange() instead.
+        ///
+        /// Example use case:
+        /// <code>
+        /// // User wants to keep byte modifications and insertions
+        /// // but restore all deleted bytes
+        /// hexEditor.ClearDeletions();
+        /// </code>
+        /// </remarks>
+        public void ClearDeletions()
+        {
+            if (_viewModel?.Provider == null) return;
+            _viewModel.Provider.ClearDeletions();
+            UpdateVisibleLines();
+        }
+
         #endregion
     }
 }
