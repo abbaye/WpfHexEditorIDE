@@ -202,15 +202,32 @@ dotnet add package WPFHexaEditor
 
 ## 📚 Documentation
 
+### Quick References
+
 | Document | Description |
 |----------|-------------|
 | **[GETTING_STARTED.md](GETTING_STARTED.md)** | 👨‍💻 Complete tutorial with code examples |
 | **[FEATURES.md](FEATURES.md)** | 📊 Full V1 vs V2 comparison (163 features) |
 | **[MIGRATION.md](MIGRATION.md)** | 🔄 V1→V2 migration guide (zero code changes) |
-| **[ARCHITECTURE.md](ARCHITECTURE.md)** | 🏗️ Service-based architecture overview |
-| **[PERFORMANCE_GUIDE.md](PERFORMANCE_GUIDE.md)** | ⚡ Optimization details and benchmarks |
-| **[API Reference](Sources/WPFHexaEditor/README.md)** | 📖 Complete API documentation |
 | **[CHANGELOG.md](CHANGELOG.md)** | 📝 Version history and changes |
+
+### Architecture & API
+
+| Document | Description |
+|----------|-------------|
+| **[Architecture Overview](docs/architecture/overview.md)** | 🏗️ Complete system architecture with diagrams |
+| **[Core Systems](docs/architecture/core-systems/)** | ⚙️ ByteProvider, Position Mapping, Edit Tracking, Undo/Redo, Rendering, Services |
+| **[Data Flow](docs/architecture/data-flow/)** | 🔄 File operations, Edit operations, Search, Save sequences |
+| **[API Reference](docs/api-reference/)** | 📖 Complete API documentation with examples |
+| **[Performance Guide](PERFORMANCE_GUIDE.md)** | ⚡ Optimization details and benchmarks |
+
+### Code Organization
+
+| Folder | Description |
+|--------|-------------|
+| **[PartialClasses/](Sources/WPFHexaEditor/PartialClasses/)** | 📂 HexEditor organized by functionality (Core, Features, Search, UI) |
+| **[Services/](Sources/WPFHexaEditor/Services/)** | 🔧 15 specialized services (Search, Clipboard, Bookmarks, etc.) |
+| **[Core/Bytes/](Sources/WPFHexaEditor/Core/Bytes/)** | 💾 ByteProvider system and data management |
 
 ### Sample Applications
 
