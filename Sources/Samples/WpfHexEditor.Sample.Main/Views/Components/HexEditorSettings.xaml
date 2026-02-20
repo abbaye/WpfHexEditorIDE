@@ -15,6 +15,12 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="400">
 
+    <UserControl.Resources>
+        <components:EnumToComboBoxConverter x:Key="EnumToComboBoxConverter"/>
+        <components:BytesPerLineToIndexConverter x:Key="BytesPerLineToIndexConverter"/>
+        <components:ZoomToPercentConverter x:Key="ZoomToPercentConverter"/>
+    </UserControl.Resources>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="16">
 
@@ -38,12 +44,23 @@
                     <CheckBox Content="{DynamicResource HexSettings_Display_HideDeleted}"
                              IsChecked="{Binding Path=HideByteDeleted, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
+                    <CheckBox Content="Show Offset Column"
+                             IsChecked="{Binding Path=ShowOffset, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Show ASCII Column"
+                             IsChecked="{Binding Path=ShowAscii, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Show Column Separator"
+                             IsChecked="{Binding Path=ShowColumnSeparator, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Show Status Message"
+                             IsChecked="{Binding Path=ShowStatusMessage, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
 
                     <TextBlock Text="{DynamicResource HexSettings_Display_BytesPerLine}" FontSize="11" Margin="0,8,0,4"/>
                     <ComboBox x:Name="BytesPerLineComboBox"
-                             SelectedIndex="1"
-                             Margin="0,0,0,8"
-                             SelectionChanged="BytesPerLineComboBox_SelectionChanged">
+                             SelectedIndex="{Binding Path=BytePerLine, Converter={StaticResource BytesPerLineToIndexConverter}, Mode=TwoWay}"
+                             Margin="0,0,0,8">
                         <ComboBoxItem Content="8" Tag="8"/>
                         <ComboBoxItem Content="16" Tag="16"/>
                         <ComboBoxItem Content="32" Tag="32"/>
@@ -56,7 +73,37 @@
                            Maximum="3"
                            Value="1"
                            TickFrequency="0.1"
-                           ValueChanged="ZoomSlider_ValueChanged"/>
+                           ValueChanged="ZoomSlider_ValueChanged"
+                           Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding ElementName=ZoomSlider, Path=Value, Converter={StaticResource ZoomToPercentConverter}}"
+                              FontSize="11"
+                              HorizontalAlignment="Center"
+                              Foreground="{DynamicResource ForegroundBrush}"
+                              Margin="0,0,0,8"/>
+                </StackPanel>
+            </Expander>
+
+            <!-- Status Bar Options -->
+            <Expander Header="Status Bar Options" Margin="0,0,0,8">
+                <StackPanel Margin="16,8,0,0">
+                    <CheckBox Content="Show File Size"
+                             IsChecked="{Binding Path=ShowFileSizeInStatusBar, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Show Selection"
+                             IsChecked="{Binding Path=ShowSelectionInStatusBar, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Show Position"
+                             IsChecked="{Binding Path=ShowPositionInStatusBar, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Show Edit Mode"
+                             IsChecked="{Binding Path=ShowEditModeInStatusBar, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Show Bytes Per Line"
+                             IsChecked="{Binding Path=ShowBytesPerLineInStatusBar, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Show Refresh Time"
+                             IsChecked="{Binding Path=ShowRefreshTimeInStatusBar, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
                 </StackPanel>
             </Expander>
 
@@ -81,17 +128,17 @@
 
                     <TextBlock Text="{DynamicResource HexSettings_Editing_EditMode}" FontSize="11" Margin="0,8,0,4"/>
                     <ComboBox x:Name="EditModeComboBox"
-                             SelectedIndex="0"
-                             Margin="0,0,0,8"
-                             SelectionChanged="EditModeComboBox_SelectionChanged">
+                             SelectedValue="{Binding Path=EditMode, Converter={StaticResource EnumToComboBoxConverter}, Mode=TwoWay}"
+                             SelectedValuePath="Tag"
+                             Margin="0,0,0,8">
                         <ComboBoxItem Content="{DynamicResource HexSettings_Editing_Overwrite}" Tag="Overwrite"/>
                         <ComboBoxItem Content="{DynamicResource HexSettings_Editing_Insert}" Tag="Insert"/>
                     </ComboBox>
 
                     <TextBlock Text="{DynamicResource HexSettings_Editing_CaretMode}" FontSize="11" Margin="0,8,0,4"/>
                     <ComboBox x:Name="CaretModeComboBox"
-                             SelectedIndex="0"
-                             SelectionChanged="CaretModeComboBox_SelectionChanged">
+                             SelectedValue="{Binding Path=VisualCaretMode, Converter={StaticResource EnumToComboBoxConverter}, Mode=TwoWay}"
+                             SelectedValuePath="Tag">
                         <ComboBoxItem Content="{DynamicResource HexSettings_Editing_Insert}" Tag="Insert"/>
                         <ComboBoxItem Content="{DynamicResource HexSettings_Editing_Overwrite}" Tag="Overwrite"/>
                     </ComboBox>
@@ -103,9 +150,9 @@
                 <StackPanel Margin="16,8,0,0">
                     <TextBlock Text="{DynamicResource HexSettings_Clipboard_DefaultCopyMode}" FontSize="11" Margin="0,0,0,4"/>
                     <ComboBox x:Name="CopyModeComboBox"
-                             SelectedIndex="0"
-                             Margin="0,0,0,8"
-                             SelectionChanged="CopyModeComboBox_SelectionChanged">
+                             SelectedValue="{Binding Path=DefaultCopyToClipboardMode, Converter={StaticResource EnumToComboBoxConverter}, Mode=TwoWay}"
+                             SelectedValuePath="Tag"
+                             Margin="0,0,0,8">
                         <ComboBoxItem Content="{DynamicResource HexSettings_Clipboard_HexString}" Tag="HexaString"/>
                         <ComboBoxItem Content="{DynamicResource HexSettings_Clipboard_ByteArray}" Tag="ByteArray"/>
                         <ComboBoxItem Content="{DynamicResource HexSettings_Clipboard_CSharpCode}" Tag="CSharpCode"/>
@@ -131,6 +178,18 @@
                 </StackPanel>
             </Expander>
 
+            <!-- Context Menu &amp; UI Options -->
+            <Expander Header="Context Menu &amp; UI" Margin="0,0,0,8">
+                <StackPanel Margin="16,8,0,0">
+                    <CheckBox Content="Allow Zoom"
+                             IsChecked="{Binding Path=AllowZoom, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Allow Context Menu"
+                             IsChecked="{Binding Path=AllowContextMenu, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                </StackPanel>
+            </Expander>
+
             <!-- Highlight &amp; Selection -->
             <Expander Header="{DynamicResource HexSettings_Highlight_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
@@ -147,6 +206,55 @@
                     <TextBlock Text="{DynamicResource HexSettings_Highlight_AutoHighlightColor}" FontSize="11" Margin="0,8,0,4"/>
                     <components:ColorPicker x:Name="AutoHighlightColorPicker"
                                            ColorChanged="AutoHighlightColorPicker_ColorChanged"/>
+                </StackPanel>
+            </Expander>
+
+            <!-- Byte Spacer Options -->
+            <Expander Header="Byte Spacer" Margin="0,0,0,8">
+                <StackPanel Margin="16,8,0,0">
+                    <TextBlock Text="Byte Spacer Positioning" FontSize="11" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="ByteSpacerPositioningComboBox"
+                             SelectedValue="{Binding Path=ByteSpacerPositioning, Converter={StaticResource EnumToComboBoxConverter}, Mode=TwoWay}"
+                             SelectedValuePath="Tag"
+                             Margin="0,0,0,8">
+                        <ComboBoxItem Content="Both Panels" Tag="Both"/>
+                        <ComboBoxItem Content="Hex Panel Only" Tag="HexBytePanel"/>
+                        <ComboBoxItem Content="ASCII Panel Only" Tag="StringBytePanel"/>
+                        <ComboBoxItem Content="None" Tag="Nothing"/>
+                    </ComboBox>
+
+                    <TextBlock Text="Byte Spacer Width" FontSize="11" Margin="0,8,0,4"/>
+                    <ComboBox x:Name="ByteSpacerWidthComboBox"
+                             SelectedValue="{Binding Path=ByteSpacerWidthTickness, Converter={StaticResource EnumToComboBoxConverter}, Mode=TwoWay}"
+                             SelectedValuePath="Tag"
+                             Margin="0,0,0,8">
+                        <ComboBoxItem Content="Very Small" Tag="VerySmall"/>
+                        <ComboBoxItem Content="Small" Tag="Small"/>
+                        <ComboBoxItem Content="Normal" Tag="Normal"/>
+                        <ComboBoxItem Content="Large" Tag="Large"/>
+                        <ComboBoxItem Content="Very Large" Tag="VeryLarge"/>
+                    </ComboBox>
+
+                    <TextBlock Text="Byte Grouping" FontSize="11" Margin="0,8,0,4"/>
+                    <ComboBox x:Name="ByteSpacerGroupComboBox"
+                             SelectedValue="{Binding Path=ByteGrouping, Converter={StaticResource EnumToComboBoxConverter}, Mode=TwoWay}"
+                             SelectedValuePath="Tag"
+                             Margin="0,0,0,8">
+                        <ComboBoxItem Content="2 Bytes" Tag="TwoByte"/>
+                        <ComboBoxItem Content="4 Bytes" Tag="FourByte"/>
+                        <ComboBoxItem Content="6 Bytes" Tag="SixByte"/>
+                        <ComboBoxItem Content="8 Bytes" Tag="EightByte"/>
+                    </ComboBox>
+
+                    <TextBlock Text="Visual Style" FontSize="11" Margin="0,8,0,4"/>
+                    <ComboBox x:Name="ByteSpacerVisualStyleComboBox"
+                             SelectedValue="{Binding Path=ByteSpacerVisualStyle, Converter={StaticResource EnumToComboBoxConverter}, Mode=TwoWay}"
+                             SelectedValuePath="Tag"
+                             Margin="0,0,0,8">
+                        <ComboBoxItem Content="Empty Space" Tag="Empty"/>
+                        <ComboBoxItem Content="Solid Line" Tag="Line"/>
+                        <ComboBoxItem Content="Dashed Line" Tag="Dash"/>
+                    </ComboBox>
                 </StackPanel>
             </Expander>
 
@@ -195,14 +303,34 @@
                 </StackPanel>
             </Expander>
 
+            <!-- Keyboard Shortcuts -->
+            <Expander Header="Keyboard Shortcuts" Margin="0,0,0,8">
+                <StackPanel Margin="16,8,0,0">
+                    <CheckBox Content="Allow Ctrl+C (Copy)"
+                             IsChecked="{Binding Path=AllowBuildinCtrlc, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Allow Ctrl+V (Paste)"
+                             IsChecked="{Binding Path=AllowBuildinCtrlv, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Allow Ctrl+A (Select All)"
+                             IsChecked="{Binding Path=AllowBuildinCtrla, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Allow Ctrl+Z (Undo)"
+                             IsChecked="{Binding Path=AllowBuildinCtrlz, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                    <CheckBox Content="Allow Ctrl+Y (Redo)"
+                             IsChecked="{Binding Path=AllowBuildinCtrly, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
+                </StackPanel>
+            </Expander>
+
             <!-- Advanced Options -->
             <Expander Header="{DynamicResource HexSettings_Advanced_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
                     <TextBlock Text="{DynamicResource HexSettings_Advanced_ByteShiftLeft}" FontSize="11" Margin="0,0,0,4"/>
                     <TextBox x:Name="ByteShiftLeftTextBox"
-                            Text="0"
+                            Text="{Binding Path=ByteShiftLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource ModernTextBoxStyle}"
-                            TextChanged="ByteShiftLeftTextBox_TextChanged"
                             Margin="0,0,0,12"/>
 
                     <Button Content="{DynamicResource HexSettings_Advanced_SaveState}"
@@ -214,6 +342,86 @@
                            x:Name="LoadStateButton"
                            Click="LoadStateButton_Click"
                            Style="{StaticResource ModernButtonStyle}"/>
+                </StackPanel>
+            </Expander>
+
+            <!-- Colors -->
+            <Expander Header="Colors" Margin="0,0,0,8">
+                <StackPanel Margin="16,8,0,0">
+
+                    <!-- Selection Colors -->
+                    <TextBlock Text="Selection Colors" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,8"/>
+                    <TextBlock Text="Selection First Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="SelectionFirstColorPicker"
+                                           ColorChanged="SelectionFirstColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="Selection Second Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="SelectionSecondColorPicker"
+                                           ColorChanged="SelectionSecondColorPicker_ColorChanged"
+                                           Margin="0,0,0,12"/>
+
+                    <!-- Byte State Colors -->
+                    <TextBlock Text="Byte State Colors" FontWeight="SemiBold" FontSize="12" Margin="0,8,0,8"/>
+                    <TextBlock Text="Modified Byte Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="ByteModifiedColorPicker"
+                                           ColorChanged="ByteModifiedColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="Deleted Byte Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="ByteDeletedColorPicker"
+                                           ColorChanged="ByteDeletedColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="Added Byte Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="ByteAddedColorPicker"
+                                           ColorChanged="ByteAddedColorPicker_ColorChanged"
+                                           Margin="0,0,0,12"/>
+
+                    <!-- General Colors -->
+                    <TextBlock Text="General Colors" FontWeight="SemiBold" FontSize="12" Margin="0,8,0,8"/>
+                    <TextBlock Text="Highlight Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="HighLightColorPicker"
+                                           ColorChanged="HighLightColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="Mouse Over Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="MouseOverColorPicker"
+                                           ColorChanged="MouseOverColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="Foreground Second Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="ForegroundSecondColorPicker"
+                                           ColorChanged="ForegroundSecondColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="Foreground Contrast" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="ForegroundContrastPicker"
+                                           ColorChanged="ForegroundContrastPicker_ColorChanged"
+                                           Margin="0,0,0,12"/>
+
+                    <!-- TBL Colors -->
+                    <TextBlock Text="TBL Colors" FontWeight="SemiBold" FontSize="12" Margin="0,8,0,8"/>
+                    <TextBlock Text="TBL DTE Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="TblDteColorPicker"
+                                           ColorChanged="TblDteColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="TBL MTE Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="TblMteColorPicker"
+                                           ColorChanged="TblMteColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="TBL End Block Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="TblEndBlockColorPicker"
+                                           ColorChanged="TblEndBlockColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="TBL End Line Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="TblEndLineColorPicker"
+                                           ColorChanged="TblEndLineColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="TBL Default Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="TblDefaultColorPicker"
+                                           ColorChanged="TblDefaultColorPicker_ColorChanged"
+                                           Margin="0,0,0,12"/>
+
+                    <!-- Bar Chart -->
+                    <TextBlock Text="Bar Chart Color" FontSize="11" Margin="0,8,0,4"/>
+                    <components:ColorPicker x:Name="BarChartColorPicker"
+                                           ColorChanged="BarChartColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
                 </StackPanel>
             </Expander>
 

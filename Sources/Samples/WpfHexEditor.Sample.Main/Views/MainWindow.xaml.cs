@@ -70,6 +70,7 @@ namespace WpfHexEditor.Sample.Main.Views
 
             // CRITICAL: Subscribe to operation state changes to disable UI during async operations
             Loaded += MainWindow_Loaded;
+            Closing += MainWindow_Closing;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -79,6 +80,15 @@ namespace WpfHexEditor.Sample.Main.Views
             {
                 HexEditorControl.OperationStateChanged += HexEditor_OperationStateChanged;
             }
+
+            // Auto-load HexEditor settings from previous session
+            HexEditorSettingsPanel?.AutoLoadState();
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Auto-save HexEditor settings for next session
+            HexEditorSettingsPanel?.AutoSaveState();
         }
 
         private void HexEditor_OperationStateChanged(object sender, WpfHexaEditor.Events.OperationStateChangedEventArgs e)

@@ -46,5 +46,17 @@ namespace WpfHexEditor.Sample.Main.Properties {
                 this["PreferredTheme"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string HexEditorSettings {
+            get {
+                return ((string)(this["HexEditorSettings"]));
+            }
+            set {
+                this["HexEditorSettings"] = value;
+            }
+        }
     }
 }
