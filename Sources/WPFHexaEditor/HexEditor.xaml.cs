@@ -765,6 +765,60 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
+        /// Show ASCII characters in TBL - DependencyProperty
+        /// </summary>
+        public bool ShowTblAscii
+        {
+            get => (bool)GetValue(ShowTblAsciiProperty);
+            set => SetValue(ShowTblAsciiProperty, value);
+        }
+
+        /// <summary>
+        /// Show DTE (Dual-Title Encoding) in TBL - DependencyProperty
+        /// </summary>
+        public bool ShowTblDte
+        {
+            get => (bool)GetValue(ShowTblDteProperty);
+            set => SetValue(ShowTblDteProperty, value);
+        }
+
+        /// <summary>
+        /// Show MTE (Multi-Title Encoding) in TBL - DependencyProperty (renamed for consistency)
+        /// </summary>
+        public bool ShowTblMte
+        {
+            get => (bool)GetValue(ShowTblMteProperty);
+            set => SetValue(ShowTblMteProperty, value);
+        }
+
+        /// <summary>
+        /// Show Japanese characters in TBL - DependencyProperty
+        /// </summary>
+        public bool ShowTblJaponais
+        {
+            get => (bool)GetValue(ShowTblJaponaisProperty);
+            set => SetValue(ShowTblJaponaisProperty, value);
+        }
+
+        /// <summary>
+        /// Show End Block markers in TBL - DependencyProperty
+        /// </summary>
+        public bool ShowTblEndBlock
+        {
+            get => (bool)GetValue(ShowTblEndBlockProperty);
+            set => SetValue(ShowTblEndBlockProperty, value);
+        }
+
+        /// <summary>
+        /// Show End Line markers in TBL - DependencyProperty
+        /// </summary>
+        public bool ShowTblEndLine
+        {
+            get => (bool)GetValue(ShowTblEndLineProperty);
+            set => SetValue(ShowTblEndLineProperty, value);
+        }
+
+        /// <summary>
         /// DTE (Dual-Tile Encoding) color - DependencyProperty
         /// </summary>
         public System.Windows.Media.Color TblDteColor
@@ -798,6 +852,24 @@ namespace WpfHexaEditor
         {
             get => (System.Windows.Media.Color)GetValue(TblEndLineColorProperty);
             set => SetValue(TblEndLineColorProperty, value);
+        }
+
+        /// <summary>
+        /// ASCII color for TBL - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color TblAsciiColor
+        {
+            get => (System.Windows.Media.Color)GetValue(TblAsciiColorProperty);
+            set => SetValue(TblAsciiColorProperty, value);
+        }
+
+        /// <summary>
+        /// Japanese characters color for TBL - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color TblJaponaisColor
+        {
+            get => (System.Windows.Media.Color)GetValue(TblJaponaisColorProperty);
+            set => SetValue(TblJaponaisColorProperty, value);
         }
 
         /// <summary>
@@ -2132,6 +2204,67 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
+        /// ShowTblAscii DependencyProperty - Show ASCII characters in TBL
+        /// </summary>
+        public static readonly DependencyProperty ShowTblAsciiProperty =
+            DependencyProperty.Register(nameof(ShowTblAscii), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnTblTypeVisibilityChanged));
+
+        /// <summary>
+        /// ShowTblDte DependencyProperty - Show DTE (Dual-Title Encoding) in TBL
+        /// </summary>
+        public static readonly DependencyProperty ShowTblDteProperty =
+            DependencyProperty.Register(nameof(ShowTblDte), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnTblTypeVisibilityChanged));
+
+        /// <summary>
+        /// ShowTblMte DependencyProperty - Show MTE (Multi-Title Encoding) in TBL
+        /// </summary>
+        public static readonly DependencyProperty ShowTblMteProperty =
+            DependencyProperty.Register(nameof(ShowTblMte), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnTblTypeVisibilityChanged));
+
+        /// <summary>
+        /// ShowTblJaponais DependencyProperty - Show Japanese characters in TBL
+        /// </summary>
+        public static readonly DependencyProperty ShowTblJaponaisProperty =
+            DependencyProperty.Register(nameof(ShowTblJaponais), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnTblTypeVisibilityChanged));
+
+        /// <summary>
+        /// ShowTblEndBlock DependencyProperty - Show End Block markers in TBL
+        /// </summary>
+        public static readonly DependencyProperty ShowTblEndBlockProperty =
+            DependencyProperty.Register(nameof(ShowTblEndBlock), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnTblTypeVisibilityChanged));
+
+        /// <summary>
+        /// ShowTblEndLine DependencyProperty - Show End Line markers in TBL
+        /// </summary>
+        public static readonly DependencyProperty ShowTblEndLineProperty =
+            DependencyProperty.Register(nameof(ShowTblEndLine), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnTblTypeVisibilityChanged));
+
+        /// <summary>
+        /// Callback when any TBL type visibility changes - sync to HexViewport and refresh
+        /// </summary>
+        private static void OnTblTypeVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && editor.HexViewport != null)
+            {
+                // Sync all TBL type visibility flags to HexViewport
+                editor.HexViewport.ShowTblAscii = editor.ShowTblAscii;
+                editor.HexViewport.ShowTblDte = editor.ShowTblDte;
+                editor.HexViewport.ShowTblMte = editor.ShowTblMte;
+                editor.HexViewport.ShowTblJaponais = editor.ShowTblJaponais;
+                editor.HexViewport.ShowTblEndBlock = editor.ShowTblEndBlock;
+                editor.HexViewport.ShowTblEndLine = editor.ShowTblEndLine;
+
+                editor.HexViewport.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
         /// TblDteColor DependencyProperty for XAML binding
         /// </summary>
         public static readonly DependencyProperty TblDteColorProperty =
@@ -2160,6 +2293,20 @@ namespace WpfHexaEditor
                 new PropertyMetadata(Colors.Orange, OnTblColorChanged));
 
         /// <summary>
+        /// TblAsciiColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblAsciiColorProperty =
+            DependencyProperty.Register(nameof(TblAsciiColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.LightGreen, OnTblColorChanged));
+
+        /// <summary>
+        /// TblJaponaisColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty TblJaponaisColorProperty =
+            DependencyProperty.Register(nameof(TblJaponaisColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Pink, OnTblColorChanged));
+
+        /// <summary>
         /// TblDefaultColor DependencyProperty for XAML binding
         /// </summary>
         public static readonly DependencyProperty TblDefaultColorProperty =
@@ -2168,8 +2315,19 @@ namespace WpfHexaEditor
 
         private static void OnTblColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is HexEditor editor)
-                editor.HexViewport?.InvalidateVisual();
+            if (d is HexEditor editor && editor.HexViewport != null)
+            {
+                // Sync all TBL colors to HexViewport for rendering
+                editor.HexViewport.TblDteColor = editor.TblDteColor;
+                editor.HexViewport.TblMteColor = editor.TblMteColor;
+                editor.HexViewport.TblAsciiColor = editor.TblAsciiColor;
+                editor.HexViewport.TblJaponaisColor = editor.TblJaponaisColor;
+                editor.HexViewport.TblEndBlockColor = editor.TblEndBlockColor;
+                editor.HexViewport.TblEndLineColor = editor.TblEndLineColor;
+                editor.HexViewport.TblDefaultColor = editor.TblDefaultColor;
+
+                editor.HexViewport.InvalidateVisual();
+            }
         }
 
         /// <summary>

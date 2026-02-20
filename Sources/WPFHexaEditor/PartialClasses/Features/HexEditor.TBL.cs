@@ -29,11 +29,45 @@ namespace WpfHexaEditor
                 _tblStream = new TblStream(path);
                 _characterTableType = CharacterTableType.TblFile;
 
-                // Sync TblStream to HexViewport for color rendering
+                // Sync TblStream to HexViewport for rendering and enable TBL display
                 if (HexViewport != null)
+                {
                     HexViewport.TblStream = _tblStream;
+                    HexViewport.TblShowMte = true;
+                }
 
-                StatusText.Text = $"TBL loaded: {System.IO.Path.GetFileName(path)}";
+                // Update status bar
+                string fileName = System.IO.Path.GetFileName(path);
+                StatusText.Text = $"TBL loaded: {fileName}";
+
+                // Update TBL status icon with detailed statistics
+                TblStatusIcon.Visibility = System.Windows.Visibility.Visible;
+
+                // Build detailed tooltip with TBL content statistics
+                var tooltipText = new System.Text.StringBuilder();
+                tooltipText.AppendLine($"📋 TBL File: {fileName}");
+                tooltipText.AppendLine($"━━━━━━━━━━━━━━━━━━━━━━━━━");
+                tooltipText.AppendLine($"Total Entries: {_tblStream.Length}");
+                tooltipText.AppendLine();
+
+                // Show breakdown by type (only non-zero counts)
+                if (_tblStream.TotalAscii > 0)
+                    tooltipText.AppendLine($"  • ASCII: {_tblStream.TotalAscii}");
+                if (_tblStream.TotalDte > 0)
+                    tooltipText.AppendLine($"  • DTE (Dual): {_tblStream.TotalDte}");
+                if (_tblStream.TotalMte > 0)
+                    tooltipText.AppendLine($"  • MTE (Multi): {_tblStream.TotalMte}");
+                if (_tblStream.TotalJaponais > 0)
+                    tooltipText.AppendLine($"  • Japanese: {_tblStream.TotalJaponais}");
+                if (_tblStream.TotalEndBlock > 0)
+                    tooltipText.AppendLine($"  • End Block: {_tblStream.TotalEndBlock}");
+                if (_tblStream.TotalEndLine > 0)
+                    tooltipText.AppendLine($"  • End Line: {_tblStream.TotalEndLine}");
+
+                tooltipText.AppendLine();
+                tooltipText.AppendLine("⚠️ Edit only in HEX panel when TBL is loaded");
+
+                TblStatusTooltipText.Text = tooltipText.ToString();
             }
             catch (Exception ex)
             {
@@ -41,9 +75,15 @@ namespace WpfHexaEditor
                 _tblStream = null;
                 _characterTableType = CharacterTableType.Ascii;
 
-                // Clear TblStream in HexViewport
+                // Clear TblStream in HexViewport and disable TBL display
                 if (HexViewport != null)
+                {
                     HexViewport.TblStream = null;
+                    HexViewport.TblShowMte = false;
+                }
+
+                // Hide TBL status icon
+                TblStatusIcon.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
 
@@ -60,11 +100,18 @@ namespace WpfHexaEditor
             }
             _characterTableType = CharacterTableType.Ascii;
 
-            // Clear TblStream in HexViewport
+            // Clear TblStream in HexViewport and disable TBL display
             if (HexViewport != null)
+            {
                 HexViewport.TblStream = null;
+                HexViewport.TblShowMte = false;
+            }
 
+            // Update status bar
             StatusText.Text = "TBL closed, using ASCII";
+
+            // Hide TBL status icon
+            TblStatusIcon.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         /// <summary>

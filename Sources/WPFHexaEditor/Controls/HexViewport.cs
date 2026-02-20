@@ -82,10 +82,21 @@ namespace WpfHexaEditor.Controls
 
         // TBL (Character Table) colors - Phase 7.5 V1 Compatibility
         private bool _tblShowMte = false;
+
+        // TBL type visibility flags (all true by default)
+        private bool _showTblAscii = true;
+        private bool _showTblDte = true;
+        private bool _showTblMte = true;
+        private bool _showTblJaponais = true;
+        private bool _showTblEndBlock = true;
+        private bool _showTblEndLine = true;
+
         private Brush _tblDteBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0x00)); // Yellow
         private Brush _tblMteBrush = new SolidColorBrush(Color.FromRgb(0xAD, 0xD8, 0xE6)); // LightBlue
         private Brush _tblEndBlockBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0x00, 0x00)); // Red
         private Brush _tblEndLineBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xA5, 0x00)); // Orange
+        private Brush _tblAsciiBrush = new SolidColorBrush(Color.FromRgb(0x90, 0xEE, 0x90)); // LightGreen
+        private Brush _tblJaponaisBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xC0, 0xCB)); // Pink
 
         // Debug counter to avoid spamming logs every frame
         private int _debugRenderCount = 0;
@@ -571,6 +582,60 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
+        /// Show ASCII characters in TBL
+        /// </summary>
+        public bool ShowTblAscii
+        {
+            get => _showTblAscii;
+            set { _showTblAscii = value; InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// Show DTE (Dual-Title Encoding) in TBL
+        /// </summary>
+        public bool ShowTblDte
+        {
+            get => _showTblDte;
+            set { _showTblDte = value; InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// Show MTE (Multi-Title Encoding) in TBL
+        /// </summary>
+        public bool ShowTblMte
+        {
+            get => _showTblMte;
+            set { _showTblMte = value; InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// Show Japanese characters in TBL
+        /// </summary>
+        public bool ShowTblJaponais
+        {
+            get => _showTblJaponais;
+            set { _showTblJaponais = value; InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// Show End Block markers in TBL
+        /// </summary>
+        public bool ShowTblEndBlock
+        {
+            get => _showTblEndBlock;
+            set { _showTblEndBlock = value; InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// Show End Line markers in TBL
+        /// </summary>
+        public bool ShowTblEndLine
+        {
+            get => _showTblEndLine;
+            set { _showTblEndLine = value; InvalidateVisual(); }
+        }
+
+        /// <summary>
         /// DTE (Double Tile Encoding) color - Phase 7.5 V1 Compatibility
         /// </summary>
         public Color TblDteColor
@@ -604,6 +669,24 @@ namespace WpfHexaEditor.Controls
         {
             get => (_tblEndLineBrush as SolidColorBrush)?.Color ?? Colors.Orange;
             set { _tblEndLineBrush = new SolidColorBrush(value); _tblEndLineBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// TBL ASCII color
+        /// </summary>
+        public Color TblAsciiColor
+        {
+            get => (_tblAsciiBrush as SolidColorBrush)?.Color ?? Colors.LightGreen;
+            set { _tblAsciiBrush = new SolidColorBrush(value); _tblAsciiBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// TBL Japanese color
+        /// </summary>
+        public Color TblJaponaisColor
+        {
+            get => (_tblJaponaisBrush as SolidColorBrush)?.Color ?? Colors.Pink;
+            set { _tblJaponaisBrush = new SolidColorBrush(value); _tblJaponaisBrush.Freeze(); InvalidateVisual(); }
         }
 
         /// <summary>
@@ -749,8 +832,9 @@ namespace WpfHexaEditor.Controls
                         }
 
                         var byteData = line.Bytes[i];
-                        DrawAsciiByte(dc, byteData, asciiX, y);
-                        asciiX += AsciiCharWidth;
+                        // DrawAsciiByte now returns the actual width used (for TBL auto-sizing)
+                        double usedWidth = DrawAsciiByte(dc, line, i, asciiX, y);
+                        asciiX += usedWidth;
                     }
                 }
 
@@ -1048,10 +1132,79 @@ namespace WpfHexaEditor.Controls
             dc.DrawText(formattedText, new Point(textX, textY));
         }
 
-        private void DrawAsciiByte(DrawingContext dc, ByteData byteData, double x, double y)
+        /// <summary>
+        /// Draw ASCII byte with TBL auto-sizing support
+        /// </summary>
+        /// <returns>Actual width used (may be larger than AsciiCharWidth for TBL characters)</returns>
+        private double DrawAsciiByte(DrawingContext dc, HexLine line, int byteIndex, double x, double y)
         {
-            var rect = new Rect(x, y, AsciiCharWidth, _lineHeight);
+            var byteData = line.Bytes[byteIndex];
 
+            // STEP 1: Calculate display character and determine TBL type/color FIRST
+            var displayChar = GetDisplayCharacter(line, byteIndex);
+
+            // Determine text color based on TBL type
+            Brush textBrush = _asciiBrush; // Default
+            Core.CharacterTable.DteType dteType = Core.CharacterTable.DteType.Invalid;
+
+            if (_tblStream != null)
+            {
+                try
+                {
+                    string hexByte = byteData.Value.ToString("X2");
+                    var (text, type) = _tblStream.FindMatch(hexByte, showSpecialValue: true);
+                    dteType = type;
+
+                    // Select TEXT color based on TBL type (only if type is visible)
+                    bool shouldShow = dteType switch
+                    {
+                        Core.CharacterTable.DteType.Ascii => _showTblAscii,
+                        Core.CharacterTable.DteType.DualTitleEncoding => _showTblDte,
+                        Core.CharacterTable.DteType.MultipleTitleEncoding => _showTblMte,
+                        Core.CharacterTable.DteType.EndBlock => _showTblEndBlock,
+                        Core.CharacterTable.DteType.EndLine => _showTblEndLine,
+                        Core.CharacterTable.DteType.Japonais => _showTblJaponais,
+                        _ => false
+                    };
+
+                    if (shouldShow && text != "#")
+                    {
+                        textBrush = dteType switch
+                        {
+                            Core.CharacterTable.DteType.Ascii => _tblAsciiBrush,
+                            Core.CharacterTable.DteType.DualTitleEncoding => _tblDteBrush,
+                            Core.CharacterTable.DteType.MultipleTitleEncoding => _tblMteBrush,
+                            Core.CharacterTable.DteType.Japonais => _tblJaponaisBrush,
+                            Core.CharacterTable.DteType.EndBlock => _tblEndBlockBrush,
+                            Core.CharacterTable.DteType.EndLine => _tblEndLineBrush,
+                            _ => _asciiBrush
+                        };
+                    }
+                }
+                catch
+                {
+                    // Fall back to default brush on error
+                }
+            }
+
+            var formattedText = new FormattedText(
+                displayChar,
+                System.Globalization.CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                _typeface,
+                13,
+                textBrush, // Use TBL color for text
+                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+            // TBL AUTO-SIZING: Use larger width if TBL character is wider (V1 Legacy compatible)
+            double cellWidth = _tblStream != null && formattedText.Width > AsciiCharWidth
+                ? formattedText.Width
+                : AsciiCharWidth;
+
+            // STEP 2: Create rect with dynamic width
+            var rect = new Rect(x, y, cellWidth, _lineHeight);
+
+            // STEP 3: Draw backgrounds and borders
             // Phase 7.1: Draw custom background block FIRST (underneath everything)
             if (_customBackgroundBlocks != null && _customBackgroundBlocks.Count > 0)
             {
@@ -1066,34 +1219,43 @@ namespace WpfHexaEditor.Controls
                 }
             }
 
-            // Phase 7.5: Draw TBL color background (between custom background and selection)
-            if (_tblStream != null && _tblShowMte)
+            // Phase 7.5: Draw TBL background ONLY for special types (EndBlock, EndLine, Japonais)
+            if (_tblStream != null && dteType != Core.CharacterTable.DteType.Invalid)
             {
-                try
-                {
-                    // Convert byte to hex string for TBL lookup
-                    string hexByte = byteData.Value.ToString("X2");
-                    var (text, dteType) = _tblStream.FindMatch(hexByte, showSpecialValue: true);
+                // Only special types get background color (in addition to text color)
+                bool isSpecialType = dteType == Core.CharacterTable.DteType.EndBlock ||
+                                     dteType == Core.CharacterTable.DteType.EndLine ||
+                                     dteType == Core.CharacterTable.DteType.Japonais;
 
-                    // Select brush based on DTE type
-                    Brush tblBrush = dteType switch
+                if (isSpecialType)
+                {
+                    bool shouldShow = dteType switch
                     {
-                        Core.CharacterTable.DteType.DualTitleEncoding => _tblDteBrush,
-                        Core.CharacterTable.DteType.MultipleTitleEncoding => _tblMteBrush,
-                        Core.CharacterTable.DteType.EndBlock => _tblEndBlockBrush,
-                        Core.CharacterTable.DteType.EndLine => _tblEndLineBrush,
-                        _ => _tblDefaultBrush
+                        Core.CharacterTable.DteType.EndBlock => _showTblEndBlock,
+                        Core.CharacterTable.DteType.EndLine => _showTblEndLine,
+                        Core.CharacterTable.DteType.Japonais => _showTblJaponais,
+                        _ => false
                     };
 
-                    // Draw TBL color background
-                    if (tblBrush != _tblDefaultBrush || dteType != Core.CharacterTable.DteType.Invalid)
+                    if (shouldShow)
                     {
-                        dc.DrawRectangle(tblBrush, null, rect);
+                        // Select background brush for special types
+                        Brush bgBrush = dteType switch
+                        {
+                            Core.CharacterTable.DteType.Japonais => _tblJaponaisBrush,
+                            Core.CharacterTable.DteType.EndBlock => _tblEndBlockBrush,
+                            Core.CharacterTable.DteType.EndLine => _tblEndLineBrush,
+                            _ => null
+                        };
+
+                        // Draw semi-transparent background for special types
+                        if (bgBrush != null)
+                        {
+                            var semiBrush = bgBrush.Clone();
+                            semiBrush.Opacity = 0.3; // Semi-transparent background
+                            dc.DrawRectangle(semiBrush, null, rect);
+                        }
                     }
-                }
-                catch
-                {
-                    // Silently ignore TBL lookup errors
                 }
             }
 
@@ -1155,9 +1317,32 @@ namespace WpfHexaEditor.Controls
                 dc.DrawRoundedRectangle(null, _cursorPen, rect, 1, 1);
             }
 
-            // Draw ASCII character centered in the cell
+            // STEP 4: Draw text centered in the cell (formattedText already calculated in STEP 1)
+            double textX = x + (cellWidth - formattedText.Width) / 2;
+            double textY = y + (_lineHeight - formattedText.Height) / 2;
+
+            dc.DrawText(formattedText, new Point(textX, textY));
+
+            // Return actual width used so caller can adjust x position
+            return cellWidth;
+        }
+
+        /// <summary>
+        /// Get the actual rendered width of a character (accounts for TBL auto-sizing)
+        /// CRITICAL for hit testing - must match DrawAsciiByte width calculation
+        /// </summary>
+        private double GetCharacterDisplayWidth(HexLine line, int byteIndex)
+        {
+            // If no TBL loaded, use fixed ASCII width
+            if (_tblStream == null)
+                return AsciiCharWidth;
+
+            // Get the display character using the same logic as rendering
+            var displayChar = GetDisplayCharacter(line, byteIndex);
+
+            // Create FormattedText to measure actual width (same as DrawAsciiByte)
             var formattedText = new FormattedText(
-                byteData.AsciiChar.ToString(),
+                displayChar,
                 System.Globalization.CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 _typeface,
@@ -1165,10 +1350,82 @@ namespace WpfHexaEditor.Controls
                 _asciiBrush,
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
-            double textX = x + (AsciiCharWidth - formattedText.Width) / 2;
-            double textY = y + (_lineHeight - formattedText.Height) / 2;
+            // TBL AUTO-SIZING: Use larger width if TBL character is wider (matches DrawAsciiByte logic)
+            return formattedText.Width > AsciiCharWidth
+                ? formattedText.Width
+                : AsciiCharWidth;
+        }
 
-            dc.DrawText(formattedText, new Point(textX, textY));
+        /// <summary>
+        /// Get display character for a byte - uses TBL if loaded (respects type visibility flags), otherwise ASCII
+        /// </summary>
+        private string GetDisplayCharacter(HexLine line, int byteIndex)
+        {
+            var byteData = line.Bytes[byteIndex];
+
+            // If TBL stream is loaded, use it for character conversion (respecting type filters)
+            if (_tblStream != null)
+            {
+                try
+                {
+                    string hexByte = byteData.Value.ToString("X2");
+
+                    // Try multi-byte (DTE/MTE) match first if there's a next byte
+                    if (byteIndex < line.Bytes.Count - 1)
+                    {
+                        var nextByte = line.Bytes[byteIndex + 1];
+                        string hexNext = nextByte.Value.ToString("X2");
+                        string multiByteHex = hexByte + hexNext;
+
+                        var (mteText, mteType) = _tblStream.FindMatch(multiByteHex, showSpecialValue: true);
+
+                        // Check if this TBL type is enabled for display
+                        bool shouldShow = mteType switch
+                        {
+                            Core.CharacterTable.DteType.DualTitleEncoding => _showTblDte,
+                            Core.CharacterTable.DteType.MultipleTitleEncoding => _showTblMte,
+                            Core.CharacterTable.DteType.EndBlock => _showTblEndBlock,
+                            Core.CharacterTable.DteType.EndLine => _showTblEndLine,
+                            Core.CharacterTable.DteType.Japonais => _showTblJaponais,
+                            _ => false
+                        };
+
+                        // If multi-byte match found and type is enabled, return it
+                        if (mteText != "#" && shouldShow)
+                        {
+                            // Note: For proper MTE rendering, the caller should skip the next byte
+                            // For now, we'll just show the first character (V1 Legacy behavior)
+                            return mteText;
+                        }
+                    }
+
+                    // Single byte match
+                    var (text, dteType) = _tblStream.FindMatch(hexByte, showSpecialValue: true);
+
+                    // Check if this TBL type is enabled for display
+                    bool shouldShowSingle = dteType switch
+                    {
+                        Core.CharacterTable.DteType.Ascii => _showTblAscii,
+                        Core.CharacterTable.DteType.DualTitleEncoding => _showTblDte,
+                        Core.CharacterTable.DteType.MultipleTitleEncoding => _showTblMte,
+                        Core.CharacterTable.DteType.EndBlock => _showTblEndBlock,
+                        Core.CharacterTable.DteType.EndLine => _showTblEndLine,
+                        Core.CharacterTable.DteType.Japonais => _showTblJaponais,
+                        _ => false
+                    };
+
+                    // Return TBL character if found and type is enabled, otherwise fall back to ASCII
+                    if (text != "#" && shouldShowSingle)
+                        return text;
+                }
+                catch
+                {
+                    // Fall back to ASCII on any TBL error
+                }
+            }
+
+            // Default: Use standard ASCII conversion
+            return byteData.AsciiChar.ToString();
         }
 
         /// <summary>
@@ -1362,14 +1619,17 @@ namespace WpfHexaEditor.Controls
                     asciiX += (int)ByteSpacerWidthTickness;
                 }
 
-                // Check if click is within this ASCII character's rect
-                if (x >= asciiX && x < asciiX + AsciiCharWidth)
+                // CRITICAL: Calculate actual character width (accounts for TBL auto-sizing)
+                double charWidth = GetCharacterDisplayWidth(line, i);
+
+                // Check if click is within this ASCII character's rect (using actual width)
+                if (x >= asciiX && x < asciiX + charWidth)
                 {
                     // Click is within this ASCII character's visual rect
                     return (line.Bytes[i].VirtualPos.Value, false);
                 }
 
-                asciiX += AsciiCharWidth;
+                asciiX += charWidth;
             }
 
             return (null, true);

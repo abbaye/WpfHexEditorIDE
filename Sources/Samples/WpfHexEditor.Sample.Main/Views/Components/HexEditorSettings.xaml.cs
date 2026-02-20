@@ -153,6 +153,8 @@ namespace WpfHexEditor.Sample.Main.Views.Components
             // TBL Colors
             TblDteColorPicker.SelectedColor = HexEditorControl.TblDteColor;
             TblMteColorPicker.SelectedColor = HexEditorControl.TblMteColor;
+            TblAsciiColorPicker.SelectedColor = HexEditorControl.TblAsciiColor;
+            TblJaponaisColorPicker.SelectedColor = HexEditorControl.TblJaponaisColor;
             TblEndBlockColorPicker.SelectedColor = HexEditorControl.TblEndBlockColor;
             TblEndLineColorPicker.SelectedColor = HexEditorControl.TblEndLineColor;
             TblDefaultColorPicker.SelectedColor = HexEditorControl.TblDefaultColor;
@@ -692,6 +694,18 @@ namespace WpfHexEditor.Sample.Main.Views.Components
         {
             if (HexEditorControl == null) return;
             HexEditorControl.TblMteColor = e;
+        }
+
+        private void TblAsciiColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.TblAsciiColor = e;
+        }
+
+        private void TblJaponaisColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.TblJaponaisColor = e;
         }
 
         private void TblEndBlockColorPicker_ColorChanged(object sender, Color e)
