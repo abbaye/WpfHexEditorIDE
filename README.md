@@ -57,7 +57,7 @@ dotnet add package WPFHexaEditor
 
 ---
 
-## 🎯 Why Choose V2?
+## 🎯 Why Choose the brand new V2?
 
 <table>
 <tr>
@@ -74,7 +74,7 @@ dotnet add package WPFHexaEditor
 
 ### 🏗️ Architecture
 - **MVVM** + Services
-- **15 specialized** services
+- **16 specialized** services
 - **100% testable**
 - **Zero dependencies**
 
@@ -82,8 +82,8 @@ dotnet add package WPFHexaEditor
 <td width="33%">
 
 ### ✅ Production Ready
-- **Issue #145** fixed
-- **Save data loss** fixed
+- **Solide MVVM architecture** fixed
+- **Insert byte anywhere** fixed
 - **Scroll markers**
 - **Async operations**
 
@@ -101,9 +101,9 @@ dotnet add package WPFHexaEditor
 </td>
 <td width="33%">
 
-### 🔄 100% Compatible
+### 🔄 100% Retro-Compatible
 - **Drop-in** replacement
-- **Same API** as V1
+- **Same but bonified API** as V1
 - **Zero breaking** changes
 - **Multi-targeting**
 
