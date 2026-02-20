@@ -80,9 +80,53 @@
                 </StackPanel>
             </Expander>
 
+            <!-- TBL Character Types -->
+            <Expander Header="📋 TBL Character Types" Margin="0,0,0,8">
+                <StackPanel Margin="16,8,0,0">
+                    <TextBlock Text="Select which TBL character types to display in ASCII panel"
+                              FontSize="11"
+                              Foreground="{DynamicResource ForegroundBrush}"
+                              TextWrapping="Wrap"
+                              Margin="0,0,0,12"/>
+
+                    <CheckBox Content="ASCII (Single byte)"
+                             IsChecked="{Binding Path=ShowTblAscii, Mode=TwoWay}"
+                             ToolTip="Show ASCII characters from TBL (1 byte = 1 char)"
+                             Margin="0,0,0,8"/>
+
+                    <CheckBox Content="DTE (Dual Title Encoding)"
+                             IsChecked="{Binding Path=ShowTblDte, Mode=TwoWay}"
+                             ToolTip="Show DTE characters from TBL (2 bytes encoded)"
+                             Margin="0,0,0,8"/>
+
+                    <CheckBox Content="MTE (Multi Title Encoding)"
+                             IsChecked="{Binding Path=ShowTblMte, Mode=TwoWay}"
+                             ToolTip="Show MTE characters from TBL (multi-byte encoded)"
+                             Margin="0,0,0,8"/>
+
+                    <CheckBox Content="Japanese Characters"
+                             IsChecked="{Binding Path=ShowTblJaponais, Mode=TwoWay}"
+                             ToolTip="Show Japanese characters from TBL"
+                             Margin="0,0,0,8"/>
+
+                    <CheckBox Content="End Block Markers"
+                             IsChecked="{Binding Path=ShowTblEndBlock, Mode=TwoWay}"
+                             ToolTip="Show End Block markers from TBL"
+                             Margin="0,0,0,8"/>
+
+                    <CheckBox Content="End Line Markers"
+                             IsChecked="{Binding Path=ShowTblEndLine, Mode=TwoWay}"
+                             ToolTip="Show End Line markers from TBL"
+                             Margin="0,0,0,8"/>
+                </StackPanel>
+            </Expander>
+
             <!-- Status Bar Options -->
             <Expander Header="Status Bar Options" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
+                    <CheckBox Content="Show Status Bar"
+                             IsChecked="{Binding Path=ShowStatusBar, Mode=TwoWay}"
+                             Margin="0,0,0,8"/>
                     <CheckBox Content="Show File Size"
                              IsChecked="{Binding Path=ShowFileSizeInStatusBar, Mode=TwoWay}"
                              Margin="0,0,0,8"/>

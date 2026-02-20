@@ -407,6 +407,23 @@
             <StatusBarItem Visibility="{Binding ShowRefreshTimeInStatusBar, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock x:Name="RefreshTimeText"/>
             </StatusBarItem>
+
+            <!-- TBL Status Indicator (right-aligned) -->
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="TblStatusIcon"
+                           Text="📋"
+                           FontFamily="Segoe UI Emoji"
+                           FontSize="14"
+                           Margin="5,0,5,0"
+                           Visibility="Collapsed"
+                           Cursor="Hand">
+                    <TextBlock.ToolTip>
+                        <ToolTip x:Name="TblStatusTooltip">
+                            <TextBlock x:Name="TblStatusTooltipText" Text="No TBL loaded"/>
+                        </ToolTip>
+                    </TextBlock.ToolTip>
+                </TextBlock>
+            </StatusBarItem>
         </StatusBar>
     </Grid>
 </UserControl>

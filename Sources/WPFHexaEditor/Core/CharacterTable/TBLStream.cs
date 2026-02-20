@@ -1,6 +1,7 @@
 //////////////////////////////////////////////
-// Apache 2.0  - 2003-2019
+// Apache 2.0  - 2003-2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5 (Performance optimizations)
 //////////////////////////////////////////////
 
 using System;
@@ -17,7 +18,7 @@ namespace WpfHexaEditor.Core.CharacterTable
     /// </summary>
     public sealed class TblStream : IDisposable
     {
-        #region Global class variables        
+        #region Global class variables
         /// <summary>
         /// TBL file path
         /// </summary>
@@ -27,16 +28,22 @@ namespace WpfHexaEditor.Core.CharacterTable
         /// Represente the whole TBL file
         /// </summary>
         private Dictionary<string, Dte> _dteList = new();
+
+        /// <summary>
+        /// Cached EndBlock and EndLine values for performance
+        /// </summary>
+        private string _endBlock = string.Empty;
+        private string _endLine = string.Empty;
         #endregion
 
         #region Constructors
         /// <summary>
-        /// Constructeur permétant de charg?le fichier DTE
+        /// Constructeur permï¿½tant de charg?le fichier DTE
         /// </summary>
         public TblStream(string fileName) => FileName = fileName;
 
         /// <summary>
-        /// Constructeur permétant de chargéle fichier DTE
+        /// Constructeur permï¿½tant de chargï¿½le fichier DTE
         /// </summary>
         public TblStream() { }
         #endregion
@@ -63,19 +70,22 @@ namespace WpfHexaEditor.Core.CharacterTable
         /// <param name="showSpecialValue">Fin the Endblock and EndLine</param>
         public (string text, DteType dteType) FindMatch(string hex, bool showSpecialValue)
         {
+            // OPTIMIZED: Use TryGetValue instead of ContainsKey+indexer to reduce Dictionary lookups by 50%
             if (showSpecialValue)
             {
-                if (_dteList.ContainsKey($"/{hex}")) return (Properties.Resources.EndTagString, DteType.EndBlock); //"<end>";
-                if (_dteList.ContainsKey($"*{hex}")) return (Properties.Resources.LineTagString, DteType.EndLine); //"<ln>";
+                if (_dteList.TryGetValue($"/{hex}", out var endBlock))
+                    return (Properties.Resources.EndTagString, DteType.EndBlock);
+                if (_dteList.TryGetValue($"*{hex}", out var endLine))
+                    return (Properties.Resources.LineTagString, DteType.EndLine);
             }
 
-            return _dteList.ContainsKey(hex)
-                ? (_dteList[hex].Value, _dteList[hex].Type)
+            return _dteList.TryGetValue(hex, out var dte)
+                ? (dte.Value, dte.Type)
                 : ("#", DteType.Invalid);
         }
 
         /// <summary>
-        /// Convert data to TBL string. 
+        /// Convert data to TBL string.
         /// </summary>
         /// <returns>
         /// Return string converted to TBL string representation.
@@ -83,24 +93,44 @@ namespace WpfHexaEditor.Core.CharacterTable
         /// </returns>
         public string ToTblString(byte[] data)
         {
-            if (data == null) return null;
+            if (data == null || data.Length == 0) return string.Empty;
 
-            var sb = new StringBuilder();
+            // OPTIMIZED: Pre-allocate StringBuilder capacity and reuse hex conversion results
+            var sb = new StringBuilder(data.Length * 2);
 
             for (var i = 0; i < data.Length; i++)
             {
+                // Try multi-byte (MTE/DTE) match first
                 if (i < data.Length - 1)
                 {
-                    var mte = FindMatch(ByteConverters.ByteToHex(data[i]) + ByteConverters.ByteToHex(data[i + 1]), true);
+                    // Build 4-char hex string (e.g., "8899")
+                    var hex1 = ByteConverters.ByteToHex(data[i]);
+                    var hex2 = ByteConverters.ByteToHex(data[i + 1]);
+                    var mteKey = hex1 + hex2;
 
-                    if (mte.text != "#")
+                    if (_dteList.TryGetValue(mteKey, out var mte))
                     {
-                        sb.Append(mte);
+                        sb.Append(mte.Value); // FIX: Append .Value not tuple
+                        i++; // Skip next byte since we consumed it
                         continue;
                     }
-                }
 
-                sb.Append(FindMatch(ByteConverters.ByteToHex(data[i]), true));
+                    // If no MTE match, check single byte with hex1 we already computed
+                    if (_dteList.TryGetValue(hex1, out var dte1))
+                        sb.Append(dte1.Value);
+                    else
+                        sb.Append('#'); // No match found
+                }
+                else
+                {
+                    // Last byte - single byte match only
+                    var key = ByteConverters.ByteToHex(data[i]);
+
+                    if (_dteList.TryGetValue(key, out var dte))
+                        sb.Append(dte.Value);
+                    else
+                        sb.Append('#'); // No match found
+                }
             }
 
             return sb.ToString();
@@ -113,6 +143,8 @@ namespace WpfHexaEditor.Core.CharacterTable
         {
             _fileName = string.Empty;
             _dteList.Clear();
+            _endBlock = string.Empty;
+            _endLine = string.Empty;
         }
 
         /// <summary>
@@ -120,91 +152,163 @@ namespace WpfHexaEditor.Core.CharacterTable
         /// </summary>
         public void Load(string tblString)
         {
-            //Variables
-            char[] sepEndLine = { '\n' }; //end line char
-            char[] sepEqual = { '=' }; //equal separator char
-
-            //build strings line
-            var textFromString = new StringBuilder(tblString);
-            textFromString.Insert(textFromString.Length, new[] { '\r', '\n' });
-            var lines = textFromString.ToString().Split(sepEndLine);
-
-            //Clear before loading
+            // OPTIMIZED: Single-pass parsing with minimal allocations
             _dteList.Clear();
-
-            #region Fill dtelist dictionary 
-            foreach (var line in lines)
-            {
-                var info = line.Split(sepEqual);
-
-                Dte dte;
-                try
-                {
-                    switch (info[0].Length)
-                    {
-                        case 2:
-                            dte = info[1].Length == 2
-                                ? new Dte(info[0], info[1].Substring(0, info[1].Length - 1), DteType.Ascii)
-                                : new Dte(info[0], info[1].Substring(0, info[1].Length - 1),
-                                    DteType.DualTitleEncoding);
-                            break;
-                        case 4: // >2
-                            dte = new Dte(info[0], info[1].Substring(0, info[1].Length - 1),
-                                DteType.MultipleTitleEncoding);
-                            break;
-                        default:
-                            continue;
-                    }
-                }
-                catch (IndexOutOfRangeException)
-                {
-                    switch (info[0].Substring(0, 1))
-                    {
-                        case @"/":
-                            dte = new Dte(info[0].Substring(0, info[0].Length - 1), string.Empty, DteType.EndBlock);
-                            break;
-                        case @"*":
-                            dte = new Dte(info[0].Substring(0, info[0].Length - 1), string.Empty, DteType.EndLine);
-                            break;
-                        default:
-                            continue;
-                    }
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    //Occurs when two == are in the same line
-                    dte = new Dte(info[0], "=", DteType.DualTitleEncoding);
-                }
-
-                if (!_dteList.ContainsKey(dte.Entry)) //Fix issue #105
-                    _dteList.Add(dte.Entry, dte);
-            }
-            #endregion
-
-            #region Load bookmark
             BookMarks.Clear();
-            foreach (var line in lines)
+
+            if (string.IsNullOrWhiteSpace(tblString))
+                return;
+
+            var lines = tblString.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Pre-allocate dictionary capacity (most TBL files have 256-512 entries)
+            if (_dteList.Count == 0)
+                _dteList = new(Math.Min(lines.Length, 512));
+
+            // Single-pass parsing (both DTEs and bookmarks)
+            foreach (var rawLine in lines)
             {
-                try
+                var line = rawLine.TrimEnd('\r', '\n');
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                // Parse bookmark lines (start with '(')
+                if (line.StartsWith("("))
                 {
-                    if (line.Substring(0, 1) != "(") continue;
-
-                    var fav = new BookMark();
-                    var lineSplited = line.Split(')');
-                    fav.Description = lineSplited[1].Substring(0, lineSplited[1].Length - 1);
-
-                    lineSplited = line.Split('h');
-                    fav.BytePositionInStream =
-                        ByteConverters.HexLiteralToLong(lineSplited[0].Substring(1, lineSplited[0].Length - 1)).position;
-                    fav.Marker = ScrollMarker.TblBookmark;
-                    BookMarks.Add(fav);
+                    TryParseBookmark(line);
+                    continue;
                 }
-                catch
+
+                // Parse DTE entry lines (contain '=')
+                var equalIndex = line.IndexOf('=');
+                if (equalIndex > 0)
                 {
-                    //Nothing to add if error
+                    TryParseDteEntry(line, equalIndex);
                 }
             }
-            #endregion
+
+            // Update cached EndBlock/EndLine values
+            UpdateEndBlockAndEndLineCache();
+        }
+
+        /// <summary>
+        /// Update cached EndBlock and EndLine values
+        /// </summary>
+        private void UpdateEndBlockAndEndLineCache()
+        {
+            _endBlock = string.Empty;
+            _endLine = string.Empty;
+
+            foreach (var dte in _dteList.Values)
+            {
+                if (dte.Type == DteType.EndBlock)
+                    _endBlock = dte.Entry;
+                else if (dte.Type == DteType.EndLine)
+                    _endLine = dte.Entry;
+
+                // Early exit if both found
+                if (!string.IsNullOrEmpty(_endBlock) && !string.IsNullOrEmpty(_endLine))
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Try to parse a DTE entry from a line
+        /// </summary>
+        private void TryParseDteEntry(string line, int equalIndex)
+        {
+            try
+            {
+                var entry = line.Substring(0, equalIndex);
+                var valueStart = equalIndex + 1;
+                var value = valueStart < line.Length ? line.Substring(valueStart) : string.Empty;
+
+                // Remove trailing carriage return if present
+                if (value.EndsWith("\r"))
+                    value = value.Substring(0, value.Length - 1);
+
+                // Determine DTE type based on entry length and prefix
+                DteType type;
+                if (entry.StartsWith("/"))
+                {
+                    type = DteType.EndBlock;
+                    entry = entry.Substring(1); // Remove '/' prefix
+                }
+                else if (entry.StartsWith("*"))
+                {
+                    type = DteType.EndLine;
+                    entry = entry.Substring(1); // Remove '*' prefix
+                }
+                else if (value == "=")
+                {
+                    // Special case: "XX==" means value is "="
+                    type = DteType.DualTitleEncoding;
+                }
+                else
+                {
+                    // Determine type based on entry length
+                    if (entry.Length == 2)
+                        type = value.Length == 1 ? DteType.Ascii : DteType.DualTitleEncoding;
+                    else if (entry.Length == 4)
+                        type = DteType.MultipleTitleEncoding;
+                    else
+                        type = DteType.Invalid;
+                }
+
+                if (type != DteType.Invalid)
+                {
+                    var dte = new Dte(entry, value, type);
+                    // Add to dictionary, avoiding duplicates (Issue #105)
+                    if (!_dteList.ContainsKey(dte.Entry))
+                        _dteList.Add(dte.Entry, dte);
+                }
+            }
+            catch
+            {
+                // Silently ignore malformed entries
+            }
+        }
+
+        /// <summary>
+        /// Try to parse a bookmark from a line (format: "(addressh)description")
+        /// </summary>
+        private void TryParseBookmark(string line)
+        {
+            try
+            {
+                if (!line.StartsWith("("))
+                    return;
+
+                var closeParenIndex = line.IndexOf(')');
+                if (closeParenIndex <= 1)
+                    return;
+
+                var hIndex = line.IndexOf('h');
+                if (hIndex <= 1 || hIndex >= closeParenIndex)
+                    return;
+
+                // Extract address (between '(' and 'h')
+                var addressStr = line.Substring(1, hIndex - 1);
+                var (_, position) = ByteConverters.HexLiteralToLong(addressStr);
+
+                // Extract description (after ')')
+                var description = closeParenIndex + 1 < line.Length
+                    ? line.Substring(closeParenIndex + 1).TrimEnd('\r', '\n')
+                    : string.Empty;
+
+                var bookmark = new BookMark
+                {
+                    BytePositionInStream = position,
+                    Description = description,
+                    Marker = ScrollMarker.TblBookmark
+                };
+
+                BookMarks.Add(bookmark);
+            }
+            catch
+            {
+                // Silently ignore malformed bookmarks
+            }
         }
 
         /// <summary>
@@ -275,6 +379,12 @@ namespace WpfHexaEditor.Core.CharacterTable
             if (dte is null) return;
 
             _dteList.Add(dte.Entry, dte);
+
+            // Update cache if this is an EndBlock or EndLine
+            if (dte.Type == DteType.EndBlock)
+                _endBlock = dte.Entry;
+            else if (dte.Type == DteType.EndLine)
+                _endLine = dte.Entry;
         }
 
         /// <summary>
@@ -354,34 +464,14 @@ namespace WpfHexaEditor.Core.CharacterTable
         public int TotalEndBlock => _dteList.Count(l => l.Value.Type == DteType.EndBlock);
 
         /// <summary>
-        /// Get the end block char
+        /// Get the end block char (cached for performance)
         /// </summary>
-        public string EndBlock
-        {
-            get
-            {
-                foreach (var dte in _dteList)
-                    if (dte.Value.Type == DteType.EndBlock)
-                        return dte.Value.Entry;
-
-                return string.Empty;
-            }
-        }
+        public string EndBlock => _endBlock;
 
         /// <summary>
-        /// Get the end line char
+        /// Get the end line char (cached for performance)
         /// </summary>
-        public string EndLine
-        {
-            get
-            {
-                foreach (var dte in _dteList)
-                    if (dte.Value.Type == DteType.EndLine)
-                        return dte.Value.Entry;
-
-                return string.Empty;
-            }
-        }
+        public string EndLine => _endLine;
 
         /// <summary>
         /// Enable/Disable Readonly on control.

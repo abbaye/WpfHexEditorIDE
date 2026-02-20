@@ -12,6 +12,7 @@ using System.Threading;
 using System.Windows;
 using WpfHexEditor.Sample.Main.ViewModels;
 using WpfHexEditor.Sample.Main.Views.Dialogs;
+using Microsoft.Win32;
 
 namespace WpfHexEditor.Sample.Main.Views
 {
@@ -165,5 +166,44 @@ namespace WpfHexEditor.Sample.Main.Views
             HexEditorControl?.Close();
             base.OnClosed(e);
         }
+
+        #region TBL Character Table Support
+
+        /// <summary>
+        /// Load a TBL (Character Table) file for custom encoding
+        /// </summary>
+        private void LoadTblMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Title = "Select a TBL file",
+                Filter = "TBL Files (*.tbl)|*.tbl|All Files (*.*)|*.*",
+                CheckFileExists = true,
+                Multiselect = false
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // Load the TBL file (HexEditor will update status bar automatically)
+                HexEditorControl.LoadTBLFile(openFileDialog.FileName);
+
+                // Enable the Close TBL menu item
+                CloseTblMenuItem.IsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Close the current TBL file and return to ASCII encoding
+        /// </summary>
+        private void CloseTblMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Close the TBL (HexEditor will update status bar automatically)
+            HexEditorControl.CloseTBL();
+
+            // Disable the Close TBL menu item
+            CloseTblMenuItem.IsEnabled = false;
+        }
+
+        #endregion
     }
 }
