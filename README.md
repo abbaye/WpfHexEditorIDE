@@ -16,7 +16,7 @@
 
   <img src="Images/SampleV2_001.png?raw=true" alt="WPF HexEditor V2" width="700"/>
   <br/>
-  <sub><i>Screenshot from bran new V2 version</i></sub>
+  <sub><i>Screenshot from brand new V2 version</i></sub>
 
   <p>
     <a href="#-quick-start"><b>Quick Start</b></a> •
