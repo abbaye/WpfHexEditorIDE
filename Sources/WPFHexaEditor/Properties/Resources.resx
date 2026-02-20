@@ -774,4 +774,86 @@
   <data name="InvertSelectionTooltipString" xml:space="preserve">
     <value>Invert all bits in each byte (XOR with 0xFF)</value>
   </data>
+  <!-- Relative Search (ROM Encoding Discovery) -->
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Relative Search...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>Relative Search - Encoding Discovery</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>Known Text:</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>Use parallel search</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>Min matches:</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>Max proposals:</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>TBL loaded: {0} entries (will be used for validation)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>No TBL loaded (proposals scored independently)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>Encoding Proposals</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="RelativeSearchScoreColumnString" xml:space="preserve">
+    <value>Score</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>Matches</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>Sample Text</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>Preview (Decoded Text)</value>
+  </data>
+  <data name="RelativeSearchMatchPositionsString" xml:space="preserve">
+    <value>Matches at:</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>Export to TBL</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>Navigate to Match</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>Searching 256 encoding offsets...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>Found {0} proposals in {1}ms</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>Found {0} proposals in {1}ms (top match validated by loaded TBL!)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>Searching 256 offsets (validating against {0} TBL entries)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>Search cancelled</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>No encoding proposals found. Try different search text.</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>No file is open</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>Enter text you know appears in the ROM (e.g., "World", "Start", "Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>Save the selected encoding proposal as a TBL file</value>
+  </data>
 </root>
