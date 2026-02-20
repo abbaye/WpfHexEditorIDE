@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="Images/Logo.png?raw=true" width="420" height="100" />
+  <img src="Images/Logo2026.png?raw=true" width="420" height="100" />
   <br/><br/>
 
   <h3>⚡ The Fastest Wpf Hex Editor Control for .NET ⚡</h3>
