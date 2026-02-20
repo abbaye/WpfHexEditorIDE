@@ -31,7 +31,7 @@ This folder contains **completed technical documentation** from the development 
 | **MIGRATION_GUIDE_V1_TO_V2.md** | 2026-02-19 | 📦 Archived | Earlier migration guide (superseded) |
 | **MIGRATION_PLAN.md** | 2026-02-19 | 📦 Archived | Migration planning document |
 
-> **Note:** For current migration information, see [MIGRATION.md](../../MIGRATION.md) in the root directory.
+> **Note:** For current migration information, see [MIGRATION.md](../migration/MIGRATION.md) in the docs/migration directory.
 
 ### 📊 Summary Reports
 
@@ -77,7 +77,7 @@ For **active documentation**, please see:
 - **[docs/api-reference/](../api-reference/)** - API reference (in development)
 
 ### Migration
-- **[MIGRATION.md](../../MIGRATION.md)** - V1→V2 migration guide
+- **[MIGRATION.md](../migration/MIGRATION.md)** - V1→V2 migration guide
 
 ---
 

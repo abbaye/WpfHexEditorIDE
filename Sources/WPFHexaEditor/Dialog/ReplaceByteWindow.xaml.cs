@@ -18,7 +18,7 @@ namespace WpfHexaEditor.Dialog
     /// Modern MVVM dialog for single-byte find/replace operations.
     /// Provides validation, preview, and options for scope control.
     /// </summary>
-    internal partial class ReplaceByteWindow
+    public partial class ReplaceByteWindow
     {
         /// <summary>
         /// Gets the ViewModel for this dialog

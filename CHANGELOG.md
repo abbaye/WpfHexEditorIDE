@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **BREAKING CHANGE:** Major namespace reorganization to make V2 the default control.
 
-This release implements **Phase 2** of the [MIGRATION_PLAN_V2.md](MIGRATION_PLAN_V2.md), making V2 the main "HexEditor" control while moving V1 to legacy status.
+This release implements **Phase 2** of the [docs/migration/MIGRATION_PLAN_V2.md](docs/migration/MIGRATION_PLAN_V2.md), making V2 the main "HexEditor" control while moving V1 to legacy status.
 
 #### 🔁 Renamed Classes (100% Backward Compatible)
 
@@ -67,7 +67,7 @@ This release implements **Phase 2** of the [MIGRATION_PLAN_V2.md](MIGRATION_PLAN
 
 That's it! The public API is identical.
 
-See [MIGRATION_PLAN_V2.md](MIGRATION_PLAN_V2.md) for complete migration guide and timeline.
+See [docs/migration/MIGRATION_PLAN_V2.md](docs/migration/MIGRATION_PLAN_V2.md) for complete migration guide and timeline.
 
 #### 📊 Build Status
 - ✅ Compiles successfully with 0 errors

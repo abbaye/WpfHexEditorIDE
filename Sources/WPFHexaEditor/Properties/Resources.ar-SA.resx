@@ -690,4 +690,16 @@
   <data name="ProgressButtonCancel" xml:space="preserve">
     <value>إلغاء</value>
   </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>ملء التحديد بقيمة بايت محددة</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>استبدال جميع تكرارات بايت واحد بآخر</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>عكس ترتيب البايت في التحديد (تحويل endianness)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>عكس جميع البتات في كل بايت (XOR مع 0xFF)</value>
+  </data>
 </root>

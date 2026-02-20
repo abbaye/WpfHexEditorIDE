@@ -235,28 +235,28 @@
             </MenuItem>
 
             <!-- Fill -->
-            <MenuItem x:Name="FillByteMenuItem" Header="{DynamicResource FillWithByteString}" Click="FillByteMenuItem_Click">
+            <MenuItem x:Name="FillByteMenuItem" Header="{DynamicResource FillWithByteString}" Click="FillByteMenuItem_Click" ToolTip="{DynamicResource FillWithByteTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="🎨" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Replace -->
-            <MenuItem x:Name="ReplaceByteMenuItem" Header="{DynamicResource ReplaceByteMenuString}" Click="ReplaceByteMenuItem_Click">
+            <MenuItem x:Name="ReplaceByteMenuItem" Header="{DynamicResource ReplaceByteMenuString}" Click="ReplaceByteMenuItem_Click" ToolTip="{DynamicResource ReplaceByteTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="🔄" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Reverse Selection -->
-            <MenuItem x:Name="ReverseSelectionMenuItem" Header="{DynamicResource ReverseSelectionString}" Click="ReverseSelectionMenuItem_Click">
+            <MenuItem x:Name="ReverseSelectionMenuItem" Header="{DynamicResource ReverseSelectionString}" Click="ReverseSelectionMenuItem_Click" ToolTip="{DynamicResource ReverseSelectionTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="⇄" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Invert Selection -->
-            <MenuItem x:Name="InvertSelectionMenuItem" Header="{DynamicResource InvertSelectionString}" Click="InvertSelectionMenuItem_Click">
+            <MenuItem x:Name="InvertSelectionMenuItem" Header="{DynamicResource InvertSelectionString}" Click="InvertSelectionMenuItem_Click" ToolTip="{DynamicResource InvertSelectionTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="⊕" FontSize="14"/>
                 </MenuItem.Icon>

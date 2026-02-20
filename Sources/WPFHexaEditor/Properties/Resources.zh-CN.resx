@@ -687,4 +687,16 @@
   <data name="ProgressTitleSearching" xml:space="preserve">
     <value>搜索</value>
   </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>用特定字节值填充选区</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>将一个字节的所有出现替换为另一个</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>反转选区中的字节顺序（字节序转换）</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>反转每个字节中的所有位（与 0xFF 进行 XOR）</value>
+  </data>
 </root>

@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:services="clr-namespace:WpfHexEditor.Sample.Main.Services"
              xmlns:hexServices="clr-namespace:WpfHexaEditor.Services;assembly=WPFHexaEditor"
-             StartupUri="Views/VS2026MainWindow.xaml">
-    <!-- VS 2026 Preview UI (minimal version with inline styles) -->
+             StartupUri="Views/MainWindow.xaml">
+    <!-- Modern Main Window (VS 2026 inspired design) -->
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

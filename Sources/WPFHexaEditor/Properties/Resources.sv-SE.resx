@@ -690,4 +690,16 @@
   <data name="ProgressButtonCancel" xml:space="preserve">
     <value>Avbryt</value>
   </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>Fyll urval med ett specifikt bytevärde</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>Ersätt alla förekomster av en byte med en annan</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>Omvänd byteordning i urval (endianness-konvertering)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>Invertera alla bitar i varje byte (XOR med 0xFF)</value>
+  </data>
 </root>

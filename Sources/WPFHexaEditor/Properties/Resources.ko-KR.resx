@@ -690,4 +690,16 @@
   <data name="ProgressButtonCancel" xml:space="preserve">
     <value>취소</value>
   </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>선택 영역을 특정 바이트 값으로 채우기</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>한 바이트의 모든 항목을 다른 바이트로 바꾸기</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>선택 영역의 바이트 순서 반전 (엔디안 변환)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>각 바이트의 모든 비트 반전 (0xFF로 XOR)</value>
+  </data>
 </root>

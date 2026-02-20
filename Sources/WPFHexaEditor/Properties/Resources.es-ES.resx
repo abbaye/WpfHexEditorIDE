@@ -689,4 +689,16 @@
   <data name="ProgressTitleSearching" xml:space="preserve">
     <value>Buscando</value>
   </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>Rellenar la selección con un valor de byte específico</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>Reemplazar todas las ocurrencias de un byte con otro</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>Invertir el orden de bytes en la selección (conversión de endianness)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>Invertir todos los bits en cada byte (XOR con 0xFF)</value>
+  </data>
 </root>

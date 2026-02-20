@@ -690,4 +690,16 @@
   <data name="ProgressButtonCancel" xml:space="preserve">
     <value>キャンセル</value>
   </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>選択範囲を特定のバイト値で埋める</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>1つのバイトのすべての出現を別のバイトに置き換える</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>選択範囲のバイト順序を逆にする（エンディアン変換）</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>各バイトのすべてのビットを反転（0xFFとXOR）</value>
+  </data>
 </root>

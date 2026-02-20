@@ -690,4 +690,16 @@
   <data name="ProgressButtonCancel" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>Auswahl mit einem bestimmten Byte-Wert füllen</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>Alle Vorkommen eines Bytes durch ein anderes ersetzen</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>Byte-Reihenfolge in der Auswahl umkehren (Endianness-Konvertierung)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>Alle Bits in jedem Byte invertieren (XOR mit 0xFF)</value>
+  </data>
 </root>

@@ -380,7 +380,7 @@ else
 
 Just update the NuGet package and everything works!
 
-👉 **[Migration guide](https://github.com/abbaye/WpfHexEditorControl/blob/master/MIGRATION.md)**
+👉 **[Migration guide](https://github.com/abbaye/WpfHexEditorControl/blob/master/docs/migration/MIGRATION.md)**
 
 ---
 

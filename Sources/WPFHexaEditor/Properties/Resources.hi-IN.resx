@@ -690,4 +690,16 @@
   <data name="ProgressButtonCancel" xml:space="preserve">
     <value>रद्द करें</value>
   </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>चयन को एक विशिष्ट बाइट मान से भरें</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>एक बाइट की सभी घटनाओं को दूसरे से बदलें</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>चयन में बाइट क्रम उलटें (endianness रूपांतरण)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>प्रत्येक बाइट में सभी बिट्स को उलटें (0xFF के साथ XOR)</value>
+  </data>
 </root>

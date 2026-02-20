@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  2026
-// HexEditor V2 - VS 2026 Preview Style Main Window
-// Modern futuristic interface without Ribbon
+// HexEditor V2 - Main Window
+// Modern interface without Ribbon (VS 2026 inspired design)
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
@@ -16,14 +16,14 @@ using WpfHexEditor.Sample.Main.Views.Dialogs;
 namespace WpfHexEditor.Sample.Main.Views
 {
     /// <summary>
-    /// VS 2026 Preview Style Main Window - The futuristic hex editor experience
-    /// Features: Floating command bar, neumorphic sidebar, glassmorphism, fluid animations
+    /// Main Window - Modern hex editor experience
+    /// Features: Classic menu + toolbar, modern panels, VS 2026 inspired design
     /// </summary>
-    public partial class VS2026MainWindow : Window
+    public partial class MainWindow : Window
     {
         private readonly ModernMainWindowViewModel _viewModel;
 
-        public VS2026MainWindow()
+        public MainWindow()
         {
             // CRITICAL: Restore culture for this window BEFORE InitializeComponent
             // This ensures the window's resources are loaded with the correct culture
@@ -35,7 +35,7 @@ namespace WpfHexEditor.Sample.Main.Views
                     var culture = new CultureInfo(cultureName);
                     Thread.CurrentThread.CurrentCulture = culture;
                     Thread.CurrentThread.CurrentUICulture = culture;
-                    System.Diagnostics.Debug.WriteLine($"[VS2026MainWindow.Constructor] Restored culture to: {culture.Name}");
+                    System.Diagnostics.Debug.WriteLine($"[MainWindow.Constructor] Restored culture to: {culture.Name}");
                 }
                 catch (CultureNotFoundException)
                 {
@@ -69,10 +69,10 @@ namespace WpfHexEditor.Sample.Main.Views
             Services.ThemeManager.SyncHexEditorColors(HexEditorControl);
 
             // CRITICAL: Subscribe to operation state changes to disable UI during async operations
-            Loaded += VS2026MainWindow_Loaded;
+            Loaded += MainWindow_Loaded;
         }
 
-        private void VS2026MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // Subscribe to HexEditor operation state changes
             if (HexEditorControl != null)

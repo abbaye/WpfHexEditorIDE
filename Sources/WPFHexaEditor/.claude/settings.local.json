@@ -59,7 +59,14 @@
       "Read(//c/Users/khens/source/repos/WpfHexEditorControl/Sources/WPFHexaEditor/**)",
       "Bash(python:*)",
       "Bash(git fetch:*)",
-      "Bash(dotnet test:*)"
+      "Bash(dotnet test:*)",
+      "Bash(for file in GETTING_STARTED.md FEATURES.md MIGRATION.md CHANGELOG.md CONTRIBUTING.md)",
+      "Bash(do test -f \"$file\")",
+      "Bash(echo:*)",
+      "Bash(for dir in docs/architecture/core-systems docs/architecture/data-flow docs/api-reference Sources/Samples Sources/WPFHexaEditor/PartialClasses Sources/WPFHexaEditor/Services Sources/WPFHexaEditor/Core/Bytes)",
+      "Bash(do test:*)",
+      "Bash(git rm:*)",
+      "Bash(/tmp/tooltip_translations.txt:*)"
     ]
   }
 }

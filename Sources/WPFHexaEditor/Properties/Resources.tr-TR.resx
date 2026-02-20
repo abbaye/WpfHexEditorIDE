@@ -690,4 +690,16 @@
   <data name="ProgressButtonCancel" xml:space="preserve">
     <value>İptal</value>
   </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>Seçimi belirli bir bayt değeriyle doldur</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>Bir baytın tüm oluşumlarını başka bir baytla değiştir</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>Seçimdeki bayt sırasını ters çevir (endianness dönüşümü)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>Her bayttaki tüm bitleri ters çevir (0xFF ile XOR)</value>
+  </data>
 </root>

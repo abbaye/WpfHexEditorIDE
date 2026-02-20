@@ -16,7 +16,7 @@ namespace WpfHexaEditor.Dialog
     /// Modern MVVM dialog for entering a single byte value.
     /// This Window is used to give a hex value for fill the selection with.
     /// </summary>
-    internal partial class GiveByteWindow
+    public partial class GiveByteWindow
     {
         /// <summary>
         /// Gets the ViewModel for this dialog
