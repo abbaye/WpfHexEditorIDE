@@ -1271,6 +1271,35 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
+        /// Get the actual rendered width of a character (accounts for TBL auto-sizing)
+        /// CRITICAL for hit testing - must match DrawAsciiByte width calculation
+        /// </summary>
+        private double GetCharacterDisplayWidth(HexLine line, int byteIndex)
+        {
+            // If no TBL loaded, use fixed ASCII width
+            if (_tblStream == null)
+                return AsciiCharWidth;
+
+            // Get the display character using the same logic as rendering
+            var displayChar = GetDisplayCharacter(line, byteIndex);
+
+            // Create FormattedText to measure actual width (same as DrawAsciiByte)
+            var formattedText = new FormattedText(
+                displayChar,
+                System.Globalization.CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                _typeface,
+                13,
+                _asciiBrush,
+                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+            // TBL AUTO-SIZING: Use larger width if TBL character is wider (matches DrawAsciiByte logic)
+            return formattedText.Width > AsciiCharWidth
+                ? formattedText.Width
+                : AsciiCharWidth;
+        }
+
+        /// <summary>
         /// Get display character for a byte - uses TBL if loaded (respects type visibility flags), otherwise ASCII
         /// </summary>
         private string GetDisplayCharacter(HexLine line, int byteIndex)
@@ -1533,14 +1562,17 @@ namespace WpfHexaEditor.Controls
                     asciiX += (int)ByteSpacerWidthTickness;
                 }
 
-                // Check if click is within this ASCII character's rect
-                if (x >= asciiX && x < asciiX + AsciiCharWidth)
+                // CRITICAL: Calculate actual character width (accounts for TBL auto-sizing)
+                double charWidth = GetCharacterDisplayWidth(line, i);
+
+                // Check if click is within this ASCII character's rect (using actual width)
+                if (x >= asciiX && x < asciiX + charWidth)
                 {
                     // Click is within this ASCII character's visual rect
                     return (line.Bytes[i].VirtualPos.Value, false);
                 }
 
-                asciiX += AsciiCharWidth;
+                asciiX += charWidth;
             }
 
             return (null, true);
