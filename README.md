@@ -23,7 +23,7 @@
     <a href="FEATURES.md"><b>Features</b></a> •
     <a href="GETTING_STARTED.md"><b>Tutorial</b></a> •
     <a href="#-documentation"><b>Docs</b></a> •
-    <a href="MIGRATION.md"><b>V1→V2</b></a>
+    <a href="docs/migration/MIGRATION.md"><b>V1→V2</b></a>
   </p>
 </div>
 
@@ -120,7 +120,7 @@ dotnet add package WPFHexaEditor
 </tr>
 </table>
 
-**Upgrading from V1?** → **[Migration Guide](MIGRATION.md)** (zero code changes required!)
+**Upgrading from V1?** → **[Migration Guide](docs/migration/MIGRATION.md)** (zero code changes required!)
 
 ---
 
@@ -208,7 +208,7 @@ dotnet add package WPFHexaEditor
 |----------|-------------|
 | **[GETTING_STARTED.md](GETTING_STARTED.md)** | 👨‍💻 Complete tutorial with code examples |
 | **[FEATURES.md](FEATURES.md)** | 📊 Full V1 vs V2 comparison (163 features) |
-| **[MIGRATION.md](MIGRATION.md)** | 🔄 V1→V2 migration guide (zero code changes) |
+| **[MIGRATION.md](docs/migration/MIGRATION.md)** | 🔄 V1→V2 migration guide (zero code changes) |
 | **[CHANGELOG.md](CHANGELOG.md)** | 📝 Version history and changes |
 
 ### Architecture & API
@@ -374,7 +374,7 @@ See [LICENSE](LICENSE) file for details.
   **[🚀 Quick Start](#-quick-start)** •
   **[📖 Tutorial](GETTING_STARTED.md)** •
   **[📊 Features](FEATURES.md)** •
-  **[🔄 Migration](MIGRATION.md)** •
+  **[🔄 Migration](docs/migration/MIGRATION.md)** •
   **[⭐ Star Us](https://github.com/abbaye/WpfHexEditorControl)**
 
   <br/>

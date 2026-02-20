@@ -488,7 +488,7 @@ The control automatically uses memory-mapped files for large files (GB+). For op
 ## 📖 Next Steps
 
 - **[Feature Comparison](FEATURES.md)** - See all 163 features compared between V1 and V2
-- **[Migration Guide](MIGRATION.md)** - Upgrading from V1 to V2 (zero code changes)
+- **[Migration Guide](docs/migration/MIGRATION.md)** - Upgrading from V1 to V2 (zero code changes)
 - **[Architecture Guide](ARCHITECTURE.md)** - Understand the service-based design
 - **[Performance Guide](PERFORMANCE_GUIDE.md)** - Optimization tips and benchmarks
 - **[API Reference](Sources/WPFHexaEditor/README.md)** - Complete API documentation

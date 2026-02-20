@@ -444,4 +444,4 @@ All shortcuts are configurable via AllowBuildin* properties.
 
 ---
 
-📖 **Back to:** [Main README](README.md) | [Getting Started](GETTING_STARTED.md) | [Migration Guide](MIGRATION.md)
+📖 **Back to:** [Main README](README.md) | [Getting Started](GETTING_STARTED.md) | [Migration Guide](docs/migration/MIGRATION.md)

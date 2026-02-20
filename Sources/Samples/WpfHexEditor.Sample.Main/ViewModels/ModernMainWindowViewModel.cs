@@ -169,6 +169,10 @@ namespace WpfHexEditor.Sample.Main.ViewModels
         public ICommand ToggleSearchPanelCommand { get; }
         public ICommand ShowAboutCommand { get; }
         public ICommand ShowKeyboardShortcutsCommand { get; }
+        public ICommand ReverseSelectionCommand { get; }
+        public ICommand InvertSelectionCommand { get; }
+        public ICommand FillWithByteCommand { get; }
+        public ICommand ReplaceByteCommand { get; }
 
         #endregion
 
@@ -219,6 +223,12 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             ToggleSearchPanelCommand = new RelayCommand(ToggleSearchPanel);
             ShowAboutCommand = new RelayCommand(ShowAbout);
             ShowKeyboardShortcutsCommand = new RelayCommand(ShowKeyboardShortcuts);
+
+            // Byte operations
+            ReverseSelectionCommand = new RelayCommand(ReverseSelection, () => IsFileLoaded && _hexEditor?.HasSelection == true && !IsOperationActive);
+            InvertSelectionCommand = new RelayCommand(InvertSelection, () => IsFileLoaded && _hexEditor?.HasSelection == true && !IsOperationActive);
+            FillWithByteCommand = new RelayCommand(FillWithByte, () => IsFileLoaded && _hexEditor?.HasSelection == true && !IsOperationActive);
+            ReplaceByteCommand = new RelayCommand(ReplaceByte, () => IsFileLoaded && !IsOperationActive);
         }
 
         #endregion
@@ -460,6 +470,111 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             catch (Exception ex)
             {
                 StatusMessage = $"Clear selection failed: {ex.Message}";
+            }
+        }
+
+        private void ReverseSelection()
+        {
+            try
+            {
+                _hexEditor?.ReverseSelection();
+                var length = _hexEditor?.SelectionLength ?? 0;
+                StatusMessage = $"Reversed {length} bytes";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Reverse selection failed: {ex.Message}";
+            }
+        }
+
+        private void InvertSelection()
+        {
+            try
+            {
+                _hexEditor?.InvertSelection();
+                var length = _hexEditor?.SelectionLength ?? 0;
+                StatusMessage = $"Inverted {length} bytes";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Invert selection failed: {ex.Message}";
+            }
+        }
+
+        private void FillWithByte()
+        {
+            try
+            {
+                if (_hexEditor == null || !_hexEditor.HasSelection) return;
+
+                // Use the modern MVVM GiveByteWindow dialog
+                var dialog = new WpfHexaEditor.Dialog.GiveByteWindow
+                {
+                    Owner = System.Windows.Application.Current.MainWindow
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    byte fillByte = dialog.ByteValue;
+                    long fillStart = _hexEditor.SelectionStart;
+                    long fillLength = _hexEditor.SelectionLength;
+
+                    _hexEditor.FillWithByte(fillByte, fillStart, fillLength);
+                    StatusMessage = $"Filled {fillLength} bytes with 0x{fillByte:X2}";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Fill with byte failed: {ex.Message}";
+            }
+        }
+
+        private void ReplaceByte()
+        {
+            try
+            {
+                if (_hexEditor == null) return;
+
+                // Use the modern MVVM ReplaceByteWindow dialog
+                var dialog = new WpfHexaEditor.Dialog.ReplaceByteWindow
+                {
+                    Owner = System.Windows.Application.Current.MainWindow
+                };
+
+                // Pre-fill options if a selection exists
+                if (_hexEditor.HasSelection)
+                {
+                    dialog.ViewModel.ReplaceInSelectionOnly = true;
+
+                    if (_hexEditor.SelectionLength == 1)
+                    {
+                        try
+                        {
+                            var selectedByte = _hexEditor.GetByte(_hexEditor.SelectionStart);
+                            dialog.ViewModel.FindByte = selectedByte;
+                        }
+                        catch { /* Ignore errors */ }
+                    }
+                }
+
+                if (dialog.ShowDialog() == true)
+                {
+                    byte findByte = dialog.FindByte;
+                    byte replaceByte = dialog.ReplaceByte;
+                    byte[] findData = new byte[] { findByte };
+                    byte[] replaceData = new byte[] { replaceByte };
+                    bool inSelectionOnly = dialog.ReplaceInSelectionOnly;
+
+                    var replaced = _hexEditor.ReplaceAll(findData, replaceData, false, inSelectionOnly);
+                    int replacedCount = replaced.Count();
+
+                    string scope = inSelectionOnly ? "in selection" : "in file";
+                    StatusMessage = $"Replaced {replacedCount} occurrences (0x{findByte:X2} → 0x{replaceByte:X2}) {scope}";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Replace byte failed: {ex.Message}";
             }
         }
 
