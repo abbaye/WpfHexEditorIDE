@@ -129,6 +129,41 @@ namespace WpfHexEditor.Sample.Main.Views.Components
             }
 
             SetupCheckBoxBindings(contentRoot);
+
+            // Initialize all ColorPickers with current values
+            InitializeColorPickers();
+        }
+
+        private void InitializeColorPickers()
+        {
+            if (HexEditorControl == null) return;
+
+            System.Diagnostics.Debug.WriteLine("[HexEditorSettings] InitializeColorPickers called");
+
+            // Selection Colors
+            SelectionFirstColorPicker.SelectedColor = HexEditorControl.SelectionFirstColor;
+            SelectionSecondColorPicker.SelectedColor = HexEditorControl.SelectionSecondColor;
+
+            // Byte State Colors
+            ByteModifiedColorPicker.SelectedColor = HexEditorControl.ByteModifiedColor;
+            ByteDeletedColorPicker.SelectedColor = HexEditorControl.ByteDeletedColor;
+            ByteAddedColorPicker.SelectedColor = HexEditorControl.ByteAddedColor;
+
+            // General Colors
+            HighLightColorPicker.SelectedColor = HexEditorControl.HighLightColor;
+            MouseOverColorPicker.SelectedColor = HexEditorControl.MouseOverColor;
+            ForegroundSecondColorPicker.SelectedColor = HexEditorControl.ForegroundSecondColor;
+            ForegroundContrastPicker.SelectedColor = HexEditorControl.ForegroundContrast;
+
+            // TBL Colors
+            TblDteColorPicker.SelectedColor = HexEditorControl.TblDteColor;
+            TblMteColorPicker.SelectedColor = HexEditorControl.TblMteColor;
+            TblEndBlockColorPicker.SelectedColor = HexEditorControl.TblEndBlockColor;
+            TblEndLineColorPicker.SelectedColor = HexEditorControl.TblEndLineColor;
+            TblDefaultColorPicker.SelectedColor = HexEditorControl.TblDefaultColor;
+
+            // Bar Chart
+            BarChartColorPicker.SelectedColor = HexEditorControl.BarChartColor;
         }
 
         private void CheckBox_Changed(object sender, RoutedEventArgs e)
