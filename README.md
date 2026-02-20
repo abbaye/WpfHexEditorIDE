@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="Images/Logo2026.png?raw=true" width="420" height="100" />
-  <br/><br/>
+  <img src="Images/Logo2026.png?raw=true" width="750" Height="250" />
+  <br/>
 
   <h3>⚡ The Fastest Wpf Hex Editor Control for .NET ⚡</h3>
 
@@ -14,7 +14,7 @@
 
   <br/>
 
-  <img src="Images/SampleV2_001.png?raw=true" alt="WPF HexEditor V2" width="700"/>
+  <img src="Images/SampleV2_001.png?raw=true" alt="WPF HexEditor V2" width="700" />
   <br/>
   <sub><i>Screenshot from brand new V2 version</i></sub>
 
