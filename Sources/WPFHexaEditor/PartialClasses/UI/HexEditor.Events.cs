@@ -243,7 +243,7 @@ namespace WpfHexaEditor
                 double relativeX = x - asciiStartX;
 
                 // Calculate byte index accounting for spacers
-                int byteIndex = 0;
+                int byteIndex = -1; // -1 means no byte found
                 double currentX = 0;
 
                 for (int i = 0; i < _viewModel.BytePerLine && i < line.Bytes.Count; i++)
@@ -262,7 +262,6 @@ namespace WpfHexaEditor
                     }
 
                     currentX += AsciiCharWidth;
-                    byteIndex = i;
                 }
 
                 // Validate that the clicked byte actually exists on this line

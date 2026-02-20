@@ -69,7 +69,8 @@
       "Bash(/tmp/tooltip_translations.txt:*)",
       "Bash(for file in *.resx)",
       "Bash(do sed -i '/<data name=\"\"HexSettings_Display_HideDeleted\"\"/,/<\\\\/data>/d' \"$file\")",
-      "Bash(do sed -i '/<data name=\"\"Ribbon_View_HideDeleted\"\"/,/<\\\\/data>/d' \"$file\")"
+      "Bash(do sed -i '/<data name=\"\"Ribbon_View_HideDeleted\"\"/,/<\\\\/data>/d' \"$file\")",
+      "Bash(git show:*)"
     ]
   }
 }

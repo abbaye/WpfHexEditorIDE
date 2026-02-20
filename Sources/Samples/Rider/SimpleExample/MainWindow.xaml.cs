@@ -11,6 +11,7 @@ namespace RiderSimpleExample;
 /// - Handling events (SelectionChanged, DataCopied)
 /// - Using properties (ReadOnlyMode, BytePerLine)
 /// - Saving changes
+/// - Loading TBL (Character Table) files for custom encoding
 ///
 /// 💡 Rider Tips:
 /// - Press Ctrl+Space to see IntelliSense for HexEditor properties
@@ -120,5 +121,84 @@ public partial class MainWindow : Window
         StatusText.Text = length > 0
             ? $"📋 Copied {length} bytes to clipboard"
             : "📋 Data copied to clipboard";
+    }
+
+    /// <summary>
+    /// Load a TBL (Character Table) file for custom encoding
+    /// </summary>
+    private void LoadTblButton_Click(object sender, RoutedEventArgs e)
+    {
+        var openFileDialog = new OpenFileDialog
+        {
+            Title = "Select a TBL file",
+            Filter = "TBL Files (*.tbl)|*.tbl|All Files (*.*)|*.*",
+            CheckFileExists = true,
+            Multiselect = false
+        };
+
+        if (openFileDialog.ShowDialog() == true)
+        {
+            try
+            {
+                // Load the TBL file
+                HexEditor.LoadTBLFile(openFileDialog.FileName);
+
+                // Enable the Close TBL button
+                CloseTblButton.IsEnabled = true;
+
+                StatusText.Text = $"📋 TBL loaded: {System.IO.Path.GetFileName(openFileDialog.FileName)}";
+
+                MessageBox.Show(
+                    $"TBL file loaded successfully!\n\n" +
+                    $"File: {System.IO.Path.GetFileName(openFileDialog.FileName)}\n" +
+                    $"Entries: {HexEditor.TBL?.Length ?? 0}\n\n" +
+                    $"The hex editor will now display characters using the custom character table.",
+                    "TBL Loaded",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Error loading TBL file: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                StatusText.Text = "❌ Error loading TBL file";
+            }
+        }
+    }
+
+    /// <summary>
+    /// Close the current TBL file and return to ASCII encoding
+    /// </summary>
+    private void CloseTblButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            // Close the TBL
+            HexEditor.CloseTBL();
+
+            // Disable the Close TBL button
+            CloseTblButton.IsEnabled = false;
+
+            StatusText.Text = "📋 TBL closed, using ASCII encoding";
+
+            MessageBox.Show(
+                "TBL file closed successfully.\n\n" +
+                "The hex editor has returned to standard ASCII encoding.",
+                "TBL Closed",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+        catch (System.Exception ex)
+        {
+            MessageBox.Show($"Error closing TBL: {ex.Message}",
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+
+            StatusText.Text = "❌ Error closing TBL";
+        }
     }
 }

@@ -41,6 +41,32 @@
                         FontWeight="SemiBold"
                         Cursor="Hand"/>
 
+                <Button Content="📋 Load TBL"
+                        Click="LoadTblButton_Click"
+                        Padding="15,8"
+                        Margin="5"
+                        Background="#6F42C1"
+                        Foreground="White"
+                        BorderThickness="0"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Cursor="Hand"
+                        ToolTip="Load a TBL (Character Table) file for custom encoding"/>
+
+                <Button x:Name="CloseTblButton"
+                        Content="❌ Close TBL"
+                        Click="CloseTblButton_Click"
+                        Padding="15,8"
+                        Margin="5"
+                        Background="#DC3545"
+                        Foreground="White"
+                        BorderThickness="0"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Cursor="Hand"
+                        IsEnabled="False"
+                        ToolTip="Close the current TBL file and return to ASCII"/>
+
                 <CheckBox Content="🔒 Read-Only Mode"
                           IsChecked="{Binding ElementName=HexEditor, Path=ReadOnlyMode}"
                           VerticalAlignment="Center"

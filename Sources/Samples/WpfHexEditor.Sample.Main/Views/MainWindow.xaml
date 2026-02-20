@@ -307,6 +307,27 @@
                         </MenuItem.Header>
                     </MenuItem>
                 </MenuItem>
+                <Separator/>
+                <MenuItem Header="Character Table (TBL)">
+                    <MenuItem Click="LoadTblMenuItem_Click">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📋 " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
+                                <TextBlock Text="Load TBL File..."/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem x:Name="CloseTblMenuItem"
+                              Click="CloseTblMenuItem_Click"
+                              IsEnabled="False">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="❌ " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
+                                <TextBlock Text="Close TBL"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="{DynamicResource Menu_Position}">
