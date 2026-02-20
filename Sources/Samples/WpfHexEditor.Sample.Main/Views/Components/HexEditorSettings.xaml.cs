@@ -87,36 +87,29 @@ namespace WpfHexEditor.Sample.Main.Views.Components
 
             System.Diagnostics.Debug.WriteLine("[HexEditorSettings] RecreateBindings called");
 
-            // Find all CheckBox controls and set up two-way synchronization
-            void SetupCheckBoxBindings(DependencyObject element)
+            // Update all bindings from source (HexEditor) to target (UI controls)
+            // This refreshes the UI without breaking the TwoWay bindings
+            void UpdateBindingsInTree(DependencyObject element)
             {
                 if (element == null) return;
 
-                if (element is CheckBox checkBox)
+                // Get all locally set properties for this element
+                var enumerator = element.GetLocalValueEnumerator();
+                while (enumerator.MoveNext())
                 {
-                    // Get the binding to determine which property to sync
-                    var binding = System.Windows.Data.BindingOperations.GetBinding(checkBox, CheckBox.IsCheckedProperty);
-                    if (binding != null && binding.Path != null)
+                    var entry = enumerator.Current;
+                    if (System.Windows.Data.BindingOperations.IsDataBound(element, entry.Property))
                     {
-                        var propertyName = binding.Path.Path;
-                        System.Diagnostics.Debug.WriteLine($"  Setting up CheckBox for property: {propertyName}");
-
-                        // Set initial value from HexEditor
-                        var property = HexEditorControl.GetType().GetProperty(propertyName);
-                        if (property != null && property.PropertyType == typeof(bool))
+                        var bindingExpr = System.Windows.Data.BindingOperations.GetBindingExpression(element, entry.Property);
+                        if (bindingExpr != null)
                         {
-                            checkBox.IsChecked = (bool)property.GetValue(HexEditorControl);
+                            // Update the target (UI) from source (HexEditor) without breaking the binding
+                            bindingExpr.UpdateTarget();
 
-                            // Remove old handler if exists
-                            checkBox.Checked -= CheckBox_Changed;
-                            checkBox.Unchecked -= CheckBox_Changed;
-
-                            // Add handler to update HexEditor when checkbox changes
-                            checkBox.Checked += CheckBox_Changed;
-                            checkBox.Unchecked += CheckBox_Changed;
-
-                            // Store property name in Tag for the handler
-                            checkBox.Tag = propertyName;
+                            if (element is CheckBox)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"  Updated binding on CheckBox: {bindingExpr.ParentBinding.Path.Path}");
+                            }
                         }
                     }
                 }
@@ -126,11 +119,11 @@ namespace WpfHexEditor.Sample.Main.Views.Components
                 for (int i = 0; i < childCount; i++)
                 {
                     var child = System.Windows.Media.VisualTreeHelper.GetChild(element, i);
-                    SetupCheckBoxBindings(child);
+                    UpdateBindingsInTree(child);
                 }
             }
 
-            SetupCheckBoxBindings(contentRoot);
+            UpdateBindingsInTree(contentRoot);
 
             // Initialize all ColorPickers with current values
             InitializeColorPickers();
@@ -168,23 +161,6 @@ namespace WpfHexEditor.Sample.Main.Views.Components
             BarChartColorPicker.SelectedColor = HexEditorControl.BarChartColor;
         }
 
-        private void CheckBox_Changed(object sender, RoutedEventArgs e)
-        {
-            if (sender is not CheckBox checkBox || HexEditorControl == null)
-                return;
-
-            var propertyName = checkBox.Tag as string;
-            if (string.IsNullOrEmpty(propertyName))
-                return;
-
-            var property = HexEditorControl.GetType().GetProperty(propertyName);
-            if (property != null && property.PropertyType == typeof(bool))
-            {
-                var newValue = checkBox.IsChecked == true;
-                property.SetValue(HexEditorControl, newValue);
-                System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] CheckBox changed: {propertyName} = {newValue}");
-            }
-        }
 
         private void UpdateBindings()
         {
@@ -237,17 +213,6 @@ namespace WpfHexEditor.Sample.Main.Views.Components
             System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] Updated {bindingsUpdated} bindings");
         }
 
-        private void BytesPerLineComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (HexEditorControl == null || BytesPerLineComboBox.SelectedItem == null) return;
-
-            var selectedItem = (ComboBoxItem)BytesPerLineComboBox.SelectedItem;
-            if (int.TryParse(selectedItem.Tag?.ToString(), out int bytesPerLine))
-            {
-                HexEditorControl.BytePerLine = bytesPerLine;
-            }
-        }
-
         private void ZoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (HexEditorControl == null) return;
@@ -255,55 +220,7 @@ namespace WpfHexEditor.Sample.Main.Views.Components
             // Apply zoom via ScaleTransform
             var scaleTransform = new ScaleTransform(e.NewValue, e.NewValue);
             HexEditorControl.LayoutTransform = scaleTransform;
-        }
-
-        private void EditModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (HexEditorControl == null || EditModeComboBox.SelectedItem == null) return;
-
-            var selectedItem = (ComboBoxItem)EditModeComboBox.SelectedItem;
-            var editModeString = selectedItem.Tag?.ToString();
-
-            if (Enum.TryParse<EditMode>(editModeString, out var editMode))
-            {
-                HexEditorControl.EditMode = editMode;
-            }
-        }
-
-        private void CaretModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (HexEditorControl == null || CaretModeComboBox.SelectedItem == null) return;
-
-            var selectedItem = (ComboBoxItem)CaretModeComboBox.SelectedItem;
-            var caretModeString = selectedItem.Tag?.ToString();
-
-            if (Enum.TryParse<WpfHexaEditor.Core.CaretMode>(caretModeString, out var caretMode))
-            {
-                HexEditorControl.VisualCaretMode = caretMode;
-            }
-        }
-
-        private void CopyModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (HexEditorControl == null || CopyModeComboBox.SelectedItem == null) return;
-
-            var selectedItem = (ComboBoxItem)CopyModeComboBox.SelectedItem;
-            var copyModeString = selectedItem.Tag?.ToString();
-
-            if (Enum.TryParse<CopyPasteMode>(copyModeString, out var copyMode))
-            {
-                HexEditorControl.DefaultCopyToClipboardMode = copyMode;
-            }
-        }
-
-        private void ByteShiftLeftTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (HexEditorControl == null) return;
-
-            if (long.TryParse(ByteShiftLeftTextBox.Text, out long byteShift))
-            {
-                HexEditorControl.ByteShiftLeft = byteShift;
-            }
+            System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] Zoom changed to {e.NewValue:P0}");
         }
 
         /// <summary>
@@ -548,20 +465,11 @@ namespace WpfHexEditor.Sample.Main.Views.Components
                 // Verify it was saved
                 var saved = Properties.Settings.Default.HexEditorSettings;
                 System.Diagnostics.Debug.WriteLine($"[SaveState] Verification - saved length: {saved?.Length ?? 0}");
-
-                MessageBox.Show(
-                    $"HexEditor settings saved successfully!\n\nJSON length: {json.Length} chars\nSaved: {!string.IsNullOrEmpty(saved)}",
-                    "Success",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                System.Diagnostics.Debug.WriteLine("[SaveState] Settings saved successfully (silent)");
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Failed to save settings:\n{ex.Message}",
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine($"[SaveState] ERROR: {ex.Message}");
             }
         }
 
