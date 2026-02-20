@@ -8,7 +8,7 @@ using System;
 namespace WpfHexaEditor.Core.CharacterTable
 {
     /// <summary>
-    /// Objet représentant un DTE.
+    /// Objet reprï¿½sentant un DTE.
     /// </summary>
     public sealed class Dte
     {
@@ -28,7 +28,7 @@ namespace WpfHexaEditor.Core.CharacterTable
         }
 
         /// <summary>
-        /// Contructeur permetant d'ajouter une entrée et une valeur
+        /// Contructeur permetant d'ajouter une entrï¿½e et une valeur
         /// </summary>
         /// <param name="entry">Nom du DTE</param>
         /// <param name="value">Valeur du DTE</param>
@@ -40,7 +40,7 @@ namespace WpfHexaEditor.Core.CharacterTable
         }
 
         /// <summary>
-        /// Contructeur permetant d'ajouter une entrée, une valeur et une description
+        /// Contructeur permetant d'ajouter une entrï¿½e, une valeur et une description
         /// </summary>
         /// <param name="entry">Nom du DTE</param>
         /// <param name="value">Valeur du DTE</param>
@@ -54,7 +54,7 @@ namespace WpfHexaEditor.Core.CharacterTable
 
         #endregion Constructeurs
 
-        #region Propriétés
+        #region Propriï¿½tï¿½s
 
         /// <summary>
         /// Nom du DTE
@@ -77,9 +77,9 @@ namespace WpfHexaEditor.Core.CharacterTable
         /// </summary>
         public DteType Type { get; }
 
-        #endregion Propriétés
+        #endregion Propriï¿½tï¿½s
 
-        #region Méthodes
+        #region Mï¿½thodes
 
         /// <summary>
         /// Cette fonction permet de retourner le DTE sous forme : [Entry]=[Valeur]
@@ -89,7 +89,7 @@ namespace WpfHexaEditor.Core.CharacterTable
             ? _entry + "=" + Value
             : _entry;
 
-        #endregion Méthodes
+        #endregion Mï¿½thodes
 
         #region Methodes Static
 
@@ -103,8 +103,8 @@ namespace WpfHexaEditor.Core.CharacterTable
                 {
                     case 2:
                         return dteValue.Value.Length == 2 ? DteType.Ascii : DteType.DualTitleEncoding;
-                    case 4: // >2
-                        return DteType.MultipleTitleEncoding;
+                    case >= 4 when dteValue._entry.Length % 2 == 0 && dteValue._entry.Length <= 16:
+                        return DteType.MultipleTitleEncoding;  // 2-8 bytes (4-16 hex chars)
                 }
             }
             catch (IndexOutOfRangeException)

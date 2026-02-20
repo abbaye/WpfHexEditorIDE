@@ -975,4 +975,43 @@
   <data name="Message_NoLanguageSelected_Text" xml:space="preserve">
     <value>Tamam'a tıklamadan önce lütfen bir dil seçin.</value>
   </data>
+
+  <!-- ColorPicker Localizations -->
+  <data name="ColorPicker_Tab_Custom" xml:space="preserve">
+    <value>Özel</value>
+    <comment>ColorPicker - Tab Custom</comment>
+  </data>
+  <data name="ColorPicker_Tab_Palette" xml:space="preserve">
+    <value>Palet</value>
+    <comment>ColorPicker - Tab Palette</comment>
+  </data>
+  <data name="ColorPicker_Preview_Original" xml:space="preserve">
+    <value>Orijinal</value>
+    <comment>ColorPicker - Preview Original</comment>
+  </data>
+  <data name="ColorPicker_Preview_New" xml:space="preserve">
+    <value>Yeni</value>
+    <comment>ColorPicker - Preview New</comment>
+  </data>
+  <data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
+    <value>Renk Seçici</value>
+    <comment>ColorPicker - Section ColorSelector</comment>
+  </data>
+  <data name="ColorPicker_Section_RGBValues" xml:space="preserve">
+    <value>RGB Değerleri</value>
+    <comment>ColorPicker - Section RGBValues</comment>
+  </data>
+  <data name="ColorPicker_Section_HexColor" xml:space="preserve">
+    <value>Onaltılık Renk</value>
+    <comment>ColorPicker - Section HexColor</comment>
+  </data>
+  <data name="ColorPicker_Section_StandardColors" xml:space="preserve">
+    <value>Standart Renkler</value>
+    <comment>ColorPicker - Section StandardColors</comment>
+  </data>
+  <data name="ColorPicker_Section_RecentColors" xml:space="preserve">
+    <value>Son Renkler</value>
+    <comment>ColorPicker - Section RecentColors</comment>
+  </data>
+
 </root>

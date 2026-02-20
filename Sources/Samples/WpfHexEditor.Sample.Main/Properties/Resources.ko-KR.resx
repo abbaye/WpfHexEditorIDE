@@ -975,4 +975,43 @@
   <data name="Message_NoLanguageSelected_Text" xml:space="preserve">
     <value>확인을 클릭하기 전에 언어를 선택하세요.</value>
   </data>
+
+  <!-- ColorPicker Localizations -->
+  <data name="ColorPicker_Tab_Custom" xml:space="preserve">
+    <value>사용자 지정</value>
+    <comment>ColorPicker - Tab Custom</comment>
+  </data>
+  <data name="ColorPicker_Tab_Palette" xml:space="preserve">
+    <value>팔레트</value>
+    <comment>ColorPicker - Tab Palette</comment>
+  </data>
+  <data name="ColorPicker_Preview_Original" xml:space="preserve">
+    <value>원본</value>
+    <comment>ColorPicker - Preview Original</comment>
+  </data>
+  <data name="ColorPicker_Preview_New" xml:space="preserve">
+    <value>새로운</value>
+    <comment>ColorPicker - Preview New</comment>
+  </data>
+  <data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
+    <value>색상 선택기</value>
+    <comment>ColorPicker - Section ColorSelector</comment>
+  </data>
+  <data name="ColorPicker_Section_RGBValues" xml:space="preserve">
+    <value>RGB 값</value>
+    <comment>ColorPicker - Section RGBValues</comment>
+  </data>
+  <data name="ColorPicker_Section_HexColor" xml:space="preserve">
+    <value>16진수 색상</value>
+    <comment>ColorPicker - Section HexColor</comment>
+  </data>
+  <data name="ColorPicker_Section_StandardColors" xml:space="preserve">
+    <value>표준 색상</value>
+    <comment>ColorPicker - Section StandardColors</comment>
+  </data>
+  <data name="ColorPicker_Section_RecentColors" xml:space="preserve">
+    <value>최근 색상</value>
+    <comment>ColorPicker - Section RecentColors</comment>
+  </data>
+
 </root>

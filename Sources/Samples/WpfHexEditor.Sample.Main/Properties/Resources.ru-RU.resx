@@ -1206,4 +1206,43 @@
   <data name="Toolbar_ReadOnly_ToolTip" xml:space="preserve">
     <value>Только чтение</value>
   </data>
+
+  <!-- ColorPicker Localizations -->
+  <data name="ColorPicker_Tab_Custom" xml:space="preserve">
+    <value>Пользовательский</value>
+    <comment>ColorPicker - Tab Custom</comment>
+  </data>
+  <data name="ColorPicker_Tab_Palette" xml:space="preserve">
+    <value>Палитра</value>
+    <comment>ColorPicker - Tab Palette</comment>
+  </data>
+  <data name="ColorPicker_Preview_Original" xml:space="preserve">
+    <value>Исходный</value>
+    <comment>ColorPicker - Preview Original</comment>
+  </data>
+  <data name="ColorPicker_Preview_New" xml:space="preserve">
+    <value>Новый</value>
+    <comment>ColorPicker - Preview New</comment>
+  </data>
+  <data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
+    <value>Выбор цвета</value>
+    <comment>ColorPicker - Section ColorSelector</comment>
+  </data>
+  <data name="ColorPicker_Section_RGBValues" xml:space="preserve">
+    <value>Значения RGB</value>
+    <comment>ColorPicker - Section RGBValues</comment>
+  </data>
+  <data name="ColorPicker_Section_HexColor" xml:space="preserve">
+    <value>Hex цвет</value>
+    <comment>ColorPicker - Section HexColor</comment>
+  </data>
+  <data name="ColorPicker_Section_StandardColors" xml:space="preserve">
+    <value>Стандартные цвета</value>
+    <comment>ColorPicker - Section StandardColors</comment>
+  </data>
+  <data name="ColorPicker_Section_RecentColors" xml:space="preserve">
+    <value>Недавние цвета</value>
+    <comment>ColorPicker - Section RecentColors</comment>
+  </data>
+
 </root>

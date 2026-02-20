@@ -873,6 +873,24 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
+        /// 3-byte sequences color for TBL - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color Tbl3ByteColor
+        {
+            get => (System.Windows.Media.Color)GetValue(Tbl3ByteColorProperty);
+            set => SetValue(Tbl3ByteColorProperty, value);
+        }
+
+        /// <summary>
+        /// 4+ byte sequences color for TBL - DependencyProperty
+        /// </summary>
+        public System.Windows.Media.Color Tbl4PlusByteColor
+        {
+            get => (System.Windows.Media.Color)GetValue(Tbl4PlusByteColorProperty);
+            set => SetValue(Tbl4PlusByteColorProperty, value);
+        }
+
+        /// <summary>
         /// Default color for TBL - DependencyProperty
         /// </summary>
         public System.Windows.Media.Color TblDefaultColor
@@ -2307,6 +2325,20 @@ namespace WpfHexaEditor
                 new PropertyMetadata(Colors.Pink, OnTblColorChanged));
 
         /// <summary>
+        /// Tbl3ByteColor DependencyProperty for XAML binding (3-byte sequences)
+        /// </summary>
+        public static readonly DependencyProperty Tbl3ByteColorProperty =
+            DependencyProperty.Register(nameof(Tbl3ByteColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Cyan, OnTblColorChanged));
+
+        /// <summary>
+        /// Tbl4PlusByteColor DependencyProperty for XAML binding (4+ byte sequences)
+        /// </summary>
+        public static readonly DependencyProperty Tbl4PlusByteColorProperty =
+            DependencyProperty.Register(nameof(Tbl4PlusByteColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Magenta, OnTblColorChanged));
+
+        /// <summary>
         /// TblDefaultColor DependencyProperty for XAML binding
         /// </summary>
         public static readonly DependencyProperty TblDefaultColorProperty =
@@ -2325,6 +2357,8 @@ namespace WpfHexaEditor
                 editor.HexViewport.TblEndBlockColor = editor.TblEndBlockColor;
                 editor.HexViewport.TblEndLineColor = editor.TblEndLineColor;
                 editor.HexViewport.TblDefaultColor = editor.TblDefaultColor;
+                editor.HexViewport.Tbl3ByteColor = editor.Tbl3ByteColor;         // NEW: 3-byte color
+                editor.HexViewport.Tbl4PlusByteColor = editor.Tbl4PlusByteColor; // NEW: 4+ byte color
 
                 editor.HexViewport.InvalidateVisual();
             }

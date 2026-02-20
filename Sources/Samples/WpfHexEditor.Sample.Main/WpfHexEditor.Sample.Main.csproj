@@ -18,6 +18,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Multi-Byte TBL Sample Files -->
+    <Content Include="SampleFiles\TBL\multibyte-demo.tbl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\TBL\multibyte-test.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SampleFiles\TBL\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Base resource file with Designer -->
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

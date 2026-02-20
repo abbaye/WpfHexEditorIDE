@@ -1,0 +1,61 @@
+# Multi-Byte TBL Demo File
+# Demonstrates support for 1, 2, 3, and 4-byte character encodings
+# Issue #110 - Multi-byte TBL support (3-8 bytes)
+
+# ===== SINGLE BYTE (1 byte = 2 hex chars) =====
+FF=A
+FE=B
+FD=C
+FC=D
+FB=E
+FA=F
+F9=G
+F8=H
+F7=I
+F6=J
+00=.
+01=!
+02=?
+20=
+
+# ===== DUAL BYTE (2 bytes = 4 hex chars - DTE) =====
+88A9=の
+88AA=は
+88AB=を
+040A=α
+0428=β
+FFCC=γ
+AABB=δ
+1122=★
+3344=♥
+5566=♦
+
+# ===== TRIPLE BYTE (3 bytes = 6 hex chars) =====
+0428FF=Hello
+AABBCC=World
+123456=Test3
+FEDCBA=Three
+111213=ABC
+212223=XYZ
+313233=123
+414243=TBL
+
+# ===== QUAD BYTE (4 bytes = 8 hex chars) =====
+0428FFCC=MultiByte
+DEADBEEF=DeadBeef
+12345678=LongSeq
+ABCDEF01=Example
+CAFEBABE=CoffeBean
+BAADF00D=BadFood
+FEEDFACE=FeedFace
+C0FFEE00=Coffee
+
+# ===== SPECIAL MARKERS =====
+/00=EndBlock
+*0A=EndLine
+
+# Notes:
+# - Greedy matching: If 0428 and 0428FF both exist, 0428FF takes priority
+# - This demo shows entries from 1 byte up to 4 bytes
+# - Maximum supported: 8 bytes (16 hex chars)
+# - Edit hex values in HEX panel when TBL is loaded

@@ -464,6 +464,14 @@
                     <TextBlock Text="TBL Default Color" FontSize="11" Margin="0,0,0,4"/>
                     <components:ColorPicker x:Name="TblDefaultColorPicker"
                                            ColorChanged="TblDefaultColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="TBL 3-Byte Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="Tbl3ByteColorPicker"
+                                           ColorChanged="Tbl3ByteColorPicker_ColorChanged"
+                                           Margin="0,0,0,8"/>
+                    <TextBlock Text="TBL 4+ Byte Color" FontSize="11" Margin="0,0,0,4"/>
+                    <components:ColorPicker x:Name="Tbl4PlusByteColorPicker"
+                                           ColorChanged="Tbl4PlusByteColorPicker_ColorChanged"
                                            Margin="0,0,0,12"/>
 
                     <!-- Bar Chart -->

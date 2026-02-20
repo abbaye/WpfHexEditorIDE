@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -97,6 +98,8 @@ namespace WpfHexaEditor.Controls
         private Brush _tblEndLineBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xA5, 0x00)); // Orange
         private Brush _tblAsciiBrush = new SolidColorBrush(Color.FromRgb(0x90, 0xEE, 0x90)); // LightGreen
         private Brush _tblJaponaisBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xC0, 0xCB)); // Pink
+        private Brush _tbl3ByteBrush = new SolidColorBrush(Color.FromRgb(0x00, 0xFF, 0xFF)); // Cyan
+        private Brush _tbl4PlusByteBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0x00, 0xFF)); // Magenta
 
         // Debug counter to avoid spamming logs every frame
         private int _debugRenderCount = 0;
@@ -218,6 +221,8 @@ namespace WpfHexaEditor.Controls
             _tblEndBlockBrush.Freeze();
             _tblEndLineBrush.Freeze();
             _tblDefaultBrush.Freeze();
+            _tbl3ByteBrush.Freeze();
+            _tbl4PlusByteBrush.Freeze();
 
             // Initialize caret for Insert mode
             _caret = new Caret(new SolidColorBrush(Color.FromRgb(0x00, 0x78, 0xD4))); // Blue caret
@@ -690,6 +695,24 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
+        /// TBL 3-byte sequences color
+        /// </summary>
+        public Color Tbl3ByteColor
+        {
+            get => (_tbl3ByteBrush as SolidColorBrush)?.Color ?? Colors.Cyan;
+            set { _tbl3ByteBrush = new SolidColorBrush(value); _tbl3ByteBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// TBL 4+ byte sequences color
+        /// </summary>
+        public Color Tbl4PlusByteColor
+        {
+            get => (_tbl4PlusByteBrush as SolidColorBrush)?.Color ?? Colors.Magenta;
+            set { _tbl4PlusByteBrush = new SolidColorBrush(value); _tbl4PlusByteBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
         /// TBL Default color - Phase 7.5 V1 Compatibility
         /// </summary>
         public Color TblDefaultColor
@@ -1158,8 +1181,15 @@ namespace WpfHexaEditor.Controls
             {
                 try
                 {
-                    string hexByte = byteData.Value.ToString("X2");
-                    var (text, type) = _tblStream.FindMatch(hexByte, showSpecialValue: true);
+                    // Determine how many bytes this character consumes (uses greedy matching)
+                    int byteCount = GetCharacterByteCount(line, byteIndex);
+
+                    // Build hex key for the actual byte count
+                    var hexKey = new StringBuilder(byteCount * 2);
+                    for (int j = 0; j < byteCount && byteIndex + j < line.Bytes.Count; j++)
+                        hexKey.Append(line.Bytes[byteIndex + j].Value.ToString("X2"));
+
+                    var (text, type) = _tblStream.FindMatch(hexKey.ToString(), showSpecialValue: true);
                     dteType = type;
 
                     // Select TEXT color based on TBL type (only if type is visible)
@@ -1176,16 +1206,25 @@ namespace WpfHexaEditor.Controls
 
                     if (shouldShow && text != "#")
                     {
-                        textBrush = dteType switch
+                        // Special types get their specific colors (override byte count logic)
+                        if (dteType == Core.CharacterTable.DteType.Japonais)
+                            textBrush = _tblJaponaisBrush;
+                        else if (dteType == Core.CharacterTable.DteType.EndBlock)
+                            textBrush = _tblEndBlockBrush;
+                        else if (dteType == Core.CharacterTable.DteType.EndLine)
+                            textBrush = _tblEndLineBrush;
+                        // For normal types, use color based on byte count
+                        else
                         {
-                            Core.CharacterTable.DteType.Ascii => _tblAsciiBrush,
-                            Core.CharacterTable.DteType.DualTitleEncoding => _tblDteBrush,
-                            Core.CharacterTable.DteType.MultipleTitleEncoding => _tblMteBrush,
-                            Core.CharacterTable.DteType.Japonais => _tblJaponaisBrush,
-                            Core.CharacterTable.DteType.EndBlock => _tblEndBlockBrush,
-                            Core.CharacterTable.DteType.EndLine => _tblEndLineBrush,
-                            _ => _asciiBrush
-                        };
+                            textBrush = byteCount switch
+                            {
+                                1 => dteType == Core.CharacterTable.DteType.Ascii ? _tblAsciiBrush : _asciiBrush,
+                                2 => dteType == Core.CharacterTable.DteType.DualTitleEncoding ? _tblDteBrush : _tblMteBrush,
+                                3 => _tbl3ByteBrush,
+                                >= 4 => _tbl4PlusByteBrush,
+                                _ => _asciiBrush
+                            };
+                        }
                     }
                 }
                 catch
@@ -1335,8 +1374,9 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
-        /// Get how many bytes this character consumes (1 for ASCII, 2+ for DTE/MTE)
+        /// Get how many bytes this character consumes (1 for ASCII, 2-8 for multi-byte)
         /// CRITICAL: Must be called before GetDisplayCharacter to know if we should skip next bytes
+        /// Uses greedy matching - tries longest matches first (8 bytes down to 2)
         /// </summary>
         private int GetCharacterByteCount(HexLine line, int byteIndex)
         {
@@ -1345,20 +1385,23 @@ namespace WpfHexaEditor.Controls
 
             try
             {
-                var byteData = line.Bytes[byteIndex];
-                string hexByte = byteData.Value.ToString("X2");
-
-                // Check for multi-byte (DTE/MTE) match first if there's a next byte
-                if (byteIndex < line.Bytes.Count - 1)
+                // GREEDY MATCHING: Try multi-byte matches from longest to shortest (8 bytes down to 2)
+                int maxLen = Math.Min(8, line.Bytes.Count - byteIndex);
+                for (int len = maxLen; len >= 2; len--)
                 {
-                    var nextByte = line.Bytes[byteIndex + 1];
-                    string hexNext = nextByte.Value.ToString("X2");
-                    string multiByteHex = hexByte + hexNext;
+                    // Build hex string for this length
+                    var hexKey = new StringBuilder(len * 2);
+                    for (int j = 0; j < len; j++)
+                    {
+                        if (byteIndex + j >= line.Bytes.Count)
+                            break;
+                        hexKey.Append(line.Bytes[byteIndex + j].Value.ToString("X2"));
+                    }
 
-                    var (mteText, mteType) = _tblStream.FindMatch(multiByteHex, showSpecialValue: true);
+                    var (text, type) = _tblStream.FindMatch(hexKey.ToString(), showSpecialValue: true);
 
                     // Check if this TBL type is enabled for display
-                    bool shouldShow = mteType switch
+                    bool shouldShow = type switch
                     {
                         Core.CharacterTable.DteType.DualTitleEncoding => _showTblDte,
                         Core.CharacterTable.DteType.MultipleTitleEncoding => _showTblMte,
@@ -1368,14 +1411,11 @@ namespace WpfHexaEditor.Controls
                         _ => false
                     };
 
-                    // If multi-byte match found and type is enabled, return 2 (DTE consumes 2 bytes)
-                    if (mteText != "#" && shouldShow)
-                    {
-                        return 2; // DTE/MTE always consumes 2 bytes
-                    }
+                    if (text != "#" && shouldShow)
+                        return len; // Return actual byte count consumed (2-8 bytes)
                 }
 
-                // Single byte character
+                // Single byte fallback
                 return 1;
             }
             catch
@@ -1425,16 +1465,20 @@ namespace WpfHexaEditor.Controls
             {
                 try
                 {
-                    string hexByte = byteData.Value.ToString("X2");
-
-                    // Try multi-byte (DTE/MTE) match first if there's a next byte
-                    if (byteIndex < line.Bytes.Count - 1)
+                    // GREEDY MATCHING: Try multi-byte matches from longest to shortest (8 bytes down to 2)
+                    int maxLen = Math.Min(8, line.Bytes.Count - byteIndex);
+                    for (int len = maxLen; len >= 2; len--)
                     {
-                        var nextByte = line.Bytes[byteIndex + 1];
-                        string hexNext = nextByte.Value.ToString("X2");
-                        string multiByteHex = hexByte + hexNext;
+                        // Build hex string for this length
+                        var hexKey = new StringBuilder(len * 2);
+                        for (int j = 0; j < len; j++)
+                        {
+                            if (byteIndex + j >= line.Bytes.Count)
+                                break;
+                            hexKey.Append(line.Bytes[byteIndex + j].Value.ToString("X2"));
+                        }
 
-                        var (mteText, mteType) = _tblStream.FindMatch(multiByteHex, showSpecialValue: true);
+                        var (mteText, mteType) = _tblStream.FindMatch(hexKey.ToString(), showSpecialValue: true);
 
                         // Check if this TBL type is enabled for display
                         bool shouldShow = mteType switch
@@ -1449,14 +1493,11 @@ namespace WpfHexaEditor.Controls
 
                         // If multi-byte match found and type is enabled, return it
                         if (mteText != "#" && shouldShow)
-                        {
-                            // Note: For proper MTE rendering, the caller should skip the next byte
-                            // For now, we'll just show the first character (V1 Legacy behavior)
                             return mteText;
-                        }
                     }
 
                     // Single byte match
+                    string hexByte = byteData.Value.ToString("X2");
                     var (text, dteType) = _tblStream.FindMatch(hexByte, showSpecialValue: true);
 
                     // Check if this TBL type is enabled for display

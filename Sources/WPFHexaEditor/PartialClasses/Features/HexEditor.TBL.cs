@@ -57,6 +57,12 @@ namespace WpfHexaEditor
                     tooltipText.AppendLine($"  • DTE (Dual): {_tblStream.TotalDte}");
                 if (_tblStream.TotalMte > 0)
                     tooltipText.AppendLine($"  • MTE (Multi): {_tblStream.TotalMte}");
+                if (_tblStream.Total3Byte > 0)
+                    tooltipText.AppendLine($"  • 3-Byte: {_tblStream.Total3Byte}");
+                if (_tblStream.Total4Byte > 0)
+                    tooltipText.AppendLine($"  • 4-Byte: {_tblStream.Total4Byte}");
+                if (_tblStream.Total5PlusByte > 0)
+                    tooltipText.AppendLine($"  • 5+ Byte: {_tblStream.Total5PlusByte}");
                 if (_tblStream.TotalJaponais > 0)
                     tooltipText.AppendLine($"  • Japanese: {_tblStream.TotalJaponais}");
                 if (_tblStream.TotalEndBlock > 0)

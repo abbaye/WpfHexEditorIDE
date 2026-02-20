@@ -160,6 +160,8 @@ namespace WpfHexEditor.Sample.Main.Views.Components
             TblEndBlockColorPicker.SelectedColor = HexEditorControl.TblEndBlockColor;
             TblEndLineColorPicker.SelectedColor = HexEditorControl.TblEndLineColor;
             TblDefaultColorPicker.SelectedColor = HexEditorControl.TblDefaultColor;
+            Tbl3ByteColorPicker.SelectedColor = HexEditorControl.Tbl3ByteColor;
+            Tbl4PlusByteColorPicker.SelectedColor = HexEditorControl.Tbl4PlusByteColor;
 
             // Bar Chart
             BarChartColorPicker.SelectedColor = HexEditorControl.BarChartColor;
@@ -745,6 +747,18 @@ namespace WpfHexEditor.Sample.Main.Views.Components
         {
             if (HexEditorControl == null) return;
             HexEditorControl.TblDefaultColor = e;
+        }
+
+        private void Tbl3ByteColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.Tbl3ByteColor = e;
+        }
+
+        private void Tbl4PlusByteColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.Tbl4PlusByteColor = e;
         }
 
         // Bar Chart
