@@ -319,9 +319,102 @@ namespace WpfHexEditor.Sample.Main.Views.Components
         private void AutoHighlightColorPicker_ColorChanged(object sender, Color e)
         {
             if (HexEditorControl == null) return;
-
-            // Set the auto-highlight color
             HexEditorControl.AutoHighLiteSelectionByteBrush = e;
+        }
+
+        // Selection Colors
+        private void SelectionFirstColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.SelectionFirstColor = e;
+        }
+
+        private void SelectionSecondColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.SelectionSecondColor = e;
+        }
+
+        // Byte State Colors
+        private void ByteModifiedColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.ByteModifiedColor = e;
+        }
+
+        private void ByteDeletedColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.ByteDeletedColor = e;
+        }
+
+        private void ByteAddedColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.ByteAddedColor = e;
+        }
+
+        // General Colors
+        private void HighLightColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.HighLightColor = e;
+        }
+
+        private void MouseOverColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.MouseOverColor = e;
+        }
+
+        private void ForegroundSecondColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.ForegroundSecondColor = e;
+        }
+
+        private void ForegroundContrastPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.ForegroundContrast = e;
+        }
+
+        // TBL Colors
+        private void TblDteColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.TblDteColor = e;
+        }
+
+        private void TblMteColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.TblMteColor = e;
+        }
+
+        private void TblEndBlockColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.TblEndBlockColor = e;
+        }
+
+        private void TblEndLineColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.TblEndLineColor = e;
+        }
+
+        private void TblDefaultColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.TblDefaultColor = e;
+        }
+
+        // Bar Chart
+        private void BarChartColorPicker_ColorChanged(object sender, Color e)
+        {
+            if (HexEditorControl == null) return;
+            HexEditorControl.BarChartColor = e;
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
