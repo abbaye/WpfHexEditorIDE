@@ -699,4 +699,86 @@
   <data name="InvertSelectionTooltipString" xml:space="preserve">
     <value>Inverser tous les bits de chaque octet (XOR avec 0xFF)</value>
   </data>
+  <!-- Relative Search (Découverte d'encodage ROM) -->
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Recherche Relative...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>Recherche Relative - Découverte d'Encodage</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>Texte Connu:</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>Rechercher</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>Utiliser la recherche parallèle</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>Correspondances min:</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>Propositions max:</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>TBL chargé: {0} entrées (sera utilisé pour validation)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>Aucun TBL chargé (propositions notées indépendamment)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>Propositions d'Encodage</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>Décalage</value>
+  </data>
+  <data name="RelativeSearchScoreColumnString" xml:space="preserve">
+    <value>Score</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>Correspondances</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>Texte d'Exemple</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>Aperçu (Texte Décodé)</value>
+  </data>
+  <data name="RelativeSearchMatchPositionsString" xml:space="preserve">
+    <value>Correspondances à:</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>Exporter vers TBL</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>Naviguer vers Correspondance</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>Recherche dans 256 décalages d'encodage...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>Trouvé {0} propositions en {1}ms</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>Trouvé {0} propositions en {1}ms (meilleure correspondance validée par TBL chargé!)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>Recherche dans 256 décalages (validation contre {0} entrées TBL)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>Recherche annulée</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>Aucune proposition d'encodage trouvée. Essayez un texte différent.</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>Aucun fichier ouvert</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>Entrez un texte que vous savez présent dans le ROM (ex: "World", "Start", "Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>Enregistrer la proposition d'encodage sélectionnée comme fichier TBL</value>
+  </data>
 </root>

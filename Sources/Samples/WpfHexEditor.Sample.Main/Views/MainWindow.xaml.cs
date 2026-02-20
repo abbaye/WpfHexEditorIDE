@@ -204,6 +204,15 @@ namespace WpfHexEditor.Sample.Main.Views
             CloseTblMenuItem.IsEnabled = false;
         }
 
+        /// <summary>
+        /// Opens the Relative Search dialog for ROM encoding discovery
+        /// </summary>
+        private void RelativeSearchMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Show the Relative Search dialog (HexEditor API)
+            HexEditorControl.ShowRelativeSearchDialog();
+        }
+
         #endregion
     }
 }

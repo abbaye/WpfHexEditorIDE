@@ -1784,5 +1784,239 @@ namespace WpfHexaEditor.Properties {
                 return ResourceManager.GetString("ProgressTitleSearching", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Relative Search....
+        /// </summary>
+        public static string RelativeSearchMenuString {
+            get {
+                return ResourceManager.GetString("RelativeSearchMenuString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Relative Search - Encoding Discovery.
+        /// </summary>
+        public static string RelativeSearchString {
+            get {
+                return ResourceManager.GetString("RelativeSearchString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Known Text:.
+        /// </summary>
+        public static string RelativeSearchKnownTextString {
+            get {
+                return ResourceManager.GetString("RelativeSearchKnownTextString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string RelativeSearchSearchButtonString {
+            get {
+                return ResourceManager.GetString("RelativeSearchSearchButtonString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use parallel search.
+        /// </summary>
+        public static string RelativeSearchUseParallelString {
+            get {
+                return ResourceManager.GetString("RelativeSearchUseParallelString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Min matches:.
+        /// </summary>
+        public static string RelativeSearchMinMatchesString {
+            get {
+                return ResourceManager.GetString("RelativeSearchMinMatchesString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Max proposals:.
+        /// </summary>
+        public static string RelativeSearchMaxProposalsString {
+            get {
+                return ResourceManager.GetString("RelativeSearchMaxProposalsString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to TBL loaded: {0} entries (will be used for validation).
+        /// </summary>
+        public static string RelativeSearchTblLoadedString {
+            get {
+                return ResourceManager.GetString("RelativeSearchTblLoadedString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No TBL loaded (proposals scored independently).
+        /// </summary>
+        public static string RelativeSearchNoTblString {
+            get {
+                return ResourceManager.GetString("RelativeSearchNoTblString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Encoding Proposals.
+        /// </summary>
+        public static string RelativeSearchProposalsHeaderString {
+            get {
+                return ResourceManager.GetString("RelativeSearchProposalsHeaderString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Offset.
+        /// </summary>
+        public static string RelativeSearchOffsetColumnString {
+            get {
+                return ResourceManager.GetString("RelativeSearchOffsetColumnString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Score.
+        /// </summary>
+        public static string RelativeSearchScoreColumnString {
+            get {
+                return ResourceManager.GetString("RelativeSearchScoreColumnString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Matches.
+        /// </summary>
+        public static string RelativeSearchMatchesColumnString {
+            get {
+                return ResourceManager.GetString("RelativeSearchMatchesColumnString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sample Text.
+        /// </summary>
+        public static string RelativeSearchSampleColumnString {
+            get {
+                return ResourceManager.GetString("RelativeSearchSampleColumnString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Preview (Decoded Text).
+        /// </summary>
+        public static string RelativeSearchPreviewHeaderString {
+            get {
+                return ResourceManager.GetString("RelativeSearchPreviewHeaderString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Export to TBL.
+        /// </summary>
+        public static string RelativeSearchExportTblString {
+            get {
+                return ResourceManager.GetString("RelativeSearchExportTblString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Navigate to Match.
+        /// </summary>
+        public static string RelativeSearchNavigateString {
+            get {
+                return ResourceManager.GetString("RelativeSearchNavigateString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Searching 256 encoding offsets....
+        /// </summary>
+        public static string RelativeSearchSearchingString {
+            get {
+                return ResourceManager.GetString("RelativeSearchSearchingString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Found {0} proposals in {1}ms.
+        /// </summary>
+        public static string RelativeSearchFoundProposalsString {
+            get {
+                return ResourceManager.GetString("RelativeSearchFoundProposalsString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Found {0} proposals in {1}ms (top match validated by loaded TBL!).
+        /// </summary>
+        public static string RelativeSearchFoundWithValidationString {
+            get {
+                return ResourceManager.GetString("RelativeSearchFoundWithValidationString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Searching 256 offsets (validating against {0} TBL entries)....
+        /// </summary>
+        public static string RelativeSearchSearchingWithTblString {
+            get {
+                return ResourceManager.GetString("RelativeSearchSearchingWithTblString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search cancelled.
+        /// </summary>
+        public static string RelativeSearchCancelledString {
+            get {
+                return ResourceManager.GetString("RelativeSearchCancelledString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No encoding proposals found. Try different search text..
+        /// </summary>
+        public static string RelativeSearchNoProposalsString {
+            get {
+                return ResourceManager.GetString("RelativeSearchNoProposalsString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No file is open.
+        /// </summary>
+        public static string RelativeSearchNoFileOpenString {
+            get {
+                return ResourceManager.GetString("RelativeSearchNoFileOpenString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter text you know appears in the ROM (e.g., "World", "Start", "Hero").
+        /// </summary>
+        public static string RelativeSearchKnownTextTooltipString {
+            get {
+                return ResourceManager.GetString("RelativeSearchKnownTextTooltipString", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Save the selected encoding proposal as a TBL file.
+        /// </summary>
+        public static string RelativeSearchExportTooltipString {
+            get {
+                return ResourceManager.GetString("RelativeSearchExportTooltipString", resourceCulture);
+            }
+        }
     }
 }

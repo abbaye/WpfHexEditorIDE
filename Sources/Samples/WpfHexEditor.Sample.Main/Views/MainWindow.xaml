@@ -235,6 +235,15 @@
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
+                <Separator/>
+                <MenuItem Click="RelativeSearchMenuItem_Click">
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔎 " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
+                            <TextBlock Text="{DynamicResource RelativeSearchMenuString}"/>
+                        </StackPanel>
+                    </MenuItem.Header>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="{DynamicResource Menu_Tools}">
