@@ -66,7 +66,10 @@
       "Bash(for dir in docs/architecture/core-systems docs/architecture/data-flow docs/api-reference Sources/Samples Sources/WPFHexaEditor/PartialClasses Sources/WPFHexaEditor/Services Sources/WPFHexaEditor/Core/Bytes)",
       "Bash(do test:*)",
       "Bash(git rm:*)",
-      "Bash(/tmp/tooltip_translations.txt:*)"
+      "Bash(/tmp/tooltip_translations.txt:*)",
+      "Bash(for file in *.resx)",
+      "Bash(do sed -i '/<data name=\"\"HexSettings_Display_HideDeleted\"\"/,/<\\\\/data>/d' \"$file\")",
+      "Bash(do sed -i '/<data name=\"\"Ribbon_View_HideDeleted\"\"/,/<\\\\/data>/d' \"$file\")"
     ]
   }
 }

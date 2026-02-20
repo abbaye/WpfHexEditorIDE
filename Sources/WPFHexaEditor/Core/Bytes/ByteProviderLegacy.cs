@@ -694,6 +694,230 @@ namespace WpfHexaEditor.Core.Bytes
                 ? _byteModifiedDictionary
                 : _byteModifiedDictionary.Where(b => b.Value.Action == action).ToDictionary(k => k.Key, v => v.Value);
 
+        #region Restore Original Bytes (Issue #127)
+
+        /// <summary>
+        /// Restore a modified byte to its original value at the specified position.
+        /// Removes the modification from the dictionary and clears the red highlight.
+        /// This method only removes the modification entry; the original value is automatically
+        /// read from the underlying file/stream when accessed.
+        /// </summary>
+        /// <param name="bytePositionInStream">Position of the byte to restore</param>
+        /// <returns>True if the modification was removed, false if no modification existed at this position</returns>
+        /// <example>
+        /// // Restore a single modified byte
+        /// if (provider.RestoreOriginalByte(0x100))
+        ///     Console.WriteLine("Byte restored to original value");
+        /// else
+        ///     Console.WriteLine("No modification found at this position");
+        /// </example>
+        public bool RestoreOriginalByte(long bytePositionInStream)
+        {
+            if (bytePositionInStream < 0)
+                return false;
+
+            var (success, byteModified) = CheckIfIsByteModified(bytePositionInStream, ByteAction.Modified);
+
+            if (success)
+            {
+                _byteModifiedDictionary.Remove(bytePositionInStream);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Remove modification at specified position (V2-compatible alias).
+        /// </summary>
+        /// <param name="bytePositionInStream">Position of the byte to restore</param>
+        /// <returns>True if modification was removed</returns>
+        public bool RemoveModification(long bytePositionInStream) => RestoreOriginalByte(bytePositionInStream);
+
+        /// <summary>
+        /// Reset byte to original value (concise alias).
+        /// </summary>
+        /// <param name="bytePositionInStream">Position of the byte to reset</param>
+        /// <returns>True if modification was removed</returns>
+        public bool ResetByte(long bytePositionInStream) => RestoreOriginalByte(bytePositionInStream);
+
+        /// <summary>
+        /// Restore multiple modified bytes to their original values.
+        /// Uses array for optimal performance with known positions.
+        /// </summary>
+        /// <param name="positions">Array of positions to restore</param>
+        /// <returns>Number of modifications successfully removed</returns>
+        /// <example>
+        /// long[] positions = new long[] { 0x100, 0x200, 0x300 };
+        /// int count = provider.RestoreOriginalBytes(positions);
+        /// Console.WriteLine($"Restored {count} out of {positions.Length} bytes");
+        /// </example>
+        public int RestoreOriginalBytes(long[] positions)
+        {
+            if (positions == null || positions.Length == 0)
+                return 0;
+
+            int count = 0;
+            foreach (var position in positions)
+            {
+                if (RestoreOriginalByte(position))
+                    count++;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreOriginalBytes(long[])
+        /// </summary>
+        public int RemoveModifications(long[] positions) => RestoreOriginalBytes(positions);
+
+        /// <summary>
+        /// Concise alias for RestoreOriginalBytes(long[])
+        /// </summary>
+        public int ResetBytes(long[] positions) => RestoreOriginalBytes(positions);
+
+        /// <summary>
+        /// Restore multiple modified bytes to their original values.
+        /// Uses IEnumerable for maximum flexibility (LINQ, generators, etc.).
+        /// </summary>
+        /// <param name="positions">Enumerable collection of positions to restore</param>
+        /// <returns>Number of modifications successfully removed</returns>
+        /// <example>
+        /// // Works with LINQ
+        /// var positions = provider.GetByteModifieds(ByteAction.Modified)
+        ///     .Keys
+        ///     .Where(p => p >= 0x1000 && p <= 0x2000);
+        /// int count = provider.RestoreOriginalBytes(positions);
+        ///
+        /// // Works with List
+        /// List&lt;long&gt; posList = new List&lt;long&gt; { 10, 20, 30 };
+        /// count = provider.RestoreOriginalBytes(posList);
+        ///
+        /// // Works with HashSet
+        /// HashSet&lt;long&gt; posSet = new HashSet&lt;long&gt; { 40, 50, 60 };
+        /// count = provider.RestoreOriginalBytes(posSet);
+        /// </example>
+        public int RestoreOriginalBytes(IEnumerable<long> positions)
+        {
+            if (positions == null)
+                return 0;
+
+            int count = 0;
+            foreach (var position in positions)
+            {
+                if (RestoreOriginalByte(position))
+                    count++;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreOriginalBytes(IEnumerable)
+        /// </summary>
+        public int RemoveModifications(IEnumerable<long> positions) => RestoreOriginalBytes(positions);
+
+        /// <summary>
+        /// Concise alias for RestoreOriginalBytes(IEnumerable)
+        /// </summary>
+        public int ResetBytes(IEnumerable<long> positions) => RestoreOriginalBytes(positions);
+
+        /// <summary>
+        /// Restore all modified bytes in a continuous range to their original values.
+        /// Automatically handles inverted ranges (startPosition > stopPosition).
+        /// </summary>
+        /// <param name="startPosition">Start position (inclusive)</param>
+        /// <param name="stopPosition">Stop position (inclusive)</param>
+        /// <returns>Number of modifications successfully removed</returns>
+        /// <example>
+        /// // Restore all modifications between 0x100 and 0x200
+        /// int count = provider.RestoreOriginalBytesInRange(0x100, 0x200);
+        /// Console.WriteLine($"Restored {count} bytes in range");
+        ///
+        /// // Handles inverted range automatically
+        /// count = provider.RestoreOriginalBytesInRange(0x200, 0x100); // Same result
+        /// </example>
+        public int RestoreOriginalBytesInRange(long startPosition, long stopPosition)
+        {
+            // Fix inverted range
+            if (startPosition > stopPosition)
+                (startPosition, stopPosition) = (stopPosition, startPosition);
+
+            if (startPosition < 0)
+                return 0;
+
+            int count = 0;
+
+            // Get all modified positions in the range to avoid modifying dictionary during enumeration
+            var positionsInRange = _byteModifiedDictionary
+                .Where(kvp => kvp.Value.Action == ByteAction.Modified
+                           && kvp.Key >= startPosition
+                           && kvp.Key <= stopPosition)
+                .Select(kvp => kvp.Key)
+                .ToList();
+
+            foreach (var position in positionsInRange)
+            {
+                if (_byteModifiedDictionary.Remove(position))
+                    count++;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreOriginalBytesInRange
+        /// </summary>
+        public int RemoveModificationsInRange(long startPosition, long stopPosition)
+            => RestoreOriginalBytesInRange(startPosition, stopPosition);
+
+        /// <summary>
+        /// Concise alias for RestoreOriginalBytesInRange
+        /// </summary>
+        public int ResetBytesInRange(long startPosition, long stopPosition)
+            => RestoreOriginalBytesInRange(startPosition, stopPosition);
+
+        /// <summary>
+        /// Restore ALL modified bytes to their original values.
+        /// WARNING: This clears all modifications in the entire file.
+        /// Insertions and deletions are NOT affected, only modifications.
+        /// </summary>
+        /// <returns>Number of modifications removed</returns>
+        /// <example>
+        /// // Clear all modifications (like Ctrl+Z repeated until nothing left)
+        /// int count = provider.RestoreAllModifications();
+        /// Console.WriteLine($"Restored {count} modifications");
+        /// </example>
+        public int RestoreAllModifications()
+        {
+            var modifiedPositions = _byteModifiedDictionary
+                .Where(kvp => kvp.Value.Action == ByteAction.Modified)
+                .Select(kvp => kvp.Key)
+                .ToList();
+
+            int count = 0;
+            foreach (var position in modifiedPositions)
+            {
+                if (_byteModifiedDictionary.Remove(position))
+                    count++;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreAllModifications
+        /// </summary>
+        public int RemoveAllModifications() => RestoreAllModifications();
+
+        /// <summary>
+        /// Concise alias for RestoreAllModifications
+        /// </summary>
+        public int ResetAllBytes() => RestoreAllModifications();
+
+        #endregion Restore Original Bytes (Issue #127)
+
         /// <summary>
         /// Fill with byte at position
         /// </summary>

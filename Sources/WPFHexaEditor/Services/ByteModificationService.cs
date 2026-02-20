@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
+using System.Collections.Generic;
 using WpfHexaEditor.Core.Bytes;
 
 namespace WpfHexaEditor.Services
@@ -266,6 +267,193 @@ namespace WpfHexaEditor.Services
                 return false;
 
             return !provider.ReadOnlyMode && !readOnlyMode && allowDelete;
+        }
+
+        #endregion
+
+        #region Restore Operations (Issue #127)
+
+        /// <summary>
+        /// Restore a modified byte to its original value.
+        /// Removes the modification from the dictionary and clears the highlight.
+        /// </summary>
+        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="bytePositionInStream">Position to restore</param>
+        /// <returns>True if modification was removed, false if no modification existed</returns>
+        /// <example>
+        /// var modService = new ByteModificationService();
+        /// if (modService.RestoreOriginalByte(provider, 0x100))
+        ///     Console.WriteLine("Byte restored successfully");
+        /// </example>
+        public bool RestoreOriginalByte(ByteProviderLegacy provider, long bytePositionInStream)
+        {
+            if (provider == null || !provider.IsOpen)
+                return false;
+
+            return provider.RestoreOriginalByte(bytePositionInStream);
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreOriginalByte
+        /// </summary>
+        public bool RemoveModification(ByteProviderLegacy provider, long position)
+            => RestoreOriginalByte(provider, position);
+
+        /// <summary>
+        /// Concise alias for RestoreOriginalByte
+        /// </summary>
+        public bool ResetByte(ByteProviderLegacy provider, long position)
+            => RestoreOriginalByte(provider, position);
+
+        /// <summary>
+        /// Restore multiple modified bytes (array overload).
+        /// </summary>
+        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="positions">Array of positions to restore</param>
+        /// <returns>Number of modifications successfully removed</returns>
+        /// <example>
+        /// var modService = new ByteModificationService();
+        /// long[] positions = { 0x100, 0x200, 0x300 };
+        /// int count = modService.RestoreOriginalBytes(provider, positions);
+        /// Console.WriteLine($"Restored {count} bytes");
+        /// </example>
+        public int RestoreOriginalBytes(ByteProviderLegacy provider, long[] positions)
+        {
+            if (provider == null || !provider.IsOpen || positions == null)
+                return 0;
+
+            return provider.RestoreOriginalBytes(positions);
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreOriginalBytes(long[])
+        /// </summary>
+        public int RemoveModifications(ByteProviderLegacy provider, long[] positions)
+            => RestoreOriginalBytes(provider, positions);
+
+        /// <summary>
+        /// Concise alias for RestoreOriginalBytes(long[])
+        /// </summary>
+        public int ResetBytes(ByteProviderLegacy provider, long[] positions)
+            => RestoreOriginalBytes(provider, positions);
+
+        /// <summary>
+        /// Restore multiple modified bytes (IEnumerable overload).
+        /// Supports LINQ queries, List, HashSet, and other collections.
+        /// </summary>
+        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="positions">Enumerable collection of positions to restore</param>
+        /// <returns>Number of modifications successfully removed</returns>
+        /// <example>
+        /// var modService = new ByteModificationService();
+        ///
+        /// // With LINQ
+        /// var positions = provider.GetByteModifieds(ByteAction.Modified)
+        ///     .Keys
+        ///     .Where(p => p >= 0x1000 && p <= 0x2000);
+        /// int count = modService.RestoreOriginalBytes(provider, positions);
+        ///
+        /// // With List
+        /// List&lt;long&gt; posList = new List&lt;long&gt; { 10, 20, 30 };
+        /// count = modService.RestoreOriginalBytes(provider, posList);
+        /// </example>
+        public int RestoreOriginalBytes(ByteProviderLegacy provider, IEnumerable<long> positions)
+        {
+            if (provider == null || !provider.IsOpen || positions == null)
+                return 0;
+
+            return provider.RestoreOriginalBytes(positions);
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreOriginalBytes(IEnumerable)
+        /// </summary>
+        public int RemoveModifications(ByteProviderLegacy provider, IEnumerable<long> positions)
+            => RestoreOriginalBytes(provider, positions);
+
+        /// <summary>
+        /// Concise alias for RestoreOriginalBytes(IEnumerable)
+        /// </summary>
+        public int ResetBytes(ByteProviderLegacy provider, IEnumerable<long> positions)
+            => RestoreOriginalBytes(provider, positions);
+
+        /// <summary>
+        /// Restore all modifications in a continuous range.
+        /// Automatically handles inverted ranges (start > stop).
+        /// </summary>
+        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="startPosition">Start position (inclusive)</param>
+        /// <param name="stopPosition">Stop position (inclusive)</param>
+        /// <returns>Number of modifications successfully removed</returns>
+        /// <example>
+        /// var modService = new ByteModificationService();
+        /// int count = modService.RestoreOriginalBytesInRange(provider, 0x100, 0x200);
+        /// Console.WriteLine($"Restored {count} bytes in range");
+        /// </example>
+        public int RestoreOriginalBytesInRange(ByteProviderLegacy provider, long startPosition, long stopPosition)
+        {
+            if (provider == null || !provider.IsOpen)
+                return 0;
+
+            return provider.RestoreOriginalBytesInRange(startPosition, stopPosition);
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreOriginalBytesInRange
+        /// </summary>
+        public int RemoveModificationsInRange(ByteProviderLegacy provider, long start, long stop)
+            => RestoreOriginalBytesInRange(provider, start, stop);
+
+        /// <summary>
+        /// Concise alias for RestoreOriginalBytesInRange
+        /// </summary>
+        public int ResetBytesInRange(ByteProviderLegacy provider, long start, long stop)
+            => RestoreOriginalBytesInRange(provider, start, stop);
+
+        /// <summary>
+        /// Restore ALL modifications in the file.
+        /// WARNING: This clears all byte modifications.
+        /// Insertions and deletions are NOT affected.
+        /// </summary>
+        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <returns>Number of modifications removed</returns>
+        /// <example>
+        /// var modService = new ByteModificationService();
+        /// int count = modService.RestoreAllModifications(provider);
+        /// Console.WriteLine($"Cleared {count} modifications");
+        /// </example>
+        public int RestoreAllModifications(ByteProviderLegacy provider)
+        {
+            if (provider == null || !provider.IsOpen)
+                return 0;
+
+            return provider.RestoreAllModifications();
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreAllModifications
+        /// </summary>
+        public int RemoveAllModifications(ByteProviderLegacy provider)
+            => RestoreAllModifications(provider);
+
+        /// <summary>
+        /// Concise alias for RestoreAllModifications
+        /// </summary>
+        public int ResetAllBytes(ByteProviderLegacy provider)
+            => RestoreAllModifications(provider);
+
+        /// <summary>
+        /// Check if a restore operation is allowed.
+        /// Restore is allowed if the provider is open and not in read-only mode.
+        /// </summary>
+        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <returns>True if restore is allowed</returns>
+        public bool CanRestore(ByteProviderLegacy provider)
+        {
+            if (provider == null || !provider.IsOpen)
+                return false;
+
+            return !provider.ReadOnlyMode;
         }
 
         #endregion

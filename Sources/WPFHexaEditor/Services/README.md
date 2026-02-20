@@ -259,7 +259,7 @@ highlightService.UnHighLightAll();
 ---
 
 ### 6. 🔧 ByteModificationService
-**Responsibility:** Manage byte modifications (insert, delete, modify)
+**Responsibility:** Manage byte modifications (insert, delete, modify, restore) ✨ **Updated for Issue #127**
 
 **Main methods:**
 - `ModifyByte()` - Modify byte at position
@@ -271,6 +271,16 @@ highlightService.UnHighLightAll();
 - `CanModify()` - Check if modification allowed
 - `CanInsert()` - Check if insertion allowed
 - `CanDelete()` - Check if deletion allowed
+
+**✨ NEW - Restore Operations (Issue #127):**
+- `RestoreOriginalByte()` - Restore single byte to original value
+- `RemoveModification()` - V2-compatible alias
+- `ResetByte()` - Concise alias
+- `RestoreOriginalBytes(long[])` - Restore multiple bytes (array)
+- `RestoreOriginalBytes(IEnumerable<long>)` - Restore multiple bytes (LINQ support)
+- `RestoreOriginalBytesInRange()` - Restore range of bytes
+- `RestoreAllModifications()` - Restore ALL modifications
+- `CanRestore()` - Check if restore is allowed
 
 **Usage:**
 ```csharp
@@ -289,14 +299,47 @@ int inserted = modService.InsertBytes(_provider, new byte[] { 0x48, 0x65, 0x6C, 
 // Delete range (handles inverted positions automatically)
 long lastPos = modService.DeleteRange(_provider, start, stop, readOnlyMode, allowDelete);
 
+// ✨ NEW - Restore modified byte to original value (Issue #127)
+if (modService.RestoreOriginalByte(_provider, 0x100))
+{
+    Console.WriteLine("Byte restored to original value");
+}
+
+// ✨ NEW - Restore multiple bytes
+long[] positions = { 0x100, 0x200, 0x300 };
+int count = modService.RestoreOriginalBytes(_provider, positions);
+Console.WriteLine($"Restored {count} bytes");
+
+// ✨ NEW - Restore with LINQ
+var modifiedPositions = _provider.GetByteModifieds(ByteAction.Modified)
+    .Keys
+    .Where(p => p >= 0x1000 && p <= 0x2000);
+count = modService.RestoreOriginalBytes(_provider, modifiedPositions);
+
+// ✨ NEW - Restore range
+count = modService.RestoreOriginalBytesInRange(_provider, 0x100, 0x200);
+
+// ✨ NEW - Restore ALL modifications
+count = modService.RestoreAllModifications(_provider);
+
 // Check permissions
 if (modService.CanModify(_provider, readOnlyMode))
 {
     // Perform modification
 }
+
+if (modService.CanRestore(_provider))
+{
+    // Perform restore
+}
 ```
 
 **Note:** All methods include validation and return success/failure indicators.
+
+**Three naming variants available:**
+- `RestoreOriginalByte()` - Descriptive ✅ Recommended
+- `RemoveModification()` - V2-compatible
+- `ResetByte()` - Concise
 
 ---
 

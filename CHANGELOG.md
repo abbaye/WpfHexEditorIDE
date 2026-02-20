@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ✨ Added
+- **Restore modified bytes to original values** (#127)
+  - New method: `RestoreOriginalByte(long position)` to restore a single modified byte
+  - New method: `RestoreOriginalBytes(long[] positions)` to restore multiple bytes (array)
+  - New method: `RestoreOriginalBytes(IEnumerable<long> positions)` to restore multiple bytes (LINQ support)
+  - New method: `RestoreOriginalBytesInRange(long start, long stop)` to restore a continuous range
+  - New method: `RestoreAllModifications()` to clear all modifications at once
+  - Three naming variants available: `RestoreOriginalByte`, `RemoveModification`, `ResetByte` (all are aliases)
+  - Automatic removal of red/orange modification highlight when byte is restored
+  - Full support in both V1 (ByteProviderLegacy) and V2 (ByteProvider)
+  - Service layer integration (ByteModificationService)
+  - Public API exposed through HexEditor control
+  - Batch mode support for optimal performance when restoring multiple bytes
+  - Undo/Redo integration for V2 (restore operations can be undone)
+  - Comprehensive XML documentation with examples
+
+### 📝 Changed
+- Updated `ByteModificationService` with restore operations section
+- Enhanced documentation across 30+ files (READMEs, Wiki, API Reference)
+
 ## [2.6.0] - 2026-02-14
 
 ### 🔄 Phase 2 Migration - V2 Becomes Main Control

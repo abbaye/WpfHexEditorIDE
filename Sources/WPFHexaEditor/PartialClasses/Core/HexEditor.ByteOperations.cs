@@ -399,6 +399,217 @@ namespace WpfHexaEditor
             return _viewModel.Provider.GetByteModifieds(action);
         }
 
+        #region Restore Original Bytes (Issue #127)
+
+        /// <summary>
+        /// Restore a modified byte to its original value and remove red highlight.
+        /// This removes the modification entry; the original value is automatically
+        /// read from the underlying file when accessed again.
+        /// </summary>
+        /// <param name="position">Position of the byte to restore (virtual)</param>
+        /// <returns>True if the modification was removed, false if no modification existed</returns>
+        /// <example>
+        /// // Restore a single byte that was modified
+        /// if (hexEditor.RestoreOriginalByte(0x100))
+        ///     Console.WriteLine("Byte restored successfully");
+        /// </example>
+        public bool RestoreOriginalByte(long position)
+        {
+            if (_viewModel?.Provider == null || ReadOnlyMode)
+                return false;
+
+            bool result = _viewModel.Provider.RestoreOriginalByte(position);
+
+            if (result)
+            {
+                // Refresh view to remove highlight
+                RefreshView(false, true);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Remove modification at specified position (V2-compatible alias).
+        /// </summary>
+        /// <param name="position">Position of the byte to restore</param>
+        /// <returns>True if modification was removed</returns>
+        public bool RemoveModification(long position) => RestoreOriginalByte(position);
+
+        /// <summary>
+        /// Reset byte to original value (concise alias).
+        /// </summary>
+        /// <param name="position">Position of the byte to reset</param>
+        /// <returns>True if modification was removed</returns>
+        public bool ResetByte(long position) => RestoreOriginalByte(position);
+
+        /// <summary>
+        /// Restore multiple modified bytes to their original values.
+        /// </summary>
+        /// <param name="positions">Array of positions to restore</param>
+        /// <returns>Number of modifications successfully removed</returns>
+        /// <example>
+        /// long[] positions = new long[] { 0x100, 0x200, 0x300 };
+        /// int count = hexEditor.RestoreOriginalBytes(positions);
+        /// MessageBox.Show($"Restored {count} bytes");
+        /// </example>
+        public int RestoreOriginalBytes(long[] positions)
+        {
+            if (_viewModel?.Provider == null || ReadOnlyMode || positions == null)
+                return 0;
+
+            int count = _viewModel.Provider.RestoreOriginalBytes(positions);
+
+            if (count > 0)
+            {
+                // Refresh view to remove highlights
+                RefreshView(false, true);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreOriginalBytes(long[])
+        /// </summary>
+        public int RemoveModifications(long[] positions) => RestoreOriginalBytes(positions);
+
+        /// <summary>
+        /// Concise alias for RestoreOriginalBytes(long[])
+        /// </summary>
+        public int ResetBytes(long[] positions) => RestoreOriginalBytes(positions);
+
+        /// <summary>
+        /// Restore multiple modified bytes to their original values.
+        /// Supports LINQ queries, List, HashSet, and other IEnumerable collections.
+        /// </summary>
+        /// <param name="positions">Enumerable collection of positions to restore</param>
+        /// <returns>Number of modifications successfully removed</returns>
+        /// <example>
+        /// // Works with LINQ
+        /// var positions = hexEditor.GetByteModifieds(ByteAction.Modified)
+        ///     .Keys
+        ///     .Where(p => p >= 0x1000 && p <= 0x2000);
+        /// int count = hexEditor.RestoreOriginalBytes(positions);
+        ///
+        /// // Works with List
+        /// List&lt;long&gt; posList = new List&lt;long&gt; { 10, 20, 30 };
+        /// count = hexEditor.RestoreOriginalBytes(posList);
+        /// </example>
+        public int RestoreOriginalBytes(IEnumerable<long> positions)
+        {
+            if (_viewModel?.Provider == null || ReadOnlyMode || positions == null)
+                return 0;
+
+            int count = _viewModel.Provider.RestoreOriginalBytes(positions);
+
+            if (count > 0)
+            {
+                // Refresh view to remove highlights
+                RefreshView(false, true);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreOriginalBytes(IEnumerable)
+        /// </summary>
+        public int RemoveModifications(IEnumerable<long> positions) => RestoreOriginalBytes(positions);
+
+        /// <summary>
+        /// Concise alias for RestoreOriginalBytes(IEnumerable)
+        /// </summary>
+        public int ResetBytes(IEnumerable<long> positions) => RestoreOriginalBytes(positions);
+
+        /// <summary>
+        /// Restore all modified bytes in a continuous range to their original values.
+        /// Automatically handles inverted ranges (startPosition > stopPosition).
+        /// </summary>
+        /// <param name="startPosition">Start position (inclusive, virtual)</param>
+        /// <param name="stopPosition">Stop position (inclusive, virtual)</param>
+        /// <returns>Number of modifications successfully removed</returns>
+        /// <example>
+        /// // Restore modifications in current selection
+        /// if (hexEditor.SelectionLength > 0)
+        /// {
+        ///     int count = hexEditor.RestoreOriginalBytesInRange(
+        ///         hexEditor.SelectionStart,
+        ///         hexEditor.SelectionStop);
+        ///     MessageBox.Show($"Restored {count} bytes in selection");
+        /// }
+        /// </example>
+        public int RestoreOriginalBytesInRange(long startPosition, long stopPosition)
+        {
+            if (_viewModel?.Provider == null || ReadOnlyMode)
+                return 0;
+
+            int count = _viewModel.Provider.RestoreOriginalBytesInRange(startPosition, stopPosition);
+
+            if (count > 0)
+            {
+                // Refresh view to remove highlights
+                RefreshView(false, true);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreOriginalBytesInRange
+        /// </summary>
+        public int RemoveModificationsInRange(long startPosition, long stopPosition)
+            => RestoreOriginalBytesInRange(startPosition, stopPosition);
+
+        /// <summary>
+        /// Concise alias for RestoreOriginalBytesInRange
+        /// </summary>
+        public int ResetBytesInRange(long startPosition, long stopPosition)
+            => RestoreOriginalBytesInRange(startPosition, stopPosition);
+
+        /// <summary>
+        /// Restore ALL modified bytes to their original values.
+        /// WARNING: This clears all modifications in the entire file.
+        /// Insertions and deletions are NOT affected.
+        /// </summary>
+        /// <returns>Number of modifications removed</returns>
+        /// <example>
+        /// // Clear all modifications
+        /// if (MessageBox.Show("Restore all modifications?", "Confirm",
+        ///     MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+        /// {
+        ///     int count = hexEditor.RestoreAllModifications();
+        ///     MessageBox.Show($"Restored {count} modifications");
+        /// }
+        /// </example>
+        public int RestoreAllModifications()
+        {
+            if (_viewModel?.Provider == null || ReadOnlyMode)
+                return 0;
+
+            int count = _viewModel.Provider.RestoreAllModifications();
+
+            if (count > 0)
+            {
+                // Refresh view to remove all highlights
+                RefreshView(false, true);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// V2-compatible alias for RestoreAllModifications
+        /// </summary>
+        public int RemoveAllModifications() => RestoreAllModifications();
+
+        /// <summary>
+        /// Concise alias for RestoreAllModifications
+        /// </summary>
+        public int ResetAllBytes() => RestoreAllModifications();
+
+        #endregion Restore Original Bytes (Issue #127)
+
         #endregion
     }
 }
