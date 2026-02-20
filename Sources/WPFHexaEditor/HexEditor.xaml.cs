@@ -2315,8 +2315,19 @@ namespace WpfHexaEditor
 
         private static void OnTblColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is HexEditor editor)
-                editor.HexViewport?.InvalidateVisual();
+            if (d is HexEditor editor && editor.HexViewport != null)
+            {
+                // Sync all TBL colors to HexViewport for rendering
+                editor.HexViewport.TblDteColor = editor.TblDteColor;
+                editor.HexViewport.TblMteColor = editor.TblMteColor;
+                editor.HexViewport.TblAsciiColor = editor.TblAsciiColor;
+                editor.HexViewport.TblJaponaisColor = editor.TblJaponaisColor;
+                editor.HexViewport.TblEndBlockColor = editor.TblEndBlockColor;
+                editor.HexViewport.TblEndLineColor = editor.TblEndLineColor;
+                editor.HexViewport.TblDefaultColor = editor.TblDefaultColor;
+
+                editor.HexViewport.InvalidateVisual();
+            }
         }
 
         /// <summary>
