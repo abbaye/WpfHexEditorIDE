@@ -76,19 +76,19 @@
     <value>خروج</value>
   </data>
   <data name="Menu_Edit" xml:space="preserve">
-    <value>_تحرير</value>
+    <value>تحرير</value>
   </data>
   <data name="Menu_Edit_Undo" xml:space="preserve">
-    <value>_تراجع</value>
+    <value>تراجع</value>
   </data>
   <data name="Menu_Edit_Redo" xml:space="preserve">
-    <value>_إعادة</value>
+    <value>إعادة</value>
   </data>
   <data name="Menu_Edit_Find" xml:space="preserve">
-    <value>_بحث...</value>
+    <value>بحث...</value>
   </data>
   <data name="Menu_Edit_FindReplace" xml:space="preserve">
-    <value>بحث و_استبدال...</value>
+    <value>بحث واستبدال...</value>
   </data>
   <data name="Menu_Edit_Copy" xml:space="preserve">
     <value>نسخ</value>
@@ -100,52 +100,52 @@
     <value>حذف التحديد</value>
   </data>
   <data name="Menu_Edit_SelectAll" xml:space="preserve">
-    <value>تحديد ال_كل</value>
+    <value>تحديد الكل</value>
   </data>
   <data name="Menu_Edit_ClearSelection" xml:space="preserve">
-    <value>_مسح التحديد</value>
+    <value>مسح التحديد</value>
   </data>
   <data name="Menu_Edit_Bookmarks" xml:space="preserve">
-    <value>_إشارات مرجعية</value>
+    <value>إشارات مرجعية</value>
   </data>
   <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
     <value>تبديل الإشارة المرجعية</value>
   </data>
   <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
-    <value>_مسح جميع الإشارات المرجعية</value>
+    <value>مسح جميع الإشارات المرجعية</value>
   </data>
   <data name="Menu_Search" xml:space="preserve">
-    <value>_بحث</value>
+    <value>بحث</value>
   </data>
   <data name="Menu_Search_FindNext" xml:space="preserve">
-    <value>بحث عن ال_تالي</value>
+    <value>بحث عن التالي</value>
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
-    <value>بحث عن ال_سابق</value>
+    <value>بحث عن السابق</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
-    <value>_أدوات</value>
+    <value>أدوات</value>
   </data>
   <data name="Menu_Tools_Bookmarks" xml:space="preserve">
-    <value>_إشارات مرجعية</value>
+    <value>إشارات مرجعية</value>
   </data>
   <data name="Menu_Tools_NextBookmark" xml:space="preserve">
-    <value>الإشارة المرجعية ال_تالية</value>
+    <value>الإشارة المرجعية التالية</value>
   </data>
   <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
-    <value>الإشارة المرجعية ال_سابقة</value>
+    <value>الإشارة المرجعية السابقة</value>
   </data>
   <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
-    <value>_عرض جميع الإشارات المرجعية...</value>
+    <value>عرض جميع الإشارات المرجعية...</value>
   </data>
   <data name="Menu_Position" xml:space="preserve">
-    <value>_موضع</value>
+    <value>موضع</value>
   </data>
   <data name="Menu_Position_GoTo" xml:space="preserve">
-    <value>_الانتقال إلى الموضع...</value>
+    <value>الانتقال إلى الموضع...</value>
   </data>
   <data name="Menu_View" xml:space="preserve">
-    <value>_عرض</value>
+    <value>عرض</value>
   </data>
   <data name="Menu_View_DisplayOptions" xml:space="preserve">
     <value>خيارات العرض</value>
@@ -166,13 +166,13 @@
     <value>البايتات في كل سطر</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>_خيارات</value>
+    <value>خيارات</value>
   </data>
   <data name="Menu_Options_SettingsPanel" xml:space="preserve">
-    <value>_لوحة الإعدادات...</value>
+    <value>لوحة الإعدادات...</value>
   </data>
   <data name="Menu_Options_Advanced" xml:space="preserve">
-    <value>_خيارات متقدمة (المظهر، اللغة)...</value>
+    <value>خيارات متقدمة (المظهر، اللغة)...</value>
   </data>
   <data name="Menu_Options_ContextMenu" xml:space="preserve">
     <value>قائمة السياق</value>
@@ -187,16 +187,16 @@
     <value>عد البايتات المحددة</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
-    <value>_مساعدة</value>
+    <value>مساعدة</value>
   </data>
   <data name="Menu_Help_About" xml:space="preserve">
-    <value>_حول</value>
+    <value>حول</value>
   </data>
   <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
-    <value>_اختصارات لوحة المفاتيح</value>
+    <value>اختصارات لوحة المفاتيح</value>
   </data>
   <data name="Menu_File" xml:space="preserve">
-    <value>_ملف</value>
+    <value>ملف</value>
   </data>
   <data name="Toolbar_Open" xml:space="preserve">
     <value>📂 فتح</value>

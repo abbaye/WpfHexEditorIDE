@@ -76,19 +76,19 @@
     <value>Afsluiten</value>
   </data>
   <data name="Menu_Edit" xml:space="preserve">
-    <value>_Bewerken</value>
+    <value>Bewerken</value>
   </data>
   <data name="Menu_Edit_Undo" xml:space="preserve">
-    <value>_Ongedaan maken</value>
+    <value>Ongedaan maken</value>
   </data>
   <data name="Menu_Edit_Redo" xml:space="preserve">
-    <value>_Opnieuw</value>
+    <value>Opnieuw</value>
   </data>
   <data name="Menu_Edit_Find" xml:space="preserve">
-    <value>_Zoeken...</value>
+    <value>Zoeken...</value>
   </data>
   <data name="Menu_Edit_FindReplace" xml:space="preserve">
-    <value>Zoeken en _Vervangen...</value>
+    <value>Zoeken en Vervangen...</value>
   </data>
   <data name="Menu_Edit_Copy" xml:space="preserve">
     <value>Kopiëren</value>
@@ -100,52 +100,52 @@
     <value>Selectie verwijderen</value>
   </data>
   <data name="Menu_Edit_SelectAll" xml:space="preserve">
-    <value>_Alles selecteren</value>
+    <value>Alles selecteren</value>
   </data>
   <data name="Menu_Edit_ClearSelection" xml:space="preserve">
-    <value>Selectie _wissen</value>
+    <value>Selectie wissen</value>
   </data>
   <data name="Menu_Edit_Bookmarks" xml:space="preserve">
-    <value>_Bladwijzers</value>
+    <value>Bladwijzers</value>
   </data>
   <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
     <value>Bladwijzer schakelen</value>
   </data>
   <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
-    <value>Alle bladwijzers _wissen</value>
+    <value>Alle bladwijzers wissen</value>
   </data>
   <data name="Menu_Search" xml:space="preserve">
-    <value>_Zoeken</value>
+    <value>Zoeken</value>
   </data>
   <data name="Menu_Search_FindNext" xml:space="preserve">
-    <value>Volgende _zoeken</value>
+    <value>Volgende zoeken</value>
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
-    <value>Vorige _zoeken</value>
+    <value>Vorige zoeken</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
-    <value>_Extra</value>
+    <value>Extra</value>
   </data>
   <data name="Menu_Tools_Bookmarks" xml:space="preserve">
-    <value>_Bladwijzers</value>
+    <value>Bladwijzers</value>
   </data>
   <data name="Menu_Tools_NextBookmark" xml:space="preserve">
-    <value>_Volgende bladwijzer</value>
+    <value>Volgende bladwijzer</value>
   </data>
   <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
-    <value>_Vorige bladwijzer</value>
+    <value>Vorige bladwijzer</value>
   </data>
   <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
-    <value>Alle bladwijzers _tonen...</value>
+    <value>Alle bladwijzers tonen...</value>
   </data>
   <data name="Menu_Position" xml:space="preserve">
-    <value>_Positie</value>
+    <value>Positie</value>
   </data>
   <data name="Menu_Position_GoTo" xml:space="preserve">
-    <value>_Ga naar positie...</value>
+    <value>Ga naar positie...</value>
   </data>
   <data name="Menu_View" xml:space="preserve">
-    <value>_Beeld</value>
+    <value>Beeld</value>
   </data>
   <data name="Menu_View_DisplayOptions" xml:space="preserve">
     <value>Weergaveopties</value>
@@ -166,13 +166,13 @@
     <value>Bytes per regel</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>_Opties</value>
+    <value>Opties</value>
   </data>
   <data name="Menu_Options_SettingsPanel" xml:space="preserve">
-    <value>_Instellingenpaneel...</value>
+    <value>Instellingenpaneel...</value>
   </data>
   <data name="Menu_Options_Advanced" xml:space="preserve">
-    <value>_Geavanceerde opties (Thema, Taal)...</value>
+    <value>Geavanceerde opties (Thema, Taal)...</value>
   </data>
   <data name="Menu_Options_ContextMenu" xml:space="preserve">
     <value>Contextmenu</value>
@@ -187,16 +187,16 @@
     <value>Geselecteerde bytes tellen</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
-    <value>_Help</value>
+    <value>Help</value>
   </data>
   <data name="Menu_Help_About" xml:space="preserve">
-    <value>_Over</value>
+    <value>Over</value>
   </data>
   <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
-    <value>_Sneltoetsen</value>
+    <value>Sneltoetsen</value>
   </data>
   <data name="Menu_File" xml:space="preserve">
-    <value>_Bestand</value>
+    <value>Bestand</value>
   </data>
   <data name="Toolbar_Open" xml:space="preserve">
     <value>📂 Openen</value>

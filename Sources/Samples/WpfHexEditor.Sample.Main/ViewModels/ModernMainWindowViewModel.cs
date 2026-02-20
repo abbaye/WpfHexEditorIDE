@@ -22,7 +22,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
     {
         #region Fields
 
-        private bool _isSettingsPanelVisible = false;
+        private bool _isSettingsPanelVisible = true;  // Open by default to show HexEditor options
         private bool _isSearchPanelVisible = true;
         private bool _isFileLoaded = false;
         private bool _isOperationActive = false;
@@ -170,6 +170,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
         public ICommand ToggleSearchPanelCommand { get; }
         public ICommand ShowAboutCommand { get; }
         public ICommand ShowKeyboardShortcutsCommand { get; }
+        public ICommand OpenGitHubCommand { get; }
         public ICommand ReverseSelectionCommand { get; }
         public ICommand InvertSelectionCommand { get; }
         public ICommand FillWithByteCommand { get; }
@@ -224,6 +225,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             ToggleSearchPanelCommand = new RelayCommand(ToggleSearchPanel);
             ShowAboutCommand = new RelayCommand(ShowAbout);
             ShowKeyboardShortcutsCommand = new RelayCommand(ShowKeyboardShortcuts);
+            OpenGitHubCommand = new RelayCommand(OpenGitHub);
 
             // Byte operations
             ReverseSelectionCommand = new RelayCommand(ReverseSelection, () => IsFileLoaded && _hexEditor?.HasSelection == true && !IsOperationActive);
@@ -816,6 +818,23 @@ namespace WpfHexEditor.Sample.Main.ViewModels
                 "About",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
+        }
+
+        private void OpenGitHub()
+        {
+            try
+            {
+                var psi = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "https://github.com/abbaye/WpfHexEditorControl",
+                    UseShellExecute = true
+                };
+                System.Diagnostics.Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to open GitHub link: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void OnThemeChanged(object sender, string themeName)

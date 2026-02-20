@@ -14,14 +14,190 @@ namespace WpfHexEditor.Sample.Main.Views.Components
     /// </summary>
     public partial class HexEditorSettings : UserControl
     {
+        private global::WpfHexaEditor.HexEditor _hexEditorControl;
+
         /// <summary>
         /// Reference to the HexEditor control to configure
         /// </summary>
-        public global::WpfHexaEditor.HexEditor HexEditorControl { get; set; }
+        public global::WpfHexaEditor.HexEditor HexEditorControl
+        {
+            get => _hexEditorControl;
+            set
+            {
+                _hexEditorControl = value;
+
+                // IMPORTANT: Set DataContext on the content (ScrollViewer), not on the UserControl itself
+                // This preserves the UserControl's inherited DataContext for its own bindings (like Visibility)
+                if (Content is FrameworkElement contentElement)
+                {
+                    contentElement.DataContext = value;
+                    System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] Set content DataContext. Content = {contentElement.GetType().Name}, HexEditor.ShowByteToolTip = {value?.ShowByteToolTip}");
+                }
+
+                // Recreate bindings if control is already loaded, otherwise wait for Loaded event
+                if (value != null && IsLoaded)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] Control already loaded, calling RecreateBindings immediately");
+                    RecreateBindings();
+                }
+                else if (value != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] Control not yet loaded, will call RecreateBindings in Loaded event");
+                }
+            }
+        }
 
         public HexEditorSettings()
         {
             InitializeComponent();
+
+            // Update bindings when control is loaded
+            Loaded += (s, e) =>
+            {
+                System.Diagnostics.Debug.WriteLine("[HexEditorSettings] Loaded event fired");
+                if (HexEditorControl != null && Content is FrameworkElement contentElement)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] HexEditorControl exists, Content DataContext = {contentElement.DataContext?.GetType().Name}");
+
+                    // IMPORTANT: Call RecreateBindings here when visual tree is fully loaded
+                    System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] Calling RecreateBindings from Loaded event");
+                    RecreateBindings();
+
+                    // Also log current state after setup
+                    System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] After RecreateBindings: ShowByteToolTip={HexEditorControl.ShowByteToolTip}");
+                }
+            };
+
+            // Monitor DataContext changes on content
+            if (Content is FrameworkElement element)
+            {
+                element.DataContextChanged += (s, e) =>
+                {
+                    System.Diagnostics.Debug.WriteLine($"[HexEditorSettings.Content] DataContextChanged: Old={e.OldValue?.GetType().Name}, New={e.NewValue?.GetType().Name}");
+                };
+            }
+        }
+
+        private void RecreateBindings()
+        {
+            if (HexEditorControl == null || Content is not FrameworkElement contentRoot)
+                return;
+
+            System.Diagnostics.Debug.WriteLine("[HexEditorSettings] RecreateBindings called");
+
+            // Find all CheckBox controls and set up two-way synchronization
+            void SetupCheckBoxBindings(DependencyObject element)
+            {
+                if (element == null) return;
+
+                if (element is CheckBox checkBox)
+                {
+                    // Get the binding to determine which property to sync
+                    var binding = System.Windows.Data.BindingOperations.GetBinding(checkBox, CheckBox.IsCheckedProperty);
+                    if (binding != null && binding.Path != null)
+                    {
+                        var propertyName = binding.Path.Path;
+                        System.Diagnostics.Debug.WriteLine($"  Setting up CheckBox for property: {propertyName}");
+
+                        // Set initial value from HexEditor
+                        var property = HexEditorControl.GetType().GetProperty(propertyName);
+                        if (property != null && property.PropertyType == typeof(bool))
+                        {
+                            checkBox.IsChecked = (bool)property.GetValue(HexEditorControl);
+
+                            // Remove old handler if exists
+                            checkBox.Checked -= CheckBox_Changed;
+                            checkBox.Unchecked -= CheckBox_Changed;
+
+                            // Add handler to update HexEditor when checkbox changes
+                            checkBox.Checked += CheckBox_Changed;
+                            checkBox.Unchecked += CheckBox_Changed;
+
+                            // Store property name in Tag for the handler
+                            checkBox.Tag = propertyName;
+                        }
+                    }
+                }
+
+                // Recurse through visual tree
+                int childCount = System.Windows.Media.VisualTreeHelper.GetChildrenCount(element);
+                for (int i = 0; i < childCount; i++)
+                {
+                    var child = System.Windows.Media.VisualTreeHelper.GetChild(element, i);
+                    SetupCheckBoxBindings(child);
+                }
+            }
+
+            SetupCheckBoxBindings(contentRoot);
+        }
+
+        private void CheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            if (sender is not CheckBox checkBox || HexEditorControl == null)
+                return;
+
+            var propertyName = checkBox.Tag as string;
+            if (string.IsNullOrEmpty(propertyName))
+                return;
+
+            var property = HexEditorControl.GetType().GetProperty(propertyName);
+            if (property != null && property.PropertyType == typeof(bool))
+            {
+                var newValue = checkBox.IsChecked == true;
+                property.SetValue(HexEditorControl, newValue);
+                System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] CheckBox changed: {propertyName} = {newValue}");
+            }
+        }
+
+        private void UpdateBindings()
+        {
+            // Force all bindings to update from source (HexEditor properties)
+            // This is needed because bindings were created before DataContext was set
+
+            System.Diagnostics.Debug.WriteLine("[HexEditorSettings] UpdateBindings called");
+
+            // Start from the content element, not the UserControl itself
+            if (Content is not DependencyObject contentRoot)
+            {
+                System.Diagnostics.Debug.WriteLine("[HexEditorSettings] No content to update");
+                return;
+            }
+
+            int bindingsUpdated = 0;
+
+            // Helper method to recursively update all bindings in visual tree
+            void UpdateBindingsRecursive(DependencyObject element)
+            {
+                if (element == null) return;
+
+                // Get all locally set properties for this element
+                var enumerator = element.GetLocalValueEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    var entry = enumerator.Current;
+                    if (System.Windows.Data.BindingOperations.IsDataBound(element, entry.Property))
+                    {
+                        var bindingExpr = System.Windows.Data.BindingOperations.GetBindingExpression(element, entry.Property);
+                        if (bindingExpr != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"  Updating binding on {element.GetType().Name}.{entry.Property.Name}");
+                            bindingExpr.UpdateTarget();
+                            bindingsUpdated++;
+                        }
+                    }
+                }
+
+                // Recurse through visual tree
+                int childCount = System.Windows.Media.VisualTreeHelper.GetChildrenCount(element);
+                for (int i = 0; i < childCount; i++)
+                {
+                    var child = System.Windows.Media.VisualTreeHelper.GetChild(element, i);
+                    UpdateBindingsRecursive(child);
+                }
+            }
+
+            UpdateBindingsRecursive(contentRoot);
+            System.Diagnostics.Debug.WriteLine($"[HexEditorSettings] Updated {bindingsUpdated} bindings");
         }
 
         private void BytesPerLineComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

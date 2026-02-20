@@ -76,19 +76,19 @@
     <value>Çıkış</value>
   </data>
   <data name="Menu_Edit" xml:space="preserve">
-    <value>_Düzenle</value>
+    <value>Düzenle</value>
   </data>
   <data name="Menu_Edit_Undo" xml:space="preserve">
-    <value>_Geri Al</value>
+    <value>Geri Al</value>
   </data>
   <data name="Menu_Edit_Redo" xml:space="preserve">
-    <value>_Yinele</value>
+    <value>Yinele</value>
   </data>
   <data name="Menu_Edit_Find" xml:space="preserve">
-    <value>_Bul...</value>
+    <value>Bul...</value>
   </data>
   <data name="Menu_Edit_FindReplace" xml:space="preserve">
-    <value>Bul ve _Değiştir...</value>
+    <value>Bul ve Değiştir...</value>
   </data>
   <data name="Menu_Edit_Copy" xml:space="preserve">
     <value>Kopyala</value>
@@ -100,52 +100,52 @@
     <value>Seçimi Sil</value>
   </data>
   <data name="Menu_Edit_SelectAll" xml:space="preserve">
-    <value>_Tümünü Seç</value>
+    <value>Tümünü Seç</value>
   </data>
   <data name="Menu_Edit_ClearSelection" xml:space="preserve">
-    <value>_Seçimi Temizle</value>
+    <value>Seçimi Temizle</value>
   </data>
   <data name="Menu_Edit_Bookmarks" xml:space="preserve">
-    <value>_Yer İmleri</value>
+    <value>Yer İmleri</value>
   </data>
   <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
     <value>Yer İmi Değiştir</value>
   </data>
   <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
-    <value>_Tüm Yer İmlerini Temizle</value>
+    <value>Tüm Yer İmlerini Temizle</value>
   </data>
   <data name="Menu_Search" xml:space="preserve">
-    <value>_Ara</value>
+    <value>Ara</value>
   </data>
   <data name="Menu_Search_FindNext" xml:space="preserve">
-    <value>_Sonrakini Bul</value>
+    <value>Sonrakini Bul</value>
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
-    <value>_Öncekini Bul</value>
+    <value>Öncekini Bul</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
-    <value>_Araçlar</value>
+    <value>Araçlar</value>
   </data>
   <data name="Menu_Tools_Bookmarks" xml:space="preserve">
-    <value>_Yer İmleri</value>
+    <value>Yer İmleri</value>
   </data>
   <data name="Menu_Tools_NextBookmark" xml:space="preserve">
-    <value>_Sonraki Yer İmi</value>
+    <value>Sonraki Yer İmi</value>
   </data>
   <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
-    <value>_Önceki Yer İmi</value>
+    <value>Önceki Yer İmi</value>
   </data>
   <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
-    <value>_Tüm Yer İmlerini Göster...</value>
+    <value>Tüm Yer İmlerini Göster...</value>
   </data>
   <data name="Menu_Position" xml:space="preserve">
-    <value>_Konum</value>
+    <value>Konum</value>
   </data>
   <data name="Menu_Position_GoTo" xml:space="preserve">
-    <value>_Konuma Git...</value>
+    <value>Konuma Git...</value>
   </data>
   <data name="Menu_View" xml:space="preserve">
-    <value>_Görünüm</value>
+    <value>Görünüm</value>
   </data>
   <data name="Menu_View_DisplayOptions" xml:space="preserve">
     <value>Görüntü Seçenekleri</value>
@@ -166,13 +166,13 @@
     <value>Satır Başına Bayt</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>_Seçenekler</value>
+    <value>Seçenekler</value>
   </data>
   <data name="Menu_Options_SettingsPanel" xml:space="preserve">
-    <value>_Ayarlar Paneli...</value>
+    <value>Ayarlar Paneli...</value>
   </data>
   <data name="Menu_Options_Advanced" xml:space="preserve">
-    <value>_Gelişmiş Seçenekler (Tema, Dil)...</value>
+    <value>Gelişmiş Seçenekler (Tema, Dil)...</value>
   </data>
   <data name="Menu_Options_ContextMenu" xml:space="preserve">
     <value>Bağlam Menüsü</value>
@@ -187,16 +187,16 @@
     <value>Seçilen Baytları Say</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
-    <value>_Yardım</value>
+    <value>Yardım</value>
   </data>
   <data name="Menu_Help_About" xml:space="preserve">
-    <value>_Hakkında</value>
+    <value>Hakkında</value>
   </data>
   <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
-    <value>_Klavye Kısayolları</value>
+    <value>Klavye Kısayolları</value>
   </data>
   <data name="Menu_File" xml:space="preserve">
-    <value>_Dosya</value>
+    <value>Dosya</value>
   </data>
   <data name="Toolbar_Open" xml:space="preserve">
     <value>📂 Aç</value>

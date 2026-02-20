@@ -23,6 +23,7 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <components:VisibilityToBoolConverter x:Key="VisibilityToBooleanConverter"/>
     </Window.Resources>
 
     <Window.InputBindings>
@@ -174,7 +175,10 @@
                     </MenuItem.Header>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Command="{Binding ReverseSelectionCommand}">
+                <MenuItem Command="{Binding ReverseSelectionCommand}"
+                          ToolTip="{DynamicResource ReverseSelectionTooltipString}"
+                          ToolTipService.ShowOnDisabled="True"
+                          ToolTipService.IsEnabled="True">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="⇄ " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
@@ -182,7 +186,10 @@
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Command="{Binding InvertSelectionCommand}">
+                <MenuItem Command="{Binding InvertSelectionCommand}"
+                          ToolTip="{DynamicResource InvertSelectionTooltipString}"
+                          ToolTipService.ShowOnDisabled="True"
+                          ToolTipService.IsEnabled="True">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="⊕ " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
@@ -277,7 +284,10 @@
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Byte Operations">
-                    <MenuItem Command="{Binding FillWithByteCommand}">
+                    <MenuItem Command="{Binding FillWithByteCommand}"
+                              ToolTip="{DynamicResource FillWithByteTooltipString}"
+                              ToolTipService.ShowOnDisabled="True"
+                              ToolTipService.IsEnabled="True">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="🎨 " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
@@ -285,7 +295,10 @@
                             </StackPanel>
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Command="{Binding ReplaceByteCommand}">
+                    <MenuItem Command="{Binding ReplaceByteCommand}"
+                              ToolTip="{DynamicResource ReplaceByteTooltipString}"
+                              ToolTipService.ShowOnDisabled="True"
+                              ToolTipService.IsEnabled="True">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="🔄 " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
@@ -309,10 +322,18 @@
 
             <MenuItem Header="{DynamicResource Menu_View}">
                 <MenuItem Header="{DynamicResource Menu_View_DisplayOptions}">
-                    <MenuItem Header="{DynamicResource Menu_View_ShowStatusBar}" IsCheckable="True" IsChecked="True"/>
-                    <MenuItem Header="{DynamicResource Menu_View_ShowHeader}" IsCheckable="True" IsChecked="True"/>
-                    <MenuItem Header="{DynamicResource Menu_View_ShowOffset}" IsCheckable="True" IsChecked="True"/>
-                    <MenuItem Header="{DynamicResource Menu_View_ShowASCII}" IsCheckable="True" IsChecked="True"/>
+                    <MenuItem Header="{DynamicResource Menu_View_ShowStatusBar}"
+                             IsCheckable="True"
+                             IsChecked="{Binding ElementName=HexEditorControl, Path=StatusBarVisibility, Converter={StaticResource VisibilityToBooleanConverter}, Mode=TwoWay}"/>
+                    <MenuItem Header="{DynamicResource Menu_View_ShowHeader}"
+                             IsCheckable="True"
+                             IsChecked="{Binding ElementName=HexEditorControl, Path=HeaderVisibility, Converter={StaticResource VisibilityToBooleanConverter}, Mode=TwoWay}"/>
+                    <MenuItem Header="{DynamicResource Menu_View_ShowOffset}"
+                             IsCheckable="True"
+                             IsChecked="{Binding ElementName=HexEditorControl, Path=ShowOffset, Mode=TwoWay}"/>
+                    <MenuItem Header="{DynamicResource Menu_View_ShowASCII}"
+                             IsCheckable="True"
+                             IsChecked="{Binding ElementName=HexEditorControl, Path=ShowAscii, Mode=TwoWay}"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="{DynamicResource Menu_View_BytesPerLine}">
@@ -341,11 +362,19 @@
                     </MenuItem.Header>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="{DynamicResource Menu_Options_ContextMenu}" IsCheckable="True" IsChecked="True"/>
-                <MenuItem Header="{DynamicResource Menu_Options_ShowByteToolTip}" IsCheckable="True"/>
+                <MenuItem Header="{DynamicResource Menu_Options_ContextMenu}"
+                         IsCheckable="True"
+                         IsChecked="{Binding ElementName=HexEditorControl, Path=AllowContextMenu, Mode=TwoWay}"/>
+                <MenuItem Header="{DynamicResource Menu_Options_ShowByteToolTip}"
+                         IsCheckable="True"
+                         IsChecked="{Binding ElementName=HexEditorControl, Path=ShowByteToolTip, Mode=TwoWay}"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource Menu_Options_AutoHighlight}" IsCheckable="True"/>
-                <MenuItem Header="{DynamicResource Menu_Options_CountSelected}" IsCheckable="True"/>
+                <MenuItem Header="{DynamicResource Menu_Options_AutoHighlight}"
+                         IsCheckable="True"
+                         IsChecked="{Binding ElementName=HexEditorControl, Path=AllowAutoHighLightSelectionByte, Mode=TwoWay}"/>
+                <MenuItem Header="{DynamicResource Menu_Options_CountSelected}"
+                         IsCheckable="True"
+                         IsChecked="{Binding ElementName=HexEditorControl, Path=AllowByteCount, Mode=TwoWay}"/>
             </MenuItem>
 
             <MenuItem Header="{DynamicResource Menu_Help}">
@@ -362,6 +391,15 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="⌨️ " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
                             <TextBlock Text="{DynamicResource Menu_Help_KeyboardShortcuts}"/>
+                        </StackPanel>
+                    </MenuItem.Header>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Command="{Binding OpenGitHubCommand}">
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔗 " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
+                            <TextBlock Text="{DynamicResource Menu_Help_GitHub}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>

@@ -1044,142 +1044,142 @@
 
 
   <data name="Menu_File" xml:space="preserve">
-    <value>_Файл</value>
+    <value>Файл</value>
   </data>
   <data name="Menu_File_Open" xml:space="preserve">
-    <value>_Открыть</value>
+    <value>Открыть</value>
   </data>
   <data name="Menu_File_Save" xml:space="preserve">
-    <value>_Сохранить</value>
+    <value>Сохранить</value>
   </data>
   <data name="Menu_File_SaveAs" xml:space="preserve">
-    <value>Сохранить _как...</value>
+    <value>Сохранить как...</value>
   </data>
   <data name="Menu_File_Close" xml:space="preserve">
-    <value>_Закрыть</value>
+    <value>Закрыть</value>
   </data>
   <data name="Menu_File_Exit" xml:space="preserve">
-    <value>В_ыход</value>
+    <value>Выход</value>
   </data>
   <data name="Menu_Edit" xml:space="preserve">
-    <value>_Правка</value>
+    <value>Правка</value>
   </data>
   <data name="Menu_Edit_Undo" xml:space="preserve">
-    <value>_Отменить</value>
+    <value>Отменить</value>
   </data>
   <data name="Menu_Edit_Redo" xml:space="preserve">
-    <value>_Повторить</value>
+    <value>Повторить</value>
   </data>
   <data name="Menu_Edit_Find" xml:space="preserve">
-    <value>_Найти...</value>
+    <value>Найти...</value>
   </data>
   <data name="Menu_Edit_FindReplace" xml:space="preserve">
-    <value>Найти и _заменить...</value>
+    <value>Найти и заменить...</value>
   </data>
   <data name="Menu_Edit_Copy" xml:space="preserve">
-    <value>_Копировать</value>
+    <value>Копировать</value>
   </data>
   <data name="Menu_Edit_Paste" xml:space="preserve">
-    <value>_Вставить</value>
+    <value>Вставить</value>
   </data>
   <data name="Menu_Edit_DeleteSelection" xml:space="preserve">
-    <value>_Удалить выделение</value>
+    <value>Удалить выделение</value>
   </data>
   <data name="Menu_Edit_SelectAll" xml:space="preserve">
-    <value>Выделить _всё</value>
+    <value>Выделить всё</value>
   </data>
   <data name="Menu_Edit_ClearSelection" xml:space="preserve">
-    <value>_Очистить выделение</value>
+    <value>Очистить выделение</value>
   </data>
   <data name="Menu_Edit_Bookmarks" xml:space="preserve">
-    <value>_Закладки</value>
+    <value>Закладки</value>
   </data>
   <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
-    <value>_Переключить закладку</value>
+    <value>Переключить закладку</value>
   </data>
   <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
-    <value>Очистить _все закладки</value>
+    <value>Очистить все закладки</value>
   </data>
   <data name="Menu_Search" xml:space="preserve">
-    <value>_Поиск</value>
+    <value>Поиск</value>
   </data>
   <data name="Menu_Search_FindNext" xml:space="preserve">
-    <value>Найти _следующее</value>
+    <value>Найти следующее</value>
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
-    <value>Найти _предыдущее</value>
+    <value>Найти предыдущее</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
-    <value>_Инструменты</value>
+    <value>Инструменты</value>
   </data>
   <data name="Menu_Tools_Bookmarks" xml:space="preserve">
-    <value>_Закладки</value>
+    <value>Закладки</value>
   </data>
   <data name="Menu_Tools_NextBookmark" xml:space="preserve">
-    <value>_Следующая закладка</value>
+    <value>Следующая закладка</value>
   </data>
   <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
-    <value>_Предыдущая закладка</value>
+    <value>Предыдущая закладка</value>
   </data>
   <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
-    <value>_Показать все закладки</value>
+    <value>Показать все закладки</value>
   </data>
   <data name="Menu_Position" xml:space="preserve">
-    <value>_Позиция</value>
+    <value>Позиция</value>
   </data>
   <data name="Menu_Position_GoTo" xml:space="preserve">
-    <value>_Перейти к...</value>
+    <value>Перейти к...</value>
   </data>
   <data name="Menu_View" xml:space="preserve">
-    <value>_Вид</value>
+    <value>Вид</value>
   </data>
   <data name="Menu_View_DisplayOptions" xml:space="preserve">
-    <value>_Параметры отображения</value>
+    <value>Параметры отображения</value>
   </data>
   <data name="Menu_View_ShowStatusBar" xml:space="preserve">
-    <value>Показать строку _состояния</value>
+    <value>Показать строку состояния</value>
   </data>
   <data name="Menu_View_ShowHeader" xml:space="preserve">
-    <value>Показать _заголовок</value>
+    <value>Показать заголовок</value>
   </data>
   <data name="Menu_View_ShowOffset" xml:space="preserve">
-    <value>Показать _Offset</value>
+    <value>Показать Offset</value>
   </data>
   <data name="Menu_View_ShowASCII" xml:space="preserve">
-    <value>Показать _ASCII</value>
+    <value>Показать ASCII</value>
   </data>
   <data name="Menu_View_BytesPerLine" xml:space="preserve">
-    <value>_Байтов в строке</value>
+    <value>Байтов в строке</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>_Параметры</value>
+    <value>Параметры</value>
   </data>
   <data name="Menu_Options_SettingsPanel" xml:space="preserve">
-    <value>Панель _настроек</value>
+    <value>Панель настроек</value>
   </data>
   <data name="Menu_Options_Advanced" xml:space="preserve">
-    <value>_Дополнительно...</value>
+    <value>Дополнительно...</value>
   </data>
   <data name="Menu_Options_ContextMenu" xml:space="preserve">
-    <value>_Контекстное меню</value>
+    <value>Контекстное меню</value>
   </data>
   <data name="Menu_Options_ShowByteToolTip" xml:space="preserve">
-    <value>Показать подсказку _байта</value>
+    <value>Показать подсказку байта</value>
   </data>
   <data name="Menu_Options_AutoHighlight" xml:space="preserve">
-    <value>_Автоподсветка</value>
+    <value>Автоподсветка</value>
   </data>
   <data name="Menu_Options_CountSelected" xml:space="preserve">
-    <value>_Подсчет выделенных</value>
+    <value>Подсчет выделенных</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
-    <value>_Справка</value>
+    <value>Справка</value>
   </data>
   <data name="Menu_Help_About" xml:space="preserve">
-    <value>_О программе...</value>
+    <value>О программе...</value>
   </data>
   <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
-    <value>_Горячие клавиши</value>
+    <value>Горячие клавиши</value>
   </data>
   <data name="Toolbar_Open" xml:space="preserve">
     <value>📂 Открыть</value>

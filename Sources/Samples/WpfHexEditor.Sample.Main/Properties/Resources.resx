@@ -83,23 +83,23 @@
 
   <!-- Edit Menu -->
   <data name="Menu_Edit" xml:space="preserve">
-    <value>_Edit</value>
+    <value>Edit</value>
     <comment>Edit menu header</comment>
   </data>
   <data name="Menu_Edit_Undo" xml:space="preserve">
-    <value>_Undo</value>
+    <value>Undo</value>
     <comment>Edit menu - Undo command</comment>
   </data>
   <data name="Menu_Edit_Redo" xml:space="preserve">
-    <value>_Redo</value>
+    <value>Redo</value>
     <comment>Edit menu - Redo command</comment>
   </data>
   <data name="Menu_Edit_Find" xml:space="preserve">
-    <value>_Find...</value>
+    <value>Find...</value>
     <comment>Edit menu - Find command</comment>
   </data>
   <data name="Menu_Edit_FindReplace" xml:space="preserve">
-    <value>Find and _Replace...</value>
+    <value>Find and Replace...</value>
     <comment>Edit menu - Find and Replace command</comment>
   </data>
   <data name="Menu_Edit_Copy" xml:space="preserve">
@@ -115,15 +115,15 @@
     <comment>Edit menu - Delete Selection command</comment>
   </data>
   <data name="Menu_Edit_SelectAll" xml:space="preserve">
-    <value>Select _All</value>
+    <value>Select All</value>
     <comment>Edit menu - Select All command</comment>
   </data>
   <data name="Menu_Edit_ClearSelection" xml:space="preserve">
-    <value>_Clear Selection</value>
+    <value>Clear Selection</value>
     <comment>Edit menu - Clear Selection command</comment>
   </data>
   <data name="Menu_Edit_Bookmarks" xml:space="preserve">
-    <value>_Bookmarks</value>
+    <value>Bookmarks</value>
     <comment>Edit menu - Bookmarks submenu</comment>
   </data>
   <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
@@ -131,59 +131,59 @@
     <comment>Edit menu - Toggle Bookmark command</comment>
   </data>
   <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
-    <value>_Clear All Bookmarks</value>
+    <value>Clear All Bookmarks</value>
     <comment>Edit menu - Clear All Bookmarks command</comment>
   </data>
 
   <!-- Search Menu -->
   <data name="Menu_Search" xml:space="preserve">
-    <value>_Search</value>
+    <value>Search</value>
     <comment>Search menu header</comment>
   </data>
   <data name="Menu_Search_FindNext" xml:space="preserve">
-    <value>Find _Next</value>
+    <value>Find Next</value>
     <comment>Search menu - Find Next command</comment>
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
-    <value>Find _Previous</value>
+    <value>Find Previous</value>
     <comment>Search menu - Find Previous command</comment>
   </data>
 
   <!-- Tools Menu -->
   <data name="Menu_Tools" xml:space="preserve">
-    <value>_Tools</value>
+    <value>Tools</value>
     <comment>Tools menu header</comment>
   </data>
   <data name="Menu_Tools_Bookmarks" xml:space="preserve">
-    <value>_Bookmarks</value>
+    <value>Bookmarks</value>
     <comment>Tools menu - Bookmarks submenu</comment>
   </data>
   <data name="Menu_Tools_NextBookmark" xml:space="preserve">
-    <value>_Next Bookmark</value>
+    <value>Next Bookmark</value>
     <comment>Tools menu - Next Bookmark command</comment>
   </data>
   <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
-    <value>_Previous Bookmark</value>
+    <value>Previous Bookmark</value>
     <comment>Tools menu - Previous Bookmark command</comment>
   </data>
   <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
-    <value>_Show All Bookmarks...</value>
+    <value>Show All Bookmarks...</value>
     <comment>Tools menu - Show All Bookmarks command</comment>
   </data>
 
   <!-- Position Menu -->
   <data name="Menu_Position" xml:space="preserve">
-    <value>_Position</value>
+    <value>Position</value>
     <comment>Position menu header</comment>
   </data>
   <data name="Menu_Position_GoTo" xml:space="preserve">
-    <value>_Go to Position...</value>
+    <value>Go to Position...</value>
     <comment>Position menu - Go to Position command</comment>
   </data>
 
   <!-- View Menu -->
   <data name="Menu_View" xml:space="preserve">
-    <value>_View</value>
+    <value>View</value>
     <comment>View menu header</comment>
   </data>
   <data name="Menu_View_DisplayOptions" xml:space="preserve">
@@ -213,15 +213,15 @@
 
   <!-- Options Menu -->
   <data name="Menu_Options" xml:space="preserve">
-    <value>_Options</value>
+    <value>Options</value>
     <comment>Options menu header</comment>
   </data>
   <data name="Menu_Options_SettingsPanel" xml:space="preserve">
-    <value>_Settings Panel...</value>
+    <value>Settings Panel...</value>
     <comment>Options menu - Settings Panel command</comment>
   </data>
   <data name="Menu_Options_Advanced" xml:space="preserve">
-    <value>_Advanced Options (Theme, Language)...</value>
+    <value>Advanced Options (Theme, Language)...</value>
     <comment>Options menu - Advanced Options command</comment>
   </data>
   <data name="Menu_Options_ContextMenu" xml:space="preserve">
@@ -243,21 +243,25 @@
 
   <!-- Help Menu -->
   <data name="Menu_Help" xml:space="preserve">
-    <value>_Help</value>
+    <value>Help</value>
     <comment>Help menu header</comment>
   </data>
   <data name="Menu_Help_About" xml:space="preserve">
-    <value>_About</value>
+    <value>About</value>
     <comment>Help menu - About command</comment>
   </data>
   <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
-    <value>_Keyboard Shortcuts</value>
+    <value>Keyboard Shortcuts</value>
     <comment>Help menu - Keyboard Shortcuts command</comment>
+  </data>
+  <data name="Menu_Help_GitHub" xml:space="preserve">
+    <value>GitHub Project</value>
+    <comment>Help menu - Open GitHub repository</comment>
   </data>
 
   <!-- File Menu (adding missing header) -->
   <data name="Menu_File" xml:space="preserve">
-    <value>_File</value>
+    <value>File</value>
     <comment>File menu header</comment>
   </data>
 

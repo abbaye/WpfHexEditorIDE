@@ -76,19 +76,19 @@
     <value>Avsluta</value>
   </data>
   <data name="Menu_Edit" xml:space="preserve">
-    <value>_Redigera</value>
+    <value>Redigera</value>
   </data>
   <data name="Menu_Edit_Undo" xml:space="preserve">
-    <value>_Ångra</value>
+    <value>Ångra</value>
   </data>
   <data name="Menu_Edit_Redo" xml:space="preserve">
-    <value>_Gör om</value>
+    <value>Gör om</value>
   </data>
   <data name="Menu_Edit_Find" xml:space="preserve">
-    <value>_Sök...</value>
+    <value>Sök...</value>
   </data>
   <data name="Menu_Edit_FindReplace" xml:space="preserve">
-    <value>Sök och _Ersätt...</value>
+    <value>Sök och Ersätt...</value>
   </data>
   <data name="Menu_Edit_Copy" xml:space="preserve">
     <value>Kopiera</value>
@@ -100,52 +100,52 @@
     <value>Ta bort markering</value>
   </data>
   <data name="Menu_Edit_SelectAll" xml:space="preserve">
-    <value>Markera _allt</value>
+    <value>Markera allt</value>
   </data>
   <data name="Menu_Edit_ClearSelection" xml:space="preserve">
-    <value>_Rensa markering</value>
+    <value>Rensa markering</value>
   </data>
   <data name="Menu_Edit_Bookmarks" xml:space="preserve">
-    <value>_Bokmärken</value>
+    <value>Bokmärken</value>
   </data>
   <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
     <value>Växla bokmärke</value>
   </data>
   <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
-    <value>_Rensa alla bokmärken</value>
+    <value>Rensa alla bokmärken</value>
   </data>
   <data name="Menu_Search" xml:space="preserve">
-    <value>_Sök</value>
+    <value>Sök</value>
   </data>
   <data name="Menu_Search_FindNext" xml:space="preserve">
-    <value>Sök _nästa</value>
+    <value>Sök nästa</value>
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
-    <value>Sök _föregående</value>
+    <value>Sök föregående</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
-    <value>_Verktyg</value>
+    <value>Verktyg</value>
   </data>
   <data name="Menu_Tools_Bookmarks" xml:space="preserve">
-    <value>_Bokmärken</value>
+    <value>Bokmärken</value>
   </data>
   <data name="Menu_Tools_NextBookmark" xml:space="preserve">
-    <value>_Nästa bokmärke</value>
+    <value>Nästa bokmärke</value>
   </data>
   <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
-    <value>_Föregående bokmärke</value>
+    <value>Föregående bokmärke</value>
   </data>
   <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
-    <value>_Visa alla bokmärken...</value>
+    <value>Visa alla bokmärken...</value>
   </data>
   <data name="Menu_Position" xml:space="preserve">
-    <value>_Position</value>
+    <value>Position</value>
   </data>
   <data name="Menu_Position_GoTo" xml:space="preserve">
-    <value>_Gå till position...</value>
+    <value>Gå till position...</value>
   </data>
   <data name="Menu_View" xml:space="preserve">
-    <value>_Visa</value>
+    <value>Visa</value>
   </data>
   <data name="Menu_View_DisplayOptions" xml:space="preserve">
     <value>Visningsalternativ</value>
@@ -166,13 +166,13 @@
     <value>Bytes per rad</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>_Alternativ</value>
+    <value>Alternativ</value>
   </data>
   <data name="Menu_Options_SettingsPanel" xml:space="preserve">
-    <value>_Inställningspanel...</value>
+    <value>Inställningspanel...</value>
   </data>
   <data name="Menu_Options_Advanced" xml:space="preserve">
-    <value>_Avancerade alternativ (Tema, Språk)...</value>
+    <value>Avancerade alternativ (Tema, Språk)...</value>
   </data>
   <data name="Menu_Options_ContextMenu" xml:space="preserve">
     <value>Kontextmeny</value>
@@ -187,16 +187,16 @@
     <value>Räkna markerade bytes</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
-    <value>_Hjälp</value>
+    <value>Hjälp</value>
   </data>
   <data name="Menu_Help_About" xml:space="preserve">
-    <value>_Om</value>
+    <value>Om</value>
   </data>
   <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
-    <value>_Tangentbordsgenvägar</value>
+    <value>Tangentbordsgenvägar</value>
   </data>
   <data name="Menu_File" xml:space="preserve">
-    <value>_Arkiv</value>
+    <value>Arkiv</value>
   </data>
   <data name="Toolbar_Open" xml:space="preserve">
     <value>📂 Öppna</value>

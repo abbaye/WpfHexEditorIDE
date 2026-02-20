@@ -76,19 +76,19 @@
     <value>종료</value>
   </data>
   <data name="Menu_Edit" xml:space="preserve">
-    <value>편집(_E)</value>
+    <value>편집(E)</value>
   </data>
   <data name="Menu_Edit_Undo" xml:space="preserve">
-    <value>실행 취소(_U)</value>
+    <value>실행 취소(U)</value>
   </data>
   <data name="Menu_Edit_Redo" xml:space="preserve">
-    <value>다시 실행(_R)</value>
+    <value>다시 실행(R)</value>
   </data>
   <data name="Menu_Edit_Find" xml:space="preserve">
-    <value>찾기(_F)...</value>
+    <value>찾기(F)...</value>
   </data>
   <data name="Menu_Edit_FindReplace" xml:space="preserve">
-    <value>찾기 및 바꾸기(_R)...</value>
+    <value>찾기 및 바꾸기(R)...</value>
   </data>
   <data name="Menu_Edit_Copy" xml:space="preserve">
     <value>복사</value>
@@ -100,52 +100,52 @@
     <value>선택 항목 삭제</value>
   </data>
   <data name="Menu_Edit_SelectAll" xml:space="preserve">
-    <value>모두 선택(_A)</value>
+    <value>모두 선택(A)</value>
   </data>
   <data name="Menu_Edit_ClearSelection" xml:space="preserve">
-    <value>선택 지우기(_C)</value>
+    <value>선택 지우기(C)</value>
   </data>
   <data name="Menu_Edit_Bookmarks" xml:space="preserve">
-    <value>책갈피(_B)</value>
+    <value>책갈피(B)</value>
   </data>
   <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
     <value>책갈피 전환</value>
   </data>
   <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
-    <value>모든 책갈피 지우기(_C)</value>
+    <value>모든 책갈피 지우기(C)</value>
   </data>
   <data name="Menu_Search" xml:space="preserve">
-    <value>검색(_S)</value>
+    <value>검색(S)</value>
   </data>
   <data name="Menu_Search_FindNext" xml:space="preserve">
-    <value>다음 찾기(_N)</value>
+    <value>다음 찾기(N)</value>
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
-    <value>이전 찾기(_P)</value>
+    <value>이전 찾기(P)</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
-    <value>도구(_T)</value>
+    <value>도구(T)</value>
   </data>
   <data name="Menu_Tools_Bookmarks" xml:space="preserve">
-    <value>책갈피(_B)</value>
+    <value>책갈피(B)</value>
   </data>
   <data name="Menu_Tools_NextBookmark" xml:space="preserve">
-    <value>다음 책갈피(_N)</value>
+    <value>다음 책갈피(N)</value>
   </data>
   <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
-    <value>이전 책갈피(_P)</value>
+    <value>이전 책갈피(P)</value>
   </data>
   <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
-    <value>모든 책갈피 표시(_S)...</value>
+    <value>모든 책갈피 표시(S)...</value>
   </data>
   <data name="Menu_Position" xml:space="preserve">
-    <value>위치(_P)</value>
+    <value>위치(P)</value>
   </data>
   <data name="Menu_Position_GoTo" xml:space="preserve">
-    <value>위치로 이동(_G)...</value>
+    <value>위치로 이동(G)...</value>
   </data>
   <data name="Menu_View" xml:space="preserve">
-    <value>보기(_V)</value>
+    <value>보기(V)</value>
   </data>
   <data name="Menu_View_DisplayOptions" xml:space="preserve">
     <value>표시 옵션</value>
@@ -166,13 +166,13 @@
     <value>줄당 바이트 수</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>옵션(_O)</value>
+    <value>옵션(O)</value>
   </data>
   <data name="Menu_Options_SettingsPanel" xml:space="preserve">
-    <value>설정 패널(_S)...</value>
+    <value>설정 패널(S)...</value>
   </data>
   <data name="Menu_Options_Advanced" xml:space="preserve">
-    <value>고급 옵션 (테마, 언어)(_A)...</value>
+    <value>고급 옵션 (테마, 언어)(A)...</value>
   </data>
   <data name="Menu_Options_ContextMenu" xml:space="preserve">
     <value>상황에 맞는 메뉴</value>
@@ -187,16 +187,16 @@
     <value>선택한 바이트 수 세기</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
-    <value>도움말(_H)</value>
+    <value>도움말(H)</value>
   </data>
   <data name="Menu_Help_About" xml:space="preserve">
-    <value>정보(_A)</value>
+    <value>정보(A)</value>
   </data>
   <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
-    <value>키보드 단축키(_K)</value>
+    <value>키보드 단축키(K)</value>
   </data>
   <data name="Menu_File" xml:space="preserve">
-    <value>파일(_F)</value>
+    <value>파일(F)</value>
   </data>
   <data name="Toolbar_Open" xml:space="preserve">
     <value>📂 열기</value>

@@ -311,7 +311,20 @@ namespace WpfHexaEditor.Core.Bytes
             }
             else if (physicalPos.HasValue)
             {
-                _editsManager.ModifyByte(physicalPos.Value, value);
+                // CRITICAL FIX: Check if new value matches original file value
+                // If it does, REMOVE modification instead of adding it
+                var (originalValue, success) = _fileProvider.ReadByte(physicalPos.Value);
+
+                if (success && value == originalValue)
+                {
+                    // New value matches original file - REMOVE modification marker
+                    _editsManager.RemoveModification(physicalPos.Value);
+                }
+                else
+                {
+                    // New value is different - mark as modified
+                    _editsManager.ModifyByte(physicalPos.Value, value);
+                }
             }
         }
 

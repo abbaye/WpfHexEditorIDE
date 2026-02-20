@@ -14,9 +14,9 @@
 
   <br/>
 
-  <img src="Images/Sample11-NOTBL.png?raw=true" alt="WPF HexEditor V2" width="700"/>
+  <img src="Images/SampleV2_001.png?raw=true" alt="WPF HexEditor V2" width="700"/>
   <br/>
-  <sub><i>Screenshot from V1 (Legacy)</i></sub>
+  <sub><i>Screenshot from bran new V2 version</i></sub>
 
   <p>
     <a href="#-quick-start"><b>Quick Start</b></a> •

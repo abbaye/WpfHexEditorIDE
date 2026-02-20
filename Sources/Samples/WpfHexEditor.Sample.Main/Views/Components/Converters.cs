@@ -37,6 +37,30 @@ namespace WpfHexEditor.Sample.Main.Views.Components
     }
 
     /// <summary>
+    /// Converter for visibility to boolean (reverse of BoolToVisibilityConverter)
+    /// </summary>
+    public class VisibilityToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Visibility visibility)
+            {
+                return visibility == Visibility.Visible;
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolValue)
+            {
+                return boolValue ? Visibility.Visible : Visibility.Collapsed;
+            }
+            return Visibility.Collapsed;
+        }
+    }
+
+    /// <summary>
     /// Converter for integer to boolean (used for BytesPerLine radio buttons)
     /// </summary>
     public class IntToBoolConverter : IValueConverter

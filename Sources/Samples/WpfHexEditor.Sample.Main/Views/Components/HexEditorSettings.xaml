@@ -33,10 +33,10 @@
                              ToolTip="{DynamicResource HexSettings_Display_ShowLineNumbers_ToolTip}"
                              Margin="0,0,0,8"/>
                     <CheckBox Content="{DynamicResource HexSettings_Display_ShowByteTooltip}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=ShowByteToolTip, Mode=TwoWay}"
+                             IsChecked="{Binding Path=ShowByteToolTip, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                     <CheckBox Content="{DynamicResource HexSettings_Display_HideDeleted}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=HideByteDeleted, Mode=TwoWay}"
+                             IsChecked="{Binding Path=HideByteDeleted, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
 
                     <TextBlock Text="{DynamicResource HexSettings_Display_BytesPerLine}" FontSize="11" Margin="0,8,0,4"/>
@@ -64,19 +64,19 @@
             <Expander Header="{DynamicResource HexSettings_Editing_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
                     <CheckBox Content="{DynamicResource HexSettings_Editing_ReadOnly}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=ReadOnlyMode, Mode=TwoWay}"
+                             IsChecked="{Binding Path=ReadOnlyMode, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                     <CheckBox Content="{DynamicResource HexSettings_Editing_AllowInsertAnywhere}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=CanInsertAnywhere, Mode=TwoWay}"
+                             IsChecked="{Binding Path=CanInsertAnywhere, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                     <CheckBox Content="{DynamicResource HexSettings_Editing_AllowDeleteByte}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=AllowDeleteByte, Mode=TwoWay}"
+                             IsChecked="{Binding Path=AllowDeleteByte, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                     <CheckBox Content="{DynamicResource HexSettings_Editing_AllowExtendFile}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=AllowExtend, Mode=TwoWay}"
+                             IsChecked="{Binding Path=AllowExtend, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                     <CheckBox Content="{DynamicResource HexSettings_Editing_AppendNeedsConfirmation}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=AppendNeedConfirmation, Mode=TwoWay}"
+                             IsChecked="{Binding Path=AppendNeedConfirmation, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
 
                     <TextBlock Text="{DynamicResource HexSettings_Editing_EditMode}" FontSize="11" Margin="0,8,0,4"/>
@@ -120,13 +120,13 @@
             <Expander Header="{DynamicResource HexSettings_DragDrop_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
                     <CheckBox Content="{DynamicResource HexSettings_DragDrop_AllowFileDrop}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=AllowFileDrop, Mode=TwoWay}"
+                             IsChecked="{Binding Path=AllowFileDrop, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                     <CheckBox Content="{DynamicResource HexSettings_DragDrop_FileDropConfirmation}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=FileDroppingConfirmation, Mode=TwoWay}"
+                             IsChecked="{Binding Path=FileDroppingConfirmation, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                     <CheckBox Content="{DynamicResource HexSettings_DragDrop_AllowTextDrop}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=AllowTextDrop, Mode=TwoWay}"
+                             IsChecked="{Binding Path=AllowTextDrop, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                 </StackPanel>
             </Expander>
@@ -135,13 +135,13 @@
             <Expander Header="{DynamicResource HexSettings_Highlight_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
                     <CheckBox Content="{DynamicResource HexSettings_Highlight_AutoHighlight}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=AllowAutoHighLightSelectionByte, Mode=TwoWay}"
+                             IsChecked="{Binding Path=AllowAutoHighLightSelectionByte, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                     <CheckBox Content="{DynamicResource HexSettings_Highlight_AutoSelectDoubleClick}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=AllowAutoSelectSameByteAtDoubleClick, Mode=TwoWay}"
+                             IsChecked="{Binding Path=AllowAutoSelectSameByteAtDoubleClick, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                     <CheckBox Content="{DynamicResource HexSettings_Highlight_AllowMarkerClick}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=AllowMarkerClickNavigation, Mode=TwoWay}"
+                             IsChecked="{Binding Path=AllowMarkerClickNavigation, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
 
                     <TextBlock Text="{DynamicResource HexSettings_Highlight_AutoHighlightColor}" FontSize="11" Margin="0,8,0,4"/>
@@ -190,7 +190,7 @@
             <Expander Header="{DynamicResource HexSettings_Statistics_Title}" Margin="0,0,0,8">
                 <StackPanel Margin="16,8,0,0">
                     <CheckBox Content="{DynamicResource HexSettings_Statistics_AllowByteCount}"
-                             IsChecked="{Binding ElementName=HexEditorControl, Path=AllowByteCount, Mode=TwoWay}"
+                             IsChecked="{Binding Path=AllowByteCount, Mode=TwoWay}"
                              Margin="0,0,0,8"/>
                 </StackPanel>
             </Expander>

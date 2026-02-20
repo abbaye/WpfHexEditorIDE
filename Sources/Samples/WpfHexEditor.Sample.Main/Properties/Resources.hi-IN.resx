@@ -76,19 +76,19 @@
     <value>बाहर निकलें</value>
   </data>
   <data name="Menu_Edit" xml:space="preserve">
-    <value>_संपादन</value>
+    <value>संपादन</value>
   </data>
   <data name="Menu_Edit_Undo" xml:space="preserve">
-    <value>_पूर्ववत करें</value>
+    <value>पूर्ववत करें</value>
   </data>
   <data name="Menu_Edit_Redo" xml:space="preserve">
-    <value>_फिर से करें</value>
+    <value>फिर से करें</value>
   </data>
   <data name="Menu_Edit_Find" xml:space="preserve">
-    <value>_खोजें...</value>
+    <value>खोजें...</value>
   </data>
   <data name="Menu_Edit_FindReplace" xml:space="preserve">
-    <value>खोजें और _बदलें...</value>
+    <value>खोजें और बदलें...</value>
   </data>
   <data name="Menu_Edit_Copy" xml:space="preserve">
     <value>कॉपी करें</value>
@@ -100,52 +100,52 @@
     <value>चयन हटाएं</value>
   </data>
   <data name="Menu_Edit_SelectAll" xml:space="preserve">
-    <value>_सभी चुनें</value>
+    <value>सभी चुनें</value>
   </data>
   <data name="Menu_Edit_ClearSelection" xml:space="preserve">
-    <value>_चयन साफ करें</value>
+    <value>चयन साफ करें</value>
   </data>
   <data name="Menu_Edit_Bookmarks" xml:space="preserve">
-    <value>_बुकमार्क</value>
+    <value>बुकमार्क</value>
   </data>
   <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
     <value>बुकमार्क टॉगल करें</value>
   </data>
   <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
-    <value>_सभी बुकमार्क साफ करें</value>
+    <value>सभी बुकमार्क साफ करें</value>
   </data>
   <data name="Menu_Search" xml:space="preserve">
-    <value>_खोजें</value>
+    <value>खोजें</value>
   </data>
   <data name="Menu_Search_FindNext" xml:space="preserve">
-    <value>_अगला खोजें</value>
+    <value>अगला खोजें</value>
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
-    <value>_पिछला खोजें</value>
+    <value>पिछला खोजें</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
-    <value>_उपकरण</value>
+    <value>उपकरण</value>
   </data>
   <data name="Menu_Tools_Bookmarks" xml:space="preserve">
-    <value>_बुकमार्क</value>
+    <value>बुकमार्क</value>
   </data>
   <data name="Menu_Tools_NextBookmark" xml:space="preserve">
-    <value>_अगला बुकमार्क</value>
+    <value>अगला बुकमार्क</value>
   </data>
   <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
-    <value>_पिछला बुकमार्क</value>
+    <value>पिछला बुकमार्क</value>
   </data>
   <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
-    <value>_सभी बुकमार्क दिखाएं...</value>
+    <value>सभी बुकमार्क दिखाएं...</value>
   </data>
   <data name="Menu_Position" xml:space="preserve">
-    <value>_स्थिति</value>
+    <value>स्थिति</value>
   </data>
   <data name="Menu_Position_GoTo" xml:space="preserve">
-    <value>_स्थिति पर जाएं...</value>
+    <value>स्थिति पर जाएं...</value>
   </data>
   <data name="Menu_View" xml:space="preserve">
-    <value>_दृश्य</value>
+    <value>दृश्य</value>
   </data>
   <data name="Menu_View_DisplayOptions" xml:space="preserve">
     <value>प्रदर्शन विकल्प</value>
@@ -166,13 +166,13 @@
     <value>प्रति पंक्ति बाइट्स</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>_विकल्प</value>
+    <value>विकल्प</value>
   </data>
   <data name="Menu_Options_SettingsPanel" xml:space="preserve">
-    <value>_सेटिंग्स पैनल...</value>
+    <value>सेटिंग्स पैनल...</value>
   </data>
   <data name="Menu_Options_Advanced" xml:space="preserve">
-    <value>_उन्नत विकल्प (थीम, भाषा)...</value>
+    <value>उन्नत विकल्प (थीम, भाषा)...</value>
   </data>
   <data name="Menu_Options_ContextMenu" xml:space="preserve">
     <value>प्रसंग मेनू</value>
@@ -187,16 +187,16 @@
     <value>चयनित बाइट्स गिनें</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
-    <value>_सहायता</value>
+    <value>सहायता</value>
   </data>
   <data name="Menu_Help_About" xml:space="preserve">
-    <value>_परिचय</value>
+    <value>परिचय</value>
   </data>
   <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
-    <value>_कीबोर्ड शॉर्टकट</value>
+    <value>कीबोर्ड शॉर्टकट</value>
   </data>
   <data name="Menu_File" xml:space="preserve">
-    <value>_फ़ाइल</value>
+    <value>फ़ाइल</value>
   </data>
   <data name="Toolbar_Open" xml:space="preserve">
     <value>📂 खोलें</value>

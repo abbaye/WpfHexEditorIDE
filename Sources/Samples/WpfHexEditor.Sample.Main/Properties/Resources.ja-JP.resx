@@ -76,19 +76,19 @@
     <value>終了</value>
   </data>
   <data name="Menu_Edit" xml:space="preserve">
-    <value>編集(_E)</value>
+    <value>編集(E)</value>
   </data>
   <data name="Menu_Edit_Undo" xml:space="preserve">
-    <value>元に戻す(_U)</value>
+    <value>元に戻す(U)</value>
   </data>
   <data name="Menu_Edit_Redo" xml:space="preserve">
-    <value>やり直す(_R)</value>
+    <value>やり直す(R)</value>
   </data>
   <data name="Menu_Edit_Find" xml:space="preserve">
-    <value>検索(_F)...</value>
+    <value>検索(F)...</value>
   </data>
   <data name="Menu_Edit_FindReplace" xml:space="preserve">
-    <value>検索と置換(_R)...</value>
+    <value>検索と置換(R)...</value>
   </data>
   <data name="Menu_Edit_Copy" xml:space="preserve">
     <value>コピー</value>
@@ -100,52 +100,52 @@
     <value>選択範囲を削除</value>
   </data>
   <data name="Menu_Edit_SelectAll" xml:space="preserve">
-    <value>すべて選択(_A)</value>
+    <value>すべて選択(A)</value>
   </data>
   <data name="Menu_Edit_ClearSelection" xml:space="preserve">
-    <value>選択を解除(_C)</value>
+    <value>選択を解除(C)</value>
   </data>
   <data name="Menu_Edit_Bookmarks" xml:space="preserve">
-    <value>ブックマーク(_B)</value>
+    <value>ブックマーク(B)</value>
   </data>
   <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
     <value>ブックマークの切り替え</value>
   </data>
   <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
-    <value>すべてのブックマークを削除(_C)</value>
+    <value>すべてのブックマークを削除(C)</value>
   </data>
   <data name="Menu_Search" xml:space="preserve">
-    <value>検索(_S)</value>
+    <value>検索(S)</value>
   </data>
   <data name="Menu_Search_FindNext" xml:space="preserve">
-    <value>次を検索(_N)</value>
+    <value>次を検索(N)</value>
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
-    <value>前を検索(_P)</value>
+    <value>前を検索(P)</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
-    <value>ツール(_T)</value>
+    <value>ツール(T)</value>
   </data>
   <data name="Menu_Tools_Bookmarks" xml:space="preserve">
-    <value>ブックマーク(_B)</value>
+    <value>ブックマーク(B)</value>
   </data>
   <data name="Menu_Tools_NextBookmark" xml:space="preserve">
-    <value>次のブックマーク(_N)</value>
+    <value>次のブックマーク(N)</value>
   </data>
   <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
-    <value>前のブックマーク(_P)</value>
+    <value>前のブックマーク(P)</value>
   </data>
   <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
-    <value>すべてのブックマークを表示(_S)...</value>
+    <value>すべてのブックマークを表示(S)...</value>
   </data>
   <data name="Menu_Position" xml:space="preserve">
-    <value>位置(_P)</value>
+    <value>位置(P)</value>
   </data>
   <data name="Menu_Position_GoTo" xml:space="preserve">
-    <value>指定位置へ移動(_G)...</value>
+    <value>指定位置へ移動(G)...</value>
   </data>
   <data name="Menu_View" xml:space="preserve">
-    <value>表示(_V)</value>
+    <value>表示(V)</value>
   </data>
   <data name="Menu_View_DisplayOptions" xml:space="preserve">
     <value>表示オプション</value>
@@ -166,13 +166,13 @@
     <value>1行あたりのバイト数</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>オプション(_O)</value>
+    <value>オプション(O)</value>
   </data>
   <data name="Menu_Options_SettingsPanel" xml:space="preserve">
-    <value>設定パネル(_S)...</value>
+    <value>設定パネル(S)...</value>
   </data>
   <data name="Menu_Options_Advanced" xml:space="preserve">
-    <value>詳細オプション（テーマ、言語）(_A)...</value>
+    <value>詳細オプション（テーマ、言語）(A)...</value>
   </data>
   <data name="Menu_Options_ContextMenu" xml:space="preserve">
     <value>コンテキストメニュー</value>
@@ -187,16 +187,16 @@
     <value>選択バイト数をカウント</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
-    <value>ヘルプ(_H)</value>
+    <value>ヘルプ(H)</value>
   </data>
   <data name="Menu_Help_About" xml:space="preserve">
-    <value>バージョン情報(_A)</value>
+    <value>バージョン情報(A)</value>
   </data>
   <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
-    <value>キーボードショートカット(_K)</value>
+    <value>キーボードショートカット(K)</value>
   </data>
   <data name="Menu_File" xml:space="preserve">
-    <value>ファイル(_F)</value>
+    <value>ファイル(F)</value>
   </data>
   <data name="Toolbar_Open" xml:space="preserve">
     <value>📂 開く</value>

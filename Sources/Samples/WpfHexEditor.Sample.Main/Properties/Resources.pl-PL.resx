@@ -988,142 +988,142 @@
 
 
   <data name="Menu_File" xml:space="preserve">
-    <value>_Plik</value>
+    <value>Plik</value>
   </data>
   <data name="Menu_File_Open" xml:space="preserve">
-    <value>_Otwórz</value>
+    <value>Otwórz</value>
   </data>
   <data name="Menu_File_Save" xml:space="preserve">
-    <value>_Zapisz</value>
+    <value>Zapisz</value>
   </data>
   <data name="Menu_File_SaveAs" xml:space="preserve">
-    <value>Zapisz _jako...</value>
+    <value>Zapisz jako...</value>
   </data>
   <data name="Menu_File_Close" xml:space="preserve">
-    <value>_Zamknij</value>
+    <value>Zamknij</value>
   </data>
   <data name="Menu_File_Exit" xml:space="preserve">
-    <value>Za_kończ</value>
+    <value>Zakończ</value>
   </data>
   <data name="Menu_Edit" xml:space="preserve">
-    <value>_Edycja</value>
+    <value>Edycja</value>
   </data>
   <data name="Menu_Edit_Undo" xml:space="preserve">
-    <value>_Cofnij</value>
+    <value>Cofnij</value>
   </data>
   <data name="Menu_Edit_Redo" xml:space="preserve">
-    <value>_Ponów</value>
+    <value>Ponów</value>
   </data>
   <data name="Menu_Edit_Find" xml:space="preserve">
-    <value>_Znajdź...</value>
+    <value>Znajdź...</value>
   </data>
   <data name="Menu_Edit_FindReplace" xml:space="preserve">
-    <value>Znajdź i _zamień...</value>
+    <value>Znajdź i zamień...</value>
   </data>
   <data name="Menu_Edit_Copy" xml:space="preserve">
-    <value>_Kopiuj</value>
+    <value>Kopiuj</value>
   </data>
   <data name="Menu_Edit_Paste" xml:space="preserve">
-    <value>_Wklej</value>
+    <value>Wklej</value>
   </data>
   <data name="Menu_Edit_DeleteSelection" xml:space="preserve">
-    <value>_Usuń zaznaczenie</value>
+    <value>Usuń zaznaczenie</value>
   </data>
   <data name="Menu_Edit_SelectAll" xml:space="preserve">
-    <value>Zaznacz _wszystko</value>
+    <value>Zaznacz wszystko</value>
   </data>
   <data name="Menu_Edit_ClearSelection" xml:space="preserve">
-    <value>_Wyczyść zaznaczenie</value>
+    <value>Wyczyść zaznaczenie</value>
   </data>
   <data name="Menu_Edit_Bookmarks" xml:space="preserve">
-    <value>_Zakładki</value>
+    <value>Zakładki</value>
   </data>
   <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
-    <value>_Przełącz zakładkę</value>
+    <value>Przełącz zakładkę</value>
   </data>
   <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
-    <value>Wyczyść _wszystkie zakładki</value>
+    <value>Wyczyść wszystkie zakładki</value>
   </data>
   <data name="Menu_Search" xml:space="preserve">
-    <value>_Szukaj</value>
+    <value>Szukaj</value>
   </data>
   <data name="Menu_Search_FindNext" xml:space="preserve">
-    <value>Znajdź _następny</value>
+    <value>Znajdź następny</value>
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
-    <value>Znajdź _poprzedni</value>
+    <value>Znajdź poprzedni</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
-    <value>_Narzędzia</value>
+    <value>Narzędzia</value>
   </data>
   <data name="Menu_Tools_Bookmarks" xml:space="preserve">
-    <value>_Zakładki</value>
+    <value>Zakładki</value>
   </data>
   <data name="Menu_Tools_NextBookmark" xml:space="preserve">
-    <value>_Następna zakładka</value>
+    <value>Następna zakładka</value>
   </data>
   <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
-    <value>_Poprzednia zakładka</value>
+    <value>Poprzednia zakładka</value>
   </data>
   <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
-    <value>_Pokaż wszystkie zakładki</value>
+    <value>Pokaż wszystkie zakładki</value>
   </data>
   <data name="Menu_Position" xml:space="preserve">
-    <value>_Pozycja</value>
+    <value>Pozycja</value>
   </data>
   <data name="Menu_Position_GoTo" xml:space="preserve">
-    <value>_Przejdź do...</value>
+    <value>Przejdź do...</value>
   </data>
   <data name="Menu_View" xml:space="preserve">
-    <value>_Widok</value>
+    <value>Widok</value>
   </data>
   <data name="Menu_View_DisplayOptions" xml:space="preserve">
-    <value>_Opcje wyświetlania</value>
+    <value>Opcje wyświetlania</value>
   </data>
   <data name="Menu_View_ShowStatusBar" xml:space="preserve">
-    <value>Pokaż pasek _stanu</value>
+    <value>Pokaż pasek stanu</value>
   </data>
   <data name="Menu_View_ShowHeader" xml:space="preserve">
-    <value>Pokaż _nagłówek</value>
+    <value>Pokaż nagłówek</value>
   </data>
   <data name="Menu_View_ShowOffset" xml:space="preserve">
-    <value>Pokaż _Offset</value>
+    <value>Pokaż Offset</value>
   </data>
   <data name="Menu_View_ShowASCII" xml:space="preserve">
-    <value>Pokaż _ASCII</value>
+    <value>Pokaż ASCII</value>
   </data>
   <data name="Menu_View_BytesPerLine" xml:space="preserve">
-    <value>_Bajtów na linię</value>
+    <value>Bajtów na linię</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>_Opcje</value>
+    <value>Opcje</value>
   </data>
   <data name="Menu_Options_SettingsPanel" xml:space="preserve">
-    <value>Panel _ustawień</value>
+    <value>Panel ustawień</value>
   </data>
   <data name="Menu_Options_Advanced" xml:space="preserve">
-    <value>_Zaawansowane...</value>
+    <value>Zaawansowane...</value>
   </data>
   <data name="Menu_Options_ContextMenu" xml:space="preserve">
-    <value>Menu _kontekstowe</value>
+    <value>Menu kontekstowe</value>
   </data>
   <data name="Menu_Options_ShowByteToolTip" xml:space="preserve">
-    <value>Pokaż podpowiedź _bajtu</value>
+    <value>Pokaż podpowiedź bajtu</value>
   </data>
   <data name="Menu_Options_AutoHighlight" xml:space="preserve">
-    <value>_Automatyczne podświetlanie</value>
+    <value>Automatyczne podświetlanie</value>
   </data>
   <data name="Menu_Options_CountSelected" xml:space="preserve">
-    <value>_Liczenie zaznaczonych</value>
+    <value>Liczenie zaznaczonych</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
-    <value>Po_moc</value>
+    <value>Pomoc</value>
   </data>
   <data name="Menu_Help_About" xml:space="preserve">
-    <value>_O programie...</value>
+    <value>O programie...</value>
   </data>
   <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
-    <value>Skróty _klawiszowe</value>
+    <value>Skróty klawiszowe</value>
   </data>
   <data name="Toolbar_Open" xml:space="preserve">
     <value>📂 Otwórz</value>
