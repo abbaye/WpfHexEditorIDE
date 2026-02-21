@@ -877,10 +877,10 @@
     <value>السماح بعد البايتات</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>خيارات متقدمة</value>
+    <value>⚙️ خيارات متقدمة</value>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>خيارات متقدمة</value>
+    <value>⚙️ خيارات متقدمة</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>إزاحة البايت لليسار:</value>

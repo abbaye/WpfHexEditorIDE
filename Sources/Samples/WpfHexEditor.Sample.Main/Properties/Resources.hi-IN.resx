@@ -877,10 +877,10 @@
     <value>बाइट गणना की अनुमति दें</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>उन्नत विकल्प</value>
+    <value>⚙️ उन्नत विकल्प</value>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>उन्नत विकल्प</value>
+    <value>⚙️ उन्नत विकल्प</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>बाइट शिफ्ट लेफ्ट:</value>

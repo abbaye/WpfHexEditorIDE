@@ -41,6 +41,7 @@
         <KeyBinding Key="A" Modifiers="Control" Command="{Binding SelectAllCommand}"/>
         <KeyBinding Key="G" Modifiers="Control" Command="{Binding GoToPositionCommand}"/>
         <KeyBinding Key="B" Modifiers="Control" Command="{Binding ToggleBookmarkCommand}"/>
+        <KeyBinding Key="T" Modifiers="Control" Command="{Binding OpenTblEditorCommand}"/>
         <KeyBinding Key="OemComma" Modifiers="Control" Command="{Binding ToggleSettingsPanelCommand}"/>
     </Window.InputBindings>
 
@@ -318,6 +319,16 @@
                             </StackPanel>
                         </MenuItem.Header>
                     </MenuItem>
+                    <MenuItem Command="{Binding OpenTblEditorCommand}"
+                              InputGestureText="Ctrl+T">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📝 " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
+                                <TextBlock Text="TBL Editor..."/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <Separator/>
                     <MenuItem x:Name="CloseTblMenuItem"
                               Click="CloseTblMenuItem_Click"
                               IsEnabled="False">

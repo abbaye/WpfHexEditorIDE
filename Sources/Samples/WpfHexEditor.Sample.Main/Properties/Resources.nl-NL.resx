@@ -877,10 +877,10 @@
     <value>Byteaantal toestaan</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>Geavanceerde opties</value>
+    <value>⚙️ Geavanceerde opties</value>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>Geavanceerde opties</value>
+    <value>⚙️ Geavanceerde opties</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>Byteverschuiving links:</value>

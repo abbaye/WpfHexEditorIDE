@@ -877,10 +877,10 @@
     <value>Byte-Zählung erlauben</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>Erweiterte Optionen</value>
+    <value>⚙️ Erweiterte Optionen</value>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>Erweiterte Optionen</value>
+    <value>⚙️ Erweiterte Optionen</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>Byte-Verschiebung nach links:</value>

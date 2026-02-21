@@ -877,10 +877,10 @@
     <value>Tillåt byte-räkning</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>Avancerade alternativ</value>
+    <value>⚙️ Avancerade alternativ</value>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>Avancerade alternativ</value>
+    <value>⚙️ Avancerade alternativ</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>Byte-förskjutning vänster:</value>

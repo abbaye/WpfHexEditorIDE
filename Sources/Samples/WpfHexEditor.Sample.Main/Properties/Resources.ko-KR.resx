@@ -877,10 +877,10 @@
     <value>바이트 수 세기 허용</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>고급 옵션</value>
+    <value>⚙️ 고급 옵션</value>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>고급 옵션</value>
+    <value>⚙️ 고급 옵션</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>바이트 왼쪽 이동:</value>

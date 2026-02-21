@@ -532,7 +532,7 @@
     <value>Autoriser compte d'octets</value>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>Options avancées</value>
+    <value>⚙️ Options avancées</value>
   </data>
   <data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
     <value>Décalage d'octet à gauche :</value>
@@ -751,7 +751,7 @@
     <value>Permettre le comptage d'octets</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>Options avancées</value>
+    <value>⚙️ Options avancées</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>Décalage d'octet à gauche :</value>

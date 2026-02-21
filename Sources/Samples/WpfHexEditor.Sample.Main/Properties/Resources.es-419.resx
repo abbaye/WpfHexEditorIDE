@@ -883,11 +883,11 @@
     <comment>Hex editor settings - Allow byte count checkbox</comment>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>Opciones avanzadas</value>
+    <value>⚙️ Opciones avanzadas</value>
     <comment>Hex editor settings - Advanced Options expander header</comment>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>Opciones avanzadas</value>
+    <value>⚙️ Opciones avanzadas</value>
     <comment>Hex editor settings - Advanced Options expander header</comment>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">

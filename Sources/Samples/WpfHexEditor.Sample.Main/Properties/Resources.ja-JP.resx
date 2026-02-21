@@ -877,10 +877,10 @@
     <value>バイト数カウントを許可</value>
   </data>
   <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>高度なオプション</value>
+    <value>⚙️ 高度なオプション</value>
   </data>
   <data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>高度なオプション</value>
+    <value>⚙️ 高度なオプション</value>
   </data>
   <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>バイト左シフト:</value>

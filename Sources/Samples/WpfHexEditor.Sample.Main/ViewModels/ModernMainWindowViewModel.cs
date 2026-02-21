@@ -176,6 +176,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
         public ICommand InvertSelectionCommand { get; }
         public ICommand FillWithByteCommand { get; }
         public ICommand ReplaceByteCommand { get; }
+        public ICommand OpenTblEditorCommand { get; }
 
         #endregion
 
@@ -234,6 +235,9 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             InvertSelectionCommand = new RelayCommand(InvertSelection, () => IsFileLoaded && _hexEditor?.HasSelection == true && !IsOperationActive);
             FillWithByteCommand = new RelayCommand(FillWithByte, () => IsFileLoaded && _hexEditor?.HasSelection == true && !IsOperationActive);
             ReplaceByteCommand = new RelayCommand(ReplaceByte, () => IsFileLoaded && !IsOperationActive);
+
+            // TBL Editor - Can open without TBL loaded to create new or open existing
+            OpenTblEditorCommand = new RelayCommand(OpenTblEditor, () => !IsOperationActive);
         }
 
         #endregion
@@ -846,6 +850,22 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to open GitHub link: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OpenTblEditor()
+        {
+            try
+            {
+                if (_hexEditor != null)
+                {
+                    _hexEditor.OpenTblEditor();
+                    StatusMessage = "TBL Editor opened";
+                }
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Failed to open TBL Editor: {ex.Message}";
             }
         }
 
