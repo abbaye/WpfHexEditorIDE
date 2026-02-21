@@ -1001,15 +1001,9 @@ namespace WpfHexaEditor.Controls
                     // Must account for ByteSize (Bit8/16/32) to get correct total hex area width
                     double hexStartX = ShowOffset ? OffsetWidth : 0;
 
-                    // Get cell width and stride from first byte (all bytes in line have same ByteSize)
+                    // Get cell width from first byte (stride already calculated above)
                     double cellWidth = line.Bytes.Count > 0 ? line.Bytes[0].CellWidth : 24;
-                    int stride = line.Bytes.Count > 0 ? (line.Bytes[0].ByteSize switch
-                    {
-                        Core.ByteSizeType.Bit8 => 1,
-                        Core.ByteSizeType.Bit16 => 2,
-                        Core.ByteSizeType.Bit32 => 4,
-                        _ => 1
-                    }) : 1;
+                    // Note: Reuse 'stride' variable from hex loop above (already calculated)
 
                     // Calculate number of cells for full line (e.g., 16 bytes / 2 = 8 cells in Bit16)
                     int numCells = (_bytesPerLine + stride - 1) / stride; // Ceiling division
