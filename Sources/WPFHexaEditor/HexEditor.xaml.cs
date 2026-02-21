@@ -1984,6 +1984,11 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor && e.NewValue is long position && position >= 0)
             {
+                // CRITICAL FIX: Prevent infinite loop - only update ViewModel if value actually changed
+                var currentVmStart = editor._viewModel?.SelectionStart.IsValid == true ? editor._viewModel.SelectionStart.Value : -1L;
+                if (currentVmStart == position)
+                    return; // Already synced, avoid recursion
+
                 editor.SetPosition(position);
             }
         }
@@ -2024,6 +2029,11 @@ namespace WpfHexaEditor
             {
                 if (editor._viewModel != null && position >= 0 && position < editor.VirtualLength)
                 {
+                    // CRITICAL FIX: Prevent infinite loop - only update ViewModel if value actually changed
+                    var currentVmStart = editor._viewModel.SelectionStart.IsValid ? editor._viewModel.SelectionStart.Value : -1L;
+                    if (currentVmStart == position)
+                        return; // Already synced, avoid recursion
+
                     var oldStart = e.OldValue is long old ? old : -1;
                     var oldStop = editor.SelectionStop;
                     var oldLength = editor.SelectionLength;
@@ -2061,6 +2071,11 @@ namespace WpfHexaEditor
             {
                 if (editor._viewModel != null && position >= 0 && position < editor.VirtualLength)
                 {
+                    // CRITICAL FIX: Prevent infinite loop - only update ViewModel if value actually changed
+                    var currentVmStop = editor._viewModel.SelectionStop.IsValid ? editor._viewModel.SelectionStop.Value : -1L;
+                    if (currentVmStop == position)
+                        return; // Already synced, avoid recursion
+
                     var oldStart = editor.SelectionStart;
                     var oldStop = e.OldValue is long old ? old : -1;
                     var oldLength = editor.SelectionLength;
@@ -2093,6 +2108,10 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor && e.NewValue is int bytesPerLine && bytesPerLine > 0)
             {
+                // CRITICAL FIX: Prevent infinite loop - only update ViewModel if value actually changed
+                if (editor._viewModel != null && editor._viewModel.BytePerLine == bytesPerLine)
+                    return; // Already synced, avoid recursion
+
                 // ALWAYS update viewport and headers (even during initialization when ViewModel doesn't exist yet)
                 editor.HexViewport.BytesPerLine = bytesPerLine;
                 editor.RefreshColumnHeader();
@@ -2120,6 +2139,10 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor && e.NewValue is Models.EditMode mode)
             {
+                // CRITICAL FIX: Prevent infinite loop - only update ViewModel if value actually changed
+                if (editor._viewModel != null && editor._viewModel.EditMode == mode)
+                    return; // Already synced, avoid recursion
+
                 if (editor._viewModel != null)
                 {
                     editor._viewModel.EditMode = mode;
