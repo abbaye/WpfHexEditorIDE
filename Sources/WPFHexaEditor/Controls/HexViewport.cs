@@ -1867,6 +1867,8 @@ namespace WpfHexaEditor.Controls
                 _ => 1
             }) : 1;
 
+            System.Diagnostics.Debug.WriteLine($"[HitTest] MouseX={x:F1}, LineIndex={lineIndex}, Stride={stride}, ByteCount={line.Bytes.Count}");
+
             for (int i = 0; i < line.Bytes.Count; i++)
             {
                 // Calculate byte position from group index (matches drawing logic)
@@ -1889,6 +1891,7 @@ namespace WpfHexaEditor.Controls
                 if (x >= hexX && x < hexX + byteHitWidth)
                 {
                     // Click is within this byte's area (including spacing after it)
+                    System.Diagnostics.Debug.WriteLine($"[HitTest] HIT! i={i}, VirtualPos={byteData.VirtualPos.Value}, hexX={hexX:F1}, width={byteHitWidth:F1}");
                     return (byteData.VirtualPos.Value, true);
                 }
 
