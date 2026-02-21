@@ -866,7 +866,8 @@ namespace WpfHexaEditor.Controls
 
                     var byteData = line.Bytes[i];
                     DrawHexByte(dc, byteData, hexX, y);
-                    hexX += HexByteWidth + HexByteSpacing;
+                    // Phase 3: Use dynamic cell width based on ByteSize instead of fixed HexByteWidth
+                    hexX += byteData.CellWidth + HexByteSpacing;
                 }
 
                 // Draw separator and ASCII (if visible)
@@ -1094,8 +1095,10 @@ namespace WpfHexaEditor.Controls
 
         private void DrawHexByte(DrawingContext dc, ByteData byteData, double x, double y)
         {
-            // Calculate the actual byte cell rect (without spacing on the right)
-            double byteWidth = HexByteWidth - HexByteSpacing;
+            // Phase 3: Calculate cell width dynamically based on ByteSize
+            // Bit8=24px, Bit16=52px, Bit32=106px (includes spacing on right)
+            double cellWidth = byteData.CellWidth;
+            double byteWidth = cellWidth - HexByteSpacing;
             var rect = new Rect(x, y, byteWidth, _lineHeight);
 
             // Phase 7.1: Draw custom background block FIRST (underneath everything)
@@ -1197,14 +1200,18 @@ namespace WpfHexaEditor.Controls
 
             Brush textBrush = useAlternateColor ? _alternateByteBrush : _normalByteBrush;
 
+            // Phase 3: Use GetHexText() for multi-byte support with ByteOrder
             var formattedText = new FormattedText(
-                byteData.HexString,
+                byteData.GetHexText(),
                 System.Globalization.CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 _typeface,
                 _fontSize,
                 textBrush,
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+            // Phase 3: Set max width to prevent text overflow in multi-byte cells
+            formattedText.MaxTextWidth = byteWidth;
 
             // Center the text within the byte cell
             double textX = x + (byteWidth - formattedText.Width) / 2;
