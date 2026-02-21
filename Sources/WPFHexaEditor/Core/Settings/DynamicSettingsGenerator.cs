@@ -116,10 +116,7 @@ namespace WpfHexaEditor.Core.Settings
             // Generate controls for each property in this category
             foreach (var property in properties)
             {
-                // Skip read-only properties for now (can be added later if needed)
-                if (property.IsReadOnly)
-                    continue;
-
+                // Include read-only properties but make them disabled
                 var controlElement = GeneratePropertyControl(property);
                 if (controlElement != null)
                     contentPanel.Children.Add(controlElement);
@@ -173,6 +170,13 @@ namespace WpfHexaEditor.Core.Settings
             PropertyMetadata metadata,
             IPropertyControl propertyControl)
         {
+            // Disable control if property is read-only
+            if (metadata.IsReadOnly && control is Control ctrl)
+            {
+                ctrl.IsEnabled = false;
+                ctrl.Opacity = 0.6; // Visual indication that it's read-only
+            }
+
             // CheckBox (bool properties)
             if (control is CheckBox checkBox)
             {

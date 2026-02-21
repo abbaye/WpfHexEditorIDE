@@ -27,7 +27,7 @@ namespace WpfHexaEditor.Core.Settings.Controls
         {
             return new Binding(metadata.PropertyName)
             {
-                Mode = BindingMode.TwoWay,
+                Mode = metadata.IsReadOnly ? BindingMode.OneWay : BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
         }

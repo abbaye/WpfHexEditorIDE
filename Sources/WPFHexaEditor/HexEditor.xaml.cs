@@ -1184,8 +1184,10 @@ namespace WpfHexaEditor
         /// <summary>
         /// Has the file been modified?
         /// Uses DependencyProperty for XAML binding support
+        /// Read-only - reflects ByteProvider state
         /// </summary>
         [Category("Data")]
+        [ReadOnly(true)]
         public bool IsModified
         {
             get => (bool)GetValue(IsModifiedProperty);

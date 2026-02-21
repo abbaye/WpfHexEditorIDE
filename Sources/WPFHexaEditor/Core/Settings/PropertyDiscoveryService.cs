@@ -63,8 +63,10 @@ namespace WpfHexaEditor.Core.Settings
                     continue;
 
                 // 4. Check if this is a read-only dependency property
-                // For WPF, we need to check both the CLR property setter AND if it's a DependencyPropertyKey
-                bool isReadOnly = !propInfo.CanWrite || IsReadOnlyDependencyProperty(dp, _targetType);
+                // For WPF, we need to check: CLR property setter, DependencyPropertyKey, AND [ReadOnly] attribute
+                bool isReadOnly = !propInfo.CanWrite ||
+                                  IsReadOnlyDependencyProperty(dp, _targetType) ||
+                                  HasReadOnlyAttribute(propInfo);
 
                 // 4. Create metadata
                 var metadata = new PropertyMetadata
@@ -220,6 +222,15 @@ namespace WpfHexaEditor.Core.Settings
             // Alternative: Check if the DependencyProperty's metadata indicates read-only
             // WPF doesn't have a direct IsReadOnly property, but we can check the registration
             return false;
+        }
+
+        /// <summary>
+        /// Checks if a property has the [ReadOnly(true)] attribute.
+        /// </summary>
+        private bool HasReadOnlyAttribute(PropertyInfo propInfo)
+        {
+            var readOnlyAttr = propInfo.GetCustomAttribute<System.ComponentModel.ReadOnlyAttribute>();
+            return readOnlyAttr != null && readOnlyAttr.IsReadOnly;
         }
     }
 }
