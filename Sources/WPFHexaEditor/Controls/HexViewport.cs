@@ -128,6 +128,13 @@ namespace WpfHexaEditor.Controls
         private System.Diagnostics.Stopwatch _refreshStopwatch = new System.Diagnostics.Stopwatch();
         private long _lastRefreshTimeMs = 0;
 
+        // Phase 6 (Bug 4): Dynamic CellWidth cache for Font/DPI support
+        // Cache stores calculated cell widths based on byte count, font size, and font family
+        // Key: (byteCount, fontSize, fontFamily) → Value: calculated width in pixels
+        // Invalidated when font settings change (FontSize, FontFamily, DPI)
+        private Dictionary<(int byteCount, double fontSize, string fontFamily), double> _cellWidthCache = new();
+        private double _dpi = 1.0; // DPI scale factor (1.0 = 96 DPI, 1.5 = 144 DPI, etc.)
+
         /// <summary>
         /// Get the last visible byte position in the viewport (matches Legacy behavior)
         /// Only counts lines that are FULLY visible (not cut off by status bar or bottom edge)
@@ -179,6 +186,9 @@ namespace WpfHexaEditor.Controls
 
             // Calculate character dimensions
             CalculateCharacterDimensions();
+
+            // Initialize DPI scale factor (Bug 4 - Font/DPI support)
+            _dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
 
             // Cursor pen (blue, thick)
             _cursorPen = new Pen(new SolidColorBrush(Color.FromRgb(0x00, 0x78, 0xD4)), 2.5);
@@ -264,6 +274,57 @@ namespace WpfHexaEditor.Controls
             _charWidth = formattedText.Width / 2.0;
             _charHeight = formattedText.Height;
             _lineHeight = _charHeight + 4; // Add padding
+        }
+
+        /// <summary>
+        /// Phase 6 (Bug 4): Calculate dynamic cell width based on actual font/DPI settings
+        /// Uses FormattedText to measure real text width and caches results for performance
+        /// </summary>
+        /// <param name="byteCount">Number of bytes in the cell (1, 2, 3, or 4)</param>
+        /// <returns>Cell width in pixels (includes 4px padding)</returns>
+        private double CalculateCellWidth(int byteCount)
+        {
+            // Create cache key based on current font settings
+            var key = (byteCount, _fontSize, _typeface.FontFamily.Source);
+
+            // Return cached value if available
+            if (_cellWidthCache.TryGetValue(key, out double cachedWidth))
+                return cachedWidth;
+
+            // Measure actual text width using FormattedText
+            // Use "FF" repeated to simulate hex string (1 byte = "FF", 2 bytes = "FFFF", etc.)
+            string sampleText = new string('F', byteCount * 2);
+            var formattedText = new FormattedText(
+                sampleText,
+                System.Globalization.CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                _typeface,
+                _fontSize,
+                Brushes.Black,
+                _dpi
+            );
+
+            // Add small padding to prevent text clipping (4px total)
+            double width = formattedText.Width + 4;
+
+            // Cache the result
+            _cellWidthCache[key] = width;
+
+            return width;
+        }
+
+        /// <summary>
+        /// Phase 6 (Bug 4): Get dynamic cell width for a ByteData object
+        /// Wrapper method that extracts byte count and calls CalculateCellWidth
+        /// </summary>
+        /// <param name="byteData">ByteData object with Values array</param>
+        /// <returns>Cell width in pixels</returns>
+        private double GetDynamicCellWidth(ByteData byteData)
+        {
+            if (byteData == null || byteData.Values == null || byteData.Values.Length == 0)
+                return CalculateCellWidth(1); // Fallback to 1-byte width
+
+            return CalculateCellWidth(byteData.Values.Length);
         }
 
         #endregion
@@ -815,6 +876,52 @@ namespace WpfHexaEditor.Controls
 
         #endregion
 
+        #region Public Methods
+
+        /// <summary>
+        /// Phase 6 (Bug 4): Calculate cell width for a given byte count based on current font/DPI settings
+        /// Public method for external use (e.g., RefreshColumnHeader in UIHelpers)
+        /// </summary>
+        /// <param name="byteCount">Number of bytes (1, 2, 3, or 4)</param>
+        /// <returns>Cell width in pixels</returns>
+        public double CalculateCellWidthForByteCount(int byteCount)
+        {
+            return CalculateCellWidth(byteCount);
+        }
+
+        /// <summary>
+        /// Phase 6 (Bug 4): Update font settings and invalidate CellWidth cache
+        /// Call this method whenever FontFamily, FontSize, or DPI changes
+        /// </summary>
+        /// <param name="fontFamily">New font family (e.g., "Consolas", "Courier New")</param>
+        /// <param name="fontSize">New font size in points</param>
+        public void UpdateFont(string fontFamily, double fontSize)
+        {
+            // Update typeface if font family changed
+            if (_typeface?.FontFamily.Source != fontFamily)
+            {
+                _typeface = new Typeface(new FontFamily(fontFamily), FontStyles.Normal, FontWeights.Medium, FontStretches.Normal);
+                _boldTypeface = new Typeface(new FontFamily(fontFamily), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+            }
+
+            // Update font size
+            _fontSize = fontSize;
+
+            // Update DPI (may have changed on high-DPI displays)
+            _dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+
+            // Recalculate character dimensions
+            CalculateCharacterDimensions();
+
+            // CRITICAL: Invalidate cell width cache (Bug 4 fix)
+            _cellWidthCache.Clear();
+
+            // Trigger re-render
+            InvalidateVisual();
+        }
+
+        #endregion
+
         #region Rendering
 
         protected override void OnRender(DrawingContext dc)
@@ -883,7 +990,8 @@ namespace WpfHexaEditor.Controls
                     var byteData = line.Bytes[i];
                     DrawHexByte(dc, byteData, hexX, y);
                     // Phase 3: Use dynamic cell width based on ByteSize instead of fixed HexByteWidth
-                    hexX += byteData.CellWidth + HexByteSpacing;
+                    // Bug 4: Use GetDynamicCellWidth() for Font/DPI support
+                    hexX += GetDynamicCellWidth(byteData) + HexByteSpacing;
                 }
 
                 // Draw separator and ASCII (if visible)
@@ -1129,8 +1237,9 @@ namespace WpfHexaEditor.Controls
         private void DrawHexByte(DrawingContext dc, ByteData byteData, double x, double y)
         {
             // Phase 3: Calculate cell width dynamically based on ByteSize
-            // Bit8=24px, Bit16=52px, Bit32=106px (includes spacing on right)
-            double cellWidth = byteData.CellWidth;
+            // Bug 4: Use GetDynamicCellWidth() for Font/DPI support
+            // Bit8/16/32 width now adapts to current font size and DPI
+            double cellWidth = GetDynamicCellWidth(byteData);
             double byteWidth = cellWidth - HexByteSpacing;
             var rect = new Rect(x, y, byteWidth, _lineHeight);
 
@@ -1780,8 +1889,9 @@ namespace WpfHexaEditor.Controls
 
                 // Check if click is within this byte's rect
                 // Phase 6: Use dynamic CellWidth instead of fixed HexByteWidth
+                // Bug 4: Use GetDynamicCellWidth() for Font/DPI support
                 var byteData = line.Bytes[i];
-                double byteHitWidth = byteData.CellWidth + HexByteSpacing;
+                double byteHitWidth = GetDynamicCellWidth(byteData) + HexByteSpacing;
                 if (x >= hexX && x < hexX + byteHitWidth)
                 {
                     // Click is within this byte's area (including spacing after it)

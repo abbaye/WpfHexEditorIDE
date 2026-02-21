@@ -134,14 +134,9 @@ namespace WpfHexaEditor
                 _ => 1
             };
 
-            // Phase 4: Calculate cell width based on ByteSize
-            double cellWidth = (_viewModel?.ByteSize ?? Core.ByteSizeType.Bit8) switch
-            {
-                Core.ByteSizeType.Bit8 => 24,
-                Core.ByteSizeType.Bit16 => 52,
-                Core.ByteSizeType.Bit32 => 106,
-                _ => 24
-            };
+            // Phase 4 / Bug 4: Calculate cell width dynamically based on font/DPI
+            // Use HexViewport's dynamic calculation instead of hardcoded values
+            double cellWidth = HexViewport.CalculateCellWidthForByteCount(stride);
 
             // Generate hex column headers with stride (e.g., 00 02 04 for Bit16)
             for (int i = 0; i < bytesPerLine; i += stride)
