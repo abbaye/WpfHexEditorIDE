@@ -134,6 +134,15 @@ namespace WpfHexaEditor
 
                 // Initialize mouse hover brush
                 HexViewport.MouseHoverBrush = new SolidColorBrush(MouseOverColor);
+
+                // Bug 4: Subscribe to FontSize/FontFamily changes to update dynamic CellWidth cache
+                var fontSizeDescriptor = System.ComponentModel.DependencyPropertyDescriptor.FromProperty(
+                    Control.FontSizeProperty, typeof(HexEditor));
+                fontSizeDescriptor?.AddValueChanged(this, OnFontPropertyChanged);
+
+                var fontFamilyDescriptor = System.ComponentModel.DependencyPropertyDescriptor.FromProperty(
+                    Control.FontFamilyProperty, typeof(HexEditor));
+                fontFamilyDescriptor?.AddValueChanged(this, OnFontPropertyChanged);
             }
 
             // Subscribe to PreviewKeyDown for Escape key (clear search markers)
@@ -152,6 +161,26 @@ namespace WpfHexaEditor
 
             // Initialize zoom system
             InitialiseZoom();
+        }
+
+        /// <summary>
+        /// Bug 4: Handle FontSize/FontFamily changes to update HexViewport dynamic CellWidth cache
+        /// Called when user changes font settings in Settings panel or programmatically
+        /// </summary>
+        private void OnFontPropertyChanged(object sender, EventArgs e)
+        {
+            if (HexViewport == null)
+                return;
+
+            // Get current font settings (from UserControl.FontFamily and UserControl.FontSize)
+            string fontFamily = FontFamily.Source;
+            double fontSize = FontSize;
+
+            // Update HexViewport font and invalidate CellWidth cache
+            HexViewport.UpdateFont(fontFamily, fontSize);
+
+            // Refresh column headers with new widths
+            RefreshColumnHeader();
         }
 
         /// <summary>
