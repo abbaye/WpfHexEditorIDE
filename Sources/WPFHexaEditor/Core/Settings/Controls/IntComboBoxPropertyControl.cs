@@ -64,7 +64,7 @@ namespace WpfHexaEditor.Core.Settings.Controls
                 var item = new ComboBoxItem
                 {
                     Content = value.ToString(),
-                    Tag = value.ToString()
+                    Tag = value  // CRITICAL FIX: Keep as int object, not string, for proper converter binding
                 };
                 comboBox.Items.Add(item);
             }

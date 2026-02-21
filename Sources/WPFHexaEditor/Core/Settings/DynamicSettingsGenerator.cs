@@ -209,12 +209,10 @@ namespace WpfHexaEditor.Core.Settings
                         intControl.PopulateAllowedValues(comboBox, metadata);
                     }
 
-                    // Apply BytesPerLineToIndexConverter for TwoWay binding
-                    var converter = TryFindResource("BytesPerLineToIndexConverter") as IValueConverter;
-                    if (converter != null)
-                        binding.Converter = converter;
-
-                    comboBox.SetBinding(ComboBox.SelectedIndexProperty, binding);
+                    // CRITICAL FIX: Use SelectedValue instead of SelectedIndex
+                    // Tag now contains the int value directly (8, 16, 24, 32), no converter needed
+                    // Direct binding: HexEditor.BytePerLine (32) ↔ ComboBox.SelectedValue (32) ↔ Item.Tag (32)
+                    comboBox.SetBinding(ComboBox.SelectedValueProperty, binding);
                 }
                 else
                 {
