@@ -157,10 +157,11 @@
     </Content>
   </ItemGroup>
 
-  <!-- Span<T> support for .NET Framework 4.8 -->
+  <!-- Span<T> and System.Text.Json support for .NET Framework 4.8 -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>

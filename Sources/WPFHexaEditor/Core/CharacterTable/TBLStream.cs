@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using WpfHexaEditor.Core.Bytes;
+using WpfHexaEditor.TBLEditorModule.Models;
+using WpfHexaEditor.TBLEditorModule.Services;
 
 namespace WpfHexaEditor.Core.CharacterTable
 {
@@ -801,6 +803,160 @@ namespace WpfHexaEditor.Core.CharacterTable
 
             tbl.AllowEdit = true;
             return tbl;
+        }
+
+        #endregion
+
+        #region Multi-Format Support
+
+        /// <summary>
+        /// Load TBL from file with auto-detected format (supports .tbl, .csv, .json)
+        /// </summary>
+        public TblImportResult LoadFromFile(string filePath)
+        {
+            var importService = new TblImportService();
+            var result = importService.ImportFromFile(filePath);
+
+            if (result.Success)
+            {
+                // Clear existing entries
+                _dteList.Clear();
+
+                // Add imported entries
+                foreach (var entry in result.Entries)
+                {
+                    Add(entry);
+                }
+
+                _fileName = filePath;
+                _isModified = false;
+                _modificationCount = 0;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Load TBL from CSV file
+        /// </summary>
+        public TblImportResult LoadFromCsv(string filePath, CsvImportOptions options = null)
+        {
+            var importService = new TblImportService();
+            var result = importService.ImportFromCsv(filePath, options);
+
+            if (result.Success)
+            {
+                _dteList.Clear();
+                foreach (var entry in result.Entries)
+                    Add(entry);
+
+                _fileName = filePath;
+                _isModified = false;
+                _modificationCount = 0;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Load TBL from JSON file
+        /// </summary>
+        public TblImportResult LoadFromJson(string filePath, JsonImportOptions options = null)
+        {
+            var importService = new TblImportService();
+            var result = importService.ImportFromJson(filePath, options);
+
+            if (result.Success)
+            {
+                _dteList.Clear();
+                foreach (var entry in result.Entries)
+                    Add(entry);
+
+                _fileName = filePath;
+                _isModified = false;
+                _modificationCount = 0;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Save TBL to file with format based on extension (supports .tbl, .csv, .json)
+        /// </summary>
+        public void SaveToFile(string filePath, CsvExportOptions csvOptions = null, JsonExportOptions jsonOptions = null)
+        {
+            var exportService = new TblExportService();
+            var entries = GetAllEntries();
+
+            exportService.ExportToFile(entries, filePath, csvOptions, jsonOptions);
+
+            _fileName = filePath;
+            _isModified = false;
+        }
+
+        /// <summary>
+        /// Save TBL to CSV file
+        /// </summary>
+        public void SaveToCsv(string filePath, CsvExportOptions options = null)
+        {
+            var exportService = new TblExportService();
+            var entries = GetAllEntries();
+
+            exportService.ExportToCsvFile(entries, filePath, options);
+
+            _fileName = filePath;
+            _isModified = false;
+        }
+
+        /// <summary>
+        /// Save TBL to JSON file
+        /// </summary>
+        public void SaveToJson(string filePath, JsonExportOptions options = null)
+        {
+            var exportService = new TblExportService();
+            var entries = GetAllEntries();
+
+            exportService.ExportToJsonFile(entries, filePath, options);
+
+            _fileName = filePath;
+            _isModified = false;
+        }
+
+        /// <summary>
+        /// Export TBL to CSV string
+        /// </summary>
+        public string ExportToCsvString(CsvExportOptions options = null)
+        {
+            var exportService = new TblExportService();
+            var entries = GetAllEntries();
+            return exportService.ExportToCsv(entries, options);
+        }
+
+        /// <summary>
+        /// Export TBL to JSON string
+        /// </summary>
+        public string ExportToJsonString(JsonExportOptions options = null)
+        {
+            var exportService = new TblExportService();
+            var entries = GetAllEntries();
+            return exportService.ExportToJson(entries, options);
+        }
+
+        /// <summary>
+        /// Detect file format from extension
+        /// </summary>
+        public static TblFileFormat DetectFileFormat(string filePath)
+        {
+            var extension = Path.GetExtension(filePath)?.ToLowerInvariant();
+
+            return extension switch
+            {
+                ".tbl" => TblFileFormat.Tbl,
+                ".tblx" => TblFileFormat.Tblx,
+                ".csv" => TblFileFormat.Csv,
+                ".json" => TblFileFormat.Json,
+                _ => TblFileFormat.Tbl // Default to standard TBL
+            };
         }
 
         #endregion
