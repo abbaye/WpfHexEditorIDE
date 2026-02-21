@@ -295,6 +295,15 @@ namespace WpfHexaEditor
 
             VirtualPosition newPos = currentPos;
 
+            // CRITICAL FIX: Calculate stride based on ByteSize for multi-byte navigation
+            int stride = _viewModel.ByteSize switch
+            {
+                Core.ByteSizeType.Bit8 => 1,
+                Core.ByteSizeType.Bit16 => 2,
+                Core.ByteSizeType.Bit32 => 4,
+                _ => 1
+            };
+
             switch (e.Key)
             {
                 // Arrow keys navigation
@@ -317,9 +326,15 @@ namespace WpfHexaEditor
                     }
                     else
                     {
-                        // Normal Left: Move one byte left
+                        // FIXED: Move by stride (respects ByteSize: 1/2/4 bytes)
                         if (currentPos.Value > 0)
-                            newPos = new VirtualPosition(currentPos.Value - 1);
+                        {
+                            long targetPos = currentPos.Value - stride;
+                            // Snap to group boundary (floor division)
+                            if (stride > 1)
+                                targetPos = (targetPos / stride) * stride;
+                            newPos = new VirtualPosition(Math.Max(0, targetPos));
+                        }
                     }
                     break;
 
@@ -343,9 +358,15 @@ namespace WpfHexaEditor
                     }
                     else
                     {
-                        // Normal Right: Move one byte right
+                        // FIXED: Move by stride (respects ByteSize: 1/2/4 bytes)
                         if (currentPos.Value < _viewModel.VirtualLength - 1)
-                            newPos = new VirtualPosition(currentPos.Value + 1);
+                        {
+                            long targetPos = currentPos.Value + stride;
+                            // Snap to group boundary (ceiling division for forward movement)
+                            if (stride > 1)
+                                targetPos = ((targetPos + stride - 1) / stride) * stride;
+                            newPos = new VirtualPosition(Math.Min(_viewModel.VirtualLength - 1, targetPos));
+                        }
                     }
                     break;
 
