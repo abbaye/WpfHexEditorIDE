@@ -50,9 +50,6 @@ namespace WpfHexaEditor.Controls
         private bool _showByteToolTip = false; // V1 compatible: Show tooltip on byte hover
         private System.Windows.Controls.ToolTip _byteToolTip; // Custom tooltip that follows mouse
 
-        // TEMP DEBUG: Flag to show OnKeyDown diagnostic once
-        private static bool _onKeyDownMessageShown = false;
-
         // Cached resources
         private Typeface _typeface;
         private Typeface _boldTypeface;
@@ -2072,21 +2069,6 @@ namespace WpfHexaEditor.Controls
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-
-            // TEMP DEBUG: Confirm OnKeyDown is being called
-            if (!_onKeyDownMessageShown && (e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Up || e.Key == Key.Down))
-            {
-                _onKeyDownMessageShown = true;
-                System.Windows.MessageBox.Show(
-                    $"HexViewport.OnKeyDown called!\n\n" +
-                    $"Key: {e.Key}\n" +
-                    $"IsFocused: {IsFocused}\n" +
-                    $"IsKeyboardFocused: {IsKeyboardFocused}\n" +
-                    $"KeyboardNavigation event subscribers: {KeyboardNavigation?.GetInvocationList()?.Length ?? 0}",
-                    "🔍 DEBUG: OnKeyDown",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Information);
-            }
 
             // Keyboard navigation - raise event for parent to handle
             // Parent (HexEditor) will update ViewModel selection/cursor

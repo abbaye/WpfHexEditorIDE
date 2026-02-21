@@ -68,20 +68,8 @@ namespace WpfHexaEditor
                 HexViewport.EditMode = EditMode;
 
                 // CRITICAL FIX: Synchronize ByteSize and ByteOrder from DependencyProperties
-                System.Diagnostics.Debug.WriteLine($"[OpenStream] BEFORE sync: ViewModel.ByteSize={_viewModel.ByteSize}, DP.ByteSize={ByteSize}");
                 _viewModel.ByteSize = ByteSize;
                 _viewModel.ByteOrder = ByteOrder;
-                System.Diagnostics.Debug.WriteLine($"[OpenStream] AFTER sync: ViewModel.ByteSize={_viewModel.ByteSize}");
-
-                // TEMP DEBUG: Show what ByteSize was used
-                System.Windows.MessageBox.Show(
-                    $"File Opened!\n\n" +
-                    $"DependencyProperty ByteSize: {ByteSize}\n" +
-                    $"ViewModel ByteSize: {_viewModel.ByteSize}\n\n" +
-                    $"If these don't match, the sync failed!",
-                    "🔍 DEBUG: OpenStream ByteSize Sync",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Information);
 
                 // Initialize byte spacer properties on viewport
                 HexViewport.ByteSpacerPositioning = ByteSpacerPositioning;
@@ -180,20 +168,8 @@ namespace WpfHexaEditor
                 HexViewport.EditMode = EditMode;
 
                 // CRITICAL FIX: Synchronize ByteSize and ByteOrder from DependencyProperties
-                System.Diagnostics.Debug.WriteLine($"[OpenStream] BEFORE sync: ViewModel.ByteSize={_viewModel.ByteSize}, DP.ByteSize={ByteSize}");
                 _viewModel.ByteSize = ByteSize;
                 _viewModel.ByteOrder = ByteOrder;
-                System.Diagnostics.Debug.WriteLine($"[OpenStream] AFTER sync: ViewModel.ByteSize={_viewModel.ByteSize}");
-
-                // TEMP DEBUG: Show what ByteSize was used
-                System.Windows.MessageBox.Show(
-                    $"File Opened!\n\n" +
-                    $"DependencyProperty ByteSize: {ByteSize}\n" +
-                    $"ViewModel ByteSize: {_viewModel.ByteSize}\n\n" +
-                    $"If these don't match, the sync failed!",
-                    "🔍 DEBUG: OpenStream ByteSize Sync",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Information);
 
                 // Initialize byte spacer properties on viewport
                 HexViewport.ByteSpacerPositioning = ByteSpacerPositioning;

@@ -57,20 +57,8 @@ namespace WpfHexaEditor
 
             // CRITICAL FIX: Synchronize ByteSize and ByteOrder from DependencyProperties
             // This ensures multi-byte mode settings are preserved across file open/close
-            System.Diagnostics.Debug.WriteLine($"[OpenFile] BEFORE sync: ViewModel.ByteSize={_viewModel.ByteSize}, DP.ByteSize={ByteSize}");
             _viewModel.ByteSize = ByteSize;
             _viewModel.ByteOrder = ByteOrder;
-            System.Diagnostics.Debug.WriteLine($"[OpenFile] AFTER sync: ViewModel.ByteSize={_viewModel.ByteSize}");
-
-            // TEMP DEBUG: Show what ByteSize was used
-            System.Windows.MessageBox.Show(
-                $"File Opened (OpenFile)!\n\n" +
-                $"DependencyProperty ByteSize: {ByteSize}\n" +
-                $"ViewModel ByteSize: {_viewModel.ByteSize}\n\n" +
-                $"Navigation should move by {(_viewModel.ByteSize == Core.ByteSizeType.Bit8 ? 1 : _viewModel.ByteSize == Core.ByteSizeType.Bit16 ? 2 : 4)} bytes",
-                "🔍 DEBUG: OpenFile ByteSize Sync",
-                System.Windows.MessageBoxButton.OK,
-                System.Windows.MessageBoxImage.Information);
 
             // ByteProvider V2 always supports insertion anywhere - no need to set flag
             if (EditMode == EditMode.Insert)

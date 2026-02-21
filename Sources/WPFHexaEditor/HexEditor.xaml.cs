@@ -57,9 +57,6 @@ namespace WpfHexaEditor
         // CRITICAL: Closing flag to prevent async operations from accessing disposed resources
         private volatile bool _isClosing = false;
 
-        // TEMP DEBUG: Flag to show diagnostic message only once
-        private static bool _debugMessageShown = false;
-
         // Highlights  - stores ranges of highlighted bytes
         private readonly List<(long start, long length)> _highlights = new List<(long, long)>();
 
@@ -326,25 +323,13 @@ namespace WpfHexaEditor
         /// </summary>
         private void HexViewport_KeyboardNavigation(object sender, Controls.KeyboardNavigationEventArgs e)
         {
-            // TEMP DEBUG: Confirm handler is being called (ALWAYS show for Left/Right)
-            if (e.Key == System.Windows.Input.Key.Left || e.Key == System.Windows.Input.Key.Right)
-            {
-                System.Windows.MessageBox.Show(
-                    $"✅ HANDLER CALLED!\n\n" +
-                    $"Key: {e.Key}\n" +
-                    $"ViewModel null? {_viewModel == null}",
-                    "🔍 Handler Entry Point",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Information);
-            }
-
             if (_viewModel == null)
                 return;
 
             var currentPos = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0;
             long newPos = currentPos;
 
-            // Bug fix: Calculate stride based on ByteSize for Left/Right navigation
+            // Calculate stride based on ByteSize for multi-byte navigation
             int stride = _viewModel.ByteSize switch
             {
                 Core.ByteSizeType.Bit8 => 1,
@@ -352,27 +337,6 @@ namespace WpfHexaEditor
                 Core.ByteSizeType.Bit32 => 4,
                 _ => 1
             };
-
-            // DEBUG: Log ByteSize and stride
-            System.Diagnostics.Debug.WriteLine($"[KeyNav] ByteSize={_viewModel.ByteSize}, stride={stride}, currentPos={currentPos}");
-
-            // TEMP DIAGNOSTIC: Show MessageBox on first navigation key press
-            if (!_debugMessageShown)
-            {
-                _debugMessageShown = true;
-                System.Windows.MessageBox.Show(
-                    $"Keyboard Navigation Handler Called!\n\n" +
-                    $"ByteSize: {_viewModel.ByteSize}\n" +
-                    $"Stride: {stride}\n" +
-                    $"Current Position: {currentPos}\n" +
-                    $"Key Pressed: {e.Key}",
-                    "🔍 DEBUG: Navigation Diagnostic",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Information);
-            }
-
-            // REMOVED: Don't snap currentPos before calculation - this causes "press twice" issue
-            // Just calculate newPos from current position and snap result with direction awareness
 
             switch (e.Key)
             {
@@ -421,12 +385,7 @@ namespace WpfHexaEditor
                     break;
             }
 
-            // DEBUG: Log newPos before final snap
-            System.Diagnostics.Debug.WriteLine($"[KeyNav] After key {e.Key}: newPos={newPos}");
-
-            // CRITICAL FIX: Direction-aware snapping for multi-byte modes
-            // This fixes the "press twice" issue by snapping in the direction of movement
-            long oldNewPos = newPos; // Save for diagnostic
+            // Direction-aware snapping for multi-byte modes
             if (stride > 1)
             {
                 bool movingForward = (e.Key == System.Windows.Input.Key.Right ||
@@ -438,30 +397,11 @@ namespace WpfHexaEditor
                     // Moving forward: Snap UP to next boundary (or stay if already aligned)
                     // Formula: ceiling division = (n + stride - 1) / stride * stride
                     newPos = ((newPos + stride - 1) / stride) * stride;
-                    System.Diagnostics.Debug.WriteLine($"[KeyNav] Snap UP: {oldNewPos} → {newPos}");
                 }
                 else
                 {
                     // Moving backward: Snap DOWN to previous boundary (or stay if already aligned)
                     newPos = (newPos / stride) * stride;
-                    System.Diagnostics.Debug.WriteLine($"[KeyNav] Snap DOWN: {oldNewPos} → {newPos}");
-                }
-
-                // TEMP DEBUG: Show movement details for Left/Right
-                if (e.Key == System.Windows.Input.Key.Left || e.Key == System.Windows.Input.Key.Right)
-                {
-                    System.Windows.MessageBox.Show(
-                        $"Navigation Step Details:\n\n" +
-                        $"Started at position: {currentPos}\n" +
-                        $"Key pressed: {e.Key}\n" +
-                        $"Stride (bytes per group): {stride}\n" +
-                        $"After ±stride: {oldNewPos}\n" +
-                        $"After snapping: {newPos}\n" +
-                        $"Net movement: {newPos - currentPos} bytes\n\n" +
-                        $"Expected movement: ~{stride} bytes",
-                        "🔍 DEBUG: Navigation Step",
-                        System.Windows.MessageBoxButton.OK,
-                        System.Windows.MessageBoxImage.Information);
                 }
             }
 
