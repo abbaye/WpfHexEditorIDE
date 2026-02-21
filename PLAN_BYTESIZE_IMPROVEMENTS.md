@@ -300,6 +300,68 @@ private void OnFontSizeChanged()
 
 ---
 
+### Bug 5: Keyboard Navigation in Multi-Byte Modes ⚠️ PRIORITÉ HAUTE - ✅ RESOLVED
+
+**Symptôme**: En mode Bit16/32, les touches Left/Right ne fonctionnent pas correctement
+- Pression de Right peut causer le curseur à se déplacer vers l'arrière
+- Nécessite 2 pressions pour voir le changement visuel
+- Up/Down fonctionnent correctement
+
+**Cause Racine**:
+Quand cursor n'est pas aligné sur une boundary de groupe, la logique de snap causait des mouvements incorrects:
+```
+Exemple (Bit16, stride=2):
+- Position actuelle: 1 (pas sur boundary)
+- Press Right: newPos = 1 + 2 = 3
+- Snap: (3 / 2) * 2 = 2
+- Résultat: Bouge vers l'arrière! ❌
+```
+
+**Solution Implémentée** (commits ac21210, 30d10c4, 3793384):
+1. **Dual-Snap Approach**:
+   - **Snap AVANT** calcul newPos pour Left/Right (nouveau)
+   - **Snap APRÈS** calcul pour tous les navigation keys (existant)
+
+2. **Code Fix** (HexEditor.xaml.cs, ligne ~360):
+```csharp
+// Calculate stride
+int stride = _viewModel.ByteSize switch
+{
+    Core.ByteSizeType.Bit8 => 1,
+    Core.ByteSizeType.Bit16 => 2,
+    Core.ByteSizeType.Bit32 => 4,
+    _ => 1
+};
+
+// CRITICAL: Snap currentPos FIRST
+if (stride > 1)
+{
+    currentPos = (currentPos / stride) * stride;
+}
+
+// Now move by stride (always moves forward/backward correctly)
+case Key.Left:
+    newPos = Math.Max(0, currentPos - stride);
+    break;
+case Key.Right:
+    newPos = Math.Min(_viewModel.VirtualLength - 1, currentPos + stride);
+    break;
+```
+
+**Résultat**:
+- ✅ Left/Right se déplacent toujours d'exactement un groupe complet
+- ✅ Pas de mouvements vers l'arrière
+- ✅ Up/Down/PageUp/PageDown continuent de fonctionner (snap final les aligne)
+- ✅ Click detection aussi snappé aux boundaries de groupes
+
+**Testing**:
+1. ✅ Bit16 mode: position 0 → Right → position 2 → Right → position 4
+2. ✅ Bit32 mode: position 0 → Right → position 4 → Right → position 8
+3. ✅ Click au milieu d'un groupe → cursor snap au début du groupe
+4. ✅ Left depuis position 4 (Bit16) → position 2 → position 0
+
+---
+
 ## 📋 Phases Futures - Roadmap Complète
 
 ---
@@ -751,12 +813,18 @@ Ctrl+E: Toggle ByteOrder (LoHi ↔ HiLo)
 1. ✅ Fix ByteOrder not updating display (DONE - commit 03e1314)
 2. ✅ Fix ByteSpacer positioning in multi-byte modes (DONE - commit b33bd8a)
 3. ✅ Fix partial group CellWidth (DONE - commit 723c97e)
-4. ✅ Implement dynamic CellWidth with Font/DPI support (DONE - commits b80a2ca, 63cdf2b)
+4. ✅ Implement dynamic CellWidth with Font/DPI support (DONE - commits b80a2ca, 63cdf2b, 79c7890)
    - ✅ Replaced hardcoded pixel values with FormattedText measurements
    - ✅ Added cache in HexViewport (_cellWidthCache Dictionary)
    - ✅ Invalidate cache on FontSize/FontFamily/DPI changes
    - ✅ Wired up font change detection with DependencyPropertyDescriptor
+   - ✅ Fixed separator positioning (line 1005) to use GetDynamicCellWidth() (commit 79c7890)
    - 🧪 Ready for testing with different fonts (Consolas, Courier, sizes 10-20)
+5. ✅ Fix keyboard navigation in multi-byte modes (DONE - commits ac21210, 30d10c4, 3793384)
+   - ✅ Left/Right now move by stride (1/2/4 bytes for Bit8/16/32)
+   - ✅ Snap current position BEFORE calculating newPos to prevent backwards movement
+   - ✅ Dual-snap approach: snap before (Left/Right) + snap after (all navigation keys)
+   - 🎯 Navigation now works correctly: each key press moves exactly one group
 
 ### Sprint 2 (Édition) - 2 semaines
 4. Phase 7.1: Édition Group-Level (disable Bit16/32 for now, add UI message)
