@@ -125,8 +125,26 @@ namespace WpfHexaEditor
                 selectionStartColumn = (int)(_viewModel.SelectionStart.Value % bytesPerLine);
             }
 
-            // Generate hex column headers (00 01 02...0F)
-            for (int i = 0; i < bytesPerLine; i++)
+            // Phase 4: Calculate stride based on ByteSize (Bit8=1, Bit16=2, Bit32=4)
+            int stride = (_viewModel?.ByteSize ?? Core.ByteSizeType.Bit8) switch
+            {
+                Core.ByteSizeType.Bit8 => 1,
+                Core.ByteSizeType.Bit16 => 2,
+                Core.ByteSizeType.Bit32 => 4,
+                _ => 1
+            };
+
+            // Phase 4: Calculate cell width based on ByteSize
+            double cellWidth = (_viewModel?.ByteSize ?? Core.ByteSizeType.Bit8) switch
+            {
+                Core.ByteSizeType.Bit8 => 24,
+                Core.ByteSizeType.Bit16 => 52,
+                Core.ByteSizeType.Bit32 => 106,
+                _ => 24
+            };
+
+            // Generate hex column headers with stride (e.g., 00 02 04 for Bit16)
+            for (int i = 0; i < bytesPerLine; i += stride)
             {
                 // Add byte spacer before this column if needed
                 if (ByteSpacerPositioning == ByteSpacerPosition.Both ||
@@ -135,12 +153,12 @@ namespace WpfHexaEditor
                     AddByteSpacer(_hexHeaderStackPanel, i, forceEmpty: true);
                 }
 
-                // Add byte position header (00, 01, 02, etc.)
+                // Add byte position header (00, 02, 04... for Bit16)
                 bool isSelectionColumn = (i == selectionStartColumn);
                 var headerText = new TextBlock
                 {
                     Text = i.ToString("X2"),
-                    Width = 24, // Match HexByteWidth from HexViewport
+                    Width = cellWidth, // Phase 4: Dynamic width (24/52/106px)
                     TextAlignment = TextAlignment.Center,
                     FontSize = 11,
                     FontWeight = isSelectionColumn ? FontWeights.Bold : FontWeights.Normal,
