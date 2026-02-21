@@ -787,8 +787,12 @@ namespace WpfHexaEditor
 
                 case nameof(HexEditorViewModel.ByteSize):
                     // Phase 5: Sync ByteSize DP for TwoWay binding in settings panel
+                    System.Diagnostics.Debug.WriteLine($"[ViewModel PropertyChanged] ByteSize changed to: {_viewModel.ByteSize}");
                     if (ByteSize != _viewModel.ByteSize)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[ViewModel PropertyChanged] Syncing DP: {ByteSize} → {_viewModel.ByteSize}");
                         SetValue(ByteSizeProperty, _viewModel.ByteSize);
+                    }
                     RefreshColumnHeader(); // Update headers for new stride
                     break;
 

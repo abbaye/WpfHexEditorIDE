@@ -341,6 +341,17 @@ namespace WpfHexaEditor
             // DEBUG: Log ByteSize and stride
             System.Diagnostics.Debug.WriteLine($"[KeyNav] ByteSize={_viewModel.ByteSize}, stride={stride}, currentPos={currentPos}");
 
+            // TEMP DIAGNOSTIC: Show ByteSize in status bar
+            var statusBar = this.FindName("StatusBar") as System.Windows.Controls.Primitives.StatusBar;
+            if (statusBar != null && statusBar.Items.Count > 0)
+            {
+                var firstItem = statusBar.Items[0] as System.Windows.Controls.TextBlock;
+                if (firstItem != null)
+                {
+                    firstItem.Text = $"ByteSize={_viewModel.ByteSize} | Stride={stride} | Pos={currentPos}";
+                }
+            }
+
             // CRITICAL: Snap current position to group boundary FIRST
             // This ensures navigation always moves forward/backward correctly
             if (stride > 1)
@@ -2655,16 +2666,27 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor && e.NewValue is ByteSizeType byteSize)
             {
+                System.Diagnostics.Debug.WriteLine($"[ByteSize DP] OnByteSizeChanged: {e.OldValue} → {e.NewValue}");
+
                 // CRITICAL FIX: Prevent infinite loop - only update ViewModel if value actually changed
                 if (editor._viewModel != null && editor._viewModel.ByteSize == byteSize)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] Already synced, skipping");
                     return; // Already synced, avoid recursion
+                }
 
                 if (editor._viewModel != null)
                 {
+                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] Syncing to ViewModel: {byteSize}");
                     editor._viewModel.ByteSize = byteSize;
                     // ByteSize change triggers automatic ClearLineCache() + RefreshVisibleLines() in ViewModel
                     editor.RefreshColumnHeader(); // Update headers to reflect new stride
                     editor.HexViewport.InvalidateVisual(); // Force viewport redraw
+                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] Sync complete");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] WARNING: _viewModel is null!");
                 }
             }
         }

@@ -92,7 +92,9 @@
       "Bash(git log:*)",
       "Bash(la navigation key left/right non plus mais key up/down fonctionne bien\":*)",
       "Bash(mais en multi-byte par exemple je dois appuyer deux fois a gauche/droite)",
-      "Bash(pour voir le changement dans l 'éditeur\":*)"
+      "Bash(pour voir le changement dans l 'éditeur\":*)",
+      "Bash(Stride=Y)",
+      "Bash(Pos=Z\":*)"
     ]
   }
 }
