@@ -49,8 +49,6 @@
     <Color x:Key="HexEditor_SelectionFirstColor">#660078D4</Color>         <!-- Office Blue with 40% opacity -->
     <Color x:Key="HexEditor_SelectionSecondColor">#660078D4</Color>        <!-- Office Blue with 40% opacity -->
     <Color x:Key="HexEditor_ByteModifiedColor">#FF8C00</Color>             <!-- Orange -->
-    <Color x:Key="HexEditor_ByteDeletedColor">#E81123</Color>              <!-- Office Red -->
-    <Color x:Key="HexEditor_ByteAddedColor">#107C10</Color>                <!-- Office Green -->
     <Color x:Key="HexEditor_HighLightColor">#FFD700</Color>                <!-- Gold -->
     <!-- MouseOverColor removed - controlled by HexEditor DP default -->
     <Color x:Key="HexEditor_ForegroundSecondColor">#0000FF</Color>         <!-- Blue -->

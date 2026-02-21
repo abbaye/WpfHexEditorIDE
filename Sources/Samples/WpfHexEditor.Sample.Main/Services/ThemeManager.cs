@@ -161,9 +161,6 @@ namespace WpfHexEditor.Sample.Main.Services
                 hexEditor.ByteModifiedColor = GetColorResource("HexEditor_ByteModifiedColor",
                     Color.FromRgb(255, 165, 0));
 
-                hexEditor.ByteDeletedColor = GetColorResource("HexEditor_ByteDeletedColor",
-                    Color.FromRgb(244, 67, 54));
-
                 hexEditor.ByteAddedColor = GetColorResource("HexEditor_ByteAddedColor",
                     Color.FromRgb(76, 175, 80));
 

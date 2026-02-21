@@ -1174,6 +1174,14 @@
     <value>Load Saved State</value>
     <comment>Hex editor settings - Load saved state button</comment>
   </data>
+  <data name="HexSettings_SaveButton" xml:space="preserve">
+    <value>💾 Save State</value>
+    <comment>Hex editor settings - Save state button</comment>
+  </data>
+  <data name="HexSettings_LoadButton" xml:space="preserve">
+    <value>📂 Load State</value>
+    <comment>Hex editor settings - Load state button</comment>
+  </data>
   <data name="HexSettings_ResetButton" xml:space="preserve">
     <value>🔄 Reset All to Defaults</value>
     <comment>Hex editor settings - Reset all to defaults button</comment>

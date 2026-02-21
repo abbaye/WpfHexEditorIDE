@@ -1719,33 +1719,6 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Color for deleted bytes
-        /// </summary>
-        [Category("Colors")]
-        public Color ByteDeletedColor
-        {
-            get => (Color)GetValue(ByteDeletedColorProperty);
-            set => SetValue(ByteDeletedColorProperty, value);
-        }
-
-        public static readonly DependencyProperty ByteDeletedColorProperty =
-            DependencyProperty.Register(nameof(ByteDeletedColor), typeof(Color), typeof(HexEditor),
-                new PropertyMetadata(Color.FromRgb(244, 67, 54), OnByteDeletedColorChanged));
-
-        private static void OnByteDeletedColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor editor)
-            {
-                var color = (Color)e.NewValue;
-                editor.Resources["DeletedBrush"] = new SolidColorBrush(color);
-
-                // Update HexViewport color
-                if (editor.HexViewport != null)
-                    editor.HexViewport.DeletedByteColor = color;
-            }
-        }
-
-        /// <summary>
         /// Color for added bytes
         /// </summary>
         [Category("Colors")]
@@ -1825,7 +1798,34 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Foreground color for alternate bytes (uses Color instead of Brush)
+        /// Foreground color for normal bytes (even columns: 00, 02, 04...)
+        /// </summary>
+        [Category("Colors")]
+        public Color ForegroundFirstColor
+        {
+            get => (Color)GetValue(ForegroundFirstColorProperty);
+            set => SetValue(ForegroundFirstColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ForegroundFirstColorProperty =
+            DependencyProperty.Register(nameof(ForegroundFirstColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.Black, OnForegroundFirstColorChanged));
+
+        private static void OnForegroundFirstColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var color = (Color)e.NewValue;
+                editor.Resources["ByteForegroundBrush"] = new SolidColorBrush(color);
+
+                // Update HexViewport color
+                if (editor.HexViewport != null)
+                    editor.HexViewport.NormalByteColor = color;
+            }
+        }
+
+        /// <summary>
+        /// Foreground color for alternate bytes (odd columns: 01, 03, 05...)
         /// </summary>
         [Category("Colors")]
         public Color ForegroundSecondColor
@@ -1842,15 +1842,12 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor)
             {
-                var brush = new SolidColorBrush((Color)e.NewValue);
-                editor.Resources["AlternateByteForegroundBrush"] = brush;
+                var color = (Color)e.NewValue;
+                editor.Resources["AlternateByteForegroundBrush"] = new SolidColorBrush(color);
 
-                // Update HexViewport colors
+                // Update HexViewport color
                 if (editor.HexViewport != null)
-                {
-                    var normalBrush = editor.Resources["ByteForegroundBrush"] as Brush;
-                    editor.HexViewport.SetByteForegroundColors(normalBrush, brush);
-                }
+                    editor.HexViewport.AlternateByteColor = color;
             }
         }
 
@@ -2734,20 +2731,6 @@ namespace WpfHexaEditor
             {
                 if (value is SolidColorBrush solidBrush)
                     ByteModifiedColor = solidBrush.Color;
-            }
-        }
-
-        /// <summary>
-        /// Deleted byte color as Brush. Use ByteDeletedColor (Color) for V2 code.
-        /// </summary>
-        [Category("Colors")]
-        public Brush ByteDeletedColorBrush
-        {
-            get => new SolidColorBrush(ByteDeletedColor);
-            set
-            {
-                if (value is SolidColorBrush solidBrush)
-                    ByteDeletedColor = solidBrush.Color;
             }
         }
 

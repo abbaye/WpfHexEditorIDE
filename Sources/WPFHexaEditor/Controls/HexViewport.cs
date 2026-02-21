@@ -728,15 +728,6 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
-        /// Color for deleted bytes
-        /// </summary>
-        public Color DeletedByteColor
-        {
-            get => (_deletedBrush as SolidColorBrush)?.Color ?? Color.FromRgb(0xF4, 0x43, 0x36);
-            set { _deletedBrush = new SolidColorBrush(value); _deletedBrush.Freeze(); InvalidateVisual(); }
-        }
-
-        /// <summary>
         /// Color for selected bytes
         /// </summary>
         public Color SelectionColor
@@ -761,6 +752,24 @@ namespace WpfHexaEditor.Controls
         {
             get => (_offsetBrush as SolidColorBrush)?.Color ?? Color.FromRgb(0x75, 0x75, 0x75);
             set { _offsetBrush = new SolidColorBrush(value); _offsetBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// Color for normal bytes (even columns: 00, 02, 04...)
+        /// </summary>
+        public Color NormalByteColor
+        {
+            get => (_normalByteBrush as SolidColorBrush)?.Color ?? Color.FromRgb(0x00, 0x00, 0x00);
+            set { _normalByteBrush = new SolidColorBrush(value); _normalByteBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// Color for alternate bytes (odd columns: 01, 03, 05...)
+        /// </summary>
+        public Color AlternateByteColor
+        {
+            get => (_alternateByteBrush as SolidColorBrush)?.Color ?? Color.FromRgb(0x00, 0x00, 0xFF);
+            set { _alternateByteBrush = new SolidColorBrush(value); _alternateByteBrush.Freeze(); InvalidateVisual(); }
         }
 
         /// <summary>

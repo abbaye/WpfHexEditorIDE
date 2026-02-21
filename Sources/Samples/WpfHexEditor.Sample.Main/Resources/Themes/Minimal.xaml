@@ -49,8 +49,6 @@
     <Color x:Key="HexEditor_SelectionFirstColor">#66000000</Color>         <!-- Black with 40% opacity -->
     <Color x:Key="HexEditor_SelectionSecondColor">#66000000</Color>        <!-- Black with 40% opacity -->
     <Color x:Key="HexEditor_ByteModifiedColor">#666666</Color>             <!-- Medium Gray -->
-    <Color x:Key="HexEditor_ByteDeletedColor">#000000</Color>              <!-- Black -->
-    <Color x:Key="HexEditor_ByteAddedColor">#444444</Color>                <!-- Dark Gray -->
     <Color x:Key="HexEditor_HighLightColor">#999999</Color>                <!-- Light Gray -->
     <!-- MouseOverColor removed - controlled by HexEditor DP default -->
     <Color x:Key="HexEditor_ForegroundSecondColor">#444444</Color>         <!-- Dark Gray -->

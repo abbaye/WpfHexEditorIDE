@@ -371,6 +371,7 @@ namespace WpfHexaEditor.Core.Settings
             // Reset button - Use DynamicResource for Content
             var resetButton = new Button
             {
+                Margin = new Thickness(0, 0, 8, 0),
                 Padding = new Thickness(12, 6, 12, 6),
                 Name = "ResetButton"
             };
