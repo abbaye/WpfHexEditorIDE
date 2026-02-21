@@ -308,30 +308,11 @@ namespace WpfHexaEditor
             if (_viewModel == null)
                 return;
 
-            // CRITICAL: Snap positions to group boundaries for multi-byte modes
-            // Calculate stride
-            int stride = _viewModel.ByteSize switch
-            {
-                Core.ByteSizeType.Bit8 => 1,
-                Core.ByteSizeType.Bit16 => 2,
-                Core.ByteSizeType.Bit32 => 4,
-                _ => 1
-            };
-
-            // Snap start and end positions to group boundaries
-            long startPos = e.StartPosition;
-            long endPos = e.EndPosition;
-
-            if (stride > 1)
-            {
-                startPos = (startPos / stride) * stride;
-                endPos = (endPos / stride) * stride;
-            }
-
-            // Update selection range in ViewModel
+            // Use positions directly from hit testing - don't snap!
+            // The hit testing should already return the correct ByteData position
             _viewModel.SetSelectionRange(
-                new VirtualPosition(startPos),
-                new VirtualPosition(endPos));
+                new VirtualPosition(e.StartPosition),
+                new VirtualPosition(e.EndPosition));
 
             // Update UI
             UpdateSelectionInfo();
@@ -357,11 +338,15 @@ namespace WpfHexaEditor
                 _ => 1
             };
 
+            // DEBUG: Log ByteSize and stride
+            System.Diagnostics.Debug.WriteLine($"[KeyNav] ByteSize={_viewModel.ByteSize}, stride={stride}, currentPos={currentPos}");
+
             // CRITICAL: Snap current position to group boundary FIRST
             // This ensures navigation always moves forward/backward correctly
             if (stride > 1)
             {
                 currentPos = (currentPos / stride) * stride;
+                System.Diagnostics.Debug.WriteLine($"[KeyNav] After snap: currentPos={currentPos}");
             }
 
             switch (e.Key)
@@ -411,12 +396,16 @@ namespace WpfHexaEditor
                     break;
             }
 
+            // DEBUG: Log newPos before final snap
+            System.Diagnostics.Debug.WriteLine($"[KeyNav] After key {e.Key}: newPos={newPos}");
+
             // CRITICAL: Snap newPos to group boundary for multi-byte modes
             // This ensures cursor is always aligned on first byte of a group
             // Example in Bit16: position 3 → snaps to 2 (start of group)
             if (stride > 1)
             {
                 newPos = (newPos / stride) * stride;
+                System.Diagnostics.Debug.WriteLine($"[KeyNav] After final snap: newPos={newPos}");
             }
 
             // Update selection based on Shift key
@@ -1551,7 +1540,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Number of bytes per line (8, 16, 32, etc.) - DependencyProperty for XAML binding
         /// </summary>
-        [Category("Data")]
+        [Category("Visual")]
         public int BytePerLine
         {
             get => (int)GetValue(BytePerLineProperty);
