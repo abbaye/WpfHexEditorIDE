@@ -47,6 +47,8 @@ namespace WpfHexaEditor.ViewModels
 
         private EditMode _editMode = EditMode.Overwrite;
         private int _bytePerLine = 16;
+        private Core.ByteSizeType _byteSize = Core.ByteSizeType.Bit8;      // Phase 2: ByteSize/ByteOrder
+        private Core.ByteOrderType _byteOrder = Core.ByteOrderType.LoHi;   // Phase 2: ByteSize/ByteOrder
         private long _scrollPosition = 0;
         private int _visibleLines = 20;
         private VirtualPosition _selectionStart = VirtualPosition.Invalid;
@@ -90,6 +92,45 @@ namespace WpfHexaEditor.ViewModels
                     // Force full refresh when BytePerLine changes (line structure completely different)
                     // Clear cache to prevent incremental update which can cause index errors
                     ClearLineCache();
+                    RefreshVisibleLines();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Byte size mode (Bit8/16/32) - Phase 2: ByteSize/ByteOrder
+        /// </summary>
+        public Core.ByteSizeType ByteSize
+        {
+            get => _byteSize;
+            set
+            {
+                if (_byteSize != value)
+                {
+                    _byteSize = value;
+                    OnPropertyChanged();
+
+                    // Force full refresh when ByteSize changes (affects byte grouping)
+                    ClearLineCache();
+                    RefreshVisibleLines();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Byte order (LoHi/HiLo for endianness) - Phase 2: ByteSize/ByteOrder
+        /// </summary>
+        public Core.ByteOrderType ByteOrder
+        {
+            get => _byteOrder;
+            set
+            {
+                if (_byteOrder != value)
+                {
+                    _byteOrder = value;
+                    OnPropertyChanged();
+
+                    // Refresh lines to apply new byte order (no cache clear needed, just visual change)
                     RefreshVisibleLines();
                 }
             }
@@ -1272,15 +1313,36 @@ namespace WpfHexaEditor.ViewModels
             // Calculate cursor position once
             var cursorPos = _selectionStop.IsValid ? _selectionStop : _selectionStart;
 
-            // Create ByteData for each byte in the line
-            for (int i = 0; i < lineBytes.Length; i++)
+            // Phase 2: Group bytes by stride based on ByteSize (Bit8=1, Bit16=2, Bit32=4)
+            int stride = ByteSize switch
+            {
+                Core.ByteSizeType.Bit8 => 1,
+                Core.ByteSizeType.Bit16 => 2,
+                Core.ByteSizeType.Bit32 => 4,
+                _ => 1
+            };
+
+            // Create ByteData for each byte group in the line
+            for (int i = 0; i < lineBytes.Length; i += stride)
             {
                 long virtualPos = startVirtualPos + i;
+
+                // Gather bytes for this group (handle end-of-line partial groups)
+                var groupSize = Math.Min(stride, lineBytes.Length - i);
+                var group = new byte[groupSize];
+                for (int j = 0; j < groupSize; j++)
+                {
+                    group[j] = lineBytes[i + j];
+                }
+
                 var byteData = new ByteData
                 {
                     VirtualPos = new VirtualPosition(virtualPos),
                     PhysicalPos = null, // ByteProvider V2 handles mapping internally
-                    Value = lineBytes[i],
+                    Value = lineBytes[i],       // First byte (Bit8 backward compatibility)
+                    Values = group,             // All bytes in this group
+                    ByteSize = ByteSize,        // Current mode
+                    ByteOrder = ByteOrder,      // Current endianness
                     Action = _provider.GetByteAction(virtualPos),
                     IsSelected = IsByteSelected(new VirtualPosition(virtualPos)),
                     IsCursor = cursorPos.IsValid && virtualPos == cursorPos.Value
