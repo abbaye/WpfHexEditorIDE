@@ -134,6 +134,15 @@ namespace WpfHexaEditor
 
                 // Initialize mouse hover brush
                 HexViewport.MouseHoverBrush = new SolidColorBrush(MouseOverColor);
+
+                // Bug 4: Subscribe to FontSize/FontFamily changes to update dynamic CellWidth cache
+                var fontSizeDescriptor = System.ComponentModel.DependencyPropertyDescriptor.FromProperty(
+                    Control.FontSizeProperty, typeof(HexEditor));
+                fontSizeDescriptor?.AddValueChanged(this, OnFontPropertyChanged);
+
+                var fontFamilyDescriptor = System.ComponentModel.DependencyPropertyDescriptor.FromProperty(
+                    Control.FontFamilyProperty, typeof(HexEditor));
+                fontFamilyDescriptor?.AddValueChanged(this, OnFontPropertyChanged);
             }
 
             // Subscribe to PreviewKeyDown for Escape key (clear search markers)
@@ -152,6 +161,26 @@ namespace WpfHexaEditor
 
             // Initialize zoom system
             InitialiseZoom();
+        }
+
+        /// <summary>
+        /// Bug 4: Handle FontSize/FontFamily changes to update HexViewport dynamic CellWidth cache
+        /// Called when user changes font settings in Settings panel or programmatically
+        /// </summary>
+        private void OnFontPropertyChanged(object sender, EventArgs e)
+        {
+            if (HexViewport == null)
+                return;
+
+            // Get current font settings (from UserControl.FontFamily and UserControl.FontSize)
+            string fontFamily = FontFamily.Source;
+            double fontSize = FontSize;
+
+            // Update HexViewport font and invalidate CellWidth cache
+            HexViewport.UpdateFont(fontFamily, fontSize);
+
+            // Refresh column headers with new widths
+            RefreshColumnHeader();
         }
 
         /// <summary>
@@ -279,7 +308,8 @@ namespace WpfHexaEditor
             if (_viewModel == null)
                 return;
 
-            // Update selection range in ViewModel
+            // Use positions directly from hit testing - don't snap!
+            // The hit testing should already return the correct ByteData position
             _viewModel.SetSelectionRange(
                 new VirtualPosition(e.StartPosition),
                 new VirtualPosition(e.EndPosition));
@@ -299,14 +329,25 @@ namespace WpfHexaEditor
             var currentPos = _viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0;
             long newPos = currentPos;
 
+            // Calculate stride based on ByteSize for multi-byte navigation
+            int stride = _viewModel.ByteSize switch
+            {
+                Core.ByteSizeType.Bit8 => 1,
+                Core.ByteSizeType.Bit16 => 2,
+                Core.ByteSizeType.Bit32 => 4,
+                _ => 1
+            };
+
             switch (e.Key)
             {
                 case System.Windows.Input.Key.Left:
-                    newPos = Math.Max(0, currentPos - 1);
+                    // Move by stride (1 byte in Bit8, 2 in Bit16, 4 in Bit32)
+                    newPos = Math.Max(0, currentPos - stride);
                     break;
 
                 case System.Windows.Input.Key.Right:
-                    newPos = Math.Min(_viewModel.VirtualLength - 1, currentPos + 1);
+                    // Move by stride
+                    newPos = Math.Min(_viewModel.VirtualLength - 1, currentPos + stride);
                     break;
 
                 case System.Windows.Input.Key.Up:
@@ -342,6 +383,26 @@ namespace WpfHexaEditor
                         newPos = Math.Min(_viewModel.VirtualLength - 1, lineStart + _viewModel.BytePerLine - 1);
                     }
                     break;
+            }
+
+            // Direction-aware snapping for multi-byte modes
+            if (stride > 1)
+            {
+                bool movingForward = (e.Key == System.Windows.Input.Key.Right ||
+                                      e.Key == System.Windows.Input.Key.Down ||
+                                      e.Key == System.Windows.Input.Key.PageDown);
+
+                if (movingForward)
+                {
+                    // Moving forward: Snap UP to next boundary (or stay if already aligned)
+                    // Formula: ceiling division = (n + stride - 1) / stride * stride
+                    newPos = ((newPos + stride - 1) / stride) * stride;
+                }
+                else
+                {
+                    // Moving backward: Snap DOWN to previous boundary (or stay if already aligned)
+                    newPos = (newPos / stride) * stride;
+                }
             }
 
             // Update selection based on Shift key
@@ -1476,7 +1537,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Number of bytes per line (8, 16, 32, etc.) - DependencyProperty for XAML binding
         /// </summary>
-        [Category("Data")]
+        [Category("Visual")]
         public int BytePerLine
         {
             get => (int)GetValue(BytePerLineProperty);
@@ -1530,20 +1591,6 @@ namespace WpfHexaEditor
             get => (System.Windows.Media.Brush)Resources["AlternateByteForegroundBrush"];
             set => Resources["AlternateByteForegroundBrush"] = value;
         }
-
-        /// <summary>
-        /// Show column separator between hex and ASCII
-        /// </summary>
-        [Category("Display")]
-        public bool ShowColumnSeparator
-        {
-            get => (bool)GetValue(ShowColumnSeparatorProperty);
-            set => SetValue(ShowColumnSeparatorProperty, value);
-        }
-
-        public static readonly DependencyProperty ShowColumnSeparatorProperty =
-            DependencyProperty.Register(nameof(ShowColumnSeparator), typeof(bool), typeof(HexEditor),
-                new PropertyMetadata(true));
 
         #endregion
 
@@ -2575,14 +2622,60 @@ namespace WpfHexaEditor
         /// </summary>
         public static readonly DependencyProperty ByteOrderProperty =
             DependencyProperty.Register(nameof(ByteOrder), typeof(ByteOrderType), typeof(HexEditor),
-                new PropertyMetadata(ByteOrderType.LoHi));
+                new PropertyMetadata(ByteOrderType.LoHi, OnByteOrderChanged));
+
+        private static void OnByteOrderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is ByteOrderType byteOrder)
+            {
+                // CRITICAL FIX: Prevent infinite loop - only update ViewModel if value actually changed
+                if (editor._viewModel != null && editor._viewModel.ByteOrder == byteOrder)
+                    return; // Already synced, avoid recursion
+
+                if (editor._viewModel != null)
+                {
+                    editor._viewModel.ByteOrder = byteOrder;
+                    // ByteOrder change triggers automatic RefreshVisibleLines() in ViewModel
+                    // No need to call RefreshColumnHeader() - headers don't depend on ByteOrder
+                }
+            }
+        }
 
         /// <summary>
         /// ByteSize DependencyProperty for XAML binding
         /// </summary>
         public static readonly DependencyProperty ByteSizeProperty =
             DependencyProperty.Register(nameof(ByteSize), typeof(ByteSizeType), typeof(HexEditor),
-                new PropertyMetadata(ByteSizeType.Bit8));
+                new PropertyMetadata(ByteSizeType.Bit8, OnByteSizeChanged));
+
+        private static void OnByteSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is ByteSizeType byteSize)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ByteSize DP] OnByteSizeChanged: {e.OldValue} → {e.NewValue}");
+
+                // CRITICAL FIX: Prevent infinite loop - only update ViewModel if value actually changed
+                if (editor._viewModel != null && editor._viewModel.ByteSize == byteSize)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] Already synced, skipping");
+                    return; // Already synced, avoid recursion
+                }
+
+                if (editor._viewModel != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] Syncing to ViewModel: {byteSize}");
+                    editor._viewModel.ByteSize = byteSize;
+                    // ByteSize change triggers automatic ClearLineCache() + RefreshVisibleLines() in ViewModel
+                    editor.RefreshColumnHeader(); // Update headers to reflect new stride
+                    editor.HexViewport.InvalidateVisual(); // Force viewport redraw
+                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] Sync complete");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] WARNING: _viewModel is null!");
+                }
+            }
+        }
 
         /// <summary>
         /// BarChartPanelVisibility DependencyProperty for XAML binding

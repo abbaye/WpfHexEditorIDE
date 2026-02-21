@@ -55,6 +55,11 @@ namespace WpfHexaEditor
             _viewModel.EditMode = EditMode;
             HexViewport.EditMode = EditMode; // Also sync to HexViewport for caret display
 
+            // CRITICAL FIX: Synchronize ByteSize and ByteOrder from DependencyProperties
+            // This ensures multi-byte mode settings are preserved across file open/close
+            _viewModel.ByteSize = ByteSize;
+            _viewModel.ByteOrder = ByteOrder;
+
             // ByteProvider V2 always supports insertion anywhere - no need to set flag
             if (EditMode == EditMode.Insert)
             {

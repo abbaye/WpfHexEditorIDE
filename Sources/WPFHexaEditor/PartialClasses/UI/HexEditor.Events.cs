@@ -30,20 +30,24 @@ namespace WpfHexaEditor
             // Set keyboard focus to enable keyboard input
             HexViewport.Focus();
 
-            // Detect which area was clicked (Hex or ASCII)
+            // Phase 4: Use HexViewport's HitTestByteWithArea (same as mouseover - guaranteed consistent!)
             var mousePos = e.GetPosition(HexViewport);
-            var clickArea = GetClickAreaAtMouse(mousePos);
-            _isAsciiEditMode = (clickArea == ClickArea.Ascii);
+            var hitResult = HexViewport.HitTestByteWithArea(mousePos);
+
+            // Check if we hit a valid byte position
+            if (!hitResult.Position.HasValue)
+                return;
+
+            // Convert long position to VirtualPosition
+            var position = new VirtualPosition(hitResult.Position.Value);
+
+            // Detect which area was clicked (Hex or ASCII) from hit result
+            _isAsciiEditMode = !hitResult.IsHexArea; // If not hex, then ASCII
 
             // Set the active panel for dual-color selection
-            HexViewport.ActivePanel = (clickArea == ClickArea.Ascii)
-                ? Controls.ActivePanelType.Ascii
-                : Controls.ActivePanelType.Hex;
-
-            // Get the virtual position at mouse coordinates
-            var position = GetVirtualPositionAtMouse(mousePos);
-            if (!position.IsValid)
-                return;
+            HexViewport.ActivePanel = hitResult.IsHexArea
+                ? Controls.ActivePanelType.Hex
+                : Controls.ActivePanelType.Ascii;
 
             // Check for Shift key (extend selection)
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
@@ -75,9 +79,11 @@ namespace WpfHexaEditor
             Point mousePos = e.GetPosition(HexViewport);
             _lastMousePosition = mousePos;
 
-            var position = GetVirtualPositionAtMouse(mousePos);
-            if (position.IsValid)
+            // Phase 4: Use HexViewport's HitTestByteWithArea (same as mouseover - guaranteed consistent!)
+            var hitResult = HexViewport.HitTestByteWithArea(mousePos);
+            if (hitResult.Position.HasValue)
             {
+                var position = new VirtualPosition(hitResult.Position.Value);
                 // Update selection range during drag
                 _viewModel.SetSelectionRange(_mouseDownPosition, position);
             }
@@ -167,12 +173,23 @@ namespace WpfHexaEditor
                 return VirtualPosition.Invalid;
 
             // Layout constants from HexViewport (must match rendering)
-            const double HexByteWidth = 24;
             const double HexByteSpacing = 2;
             const double TopMargin = 2;
             const double AsciiCharWidth = 10;
             const int ByteGrouping = 4;
             const double ByteSpacerWidthTickness = 6;
+
+            // Phase 4: Calculate stride and cell width based on ByteSize
+            int stride = _viewModel.ByteSize switch
+            {
+                Core.ByteSizeType.Bit8 => 1,
+                Core.ByteSizeType.Bit16 => 2,
+                Core.ByteSizeType.Bit32 => 4,
+                _ => 1
+            };
+
+            // Calculate actual cell width based on stride (using HexViewport's calculation)
+            double cellWidth = HexViewport.CalculateCellWidthForByteCount(stride);
 
             // Use HexViewport's actual calculated dimensions
             double hexStartX = HexViewport.HexPanelStartX;
@@ -209,25 +226,30 @@ namespace WpfHexaEditor
                 double relativeX = x - hexStartX;
 
                 // Calculate byte index accounting for spacers
+                // Phase 4: In multi-byte mode, line.Bytes contains grouped ByteData objects (8 for Bit16, 4 for Bit32)
                 int byteIndex = 0;
                 double currentX = 0;
 
-                for (int i = 0; i < _viewModel.BytePerLine && i < line.Bytes.Count; i++)
+                for (int i = 0; i < line.Bytes.Count; i++)
                 {
+                    // Phase 4: Calculate actual byte position (i * stride) for ByteGrouping check
+                    int actualBytePos = i * stride;
+
                     // Add spacer width before this byte if needed
-                    if (_viewModel.BytePerLine >= ByteGrouping && i > 0 && i % ByteGrouping == 0)
+                    if (_viewModel.BytePerLine >= ByteGrouping && actualBytePos > 0 && actualBytePos % ByteGrouping == 0)
                     {
                         currentX += ByteSpacerWidthTickness;
                     }
 
+                    // Phase 4: Use dynamic cellWidth instead of hardcoded HexByteWidth
                     // Check if click is within this byte's bounds
-                    if (relativeX >= currentX && relativeX < currentX + HexByteWidth + HexByteSpacing)
+                    if (relativeX >= currentX && relativeX < currentX + cellWidth + HexByteSpacing)
                     {
                         byteIndex = i;
                         break;
                     }
 
-                    currentX += HexByteWidth + HexByteSpacing;
+                    currentX += cellWidth + HexByteSpacing;
                     byteIndex = i;
                 }
 
@@ -243,25 +265,34 @@ namespace WpfHexaEditor
                 double relativeX = x - asciiStartX;
 
                 // Calculate byte index accounting for spacers
+                // Phase 4: In multi-byte mode, line.Bytes contains grouped ByteData objects
+                // Each ByteData group shows multiple ASCII chars (stride chars)
                 int byteIndex = -1; // -1 means no byte found
                 double currentX = 0;
 
-                for (int i = 0; i < _viewModel.BytePerLine && i < line.Bytes.Count; i++)
+                for (int i = 0; i < line.Bytes.Count; i++)
                 {
+                    // Phase 4: Calculate actual byte position (i * stride) for ByteGrouping check
+                    int actualBytePos = i * stride;
+
                     // Add spacer width before this byte if needed
-                    if (_viewModel.BytePerLine >= ByteGrouping && i > 0 && i % ByteGrouping == 0)
+                    if (_viewModel.BytePerLine >= ByteGrouping && actualBytePos > 0 && actualBytePos % ByteGrouping == 0)
                     {
                         currentX += ByteSpacerWidthTickness;
                     }
 
-                    // Check if click is within this byte's bounds
-                    if (relativeX >= currentX && relativeX < currentX + AsciiCharWidth)
+                    // Phase 4: In multi-byte mode, each ByteData shows 'stride' ASCII characters
+                    // Width = stride * AsciiCharWidth
+                    double asciiGroupWidth = stride * AsciiCharWidth;
+
+                    // Check if click is within this byte group's ASCII bounds
+                    if (relativeX >= currentX && relativeX < currentX + asciiGroupWidth)
                     {
                         byteIndex = i;
                         break;
                     }
 
-                    currentX += AsciiCharWidth;
+                    currentX += asciiGroupWidth; // Phase 4: Advance by group width, not single char width
                 }
 
                 // Validate that the clicked byte actually exists on this line
@@ -295,6 +326,15 @@ namespace WpfHexaEditor
 
             VirtualPosition newPos = currentPos;
 
+            // CRITICAL FIX: Calculate stride based on ByteSize for multi-byte navigation
+            int stride = _viewModel.ByteSize switch
+            {
+                Core.ByteSizeType.Bit8 => 1,
+                Core.ByteSizeType.Bit16 => 2,
+                Core.ByteSizeType.Bit32 => 4,
+                _ => 1
+            };
+
             switch (e.Key)
             {
                 // Arrow keys navigation
@@ -317,9 +357,15 @@ namespace WpfHexaEditor
                     }
                     else
                     {
-                        // Normal Left: Move one byte left
+                        // FIXED: Move by stride (respects ByteSize: 1/2/4 bytes)
                         if (currentPos.Value > 0)
-                            newPos = new VirtualPosition(currentPos.Value - 1);
+                        {
+                            long targetPos = currentPos.Value - stride;
+                            // Snap to group boundary (floor division)
+                            if (stride > 1)
+                                targetPos = (targetPos / stride) * stride;
+                            newPos = new VirtualPosition(Math.Max(0, targetPos));
+                        }
                     }
                     break;
 
@@ -343,9 +389,15 @@ namespace WpfHexaEditor
                     }
                     else
                     {
-                        // Normal Right: Move one byte right
+                        // FIXED: Move by stride (respects ByteSize: 1/2/4 bytes)
                         if (currentPos.Value < _viewModel.VirtualLength - 1)
-                            newPos = new VirtualPosition(currentPos.Value + 1);
+                        {
+                            long targetPos = currentPos.Value + stride;
+                            // Snap to group boundary (ceiling division for forward movement)
+                            if (stride > 1)
+                                targetPos = ((targetPos + stride - 1) / stride) * stride;
+                            newPos = new VirtualPosition(Math.Min(_viewModel.VirtualLength - 1, targetPos));
+                        }
                     }
                     break;
 
@@ -431,14 +483,49 @@ namespace WpfHexaEditor
                         : EditMode.Insert;
                     break;
 
-                // Delete key: Delete selection
+                // Delete key: Delete selection (multi-byte aware)
                 case Key.Delete:
-                    if (_viewModel.HasSelection && !_viewModel.ReadOnlyMode)
+                    if (!_viewModel.ReadOnlyMode)
                     {
-                        DeleteSelection();
+                        // Use stride calculated at method start (lines 298-305)
+                        // No need to recalculate - already available in scope
+
+                        if (_viewModel.HasSelection && _viewModel.SelectionStart != _viewModel.SelectionStop)
+                        {
+                            long start = Math.Min(_viewModel.SelectionStart.Value, _viewModel.SelectionStop.Value);
+                            long stop = Math.Max(_viewModel.SelectionStart.Value, _viewModel.SelectionStop.Value);
+
+                            // Multi-byte mode: Expand to group boundaries
+                            if (stride > 1)
+                            {
+                                // Snap start DOWN to group boundary (floor division)
+                                start = (start / stride) * stride;
+
+                                // Snap stop UP to include full group (ceiling division)
+                                stop = ((stop + stride - 1) / stride) * stride - 1;
+
+                                // Ensure we don't go past file end
+                                stop = Math.Min(stop, _viewModel.VirtualLength - 1);
+                            }
+
+                            // OPTIMIZED: Use bulk deletion instead of loop
+                            long length = stop - start + 1;
+                            _viewModel.DeleteBytes(start, length);
+                        }
+                        else if (_viewModel.SelectionStart.IsValid)
+                        {
+                            // No selection: Delete stride bytes at cursor position
+                            long cursorPos = _viewModel.SelectionStart.Value;
+
+                            // Snap cursor to group boundary
+                            long alignedStart = (cursorPos / stride) * stride;
+                            int bytesToDelete = (int)Math.Min(stride, _viewModel.VirtualLength - alignedStart);
+
+                            // OPTIMIZED: Use bulk deletion instead of loop
+                            _viewModel.DeleteBytes(alignedStart, bytesToDelete);
+                        }
 
                         // CRITICAL UX FIX: After deletion, position cursor (with scroll) and restore focus
-                        // This ensures immediate keyboard responsiveness and visibility
                         if (_viewModel.SelectionStart.IsValid)
                         {
                             SetPosition(_viewModel.SelectionStart.Value);
@@ -783,6 +870,24 @@ namespace WpfHexaEditor
                     if (BytePerLine != _viewModel.BytePerLine)
                         SetValue(BytePerLineProperty, _viewModel.BytePerLine);
                     RefreshColumnHeader(); // Regenerate headers to match new BytesPerLine
+                    break;
+
+                case nameof(HexEditorViewModel.ByteSize):
+                    // Phase 5: Sync ByteSize DP for TwoWay binding in settings panel
+                    System.Diagnostics.Debug.WriteLine($"[ViewModel PropertyChanged] ByteSize changed to: {_viewModel.ByteSize}");
+                    if (ByteSize != _viewModel.ByteSize)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[ViewModel PropertyChanged] Syncing DP: {ByteSize} → {_viewModel.ByteSize}");
+                        SetValue(ByteSizeProperty, _viewModel.ByteSize);
+                    }
+                    RefreshColumnHeader(); // Update headers for new stride
+                    break;
+
+                case nameof(HexEditorViewModel.ByteOrder):
+                    // Phase 5: Sync ByteOrder DP for TwoWay binding in settings panel
+                    if (ByteOrder != _viewModel.ByteOrder)
+                        SetValue(ByteOrderProperty, _viewModel.ByteOrder);
+                    // ByteOrder change is visual only, no header update needed
                     break;
             }
 

@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfHexaEditor.Core;
 
@@ -57,9 +58,24 @@ namespace WpfHexaEditor.Models
         public PhysicalPosition? PhysicalPos { get; set; }
 
         /// <summary>
-        /// Byte value
+        /// Byte value (for Bit8 mode, preserved for backward compatibility)
         /// </summary>
         public byte Value { get; set; }
+
+        /// <summary>
+        /// Multi-byte values (for Bit16/32 modes) - Phase 1: ByteSize/ByteOrder implementation
+        /// </summary>
+        public byte[] Values { get; set; }
+
+        /// <summary>
+        /// Byte size mode (Bit8, Bit16, Bit32) - Phase 1: ByteSize/ByteOrder implementation
+        /// </summary>
+        public Core.ByteSizeType ByteSize { get; set; } = Core.ByteSizeType.Bit8;
+
+        /// <summary>
+        /// Byte order (LoHi/HiLo for endianness) - Phase 1: ByteSize/ByteOrder implementation
+        /// </summary>
+        public Core.ByteOrderType ByteOrder { get; set; } = Core.ByteOrderType.LoHi;
 
         /// <summary>
         /// Byte action (Added, Modified, Deleted, Nothing)
@@ -115,7 +131,7 @@ namespace WpfHexaEditor.Models
         }
 
         /// <summary>
-        /// Hex representation (e.g., "FF")
+        /// Hex representation (e.g., "FF") - Legacy property for backward compatibility
         /// </summary>
         public string HexString => Value.ToString("X2");
 
@@ -123,6 +139,26 @@ namespace WpfHexaEditor.Models
         /// ASCII representation (printable char or '.')
         /// </summary>
         public char AsciiChar => Value >= 32 && Value <= 126 ? (char)Value : '.';
+
+        /// <summary>
+        /// Get hex text representation based on ByteSize and ByteOrder - Phase 1: ByteSize/ByteOrder
+        /// </summary>
+        public string GetHexText()
+        {
+            if (ByteSize == Core.ByteSizeType.Bit8 || Values == null || Values.Length == 0)
+            {
+                // Bit8 mode: use single Value
+                return Value.ToString("X2");
+            }
+
+            // Multi-byte mode: apply ByteOrder
+            var bytes = (ByteOrder == Core.ByteOrderType.HiLo)
+                ? Values.Reverse().ToArray()
+                : Values;
+
+            return string.Concat(bytes.Select(b => b.ToString("X2")));
+        }
+
 
         #region INotifyPropertyChanged
 

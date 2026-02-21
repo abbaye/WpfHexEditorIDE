@@ -508,9 +508,10 @@ namespace WpfHexaEditor.Core.Bytes
             // CRITICAL FIX: Must invalidate cache after EACH deletion, not just at the end
             // Each deletion changes virtual→physical mapping, so cache becomes stale immediately
             // Without this, VirtualToPhysical() returns obsolete positions from cache for subsequent deletions
+            // BUGFIX: Always delete at startVirtualPosition because each deletion shifts remaining bytes up
             for (long i = 0; i < count; i++)
             {
-                long virtualPos = startVirtualPosition + i;
+                long virtualPos = startVirtualPosition; // Don't add i - bytes shift after each delete!
 
                 // Convert to physical position
                 var (physicalPos, isInserted) = _positionMapper.VirtualToPhysical(virtualPos, _fileProvider.Length);

@@ -67,6 +67,10 @@ namespace WpfHexaEditor
                 _viewModel.EditMode = EditMode;
                 HexViewport.EditMode = EditMode;
 
+                // CRITICAL FIX: Synchronize ByteSize and ByteOrder from DependencyProperties
+                _viewModel.ByteSize = ByteSize;
+                _viewModel.ByteOrder = ByteOrder;
+
                 // Initialize byte spacer properties on viewport
                 HexViewport.ByteSpacerPositioning = ByteSpacerPositioning;
                 HexViewport.ByteSpacerWidthTickness = ByteSpacerWidthTickness;
@@ -162,6 +166,10 @@ namespace WpfHexaEditor
                 // Synchronize ViewModel with control's EditMode
                 _viewModel.EditMode = EditMode;
                 HexViewport.EditMode = EditMode;
+
+                // CRITICAL FIX: Synchronize ByteSize and ByteOrder from DependencyProperties
+                _viewModel.ByteSize = ByteSize;
+                _viewModel.ByteOrder = ByteOrder;
 
                 // Initialize byte spacer properties on viewport
                 HexViewport.ByteSpacerPositioning = ByteSpacerPositioning;
