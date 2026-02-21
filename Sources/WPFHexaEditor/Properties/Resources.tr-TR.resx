@@ -702,4 +702,139 @@
   <data name="InvertSelectionTooltipString" xml:space="preserve">
     <value>Her bayttaki tüm bitleri ters çevir (0xFF ile XOR)</value>
   </data>
+
+  <!-- TBL Editor Localizations -->
+  <data name="TblEditor_Title" xml:space="preserve">
+    <value>TBL Karakter Tablosu Düzenleyici</value>
+    <comment>TBL Editor - Title</comment>
+  </data>
+  <data name="TblEditor_NoTblLoaded" xml:space="preserve">
+    <value>TBL dosyası yüklenmedi. Lütfen önce bir TBL dosyası yükleyin.</value>
+    <comment>TBL Editor - NoTblLoaded</comment>
+  </data>
+  <data name="TblEditor_UnsavedChanges" xml:space="preserve">
+    <value>Kaydedilmemiş değişiklikleriniz var. Kapatmadan önce kaydetmek ister misiniz?</value>
+    <comment>TBL Editor - UnsavedChanges</comment>
+  </data>
+  <data name="TblEditor_ConfirmDelete" xml:space="preserve">
+    <value>{0} giriş silinsin mi?</value>
+    <comment>TBL Editor - ConfirmDelete</comment>
+  </data>
+  <data name="TblEditor_ErrorSaving" xml:space="preserve">
+    <value>TBL kaydedilirken hata: {0}</value>
+    <comment>TBL Editor - ErrorSaving</comment>
+  </data>
+  <data name="TblEditor_SavedSuccessfully" xml:space="preserve">
+    <value>TBL başarıyla kaydedildi</value>
+    <comment>TBL Editor - SavedSuccessfully</comment>
+  </data>
+  <data name="TblEditor_NoConflicts" xml:space="preserve">
+    <value>Çakışma tespit edilmedi!</value>
+    <comment>TBL Editor - NoConflicts</comment>
+  </data>
+  <data name="TblEditor_ConflictsDetected" xml:space="preserve">
+    <value>{0} çakışma tespit edildi</value>
+    <comment>TBL Editor - ConflictsDetected</comment>
+  </data>
+  <data name="TblEditor_PrefixConflict" xml:space="preserve">
+    <value>'{0}' girişi {1} uzun girişin önekidir</value>
+    <comment>TBL Editor - PrefixConflict</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry" xml:space="preserve">
+    <value>Yinelenen giriş '{0}'</value>
+    <comment>TBL Editor - DuplicateEntry</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveShorter" xml:space="preserve">
+    <value>Daha kısa girişi kaldırın veya farklı bayt değerleri kullanın</value>
+    <comment>TBL Editor - Suggestion RemoveShorter</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveDuplicate" xml:space="preserve">
+    <value>Yinelemeyi kaldırın veya değerleri birleştirin</value>
+    <comment>TBL Editor - Suggestion RemoveDuplicate</comment>
+  </data>
+  <data name="TblEditor_AddEntry" xml:space="preserve">
+    <value>Giriş ekle</value>
+    <comment>TBL Editor - AddEntry</comment>
+  </data>
+  <data name="TblEditor_DeleteEntry" xml:space="preserve">
+    <value>Giriş sil</value>
+    <comment>TBL Editor - DeleteEntry</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry_Button" xml:space="preserve">
+    <value>Çoğalt</value>
+    <comment>TBL Editor - DuplicateEntry Button</comment>
+  </data>
+  <data name="TblEditor_Save" xml:space="preserve">
+    <value>Kaydet</value>
+    <comment>TBL Editor - Save</comment>
+  </data>
+  <data name="TblEditor_SaveAs" xml:space="preserve">
+    <value>Farklı kaydet</value>
+    <comment>TBL Editor - SaveAs</comment>
+  </data>
+  <data name="TblEditor_Validate" xml:space="preserve">
+    <value>Doğrula</value>
+    <comment>TBL Editor - Validate</comment>
+  </data>
+  <data name="TblEditor_Undo" xml:space="preserve">
+    <value>Geri al ({0})</value>
+    <comment>TBL Editor - Undo</comment>
+  </data>
+  <data name="TblEditor_Redo" xml:space="preserve">
+    <value>Yinele ({0})</value>
+    <comment>TBL Editor - Redo</comment>
+  </data>
+  <data name="TblEditor_Search" xml:space="preserve">
+    <value>Onaltılık değer veya karaktere göre ara</value>
+    <comment>TBL Editor - Search</comment>
+  </data>
+  <data name="TblEditor_FilterByType" xml:space="preserve">
+    <value>Tür:</value>
+    <comment>TBL Editor - FilterByType</comment>
+  </data>
+  <data name="TblEditor_ConflictsOnly" xml:space="preserve">
+    <value>⚠ Sadece çakışmalar</value>
+    <comment>TBL Editor - ConflictsOnly</comment>
+  </data>
+  <data name="TblEditor_ClearFilters" xml:space="preserve">
+    <value>Temizle</value>
+    <comment>TBL Editor - ClearFilters</comment>
+  </data>
+  <data name="TblEditor_EntriesCount" xml:space="preserve">
+    <value>{0} giriş</value>
+    <comment>TBL Editor - EntriesCount</comment>
+  </data>
+  <data name="TblEditor_HexValue" xml:space="preserve">
+    <value>Onaltılık Değer</value>
+    <comment>TBL Editor - HexValue</comment>
+  </data>
+  <data name="TblEditor_Character" xml:space="preserve">
+    <value>Karakter(ler)</value>
+    <comment>TBL Editor - Character</comment>
+  </data>
+  <data name="TblEditor_Type" xml:space="preserve">
+    <value>Tür</value>
+    <comment>TBL Editor - Type</comment>
+  </data>
+  <data name="TblEditor_Bytes" xml:space="preserve">
+    <value>Baytlar</value>
+    <comment>TBL Editor - Bytes</comment>
+  </data>
+  <data name="TblEditor_Details" xml:space="preserve">
+    <value>Detaylar</value>
+    <comment>TBL Editor - Details</comment>
+  </data>
+  <data name="TblEditor_Statistics" xml:space="preserve">
+    <value>İstatistikler</value>
+    <comment>TBL Editor - Statistics</comment>
+  </data>
+  <data name="TblEditor_Advanced" xml:space="preserve">
+    <value>Gelişmiş</value>
+    <comment>TBL Editor - Advanced</comment>
+  </data>
+  <data name="TblEditor_Modified" xml:space="preserve">
+    <value>● Değiştirildi</value>
+    <comment>TBL Editor - Modified</comment>
+  </data>
+
 </root>

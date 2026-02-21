@@ -781,4 +781,139 @@
   <data name="RelativeSearchExportTooltipString" xml:space="preserve">
     <value>Enregistrer la proposition d'encodage sélectionnée comme fichier TBL</value>
   </data>
+
+  <!-- TBL Editor Localizations -->
+  <data name="TblEditor_Title" xml:space="preserve">
+    <value>Éditeur de table de caractères TBL</value>
+    <comment>TBL Editor - Title</comment>
+  </data>
+  <data name="TblEditor_NoTblLoaded" xml:space="preserve">
+    <value>Aucun fichier TBL chargé. Veuillez d'abord charger un fichier TBL.</value>
+    <comment>TBL Editor - NoTblLoaded</comment>
+  </data>
+  <data name="TblEditor_UnsavedChanges" xml:space="preserve">
+    <value>Vous avez des modifications non enregistrées. Voulez-vous enregistrer avant de fermer?</value>
+    <comment>TBL Editor - UnsavedChanges</comment>
+  </data>
+  <data name="TblEditor_ConfirmDelete" xml:space="preserve">
+    <value>Supprimer {0} entrées?</value>
+    <comment>TBL Editor - ConfirmDelete</comment>
+  </data>
+  <data name="TblEditor_ErrorSaving" xml:space="preserve">
+    <value>Erreur lors de l'enregistrement du TBL: {0}</value>
+    <comment>TBL Editor - ErrorSaving</comment>
+  </data>
+  <data name="TblEditor_SavedSuccessfully" xml:space="preserve">
+    <value>TBL enregistré avec succès</value>
+    <comment>TBL Editor - SavedSuccessfully</comment>
+  </data>
+  <data name="TblEditor_NoConflicts" xml:space="preserve">
+    <value>Aucun conflit détecté!</value>
+    <comment>TBL Editor - NoConflicts</comment>
+  </data>
+  <data name="TblEditor_ConflictsDetected" xml:space="preserve">
+    <value>{0} conflits détectés</value>
+    <comment>TBL Editor - ConflictsDetected</comment>
+  </data>
+  <data name="TblEditor_PrefixConflict" xml:space="preserve">
+    <value>L'entrée '{0}' est un préfixe de {1} entrées plus longues</value>
+    <comment>TBL Editor - PrefixConflict</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry" xml:space="preserve">
+    <value>Entrée dupliquée '{0}'</value>
+    <comment>TBL Editor - DuplicateEntry</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveShorter" xml:space="preserve">
+    <value>Supprimer l'entrée la plus courte ou utiliser des valeurs d'octets différentes</value>
+    <comment>TBL Editor - Suggestion RemoveShorter</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveDuplicate" xml:space="preserve">
+    <value>Supprimer le doublon ou fusionner les valeurs</value>
+    <comment>TBL Editor - Suggestion RemoveDuplicate</comment>
+  </data>
+  <data name="TblEditor_AddEntry" xml:space="preserve">
+    <value>Ajouter une entrée</value>
+    <comment>TBL Editor - AddEntry</comment>
+  </data>
+  <data name="TblEditor_DeleteEntry" xml:space="preserve">
+    <value>Supprimer l'entrée</value>
+    <comment>TBL Editor - DeleteEntry</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry_Button" xml:space="preserve">
+    <value>Dupliquer</value>
+    <comment>TBL Editor - DuplicateEntry Button</comment>
+  </data>
+  <data name="TblEditor_Save" xml:space="preserve">
+    <value>Enregistrer</value>
+    <comment>TBL Editor - Save</comment>
+  </data>
+  <data name="TblEditor_SaveAs" xml:space="preserve">
+    <value>Enregistrer sous</value>
+    <comment>TBL Editor - SaveAs</comment>
+  </data>
+  <data name="TblEditor_Validate" xml:space="preserve">
+    <value>Valider</value>
+    <comment>TBL Editor - Validate</comment>
+  </data>
+  <data name="TblEditor_Undo" xml:space="preserve">
+    <value>Annuler ({0})</value>
+    <comment>TBL Editor - Undo</comment>
+  </data>
+  <data name="TblEditor_Redo" xml:space="preserve">
+    <value>Rétablir ({0})</value>
+    <comment>TBL Editor - Redo</comment>
+  </data>
+  <data name="TblEditor_Search" xml:space="preserve">
+    <value>Rechercher par valeur hexadécimale ou caractère</value>
+    <comment>TBL Editor - Search</comment>
+  </data>
+  <data name="TblEditor_FilterByType" xml:space="preserve">
+    <value>Type:</value>
+    <comment>TBL Editor - FilterByType</comment>
+  </data>
+  <data name="TblEditor_ConflictsOnly" xml:space="preserve">
+    <value>⚠ Conflits uniquement</value>
+    <comment>TBL Editor - ConflictsOnly</comment>
+  </data>
+  <data name="TblEditor_ClearFilters" xml:space="preserve">
+    <value>Effacer</value>
+    <comment>TBL Editor - ClearFilters</comment>
+  </data>
+  <data name="TblEditor_EntriesCount" xml:space="preserve">
+    <value>{0} entrées</value>
+    <comment>TBL Editor - EntriesCount</comment>
+  </data>
+  <data name="TblEditor_HexValue" xml:space="preserve">
+    <value>Valeur hexadécimale</value>
+    <comment>TBL Editor - HexValue</comment>
+  </data>
+  <data name="TblEditor_Character" xml:space="preserve">
+    <value>Caractère(s)</value>
+    <comment>TBL Editor - Character</comment>
+  </data>
+  <data name="TblEditor_Type" xml:space="preserve">
+    <value>Type</value>
+    <comment>TBL Editor - Type</comment>
+  </data>
+  <data name="TblEditor_Bytes" xml:space="preserve">
+    <value>Octets</value>
+    <comment>TBL Editor - Bytes</comment>
+  </data>
+  <data name="TblEditor_Details" xml:space="preserve">
+    <value>Détails</value>
+    <comment>TBL Editor - Details</comment>
+  </data>
+  <data name="TblEditor_Statistics" xml:space="preserve">
+    <value>Statistiques</value>
+    <comment>TBL Editor - Statistics</comment>
+  </data>
+  <data name="TblEditor_Advanced" xml:space="preserve">
+    <value>Avancé</value>
+    <comment>TBL Editor - Advanced</comment>
+  </data>
+  <data name="TblEditor_Modified" xml:space="preserve">
+    <value>● Modifié</value>
+    <comment>TBL Editor - Modified</comment>
+  </data>
+
 </root>

@@ -702,4 +702,139 @@
   <data name="InvertSelectionTooltipString" xml:space="preserve">
     <value>각 바이트의 모든 비트 반전 (0xFF로 XOR)</value>
   </data>
+
+  <!-- TBL Editor Localizations -->
+  <data name="TblEditor_Title" xml:space="preserve">
+    <value>TBL 문자 테이블 편집기</value>
+    <comment>TBL Editor - Title</comment>
+  </data>
+  <data name="TblEditor_NoTblLoaded" xml:space="preserve">
+    <value>TBL 파일이 로드되지 않았습니다. 먼저 TBL 파일을 로드하세요.</value>
+    <comment>TBL Editor - NoTblLoaded</comment>
+  </data>
+  <data name="TblEditor_UnsavedChanges" xml:space="preserve">
+    <value>저장하지 않은 변경 사항이 있습니다. 닫기 전에 저장하시겠습니까?</value>
+    <comment>TBL Editor - UnsavedChanges</comment>
+  </data>
+  <data name="TblEditor_ConfirmDelete" xml:space="preserve">
+    <value>{0}개의 항목을 삭제하시겠습니까?</value>
+    <comment>TBL Editor - ConfirmDelete</comment>
+  </data>
+  <data name="TblEditor_ErrorSaving" xml:space="preserve">
+    <value>TBL 저장 오류: {0}</value>
+    <comment>TBL Editor - ErrorSaving</comment>
+  </data>
+  <data name="TblEditor_SavedSuccessfully" xml:space="preserve">
+    <value>TBL이 성공적으로 저장되었습니다</value>
+    <comment>TBL Editor - SavedSuccessfully</comment>
+  </data>
+  <data name="TblEditor_NoConflicts" xml:space="preserve">
+    <value>충돌이 감지되지 않았습니다!</value>
+    <comment>TBL Editor - NoConflicts</comment>
+  </data>
+  <data name="TblEditor_ConflictsDetected" xml:space="preserve">
+    <value>{0}개의 충돌이 감지되었습니다</value>
+    <comment>TBL Editor - ConflictsDetected</comment>
+  </data>
+  <data name="TblEditor_PrefixConflict" xml:space="preserve">
+    <value>항목 '{0}'은(는) {1}개의 더 긴 항목의 접두사입니다</value>
+    <comment>TBL Editor - PrefixConflict</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry" xml:space="preserve">
+    <value>중복 항목 '{0}'</value>
+    <comment>TBL Editor - DuplicateEntry</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveShorter" xml:space="preserve">
+    <value>짧은 항목을 제거하거나 다른 바이트 값을 사용하세요</value>
+    <comment>TBL Editor - Suggestion RemoveShorter</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveDuplicate" xml:space="preserve">
+    <value>중복을 제거하거나 값을 병합하세요</value>
+    <comment>TBL Editor - Suggestion RemoveDuplicate</comment>
+  </data>
+  <data name="TblEditor_AddEntry" xml:space="preserve">
+    <value>항목 추가</value>
+    <comment>TBL Editor - AddEntry</comment>
+  </data>
+  <data name="TblEditor_DeleteEntry" xml:space="preserve">
+    <value>항목 삭제</value>
+    <comment>TBL Editor - DeleteEntry</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry_Button" xml:space="preserve">
+    <value>복제</value>
+    <comment>TBL Editor - DuplicateEntry Button</comment>
+  </data>
+  <data name="TblEditor_Save" xml:space="preserve">
+    <value>저장</value>
+    <comment>TBL Editor - Save</comment>
+  </data>
+  <data name="TblEditor_SaveAs" xml:space="preserve">
+    <value>다른 이름으로 저장</value>
+    <comment>TBL Editor - SaveAs</comment>
+  </data>
+  <data name="TblEditor_Validate" xml:space="preserve">
+    <value>유효성 검사</value>
+    <comment>TBL Editor - Validate</comment>
+  </data>
+  <data name="TblEditor_Undo" xml:space="preserve">
+    <value>실행 취소 ({0})</value>
+    <comment>TBL Editor - Undo</comment>
+  </data>
+  <data name="TblEditor_Redo" xml:space="preserve">
+    <value>다시 실행 ({0})</value>
+    <comment>TBL Editor - Redo</comment>
+  </data>
+  <data name="TblEditor_Search" xml:space="preserve">
+    <value>16진수 값 또는 문자로 검색</value>
+    <comment>TBL Editor - Search</comment>
+  </data>
+  <data name="TblEditor_FilterByType" xml:space="preserve">
+    <value>유형:</value>
+    <comment>TBL Editor - FilterByType</comment>
+  </data>
+  <data name="TblEditor_ConflictsOnly" xml:space="preserve">
+    <value>⚠ 충돌만</value>
+    <comment>TBL Editor - ConflictsOnly</comment>
+  </data>
+  <data name="TblEditor_ClearFilters" xml:space="preserve">
+    <value>지우기</value>
+    <comment>TBL Editor - ClearFilters</comment>
+  </data>
+  <data name="TblEditor_EntriesCount" xml:space="preserve">
+    <value>{0}개의 항목</value>
+    <comment>TBL Editor - EntriesCount</comment>
+  </data>
+  <data name="TblEditor_HexValue" xml:space="preserve">
+    <value>16진수 값</value>
+    <comment>TBL Editor - HexValue</comment>
+  </data>
+  <data name="TblEditor_Character" xml:space="preserve">
+    <value>문자</value>
+    <comment>TBL Editor - Character</comment>
+  </data>
+  <data name="TblEditor_Type" xml:space="preserve">
+    <value>유형</value>
+    <comment>TBL Editor - Type</comment>
+  </data>
+  <data name="TblEditor_Bytes" xml:space="preserve">
+    <value>바이트</value>
+    <comment>TBL Editor - Bytes</comment>
+  </data>
+  <data name="TblEditor_Details" xml:space="preserve">
+    <value>세부 정보</value>
+    <comment>TBL Editor - Details</comment>
+  </data>
+  <data name="TblEditor_Statistics" xml:space="preserve">
+    <value>통계</value>
+    <comment>TBL Editor - Statistics</comment>
+  </data>
+  <data name="TblEditor_Advanced" xml:space="preserve">
+    <value>고급</value>
+    <comment>TBL Editor - Advanced</comment>
+  </data>
+  <data name="TblEditor_Modified" xml:space="preserve">
+    <value>● 수정됨</value>
+    <comment>TBL Editor - Modified</comment>
+  </data>
+
 </root>
