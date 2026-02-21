@@ -74,6 +74,7 @@ namespace WpfHexaEditor
             // Store file info
             FileName = filePath;
             IsModified = false;
+            IsFileOrStreamLoaded = true;  // FIX: Update read-only DP for settings panel
 
             // Subscribe to property changes
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -250,6 +251,7 @@ namespace WpfHexaEditor
             // 6. Reset file info
             FileName = string.Empty;
             IsModified = false;
+            IsFileOrStreamLoaded = false;  // FIX: Update read-only DP for settings panel
 
             // 7. Clear bar chart
             _barChartPanel?.Clear();

@@ -398,6 +398,7 @@ namespace WpfHexaEditor
             // Store file info
             FileName = filePath;
             IsModified = false;
+            IsFileOrStreamLoaded = true;  // FIX: Update read-only DP for settings panel
 
             // Subscribe to property changes
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;

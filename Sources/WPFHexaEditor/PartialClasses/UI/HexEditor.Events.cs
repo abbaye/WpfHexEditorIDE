@@ -785,6 +785,22 @@ namespace WpfHexaEditor
                     RefreshColumnHeader(); // Regenerate headers to match new BytesPerLine
                     break;
             }
+
+            // FIX: Update IsModified DP after any property change (in case edits happened)
+            UpdateIsModifiedState();
+        }
+
+        /// <summary>
+        /// Updates IsModified DP based on ByteProvider UndoCount
+        /// </summary>
+        private void UpdateIsModifiedState()
+        {
+            if (_viewModel?.Provider != null)
+            {
+                var isModified = _viewModel.Provider.UndoCount > 0;
+                if (IsModified != isModified)
+                    IsModified = isModified;
+            }
         }
 
         private void UpdateFileSizeDisplay()
