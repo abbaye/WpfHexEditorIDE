@@ -57,6 +57,9 @@ namespace WpfHexaEditor
         // CRITICAL: Closing flag to prevent async operations from accessing disposed resources
         private volatile bool _isClosing = false;
 
+        // TEMP DEBUG: Flag to show diagnostic message only once
+        private static bool _debugMessageShown = false;
+
         // Highlights  - stores ranges of highlighted bytes
         private readonly List<(long start, long length)> _highlights = new List<(long, long)>();
 
@@ -341,15 +344,19 @@ namespace WpfHexaEditor
             // DEBUG: Log ByteSize and stride
             System.Diagnostics.Debug.WriteLine($"[KeyNav] ByteSize={_viewModel.ByteSize}, stride={stride}, currentPos={currentPos}");
 
-            // TEMP DIAGNOSTIC: Show ByteSize in status bar
-            var statusBar = this.FindName("StatusBar") as System.Windows.Controls.Primitives.StatusBar;
-            if (statusBar != null && statusBar.Items.Count > 0)
+            // TEMP DIAGNOSTIC: Show MessageBox on first navigation key press
+            if (!_debugMessageShown)
             {
-                var firstItem = statusBar.Items[0] as System.Windows.Controls.TextBlock;
-                if (firstItem != null)
-                {
-                    firstItem.Text = $"ByteSize={_viewModel.ByteSize} | Stride={stride} | Pos={currentPos}";
-                }
+                _debugMessageShown = true;
+                System.Windows.MessageBox.Show(
+                    $"Keyboard Navigation Handler Called!\n\n" +
+                    $"ByteSize: {_viewModel.ByteSize}\n" +
+                    $"Stride: {stride}\n" +
+                    $"Current Position: {currentPos}\n" +
+                    $"Key Pressed: {e.Key}",
+                    "🔍 DEBUG: Navigation Diagnostic",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
             }
 
             // CRITICAL: Snap current position to group boundary FIRST
