@@ -81,6 +81,7 @@ namespace WpfHexaEditor
                 // Store file info (no filename for stream)
                 FileName = null;
                 IsModified = false;
+                IsFileOrStreamLoaded = true;  // FIX: Update read-only DP for settings panel
 
                 // Subscribe to property changes
                 _viewModel.PropertyChanged += ViewModel_PropertyChanged;
@@ -176,6 +177,7 @@ namespace WpfHexaEditor
                 // Store file info (no filename for memory)
                 FileName = null;
                 IsModified = false;
+                IsFileOrStreamLoaded = true;  // FIX: Update read-only DP for settings panel
 
                 // Subscribe to property changes
                 _viewModel.PropertyChanged += ViewModel_PropertyChanged;
