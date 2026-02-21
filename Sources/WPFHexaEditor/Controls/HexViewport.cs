@@ -1001,8 +1001,8 @@ namespace WpfHexaEditor.Controls
                     // Must account for ByteSize (Bit8/16/32) to get correct total hex area width
                     double hexStartX = ShowOffset ? OffsetWidth : 0;
 
-                    // Get cell width from first byte (stride already calculated above)
-                    double cellWidth = line.Bytes.Count > 0 ? line.Bytes[0].CellWidth : 24;
+                    // Get dynamic cell width based on font/size (uses FormattedText measurement)
+                    double cellWidth = line.Bytes.Count > 0 ? GetDynamicCellWidth(line.Bytes[0]) : CalculateCellWidth(1);
                     // Note: Reuse 'stride' variable from hex loop above (already calculated)
 
                     // Calculate number of cells for full line (e.g., 16 bytes / 2 = 8 cells in Bit16)
