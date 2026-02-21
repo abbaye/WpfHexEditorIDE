@@ -1010,8 +1010,10 @@ namespace WpfHexaEditor.Controls
                         int bytePosition = i * stride;
 
                         // Draw byte spacer before this byte if needed
-                        // Only draw separators if BytePerLine is large enough to have multiple groups
-                        if (_bytesPerLine >= (int)ByteGrouping &&
+                        // IMPORTANT: Never draw ByteSpacers in ASCII panel when TBL is loaded
+                        // (TBL characters have variable byte consumption - spacers would be incorrect)
+                        if (_tblStream == null &&
+                            _bytesPerLine >= (int)ByteGrouping &&
                             (ByteSpacerPositioning == ByteSpacerPosition.Both ||
                              ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel) &&
                             bytePosition % (int)ByteGrouping == 0 && i > 0)
@@ -1353,9 +1355,21 @@ namespace WpfHexaEditor.Controls
                     int byteCount = GetCharacterByteCount(line, byteIndex);
 
                     // Build hex key for the actual byte count
-                    var hexKey = new StringBuilder(byteCount * 2);
-                    for (int j = 0; j < byteCount && byteIndex + j < line.Bytes.Count; j++)
-                        hexKey.Append(line.Bytes[byteIndex + j].Value.ToString("X2"));
+                    var hexKey = new StringBuilder();
+
+                    // In multi-byte mode (Bit16/32), build hex key from ALL bytes in this ByteData group
+                    if (byteData.Values != null && byteData.Values.Length > 1)
+                    {
+                        // Multi-byte: use Values[] array (contains all bytes in the group)
+                        foreach (var b in byteData.Values)
+                            hexKey.Append(b.ToString("X2"));
+                    }
+                    else
+                    {
+                        // Single-byte mode (Bit8): build from consecutive ByteData objects
+                        for (int j = 0; j < byteCount && byteIndex + j < line.Bytes.Count; j++)
+                            hexKey.Append(line.Bytes[byteIndex + j].Value.ToString("X2"));
+                    }
 
                     var (text, type) = _tblStream.FindMatch(hexKey.ToString(), showSpecialValue: true);
                     dteType = type;
@@ -1639,7 +1653,61 @@ namespace WpfHexaEditor.Controls
         {
             var byteData = line.Bytes[byteIndex];
 
-            // If TBL stream is loaded, use it for character conversion (respecting type filters)
+            // Phase 4: Handle multi-byte mode (Bit16/32) FIRST
+            if (byteData.Values != null && byteData.Values.Length > 1)
+            {
+                // Multi-byte mode: Try TBL match for the entire group first
+                if (_tblStream != null)
+                {
+                    try
+                    {
+                        // Build hex key from ALL bytes in this ByteData group
+                        var hexKey = new StringBuilder(byteData.Values.Length * 2);
+                        foreach (var b in byteData.Values)
+                            hexKey.Append(b.ToString("X2"));
+
+                        var (text, type) = _tblStream.FindMatch(hexKey.ToString(), showSpecialValue: true);
+
+                        // Check if this TBL type is enabled for display
+                        bool shouldShow = type switch
+                        {
+                            Core.CharacterTable.DteType.Ascii => _showTblAscii,
+                            Core.CharacterTable.DteType.DualTitleEncoding => _showTblDte,
+                            Core.CharacterTable.DteType.MultipleTitleEncoding => _showTblMte,
+                            Core.CharacterTable.DteType.EndBlock => _showTblEndBlock,
+                            Core.CharacterTable.DteType.EndLine => _showTblEndLine,
+                            Core.CharacterTable.DteType.Japonais => _showTblJaponais,
+                            _ => false
+                        };
+
+                        // Return TBL match if found and enabled
+                        if (text != "#" && shouldShow)
+                            return text;
+                    }
+                    catch
+                    {
+                        // Fall back to ASCII on TBL error
+                    }
+                }
+
+                // No TBL match: show all bytes in the group as ASCII
+                // IMPORTANT: Respect ByteOrder for ASCII display (same as hex)
+                var sb = new StringBuilder(byteData.Values.Length);
+
+                // Reverse bytes if HiLo (big endian) to match hex display
+                IEnumerable<byte> bytes = byteData.Values;
+                if (byteData.ByteOrder == ByteOrderType.HiLo)
+                    bytes = bytes.Reverse();
+
+                foreach (var b in bytes)
+                {
+                    char c = (b >= 0x20 && b < 0x7F) ? (char)b : '.';
+                    sb.Append(c);
+                }
+                return sb.ToString();
+            }
+
+            // Single-byte mode (Bit8): Use TBL greedy matching if loaded
             if (_tblStream != null)
             {
                 try
@@ -1699,21 +1767,6 @@ namespace WpfHexaEditor.Controls
                 {
                     // Fall back to ASCII on any TBL error
                 }
-            }
-
-            // Phase 4: In multi-byte mode (Bit16/32), display ALL bytes in the group as ASCII
-            // Each ByteData.Values contains 'stride' bytes that should all be displayed
-            if (byteData.Values != null && byteData.Values.Length > 1)
-            {
-                // Multi-byte mode: show all bytes in the group
-                var sb = new StringBuilder(byteData.Values.Length);
-                foreach (var b in byteData.Values)
-                {
-                    char c = (b >= 0x20 && b < 0x7F) ? (char)b : '.';
-                    sb.Append(c);
-                }
-                string result = sb.ToString();
-                return result;
             }
 
             // Default: Single byte mode (Bit8) - Use standard ASCII conversion
@@ -1947,7 +2000,10 @@ namespace WpfHexaEditor.Controls
                 int bytePosition = i * stride;
 
                 // Add ByteSpacer width if needed (matches drawing logic)
-                if (_bytesPerLine >= (int)ByteGrouping &&
+                // IMPORTANT: Never account for ByteSpacers when TBL is loaded
+                // (TBL characters have variable byte consumption - spacers would be incorrect)
+                if (_tblStream == null &&
+                    _bytesPerLine >= (int)ByteGrouping &&
                     (ByteSpacerPositioning == ByteSpacerPosition.Both ||
                      ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel) &&
                     bytePosition % (int)ByteGrouping == 0 && i > 0)
