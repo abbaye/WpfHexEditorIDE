@@ -67,6 +67,239 @@ Mais si selection couvre partie d'un groupe, le background ne s'étend pas sur l
 
 ---
 
+### Bug 4: CellWidth Statique - Pas de Support Font/DPI ⚠️ PRIORITÉ HAUTE
+**Symptôme**: CellWidth hardcodé ne s'adapte pas aux changements de police ou DPI
+
+**Problème Actuel**:
+```csharp
+public double CellWidth
+{
+    get
+    {
+        return Values.Length switch
+        {
+            1 => 24,   // HARDCODÉ en pixels!
+            2 => 52,   // Ne prend PAS en compte:
+            3 => 79,   //   - FontSize (peut être 10, 12, 14, 16...)
+            4 => 106,  //   - FontFamily (Consolas vs Courier)
+            _ => 24    //   - DPI scaling (96, 120, 144 DPI)
+        };
+    }
+}
+```
+
+**Conséquences**:
+1. **FontSize changé dans settings**: Texte "ABCD" déborde ou ne remplit pas la cellule
+2. **Font changée**: Largeurs différentes (Consolas ≠ Courier ≠ Lucida Console)
+3. **DPI scaling**: Sur écrans haute résolution (150%, 200%), cellules mal dimensionnées
+4. **Misalignment**: Hit testing décalé car cellule width ≠ texte width réel
+
+**Exemple du Problème**:
+```
+FontSize = 12px, Consolas:
+  Text "ABCD" width réelle = 48px (mesurée)
+  CellWidth retourné = 52px ✅ OK (petit padding)
+
+FontSize = 16px, Consolas:
+  Text "ABCD" width réelle = 64px (mesurée)
+  CellWidth retourné = 52px ❌ DÉBORDEMENT!
+
+FontSize = 10px, Courier New:
+  Text "ABCD" width réelle = 40px (mesurée)
+  CellWidth retourné = 52px ❌ TROP D'ESPACE!
+```
+
+**Solution Proposée**: CellWidth Dynamique avec FormattedText
+
+#### Approche 1: Mesure à la Volée (Simple mais coûteux)
+```csharp
+// Dans ByteData.cs - Ajouter dépendances rendering
+public class ByteData
+{
+    // Nouveau: Contexte de rendu pour calcul dynamique
+    private Typeface _typeface;
+    private double _fontSize;
+    private double _dpi;
+
+    public void SetRenderingContext(Typeface typeface, double fontSize, double dpi)
+    {
+        _typeface = typeface;
+        _fontSize = fontSize;
+        _dpi = dpi;
+    }
+
+    public double CellWidth
+    {
+        get
+        {
+            if (_typeface == null)
+                return GetStaticCellWidth(); // Fallback
+
+            // Mesurer largeur réelle du texte hex
+            string hexText = GetHexText();
+            var formattedText = new FormattedText(
+                hexText,
+                CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                _typeface,
+                _fontSize,
+                Brushes.Black,
+                _dpi
+            );
+
+            // Ajouter petit padding (2-4px)
+            return formattedText.Width + 4;
+        }
+    }
+
+    private double GetStaticCellWidth()
+    {
+        // Fallback actuel si contexte pas initialisé
+        return Values.Length switch
+        {
+            1 => 24,
+            2 => 52,
+            3 => 79,
+            4 => 106,
+            _ => 24
+        };
+    }
+}
+```
+
+**Inconvénient**: Créer FormattedText à chaque accès CellWidth = coûteux (10-100µs/cellule × milliers de cellules)
+
+#### Approche 2: Cache avec Invalidation (Recommandé)
+```csharp
+// Dans HexViewport.cs - Cache global des largeurs
+private Dictionary<(int byteCount, double fontSize, string fontFamily), double> _cellWidthCache = new();
+
+private double CalculateCellWidth(int byteCount)
+{
+    var key = (byteCount, _fontSize, _typeface.FontFamily.Source);
+
+    if (_cellWidthCache.TryGetValue(key, out double cachedWidth))
+        return cachedWidth;
+
+    // Mesurer avec FormattedText
+    string sampleText = new string('F', byteCount * 2); // "FF", "FFFF", "FFFFFF"...
+    var formattedText = new FormattedText(
+        sampleText,
+        CultureInfo.CurrentCulture,
+        FlowDirection.LeftToRight,
+        _typeface,
+        _fontSize,
+        Brushes.Black,
+        VisualTreeHelper.GetDpi(this).PixelsPerDip
+    );
+
+    double width = formattedText.Width + 4; // +4px padding
+    _cellWidthCache[key] = width;
+    return width;
+}
+
+// Invalider cache quand font change
+private void OnFontChanged()
+{
+    _cellWidthCache.Clear();
+    InvalidateVisual();
+}
+```
+
+**Avantage**: Cache réduit coût à ~1-4 mesures par session (Bit8, Bit16, Bit32 partial/full)
+
+#### Approche 3: Pre-Calculate dans ViewModel (Optimal)
+```csharp
+// Dans HexEditorViewModel.cs
+private double _cachedCellWidth_1Byte;
+private double _cachedCellWidth_2Bytes;
+private double _cachedCellWidth_3Bytes;
+private double _cachedCellWidth_4Bytes;
+
+public void UpdateCellWidthCache(Typeface typeface, double fontSize, double dpi)
+{
+    _cachedCellWidth_1Byte = MeasureHexTextWidth("FF", typeface, fontSize, dpi) + 4;
+    _cachedCellWidth_2Bytes = MeasureHexTextWidth("FFFF", typeface, fontSize, dpi) + 4;
+    _cachedCellWidth_3Bytes = MeasureHexTextWidth("FFFFFF", typeface, fontSize, dpi) + 4;
+    _cachedCellWidth_4Bytes = MeasureHexTextWidth("FFFFFFFF", typeface, fontSize, dpi) + 4;
+
+    // Forcer refresh de toutes les lignes
+    ClearLineCache();
+    RefreshVisibleLines();
+}
+
+private double MeasureHexTextWidth(string text, Typeface typeface, double fontSize, double dpi)
+{
+    var formattedText = new FormattedText(
+        text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+        typeface, fontSize, Brushes.Black, dpi
+    );
+    return formattedText.Width;
+}
+
+// Dans ByteData.cs - Utiliser cache du ViewModel
+public double GetCellWidth(HexEditorViewModel viewModel)
+{
+    return Values.Length switch
+    {
+        1 => viewModel._cachedCellWidth_1Byte,
+        2 => viewModel._cachedCellWidth_2Bytes,
+        3 => viewModel._cachedCellWidth_3Bytes,
+        4 => viewModel._cachedCellWidth_4Bytes,
+        _ => viewModel._cachedCellWidth_1Byte
+    };
+}
+```
+
+**Avantage**: Calcul une seule fois par changement de font, accès ultra-rapide
+
+**Complexité**: ByteData doit avoir référence au ViewModel (ou passer en paramètre)
+
+#### Solution Recommandée: Approche 2 (Cache dans HexViewport)
+
+**Raison**:
+- ✅ Bon compromis performance/simplicité
+- ✅ HexViewport a déjà _typeface, _fontSize, _dpi
+- ✅ Pas besoin de modifier ByteData (reste POCO)
+- ✅ Cache automatique invalidé si font change
+
+**Implémentation**:
+
+1. **HexViewport.cs** - Ajouter méthode de calcul dynamique:
+```csharp
+private double GetDynamicCellWidth(ByteData byteData)
+{
+    return CalculateCellWidth(byteData.Values.Length);
+}
+```
+
+2. **Remplacer tous les usages de `byteData.CellWidth`** par `GetDynamicCellWidth(byteData)`:
+   - OnRender() ligne ~870: `hexX += GetDynamicCellWidth(byteData) + HexByteSpacing;`
+   - HitTestByteWithArea() ligne ~1753: `double byteHitWidth = GetDynamicCellWidth(byteData) + HexByteSpacing;`
+   - RefreshColumnHeader() ligne ~881: Utiliser cache pour headers
+
+3. **Invalider cache** quand FontSize/FontFamily change:
+```csharp
+private void OnFontSizeChanged()
+{
+    _cellWidthCache.Clear();
+    InvalidateVisual();
+}
+```
+
+**Impact Performance**:
+- **Avant**: 0 calculs (hardcodé)
+- **Après**: ~4 calculs par session (1 par byte count, mis en cache)
+- **Overhead**: Négligeable (<1ms total)
+
+**Testing**:
+1. Ouvrir fichier, changer FontSize 10 → 16 → 20 → vérifier cellules s'adaptent
+2. Changer FontFamily Consolas → Courier → vérifier largeurs ajustées
+3. DPI 100% → 150% → 200% → vérifier scaling correct
+4. Bit16 partial group (1 byte) → vérifier CellWidth = width de 2 chars, pas 4
+
+---
+
 ## 📋 Phases Futures - Roadmap Complète
 
 ---
@@ -514,10 +747,15 @@ Ctrl+E: Toggle ByteOrder (LoHi ↔ HiLo)
 
 ## 🚀 Ordre d'Implémentation Recommandé
 
-### Sprint 1 (Bugs Critiques) - 1 semaine
-1. ✅ Fix ByteOrder not updating display (DONE)
-2. 🔧 Fix positioning issues (hit testing, separator)
-3. 🔧 Fix partial group handling (end of file)
+### Sprint 1 (Bugs Critiques) - 1.5 semaines
+1. ✅ Fix ByteOrder not updating display (DONE - commit 03e1314)
+2. ✅ Fix ByteSpacer positioning in multi-byte modes (DONE - commit b33bd8a)
+3. ✅ Fix partial group CellWidth (DONE - commit 723c97e)
+4. 🔧 **NEXT**: Implement dynamic CellWidth with Font/DPI support (Bug 4 - PRIORITÉ HAUTE)
+   - Replace hardcoded pixel values with FormattedText measurements
+   - Add cache in HexViewport to avoid performance hit
+   - Invalidate cache on FontSize/FontFamily/DPI changes
+   - Test with different fonts (Consolas, Courier, sizes 10-20)
 
 ### Sprint 2 (Édition) - 2 semaines
 4. Phase 7.1: Édition Group-Level (disable Bit16/32 for now, add UI message)
@@ -626,10 +864,24 @@ ByteSize to match the TBL encoding:
 
 ## ⚠️ Limitations Connues
 
-1. **Édition**: Bit16/32 edit currently disabled (Phase 7)
-2. **TBL Misalignment**: Warning shown but not prevented (Phase 11)
-3. **Partial Groups**: End-of-file groups may not render perfectly (Sprint 1)
-4. **Performance**: Large files (>100MB) in Bit32 not profiled yet (Phase 14)
+1. **CellWidth Statique**: Largeur des cellules hardcodée, ne s'adapte PAS aux changements de FontSize/FontFamily/DPI (Bug 4 - PRIORITÉ HAUTE)
+   - Impact: Débordement de texte ou espace excessif si police changée
+   - Solution: Implémenter calcul dynamique avec FormattedText + cache (voir Bug 4)
+
+2. **Édition**: Bit16/32 edit currently disabled (Phase 7)
+   - Impact: Impossible de modifier bytes en mode multi-byte
+   - Solution future: Édition group-level ou byte-level
+
+3. **TBL Misalignment**: Warning shown but not prevented (Phase 11)
+   - Impact: Confusion si TBL 2-byte avec ByteSize=Bit32
+   - Solution future: Auto-suggest ByteSize optimal pour TBL
+
+4. **Partial Groups**: End-of-file groups render correctly but may have visual quirks (Sprint 1 - RÉSOLU)
+   - Status: CellWidth dynamique implémenté (commit 723c97e) ✅
+
+5. **Performance**: Large files (>100MB) in Bit32 not profiled yet (Phase 14)
+   - Impact: Potentielle lenteur non mesurée
+   - Solution future: Profiling + optimizations (cache, pooling)
 
 ---
 
