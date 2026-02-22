@@ -236,6 +236,12 @@
                  VirtualizingPanel.CacheLengthUnit="Item">
             <ListBox.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="Edit Value..." Click="EditValue_Click">
+                        <MenuItem.Icon>
+                            <TextBlock Text="✏️" FontSize="14"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator/>
                     <MenuItem Header="Copy Value" Click="CopyValue_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="📋" FontSize="14"/>

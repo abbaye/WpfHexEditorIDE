@@ -195,6 +195,172 @@ namespace WpfHexaEditor.Core
 
         #endregion
 
+        #region Extended String Reading
+
+        /// <summary>
+        /// Read null-terminated ASCII string
+        /// </summary>
+        /// <param name="data">Source byte array</param>
+        /// <param name="offset">Offset in the array</param>
+        /// <param name="maxLength">Maximum length to read</param>
+        /// <returns>Null-terminated string</returns>
+        public string ReadStringNullTerminated(byte[] data, int offset, int maxLength = 1024)
+        {
+            if (data == null || offset < 0 || offset >= data.Length)
+                return string.Empty;
+
+            int length = 0;
+            while (offset + length < data.Length &&
+                   length < maxLength &&
+                   data[offset + length] != 0)
+            {
+                length++;
+            }
+
+            if (length == 0)
+                return string.Empty;
+
+            return Encoding.ASCII.GetString(data, offset, length);
+        }
+
+        /// <summary>
+        /// Read null-terminated UTF-8 string
+        /// </summary>
+        public string ReadStringUTF8NullTerminated(byte[] data, int offset, int maxLength = 1024)
+        {
+            if (data == null || offset < 0 || offset >= data.Length)
+                return string.Empty;
+
+            int length = 0;
+            while (offset + length < data.Length &&
+                   length < maxLength &&
+                   data[offset + length] != 0)
+            {
+                length++;
+            }
+
+            if (length == 0)
+                return string.Empty;
+
+            return Encoding.UTF8.GetString(data, offset, length);
+        }
+
+        #endregion
+
+        #region Hex String Conversion
+
+        /// <summary>
+        /// Read bytes as hexadecimal string
+        /// </summary>
+        public string ReadBytesAsHex(byte[] data, int offset, int length)
+        {
+            var bytes = ReadBytes(data, offset, length);
+            if (bytes == null || bytes.Length == 0)
+                return string.Empty;
+
+            return BitConverter.ToString(bytes).Replace("-", "");
+        }
+
+        #endregion
+
+        #region Signature Checking (Static Methods)
+
+        /// <summary>
+        /// Check if signature matches at specified offset
+        /// </summary>
+        /// <param name="data">Byte array to check</param>
+        /// <param name="offset">Offset in bytes</param>
+        /// <param name="hexSignature">Hex string signature (e.g., "504B0304")</param>
+        /// <returns>True if signature matches</returns>
+        public static bool CheckSignature(byte[] data, int offset, string hexSignature)
+        {
+            if (string.IsNullOrWhiteSpace(hexSignature) || data == null)
+                return false;
+
+            var expectedBytes = HexStringToBytes(hexSignature);
+            if (expectedBytes == null || offset < 0 || offset + expectedBytes.Length > data.Length)
+                return false;
+
+            for (int i = 0; i < expectedBytes.Length; i++)
+            {
+                if (data[offset + i] != expectedBytes[i])
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Find offset of signature in data
+        /// </summary>
+        /// <param name="data">Byte array to search</param>
+        /// <param name="hexSignature">Hex string signature</param>
+        /// <param name="startOffset">Start searching from this offset</param>
+        /// <param name="maxOffset">Stop searching at this offset (0 = end of data)</param>
+        /// <returns>Offset where signature found, or -1 if not found</returns>
+        public static int FindSignature(byte[] data, string hexSignature, int startOffset = 0, int maxOffset = 0)
+        {
+            if (string.IsNullOrWhiteSpace(hexSignature) || data == null)
+                return -1;
+
+            var expectedBytes = HexStringToBytes(hexSignature);
+            if (expectedBytes == null || expectedBytes.Length == 0)
+                return -1;
+
+            int searchEnd = maxOffset > 0 ? Math.Min(maxOffset, data.Length) : data.Length;
+
+            for (int i = startOffset; i <= searchEnd - expectedBytes.Length; i++)
+            {
+                bool match = true;
+                for (int j = 0; j < expectedBytes.Length; j++)
+                {
+                    if (data[i + j] != expectedBytes[j])
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+
+                if (match)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Convert hex string to byte array
+        /// </summary>
+        /// <param name="hex">Hex string (e.g., "504B0304")</param>
+        /// <returns>Byte array or null if invalid</returns>
+        private static byte[] HexStringToBytes(string hex)
+        {
+            if (string.IsNullOrWhiteSpace(hex))
+                return null;
+
+            // Remove spaces and dashes
+            hex = hex.Replace(" ", "").Replace("-", "");
+
+            if (hex.Length % 2 != 0)
+                return null;
+
+            try
+            {
+                var bytes = new byte[hex.Length / 2];
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+                }
+                return bytes;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Detect if a field should use big-endian based on format hints
         /// Some formats like network protocols typically use big-endian

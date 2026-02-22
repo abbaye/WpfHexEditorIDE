@@ -102,6 +102,11 @@ namespace WpfHexaEditor.Views.Panels
         /// </summary>
         public event EventHandler<string> FormatterChanged;
 
+        /// <summary>
+        /// Event fired when a field value is edited
+        /// </summary>
+        public event EventHandler<FieldEditedEventArgs> FieldValueEdited;
+
         private void FieldsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
@@ -126,6 +131,37 @@ namespace WpfHexaEditor.Views.Panels
         private void ClearSearchButton_Click(object sender, RoutedEventArgs e)
         {
             SearchText = string.Empty;
+        }
+
+        private void EditValue_Click(object sender, RoutedEventArgs e)
+        {
+            if (FieldsListBox.SelectedItem is not ParsedFieldViewModel field)
+                return;
+
+            if (!field.IsEditable)
+            {
+                System.Windows.MessageBox.Show("This field cannot be edited.", "Edit Field",
+                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                return;
+            }
+
+            // Show edit dialog
+            var dialog = new FieldEditDialog(field);
+            if (dialog.ShowDialog() == true)
+            {
+                var newValue = dialog.EditedValue;
+                var bytes = field.TryParseEditedValue(newValue);
+
+                if (bytes == null)
+                {
+                    System.Windows.MessageBox.Show($"Invalid value for type '{field.ValueType}'.\n\nPlease enter a valid value.",
+                        "Invalid Value", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    return;
+                }
+
+                // Raise event for the HexEditor to handle the actual write
+                FieldValueEdited?.Invoke(this, new FieldEditedEventArgs(field, bytes));
+            }
         }
 
         private void CopyValue_Click(object sender, RoutedEventArgs e)
@@ -507,6 +543,21 @@ namespace WpfHexaEditor.Views.Panels
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    /// <summary>
+    /// Event args for field value edited
+    /// </summary>
+    public class FieldEditedEventArgs : EventArgs
+    {
+        public ParsedFieldViewModel Field { get; }
+        public byte[] NewBytes { get; }
+
+        public FieldEditedEventArgs(ParsedFieldViewModel field, byte[] newBytes)
+        {
+            Field = field;
+            NewBytes = newBytes;
         }
     }
 }
