@@ -1,0 +1,45 @@
+{
+  "formatName": "Qpress Compression",
+  "version": "1.0",
+  "extensions": [ ".qp", ".qpress" ],
+  "description": "Qpress archive format using QuickLZ compression, commonly used for MySQL/MariaDB backups",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "7170730100",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {},
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Qpress Magic",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Magic bytes: 'qps'"
+    },
+    {
+      "type": "data",
+      "name": "Version",
+      "offset": 3,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Format version (0x01 0x00 for version 1.0)"
+    },
+    {
+      "type": "data",
+      "name": "File Entry",
+      "offset": 5,
+      "length": 11,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "First file entry header"
+    }
+  ]
+}

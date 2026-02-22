@@ -1,0 +1,45 @@
+{
+  "formatName": "Snappy Compression",
+  "version": "1.0",
+  "extensions": [ ".snappy", ".sz" ],
+  "description": "Snappy compressed stream format developed by Google, optimized for speed rather than compression ratio",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "FF06000073",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {},
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Stream Identifier",
+      "offset": 0,
+      "length": 10,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Snappy stream identifier: 0xFF 0x06 0x00 0x00 'sNaPpY'"
+    },
+    {
+      "type": "data",
+      "name": "Chunk Type",
+      "offset": 10,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Chunk type identifier (0x00=compressed, 0x01=uncompressed, 0xFE=padding)"
+    },
+    {
+      "type": "data",
+      "name": "Chunk Length",
+      "offset": 11,
+      "length": 3,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Chunk data length (little-endian, 24-bit)"
+    }
+  ]
+}

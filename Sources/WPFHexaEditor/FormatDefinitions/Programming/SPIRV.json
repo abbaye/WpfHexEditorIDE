@@ -1,0 +1,54 @@
+{
+  "formatName": "SPIR-V Binary",
+  "version": "1.0",
+  "extensions": [ ".spv", ".spirv" ],
+  "description": "SPIR-V (Standard Portable Intermediate Representation - Vulkan) binary format for GPU shaders",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "07230203",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {},
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SPIR-V Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Magic number: 0x07230203"
+    },
+    {
+      "type": "data",
+      "name": "Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "SPIR-V version number (e.g., 0x00010000 for 1.0)"
+    },
+    {
+      "type": "data",
+      "name": "Generator",
+      "offset": 8,
+      "length": 4,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Generator magic number (tool identifier)"
+    },
+    {
+      "type": "data",
+      "name": "Bound",
+      "offset": 12,
+      "length": 4,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "Bound (highest ID used + 1)"
+    }
+  ]
+}

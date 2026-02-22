@@ -1,0 +1,54 @@
+{
+  "formatName": "SQX Archive",
+  "version": "1.0",
+  "extensions": [ ".sqx" ],
+  "description": "SQX archive format with advanced compression algorithms and encryption support",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "53515820",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {},
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SQX Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Magic bytes: 'SQX '"
+    },
+    {
+      "type": "data",
+      "name": "Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Format version (little-endian)"
+    },
+    {
+      "type": "data",
+      "name": "Flags",
+      "offset": 6,
+      "length": 2,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Archive flags (encryption, solid archive, etc.)"
+    },
+    {
+      "type": "data",
+      "name": "Header Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "Main header size (little-endian)"
+    }
+  ]
+}

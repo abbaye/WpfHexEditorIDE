@@ -1,0 +1,36 @@
+{
+  "formatName": "Brotli Compression",
+  "version": "1.0",
+  "extensions": [ ".br" ],
+  "description": "Brotli compressed format developed by Google, used for web compression and file compression",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "CE",
+    "offset": 0,
+    "required": false
+  },
+
+  "variables": {},
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Window Bits",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "First byte contains window size bits (usually 0xCE for typical files)"
+    },
+    {
+      "type": "data",
+      "name": "Compressed Data",
+      "offset": 1,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Brotli compressed data stream (bit-packed format)"
+    }
+  ]
+}

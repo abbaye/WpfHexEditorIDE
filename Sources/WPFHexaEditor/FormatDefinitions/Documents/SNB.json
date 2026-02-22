@@ -1,0 +1,54 @@
+{
+  "formatName": "Shanda Bambook",
+  "version": "1.0",
+  "extensions": [ ".snb" ],
+  "description": "Shanda Bambook e-book format, used by Chinese e-reader devices from Shanda Interactive",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "534E4242",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {},
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SNB Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "SNB magic bytes: 'SNBB'"
+    },
+    {
+      "type": "data",
+      "name": "Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Format version (little-endian)"
+    },
+    {
+      "type": "data",
+      "name": "Header Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Header size (little-endian)"
+    },
+    {
+      "type": "data",
+      "name": "Content Offset",
+      "offset": 12,
+      "length": 4,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "Offset to content data (little-endian)"
+    }
+  ]
+}

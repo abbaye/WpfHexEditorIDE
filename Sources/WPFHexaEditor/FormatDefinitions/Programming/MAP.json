@@ -1,0 +1,45 @@
+{
+  "formatName": "Linker MAP File",
+  "version": "1.0",
+  "extensions": [ ".map" ],
+  "description": "Linker MAP file containing memory map and symbol information from the linking process (text format)",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "20",
+    "offset": 0,
+    "required": false
+  },
+
+  "variables": {},
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Text Header",
+      "offset": 0,
+      "length": 64,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MAP file header (text format, varies by linker)"
+    },
+    {
+      "type": "data",
+      "name": "Symbol Section",
+      "offset": 64,
+      "length": 128,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Symbol table section with addresses and names"
+    },
+    {
+      "type": "data",
+      "name": "Memory Map",
+      "offset": 192,
+      "length": 256,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Memory layout and segment information"
+    }
+  ]
+}

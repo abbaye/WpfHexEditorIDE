@@ -1,0 +1,54 @@
+{
+  "formatName": "UHA Archive",
+  "version": "1.0",
+  "extensions": [ ".uha" ],
+  "description": "UHARC archive format with high compression ratio, developed by Uwe Herklotz",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "55484152435300",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {},
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "UHA Signature",
+      "offset": 0,
+      "length": 7,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Magic bytes: 'UHARCS' + 0x00"
+    },
+    {
+      "type": "data",
+      "name": "Version",
+      "offset": 7,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Format version"
+    },
+    {
+      "type": "data",
+      "name": "Archive Type",
+      "offset": 9,
+      "length": 1,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Archive type flags"
+    },
+    {
+      "type": "data",
+      "name": "Directory Offset",
+      "offset": 10,
+      "length": 4,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "Offset to file directory (little-endian)"
+    }
+  ]
+}
