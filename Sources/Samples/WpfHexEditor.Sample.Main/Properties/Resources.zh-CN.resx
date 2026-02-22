@@ -742,6 +742,10 @@
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>查找上一个(P)</value>
   </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>相对搜索</value>
+    <comment>Search menu - Relative Search command</comment>
+  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>工具(T)</value>
   </data>

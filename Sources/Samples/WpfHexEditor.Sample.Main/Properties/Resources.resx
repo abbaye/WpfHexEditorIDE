@@ -142,6 +142,10 @@
     <value>Find Previous</value>
     <comment>Search menu - Find Previous command</comment>
   </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Relative Search</value>
+    <comment>Search menu - Relative Search command</comment>
+  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>Tools</value>
     <comment>Tools menu header</comment>

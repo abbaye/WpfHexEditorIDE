@@ -748,6 +748,10 @@
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>Znajdź poprzedni</value>
   </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Wyszukiwanie względne</value>
+    <comment>Search menu - Relative Search command</comment>
+  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>Narzędzia</value>
   </data>

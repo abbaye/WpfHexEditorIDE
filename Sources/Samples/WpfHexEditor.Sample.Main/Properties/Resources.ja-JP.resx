@@ -121,6 +121,10 @@
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>前を検索(P)</value>
   </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>相対検索</value>
+    <comment>Search menu - Relative Search command</comment>
+  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>ツール(T)</value>
   </data>
