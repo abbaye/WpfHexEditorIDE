@@ -31,6 +31,7 @@ namespace WpfHexaEditor.Core.Settings
 
         /// <summary>
         /// Generates the complete settings panel with Expanders grouped by category.
+        /// Supports hierarchical categories (e.g., "Colors.Selection" creates nested expanders).
         /// Returns a StackPanel containing all UI elements.
         /// </summary>
         public StackPanel GenerateSettingsPanel()
@@ -40,13 +41,19 @@ namespace WpfHexaEditor.Core.Settings
             // 1. Header
             rootPanel.Children.Add(CreateHeader());
 
-            // 2. Group properties by category
-            var propertiesByCategory = _discoveryService.GroupByCategory();
+            // 2. Group properties by hierarchical categories
+            var hierarchy = _discoveryService.GroupByHierarchy();
 
-            // 3. Create an Expander for each category
-            foreach (var category in propertiesByCategory)
+            // 3. Create an Expander for each parent category
+            // Sort parent categories by custom order
+            var sortedParents = hierarchy.Keys
+                .OrderBy(cat => GetCategoryOrder(cat))
+                .ThenBy(cat => cat);
+
+            foreach (var parentCategory in sortedParents)
             {
-                var expander = CreateCategoryExpander(category.Key, category.Value);
+                var subcategories = hierarchy[parentCategory];
+                var expander = CreateHierarchicalCategoryExpander(parentCategory, subcategories);
                 rootPanel.Children.Add(expander);
             }
 
@@ -115,6 +122,119 @@ namespace WpfHexaEditor.Core.Settings
             foreach (var property in properties)
             {
                 // Include read-only properties but make them disabled
+                var controlElement = GeneratePropertyControl(property);
+                if (controlElement != null)
+                    contentPanel.Children.Add(controlElement);
+            }
+
+            expander.Content = contentPanel;
+            return expander;
+        }
+
+        /// <summary>
+        /// Creates a hierarchical Expander for a parent category with optional subcategories.
+        /// If subcategories exist, creates nested Expanders within the parent.
+        /// </summary>
+        private Expander CreateHierarchicalCategoryExpander(string parentCategory, Dictionary<string, List<PropertyMetadata>> subcategories)
+        {
+            var expander = new Expander
+            {
+                IsExpanded = (parentCategory == "Display"), // Display category open by default
+                Margin = new Thickness(0, 0, 0, 8),
+                BorderThickness = new Thickness(1),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200))
+            };
+
+            // Set header for parent category
+            var resourceKey = $"HexSettings_{parentCategory}_Title";
+            try
+            {
+                expander.SetResourceReference(Expander.HeaderProperty, resourceKey);
+            }
+            catch
+            {
+                expander.Header = GetCategoryHeader(parentCategory);
+            }
+
+            var contentPanel = new StackPanel
+            {
+                Margin = new Thickness(16, 8, 0, 0)
+            };
+
+            // Check if there are direct properties (no subcategory) and subcategories
+            var hasDirectProperties = subcategories.ContainsKey(string.Empty) && subcategories[string.Empty].Any();
+            var hasSubcategories = subcategories.Keys.Any(k => !string.IsNullOrEmpty(k));
+
+            // Add direct properties first (properties without subcategory)
+            if (hasDirectProperties)
+            {
+                foreach (var property in subcategories[string.Empty])
+                {
+                    var controlElement = GeneratePropertyControl(property);
+                    if (controlElement != null)
+                        contentPanel.Children.Add(controlElement);
+                }
+
+                // Add separator if we also have subcategories
+                if (hasSubcategories)
+                {
+                    contentPanel.Children.Add(new Separator { Margin = new Thickness(0, 8, 0, 8) });
+                }
+            }
+
+            // Create nested Expanders for subcategories
+            if (hasSubcategories)
+            {
+                // Sort subcategories alphabetically
+                var sortedSubcategories = subcategories.Keys
+                    .Where(k => !string.IsNullOrEmpty(k))
+                    .OrderBy(k => GetSubcategoryOrder(k))
+                    .ThenBy(k => k);
+
+                foreach (var subcategoryName in sortedSubcategories)
+                {
+                    var subExpander = CreateSubcategoryExpander(parentCategory, subcategoryName, subcategories[subcategoryName]);
+                    contentPanel.Children.Add(subExpander);
+                }
+            }
+
+            expander.Content = contentPanel;
+            return expander;
+        }
+
+        /// <summary>
+        /// Creates a nested Expander for a subcategory within a parent category.
+        /// </summary>
+        private Expander CreateSubcategoryExpander(string parentCategory, string subcategoryName, List<PropertyMetadata> properties)
+        {
+            var expander = new Expander
+            {
+                IsExpanded = true, // Subcategories expanded by default
+                Margin = new Thickness(0, 0, 0, 8),
+                BorderThickness = new Thickness(1),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(220, 220, 220)),
+                Background = new SolidColorBrush(Color.FromRgb(250, 250, 250))
+            };
+
+            // Try to use localized resource, fallback to formatted name
+            var resourceKey = $"HexSettings_{parentCategory}_{subcategoryName}_Title";
+            try
+            {
+                expander.SetResourceReference(Expander.HeaderProperty, resourceKey);
+            }
+            catch
+            {
+                expander.Header = GetSubcategoryHeader(subcategoryName);
+            }
+
+            var contentPanel = new StackPanel
+            {
+                Margin = new Thickness(16, 8, 0, 8)
+            };
+
+            // Generate controls for each property in this subcategory
+            foreach (var property in properties)
+            {
                 var controlElement = GeneratePropertyControl(property);
                 if (controlElement != null)
                     contentPanel.Children.Add(controlElement);
@@ -333,6 +453,40 @@ namespace WpfHexaEditor.Core.Settings
                 "Keyboard" => "⌨️ Keyboard & Mouse",
                 "TBL" => "📝 Character Table",
                 _ => category
+            };
+        }
+
+        /// <summary>
+        /// Gets the display name for a subcategory with emoji icons.
+        /// </summary>
+        private string GetSubcategoryHeader(string subcategory)
+        {
+            return subcategory switch
+            {
+                "Selection" => "🎯 Selection",
+                "ByteStates" => "🔄 Byte States",
+                "Foreground" => "✍️ Foreground",
+                "CharacterTable" => "📝 Character Table (TBL)",
+                "Charts" => "📊 Charts",
+                "Legacy" => "⚠️ Legacy (Compatibility)",
+                _ => subcategory
+            };
+        }
+
+        /// <summary>
+        /// Gets the sort order for subcategories within Colors category.
+        /// </summary>
+        private int GetSubcategoryOrder(string subcategory)
+        {
+            return subcategory switch
+            {
+                "Selection" => 1,
+                "ByteStates" => 2,
+                "Foreground" => 3,
+                "CharacterTable" => 4,
+                "Charts" => 5,
+                "Legacy" => 99, // Legacy last
+                _ => 50 // Unknown subcategories in middle
             };
         }
 

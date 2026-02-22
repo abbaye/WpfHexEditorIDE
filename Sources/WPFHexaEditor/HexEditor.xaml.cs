@@ -87,6 +87,9 @@ namespace WpfHexaEditor
         {
             InitializeComponent();
 
+            // Initialize custom background blocks system
+            InitializeCustomBackgroundBlocks();
+
             // Initialize auto-scroll timer
             _autoScrollTimer = new DispatcherTimer
             {
@@ -890,7 +893,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// DTE (Dual-Tile Encoding) color - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblDteColor
         {
             get => (System.Windows.Media.Color)GetValue(TblDteColorProperty);
@@ -900,7 +903,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// MTE (Multi-Title Encoding) color - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblMteColor
         {
             get => (System.Windows.Media.Color)GetValue(TblMteColorProperty);
@@ -910,7 +913,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// End block color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblEndBlockColor
         {
             get => (System.Windows.Media.Color)GetValue(TblEndBlockColorProperty);
@@ -920,7 +923,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// End line color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblEndLineColor
         {
             get => (System.Windows.Media.Color)GetValue(TblEndLineColorProperty);
@@ -930,7 +933,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// ASCII color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblAsciiColor
         {
             get => (System.Windows.Media.Color)GetValue(TblAsciiColorProperty);
@@ -940,7 +943,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Japanese characters color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblJaponaisColor
         {
             get => (System.Windows.Media.Color)GetValue(TblJaponaisColorProperty);
@@ -950,7 +953,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// 3-byte sequences color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color Tbl3ByteColor
         {
             get => (System.Windows.Media.Color)GetValue(Tbl3ByteColorProperty);
@@ -960,7 +963,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// 4+ byte sequences color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color Tbl4PlusByteColor
         {
             get => (System.Windows.Media.Color)GetValue(Tbl4PlusByteColorProperty);
@@ -970,7 +973,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Default color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblDefaultColor
         {
             get => (System.Windows.Media.Color)GetValue(TblDefaultColorProperty);
@@ -982,7 +985,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Bar chart color - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Charts")]
         public System.Windows.Media.Color BarChartColor
         {
             get => (System.Windows.Media.Color)GetValue(BarChartColorProperty);
@@ -992,7 +995,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Inline bar chart color (for ASCII panel bar visualization) - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Charts")]
         public System.Windows.Media.Color InlineBarChartColor
         {
             get => (System.Windows.Media.Color)GetValue(InlineBarChartColorProperty);
@@ -1002,7 +1005,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Selection brush for the active panel (Hex or ASCII) - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Selection")]
         public Brush SelectionActiveBrush
         {
             get => (Brush)GetValue(SelectionActiveBrushProperty);
@@ -1012,7 +1015,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Selection brush for the inactive panel (Hex or ASCII) - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Selection")]
         public Brush SelectionInactiveBrush
         {
             get => (Brush)GetValue(SelectionInactiveBrushProperty);
@@ -1723,7 +1726,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// First selection gradient color
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Selection")]
         public Color SelectionFirstColor
         {
             get => (Color)GetValue(SelectionFirstColorProperty);
@@ -1756,7 +1759,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Second selection gradient color
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Selection")]
         public Color SelectionSecondColor
         {
             get => (Color)GetValue(SelectionSecondColorProperty);
@@ -1783,7 +1786,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Color for modified bytes
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.ByteStates")]
         public Color ByteModifiedColor
         {
             get => (Color)GetValue(ByteModifiedColorProperty);
@@ -1810,7 +1813,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Color for added bytes
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.ByteStates")]
         public Color ByteAddedColor
         {
             get => (Color)GetValue(ByteAddedColorProperty);
@@ -1837,7 +1840,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Color for highlighted bytes
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.ByteStates")]
         public Color HighLightColor
         {
             get => (Color)GetValue(HighLightColorProperty);
@@ -1860,7 +1863,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Mouse over color
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.ByteStates")]
         public Color MouseOverColor
         {
             get => (Color)GetValue(MouseOverColorProperty);
@@ -1889,7 +1892,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground color for normal bytes (even columns: 00, 02, 04...)
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Foreground")]
         public Color ForegroundFirstColor
         {
             get => (Color)GetValue(ForegroundFirstColorProperty);
@@ -1916,7 +1919,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground color for alternate bytes (odd columns: 01, 03, 05...)
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Foreground")]
         public Color ForegroundSecondColor
         {
             get => (Color)GetValue(ForegroundSecondColorProperty);
@@ -1943,7 +1946,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground color for offset header
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Foreground")]
         public Color ForegroundOffSetHeaderColor
         {
             get => (Color)GetValue(ForegroundOffSetHeaderColorProperty);
@@ -1970,7 +1973,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground highlight offset header color
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Foreground")]
         public Color ForegroundHighLightOffSetHeaderColor
         {
             get => (Color)GetValue(ForegroundHighLightOffSetHeaderColorProperty);
@@ -1994,7 +1997,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground contrast color
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Foreground")]
         public Color ForegroundContrast
         {
             get => (Color)GetValue(ForegroundContrastProperty);
@@ -2832,7 +2835,9 @@ namespace WpfHexaEditor
                 // Sync with HexViewport - pass blocks if enabled, empty list if disabled
                 if (editor.HexViewport != null)
                 {
-                    editor.HexViewport.CustomBackgroundBlocks = allowed ? editor._customBackgroundBlocks : new List<Core.CustomBackgroundBlock>();
+                    editor.HexViewport.CustomBackgroundBlocks = allowed
+                        ? editor._customBackgroundService.GetAllBlocks().ToList()
+                        : new List<Core.CustomBackgroundBlock>();
                     editor.HexViewport.InvalidateVisual();
                 }
             }
@@ -2873,7 +2878,7 @@ namespace WpfHexaEditor
         /// <remarks>
         /// This property is provided for V1 compatibility. New code should use the Color-based property.
         /// </remarks>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         [Obsolete("Use SelectionFirstColor (Color property) instead. This Brush wrapper is for V1 compatibility only.", false)]
         public Brush SelectionFirstColorBrush
         {
@@ -2888,7 +2893,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Selection second color as Brush. Use SelectionSecondColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush SelectionSecondColorBrush
         {
             get => new SolidColorBrush(SelectionSecondColor);
@@ -2902,7 +2907,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Modified byte color as Brush. Use ByteModifiedColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ByteModifiedColorBrush
         {
             get => new SolidColorBrush(ByteModifiedColor);
@@ -2916,7 +2921,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Added byte color as Brush. Use ByteAddedColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ByteAddedColorBrush
         {
             get => new SolidColorBrush(ByteAddedColor);
@@ -2930,7 +2935,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Highlight color as Brush. Use HighLightColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush HighLightColorBrush
         {
             get => new SolidColorBrush(HighLightColor);
@@ -2944,7 +2949,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Mouse over color as Brush. Use MouseOverColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush MouseOverColorBrush
         {
             get => new SolidColorBrush(MouseOverColor);
@@ -2958,7 +2963,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground second color as Brush. Use ForegroundSecondColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ForegroundSecondColorBrush
         {
             get => new SolidColorBrush(ForegroundSecondColor);
@@ -2972,7 +2977,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Offset header foreground color as Brush. Use ForegroundOffSetHeaderColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ForegroundOffSetHeaderColorBrush
         {
             get => new SolidColorBrush(ForegroundOffSetHeaderColor);
@@ -2986,7 +2991,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Highlighted offset header foreground color as Brush. Use ForegroundHighLightOffSetHeaderColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ForegroundHighLightOffSetHeaderColorBrush
         {
             get => new SolidColorBrush(ForegroundHighLightOffSetHeaderColor);
@@ -3000,7 +3005,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground contrast color as Brush. Use ForegroundContrast (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ForegroundContrastBrush
         {
             get => new SolidColorBrush(ForegroundContrast);
