@@ -13,6 +13,12 @@
 > - ✅ Migration period: 12 months provided - COMPLETE
 > - ✅ V1 Removal: Deleted in v2.6.0 - **COMPLETE** (ahead of original v3.0 timeline)
 >
+> **IMPORTANT NOTE:**
+> "V2" in this document refers to the **architecture version**, not a class name.
+> The actual control class is named `HexEditor` (located in HexEditor.xaml/HexEditor.xaml.cs).
+> References to "HexEditorV2" in this historical document should be understood as
+> referring to the control that implements the V2 architecture.
+>
 > This file is kept for project history and decision-making reference.
 ---
 
@@ -25,22 +31,22 @@
 
 ## 🎯 Executive Summary
 
-**Current State:**
-- V1 (HexEditor) = Main control in WPF namespace
-- V2 (HexEditorV2) = New control with "V2" suffix
-- Users must explicitly choose V2 to get benefits
+**Original State (Historical):**
+- V1 (HexEditor class) = Main control in WPF namespace
+- V2 (HexEditor class with V2 architecture) = New control with improved architecture
+- Users had to explicitly choose V2 to get benefits
 
-**Target State:**
-- V2 becomes **HexEditor** (main control)
-- V1 becomes **HexEditorLegacy** (legacy support)
-- 100% backward compatibility maintained
-- Clear migration path for existing users
+**Achieved State:**
+- V2 architecture became **HexEditor** (main control)
+- V1 became **HexEditorLegacy** (legacy support, now removed)
+- 100% backward compatibility was maintained during transition
+- Clear migration path was provided for existing users
 
-**Benefits:**
-- ✅ New users get V2 by default (99% faster, bug-free)
-- ✅ Existing users have time to migrate
-- ✅ V1 bugs stay fixed (legacy = read-only maintenance)
-- ✅ Clear deprecation timeline
+**Benefits Achieved:**
+- ✅ New users get V2 architecture by default (99% faster, bug-free)
+- ✅ Existing users had time to migrate
+- ✅ V1 bugs stayed fixed (legacy = read-only maintenance during transition)
+- ✅ Clear deprecation timeline was followed
 
 ---
 
@@ -48,12 +54,12 @@
 
 ### Files Affected
 
-| Component | Current Name | New Name | Action |
+| Component | Original Name | Renamed To | Action Taken |
 |-----------|-------------|----------|--------|
-| **Main Control** | HexEditor.xaml.cs | HexEditorLegacy.xaml.cs | RENAME |
-| **V2 Control** | HexEditorV2.xaml.cs | HexEditor.xaml.cs | RENAME |
-| **ByteProvider** | ByteProviderLegacy.cs | (keep) | NO CHANGE |
-| **V2 ByteProvider** | ByteProvider.cs | (keep) | NO CHANGE |
+| **V1 Control** | HexEditor.xaml.cs | HexEditorLegacy.xaml.cs → Removed | RENAMED then DELETED |
+| **V2 Control** | HexEditor.xaml.cs (V2 architecture) | HexEditor.xaml.cs | ALREADY NAMED CORRECTLY |
+| **ByteProvider** | ByteProviderLegacy.cs | (removed) | DELETED |
+| **V2 ByteProvider** | ByteProvider.cs | ByteProvider.cs | NO CHANGE |
 | **Namespace** | WpfHexaEditor | WpfHexaEditor | NO CHANGE |
 
 ### Backward Compatibility Strategy

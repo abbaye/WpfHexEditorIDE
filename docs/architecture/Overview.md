@@ -78,7 +78,7 @@ Bidirectional conversion between virtual and physical positions:
 graph TB
     subgraph "🎨 Presentation Layer"
         HexEditor["HexEditor Control<br/>(Main API)"]
-        HexEditorV2["HexEditorV2<br/>(UserControl)"]
+        HexEditor["HexEditor<br/>(UserControl)"]
         HexViewport["HexViewport<br/>(Custom Rendering)"]
     end
 
@@ -111,9 +111,8 @@ graph TB
         FileSystem["File System<br/>(Disk/Memory/Stream)"]
     end
 
-    HexEditor --> HexEditorV2
-    HexEditorV2 --> HexViewport
-    HexEditorV2 --> ViewModel
+    HexEditor --> HexViewport
+    HexEditor --> ViewModel
 
     ViewModel --> SearchService
     ViewModel --> ClipboardService
@@ -156,7 +155,7 @@ graph TB
 ```mermaid
 graph LR
     subgraph "Layer 1: UI"
-        UI["HexEditor<br/>HexEditorV2<br/>HexViewport"]
+        UI["HexEditor<br/>HexViewport"]
     end
 
     subgraph "Layer 2: Presentation"
@@ -198,7 +197,7 @@ graph LR
 
 | Layer | Components | Responsibility | Thread Safety |
 |-------|-----------|----------------|---------------|
-| **1. UI** | HexEditor, HexEditorV2, HexViewport | User interaction, rendering | UI thread only |
+| **1. UI** | HexEditor, HexViewport | User interaction, rendering | UI thread only |
 | **2. Presentation** | HexEditorViewModel | Business logic, state management | UI thread only |
 | **3. Services** | 15 specialized services | Feature implementation | UI thread only |
 | **4. Data Access** | ByteProvider | API coordination, caching | UI thread only |
@@ -701,5 +700,5 @@ finally
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0
-**Status**: ✅ Complete (100% ByteProvider API + 100% Legacy V1 API)
+**Version**: 2.0 (V2 architecture)
+**Status**: ✅ Complete (100% ByteProvider API + 100% Legacy V1 API compatibility)

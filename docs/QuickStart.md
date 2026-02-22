@@ -1,4 +1,4 @@
-# Quick Start Guide: HexEditorV2
+# Quick Start Guide: HexEditor
 
 ## Installation
 
@@ -22,9 +22,9 @@ dotnet build
 <Window x:Class="MyApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:v2="clr-namespace:WpfHexaEditor.V2;assembly=WPFHexaEditor">
+        xmlns:hex="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor">
     <Grid>
-        <v2:HexEditorV2 x:Name="HexEditor" />
+        <hex:HexEditor x:Name="HexEditor" />
     </Grid>
 </Window>
 ```
@@ -193,8 +193,8 @@ HexEditor.ClearCustomBackgroundBlock();
 
 ```csharp
 // Compare two files
-HexEditorV2 editor1 = new HexEditorV2();
-HexEditorV2 editor2 = new HexEditorV2();
+HexEditor editor1 = new HexEditor();
+HexEditor editor2 = new HexEditor();
 
 editor1.OpenFile("file1.bin");
 editor2.OpenFile("file2.bin");
@@ -296,7 +296,7 @@ public class HexEditorViewModel : INotifyPropertyChanged
 ### XAML Binding
 
 ```xml
-<v2:HexEditorV2
+<hex:HexEditor
     FileName="{Binding FilePath}"
     IsModified="{Binding IsModified, Mode=OneWayToSource}"
     Position="{Binding CurrentPosition, Mode=TwoWay}"
@@ -343,7 +343,7 @@ HexEditor.MouseWheelSpeed = MouseWheelSpeed.Fast;
 - Try opening with read-only mode
 
 ### Performance Issues
-- Ensure you're using HexEditorV2, not legacy HexEditor
+- Ensure you're using the modern HexEditor control (with V2 architecture)
 - Check file size (V2 handles GB+ files efficiently)
 - Reduce BytePerLine for very large viewports
 

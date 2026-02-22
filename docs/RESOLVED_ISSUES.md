@@ -10,7 +10,7 @@ This document tracks critical issues that have been resolved in WPF HexEditor V2
 
 ### Problem Description
 
-When typing consecutive hex characters in **Insert Mode** (e.g., "FFFFFFFF"), the HexEditorV2 control produced incorrect byte sequences. Instead of pairing hex characters to form complete bytes like "FF FF FF FF", it created incomplete bytes with only the high nibble set: "F0 F0 F0 F0".
+When typing consecutive hex characters in **Insert Mode** (e.g., "FFFFFFFF"), the HexEditor control produced incorrect byte sequences. Instead of pairing hex characters to form complete bytes like "FF FF FF FF", it created incomplete bytes with only the high nibble set: "F0 F0 F0 F0".
 
 ### User Impact
 
@@ -58,7 +58,7 @@ The bug returned virtual position 52 instead of 53, causing out-of-range calcula
 ### Fixes Applied
 
 #### Fix 1: Cursor Position Synchronization (Commit 35b19b5)
-**Location**: `HexEditorV2.xaml.cs` lines ~5987-6010
+**Location**: `HexEditor.xaml.cs` lines ~5987-6010
 
 **Changes:**
 - Added `Dispatcher.Invoke(DispatcherPriority.Send)` for synchronous cursor updates

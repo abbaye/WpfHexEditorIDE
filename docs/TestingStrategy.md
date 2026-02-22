@@ -2,13 +2,13 @@
 
 ## Overview
 
-Comprehensive testing strategy for HexEditorV2, covering V1 compatibility, V2 features, performance benchmarks, and stability tests.
+Comprehensive testing strategy for HexEditor, covering V1 compatibility, V2 architecture features, performance benchmarks, and stability tests.
 
 ## Test Structure
 
 ```
 Tests/
-├── WPFHexaEditor.V2.Tests/              # Unit tests
+├── WPFHexaEditor.Tests/              # Unit tests
 │   ├── CompatibilityTests/
 │   │   ├── Phase1_TypeCompatibilityTests.cs
 │   │   ├── Phase2_VisibilityCompatibilityTests.cs
@@ -28,12 +28,12 @@ Tests/
 │   │   └── SearchServiceTests.cs
 │   └── ModelTests/
 │       └── VirtualPositionTests.cs
-├── WPFHexaEditor.V2.IntegrationTests/   # Integration tests
+├── WPFHexaEditor.IntegrationTests/   # Integration tests
 │   ├── EndToEndTests.cs
 │   ├── V1SampleCompatibilityTests.cs
 │   └── RegressionTests.cs
 └── Benchmarks/
-    └── WPFHexaEditor.V2.Benchmarks/     # Performance benchmarks
+    └── WPFHexaEditor.Benchmarks/     # Performance benchmarks
         ├── RenderingBenchmarks.cs
         ├── OperationBenchmarks.cs
         ├── MemoryBenchmarks.cs
@@ -52,7 +52,7 @@ public class Phase1_TypeCompatibilityTests
     [TestMethod]
     public void BrushToColor_Conversion_Works()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.SelectionFirstColorBrush = Brushes.Blue;
         Assert.AreEqual(Colors.Blue, editor.SelectionFirstColor);
     }
@@ -60,7 +60,7 @@ public class Phase1_TypeCompatibilityTests
     [TestMethod]
     public void ColorToBrush_Conversion_Works()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.SelectionFirstColor = Colors.Red;
         var brush = editor.SelectionFirstColorBrush as SolidColorBrush;
         Assert.IsNotNull(brush);
@@ -71,7 +71,7 @@ public class Phase1_TypeCompatibilityTests
     public void AllBrushProperties_AreDefined()
     {
         // Test all 11 Brush wrapper properties exist
-        var type = typeof(HexEditorV2);
+        var type = typeof(HexEditor);
         Assert.IsNotNull(type.GetProperty("SelectionFirstColorBrush"));
         Assert.IsNotNull(type.GetProperty("SelectionSecondColorBrush"));
         // ... test all 11 properties
@@ -89,7 +89,7 @@ public class Phase2_VisibilityCompatibilityTests
     [TestMethod]
     public void HeaderVisibility_MapsToShowHeader()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.HeaderVisibility = Visibility.Visible;
         Assert.IsTrue(editor.ShowHeader);
 
@@ -100,7 +100,7 @@ public class Phase2_VisibilityCompatibilityTests
     [TestMethod]
     public void ShowHeader_MapsToHeaderVisibility()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.ShowHeader = true;
         Assert.AreEqual(Visibility.Visible, editor.HeaderVisibility);
 
@@ -122,7 +122,7 @@ public class Phase3_StringSearchTests
     [TestMethod]
     public void FindFirst_WithString_FindsPattern()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test-file.bin");
 
         long position = editor.FindFirst("Hello");
@@ -132,7 +132,7 @@ public class Phase3_StringSearchTests
     [TestMethod]
     public void FindNext_WithString_FindsNextOccurrence()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test-file.bin");
 
         long first = editor.FindFirst("test");
@@ -144,7 +144,7 @@ public class Phase3_StringSearchTests
     [TestMethod]
     public void ReplaceAll_WithString_ReplacesAllOccurrences()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test-file.bin");
 
         int count = editor.ReplaceAll("old", "new");
@@ -163,7 +163,7 @@ public class Phase4_EventCompatibilityTests
     [TestMethod]
     public void SelectionStartChanged_Fires_OnSelectionStartChange()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         bool eventFired = false;
 
         editor.SelectionStartChanged += (s, e) => eventFired = true;
@@ -175,7 +175,7 @@ public class Phase4_EventCompatibilityTests
     [TestMethod]
     public void AllV1Events_AreDefined()
     {
-        var type = typeof(HexEditorV2);
+        var type = typeof(HexEditor);
         var events = type.GetEvents();
 
         // Verify all 20 V1 events exist
@@ -188,7 +188,7 @@ public class Phase4_EventCompatibilityTests
     [TestMethod]
     public void Event_OrderingIsCorrect()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         var order = new List<string>();
 
         editor.SelectionStartChanged += (s, e) => order.Add("Start");
@@ -212,7 +212,7 @@ public class Phase5_ConfigPropertiesTests
     [TestMethod]
     public void AllConfigProperties_HaveDefaultValues()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
 
         Assert.IsTrue(editor.AllowContextMenu); // default true
         Assert.IsTrue(editor.AllowZoom); // default true
@@ -223,7 +223,7 @@ public class Phase5_ConfigPropertiesTests
     [TestMethod]
     public void AllConfigProperties_AreSettable()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
 
         editor.AllowContextMenu = false;
         Assert.IsFalse(editor.AllowContextMenu);
@@ -244,7 +244,7 @@ public class Phase6_V1MethodsTests
     [TestMethod]
     public void SetPosition_WithHexString_ParsesCorrectly()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test.bin");
 
         editor.SetPosition("0xFF");
@@ -257,7 +257,7 @@ public class Phase6_V1MethodsTests
     [TestMethod]
     public void SetPosition_WithByteLength_CreatesSelection()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test.bin");
 
         editor.SetPosition(100, 50); // Start at 100, select 50 bytes
@@ -270,7 +270,7 @@ public class Phase6_V1MethodsTests
     [TestMethod]
     public void SubmitChanges_AliasesCorrectly()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test.bin");
 
         editor.ModifyByte(0xFF, 0);
@@ -282,7 +282,7 @@ public class Phase6_V1MethodsTests
     [TestMethod]
     public void Undo_WithRepeat_UndoesMultipleOperations()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test.bin");
 
         // Make 5 changes
@@ -308,7 +308,7 @@ public class Phase7_AdvancedFeaturesTests
     [TestMethod]
     public void CustomBackgroundBlocks_AddAndRetrieve()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         var block = new CustomBackgroundBlock(0, 100, Brushes.Yellow);
 
         editor.AddCustomBackgroundBlock(block);
@@ -322,8 +322,8 @@ public class Phase7_AdvancedFeaturesTests
     [TestMethod]
     public void FileComparison_FindsDifferences()
     {
-        var editor1 = new HexEditorV2();
-        var editor2 = new HexEditorV2();
+        var editor1 = new HexEditor();
+        var editor2 = new HexEditor();
 
         editor1.OpenFile("file1.bin");
         editor2.OpenFile("file2.bin");
@@ -338,7 +338,7 @@ public class Phase7_AdvancedFeaturesTests
     [TestMethod]
     public void StatePersistence_SaveAndLoad()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test.bin");
         editor.SetPosition(500);
         editor.SelectionStart = 100;
@@ -346,7 +346,7 @@ public class Phase7_AdvancedFeaturesTests
 
         editor.SaveCurrentState("state.xml");
 
-        var editor2 = new HexEditorV2();
+        var editor2 = new HexEditor();
         editor2.OpenFile("test.bin");
         editor2.LoadCurrentState("state.xml");
 
@@ -369,7 +369,7 @@ public class EndToEndTests
     [TestMethod]
     public void OpenFile_Edit_Save_Workflow()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         string tempFile = CreateTempFile();
 
         editor.OpenFile(tempFile);
@@ -389,7 +389,7 @@ public class EndToEndTests
     [TestMethod]
     public void Search_Replace_Undo_Workflow()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test.bin");
 
         long pos = editor.FindFirst("test");
@@ -448,7 +448,7 @@ public class RenderingBenchmarks
     [BenchmarkDotNet.Attributes.Benchmark]
     public void Render_1000_Lines()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("large-file.bin");
         // Measure rendering time
     }
@@ -456,7 +456,7 @@ public class RenderingBenchmarks
     [BenchmarkDotNet.Attributes.Benchmark]
     public void Scroll_Through_LargeFile()
     {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("100mb-file.bin");
         // Scroll through file, measure perf
     }
@@ -493,14 +493,14 @@ public class OperationBenchmarks
 
     [Benchmark]
     public void Search_FindFirst() {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test.bin");
         editor.FindFirst(new byte[] { 0x48, 0x65, 0x6C, 0x6C, 0x6F });
     }
 
     [Benchmark]
     public void InsertByte_1000Times() {
-        var editor = new HexEditorV2();
+        var editor = new HexEditor();
         editor.OpenFile("test.bin");
         editor.EditMode = EditMode.Insert;
         for (int i = 0; i < 1000; i++)
@@ -513,19 +513,19 @@ public class OperationBenchmarks
 
 ### Unit Tests
 ```powershell
-cd Tests/WPFHexaEditor.V2.Tests
+cd Tests/WPFHexaEditor.Tests
 dotnet test
 ```
 
 ### Integration Tests
 ```powershell
-cd Tests/WPFHexaEditor.V2.IntegrationTests
+cd Tests/WPFHexaEditor.IntegrationTests
 dotnet test
 ```
 
 ### Benchmarks
 ```powershell
-cd Benchmarks/WPFHexaEditor.V2.Benchmarks
+cd Benchmarks/WPFHexaEditor.Benchmarks
 dotnet run -c Release
 ```
 
@@ -553,11 +553,11 @@ jobs:
         with:
           dotnet-version: '8.0.x'
       - name: Run Unit Tests
-        run: dotnet test Tests/WPFHexaEditor.V2.Tests
+        run: dotnet test Tests/WPFHexaEditor.Tests
       - name: Run Integration Tests
-        run: dotnet test Tests/WPFHexaEditor.V2.IntegrationTests
+        run: dotnet test Tests/WPFHexaEditor.IntegrationTests
       - name: Run Benchmarks
-        run: dotnet run --project Benchmarks/WPFHexaEditor.V2.Benchmarks -c Release
+        run: dotnet run --project Benchmarks/WPFHexaEditor.Benchmarks -c Release
 ```
 
 ## Success Criteria
