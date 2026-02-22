@@ -65,7 +65,7 @@ dotnet test WPFHexaEditor.Tests/WPFHexaEditor.Tests.csproj
 ## 📚 Documentation
 
 - **[Main README](../README.md)** - Project overview and features
-- **[Architecture Guide](../ARCHITECTURE.md)** - Detailed architecture documentation
+- **[Architecture Guide](ARCHITECTURE.md)** - Detailed architecture documentation
 - **[Services Documentation](WPFHexaEditor/Services/README.md)** - Service layer details
 - **[Core Components](WPFHexaEditor/Core/README.md)** - Core infrastructure
 - **[Samples Guide](Samples/README.md)** - Sample applications
