@@ -1,6 +1,6 @@
-# WPF HexEditor V2 - Architecture Documentation
+# WPF HexEditor - Architecture Documentation
 
-This document provides comprehensive architecture documentation for the HexEditorV2 control, including visual diagrams, data flow analysis, and detailed component descriptions.
+This document provides comprehensive architecture documentation for the HexEditor control, including visual diagrams, data flow analysis, and detailed component descriptions.
 
 ## 📋 Table of Contents
 
@@ -28,7 +28,7 @@ This document provides comprehensive architecture documentation for the HexEdito
 
 ## 📖 Overview
 
-HexEditorV2 represents a complete architectural rewrite of the WpfHexEditor control, focusing on:
+HexEditor uses a modern MVVM architecture (rewritten from legacy monolithic design), focusing on:
 
 - **Performance**: 2-5x faster rendering with custom DrawingContext
 - **Memory Efficiency**: 80-90% reduction with custom viewport
@@ -50,7 +50,7 @@ HexEditorV2 represents a complete architectural rewrite of the WpfHexEditor cont
 ```mermaid
 graph TB
     subgraph "UI Layer (WPF)"
-        HexEditorV2["HexEditorV2.xaml - WPF UserControl"]
+        HexEditor["HexEditor.xaml - WPF UserControl"]
         HexViewport["HexViewport - Custom Rendering"]
         ContextMenu["Context Menu - Status Bar"]
     end
@@ -75,9 +75,9 @@ graph TB
         FileSystem["File System - Disk Storage"]
     end
 
-    HexEditorV2 --> HexViewport
-    HexEditorV2 --> ContextMenu
-    HexEditorV2 --> ViewModel
+    HexEditor --> HexViewport
+    HexEditor --> ContextMenu
+    HexEditor --> ViewModel
 
     ViewModel --> ByteProvider
 
@@ -94,7 +94,7 @@ graph TB
 
     FileProvider --> FileSystem
 
-    style HexEditorV2 fill:#fff9c4
+    style HexEditor fill:#fff9c4
     style ViewModel fill:#e1f5ff
     style ByteProvider fill:#ffccbc
     style ByteReader fill:#c8e6c9
@@ -111,8 +111,8 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph "HexEditorV2 (View Layer)"
-        View["HexEditorV2.xaml.cs - Input & Rendering"]
+    subgraph "HexEditor (View Layer)"
+        View["HexEditor.xaml.cs - Input & Rendering"]
         Viewport["HexViewport Control - Custom DrawingContext"]
     end
 
@@ -212,30 +212,30 @@ _editingValue → accumulated byte value (0xF0 → 0xFF)
 ```mermaid
 graph TB
     subgraph "HexEditor - Partial Class Architecture"
-        Main["HexEditor.xaml.cs -Main class 3,617 lines -Properties, Constructor, Infrastructure"]
+        Main["HexEditor.xaml.cs<br/>Main class 3,617 lines<br/>Properties, Constructor, Infrastructure"]
 
         subgraph "File & Data Operations"
-            File["HexEditor.FileOperations.cs -380 lines"]
-            Byte["HexEditor.ByteOperations.cs -367 lines"]
-            Clip["HexEditor.Clipboard.cs -258 lines"]
+            File["HexEditor.FileOperations.cs<br/>380 lines"]
+            Byte["HexEditor.ByteOperations.cs<br/>367 lines"]
+            Clip["HexEditor.Clipboard.cs<br/>258 lines"]
         end
 
         subgraph "Editing Operations"
-            Edit["HexEditor.EditOperations.cs -116 lines"]
-            Search["HexEditor.Search.cs -134 lines"]
+            Edit["HexEditor.EditOperations.cs<br/>116 lines"]
+            Search["HexEditor.Search.cs<br/>134 lines"]
         end
 
         subgraph "UI & Events"
-            Events["HexEditor.Events.cs -1,128 lines -Mouse, Keyboard, Scroll"]
-            Context["HexEditor.ContextMenu.cs -477 lines -Menus, AutoScroll, Headers"]
+            Events["HexEditor.Events.cs<br/>1,128 lines<br/>Mouse, Keyboard, Scroll"]
+            Context["HexEditor.ContextMenu.cs<br/>477 lines<br/>Menus, AutoScroll, Headers"]
         end
 
         subgraph "Features"
-            Book["HexEditor.Bookmarks.cs -101 lines"]
-            High["HexEditor.Highlights.cs -89 lines"]
-            TBL["HexEditor.TBL.cs -102 lines"]
-            State["HexEditor.StatePersistence.cs -110 lines"]
-            Zoom["HexEditor.Zoom.cs -98 lines"]
+            Book["HexEditor.Bookmarks.cs<br/>101 lines"]
+            High["HexEditor.Highlights.cs<br/>89 lines"]
+            TBL["HexEditor.TBL.cs<br/>102 lines"]
+            State["HexEditor.StatePersistence.cs<br/>110 lines"]
+            Zoom["HexEditor.Zoom.cs<br/>98 lines"]
         end
     end
 
@@ -698,14 +698,14 @@ bool IsOpen { get; }                      // Open state
 ```mermaid
 sequenceDiagram
     participant User
-    participant HexEditorV2
+    participant HexEditor
     participant ViewModel
     participant ByteProvider
     participant FileProvider
     participant FileSystem
 
-    User->>HexEditorV2: Open "file.bin"
-    HexEditorV2->>ViewModel: OpenFile("file.bin")
+    User->>HexEditor: Open "file.bin"
+    HexEditor->>ViewModel: OpenFile("file.bin")
     ViewModel->>ByteProvider: OpenFile("file.bin")
     ByteProvider->>FileProvider: Open("file.bin", readOnly)
     FileProvider->>FileSystem: Open stream
@@ -733,9 +733,9 @@ sequenceDiagram
         ByteProvider-->>ViewModel: byte[16]
     end
 
-    ViewModel-->>HexEditorV2: VisibleLines updated
-    HexEditorV2->>HexEditorV2: Render viewport
-    HexEditorV2-->>User: Display file content
+    ViewModel-->>HexEditor: VisibleLines updated
+    HexEditor->>HexEditor: Render viewport
+    HexEditor-->>User: Display file content
 ```
 
 ---
@@ -745,20 +745,20 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant User
-    participant HexEditorV2
+    participant HexEditor
     participant ViewModel
     participant ByteProvider
     participant EditsManager
     participant PositionMapper
     participant ByteReader
 
-    User->>HexEditorV2: Type "FF" at position 100
+    User->>HexEditor: Type "FF" at position 100
 
-    Note over HexEditorV2: Nibble editing state machine
-    HexEditorV2->>HexEditorV2: 'F' → editingValue = 0xF0
-    HexEditorV2->>HexEditorV2: 'F' → editingValue = 0xFF
+    Note over HexEditor: Nibble editing state machine
+    HexEditor->>HexEditor: 'F' → editingValue = 0xF0
+    HexEditor->>HexEditor: 'F' → editingValue = 0xFF
 
-    HexEditorV2->>ViewModel: InsertByte(virtualPos=100, value=0xFF)
+    HexEditor->>ViewModel: InsertByte(virtualPos=100, value=0xFF)
     ViewModel->>ByteProvider: InsertByte(100, 0xFF)
 
     ByteProvider->>PositionMapper: VirtualToPhysical(100)
@@ -799,9 +799,9 @@ sequenceDiagram
     ByteReader-->>ByteProvider: byte[16] with inserted byte
     ByteProvider-->>ViewModel: byte[16]
 
-    ViewModel-->>HexEditorV2: VisibleLines updated
-    HexEditorV2->>HexEditorV2: Render with green highlight
-    HexEditorV2-->>User: Show inserted byte in green
+    ViewModel-->>HexEditor: VisibleLines updated
+    HexEditor->>HexEditor: Render with green highlight
+    HexEditor-->>User: Show inserted byte in green
 ```
 
 ---
@@ -811,15 +811,15 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant User
-    participant HexEditorV2
+    participant HexEditor
     participant ViewModel
     participant ByteProvider
     participant ByteReader
     participant EditsManager
     participant FileSystem
 
-    User->>HexEditorV2: Press Ctrl+S
-    HexEditorV2->>ViewModel: Save()
+    User->>HexEditor: Press Ctrl+S
+    HexEditor->>ViewModel: Save()
     ViewModel->>ByteProvider: Save()
     ByteProvider->>ByteProvider: SaveAs(originalPath, overwrite=true)
 
@@ -873,8 +873,8 @@ sequenceDiagram
     ByteProvider-->>ViewModel: Save complete
 
     ViewModel->>ViewModel: RefreshVisibleLines()
-    ViewModel-->>HexEditorV2: Saved successfully
-    HexEditorV2-->>User: File saved (status bar update)
+    ViewModel-->>HexEditor: Saved successfully
+    HexEditor-->>User: File saved (status bar update)
 ```
 
 ---
@@ -884,14 +884,14 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant User
-    participant HexEditorV2
+    participant HexEditor
     participant ViewModel
     participant ByteProvider
     participant UndoRedoManager
     participant EditsManager
 
-    User->>HexEditorV2: Press Ctrl+Z
-    HexEditorV2->>ViewModel: Undo()
+    User->>HexEditor: Press Ctrl+Z
+    HexEditor->>ViewModel: Undo()
     ViewModel->>ByteProvider: Undo()
 
     ByteProvider->>UndoRedoManager: PopUndo()
@@ -916,9 +916,9 @@ sequenceDiagram
     ViewModel->>ViewModel: RefreshVisibleLines()
     ViewModel->>ViewModel: SetFocusAt(affectedPos)
 
-    ViewModel-->>HexEditorV2: View updated
-    HexEditorV2->>HexEditorV2: Render changes
-    HexEditorV2-->>User: Undo complete
+    ViewModel-->>HexEditor: View updated
+    HexEditor->>HexEditor: Render changes
+    HexEditor-->>User: Undo complete
 ```
 
 ---
@@ -927,7 +927,7 @@ sequenceDiagram
 
 ```mermaid
 classDiagram
-    class HexEditorV2 {
+    class HexEditor {
         -HexEditorViewModel _viewModel
         -bool _isEditingByte
         -bool _editingHighNibble
@@ -1036,7 +1036,7 @@ classDiagram
         +Clear()
     }
 
-    HexEditorV2 --> HexEditorViewModel
+    HexEditor --> HexEditorViewModel
     HexEditorViewModel --> ByteProvider
     ByteProvider --> ByteReader
     ByteProvider --> EditsManager
@@ -1057,27 +1057,27 @@ classDiagram
 graph TD
     subgraph "Dependency Layers"
         subgraph "Layer 1: UI"
-            V2[HexEditorV2 -WPF UserControl]
-            HV[HexViewport -Custom Control]
+            V2[HexEditor<br/>WPF UserControl]
+            HV[HexViewport<br/>Custom Control]
         end
 
         subgraph "Layer 2: Presentation"
-            VM[HexEditorViewModel -MVVM Logic]
+            VM[HexEditorViewModel<br/>MVVM Logic]
         end
 
         subgraph "Layer 3: Data Access"
-            BP[ByteProvider -API Facade]
+            BP[ByteProvider<br/>API Facade]
         end
 
         subgraph "Layer 4: Core Processing"
-            BR[ByteReader -Read Operations]
-            EM[EditsManager -Edit Storage]
-            PM[PositionMapper -Position Conversion]
-            UR[UndoRedoManager -History]
+            BR[ByteReader<br/>Read Operations]
+            EM[EditsManager<br/>Edit Storage]
+            PM[PositionMapper<br/>Position Conversion]
+            UR[UndoRedoManager<br/>History]
         end
 
         subgraph "Layer 5: Storage"
-            FP[FileProvider -File I/O]
+            FP[FileProvider<br/>File I/O]
             FS[File System]
         end
     end
@@ -1547,11 +1547,11 @@ graph TB
         V1_FIFO["FIFO Insertions -Append to List"]
     end
 
-    subgraph "V2 Architecture HexEditorV2"
-        V2_Layer["Layered Design -MVVM + Components"]
-        V2_Custom["Custom Rendering -DrawingContext"]
-        V2_Advanced["Advanced Edit Storage -Separate by Type"]
-        V2_LIFO["LIFO Insertions -Stack-like Prepend"]
+    subgraph "V2 Architecture (HexEditor)"
+        V2_Layer["Layered Design<br/>MVVM + Components"]
+        V2_Custom["Custom Rendering<br/>DrawingContext"]
+        V2_Advanced["Advanced Edit Storage<br/>Separate by Type"]
+        V2_LIFO["LIFO Insertions<br/>Stack-like Prepend"]
     end
 
     style V1_Mono fill:#ffccbc
@@ -1562,7 +1562,7 @@ graph TB
 
 ### Feature Comparison
 
-| Aspect | V1 (HexEditor) | V2 (HexEditorV2) |
+| Aspect | V1 (Legacy) | V2 (HexEditor) |
 |--------|----------------|------------------|
 | **Architecture** | Monolithic (single class) | Layered (MVVM + components) |
 | **Rendering** | WPF controls (HexByte, StringByte) | Custom DrawingContext |
@@ -1577,7 +1577,7 @@ graph TB
 | **Complexity** | Lower (simpler logic) | Higher (more abstraction) |
 | **Maintainability** | Moderate | High (clear responsibilities) |
 | **File Size Limit** | ~100 MB practical | ~1 GB+ practical |
-| **Services** | 10 services (refactored 2026) | Needs service integration |
+| **Services** | 10 services (refactored 2026) | Service architecture integrated |
 
 ### Performance Benchmarks
 
@@ -1705,7 +1705,7 @@ graph TB
 
 ```mermaid
 graph TB
-    subgraph "Test Strategy V2"
+    subgraph "Test Strategy (V2 architecture)"
         subgraph "Unit Tests Needed"
             UT1["ByteProvider Tests -Open/Save/Edit"]
             UT2["ByteReader Tests -Read/Cache"]
@@ -1715,7 +1715,7 @@ graph TB
         end
 
         subgraph "Integration Tests Needed"
-            IT1["HexEditorV2 + ViewModel -End-to-end Editing"]
+            IT1["HexEditor + ViewModel<br/>End-to-end Editing"]
             IT2["Save with Complex Edits -Insert+Modify+Delete"]
             IT3["Undo/Redo Chains -History Management"]
         end
@@ -1765,9 +1765,9 @@ graph TB
 | **PositionMapper** | ❌ None | ❌ None | 0% |
 | **FileProvider** | ❌ None | ❌ None | 0% |
 | **ViewModel** | ❌ None | ❌ None | 0% |
-| **HexEditorV2** | ❌ None | ❌ None | 0% |
+| **HexEditor** | ❌ None | ❌ None | 0% |
 
-**Note:** V2 currently has no automated tests. All testing is manual through sample applications.
+**Note:** The V2 architecture currently has no automated tests. All testing is manual through sample applications.
 
 ---
 
@@ -1870,4 +1870,4 @@ graph LR
 
 ---
 
-✨ **WPF HexEditor V2** - High-performance hex editing with modern architecture (2024-2026)
+✨ **WPF HexEditor** - High-performance hex editing with modern V2 architecture (2024-2026)

@@ -1,6 +1,6 @@
-# 🏗️ WPF HexEditor V2 - Architecture Overview
+# 🏗️ WPF HexEditor - Architecture Overview
 
-**Complete system architecture for HexEditor V2 with MVVM pattern and 100% API compatibility**
+**Complete system architecture for HexEditor with MVVM pattern and comprehensive API**
 
 ---
 
@@ -20,11 +20,11 @@
 
 ## 📖 Introduction
 
-HexEditor V2 is a **complete architectural rewrite** of the WPF Hex Editor control, designed with modern software engineering principles:
+HexEditor uses a **modern MVVM architecture** designed with clean software engineering principles:
 
-- ✅ **100% ByteProvider API Compatibility** (186/186 methods)
-- ✅ **100% Legacy V1 Compatibility** (187/187 methods)
-- ⚡ **3-5x Performance Improvement** with custom rendering
+- ✅ **Comprehensive ByteProvider API** (186+ methods)
+- ✅ **Backward Compatible API** - Zero breaking changes from legacy architecture
+- ⚡ **99% Performance Improvement** with custom rendering (vs legacy ItemsControl)
 - 🏗️ **Clean MVVM Architecture** with separation of concerns
 - 📦 **Modular Service Layer** (15 specialized services)
 - 🔄 **Comprehensive Undo/Redo** with granular control
@@ -78,7 +78,7 @@ Bidirectional conversion between virtual and physical positions:
 graph TB
     subgraph "🎨 Presentation Layer"
         HexEditor["HexEditor Control<br/>(Main API)"]
-        HexEditorV2["HexEditorV2<br/>(UserControl)"]
+        HexEditor["HexEditor<br/>(UserControl)"]
         HexViewport["HexViewport<br/>(Custom Rendering)"]
     end
 
@@ -111,9 +111,8 @@ graph TB
         FileSystem["File System<br/>(Disk/Memory/Stream)"]
     end
 
-    HexEditor --> HexEditorV2
-    HexEditorV2 --> HexViewport
-    HexEditorV2 --> ViewModel
+    HexEditor --> HexViewport
+    HexEditor --> ViewModel
 
     ViewModel --> SearchService
     ViewModel --> ClipboardService
@@ -156,7 +155,7 @@ graph TB
 ```mermaid
 graph LR
     subgraph "Layer 1: UI"
-        UI["HexEditor<br/>HexEditorV2<br/>HexViewport"]
+        UI["HexEditor<br/>HexViewport"]
     end
 
     subgraph "Layer 2: Presentation"
@@ -198,7 +197,7 @@ graph LR
 
 | Layer | Components | Responsibility | Thread Safety |
 |-------|-----------|----------------|---------------|
-| **1. UI** | HexEditor, HexEditorV2, HexViewport | User interaction, rendering | UI thread only |
+| **1. UI** | HexEditor, HexViewport | User interaction, rendering | UI thread only |
 | **2. Presentation** | HexEditorViewModel | Business logic, state management | UI thread only |
 | **3. Services** | 15 specialized services | Feature implementation | UI thread only |
 | **4. Data Access** | ByteProvider | API coordination, caching | UI thread only |
@@ -216,13 +215,29 @@ graph LR
 **Purpose**: Public API surface with partial classes organized by functionality.
 
 **Structure**:
-```
-HexEditor.cs (main)
-├── Core/              → File, Stream, Byte, Edit, Batch, Diagnostics, Async
-├── Features/          → Bookmarks, Highlights, FileComparison, TBL
-├── Search/            → Find, Replace, Count
-├── UI/                → Events, Clipboard, Zoom, UIHelpers
-└── Compatibility/     → Legacy V1 API wrappers
+
+```mermaid
+graph TD
+    Root["📦 HexEditor.cs<br/>(Main Control)"]
+
+    Core["⚙️ Core/<br/>File, Stream, Byte, Edit<br/>Batch, Diagnostics, Async"]
+    Features["✨ Features/<br/>Bookmarks, Highlights<br/>FileComparison, TBL"]
+    Search["🔍 Search/<br/>Find, Replace, Count"]
+    UI["🎨 UI/<br/>Events, Clipboard<br/>Zoom, UIHelpers"]
+    Compat["🔄 Compatibility/<br/>Legacy V1 API wrappers"]
+
+    Root --> Core
+    Root --> Features
+    Root --> Search
+    Root --> UI
+    Root --> Compat
+
+    style Root fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style Core fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style Features fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style Search fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style UI fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style Compat fill:#e0f2f1,stroke:#00796b,stroke-width:2px
 ```
 
 **Key Methods**:
@@ -685,5 +700,5 @@ finally
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0
-**Status**: ✅ Complete (100% ByteProvider API + 100% Legacy V1 API)
+**Version**: 2.0 (V2 architecture)
+**Status**: ✅ Complete (100% ByteProvider API + 100% Legacy V1 API compatibility)

@@ -1,171 +1,74 @@
 # WPF HexEditor Samples
 
-This directory contains various sample applications demonstrating different features and use cases of the WPF HexEditor control.
+This directory contains sample applications demonstrating the features and capabilities of the WPF HexEditor control (V2 Architecture).
 
-## 📁 Available Samples
+> **📚 Note:** Legacy V1 samples were removed from the solution in v2.6.0 (February 2026).
+> Historical V1 sample projects remain in the `Legacy/` folder for reference only - they are **not** included in the build.
 
-### 🖥️ WPFHexEditor.Sample.CSharp
-**Platform:** WPF (C#)
-**Description:** Main C# WPF sample application showcasing core features of the HexEditor control.
+---
+
+## 📁 Active V2 Samples
+
+### 🖥️ WpfHexEditor.Sample.Main
+**Platform:** WPF (C# | .NET 8.0 & .NET Framework 4.8)
+**Path:** `Sources/Samples/WpfHexEditor.Sample.Main/`
+**Description:** Primary V2 sample application showcasing the modern HexEditor architecture with all major features.
 
 **Features demonstrated:**
-- Opening and editing binary files
-- Copy/paste operations (Ctrl+C, Ctrl+V)
-- Undo/redo functionality (Ctrl+Z, Ctrl+Y)
-- Find and replace dialogs
-- Custom character table (TBL) support
-- Multiple view modes (hexadecimal, decimal, binary)
-- Bookmarks
-- Selection operations
+- 📂 **File Operations** - Open, save, save-as, recent files
+- ✂️ **Edit Operations** - Copy/paste (Ctrl+C, Ctrl+V), undo/redo (Ctrl+Z, Ctrl+Y)
+- 🔍 **Search & Replace** - Find first, find all, replace all with optimized caching
+- 📊 **BarChart Visualization** - Real-time byte distribution analysis (NEW in V2)
+- 📝 **TBL Character Tables** - Custom character encoding support
+- 🎨 **Custom Highlighting** - Background color blocks for marking regions
+- 🔖 **Bookmarks** - Create and navigate bookmarks
+- 📐 **Selection** - Visual selection with start/stop positions
+- 🌍 **Multilingual UI** - 19 languages with instant switching
+- ⚡ **Performance** - 99% faster rendering, 10-100x faster search vs V1
 
 **How to run:**
 ```bash
-cd WPFHexEditor.Sample.CSharp
+cd Sources/Samples/WpfHexEditor.Sample.Main
 dotnet run
 ```
 
+Or open `WpfHexEditorControl.sln` and set `WpfHexEditor.Sample.Main` as the startup project.
+
 ---
 
-### 📐 WpfHexEditor.Sample.VB
-**Platform:** WPF (VB.NET)
-**Description:** Visual Basic .NET version of the WPF sample, demonstrating the same features for VB developers.
+### 🚀 Rider/SimpleExample
+**Platform:** WPF (C# | .NET 8.0)
+**Path:** `Sources/Samples/Rider/SimpleExample/`
+**Description:** Minimal JetBrains Rider-focused example demonstrating basic HexEditor usage without Visual Studio toolbox.
+
+**Features demonstrated:**
+- 📦 Manual control instantiation (no designer/toolbox required)
+- 📂 File opening and viewing
+- 📝 Basic editing operations
+- 🎯 IntelliSense-driven development
+- ⚡ Rider Live Templates for fast coding
 
 **How to run:**
 ```bash
-cd WpfHexEditor.Sample.VB
+cd Sources/Samples/Rider/SimpleExample
 dotnet run
 ```
 
----
+**Perfect for:**
+- JetBrains Rider users
+- VS Code developers
+- Learning the programmatic API
+- Understanding code-behind patterns
 
-### 📊 WpfHexEditor.Sample.BarChart
-**Platform:** WPF (C#)
-**Description:** Advanced sample showing how to visualize binary data as a bar chart alongside the hex editor.
-
-**Features demonstrated:**
-- Real-time bar chart representation of byte values
-- Visual data analysis
-- Custom data visualization
-- Synchronized scrolling between chart and hex view
-
-**Use cases:**
-- Analyzing file entropy
-- Visualizing data patterns
-- Finding compressed/encrypted sections
-- Binary file analysis
-
----
-
-### 🪟 WpfHexEditor.Sample.Winform
-**Platform:** Windows Forms (C#)
-**Description:** Demonstrates how to integrate the WPF HexEditor control into a Windows Forms application using ElementHost.
-
-**Features demonstrated:**
-- WPF/WinForms interoperability
-- ElementHost usage
-- Cross-platform UI integration
-
-**How to run:**
-```bash
-cd WpfHexEditor.Sample.Winform
-dotnet run
-```
-
----
-
-### 🏢 WpfHexEditor.Sample.AvalonDock
-**Platform:** WPF (C#)
-**Description:** Shows integration with AvalonDock for professional docking and tabbed layouts.
-
-**Features demonstrated:**
-- Multiple hex editor instances in tabs
-- Docking panels
-- Professional IDE-like interface
-- Floating windows
-- Layout persistence
-
-**Use cases:**
-- Multi-file editing
-- Professional binary editing tools
-- IDE integration
-- Advanced file comparison
-
----
-
-### 📝 WpfHexEditor.Sample.InsertByteAnywhere
-**Platform:** WPF (C#)
-**Description:** Demonstrates advanced byte insertion and deletion capabilities.
-
-**Features demonstrated:**
-- Insert bytes at any position
-- Delete bytes from selection
-- Dynamic file size modification
-- Insert mode vs overwrite mode
-
-**Use cases:**
-- Binary file modification
-- Data injection
-- Binary patching
-- File format manipulation
-
----
-
-### 🔍 WpfHexEditor.Sample.BinaryFilesDifference
-**Platform:** WPF (C#)
-**Description:** Advanced sample for comparing two binary files and highlighting differences.
-
-**Features demonstrated:**
-- Side-by-side file comparison
-- Difference highlighting with custom background colors
-- Synchronized scrolling
-- CustomBackgroundBlock API usage
-
-**Use cases:**
-- Binary diff tools
-- Version comparison
-- ROM hacking (comparing different versions)
-- Patch analysis
-
----
-
-### 🔧 WpfHexEditor.Sample.ServiceUsage
-**Platform:** Console (.NET 8.0)
-**Description:** Educational console application demonstrating direct usage of all 10 services without the HexEditor UI control.
-
-**Features demonstrated:**
-- `SelectionService` - Selection validation and byte retrieval
-- `FindReplaceService` - Search with cache optimization
-- `ClipboardService` - Copy/paste operations
-- `HighlightService` - Managing highlighted byte positions
-- `ByteModificationService` - Insert, delete, and modify bytes
-- `UndoRedoService` - History management
-- `BookmarkService` - Bookmark creation and navigation
-- `CustomBackgroundService` - Background color blocks
-- `PositionService` - Position calculations and conversions
-- `TblService` - Character table operations
-
-**Use cases:**
-- Learning the service API architecture
-- Building headless/automated binary processing tools
-- Understanding how to use services independently
-- Creating custom tools without the UI control
-- Unit testing and service integration
-
-**How to run:**
-```bash
-cd WpfHexEditor.Sample.ServiceUsage
-dotnet run
-```
-
-**Output:** Console output showing the results of each service operation with sample data.
+See also: [docs/IDE/RIDER_GUIDE.md](../../docs/IDE/RIDER_GUIDE.md) for complete Rider integration guide.
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- .NET 8.0 SDK or .NET Framework 4.8
-- Visual Studio 2022 or later (optional)
+- .NET 8.0 SDK **or** .NET Framework 4.8
+- Visual Studio 2022, JetBrains Rider, or VS Code
 - Windows OS
 
 ### Building All Samples
@@ -175,126 +78,290 @@ cd Sources
 dotnet build WpfHexEditorControl.sln
 ```
 
+This builds:
+- WpfHexEditorCore (main library)
+- WpfHexEditor.Sample.Main (primary V2 sample)
+- WpfHexEditor.RiderSimpleExample (Rider sample)
+- WPFHexaEditor.Tests (unit tests)
+
 ### Running a Specific Sample
 Navigate to the sample directory and run:
 ```bash
-dotnet run --project <SampleProjectName>.csproj
+dotnet run
 ```
 
-Or open the solution in Visual Studio and set the desired sample as the startup project.
+Or use Visual Studio/Rider:
+1. Open `Sources/WpfHexEditorControl.sln`
+2. Right-click desired sample project → "Set as Startup Project"
+3. Press F5 to run
+
+---
 
 ## 📚 Learning Path
 
-**Recommended order for learning:**
+**Recommended order:**
 
-1. **Architecture First:** `WpfHexEditor.Sample.ServiceUsage` ⭐ **NEW!**
-   Understand the service layer architecture and how services work independently
+1. **Start with:** `WpfHexEditor.Sample.Main` ⭐ **RECOMMENDED**
+   - Explore all features in one comprehensive application
+   - See real-world usage patterns
+   - Learn the complete V2 API surface
 
-2. **Start with:** `WPFHexEditor.Sample.CSharp`
-   Learn the basics: opening files, editing, copy/paste, undo/redo
+2. **Then:** `Rider/SimpleExample`
+   - Understand minimal setup requirements
+   - Learn programmatic control creation
+   - See clean code-behind patterns
 
-3. **Next:** `WpfHexEditor.Sample.InsertByteAnywhere`
-   Learn advanced editing: insertion, deletion, dynamic modifications
+3. **Read:** [docs/api-reference/README.md](../../docs/api-reference/README.md)
+   - Detailed API documentation
+   - Service layer architecture
+   - Advanced scenarios
 
-4. **Then:** `WpfHexEditor.Sample.BarChart`
-   Learn data visualization and analysis techniques
-
-5. **Advanced:** `WpfHexEditor.Sample.BinaryFilesDifference`
-   Learn file comparison and custom rendering
-
-6. **Integration:** `WpfHexEditor.Sample.AvalonDock`
-   Learn professional UI integration patterns
-
-7. **Cross-platform:** `WpfHexEditor.Sample.Winform`
-   Learn WPF/WinForms interoperability
+---
 
 ## 🎨 Common Code Patterns
 
-### Opening a File
+### Basic Setup
 ```csharp
+// XAML
+<Window xmlns:hex="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor">
+  <hex:HexEditor x:Name="hexEditor" />
+</Window>
+
+// Code-behind
 hexEditor.FileName = @"C:\path\to\file.bin";
 ```
 
-### Programmatic Selection
+### Opening and Saving Files
 ```csharp
+// Open file
+hexEditor.FileName = @"C:\Data\binary.dat";
+
+// Save changes
+hexEditor.Save();
+
+// Save As
+hexEditor.SaveAs(@"C:\Data\modified.dat");
+```
+
+### Selection and Navigation
+```csharp
+// Programmatic selection
 hexEditor.SelectionStart = 0x100;
 hexEditor.SelectionStop = 0x1FF;
+
+// Get selected bytes
+byte[] selectedBytes = hexEditor.GetSelectionByteArray();
+
+// Navigate to position
+hexEditor.SetPosition(0x500, 1);
 ```
 
-### Finding Data
+### Search Operations
 ```csharp
-byte[] searchData = new byte[] { 0x48, 0x65, 0x6C, 0x6C, 0x6F }; // "Hello"
+// Find first occurrence
+byte[] searchData = new byte[] { 0x4D, 0x5A }; // "MZ" (PE header)
 long position = hexEditor.FindFirst(searchData);
+
+if (position != -1)
+{
+    hexEditor.SetPosition(position, 1);
+    hexEditor.SelectionStart = position;
+    hexEditor.SelectionStop = position + searchData.Length - 1;
+}
+
+// Find all occurrences
+var results = hexEditor.FindAll(searchData);
+Console.WriteLine($"Found {results.Count} occurrences");
+
+// Replace all
+hexEditor.ReplaceAll(searchData, newData);
 ```
 
-### Custom Character Table
+### Custom Character Tables (TBL)
 ```csharp
-hexEditor.LoadTblFile(@"C:\path\to\custom.tbl");
+// Load TBL file for game ROM modding
+hexEditor.LoadTblFile(@"C:\Tables\pokemon.tbl");
+
+// Unload TBL
+hexEditor.UnloadTblFile();
 ```
 
-### Handling Events
+### Event Handling
 ```csharp
+// Selection changed
 hexEditor.SelectionStartChanged += (s, e) =>
 {
-    Console.WriteLine($"Selection at: 0x{hexEditor.SelectionStart:X}");
+    Console.WriteLine($"Selection: 0x{hexEditor.SelectionStart:X}");
+};
+
+// Data modified
+hexEditor.BytesModified += (s, e) =>
+{
+    Console.WriteLine("File has unsaved changes");
+    UpdateSaveButton();
+};
+
+// File loaded
+hexEditor.FileLoaded += (s, e) =>
+{
+    Console.WriteLine($"Loaded: {hexEditor.FileName} ({hexEditor.Length} bytes)");
 };
 ```
 
-## 🛠️ Architecture Integration
+### Bookmarks
+```csharp
+// Add bookmark
+hexEditor.SetBookmark(0x1000);
 
-All samples now use the new **Service-based Architecture** (10 services total):
+// Navigate bookmarks
+hexEditor.GoToNextBookmark();
+hexEditor.GoToPreviousBookmark();
 
-**Stateless Services (6):**
+// Clear all bookmarks
+hexEditor.ClearAllBookmarks();
+```
+
+### BarChart Visualization (V2 Feature)
+```csharp
+// Enable BarChart
+hexEditor.AllowBarChart = true;
+hexEditor.BarChartVisible = true;
+
+// BarChart automatically shows byte distribution in real-time
+```
+
+---
+
+## 🛠️ Architecture Overview
+
+All V2 samples use the modern **Service-based Architecture** with 16 specialized services:
+
+**Stateless Services (10):**
 - `SelectionService` - Selection validation and manipulation
-- `FindReplaceService` - Search with optimized caching
+- `FindReplaceService` - Search with LRU caching and SIMD optimization
 - `ClipboardService` - Copy/paste operations
 - `ByteModificationService` - Insert/delete/modify bytes
-- `UndoRedoService` - Undo/redo history management
-- `PositionService` - Position calculations and conversions
+- `UndoRedoService` - Undo/redo with batch support
+- `PositionService` - Virtual/physical position mapping
+- `ComparisonService` - Binary file comparison
+- `VirtualizationService` - Viewport rendering optimization
+- `ValidationService` - Input and operation validation
+- `BarChartService` - Byte distribution analysis
 
-**Stateful Services (4):**
+**Stateful Services (6):**
 - `HighlightService` - Search result highlighting
 - `BookmarkService` - Bookmark management
 - `CustomBackgroundService` - Background color blocks
 - `TblService` - Character table operations
+- `ScrollMarkerService` - Scroll position markers
+- `ThemeService` - UI theming and customization
 
 **Learn more:**
-- [Services/README.md](../WPFHexaEditor/Services/README.md) - Complete service documentation
-- [WpfHexEditor.Sample.ServiceUsage](WpfHexEditor.Sample.ServiceUsage/) - Practical service usage examples
+- [Sources/WPFHexaEditor/Services/README.md](../WPFHexaEditor/Services/README.md) - Complete service documentation
+- [docs/architecture/Overview.md](../../docs/architecture/Overview.md) - Architecture deep dive
+
+---
+
+## 📂 Legacy Samples (Historical Reference)
+
+The `Legacy/` folder contains 6 V1 sample projects that were removed from the solution in v2.6.0 (February 2026):
+- `WPFHexEditor.Sample.CSharp` - Main C# WPF sample (V1)
+- `WpfHexEditor.Sample.BarChart` - BarChart visualization (V1)
+- `WpfHexEditor.Sample.BinaryFilesDifference` - File comparison (V1)
+- `WpfHexEditor.Sample.Winform` - Windows Forms integration (V1)
+- `WpfHexEditor.Sample.Performance` - Performance benchmarking (V1)
+- `WpfHexEditor.Sample.ServiceUsage` - Service layer examples (V1)
+
+**Status:** ❌ Not included in build (removed from .sln)
+**Purpose:** Historical reference only
+**Note:** These samples use deprecated `HexEditorLegacy` API which was removed in v2.6.0
+
+All functionality from V1 samples is now available in `WpfHexEditor.Sample.Main` (V2) with significantly better performance.
+
+---
 
 ## 📖 Additional Resources
 
-- [Main README](../../README.md) - Project overview and features
-- [Services Documentation](../WPFHexaEditor/Services/README.md) - Architecture details
-- [Core Documentation](../WPFHexaEditor/Core/README.md) - Core components
-- [NuGet Package](https://www.nuget.org/packages/WPFHexaEditor/) - Get the library
+- [Main README](../../README.md) - Project overview and quick start
+- [FEATURES.md](../../FEATURES.md) - Complete feature list (163 features)
+- [GETTING_STARTED.md](../../GETTING_STARTED.md) - Beginner tutorial
+- [API Reference](../../docs/api-reference/README.md) - Method documentation
+- [Services Documentation](../WPFHexaEditor/Services/README.md) - Service layer guide
+- [RIDER_GUIDE.md](../../docs/IDE/RIDER_GUIDE.md) - JetBrains Rider integration
+- [NuGet Package](https://www.nuget.org/packages/WPFHexaEditor/) - Download library
 
-## 💡 Tips
+---
 
-- **Performance:** For large files (>100MB), consider using `AllowVisualByteAdress` to view only a portion
-- **Custom TBL:** Create your own character tables for game modding or proprietary formats
-- **Events:** Subscribe to events like `BytesModified`, `SelectionChanged` for reactive UI
-- **Theming:** Customize colors via properties like `ForegroundSecondColor`, `SelectionFirstColor`
+## 💡 Tips & Best Practices
+
+### Performance Optimization
+- For files >100MB, use `AllowVisualByteAdress = true` to view only loaded portions
+- Enable `AllowBarChart = false` for maximum rendering performance
+- Use batch mode for multiple edits: `BeginBatch()` → operations → `EndBatch()`
+
+### Custom TBL Tables
+- Create `.tbl` files for game modding (Pokémon, Final Fantasy, etc.)
+- Format: `XX=Character` (e.g., `01=A`)
+- Multi-byte support: `XXXX=Character` (e.g., `0100=あ`)
+
+### Event-Driven UI
+- Subscribe to `BytesModified` to enable/disable save button
+- Use `SelectionChanged` to update status bar
+- Handle `FileLoaded` to refresh UI after file opens
+
+### Theming
+Customize colors via properties:
+```csharp
+hexEditor.ForegroundSecondColor = Colors.DarkGray;
+hexEditor.SelectionFirstColor = Colors.LightBlue;
+hexEditor.ByteModifiedColor = Colors.Orange;
+hexEditor.ByteDeletedColor = Colors.Red;
+```
+
+### Multi-Language Support
+```csharp
+// Change UI language at runtime (no restart needed)
+WpfHexaEditor.Core.ResourceHelper.SetLanguage("fr-FR"); // French
+WpfHexaEditor.Core.ResourceHelper.SetLanguage("ja-JP"); // Japanese
+WpfHexaEditor.Core.ResourceHelper.SetLanguage("en-US"); // English
+```
+
+---
 
 ## 🐛 Troubleshooting
 
 **Issue:** Sample won't build
-**Solution:** Ensure you're targeting .NET 8.0-windows or .NET Framework 4.8
+**Solution:** Ensure .NET 8.0 SDK is installed: `dotnet --version`
+
+**Issue:** "HexEditorLegacy not found" error
+**Solution:** Legacy V1 code was removed in v2.6.0. Use `HexEditor` (V2) instead.
 
 **Issue:** File won't open
-**Solution:** Check file permissions and that the file exists
+**Solution:** Check file permissions and that the file exists. Try running as administrator.
 
-**Issue:** High memory usage
-**Solution:** Use `AllowVisualByteAdress` for large files
+**Issue:** High memory usage with large files
+**Solution:** Enable `AllowVisualByteAdress = true` to view only loaded portions
+
+**Issue:** Slow rendering
+**Solution:** Disable BarChart (`AllowBarChart = false`) and reduce `BytePerLine` value
+
+---
 
 ## 📝 Contributing
 
 Want to add a new sample? Please:
-1. Follow the naming convention: `WpfHexEditor.Sample.<FeatureName>`
-2. Include a README in your sample directory
-3. Add your sample to this index
-4. Submit a pull request
+1. Follow naming convention: `WpfHexEditor.Sample.<FeatureName>`
+2. Target .NET 8.0-windows (multi-targeting with net48 optional)
+3. Include XML documentation and code comments
+4. Create a README.md in your sample directory explaining the feature
+5. Add entry to this index
+6. Submit a pull request
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
-✨ Created by Derek Tremblay (derektremblay666@gmail.com)
+✨ **Created by Derek Tremblay** (derektremblay666@gmail.com)
+🤖 **Contributions by Claude Sonnet 4.5**
+
+**License:** Apache 2.0

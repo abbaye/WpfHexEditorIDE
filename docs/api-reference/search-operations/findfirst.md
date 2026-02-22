@@ -16,7 +16,7 @@ The `FindFirst()` method searches for the first occurrence of a byte pattern sta
 - 🔍 **Case-sensitive** byte matching
 - ⚡ **O(n/m) average complexity** (n = file size, m = pattern length)
 
-**Performance**: V2 search is **10-100x faster** than V1 thanks to algorithmic improvements and hardware acceleration.
+**Performance**: Modern search is **10-100x faster** thanks to algorithmic improvements and hardware acceleration.
 
 ---
 
@@ -33,7 +33,7 @@ public long FindFirst(byte[] pattern, long startPosition)
 public long FindFirst(byte[] pattern, long startPosition, SearchOptions options)
 ```
 
-**Since:** V1.0 (V2 added Boyer-Moore-Horspool + SIMD + caching)
+**Since:** V1.0 (Enhanced with Boyer-Moore-Horspool + SIMD + caching)
 
 ---
 
@@ -845,9 +845,9 @@ if (dialoguePos >= 0)
 
 ## ⚡ Performance Benchmarks
 
-### V2 vs V1 Performance
+### Performance Comparison
 
-| File Size | Pattern Length | V1 Time | V2 Time | Speedup |
+| File Size | Pattern Length | Previous | Current | Speedup |
 |-----------|----------------|---------|---------|---------|
 | 1 MB | 4 bytes | 150ms | 15ms | **10x** |
 | 10 MB | 4 bytes | 1,500ms | 50ms | **30x** |
@@ -916,4 +916,4 @@ long firstMatch = Math.Min(
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0 (Boyer-Moore-Horspool + SIMD + LRU Cache)
+**Version**: 2.0 (Boyer-Moore-Horspool + SIMD + LRU Cache)

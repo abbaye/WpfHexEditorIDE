@@ -1,12 +1,12 @@
 # Best Practices
 
-Performance tips, optimization strategies, and recommended patterns for using WPF HexEditor V2.
+Performance tips, optimization strategies, and recommended patterns for using WPF HexEditor.
 
 ---
 
 ## 📋 Overview
 
-This guide covers **proven strategies** for getting the best performance, reliability, and user experience from WPF HexEditor V2.
+This guide covers **proven strategies** for getting the best performance, reliability, and user experience from WPF HexEditor.
 
 **Topics**:
 - ⚡ Performance optimization
@@ -247,7 +247,7 @@ long pos1 = hexEditor.FindFirst(pattern);
 long pos2 = hexEditor.FindFirst(pattern);
 ```
 
-**Rule**: V2 **automatically caches** recent searches. Reuse patterns when possible.
+**Rule**: Search results are **automatically cached**. Reuse patterns when possible.
 
 ---
 
@@ -272,15 +272,15 @@ long pos = hexEditor.FindFirst(pattern, 0, searchEnd);
 
 ### Use Parallel Search for Large Files
 
-**✅ Automatic in V2**
+**✅ Automatic Optimization**
 ```csharp
-// For files > 10 MB, V2 automatically uses parallel search
+// For files > 10 MB, parallel search is automatically used
 // (all CPU cores utilized)
 List<long> positions = hexEditor.FindAll(pattern);
 // 8-core CPU: ~7x faster than single-threaded!
 ```
 
-**Rule**: V2 **automatically parallelizes** for large files. No code changes needed.
+**Rule**: Search **automatically parallelizes** for large files. No code changes needed.
 
 ---
 
@@ -931,7 +931,7 @@ private void CancelButton_Click(object sender, RoutedEventArgs e)
 
 ### Learn More
 
-- **[Architecture Overview](Architecture-Overview)** - Understand how V2 works
+- **[Architecture Overview](Architecture-Overview)** - Understand the internal architecture
 - **[API Reference](API-Reference)** - Complete API documentation
 - **[Sample Applications](Sample-Applications)** - Real-world examples
 - **[Troubleshooting](Troubleshooting)** - Common issues and solutions

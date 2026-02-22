@@ -7,7 +7,90 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 🚨 BREAKING CHANGES - Legacy V1 Code Removal
+
+**Complete removal of Legacy V1 components** (2026-02-22)
+
+After 12 months of deprecation period (v2.6.0 - February 2026), all Legacy V1 code has been completely removed from the codebase. The project is now **V2-only** with a clean, modern architecture.
+
+**Removed components (17,093 lines of code):**
+- ❌ `HexEditorLegacy.xaml/.cs` (6,521 LOC) - Legacy V1 control (10-100x slower than V2)
+- ❌ `ByteProviderLegacy.cs` (1,890 LOC) - Legacy V1 byte provider
+- ❌ 6 Legacy sample projects (5,079 LOC):
+  - WPFHexEditor.Sample.CSharp
+  - WpfHexEditor.Sample.BarChart
+  - WpfHexEditor.Sample.BinaryFilesDifference
+  - WpfHexEditor.Sample.Winform
+  - WpfHexEditor.Sample.Performance
+  - WpfHexEditor.Sample.ServiceUsage
+- ❌ V1 UI rendering classes (2,051 LOC):
+  - `BaseByte.cs`, `HexByte.cs`, `StringByte.cs`, `FastTextLine.cs`
+- ❌ V1 search dialogs:
+  - `Dialog/FindWindow.xaml/.cs`
+  - `Dialog/FindReplaceWindow.xaml/.cs`
+- ❌ V1 extension methods (1,552 LOC):
+  - `ByteProviderAsyncExtensions.cs`
+  - `ByteProviderParallelExtensions.cs`
+  - `ByteProviderSpanExtensions.cs`
+  - `ByteProviderV2Test.cs`
+
+**Services layer migrated to V2 API:**
+- ✅ `ByteModificationService` - Migrated V1 API calls to V2 (ReadOnlyMode → IsReadOnly, AddByteAdded parameter order fix)
+- ✅ `ClipboardService` - Reimplemented using V2 GetBytes() API
+- ✅ `FindReplaceService` - Reimplemented search with chunked GetBytes (64KB chunks)
+- ✅ `SelectionService` - Fixed V2 tuple API usage `(byte value, bool success) = GetByte(pos)`
+
+**Preserved for backward compatibility:**
+- ✅ `CompatibilityLayer` (725 LOC) - **KEPT** for API backward compatibility
+  - Provides seamless V1→V2 API migration path
+  - Zero-code migration for existing applications
+  - No performance penalty (simple property mappings)
+
+**Impact:**
+- 🎉 Codebase reduced by **30%** (17,093 lines removed)
+- 🎉 Solution file cleaned (removed 6 Legacy sample references)
+- 🎉 Build time improved (fewer files to compile)
+- 🎉 Maintenance burden significantly reduced
+- 🎉 Clear V2-only architecture going forward
+
+**Migration:**
+All functionality from V1 is available in V2. Simply replace:
+- `HexEditorLegacy` → `HexEditor` (V2)
+- `ByteProviderLegacy` → `V2.ByteProvider.ByteProvider`
+
+See [docs/migration/MIGRATION_PLAN_V2.md](docs/migration/MIGRATION_PLAN_V2.md) for detailed migration guide.
+
+### 🐛 Fixed
+- **ByteSize 16/32 multi-byte mode improvements** (2026-02-21/22)
+  - Fixed click positioning in Bit16/32 modes for both hex and ASCII panels
+  - Fixed keyboard navigation left/right in multi-byte modes
+  - Unified hit testing using single `HitTestByteWithArea` method across all interactions
+  - Eliminated hardcoded 24px width assumption (now uses dynamic cell width based on ByteSize)
+  - Fixed ASCII mouseover alignment in multi-byte modes
+  - Perfect pixel-perfect alignment between rendering and hit testing
+
+- **ASCII panel multi-byte rendering fixes**
+  - Fixed `GetDisplayCharacter` to return all bytes in multi-byte groups (e.g., "MZ" instead of "M")
+  - Fixed `GetCharacterDisplayWidth` to use FormattedText measurement for pixel-perfect alignment
+  - Fixed `DrawAsciiByte` cell width auto-sizing to work in multi-byte mode (not just TBL)
+  - Fixed separator position calculation to use actual hexX from rendering loop
+  - Simplified ASCII rendering loop (removed bytesConsumed skipping logic)
+
+- **ByteOrder and TBL compatibility**
+  - Fixed ASCII display to respect ByteOrder setting (HiLo/LoHi) matching hex panel behavior
+  - Fixed TBL hex key building in multi-byte mode to use Values[] array instead of single Value
+  - ByteSpacers now correctly disabled in ASCII panel when TBL is loaded (variable byte consumption)
+  - Fixed GetDisplayCharacter to handle multi-byte mode before TBL logic
+
+- **Performance improvements**
+  - Removed heavy debug logging that caused slowdowns
+
 ### ✨ Added
+- **Category localization for property grid** (2026-02-22)
+  - Added `CategoryKeyboardMouse` resource key to all 19 language files
+  - Translations: EN, FR, DE, ES, IT, JA, KO, NL, PL, PT, RU, SV, TR, ZH, AR, HI
+  - MouseWheelSpeed property moved to "Keyboard & mouse" category
+
 - **Restore modified bytes to original values** (#127)
   - New method: `RestoreOriginalByte(long position)` to restore a single modified byte
   - New method: `RestoreOriginalBytes(long[] positions)` to restore multiple bytes (array)
@@ -16,7 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - New method: `RestoreAllModifications()` to clear all modifications at once
   - Three naming variants available: `RestoreOriginalByte`, `RemoveModification`, `ResetByte` (all are aliases)
   - Automatic removal of red/orange modification highlight when byte is restored
-  - Full support in both V1 (ByteProviderLegacy) and V2 (ByteProvider)
+  - Full support in V2 (ByteProvider)
   - Service layer integration (ByteModificationService)
   - Public API exposed through HexEditor control
   - Batch mode support for optimal performance when restoring multiple bytes
@@ -24,6 +107,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive XML documentation with examples
 
 ### 📝 Changed
+- **Multi-byte mode architecture improvements** (2026-02-21/22)
+  - Unified hit testing: All mouse interactions now use single `HitTestByteWithArea` method
+  - Consistency: Click, mouseover, drag, and auto-scroll all use identical hit testing logic
+  - `HitTestByteWithArea` changed from private to internal for cross-class usage
+  - Simplified rendering loops: Removed complex bytesConsumed skipping logic
+  - ASCII rendering and hit testing now use same simple loop structure as Hex panel
+
+- **Property categorization**
+  - MouseWheelSpeed moved from "Visual" to "Keyboard & mouse" category
+  - Enhanced XML documentation for MouseWheelSpeed property and DependencyProperty
+
+### 🔧 Technical Details
+**Files Modified (Multi-byte mode fixes):**
+- `HexViewport.cs`: Core rendering and hit testing engine
+  - `GetDisplayCharacter`: Multi-byte support with ByteOrder handling
+  - `GetCharacterDisplayWidth`: FormattedText-based measurement
+  - `GetCharacterByteCount`: Returns 1 in multi-byte mode (no skipping)
+  - `DrawAsciiByte`: Auto-sizing cell width for all modes
+  - `HitTestByteWithArea`: Changed to internal, used by all interactions
+  - Rendering loops: Simplified from complex skip logic to simple iteration
+
+- `HexEditor.Events.cs`: Event handling refactored
+  - `Content_MouseDown`: Uses HitTestByteWithArea
+  - `Content_MouseMove`: Uses HitTestByteWithArea
+  - `GetVirtualPositionAtMouse`: Updated for dynamic cell width
+
+- `HexEditor.UIHelpers.cs`: Auto-scroll behavior
+  - `AutoScrollTimer_Tick`: Uses HitTestByteWithArea
+
+- `HexEditor.xaml.cs`: Property metadata
+  - MouseWheelSpeed category and documentation
+
+- `Properties/Resources.*.resx` (19 files): Category localization
+  - Added CategoryKeyboardMouse in all languages
+
+**Commits:**
+- `041518a`: fix: ByteSize 16/32 click positioning and ASCII panel alignment
+- `d5ccf83`: fix: Perfect pixel alignment in ASCII panel for multi-byte modes
+- `47d9b28`: fix: ByteOrder and TBL compatibility in ASCII panel
+
 - Updated `ByteModificationService` with restore operations section
 - Enhanced documentation across 30+ files (READMEs, Wiki, API Reference)
 

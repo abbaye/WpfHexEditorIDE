@@ -781,7 +781,7 @@ await teaching.DemonstrateEditSequence();
 ### 4. Edit History Branching Simulation
 
 ```csharp
-// Simulate branching edit history (V2 doesn't support true branching)
+// Simulate branching edit history (doesn't support true branching)
 public class BranchingSimulator
 {
     private HexEditor _hexEditor;
@@ -914,4 +914,4 @@ hexEditor.Redo();
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0 (Command Pattern with Unlimited Redo)
+**Version**: 2.0 (Command Pattern with Unlimited Redo)

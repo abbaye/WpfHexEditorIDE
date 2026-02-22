@@ -60,6 +60,9 @@ namespace WpfHexaEditor
             _viewModel.ByteSize = ByteSize;
             _viewModel.ByteOrder = ByteOrder;
 
+            // Synchronize ByteShiftLeft (V1 Legacy feature)
+            _viewModel.ByteShiftLeft = ByteShiftLeft;
+
             // ByteProvider V2 always supports insertion anywhere - no need to set flag
             if (EditMode == EditMode.Insert)
             {

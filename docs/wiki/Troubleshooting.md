@@ -1,12 +1,12 @@
 # Troubleshooting
 
-Common problems and their solutions for WPF HexEditor V2.
+Common problems and their solutions for WPF HexEditor.
 
 ---
 
 ## 📋 Overview
 
-This guide helps you diagnose and fix common issues with WPF HexEditor V2.
+This guide helps you diagnose and fix common issues with WPF HexEditor.
 
 **Quick Links**:
 - [Installation Issues](#-installation-issues)
@@ -323,13 +323,11 @@ for (long pos = 0; pos < hexEditor.Length; pos += chunkSize)
 
 **Symptoms**: FindFirst/FindAll takes minutes on large files.
 
-**Solution 1**: Verify V2 is being used
+**Solution 1**: Verify you're using the latest version
 ```csharp
 // Check version
 Console.WriteLine($"HexEditor version: {hexEditor.Version}");
-// Should be "2.x.x"
-
-// V2 search is 10-100x faster than V1
+// Should be "2.6.0" or later (legacy code removed in v2.6.0)
 ```
 
 **Solution 2**: Limit search range
@@ -744,13 +742,15 @@ public MainWindow()
 ### Check Version
 
 ```csharp
-// Verify you're using V2
+// Check your version
 Console.WriteLine($"WPF HexEditor version: {hexEditor.Version}");
-// Should output: "2.x.x"
+// Should output: "2.6.0" or later
 
-if (hexEditor.Version.Major < 2)
+// v2.6.0 (Feb 2026): Legacy code completely removed
+// v2.0.0 (Feb 2024): Modern architecture introduced
+if (hexEditor.Version < new Version(2, 6, 0))
 {
-    Console.WriteLine("⚠️ Warning: Using old V1! Upgrade to V2 for 99% faster performance");
+    Console.WriteLine("⚠️ Consider upgrading to v2.6.0+ for latest improvements");
 }
 ```
 

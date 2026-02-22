@@ -394,7 +394,7 @@ hexEditor.ClearUndoHistory();
 Console.WriteLine("Undo history cleared");
 ```
 
-### Granular Clear Operations (V2)
+### Granular Clear Operations
 
 ```csharp
 // Clear only modifications (keep insertions/deletions)

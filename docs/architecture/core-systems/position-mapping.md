@@ -147,17 +147,37 @@ Result: Creates segment [5, 7] with InsertedCount=3
 Operation 2: Delete 2 bytes at position 8 (physical)
 Result: Creates segment [8, 9] with DeletedCount=2
 
-Final segments:
-┌─────────────────────────────────────────┐
-│ Segment 1: Virtual [0, 4] → Physical [0, 4]   │
-│   InsertedCount: 0, DeletedCount: 0            │
-├─────────────────────────────────────────┤
-│ Segment 2: Virtual [5, 7] → Physical [5, 5]   │
-│   InsertedCount: 3, DeletedCount: 0            │
-├─────────────────────────────────────────┤
-│ Segment 3: Virtual [8, 10] → Physical [6, 7]  │
-│   InsertedCount: 0, DeletedCount: 2            │
-└─────────────────────────────────────────┘
+**Final segments:**
+
+```mermaid
+graph TD
+    subgraph S1["📦 Segment 1"]
+        S1V["Virtual: [0, 4]"]
+        S1P["Physical: [0, 4]"]
+        S1I["Inserted: 0"]
+        S1D["Deleted: 0"]
+    end
+
+    subgraph S2["📦 Segment 2"]
+        S2V["Virtual: [5, 7]"]
+        S2P["Physical: [5, 5]"]
+        S2I["✨ Inserted: 3"]
+        S2D["Deleted: 0"]
+    end
+
+    subgraph S3["📦 Segment 3"]
+        S3V["Virtual: [8, 10]"]
+        S3P["Physical: [6, 7]"]
+        S3I["Inserted: 0"]
+        S3D["🗑️ Deleted: 2"]
+    end
+
+    S1 --> S2 --> S3
+
+    style S1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style S2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style S3 fill:#ffebee,stroke:#c62828,stroke-width:2px
+```
 ```
 
 ### Segment List Management
@@ -384,27 +404,43 @@ Edit sequence:
 3. Delete 4 bytes at physical position 15
 4. Modify byte at position 8
 
-Resulting segments:
+**Resulting segments:**
 
-┌────────────────────────────────────┐
-│ Segment 1: [0, 4] → [0, 4]       │
-│   No changes                       │
-├────────────────────────────────────┤
-│ Segment 2: [5, 7] → inserted      │
-│   InsertedCount: 3                 │
-├────────────────────────────────────┤
-│ Segment 3: [8, 9] → [5, 6]       │
-│   Contains modification at pos 8  │
-├────────────────────────────────────┤
-│ Segment 4: [10, 11] → inserted    │
-│   InsertedCount: 2                 │
-├────────────────────────────────────┤
-│ Segment 5: [12, 18] → [7, 14]    │
-│   DeletedCount: 4 (at phys 15-18) │
-└────────────────────────────────────┘
+```mermaid
+graph TD
+    subgraph S1["📦 Segment 1: [0,4] → [0,4]"]
+        S1Info["No changes"]
+    end
 
-Virtual length: 19 bytes (20 - 4 deleted + 5 inserted)
-Physical length: 20 bytes (unchanged)
+    subgraph S2["✨ Segment 2: [5,7] → inserted"]
+        S2Info["InsertedCount: 3"]
+    end
+
+    subgraph S3["📝 Segment 3: [8,9] → [5,6]"]
+        S3Info["Modified at pos 8"]
+    end
+
+    subgraph S4["✨ Segment 4: [10,11] → inserted"]
+        S4Info["InsertedCount: 2"]
+    end
+
+    subgraph S5["🗑️ Segment 5: [12,18] → [7,14]"]
+        S5Info["DeletedCount: 4<br/>(at phys 15-18)"]
+    end
+
+    S1 --> S2 --> S3 --> S4 --> S5
+
+    Summary["💾 Virtual length: 19 bytes<br/>(20 - 4 deleted + 5 inserted)<br/>📄 Physical length: 20 bytes"]
+
+    S5 --> Summary
+
+    style S1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style S2 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style S3 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style S4 fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style S5 fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style Summary fill:#e8f5e9,stroke:#388e3c,stroke-width:3px
+```
 ```
 
 ---

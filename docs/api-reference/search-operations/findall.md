@@ -30,7 +30,7 @@ public List<long> FindAll(byte[] pattern)
 public List<long> FindAll(byte[] pattern, long startPosition, long endPosition)
 ```
 
-**Since:** V1.0 (V2 added parallelization + SIMD)
+**Since:** V1.0 (Enhanced with parallelization + SIMD)
 
 ---
 
@@ -805,9 +805,9 @@ if (watermarks.Values.Sum() > 0)
 
 ## ⚡ Performance Benchmarks
 
-### V2 Performance (with Parallelization)
+### Performance (with Parallelization)
 
-| File Size | Pattern | Matches | Time (V1) | Time (V2) | Speedup |
+| File Size | Pattern | Matches | Previous | Current | Speedup |
 |-----------|---------|---------|-----------|-----------|---------|
 | 10 MB | 4 bytes | 100 | 1,500ms | 50ms | **30x** |
 | 100 MB | 4 bytes | 1,000 | 15,000ms | 200ms | **75x** |
@@ -819,8 +819,8 @@ if (watermarks.Values.Sum() > 0)
 File size: 100 MB
 Matches: 10,000
 
-V1: ~800 MB (stores full context)
-V2: ~80 KB (stores positions only) - 10,000x less!
+Previous: ~800 MB (stores full context)
+Current: ~80 KB (stores positions only) - 10,000x less!
 ```
 
 ---
@@ -845,7 +845,7 @@ int count = hexEditor.CountOccurrences(new byte[] { 0x00 });
 
 ### Parallel Processing
 
-- V2 automatically uses **parallel processing** for files > 10 MB
+- Automatically uses **parallel processing** for files > 10 MB
 - Utilizes all available CPU cores
 - Significantly faster on multi-core systems
 
@@ -871,4 +871,4 @@ List<long> positions = hexEditor.FindAll(pattern);
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0 (Boyer-Moore-Horspool + SIMD + Parallel + LRU Cache)
+**Version**: 2.0 (Boyer-Moore-Horspool + SIMD + Parallel + LRU Cache)

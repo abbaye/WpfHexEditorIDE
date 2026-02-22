@@ -30,7 +30,7 @@ public int ReplaceAll(byte[] findPattern, byte[] replacePattern)
 public int ReplaceAll(byte[] findPattern, byte[] replacePattern, int maxReplacements)
 ```
 
-**Since:** V1.0 (V2 optimized with batch operations)
+**Since:** V1.0 (Optimized with batch operations)
 
 ---
 
@@ -823,4 +823,4 @@ byte[] replace = { 0xAA, 0xAA, 0xAA };
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0 (Optimized batch operations)
+**Version**: 2.0 (Optimized batch operations)

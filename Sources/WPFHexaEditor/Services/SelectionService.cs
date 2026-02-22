@@ -79,7 +79,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Validate and clamp selection to provider bounds
         /// </summary>
-        public (long start, long stop) ValidateSelection(ByteProviderLegacy provider, long selectionStart, long selectionStop)
+        public (long start, long stop) ValidateSelection(ByteProvider provider, long selectionStart, long selectionStop)
         {
             if (provider == null || !provider.IsOpen)
                 return (-1, -1);
@@ -87,11 +87,11 @@ namespace WpfHexaEditor.Services
             var start = Math.Max(-1, selectionStart);
             var stop = Math.Max(-1, selectionStop);
 
-            if (start >= 0 && start >= provider.Length)
-                start = provider.Length - 1;
+            if (start >= 0 && start >= provider.VirtualLength)
+                start = provider.VirtualLength - 1;
 
-            if (stop >= 0 && stop >= provider.Length)
-                stop = provider.Length - 1;
+            if (stop >= 0 && stop >= provider.VirtualLength)
+                stop = provider.VirtualLength - 1;
 
             return (start, stop);
         }
@@ -99,7 +99,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Get byte array from selection
         /// </summary>
-        public byte[] GetSelectionBytes(ByteProviderLegacy provider, long selectionStart, long selectionStop, bool copyChange = true)
+        public byte[] GetSelectionBytes(ByteProvider provider, long selectionStart, long selectionStop, bool copyChange = true)
         {
             if (provider == null || !provider.IsOpen)
                 return null;
@@ -107,26 +107,27 @@ namespace WpfHexaEditor.Services
             if (!IsValidSelection(selectionStart, selectionStop))
                 return null;
 
-            using var ms = new MemoryStream();
-            provider.CopyToStream(ms, selectionStart, selectionStop, copyChange);
-            return ms.ToArray();
+            // V2: Use GetBytes directly instead of CopyToStream
+            var length = (int)(selectionStop - selectionStart + 1);
+            return provider.GetBytes(selectionStart, length);
         }
 
         /// <summary>
         /// Get all bytes from provider
         /// </summary>
-        public byte[] GetAllBytes(ByteProviderLegacy provider, bool copyChange = true)
+        public byte[] GetAllBytes(ByteProvider provider, bool copyChange = true)
         {
             if (provider == null || !provider.IsOpen)
                 return null;
 
-            return provider.GetAllBytes(copyChange);
+            // V2: Use GetBytes(0, VirtualLength) instead of GetAllBytes
+            return provider.GetBytes(0, (int)provider.VirtualLength);
         }
 
         /// <summary>
         /// Calculate selection start position for "Select All"
         /// </summary>
-        public long GetSelectAllStart(ByteProviderLegacy provider)
+        public long GetSelectAllStart(ByteProvider provider)
         {
             if (provider == null || !provider.IsOpen)
                 return -1;
@@ -137,23 +138,23 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Calculate selection stop position for "Select All"
         /// </summary>
-        public long GetSelectAllStop(ByteProviderLegacy provider)
+        public long GetSelectAllStop(ByteProvider provider)
         {
             if (provider == null || !provider.IsOpen)
                 return -1;
 
-            return provider.Length;
+            return provider.VirtualLength;
         }
 
         /// <summary>
         /// Check if entire file is selected
         /// </summary>
-        public bool IsAllSelected(ByteProviderLegacy provider, long selectionStart, long selectionStop)
+        public bool IsAllSelected(ByteProvider provider, long selectionStart, long selectionStop)
         {
             if (provider == null || !provider.IsOpen)
                 return false;
 
-            return selectionStart == 0 && selectionStop >= provider.Length - 1;
+            return selectionStart == 0 && selectionStop >= provider.VirtualLength - 1;
         }
 
         /// <summary>
@@ -167,7 +168,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Extend selection by offset
         /// </summary>
-        public long ExtendSelection(ByteProviderLegacy provider, long currentPosition, long offset, long visualStart = -1, long visualStop = -1)
+        public long ExtendSelection(ByteProvider provider, long currentPosition, long offset, long visualStart = -1, long visualStop = -1)
         {
             if (provider == null || !provider.IsOpen)
                 return currentPosition;
@@ -177,8 +178,8 @@ namespace WpfHexaEditor.Services
             // Clamp to provider bounds
             if (newPosition < 0)
                 newPosition = 0;
-            else if (newPosition >= provider.Length)
-                newPosition = provider.Length - 1;
+            else if (newPosition >= provider.VirtualLength)
+                newPosition = provider.VirtualLength - 1;
 
             // Respect visual byte address if set
             if (visualStart >= 0 && newPosition < visualStart)
@@ -193,16 +194,17 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Get selection byte at specific position
         /// </summary>
-        public byte? GetSelectionByte(ByteProviderLegacy provider, long position)
+        public byte? GetSelectionByte(ByteProvider provider, long position)
         {
             if (provider == null || !provider.IsOpen)
                 return null;
 
-            if (position < 0 || position >= provider.Length)
+            if (position < 0 || position >= provider.VirtualLength)
                 return null;
 
-            var result = provider.GetByte(position);
-            return result.succes ? result.singleByte : (byte?)null;
+            // V2: Fix tuple usage - GetByte returns (byte value, bool success)
+            var (value, success) = provider.GetByte(position);
+            return success ? value : (byte?)null;
         }
 
         #endregion

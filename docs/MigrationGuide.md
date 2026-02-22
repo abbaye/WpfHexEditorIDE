@@ -1,12 +1,27 @@
 # Migration Guide: V1 → V2
 
+---
+> **📚 HISTORICAL DOCUMENT**
+>
+> This document describes the V1→V2 migration that was completed in February 2026.
+> As of **v2.6.0 (Feb 2026)**, the V1 Legacy code has been **completely removed** (17,093 LOC deleted).
+>
+> **Current Status:** All projects now use the V2 architecture under the name `HexEditor`.
+>
+> **IMPORTANT:** "V2" refers to the **architecture version**, not a class name. The control class
+> is named `HexEditor` (in HexEditor.xaml/HexEditor.xaml.cs).
+>
+> **Purpose:** This document is kept for historical reference and to help understand the project's evolution.
+> If you're starting a new project, simply use `HexEditor` - no migration needed!
+---
+
 ## Overview
 
-HexEditorV2 maintains 100% backward compatibility with V1 while providing modern architecture and significant performance improvements. This guide helps you migrate existing V1 applications to leverage V2 features.
+The V2 architecture (implemented in the HexEditor class) maintained 100% backward compatibility with V1 while providing modern architecture and significant performance improvements. This guide documented the migration process for existing V1 applications.
 
 ## Quick Summary
 
-✅ **V1 code works without changes on V2**
+✅ **V1 code worked without changes with V2 architecture**
 ✅ **99% performance improvement (custom rendering)**
 ✅ **Native insert mode support**
 ✅ **Modern MVVM architecture**
@@ -192,7 +207,7 @@ UpdateStatusBar(); // Manual UI update
 
 ### V2 Style (MVVM Binding)
 ```xml
-<v2:HexEditorV2
+<hex:HexEditor
     FileName="{Binding FilePath}"
     IsModified="{Binding IsModified, Mode=OneWayToSource}"
     Position="{Binding CurrentPosition, Mode=TwoWay}"
@@ -270,9 +285,9 @@ However, **new code** should prefer V2 API:
 
 ### Issue: Performance not improved
 
-**Cause**: Using TextBlock rendering instead of DrawingContext
-**Solution**: Ensure you're using HexEditorV2, not original HexEditor
-**Check**: V2 uses `HexViewport` custom control
+**Cause**: Using legacy TextBlock rendering instead of modern DrawingContext
+**Solution**: Ensure you're using the modern HexEditor control with V2 architecture
+**Check**: Modern version uses `HexViewport` custom control
 
 ### Issue: Insert mode not working
 
@@ -299,11 +314,11 @@ However, **new code** should prefer V2 API:
 
 ## Summary
 
-HexEditorV2 provides:
+The V2 architecture provided:
 - ✅ 100% V1 compatibility (no code changes needed)
 - ✅ 99% performance improvement
 - ✅ Native insert mode
 - ✅ Modern MVVM architecture
 - ✅ Path to gradually adopt V2 features
 
-**Recommendation**: Start with drop-in replacement, then gradually migrate to V2 API as you touch related code.
+**Historical Recommendation**: Users could start with drop-in replacement, then gradually migrate to V2 API as they touched related code.

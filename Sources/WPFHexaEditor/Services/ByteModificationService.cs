@@ -58,25 +58,27 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Modify byte at specified position
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="byte">New byte value (null to delete)</param>
         /// <param name="bytePositionInStream">Position to modify</param>
         /// <param name="undoLength">Length for undo operation (default 1)</param>
         /// <param name="readOnlyMode">If true, modification is not allowed</param>
         /// <returns>True if modification was successful</returns>
-        public bool ModifyByte(ByteProviderLegacy provider, byte? @byte, long bytePositionInStream,
+        public bool ModifyByte(ByteProvider provider, byte? @byte, long bytePositionInStream,
             long undoLength = 1, bool readOnlyMode = false)
         {
             if (provider == null || !provider.IsOpen)
                 return false;
 
-            if (provider.ReadOnlyMode || readOnlyMode)
+            if (provider.IsReadOnly || readOnlyMode)
                 return false;
 
-            if (bytePositionInStream < 0 || bytePositionInStream >= provider.Length)
+            if (bytePositionInStream < 0 || bytePositionInStream >= provider.VirtualLength)
                 return false;
 
-            provider.AddByteModified(@byte, bytePositionInStream, undoLength);
+            // V2: AddByteModified requires non-nullable byte
+            if (@byte.HasValue)
+                provider.AddByteModified(@byte.Value, bytePositionInStream, undoLength);
             return true;
         }
 
@@ -87,12 +89,12 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Insert a single byte at specified position
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="byte">Byte value to insert</param>
         /// <param name="bytePositionInStream">Position to insert at</param>
         /// <param name="canInsertAnywhere">If false, insertion is not allowed</param>
         /// <returns>True if insertion was successful</returns>
-        public bool InsertByte(ByteProviderLegacy provider, byte @byte, long bytePositionInStream,
+        public bool InsertByte(ByteProvider provider, byte @byte, long bytePositionInStream,
             bool canInsertAnywhere = true)
         {
             return InsertByte(provider, @byte, bytePositionInStream, 1, canInsertAnywhere);
@@ -101,13 +103,13 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Insert a byte multiple times at specified position
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="byte">Byte value to insert</param>
         /// <param name="bytePositionInStream">Position to insert at</param>
         /// <param name="length">Number of times to insert the byte</param>
         /// <param name="canInsertAnywhere">If false, insertion is not allowed</param>
         /// <returns>True if insertion was successful</returns>
-        public bool InsertByte(ByteProviderLegacy provider, byte @byte, long bytePositionInStream,
+        public bool InsertByte(ByteProvider provider, byte @byte, long bytePositionInStream,
             long length, bool canInsertAnywhere = true)
         {
             if (provider == null || !provider.IsOpen)
@@ -123,7 +125,7 @@ namespace WpfHexaEditor.Services
                 return false;
 
             for (var i = 0; i < length; i++)
-                provider.AddByteAdded(@byte, bytePositionInStream + i);
+                provider.InsertByte(bytePositionInStream + i, @byte);
 
             return true;
         }
@@ -131,12 +133,12 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Insert an array of bytes at specified position
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="bytes">Bytes to insert</param>
         /// <param name="bytePositionInStream">Position to insert at</param>
         /// <param name="canInsertAnywhere">If false, insertion is not allowed</param>
         /// <returns>Number of bytes inserted</returns>
-        public int InsertBytes(ByteProviderLegacy provider, byte[] bytes, long bytePositionInStream,
+        public int InsertBytes(ByteProvider provider, byte[] bytes, long bytePositionInStream,
             bool canInsertAnywhere = true)
         {
             if (provider == null || !provider.IsOpen)
@@ -156,7 +158,7 @@ namespace WpfHexaEditor.Services
 
             foreach (var @byte in bytes)
             {
-                provider.AddByteAdded(@byte, position++);
+                provider.InsertByte(position++, @byte);
                 count++;
             }
 
@@ -170,22 +172,22 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Delete bytes at specified position
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="bytePositionInStream">Position to start deletion</param>
         /// <param name="length">Number of bytes to delete</param>
         /// <param name="readOnlyMode">If true, deletion is not allowed</param>
         /// <param name="allowDelete">If false, deletion is not allowed</param>
         /// <returns>Last position after deletion, or -1 if failed</returns>
-        public long DeleteBytes(ByteProviderLegacy provider, long bytePositionInStream, long length = 1,
+        public long DeleteBytes(ByteProvider provider, long bytePositionInStream, long length = 1,
             bool readOnlyMode = false, bool allowDelete = true)
         {
             if (provider == null || !provider.IsOpen)
                 return -1;
 
-            if (provider.ReadOnlyMode || readOnlyMode || !allowDelete)
+            if (provider.IsReadOnly || readOnlyMode || !allowDelete)
                 return -1;
 
-            if (bytePositionInStream < 0 || bytePositionInStream >= provider.Length)
+            if (bytePositionInStream < 0 || bytePositionInStream >= provider.VirtualLength)
                 return -1;
 
             if (length <= 0)
@@ -198,13 +200,13 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Delete a range of bytes
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="startPosition">Start position (inclusive)</param>
         /// <param name="stopPosition">Stop position (inclusive)</param>
         /// <param name="readOnlyMode">If true, deletion is not allowed</param>
         /// <param name="allowDelete">If false, deletion is not allowed</param>
         /// <returns>Last position after deletion, or -1 if failed</returns>
-        public long DeleteRange(ByteProviderLegacy provider, long startPosition, long stopPosition,
+        public long DeleteRange(ByteProvider provider, long startPosition, long stopPosition,
             bool readOnlyMode = false, bool allowDelete = true)
         {
             if (provider == null || !provider.IsOpen)
@@ -229,24 +231,24 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Check if modification is allowed
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="readOnlyMode">External read-only mode flag</param>
         /// <returns>True if modification is allowed</returns>
-        public bool CanModify(ByteProviderLegacy provider, bool readOnlyMode = false)
+        public bool CanModify(ByteProvider provider, bool readOnlyMode = false)
         {
             if (provider == null || !provider.IsOpen)
                 return false;
 
-            return !provider.ReadOnlyMode && !readOnlyMode;
+            return !provider.IsReadOnly && !readOnlyMode;
         }
 
         /// <summary>
         /// Check if insertion is allowed
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="canInsertAnywhere">External insert permission flag</param>
         /// <returns>True if insertion is allowed</returns>
-        public bool CanInsert(ByteProviderLegacy provider, bool canInsertAnywhere = true)
+        public bool CanInsert(ByteProvider provider, bool canInsertAnywhere = true)
         {
             if (provider == null || !provider.IsOpen)
                 return false;
@@ -257,16 +259,16 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Check if deletion is allowed
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="readOnlyMode">External read-only mode flag</param>
         /// <param name="allowDelete">External delete permission flag</param>
         /// <returns>True if deletion is allowed</returns>
-        public bool CanDelete(ByteProviderLegacy provider, bool readOnlyMode = false, bool allowDelete = true)
+        public bool CanDelete(ByteProvider provider, bool readOnlyMode = false, bool allowDelete = true)
         {
             if (provider == null || !provider.IsOpen)
                 return false;
 
-            return !provider.ReadOnlyMode && !readOnlyMode && allowDelete;
+            return !provider.IsReadOnly && !readOnlyMode && allowDelete;
         }
 
         #endregion
@@ -277,7 +279,7 @@ namespace WpfHexaEditor.Services
         /// Restore a modified byte to its original value.
         /// Removes the modification from the dictionary and clears the highlight.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="bytePositionInStream">Position to restore</param>
         /// <returns>True if modification was removed, false if no modification existed</returns>
         /// <example>
@@ -285,7 +287,7 @@ namespace WpfHexaEditor.Services
         /// if (modService.RestoreOriginalByte(provider, 0x100))
         ///     Console.WriteLine("Byte restored successfully");
         /// </example>
-        public bool RestoreOriginalByte(ByteProviderLegacy provider, long bytePositionInStream)
+        public bool RestoreOriginalByte(ByteProvider provider, long bytePositionInStream)
         {
             if (provider == null || !provider.IsOpen)
                 return false;
@@ -296,19 +298,19 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// V2-compatible alias for RestoreOriginalByte
         /// </summary>
-        public bool RemoveModification(ByteProviderLegacy provider, long position)
+        public bool RemoveModification(ByteProvider provider, long position)
             => RestoreOriginalByte(provider, position);
 
         /// <summary>
         /// Concise alias for RestoreOriginalByte
         /// </summary>
-        public bool ResetByte(ByteProviderLegacy provider, long position)
+        public bool ResetByte(ByteProvider provider, long position)
             => RestoreOriginalByte(provider, position);
 
         /// <summary>
         /// Restore multiple modified bytes (array overload).
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="positions">Array of positions to restore</param>
         /// <returns>Number of modifications successfully removed</returns>
         /// <example>
@@ -317,7 +319,7 @@ namespace WpfHexaEditor.Services
         /// int count = modService.RestoreOriginalBytes(provider, positions);
         /// Console.WriteLine($"Restored {count} bytes");
         /// </example>
-        public int RestoreOriginalBytes(ByteProviderLegacy provider, long[] positions)
+        public int RestoreOriginalBytes(ByteProvider provider, long[] positions)
         {
             if (provider == null || !provider.IsOpen || positions == null)
                 return 0;
@@ -328,20 +330,20 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// V2-compatible alias for RestoreOriginalBytes(long[])
         /// </summary>
-        public int RemoveModifications(ByteProviderLegacy provider, long[] positions)
+        public int RemoveModifications(ByteProvider provider, long[] positions)
             => RestoreOriginalBytes(provider, positions);
 
         /// <summary>
         /// Concise alias for RestoreOriginalBytes(long[])
         /// </summary>
-        public int ResetBytes(ByteProviderLegacy provider, long[] positions)
+        public int ResetBytes(ByteProvider provider, long[] positions)
             => RestoreOriginalBytes(provider, positions);
 
         /// <summary>
         /// Restore multiple modified bytes (IEnumerable overload).
         /// Supports LINQ queries, List, HashSet, and other collections.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="positions">Enumerable collection of positions to restore</param>
         /// <returns>Number of modifications successfully removed</returns>
         /// <example>
@@ -357,7 +359,7 @@ namespace WpfHexaEditor.Services
         /// List&lt;long&gt; posList = new List&lt;long&gt; { 10, 20, 30 };
         /// count = modService.RestoreOriginalBytes(provider, posList);
         /// </example>
-        public int RestoreOriginalBytes(ByteProviderLegacy provider, IEnumerable<long> positions)
+        public int RestoreOriginalBytes(ByteProvider provider, IEnumerable<long> positions)
         {
             if (provider == null || !provider.IsOpen || positions == null)
                 return 0;
@@ -368,20 +370,20 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// V2-compatible alias for RestoreOriginalBytes(IEnumerable)
         /// </summary>
-        public int RemoveModifications(ByteProviderLegacy provider, IEnumerable<long> positions)
+        public int RemoveModifications(ByteProvider provider, IEnumerable<long> positions)
             => RestoreOriginalBytes(provider, positions);
 
         /// <summary>
         /// Concise alias for RestoreOriginalBytes(IEnumerable)
         /// </summary>
-        public int ResetBytes(ByteProviderLegacy provider, IEnumerable<long> positions)
+        public int ResetBytes(ByteProvider provider, IEnumerable<long> positions)
             => RestoreOriginalBytes(provider, positions);
 
         /// <summary>
         /// Restore all modifications in a continuous range.
         /// Automatically handles inverted ranges (start > stop).
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <param name="startPosition">Start position (inclusive)</param>
         /// <param name="stopPosition">Stop position (inclusive)</param>
         /// <returns>Number of modifications successfully removed</returns>
@@ -390,7 +392,7 @@ namespace WpfHexaEditor.Services
         /// int count = modService.RestoreOriginalBytesInRange(provider, 0x100, 0x200);
         /// Console.WriteLine($"Restored {count} bytes in range");
         /// </example>
-        public int RestoreOriginalBytesInRange(ByteProviderLegacy provider, long startPosition, long stopPosition)
+        public int RestoreOriginalBytesInRange(ByteProvider provider, long startPosition, long stopPosition)
         {
             if (provider == null || !provider.IsOpen)
                 return 0;
@@ -401,13 +403,13 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// V2-compatible alias for RestoreOriginalBytesInRange
         /// </summary>
-        public int RemoveModificationsInRange(ByteProviderLegacy provider, long start, long stop)
+        public int RemoveModificationsInRange(ByteProvider provider, long start, long stop)
             => RestoreOriginalBytesInRange(provider, start, stop);
 
         /// <summary>
         /// Concise alias for RestoreOriginalBytesInRange
         /// </summary>
-        public int ResetBytesInRange(ByteProviderLegacy provider, long start, long stop)
+        public int ResetBytesInRange(ByteProvider provider, long start, long stop)
             => RestoreOriginalBytesInRange(provider, start, stop);
 
         /// <summary>
@@ -415,14 +417,14 @@ namespace WpfHexaEditor.Services
         /// WARNING: This clears all byte modifications.
         /// Insertions and deletions are NOT affected.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <returns>Number of modifications removed</returns>
         /// <example>
         /// var modService = new ByteModificationService();
         /// int count = modService.RestoreAllModifications(provider);
         /// Console.WriteLine($"Cleared {count} modifications");
         /// </example>
-        public int RestoreAllModifications(ByteProviderLegacy provider)
+        public int RestoreAllModifications(ByteProvider provider)
         {
             if (provider == null || !provider.IsOpen)
                 return 0;
@@ -433,27 +435,27 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// V2-compatible alias for RestoreAllModifications
         /// </summary>
-        public int RemoveAllModifications(ByteProviderLegacy provider)
+        public int RemoveAllModifications(ByteProvider provider)
             => RestoreAllModifications(provider);
 
         /// <summary>
         /// Concise alias for RestoreAllModifications
         /// </summary>
-        public int ResetAllBytes(ByteProviderLegacy provider)
+        public int ResetAllBytes(ByteProvider provider)
             => RestoreAllModifications(provider);
 
         /// <summary>
         /// Check if a restore operation is allowed.
         /// Restore is allowed if the provider is open and not in read-only mode.
         /// </summary>
-        /// <param name="provider">ByteProviderLegacy instance</param>
+        /// <param name="provider">ByteProvider instance</param>
         /// <returns>True if restore is allowed</returns>
-        public bool CanRestore(ByteProviderLegacy provider)
+        public bool CanRestore(ByteProvider provider)
         {
             if (provider == null || !provider.IsOpen)
                 return false;
 
-            return !provider.ReadOnlyMode;
+            return !provider.IsReadOnly;
         }
 
         #endregion

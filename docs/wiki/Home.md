@@ -94,7 +94,7 @@
 - 🏗️ **MVVM architecture** - Clean separation of concerns
 - 🔧 **15 specialized services** - Modular, testable, extensible
 - 📦 **Zero dependencies** - No external packages required
-- 🎯 **100% V1 compatible** - Drop-in replacement
+- 🎯 **Modern codebase** - Legacy code removed in v2.6.0 (Feb 2026)
 
 ---
 

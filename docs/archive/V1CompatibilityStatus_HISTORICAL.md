@@ -1,6 +1,18 @@
 # V1 Compatibility Status Report
 
-## Test Date: 2026-02-12 (Updated: 2026-02-12 - Phase 7 Complete!)
+---
+> **📚 ARCHIVED HISTORICAL DOCUMENT**
+>
+> This compatibility report documented the V1→V2 transition testing (Feb 12, 2026).
+> As of **v2.6.0 (Feb 22, 2026)**, V1 Legacy code has been **completely removed**.
+>
+> **Archival Status:** This document is preserved for historical reference showing
+> how V2 achieved 100% backward compatibility during the migration period.
+>
+> **Current Status:** Project is now V2-only. This compatibility testing is no longer relevant.
+---
+
+## Original Test Date: 2026-02-12 (Phase 7 Complete)
 
 ## Test Method
 Replaced `HexEditor` V1 with `HexEditorV2` in the official C# sample project (`WPFHexEditor.Sample.CSharp`) to verify real-world V1 compatibility.

@@ -1,6 +1,6 @@
-# 📖 HexEditor V2 - API Reference
+# 📖 HexEditor - API Reference
 
-Complete API documentation for **WPF HexEditor V2**
+Complete API documentation for **WPF HexEditor**
 
 ---
 
@@ -23,7 +23,7 @@ Complete API documentation for **WPF HexEditor V2**
 
 ---
 
-## 🆕 What's New in V2
+## 🆕 Modern Features
 
 ### Granular Clear Operations
 Fine-grained control over clearing edits:

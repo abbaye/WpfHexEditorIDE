@@ -43,7 +43,7 @@ public void NavigateToPreviousDifference()
 public void NavigateToFirstDifference()
 ```
 
-**Since:** V1.0 (V2 optimized performance)
+**Since:** V1.0 (Optimized performance)
 
 ---
 
@@ -741,7 +741,7 @@ Detect tampering in evidence files.
 ### Performance
 
 ```
-V2 Comparison Performance:
+Comparison Performance:
   10 MB:   ~50ms
   100 MB:  ~500ms
   1 GB:    ~5000ms
@@ -763,4 +763,4 @@ V2 Comparison Performance:
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0 (Optimized Performance)
+**Version**: 2.0 (Optimized Performance)

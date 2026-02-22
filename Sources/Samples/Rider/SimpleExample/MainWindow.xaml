@@ -6,6 +6,7 @@
         xmlns:hex="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
         mc:Ignorable="d"
         Title="WpfHexEditor - Rider Simple Example"
+        Icon="../../../../Images/Logo-Icon.ico"
         Height="600" Width="900"
         WindowStartupLocation="CenterScreen">
 

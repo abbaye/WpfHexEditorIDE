@@ -6,7 +6,7 @@ Manage bookmarks to mark and navigate to important file positions.
 
 ## 📋 Description
 
-Bookmarks allow you to mark specific positions in the file for quick navigation and reference. WPF HexEditor V2 provides a complete bookmark system with add, remove, clear, and navigation capabilities.
+Bookmarks allow you to mark specific positions in the file for quick navigation and reference. WPF HexEditor provides a complete bookmark system with add, remove, clear, and navigation capabilities.
 
 **Key characteristics**:
 - 📌 **Mark important positions** with descriptive labels
@@ -45,7 +45,7 @@ public bool HasBookmarkAt(long position)
 public int BookmarkCount { get; }
 ```
 
-**Since:** V1.0 (V2 added color support)
+**Since:** V1.0 (Color support added)
 
 ---
 
@@ -902,7 +902,7 @@ public class ForensicBookmarker
 ### Position Validity
 
 - Bookmarks track position, not content
-- If file length changes (insertions/deletions), bookmark positions become invalid
+- If file length changes (insertions/deletions), bookmark positions may become invalid
 - Consider saving bookmark snapshots for validation
 
 ### Maximum Bookmarks
@@ -922,4 +922,4 @@ public class ForensicBookmarker
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0 (Color Support Added)
+**Version**: 2.0 (Color Support Added)

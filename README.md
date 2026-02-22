@@ -59,7 +59,7 @@ dotnet add package WPFHexaEditor
 
 ---
 
-## 🎯 Why Choose the brand new V2?
+## 🎯 Why Choose WPF HexEditor?
 
 <table>
 <tr>
@@ -122,14 +122,16 @@ dotnet add package WPFHexaEditor
 </tr>
 </table>
 
-**Upgrading from V1?** → **[Migration Guide](docs/migration/MIGRATION.md)** (zero code changes required!)
+**Note:** V1 Legacy code was completely removed in v2.6+ (Feb 2026) after 12-month deprecation. See **[Migration Guide](docs/migration/MIGRATION.md)** for historical reference.
 
 ---
 
 ## 📊 Key Stats
 
-| Metric | V1 Legacy | V2 Modern | Improvement |
-|--------|:---------:|:---------:|:-----------:|
+> **Note:** V1 Legacy was removed in v2.6+ (Feb 2026). Table shows historical comparison.
+
+| Metric | V1 Legacy (Removed) | V2 Modern (Current) | Improvement |
+|--------|:-------------------:|:-------------------:|:-----------:|
 | **Rendering** | ItemsControl | DrawingContext | ⚡ **99% faster** |
 | **Search** | Standard | LRU + Parallel + SIMD | ⚡ **10-100x faster** |
 | **Memory** | High | Span&lt;T&gt; + Pooling | ⚡ **80-90% less** |

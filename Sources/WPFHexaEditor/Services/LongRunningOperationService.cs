@@ -208,7 +208,7 @@ namespace WpfHexaEditor.Services
         /// </summary>
         public async Task<List<long>> FindAllAsync(
             FindReplaceService findService,
-            ByteProviderLegacy provider,
+            ByteProvider provider,
             byte[] searchPattern,
             long startPosition = 0)
         {
@@ -247,7 +247,7 @@ namespace WpfHexaEditor.Services
         /// </summary>
         public async Task<int> ReplaceAllAsync(
             FindReplaceService findService,
-            ByteProviderLegacy provider,
+            ByteProvider provider,
             byte[] findPattern,
             byte[] replacePattern,
             bool truncateLength,

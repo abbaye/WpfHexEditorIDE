@@ -358,7 +358,7 @@ public class SelectiveHistoryClearer
 
     public void ClearOldHistory(TimeSpan age)
     {
-        // Note: V2 doesn't natively support this
+        // Note: Not natively supported
         // This is a conceptual example
 
         Console.WriteLine($"Clearing history older than {age.TotalMinutes} minutes");
@@ -372,7 +372,7 @@ public class SelectiveHistoryClearer
     public void ClearRedoOnly()
     {
         // Clear only redo stack by making dummy edit and undoing
-        // (Workaround since V2 doesn't have separate clear methods)
+        // (Workaround since there's no separate clear method)
 
         if (_hexEditor.RedoDepth > 0)
         {
@@ -781,4 +781,4 @@ Console.WriteLine($"Can undo: {hexEditor.CanUndo}");  // False
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0
+**Version**: 2.0

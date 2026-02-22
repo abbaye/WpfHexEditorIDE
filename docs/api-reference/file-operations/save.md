@@ -6,7 +6,7 @@ Save all pending changes to the current file or a new file.
 
 ## 📋 Description
 
-The `Save()` method persists all modifications, insertions, and deletions to disk. HexEditor V2 uses a **smart save algorithm** that automatically chooses between:
+The `Save()` method persists all modifications, insertions, and deletions to disk. HexEditor uses a **smart save algorithm** that automatically chooses between:
 - **Fast path** (100x faster) - For modifications-only edits
 - **Full rebuild** - For insertions/deletions (structural changes)
 
@@ -26,7 +26,7 @@ public async Task SaveAsync(IProgress<double> progress = null)
 public async Task SaveAsync(string fileName, IProgress<double> progress = null)
 ```
 
-**Since:** V1.0 (Save, SaveAs), V2.0 (SaveAsync)
+**Since:** V1.0 (Save, SaveAs), v2.0 (SaveAsync)
 
 ---
 
@@ -560,4 +560,4 @@ For full rebuild (with insertions/deletions):
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0
+**Version**: 2.0

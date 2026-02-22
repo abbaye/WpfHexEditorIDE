@@ -71,6 +71,9 @@ namespace WpfHexaEditor
                 _viewModel.ByteSize = ByteSize;
                 _viewModel.ByteOrder = ByteOrder;
 
+                // Synchronize ByteShiftLeft (V1 Legacy feature)
+                _viewModel.ByteShiftLeft = ByteShiftLeft;
+
                 // Initialize byte spacer properties on viewport
                 HexViewport.ByteSpacerPositioning = ByteSpacerPositioning;
                 HexViewport.ByteSpacerWidthTickness = ByteSpacerWidthTickness;
@@ -170,6 +173,9 @@ namespace WpfHexaEditor
                 // CRITICAL FIX: Synchronize ByteSize and ByteOrder from DependencyProperties
                 _viewModel.ByteSize = ByteSize;
                 _viewModel.ByteOrder = ByteOrder;
+
+                // Synchronize ByteShiftLeft (V1 Legacy feature)
+                _viewModel.ByteShiftLeft = ByteShiftLeft;
 
                 // Initialize byte spacer properties on viewport
                 HexViewport.ByteSpacerPositioning = ByteSpacerPositioning;

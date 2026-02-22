@@ -44,31 +44,62 @@
 ### 1. Architecture MVVM Layered
 
 **V1: Monolithic**
-```
-HexEditor (Single Class ~3000 lines)
-├── UI + Business Logic + Data Access mélangés
-└── Couplage fort, difficile à tester
+```mermaid
+graph TD
+    V1["❌ HexEditor V1<br/>(Single Class ~3000 lines)"]
+    Mixed["UI + Business Logic +<br/>Data Access mélangés"]
+    Problem["Couplage fort,<br/>difficile à tester"]
+
+    V1 --> Mixed
+    V1 --> Problem
+
+    style V1 fill:#ffebee,stroke:#c62828,stroke-width:3px
+    style Mixed fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style Problem fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px
 ```
 
 **V2: Layered MVVM**
-```
-View (HexEditor - 16 partial classes, 3,117 lines)
-├── HexViewport (Custom Rendering)
-└── Context Menu, Events, etc.
+```mermaid
+graph TD
+    View["🎨 View Layer<br/>(HexEditor - 16 partial classes, 3,117 lines)"]
+    Viewport["HexViewport<br/>(Custom Rendering)"]
+    Menu["Context Menu,<br/>Events, etc."]
 
-ViewModel (HexEditorViewModel)
-├── Business Logic
-└── Selection, Visible Lines, Edit Operations
+    ViewModel["🧠 ViewModel<br/>(HexEditorViewModel)"]
+    BizLogic["Business Logic"]
+    Selection["Selection, Visible Lines,<br/>Edit Operations"]
 
-Data Layer (ByteProvider)
-├── File Management
-└── Coordinate Components
+    Data["💾 Data Layer<br/>(ByteProvider)"]
+    FileMgmt["File Management"]
+    Coord["Coordinate Components"]
 
-Core Components
-├── ByteReader (Virtual View)
-├── EditsManager (Edit Tracking)
-├── PositionMapper (Virtual↔Physical)
-└── FileProvider (Stream I/O)
+    Core["⚙️ Core Components"]
+    Reader["ByteReader<br/>(Virtual View)"]
+    Edits["EditsManager<br/>(Edit Tracking)"]
+    Mapper["PositionMapper<br/>(Virtual↔Physical)"]
+    FileProvider["FileProvider<br/>(Stream I/O)"]
+
+    View --> Viewport
+    View --> Menu
+    View --> ViewModel
+
+    ViewModel --> BizLogic
+    ViewModel --> Selection
+    ViewModel --> Data
+
+    Data --> FileMgmt
+    Data --> Coord
+    Data --> Core
+
+    Core --> Reader
+    Core --> Edits
+    Core --> Mapper
+    Core --> FileProvider
+
+    style View fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style ViewModel fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px
+    style Data fill:#fff3e0,stroke:#f57c00,stroke-width:3px
+    style Core fill:#e8f5e9,stroke:#388e3c,stroke-width:3px
 ```
 
 **Avantages**:

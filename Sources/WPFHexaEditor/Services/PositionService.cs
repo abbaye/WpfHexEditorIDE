@@ -66,7 +66,7 @@ namespace WpfHexaEditor.Services
         /// <param name="provider">Byte provider for deleted byte count</param>
         /// <returns>Line number</returns>
         public long GetLineNumber(long position, long byteShiftLeft, bool hideByteDeleted,
-            int bytePerLine, int byteSizeRatio, ByteProviderLegacy provider) =>
+            int bytePerLine, int byteSizeRatio, ByteProvider provider) =>
             (position - byteShiftLeft - (hideByteDeleted
                 ? GetCountOfByteDeletedBeforePosition(position, provider)
                 : 0)
@@ -84,7 +84,7 @@ namespace WpfHexaEditor.Services
         /// <param name="provider">Byte provider for deleted byte count</param>
         /// <returns>Column number (0-based)</returns>
         public long GetColumnNumber(long position, bool hideByteDeleted, bool allowVisualByteAddress,
-            long visualByteAdressStart, long byteShiftLeft, int bytePerLine, ByteProviderLegacy provider)
+            long visualByteAdressStart, long byteShiftLeft, int bytePerLine, ByteProvider provider)
         {
             var correcter = hideByteDeleted
                 ? GetCountOfByteDeletedBeforePosition(position, provider)
@@ -101,7 +101,7 @@ namespace WpfHexaEditor.Services
         /// <param name="position">Byte position in stream</param>
         /// <param name="provider">Byte provider</param>
         /// <returns>Count of deleted bytes before position</returns>
-        public long GetCountOfByteDeletedBeforePosition(long position, ByteProviderLegacy provider) =>
+        public long GetCountOfByteDeletedBeforePosition(long position, ByteProvider provider) =>
             provider == null
                 ? 0
                 : provider.GetByteModifieds(ByteAction.Deleted)
@@ -118,7 +118,7 @@ namespace WpfHexaEditor.Services
         /// <param name="positionCorrection">Position offset (positive or negative)</param>
         /// <param name="provider">Byte provider for deleted byte checking</param>
         /// <returns>Corrected valid position, or -1 if provider is null</returns>
-        public long GetValidPositionFrom(long position, long positionCorrection, ByteProviderLegacy provider)
+        public long GetValidPositionFrom(long position, long positionCorrection, ByteProvider provider)
         {
             if (provider == null)
                 return -1;
@@ -182,7 +182,7 @@ namespace WpfHexaEditor.Services
         /// <returns>First visible byte position</returns>
         public long GetFirstVisibleBytePosition(long scrollValue, int bytePerLine, long byteShiftLeft,
             int byteSizeRatio, bool hideByteDeleted, bool allowVisualByteAddress,
-            long visualByteAdressStart, ByteProviderLegacy provider)
+            long visualByteAdressStart, ByteProvider provider)
         {
             // Compute the targeted position for the first visible byte
             var targetedPosition = allowVisualByteAddress

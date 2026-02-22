@@ -1,12 +1,12 @@
 # Architecture Overview
 
-Understanding how WPF HexEditor V2 works under the hood.
+Understanding how WPF HexEditor works under the hood.
 
 ---
 
 ## 📋 Overview
 
-WPF HexEditor V2 is built with a **modern, layered architecture** designed for performance, maintainability, and extensibility. This document provides a high-level overview of how the system works.
+WPF HexEditor is built with a **modern, layered architecture** designed for performance, maintainability, and extensibility. This document provides a high-level overview of how the system works.
 
 **Target Audience**: Developers who want to understand the internal architecture before extending or integrating WPF HexEditor.
 
@@ -14,45 +14,28 @@ WPF HexEditor V2 is built with a **modern, layered architecture** designed for p
 
 ## 🏗️ High-Level Architecture
 
-```
-┌─────────────────────────────────────────────────┐
-│            Your WPF Application                 │
-│  (MainWindow.xaml, ViewModels, Commands)        │
-└─────────────────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────┐
-│              HexEditor Control                  │
-│  • User interactions (keyboard, mouse)          │
-│  • Visual rendering (hex + ASCII columns)       │
-│  • Data binding & commands                      │
-└─────────────────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────┐
-│             ByteProvider System                 │
-│  • File I/O management                          │
-│  • Edit tracking (mods, inserts, deletes)       │
-│  • Position mapping (virtual ↔ physical)        │
-│  • Undo/Redo command pattern                    │
-└─────────────────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────┐
-│              Service Layer                      │
-│  • Search (Boyer-Moore + SIMD)                  │
-│  • Clipboard operations                         │
-│  • Bookmark management                          │
-│  • Highlight rendering                          │
-│  • TBL (Translation Tables)                     │
-│  • Binary comparison                            │
-└─────────────────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────┐
-│           Physical File Storage                 │
-│  (Disk, Memory, Stream)                         │
-└─────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    App["🖥️ Your WPF Application<br/>(MainWindow.xaml, ViewModels, Commands)"]
+
+    Control["🎨 HexEditor Control<br/>• User interactions (keyboard, mouse)<br/>• Visual rendering (hex + ASCII columns)<br/>• Data binding & commands"]
+
+    Provider["💾 ByteProvider System<br/>• File I/O management<br/>• Edit tracking (mods, inserts, deletes)<br/>• Position mapping (virtual ↔ physical)<br/>• Undo/Redo command pattern"]
+
+    Services["🔧 Service Layer<br/>• Search (Boyer-Moore + SIMD)<br/>• Clipboard operations<br/>• Bookmark management<br/>• Highlight rendering<br/>• TBL (Translation Tables)<br/>• Binary comparison"]
+
+    Storage["📁 Physical File Storage<br/>(Disk, Memory, Stream)"]
+
+    App --> Control
+    Control --> Provider
+    Provider --> Services
+    Services --> Storage
+
+    style App fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style Control fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px
+    style Provider fill:#fff3e0,stroke:#f57c00,stroke-width:3px
+    style Services fill:#e8f5e9,stroke:#388e3c,stroke-width:3px
+    style Storage fill:#fce4ec,stroke:#c2185b,stroke-width:3px
 ```
 
 ---
@@ -168,25 +151,29 @@ Result: Z Y X (reverse of insertion order)
 4. **BatchCommand**: Groups multiple commands
 
 **Architecture**:
-```
-┌──────────────┐       ┌──────────────┐
-│  Undo Stack  │       │  Redo Stack  │
-├──────────────┤       ├──────────────┤
-│  Command 3   │       │              │
-│  Command 2   │       │              │
-│  Command 1   │       │              │
-└──────────────┘       └──────────────┘
 
-User calls Undo():
-  1. Pop Command 3 from Undo Stack
-  2. Execute Command 3.Undo()
-  3. Push Command 3 to Redo Stack
+```mermaid
+flowchart LR
+    subgraph UndoStack["🔙 Undo Stack"]
+        U3["Command 3"]
+        U2["Command 2"]
+        U1["Command 1"]
+        U3 -.-> U2 -.-> U1
+    end
 
-User calls Redo():
-  1. Pop Command 3 from Redo Stack
-  2. Execute Command 3.Execute()
-  3. Push Command 3 to Undo Stack
+    subgraph RedoStack["🔄 Redo Stack"]
+        R["(empty)"]
+    end
+
+    UndoStack <-->|"Undo()/Redo()"| RedoStack
+
+    style UndoStack fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style RedoStack fill:#fff3e0,stroke:#f57c00,stroke-width:2px
 ```
+
+**Undo/Redo Process**:
+- **Undo()**: Pop Command 3 from Undo Stack → Execute `Command3.Undo()` → Push to Redo Stack
+- **Redo()**: Pop Command 3 from Redo Stack → Execute `Command3.Execute()` → Push to Undo Stack
 
 **Batch Operations**:
 ```csharp
@@ -207,14 +194,14 @@ hexEditor.Undo();
 
 ### 1. Custom DrawingContext Rendering
 
-**V1 Problem**: Used ItemsControl + DataTemplate (generated thousands of UI elements).
+**Legacy Approach** (removed in v2.6.0): Used ItemsControl + DataTemplate (generated thousands of UI elements).
 
-**V2 Solution**: Direct pixel-level rendering using DrawingContext.
+**Modern Solution**: Direct pixel-level rendering using DrawingContext.
 
-**Performance**:
+**Performance Improvement**:
 ```
-V1: 50,000 bytes → 50,000 TextBlock controls → 3000ms render time
-V2: 50,000 bytes → 1 DrawingVisual → 30ms render time (99% faster!)
+Legacy: 50,000 bytes → 50,000 TextBlock controls → 3000ms render time
+Modern: 50,000 bytes → 1 DrawingVisual → 30ms render time (99% faster!)
 ```
 
 **How It Works**:
@@ -246,9 +233,9 @@ protected override void OnRender(DrawingContext dc)
 
 ### 2. Boyer-Moore-Horspool Search
 
-**V1 Problem**: Naive byte-by-byte search (O(n*m) worst case).
+**Legacy Approach** (removed in v2.6.0): Naive byte-by-byte search (O(n*m) worst case).
 
-**V2 Solution**: Boyer-Moore-Horspool algorithm + SIMD acceleration.
+**Modern Solution**: Boyer-Moore-Horspool algorithm + SIMD acceleration.
 
 **Algorithm**:
 ```
@@ -264,11 +251,11 @@ Example: Search for "ABCD" in "XYZABXABCD"
                 A B C D ← Match!
 ```
 
-**Performance**:
+**Performance Improvement**:
 ```
 100 MB file, 4-byte pattern:
-  V1: 15,000ms (naive search)
-  V2: 150ms (Boyer-Moore-Horspool + SIMD) - 100x faster!
+  Legacy: 15,000ms (naive search)
+  Modern: 150ms (Boyer-Moore-Horspool + SIMD) - 100x faster!
 ```
 
 ---
@@ -404,7 +391,7 @@ public List<long> FindAll(byte[] pattern)
 
 ## 🔧 Service Architecture
 
-WPF HexEditor V2 uses a **service-oriented architecture** with 15 specialized services.
+WPF HexEditor uses a **service-oriented architecture** with 15 specialized services.
 
 ### Core Services
 
@@ -421,23 +408,24 @@ WPF HexEditor V2 uses a **service-oriented architecture** with 15 specialized se
 
 ### Service Communication
 
-```
-┌─────────────────┐
-│  HexEditor      │
-└────────┬────────┘
-         │
-    ┌────┴─────┐
-    ▼          ▼
-┌─────────┐  ┌──────────┐
-│ Search  │  │Clipboard │
-│ Service │  │ Service  │
-└─────────┘  └──────────┘
-    │            │
-    └────┬───────┘
-         ▼
-    ┌─────────────┐
-    │ByteProvider │
-    └─────────────┘
+```mermaid
+flowchart TD
+    HexEditor["🎨 HexEditor"]
+
+    Search["🔍 Search<br/>Service"]
+    Clipboard["📋 Clipboard<br/>Service"]
+
+    Provider["💾 ByteProvider"]
+
+    HexEditor --> Search
+    HexEditor --> Clipboard
+    Search --> Provider
+    Clipboard --> Provider
+
+    style HexEditor fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style Search fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style Clipboard fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style Provider fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px
 ```
 
 **Example**:
@@ -545,7 +533,7 @@ User: hexEditor.Save()
 
 ## 🎨 Extension Points
 
-WPF HexEditor V2 is designed for extensibility.
+WPF HexEditor is designed for extensibility.
 
 ### Custom Rendering
 

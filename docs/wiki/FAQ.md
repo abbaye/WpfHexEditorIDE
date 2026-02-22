@@ -1,6 +1,6 @@
 # Frequently Asked Questions (FAQ)
 
-Common questions and answers about WPF HexEditor V2.
+Common questions and answers about WPF HexEditor.
 
 ---
 
@@ -85,7 +85,7 @@ Or in XAML:
 
 ### Q: Can I open files larger than 1 GB?
 
-**A:** Yes! V2 handles files from bytes to gigabytes efficiently:
+**A:** Yes! WPF HexEditor handles files from bytes to gigabytes efficiently:
 
 - Files < 100 MB: Fast immediate load
 - Files > 100 MB: Use `OpenAsync()` with progress
@@ -174,13 +174,13 @@ hexEditor.AddHighlight(0x1000, 2048, Colors.LightGreen, "Data Section");
 
 ## ⚡ Performance
 
-### Q: Why is V2 so much faster than V1?
+### Q: Why is WPF HexEditor so fast?
 
-**A:** V2 uses several advanced optimizations:
+**A:** The current architecture uses several advanced optimizations:
 
-1. **Custom DrawingContext Rendering** (99% faster)
-   - V1: ItemsControl + DataTemplate (slow)
-   - V2: Direct pixel rendering (blazing fast)
+1. **Custom DrawingContext Rendering** (99% faster than legacy approach)
+   - Direct pixel rendering for blazing fast display
+   - No intermediate UI element generation
 
 2. **Smart Search with LRU Cache** (10-100x faster)
    - Repeated searches are cached
@@ -224,7 +224,7 @@ Also consider:
 
 ### Q: How can I improve search performance?
 
-**A:** V2 search is already optimized, but you can:
+**A:** Search is already highly optimized, but you can:
 
 1. **Use CountOccurrences() instead of FindAll()**
    ```csharp
@@ -239,7 +239,7 @@ Also consider:
    ```
 
 3. **Cache frequently searched patterns**
-   - Search cache is automatic in V2
+   - Search cache is automatic
    - Repeated searches are 10-100x faster
 
 ---
@@ -363,52 +363,46 @@ else
 }
 ```
 
-**Note**: Issue #145 (Insert Mode bug) was fixed in V2. Make sure you're using the latest version.
+**Note**: Issue #145 (Insert Mode bug) was fixed in v2.0.0 (February 2024). The legacy code containing this bug was completely removed in v2.6.0 (February 2026).
 
 ---
 
-## 🔄 Migration from V1
+## 📜 Version History
 
-### Q: Is V2 compatible with V1 code?
+### Q: What happened to the legacy V1 code?
 
-**A:** Yes! V2 is **100% compatible** with V1:
+**A:** The legacy V1 implementation was **completely removed** in v2.6.0 (February 2026):
 
-- ✅ Same API methods
-- ✅ Same properties
-- ✅ Same events
-- ✅ Zero code changes required
+- 🗑️ **17,093 lines of code deleted**
+- ✅ All functionality now uses modern architecture
+- 🎯 Simpler codebase, easier to maintain
 
-Just update the NuGet package and everything works!
+**Historical Context:**
+- v2.0.0 (Feb 2024): Modern architecture introduced alongside legacy code
+- v2.1.0 - v2.5.0: Gradual improvements to modern implementation
+- v2.6.0 (Feb 2026): Legacy code completely removed
 
-👉 **[Migration guide](https://github.com/abbaye/WpfHexEditorControl/blob/master/docs/migration/MIGRATION.md)**
-
----
-
-### Q: What critical bugs were fixed in V2?
-
-**A:** All major V1 bugs are fixed:
-
-| Bug | V1 Status | V2 Status |
-|-----|-----------|-----------|
-| **Issue #145: Insert Mode** | ⚠️ Critical | ✅ **FIXED** |
-| **Save Data Loss** | ⚠️ Critical | ✅ **FIXED** |
-| **Search Cache** | ⚠️ | ✅ **FIXED** |
-| **Binary Search** | ⚠️ | ✅ **FIXED** |
-
-V2 is **production-ready** ✅
-
----
-
-### Q: Should I upgrade from V1 to V2?
-
-**A:** **Absolutely yes!** Benefits:
-
+The modern implementation that replaced it offers:
 - ⚡ **99% faster** rendering
 - 🔍 **10-100x faster** search
 - 💾 **80-90% less** memory
 - 🐛 **All critical bugs** fixed
 - 🏗️ **Better architecture** (MVVM + Services)
-- ✅ **Zero migration** effort (100% compatible)
+
+---
+
+### Q: What critical bugs were fixed in the modern implementation?
+
+**A:** All major legacy bugs are fixed:
+
+| Bug | Legacy Status | Modern Status |
+|-----|---------------|---------------|
+| **Issue #145: Insert Mode** | ⚠️ Critical | ✅ **FIXED** |
+| **Save Data Loss** | ⚠️ Critical | ✅ **FIXED** |
+| **Search Cache** | ⚠️ | ✅ **FIXED** |
+| **Binary Search** | ⚠️ | ✅ **FIXED** |
+
+Current version is **production-ready** ✅
 
 ---
 

@@ -6,7 +6,7 @@ Reverse the last edit operation.
 
 ## 📋 Description
 
-The `Undo()` method reverses the last edit operation, restoring the file to its previous state. WPF HexEditor V2 implements **unlimited undo** using the Command pattern, allowing you to undo any number of operations.
+The `Undo()` method reverses the last edit operation, restoring the file to its previous state. WPF HexEditor implements **unlimited undo** using the Command pattern, allowing you to undo any number of operations.
 
 **Key characteristics**:
 - ✅ **Unlimited undo** - no depth limit (configurable)
@@ -706,4 +706,4 @@ Console.WriteLine($"Can redo: {hexEditor.CanRedo}");  // False (redo cleared)
 ---
 
 **Last Updated**: 2026-02-19
-**Version**: V2.0 (Command Pattern with Unlimited Undo)
+**Version**: 2.0 (Command Pattern with Unlimited Undo)

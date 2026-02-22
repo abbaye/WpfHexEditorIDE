@@ -1,10 +1,10 @@
-# HexEditorV2 API Reference
+# HexEditor API Reference
 
-Complete API documentation for WPF Hex Editor V2.
+Complete API documentation for WPF Hex Editor.
 
 **Version**: 2.0
 **Last Updated**: 2026-02-13
-**Namespace**: `WpfHexaEditor.V2`
+**Namespace**: `WpfHexaEditor`
 
 ---
 
@@ -34,17 +34,17 @@ Complete API documentation for WPF Hex Editor V2.
 
 ## Overview
 
-`HexEditorV2` is a high-performance WPF hex editor control with:
+`HexEditor` is a high-performance WPF hex editor control with:
 - **Custom DrawingContext rendering** (99% faster than V1)
 - **Native insert mode** support
 - **MVVM architecture**
 - **100% V1 compatibility** (drop-in replacement)
 
 ```csharp
-using WpfHexaEditor.V2;
+using WpfHexaEditor;
 
 // Basic usage
-var hexEditor = new HexEditorV2();
+var hexEditor = new HexEditor();
 hexEditor.OpenFile("myfile.bin");
 ```
 
@@ -1036,7 +1036,7 @@ public event EventHandler FileOpened;
 ```csharp
 hexEditor.FileOpened += (sender, e) =>
 {
-    var editor = sender as HexEditorV2;
+    var editor = sender as HexEditor;
     Console.WriteLine($"Opened: {editor.FileName} ({editor.Length} bytes)");
 };
 ```
@@ -1065,7 +1065,7 @@ public event EventHandler SelectionChanged;
 ```csharp
 hexEditor.SelectionChanged += (sender, e) =>
 {
-    var editor = sender as HexEditorV2;
+    var editor = sender as HexEditor;
     statusLabel.Text = $"Selected: {editor.SelectionLength} bytes";
 };
 ```
@@ -1116,7 +1116,7 @@ public event EventHandler RedoCompleted;
 
 ```csharp
 // Create editor
-var hexEditor = new HexEditorV2
+var hexEditor = new HexEditor
 {
     ReadOnlyMode = true,
     ShowByteToolTip = true
@@ -1141,7 +1141,7 @@ if (position >= 0)
 ### Example 2: Binary Editor with Undo
 
 ```csharp
-var hexEditor = new HexEditorV2
+var hexEditor = new HexEditor
 {
     EditMode = EditMode.Overwrite,
     ShowStatusBar = true
@@ -1168,7 +1168,7 @@ hexEditor.Save();
 ### Example 3: Search and Replace
 
 ```csharp
-var hexEditor = new HexEditorV2();
+var hexEditor = new HexEditor();
 hexEditor.OpenFile(@"C:\data\text.dat");
 
 // Find all occurrences of "ERROR"
@@ -1193,7 +1193,7 @@ hexEditor.Save();
 ### Example 4: Insert Mode Editing
 
 ```csharp
-var hexEditor = new HexEditorV2
+var hexEditor = new HexEditor
 {
     EditMode = EditMode.Insert
 };
@@ -1220,7 +1220,7 @@ hexEditor.Save();
 ### Example 5: Custom Visual Theme
 
 ```csharp
-var hexEditor = new HexEditorV2
+var hexEditor = new HexEditor
 {
     // Custom colors
     SelectionFirstColor = Colors.DarkBlue,
@@ -1244,7 +1244,7 @@ var hexEditor = new HexEditorV2
 ### Example 6: Bookmarks
 
 ```csharp
-var hexEditor = new HexEditorV2
+var hexEditor = new HexEditor
 {
     AllowBookmark = true
 };
