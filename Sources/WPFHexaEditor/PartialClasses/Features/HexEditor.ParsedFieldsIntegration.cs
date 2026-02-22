@@ -50,6 +50,8 @@ namespace WpfHexaEditor
 
         private IFieldValueFormatter _currentFormatter;
         private readonly FieldValueReader _fieldValueReader = new FieldValueReader();
+        private readonly FieldValidator _fieldValidator = new FieldValidator();
+        private readonly ChecksumValidator _checksumValidator = new ChecksumValidator();
         private FormatDefinition _detectedFormat;
         private VariableContext _variableContext;
         private ExpressionEvaluator _expressionEvaluator;
@@ -490,6 +492,17 @@ namespace WpfHexaEditor
                     // Use FieldValueReader to parse the value
                     bool bigEndian = FieldValueReader.ShouldUseBigEndian(_detectedFormat?.FormatName);
                     field.RawValue = _fieldValueReader.ReadValue(buffer, 0, field.Length, field.ValueType, bigEndian);
+
+                    // Validate the value if validation rules exist
+                    if (field.BlockDefinition?.ValidationRules != null)
+                    {
+                        var validationResult = _fieldValidator.Validate(field.RawValue, field.BlockDefinition.ValidationRules);
+                        field.IsValid = validationResult.IsValid;
+                        if (!validationResult.IsValid)
+                        {
+                            field.ValidationMessage = validationResult.Message;
+                        }
+                    }
                 }
             }
             catch (Exception ex)

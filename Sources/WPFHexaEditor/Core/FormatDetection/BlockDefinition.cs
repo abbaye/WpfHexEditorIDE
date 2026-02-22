@@ -76,6 +76,11 @@ namespace WpfHexaEditor.Core.FormatDetection
         /// </summary>
         public bool? Hidden { get; set; }
 
+        /// <summary>
+        /// Validation rules for this field
+        /// </summary>
+        public FieldValidationRules ValidationRules { get; set; }
+
         #region Conditional Block Properties
 
         /// <summary>
