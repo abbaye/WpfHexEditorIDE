@@ -59,7 +59,7 @@ dotnet add package WPFHexaEditor
 
 ---
 
-## 🎯 Why Choose the brand new V2?
+## 🎯 Why Choose WPF HexEditor?
 
 <table>
 <tr>
