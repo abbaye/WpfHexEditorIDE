@@ -427,6 +427,16 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
+        /// Data string display format (Hexadecimal, Decimal, Binary)
+        /// </summary>
+        public Core.DataVisualType DataStringVisual { get; set; } = Core.DataVisualType.Hexadecimal;
+
+        /// <summary>
+        /// Offset string display format (Hexadecimal, Decimal, Binary)
+        /// </summary>
+        public Core.DataVisualType OffSetStringVisual { get; set; } = Core.DataVisualType.Hexadecimal;
+
+        /// <summary>
         /// Cursor position
         /// </summary>
         public long CursorPosition
@@ -1145,8 +1155,11 @@ namespace WpfHexaEditor.Controls
 
             var typeface = isSelectionStartLine ? _boldTypeface : _typeface;
 
+            // Format offset according to OffSetStringVisual setting
+            string offsetText = FormatOffset(line.StartPosition.Value, OffSetStringVisual);
+
             var formattedText = new FormattedText(
-                line.OffsetLabel,
+                offsetText,
                 System.Globalization.CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 typeface,
@@ -1155,6 +1168,20 @@ namespace WpfHexaEditor.Controls
                 VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
             dc.DrawText(formattedText, new Point(LeftMargin, y + 2));
+        }
+
+        /// <summary>
+        /// Format offset value according to the specified visual type
+        /// </summary>
+        private string FormatOffset(long position, Core.DataVisualType visualType)
+        {
+            return visualType switch
+            {
+                Core.DataVisualType.Hexadecimal => $"0x{position:X8}",
+                Core.DataVisualType.Decimal => position.ToString("D10").PadLeft(10, ' '),
+                Core.DataVisualType.Binary => $"0b{Convert.ToString(position, 2).PadLeft(32, '0')}",
+                _ => $"0x{position:X8}"
+            };
         }
 
         private void DrawHexByte(DrawingContext dc, ByteData byteData, double x, double y)
@@ -1265,9 +1292,9 @@ namespace WpfHexaEditor.Controls
 
             Brush textBrush = useAlternateColor ? _alternateByteBrush : _normalByteBrush;
 
-            // Phase 3: Use GetHexText() for multi-byte support with ByteOrder
+            // Phase 3: Use GetHexText() for multi-byte support with ByteOrder and DataStringVisual
             var formattedText = new FormattedText(
-                byteData.GetHexText(),
+                byteData.GetHexText(DataStringVisual),
                 System.Globalization.CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 _typeface,
