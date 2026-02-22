@@ -1,0 +1,47 @@
+{
+  "formatName": "CriWare CPK",
+  "version": "1.0",
+  "extensions": [ ".cpk" ],
+  "description": "CRI Middleware CPK archive",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "43504B20",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CPK Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "CPK magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 16,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of CPK header"
+    },
+    {
+      "type": "field",
+      "name": "File Count",
+      "offset": 20,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Number of files"
+    }
+  ]
+}

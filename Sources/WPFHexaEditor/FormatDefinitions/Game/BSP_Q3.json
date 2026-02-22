@@ -1,0 +1,47 @@
+{
+  "formatName": "Quake 3 BSP",
+  "version": "1.0",
+  "extensions": [ ".bsp" ],
+  "description": "Quake 3 engine BSP map format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "49425350",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "BSP Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "IBSP magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "BSP version number (46 for Q3)"
+    },
+    {
+      "type": "field",
+      "name": "Entities Lump Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Offset to entities directory entry"
+    }
+  ]
+}

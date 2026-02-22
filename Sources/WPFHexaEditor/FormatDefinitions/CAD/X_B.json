@@ -1,0 +1,29 @@
+{
+  "formatName": "Parasolid Binary",
+  "version": "1.0",
+  "extensions": [ ".x_b" ],
+  "description": "Parasolid transmit binary format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "D0CF11E0",
+    "offset": 0,
+    "required": false
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Binary Header",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Parasolid binary header"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "formatName": "Maya Binary",
+  "version": "1.0",
+  "extensions": [ ".mb" ],
+  "description": "Autodesk Maya binary scene file",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "466F7220",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Maya Binary Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "For signature"
+    },
+    {
+      "type": "field",
+      "name": "Version Info",
+      "offset": 4,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Maya version information"
+    }
+  ]
+}

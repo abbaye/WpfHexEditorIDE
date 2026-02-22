@@ -1,0 +1,29 @@
+{
+  "formatName": "Pro/ENGINEER Assembly",
+  "version": "1.0",
+  "extensions": [ ".asm" ],
+  "description": "Pro/ENGINEER (Creo) assembly file",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "",
+    "offset": 0,
+    "required": false
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Assembly Header",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Pro/ENGINEER assembly header"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "formatName": "Game Package",
+  "version": "1.0",
+  "extensions": [ ".pac", ".pack" ],
+  "description": "Generic game package/archive format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "",
+    "offset": 0,
+    "required": false
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Package Header",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Game-specific package header"
+    }
+  ]
+}

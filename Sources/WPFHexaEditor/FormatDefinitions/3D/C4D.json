@@ -1,0 +1,38 @@
+{
+  "formatName": "Cinema 4D",
+  "version": "1.0",
+  "extensions": [ ".c4d" ],
+  "description": "Maxon Cinema 4D scene file",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "433444",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "C4D Signature",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "C4D magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 3,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Cinema 4D version"
+    }
+  ]
+}

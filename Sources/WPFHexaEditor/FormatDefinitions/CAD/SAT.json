@@ -1,0 +1,38 @@
+{
+  "formatName": "ACIS SAT",
+  "version": "1.0",
+  "extensions": [ ".sat" ],
+  "description": "ACIS text format (Standard ACIS Text)",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "343030",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Version Number",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ACIS version (e.g., 400, 700)"
+    },
+    {
+      "type": "field",
+      "name": "Space Delimiter",
+      "offset": 3,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Space character"
+    }
+  ]
+}

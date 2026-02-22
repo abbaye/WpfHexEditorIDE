@@ -1,0 +1,29 @@
+{
+  "formatName": "Unity Asset",
+  "version": "1.0",
+  "extensions": [ ".asset" ],
+  "description": "Unity asset/scene file",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "2559414D4C",
+    "offset": 0,
+    "required": false
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "YAML Header",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "%YAML text format marker"
+    }
+  ]
+}

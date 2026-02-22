@@ -1,0 +1,47 @@
+{
+  "formatName": "Binary glTF",
+  "version": "1.0",
+  "extensions": [ ".glb" ],
+  "description": "Khronos glTF binary format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "676C5446",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "glTF Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "glTF magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "glTF version (2)"
+    },
+    {
+      "type": "field",
+      "name": "Length",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Total file length"
+    }
+  ]
+}

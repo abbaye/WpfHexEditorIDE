@@ -1,0 +1,56 @@
+{
+  "formatName": "Unreal Engine Asset",
+  "version": "1.0",
+  "extensions": [ ".uasset" ],
+  "description": "Unreal Engine 4/5 asset file format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "C1832A9E",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Package Tag",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Unreal package signature"
+    },
+    {
+      "type": "field",
+      "name": "Legacy UE3 Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Legacy version from UE3"
+    },
+    {
+      "type": "field",
+      "name": "UE4 Version",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Unreal Engine 4 version number"
+    },
+    {
+      "type": "field",
+      "name": "File Version",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Package file version"
+    }
+  ]
+}

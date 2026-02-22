@@ -1,0 +1,38 @@
+{
+  "formatName": "Object File Format",
+  "version": "1.0",
+  "extensions": [ ".off" ],
+  "description": "Geomview Object File Format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "4F46460A",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "OFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "OFF\\n signature"
+    },
+    {
+      "type": "field",
+      "name": "Vertex Count",
+      "offset": 4,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Number of vertices (ASCII)"
+    }
+  ]
+}

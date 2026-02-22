@@ -1,0 +1,29 @@
+{
+  "formatName": "Minecraft DAT",
+  "version": "1.0",
+  "extensions": [ ".dat" ],
+  "description": "Minecraft data file (NBT format)",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "0A",
+    "offset": 0,
+    "required": false
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "NBT Compound Tag",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "NBT compound tag (0x0A)"
+    }
+  ]
+}

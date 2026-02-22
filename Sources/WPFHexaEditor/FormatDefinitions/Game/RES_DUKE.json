@@ -1,0 +1,38 @@
+{
+  "formatName": "Duke Nukem GRP",
+  "version": "1.0",
+  "extensions": [ ".grp" ],
+  "description": "Duke Nukem 3D GRP resource archive",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "4B656E53696C766572696D616E",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "GRP Signature",
+      "offset": 0,
+      "length": 12,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "KenSilverman signature"
+    },
+    {
+      "type": "field",
+      "name": "Number of Files",
+      "offset": 12,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Total number of files"
+    }
+  ]
+}
