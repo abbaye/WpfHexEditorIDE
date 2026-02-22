@@ -159,7 +159,11 @@
                  ItemContainerStyle="{StaticResource FieldItemStyle}"
                  SelectionChanged="FieldsListBox_SelectionChanged"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 BorderThickness="0">
+                 BorderThickness="0"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling"
+                 VirtualizingPanel.CacheLength="20,20"
+                 VirtualizingPanel.CacheLengthUnit="Item">
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Copy Value" Click="CopyValue_Click">

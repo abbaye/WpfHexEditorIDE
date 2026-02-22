@@ -56,6 +56,11 @@ namespace WpfHexaEditor
         private VariableContext _variableContext;
         private ExpressionEvaluator _expressionEvaluator;
 
+        // Performance tracking
+        private int _parsedFieldCount;
+        private const int MaxFieldsLimit = 10000; // Safety limit to prevent UI freeze
+        private const int DepthLimit = 10; // Maximum recursion depth
+
         #endregion
 
         #region Initialization
@@ -183,6 +188,7 @@ namespace WpfHexaEditor
                     // Clear existing fields and variables
                     ParsedFieldsPanel.ParsedFields.Clear();
                     _variableContext?.Clear();
+                    _parsedFieldCount = 0; // Reset performance counter
 
                     // Load format-defined variables
                     if (_detectedFormat.Variables != null)
@@ -216,8 +222,15 @@ namespace WpfHexaEditor
         /// </summary>
         private void ParseBlocks(System.Collections.Generic.List<BlockDefinition> blocks, int depth)
         {
-            if (blocks == null || depth > 10) // Prevent infinite recursion
+            // Performance safeguards
+            if (blocks == null || depth > DepthLimit)
                 return;
+
+            if (_parsedFieldCount >= MaxFieldsLimit)
+            {
+                System.Diagnostics.Debug.WriteLine($"Field limit reached ({MaxFieldsLimit}). Stopping parsing to prevent UI freeze.");
+                return;
+            }
 
             foreach (var block in blocks)
             {
@@ -282,6 +295,14 @@ namespace WpfHexaEditor
                     if (block.Hidden != true)
                     {
                         ParsedFieldsPanel.ParsedFields.Add(fieldVm);
+                        _parsedFieldCount++;
+
+                        // Check limit after adding
+                        if (_parsedFieldCount >= MaxFieldsLimit)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Reached maximum field limit ({MaxFieldsLimit})");
+                            return;
+                        }
                     }
                 }
                 catch (Exception ex)
