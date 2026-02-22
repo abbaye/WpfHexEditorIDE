@@ -14,9 +14,9 @@
 
   <br/>
 
-  <img src="Images/SampleV2_001.png?raw=true" alt="WPF HexEditor V2" width="700"/>
+  <img src="Images/SampleV2_001.png?raw=true" alt="WPF HexEditor" width="700"/>
   <br/>
-  <sub><i>Screenshot from brand new V2 version</i></sub>
+  <sub><i>Modern HexEditor with MVVM architecture</i></sub>
 
   <p>
     <a href="#-quick-start"><b>Quick Start</b></a> •
@@ -84,7 +84,7 @@ dotnet add package WPFHexaEditor
 <td width="33%">
 
 ### ✅ Production Ready
-- **Solide MVVM architecture** fixed
+- **Solid MVVM architecture**
 - **Insert byte anywhere** fixed
 - **Scroll markers**
 - **Async operations**
@@ -103,10 +103,10 @@ dotnet add package WPFHexaEditor
 </td>
 <td width="33%">
 
-### 🔄 100% Retro-Compatible
-- **Drop-in** replacement
-- **Same but bonified API** as V1
-- **Zero breaking** changes
+### 🔄 Modern & Compatible
+- **Clean architecture**
+- **Comprehensive API**
+- **Legacy code removed** (v2.6.0)
 - **Multi-targeting**
 
 </td>
@@ -143,8 +143,6 @@ dotnet add package WPFHexaEditor
 ---
 
 ## 📸 Screenshots
-
-> **Note:** The screenshots below are from V1 (Legacy). V2 screenshots will be added soon.
 
 <table>
 <tr>
@@ -236,15 +234,12 @@ dotnet add package WPFHexaEditor
 
 | Sample | Description |
 |--------|-------------|
-| **[C# WPF Sample](Sources/Samples/WPFHexEditor.Sample.CSharp/)** | Main comprehensive demo with all features |
-| **[AvalonDock Sample](Sources/Samples/WpfHexEditor.Sample.AvalonDock/)** | IDE-like dockable interface |
-| **[BarChart Sample](Sources/Samples/WpfHexEditor.Sample.BarChart/)** | Visual data analysis |
-| **[WinForms Sample](Sources/Samples/WpfHexEditor.Sample.Winform/)** | Windows Forms integration |
-| **[Binary Diff Sample](Sources/Samples/WpfHexEditor.Sample.BinaryFilesDifference/)** | File comparison tool |
-| **[Insert Anywhere Sample](Sources/Samples/WpfHexEditor.Sample.InsertByteAnywhere/)** | Dynamic insert/delete operations |
-| **[Service Usage Sample](Sources/Samples/WpfHexEditor.Sample.ServiceUsage/)** | Console app (headless usage) |
+| **[Main Sample](Sources/Samples/WpfHexEditor.Sample.Main/)** | ⭐ Comprehensive WPF demo with all features |
+| **[Rider Simple Example](Sources/Samples/Rider/SimpleExample/)** | Minimal example for JetBrains Rider/VS Code users |
 
-**[→ Browse all samples with documentation](Sources/Samples/)**
+> **Note:** Legacy V1 samples were removed in v2.6.0 (Feb 2026). All functionality is now available in the Main Sample.
+
+**[→ Browse samples with documentation](Sources/Samples/)**
 
 ---
 
@@ -264,7 +259,7 @@ dotnet add package WPFHexaEditor
 - 📍 **Scrollbar Markers** - Visual indicators for search/bookmarks/changes and selection!
 - 📊 **BarChart View** - Byte frequency visualization
 - 🪟 **AvalonDock Support** - Professional IDE integration
-- 🌍 **9 Languages** - English, Spanish, French, Polish, Portuguese, Russian, Chinese
+- 🌍 **19 Languages** - English, Spanish, French, German, Italian, Japanese, Korean, Dutch, Polish, Portuguese, Russian, Swedish, Turkish, Chinese, Arabic, Hindi
 
 ### Developer Features
 - 🏗️ **MVVM Architecture** - ViewModel, RelayCommand, INotifyPropertyChanged
@@ -292,9 +287,9 @@ WPF HexEditor uses **multi-targeting** for maximum compatibility:
 
 ---
 
-## 🐛 Critical Bug Fixes (V2)
+## 🐛 Critical Bug Fixes
 
-| Bug | V1 Status | V2 Status |
+| Bug | Legacy Status (removed) | Modern Status |
 |-----|-----------|-----------|
 | **Issue #145: Insert Mode** | ⚠️ Critical | ✅ **FIXED** (commit 405b164) |
 | **Save Data Loss** | ⚠️ Critical | ✅ **FIXED** (multi-MB corruption resolved) |
