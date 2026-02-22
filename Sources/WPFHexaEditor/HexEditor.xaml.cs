@@ -29,8 +29,8 @@ namespace WpfHexaEditor
     /// Clean UserControl without UI chrome (toolbar, menus, etc.)
     /// Host application provides UI and calls public methods/properties
     ///
-    /// NOTE: This is V2 (formerly HexEditor) - 99% faster with critical bug fixes.
-    /// For legacy V1 control, use HexEditorLegacy (deprecated, will be removed in v3.0).
+    /// NOTE: This is the modern V2 implementation - 99% faster with critical bug fixes.
+    /// Legacy V1 control (HexEditorLegacy) was removed in v2.6+ (Feb 2026).
     /// </summary>
     public partial class HexEditor : UserControl
     {

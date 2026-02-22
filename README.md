@@ -39,7 +39,7 @@
 
 ## ⚡ Quick Start
 
-**1. Install via NuGet:**
+**1. Install via NuGet (V1 only):**
 ```bash
 dotnet add package WPFHexaEditor
 ```
