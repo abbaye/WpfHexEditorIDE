@@ -77,7 +77,8 @@ namespace WpfHexaEditor
             {
                 if (Directory.Exists(path))
                 {
-                    editor.LoadFormatDefinitions(path);
+                    var count = editor.LoadFormatDefinitions(path);
+                    editor.LoadedFormatCount = count;
                 }
             }
         }
@@ -145,6 +146,34 @@ namespace WpfHexaEditor
             set => SetValue(MaxFormatDetectionSizeProperty, value);
         }
 
+        /// <summary>
+        /// DependencyPropertyKey for LoadedFormatCount (read-only)
+        /// </summary>
+        private static readonly DependencyPropertyKey LoadedFormatCountPropertyKey =
+            DependencyProperty.RegisterReadOnly(
+                nameof(LoadedFormatCount),
+                typeof(int),
+                typeof(HexEditor),
+                new PropertyMetadata(0));
+
+        /// <summary>
+        /// DependencyProperty for LoadedFormatCount (public accessor)
+        /// </summary>
+        public static readonly DependencyProperty LoadedFormatCountProperty =
+            LoadedFormatCountPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Number of loaded format definitions
+        /// </summary>
+        [Category("Format Detection")]
+        [Description("Number of format definitions currently loaded")]
+        [System.ComponentModel.ReadOnly(true)]
+        public int LoadedFormatCount
+        {
+            get => (int)GetValue(LoadedFormatCountProperty);
+            private set => SetValue(LoadedFormatCountPropertyKey, value);
+        }
+
         #endregion
 
         #region Events
@@ -169,9 +198,10 @@ namespace WpfHexaEditor
                 Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
                 "FormatDefinitions");
 
-            if (Directory.Exists(defaultDir))
+            // Set default path if not already set
+            if (string.IsNullOrWhiteSpace(FormatDefinitionsPath) && Directory.Exists(defaultDir))
             {
-                LoadFormatDefinitions(defaultDir);
+                FormatDefinitionsPath = defaultDir;
             }
         }
 
@@ -186,7 +216,9 @@ namespace WpfHexaEditor
         /// <returns>Number of formats loaded</returns>
         public int LoadFormatDefinitions(string directory)
         {
-            return _formatDetectionService.LoadFormatDefinitionsFromDirectory(directory);
+            var count = _formatDetectionService.LoadFormatDefinitionsFromDirectory(directory);
+            LoadedFormatCount = count;
+            return count;
         }
 
         /// <summary>
@@ -196,7 +228,9 @@ namespace WpfHexaEditor
         /// <returns>True if loaded successfully</returns>
         public bool LoadFormatDefinition(string jsonFilePath)
         {
-            return _formatDetectionService.LoadFormatDefinition(jsonFilePath);
+            var result = _formatDetectionService.LoadFormatDefinition(jsonFilePath);
+            LoadedFormatCount = _formatDetectionService.GetFormatCount();
+            return result;
         }
 
         /// <summary>
@@ -206,7 +240,9 @@ namespace WpfHexaEditor
         /// <returns>Format definition or null</returns>
         public FormatDefinition ImportFormatFromJson(string json)
         {
-            return _formatDetectionService.ImportFromJson(json);
+            var result = _formatDetectionService.ImportFromJson(json);
+            LoadedFormatCount = _formatDetectionService.GetFormatCount();
+            return result;
         }
 
         /// <summary>
@@ -226,6 +262,7 @@ namespace WpfHexaEditor
         public void ClearFormatDefinitions()
         {
             _formatDetectionService.ClearFormats();
+            LoadedFormatCount = 0;
         }
 
         #endregion
@@ -389,11 +426,6 @@ namespace WpfHexaEditor
         /// Get all loaded format definitions
         /// </summary>
         public FormatDefinition[] LoadedFormats => _formatDetectionService.GetAllFormats().ToArray();
-
-        /// <summary>
-        /// Get number of loaded formats
-        /// </summary>
-        public int LoadedFormatCount => _formatDetectionService.GetFormatCount();
 
         /// <summary>
         /// Check if any formats are loaded
