@@ -188,20 +188,70 @@ namespace WpfHexaEditor
         #region Initialization
 
         /// <summary>
-        /// Initialize format detection system
+        /// Initialize format detection system with hybrid loading strategy
         /// This should be called from the HexEditor constructor
+        ///
+        /// Loading Priority:
+        /// 1. Embedded resources (351 built-in formats)
+        /// 2. External directory next to executable (FormatDefinitions/)
+        /// 3. User custom directory (%AppData%/WpfHexaEditor/FormatDefinitions/)
         /// </summary>
         private void InitializeFormatDetection()
         {
-            // Default format definitions directory (next to executable)
-            var defaultDir = Path.Combine(
-                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
-                "FormatDefinitions");
+            int totalLoaded = 0;
 
-            // Set default path if not already set
-            if (string.IsNullOrWhiteSpace(FormatDefinitionsPath) && Directory.Exists(defaultDir))
+            try
             {
-                FormatDefinitionsPath = defaultDir;
+                // STEP 1: Load built-in embedded format definitions (always available)
+                System.Diagnostics.Debug.WriteLine("Loading embedded format definitions...");
+                int embeddedCount = LoadEmbeddedFormatDefinitions();
+                totalLoaded += embeddedCount;
+                System.Diagnostics.Debug.WriteLine($"✓ Loaded {embeddedCount} embedded formats");
+
+                // STEP 2: Load external formats from directory next to executable (optional)
+                // Allows users to override built-in formats or add new ones
+                var externalDir = Path.Combine(
+                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
+                    "FormatDefinitions");
+
+                if (Directory.Exists(externalDir))
+                {
+                    System.Diagnostics.Debug.WriteLine($"Loading external formats from: {externalDir}");
+                    int externalCount = LoadFormatDefinitions(externalDir);
+                    totalLoaded += externalCount;
+                    System.Diagnostics.Debug.WriteLine($"✓ Loaded {externalCount} external formats");
+
+                    // Set FormatDefinitionsPath for UI display
+                    if (string.IsNullOrWhiteSpace(FormatDefinitionsPath))
+                    {
+                        FormatDefinitionsPath = externalDir;
+                    }
+                }
+
+                // STEP 3: Load user custom formats from AppData (optional)
+                // Allows users to create personal format definitions
+                var userDir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "WpfHexaEditor",
+                    "FormatDefinitions");
+
+                if (Directory.Exists(userDir))
+                {
+                    System.Diagnostics.Debug.WriteLine($"Loading user custom formats from: {userDir}");
+                    int userCount = LoadFormatDefinitions(userDir);
+                    totalLoaded += userCount;
+                    System.Diagnostics.Debug.WriteLine($"✓ Loaded {userCount} user custom formats");
+                }
+
+                System.Diagnostics.Debug.WriteLine($"═══════════════════════════════════════");
+                System.Diagnostics.Debug.WriteLine($"Total formats loaded: {totalLoaded}");
+                System.Diagnostics.Debug.WriteLine($"  • Embedded: {embeddedCount}");
+                System.Diagnostics.Debug.WriteLine($"  • External: {totalLoaded - embeddedCount}");
+                System.Diagnostics.Debug.WriteLine($"═══════════════════════════════════════");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error initializing format detection: {ex.Message}");
             }
         }
 
@@ -263,6 +313,60 @@ namespace WpfHexaEditor
         {
             _formatDetectionService.ClearFormats();
             LoadedFormatCount = 0;
+        }
+
+        /// <summary>
+        /// Load embedded format definitions from assembly resources
+        /// Called automatically during initialization to load built-in formats
+        /// </summary>
+        /// <returns>Number of formats loaded from embedded resources</returns>
+        public int LoadEmbeddedFormatDefinitions()
+        {
+            int count = 0;
+
+            try
+            {
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                var resourceNames = assembly.GetManifestResourceNames()
+                    .Where(r => r.Contains("FormatDefinitions") && r.EndsWith(".json"))
+                    .ToList();
+
+                System.Diagnostics.Debug.WriteLine($"Found {resourceNames.Count} embedded format resource(s)");
+
+                foreach (var resourceName in resourceNames)
+                {
+                    try
+                    {
+                        using var stream = assembly.GetManifestResourceStream(resourceName);
+                        if (stream == null)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"⚠ Failed to load embedded resource: {resourceName}");
+                            continue;
+                        }
+
+                        using var reader = new System.IO.StreamReader(stream);
+                        var json = reader.ReadToEnd();
+
+                        var format = _formatDetectionService.ImportFromJson(json);
+                        if (format != null && _formatDetectionService.AddFormatDefinition(format))
+                        {
+                            count++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"⚠ Error loading embedded format {resourceName}: {ex.Message}");
+                    }
+                }
+
+                LoadedFormatCount = _formatDetectionService.GetFormatCount();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error loading embedded formats: {ex.Message}");
+            }
+
+            return count;
         }
 
         #endregion

@@ -43,18 +43,7 @@ namespace WpfHexaEditor.Services
 
                 if (format != null && format.IsValid())
                 {
-                    // Check if already loaded
-                    var existing = _loadedFormats.FirstOrDefault(f =>
-                        f.FormatName == format.FormatName && f.Version == format.Version);
-
-                    if (existing != null)
-                    {
-                        // Replace existing
-                        _loadedFormats.Remove(existing);
-                    }
-
-                    _loadedFormats.Add(format);
-                    return true;
+                    return AddFormatDefinition(format);
                 }
             }
             catch (Exception ex)
@@ -63,6 +52,38 @@ namespace WpfHexaEditor.Services
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Add a format definition directly (used for embedded resources)
+        /// </summary>
+        /// <param name="format">Format definition to add</param>
+        /// <returns>True if added successfully</returns>
+        public bool AddFormatDefinition(FormatDefinition format)
+        {
+            if (format == null || !format.IsValid())
+                return false;
+
+            try
+            {
+                // Check if already loaded
+                var existing = _loadedFormats.FirstOrDefault(f =>
+                    f.FormatName == format.FormatName && f.Version == format.Version);
+
+                if (existing != null)
+                {
+                    // Replace existing (allows user formats to override built-in)
+                    _loadedFormats.Remove(existing);
+                }
+
+                _loadedFormats.Add(format);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error adding format definition: {ex.Message}");
+                return false;
+            }
         }
 
         /// <summary>
