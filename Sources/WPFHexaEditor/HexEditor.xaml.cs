@@ -749,9 +749,11 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Mouse wheel scroll speed - DependencyProperty
+        /// Gets or sets the mouse wheel scroll speed for vertical scrolling.
+        /// Category: Keyboard &amp; mouse
+        /// Default: Normal
         /// </summary>
-        [Category("Visual")]
+        [Category("Keyboard")]
         public MouseWheelSpeed MouseWheelSpeed
         {
             get => (MouseWheelSpeed)GetValue(MouseWheelSpeedProperty);
@@ -985,6 +987,16 @@ namespace WpfHexaEditor
         {
             get => (System.Windows.Media.Color)GetValue(BarChartColorProperty);
             set => SetValue(BarChartColorProperty, value);
+        }
+
+        /// <summary>
+        /// Inline bar chart color (for ASCII panel bar visualization) - DependencyProperty
+        /// </summary>
+        [Category("Colors")]
+        public System.Windows.Media.Color InlineBarChartColor
+        {
+            get => (System.Windows.Media.Color)GetValue(InlineBarChartColorProperty);
+            set => SetValue(InlineBarChartColorProperty, value);
         }
 
         /// <summary>
@@ -1530,6 +1542,33 @@ namespace WpfHexaEditor
                             break;
                         }
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Show inline bar chart in ASCII panel (replaces ASCII chars with vertical bars representing byte values)
+        /// V1 Legacy feature compatibility
+        /// </summary>
+        [Category("Display")]
+        public bool ShowInlineBarChart
+        {
+            get => (bool)GetValue(ShowInlineBarChartProperty);
+            set => SetValue(ShowInlineBarChartProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowInlineBarChartProperty =
+            DependencyProperty.Register(nameof(ShowInlineBarChart), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false, OnShowInlineBarChartChanged));
+
+        private static void OnShowInlineBarChartChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool showInlineBarChart)
+            {
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.ShowInlineBarChart = showInlineBarChart;
+                    editor.HexViewport.InvalidateVisual();
                 }
             }
         }
@@ -2293,7 +2332,8 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// MouseWheelSpeed DependencyProperty for XAML binding
+        /// Identifies the <see cref="MouseWheelSpeed"/> dependency property.
+        /// Controls the mouse wheel scroll speed for vertical scrolling through the hex data.
         /// </summary>
         public static readonly DependencyProperty MouseWheelSpeedProperty =
             DependencyProperty.Register(nameof(MouseWheelSpeed), typeof(MouseWheelSpeed), typeof(HexEditor),
@@ -2571,6 +2611,22 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
+        /// InlineBarChartColor DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty InlineBarChartColorProperty =
+            DependencyProperty.Register(nameof(InlineBarChartColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(0x00, 0x78, 0xD4), OnInlineBarChartColorChanged));
+
+        private static void OnInlineBarChartColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is Color color && editor.HexViewport != null)
+            {
+                editor.HexViewport.InlineBarChartColor = color;
+                editor.HexViewport.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
         /// SelectionActiveBrush DependencyProperty for XAML binding
         /// Brush used for selection in the active panel (Hex or ASCII)
         /// </summary>
@@ -2652,27 +2708,18 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor && e.NewValue is ByteSizeType byteSize)
             {
-                System.Diagnostics.Debug.WriteLine($"[ByteSize DP] OnByteSizeChanged: {e.OldValue} → {e.NewValue}");
-
                 // CRITICAL FIX: Prevent infinite loop - only update ViewModel if value actually changed
                 if (editor._viewModel != null && editor._viewModel.ByteSize == byteSize)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] Already synced, skipping");
                     return; // Already synced, avoid recursion
                 }
 
                 if (editor._viewModel != null)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] Syncing to ViewModel: {byteSize}");
                     editor._viewModel.ByteSize = byteSize;
                     // ByteSize change triggers automatic ClearLineCache() + RefreshVisibleLines() in ViewModel
                     editor.RefreshColumnHeader(); // Update headers to reflect new stride
                     editor.HexViewport.InvalidateVisual(); // Force viewport redraw
-                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] Sync complete");
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"[ByteSize DP] WARNING: _viewModel is null!");
                 }
             }
         }
@@ -2720,8 +2767,20 @@ namespace WpfHexaEditor
 
         private static void OnByteShiftLeftChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is HexEditor editor)
+            if (d is HexEditor editor && e.NewValue is long byteShiftLeft)
             {
+                // Prevent infinite loop - only update ViewModel if value actually changed
+                if (editor._viewModel != null && editor._viewModel.ByteShiftLeft == byteShiftLeft)
+                {
+                    return; // Already synced, avoid recursion
+                }
+
+                if (editor._viewModel != null)
+                {
+                    editor._viewModel.ByteShiftLeft = byteShiftLeft;
+                    // ViewModel triggers RefreshVisibleLines() which updates viewport
+                }
+
                 // Refresh viewport to update offset display
                 editor.HexViewport?.InvalidateVisual();
             }

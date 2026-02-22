@@ -6,6 +6,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using WpfHexaEditor.Core.Converters;
 
 namespace WpfHexaEditor.Core.Settings.Controls
 {
@@ -29,7 +30,8 @@ namespace WpfHexaEditor.Core.Settings.Controls
             return new Binding(metadata.PropertyName)
             {
                 Mode = BindingMode.TwoWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                UpdateSourceTrigger = UpdateSourceTrigger.LostFocus // Update when TextBox loses focus
+                // Note: WPF handles long ↔ string conversion automatically, no converter needed
             };
         }
 

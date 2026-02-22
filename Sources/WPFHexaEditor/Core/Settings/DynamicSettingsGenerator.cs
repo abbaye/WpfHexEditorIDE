@@ -99,13 +99,11 @@ namespace WpfHexaEditor.Core.Settings
             try
             {
                 expander.SetResourceReference(Expander.HeaderProperty, resourceKey);
-                System.Diagnostics.Debug.WriteLine($"[Localization] Expander '{category}': Using DynamicResource '{resourceKey}'");
             }
             catch
             {
                 // Fallback if resource doesn't exist
                 expander.Header = GetCategoryHeader(category);
-                System.Diagnostics.Debug.WriteLine($"[Localization] Expander '{category}': Using fallback (resource not found)");
             }
 
             var contentPanel = new StackPanel
@@ -136,11 +134,9 @@ namespace WpfHexaEditor.Core.Settings
             {
                 // 1. Create control via Factory
                 var propertyControl = PropertyControlFactory.Create(metadata);
-                System.Diagnostics.Debug.WriteLine($"[PropertyControl] {metadata.PropertyName} ({metadata.PropertyType.Name}): Using {propertyControl.GetType().Name}");
 
                 // 2. Create the WPF control
                 var control = propertyControl.CreateControl();
-                System.Diagnostics.Debug.WriteLine($"  Created control: {control.GetType().Name}, Tag={control.Tag}");
 
                 // 3. Create binding
                 var binding = propertyControl.CreateBinding(metadata);
@@ -318,8 +314,6 @@ namespace WpfHexaEditor.Core.Settings
             var resourceKey = $"HexSettings_{category}_Title";
             var localized = TryFindResource(resourceKey) as string;
 
-            System.Diagnostics.Debug.WriteLine($"[Localization] Category '{category}': Key='{resourceKey}', Found={localized != null}, Value={localized ?? "null"}");
-
             return localized ?? AddEmojiToCategory(category);
         }
 
@@ -336,7 +330,7 @@ namespace WpfHexaEditor.Core.Settings
                 "Behavior" => "⚙️ Behavior",
                 "Data" => "💾 Data",
                 "Visual" => "👁️ Visual",
-                "Keyboard" => "⌨️ Keyboard",
+                "Keyboard" => "⌨️ Keyboard & Mouse",
                 "TBL" => "📝 Character Table",
                 _ => category
             };

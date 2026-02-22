@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using WpfHexaEditor.Core;
@@ -88,6 +89,7 @@ namespace WpfHexaEditor
         /// Byte shift left amount  - DependencyProperty
         /// Used for adjusting byte position display offset
         /// </summary>
+        [Category("Visual")]
         public long ByteShiftLeft
         {
             get => (long)GetValue(ByteShiftLeftProperty);

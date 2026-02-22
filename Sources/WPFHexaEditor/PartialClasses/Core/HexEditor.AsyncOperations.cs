@@ -384,6 +384,11 @@ namespace WpfHexaEditor
             _viewModel.EditMode = EditMode;
             HexViewport.EditMode = EditMode;
 
+            // Synchronize ByteSize, ByteOrder and ByteShiftLeft from DependencyProperties
+            _viewModel.ByteSize = ByteSize;
+            _viewModel.ByteOrder = ByteOrder;
+            _viewModel.ByteShiftLeft = ByteShiftLeft;
+
             // Initialize byte spacer properties on viewport
             HexViewport.ByteSpacerPositioning = ByteSpacerPositioning;
             HexViewport.ByteSpacerWidthTickness = ByteSpacerWidthTickness;

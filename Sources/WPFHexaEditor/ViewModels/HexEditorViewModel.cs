@@ -47,6 +47,7 @@ namespace WpfHexaEditor.ViewModels
 
         private EditMode _editMode = EditMode.Overwrite;
         private int _bytePerLine = 16;
+        private long _byteShiftLeft = 0; // V1 Legacy feature: visual byte offset
         private Core.ByteSizeType _byteSize = Core.ByteSizeType.Bit8;      // Phase 2: ByteSize/ByteOrder
         private Core.ByteOrderType _byteOrder = Core.ByteOrderType.LoHi;   // Phase 2: ByteSize/ByteOrder
         private long _scrollPosition = 0;
@@ -91,6 +92,28 @@ namespace WpfHexaEditor.ViewModels
 
                     // Force full refresh when BytePerLine changes (line structure completely different)
                     // Clear cache to prevent incremental update which can cause index errors
+                    ClearLineCache();
+                    RefreshVisibleLines();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Byte shift left - Visual offset for byte display
+        /// V1 Legacy feature: useful for editing fixed-width tables
+        /// </summary>
+        public long ByteShiftLeft
+        {
+            get => _byteShiftLeft;
+            set
+            {
+                if (_byteShiftLeft != value && value >= 0)
+                {
+                    _byteShiftLeft = value;
+                    OnPropertyChanged();
+
+                    // CRITICAL: Clear cache because cached lines have old ByteShiftLeft baked in
+                    // Each line's StartPosition = lineNumber * BytePerLine + ByteShiftLeft
                     ClearLineCache();
                     RefreshVisibleLines();
                 }
@@ -260,8 +283,20 @@ namespace WpfHexaEditor.ViewModels
 
         /// <summary>
         /// Total number of lines
+        /// FIX: Account for ByteShiftLeft - we only display bytes starting from ByteShiftLeft
         /// </summary>
-        public long TotalLines => (VirtualLength + BytePerLine - 1) / BytePerLine;
+        public long TotalLines
+        {
+            get
+            {
+                if (VirtualLength <= ByteShiftLeft)
+                    return 0; // No bytes to display if shift is beyond file length
+
+                // Calculate lines needed to display bytes from ByteShiftLeft to VirtualLength-1
+                long bytesToDisplay = VirtualLength - ByteShiftLeft;
+                return (bytesToDisplay + BytePerLine - 1) / BytePerLine;
+            }
+        }
 
         /// <summary>
         /// Visible lines (observable collection for UI binding)
@@ -408,7 +443,8 @@ namespace WpfHexaEditor.ViewModels
             InvalidateLineAtPosition(virtualPos.Value);
 
             // Refresh only the affected line if it's currently visible
-            long lineNumber = virtualPos.Value / BytePerLine;
+            // FIX: Account for ByteShiftLeft in line calculation
+            long lineNumber = (virtualPos.Value - ByteShiftLeft) / BytePerLine;
             if (lineNumber >= ScrollPosition && lineNumber < ScrollPosition + VisibleLines)
             {
                 RefreshLine(lineNumber);
@@ -1269,7 +1305,8 @@ namespace WpfHexaEditor.ViewModels
         /// </summary>
         private void InvalidateLineAtPosition(long virtualPos)
         {
-            long lineNumber = virtualPos / BytePerLine;
+            // FIX: Account for ByteShiftLeft in line calculation
+            long lineNumber = (virtualPos - ByteShiftLeft) / BytePerLine;
             if (_lineCache.ContainsKey(lineNumber))
             {
                 _lineCache.Remove(lineNumber);
@@ -1332,7 +1369,11 @@ namespace WpfHexaEditor.ViewModels
         /// </summary>
         private HexLine CreateLine(long lineNumber)
         {
-            var startVirtualPos = lineNumber * BytePerLine;
+            // FIX: Apply ByteShiftLeft to actual starting position (V1 Legacy feature)
+            // This shifts which bytes appear on each line, not just the offset display
+            // Line 0 starts at ByteShiftLeft, Line 1 at ByteShiftLeft + BytePerLine, etc.
+            var startVirtualPos = lineNumber * BytePerLine + ByteShiftLeft;
+
             var line = new HexLine
             {
                 LineNumber = lineNumber,
