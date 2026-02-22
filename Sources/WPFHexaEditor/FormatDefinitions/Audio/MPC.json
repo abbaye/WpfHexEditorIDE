@@ -1,0 +1,24 @@
+{
+  "formatName": "Musepack Audio",
+  "version": "1.0",
+  "extensions": [ ".mpc", ".mp+", ".mpp" ],
+  "description": "Musepack lossy audio compression format optimized for transparency",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "4D 50 2B",
+    "offset": 0,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Musepack Header",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MP+ - Musepack audio file signature"
+    }
+  ]
+}

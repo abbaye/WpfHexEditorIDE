@@ -1,0 +1,24 @@
+{
+  "formatName": "Windows Media Audio",
+  "version": "1.0",
+  "extensions": [ ".wma" ],
+  "description": "Microsoft Windows Media Audio lossy audio codec",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "30 26 B2 75 8E 66 CF 11 A6 D9 00 AA 00 62 CE 6C",
+    "offset": 0,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ASF Header GUID",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ASF Header Object GUID for WMA"
+    }
+  ]
+}

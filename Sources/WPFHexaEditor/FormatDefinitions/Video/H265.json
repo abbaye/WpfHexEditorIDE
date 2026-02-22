@@ -1,0 +1,24 @@
+{
+  "formatName": "Raw H.265/HEVC",
+  "version": "1.0",
+  "extensions": [ ".h265", ".265", ".hevc" ],
+  "description": "Raw H.265/HEVC (High Efficiency Video Coding) elementary stream",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "00 00 00 01",
+    "offset": 0,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "NAL Unit Start Code",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "H.265/HEVC NAL Unit start code prefix"
+    }
+  ]
+}

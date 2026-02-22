@@ -1,0 +1,24 @@
+{
+  "formatName": "iTunes Video",
+  "version": "1.0",
+  "extensions": [ ".m4v" ],
+  "description": "MPEG-4 video container developed by Apple for iTunes Store",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "66 74 79 70",
+    "offset": 4,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "File Type Box",
+      "offset": 4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ftyp - MP4 file type identifier"
+    }
+  ]
+}

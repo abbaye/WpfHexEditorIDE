@@ -1,0 +1,24 @@
+{
+  "formatName": "Apple Lossless Audio Codec",
+  "version": "1.0",
+  "extensions": [ ".alac", ".m4a" ],
+  "description": "Apple Lossless Audio Codec for lossless compression of digital music",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "66 74 79 70",
+    "offset": 4,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "File Type Box",
+      "offset": 4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ftyp - MP4 container for ALAC"
+    }
+  ]
+}

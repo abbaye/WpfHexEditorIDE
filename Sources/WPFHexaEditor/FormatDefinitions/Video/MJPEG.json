@@ -1,0 +1,24 @@
+{
+  "formatName": "Motion JPEG",
+  "version": "1.0",
+  "extensions": [ ".mjpeg", ".mjpg" ],
+  "description": "Motion JPEG video format where each frame is a separate JPEG image",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "FF D8 FF",
+    "offset": 0,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "JPEG SOI Marker",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "JPEG Start of Image marker"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "formatName": "Sound File",
+  "version": "1.0",
+  "extensions": [ ".snd" ],
+  "description": "Generic sound file format used by various systems",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "2E 73 6E 64",
+    "offset": 0,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SND Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": ".snd - Sound file header"
+    }
+  ]
+}

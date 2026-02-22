@@ -1,0 +1,24 @@
+{
+  "formatName": "DSD Interchange File Format",
+  "version": "1.0",
+  "extensions": [ ".dff" ],
+  "description": "Philips DSDIFF format for Direct Stream Digital audio interchange",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "46 52 4D 38",
+    "offset": 0,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "DFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "FRM8 - IFF container for DSD"
+    }
+  ]
+}

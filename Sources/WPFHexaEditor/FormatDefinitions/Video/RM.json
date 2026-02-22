@@ -1,0 +1,24 @@
+{
+  "formatName": "RealMedia",
+  "version": "1.0",
+  "extensions": [ ".rm", ".ra" ],
+  "description": "RealMedia multimedia container format developed by RealNetworks",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "2E 52 4D 46",
+    "offset": 0,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RMF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": ".RMF - RealMedia File header"
+    }
+  ]
+}

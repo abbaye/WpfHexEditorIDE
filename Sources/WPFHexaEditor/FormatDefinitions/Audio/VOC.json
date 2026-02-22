@@ -1,0 +1,24 @@
+{
+  "formatName": "Creative Voice File",
+  "version": "1.0",
+  "extensions": [ ".voc" ],
+  "description": "Creative Labs Sound Blaster audio file format",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "43 72 65 61 74 69 76 65 20 56 6F 69 63 65 20 46 69 6C 65",
+    "offset": 0,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "VOC Header",
+      "offset": 0,
+      "length": 19,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Creative Voice File header"
+    }
+  ]
+}

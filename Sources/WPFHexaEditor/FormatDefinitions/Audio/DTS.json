@@ -1,0 +1,24 @@
+{
+  "formatName": "DTS Audio",
+  "version": "1.0",
+  "extensions": [ ".dts", ".dtshd" ],
+  "description": "DTS (Digital Theater Systems) multi-channel audio codec",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "7F FE 80 01",
+    "offset": 0,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "DTS Sync Word",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "DTS core substream sync word"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "formatName": "VP9 Video",
+  "version": "1.0",
+  "extensions": [ ".vp9", ".ivf" ],
+  "description": "VP9 video codec, successor to VP8 developed by Google",
+  "author": "WPFHexaEditor Team",
+  "detection": {
+    "signature": "44 4B 49 46",
+    "offset": 0,
+    "required": true
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "IVF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "DKIF - IVF container header for VP9"
+    }
+  ]
+}
