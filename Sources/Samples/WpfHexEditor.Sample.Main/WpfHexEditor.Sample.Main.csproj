@@ -18,6 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Logo Icon -->
+    <Content Include="Logo.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
     <!-- Multi-Byte TBL Sample Files -->
     <Content Include="SampleFiles\TBL\multibyte-demo.tbl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

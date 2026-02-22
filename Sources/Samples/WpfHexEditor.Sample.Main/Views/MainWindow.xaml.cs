@@ -83,7 +83,19 @@ namespace WpfHexEditor.Sample.Main.Views
             }
 
             // Auto-load HexEditor settings from previous session
-            HexEditorSettingsPanel?.AutoLoadState();
+            try
+            {
+                var json = Properties.Settings.Default.HexEditorSettings;
+                if (!string.IsNullOrEmpty(json) && HexEditorSettingsPanel != null)
+                {
+                    HexEditorSettingsPanel.LoadSettingsJson(json);
+                    System.Diagnostics.Debug.WriteLine("[MainWindow] Settings loaded from persistence");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[MainWindow] Failed to load settings: {ex.Message}");
+            }
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -92,7 +104,20 @@ namespace WpfHexEditor.Sample.Main.Views
             _viewModel?.SaveUIState();
 
             // Auto-save HexEditor settings for next session
-            HexEditorSettingsPanel?.AutoSaveState();
+            try
+            {
+                if (HexEditorSettingsPanel != null)
+                {
+                    var json = HexEditorSettingsPanel.GetSettingsJson();
+                    Properties.Settings.Default.HexEditorSettings = json;
+                    Properties.Settings.Default.Save();
+                    System.Diagnostics.Debug.WriteLine("[MainWindow] Settings saved to persistence");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[MainWindow] Failed to save settings: {ex.Message}");
+            }
         }
 
         private void HexEditor_OperationStateChanged(object sender, WpfHexaEditor.Events.OperationStateChangedEventArgs e)

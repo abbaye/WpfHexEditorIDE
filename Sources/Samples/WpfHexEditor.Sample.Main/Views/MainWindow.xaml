@@ -14,9 +14,9 @@
         xmlns:local="clr-namespace:WpfHexEditor.Sample.Main.Views"
         xmlns:components="clr-namespace:WpfHexEditor.Sample.Main.Views.Components"
         xmlns:hexEditor="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
+        xmlns:hexControls="clr-namespace:WpfHexaEditor.Controls;assembly=WPFHexaEditor"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Icon="Logo.ico"
         Height="900" Width="1600"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource BackgroundBrush}"
@@ -477,11 +477,11 @@
                                 Margin="4"/>
 
             <!-- Settings Panel (Slide-in from right) -->
-            <components:HexEditorSettings x:Name="HexEditorSettingsPanel"
+            <hexControls:HexEditorSettings x:Name="HexEditorSettingsPanel"
                                          Grid.Column="1"
                                          Visibility="{Binding IsSettingsPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <components:HexEditorSettings.Style>
-                    <Style TargetType="components:HexEditorSettings">
+                <hexControls:HexEditorSettings.Style>
+                    <Style TargetType="hexControls:HexEditorSettings">
                         <Setter Property="Width" Value="0"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsSettingsPanelVisible}" Value="True">
@@ -489,8 +489,8 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </components:HexEditorSettings.Style>
-            </components:HexEditorSettings>
+                </hexControls:HexEditorSettings.Style>
+            </hexControls:HexEditorSettings>
 
         </Grid>
 

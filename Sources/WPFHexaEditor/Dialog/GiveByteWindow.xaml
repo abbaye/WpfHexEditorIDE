@@ -11,7 +11,6 @@
     Width="420"
     Height="260"
     x:ClassModifier="public"
-    Icon="/WPFHexaEditor;component/Resources/Icon/Logo-Icon.ico"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
     WindowStartupLocation="CenterOwner"

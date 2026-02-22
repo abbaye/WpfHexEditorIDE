@@ -837,4 +837,282 @@
     <comment>TBL Editor - Modified</comment>
   </data>
 
+<data name="ColorPicker_Tab_Custom" xml:space="preserve">
+    <value>Özel</value>
+    <comment>ColorPicker - Tab Custom</comment>
+  </data>
+<data name="ColorPicker_Tab_Palette" xml:space="preserve">
+    <value>Palet</value>
+    <comment>ColorPicker - Tab Palette</comment>
+  </data>
+<data name="ColorPicker_Preview_Original" xml:space="preserve">
+    <value>Orijinal</value>
+    <comment>ColorPicker - Preview Original</comment>
+  </data>
+<data name="ColorPicker_Preview_New" xml:space="preserve">
+    <value>Yeni</value>
+    <comment>ColorPicker - Preview New</comment>
+  </data>
+<data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
+    <value>Renk Seçici</value>
+    <comment>ColorPicker - Section ColorSelector</comment>
+  </data>
+<data name="ColorPicker_Section_RGBValues" xml:space="preserve">
+    <value>RGB Değerleri</value>
+    <comment>ColorPicker - Section RGBValues</comment>
+  </data>
+<data name="ColorPicker_Section_HexColor" xml:space="preserve">
+    <value>Onaltılık Renk</value>
+    <comment>ColorPicker - Section HexColor</comment>
+  </data>
+<data name="ColorPicker_Section_StandardColors" xml:space="preserve">
+    <value>Standart Renkler</value>
+    <comment>ColorPicker - Section StandardColors</comment>
+  </data>
+<data name="ColorPicker_Section_RecentColors" xml:space="preserve">
+    <value>Son Renkler</value>
+    <comment>ColorPicker - Section RecentColors</comment>
+  </data>
+<data name="HexSettings_Title" xml:space="preserve">
+    <value>HEX DÜZENLEYİCİ AYARLARI</value>
+  </data>
+<data name="HexSettings_Header" xml:space="preserve">
+    <value>HEX DÜZENLEYİCİ AYARLARI</value>
+  </data>
+<data name="HexSettings_Display_Title" xml:space="preserve">
+    <value>📺 Görüntü Seçenekleri</value>
+  </data>
+<data name="HexSettings_Display_Header" xml:space="preserve">
+    <value>📺 Görüntü Seçenekleri</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Satır Numaralarını Göster (yer tutucu)</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+    <value>Bu özellik henüz V2'de mevcut değil</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>Satır Numaralarını Göster (yer tutucu)</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>Bu özellik henüz V2'de mevcut değil</value>
+  </data>
+<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+    <value>Bayt İpucunu Göster</value>
+  </data>
+<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>Bayt İpucunu Göster</value>
+  </data>
+<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>Satır Başına Bayt:</value>
+  </data>
+<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>Yakınlaştırma Ölçeği:</value>
+  </data>
+<data name="HexSettings_Editing_Title" xml:space="preserve">
+    <value>✏️ Düzenleme Seçenekleri</value>
+  </data>
+<data name="HexSettings_Editing_Header" xml:space="preserve">
+    <value>✏️ Düzenleme Seçenekleri</value>
+  </data>
+<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>Salt Okunur Modu</value>
+  </data>
+<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+    <value>Her Yere Eklemeye İzin Ver</value>
+  </data>
+<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>Her Yere Eklemeye İzin Ver</value>
+  </data>
+<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+    <value>Bayt Silmeye İzin Ver</value>
+  </data>
+<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>Bayt Silmeye İzin Ver</value>
+  </data>
+<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+    <value>Dosya Genişletmeye İzin Ver</value>
+  </data>
+<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>Dosya Genişletmeye İzin Ver</value>
+  </data>
+<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+    <value>Ekleme Onay Gerektirir</value>
+  </data>
+<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>Ekleme Onay Gerektirir</value>
+  </data>
+<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+    <value>Düzenleme Modu:</value>
+  </data>
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>Üzerine Yaz</value>
+  </data>
+<data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>Ekle</value>
+  </data>
+<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+    <value>İmleç Modu:</value>
+  </data>
+<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+    <value>📋 Pano Seçenekleri</value>
+  </data>
+<data name="HexSettings_Clipboard_Header" xml:space="preserve">
+    <value>📋 Pano Seçenekleri</value>
+  </data>
+<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+    <value>Varsayılan Kopyalama Modu:</value>
+  </data>
+<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>Hex Dizisi</value>
+  </data>
+<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>Bayt Dizisi</value>
+  </data>
+<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>C# Kodu</value>
+  </data>
+<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>VB Kodu</value>
+  </data>
+<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>C Kodu</value>
+  </data>
+<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>Java Kodu</value>
+  </data>
+<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+    <value>📎 Sürükle &amp; Bırak Seçenekleri</value>
+  </data>
+<data name="HexSettings_DragDrop_Header" xml:space="preserve">
+    <value>📎 Sürükle &amp; Bırak Seçenekleri</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+    <value>Dosya Bırakmaya İzin Ver</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>Dosya Bırakmaya İzin Ver</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+    <value>Dosya Bırakma Onayı</value>
+  </data>
+<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>Dosya Bırakma Onayı</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+    <value>Metin Bırakmaya İzin Ver</value>
+  </data>
+<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>Metin Bırakmaya İzin Ver</value>
+  </data>
+<data name="HexSettings_Highlight_Title" xml:space="preserve">
+    <value>🎨 Vurgulama &amp; Seçim</value>
+  </data>
+<data name="HexSettings_Highlight_Header" xml:space="preserve">
+    <value>🎨 Vurgulama &amp; Seçim</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>Seçili Baytı Otomatik Vurgula</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+    <value>Aynı Baytı Otomatik Seç (Çift Tıklama)</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>Aynı Baytı Otomatik Seç (Çift Tıklama)</value>
+  </data>
+<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+    <value>İşaretçi Tıklama Gezintisine İzin Ver</value>
+  </data>
+<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>İşaretçi Tıklama Gezintisine İzin Ver</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+    <value>Otomatik Vurgulama Rengi:</value>
+  </data>
+<data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>Otomatik Vurgulama Rengi:</value>
+  </data>
+<data name="HexSettings_Search_Title" xml:space="preserve">
+    <value>🔍 Arama Seçenekleri</value>
+  </data>
+<data name="HexSettings_Search_Header" xml:space="preserve">
+    <value>🔍 Arama Seçenekleri</value>
+  </data>
+<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+    <value>Paralel Aramayı Etkinleştir</value>
+  </data>
+<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>Paralel Aramayı Etkinleştir</value>
+  </data>
+<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+    <value>Joker Karakter Araması Kullan (??)</value>
+  </data>
+<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>Joker Karakter Araması Kullan (??)</value>
+  </data>
+<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>Tüm Eşleşmeleri Vurgula</value>
+  </data>
+<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>Arama Sonucu Sınırı:</value>
+  </data>
+<data name="HexSettings_Statistics_Title" xml:space="preserve">
+    <value>📊 İstatistikler</value>
+  </data>
+<data name="HexSettings_Statistics_Header" xml:space="preserve">
+    <value>📊 İstatistikler</value>
+  </data>
+<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+    <value>Bayt Sayımına İzin Ver</value>
+  </data>
+<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+    <value>Bayt Sayımına İzin Ver</value>
+  </data>
+<data name="HexSettings_Advanced_Title" xml:space="preserve">
+    <value>⚙️ Gelişmiş Seçenekler</value>
+  </data>
+<data name="HexSettings_Advanced_Header" xml:space="preserve">
+    <value>⚙️ Gelişmiş Seçenekler</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+    <value>Bayt Sola Kaydırma:</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+    <value>Bayt Sola Kaydırma:</value>
+  </data>
+<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>Güncel Durumu Kaydet</value>
+  </data>
+<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>Kaydedilen Durumu Yükle</value>
+  </data>
+<data name="HexSettings_ResetButton" xml:space="preserve">
+    <value>🔄 Tümünü Varsayılanlara Sıfırla</value>
+  </data>
+<data name="HexSettings_Button_Reset" xml:space="preserve">
+    <value>🔄 Tümünü Varsayılanlara Sıfırla</value>
+  </data>
+<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+    <value>Durum Çubuğu</value>
+  </data>
+<data name="HexSettings_Colors_Title" xml:space="preserve">
+    <value>Renkler</value>
+  </data>
+<data name="HexSettings_Behavior_Title" xml:space="preserve">
+    <value>Davranış</value>
+  </data>
+<data name="HexSettings_Data_Title" xml:space="preserve">
+    <value>Veri</value>
+  </data>
+<data name="HexSettings_Visual_Title" xml:space="preserve">
+    <value>Görsel</value>
+  </data>
+<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+    <value>Klavye</value>
+  </data>
+<data name="HexSettings_TBL_Title" xml:space="preserve">
+    <value>Karakter Tablosu</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>Durumu Kaydet</value></data>
+<data name="HexSettings_LoadButton" xml:space="preserve"><value>Durumu Yükle</value></data>
 </root>

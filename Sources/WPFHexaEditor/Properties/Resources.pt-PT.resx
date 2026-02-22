@@ -837,4 +837,282 @@
     <comment>TBL Editor - Modified</comment>
   </data>
 
+<data name="ColorPicker_Tab_Custom" xml:space="preserve">
+    <value>Personalizado</value>
+    <comment>ColorPicker - Tab Custom</comment>
+  </data>
+<data name="ColorPicker_Tab_Palette" xml:space="preserve">
+    <value>Paleta</value>
+    <comment>ColorPicker - Tab Palette</comment>
+  </data>
+<data name="ColorPicker_Preview_Original" xml:space="preserve">
+    <value>Original</value>
+    <comment>ColorPicker - Preview Original</comment>
+  </data>
+<data name="ColorPicker_Preview_New" xml:space="preserve">
+    <value>Novo</value>
+    <comment>ColorPicker - Preview New</comment>
+  </data>
+<data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
+    <value>Seletor de cores</value>
+    <comment>ColorPicker - Section ColorSelector</comment>
+  </data>
+<data name="ColorPicker_Section_RGBValues" xml:space="preserve">
+    <value>Valores RGB</value>
+    <comment>ColorPicker - Section RGBValues</comment>
+  </data>
+<data name="ColorPicker_Section_HexColor" xml:space="preserve">
+    <value>Cor hexadecimal</value>
+    <comment>ColorPicker - Section HexColor</comment>
+  </data>
+<data name="ColorPicker_Section_StandardColors" xml:space="preserve">
+    <value>Cores padrão</value>
+    <comment>ColorPicker - Section StandardColors</comment>
+  </data>
+<data name="ColorPicker_Section_RecentColors" xml:space="preserve">
+    <value>Cores recentes</value>
+    <comment>ColorPicker - Section RecentColors</comment>
+  </data>
+<data name="HexSettings_Title" xml:space="preserve">
+    <value>DEFINIÇÕES DO EDITOR HEX</value>
+  </data>
+<data name="HexSettings_Header" xml:space="preserve">
+    <value>DEFINIÇÕES DO EDITOR HEX</value>
+  </data>
+<data name="HexSettings_Display_Title" xml:space="preserve">
+    <value>📺 Opções de Visualização</value>
+  </data>
+<data name="HexSettings_Display_Header" xml:space="preserve">
+    <value>📺 Opções de Visualização</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Mostrar Números de Linha (marcador de posição)</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+    <value>Esta funcionalidade ainda não está disponível em V2</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>Mostrar Números de Linha (marcador de posição)</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>Esta funcionalidade ainda não está disponível em V2</value>
+  </data>
+<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+    <value>Mostrar Sugestão de Byte</value>
+  </data>
+<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>Mostrar Sugestão de Byte</value>
+  </data>
+<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>Bytes por Linha:</value>
+  </data>
+<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>Escala de Zoom:</value>
+  </data>
+<data name="HexSettings_Editing_Title" xml:space="preserve">
+    <value>✏️ Opções de Edição</value>
+  </data>
+<data name="HexSettings_Editing_Header" xml:space="preserve">
+    <value>✏️ Opções de Edição</value>
+  </data>
+<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>Modo Só de Leitura</value>
+  </data>
+<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+    <value>Permitir Inserir em Qualquer Lugar</value>
+  </data>
+<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>Permitir Inserir em Qualquer Lugar</value>
+  </data>
+<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+    <value>Permitir Eliminar Byte</value>
+  </data>
+<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>Permitir Eliminar Byte</value>
+  </data>
+<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+    <value>Permitir Expandir Ficheiro</value>
+  </data>
+<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>Permitir Expandir Ficheiro</value>
+  </data>
+<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+    <value>Anexar Requer Confirmação</value>
+  </data>
+<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>Anexar Requer Confirmação</value>
+  </data>
+<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+    <value>Modo de Edição:</value>
+  </data>
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>Substituir</value>
+  </data>
+<data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>Inserir</value>
+  </data>
+<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+    <value>Modo do Cursor:</value>
+  </data>
+<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+    <value>📋 Opções da Área de Transferência</value>
+  </data>
+<data name="HexSettings_Clipboard_Header" xml:space="preserve">
+    <value>📋 Opções da Área de Transferência</value>
+  </data>
+<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+    <value>Modo de Cópia Predefinido:</value>
+  </data>
+<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>Cadeia Hex</value>
+  </data>
+<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>Matriz de Bytes</value>
+  </data>
+<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>Código C#</value>
+  </data>
+<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>Código VB</value>
+  </data>
+<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>Código C</value>
+  </data>
+<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>Código Java</value>
+  </data>
+<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+    <value>📎 Opções de Arrastar e Largar</value>
+  </data>
+<data name="HexSettings_DragDrop_Header" xml:space="preserve">
+    <value>📎 Opções de Arrastar e Largar</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+    <value>Permitir Largar Ficheiros</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>Permitir Largar Ficheiros</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+    <value>Confirmação ao Largar Ficheiro</value>
+  </data>
+<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>Confirmação ao Largar Ficheiro</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+    <value>Permitir Largar Texto</value>
+  </data>
+<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>Permitir Largar Texto</value>
+  </data>
+<data name="HexSettings_Highlight_Title" xml:space="preserve">
+    <value>🎨 Realce e Seleção</value>
+  </data>
+<data name="HexSettings_Highlight_Header" xml:space="preserve">
+    <value>🎨 Realce e Seleção</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>Realçar Automaticamente Byte Selecionado</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+    <value>Selecionar Automaticamente Byte Igual (Duplo Clique)</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>Selecionar Automaticamente Byte Igual (Duplo Clique)</value>
+  </data>
+<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+    <value>Permitir Navegação por Clique no Marcador</value>
+  </data>
+<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>Permitir Navegação por Clique no Marcador</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+    <value>Cor de Realce Automático:</value>
+  </data>
+<data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>Cor de Realce Automático:</value>
+  </data>
+<data name="HexSettings_Search_Title" xml:space="preserve">
+    <value>🔍 Opções de Pesquisa</value>
+  </data>
+<data name="HexSettings_Search_Header" xml:space="preserve">
+    <value>🔍 Opções de Pesquisa</value>
+  </data>
+<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+    <value>Ativar Pesquisa Paralela</value>
+  </data>
+<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>Ativar Pesquisa Paralela</value>
+  </data>
+<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+    <value>Usar Pesquisa com Caracteres Universais (??)</value>
+  </data>
+<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>Usar Pesquisa com Caracteres Universais (??)</value>
+  </data>
+<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>Realçar Todas as Correspondências</value>
+  </data>
+<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>Limite de Resultados de Pesquisa:</value>
+  </data>
+<data name="HexSettings_Statistics_Title" xml:space="preserve">
+    <value>📊 Estatísticas</value>
+  </data>
+<data name="HexSettings_Statistics_Header" xml:space="preserve">
+    <value>📊 Estatísticas</value>
+  </data>
+<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+    <value>Permitir Contagem de Bytes</value>
+  </data>
+<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+    <value>Permitir Contagem de Bytes</value>
+  </data>
+<data name="HexSettings_Advanced_Title" xml:space="preserve">
+    <value>⚙️ Opções Avançadas</value>
+  </data>
+<data name="HexSettings_Advanced_Header" xml:space="preserve">
+    <value>⚙️ Opções Avançadas</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+    <value>Deslocamento de Byte à Esquerda:</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+    <value>Deslocamento de Byte à Esquerda:</value>
+  </data>
+<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>Guardar Estado Atual</value>
+  </data>
+<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>Carregar Estado Guardado</value>
+  </data>
+<data name="HexSettings_ResetButton" xml:space="preserve">
+    <value>🔄 Repor Todas as Predefinições</value>
+  </data>
+<data name="HexSettings_Button_Reset" xml:space="preserve">
+    <value>🔄 Repor Todas as Predefinições</value>
+  </data>
+<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+    <value>Barra de estado</value>
+  </data>
+<data name="HexSettings_Colors_Title" xml:space="preserve">
+    <value>Cores</value>
+  </data>
+<data name="HexSettings_Behavior_Title" xml:space="preserve">
+    <value>Comportamento</value>
+  </data>
+<data name="HexSettings_Data_Title" xml:space="preserve">
+    <value>Dados</value>
+  </data>
+<data name="HexSettings_Visual_Title" xml:space="preserve">
+    <value>Visual</value>
+  </data>
+<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+    <value>Teclado</value>
+  </data>
+<data name="HexSettings_TBL_Title" xml:space="preserve">
+    <value>Tabela de caracteres</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>Guardar estado</value></data>
+<data name="HexSettings_LoadButton" xml:space="preserve"><value>Carregar estado</value></data>
 </root>

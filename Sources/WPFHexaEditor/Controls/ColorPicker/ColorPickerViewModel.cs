@@ -9,9 +9,9 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
-using WpfHexEditor.Sample.Main.Helpers;
+using WpfHexaEditor.Helpers;
 
-namespace WpfHexEditor.Sample.Main.ViewModels
+namespace WpfHexaEditor.Controls
 {
     /// <summary>
     /// ViewModel for ColorPicker component that manages color state and conversions between RGB/HSV/Hex.

@@ -6,6 +6,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using WpfHexaEditor.Controls;
 
 namespace WpfHexaEditor.Core.Settings.Controls
 {
@@ -17,16 +18,11 @@ namespace WpfHexaEditor.Core.Settings.Controls
     {
         public FrameworkElement CreateControl()
         {
-            // ColorPicker is custom UserControl from Sample.Main/Views/Components
-            // It will be resolved at runtime via XAML namespace
-            // For now, we return a placeholder that will be replaced during generation
-            // The actual ColorPicker creation is handled in DynamicSettingsGenerator
-
-            // Return a placeholder Border that will be replaced
-            return new Border
+            // Create ColorPicker instance directly
+            return new ColorPicker
             {
                 Margin = new Thickness(0, 0, 0, 8),
-                Tag = "ColorPicker" // Marker for DynamicSettingsGenerator
+                ShowAlphaChannel = false // HexEditor colors don't use alpha channel
             };
         }
 

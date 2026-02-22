@@ -834,4 +834,385 @@
     <comment>TBL Editor - Modified</comment>
   </data>
 
+<data name="ColorPicker_Tab_Custom" xml:space="preserve">
+    <value>自定义</value>
+    <comment>ColorPicker - Tab Custom</comment>
+  </data>
+<data name="ColorPicker_Tab_Palette" xml:space="preserve">
+    <value>调色板</value>
+    <comment>ColorPicker - Tab Palette</comment>
+  </data>
+<data name="ColorPicker_Preview_Original" xml:space="preserve">
+    <value>原始</value>
+    <comment>ColorPicker - Preview Original</comment>
+  </data>
+<data name="ColorPicker_Preview_New" xml:space="preserve">
+    <value>新建</value>
+    <comment>ColorPicker - Preview New</comment>
+  </data>
+<data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
+    <value>颜色选择器</value>
+    <comment>ColorPicker - Section ColorSelector</comment>
+  </data>
+<data name="ColorPicker_Section_RGBValues" xml:space="preserve">
+    <value>RGB值</value>
+    <comment>ColorPicker - Section RGBValues</comment>
+  </data>
+<data name="ColorPicker_Section_HexColor" xml:space="preserve">
+    <value>十六进制颜色</value>
+    <comment>ColorPicker - Section HexColor</comment>
+  </data>
+<data name="ColorPicker_Section_StandardColors" xml:space="preserve">
+    <value>标准颜色</value>
+    <comment>ColorPicker - Section StandardColors</comment>
+  </data>
+<data name="ColorPicker_Section_RecentColors" xml:space="preserve">
+    <value>最近使用的颜色</value>
+    <comment>ColorPicker - Section RecentColors</comment>
+  </data>
+<data name="HexSettings_Header" xml:space="preserve">
+    <value>十六进制编辑器设置</value>
+    <comment>Hex editor settings - Main header</comment>
+  </data>
+<data name="HexSettings_Display_Header" xml:space="preserve">
+    <value>📺 显示选项</value>
+    <comment>Hex editor settings - Display Options expander header</comment>
+  </data>
+<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>显示行号（占位符）</value>
+    <comment>Hex editor settings - Show line numbers (disabled)</comment>
+  </data>
+<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>此功能在 V2 中暂不可用</value>
+    <comment>Hex editor settings - Line numbers tooltip</comment>
+  </data>
+<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>显示字节工具提示</value>
+    <comment>Hex editor settings - Show byte tooltip checkbox</comment>
+  </data>
+<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>每行字节数：</value>
+    <comment>Hex editor settings - Bytes per line label</comment>
+  </data>
+<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>缩放比例：</value>
+    <comment>Hex editor settings - Zoom scale label</comment>
+  </data>
+<data name="HexSettings_Editing_Header" xml:space="preserve">
+    <value>✏️ 编辑选项</value>
+    <comment>Hex editor settings - Editing Options expander header</comment>
+  </data>
+<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>只读模式</value>
+    <comment>Hex editor settings - Read only mode checkbox</comment>
+  </data>
+<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>允许在任何位置插入</value>
+    <comment>Hex editor settings - Allow insert anywhere checkbox</comment>
+  </data>
+<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>允许删除字节</value>
+    <comment>Hex editor settings - Allow delete byte checkbox</comment>
+  </data>
+<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>允许扩展文件</value>
+    <comment>Hex editor settings - Allow extend file checkbox</comment>
+  </data>
+<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>追加需要确认</value>
+    <comment>Hex editor settings - Append needs confirmation checkbox</comment>
+  </data>
+<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+    <value>编辑模式：</value>
+    <comment>Hex editor settings - Edit mode label</comment>
+  </data>
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>覆盖</value>
+    <comment>Hex editor settings - Overwrite mode option</comment>
+  </data>
+<data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>插入</value>
+    <comment>Hex editor settings - Insert mode option</comment>
+  </data>
+<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+    <value>光标模式：</value>
+    <comment>Hex editor settings - Caret mode label</comment>
+  </data>
+<data name="HexSettings_Clipboard_Header" xml:space="preserve">
+    <value>📋 剪贴板选项</value>
+    <comment>Hex editor settings - Clipboard Options expander header</comment>
+  </data>
+<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+    <value>默认复制模式：</value>
+    <comment>Hex editor settings - Default copy mode label</comment>
+  </data>
+<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>十六进制字符串</value>
+    <comment>Hex editor settings - Hex string copy mode option</comment>
+  </data>
+<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>字节数组</value>
+    <comment>Hex editor settings - Byte array copy mode option</comment>
+  </data>
+<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>C# 代码</value>
+    <comment>Hex editor settings - C# code copy mode option</comment>
+  </data>
+<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>VB 代码</value>
+    <comment>Hex editor settings - VB code copy mode option</comment>
+  </data>
+<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>C 代码</value>
+    <comment>Hex editor settings - C code copy mode option</comment>
+  </data>
+<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>Java 代码</value>
+    <comment>Hex editor settings - Java code copy mode option</comment>
+  </data>
+<data name="HexSettings_DragDrop_Header" xml:space="preserve">
+    <value>📎 拖放选项</value>
+    <comment>Hex editor settings - Drag &amp; Drop Options expander header</comment>
+  </data>
+<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>允许文件拖放</value>
+    <comment>Hex editor settings - Allow file drop checkbox</comment>
+  </data>
+<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>文件拖放确认</value>
+    <comment>Hex editor settings - File dropping confirmation checkbox</comment>
+  </data>
+<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>允许文本拖放</value>
+    <comment>Hex editor settings - Allow text drop checkbox</comment>
+  </data>
+<data name="HexSettings_Highlight_Header" xml:space="preserve">
+    <value>🎨 突出显示与选择</value>
+    <comment>Hex editor settings - Highlight &amp; Selection expander header</comment>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>自动突出显示选定字节</value>
+    <comment>Hex editor settings - Auto-highlight selection byte checkbox</comment>
+  </data>
+<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>自动选择相同字节（双击）</value>
+    <comment>Hex editor settings - Auto-select same byte on double-click checkbox</comment>
+  </data>
+<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>允许标记点击导航</value>
+    <comment>Hex editor settings - Allow marker click navigation checkbox</comment>
+  </data>
+<data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>自动突出显示颜色：</value>
+    <comment>Hex editor settings - Auto-highlight color label</comment>
+  </data>
+<data name="HexSettings_Search_Header" xml:space="preserve">
+    <value>🔍 搜索选项</value>
+    <comment>Hex editor settings - Search Options expander header</comment>
+  </data>
+<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>启用并行搜索</value>
+    <comment>Hex editor settings - Enable parallel search checkbox</comment>
+  </data>
+<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>使用通配符搜索 (??)</value>
+    <comment>Hex editor settings - Use wildcard search checkbox</comment>
+  </data>
+<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>高亮所有匹配项</value>
+    <comment>Hex editor settings - Highlight all matches checkbox</comment>
+  </data>
+<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>搜索结果限制：</value>
+    <comment>Hex editor settings - Search result limit label</comment>
+  </data>
+<data name="HexSettings_Statistics_Header" xml:space="preserve">
+    <value>📊 统计</value>
+    <comment>Hex editor settings - Statistics expander header</comment>
+  </data>
+<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+    <value>允许字节计数</value>
+    <comment>Hex editor settings - Allow byte count checkbox</comment>
+  </data>
+<data name="HexSettings_Advanced_Header" xml:space="preserve">
+    <value>⚙️ 高级选项</value>
+    <comment>Hex editor settings - Advanced Options expander header</comment>
+  </data>
+<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+    <value>字节左移：</value>
+    <comment>Hex editor settings - Byte shift left label</comment>
+  </data>
+<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>保存当前状态</value>
+    <comment>Hex editor settings - Save current state button</comment>
+  </data>
+<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>加载保存的状态</value>
+    <comment>Hex editor settings - Load saved state button</comment>
+  </data>
+<data name="HexSettings_Button_Reset" xml:space="preserve">
+    <value>🔄 重置所有为默认值</value>
+    <comment>Hex editor settings - Reset all to defaults button</comment>
+  </data>
+<data name="HexSettings_Title" xml:space="preserve">
+    <value>十六进制编辑器设置</value>
+  </data>
+<data name="HexSettings_Display_Title" xml:space="preserve">
+    <value>📺 显示选项</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>显示行号（占位符）</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+    <value>此功能在 V2 中尚不可用</value>
+  </data>
+<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+    <value>显示字节工具提示</value>
+  </data>
+<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>每行字节数：</value>
+  </data>
+<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>缩放比例：</value>
+  </data>
+<data name="HexSettings_Editing_Title" xml:space="preserve">
+    <value>✏️ 编辑选项</value>
+  </data>
+<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>只读模式</value>
+  </data>
+<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+    <value>允许在任意位置插入</value>
+  </data>
+<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+    <value>允许删除字节</value>
+  </data>
+<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+    <value>允许扩展文件</value>
+  </data>
+<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+    <value>追加需要确认</value>
+  </data>
+<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+    <value>编辑模式：</value>
+  </data>
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>覆盖</value>
+  </data>
+<data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>插入</value>
+  </data>
+<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+    <value>光标模式：</value>
+  </data>
+<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+    <value>📋 剪贴板选项</value>
+  </data>
+<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+    <value>默认复制模式：</value>
+  </data>
+<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>十六进制字符串</value>
+  </data>
+<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>字节数组</value>
+  </data>
+<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>C# 代码</value>
+  </data>
+<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>VB 代码</value>
+  </data>
+<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>C 代码</value>
+  </data>
+<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>Java 代码</value>
+  </data>
+<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+    <value>📎 拖放选项</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+    <value>允许文件拖放</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+    <value>文件拖放确认</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+    <value>允许文本拖放</value>
+  </data>
+<data name="HexSettings_Highlight_Title" xml:space="preserve">
+    <value>🎨 高亮和选择</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>自动高亮选择的字节</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+    <value>自动选择相同字节（双击）</value>
+  </data>
+<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+    <value>允许标记点击导航</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+    <value>自动高亮颜色：</value>
+  </data>
+<data name="HexSettings_Search_Title" xml:space="preserve">
+    <value>🔍 搜索选项</value>
+  </data>
+<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+    <value>启用并行搜索</value>
+  </data>
+<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+    <value>使用通配符搜索（??）</value>
+  </data>
+<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>高亮所有匹配项</value>
+  </data>
+<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>搜索结果限制：</value>
+  </data>
+<data name="HexSettings_Statistics_Title" xml:space="preserve">
+    <value>📊 统计</value>
+  </data>
+<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+    <value>允许字节计数</value>
+  </data>
+<data name="HexSettings_Advanced_Title" xml:space="preserve">
+    <value>⚙️ 高级选项</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+    <value>字节左移：</value>
+  </data>
+<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>保存当前状态</value>
+  </data>
+<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>加载已保存的状态</value>
+  </data>
+<data name="HexSettings_ResetButton" xml:space="preserve">
+    <value>🔄 全部重置为默认值</value>
+  </data>
+<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+    <value>状态栏</value>
+  </data>
+<data name="HexSettings_Colors_Title" xml:space="preserve">
+    <value>颜色</value>
+  </data>
+<data name="HexSettings_Behavior_Title" xml:space="preserve">
+    <value>行为</value>
+  </data>
+<data name="HexSettings_Data_Title" xml:space="preserve">
+    <value>数据</value>
+  </data>
+<data name="HexSettings_Visual_Title" xml:space="preserve">
+    <value>视觉</value>
+  </data>
+<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+    <value>键盘</value>
+  </data>
+<data name="HexSettings_TBL_Title" xml:space="preserve">
+    <value>字符表</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>保存状态</value></data>
+<data name="HexSettings_LoadButton" xml:space="preserve"><value>加载状态</value></data>
 </root>

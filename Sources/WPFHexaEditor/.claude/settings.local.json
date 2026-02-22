@@ -95,7 +95,12 @@
       "Bash(pour voir le changement dans l 'éditeur\":*)",
       "Bash(Stride=Y)",
       "Bash(Pos=Z\":*)",
-      "Bash(git diff:*)"
+      "Bash(git diff:*)",
+      "Bash(/tmp/migrate_localization_v2.sh:*)",
+      "Bash(chmod:*)",
+      "Bash(/tmp/migrate_localization_v2.sh)",
+      "Bash(/tmp/migrate_loc.py:*)",
+      "Bash(/tmp/cleanup_sample_loc.py:*)"
     ]
   }
 }

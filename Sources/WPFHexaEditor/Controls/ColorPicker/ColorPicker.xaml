@@ -5,16 +5,22 @@
     Contributors: Claude Sonnet 4.5
 -->
 
-<UserControl x:Class="WpfHexEditor.Sample.Main.Views.Components.ColorPicker"
+<UserControl x:Class="WpfHexaEditor.Controls.ColorPicker"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:WpfHexEditor.Sample.Main.Views.Components"
+             xmlns:local="clr-namespace:WpfHexaEditor.Converters"
              mc:Ignorable="d"
              d:DesignHeight="32" d:DesignWidth="200">
 
     <UserControl.Resources>
+        <!-- Fallback brushes for apps without theme -->
+        <SolidColorBrush x:Key="BorderBrush" Color="#CCCCCC"/>
+        <SolidColorBrush x:Key="SurfaceElevatedBrush" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="ForegroundBrush" Color="#333333"/>
+
+        <!-- ColorPicker converters -->
         <local:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
         <local:ColorToContrastBrushConverter x:Key="ColorToContrastBrushConverter"/>
         <local:HueToGradientBrushConverter x:Key="HueToGradientBrushConverter"/>

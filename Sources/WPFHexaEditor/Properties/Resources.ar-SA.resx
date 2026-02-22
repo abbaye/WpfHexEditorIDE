@@ -837,4 +837,282 @@
     <comment>TBL Editor - Modified</comment>
   </data>
 
+<data name="ColorPicker_Tab_Custom" xml:space="preserve">
+    <value>مخصص</value>
+    <comment>ColorPicker - Tab Custom</comment>
+  </data>
+<data name="ColorPicker_Tab_Palette" xml:space="preserve">
+    <value>لوحة الألوان</value>
+    <comment>ColorPicker - Tab Palette</comment>
+  </data>
+<data name="ColorPicker_Preview_Original" xml:space="preserve">
+    <value>الأصلي</value>
+    <comment>ColorPicker - Preview Original</comment>
+  </data>
+<data name="ColorPicker_Preview_New" xml:space="preserve">
+    <value>جديد</value>
+    <comment>ColorPicker - Preview New</comment>
+  </data>
+<data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
+    <value>منتقي الألوان</value>
+    <comment>ColorPicker - Section ColorSelector</comment>
+  </data>
+<data name="ColorPicker_Section_RGBValues" xml:space="preserve">
+    <value>قيم RGB</value>
+    <comment>ColorPicker - Section RGBValues</comment>
+  </data>
+<data name="ColorPicker_Section_HexColor" xml:space="preserve">
+    <value>لون سداسي عشري</value>
+    <comment>ColorPicker - Section HexColor</comment>
+  </data>
+<data name="ColorPicker_Section_StandardColors" xml:space="preserve">
+    <value>الألوان القياسية</value>
+    <comment>ColorPicker - Section StandardColors</comment>
+  </data>
+<data name="ColorPicker_Section_RecentColors" xml:space="preserve">
+    <value>الألوان الحديثة</value>
+    <comment>ColorPicker - Section RecentColors</comment>
+  </data>
+<data name="HexSettings_Title" xml:space="preserve">
+    <value>إعدادات محرر HEX</value>
+  </data>
+<data name="HexSettings_Header" xml:space="preserve">
+    <value>إعدادات محرر HEX</value>
+  </data>
+<data name="HexSettings_Display_Title" xml:space="preserve">
+    <value>📺 خيارات العرض</value>
+  </data>
+<data name="HexSettings_Display_Header" xml:space="preserve">
+    <value>📺 خيارات العرض</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>إظهار أرقام الأسطر (عنصر نائب)</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+    <value>هذه الميزة غير متاحة بعد في V2</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>إظهار أرقام الأسطر (عنصر نائب)</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>هذه الميزة غير متاحة بعد في V2</value>
+  </data>
+<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+    <value>إظهار تلميح البايت</value>
+  </data>
+<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>إظهار تلميح البايت</value>
+  </data>
+<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>البايتات في كل سطر:</value>
+  </data>
+<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>مقياس التكبير:</value>
+  </data>
+<data name="HexSettings_Editing_Title" xml:space="preserve">
+    <value>✏️ خيارات التحرير</value>
+  </data>
+<data name="HexSettings_Editing_Header" xml:space="preserve">
+    <value>✏️ خيارات التحرير</value>
+  </data>
+<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>وضع القراءة فقط</value>
+  </data>
+<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+    <value>السماح بالإدراج في أي مكان</value>
+  </data>
+<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>السماح بالإدراج في أي مكان</value>
+  </data>
+<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+    <value>السماح بحذف البايت</value>
+  </data>
+<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>السماح بحذف البايت</value>
+  </data>
+<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+    <value>السماح بتمديد الملف</value>
+  </data>
+<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>السماح بتمديد الملف</value>
+  </data>
+<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+    <value>الإلحاق يحتاج إلى تأكيد</value>
+  </data>
+<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>الإلحاق يحتاج إلى تأكيد</value>
+  </data>
+<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+    <value>وضع التحرير:</value>
+  </data>
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>الكتابة فوق</value>
+  </data>
+<data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>إدراج</value>
+  </data>
+<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+    <value>وضع المؤشر:</value>
+  </data>
+<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+    <value>📋 خيارات الحافظة</value>
+  </data>
+<data name="HexSettings_Clipboard_Header" xml:space="preserve">
+    <value>📋 خيارات الحافظة</value>
+  </data>
+<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+    <value>وضع النسخ الافتراضي:</value>
+  </data>
+<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>سلسلة Hex</value>
+  </data>
+<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>مصفوفة البايتات</value>
+  </data>
+<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>كود C#</value>
+  </data>
+<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>كود VB</value>
+  </data>
+<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>كود C</value>
+  </data>
+<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>كود Java</value>
+  </data>
+<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+    <value>📎 خيارات السحب والإفلات</value>
+  </data>
+<data name="HexSettings_DragDrop_Header" xml:space="preserve">
+    <value>📎 خيارات السحب والإفلات</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+    <value>السماح بإسقاط الملف</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>السماح بإسقاط الملف</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+    <value>تأكيد إسقاط الملف</value>
+  </data>
+<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>تأكيد إسقاط الملف</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+    <value>السماح بإسقاط النص</value>
+  </data>
+<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>السماح بإسقاط النص</value>
+  </data>
+<data name="HexSettings_Highlight_Title" xml:space="preserve">
+    <value>🎨 التمييز والتحديد</value>
+  </data>
+<data name="HexSettings_Highlight_Header" xml:space="preserve">
+    <value>🎨 التمييز والتحديد</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>تمييز تلقائي لبايت التحديد</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+    <value>تحديد تلقائي لنفس البايت (نقر مزدوج)</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>تحديد تلقائي لنفس البايت (نقر مزدوج)</value>
+  </data>
+<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+    <value>السماح بالتنقل بنقر العلامة</value>
+  </data>
+<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>السماح بالتنقل بنقر العلامة</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+    <value>لون التمييز التلقائي:</value>
+  </data>
+<data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>لون التمييز التلقائي:</value>
+  </data>
+<data name="HexSettings_Search_Title" xml:space="preserve">
+    <value>🔍 خيارات البحث</value>
+  </data>
+<data name="HexSettings_Search_Header" xml:space="preserve">
+    <value>🔍 خيارات البحث</value>
+  </data>
+<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+    <value>تمكين البحث المتوازي</value>
+  </data>
+<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>تمكين البحث المتوازي</value>
+  </data>
+<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+    <value>استخدام البحث بالحرف البدل (??)</value>
+  </data>
+<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>استخدام البحث بالحرف البدل (??)</value>
+  </data>
+<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>تمييز جميع المطابقات</value>
+  </data>
+<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>حد نتائج البحث:</value>
+  </data>
+<data name="HexSettings_Statistics_Title" xml:space="preserve">
+    <value>📊 الإحصائيات</value>
+  </data>
+<data name="HexSettings_Statistics_Header" xml:space="preserve">
+    <value>📊 الإحصائيات</value>
+  </data>
+<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+    <value>السماح بعد البايتات</value>
+  </data>
+<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+    <value>السماح بعد البايتات</value>
+  </data>
+<data name="HexSettings_Advanced_Title" xml:space="preserve">
+    <value>⚙️ خيارات متقدمة</value>
+  </data>
+<data name="HexSettings_Advanced_Header" xml:space="preserve">
+    <value>⚙️ خيارات متقدمة</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+    <value>إزاحة البايت لليسار:</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+    <value>إزاحة البايت لليسار:</value>
+  </data>
+<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>حفظ الحالة الحالية</value>
+  </data>
+<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>تحميل الحالة المحفوظة</value>
+  </data>
+<data name="HexSettings_ResetButton" xml:space="preserve">
+    <value>🔄 إعادة تعيين الكل إلى الافتراضيات</value>
+  </data>
+<data name="HexSettings_Button_Reset" xml:space="preserve">
+    <value>🔄 إعادة تعيين الكل إلى الافتراضيات</value>
+  </data>
+<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+    <value>شريط الحالة</value>
+  </data>
+<data name="HexSettings_Colors_Title" xml:space="preserve">
+    <value>الألوان</value>
+  </data>
+<data name="HexSettings_Behavior_Title" xml:space="preserve">
+    <value>السلوك</value>
+  </data>
+<data name="HexSettings_Data_Title" xml:space="preserve">
+    <value>البيانات</value>
+  </data>
+<data name="HexSettings_Visual_Title" xml:space="preserve">
+    <value>البصري</value>
+  </data>
+<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+    <value>لوحة المفاتيح</value>
+  </data>
+<data name="HexSettings_TBL_Title" xml:space="preserve">
+    <value>جدول الأحرف</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>حفظ الحالة</value></data>
+<data name="HexSettings_LoadButton" xml:space="preserve"><value>تحميل الحالة</value></data>
 </root>

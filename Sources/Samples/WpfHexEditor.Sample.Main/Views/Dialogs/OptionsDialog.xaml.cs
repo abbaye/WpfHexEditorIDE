@@ -66,29 +66,54 @@ namespace WpfHexEditor.Sample.Main.Views.Dialogs
             // Sort by name for easy navigation
             languages = languages.OrderBy(l => l.Name).ToList();
 
+            // Insert "System Language" at the top of the list
+            var systemLanguage = new LanguageInfo
+            {
+                Flag = "🌐",
+                Code = "system",
+                Name = GetResourceString("Options_Language_SystemLanguage_Name", "System Language"),
+                NativeName = GetResourceString("Options_Language_SystemLanguage_Description", "Use system language")
+            };
+            languages.Insert(0, systemLanguage);
+
             LanguageListView.ItemsSource = languages;
 
-            // Select current language
-            var currentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
-            System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] Current UI Culture: {currentCulture.Name} ({currentCulture.NativeName})");
-            var currentLang = languages.FirstOrDefault(l =>
-                l.Code == currentCulture.Name ||
-                l.Code.StartsWith(currentCulture.TwoLetterISOLanguageName) ||
-                currentCulture.Name.StartsWith(l.Code));
+            // Check if user has a saved language preference
+            var savedCulture = Properties.Settings.Default.PreferredCulture;
+            LanguageInfo currentLang;
 
-            if (currentLang == null)
+            if (string.IsNullOrEmpty(savedCulture))
             {
-                // Default to English if current culture not found
-                System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] No matching language found for {currentCulture.Name}, defaulting to English");
-                currentLang = languages.FirstOrDefault(l => l.Code == "en") ?? languages.First();
+                // No saved preference - select "System Language"
+                System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] No saved culture preference, selecting System Language");
+                currentLang = systemLanguage;
+                SelectedCulture = CultureInfo.InstalledUICulture;
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] Matched language: {currentLang.Code} ({currentLang.Name})");
+                // Select current language
+                var currentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
+                System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] Current UI Culture: {currentCulture.Name} ({currentCulture.NativeName})");
+                currentLang = languages.FirstOrDefault(l =>
+                    l.Code == currentCulture.Name ||
+                    l.Code.StartsWith(currentCulture.TwoLetterISOLanguageName) ||
+                    currentCulture.Name.StartsWith(l.Code));
+
+                if (currentLang == null || currentLang.Code == "system")
+                {
+                    // Default to English if current culture not found
+                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] No matching language found for {currentCulture.Name}, defaulting to English");
+                    currentLang = languages.FirstOrDefault(l => l.Code == "en") ?? languages.First();
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LoadLanguages] Matched language: {currentLang.Code} ({currentLang.Name})");
+                }
+
+                SelectedCulture = new CultureInfo(currentLang.Code);
             }
 
             LanguageListView.SelectedItem = currentLang;
-            SelectedCulture = new CultureInfo(currentLang.Code);
 
             // Update current language display
             CurrentLanguageFlag.Text = currentLang.Flag;
@@ -157,7 +182,24 @@ namespace WpfHexEditor.Sample.Main.Views.Dialogs
         {
             if (LanguageListView.SelectedItem is LanguageInfo selected)
             {
-                var newCulture = new CultureInfo(selected.Code);
+                CultureInfo newCulture;
+
+                // Check if "System Language" is selected
+                if (selected.Code == "system")
+                {
+                    // Use the system's installed UI culture
+                    newCulture = CultureInfo.InstalledUICulture;
+                    System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LanguageListView_SelectionChanged] System Language selected, using: {newCulture.Name}");
+
+                    // Clear the saved culture preference so the system language is used
+                    Properties.Settings.Default.PreferredCulture = string.Empty;
+                    Properties.Settings.Default.Save();
+                }
+                else
+                {
+                    newCulture = new CultureInfo(selected.Code);
+                }
+
                 var oldCulture = DynamicResourceManager.CurrentCulture;
 
                 // Only change if it's actually different
@@ -166,7 +208,7 @@ namespace WpfHexEditor.Sample.Main.Views.Dialogs
                     System.Diagnostics.Debug.WriteLine($"[OptionsDialog.LanguageListView_SelectionChanged] Instantly changing culture from '{oldCulture.Name}' to '{newCulture.Name}'");
 
                     // Change culture instantly - no confirmation needed!
-                    DynamicResourceManager.ChangeCulture(newCulture, persistent: true);
+                    DynamicResourceManager.ChangeCulture(newCulture, persistent: selected.Code != "system");
 
                     // Update the current language display immediately
                     CurrentLanguageFlag.Text = selected.Flag;
@@ -199,6 +241,22 @@ namespace WpfHexEditor.Sample.Main.Views.Dialogs
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+        }
+
+        /// <summary>
+        /// Helper method to get a resource string with fallback
+        /// </summary>
+        private string GetResourceString(string key, string fallback)
+        {
+            try
+            {
+                var value = Properties.Resources.ResourceManager.GetString(key);
+                return string.IsNullOrEmpty(value) ? fallback : value;
+            }
+            catch
+            {
+                return fallback;
+            }
         }
 
         private void LoadCopyModes()

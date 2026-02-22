@@ -79,8 +79,8 @@ namespace WpfHexaEditor.Helpers
                 h += 360;
 
             // Clamp saturation and value to 0-1
-            s = Math.Clamp(s, 0.0, 1.0);
-            v = Math.Clamp(v, 0.0, 1.0);
+            s = Math.Max(0.0, Math.Min(1.0, s));
+            v = Math.Max(0.0, Math.Min(1.0, v));
 
             // Calculate chroma and intermediate values
             double c = v * s;

@@ -12,13 +12,23 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using WpfHexEditor.Sample.Main.Helpers;
-using WpfHexEditor.Sample.Main.ViewModels;
+using WpfHexaEditor.Helpers;
 
-namespace WpfHexEditor.Sample.Main.Views.Components
+namespace WpfHexaEditor.Controls
 {
     /// <summary>
     /// Advanced ColorPicker control with HSV selector, RGB sliders, hex input, and color palettes.
+    ///
+    /// <para><b>Theme Integration:</b></para>
+    /// <para>
+    /// This control uses the following DynamicResources for theming:
+    /// - BorderBrush: Border color for control frame
+    /// - SurfaceElevatedBrush: Background for hex display section
+    /// - ForegroundBrush: Text color for hex display
+    ///
+    /// If your application doesn't define these resources, built-in fallback values are used.
+    /// To customize colors, define these brushes in your App.xaml or theme dictionary.
+    /// </para>
     /// </summary>
     public partial class ColorPicker : UserControl
     {
@@ -268,8 +278,8 @@ namespace WpfHexEditor.Sample.Main.Views.Components
                 return;
 
             // Calculate saturation and value from mouse position
-            double saturation = Math.Clamp(position.X / HsvCanvas.ActualWidth, 0, 1);
-            double value = Math.Clamp(1 - (position.Y / HsvCanvas.ActualHeight), 0, 1);
+            double saturation = Math.Max(0, Math.Min(1, position.X / HsvCanvas.ActualWidth));
+            double value = Math.Max(0, Math.Min(1, 1 - (position.Y / HsvCanvas.ActualHeight)));
 
             // Update ViewModel (will trigger color update)
             ViewModel.Saturation = saturation;
@@ -285,8 +295,8 @@ namespace WpfHexEditor.Sample.Main.Views.Components
             double x = ViewModel.Saturation * HsvCanvas.ActualWidth - 6;  // -6 to center thumb
             double y = (1 - ViewModel.Value) * HsvCanvas.ActualHeight - 6;
 
-            Canvas.SetLeft(HsvThumb, Math.Clamp(x, 0, HsvCanvas.ActualWidth - 12));
-            Canvas.SetTop(HsvThumb, Math.Clamp(y, 0, HsvCanvas.ActualHeight - 12));
+            Canvas.SetLeft(HsvThumb, Math.Max(0, Math.Min(HsvCanvas.ActualWidth - 12, x)));
+            Canvas.SetTop(HsvThumb, Math.Max(0, Math.Min(HsvCanvas.ActualHeight - 12, y)));
         }
 
         private void UpdateHsvCanvasBackground()
