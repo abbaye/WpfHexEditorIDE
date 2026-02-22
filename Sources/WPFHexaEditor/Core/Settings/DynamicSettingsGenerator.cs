@@ -493,6 +493,26 @@ namespace WpfHexaEditor.Core.Settings
         }
 
         /// <summary>
+        /// Gets the sort order for parent categories.
+        /// </summary>
+        private int GetCategoryOrder(string category)
+        {
+            return category switch
+            {
+                "StatusBar" => 1,
+                "Display" => 2,
+                "Colors" => 3,
+                "ScrollMarkers" => 4,
+                "Behavior" => 5,
+                "Data" => 6,
+                "Visual" => 7,
+                "Keyboard" => 8,
+                "BarChart" => 9,
+                _ => 99 // Unknown categories last
+            };
+        }
+
+        /// <summary>
         /// Creates action buttons (Save/Load/Reset) at the bottom of the panel.
         /// </summary>
         private StackPanel CreateActionButtons()
