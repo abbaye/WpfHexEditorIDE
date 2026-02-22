@@ -1,20 +1,20 @@
 {
   "formatName": "MessagePack",
   "version": "1.0",
-  "extensions": [ ".msgpack", ".mp" ],
+  "extensions": [
+    ".msgpack",
+    ".mp"
+  ],
   "description": "MessagePack binary serialization format",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "data",

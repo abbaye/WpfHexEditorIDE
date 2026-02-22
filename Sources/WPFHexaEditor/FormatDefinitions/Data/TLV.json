@@ -1,20 +1,19 @@
 {
   "formatName": "Tag-Length-Value",
   "version": "1.0",
-  "extensions": [ ".tlv" ],
+  "extensions": [
+    ".tlv"
+  ],
   "description": "Generic Tag-Length-Value encoding format",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "data",

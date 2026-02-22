@@ -1,20 +1,19 @@
 {
   "formatName": "PFRO Registry Data",
   "version": "1.0",
-  "extensions": [ "" ],
+  "extensions": [
+    ""
+  ],
   "description": "PendingFileRenameOperations - Delayed file operations",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

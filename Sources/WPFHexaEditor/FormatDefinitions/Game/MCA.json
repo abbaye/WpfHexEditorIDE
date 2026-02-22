@@ -1,20 +1,19 @@
 {
   "formatName": "Minecraft Anvil Region",
   "version": "1.0",
-  "extensions": [ ".mca" ],
+  "extensions": [
+    ".mca"
+  ],
   "description": "Minecraft Anvil world region format",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

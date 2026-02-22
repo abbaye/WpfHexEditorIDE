@@ -1,11 +1,14 @@
 {
   "formatName": "VP9 Video",
   "version": "1.0",
-  "extensions": [ ".vp9", ".ivf" ],
+  "extensions": [
+    ".vp9",
+    ".ivf"
+  ],
   "description": "VP9 video codec, successor to VP8 developed by Google",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "44 4B 49 46",
+    "signature": "444B4946",
     "offset": 0,
     "required": true
   },

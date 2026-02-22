@@ -1,20 +1,20 @@
 {
   "formatName": "Protocol Buffers",
   "version": "1.0",
-  "extensions": [ ".pb", ".protobuf" ],
+  "extensions": [
+    ".pb",
+    ".protobuf"
+  ],
   "description": "Google Protocol Buffers binary serialization format",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "data",

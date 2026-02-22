@@ -1,11 +1,14 @@
 {
   "formatName": "Ogg Video",
   "version": "1.0",
-  "extensions": [ ".ogv", ".ogm" ],
+  "extensions": [
+    ".ogv",
+    ".ogm"
+  ],
   "description": "Ogg container format for video, part of the Xiph.Org Foundation's Ogg project",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "4F 67 67 53",
+    "signature": "4F676753",
     "offset": 0,
     "required": true
   },

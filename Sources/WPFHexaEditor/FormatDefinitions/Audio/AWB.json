@@ -1,11 +1,13 @@
 {
   "formatName": "AMR-WB Audio",
   "version": "1.0",
-  "extensions": [ ".awb" ],
+  "extensions": [
+    ".awb"
+  ],
   "description": "Adaptive Multi-Rate Wideband audio codec for improved speech quality",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "23 21 41 4D 52 2D 57 42 0A",
+    "signature": "2321414D522D57420A",
     "offset": 0,
     "required": true
   },

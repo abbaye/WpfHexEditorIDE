@@ -1,20 +1,19 @@
 {
   "formatName": "Microsoft Access Form",
   "version": "1.0",
-  "extensions": [ ".maf" ],
+  "extensions": [
+    ".maf"
+  ],
   "description": "Microsoft Access form module file",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "header",

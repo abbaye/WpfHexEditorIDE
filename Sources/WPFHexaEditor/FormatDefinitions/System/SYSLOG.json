@@ -1,20 +1,20 @@
 {
   "formatName": "Syslog Binary Format",
   "version": "1.0",
-  "extensions": [ ".syslog", ".log" ],
+  "extensions": [
+    ".syslog",
+    ".log"
+  ],
   "description": "Unix syslog binary format - System logging",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

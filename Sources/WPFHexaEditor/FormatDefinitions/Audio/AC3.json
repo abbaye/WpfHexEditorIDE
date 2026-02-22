@@ -1,11 +1,13 @@
 {
   "formatName": "Dolby Digital AC-3",
   "version": "1.0",
-  "extensions": [ ".ac3" ],
+  "extensions": [
+    ".ac3"
+  ],
   "description": "Dolby Digital (AC-3) audio codec for surround sound",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "0B 77",
+    "signature": "0B77",
     "offset": 0,
     "required": true
   },

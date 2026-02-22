@@ -1,20 +1,20 @@
 {
   "formatName": "SQLite Shared Memory",
   "version": "1.0",
-  "extensions": [ ".shm", "-shm" ],
+  "extensions": [
+    ".shm",
+    "-shm"
+  ],
   "description": "SQLite shared-memory file for WAL mode coordination",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "header",

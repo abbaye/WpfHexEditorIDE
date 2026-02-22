@@ -1,11 +1,13 @@
 {
   "formatName": "DSD Stream File",
   "version": "1.0",
-  "extensions": [ ".dsf" ],
+  "extensions": [
+    ".dsf"
+  ],
   "description": "Sony DSD Stream File format for Direct Stream Digital audio",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "44 53 44 20",
+    "signature": "44534420",
     "offset": 0,
     "required": true
   },

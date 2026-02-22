@@ -1,11 +1,13 @@
 {
   "formatName": "DSD Interchange File Format",
   "version": "1.0",
-  "extensions": [ ".dff" ],
+  "extensions": [
+    ".dff"
+  ],
   "description": "Philips DSDIFF format for Direct Stream Digital audio interchange",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "46 52 4D 38",
+    "signature": "46524D38",
     "offset": 0,
     "required": true
   },

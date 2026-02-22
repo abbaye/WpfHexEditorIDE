@@ -1,11 +1,13 @@
 {
   "formatName": "Xvid Video",
   "version": "1.0",
-  "extensions": [ ".xvid" ],
+  "extensions": [
+    ".xvid"
+  ],
   "description": "Xvid MPEG-4 video codec, typically stored in AVI container",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "52 49 46 46",
+    "signature": "52494646",
     "offset": 0,
     "required": true
   },

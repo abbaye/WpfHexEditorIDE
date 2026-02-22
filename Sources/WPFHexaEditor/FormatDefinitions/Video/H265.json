@@ -1,11 +1,15 @@
 {
   "formatName": "Raw H.265/HEVC",
   "version": "1.0",
-  "extensions": [ ".h265", ".265", ".hevc" ],
+  "extensions": [
+    ".h265",
+    ".265",
+    ".hevc"
+  ],
   "description": "Raw H.265/HEVC (High Efficiency Video Coding) elementary stream",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "00 00 00 01",
+    "signature": "00000001",
     "offset": 0,
     "required": true
   },

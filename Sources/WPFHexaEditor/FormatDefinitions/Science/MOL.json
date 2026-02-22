@@ -1,14 +1,46 @@
 {
   "formatName": "MDL Molfile",
   "version": "1.0",
-  "extensions": [ ".mol" ],
+  "extensions": [
+    ".mol"
+  ],
   "description": "MDL Molfile chemical structure format",
   "author": "WPFHexaEditor Team",
-  "detection": { "signature": "", "offset": 0, "required": false },
-  "variables": { "currentOffset": 0 },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false
+  },
+  "variables": {
+    "currentOffset": 0
+  },
   "blocks": [
-    { "type": "field", "name": "Molecule Name", "offset": 0, "length": 80, "color": "#FF6B6B", "opacity": 0.4, "description": "First line: molecule name" },
-    { "type": "field", "name": "Header Line 2", "offset": 80, "length": 80, "color": "#4ECDC4", "opacity": 0.3, "description": "User/program/date/etc" },
-    { "type": "field", "name": "Comment", "offset": 160, "length": 80, "color": "#95E1D3", "opacity": 0.3, "description": "Comment line" }
+    {
+      "type": "field",
+      "name": "Molecule Name",
+      "offset": 0,
+      "length": 80,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "First line: molecule name"
+    },
+    {
+      "type": "field",
+      "name": "Header Line 2",
+      "offset": 80,
+      "length": 80,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "User/program/date/etc"
+    },
+    {
+      "type": "field",
+      "name": "Comment",
+      "offset": 160,
+      "length": 80,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Comment line"
+    }
   ]
 }

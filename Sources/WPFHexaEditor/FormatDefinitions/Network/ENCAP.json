@@ -1,20 +1,19 @@
 {
   "formatName": "Encapsulated Packet",
   "version": "1.0",
-  "extensions": [ ".encap" ],
+  "extensions": [
+    ".encap"
+  ],
   "description": "Generic encapsulated packet format for tunneling protocols",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

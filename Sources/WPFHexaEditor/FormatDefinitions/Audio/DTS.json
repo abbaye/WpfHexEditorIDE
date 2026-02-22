@@ -1,11 +1,14 @@
 {
   "formatName": "DTS Audio",
   "version": "1.0",
-  "extensions": [ ".dts", ".dtshd" ],
+  "extensions": [
+    ".dts",
+    ".dtshd"
+  ],
   "description": "DTS (Digital Theater Systems) multi-channel audio codec",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "7F FE 80 01",
+    "signature": "7FFE8001",
     "offset": 0,
     "required": true
   },

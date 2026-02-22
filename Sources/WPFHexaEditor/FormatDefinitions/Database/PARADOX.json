@@ -1,20 +1,20 @@
 {
   "formatName": "Paradox Database",
   "version": "1.0",
-  "extensions": [ ".db", ".px" ],
+  "extensions": [
+    ".db",
+    ".px"
+  ],
   "description": "Borland Paradox database table format",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "header",

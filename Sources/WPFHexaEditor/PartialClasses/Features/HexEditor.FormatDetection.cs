@@ -203,10 +203,8 @@ namespace WpfHexaEditor
             try
             {
                 // STEP 1: Load built-in embedded format definitions (always available)
-                System.Diagnostics.Debug.WriteLine("Loading embedded format definitions...");
                 int embeddedCount = LoadEmbeddedFormatDefinitions();
                 totalLoaded += embeddedCount;
-                System.Diagnostics.Debug.WriteLine($"✓ Loaded {embeddedCount} embedded formats");
 
                 // STEP 2: Load external formats from directory next to executable (optional)
                 // Allows users to override built-in formats or add new ones
@@ -216,10 +214,8 @@ namespace WpfHexaEditor
 
                 if (Directory.Exists(externalDir))
                 {
-                    System.Diagnostics.Debug.WriteLine($"Loading external formats from: {externalDir}");
                     int externalCount = LoadFormatDefinitions(externalDir);
                     totalLoaded += externalCount;
-                    System.Diagnostics.Debug.WriteLine($"✓ Loaded {externalCount} external formats");
 
                     // Set FormatDefinitionsPath for UI display
                     if (string.IsNullOrWhiteSpace(FormatDefinitionsPath))
@@ -237,21 +233,13 @@ namespace WpfHexaEditor
 
                 if (Directory.Exists(userDir))
                 {
-                    System.Diagnostics.Debug.WriteLine($"Loading user custom formats from: {userDir}");
                     int userCount = LoadFormatDefinitions(userDir);
                     totalLoaded += userCount;
-                    System.Diagnostics.Debug.WriteLine($"✓ Loaded {userCount} user custom formats");
                 }
-
-                System.Diagnostics.Debug.WriteLine($"═══════════════════════════════════════");
-                System.Diagnostics.Debug.WriteLine($"Total formats loaded: {totalLoaded}");
-                System.Diagnostics.Debug.WriteLine($"  • Embedded: {embeddedCount}");
-                System.Diagnostics.Debug.WriteLine($"  • External: {totalLoaded - embeddedCount}");
-                System.Diagnostics.Debug.WriteLine($"═══════════════════════════════════════");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error initializing format detection: {ex.Message}");
+                // Silently ignore format loading errors
             }
         }
 
@@ -328,19 +316,9 @@ namespace WpfHexaEditor
             {
                 var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
-                // Debug: List ALL resource names to understand the naming pattern
-                var allResourceNames = assembly.GetManifestResourceNames();
-                System.Diagnostics.Debug.WriteLine($"═══ Total manifest resources: {allResourceNames.Length} ═══");
-                foreach (var name in allResourceNames.Take(10))
-                {
-                    System.Diagnostics.Debug.WriteLine($"  Resource: {name}");
-                }
-
                 var resourceNames = assembly.GetManifestResourceNames()
                     .Where(r => r.Contains("FormatDefinitions") && r.EndsWith(".json"))
                     .ToList();
-
-                System.Diagnostics.Debug.WriteLine($"Found {resourceNames.Count} embedded format resource(s)");
 
                 foreach (var resourceName in resourceNames)
                 {
@@ -349,7 +327,6 @@ namespace WpfHexaEditor
                         using var stream = assembly.GetManifestResourceStream(resourceName);
                         if (stream == null)
                         {
-                            System.Diagnostics.Debug.WriteLine($"⚠ Failed to load embedded resource: {resourceName}");
                             continue;
                         }
 
@@ -364,7 +341,7 @@ namespace WpfHexaEditor
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"⚠ Error loading embedded format {resourceName}: {ex.Message}");
+                        // Silently ignore format loading errors
                     }
                 }
 
@@ -372,7 +349,7 @@ namespace WpfHexaEditor
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ Error loading embedded formats: {ex.Message}");
+                // Silently ignore format loading errors
             }
 
             return count;
@@ -537,7 +514,7 @@ namespace WpfHexaEditor
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error applying format: {ex.Message}");
+                // Silently ignore format application errors
             }
 
             return false;

@@ -1,20 +1,19 @@
 {
   "formatName": "InterBase/Firebird Database (Legacy)",
   "version": "1.0",
-  "extensions": [ ".gdb" ],
+  "extensions": [
+    ".gdb"
+  ],
   "description": "Legacy InterBase/Firebird database format",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "header",

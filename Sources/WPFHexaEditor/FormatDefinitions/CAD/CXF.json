@@ -1,20 +1,19 @@
 {
   "formatName": "Cloud Point File",
   "version": "1.0",
-  "extensions": [ ".cxf" ],
+  "extensions": [
+    ".cxf"
+  ],
   "description": "3D point cloud exchange format",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

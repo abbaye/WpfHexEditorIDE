@@ -6,9 +6,7 @@
   "author": "WPFHexaEditor Team",
 
   "detection": {
-    "signature": "236465
-
-66696E65",
+    "signature": "23646566696E65",
     "offset": 0,
     "required": true
   },

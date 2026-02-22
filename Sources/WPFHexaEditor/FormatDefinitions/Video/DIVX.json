@@ -1,11 +1,13 @@
 {
   "formatName": "DivX Video",
   "version": "1.0",
-  "extensions": [ ".divx" ],
+  "extensions": [
+    ".divx"
+  ],
   "description": "DivX MPEG-4 Part 2 video codec container format",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "52 49 46 46",
+    "signature": "52494646",
     "offset": 0,
     "required": true
   },

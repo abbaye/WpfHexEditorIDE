@@ -1,11 +1,13 @@
 {
   "formatName": "Windows Media Audio",
   "version": "1.0",
-  "extensions": [ ".wma" ],
+  "extensions": [
+    ".wma"
+  ],
   "description": "Microsoft Windows Media Audio lossy audio codec",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "30 26 B2 75 8E 66 CF 11 A6 D9 00 AA 00 62 CE 6C",
+    "signature": "3026B2758E66CF11A6D900AA0062CE6C",
     "offset": 0,
     "required": true
   },

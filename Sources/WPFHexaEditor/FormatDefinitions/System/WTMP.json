@@ -1,20 +1,19 @@
 {
   "formatName": "Unix WTMP",
   "version": "1.0",
-  "extensions": [ "" ],
+  "extensions": [
+    ""
+  ],
   "description": "Unix WTMP file - Historical user login records",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

@@ -1,14 +1,47 @@
 {
   "formatName": "miniSEED Seismic Data",
   "version": "1.0",
-  "extensions": [ ".mseed", ".miniseed" ],
+  "extensions": [
+    ".mseed",
+    ".miniseed"
+  ],
   "description": "Mini-SEED seismic data format (subset of SEED)",
   "author": "WPFHexaEditor Team",
-  "detection": { "signature": "", "offset": 0, "required": false },
-  "variables": { "currentOffset": 0 },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false
+  },
+  "variables": {
+    "currentOffset": 0
+  },
   "blocks": [
-    { "type": "field", "name": "Sequence Number", "offset": 0, "length": 6, "color": "#FF6B6B", "opacity": 0.4, "description": "ASCII sequence number" },
-    { "type": "field", "name": "Record Indicator", "offset": 6, "length": 1, "color": "#4ECDC4", "opacity": 0.3, "description": "Data record indicator (D/R/Q)" },
-    { "type": "field", "name": "Reserved", "offset": 7, "length": 1, "color": "#95E1D3", "opacity": 0.3, "description": "Reserved byte" }
+    {
+      "type": "field",
+      "name": "Sequence Number",
+      "offset": 0,
+      "length": 6,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ASCII sequence number"
+    },
+    {
+      "type": "field",
+      "name": "Record Indicator",
+      "offset": 6,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Data record indicator (D/R/Q)"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 7,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Reserved byte"
+    }
   ]
 }

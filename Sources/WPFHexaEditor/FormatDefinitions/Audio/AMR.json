@@ -1,11 +1,13 @@
 {
   "formatName": "Adaptive Multi-Rate",
   "version": "1.0",
-  "extensions": [ ".amr" ],
+  "extensions": [
+    ".amr"
+  ],
   "description": "AMR audio codec optimized for speech coding, used in GSM and 3G mobile networks",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "23 21 41 4D 52 0A",
+    "signature": "2321414D520A",
     "offset": 0,
     "required": true
   },

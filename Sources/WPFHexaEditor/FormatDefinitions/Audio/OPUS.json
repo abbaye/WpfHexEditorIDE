@@ -1,11 +1,13 @@
 {
   "formatName": "Opus Audio",
   "version": "1.0",
-  "extensions": [ ".opus" ],
+  "extensions": [
+    ".opus"
+  ],
   "description": "Opus lossy audio codec designed for interactive speech and audio transmission",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "4F 67 67 53",
+    "signature": "4F676753",
     "offset": 0,
     "required": true
   },

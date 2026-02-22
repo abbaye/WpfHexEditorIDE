@@ -1,11 +1,16 @@
 {
   "formatName": "Flash MP4 Video",
   "version": "1.0",
-  "extensions": [ ".f4v", ".f4p", ".f4a", ".f4b" ],
+  "extensions": [
+    ".f4v",
+    ".f4p",
+    ".f4a",
+    ".f4b"
+  ],
   "description": "Adobe Flash MP4-based video container format",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "66 74 79 70 66 34 76",
+    "signature": "66747970663476",
     "offset": 4,
     "required": true
   },

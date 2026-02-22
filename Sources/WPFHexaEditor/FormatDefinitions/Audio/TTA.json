@@ -1,11 +1,13 @@
 {
   "formatName": "True Audio",
   "version": "1.0",
-  "extensions": [ ".tta" ],
+  "extensions": [
+    ".tta"
+  ],
   "description": "True Audio lossless audio compression format",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "54 54 41 31",
+    "signature": "54544131",
     "offset": 0,
     "required": true
   },

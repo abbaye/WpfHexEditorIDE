@@ -1,11 +1,13 @@
 {
   "formatName": "Material Exchange Format",
   "version": "1.0",
-  "extensions": [ ".mxf" ],
+  "extensions": [
+    ".mxf"
+  ],
   "description": "SMPTE standard container format for professional digital video and audio media",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "06 0E 2B 34 02 05 01 01 0D 01 02 01 01 02",
+    "signature": "060E2B34020501010D0102010102",
     "offset": 0,
     "required": true
   },

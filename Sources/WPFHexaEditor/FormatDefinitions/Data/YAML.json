@@ -1,20 +1,20 @@
 {
   "formatName": "YAML (Binary)",
   "version": "1.0",
-  "extensions": [ ".yaml", ".yml" ],
+  "extensions": [
+    ".yaml",
+    ".yml"
+  ],
   "description": "YAML Ain't Markup Language data serialization",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "data",

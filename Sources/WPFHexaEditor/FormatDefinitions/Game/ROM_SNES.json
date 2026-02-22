@@ -1,12 +1,29 @@
 {
   "formatName": "Super Nintendo ROM",
   "version": "1.0",
-  "extensions": [ ".smc", ".sfc" ],
+  "extensions": [
+    ".smc",
+    ".sfc"
+  ],
   "description": "Super Nintendo Entertainment System ROM",
   "author": "WPFHexaEditor Team",
-  "detection": { "signature": "", "offset": 0, "required": false },
-  "variables": { "currentOffset": 0 },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false
+  },
+  "variables": {
+    "currentOffset": 0
+  },
   "blocks": [
-    { "type": "field", "name": "Vectors", "offset": 65472, "length": 64, "color": "#4ECDC4", "opacity": 0.3, "description": "Interrupt vectors" }
+    {
+      "type": "field",
+      "name": "Vectors",
+      "offset": 65472,
+      "length": 64,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Interrupt vectors"
+    }
   ]
 }

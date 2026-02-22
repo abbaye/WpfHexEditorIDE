@@ -1,20 +1,19 @@
 {
   "formatName": "Pro/ENGINEER Part",
   "version": "1.0",
-  "extensions": [ ".prt" ],
+  "extensions": [
+    ".prt"
+  ],
   "description": "Pro/ENGINEER (Creo) part file",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

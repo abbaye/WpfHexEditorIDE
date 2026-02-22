@@ -1,11 +1,15 @@
 {
   "formatName": "Raw H.264/AVC",
   "version": "1.0",
-  "extensions": [ ".h264", ".264", ".avc" ],
+  "extensions": [
+    ".h264",
+    ".264",
+    ".avc"
+  ],
   "description": "Raw H.264/MPEG-4 AVC elementary stream video format",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "00 00 00 01",
+    "signature": "00000001",
     "offset": 0,
     "required": true
   },

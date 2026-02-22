@@ -1,11 +1,15 @@
 {
   "formatName": "Advanced Systems Format",
   "version": "1.0",
-  "extensions": [ ".asf", ".wma", ".wmv" ],
+  "extensions": [
+    ".asf",
+    ".wma",
+    ".wmv"
+  ],
   "description": "Microsoft Advanced Systems Format multimedia container",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "30 26 B2 75 8E 66 CF 11 A6 D9 00 AA 00 62 CE 6C",
+    "signature": "3026B2758E66CF11A6D900AA0062CE6C",
     "offset": 0,
     "required": true
   },

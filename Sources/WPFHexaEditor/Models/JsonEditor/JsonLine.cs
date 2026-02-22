@@ -123,16 +123,4 @@ namespace WpfHexaEditor.Models.JsonEditor
             return $"Line {_lineNumber}: \"{_text}\"";
         }
     }
-
-    /// <summary>
-    /// Represents a syntax token for highlighting (used by JsonSyntaxHighlighter)
-    /// Will be defined properly when implementing syntax highlighting in Phase 2
-    /// </summary>
-    public class SyntaxToken
-    {
-        public int StartColumn { get; set; }
-        public int Length { get; set; }
-        public string Text { get; set; }
-        // Additional properties will be added in Phase 2
-    }
 }

@@ -1,20 +1,20 @@
 {
   "formatName": "TGA Image",
   "version": "1.0",
-  "extensions": [ ".tga", ".tpic" ],
+  "extensions": [
+    ".tga",
+    ".tpic"
+  ],
   "description": "Truevision TGA/TARGA image format",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "54525545564953494F4E2D5846494C452E",
-    "offset": -26,
+    "signature": "54525545564953494F4E2D5846494C45",
+    "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

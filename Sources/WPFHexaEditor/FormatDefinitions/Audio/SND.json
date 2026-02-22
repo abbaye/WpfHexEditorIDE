@@ -1,11 +1,13 @@
 {
   "formatName": "Sound File",
   "version": "1.0",
-  "extensions": [ ".snd" ],
+  "extensions": [
+    ".snd"
+  ],
   "description": "Generic sound file format used by various systems",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "2E 73 6E 64",
+    "signature": "2E736E64",
     "offset": 0,
     "required": true
   },

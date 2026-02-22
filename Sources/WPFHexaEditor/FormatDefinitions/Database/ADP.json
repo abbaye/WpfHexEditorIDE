@@ -1,20 +1,19 @@
 {
   "formatName": "Microsoft Access Project",
   "version": "1.0",
-  "extensions": [ ".adp" ],
+  "extensions": [
+    ".adp"
+  ],
   "description": "Microsoft Access project file for SQL Server",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "header",

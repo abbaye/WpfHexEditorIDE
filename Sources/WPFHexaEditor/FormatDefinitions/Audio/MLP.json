@@ -1,11 +1,13 @@
 {
   "formatName": "Meridian Lossless Packing",
   "version": "1.0",
-  "extensions": [ ".mlp" ],
+  "extensions": [
+    ".mlp"
+  ],
   "description": "Meridian Lossless Packing lossless audio compression for DVD-Audio",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "18 E3 71 F3",
+    "signature": "18E371F3",
     "offset": 4,
     "required": true
   },

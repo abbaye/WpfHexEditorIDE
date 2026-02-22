@@ -1,20 +1,19 @@
 {
   "formatName": "DOS COM Executable",
   "version": "1.0",
-  "extensions": [ ".com" ],
+  "extensions": [
+    ".com"
+  ],
   "description": "DOS Command file - Simple executable",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

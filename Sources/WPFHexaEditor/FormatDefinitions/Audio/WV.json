@@ -1,11 +1,13 @@
 {
   "formatName": "WavPack Audio",
   "version": "1.0",
-  "extensions": [ ".wv" ],
+  "extensions": [
+    ".wv"
+  ],
   "description": "WavPack hybrid lossless audio compression format",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "77 76 70 6B",
+    "signature": "7776706B",
     "offset": 0,
     "required": true
   },

@@ -1,20 +1,19 @@
 {
   "formatName": "TOML Configuration",
   "version": "1.0",
-  "extensions": [ ".toml" ],
+  "extensions": [
+    ".toml"
+  ],
   "description": "Tom's Obvious, Minimal Language configuration format",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "data",

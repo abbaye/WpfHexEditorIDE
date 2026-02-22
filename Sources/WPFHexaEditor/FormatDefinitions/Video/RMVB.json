@@ -1,11 +1,13 @@
 {
   "formatName": "RealMedia Variable Bitrate",
   "version": "1.0",
-  "extensions": [ ".rmvb" ],
+  "extensions": [
+    ".rmvb"
+  ],
   "description": "RealMedia variable bitrate container developed by RealNetworks",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "2E 52 4D 46",
+    "signature": "2E524D46",
     "offset": 0,
     "required": true
   },

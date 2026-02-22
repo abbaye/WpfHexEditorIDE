@@ -1,20 +1,20 @@
 {
   "formatName": "Python Compiled Bytecode",
   "version": "1.0",
-  "extensions": [ ".pyc", ".pyo" ],
+  "extensions": [
+    ".pyc",
+    ".pyo"
+  ],
   "description": "Python compiled bytecode file",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

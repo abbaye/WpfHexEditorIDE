@@ -1,12 +1,28 @@
 {
   "formatName": "Game Save File",
   "version": "1.0",
-  "extensions": [ ".sav" ],
+  "extensions": [
+    ".sav"
+  ],
   "description": "Generic game save file",
   "author": "WPFHexaEditor Team",
-  "detection": { "signature": "", "offset": 0, "required": false },
-  "variables": { "currentOffset": 0 },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false
+  },
+  "variables": {
+    "currentOffset": 0
+  },
   "blocks": [
-    { "type": "field", "name": "Save Data", "offset": 0, "length": 4, "color": "#4ECDC4", "opacity": 0.3, "description": "Game-specific format" }
+    {
+      "type": "field",
+      "name": "Save Data",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Game-specific format"
+    }
   ]
 }

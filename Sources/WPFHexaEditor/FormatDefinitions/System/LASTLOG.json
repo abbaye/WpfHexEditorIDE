@@ -1,20 +1,19 @@
 {
   "formatName": "Unix lastlog",
   "version": "1.0",
-  "extensions": [ "" ],
+  "extensions": [
+    ""
+  ],
   "description": "Unix lastlog file - Last login information per user",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

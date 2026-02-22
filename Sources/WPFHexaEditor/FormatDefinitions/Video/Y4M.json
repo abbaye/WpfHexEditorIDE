@@ -1,11 +1,13 @@
 {
   "formatName": "YUV4MPEG2",
   "version": "1.0",
-  "extensions": [ ".y4m" ],
+  "extensions": [
+    ".y4m"
+  ],
   "description": "YUV4MPEG2 uncompressed video format used by the mjpegtools project",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "59 55 56 34 4D 50 45 47 32",
+    "signature": "595556344D50454732",
     "offset": 0,
     "required": true
   },

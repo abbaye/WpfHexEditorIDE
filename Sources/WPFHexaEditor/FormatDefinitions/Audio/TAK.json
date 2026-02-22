@@ -1,11 +1,13 @@
 {
   "formatName": "Tom's Audio Kompressor",
   "version": "1.0",
-  "extensions": [ ".tak" ],
+  "extensions": [
+    ".tak"
+  ],
   "description": "TAK lossless audio compression format with high compression ratios",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "74 42 61 4B",
+    "signature": "7442614B",
     "offset": 0,
     "required": true
   },

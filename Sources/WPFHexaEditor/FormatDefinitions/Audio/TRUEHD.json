@@ -1,11 +1,14 @@
 {
   "formatName": "Dolby TrueHD",
   "version": "1.0",
-  "extensions": [ ".thd", ".truehd" ],
+  "extensions": [
+    ".thd",
+    ".truehd"
+  ],
   "description": "Dolby TrueHD lossless multi-channel audio codec for Blu-ray",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "18 E3 71 F3",
+    "signature": "18E371F3",
     "offset": 4,
     "required": true
   },

@@ -1,20 +1,19 @@
 {
   "formatName": "Windows Page File",
   "version": "1.0",
-  "extensions": [ ".sys" ],
+  "extensions": [
+    ".sys"
+  ],
   "description": "Windows page file (pagefile.sys) - Virtual memory swap",
   "author": "WPFHexaEditor Team",
-
   "detection": {
-    "signature": "",
+    "signature": "00",
     "offset": 0,
     "required": false
   },
-
   "variables": {
     "currentOffset": 0
   },
-
   "blocks": [
     {
       "type": "field",

@@ -1,11 +1,14 @@
 {
   "formatName": "Digital Video",
   "version": "1.0",
-  "extensions": [ ".dv", ".dif" ],
+  "extensions": [
+    ".dv",
+    ".dif"
+  ],
   "description": "Digital Video format for storing digital video, commonly used in camcorders",
   "author": "WPFHexaEditor Team",
   "detection": {
-    "signature": "1F 07 00",
+    "signature": "1F0700",
     "offset": 0,
     "required": true
   },
