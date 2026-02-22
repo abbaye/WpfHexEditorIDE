@@ -4,7 +4,7 @@
 
 **Legend:** ✅ = Available | ⚠️ = Limited/Untested | ❌ = Not Available | 🆕 = New in V2 | ⚡ = Performance improvement
 
-**Note (v2.6+):** V2 is now the **main control** called `HexEditor`. V1 is now `HexEditorLegacy` (deprecated).
+**Note (v2.6.0 - Feb 2026):** V1 Legacy code has been completely **removed** (17,093 LOC deleted). The project is now V2-only using the `HexEditor` control. Historical V1 comparisons below show the evolution from Legacy to modern architecture.
 
 ---
 
@@ -407,12 +407,13 @@ All shortcuts are configurable via AllowBuildin* properties.
 - ⚡ **Performance Boost** - Significant performance improvement in V2
 - 🔧 **Enhanced/Fixed** - Improved or fixed implementation in V2
 
-### V2 Compatibility
+### Historical Context
 
-- V2 is **100% backward compatible** with V1
-- Drop-in replacement: same namespace, same class name, same public API
-- Zero breaking changes
-- V1 is now `HexEditorLegacy` (deprecated), V2 is now `HexEditor` (main control)
+- **V2 Migration (v2.5.0 - v2.6.0):** V2 was designed as a drop-in replacement for V1
+- **100% API preservation:** Same namespace, same class name `HexEditor`, same public API
+- **Zero breaking changes** during migration period (12 months)
+- **V1 Removal (v2.6.0 - Feb 2026):** Legacy code completely removed (17,093 LOC)
+- **Current Status:** Project is now V2-only using modern architecture
 
 ### Feature Count
 
