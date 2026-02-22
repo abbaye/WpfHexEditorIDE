@@ -1,0 +1,12 @@
+{
+  "formatName": "MATLAB Data File",
+  "version": "1.0",
+  "extensions": [ ".mat" ],
+  "description": "MATLAB workspace data",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "4D41544C4142", "offset": 0, "required": true },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "signature", "name": "MATLAB Header", "offset": 0, "length": 6, "color": "#FF6B6B", "opacity": 0.4, "description": "MATLAB signature" }
+  ]
+}

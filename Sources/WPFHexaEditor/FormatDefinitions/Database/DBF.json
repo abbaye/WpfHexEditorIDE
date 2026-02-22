@@ -1,0 +1,47 @@
+{
+  "formatName": "dBASE Database",
+  "version": "1.0",
+  "extensions": [ ".dbf" ],
+  "description": "dBASE database file format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "03",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "DBF Version",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "dBASE III/IV version marker"
+    },
+    {
+      "type": "field",
+      "name": "Last Update Date",
+      "offset": 1,
+      "length": 3,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "YY MM DD"
+    },
+    {
+      "type": "field",
+      "name": "Record Count",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Number of records"
+    }
+  ]
+}

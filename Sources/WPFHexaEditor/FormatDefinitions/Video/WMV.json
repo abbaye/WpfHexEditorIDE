@@ -1,0 +1,38 @@
+{
+  "formatName": "Windows Media Video",
+  "version": "1.0",
+  "extensions": [ ".wmv", ".wma", ".asf" ],
+  "description": "Windows Media Video/Audio format (ASF container)",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "3026B2758E66CF11",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ASF Header GUID",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Advanced Systems Format header"
+    },
+    {
+      "type": "field",
+      "name": "Object Size",
+      "offset": 16,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of header object"
+    }
+  ]
+}

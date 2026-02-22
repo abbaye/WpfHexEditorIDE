@@ -1,0 +1,38 @@
+{
+  "formatName": "QuickTime Movie",
+  "version": "1.0",
+  "extensions": [ ".mov", ".qt" ],
+  "description": "Apple QuickTime movie format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "6D6F6F76",
+    "offset": 4,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Atom Size",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of movie atom"
+    },
+    {
+      "type": "signature",
+      "name": "Atom Type",
+      "offset": 4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "moov atom identifier"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "formatName": "Game Package Archive",
+  "version": "1.0",
+  "extensions": [ ".pak" ],
+  "description": "Generic game asset package",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "5041434B", "offset": 0, "required": false },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "field", "name": "PAK Signature", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "PACK or variant" }
+  ]
+}

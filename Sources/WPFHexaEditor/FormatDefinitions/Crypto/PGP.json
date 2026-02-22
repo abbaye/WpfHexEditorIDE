@@ -1,0 +1,29 @@
+{
+  "formatName": "PGP Message",
+  "version": "1.0",
+  "extensions": [ ".pgp", ".asc" ],
+  "description": "Pretty Good Privacy encrypted/signed message",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "2D2D2D2D2D424547494E20504750",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PGP ASCII Armor",
+      "offset": 0,
+      "length": 15,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "-----BEGIN PGP"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "formatName": "Apache Avro",
+  "version": "1.0",
+  "extensions": [ ".avro" ],
+  "description": "Apache Avro binary data format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "4F626A01",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Avro Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Obj\\x01 signature"
+    }
+  ]
+}

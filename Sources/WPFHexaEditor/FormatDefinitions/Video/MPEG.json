@@ -1,0 +1,38 @@
+{
+  "formatName": "MPEG Video",
+  "version": "1.0",
+  "extensions": [ ".mpg", ".mpeg", ".m2v" ],
+  "description": "MPEG-1/2 video stream",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "000001B3",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "MPEG Sequence Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MPEG sequence start code"
+    },
+    {
+      "type": "field",
+      "name": "Picture Size",
+      "offset": 4,
+      "length": 3,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Width and height"
+    }
+  ]
+}

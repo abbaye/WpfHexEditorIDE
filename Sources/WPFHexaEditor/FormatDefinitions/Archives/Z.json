@@ -1,0 +1,38 @@
+{
+  "formatName": "Unix Compress",
+  "version": "1.0",
+  "extensions": [ ".z" ],
+  "description": "Unix compress (.Z) format - LZW compression",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "1F9D",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Compress Magic",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Unix compress signature"
+    },
+    {
+      "type": "field",
+      "name": "Compression Mode",
+      "offset": 2,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "LZW bits and block mode"
+    }
+  ]
+}

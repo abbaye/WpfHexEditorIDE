@@ -1,0 +1,47 @@
+{
+  "formatName": "DjVu Document",
+  "version": "1.0",
+  "extensions": [ ".djvu", ".djv" ],
+  "description": "DjVu scanned document format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "41542654464F524D",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "AT&T Form",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "AT&TFORM IFF container"
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of file minus 8"
+    },
+    {
+      "type": "field",
+      "name": "DjVu Type",
+      "offset": 12,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "DJVU or DJVM"
+    }
+  ]
+}

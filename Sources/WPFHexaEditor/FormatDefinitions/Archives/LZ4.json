@@ -1,0 +1,47 @@
+{
+  "formatName": "LZ4 Compressed",
+  "version": "1.0",
+  "extensions": [ ".lz4" ],
+  "description": "LZ4 compression format - Extremely fast",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "04224D18",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "LZ4 Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "LZ4 frame header"
+    },
+    {
+      "type": "field",
+      "name": "FLG Byte",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Frame flags"
+    },
+    {
+      "type": "field",
+      "name": "BD Byte",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Block descriptor"
+    }
+  ]
+}

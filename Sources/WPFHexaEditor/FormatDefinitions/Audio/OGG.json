@@ -1,0 +1,56 @@
+{
+  "formatName": "OGG Audio",
+  "version": "1.0",
+  "extensions": [ ".ogg", ".oga", ".ogv" ],
+  "description": "Ogg container format - Often contains Vorbis audio",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "4F676753",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "OGG Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "OggS capture pattern"
+    },
+    {
+      "type": "field",
+      "name": "Stream Version",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Always 0"
+    },
+    {
+      "type": "field",
+      "name": "Header Type",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Packet flags"
+    },
+    {
+      "type": "field",
+      "name": "Granule Position",
+      "offset": 6,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "PCM sample position"
+    }
+  ]
+}

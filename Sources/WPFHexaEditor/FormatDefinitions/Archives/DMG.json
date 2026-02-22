@@ -1,0 +1,29 @@
+{
+  "formatName": "Apple Disk Image",
+  "version": "1.0",
+  "extensions": [ ".dmg" ],
+  "description": "Apple macOS disk image format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "7801730D626260",
+    "offset": 0,
+    "required": false
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Compressed Header",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "DMG files often start with zlib compression"
+    }
+  ]
+}

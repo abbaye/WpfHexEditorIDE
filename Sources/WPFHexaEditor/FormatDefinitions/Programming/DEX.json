@@ -1,0 +1,56 @@
+{
+  "formatName": "Android DEX File",
+  "version": "1.0",
+  "extensions": [ ".dex" ],
+  "description": "Dalvik Executable - Android bytecode",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "6465780A",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "DEX Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "dex\\n signature"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "DEX format version"
+    },
+    {
+      "type": "field",
+      "name": "Checksum",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Adler32 checksum"
+    },
+    {
+      "type": "field",
+      "name": "SHA-1 Signature",
+      "offset": 12,
+      "length": 20,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "SHA-1 hash of file"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "formatName": "JPEG Image",
+  "version": "1.0",
+  "extensions": [ ".jpg", ".jpeg", ".jpe", ".jfif" ],
+  "description": "JPEG/JFIF image format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "FFD8FF",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {},
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "JPEG SOI Marker",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Start Of Image (0xFFD8)"
+    },
+    {
+      "type": "field",
+      "name": "APP0/JFIF Marker",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "APP0 marker (usually 0xFFE0)"
+    },
+    {
+      "type": "field",
+      "name": "APP0 Length",
+      "offset": 4,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Length of APP0 segment"
+    },
+    {
+      "type": "field",
+      "name": "JFIF Identifier",
+      "offset": 6,
+      "length": 5,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "JFIF identifier (JFIF\\0)"
+    },
+    {
+      "type": "field",
+      "name": "JFIF Version",
+      "offset": 11,
+      "length": 2,
+      "color": "#FFA07A",
+      "opacity": 0.3,
+      "description": "JFIF version (e.g., 1.01)"
+    },
+    {
+      "type": "field",
+      "name": "Density Units",
+      "offset": 13,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "0=None, 1=DPI, 2=DPCM"
+    },
+    {
+      "type": "field",
+      "name": "X Density",
+      "offset": 14,
+      "length": 2,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "description": "Horizontal pixel density"
+    },
+    {
+      "type": "field",
+      "name": "Y Density",
+      "offset": 16,
+      "length": 2,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "description": "Vertical pixel density"
+    },
+    {
+      "type": "field",
+      "name": "Thumbnail Width",
+      "offset": 18,
+      "length": 1,
+      "color": "#C44569",
+      "opacity": 0.3,
+      "description": "Embedded thumbnail width"
+    },
+    {
+      "type": "field",
+      "name": "Thumbnail Height",
+      "offset": 19,
+      "length": 1,
+      "color": "#98D8C8",
+      "opacity": 0.3,
+      "description": "Embedded thumbnail height"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "formatName": "TrueType Font",
+  "version": "1.0",
+  "extensions": [ ".ttf" ],
+  "description": "TrueType font format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "00010000",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "TTF Version",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Version 1.0"
+    },
+    {
+      "type": "field",
+      "name": "Number of Tables",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Number of font tables"
+    },
+    {
+      "type": "field",
+      "name": "Search Range",
+      "offset": 6,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Binary search range"
+    },
+    {
+      "type": "field",
+      "name": "Entry Selector",
+      "offset": 8,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Binary search selector"
+    }
+  ]
+}

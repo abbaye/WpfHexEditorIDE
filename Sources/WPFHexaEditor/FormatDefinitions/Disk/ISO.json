@@ -1,0 +1,38 @@
+{
+  "formatName": "ISO Disk Image",
+  "version": "1.0",
+  "extensions": [ ".iso" ],
+  "description": "ISO 9660 CD/DVD image format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "4344303031",
+    "offset": 32769,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Primary Volume Descriptor",
+      "offset": 32769,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "CD001 identifier"
+    },
+    {
+      "type": "field",
+      "name": "Volume Descriptor Type",
+      "offset": 32768,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Type of volume descriptor"
+    }
+  ]
+}

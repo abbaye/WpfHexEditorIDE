@@ -1,0 +1,47 @@
+{
+  "formatName": "Web Open Font Format 2",
+  "version": "1.0",
+  "extensions": [ ".woff2" ],
+  "description": "WOFF2 - Improved web font format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "774F4632",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "WOFF2 Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "wOF2 signature"
+    },
+    {
+      "type": "field",
+      "name": "Flavor",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "TrueType or CFF"
+    },
+    {
+      "type": "field",
+      "name": "Length",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Total WOFF2 file size"
+    }
+  ]
+}

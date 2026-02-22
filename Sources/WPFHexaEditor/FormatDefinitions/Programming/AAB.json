@@ -1,0 +1,12 @@
+{
+  "formatName": "Android App Bundle",
+  "version": "1.0",
+  "extensions": [ ".aab" ],
+  "description": "Android App Bundle publishing format",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "504B0304", "offset": 0, "required": true },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "signature", "name": "ZIP/AAB Signature", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "PK ZIP header" }
+  ]
+}

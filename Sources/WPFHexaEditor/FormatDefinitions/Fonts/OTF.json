@@ -1,0 +1,47 @@
+{
+  "formatName": "OpenType Font",
+  "version": "1.0",
+  "extensions": [ ".otf" ],
+  "description": "OpenType font format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "4F54544F",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "OTF Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "OTTO signature"
+    },
+    {
+      "type": "field",
+      "name": "Number of Tables",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Number of font tables"
+    },
+    {
+      "type": "field",
+      "name": "Search Range",
+      "offset": 6,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Binary search range"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "formatName": "Ruby Gem Package",
+  "version": "1.0",
+  "extensions": [ ".gem" ],
+  "description": "Ruby package format",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "1F8B", "offset": 0, "required": true },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "signature", "name": "GZIP Header", "offset": 0, "length": 2, "color": "#FF6B6B", "opacity": 0.4, "description": "Gem is tar.gz" }
+  ]
+}

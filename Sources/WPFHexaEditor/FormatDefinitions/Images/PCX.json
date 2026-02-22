@@ -1,0 +1,56 @@
+{
+  "formatName": "PCX Image",
+  "version": "1.0",
+  "extensions": [ ".pcx" ],
+  "description": "ZSoft PC Paintbrush image format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "0A",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PCX Manufacturer",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ZSoft (0x0A)"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "PCX version number"
+    },
+    {
+      "type": "field",
+      "name": "Encoding",
+      "offset": 2,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "1=RLE encoding"
+    },
+    {
+      "type": "field",
+      "name": "Bits Per Pixel",
+      "offset": 3,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Bits per pixel per plane"
+    }
+  ]
+}

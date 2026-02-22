@@ -1,0 +1,56 @@
+{
+  "formatName": "Web Open Font Format",
+  "version": "1.0",
+  "extensions": [ ".woff" ],
+  "description": "WOFF - Web font format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "774F4646",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "WOFF Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "wOFF signature"
+    },
+    {
+      "type": "field",
+      "name": "Flavor",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "TrueType or CFF"
+    },
+    {
+      "type": "field",
+      "name": "Length",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Total WOFF file size"
+    },
+    {
+      "type": "field",
+      "name": "Num Tables",
+      "offset": 12,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Number of font tables"
+    }
+  ]
+}

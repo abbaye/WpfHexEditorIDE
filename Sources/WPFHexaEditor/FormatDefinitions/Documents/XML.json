@@ -1,0 +1,29 @@
+{
+  "formatName": "XML Document",
+  "version": "1.0",
+  "extensions": [ ".xml" ],
+  "description": "Extensible Markup Language document",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "3C3F786D6C20",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "XML Declaration",
+      "offset": 0,
+      "length": 6,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "<?xml declaration"
+    }
+  ]
+}

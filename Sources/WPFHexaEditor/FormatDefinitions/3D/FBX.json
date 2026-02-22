@@ -1,0 +1,38 @@
+{
+  "formatName": "Autodesk FBX",
+  "version": "1.0",
+  "extensions": [ ".fbx" ],
+  "description": "Autodesk Filmbox 3D format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "4B61796461726120464258",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "FBX Magic",
+      "offset": 0,
+      "length": 11,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Kaydara FBX signature"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 23,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "FBX version number"
+    }
+  ]
+}

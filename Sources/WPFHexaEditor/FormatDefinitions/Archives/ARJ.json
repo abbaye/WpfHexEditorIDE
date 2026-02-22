@@ -1,0 +1,38 @@
+{
+  "formatName": "ARJ Archive",
+  "version": "1.0",
+  "extensions": [ ".arj" ],
+  "description": "ARJ compressed archive format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "60EA",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ARJ Signature",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ARJ archive marker"
+    },
+    {
+      "type": "field",
+      "name": "Header ID",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Basic header ID"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "formatName": "ACE Archive",
+  "version": "1.0",
+  "extensions": [ ".ace" ],
+  "description": "ACE compressed archive format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "2A2A4143452A2A",
+    "offset": 7,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ACE Signature",
+      "offset": 7,
+      "length": 7,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "**ACE** signature"
+    },
+    {
+      "type": "field",
+      "name": "Header CRC",
+      "offset": 0,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Header CRC-16"
+    }
+  ]
+}

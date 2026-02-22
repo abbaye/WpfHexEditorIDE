@@ -1,0 +1,56 @@
+{
+  "formatName": "SQLite Database",
+  "version": "1.0",
+  "extensions": [ ".sqlite", ".db", ".sqlite3", ".db3" ],
+  "description": "SQLite database file format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "53514C69746520666F726D6174203300",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SQLite Header",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "SQLite format 3\\0"
+    },
+    {
+      "type": "field",
+      "name": "Page Size",
+      "offset": 16,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Database page size"
+    },
+    {
+      "type": "field",
+      "name": "File Format Write Version",
+      "offset": 18,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "1=legacy, 2=WAL"
+    },
+    {
+      "type": "field",
+      "name": "File Format Read Version",
+      "offset": 19,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "1=legacy, 2=WAL"
+    }
+  ]
+}

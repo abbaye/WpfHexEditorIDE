@@ -1,0 +1,29 @@
+{
+  "formatName": "Windows Registry File",
+  "version": "1.0",
+  "extensions": [ ".reg" ],
+  "description": "Windows Registry export file",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "57696E646F77732052656769737472792045646974",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Registry Header",
+      "offset": 0,
+      "length": 22,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Windows Registry Edit"
+    }
+  ]
+}

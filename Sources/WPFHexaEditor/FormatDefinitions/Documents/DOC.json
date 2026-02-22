@@ -1,0 +1,47 @@
+{
+  "formatName": "Word Document (Legacy)",
+  "version": "1.0",
+  "extensions": [ ".doc" ],
+  "description": "Microsoft Word 97-2003 document (OLE2)",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "D0CF11E0A1B11AE1",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "OLE2 Signature",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Microsoft Office OLE2/CFB header"
+    },
+    {
+      "type": "field",
+      "name": "Minor Version",
+      "offset": 24,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Format minor version"
+    },
+    {
+      "type": "field",
+      "name": "Major Version",
+      "offset": 26,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Format major version (3 or 4)"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "formatName": "Game Resource Archive",
+  "version": "1.0",
+  "extensions": [ ".rez" ],
+  "description": "LithTech/various game resource archive",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "", "offset": 0, "required": false },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "field", "name": "Header", "offset": 0, "length": 4, "color": "#4ECDC4", "opacity": 0.3, "description": "REZ header" }
+  ]
+}
