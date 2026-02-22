@@ -265,8 +265,8 @@ namespace WpfHexaEditor
                     if (length <= 0 || offset + length > Length)
                         continue;
 
-                    // Create field view model
-                    var fieldVm = ParsedFieldViewModel.FromBlockDefinition(block, offset, length);
+                    // Create field view model with indentation
+                    var fieldVm = ParsedFieldViewModel.FromBlockDefinition(block, offset, length, depth);
 
                     // Read and format value
                     ReadFieldValue(fieldVm);

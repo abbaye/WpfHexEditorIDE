@@ -26,6 +26,8 @@ namespace WpfHexaEditor.ViewModels
         private bool _isSelected;
         private bool _isValid;
         private string _validationMessage;
+        private int _indentLevel;
+        private string _fieldIcon;
 
         /// <summary>
         /// Name of the field (e.g., "Image Width", "File Signature")
@@ -175,6 +177,38 @@ namespace WpfHexaEditor.ViewModels
         }
 
         /// <summary>
+        /// Indentation level for visual hierarchy (0 = root, 1+ = nested)
+        /// </summary>
+        public int IndentLevel
+        {
+            get => _indentLevel;
+            set
+            {
+                _indentLevel = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IndentMargin));
+            }
+        }
+
+        /// <summary>
+        /// Icon/emoji for field type visualization
+        /// </summary>
+        public string FieldIcon
+        {
+            get => _fieldIcon;
+            set
+            {
+                _fieldIcon = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Margin for indentation (calculated from IndentLevel)
+        /// </summary>
+        public System.Windows.Thickness IndentMargin => new System.Windows.Thickness(IndentLevel * 16, 0, 0, 0);
+
+        /// <summary>
         /// Offset formatted as hexadecimal (e.g., "0x0010")
         /// </summary>
         public string OffsetHex => $"0x{Offset:X8}";
@@ -291,7 +325,15 @@ namespace WpfHexaEditor.ViewModels
         /// </summary>
         public static ParsedFieldViewModel FromBlockDefinition(BlockDefinition block, long offset, int length)
         {
-            return new ParsedFieldViewModel
+            return FromBlockDefinition(block, offset, length, 0);
+        }
+
+        /// <summary>
+        /// Create a ParsedFieldViewModel with specified indentation level
+        /// </summary>
+        public static ParsedFieldViewModel FromBlockDefinition(BlockDefinition block, long offset, int length, int indentLevel)
+        {
+            var field = new ParsedFieldViewModel
             {
                 Name = block.Name ?? "Unnamed Field",
                 Offset = offset,
@@ -300,7 +342,56 @@ namespace WpfHexaEditor.ViewModels
                 Description = block.Description ?? string.Empty,
                 Color = block.Color ?? "#CCCCCC",
                 BlockDefinition = block,
-                IsValid = true
+                IsValid = true,
+                IndentLevel = indentLevel
+            };
+
+            // Assign icon based on type
+            field.FieldIcon = GetIconForType(block.Type, block.ValueType);
+
+            return field;
+        }
+
+        /// <summary>
+        /// Get appropriate icon for field type
+        /// </summary>
+        private static string GetIconForType(string blockType, string valueType)
+        {
+            // Block type icons
+            if (!string.IsNullOrEmpty(blockType))
+            {
+                return blockType.ToLowerInvariant() switch
+                {
+                    "signature" => "🔖",
+                    "field" => GetIconForValueType(valueType),
+                    "conditional" => "🔀",
+                    "loop" => "🔁",
+                    "action" => "⚡",
+                    _ => "📄"
+                };
+            }
+
+            return GetIconForValueType(valueType);
+        }
+
+        /// <summary>
+        /// Get icon for value type
+        /// </summary>
+        private static string GetIconForValueType(string valueType)
+        {
+            if (string.IsNullOrEmpty(valueType))
+                return "📄";
+
+            return valueType.ToLowerInvariant() switch
+            {
+                "string" or "ascii" or "utf8" or "utf16" => "📝",
+                "uint8" or "byte" or "int8" or "sbyte" => "🔢",
+                "uint16" or "ushort" or "int16" or "short" => "🔢",
+                "uint32" or "uint" or "int32" or "int" => "🔢",
+                "uint64" or "ulong" or "int64" or "long" => "🔢",
+                "float" or "double" => "📊",
+                "bytes" => "📦",
+                _ => "📄"
             };
         }
     }
