@@ -1,0 +1,12 @@
+{
+  "formatName": "MacroMolecular CIF",
+  "version": "1.0",
+  "extensions": [ ".cif", ".mmcif" ],
+  "description": "MacroMolecular Crystallographic Information File",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "646174615F", "offset": 0, "required": true },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "signature", "name": "mmCIF Data Block", "offset": 0, "length": 5, "color": "#FF6B6B", "opacity": 0.4, "description": "mmCIF data_ keyword" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "formatName": "RINEX GNSS Data",
+  "version": "1.0",
+  "extensions": [ ".rnx", ".obs", ".nav" ],
+  "description": "Receiver Independent Exchange Format for GNSS data",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "2020202020", "offset": 0, "required": false },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "field", "name": "Header", "offset": 0, "length": 80, "color": "#4ECDC4", "opacity": 0.3, "description": "First RINEX header line (80 chars)" },
+    { "type": "field", "name": "Version", "offset": 0, "length": 9, "color": "#FF6B6B", "opacity": 0.4, "description": "RINEX version number" }
+  ]
+}

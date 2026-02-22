@@ -1,0 +1,14 @@
+{
+  "formatName": "GRIB Weather Data",
+  "version": "1.0",
+  "extensions": [ ".grib", ".grb" ],
+  "description": "Gridded Binary meteorological data format",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "47524942", "offset": 0, "required": true },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "signature", "name": "GRIB Magic", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "GRIB format signature" },
+    { "type": "field", "name": "Total Length", "offset": 4, "length": 3, "color": "#4ECDC4", "opacity": 0.3, "description": "Message length in bytes" },
+    { "type": "field", "name": "Edition", "offset": 7, "length": 1, "color": "#95E1D3", "opacity": 0.3, "description": "GRIB edition number (1)" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "formatName": "DICOM Structured Report",
+  "version": "1.0",
+  "extensions": [ ".dcm", ".sr" ],
+  "description": "DICOM Structured Report for medical data",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "4449434D", "offset": 128, "required": true },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "field", "name": "Preamble", "offset": 0, "length": 128, "color": "#4ECDC4", "opacity": 0.3, "description": "128-byte preamble" },
+    { "type": "signature", "name": "DICM Magic", "offset": 128, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "DICM signature" }
+  ]
+}

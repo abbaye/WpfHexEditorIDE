@@ -1,0 +1,13 @@
+{
+  "formatName": "ECAT PET Image",
+  "version": "1.0",
+  "extensions": [ ".v", ".i" ],
+  "description": "ECAT PET medical imaging format",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "4D41545249", "offset": 0, "required": true },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "signature", "name": "ECAT Magic", "offset": 0, "length": 5, "color": "#FF6B6B", "opacity": 0.4, "description": "ECAT signature (MATRI)" },
+    { "type": "field", "name": "Version", "offset": 5, "length": 1, "color": "#4ECDC4", "opacity": 0.3, "description": "ECAT version" }
+  ]
+}

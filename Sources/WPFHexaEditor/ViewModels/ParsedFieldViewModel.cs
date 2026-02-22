@@ -195,6 +195,86 @@ namespace WpfHexaEditor.ViewModels
         public string RangeDisplay => $"{OffsetHex}-0x{EndOffset:X8} ({Length} byte{(Length != 1 ? "s" : "")})";
 
         /// <summary>
+        /// Comprehensive tooltip text with all field details
+        /// </summary>
+        public string DetailedTooltip
+        {
+            get
+            {
+                var tooltip = new System.Text.StringBuilder();
+                tooltip.AppendLine($"Field: {Name}");
+                tooltip.AppendLine($"Type: {ValueType}");
+                tooltip.AppendLine($"Range: {RangeDisplay}");
+
+                if (!string.IsNullOrEmpty(Description))
+                {
+                    tooltip.AppendLine($"Description: {Description}");
+                }
+
+                if (RawValue != null)
+                {
+                    tooltip.AppendLine();
+                    tooltip.AppendLine("Values:");
+
+                    // Show value in multiple formats
+                    if (RawValue is byte b)
+                    {
+                        tooltip.AppendLine($"  Hex: 0x{b:X2}");
+                        tooltip.AppendLine($"  Dec: {b}");
+                        tooltip.AppendLine($"  Bin: {System.Convert.ToString(b, 2).PadLeft(8, '0')}");
+                    }
+                    else if (RawValue is ushort us)
+                    {
+                        tooltip.AppendLine($"  Hex: 0x{us:X4}");
+                        tooltip.AppendLine($"  Dec: {us}");
+                    }
+                    else if (RawValue is uint ui)
+                    {
+                        tooltip.AppendLine($"  Hex: 0x{ui:X8}");
+                        tooltip.AppendLine($"  Dec: {ui}");
+                    }
+                    else if (RawValue is ulong ul)
+                    {
+                        tooltip.AppendLine($"  Hex: 0x{ul:X16}");
+                        tooltip.AppendLine($"  Dec: {ul}");
+                    }
+                    else if (RawValue is short s)
+                    {
+                        tooltip.AppendLine($"  Hex: 0x{s:X4}");
+                        tooltip.AppendLine($"  Dec: {s}");
+                    }
+                    else if (RawValue is int i)
+                    {
+                        tooltip.AppendLine($"  Hex: 0x{i:X8}");
+                        tooltip.AppendLine($"  Dec: {i}");
+                    }
+                    else if (RawValue is long l)
+                    {
+                        tooltip.AppendLine($"  Hex: 0x{l:X16}");
+                        tooltip.AppendLine($"  Dec: {l}");
+                    }
+                    else if (RawValue is string str)
+                    {
+                        tooltip.AppendLine($"  String: {str}");
+                    }
+                    else if (RawValue is byte[] bytes)
+                    {
+                        var hex = System.BitConverter.ToString(bytes).Replace("-", " ");
+                        tooltip.AppendLine($"  Hex: {hex}");
+                    }
+                }
+
+                if (!IsValid && !string.IsNullOrEmpty(ValidationMessage))
+                {
+                    tooltip.AppendLine();
+                    tooltip.AppendLine($"⚠ {ValidationMessage}");
+                }
+
+                return tooltip.ToString().TrimEnd();
+            }
+        }
+
+        /// <summary>
         /// The block definition this field was parsed from
         /// </summary>
         public BlockDefinition BlockDefinition { get; set; }

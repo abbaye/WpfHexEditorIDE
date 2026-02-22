@@ -51,6 +51,8 @@ namespace WpfHexaEditor
         private IFieldValueFormatter _currentFormatter;
         private readonly FieldValueReader _fieldValueReader = new FieldValueReader();
         private FormatDefinition _detectedFormat;
+        private VariableContext _variableContext;
+        private ExpressionEvaluator _expressionEvaluator;
 
         #endregion
 
@@ -64,6 +66,10 @@ namespace WpfHexaEditor
         {
             // Set default formatter
             _currentFormatter = new HexValueFormatter();
+
+            // Initialize variable context and expression evaluator
+            _variableContext = new VariableContext();
+            _expressionEvaluator = new ExpressionEvaluator(_variableContext);
 
             // Wire up events
             if (ParsedFieldsPanel != null)
@@ -172,8 +178,18 @@ namespace WpfHexaEditor
             {
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    // Clear existing fields
+                    // Clear existing fields and variables
                     ParsedFieldsPanel.ParsedFields.Clear();
+                    _variableContext?.Clear();
+
+                    // Load format-defined variables
+                    if (_detectedFormat.Variables != null)
+                    {
+                        foreach (var kvp in _detectedFormat.Variables)
+                        {
+                            _variableContext?.SetVariable(kvp.Key, kvp.Value);
+                        }
+                    }
 
                     // Update format info
                     ParsedFieldsPanel.FormatInfo.IsDetected = true;
@@ -205,6 +221,38 @@ namespace WpfHexaEditor
             {
                 try
                 {
+                    // Handle conditional blocks
+                    if (block.Type == "conditional")
+                    {
+                        if (EvaluateCondition(block.Condition))
+                        {
+                            if (block.Then != null)
+                                ParseBlocks(block.Then, depth + 1);
+                        }
+                        else
+                        {
+                            if (block.Else != null)
+                                ParseBlocks(block.Else, depth + 1);
+                        }
+                        continue;
+                    }
+
+                    // Handle loop blocks
+                    if (block.Type == "loop" && block.Body != null)
+                    {
+                        int count = ResolveLength(block.Count);
+                        for (int i = 0; i < count && i < 1000; i++) // Safety limit: max 1000 iterations
+                        {
+                            // Store loop index variable
+                            _variableContext?.SetVariable("i", i);
+                            _variableContext?.SetVariable("index", i);
+
+                            ParseBlocks(block.Body, depth + 1);
+                        }
+                        continue;
+                    }
+
+                    // Regular field blocks
                     // Calculate offset (handle variables and calculations)
                     long offset = ResolveOffset(block.Offset);
                     if (offset < 0 || offset >= Length)
@@ -222,17 +270,16 @@ namespace WpfHexaEditor
                     ReadFieldValue(fieldVm);
                     FormatFieldValue(fieldVm);
 
-                    // Add to panel
-                    ParsedFieldsPanel.ParsedFields.Add(fieldVm);
-
-                    // Handle conditional and loop blocks
-                    if (block.Type == "conditional" && block.Then != null)
+                    // Store value as variable if specified
+                    if (!string.IsNullOrWhiteSpace(block.StoreAs) && fieldVm.RawValue != null)
                     {
-                        // TODO: Evaluate condition and parse Then/Else blocks
+                        _variableContext?.SetVariable(block.StoreAs, fieldVm.RawValue);
                     }
-                    else if (block.Type == "loop" && block.Body != null)
+
+                    // Add to panel (skip hidden fields)
+                    if (block.Hidden != true)
                     {
-                        // TODO: Parse loop body with iteration
+                        ParsedFieldsPanel.ParsedFields.Add(fieldVm);
                     }
                 }
                 catch (Exception ex)
@@ -251,8 +298,10 @@ namespace WpfHexaEditor
             {
                 int intOffset => intOffset,
                 long longOffset => longOffset,
-                string strOffset when strOffset.StartsWith("var:") => 0, // TODO: Implement variable lookup
-                string strOffset when strOffset.StartsWith("calc:") => 0, // TODO: Implement expression evaluation
+                string strOffset when strOffset.StartsWith("var:") =>
+                    _variableContext?.GetVariableAsLong(strOffset.Substring(4)) ?? 0,
+                string strOffset when strOffset.StartsWith("calc:") =>
+                    _expressionEvaluator?.Evaluate(strOffset.Substring(5)) ?? 0,
                 _ => 0
             };
         }
@@ -265,10 +314,160 @@ namespace WpfHexaEditor
             return lengthValue switch
             {
                 int intLength => intLength,
-                string strLength when strLength.StartsWith("var:") => 0, // TODO: Implement variable lookup
-                string strLength when strLength.StartsWith("calc:") => 0, // TODO: Implement expression evaluation
+                string strLength when strLength.StartsWith("var:") =>
+                    (int)(_variableContext?.GetVariableAsLong(strLength.Substring(4)) ?? 0),
+                string strLength when strLength.StartsWith("calc:") =>
+                    (int)(_expressionEvaluator?.Evaluate(strLength.Substring(5)) ?? 0),
                 _ => 1
             };
+        }
+
+        /// <summary>
+        /// Evaluate a ConditionDefinition object
+        /// </summary>
+        private bool EvaluateCondition(ConditionDefinition condition)
+        {
+            if (condition == null)
+                return true;
+
+            try
+            {
+                // Get field value
+                long fieldValue = 0;
+                if (!string.IsNullOrWhiteSpace(condition.Field))
+                {
+                    if (condition.Field.StartsWith("offset:"))
+                    {
+                        // Read from file at offset
+                        var offsetStr = condition.Field.Substring(7);
+                        if (long.TryParse(offsetStr, out long offset))
+                        {
+                            var buffer = new byte[condition.Length];
+                            Stream.Position = offset;
+                            Stream.Read(buffer, 0, condition.Length);
+
+                            // Convert to long based on length
+                            fieldValue = condition.Length switch
+                            {
+                                1 => buffer[0],
+                                2 => System.BitConverter.ToUInt16(buffer, 0),
+                                4 => System.BitConverter.ToUInt32(buffer, 0),
+                                8 => (long)System.BitConverter.ToUInt64(buffer, 0),
+                                _ => buffer[0]
+                            };
+                        }
+                    }
+                    else if (condition.Field.StartsWith("var:"))
+                    {
+                        fieldValue = _variableContext?.GetVariableAsLong(condition.Field.Substring(4)) ?? 0;
+                    }
+                }
+
+                // Get comparison value
+                long compareValue = 0;
+                if (!string.IsNullOrWhiteSpace(condition.Value))
+                {
+                    if (condition.Value.StartsWith("0x"))
+                        long.TryParse(condition.Value.Substring(2), System.Globalization.NumberStyles.HexNumber, null, out compareValue);
+                    else
+                        long.TryParse(condition.Value, out compareValue);
+                }
+
+                // Compare based on operator
+                return condition.Operator?.ToLowerInvariant() switch
+                {
+                    "equals" or "==" => fieldValue == compareValue,
+                    "notequals" or "!=" => fieldValue != compareValue,
+                    "greaterthan" or ">" => fieldValue > compareValue,
+                    "lessthan" or "<" => fieldValue < compareValue,
+                    "greaterorequal" or ">=" => fieldValue >= compareValue,
+                    "lessorequal" or "<=" => fieldValue <= compareValue,
+                    _ => false
+                };
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Evaluate a conditional expression (string format)
+        /// Supports: ==, !=, <, >, <=, >=
+        /// Example: "width > 0", "type == 1", "var:flags != 0"
+        /// </summary>
+        private bool EvaluateCondition(string condition)
+        {
+            if (string.IsNullOrWhiteSpace(condition))
+                return true; // Empty condition = always true
+
+            try
+            {
+                // Find comparison operator
+                string[] operators = { "==", "!=", "<=", ">=", "<", ">" };
+                foreach (var op in operators)
+                {
+                    int opIndex = condition.IndexOf(op);
+                    if (opIndex > 0)
+                    {
+                        string leftStr = condition.Substring(0, opIndex).Trim();
+                        string rightStr = condition.Substring(opIndex + op.Length).Trim();
+
+                        // Evaluate both sides
+                        long leftValue = EvaluateConditionValue(leftStr);
+                        long rightValue = EvaluateConditionValue(rightStr);
+
+                        // Compare based on operator
+                        return op switch
+                        {
+                            "==" => leftValue == rightValue,
+                            "!=" => leftValue != rightValue,
+                            "<" => leftValue < rightValue,
+                            ">" => leftValue > rightValue,
+                            "<=" => leftValue <= rightValue,
+                            ">=" => leftValue >= rightValue,
+                            _ => false
+                        };
+                    }
+                }
+
+                // No operator found, evaluate as boolean expression
+                return EvaluateConditionValue(condition) != 0;
+            }
+            catch (Exception)
+            {
+                return false; // Evaluation error = false
+            }
+        }
+
+        /// <summary>
+        /// Evaluate a value in a condition (variable reference or expression)
+        /// </summary>
+        private long EvaluateConditionValue(string value)
+        {
+            value = value.Trim();
+
+            if (value.StartsWith("var:"))
+            {
+                return _variableContext?.GetVariableAsLong(value.Substring(4)) ?? 0;
+            }
+            else if (value.StartsWith("calc:"))
+            {
+                return _expressionEvaluator?.Evaluate(value.Substring(5)) ?? 0;
+            }
+            else if (long.TryParse(value, out long numValue))
+            {
+                return numValue;
+            }
+            else if (value.StartsWith("0x") && long.TryParse(value.Substring(2), System.Globalization.NumberStyles.HexNumber, null, out long hexValue))
+            {
+                return hexValue;
+            }
+            else
+            {
+                // Try as variable name without "var:" prefix
+                return _variableContext?.GetVariableAsLong(value) ?? 0;
+            }
         }
 
         /// <summary>

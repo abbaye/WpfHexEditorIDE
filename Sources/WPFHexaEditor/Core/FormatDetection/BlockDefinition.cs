@@ -64,6 +64,18 @@ namespace WpfHexaEditor.Core.FormatDetection
         /// </summary>
         public string ValueType { get; set; }
 
+        /// <summary>
+        /// Variable name to store this field's value as (e.g., "width", "height", "fileCount")
+        /// Allows referencing the value in later calculations
+        /// </summary>
+        public string StoreAs { get; set; }
+
+        /// <summary>
+        /// If true, this field is parsed but not shown in the UI
+        /// Useful for metadata fields used only for calculations
+        /// </summary>
+        public bool? Hidden { get; set; }
+
         #region Conditional Block Properties
 
         /// <summary>
@@ -84,6 +96,12 @@ namespace WpfHexaEditor.Core.FormatDetection
         #endregion
 
         #region Loop Block Properties
+
+        /// <summary>
+        /// Number of iterations for loop blocks
+        /// Can be an integer or "var:name" or "calc:expression"
+        /// </summary>
+        public object Count { get; set; }
 
         /// <summary>
         /// Maximum iterations for loop blocks (safety limit)

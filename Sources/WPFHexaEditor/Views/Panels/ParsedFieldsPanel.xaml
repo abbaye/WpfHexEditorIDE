@@ -52,7 +52,7 @@
                            FontSize="13"
                            TextWrapping="NoWrap"
                            TextTrimming="CharacterEllipsis"
-                           ToolTip="{Binding Name}"/>
+                           ToolTip="{Binding DetailedTooltip}"/>
 
                 <!-- Field value -->
                 <Grid Grid.Row="1" Grid.Column="1" Margin="0,2,0,0">
@@ -72,7 +72,7 @@
                                FontFamily="Consolas"
                                Foreground="#2196F3"
                                TextWrapping="Wrap"
-                               ToolTip="{Binding FormattedValue}"/>
+                               ToolTip="{Binding DetailedTooltip}"/>
                 </Grid>
 
                 <!-- Field details -->

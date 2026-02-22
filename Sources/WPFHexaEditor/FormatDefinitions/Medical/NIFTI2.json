@@ -1,0 +1,14 @@
+{
+  "formatName": "NIfTI-2 Medical Image",
+  "version": "1.0",
+  "extensions": [ ".nii", ".hdr", ".img" ],
+  "description": "Neuroimaging Informatics Technology Initiative v2 format",
+  "author": "WPFHexaEditor Team",
+  "detection": { "signature": "540002", "offset": 0, "required": true },
+  "variables": { "currentOffset": 0 },
+  "blocks": [
+    { "type": "signature", "name": "Header Size", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "Header size (540 bytes)" },
+    { "type": "field", "name": "Magic", "offset": 4, "length": 8, "color": "#4ECDC4", "opacity": 0.3, "description": "NIfTI-2 magic string" },
+    { "type": "field", "name": "Data Type", "offset": 12, "length": 2, "color": "#95E1D3", "opacity": 0.3, "description": "Data type code" }
+  ]
+}
