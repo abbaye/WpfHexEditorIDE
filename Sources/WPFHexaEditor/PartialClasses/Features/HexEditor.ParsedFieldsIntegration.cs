@@ -71,6 +71,7 @@ namespace WpfHexaEditor
         private FormatDefinition _detectedFormat;
         private VariableContext _variableContext;
         private ExpressionEvaluator _expressionEvaluator;
+        private readonly FormattedValueCache _formattedValueCache = new FormattedValueCache();
 
         // Performance tracking
         private int _parsedFieldCount;
@@ -191,7 +192,10 @@ namespace WpfHexaEditor
                 _ => _currentFormatter
             };
 
-            // Re-format all existing fields
+            // Clear cache since we're changing formatter (old cached values are for different formatter)
+            _formattedValueCache.Clear();
+
+            // Re-format all existing fields (will populate cache with new formatter)
             if (ParsedFieldsPanel?.ParsedFields != null)
             {
                 foreach (var field in ParsedFieldsPanel.ParsedFields)
@@ -295,6 +299,7 @@ namespace WpfHexaEditor
                     ParsedFieldsPanel.ParsedFields.Clear();
                     _variableContext?.Clear();
                     _parsedFieldCount = 0; // Reset performance counter
+                    _formattedValueCache.Clear(); // Clear cache for new parsing session
 
                     // Load format-defined variables
                     if (_detectedFormat.Variables != null)
@@ -641,7 +646,7 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Format a field's raw value using the current formatter
+        /// Format a field's raw value using the current formatter (with caching)
         /// </summary>
         private void FormatFieldValue(ParsedFieldViewModel field)
         {
@@ -650,16 +655,30 @@ namespace WpfHexaEditor
 
             try
             {
+                // Try to get from cache first
+                string formatterType = _currentFormatter.DisplayName;
+                if (_formattedValueCache.TryGet(field.Offset, field.Length, field.ValueType, formatterType, field.RawValue, out string cachedValue))
+                {
+                    field.FormattedValue = cachedValue;
+                    return;
+                }
+
+                // Cache miss - format the value
+                string formattedValue;
                 if (_currentFormatter.Supports(field.ValueType))
                 {
-                    field.FormattedValue = _currentFormatter.Format(field.RawValue, field.ValueType, field.Length);
+                    formattedValue = _currentFormatter.Format(field.RawValue, field.ValueType, field.Length);
                 }
                 else
                 {
                     // Fallback to hex formatter
                     var hexFormatter = new HexValueFormatter();
-                    field.FormattedValue = hexFormatter.Format(field.RawValue, field.ValueType, field.Length);
+                    formattedValue = hexFormatter.Format(field.RawValue, field.ValueType, field.Length);
                 }
+
+                // Store in cache and update field
+                _formattedValueCache.Set(field.Offset, field.Length, field.ValueType, formatterType, field.RawValue, formattedValue);
+                field.FormattedValue = formattedValue;
             }
             catch (Exception ex)
             {

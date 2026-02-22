@@ -366,7 +366,7 @@
                 <TextBlock Grid.Column="0"
                            FontSize="11"
                            Foreground="#666666">
-                    <Run Text="{Binding ParsedFields.Count}"/>
+                    <Run Text="{Binding ParsedFields.Count, Mode=OneWay}"/>
                     <Run Text="field(s)"/>
                 </TextBlock>
 
