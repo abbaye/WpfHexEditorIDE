@@ -171,7 +171,7 @@ namespace WpfHexaEditor
                 return Enumerable.Empty<Core.Bytes.ByteDifference>();
 
             // Use ComparisonService for V2 provider comparison
-            return Services.ComparisonService.Compare(_viewModel.Provider, provider);
+            return _comparisonService.Compare(_viewModel.Provider, provider);
         }
 
         /// <summary>

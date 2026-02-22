@@ -1567,7 +1567,8 @@ namespace WpfHexaEditor
             {
                 if (editor.HexViewport != null)
                 {
-                    editor.HexViewport.ShowInlineBarChart = showInlineBarChart;
+                    // TODO: ShowInlineBarChart property not yet implemented in HexViewport
+                    // editor.HexViewport.ShowInlineBarChart = showInlineBarChart;
                     editor.HexViewport.InvalidateVisual();
                 }
             }
@@ -2621,7 +2622,8 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor && e.NewValue is Color color && editor.HexViewport != null)
             {
-                editor.HexViewport.InlineBarChartColor = color;
+                // TODO: InlineBarChartColor property not yet implemented in HexViewport
+                // editor.HexViewport.InlineBarChartColor = color;
                 editor.HexViewport.InvalidateVisual();
             }
         }
