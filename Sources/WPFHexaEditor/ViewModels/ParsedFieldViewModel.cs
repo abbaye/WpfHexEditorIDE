@@ -291,6 +291,16 @@ namespace WpfHexaEditor.ViewModels
                     {
                         tooltip.AppendLine($"  String: {str}");
                     }
+                    else if (RawValue is float f)
+                    {
+                        tooltip.AppendLine($"  Float: {f}");
+                        tooltip.AppendLine($"  Hex: 0x{System.BitConverter.ToUInt32(System.BitConverter.GetBytes(f), 0):X8}");
+                    }
+                    else if (RawValue is double d)
+                    {
+                        tooltip.AppendLine($"  Double: {d}");
+                        tooltip.AppendLine($"  Hex: 0x{System.BitConverter.ToUInt64(System.BitConverter.GetBytes(d), 0):X16}");
+                    }
                     else if (RawValue is byte[] bytes)
                     {
                         var hex = System.BitConverter.ToString(bytes).Replace("-", " ");

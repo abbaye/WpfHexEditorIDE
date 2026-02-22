@@ -292,8 +292,14 @@ namespace WpfHexaEditor
 
             try
             {
-                // Set bar color
+                // Configure all bar chart properties
                 _barChartPanel.BarColor = BarChartColor;
+                _barChartPanel.BackgroundColor = BarChartBackgroundColor;
+                _barChartPanel.TextColor = BarChartTextColor;
+                _barChartPanel.Height = BarChartPanelHeight;
+                _barChartPanel.ShowAxisLabels = BarChartShowAxisLabels;
+                _barChartPanel.ShowGridLines = BarChartShowGridLines;
+                _barChartPanel.ShowStatistics = BarChartShowStatistics;
 
                 // Use efficient ViewModel-based update for large files
                 _barChartPanel.UpdateDataFromViewModel(_viewModel);

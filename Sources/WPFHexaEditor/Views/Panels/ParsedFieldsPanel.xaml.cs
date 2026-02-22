@@ -20,13 +20,16 @@ namespace WpfHexaEditor.Views.Panels
     public partial class ParsedFieldsPanel : UserControl, INotifyPropertyChanged
     {
         private ObservableCollection<ParsedFieldViewModel> _parsedFields;
+        private ObservableCollection<ParsedFieldViewModel> _filteredFields;
         private FormatInfo _formatInfo;
+        private string _searchText;
 
         public ParsedFieldsPanel()
         {
             InitializeComponent();
             DataContext = this;
             ParsedFields = new ObservableCollection<ParsedFieldViewModel>();
+            FilteredFields = new ObservableCollection<ParsedFieldViewModel>();
             FormatInfo = new FormatInfo();
         }
 
@@ -40,6 +43,34 @@ namespace WpfHexaEditor.Views.Panels
             {
                 _parsedFields = value;
                 OnPropertyChanged();
+                ApplyFilter(); // Refilter when fields change
+            }
+        }
+
+        /// <summary>
+        /// Filtered collection for display
+        /// </summary>
+        public ObservableCollection<ParsedFieldViewModel> FilteredFields
+        {
+            get => _filteredFields;
+            private set
+            {
+                _filteredFields = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Search/filter text
+        /// </summary>
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                ApplyFilter();
             }
         }
 
@@ -92,6 +123,11 @@ namespace WpfHexaEditor.Views.Panels
             }
         }
 
+        private void ClearSearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            SearchText = string.Empty;
+        }
+
         private void CopyValue_Click(object sender, RoutedEventArgs e)
         {
             if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
@@ -139,7 +175,41 @@ namespace WpfHexaEditor.Views.Panels
         public void Clear()
         {
             ParsedFields.Clear();
+            FilteredFields.Clear();
             FormatInfo = new FormatInfo();
+        }
+
+        /// <summary>
+        /// Apply search filter to fields
+        /// </summary>
+        private void ApplyFilter()
+        {
+            FilteredFields.Clear();
+
+            if (ParsedFields == null)
+                return;
+
+            // No filter - show all
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                foreach (var field in ParsedFields)
+                    FilteredFields.Add(field);
+                return;
+            }
+
+            // Filter by name, value, or description
+            var searchLower = SearchText.ToLowerInvariant();
+            foreach (var field in ParsedFields)
+            {
+                if (field.Name?.ToLowerInvariant().Contains(searchLower) == true ||
+                    field.FormattedValue?.ToLowerInvariant().Contains(searchLower) == true ||
+                    field.Description?.ToLowerInvariant().Contains(searchLower) == true ||
+                    field.ValueType?.ToLowerInvariant().Contains(searchLower) == true ||
+                    field.OffsetHex?.ToLowerInvariant().Contains(searchLower) == true)
+                {
+                    FilteredFields.Add(field);
+                }
+            }
         }
 
         /// <summary>

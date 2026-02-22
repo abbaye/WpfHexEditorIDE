@@ -40,6 +40,8 @@ namespace WpfHexaEditor.Core
                     "int32" or "int" => ReadInt32(data, offset, bigEndian),
                     "uint64" or "ulong" => ReadUInt64(data, offset, bigEndian),
                     "int64" or "long" => ReadInt64(data, offset, bigEndian),
+                    "float" => ReadFloat(data, offset, bigEndian),
+                    "double" => ReadDouble(data, offset, bigEndian),
                     "string" or "ascii" => ReadString(data, offset, length, Encoding.ASCII),
                     "utf8" => ReadString(data, offset, length, Encoding.UTF8),
                     "utf16" => ReadString(data, offset, length, Encoding.Unicode),
@@ -118,6 +120,40 @@ namespace WpfHexaEditor.Core
             }
             else
                 return BitConverter.ToInt64(data, offset);
+        }
+
+        #endregion
+
+        #region Floating Point
+
+        private float ReadFloat(byte[] data, int offset, bool bigEndian)
+        {
+            if (bigEndian)
+            {
+                // Reverse bytes for big-endian
+                byte[] temp = new byte[4];
+                temp[0] = data[offset + 3];
+                temp[1] = data[offset + 2];
+                temp[2] = data[offset + 1];
+                temp[3] = data[offset];
+                return BitConverter.ToSingle(temp, 0);
+            }
+            else
+                return BitConverter.ToSingle(data, offset);
+        }
+
+        private double ReadDouble(byte[] data, int offset, bool bigEndian)
+        {
+            if (bigEndian)
+            {
+                // Reverse bytes for big-endian
+                byte[] temp = new byte[8];
+                for (int i = 0; i < 8; i++)
+                    temp[i] = data[offset + 7 - i];
+                return BitConverter.ToDouble(temp, 0);
+            }
+            else
+                return BitConverter.ToDouble(data, offset);
         }
 
         #endregion

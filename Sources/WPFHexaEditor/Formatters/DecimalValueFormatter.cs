@@ -20,7 +20,8 @@ namespace WpfHexaEditor.Formatters
             // Supports all numeric types
             return valueType == "uint8" || valueType == "uint16" || valueType == "uint32" ||
                    valueType == "int8" || valueType == "int16" || valueType == "int32" ||
-                   valueType == "uint64" || valueType == "int64";
+                   valueType == "uint64" || valueType == "int64" ||
+                   valueType == "float" || valueType == "double";
         }
 
         public string Format(object value, string valueType, int length)
@@ -38,6 +39,8 @@ namespace WpfHexaEditor.Formatters
                 "int32" => Convert.ToInt32(value).ToString(),
                 "uint64" => Convert.ToUInt64(value).ToString(),
                 "int64" => Convert.ToInt64(value).ToString(),
+                "float" when value is float f => f.ToString("G9"),  // 9 significant digits for float
+                "double" when value is double d => d.ToString("G17"), // 17 significant digits for double
                 _ => value.ToString()
             };
         }

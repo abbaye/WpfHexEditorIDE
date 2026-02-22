@@ -100,9 +100,10 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/> <!-- Search box -->
+            <RowDefinition Height="Auto"/> <!-- Format info -->
+            <RowDefinition Height="*"/>    <!-- Fields list -->
+            <RowDefinition Height="Auto"/> <!-- Status bar -->
         </Grid.RowDefinitions>
 
         <!-- Header -->
@@ -134,8 +135,77 @@
             </Grid>
         </Border>
 
-        <!-- Format info -->
+        <!-- Search box -->
         <Border Grid.Row="1"
+                Background="White"
+                Padding="12,8"
+                BorderThickness="0,0,0,1"
+                BorderBrush="#E0E0E0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="🔍"
+                           FontSize="14"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0"/>
+
+                <TextBox x:Name="SearchTextBox"
+                         Grid.Column="1"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         FontSize="12"
+                         Padding="4"
+                         VerticalAlignment="Center"
+                         BorderThickness="1"
+                         BorderBrush="#CCCCCC">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Triggers>
+                                <Trigger Property="Text" Value="">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                                <VisualBrush.Visual>
+                                                    <TextBlock Text="Search fields..."
+                                                             Foreground="#999999"
+                                                             FontSize="12"
+                                                             Margin="4,0,0,0"/>
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <Button x:Name="ClearSearchButton"
+                        Grid.Column="2"
+                        Content="✕"
+                        Width="24" Height="24"
+                        Margin="4,0,0,0"
+                        FontSize="12"
+                        ToolTip="Clear search"
+                        Click="ClearSearchButton_Click"
+                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Button.Visibility>
+                        <Binding Path="SearchText">
+                            <Binding.Converter>
+                                <StaticResource ResourceKey="BoolToVisibilityConverter"/>
+                            </Binding.Converter>
+                        </Binding>
+                    </Button.Visibility>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Format info -->
+        <Border Grid.Row="2"
                 Background="#F5F5F5"
                 Padding="12,8"
                 BorderThickness="0,0,0,1"
@@ -153,8 +223,8 @@
 
         <!-- Fields list -->
         <ListBox x:Name="FieldsListBox"
-                 Grid.Row="2"
-                 ItemsSource="{Binding ParsedFields}"
+                 Grid.Row="3"
+                 ItemsSource="{Binding FilteredFields}"
                  ItemTemplate="{StaticResource FieldTemplate}"
                  ItemContainerStyle="{StaticResource FieldItemStyle}"
                  SelectionChanged="FieldsListBox_SelectionChanged"
@@ -210,7 +280,7 @@
         </ListBox>
 
         <!-- Status bar -->
-        <Border Grid.Row="3"
+        <Border Grid.Row="4"
                 Background="#F5F5F5"
                 Padding="12,6"
                 BorderThickness="0,1,0,0"

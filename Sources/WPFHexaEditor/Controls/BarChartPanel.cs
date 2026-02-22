@@ -20,7 +20,18 @@ namespace WpfHexaEditor.Controls
         private long _maxFrequency = 0;
         private Brush _barBrush = new SolidColorBrush(Color.FromRgb(0x00, 0x78, 0xD4)); // Blue bars
         private Brush _textBrush = new SolidColorBrush(Color.FromRgb(0x42, 0x42, 0x42)); // Dark gray text
+        private Brush _backgroundBrush = Brushes.White;
+        private Brush _gridLineBrush = new SolidColorBrush(Color.FromArgb(0x40, 0x80, 0x80, 0x80)); // Semi-transparent gray
         private Typeface _typeface;
+
+        // Configurable properties
+        private Color _backgroundColor = Colors.White;
+        private Color _textColor = Color.FromRgb(0x42, 0x42, 0x42);
+        private Color _gridLineColor = Color.FromArgb(0x40, 0x80, 0x80, 0x80);
+        private bool _showAxisLabels = true;
+        private bool _showGridLines = false;
+        private bool _showStatistics = true;
+        private int _axisLabelFrequency = 16;
 
         #endregion
 
@@ -53,6 +64,104 @@ namespace WpfHexaEditor.Controls
             {
                 _barBrush = new SolidColorBrush(value);
                 _barBrush.Freeze();
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the background color of the chart panel.
+        /// </summary>
+        public Color BackgroundColor
+        {
+            get => _backgroundColor;
+            set
+            {
+                _backgroundColor = value;
+                _backgroundBrush = new SolidColorBrush(value);
+                _backgroundBrush.Freeze();
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the text color for labels and statistics.
+        /// </summary>
+        public Color TextColor
+        {
+            get => _textColor;
+            set
+            {
+                _textColor = value;
+                _textBrush = new SolidColorBrush(value);
+                _textBrush.Freeze();
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the grid line color.
+        /// </summary>
+        public Color GridLineColor
+        {
+            get => _gridLineColor;
+            set
+            {
+                _gridLineColor = value;
+                _gridLineBrush = new SolidColorBrush(value);
+                _gridLineBrush.Freeze();
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets whether to show axis labels (00-FF).
+        /// </summary>
+        public bool ShowAxisLabels
+        {
+            get => _showAxisLabels;
+            set
+            {
+                _showAxisLabels = value;
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets whether to show horizontal grid lines.
+        /// </summary>
+        public bool ShowGridLines
+        {
+            get => _showGridLines;
+            set
+            {
+                _showGridLines = value;
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets whether to show statistics overlay.
+        /// </summary>
+        public bool ShowStatistics
+        {
+            get => _showStatistics;
+            set
+            {
+                _showStatistics = value;
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the frequency of axis labels (every N bytes).
+        /// Default is 16 (shows 00, 10, 20, ..., F0).
+        /// </summary>
+        public int AxisLabelFrequency
+        {
+            get => _axisLabelFrequency;
+            set
+            {
+                _axisLabelFrequency = Math.Max(1, Math.Min(value, 64)); // Clamp between 1 and 64
                 InvalidateVisual();
             }
         }
@@ -164,6 +273,29 @@ namespace WpfHexaEditor.Controls
             return (_byteFrequencies[value] * 100.0) / _totalBytes;
         }
 
+        /// <summary>
+        /// Calculate Shannon entropy of the byte distribution.
+        /// Returns value between 0 (no entropy, all same byte) and 8 (maximum entropy, uniform distribution).
+        /// High entropy (&gt;7.5) suggests encrypted/compressed data.
+        /// Low entropy (&lt;5) suggests uncompressed data with patterns.
+        /// </summary>
+        public double CalculateEntropy()
+        {
+            if (_totalBytes == 0) return 0;
+
+            double entropy = 0;
+            for (int i = 0; i < 256; i++)
+            {
+                double p = GetPercentage((byte)i) / 100.0;
+                if (p > 0)
+                {
+                    entropy -= p * Math.Log(p, 2);
+                }
+            }
+
+            return entropy;
+        }
+
         #endregion
 
         #region Rendering
@@ -172,14 +304,15 @@ namespace WpfHexaEditor.Controls
         {
             base.OnRender(dc);
 
-            // Draw white background
-            dc.DrawRectangle(Brushes.White, null, new Rect(0, 0, ActualWidth, ActualHeight));
+            // Draw background with configurable color
+            dc.DrawRectangle(_backgroundBrush, null, new Rect(0, 0, ActualWidth, ActualHeight));
 
             if (_totalBytes == 0 || _maxFrequency == 0)
             {
-                // Draw "No data" message
+                // Draw "No data" message (localized)
+                var noDataText = Properties.Resources.BarChart_NoData ?? "No data to display";
                 var formattedText = new FormattedText(
-                    "No data to display",
+                    noDataText,
                     System.Globalization.CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight,
                     _typeface,
@@ -197,6 +330,20 @@ namespace WpfHexaEditor.Controls
             double barWidth = ActualWidth / 256.0;
             double maxBarHeight = ActualHeight - 30; // Leave space for labels
 
+            // Draw grid lines (optional)
+            if (_showGridLines)
+            {
+                var gridPen = new Pen(_gridLineBrush, 1);
+                gridPen.Freeze();
+
+                // Draw 5 horizontal grid lines for frequency reference
+                for (int i = 0; i <= 4; i++)
+                {
+                    double y = (ActualHeight - 30) - (maxBarHeight / 4) * i;
+                    dc.DrawLine(gridPen, new Point(0, y), new Point(ActualWidth, y));
+                }
+            }
+
             // Draw bars
             for (int i = 0; i < 256; i++)
             {
@@ -213,33 +360,50 @@ namespace WpfHexaEditor.Controls
                 dc.DrawRectangle(_barBrush, null, rect);
             }
 
-            // Draw X-axis labels (show every 16th byte value: 00, 10, 20, ..., F0)
-            for (int i = 0; i < 256; i += 16)
+            // Draw X-axis labels (optional, configurable frequency)
+            if (_showAxisLabels)
             {
-                double x = i * barWidth;
-                var label = new FormattedText(
-                    $"{i:X2}",
+                for (int i = 0; i < 256; i += _axisLabelFrequency)
+                {
+                    double x = i * barWidth;
+                    var label = new FormattedText(
+                        $"{i:X2}",
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        FlowDirection.LeftToRight,
+                        _typeface,
+                        10,
+                        _textBrush,
+                        VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+                    dc.DrawText(label, new Point(x, ActualHeight - 15));
+                }
+            }
+
+            // Draw statistics in top-right corner (optional, localized)
+            if (_showStatistics)
+            {
+                double entropy = CalculateEntropy();
+
+                // Localized labels
+                var totalLabel = Properties.Resources.BarChart_Total ?? "Total";
+                var maxLabel = Properties.Resources.BarChart_Max ?? "Max";
+                var entropyLabel = Properties.Resources.BarChart_Entropy ?? "Entropy";
+                var bytesLabel = Properties.Resources.BarChart_Bytes ?? "bytes";
+                var bitsPerByteLabel = Properties.Resources.BarChart_BitsPerByte ?? "bits/byte";
+
+                var statsText = $"{totalLabel}: {_totalBytes:N0} {bytesLabel}  |  {maxLabel}: {_maxFrequency:N0} ({GetPercentage((byte)Array.IndexOf(_byteFrequencies, _maxFrequency)):F2}%)  |  {entropyLabel}: {entropy:F2} {bitsPerByteLabel}";
+
+                var stats = new FormattedText(
+                    statsText,
                     System.Globalization.CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight,
                     _typeface,
-                    10,
+                    11,
                     _textBrush,
                     VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
-                dc.DrawText(label, new Point(x, ActualHeight - 15));
+                dc.DrawText(stats, new Point(ActualWidth - stats.Width - 5, 5));
             }
-
-            // Draw statistics in top-right corner
-            var stats = new FormattedText(
-                $"Total: {_totalBytes:N0} bytes  |  Max: {_maxFrequency:N0} ({GetPercentage((byte)Array.IndexOf(_byteFrequencies, _maxFrequency)):F2}%)",
-                System.Globalization.CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                _typeface,
-                11,
-                _textBrush,
-                VisualTreeHelper.GetDpi(this).PixelsPerDip);
-
-            dc.DrawText(stats, new Point(ActualWidth - stats.Width - 5, 5));
         }
 
         #endregion
