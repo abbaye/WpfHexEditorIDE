@@ -160,6 +160,26 @@
                  SelectionChanged="FieldsListBox_SelectionChanged"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  BorderThickness="0">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy Value" Click="CopyValue_Click">
+                        <MenuItem.Icon>
+                            <TextBlock Text="📋" FontSize="14"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Copy Details" Click="CopyDetails_Click">
+                        <MenuItem.Icon>
+                            <TextBlock Text="📄" FontSize="14"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Export All Fields..." Click="ExportAll_Click">
+                        <MenuItem.Icon>
+                            <TextBlock Text="💾" FontSize="14"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
             <ListBox.Style>
                 <Style TargetType="ListBox">
                     <Style.Triggers>

@@ -92,6 +92,38 @@ namespace WpfHexaEditor.Views.Panels
             }
         }
 
+        private void CopyValue_Click(object sender, RoutedEventArgs e)
+        {
+            if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
+            {
+                CopyFieldValue(field);
+            }
+        }
+
+        private void CopyDetails_Click(object sender, RoutedEventArgs e)
+        {
+            if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
+            {
+                CopyFieldDetails(field);
+            }
+        }
+
+        private void ExportAll_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var exported = ExportFieldsAsText();
+                System.Windows.Clipboard.SetText(exported);
+                System.Windows.MessageBox.Show("All fields exported to clipboard!", "Export Complete",
+                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Error exporting fields: {ex.Message}", "Export Error",
+                    System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+        }
+
         /// <summary>
         /// Scroll to and select a specific field
         /// </summary>
@@ -108,6 +140,77 @@ namespace WpfHexaEditor.Views.Panels
         {
             ParsedFields.Clear();
             FormatInfo = new FormatInfo();
+        }
+
+        /// <summary>
+        /// Copy field value to clipboard
+        /// </summary>
+        public void CopyFieldValue(ParsedFieldViewModel field)
+        {
+            if (field == null || string.IsNullOrEmpty(field.FormattedValue))
+                return;
+
+            try
+            {
+                System.Windows.Clipboard.SetText(field.FormattedValue);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error copying to clipboard: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Copy field details to clipboard
+        /// </summary>
+        public void CopyFieldDetails(ParsedFieldViewModel field)
+        {
+            if (field == null)
+                return;
+
+            try
+            {
+                var details = $"{field.Name}: {field.FormattedValue}\n" +
+                             $"Type: {field.ValueType}\n" +
+                             $"Range: {field.RangeDisplay}\n" +
+                             $"Description: {field.Description}";
+                System.Windows.Clipboard.SetText(details);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error copying to clipboard: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Export all fields to text
+        /// </summary>
+        public string ExportFieldsAsText()
+        {
+            var sb = new System.Text.StringBuilder();
+
+            if (FormatInfo.IsDetected)
+            {
+                sb.AppendLine($"Format: {FormatInfo.Name}");
+                sb.AppendLine($"Description: {FormatInfo.Description}");
+                sb.AppendLine();
+            }
+
+            sb.AppendLine($"Parsed Fields ({ParsedFields.Count}):");
+            sb.AppendLine(new string('=', 80));
+
+            foreach (var field in ParsedFields)
+            {
+                var indent = new string(' ', field.IndentLevel * 2);
+                sb.AppendLine($"{indent}{field.FieldIcon} {field.Name}");
+                sb.AppendLine($"{indent}  Value: {field.FormattedValue}");
+                sb.AppendLine($"{indent}  Range: {field.RangeDisplay}");
+                if (!string.IsNullOrEmpty(field.Description))
+                    sb.AppendLine($"{indent}  Desc:  {field.Description}");
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
