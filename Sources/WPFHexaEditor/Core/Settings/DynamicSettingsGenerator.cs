@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using WpfHexaEditor.Core.Settings.Controls;
+using WpfHexaEditor.Controls;
 
 namespace WpfHexaEditor.Core.Settings
 {
@@ -103,11 +104,12 @@ namespace WpfHexaEditor.Core.Settings
 
             // Use DynamicResource for Header so it updates when language changes
             var resourceKey = $"HexSettings_{category}_Title";
-            try
+            var resource = TryFindResource(resourceKey);
+            if (resource != null)
             {
                 expander.SetResourceReference(Expander.HeaderProperty, resourceKey);
             }
-            catch
+            else
             {
                 // Fallback if resource doesn't exist
                 expander.Header = GetCategoryHeader(category);
@@ -147,11 +149,12 @@ namespace WpfHexaEditor.Core.Settings
 
             // Set header for parent category
             var resourceKey = $"HexSettings_{parentCategory}_Title";
-            try
+            var resource = TryFindResource(resourceKey);
+            if (resource != null)
             {
                 expander.SetResourceReference(Expander.HeaderProperty, resourceKey);
             }
-            catch
+            else
             {
                 expander.Header = GetCategoryHeader(parentCategory);
             }
@@ -218,11 +221,12 @@ namespace WpfHexaEditor.Core.Settings
 
             // Try to use localized resource, fallback to formatted name
             var resourceKey = $"HexSettings_{parentCategory}_{subcategoryName}_Title";
-            try
+            var resource = TryFindResource(resourceKey);
+            if (resource != null)
             {
                 expander.SetResourceReference(Expander.HeaderProperty, resourceKey);
             }
-            catch
+            else
             {
                 expander.Header = GetSubcategoryHeader(subcategoryName);
             }
@@ -401,6 +405,13 @@ namespace WpfHexaEditor.Core.Settings
             {
                 textBox.SetBinding(TextBox.TextProperty, binding);
                 return CreateControlWithLabel(propertyControl.CreateLabel(metadata), textBox);
+            }
+
+            // ColorPicker (Color properties)
+            if (control is ColorPicker.ColorPicker colorPicker)
+            {
+                colorPicker.SetBinding(ColorPicker.ColorPicker.SelectedColorProperty, binding);
+                return CreateControlWithLabel(propertyControl.CreateLabel(metadata), colorPicker);
             }
 
             // Border placeholder for ColorPicker (will be replaced in HexEditorSettings.xaml.cs)

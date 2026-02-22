@@ -195,12 +195,10 @@
     </Content>
   </ItemGroup>
 
-  <!-- Embed all FormatDefinitions JSON files as resources (351 formats built-in) -->
+  <!-- Embed all FormatDefinitions JSON files as resources (400 formats built-in) -->
   <!-- Users can still load custom formats from external directory -->
   <ItemGroup>
-    <EmbeddedResource Include="FormatDefinitions\**\*.json">
-      <LogicalName>WpfHexaEditor.FormatDefinitions.%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
-    </EmbeddedResource>
+    <EmbeddedResource Include="FormatDefinitions\**\*.json" />
   </ItemGroup>
 
   <!-- Span<T> and System.Text.Json support for .NET Framework 4.8 -->

@@ -37,7 +37,7 @@ namespace WpfHexaEditor
                 nameof(EnableAutoFormatDetection),
                 typeof(bool),
                 typeof(HexEditor),
-                new PropertyMetadata(false));
+                new PropertyMetadata(true));
 
         /// <summary>
         /// Enable or disable automatic format detection when file is opened

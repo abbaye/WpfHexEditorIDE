@@ -110,6 +110,20 @@ namespace WpfHexaEditor
             // STARTUP OPTIMIZATION: Defer expensive operations to background (low priority)
             // These operations can be done after the control is loaded and visible
 
+            // Auto-detect format if enabled
+            // Run in background to avoid blocking UI
+            if (EnableAutoFormatDetection)
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    var result = AutoDetectAndApplyFormat(filePath);
+                    if (result.Success && ShowFormatDetectionStatus)
+                    {
+                        StatusText.Text = $"Format detected: {result.Format?.FormatName ?? "Unknown"}";
+                    }
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
+
             // Update bar chart panel in background
             // Bar chart calculation can be slow for large files
             Dispatcher.BeginInvoke(new Action(() =>

@@ -10,10 +10,17 @@ namespace WpfHexaEditor.Core.FormatDetection
 {
     /// <summary>
     /// Validates field values against constraints
-    /// Supports: range checks, enum values, regex patterns, custom validators
+    /// Supports: range checks, enum values, regex patterns, checksums, custom validators
     /// </summary>
     public class FieldValidator
     {
+        private readonly ChecksumValidator _checksumValidator;
+
+        public FieldValidator()
+        {
+            _checksumValidator = new ChecksumValidator();
+        }
+
         /// <summary>
         /// Validation result
         /// </summary>
@@ -62,6 +69,70 @@ namespace WpfHexaEditor.Core.FormatDetection
             }
 
             return ValidationResult.Success();
+        }
+
+        /// <summary>
+        /// Validate a checksum field against data
+        /// </summary>
+        /// <param name="fileData">Complete file data</param>
+        /// <param name="config">Checksum validation configuration</param>
+        /// <returns>Validation result</returns>
+        public ValidationResult ValidateChecksum(byte[] fileData, ChecksumValidationConfig config)
+        {
+            if (fileData == null || config == null)
+                return ValidationResult.Failure("Invalid checksum configuration");
+
+            if (string.IsNullOrWhiteSpace(config.Algorithm))
+                return ValidationResult.Failure("Checksum algorithm not specified");
+
+            try
+            {
+                // Extract data to validate
+                if (config.DataOffset < 0 || config.DataOffset >= fileData.Length)
+                    return ValidationResult.Failure($"Invalid data offset: {config.DataOffset}");
+
+                if (config.DataLength <= 0 || config.DataOffset + config.DataLength > fileData.Length)
+                    return ValidationResult.Failure($"Invalid data length: {config.DataLength}");
+
+                byte[] dataToValidate = new byte[config.DataLength];
+                Array.Copy(fileData, config.DataOffset, dataToValidate, 0, config.DataLength);
+
+                // Calculate checksum
+                string calculatedChecksum = _checksumValidator.Calculate(dataToValidate, config.Algorithm);
+                if (calculatedChecksum == null)
+                    return ValidationResult.Failure($"Unknown checksum algorithm: {config.Algorithm}");
+
+                // If expected value provided, compare
+                if (!string.IsNullOrWhiteSpace(config.ExpectedValue))
+                {
+                    if (string.Equals(calculatedChecksum, config.ExpectedValue, StringComparison.OrdinalIgnoreCase))
+                        return ValidationResult.Success();
+                    else
+                        return ValidationResult.Failure($"Checksum mismatch: expected {config.ExpectedValue}, got {calculatedChecksum}");
+                }
+
+                // Otherwise, read checksum from file at specified offset
+                if (config.ChecksumOffset < 0 || config.ChecksumOffset >= fileData.Length)
+                    return ValidationResult.Failure($"Invalid checksum offset: {config.ChecksumOffset}");
+
+                if (config.ChecksumLength <= 0 || config.ChecksumOffset + config.ChecksumLength > fileData.Length)
+                    return ValidationResult.Failure($"Invalid checksum length: {config.ChecksumLength}");
+
+                // Read stored checksum from file
+                byte[] storedChecksumBytes = new byte[config.ChecksumLength];
+                Array.Copy(fileData, config.ChecksumOffset, storedChecksumBytes, 0, config.ChecksumLength);
+                string storedChecksum = BitConverter.ToString(storedChecksumBytes).Replace("-", "");
+
+                // Compare
+                if (string.Equals(calculatedChecksum, storedChecksum, StringComparison.OrdinalIgnoreCase))
+                    return ValidationResult.Success();
+                else
+                    return ValidationResult.Failure($"Checksum mismatch: stored {storedChecksum}, calculated {calculatedChecksum}");
+            }
+            catch (Exception ex)
+            {
+                return ValidationResult.Failure($"Checksum validation error: {ex.Message}");
+            }
         }
 
         private bool ValidateRange(object value, object minValue, object maxValue, out string message)
@@ -165,5 +236,46 @@ namespace WpfHexaEditor.Core.FormatDetection
         /// Error message to show if validation fails
         /// </summary>
         public string ErrorMessage { get; set; }
+
+        /// <summary>
+        /// Checksum validation configuration
+        /// </summary>
+        public ChecksumValidationConfig Checksum { get; set; }
+    }
+
+    /// <summary>
+    /// Configuration for checksum validation
+    /// </summary>
+    public class ChecksumValidationConfig
+    {
+        /// <summary>
+        /// Checksum algorithm (crc32, md5, sha1, sha256, sum8, sum16, sum32)
+        /// </summary>
+        public string Algorithm { get; set; }
+
+        /// <summary>
+        /// Offset where the checksum field is located (relative to data being validated)
+        /// </summary>
+        public long ChecksumOffset { get; set; }
+
+        /// <summary>
+        /// Length of the checksum field in bytes
+        /// </summary>
+        public int ChecksumLength { get; set; }
+
+        /// <summary>
+        /// Offset where data to validate starts
+        /// </summary>
+        public long DataOffset { get; set; }
+
+        /// <summary>
+        /// Length of data to validate
+        /// </summary>
+        public int DataLength { get; set; }
+
+        /// <summary>
+        /// Expected checksum value (hex string) if known upfront
+        /// </summary>
+        public string ExpectedValue { get; set; }
     }
 }

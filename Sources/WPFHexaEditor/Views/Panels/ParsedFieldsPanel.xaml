@@ -30,83 +30,138 @@
 
         <!-- Data template for parsed fields -->
         <DataTemplate x:Key="FieldTemplate">
-            <Grid Margin="{Binding IndentMargin}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <Border Padding="4,2" CornerRadius="4">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsValid}" Value="False">
+                                <Setter Property="Background" Value="#FFEBEE"/>
+                                <Setter Property="BorderBrush" Value="#F44336"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid Margin="{Binding IndentMargin}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Color indicator -->
-                <Border Grid.Row="0" Grid.RowSpan="3" Grid.Column="0"
-                        Width="4" Margin="0,0,8,0"
-                        Background="{Binding Color}"
-                        CornerRadius="2"/>
-
-                <!-- Icon -->
-                <TextBlock Grid.Row="0" Grid.RowSpan="3" Grid.Column="1"
-                           Text="{Binding FieldIcon}"
-                           FontSize="14"
-                           Margin="0,0,6,0"
-                           VerticalAlignment="Center"
-                           ToolTip="{Binding ValueType}"/>
-
-                <!-- Bookmark indicator -->
-                <TextBlock Grid.Row="0" Grid.RowSpan="3" Grid.Column="2"
-                           Text="⭐"
-                           FontSize="12"
-                           Margin="0,0,6,0"
-                           VerticalAlignment="Center"
-                           ToolTip="Bookmarked"
-                           Visibility="{Binding IsBookmarked, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
-                <!-- Field name -->
-                <TextBlock Grid.Row="0" Grid.Column="3"
-                           Text="{Binding Name}"
-                           FontWeight="SemiBold"
-                           FontSize="13"
-                           TextWrapping="NoWrap"
-                           TextTrimming="CharacterEllipsis"
-                           ToolTip="{Binding DetailedTooltip}"/>
-
-                <!-- Field value -->
-                <Grid Grid.Row="1" Grid.Column="3" Margin="0,2,0,0">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0"
-                               Text="Value: "
-                               FontSize="11"
-                               Foreground="#666666"/>
+                    <!-- Color indicator -->
+                    <Border Grid.Row="0" Grid.RowSpan="4" Grid.Column="0"
+                            Width="4" Margin="0,0,8,0"
+                            Background="{Binding Color}"
+                            CornerRadius="2"/>
 
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding FormattedValue}"
-                               FontSize="11"
-                               FontFamily="Consolas"
-                               Foreground="#2196F3"
-                               TextWrapping="Wrap"
+                    <!-- Icon -->
+                    <TextBlock Grid.Row="0" Grid.RowSpan="4" Grid.Column="1"
+                               Text="{Binding FieldIcon}"
+                               FontSize="14"
+                               Margin="0,0,6,0"
+                               VerticalAlignment="Center"
+                               ToolTip="{Binding ValueType}"/>
+
+                    <!-- Validation warning icon -->
+                    <TextBlock Grid.Row="0" Grid.RowSpan="4" Grid.Column="2"
+                               Text="⚠"
+                               FontSize="14"
+                               Margin="0,0,6,0"
+                               Foreground="#F44336"
+                               VerticalAlignment="Center"
+                               ToolTip="{Binding ValidationMessage}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsValid}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <!-- Bookmark indicator -->
+                    <TextBlock Grid.Row="0" Grid.RowSpan="4" Grid.Column="3"
+                               Text="⭐"
+                               FontSize="12"
+                               Margin="0,0,6,0"
+                               VerticalAlignment="Center"
+                               ToolTip="Bookmarked"
+                               Visibility="{Binding IsBookmarked, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                    <!-- Field name -->
+                    <TextBlock Grid.Row="0" Grid.Column="4"
+                               Text="{Binding Name}"
+                               FontWeight="SemiBold"
+                               FontSize="13"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
                                ToolTip="{Binding DetailedTooltip}"/>
-                </Grid>
 
-                <!-- Field details -->
-                <TextBlock Grid.Row="2" Grid.Column="3"
-                           Margin="0,2,0,0"
-                           FontSize="10"
-                           Foreground="#999999">
-                    <Run Text="{Binding RangeDisplay}"/>
-                    <Run Text=" • "/>
-                    <Run Text="{Binding ValueType}"/>
-                </TextBlock>
-            </Grid>
+                    <!-- Field value -->
+                    <Grid Grid.Row="1" Grid.Column="4" Margin="0,2,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="Value: "
+                                   FontSize="11"
+                                   Foreground="#666666"/>
+
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding FormattedValue}"
+                                   FontSize="11"
+                                   FontFamily="Consolas"
+                                   Foreground="#2196F3"
+                                   TextWrapping="Wrap"
+                                   ToolTip="{Binding DetailedTooltip}"/>
+                    </Grid>
+
+                    <!-- Field details -->
+                    <TextBlock Grid.Row="2" Grid.Column="4"
+                               Margin="0,2,0,0"
+                               FontSize="10"
+                               Foreground="#999999">
+                        <Run Text="{Binding RangeDisplay}"/>
+                        <Run Text=" • "/>
+                        <Run Text="{Binding ValueType}"/>
+                    </TextBlock>
+
+                    <!-- Validation error message -->
+                    <TextBlock Grid.Row="3" Grid.Column="4"
+                               Margin="0,4,0,0"
+                               FontSize="10"
+                               FontWeight="SemiBold"
+                               Foreground="#F44336"
+                               TextWrapping="Wrap"
+                               Text="{Binding ValidationMessage}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsValid}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+            </Border>
         </DataTemplate>
     </UserControl.Resources>
 

@@ -628,11 +628,49 @@ namespace WpfHexaEditor
                     // Validate the value if validation rules exist
                     if (field.BlockDefinition?.ValidationRules != null)
                     {
+                        // Standard validation (range, enum, pattern)
                         var validationResult = _fieldValidator.Validate(field.RawValue, field.BlockDefinition.ValidationRules);
                         field.IsValid = validationResult.IsValid;
                         if (!validationResult.IsValid)
                         {
                             field.ValidationMessage = validationResult.Message;
+                        }
+
+                        // Checksum validation (requires full file data)
+                        if (field.IsValid && field.BlockDefinition.ValidationRules.Checksum != null)
+                        {
+                            try
+                            {
+                                // Read full file data for checksum validation
+                                long currentPos = Stream.Position;
+                                long fileLength = Stream.Length;
+                                int maxDataLength = (int)Math.Min(fileLength, 10 * 1024 * 1024); // Limit to 10MB for safety
+                                byte[] fileData = new byte[maxDataLength];
+                                Stream.Position = 0;
+                                int bytesReadTotal = Stream.Read(fileData, 0, maxDataLength);
+                                Stream.Position = currentPos; // Restore position
+
+                                if (bytesReadTotal > 0)
+                                {
+                                    // Resize array if we read less
+                                    if (bytesReadTotal < maxDataLength)
+                                    {
+                                        Array.Resize(ref fileData, bytesReadTotal);
+                                    }
+
+                                    var checksumResult = _fieldValidator.ValidateChecksum(fileData, field.BlockDefinition.ValidationRules.Checksum);
+                                    if (!checksumResult.IsValid)
+                                    {
+                                        field.IsValid = false;
+                                        field.ValidationMessage = checksumResult.Message;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                field.IsValid = false;
+                                field.ValidationMessage = $"Checksum validation error: {ex.Message}";
+                            }
                         }
                     }
                 }
