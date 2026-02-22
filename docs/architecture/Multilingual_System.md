@@ -248,30 +248,32 @@ Toutes les chaînes du HexEditor utilisent maintenant le système de ressources 
 
 ## 🔗 Intégration dans l'architecture globale
 
-```
-┌─────────────────────────────────────────────────────┐
-│                  HexEditor (View)                    │
-│                   WPF XAML UI                        │
-│  • Utilise {x:Static prop:Resources.*}              │
-│  • Binding automatique vers la culture système      │
-└───────────────────┬─────────────────────────────────┘
-                    │
-┌───────────────────▼─────────────────────────────────┐
-│            Properties.Resources (Designer)           │
-│          Auto-generated accessor class               │
-│  • ResourceManager pour cache                       │
-│  • Propriétés statiques pour chaque ressource       │
-└───────────────────┬─────────────────────────────────┘
-                    │
-┌───────────────────▼─────────────────────────────────┐
-│          Fichiers .resx (6 langues)                 │
-│  • Resources.resx (EN - default)                    │
-│  • Resources.fr-CA.resx                             │
-│  • Resources.pl-PL.resx                             │
-│  • Resources.pt-BR.resx                             │
-│  • Resources.ru-RU.resx                             │
-│  • Resources.zh-CN.resx                             │
-└─────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    A["🖥️ HexEditor (View)<br/>WPF XAML UI"]
+    B["⚙️ Properties.Resources<br/>Auto-generated accessor class"]
+    C["📁 Fichiers .resx<br/>19 langues"]
+
+    A -->|"{x:Static prop:Resources.*}"| B
+    B -->|"ResourceManager<br/>+ Cache"| C
+
+    style A fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style B fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style C fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+
+    subgraph "Binding automatique"
+        A
+    end
+
+    subgraph "Propriétés statiques"
+        B
+    end
+
+    subgraph "Ressources"
+        C
+        D["EN (default) | FR-CA, FR-FR<br/>DE-DE | ES-ES, ES-419<br/>IT-IT | JA-JP | KO-KR<br/>NL-NL | PL-PL<br/>PT-BR, PT-PT | RU-RU<br/>SV-SE | TR-TR | ZH-CN<br/>AR-SA | HI-IN"]
+        C -.-> D
+    end
 ```
 
 ## ✅ Checklist de migration pour nouveaux composants
