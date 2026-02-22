@@ -1,3 +1,9 @@
+<div align="center">
+  <img src="../Images/Logo2026.png" alt="WPF HexEditor" width="800"/>
+</div>
+
+---
+
 # WPF HexEditor - Source Code
 
 This directory contains all the source code for the WPF HexEditor project.
