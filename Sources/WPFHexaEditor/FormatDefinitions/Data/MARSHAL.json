@@ -1,0 +1,29 @@
+{
+  "formatName": "Ruby Marshal",
+  "version": "1.0",
+  "extensions": [ ".marshal" ],
+  "description": "Ruby object serialization format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "0408",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "header",
+      "name": "Marshal Version",
+      "offset": 0,
+      "length": 2,
+      "color": "#CC342D",
+      "opacity": 0.4,
+      "description": "Ruby marshal format version"
+    }
+  ]
+}

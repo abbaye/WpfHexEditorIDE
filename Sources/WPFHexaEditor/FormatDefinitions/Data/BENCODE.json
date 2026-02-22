@@ -1,0 +1,29 @@
+{
+  "formatName": "BitTorrent Bencode",
+  "version": "1.0",
+  "extensions": [ ".torrent" ],
+  "description": "BitTorrent bencoding format for .torrent files",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "64",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "header",
+      "name": "Bencode Dictionary",
+      "offset": 0,
+      "length": 64,
+      "color": "#16A085",
+      "opacity": 0.4,
+      "description": "Bencoded dictionary start"
+    }
+  ]
+}

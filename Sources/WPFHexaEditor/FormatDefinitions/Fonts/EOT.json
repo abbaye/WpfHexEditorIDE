@@ -1,0 +1,29 @@
+{
+  "formatName": "Embedded OpenType Font",
+  "version": "1.0",
+  "extensions": [ ".eot" ],
+  "description": "Microsoft Embedded OpenType font format for web",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "",
+    "offset": 34,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "header",
+      "name": "EOT Header",
+      "offset": 0,
+      "length": 82,
+      "color": "#5E81AC",
+      "opacity": 0.4,
+      "description": "EOT font file header"
+    }
+  ]
+}

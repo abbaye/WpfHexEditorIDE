@@ -1,0 +1,29 @@
+{
+  "formatName": "Ext4 Filesystem",
+  "version": "1.0",
+  "extensions": [ ".ext4" ],
+  "description": "Fourth Extended Filesystem for Linux",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "53EF",
+    "offset": 1080,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "header",
+      "name": "Ext4 Superblock",
+      "offset": 1024,
+      "length": 1024,
+      "color": "#FCC624",
+      "opacity": 0.4,
+      "description": "Ext4 superblock structure"
+    }
+  ]
+}

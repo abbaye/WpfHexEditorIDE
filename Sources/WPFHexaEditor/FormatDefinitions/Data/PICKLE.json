@@ -1,0 +1,29 @@
+{
+  "formatName": "Python Pickle",
+  "version": "1.0",
+  "extensions": [ ".pkl", ".pickle" ],
+  "description": "Python object serialization format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "80",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "header",
+      "name": "Pickle Protocol",
+      "offset": 0,
+      "length": 2,
+      "color": "#FFD43B",
+      "opacity": 0.4,
+      "description": "Python pickle protocol version"
+    }
+  ]
+}

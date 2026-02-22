@@ -1,0 +1,29 @@
+{
+  "formatName": "ZFS Filesystem",
+  "version": "1.0",
+  "extensions": [ ".zfs" ],
+  "description": "Zettabyte File System",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "00000000000000000CBAD1BA",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "header",
+      "name": "ZFS Label",
+      "offset": 0,
+      "length": 262144,
+      "color": "#00BFFF",
+      "opacity": 0.4,
+      "description": "ZFS vdev label"
+    }
+  ]
+}

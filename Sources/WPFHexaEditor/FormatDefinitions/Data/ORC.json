@@ -1,0 +1,29 @@
+{
+  "formatName": "Apache ORC",
+  "version": "1.0",
+  "extensions": [ ".orc" ],
+  "description": "Apache Optimized Row Columnar file format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "4F5243",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ORC Magic",
+      "offset": 0,
+      "length": 3,
+      "color": "#00A699",
+      "opacity": 0.4,
+      "description": "ORC file signature"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "formatName": "dBASE III Database",
+  "version": "1.0",
+  "extensions": [ ".dbf" ],
+  "description": "dBASE III database table format",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "03",
+    "offset": 0,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "header",
+      "name": "dBASE III Header",
+      "offset": 0,
+      "length": 32,
+      "color": "#98C1D9",
+      "opacity": 0.4,
+      "description": "dBASE III file header"
+    }
+  ]
+}

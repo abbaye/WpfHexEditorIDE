@@ -1,0 +1,29 @@
+{
+  "formatName": "F2FS (Flash-Friendly File System)",
+  "version": "1.0",
+  "extensions": [ ".f2fs" ],
+  "description": "Flash-Friendly File System for NAND flash devices",
+  "author": "WPFHexaEditor Team",
+
+  "detection": {
+    "signature": "F2F52010",
+    "offset": 1024,
+    "required": true
+  },
+
+  "variables": {
+    "currentOffset": 0
+  },
+
+  "blocks": [
+    {
+      "type": "header",
+      "name": "F2FS Superblock",
+      "offset": 1024,
+      "length": 4096,
+      "color": "#34A853",
+      "opacity": 0.4,
+      "description": "F2FS superblock structure"
+    }
+  ]
+}
