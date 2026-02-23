@@ -2898,11 +2898,20 @@ namespace WpfHexaEditor.Controls.JsonEditor
             if (_caretTimer != null && CaretBlinkRate > 0)
             {
                 _caretVisible = true;
+                _caretTimer.Stop();
                 _caretTimer.Start();
             }
+            else if (_caretTimer != null)
+            {
+                // If blink rate is 0 (always visible), ensure caret is shown
+                _caretVisible = true;
+            }
 
-            // Repaint to show active selection
+            // Force immediate repaint to show caret and active selection
             InvalidateVisual();
+
+            // Force update layout to ensure cursor is visible immediately
+            UpdateLayout();
         }
 
         protected override void OnLostFocus(RoutedEventArgs e)

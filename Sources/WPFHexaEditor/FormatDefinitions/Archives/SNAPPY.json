@@ -8,6 +8,19 @@
     "description":  "Snappy compressed stream format developed by Google, optimized for speed rather than compression ratio",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Snappy Framing Format Specification",
+            "Google Snappy Compression Algorithm",
+            "Snappy Stream Format"
+        ],
+        "web_links": [
+            "https://github.com/google/snappy/blob/main/framing_format.txt",
+            "http://google.github.io/snappy/",
+            "https://en.wikipedia.org/wiki/Snappy_(compression)",
+            "https://github.com/google/snappy"
+        ]
+    },
     "detection":  {
                       "signature":  "FF06000073",
                       "offset":  0,

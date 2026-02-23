@@ -1,30 +1,39 @@
 ﻿{
-    "formatName":  "Ogg Video",
-    "version":  "1.0",
-    "extensions":  [
-                       ".ogv",
-                       ".ogm"
-                   ],
-    "description":  "Ogg container format for video, part of the Xiph.Org Foundation\u0027s Ogg project",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "4F676753",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Ogg Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "OggS - Ogg bitstream format signature"
-                   }
-               ]
+    "formatName": "Ogg Video",
+    "version": "1.0",
+    "extensions": [
+        ".ogv",
+        ".ogm"
+    ],
+    "description": "Ogg container format for video, part of the Xiph.Org Foundation's Ogg project",
+    "category": "Video",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "RFC 3533 - The Ogg Encapsulation Format",
+            "Ogg Bitstream Format"
+        ],
+        "web_links": [
+            "https://www.ietf.org/rfc/rfc3533.txt",
+            "https://xiph.org/ogg/doc/",
+            "https://en.wikipedia.org/wiki/Ogg"
+        ]
+    },
+    "detection": {
+        "signature": "4F676753",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {},
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "Ogg Header",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "OggS - Ogg bitstream format signature"
+        }
+    ]
 }

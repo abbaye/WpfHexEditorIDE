@@ -8,6 +8,18 @@
     "description":  "A-law algorithm compressed audio format used in telephony",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ITU-T Recommendation G.711 - PCM of Voice Frequencies",
+            "A-law Logarithmic Companding Algorithm",
+            "G.711 Telephony Codec Standard"
+        ],
+        "web_links": [
+            "https://www.itu.int/rec/T-REC-G.711/",
+            "https://en.wikipedia.org/wiki/G.711",
+            "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-G.711-198811-I!!PDF-E&type=items"
+        ]
+    },
     "detection":  {
                       "signature":  "2E736E64",
                       "offset":  0,

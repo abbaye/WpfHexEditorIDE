@@ -7,6 +7,19 @@
     "description":  "Unix compress (.Z) format - LZW compression",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Unix Compress .Z File Format",
+            "LZW Compression Algorithm",
+            "POSIX compress/uncompress Specification"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/Compress",
+            "http://justsolve.archiveteam.org/wiki/Compress_(Unix)",
+            "https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch",
+            "https://github.com/vapier/ncompress"
+        ]
+    },
     "detection":  {
                       "signature":  "1F9D",
                       "offset":  0,

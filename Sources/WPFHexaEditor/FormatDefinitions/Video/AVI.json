@@ -1,47 +1,57 @@
 ﻿{
-    "formatName":  "AVI Video",
-    "version":  "1.0",
-    "extensions":  [
-                       ".avi"
-                   ],
-    "description":  "Audio Video Interleave - Classic Windows video format",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "52494646",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "RIFF Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "RIFF chunk descriptor"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Size",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "File size minus 8 bytes"
-                   },
-                   {
-                       "type":  "signature",
-                       "name":  "AVI Format",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "AVI identifier"
-                   }
-               ]
+    "formatName": "AVI Video",
+    "version": "1.0",
+    "extensions": [
+        ".avi"
+    ],
+    "description": "Audio Video Interleave - Classic Windows video format",
+    "category": "Video",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Microsoft AVI RIFF File Format",
+            "Audio Video Interleave Format"
+        ],
+        "web_links": [
+            "https://docs.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference",
+            "https://en.wikipedia.org/wiki/Audio_Video_Interleave"
+        ]
+    },
+    "detection": {
+        "signature": "52494646",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "RIFF Header",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "RIFF chunk descriptor"
+        },
+        {
+            "type": "field",
+            "name": "File Size",
+            "offset": 4,
+            "length": 4,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "File size minus 8 bytes"
+        },
+        {
+            "type": "signature",
+            "name": "AVI Format",
+            "offset": 8,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "AVI identifier"
+        }
+    ]
 }

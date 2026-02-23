@@ -1295,6 +1295,13 @@ namespace WpfHexaEditor.Controls
                                    (ByteSpacerPositioning == ByteSpacerPosition.Both ||
                                     ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel);
 
+            // Calculate dynamic hex byte width based on current ByteSize mode
+            // Bug fix: Use actual cell width instead of constant HexByteWidth to prevent misalignment
+            int byteCount = _linesCached[0].Bytes.Count > 0 && _linesCached[0].Bytes[0].Values != null
+                ? _linesCached[0].Bytes[0].Values.Length
+                : 1; // Fallback to 1 byte if no data
+            double dynamicHexByteWidth = CalculateCellWidth(byteCount);
+
             // Prepare blocks with current viewport state (uses cache if unchanged)
             _customBackgroundRenderer.PrepareBlocks(
                 _customBackgroundBlocks,
@@ -1302,7 +1309,7 @@ namespace WpfHexaEditor.Controls
                 _fontSize,
                 _typeface.FontFamily.Source,
                 _lineHeight,
-                HexByteWidth,
+                dynamicHexByteWidth,
                 AsciiCharWidth,
                 ByteGrouping,
                 (int)ByteSpacerWidthTickness,
@@ -1369,19 +1376,8 @@ namespace WpfHexaEditor.Controls
             double byteWidth = cellWidth - HexByteSpacing;
             var rect = new Rect(x, y, byteWidth, _lineHeight);
 
-            // Phase 7.1: Draw custom background block FIRST (underneath everything)
-            if (_customBackgroundBlocks != null && _customBackgroundBlocks.Count > 0)
-            {
-                long position = byteData.VirtualPos.Value;
-                foreach (var block in _customBackgroundBlocks)
-                {
-                    if (position >= block.StartOffset && position <= block.StopOffset)
-                    {
-                        dc.DrawRoundedRectangle(block.Color, null, rect, 2, 2);
-                        break; // Only draw first matching block
-                    }
-                }
-            }
+            // Note: Custom background blocks are now drawn globally via CustomBackgroundRenderer
+            // in DrawCustomBackgroundBlocks() for better performance and correct spacing handling
 
             // Auto-highlight matching bytes (V1 compatible feature)
             if (_autoHighlightByteValue.HasValue && byteData.Value == _autoHighlightByteValue.Value)
@@ -1620,18 +1616,8 @@ namespace WpfHexaEditor.Controls
 
             // STEP 3: Draw backgrounds and borders
             // Phase 7.1: Draw custom background block FIRST (underneath everything)
-            if (_customBackgroundBlocks != null && _customBackgroundBlocks.Count > 0)
-            {
-                long position = byteData.VirtualPos.Value;
-                foreach (var block in _customBackgroundBlocks)
-                {
-                    if (position >= block.StartOffset && position <= block.StopOffset)
-                    {
-                        dc.DrawRoundedRectangle(block.Color, null, rect, 1, 1);
-                        break; // Only draw first matching block
-                    }
-                }
-            }
+            // Note: Custom background blocks are now drawn globally via CustomBackgroundRenderer
+            // in DrawCustomBackgroundBlocks() for better performance and correct spacing handling
 
             // Phase 7.5: Draw TBL background ONLY for special types (EndBlock, EndLine, Japonais)
             if (_tblStream != null && dteType != Core.CharacterTable.DteType.Invalid)

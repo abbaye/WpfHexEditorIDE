@@ -8,6 +8,19 @@
     "description":  "DTS (Digital Theater Systems) multi-channel audio codec",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "DTS Coherent Acoustics - ETSI TS 102 114",
+            "DTS Digital Surround Specification",
+            "DTS-HD Master Audio Format"
+        ],
+        "web_links": [
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000232.shtml",
+            "https://en.wikipedia.org/wiki/DTS,_Inc.",
+            "https://en.wikipedia.org/wiki/DTS-HD_Master_Audio",
+            "https://dts.com/"
+        ]
+    },
     "detection":  {
                       "signature":  "7FFE8001",
                       "offset":  0,

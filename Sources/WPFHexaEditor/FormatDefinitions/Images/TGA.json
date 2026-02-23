@@ -8,6 +8,19 @@
     "description":  "Truevision TGA/TARGA image format",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Truevision TGA File Format Specification Version 2.0",
+            "TARGA Raster Graphics Format",
+            "TGA Image Format"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/Truevision_TGA",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000180.shtml",
+            "https://formats.kaitai.io/tga/",
+            "https://www.fileformat.info/format/tga/egff.htm"
+        ]
+    },
     "detection":  {
                       "signature":  "54525545564953494F4E2D5846494C45",
                       "offset":  0,

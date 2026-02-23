@@ -7,6 +7,19 @@
     "description":  "Opus lossy audio codec designed for interactive speech and audio transmission",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "RFC 6716 - Definition of the Opus Audio Codec",
+            "RFC 8251 - Updates to the Opus Audio Codec",
+            "IETF Opus Specification"
+        ],
+        "web_links": [
+            "https://datatracker.ietf.org/doc/html/rfc6716",
+            "https://opus-codec.org/",
+            "https://en.wikipedia.org/wiki/Opus_(audio_format)",
+            "https://www.rfc-editor.org/info/rfc6716"
+        ]
+    },
     "detection":  {
                       "signature":  "4F676753",
                       "offset":  0,

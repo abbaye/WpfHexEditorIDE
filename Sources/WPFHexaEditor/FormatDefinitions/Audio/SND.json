@@ -7,6 +7,19 @@
     "description":  "Generic sound file format used by various systems",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "NeXT/Sun Soundfile Format Specification",
+            "Digital Sound File Format (.snd)",
+            "Sun Microsystems Audio File Standard"
+        ],
+        "web_links": [
+            "http://soundfile.sapp.org/doc/NextFormat/",
+            "https://en.wikipedia.org/wiki/Digital_sound_file_formats_using_the_.snd_extension",
+            "https://www.file-recovery.com/au-signature-format.htm",
+            "http://fileformats.archiveteam.org/wiki/AU"
+        ]
+    },
     "detection":  {
                       "signature":  "2E736E64",
                       "offset":  0,

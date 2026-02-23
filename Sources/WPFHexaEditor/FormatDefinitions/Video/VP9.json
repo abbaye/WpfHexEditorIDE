@@ -8,6 +8,19 @@
     "description":  "VP9 video codec, successor to VP8 developed by Google",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "VP9 Bitstream Specification",
+            "WebM VP9 Video Codec",
+            "Google VP9 Open Source Codec"
+        ],
+        "web_links": [
+            "https://www.webmproject.org/vp9/",
+            "https://developers.google.com/media/vp9",
+            "https://en.wikipedia.org/wiki/VP9",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000579.shtml"
+        ]
+    },
     "detection":  {
                       "signature":  "444B4946",
                       "offset":  0,

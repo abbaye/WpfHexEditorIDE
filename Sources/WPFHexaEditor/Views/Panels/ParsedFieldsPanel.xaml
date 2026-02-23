@@ -259,20 +259,25 @@
                 BorderThickness="0,0,0,1"
                 BorderBrush="#E0E0E0">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0"
+                <!-- Search icon and textbox -->
+                <TextBlock Grid.Row="0" Grid.Column="0"
                            Text="🔍"
                            FontSize="14"
                            VerticalAlignment="Center"
                            Margin="0,0,8,0"/>
 
                 <TextBox x:Name="SearchTextBox"
-                         Grid.Column="1"
+                         Grid.Row="0" Grid.Column="1"
                          Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          FontSize="12"
                          Padding="4"
@@ -302,7 +307,7 @@
                 </TextBox>
 
                 <Button x:Name="ClearSearchButton"
-                        Grid.Column="2"
+                        Grid.Row="0" Grid.Column="2"
                         Content="✕"
                         Width="24" Height="24"
                         Margin="4,0,0,0"
@@ -318,6 +323,57 @@
                         </Binding>
                     </Button.Visibility>
                 </Button>
+
+                <!-- Advanced search options -->
+                <WrapPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                           Orientation="Horizontal"
+                           Margin="0,6,0,0">
+                    <CheckBox x:Name="RegexSearchCheckBox"
+                              Content="Regex"
+                              FontSize="10"
+                              Margin="0,0,12,0"
+                              VerticalAlignment="Center"
+                              Checked="SearchOption_Changed"
+                              Unchecked="SearchOption_Changed"/>
+                    <CheckBox x:Name="CaseSensitiveCheckBox"
+                              Content="Case-sensitive"
+                              FontSize="10"
+                              Margin="0,0,12,0"
+                              VerticalAlignment="Center"
+                              Checked="SearchOption_Changed"
+                              Unchecked="SearchOption_Changed"/>
+                    <TextBlock Text="In:"
+                               FontSize="10"
+                               Margin="0,0,4,0"
+                               VerticalAlignment="Center"
+                               Foreground="#666666"/>
+                    <ComboBox x:Name="SearchFieldCombo"
+                              FontSize="10"
+                              Width="110"
+                              Margin="0,0,12,0"
+                              SelectedIndex="0"
+                              SelectionChanged="SearchOption_Changed">
+                        <ComboBoxItem Content="All fields"/>
+                        <ComboBoxItem Content="Name only"/>
+                        <ComboBoxItem Content="Value only"/>
+                        <ComboBoxItem Content="Description"/>
+                    </ComboBox>
+                    <TextBlock Text="Type:"
+                               FontSize="10"
+                               Margin="0,0,4,0"
+                               VerticalAlignment="Center"
+                               Foreground="#666666"/>
+                    <ComboBox x:Name="TypeFilterCombo"
+                              FontSize="10"
+                              Width="100"
+                              SelectedIndex="0"
+                              SelectionChanged="SearchOption_Changed">
+                        <ComboBoxItem Content="All types"/>
+                        <ComboBoxItem Content="Integers"/>
+                        <ComboBoxItem Content="Strings"/>
+                        <ComboBoxItem Content="Bytes"/>
+                    </ComboBox>
+                </WrapPanel>
             </Grid>
         </Border>
 
@@ -414,6 +470,87 @@
                 </Grid>
                 <TextBlock FontSize="11" Foreground="#666666" TextWrapping="Wrap"
                            Text="{Binding FormatInfo.Description}"/>
+
+                <!-- References Section -->
+                <StackPanel Margin="0,12,0,0"
+                            Visibility="{Binding FormatInfo.HasReferences, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <!-- References Header with Toggle -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ToggleButton x:Name="ShowReferencesToggle"
+                                      Grid.Column="0"
+                                      Content="📚 References"
+                                      FontSize="11"
+                                      FontWeight="SemiBold"
+                                      Padding="8,4"
+                                      IsChecked="True"
+                                      Style="{DynamicResource {x:Static ToolBar.ToggleButtonStyleKey}}"/>
+
+                        <Button x:Name="CopyReferencesButton"
+                                Grid.Column="2"
+                                Content="📋 Copy"
+                                FontSize="10"
+                                Padding="6,2"
+                                Margin="4,0,0,0"
+                                ToolTip="Copy references to clipboard"
+                                Click="CopyReferences_Click"
+                                Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
+                    </Grid>
+
+                    <!-- References Content (collapsible) -->
+                    <StackPanel Margin="0,8,0,0"
+                                Visibility="{Binding IsChecked, ElementName=ShowReferencesToggle, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                        <!-- Specifications -->
+                        <StackPanel Visibility="{Binding FormatInfo.References.Specifications.Count, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock Text="Specifications:"
+                                       FontWeight="SemiBold"
+                                       FontSize="10"
+                                       Foreground="#666666"
+                                       Margin="0,0,0,4"/>
+                            <ItemsControl ItemsSource="{Binding FormatInfo.References.Specifications}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}"
+                                                   FontSize="10"
+                                                   Foreground="#333333"
+                                                   Margin="12,2,0,2"
+                                                   TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                        <!-- Web Links -->
+                        <StackPanel Margin="0,8,0,0"
+                                    Visibility="{Binding FormatInfo.References.WebLinks.Count, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock Text="Web Links:"
+                                       FontWeight="SemiBold"
+                                       FontSize="10"
+                                       Foreground="#666666"
+                                       Margin="0,0,0,4"/>
+                            <ItemsControl ItemsSource="{Binding FormatInfo.References.WebLinks}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="12,2,0,2">
+                                            <Hyperlink NavigateUri="{Binding}"
+                                                       RequestNavigate="Hyperlink_RequestNavigate"
+                                                       Foreground="#2196F3"
+                                                       TextDecorations="Underline">
+                                                <Run Text="{Binding}" FontSize="10"/>
+                                            </Hyperlink>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
         </Border>
 

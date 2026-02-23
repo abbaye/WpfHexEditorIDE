@@ -1,38 +1,48 @@
 ﻿{
-    "formatName":  "Word Document",
-    "version":  "1.0",
-    "extensions":  [
-                       ".docx"
-                   ],
-    "description":  "Microsoft Word Open XML document",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "504B0304",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ZIP Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "DOCX is a ZIP container"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "ZIP Header",
-                       "offset":  4,
-                       "length":  26,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "ZIP local file header"
-                   }
-               ]
+    "formatName": "Word Document",
+    "version": "1.0",
+    "extensions": [
+        ".docx"
+    ],
+    "description": "Microsoft Word Open XML document",
+    "category": "Documents",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ECMA-376 - Office Open XML File Formats",
+            "ISO/IEC 29500 - Information Technology"
+        ],
+        "web_links": [
+            "https://www.ecma-international.org/publications-and-standards/standards/ecma-376/",
+            "https://en.wikipedia.org/wiki/Office_Open_XML"
+        ]
+    },
+    "detection": {
+        "signature": "504B0304",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "ZIP Signature",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "DOCX is a ZIP container"
+        },
+        {
+            "type": "field",
+            "name": "ZIP Header",
+            "offset": 4,
+            "length": 26,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "ZIP local file header"
+        }
+    ]
 }

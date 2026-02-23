@@ -8,6 +8,19 @@
     "description":  "PlayStation 3 Blu-ray disc image or PKG package format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PS3 PKG Package Format",
+            "PlayStation 3 Blu-ray Disc Format",
+            "PS3 Developer Wiki Specifications"
+        ],
+        "web_links": [
+            "https://www.psdevwiki.com/ps3/PKG_files",
+            "https://www.psdevwiki.com/ps3/Bluray_disc",
+            "https://wiki.rpcs3.net/index.php?title=Help:Dumping_PlayStation_3_games",
+            "https://ps2bios.gitlab.io/home/is-it-possible-to-convert-ps3iso-to-pkg/"
+        ]
+    },
     "detection":  {
                       "signature":  "7F504B47",
                       "offset":  0,

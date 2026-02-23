@@ -1,56 +1,66 @@
 ﻿{
-    "formatName":  "RAR Archive",
-    "version":  "1.0",
-    "extensions":  [
-                       ".rar"
-                   ],
-    "description":  "RAR archive format - High compression ratio archive format",
-    "category":  "Archives",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "526172211A07",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "RAR Signature",
-                       "offset":  0,
-                       "length":  6,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Rar!\\x1A\\x07 magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Header CRC",
-                       "offset":  6,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "CRC of header"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Header Type",
-                       "offset":  8,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Type of header block"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Flags",
-                       "offset":  9,
-                       "length":  2,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Archive flags"
-                   }
-               ]
+    "formatName": "RAR Archive",
+    "version": "1.0",
+    "extensions": [
+        ".rar"
+    ],
+    "description": "RAR archive format - High compression ratio archive format",
+    "category": "Archives",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "RAR 5.0 Archive Format",
+            "RAR File Format Technical Specification"
+        ],
+        "web_links": [
+            "https://www.rarlab.com/technote.htm",
+            "https://en.wikipedia.org/wiki/RAR_(file_format)"
+        ]
+    },
+    "detection": {
+        "signature": "526172211A07",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "RAR Signature",
+            "offset": 0,
+            "length": 6,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "Rar!\\x1A\\x07 magic bytes"
+        },
+        {
+            "type": "field",
+            "name": "Header CRC",
+            "offset": 6,
+            "length": 2,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "CRC of header"
+        },
+        {
+            "type": "field",
+            "name": "Header Type",
+            "offset": 8,
+            "length": 1,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "description": "Type of header block"
+        },
+        {
+            "type": "field",
+            "name": "Flags",
+            "offset": 9,
+            "length": 2,
+            "color": "#FFE66D",
+            "opacity": 0.3,
+            "description": "Archive flags"
+        }
+    ]
 }

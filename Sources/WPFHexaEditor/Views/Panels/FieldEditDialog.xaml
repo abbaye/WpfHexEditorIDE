@@ -2,9 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Edit Field Value"
-        Width="500" Height="300"
+        Width="550" Height="500"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
+        MinHeight="450"
+        MinWidth="500"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
     <Grid Margin="16">
@@ -56,46 +58,36 @@
                    Margin="0,0,0,12"/>
 
         <!-- New value input -->
-        <Border Grid.Row="4" BorderThickness="1" BorderBrush="#CCCCCC" Margin="0,0,0,12">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="80"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <StackPanel Grid.Row="4" Margin="0,0,0,12">
+            <TextBlock Text="New Value:"
+                       FontWeight="SemiBold"
+                       Background="#F5F5F5"
+                       Padding="8,4"
+                       Margin="0,0,0,4"/>
 
-                <TextBlock Grid.Row="0"
-                           Text="New Value:"
-                           FontWeight="SemiBold"
-                           Background="#F5F5F5"
-                           Padding="8,4"/>
+            <TextBox x:Name="ValueTextBox"
+                     Text="{Binding EditedValue, UpdateSourceTrigger=PropertyChanged}"
+                     FontFamily="Consolas"
+                     FontSize="13"
+                     Padding="8"
+                     Height="100"
+                     MinHeight="100"
+                     BorderThickness="1"
+                     BorderBrush="#AAAAAA"
+                     Background="White"
+                     VerticalScrollBarVisibility="Auto"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     Style="{x:Null}"/>
 
-                <TextBox x:Name="ValueTextBox"
-                         Grid.Row="1"
-                         Text="{Binding EditedValue, UpdateSourceTrigger=PropertyChanged}"
-                         FontFamily="Consolas"
-                         FontSize="13"
-                         Padding="8"
-                         BorderThickness="3"
-                         BorderBrush="Red"
-                         Background="LightYellow"
-                         VerticalScrollBarVisibility="Auto"
-                         AcceptsReturn="True"
-                         TextWrapping="Wrap"
-                         IsReadOnly="False"
-                         IsEnabled="True"
-                         VerticalAlignment="Stretch"
-                         HorizontalAlignment="Stretch"/>
-
-                <TextBlock Grid.Row="2"
-                           Text="{Binding FormatHint}"
-                           FontSize="10"
-                           Foreground="#666666"
-                           Background="#FFFEF0"
-                           Padding="8,4"
-                           TextWrapping="Wrap"/>
-            </Grid>
-        </Border>
+            <TextBlock Text="{Binding FormatHint}"
+                       FontSize="10"
+                       Foreground="#666666"
+                       Background="#FFFEF0"
+                       Padding="8,4"
+                       Margin="0,4,0,0"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
 
         <!-- Buttons -->
         <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">

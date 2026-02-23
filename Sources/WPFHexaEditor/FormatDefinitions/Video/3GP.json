@@ -8,6 +8,19 @@
     "description":  "3rd Generation Partnership Project multimedia format",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "3GPP File Format Specification",
+            "ISO/IEC 14496-12 - ISO Base Media File Format",
+            "MPEG-4 Part 12 Container"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/3GP_and_3G2",
+            "https://standards.globalspec.com/std/14494053/iso-iec-14496-12",
+            "https://www.3gpp.org/ftp/tsg_sa/tsg_sa/tsgs_22/docs/pdf/SP-030672.pdf",
+            "https://docs.fileformat.com/video/3gp/"
+        ]
+    },
     "detection":  {
                       "signature":  "66747970",
                       "offset":  4,

@@ -7,6 +7,18 @@
     "description":  "SQX archive format with advanced compression algorithms and encryption support",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "SQX Archive Format",
+            "SQX LZH Variant Compression",
+            "SQX Archiver Proprietary Format"
+        ],
+        "web_links": [
+            "https://docs.fileformat.com/compression/sqx/",
+            "http://justsolve.archiveteam.org/wiki/SQX",
+            "https://fileinfo.com/extension/sqx"
+        ]
+    },
     "detection":  {
                       "signature":  "53515820",
                       "offset":  0,

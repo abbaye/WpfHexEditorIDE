@@ -7,6 +7,19 @@
     "description":  "Creative Labs Sound Blaster audio file format",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Creative Voice File Format Specification",
+            "Creative Sound Blaster VOC Format",
+            "VOC Audio File Structure"
+        ],
+        "web_links": [
+            "https://wiki.multimedia.cx/index.php/Creative_Voice",
+            "https://en.wikipedia.org/wiki/Creative_Voice_file",
+            "https://moddingwiki.shikadi.net/wiki/VOC_Format",
+            "https://docs.fileformat.com/audio/voc/"
+        ]
+    },
     "detection":  {
                       "signature":  "437265617469766520566F6963652046696C65",
                       "offset":  0,

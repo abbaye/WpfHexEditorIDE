@@ -7,6 +7,18 @@
     "description":  "MPEG-4 video container developed by Apple for iTunes Store",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "MPEG-4 Part 14 Container (M4V variant)",
+            "ISO/IEC 14496-1 - MPEG-4 Systems",
+            "Apple FairPlay DRM Container"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/MP4_file_format",
+            "https://cloudinary.com/guides/video-formats/m4v-format-how-it-works-and-m4v-vs-mp4",
+            "https://www.movavi.com/learning-portal/m4v-file.html"
+        ]
+    },
     "detection":  {
                       "signature":  "66747970",
                       "offset":  4,

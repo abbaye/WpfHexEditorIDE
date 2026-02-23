@@ -7,6 +7,19 @@
     "description":  "Philips DSDIFF format for Direct Stream Digital audio interchange",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "DSDIFF 1.5 - Direct Stream Digital Interchange File Format",
+            "Philips DSD Specification",
+            "DSD Audio Format Standard"
+        ],
+        "web_links": [
+            "https://www.sonicstudio.com/pdf/dsd/DSDIFF_1.5_Spec.pdf",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000245.shtml",
+            "https://en.wikipedia.org/wiki/Direct_Stream_Digital",
+            "https://dsd-guide.com/philips-dsdiff-spec-15"
+        ]
+    },
     "detection":  {
                       "signature":  "46524D38",
                       "offset":  0,

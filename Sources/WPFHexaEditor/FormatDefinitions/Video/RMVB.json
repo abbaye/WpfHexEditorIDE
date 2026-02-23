@@ -7,6 +7,18 @@
     "description":  "RealMedia variable bitrate container developed by RealNetworks",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "RealMedia Variable Bitrate Format",
+            "RMVB Container Extension",
+            "RealNetworks Variable Bitrate Encoding"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/RMVB",
+            "https://docs.fileformat.com/video/rmvb/",
+            "https://www.hitpaw.com/video-format-definition-tips/rmvb-file.html"
+        ]
+    },
     "detection":  {
                       "signature":  "2E524D46",
                       "offset":  0,

@@ -10,6 +10,19 @@
     "description":  "Sega Genesis / Mega Drive ROM cartridge format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Sega Mega Drive ROM Header Specification",
+            "Genesis Technical Overview",
+            "MegaDrive ROM Header Format"
+        ],
+        "web_links": [
+            "https://plutiedev.com/rom-header",
+            "https://wiki.megadrive.org/index.php?title=MD_Rom_Header",
+            "https://datacrystal.tcrf.net/wiki/Sega_Genesis",
+            "https://github.com/sikthehedgehog/mdtools/blob/master/headgen/doc/header"
+        ]
+    },
     "detection":  {
                       "signature":  "5345474120",
                       "offset":  256,

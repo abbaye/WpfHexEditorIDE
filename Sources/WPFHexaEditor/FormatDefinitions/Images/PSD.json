@@ -7,6 +7,19 @@
     "description":  "Adobe Photoshop native format",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Adobe Photoshop File Formats Specification",
+            "PSD Format Technical Documentation",
+            "Adobe PSD File Structure"
+        ],
+        "web_links": [
+            "https://www.adobe.com/devnet-apps/photoshop/fileformatashtml/",
+            "https://www.fileformat.info/format/psd/egff.htm",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000523.shtml",
+            "https://docs.fileformat.com/image/psd/"
+        ]
+    },
     "detection":  {
                       "signature":  "38425053",
                       "offset":  0,

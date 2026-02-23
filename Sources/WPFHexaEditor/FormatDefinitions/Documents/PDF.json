@@ -1,47 +1,56 @@
 ﻿{
-    "formatName":  "PDF Document",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pdf"
-                   ],
-    "description":  "Portable Document Format by Adobe",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "25504446",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "PDF Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "%PDF magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "PDF Version",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "PDF version (e.g., -1.4, -1.7)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Binary Marker Comment",
-                       "offset":  8,
-                       "length":  8,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Comment with binary chars (usually %âãÏÓ)"
-                   }
-               ]
+    "formatName": "PDF Document",
+    "version": "1.0",
+    "extensions": [
+        ".pdf"
+    ],
+    "description": "Portable Document Format by Adobe",
+    "category": "Documents",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ISO 32000-1:2008 - PDF 1.7 Standard",
+            "PDF Reference, Sixth Edition (Version 1.7)"
+        ],
+        "web_links": [
+            "https://www.adobe.com/devnet/pdf/pdf_reference.html",
+            "https://www.iso.org/standard/51502.html",
+            "https://en.wikipedia.org/wiki/PDF"
+        ]
+    },
+    "detection": {
+        "signature": "25504446",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {},
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "PDF Signature",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "%PDF magic bytes"
+        },
+        {
+            "type": "field",
+            "name": "PDF Version",
+            "offset": 4,
+            "length": 4,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "PDF version (e.g., -1.4, -1.7)"
+        },
+        {
+            "type": "field",
+            "name": "Binary Marker Comment",
+            "offset": 8,
+            "length": 8,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "description": "Comment with binary chars (usually %âãÏÓ)"
+        }
+    ]
 }

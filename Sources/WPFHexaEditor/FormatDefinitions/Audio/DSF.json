@@ -7,6 +7,19 @@
     "description":  "Sony DSD Stream File format for Direct Stream Digital audio",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "DSF File Format Specification - Sony Corporation",
+            "DSD Stream File Format",
+            "Direct Stream Digital Audio Standard"
+        ],
+        "web_links": [
+            "https://dsd-guide.com/sites/default/files/white-papers/DSFFileFormatSpec_E.pdf",
+            "https://dsd-guide.com/sonys-dsf-file-format-spec",
+            "https://en.wikipedia.org/wiki/Direct_Stream_Digital",
+            "https://www.sony.net/Products/DSD/"
+        ]
+    },
     "detection":  {
                       "signature":  "44534420",
                       "offset":  0,

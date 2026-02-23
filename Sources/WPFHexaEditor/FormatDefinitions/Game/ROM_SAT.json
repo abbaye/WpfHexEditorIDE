@@ -8,6 +8,19 @@
     "description":  "Sega Saturn CD-ROM disc image format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Sega Saturn Disc Format Standards Specification Sheet (ST-040-R4-051795)",
+            "Saturn IP.BIN Format",
+            "Sega Saturn File Formats"
+        ],
+        "web_links": [
+            "https://www.retroreversing.com/sega-saturn-file-formats/",
+            "https://segaxtreme.net/threads/about-ip-bin.6229/",
+            "https://antime.kapsi.fi/sega/docs.html",
+            "https://antime.kapsi.fi/sega/files/ST-040-R4-051795.pdf"
+        ]
+    },
     "detection":  {
                       "signature":  "534547412053454741534154",
                       "offset":  0,

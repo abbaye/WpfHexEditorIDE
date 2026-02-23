@@ -8,6 +8,19 @@
     "description":  "Digital Video format for storing digital video, commonly used in camcorders",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "IEC 61834 - Digital Video (DV) Standard",
+            "DV Blue Book Specification",
+            "RFC 6469 - RTP Payload Format for DV (IEC 61834)"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/DV_(video_format)",
+            "https://www.rfc-editor.org/rfc/rfc6469.html",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000183.shtml",
+            "https://www.adamwilt.com/DV-tech.html"
+        ]
+    },
     "detection":  {
                       "signature":  "1F0700",
                       "offset":  0,

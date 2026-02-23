@@ -8,6 +8,18 @@
     "description":  "Qpress archive format using QuickLZ compression, commonly used for MySQL/MariaDB backups",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Qpress QuickLZ Compression",
+            "Qpress Archive Format for MySQL/MariaDB",
+            "QuickLZ Algorithm Specification"
+        ],
+        "web_links": [
+            "https://www.percona.com/blog/the-deprecation-of-qpress-quicklz-compression-algorithm/",
+            "https://mariadb.com/kb/en/mariabackup-options/",
+            "https://www.percona.com/blog/compression-for-innodb-backup/"
+        ]
+    },
     "detection":  {
                       "signature":  "7170730100",
                       "offset":  0,

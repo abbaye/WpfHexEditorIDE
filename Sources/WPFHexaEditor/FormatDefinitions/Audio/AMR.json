@@ -7,6 +7,19 @@
     "description":  "AMR audio codec optimized for speech coding, used in GSM and 3G mobile networks",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "3GPP TS 26.073 - AMR Speech Codec C-Source Code",
+            "3GPP TS 26.071 - AMR Speech Codec General Description",
+            "Adaptive Multi-Rate Audio Codec Standard"
+        ],
+        "web_links": [
+            "https://www.tech-invite.com/3m26/tinv-3gpp-26-073.html",
+            "https://www.tech-invite.com/3m26/tinv-3gpp-26-071.html",
+            "https://en.wikipedia.org/wiki/Adaptive_Multi-Rate_audio_codec",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000254.shtml"
+        ]
+    },
     "detection":  {
                       "signature":  "2321414D520A",
                       "offset":  0,

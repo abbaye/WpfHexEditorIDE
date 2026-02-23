@@ -1,56 +1,64 @@
 ﻿{
-    "formatName":  "Comic Book RAR",
-    "version":  "1.0",
-    "extensions":  [
-                       ".cbr"
-                   ],
-    "description":  "Comic Book RAR archive format, a RAR file containing sequential images for digital comics",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "526172211A07",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "RAR Signature",
-                       "offset":  0,
-                       "length":  6,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "RAR archive signature: \u0027Rar!\u0027 0x1A 0x07 (RAR 4.x)"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Header Type",
-                       "offset":  6,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.4,
-                       "description":  "RAR header type"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Flags",
-                       "offset":  8,
-                       "length":  2,
-                       "color":  "#45B7D1",
-                       "opacity":  0.4,
-                       "description":  "RAR header flags"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Header Size",
-                       "offset":  10,
-                       "length":  2,
-                       "color":  "#96CEB4",
-                       "opacity":  0.4,
-                       "description":  "RAR header size (little-endian)"
-                   }
-               ]
+    "formatName": "Comic Book RAR",
+    "version": "1.0",
+    "extensions": [
+        ".cbr"
+    ],
+    "description": "Comic Book RAR archive format, a RAR file containing sequential images for digital comics",
+    "category": "Documents",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "RAR 5.0 Archive Format",
+            "RAR File Format Technical Specification"
+        ],
+        "web_links": [
+            "https://www.rarlab.com/technote.htm",
+            "https://en.wikipedia.org/wiki/RAR_(file_format)"
+        ]
+    },
+    "detection": {
+        "signature": "526172211A07",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {},
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "RAR Signature",
+            "offset": 0,
+            "length": 6,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "RAR archive signature: 'Rar!' 0x1A 0x07 (RAR 4.x)"
+        },
+        {
+            "type": "data",
+            "name": "Header Type",
+            "offset": 6,
+            "length": 2,
+            "color": "#4ECDC4",
+            "opacity": 0.4,
+            "description": "RAR header type"
+        },
+        {
+            "type": "data",
+            "name": "Flags",
+            "offset": 8,
+            "length": 2,
+            "color": "#45B7D1",
+            "opacity": 0.4,
+            "description": "RAR header flags"
+        },
+        {
+            "type": "data",
+            "name": "Header Size",
+            "offset": 10,
+            "length": 2,
+            "color": "#96CEB4",
+            "opacity": 0.4,
+            "description": "RAR header size (little-endian)"
+        }
+    ]
 }

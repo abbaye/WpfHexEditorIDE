@@ -7,6 +7,19 @@
     "description":  "Meridian Lossless Packing lossless audio compression for DVD-Audio",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Meridian Lossless Packing Specification",
+            "MLP DVD-Audio Standard",
+            "Packed PCM Audio Codec"
+        ],
+        "web_links": [
+            "https://www.ambisonic.net/pdf/mlp_pr.pdf",
+            "https://en.wikipedia.org/wiki/Meridian_Lossless_Packing",
+            "https://wiki.hydrogenaudio.org/index.php?title=Meridian_Lossless_Packing",
+            "https://www.meridian-audio.info/public/mlp_jap_new%5B2521%5D.pdf"
+        ]
+    },
     "detection":  {
                       "signature":  "18E371F3",
                       "offset":  4,

@@ -1,51 +1,63 @@
-{
-    "formatName":  "Atari 2600 ROM",
-    "version":  "1.0",
-    "extensions":  [
-                       ".a26",
-                       ".bin"
-                   ],
-    "description":  "Atari 2600 ROM cartridge format (raw binary, no header)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "ROM Data",
-                       "offset":  0,
-                       "length":  4096,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Raw 2600 ROM code and data (typically 4KB for standard carts)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Reset Vector",
-                       "offset":  4092,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "uint16",
-                       "description":  "6507 CPU reset vector (last 2 bytes for 4KB ROM, little-endian)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "IRQ Vector",
-                       "offset":  4094,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint16",
-                       "description":  "6507 IRQ vector (little-endian)"
-                   }
-               ]
+﻿{
+    "formatName": "Atari 2600 ROM",
+    "version": "1.0",
+    "extensions": [
+        ".a26",
+        ".bin"
+    ],
+    "description": "Atari 2600 ROM cartridge format (raw binary, no header)",
+    "category": "Game",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "POSIX.1-1988 (IEEE Std 1003.1)",
+            "GNU tar Format Documentation",
+            "UStar Format Specification"
+        ],
+        "web_links": [
+            "https://www.gnu.org/software/tar/manual/",
+            "https://en.wikipedia.org/wiki/Tar_(computing)",
+            "https://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html"
+        ]
+    },
+    "detection": {
+        "signature": "00",
+        "offset": 0,
+        "required": false
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "field",
+            "name": "ROM Data",
+            "offset": 0,
+            "length": 4096,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "valueType": "bytes",
+            "description": "Raw 2600 ROM code and data (typically 4KB for standard carts)"
+        },
+        {
+            "type": "field",
+            "name": "Reset Vector",
+            "offset": 4092,
+            "length": 2,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "valueType": "uint16",
+            "description": "6507 CPU reset vector (last 2 bytes for 4KB ROM, little-endian)"
+        },
+        {
+            "type": "field",
+            "name": "IRQ Vector",
+            "offset": 4094,
+            "length": 2,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "valueType": "uint16",
+            "description": "6507 IRQ vector (little-endian)"
+        }
+    ]
 }

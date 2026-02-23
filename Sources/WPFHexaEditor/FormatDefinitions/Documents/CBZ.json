@@ -1,56 +1,65 @@
 ﻿{
-    "formatName":  "Comic Book ZIP",
-    "version":  "1.0",
-    "extensions":  [
-                       ".cbz"
-                   ],
-    "description":  "Comic Book ZIP archive format, a ZIP file containing sequential images (typically JPG/PNG) for digital comics",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "504B0304",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ZIP Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ZIP archive signature: \u0027PK\u0027 0x03 0x04"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Version",
-                       "offset":  4,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.4,
-                       "description":  "ZIP version needed to extract"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Flags",
-                       "offset":  6,
-                       "length":  2,
-                       "color":  "#45B7D1",
-                       "opacity":  0.4,
-                       "description":  "General purpose bit flag"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Compression Method",
-                       "offset":  8,
-                       "length":  2,
-                       "color":  "#96CEB4",
-                       "opacity":  0.4,
-                       "description":  "Compression method (0=stored, 8=deflated)"
-                   }
-               ]
+    "formatName": "Comic Book ZIP",
+    "version": "1.0",
+    "extensions": [
+        ".cbz"
+    ],
+    "description": "Comic Book ZIP archive format, a ZIP file containing sequential images (typically JPG/PNG) for digital comics",
+    "category": "Documents",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PKWARE APPNOTE.TXT - ZIP File Format Specification",
+            "ISO/IEC 21320-1:2015 - Document Container File"
+        ],
+        "web_links": [
+            "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
+            "https://en.wikipedia.org/wiki/ZIP_(file_format)",
+            "https://www.iso.org/standard/60101.html"
+        ]
+    },
+    "detection": {
+        "signature": "504B0304",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {},
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "ZIP Signature",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "ZIP archive signature: 'PK' 0x03 0x04"
+        },
+        {
+            "type": "data",
+            "name": "Version",
+            "offset": 4,
+            "length": 2,
+            "color": "#4ECDC4",
+            "opacity": 0.4,
+            "description": "ZIP version needed to extract"
+        },
+        {
+            "type": "data",
+            "name": "Flags",
+            "offset": 6,
+            "length": 2,
+            "color": "#45B7D1",
+            "opacity": 0.4,
+            "description": "General purpose bit flag"
+        },
+        {
+            "type": "data",
+            "name": "Compression Method",
+            "offset": 8,
+            "length": 2,
+            "color": "#96CEB4",
+            "opacity": 0.4,
+            "description": "Compression method (0=stored, 8=deflated)"
+        }
+    ]
 }

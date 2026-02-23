@@ -8,6 +8,19 @@
     "description":  "Microsoft Xbox 360 disc image and executable format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "XEX (Xbox 360 Executable) File Format",
+            "Xbox 360 Executable Container Specification",
+            "Free60 XEX Documentation"
+        ],
+        "web_links": [
+            "https://free60.org/System-Software/Formats/XEX/",
+            "https://docs.fileformat.com/executable/xex/",
+            "http://www.noxa.org/blog/2011/08/13/building-an-xbox-360-emulator-part-5-xex-files/",
+            "https://fileinfo.com/extension/xex"
+        ]
+    },
     "detection":  {
                       "signature":  "58455832",
                       "offset":  0,

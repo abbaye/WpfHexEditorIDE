@@ -7,6 +7,19 @@
     "description":  "XZ/LZMA2 compression format",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "XZ File Format Specification 1.0.0",
+            "LZMA2 Compression Algorithm",
+            "XZ Utils Documentation"
+        ],
+        "web_links": [
+            "https://xz.tukaani.org/format/",
+            "https://en.wikipedia.org/wiki/XZ_Utils",
+            "https://www.kernel.org/doc/html/latest/staging/xz.html",
+            "https://en.wikipedia.org/wiki/LZMA"
+        ]
+    },
     "detection":  {
                       "signature":  "FD377A585A00",
                       "offset":  0,

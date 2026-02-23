@@ -357,6 +357,8 @@ namespace WpfHexaEditor.Rendering
             double width = 0;
 
             // Calculate width including spacers
+            // Bug fix: Match the actual rendering logic where each byte rect is (cellWidth - HexByteSpacing)
+            // and bytes are spaced by (cellWidth + HexByteSpacing) between them
             for (int i = startByteIndex; i <= endByteIndex; i++)
             {
                 if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
@@ -364,7 +366,13 @@ namespace WpfHexaEditor.Rendering
                 {
                     width += _cachedState.ByteSpacerWidth;
                 }
-                width += _cachedState.HexByteWidth + HexByteSpacing;
+                width += _cachedState.HexByteWidth;
+
+                // Add spacing between bytes, but not after the last byte
+                if (i < endByteIndex)
+                {
+                    width += HexByteSpacing;
+                }
             }
 
             return new Rect(startX, y, width, _cachedState.LineHeight);
@@ -386,10 +394,10 @@ namespace WpfHexaEditor.Rendering
             }
             else
             {
-                // ASCII area has spacers - use same logic as hex area
+                // ASCII area has spacers - use EXACT same logic as hex area
                 double x = asciiStartX;
 
-                // Account for spacers before start byte
+                // Account for spacers before start byte (same as hex)
                 for (int i = 0; i < startByteIndex; i++)
                 {
                     if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
@@ -403,7 +411,7 @@ namespace WpfHexaEditor.Rendering
                 double startX = x;
                 double width = 0;
 
-                // Calculate width including spacers
+                // Calculate width including spacers (same as hex)
                 for (int i = startByteIndex; i <= endByteIndex; i++)
                 {
                     if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&

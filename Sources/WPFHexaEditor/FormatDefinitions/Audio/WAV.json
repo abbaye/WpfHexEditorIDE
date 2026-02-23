@@ -1,57 +1,68 @@
 ﻿{
-    "formatName":  "WAV Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".wav",
-                       ".wave"
-                   ],
-    "description":  "Waveform Audio File Format - Uncompressed audio",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "52494646",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "RIFF Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "RIFF chunk descriptor"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Size",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "File size minus 8 bytes"
-                   },
-                   {
-                       "type":  "signature",
-                       "name":  "WAVE Format",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "WAVE identifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "fmt Chunk",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Format chunk marker"
-                   }
-               ]
+    "formatName": "WAV Audio",
+    "version": "1.0",
+    "extensions": [
+        ".wav",
+        ".wave"
+    ],
+    "description": "Waveform Audio File Format - Uncompressed audio",
+    "category": "Audio",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Microsoft WAVE Audio File Format",
+            "RFC 2361 - WAVE and AVI Codec Registries"
+        ],
+        "web_links": [
+            "https://docs.microsoft.com/en-us/windows/win32/multimedia/waveform-audio-file-format",
+            "https://www.ietf.org/rfc/rfc2361.txt",
+            "https://en.wikipedia.org/wiki/WAV"
+        ]
+    },
+    "detection": {
+        "signature": "52494646",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "RIFF Header",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "RIFF chunk descriptor"
+        },
+        {
+            "type": "field",
+            "name": "File Size",
+            "offset": 4,
+            "length": 4,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "File size minus 8 bytes"
+        },
+        {
+            "type": "signature",
+            "name": "WAVE Format",
+            "offset": 8,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "WAVE identifier"
+        },
+        {
+            "type": "field",
+            "name": "fmt Chunk",
+            "offset": 12,
+            "length": 4,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "description": "Format chunk marker"
+        }
+    ]
 }

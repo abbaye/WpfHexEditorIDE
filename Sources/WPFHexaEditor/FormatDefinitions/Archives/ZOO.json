@@ -7,6 +7,19 @@
     "description":  "ZOO compressed archive format",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ZOO Archive Format - Rahul Dhesi",
+            "ZOO LZSS Compression",
+            "ZOO Generational Archive Specification"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/Zoo_(file_format)",
+            "https://github.com/jduerstock/zoo",
+            "https://archive.org/details/zoo-2.10-src",
+            "https://github.com/troglobit/booz"
+        ]
+    },
     "detection":  {
                       "signature":  "5A4F4F20",
                       "offset":  0,

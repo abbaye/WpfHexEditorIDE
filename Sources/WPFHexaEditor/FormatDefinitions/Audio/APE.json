@@ -7,6 +7,19 @@
     "description":  "Monkey\u0027s Audio lossless compression",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Monkey's Audio Compression Algorithm",
+            "APE File Format Specification",
+            "APEv2 Tagging Format"
+        ],
+        "web_links": [
+            "https://www.monkeysaudio.com/",
+            "https://en.wikipedia.org/wiki/Monkey's_Audio",
+            "https://wiki.hydrogenaudio.org/index.php?title=Monkey's_Audio",
+            "https://docs.fileformat.com/audio/ape/"
+        ]
+    },
     "detection":  {
                       "signature":  "4D414320",
                       "offset":  0,

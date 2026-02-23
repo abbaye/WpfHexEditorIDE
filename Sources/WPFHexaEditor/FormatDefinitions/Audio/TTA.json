@@ -7,6 +7,19 @@
     "description":  "True Audio lossless audio compression format",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "TTA - True Audio Lossless Format",
+            "TTA Codec Specification",
+            "True Audio Compression Algorithm"
+        ],
+        "web_links": [
+            "https://wiki.hydrogenaudio.org/index.php?title=TTA",
+            "http://www.audiodope.org/en/help/trueAudioFormat.html",
+            "https://sourceforge.net/projects/tta/",
+            "https://en.wikipedia.org/wiki/TTA_(codec)"
+        ]
+    },
     "detection":  {
                       "signature":  "54544131",
                       "offset":  0,

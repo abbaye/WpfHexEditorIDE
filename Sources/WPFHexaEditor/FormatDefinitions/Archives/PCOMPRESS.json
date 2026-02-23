@@ -7,6 +7,18 @@
     "description":  "Parallel compression archive format optimized for multi-threaded compression and decompression",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PCompress Parallel Deduplication and Compression",
+            "PCompress Archive Format",
+            "Chunk-Based Parallel Compression"
+        ],
+        "web_links": [
+            "https://github.com/moinakg/pcompress",
+            "https://moinakg.github.io/pcompress/",
+            "https://encode.su/threads/1639-pcompress-a-deduplication-compression-utility"
+        ]
+    },
     "detection":  {
                       "signature":  "50434F4D50",
                       "offset":  0,

@@ -9,6 +9,19 @@
     "description":  "Raw H.265/HEVC (High Efficiency Video Coding) elementary stream",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ITU-T H.265 - High Efficiency Video Coding",
+            "ISO/IEC 23008-2 - MPEG-H Part 2 HEVC",
+            "HEVC Standard Specification"
+        ],
+        "web_links": [
+            "https://www.itu.int/rec/T-REC-H.265",
+            "https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000530.shtml",
+            "https://hevc.hhi.fraunhofer.de/"
+        ]
+    },
     "detection":  {
                       "signature":  "00000001",
                       "offset":  0,

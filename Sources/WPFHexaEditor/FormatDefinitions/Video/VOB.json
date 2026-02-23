@@ -7,6 +7,18 @@
     "description":  "DVD Video Object file - MPEG-2 container",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "DVD Video Object Format",
+            "ISO/IEC 13818-1 - MPEG-2 Program Stream",
+            "MPEG-2 PS for DVD-Video"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/VOB",
+            "https://en.wikipedia.org/wiki/MPEG_program_stream",
+            "https://en.wikibooks.org/wiki/Inside_DVD-Video/MPEG_Format"
+        ]
+    },
     "detection":  {
                       "signature":  "000001BA",
                       "offset":  0,

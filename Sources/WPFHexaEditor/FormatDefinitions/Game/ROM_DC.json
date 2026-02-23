@@ -9,6 +9,19 @@
     "description":  "Sega Dreamcast GD-ROM disc image format (IP.BIN header)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Dreamcast GD-ROM IP.BIN Format",
+            "Dreamcast Programming Documentation",
+            "GDI Disc Image Format"
+        ],
+        "web_links": [
+            "https://mc.pp.se/dc/ip.bin.html",
+            "https://dreamcast.wiki/GDI_format",
+            "https://segaxtreme.net/threads/about-ip-bin.6229/",
+            "https://fabiensanglard.net/dreamcast_hacking/"
+        ]
+    },
     "detection":  {
                       "signature":  "534547412053454741",
                       "offset":  0,

@@ -1,29 +1,38 @@
 ﻿{
-    "formatName":  "WavPack Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".wv"
-                   ],
-    "description":  "WavPack hybrid lossless audio compression format",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "7776706B",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "WavPack Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "wvpk - WavPack file signature"
-                   }
-               ]
+    "formatName": "WavPack Audio",
+    "version": "1.0",
+    "extensions": [
+        ".wv"
+    ],
+    "description": "WavPack hybrid lossless audio compression format",
+    "category": "Audio",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Microsoft WAVE Audio File Format",
+            "RFC 2361 - WAVE and AVI Codec Registries"
+        ],
+        "web_links": [
+            "https://docs.microsoft.com/en-us/windows/win32/multimedia/waveform-audio-file-format",
+            "https://www.ietf.org/rfc/rfc2361.txt",
+            "https://en.wikipedia.org/wiki/WAV"
+        ]
+    },
+    "detection": {
+        "signature": "7776706B",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {},
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "WavPack Header",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "wvpk - WavPack file signature"
+        }
+    ]
 }

@@ -9,6 +9,19 @@
     "description":  "MPEG-1/2 video stream",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ISO/IEC 11172 - MPEG-1 Video Standard",
+            "ISO/IEC 13818-2 - MPEG-2 Video Standard",
+            "MPEG Video Coding"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/MPEG-1",
+            "https://en.wikipedia.org/wiki/MPEG-2",
+            "https://blog.ansi.org/ansi/iso-iec-11172-mpeg-1-coding-15-mbits/",
+            "https://blog.ansi.org/ansi/iso-iec-13818-mpeg-2-coding-moving-pictures/"
+        ]
+    },
     "detection":  {
                       "signature":  "000001B3",
                       "offset":  0,

@@ -1,56 +1,66 @@
 ﻿{
-    "formatName":  "Mach-O Executable",
-    "version":  "1.0",
-    "extensions":  [
-                       ""
-                   ],
-    "description":  "Mach Object - macOS/iOS executable format",
-    "category":  "Executables",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "FEEDFACE",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Mach-O Magic (32-bit)",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "0xFEEDFACE for 32-bit, 0xFEEDFACF for 64-bit"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "CPU Type",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Target CPU architecture"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "CPU Subtype",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Machine specifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Type",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Object, Execute, Library, etc."
-                   }
-               ]
+    "formatName": "Mach-O Executable",
+    "version": "1.0",
+    "extensions": [
+        ""
+    ],
+    "description": "Mach Object - macOS/iOS executable format",
+    "category": "Executables",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Mach-O Programming Topics",
+            "OS X ABI Mach-O File Format Reference"
+        ],
+        "web_links": [
+            "https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/MachOTopics/",
+            "https://en.wikipedia.org/wiki/Mach-O"
+        ]
+    },
+    "detection": {
+        "signature": "FEEDFACE",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "Mach-O Magic (32-bit)",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "0xFEEDFACE for 32-bit, 0xFEEDFACF for 64-bit"
+        },
+        {
+            "type": "field",
+            "name": "CPU Type",
+            "offset": 4,
+            "length": 4,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "Target CPU architecture"
+        },
+        {
+            "type": "field",
+            "name": "CPU Subtype",
+            "offset": 8,
+            "length": 4,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "description": "Machine specifier"
+        },
+        {
+            "type": "field",
+            "name": "File Type",
+            "offset": 12,
+            "length": 4,
+            "color": "#FFE66D",
+            "opacity": 0.3,
+            "description": "Object, Execute, Library, etc."
+        }
+    ]
 }

@@ -7,6 +7,19 @@
     "description":  "Dolby Digital (AC-3) audio codec for surround sound",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ATSC A/52:2018 - Digital Audio Compression (AC-3)",
+            "Dolby Digital Specification",
+            "AC-3 Audio Codec Standard"
+        ],
+        "web_links": [
+            "https://www.atsc.org/atsc-documents/a522012-digital-audio-compression-ac-3-e-ac-3-standard-12172012/",
+            "https://en.wikipedia.org/wiki/Dolby_Digital",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000209.shtml",
+            "https://wiki.videolan.org/AC3/"
+        ]
+    },
     "detection":  {
                       "signature":  "0B77",
                       "offset":  0,

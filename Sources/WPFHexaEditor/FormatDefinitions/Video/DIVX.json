@@ -7,6 +7,18 @@
     "description":  "DivX MPEG-4 Part 2 video codec container format",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ISO/IEC 14496-2 - MPEG-4 Part 2 Visual",
+            "MPEG-4 Advanced Simple Profile (ASP)",
+            "DivX Codec Specification"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/DivX",
+            "https://en.wikipedia.org/wiki/MPEG-4_Part_2",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000069.shtml"
+        ]
+    },
     "detection":  {
                       "signature":  "52494646",
                       "offset":  0,

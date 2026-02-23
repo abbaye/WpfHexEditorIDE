@@ -9,6 +9,19 @@
     "description":  "Audio Interchange File Format - Apple audio format",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "AIFF-1.3 Specification (1989)",
+            "AIFF-C Specification - IFF-AIFC",
+            "Audio Interchange File Format - Apple Standard"
+        ],
+        "web_links": [
+            "https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/AIFF/Docs/AIFF-1.3.pdf",
+            "https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/AIFF/AIFF.html",
+            "https://en.wikipedia.org/wiki/Audio_Interchange_File_Format",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000005.shtml"
+        ]
+    },
     "detection":  {
                       "signature":  "464F524D",
                       "offset":  0,

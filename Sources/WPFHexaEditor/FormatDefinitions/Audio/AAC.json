@@ -7,6 +7,19 @@
     "description":  "Advanced Audio Coding",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ISO/IEC 13818-7:2006 - Advanced Audio Coding (AAC)",
+            "MPEG-2 Part 7 Specification",
+            "AAC ADTS Format"
+        ],
+        "web_links": [
+            "https://www.iso.org/standard/43345.html",
+            "https://en.wikipedia.org/wiki/Advanced_Audio_Coding",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000036.shtml",
+            "https://www.mpeg.org/standards/MPEG-2/7/"
+        ]
+    },
     "detection":  {
                       "signature":  "FFF1",
                       "offset":  0,

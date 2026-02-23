@@ -176,6 +176,80 @@ namespace WpfHexaEditor.Views.Panels
                     field.IsBookmarked = !field.IsBookmarked;
                     e.Handled = true;
                     break;
+
+                case System.Windows.Input.Key.Up when e.KeyboardDevice.Modifiers == System.Windows.Input.ModifierKeys.Control:
+                    // Ctrl+Up navigates to previous field
+                    NavigateToPreviousField();
+                    e.Handled = true;
+                    break;
+
+                case System.Windows.Input.Key.Down when e.KeyboardDevice.Modifiers == System.Windows.Input.ModifierKeys.Control:
+                    // Ctrl+Down navigates to next field
+                    NavigateToNextField();
+                    e.Handled = true;
+                    break;
+
+                case System.Windows.Input.Key.Home:
+                    // Home key jumps to first field
+                    NavigateToFirstField();
+                    e.Handled = true;
+                    break;
+
+                case System.Windows.Input.Key.End:
+                    // End key jumps to last field
+                    NavigateToLastField();
+                    e.Handled = true;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Navigate to the previous field in the list
+        /// </summary>
+        private void NavigateToPreviousField()
+        {
+            var currentIndex = FieldsListBox.SelectedIndex;
+            if (currentIndex > 0)
+            {
+                FieldsListBox.SelectedIndex = currentIndex - 1;
+                FieldsListBox.ScrollIntoView(FieldsListBox.SelectedItem);
+            }
+        }
+
+        /// <summary>
+        /// Navigate to the next field in the list
+        /// </summary>
+        private void NavigateToNextField()
+        {
+            var currentIndex = FieldsListBox.SelectedIndex;
+            if (currentIndex < FilteredFields.Count - 1)
+            {
+                FieldsListBox.SelectedIndex = currentIndex + 1;
+                FieldsListBox.ScrollIntoView(FieldsListBox.SelectedItem);
+            }
+        }
+
+        /// <summary>
+        /// Navigate to the first field in the list
+        /// </summary>
+        private void NavigateToFirstField()
+        {
+            if (FilteredFields.Count > 0)
+            {
+                FieldsListBox.SelectedIndex = 0;
+                FieldsListBox.ScrollIntoView(FieldsListBox.SelectedItem);
+            }
+        }
+
+        /// <summary>
+        /// Navigate to the last field in the list
+        /// </summary>
+        private void NavigateToLastField()
+        {
+            if (FilteredFields.Count > 0)
+            {
+                FieldsListBox.SelectedIndex = FilteredFields.Count - 1;
+                FieldsListBox.ScrollIntoView(FieldsListBox.SelectedItem);
             }
         }
 
@@ -204,6 +278,12 @@ namespace WpfHexaEditor.Views.Panels
         private void ClearSearchButton_Click(object sender, RoutedEventArgs e)
         {
             SearchText = string.Empty;
+        }
+
+        private void SearchOption_Changed(object sender, RoutedEventArgs e)
+        {
+            // Trigger filter refresh when search options change
+            ApplyFilter();
         }
 
         private void FieldItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -434,6 +514,74 @@ namespace WpfHexaEditor.Views.Panels
         }
 
         /// <summary>
+        /// Handler for clicking hyperlinks in references section
+        /// Opens the URL in the default browser
+        /// </summary>
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = e.Uri.AbsoluteUri,
+                    UseShellExecute = true
+                });
+                e.Handled = true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Could not open link: {ex.Message}",
+                    "Error", System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Handler for Copy References button
+        /// Copies specifications and web links to clipboard
+        /// </summary>
+        private void CopyReferences_Click(object sender, RoutedEventArgs e)
+        {
+            if (FormatInfo?.References == null)
+                return;
+
+            try
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine($"Format: {FormatInfo.Name}");
+                sb.AppendLine($"Category: {FormatInfo.Category}");
+                sb.AppendLine();
+
+                if (FormatInfo.References.Specifications?.Count > 0)
+                {
+                    sb.AppendLine("Specifications:");
+                    foreach (var spec in FormatInfo.References.Specifications)
+                        sb.AppendLine($"  - {spec}");
+                    sb.AppendLine();
+                }
+
+                if (FormatInfo.References.WebLinks?.Count > 0)
+                {
+                    sb.AppendLine("Web Links:");
+                    foreach (var link in FormatInfo.References.WebLinks)
+                        sb.AppendLine($"  - {link}");
+                }
+
+                System.Windows.Clipboard.SetText(sb.ToString());
+                System.Windows.MessageBox.Show("References copied to clipboard!",
+                    "Copied", System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error copying references: {ex.Message}");
+                System.Windows.MessageBox.Show($"Error copying references: {ex.Message}",
+                    "Error", System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
         /// Scroll to and select a specific field
         /// </summary>
         public void SelectField(ParsedFieldViewModel field)
@@ -461,7 +609,7 @@ namespace WpfHexaEditor.Views.Panels
         }
 
         /// <summary>
-        /// Apply search filter to fields
+        /// Apply search filter to fields with advanced options (regex, type filter, etc.)
         /// </summary>
         private void ApplyFilter()
         {
@@ -471,9 +619,32 @@ namespace WpfHexaEditor.Views.Panels
 
             FilteredFields.Clear();
 
-            // Apply filters
+            // Get search options
             var hasSearchFilter = !string.IsNullOrWhiteSpace(SearchText);
             var searchLower = hasSearchFilter ? SearchText.ToLowerInvariant() : null;
+            var isRegex = RegexSearchCheckBox?.IsChecked == true;
+            var isCaseSensitive = CaseSensitiveCheckBox?.IsChecked == true;
+            var searchField = SearchFieldCombo?.SelectedIndex ?? 0;
+            var typeFilter = TypeFilterCombo?.SelectedIndex ?? 0;
+
+            // Prepare regex if needed
+            System.Text.RegularExpressions.Regex regex = null;
+            if (isRegex && hasSearchFilter)
+            {
+                try
+                {
+                    var options = isCaseSensitive
+                        ? System.Text.RegularExpressions.RegexOptions.None
+                        : System.Text.RegularExpressions.RegexOptions.IgnoreCase;
+                    regex = new System.Text.RegularExpressions.Regex(SearchText, options);
+                }
+                catch
+                {
+                    // Invalid regex - fall back to literal search
+                    isRegex = false;
+                }
+            }
+
             int searchMatchCount = 0;
 
             foreach (var field in ParsedFields)
@@ -482,15 +653,36 @@ namespace WpfHexaEditor.Views.Panels
                 if (_showBookmarksOnly && !field.IsBookmarked)
                     continue;
 
+                // Type filter
+                if (typeFilter > 0)
+                {
+                    bool typeMatch = typeFilter switch
+                    {
+                        1 => field.ValueType?.Contains("int") == true, // Integers
+                        2 => field.ValueType?.ToLower().Contains("string") == true, // Strings
+                        3 => field.ValueType?.Equals("bytes", System.StringComparison.OrdinalIgnoreCase) == true, // Bytes
+                        _ => true
+                    };
+
+                    if (!typeMatch)
+                        continue;
+                }
+
                 // Search filter
                 bool isMatch = true;
                 if (hasSearchFilter)
                 {
-                    isMatch = field.Name?.ToLowerInvariant().Contains(searchLower) == true ||
-                              field.FormattedValue?.ToLowerInvariant().Contains(searchLower) == true ||
-                              field.Description?.ToLowerInvariant().Contains(searchLower) == true ||
-                              field.ValueType?.ToLowerInvariant().Contains(searchLower) == true ||
-                              field.OffsetHex?.ToLowerInvariant().Contains(searchLower) == true;
+                    isMatch = searchField switch
+                    {
+                        1 => MatchesSearch(field.Name, searchLower, regex, isRegex, isCaseSensitive),
+                        2 => MatchesSearch(field.FormattedValue, searchLower, regex, isRegex, isCaseSensitive),
+                        3 => MatchesSearch(field.Description, searchLower, regex, isRegex, isCaseSensitive),
+                        _ => MatchesSearch(field.Name, searchLower, regex, isRegex, isCaseSensitive) ||
+                             MatchesSearch(field.FormattedValue, searchLower, regex, isRegex, isCaseSensitive) ||
+                             MatchesSearch(field.Description, searchLower, regex, isRegex, isCaseSensitive) ||
+                             MatchesSearch(field.ValueType, searchLower, regex, isRegex, isCaseSensitive) ||
+                             MatchesSearch(field.OffsetHex, searchLower, regex, isRegex, isCaseSensitive)
+                    };
 
                     if (!isMatch)
                         continue;
@@ -516,6 +708,24 @@ namespace WpfHexaEditor.Views.Panels
             {
                 SearchResultText = string.Empty;
             }
+        }
+
+        /// <summary>
+        /// Helper method to check if text matches search criteria (with regex support)
+        /// </summary>
+        private bool MatchesSearch(string text, string searchLower,
+            System.Text.RegularExpressions.Regex regex, bool isRegex, bool isCaseSensitive)
+        {
+            if (string.IsNullOrEmpty(text))
+                return false;
+
+            if (isRegex && regex != null)
+                return regex.IsMatch(text);
+
+            if (isCaseSensitive)
+                return text.Contains(searchLower);
+            else
+                return text.ToLowerInvariant().Contains(searchLower);
         }
 
         /// <summary>
@@ -569,6 +779,27 @@ namespace WpfHexaEditor.Views.Panels
             {
                 sb.AppendLine($"Format: {FormatInfo.Name}");
                 sb.AppendLine($"Description: {FormatInfo.Description}");
+
+                // Add references if available
+                if (FormatInfo.References != null)
+                {
+                    if (FormatInfo.References.Specifications?.Count > 0)
+                    {
+                        sb.AppendLine();
+                        sb.AppendLine("Specifications:");
+                        foreach (var spec in FormatInfo.References.Specifications)
+                            sb.AppendLine($"  - {spec}");
+                    }
+
+                    if (FormatInfo.References.WebLinks?.Count > 0)
+                    {
+                        sb.AppendLine();
+                        sb.AppendLine("Web Links:");
+                        foreach (var link in FormatInfo.References.WebLinks)
+                            sb.AppendLine($"  - {link}");
+                    }
+                }
+
                 sb.AppendLine();
             }
 
@@ -601,7 +832,55 @@ namespace WpfHexaEditor.Views.Panels
             {
                 sb.AppendLine("  \"format\": {");
                 sb.AppendLine($"    \"name\": \"{EscapeJson(FormatInfo.Name)}\",");
-                sb.AppendLine($"    \"description\": \"{EscapeJson(FormatInfo.Description)}\"");
+                sb.AppendLine($"    \"description\": \"{EscapeJson(FormatInfo.Description)}\",");
+
+                // Add references if available
+                if (FormatInfo.References != null &&
+                    (FormatInfo.References.Specifications?.Count > 0 || FormatInfo.References.WebLinks?.Count > 0))
+                {
+                    sb.AppendLine("    \"references\": {");
+
+                    if (FormatInfo.References.Specifications?.Count > 0)
+                    {
+                        sb.AppendLine("      \"specifications\": [");
+                        for (int i = 0; i < FormatInfo.References.Specifications.Count; i++)
+                        {
+                            sb.Append($"        \"{EscapeJson(FormatInfo.References.Specifications[i])}\"");
+                            if (i < FormatInfo.References.Specifications.Count - 1)
+                                sb.AppendLine(",");
+                            else
+                                sb.AppendLine();
+                        }
+                        sb.Append("      ]");
+                        if (FormatInfo.References.WebLinks?.Count > 0)
+                            sb.AppendLine(",");
+                        else
+                            sb.AppendLine();
+                    }
+
+                    if (FormatInfo.References.WebLinks?.Count > 0)
+                    {
+                        sb.AppendLine("      \"webLinks\": [");
+                        for (int i = 0; i < FormatInfo.References.WebLinks.Count; i++)
+                        {
+                            sb.Append($"        \"{EscapeJson(FormatInfo.References.WebLinks[i])}\"");
+                            if (i < FormatInfo.References.WebLinks.Count - 1)
+                                sb.AppendLine(",");
+                            else
+                                sb.AppendLine();
+                        }
+                        sb.AppendLine("      ]");
+                    }
+
+                    sb.AppendLine("    }");
+                }
+                else
+                {
+                    // Remove trailing comma if no references
+                    sb.Length -= 3; // Remove ",\n"
+                    sb.AppendLine();
+                }
+
                 sb.AppendLine("  },");
             }
 
@@ -671,6 +950,32 @@ namespace WpfHexaEditor.Views.Panels
                 sb.AppendLine("  <Format>");
                 sb.AppendLine($"    <Name>{EscapeXml(FormatInfo.Name)}</Name>");
                 sb.AppendLine($"    <Description>{EscapeXml(FormatInfo.Description)}</Description>");
+
+                // Add references if available
+                if (FormatInfo.References != null &&
+                    (FormatInfo.References.Specifications?.Count > 0 || FormatInfo.References.WebLinks?.Count > 0))
+                {
+                    sb.AppendLine("    <References>");
+
+                    if (FormatInfo.References.Specifications?.Count > 0)
+                    {
+                        sb.AppendLine("      <Specifications>");
+                        foreach (var spec in FormatInfo.References.Specifications)
+                            sb.AppendLine($"        <Specification>{EscapeXml(spec)}</Specification>");
+                        sb.AppendLine("      </Specifications>");
+                    }
+
+                    if (FormatInfo.References.WebLinks?.Count > 0)
+                    {
+                        sb.AppendLine("      <WebLinks>");
+                        foreach (var link in FormatInfo.References.WebLinks)
+                            sb.AppendLine($"        <WebLink>{EscapeXml(link)}</WebLink>");
+                        sb.AppendLine("      </WebLinks>");
+                    }
+
+                    sb.AppendLine("    </References>");
+                }
+
                 sb.AppendLine("  </Format>");
             }
 
@@ -726,6 +1031,30 @@ namespace WpfHexaEditor.Views.Panels
                 sb.AppendLine("    <div class=\"format-info\">");
                 sb.AppendLine($"        <h2>{EscapeHtml(FormatInfo.Name)}</h2>");
                 sb.AppendLine($"        <p>{EscapeHtml(FormatInfo.Description)}</p>");
+
+                // Add references if available
+                if (FormatInfo.References != null &&
+                    (FormatInfo.References.Specifications?.Count > 0 || FormatInfo.References.WebLinks?.Count > 0))
+                {
+                    if (FormatInfo.References.Specifications?.Count > 0)
+                    {
+                        sb.AppendLine("        <h3>Specifications</h3>");
+                        sb.AppendLine("        <ul>");
+                        foreach (var spec in FormatInfo.References.Specifications)
+                            sb.AppendLine($"            <li>{EscapeHtml(spec)}</li>");
+                        sb.AppendLine("        </ul>");
+                    }
+
+                    if (FormatInfo.References.WebLinks?.Count > 0)
+                    {
+                        sb.AppendLine("        <h3>Web Links</h3>");
+                        sb.AppendLine("        <ul>");
+                        foreach (var link in FormatInfo.References.WebLinks)
+                            sb.AppendLine($"            <li><a href=\"{EscapeHtml(link)}\" target=\"_blank\">{EscapeHtml(link)}</a></li>");
+                        sb.AppendLine("        </ul>");
+                    }
+                }
+
                 sb.AppendLine("    </div>");
             }
 
@@ -780,6 +1109,29 @@ namespace WpfHexaEditor.Views.Panels
                 sb.AppendLine();
                 sb.AppendLine(FormatInfo.Description);
                 sb.AppendLine();
+
+                // Add references if available
+                if (FormatInfo.References != null &&
+                    (FormatInfo.References.Specifications?.Count > 0 || FormatInfo.References.WebLinks?.Count > 0))
+                {
+                    if (FormatInfo.References.Specifications?.Count > 0)
+                    {
+                        sb.AppendLine("### Specifications");
+                        sb.AppendLine();
+                        foreach (var spec in FormatInfo.References.Specifications)
+                            sb.AppendLine($"- {spec}");
+                        sb.AppendLine();
+                    }
+
+                    if (FormatInfo.References.WebLinks?.Count > 0)
+                    {
+                        sb.AppendLine("### Web Links");
+                        sb.AppendLine();
+                        foreach (var link in FormatInfo.References.WebLinks)
+                            sb.AppendLine($"- [{link}]({link})");
+                        sb.AppendLine();
+                    }
+                }
             }
 
             sb.AppendLine("| Name | Value | Offset | Length | Type | Description |");
@@ -927,6 +1279,28 @@ namespace WpfHexaEditor.Views.Panels
                 OnPropertyChanged();
             }
         }
+
+        private WpfHexaEditor.Core.FormatDetection.FormatReferences _references;
+
+        /// <summary>
+        /// References (specifications and web links) for this format
+        /// </summary>
+        public WpfHexaEditor.Core.FormatDetection.FormatReferences References
+        {
+            get => _references;
+            set
+            {
+                _references = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasReferences));
+            }
+        }
+
+        /// <summary>
+        /// Returns true if this format has any references (specifications or web links)
+        /// </summary>
+        public bool HasReferences => References != null &&
+            (References.Specifications?.Count > 0 || References.WebLinks?.Count > 0);
 
         public event PropertyChangedEventHandler PropertyChanged;
 

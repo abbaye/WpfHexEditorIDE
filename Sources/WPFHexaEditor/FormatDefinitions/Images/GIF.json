@@ -1,83 +1,93 @@
 ﻿{
-    "formatName":  "GIF Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".gif"
-                   ],
-    "description":  "Graphics Interchange Format - Animated image format",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "474946383961",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "GIF Signature",
-                       "offset":  0,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "GIF magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  3,
-                       "length":  3,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "89a or 87a"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Logical Screen Width",
-                       "offset":  6,
-                       "length":  2,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Canvas width in pixels"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Logical Screen Height",
-                       "offset":  8,
-                       "length":  2,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Canvas height in pixels"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Packed Fields",
-                       "offset":  10,
-                       "length":  1,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "description":  "Global color table info"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Background Color",
-                       "offset":  11,
-                       "length":  1,
-                       "color":  "#B8B8FF",
-                       "opacity":  0.3,
-                       "description":  "Index to global color table"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Pixel Aspect Ratio",
-                       "offset":  12,
-                       "length":  1,
-                       "color":  "#FF6B9D",
-                       "opacity":  0.3,
-                       "description":  "Pixel aspect ratio"
-                   }
-               ]
+    "formatName": "GIF Image",
+    "version": "1.0",
+    "extensions": [
+        ".gif"
+    ],
+    "description": "Graphics Interchange Format - Animated image format",
+    "category": "Images",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "GIF89a Specification",
+            "Graphics Interchange Format Version 89a"
+        ],
+        "web_links": [
+            "https://www.w3.org/Graphics/GIF/spec-gif89a.txt",
+            "https://en.wikipedia.org/wiki/GIF"
+        ]
+    },
+    "detection": {
+        "signature": "474946383961",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "GIF Signature",
+            "offset": 0,
+            "length": 3,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "GIF magic bytes"
+        },
+        {
+            "type": "field",
+            "name": "Version",
+            "offset": 3,
+            "length": 3,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "89a or 87a"
+        },
+        {
+            "type": "field",
+            "name": "Logical Screen Width",
+            "offset": 6,
+            "length": 2,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "description": "Canvas width in pixels"
+        },
+        {
+            "type": "field",
+            "name": "Logical Screen Height",
+            "offset": 8,
+            "length": 2,
+            "color": "#FFE66D",
+            "opacity": 0.3,
+            "description": "Canvas height in pixels"
+        },
+        {
+            "type": "field",
+            "name": "Packed Fields",
+            "offset": 10,
+            "length": 1,
+            "color": "#C7CEEA",
+            "opacity": 0.3,
+            "description": "Global color table info"
+        },
+        {
+            "type": "field",
+            "name": "Background Color",
+            "offset": 11,
+            "length": 1,
+            "color": "#B8B8FF",
+            "opacity": 0.3,
+            "description": "Index to global color table"
+        },
+        {
+            "type": "field",
+            "name": "Pixel Aspect Ratio",
+            "offset": 12,
+            "length": 1,
+            "color": "#FF6B9D",
+            "opacity": 0.3,
+            "description": "Pixel aspect ratio"
+        }
+    ]
 }

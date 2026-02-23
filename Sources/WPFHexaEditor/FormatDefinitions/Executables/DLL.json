@@ -1,56 +1,66 @@
 ﻿{
-    "formatName":  "DLL Library",
-    "version":  "1.0",
-    "extensions":  [
-                       ".dll"
-                   ],
-    "description":  "Dynamic Link Library - Windows library file",
-    "category":  "Executables",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "4D5A",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "DOS Signature",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MZ DOS header"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Bytes on Last Page",
-                       "offset":  2,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Bytes in last 512-byte page"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Pages in File",
-                       "offset":  4,
-                       "length":  2,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Number of 512-byte pages"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "PE Header Offset",
-                       "offset":  60,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Offset to PE header"
-                   }
-               ]
+    "formatName": "DLL Library",
+    "version": "1.0",
+    "extensions": [
+        ".dll"
+    ],
+    "description": "Dynamic Link Library - Windows library file",
+    "category": "Executables",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Microsoft PE Format Specification",
+            "Windows DLL Format"
+        ],
+        "web_links": [
+            "https://learn.microsoft.com/en-us/windows/win32/debug/pe-format",
+            "https://en.wikipedia.org/wiki/Dynamic-link_library"
+        ]
+    },
+    "detection": {
+        "signature": "4D5A",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "DOS Signature",
+            "offset": 0,
+            "length": 2,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "MZ DOS header"
+        },
+        {
+            "type": "field",
+            "name": "Bytes on Last Page",
+            "offset": 2,
+            "length": 2,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "Bytes in last 512-byte page"
+        },
+        {
+            "type": "field",
+            "name": "Pages in File",
+            "offset": 4,
+            "length": 2,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "description": "Number of 512-byte pages"
+        },
+        {
+            "type": "field",
+            "name": "PE Header Offset",
+            "offset": 60,
+            "length": 4,
+            "color": "#FFE66D",
+            "opacity": 0.3,
+            "description": "Offset to PE header"
+        }
+    ]
 }

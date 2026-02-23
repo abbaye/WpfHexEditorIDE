@@ -8,6 +8,19 @@
     "description":  "AVCHD (Advanced Video Coding High Definition) video format used by camcorders",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "AVCHD Specification - Sony/Panasonic",
+            "BDAV MPEG-2 Transport Stream",
+            "H.264/MPEG-4 AVC Video Codec"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/AVCHD",
+            "https://docs.fileformat.com/video/mts/",
+            "https://www.winxdvd.com/resource/avchd-video.htm",
+            "https://fileinfo.com/extension/mts"
+        ]
+    },
     "detection":  {
                       "signature":  "47",
                       "offset":  0,

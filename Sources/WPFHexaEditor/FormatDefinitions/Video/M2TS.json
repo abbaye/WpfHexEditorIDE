@@ -7,6 +7,19 @@
     "description":  "Blu-ray Disc Audio-Video (BDAV) MPEG-2 Transport Stream container",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Blu-ray Disc Format 2.B - BDAV MPEG-2 Transport Stream",
+            "ITU-T H.222.0 | ISO/IEC 13818-1",
+            "MPEG-2 Transport Stream for Blu-ray"
+        ],
+        "web_links": [
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000636.shtml",
+            "https://en.wikipedia.org/wiki/.m2ts",
+            "https://en.wikipedia.org/wiki/MPEG-2_transport_stream",
+            "https://docs.fileformat.com/video/m2ts/"
+        ]
+    },
     "detection":  {
                       "signature":  "47",
                       "offset":  0,

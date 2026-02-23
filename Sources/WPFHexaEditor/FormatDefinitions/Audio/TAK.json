@@ -7,6 +7,18 @@
     "description":  "TAK lossless audio compression format with high compression ratios",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "TAK - Tom's lossless Audio Kompressor",
+            "TAK Lossless Audio Codec Specification",
+            "TAK Audio Format Documentation"
+        ],
+        "web_links": [
+            "https://wiki.hydrogenaudio.org/index.php?title=TAK",
+            "https://wiki.multimedia.cx/index.php/TAK",
+            "http://www.audiodope.org/en/help/musepackFormat.html"
+        ]
+    },
     "detection":  {
                       "signature":  "7442614B",
                       "offset":  0,

@@ -8,6 +8,19 @@
     "description":  "Nintendo Wii disc image format (similar to GameCube with Wii extensions)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Wii Disc Image Format Specification",
+            "WBFS (Wii Backup File System) Format",
+            "Wiimms ISO Tools Documentation"
+        ],
+        "web_links": [
+            "https://wit.wiimm.de/info/iso-images.html",
+            "https://cadence.moe/blog/2022-05-24-explanation-of-wii-disc-image-formats",
+            "https://wit.wiimm.de/",
+            "https://en.wikipedia.org/wiki/Wii_optical_disc"
+        ]
+    },
     "detection":  {
                       "signature":  "5D1C9EA3",
                       "offset":  24,

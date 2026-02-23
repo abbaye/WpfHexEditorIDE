@@ -1,56 +1,67 @@
 ﻿{
-    "formatName":  "7-Zip Archive",
-    "version":  "1.0",
-    "extensions":  [
-                       ".7z"
-                   ],
-    "description":  "7-Zip archive format with LZMA compression",
-    "category":  "Archives",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "377ABCAF271C",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "7z Signature",
-                       "offset":  0,
-                       "length":  6,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "7z magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Major Version",
-                       "offset":  6,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Format major version"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Minor Version",
-                       "offset":  7,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Format minor version"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Start Header CRC",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "CRC of start header"
-                   }
-               ]
+    "formatName": "7-Zip Archive",
+    "version": "1.0",
+    "extensions": [
+        ".7z"
+    ],
+    "description": "7-Zip archive format with LZMA compression",
+    "category": "Archives",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PKWARE APPNOTE.TXT - ZIP File Format Specification",
+            "ISO/IEC 21320-1:2015 - Document Container File"
+        ],
+        "web_links": [
+            "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
+            "https://en.wikipedia.org/wiki/ZIP_(file_format)",
+            "https://www.iso.org/standard/60101.html"
+        ]
+    },
+    "detection": {
+        "signature": "377ABCAF271C",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "7z Signature",
+            "offset": 0,
+            "length": 6,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "7z magic bytes"
+        },
+        {
+            "type": "field",
+            "name": "Major Version",
+            "offset": 6,
+            "length": 1,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "Format major version"
+        },
+        {
+            "type": "field",
+            "name": "Minor Version",
+            "offset": 7,
+            "length": 1,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "description": "Format minor version"
+        },
+        {
+            "type": "field",
+            "name": "Start Header CRC",
+            "offset": 8,
+            "length": 4,
+            "color": "#FFE66D",
+            "opacity": 0.3,
+            "description": "CRC of start header"
+        }
+    ]
 }

@@ -9,6 +9,19 @@
     "description":  "Nintendo Switch package formats (NSP/XCI/NCA)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Nintendo Switch File Formats",
+            "NSP (Nintendo Submission Package) Format",
+            "XCI (Game Cartridge) & NCA (Content Archive) Formats"
+        ],
+        "web_links": [
+            "https://www.retroreversing.com/SwitchFileFormats",
+            "https://www.oreateai.com/blog/understanding-the-differences-between-xci-and-nsp-formats-for-nintendo-switch/0fcbf59b792ceae77f660eac57a435d8",
+            "https://github.com/jakcron/nstool",
+            "https://github.com/julesontheroad/NSC_BUILDER"
+        ]
+    },
     "detection":  {
                       "signature":  "504653",
                       "offset":  0,

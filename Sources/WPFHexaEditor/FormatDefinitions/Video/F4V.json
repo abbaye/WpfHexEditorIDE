@@ -1,32 +1,40 @@
 ﻿{
-    "formatName":  "Flash MP4 Video",
-    "version":  "1.0",
-    "extensions":  [
-                       ".f4v",
-                       ".f4p",
-                       ".f4a",
-                       ".f4b"
-                   ],
-    "description":  "Adobe Flash MP4-based video container format",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "66747970663476",
-                      "offset":  4,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "File Type Box",
-                       "offset":  4,
-                       "length":  7,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ftypf4v - Flash Video file type"
-                   }
-               ]
+    "formatName": "Flash MP4 Video",
+    "version": "1.0",
+    "extensions": [
+        ".f4v",
+        ".f4p",
+        ".f4a",
+        ".f4b"
+    ],
+    "description": "Adobe Flash MP4-based video container format",
+    "category": "Video",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ISO/IEC 14496-12 - ISO Base Media File Format",
+            "ISO/IEC 14496-14 - MP4 File Format"
+        ],
+        "web_links": [
+            "https://mpeg.chiariglione.org/standards/mpeg-4",
+            "https://en.wikipedia.org/wiki/MPEG-4_Part_14"
+        ]
+    },
+    "detection": {
+        "signature": "66747970663476",
+        "offset": 4,
+        "required": true
+    },
+    "variables": {},
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "File Type Box",
+            "offset": 4,
+            "length": 7,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "ftypf4v - Flash Video file type"
+        }
+    ]
 }

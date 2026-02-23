@@ -7,6 +7,19 @@
     "description":  "Microsoft Windows Installer package (OLE2)",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Windows Installer Package Format",
+            "Microsoft MSI Specification",
+            "COM Structured Storage MSI Database"
+        ],
+        "web_links": [
+            "https://learn.microsoft.com/en-us/windows/win32/msi/installation-package",
+            "https://en.wikipedia.org/wiki/Windows_Installer",
+            "https://docs.fileformat.com/executable/msi/",
+            "https://learn.microsoft.com/en-us/windows/win32/msi/windows-installer-portal"
+        ]
+    },
     "detection":  {
                       "signature":  "D0CF11E0A1B11AE1",
                       "offset":  0,

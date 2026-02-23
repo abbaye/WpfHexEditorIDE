@@ -9,6 +9,18 @@
     "description":  "Microsoft Advanced Systems Format multimedia container",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Advanced Systems Format (ASF) Specification Rev 01.20.03",
+            "Microsoft ASF Container Format",
+            "Windows Media Container"
+        ],
+        "web_links": [
+            "https://learn.microsoft.com/en-us/windows/win32/wmformat/overview-of-the-asf-format",
+            "https://en.wikipedia.org/wiki/Advanced_Systems_Format",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000067.shtml"
+        ]
+    },
     "detection":  {
                       "signature":  "3026B2758E66CF11A6D900AA0062CE6C",
                       "offset":  0,

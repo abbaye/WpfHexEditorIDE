@@ -7,6 +7,19 @@
     "description":  "Windows Icon format",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Windows ICO File Format Specification",
+            "Microsoft Icon Format",
+            "ICO/CUR File Structure"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/ICO_(file_format)",
+            "https://formats.kaitai.io/ico/",
+            "https://docs.fileformat.com/image/ico/",
+            "https://learn.microsoft.com/en-us/windows/win32/uxguide/vis-icons"
+        ]
+    },
     "detection":  {
                       "signature":  "00000100",
                       "offset":  0,

@@ -8,6 +8,19 @@
     "description":  "Sun/NeXT audio file format",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Sun/NeXT AU Audio File Format Specification",
+            "Open Group AU Audio Format Standard",
+            "NeXT Soundfile Format"
+        ],
+        "web_links": [
+            "http://soundfile.sapp.org/doc/NextFormat/",
+            "https://pubs.opengroup.org/external/auformat.html",
+            "https://en.wikipedia.org/wiki/Au_file_format",
+            "https://www.file-recovery.com/au-signature-format.htm"
+        ]
+    },
     "detection":  {
                       "signature":  "2E736E64",
                       "offset":  0,

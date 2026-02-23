@@ -1,153 +1,163 @@
 ﻿{
-    "formatName":  "Nintendo 64 ROM",
-    "version":  "1.0",
-    "extensions":  [
-                       ".n64",
-                       ".z64",
-                       ".v64"
-                   ],
-    "description":  "Nintendo 64 ROM image (z64 big-endian format)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "80371240",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0,
-                      "bootAddress":  0,
-                      "crc1":  0,
-                      "crc2":  0,
-                      "gameTitle":  "",
-                      "gameCode":  ""
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "PI BSD Register",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "N64 ROM magic bytes 0x80371240 (big-endian/z64 format)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Clock Rate",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "PI BSD clock rate. 0x0000000F = default clock"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Boot Address",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "storeAs":  "bootAddress",
-                       "description":  "RAM address where boot code is executed"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Release Offset",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "SDK release offset"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "CRC1",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#FF6B9D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "storeAs":  "crc1",
-                       "description":  "First 32-bit checksum (verified by IPL3)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "CRC2",
-                       "offset":  20,
-                       "length":  4,
-                       "color":  "#FF6B9D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "storeAs":  "crc2",
-                       "description":  "Second 32-bit checksum (verified by IPL3)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Reserved1",
-                       "offset":  24,
-                       "length":  8,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "hidden":  true,
-                       "description":  "Reserved, must be zero"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Game Title",
-                       "offset":  32,
-                       "length":  20,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "gameTitle",
-                       "description":  "Game name in ASCII (space-padded to 20 chars)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Reserved2",
-                       "offset":  52,
-                       "length":  7,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "hidden":  true,
-                       "description":  "Reserved"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Game Code",
-                       "offset":  59,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "gameCode",
-                       "description":  "4-char game code: category + 2-char ID + country (E=USA, J=Japan, P=Europe)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "ROM Version",
-                       "offset":  63,
-                       "length":  1,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "Mask ROM version (0x00 = first version)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Boot Code",
-                       "offset":  64,
-                       "length":  4032,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "IPL3 bootstrap code (4032 bytes, variant depends on cartridge type)"
-                   }
-               ]
+    "formatName": "Nintendo 64 ROM",
+    "version": "1.0",
+    "extensions": [
+        ".n64",
+        ".z64",
+        ".v64"
+    ],
+    "description": "Nintendo 64 ROM image (z64 big-endian format)",
+    "category": "Game",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Nintendo 64 Programming Manual",
+            "N64 ROM Format Documentation"
+        ],
+        "web_links": [
+            "https://n64brew.dev/wiki/ROM",
+            "https://en.wikipedia.org/wiki/Nintendo_64"
+        ]
+    },
+    "detection": {
+        "signature": "80371240",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0,
+        "bootAddress": 0,
+        "crc1": 0,
+        "crc2": 0,
+        "gameTitle": "",
+        "gameCode": ""
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "PI BSD Register",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "N64 ROM magic bytes 0x80371240 (big-endian/z64 format)"
+        },
+        {
+            "type": "field",
+            "name": "Clock Rate",
+            "offset": 4,
+            "length": 4,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "valueType": "uint32",
+            "description": "PI BSD clock rate. 0x0000000F = default clock"
+        },
+        {
+            "type": "field",
+            "name": "Boot Address",
+            "offset": 8,
+            "length": 4,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "valueType": "uint32",
+            "storeAs": "bootAddress",
+            "description": "RAM address where boot code is executed"
+        },
+        {
+            "type": "field",
+            "name": "Release Offset",
+            "offset": 12,
+            "length": 4,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "valueType": "uint32",
+            "description": "SDK release offset"
+        },
+        {
+            "type": "field",
+            "name": "CRC1",
+            "offset": 16,
+            "length": 4,
+            "color": "#FF6B9D",
+            "opacity": 0.3,
+            "valueType": "uint32",
+            "storeAs": "crc1",
+            "description": "First 32-bit checksum (verified by IPL3)"
+        },
+        {
+            "type": "field",
+            "name": "CRC2",
+            "offset": 20,
+            "length": 4,
+            "color": "#FF6B9D",
+            "opacity": 0.3,
+            "valueType": "uint32",
+            "storeAs": "crc2",
+            "description": "Second 32-bit checksum (verified by IPL3)"
+        },
+        {
+            "type": "field",
+            "name": "Reserved1",
+            "offset": 24,
+            "length": 8,
+            "color": "#C7CEEA",
+            "opacity": 0.3,
+            "valueType": "bytes",
+            "hidden": true,
+            "description": "Reserved, must be zero"
+        },
+        {
+            "type": "field",
+            "name": "Game Title",
+            "offset": 32,
+            "length": 20,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "valueType": "ascii",
+            "storeAs": "gameTitle",
+            "description": "Game name in ASCII (space-padded to 20 chars)"
+        },
+        {
+            "type": "field",
+            "name": "Reserved2",
+            "offset": 52,
+            "length": 7,
+            "color": "#C7CEEA",
+            "opacity": 0.3,
+            "valueType": "bytes",
+            "hidden": true,
+            "description": "Reserved"
+        },
+        {
+            "type": "field",
+            "name": "Game Code",
+            "offset": 59,
+            "length": 4,
+            "color": "#FFE66D",
+            "opacity": 0.3,
+            "valueType": "ascii",
+            "storeAs": "gameCode",
+            "description": "4-char game code: category + 2-char ID + country (E=USA, J=Japan, P=Europe)"
+        },
+        {
+            "type": "field",
+            "name": "ROM Version",
+            "offset": 63,
+            "length": 1,
+            "color": "#C7CEEA",
+            "opacity": 0.3,
+            "valueType": "uint8",
+            "description": "Mask ROM version (0x00 = first version)"
+        },
+        {
+            "type": "field",
+            "name": "Boot Code",
+            "offset": 64,
+            "length": 4032,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "valueType": "bytes",
+            "description": "IPL3 bootstrap code (4032 bytes, variant depends on cartridge type)"
+        }
+    ]
 }

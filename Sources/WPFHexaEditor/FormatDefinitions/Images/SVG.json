@@ -8,6 +8,19 @@
     "description":  "Scalable Vector Graphics - XML-based vector image",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "W3C SVG 2 Specification",
+            "Scalable Vector Graphics Recommendation",
+            "SVG 1.1 (Second Edition) W3C Recommendation"
+        ],
+        "web_links": [
+            "https://www.w3.org/TR/SVG2/",
+            "https://www.w3.org/Graphics/SVG/About.html",
+            "https://developer.mozilla.org/en-US/docs/Web/SVG",
+            "https://en.wikipedia.org/wiki/SVG"
+        ]
+    },
     "detection":  {
                       "signature":  "3C73766720",
                       "offset":  0,

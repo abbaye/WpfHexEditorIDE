@@ -7,6 +7,19 @@
     "description":  "WebM video format - Based on Matroska, optimized for web",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "WebM Container Guidelines",
+            "Matroska-based Container for VP8/VP9",
+            "WebM Open Media Format"
+        ],
+        "web_links": [
+            "https://www.webmproject.org/docs/container/",
+            "https://en.wikipedia.org/wiki/WebM",
+            "https://www.webmproject.org/about/",
+            "https://cloudinary.com/guides/video-formats/webm-format-what-you-should-know"
+        ]
+    },
     "detection":  {
                       "signature":  "1A45DFA3",
                       "offset":  0,

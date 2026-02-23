@@ -8,6 +8,19 @@
     "description":  "PlayStation 1 (PSX/PS1) executable format (PS-X EXE)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PS-X EXE File Format Specification",
+            "PSX-SPX CDROM File Documentation",
+            "PlayStation Executable Format"
+        ],
+        "web_links": [
+            "https://psx-spx.consoledev.net/cdromfileformats/",
+            "https://www.retroreversing.com/ps1-exe",
+            "https://www.zanneth.com/2018/11/01/psx-exe-file-format.html",
+            "https://problemkaputt.de/psxspx-cdrom-file-formats.htm"
+        ]
+    },
     "detection":  {
                       "signature":  "50532D58204558450000000000000000",
                       "offset":  0,

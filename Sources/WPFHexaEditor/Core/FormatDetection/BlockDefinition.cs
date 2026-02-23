@@ -81,6 +81,12 @@ namespace WpfHexaEditor.Core.FormatDetection
         /// </summary>
         public FieldValidationRules ValidationRules { get; set; }
 
+        /// <summary>
+        /// Endianness for this specific field ("little" or "big")
+        /// If null, uses the format-level default endianness
+        /// </summary>
+        public string Endianness { get; set; }
+
         #region Conditional Block Properties
 
         /// <summary>

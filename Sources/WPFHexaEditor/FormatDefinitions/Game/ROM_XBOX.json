@@ -8,6 +8,19 @@
     "description":  "Microsoft Xbox (original) disc image format (XISO)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "XISO Disc Image Format",
+            "Xbox XDVDFS File System",
+            "Original Xbox Disc Format"
+        ],
+        "web_links": [
+            "https://xemu.app/docs/disc-images/",
+            "https://consolemods.org/wiki/Xbox:ISO_Extraction_&_Repacking",
+            "https://www.ngemu.com/threads/the-xiso-disc-format.145975/",
+            "https://wiki.batocera.org/systems:xbox"
+        ]
+    },
     "detection":  {
                       "signature":  "4D494352",
                       "offset":  0,

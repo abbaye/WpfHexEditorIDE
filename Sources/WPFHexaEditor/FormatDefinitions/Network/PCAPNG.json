@@ -1,47 +1,59 @@
 ﻿{
-    "formatName":  "PCAPNG Network Capture",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pcapng"
-                   ],
-    "description":  "PCAP Next Generation - Enhanced packet capture format",
-    "category":  "Network",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "0A0D0D0A",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Section Header Block",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "PCAPNG section header"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Block Total Length",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Length of block"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Byte Order Magic",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "0x1A2B3C4D for byte order detection"
-                   }
-               ]
+    "formatName": "PCAPNG Network Capture",
+    "version": "1.0",
+    "extensions": [
+        ".pcapng"
+    ],
+    "description": "PCAP Next Generation - Enhanced packet capture format",
+    "category": "Network",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "RFC 2325 - Portable Network Graphics (PNG) Specification",
+            "ISO/IEC 15948:2004 - PNG Standard",
+            "W3C PNG Specification"
+        ],
+        "web_links": [
+            "https://www.w3.org/TR/PNG/",
+            "https://www.ietf.org/rfc/rfc2083.txt",
+            "https://en.wikipedia.org/wiki/Portable_Network_Graphics"
+        ]
+    },
+    "detection": {
+        "signature": "0A0D0D0A",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "Section Header Block",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "PCAPNG section header"
+        },
+        {
+            "type": "field",
+            "name": "Block Total Length",
+            "offset": 4,
+            "length": 4,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "Length of block"
+        },
+        {
+            "type": "field",
+            "name": "Byte Order Magic",
+            "offset": 8,
+            "length": 4,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "description": "0x1A2B3C4D for byte order detection"
+        }
+    ]
 }

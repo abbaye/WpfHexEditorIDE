@@ -1,30 +1,40 @@
 ﻿{
-    "formatName":  "Motion JPEG",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mjpeg",
-                       ".mjpg"
-                   ],
-    "description":  "Motion JPEG video format where each frame is a separate JPEG image",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "FFD8FF",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "JPEG SOI Marker",
-                       "offset":  0,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "JPEG Start of Image marker"
-                   }
-               ]
+    "formatName": "Motion JPEG",
+    "version": "1.0",
+    "extensions": [
+        ".mjpeg",
+        ".mjpg"
+    ],
+    "description": "Motion JPEG video format where each frame is a separate JPEG image",
+    "category": "Video",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ISO/IEC 10918-1 - Digital Compression and Coding",
+            "JFIF File Format Specification",
+            "ITU-T T.81"
+        ],
+        "web_links": [
+            "https://www.w3.org/Graphics/JPEG/",
+            "https://jpeg.org/jpeg/",
+            "https://en.wikipedia.org/wiki/JPEG"
+        ]
+    },
+    "detection": {
+        "signature": "FFD8FF",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {},
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "JPEG SOI Marker",
+            "offset": 0,
+            "length": 3,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "JPEG Start of Image marker"
+        }
+    ]
 }

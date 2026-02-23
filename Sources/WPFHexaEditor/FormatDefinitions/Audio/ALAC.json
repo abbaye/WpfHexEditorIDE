@@ -8,6 +8,19 @@
     "description":  "Apple Lossless Audio Codec for lossless compression of digital music",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Apple Lossless Audio Codec Specification",
+            "ALAC Open Source Format",
+            "Apple Lossless in MPEG-4 Container"
+        ],
+        "web_links": [
+            "https://macosforge.github.io/alac/",
+            "https://github.com/macosforge/alac",
+            "https://en.wikipedia.org/wiki/Apple_Lossless_Audio_Codec",
+            "https://docs.fileformat.com/audio/alac/"
+        ]
+    },
     "detection":  {
                       "signature":  "66747970",
                       "offset":  4,

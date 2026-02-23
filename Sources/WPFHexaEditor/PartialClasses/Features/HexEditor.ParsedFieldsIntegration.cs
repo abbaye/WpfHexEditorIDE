@@ -324,6 +324,7 @@ namespace WpfHexaEditor
                     ParsedFieldsPanel.FormatInfo.Name = _detectedFormat.FormatName;
                     ParsedFieldsPanel.FormatInfo.Description = _detectedFormat.Description;
                     ParsedFieldsPanel.FormatInfo.Category = _detectedFormat.Category ?? "Other";
+                    ParsedFieldsPanel.FormatInfo.References = _detectedFormat.References;
 
                     // Parse all blocks from the format definition
                     if (_detectedFormat.Blocks != null)
@@ -682,6 +683,14 @@ namespace WpfHexaEditor
                 {
                     // Use FieldValueReader to parse the value
                     bool bigEndian = FieldValueReader.ShouldUseBigEndian(_detectedFormat?.FormatName);
+
+                    // Per-field endianness override (Phase 4.2)
+                    if (field.BlockDefinition?.Endianness != null)
+                    {
+                        bigEndian = field.BlockDefinition.Endianness
+                            .Equals("big", System.StringComparison.OrdinalIgnoreCase);
+                    }
+
                     field.RawValue = _fieldValueReader.ReadValue(buffer, 0, field.Length, field.ValueType, bigEndian);
 
                     // Validate the value if validation rules exist

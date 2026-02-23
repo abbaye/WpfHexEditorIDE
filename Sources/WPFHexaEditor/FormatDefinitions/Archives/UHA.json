@@ -7,6 +7,19 @@
     "description":  "UHARC archive format with high compression ratio, developed by Uwe Herklotz",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "UHARC Archive Format - Uwe Herklotz",
+            "UHA High Compression Format",
+            "UHARC Compression Specification"
+        ],
+        "web_links": [
+            "http://fileformats.archiveteam.org/wiki/UHARC",
+            "https://archive.org/details/UHARC",
+            "http://muldersoft.com/docs/uharc_info.txt",
+            "https://github.com/ghaschel/node-uharc"
+        ]
+    },
     "detection":  {
                       "signature":  "55484152435300",
                       "offset":  0,

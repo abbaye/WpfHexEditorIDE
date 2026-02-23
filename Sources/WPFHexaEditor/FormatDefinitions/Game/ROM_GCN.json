@@ -8,6 +8,19 @@
     "description":  "Nintendo GameCube disc image format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Yet Another GameCube Documentation (YAGCD)",
+            "GameCube Disc Image Format Specification",
+            "GCM File Format"
+        ],
+        "web_links": [
+            "https://www.gc-forever.com/yagcd/",
+            "https://hitmen.c02.at/files/yagcd/yagcd/chap14.html",
+            "https://www.retroreversing.com/gamecube-file-formats",
+            "https://wit.wiimm.de/info/iso-images.html"
+        ]
+    },
     "detection":  {
                       "signature":  "C2339F3D",
                       "offset":  28,

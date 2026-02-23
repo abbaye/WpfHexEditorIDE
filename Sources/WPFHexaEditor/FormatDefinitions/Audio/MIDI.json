@@ -8,6 +8,19 @@
     "description":  "Musical Instrument Digital Interface file",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Standard MIDI File (SMF) Format",
+            "MIDI 1.0 Specification",
+            "Musical Instrument Digital Interface Standard"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/MIDI",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000119.shtml",
+            "https://www.file-recovery.com/mid-signature-format.htm",
+            "https://docs.fileformat.com/audio/mid/"
+        ]
+    },
     "detection":  {
                       "signature":  "4D546864",
                       "offset":  0,

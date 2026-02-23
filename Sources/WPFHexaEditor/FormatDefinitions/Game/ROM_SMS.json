@@ -8,6 +8,19 @@
     "description":  "Sega Master System / Game Gear ROM format (TMR SEGA header)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "SMS ROM Header Specification",
+            "TMR SEGA Header Format",
+            "Sega Master System Technical Documentation"
+        ],
+        "web_links": [
+            "https://www.smspower.org/Development/ROMHeader",
+            "https://www.chibiakumas.com/z80/MasterSystemGameGear.php",
+            "https://www.copetti.org/writings/consoles/master-system/",
+            "https://github.com/maxim-zhao/sega8bitheaderreader"
+        ]
+    },
     "detection":  {
                       "signature":  "544D522053454741",
                       "offset":  32752,

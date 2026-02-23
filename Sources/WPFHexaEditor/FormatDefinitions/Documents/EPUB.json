@@ -1,38 +1,48 @@
 ﻿{
-    "formatName":  "EPUB eBook",
-    "version":  "1.0",
-    "extensions":  [
-                       ".epub"
-                   ],
-    "description":  "Electronic Publication - eBook format",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "504B0304",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ZIP Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "EPUB is a ZIP container"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "ZIP Header",
-                       "offset":  4,
-                       "length":  26,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "ZIP local file header"
-                   }
-               ]
+    "formatName": "EPUB eBook",
+    "version": "1.0",
+    "extensions": [
+        ".epub"
+    ],
+    "description": "Electronic Publication - eBook format",
+    "category": "Documents",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "EPUB 3.2 Specification",
+            "ISO/IEC TS 30135 - EPUB File Format"
+        ],
+        "web_links": [
+            "https://www.w3.org/publishing/epub3/epub-spec.html",
+            "https://en.wikipedia.org/wiki/EPUB"
+        ]
+    },
+    "detection": {
+        "signature": "504B0304",
+        "offset": 0,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "signature",
+            "name": "ZIP Signature",
+            "offset": 0,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "EPUB is a ZIP container"
+        },
+        {
+            "type": "field",
+            "name": "ZIP Header",
+            "offset": 4,
+            "length": 26,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "ZIP local file header"
+        }
+    ]
 }

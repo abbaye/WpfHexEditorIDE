@@ -8,6 +8,19 @@
     "description":  "Super Nintendo Entertainment System ROM (HiROM internal header)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "SNES Internal ROM Header Specification",
+            "SNESdev Wiki ROM Header Documentation",
+            "Super Nintendo Software Specification"
+        ],
+        "web_links": [
+            "https://snes.nesdev.org/wiki/ROM_header",
+            "https://sneslab.net/wiki/SNES_ROM_Header",
+            "https://wiki.superfamicom.org/writing-the-header",
+            "https://en.wikibooks.org/wiki/Super_NES_Programming/SNES_memory_map"
+        ]
+    },
     "detection":  {
                       "signature":  "33",
                       "offset":  65498,

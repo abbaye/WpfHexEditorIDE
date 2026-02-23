@@ -66,6 +66,11 @@ namespace WpfHexaEditor.Core.FormatDetection
         public Dictionary<string, string> Functions { get; set; } = new Dictionary<string, string>();
 
         /// <summary>
+        /// Technical references and web links for this format
+        /// </summary>
+        public FormatReferences References { get; set; }
+
+        /// <summary>
         /// Validate this format definition
         /// </summary>
         public bool IsValid()
@@ -187,5 +192,21 @@ namespace WpfHexaEditor.Core.FormatDetection
         {
             return $"{Field} {Operator} {Value} (length: {Length})";
         }
+    }
+
+    /// <summary>
+    /// Technical references for a format definition
+    /// </summary>
+    public class FormatReferences
+    {
+        /// <summary>
+        /// List of technical specification names
+        /// </summary>
+        public List<string> Specifications { get; set; } = new List<string>();
+
+        /// <summary>
+        /// List of web links to specifications and documentation
+        /// </summary>
+        public List<string> WebLinks { get; set; } = new List<string>();
     }
 }

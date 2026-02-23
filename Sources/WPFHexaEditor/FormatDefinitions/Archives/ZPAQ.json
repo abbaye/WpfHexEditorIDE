@@ -7,6 +7,19 @@
     "description":  "ZPAQ incremental archiver format",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ZPAQ Incremental Archiver Specification - Matt Mahoney",
+            "ZPAQ Compression Algorithm",
+            "ZPAQ Journaling Archive Format"
+        ],
+        "web_links": [
+            "https://mattmahoney.net/dc/zpaqdoc.html",
+            "https://mattmahoney.net/dc/zpaq_compression.pdf",
+            "https://en.wikipedia.org/wiki/ZPAQ",
+            "https://mattmahoney.net/dc/zpaq.html"
+        ]
+    },
     "detection":  {
                       "signature":  "7A5041517E",
                       "offset":  0,

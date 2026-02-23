@@ -9,6 +9,19 @@
     "description":  "Musepack lossy audio compression format optimized for transparency",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Musepack SV8 Specification",
+            "Musepack Audio Codec Standard",
+            "MPC Format Documentation"
+        ],
+        "web_links": [
+            "http://trac.musepack.net/musepack/wiki/SV8Specification",
+            "https://mutagen-specs.readthedocs.io/en/latest/mpc/sv8.html",
+            "https://en.wikipedia.org/wiki/Musepack",
+            "https://www.musepack.net/"
+        ]
+    },
     "detection":  {
                       "signature":  "4D502B",
                       "offset":  0,

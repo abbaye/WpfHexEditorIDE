@@ -7,6 +7,19 @@
     "description":  "Brotli compressed format developed by Google, used for web compression and file compression",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "RFC 7932 - Brotli Compressed Data Format",
+            "RFC 9841 - Shared Brotli Format",
+            "Brotli Compression Algorithm by Google"
+        ],
+        "web_links": [
+            "https://datatracker.ietf.org/doc/html/rfc7932",
+            "https://github.com/google/brotli",
+            "https://en.wikipedia.org/wiki/Brotli",
+            "https://www.brotli.org/"
+        ]
+    },
     "detection":  {
                       "signature":  "CE",
                       "offset":  0,

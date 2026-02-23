@@ -8,6 +8,19 @@
     "description":  "RealMedia multimedia container format developed by RealNetworks",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "RealMedia Container Format Specification",
+            "RealNetworks Proprietary Format",
+            "RealVideo and RealAudio Codec Container"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/RealMedia",
+            "https://wiki.multimedia.cx/index.php/RealMedia",
+            "https://docs.fileformat.com/video/rm/",
+            "https://fileinfo.com/extension/rm"
+        ]
+    },
     "detection":  {
                       "signature":  "2E524D46",
                       "offset":  0,

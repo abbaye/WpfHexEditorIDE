@@ -8,6 +8,19 @@
     "description":  "AOMedia Video 1 (AV1) open, royalty-free video coding format",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "AV1 Bitstream & Decoding Process Specification",
+            "AOMedia Video 1 Codec",
+            "AV1 Open Source Standard"
+        ],
+        "web_links": [
+            "https://aomedia.org/specifications/av1/",
+            "https://aomediacodec.github.io/av1-spec/av1-spec.pdf",
+            "https://en.wikipedia.org/wiki/AV1",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000541.shtml"
+        ]
+    },
     "detection":  {
                       "signature":  "444B4946",
                       "offset":  0,

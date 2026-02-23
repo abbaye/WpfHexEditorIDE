@@ -1,58 +1,68 @@
 ﻿{
-    "formatName":  "MP4 Video",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mp4",
-                       ".m4v",
-                       ".m4a"
-                   ],
-    "description":  "MPEG-4 Part 14 multimedia container",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "667479706D703432",
-                      "offset":  4,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Box Size",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Size of ftyp box"
-                   },
-                   {
-                       "type":  "signature",
-                       "name":  "Box Type",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ftyp box identifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Major Brand",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "File format brand (mp42, isom, etc.)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Minor Version",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Minor version number"
-                   }
-               ]
+    "formatName": "MP4 Video",
+    "version": "1.0",
+    "extensions": [
+        ".mp4",
+        ".m4v",
+        ".m4a"
+    ],
+    "description": "MPEG-4 Part 14 multimedia container",
+    "category": "Video",
+    "author": "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ISO/IEC 14496-12 - ISO Base Media File Format",
+            "ISO/IEC 14496-14 - MP4 File Format"
+        ],
+        "web_links": [
+            "https://mpeg.chiariglione.org/standards/mpeg-4",
+            "https://en.wikipedia.org/wiki/MPEG-4_Part_14"
+        ]
+    },
+    "detection": {
+        "signature": "667479706D703432",
+        "offset": 4,
+        "required": true
+    },
+    "variables": {
+        "currentOffset": 0
+    },
+    "blocks": [
+        {
+            "type": "field",
+            "name": "Box Size",
+            "offset": 0,
+            "length": 4,
+            "color": "#4ECDC4",
+            "opacity": 0.3,
+            "description": "Size of ftyp box"
+        },
+        {
+            "type": "signature",
+            "name": "Box Type",
+            "offset": 4,
+            "length": 4,
+            "color": "#FF6B6B",
+            "opacity": 0.4,
+            "description": "ftyp box identifier"
+        },
+        {
+            "type": "field",
+            "name": "Major Brand",
+            "offset": 8,
+            "length": 4,
+            "color": "#95E1D3",
+            "opacity": 0.3,
+            "description": "File format brand (mp42, isom, etc.)"
+        },
+        {
+            "type": "field",
+            "name": "Minor Version",
+            "offset": 12,
+            "length": 4,
+            "color": "#FFE66D",
+            "opacity": 0.3,
+            "description": "Minor version number"
+        }
+    ]
 }

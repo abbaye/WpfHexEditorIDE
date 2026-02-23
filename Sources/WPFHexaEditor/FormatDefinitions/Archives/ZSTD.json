@@ -8,6 +8,19 @@
     "description":  "Zstandard compression format by Facebook",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "RFC 8878 - Zstandard Compression Format",
+            "RFC 8478 - Zstandard (Obsolete)",
+            "Zstandard Frame Format"
+        ],
+        "web_links": [
+            "https://datatracker.ietf.org/doc/html/rfc8878",
+            "https://datatracker.ietf.org/doc/html/rfc8478",
+            "https://en.wikipedia.org/wiki/Zstd",
+            "https://github.com/facebook/zstd"
+        ]
+    },
     "detection":  {
                       "signature":  "28B52FFD",
                       "offset":  0,

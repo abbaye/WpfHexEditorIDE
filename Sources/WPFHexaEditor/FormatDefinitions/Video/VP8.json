@@ -8,6 +8,19 @@
     "description":  "VP8 video codec, open video compression format developed by Google",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "RFC 6386 - VP8 Data Format and Decoding Guide",
+            "Google VP8 Codec Specification",
+            "WebM VP8 Video Codec"
+        ],
+        "web_links": [
+            "https://www.rfc-editor.org/rfc/rfc6386.html",
+            "https://en.wikipedia.org/wiki/VP8",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000578.shtml",
+            "https://www.webmproject.org/docs/encoder-parameters/"
+        ]
+    },
     "detection":  {
                       "signature":  "444B4946",
                       "offset":  0,

@@ -53,6 +53,17 @@ namespace WpfHexaEditor.Formatters
                 // Bytes: Hex with ASCII preview
                 "bytes" when value is byte[] bytes => FormatByteArray(bytes),
 
+                // New types (Phase 4)
+                "guid" when value is Guid g => g.ToString("D"),
+                "timestamp" or "unix_timestamp" when value is DateTime dt =>
+                    $"{dt:yyyy-MM-dd HH:mm:ss} UTC (Unix: {((DateTimeOffset)dt.ToUniversalTime()).ToUnixTimeSeconds()})",
+                "timestamp64" or "unix_timestamp64" when value is DateTime dt =>
+                    $"{dt:yyyy-MM-dd HH:mm:ss} UTC (Unix: {((DateTimeOffset)dt.ToUniversalTime()).ToUnixTimeSeconds()})",
+                "filetime" when value is DateTime dt =>
+                    $"{dt:yyyy-MM-dd HH:mm:ss} UTC",
+                "ipv4" or "ipv6" when value is System.Net.IPAddress ip => ip.ToString(),
+                "mac" or "mac_address" when value is string mac => mac.ToUpperInvariant(),
+
                 // Unknown: hex representation
                 _ => $"0x{value:X}"
             };

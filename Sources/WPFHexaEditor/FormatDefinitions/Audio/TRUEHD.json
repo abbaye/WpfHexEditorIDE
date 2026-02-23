@@ -8,6 +8,19 @@
     "description":  "Dolby TrueHD lossless multi-channel audio codec for Blu-ray",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Dolby TrueHD High-Level Bitstream Description",
+            "Dolby TrueHD Lossless Audio Codec",
+            "MLP for Blu-ray Specification"
+        ],
+        "web_links": [
+            "https://developer.dolby.com/globalassets/technology/dolby-truehd/dolbytruehdhighlevelbitstreamdescription.pdf",
+            "https://developer.dolby.com/technology/dolby-audio/dolby-truehd",
+            "https://en.wikipedia.org/wiki/Dolby_TrueHD",
+            "https://grokipedia.com/page/Dolby_TrueHD"
+        ]
+    },
     "detection":  {
                       "signature":  "18E371F3",
                       "offset":  4,

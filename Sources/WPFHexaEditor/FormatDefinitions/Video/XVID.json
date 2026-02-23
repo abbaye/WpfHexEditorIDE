@@ -7,6 +7,18 @@
     "description":  "Xvid MPEG-4 video codec, typically stored in AVI container",
     "category":  "Video",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ISO/IEC 14496-2 - MPEG-4 Part 2 Visual",
+            "Xvid Advanced Simple Profile Implementation",
+            "Open Source MPEG-4 ASP Codec"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/Xvid",
+            "https://en.wikipedia.org/wiki/MPEG-4_Part_2",
+            "https://www.videoproc.com/resource/xvid-video-codec.htm"
+        ]
+    },
     "detection":  {
                       "signature":  "52494646",
                       "offset":  0,

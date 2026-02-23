@@ -46,6 +46,14 @@ namespace WpfHexaEditor.Core
                     "utf8" => ReadString(data, offset, length, Encoding.UTF8),
                     "utf16" => ReadString(data, offset, length, Encoding.Unicode),
                     "bytes" => ReadBytes(data, offset, length),
+                    // New types for Phase 4
+                    "guid" => ReadGuid(data, offset),
+                    "timestamp" or "unix_timestamp" => ReadUnixTimestamp(data, offset, bigEndian),
+                    "timestamp64" or "unix_timestamp64" => ReadUnixTimestamp64(data, offset, bigEndian),
+                    "filetime" => ReadFileTime(data, offset, bigEndian),
+                    "ipv4" => ReadIPv4(data, offset),
+                    "ipv6" => ReadIPv6(data, offset),
+                    "mac" or "mac_address" => ReadMacAddress(data, offset),
                     _ => ReadBytes(data, offset, length) // Default: return raw bytes
                 };
             }
@@ -377,6 +385,84 @@ namespace WpfHexaEditor.Core
             {
                 return null;
             }
+        }
+
+        #endregion
+
+        #region New Data Types (Phase 4)
+
+        /// <summary>
+        /// Read a GUID (16 bytes)
+        /// </summary>
+        private Guid ReadGuid(byte[] data, int offset)
+        {
+            var guidBytes = new byte[16];
+            Array.Copy(data, offset, guidBytes, 0, 16);
+            return new Guid(guidBytes);
+        }
+
+        /// <summary>
+        /// Read a Unix timestamp (32-bit, seconds since epoch)
+        /// </summary>
+        private DateTime ReadUnixTimestamp(byte[] data, int offset, bool bigEndian)
+        {
+            uint timestamp = ReadUInt32(data, offset, bigEndian);
+            return DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime;
+        }
+
+        /// <summary>
+        /// Read a Unix timestamp (64-bit, seconds since epoch)
+        /// </summary>
+        private DateTime ReadUnixTimestamp64(byte[] data, int offset, bool bigEndian)
+        {
+            long timestamp = ReadInt64(data, offset, bigEndian);
+            return DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime;
+        }
+
+        /// <summary>
+        /// Read a Windows FILETIME (64-bit, 100-nanosecond intervals since 1601-01-01)
+        /// </summary>
+        private DateTime ReadFileTime(byte[] data, int offset, bool bigEndian)
+        {
+            long fileTime = ReadInt64(data, offset, bigEndian);
+            try
+            {
+                return DateTime.FromFileTimeUtc(fileTime);
+            }
+            catch
+            {
+                // Invalid FILETIME value
+                return DateTime.MinValue;
+            }
+        }
+
+        /// <summary>
+        /// Read an IPv4 address (4 bytes)
+        /// </summary>
+        private System.Net.IPAddress ReadIPv4(byte[] data, int offset)
+        {
+            var ipBytes = new byte[4];
+            Array.Copy(data, offset, ipBytes, 0, 4);
+            return new System.Net.IPAddress(ipBytes);
+        }
+
+        /// <summary>
+        /// Read an IPv6 address (16 bytes)
+        /// </summary>
+        private System.Net.IPAddress ReadIPv6(byte[] data, int offset)
+        {
+            var ipBytes = new byte[16];
+            Array.Copy(data, offset, ipBytes, 0, 16);
+            return new System.Net.IPAddress(ipBytes);
+        }
+
+        /// <summary>
+        /// Read a MAC address (6 bytes)
+        /// Returns formatted string like "01:23:45:67:89:AB"
+        /// </summary>
+        private string ReadMacAddress(byte[] data, int offset)
+        {
+            return string.Join(":", data.Skip(offset).Take(6).Select(b => b.ToString("X2")));
         }
 
         #endregion

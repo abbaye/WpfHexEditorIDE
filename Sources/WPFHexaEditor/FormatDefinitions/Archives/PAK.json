@@ -7,6 +7,19 @@
     "description":  "PAK archive format commonly used in game engines (Quake, Unreal Engine) for packaging game assets and resources",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Quake PAK File Format",
+            "Unreal Engine PAK Container",
+            "id Software PAK Archive Specification"
+        ],
+        "web_links": [
+            "https://quakewiki.org/wiki/.pak",
+            "http://fileformats.archiveteam.org/wiki/Quake_PAK",
+            "https://unrealpak.com/",
+            "https://developer.valvesoftware.com/wiki/PAK"
+        ]
+    },
     "detection":  {
                       "signature":  "5041434B",
                       "offset":  0,

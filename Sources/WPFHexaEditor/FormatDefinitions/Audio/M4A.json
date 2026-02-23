@@ -9,6 +9,19 @@
     "description":  "MPEG-4 Audio - AAC audio container",
     "category":  "Audio",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "MPEG-4 Part 14 - ISO/IEC 14496-14:2003",
+            "M4A Audio Container Format",
+            "MPEG-4 Audio Specification"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/MPEG-4_Part_14",
+            "https://docs.fileformat.com/audio/m4a/",
+            "https://www.file-recovery.com/m4a-signature-format.htm",
+            "https://cloudinary.com/guides/video-formats/what-is-the-m4a-format-understanding-the-difference-between-m4a-mp3-and-wav"
+        ]
+    },
     "detection":  {
                       "signature":  "667479704D344120",
                       "offset":  4,
