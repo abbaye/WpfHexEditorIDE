@@ -1,29 +1,29 @@
-{
-  "formatName": "USD ASCII",
-  "version": "1.0",
-  "extensions": [ ".usda" ],
-  "description": "Pixar USD ASCII text format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "23757364612031",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "USDA Header",
-      "offset": 0,
-      "length": 7,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "#usda 1 header"
-    }
-  ]
+﻿{
+    "formatName":  "USD ASCII",
+    "version":  "1.0",
+    "extensions":  [
+                       ".usda"
+                   ],
+    "description":  "Pixar USD ASCII text format",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "23757364612031",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "USDA Header",
+                       "offset":  0,
+                       "length":  7,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "#usda 1 header"
+                   }
+               ]
 }

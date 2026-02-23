@@ -1,38 +1,38 @@
-{
-  "formatName": "Polygon File Format",
-  "version": "1.0",
-  "extensions": [ ".ply" ],
-  "description": "Stanford PLY 3D mesh format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "706C790A",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "PLY Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ply\\n signature"
-    },
-    {
-      "type": "field",
-      "name": "Format Line",
-      "offset": 4,
-      "length": 20,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "format ascii/binary 1.0"
-    }
-  ]
+﻿{
+    "formatName":  "Polygon File Format",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ply"
+                   ],
+    "description":  "Stanford PLY 3D mesh format",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "706C790A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PLY Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ply\\n signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Format Line",
+                       "offset":  4,
+                       "length":  20,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "format ascii/binary 1.0"
+                   }
+               ]
 }

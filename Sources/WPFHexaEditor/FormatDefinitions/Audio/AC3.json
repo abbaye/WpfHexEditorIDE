@@ -1,26 +1,29 @@
-{
-  "formatName": "Dolby Digital AC-3",
-  "version": "1.0",
-  "extensions": [
-    ".ac3"
-  ],
-  "description": "Dolby Digital (AC-3) audio codec for surround sound",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "0B77",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "AC-3 Sync Word",
-      "offset": 0,
-      "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "AC-3 synchronization word"
-    }
-  ]
+﻿{
+    "formatName":  "Dolby Digital AC-3",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ac3"
+                   ],
+    "description":  "Dolby Digital (AC-3) audio codec for surround sound",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "0B77",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "AC-3 Sync Word",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "AC-3 synchronization word"
+                   }
+               ]
 }

@@ -1,38 +1,38 @@
-{
-  "formatName": "WebAssembly Binary",
-  "version": "1.0",
-  "extensions": [ ".wasm" ],
-  "description": "WebAssembly binary format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "0061736D",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "WASM Magic",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "\\0asm magic number"
-    },
-    {
-      "type": "field",
-      "name": "Version",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "WebAssembly version"
-    }
-  ]
+﻿{
+    "formatName":  "WebAssembly Binary",
+    "version":  "1.0",
+    "extensions":  [
+                       ".wasm"
+                   ],
+    "description":  "WebAssembly binary format",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "0061736D",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "WASM Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "\\0asm magic number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "WebAssembly version"
+                   }
+               ]
 }

@@ -1,12 +1,29 @@
-{
-  "formatName": "NumPy Compressed Archive",
-  "version": "1.0",
-  "extensions": [ ".npz" ],
-  "description": "NumPy compressed array archive",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "504B0304", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "ZIP Signature", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "NPZ is ZIP archive" }
-  ]
+﻿{
+    "formatName":  "NumPy Compressed Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".npz"
+                   ],
+    "description":  "NumPy compressed array archive",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "504B0304",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ZIP Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "NPZ is ZIP archive"
+                   }
+               ]
 }

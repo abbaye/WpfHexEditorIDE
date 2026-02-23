@@ -1,12 +1,29 @@
-{
-  "formatName": "Tripos Mol2",
-  "version": "1.0",
-  "extensions": [ ".mol2" ],
-  "description": "Tripos Mol2 molecular structure format",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "4054524950", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "MOL2 Magic", "offset": 0, "length": 5, "color": "#FF6B6B", "opacity": 0.4, "description": "MOL2 signature (@TRIP)" }
-  ]
+﻿{
+    "formatName":  "Tripos Mol2",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mol2"
+                   ],
+    "description":  "Tripos Mol2 molecular structure format",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4054524950",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "MOL2 Magic",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MOL2 signature (@TRIP)"
+                   }
+               ]
 }

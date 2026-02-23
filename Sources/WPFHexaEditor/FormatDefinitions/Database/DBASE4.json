@@ -1,29 +1,29 @@
-{
-  "formatName": "dBASE IV Database",
-  "version": "1.0",
-  "extensions": [ ".dbf" ],
-  "description": "dBASE IV database table format with memo support",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "04",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "header",
-      "name": "dBASE IV Header",
-      "offset": 0,
-      "length": 32,
-      "color": "#3D5A80",
-      "opacity": 0.4,
-      "description": "dBASE IV file header"
-    }
-  ]
+﻿{
+    "formatName":  "dBASE IV Database",
+    "version":  "1.0",
+    "extensions":  [
+                       ".dbf"
+                   ],
+    "description":  "dBASE IV database table format with memo support",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "04",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "dBASE IV Header",
+                       "offset":  0,
+                       "length":  32,
+                       "color":  "#3D5A80",
+                       "opacity":  0.4,
+                       "description":  "dBASE IV file header"
+                   }
+               ]
 }

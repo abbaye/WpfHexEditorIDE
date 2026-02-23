@@ -1,83 +1,83 @@
-{
-  "formatName": "BLF Event Log",
-  "version": "1.0",
-  "extensions": [ ".blf" ],
-  "description": "Windows Binary Log File - System event logging",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "454C46",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "BLF Signature",
-      "offset": 0,
-      "length": 3,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ELF magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "Major Version",
-      "offset": 3,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Major format version"
-    },
-    {
-      "type": "field",
-      "name": "Minor Version",
-      "offset": 4,
-      "length": 1,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Minor format version"
-    },
-    {
-      "type": "field",
-      "name": "File Flags",
-      "offset": 5,
-      "length": 1,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Log file flags"
-    },
-    {
-      "type": "field",
-      "name": "Oldest Record",
-      "offset": 8,
-      "length": 4,
-      "color": "#FFA07A",
-      "opacity": 0.3,
-      "description": "Offset to oldest record"
-    },
-    {
-      "type": "field",
-      "name": "Newest Record",
-      "offset": 12,
-      "length": 4,
-      "color": "#C7CEEA",
-      "opacity": 0.3,
-      "description": "Offset to newest record"
-    },
-    {
-      "type": "field",
-      "name": "Checksum",
-      "offset": 16,
-      "length": 4,
-      "color": "#B8B8FF",
-      "opacity": 0.3,
-      "description": "Header checksum"
-    }
-  ]
+﻿{
+    "formatName":  "BLF Event Log",
+    "version":  "1.0",
+    "extensions":  [
+                       ".blf"
+                   ],
+    "description":  "Windows Binary Log File - System event logging",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "454C46",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "BLF Signature",
+                       "offset":  0,
+                       "length":  3,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ELF magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Major Version",
+                       "offset":  3,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Major format version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Minor Version",
+                       "offset":  4,
+                       "length":  1,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Minor format version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "File Flags",
+                       "offset":  5,
+                       "length":  1,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Log file flags"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Oldest Record",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Offset to oldest record"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Newest Record",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Offset to newest record"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Checksum",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Header checksum"
+                   }
+               ]
 }

@@ -1,36 +1,38 @@
-{
-  "formatName": "Free Lossless Image Format",
-  "version": "1.0",
-  "extensions": [ ".flif" ],
-  "description": "FLIF - Free Lossless Image Format",
-  "author": "WPFHexaEditor Team",
+﻿{
+    "formatName":  "Free Lossless Image Format",
+    "version":  "1.0",
+    "extensions":  [
+                       ".flif"
+                   ],
+    "description":  "FLIF - Free Lossless Image Format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "464C4946",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
 
-  "detection": {
-    "signature": "464C4946",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {},
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "FLIF Magic",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "FLIF magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "Header Byte",
-      "offset": 4,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Format flags"
-    }
-  ]
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "FLIF Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "FLIF magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Header Byte",
+                       "offset":  4,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Format flags"
+                   }
+               ]
 }

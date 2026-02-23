@@ -1,74 +1,75 @@
-{
-  "formatName": "GZIP Compressed File",
-  "version": "1.0",
-  "extensions": [ ".gz", ".gzip" ],
-  "description": "GZIP compression format - Common in Unix/Linux systems",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "1F8B",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "GZIP Magic",
-      "offset": 0,
-      "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "GZIP identification bytes"
-    },
-    {
-      "type": "field",
-      "name": "Compression Method",
-      "offset": 2,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "0-7 reserved, 8=deflate"
-    },
-    {
-      "type": "field",
-      "name": "Flags",
-      "offset": 3,
-      "length": 1,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "FTEXT, FHCRC, FEXTRA, FNAME, FCOMMENT"
-    },
-    {
-      "type": "field",
-      "name": "Modification Time",
-      "offset": 4,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Unix timestamp"
-    },
-    {
-      "type": "field",
-      "name": "Compression Flags",
-      "offset": 8,
-      "length": 1,
-      "color": "#C7CEEA",
-      "opacity": 0.3,
-      "description": "Extra flags"
-    },
-    {
-      "type": "field",
-      "name": "OS",
-      "offset": 9,
-      "length": 1,
-      "color": "#B8B8FF",
-      "opacity": 0.3,
-      "description": "Operating system ID"
-    }
-  ]
+﻿{
+    "formatName":  "GZIP Compressed File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".gz",
+                       ".gzip"
+                   ],
+    "description":  "GZIP compression format - Common in Unix/Linux systems",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "1F8B",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "GZIP Magic",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "GZIP identification bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Compression Method",
+                       "offset":  2,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "0-7 reserved, 8=deflate"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Flags",
+                       "offset":  3,
+                       "length":  1,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "FTEXT, FHCRC, FEXTRA, FNAME, FCOMMENT"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Modification Time",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Unix timestamp"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Compression Flags",
+                       "offset":  8,
+                       "length":  1,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Extra flags"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "OS",
+                       "offset":  9,
+                       "length":  1,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Operating system ID"
+                   }
+               ]
 }

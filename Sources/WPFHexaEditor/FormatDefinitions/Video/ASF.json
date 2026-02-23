@@ -1,28 +1,31 @@
-{
-  "formatName": "Advanced Systems Format",
-  "version": "1.0",
-  "extensions": [
-    ".asf",
-    ".wma",
-    ".wmv"
-  ],
-  "description": "Microsoft Advanced Systems Format multimedia container",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "3026B2758E66CF11A6D900AA0062CE6C",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "ASF Header GUID",
-      "offset": 0,
-      "length": 16,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ASF Header Object GUID"
-    }
-  ]
+﻿{
+    "formatName":  "Advanced Systems Format",
+    "version":  "1.0",
+    "extensions":  [
+                       ".asf",
+                       ".wma",
+                       ".wmv"
+                   ],
+    "description":  "Microsoft Advanced Systems Format multimedia container",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "3026B2758E66CF11A6D900AA0062CE6C",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ASF Header GUID",
+                       "offset":  0,
+                       "length":  16,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ASF Header Object GUID"
+                   }
+               ]
 }

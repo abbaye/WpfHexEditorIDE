@@ -1,65 +1,65 @@
-{
-  "formatName": "DirectDraw Surface",
-  "version": "1.0",
-  "extensions": [ ".dds" ],
-  "description": "DirectX texture format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "44445320",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "DDS Signature",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DDS magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "Header Size",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Size of header structure (124)"
-    },
-    {
-      "type": "field",
-      "name": "Flags",
-      "offset": 8,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Surface description flags"
-    },
-    {
-      "type": "field",
-      "name": "Height",
-      "offset": 12,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Height in pixels"
-    },
-    {
-      "type": "field",
-      "name": "Width",
-      "offset": 16,
-      "length": 4,
-      "color": "#C7CEEA",
-      "opacity": 0.3,
-      "description": "Width in pixels"
-    }
-  ]
+﻿{
+    "formatName":  "DirectDraw Surface",
+    "version":  "1.0",
+    "extensions":  [
+                       ".dds"
+                   ],
+    "description":  "DirectX texture format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "44445320",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "DDS Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "DDS magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Header Size",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Size of header structure (124)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Flags",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Surface description flags"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Height",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Height in pixels"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Width",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Width in pixels"
+                   }
+               ]
 }

@@ -1,38 +1,38 @@
-{
-  "formatName": "3D Studio Model",
-  "version": "1.0",
-  "extensions": [ ".3ds" ],
-  "description": "Autodesk 3D Studio mesh format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "4D4D",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "Primary Chunk ID",
-      "offset": 0,
-      "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Main chunk identifier (0x4D4D)"
-    },
-    {
-      "type": "field",
-      "name": "Chunk Length",
-      "offset": 2,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Length of main chunk"
-    }
-  ]
+﻿{
+    "formatName":  "3D Studio Model",
+    "version":  "1.0",
+    "extensions":  [
+                       ".3ds"
+                   ],
+    "description":  "Autodesk 3D Studio mesh format",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4D4D",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Primary Chunk ID",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Main chunk identifier (0x4D4D)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Chunk Length",
+                       "offset":  2,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Length of main chunk"
+                   }
+               ]
 }

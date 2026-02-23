@@ -1,74 +1,75 @@
-{
-  "formatName": "Virtual Memory Dump",
-  "version": "1.0",
-  "extensions": [ ".vmem", ".vmsn" ],
-  "description": "VMware virtual machine memory snapshot",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "D053564D",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "VMEM Signature",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "VMware memory signature"
-    },
-    {
-      "type": "field",
-      "name": "Version",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "VMEM format version"
-    },
-    {
-      "type": "field",
-      "name": "Memory Size",
-      "offset": 8,
-      "length": 8,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Total memory size in bytes"
-    },
-    {
-      "type": "field",
-      "name": "Guest OS Type",
-      "offset": 16,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Operating system identifier"
-    },
-    {
-      "type": "field",
-      "name": "Snapshot Time",
-      "offset": 20,
-      "length": 8,
-      "color": "#FFA07A",
-      "opacity": 0.3,
-      "description": "Snapshot creation timestamp"
-    },
-    {
-      "type": "field",
-      "name": "Flags",
-      "offset": 28,
-      "length": 4,
-      "color": "#C7CEEA",
-      "opacity": 0.3,
-      "description": "Memory dump flags"
-    }
-  ]
+﻿{
+    "formatName":  "Virtual Memory Dump",
+    "version":  "1.0",
+    "extensions":  [
+                       ".vmem",
+                       ".vmsn"
+                   ],
+    "description":  "VMware virtual machine memory snapshot",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "D053564D",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "VMEM Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "VMware memory signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "VMEM format version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Memory Size",
+                       "offset":  8,
+                       "length":  8,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Total memory size in bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Guest OS Type",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Operating system identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Snapshot Time",
+                       "offset":  20,
+                       "length":  8,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Snapshot creation timestamp"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Flags",
+                       "offset":  28,
+                       "length":  4,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Memory dump flags"
+                   }
+               ]
 }

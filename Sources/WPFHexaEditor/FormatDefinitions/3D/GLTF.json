@@ -1,29 +1,29 @@
-{
-  "formatName": "GL Transmission Format",
-  "version": "1.0",
-  "extensions": [ ".gltf" ],
-  "description": "Khronos glTF 3D model (JSON format)",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "7B",
-    "offset": 0,
-    "required": false
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "JSON Start",
-      "offset": 0,
-      "length": 1,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Opening brace for JSON"
-    }
-  ]
+﻿{
+    "formatName":  "GL Transmission Format",
+    "version":  "1.0",
+    "extensions":  [
+                       ".gltf"
+                   ],
+    "description":  "Khronos glTF 3D model (JSON format)",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7B",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "JSON Start",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Opening brace for JSON"
+                   }
+               ]
 }

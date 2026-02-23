@@ -1,83 +1,83 @@
-{
-  "formatName": "sFlow",
-  "version": "1.0",
-  "extensions": [ ".sflow" ],
-  "description": "sFlow network monitoring - Sampled flow data",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "00000005",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "sFlow Version",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Version 5 (0x00000005)"
-    },
-    {
-      "type": "field",
-      "name": "Agent Address Type",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "IP version (1=IPv4, 2=IPv6)"
-    },
-    {
-      "type": "field",
-      "name": "Agent Address",
-      "offset": 8,
-      "length": 16,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "IP address of sFlow agent"
-    },
-    {
-      "type": "field",
-      "name": "Sub-Agent ID",
-      "offset": 24,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Sub-agent identifier"
-    },
-    {
-      "type": "field",
-      "name": "Sequence Number",
-      "offset": 28,
-      "length": 4,
-      "color": "#FFA07A",
-      "opacity": 0.3,
-      "description": "Datagram sequence number"
-    },
-    {
-      "type": "field",
-      "name": "System Uptime",
-      "offset": 32,
-      "length": 4,
-      "color": "#C7CEEA",
-      "opacity": 0.3,
-      "description": "Milliseconds since device boot"
-    },
-    {
-      "type": "field",
-      "name": "Number of Samples",
-      "offset": 36,
-      "length": 4,
-      "color": "#B8B8FF",
-      "opacity": 0.3,
-      "description": "Number of flow/counter samples"
-    }
-  ]
+﻿{
+    "formatName":  "sFlow",
+    "version":  "1.0",
+    "extensions":  [
+                       ".sflow"
+                   ],
+    "description":  "sFlow network monitoring - Sampled flow data",
+    "category":  "Network",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00000005",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "sFlow Version",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Version 5 (0x00000005)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Agent Address Type",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "IP version (1=IPv4, 2=IPv6)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Agent Address",
+                       "offset":  8,
+                       "length":  16,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "IP address of sFlow agent"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Sub-Agent ID",
+                       "offset":  24,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Sub-agent identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Sequence Number",
+                       "offset":  28,
+                       "length":  4,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Datagram sequence number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "System Uptime",
+                       "offset":  32,
+                       "length":  4,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Milliseconds since device boot"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Number of Samples",
+                       "offset":  36,
+                       "length":  4,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Number of flow/counter samples"
+                   }
+               ]
 }

@@ -1,47 +1,47 @@
-{
-  "formatName": "Unity Asset Bundle",
-  "version": "1.0",
-  "extensions": [ ".unity3d" ],
-  "description": "Unity Engine asset bundle file",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "556E697479465300",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "UnityFS Signature",
-      "offset": 0,
-      "length": 8,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "UnityFS magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "Format Version",
-      "offset": 8,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Bundle format version"
-    },
-    {
-      "type": "field",
-      "name": "Unity Version",
-      "offset": 12,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Unity engine version"
-    }
-  ]
+﻿{
+    "formatName":  "Unity Asset Bundle",
+    "version":  "1.0",
+    "extensions":  [
+                       ".unity3d"
+                   ],
+    "description":  "Unity Engine asset bundle file",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "556E697479465300",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "UnityFS Signature",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "UnityFS magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Format Version",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Bundle format version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Unity Version",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Unity engine version"
+                   }
+               ]
 }

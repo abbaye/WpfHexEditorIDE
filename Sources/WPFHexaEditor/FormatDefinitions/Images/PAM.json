@@ -1,36 +1,38 @@
-{
-  "formatName": "Portable Arbitrary Map",
-  "version": "1.0",
-  "extensions": [ ".pam" ],
-  "description": "Netpbm Portable Arbitrary Map (any format)",
-  "author": "WPFHexaEditor Team",
+﻿{
+    "formatName":  "Portable Arbitrary Map",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pam"
+                   ],
+    "description":  "Netpbm Portable Arbitrary Map (any format)",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5037",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
 
-  "detection": {
-    "signature": "5037",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {},
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "PAM Magic",
-      "offset": 0,
-      "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "P7 magic number"
-    },
-    {
-      "type": "field",
-      "name": "Header",
-      "offset": 2,
-      "length": 64,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "PAM header fields"
-    }
-  ]
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PAM Magic",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "P7 magic number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Header",
+                       "offset":  2,
+                       "length":  64,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "PAM header fields"
+                   }
+               ]
 }

@@ -1,28 +1,29 @@
-{
-  "formatName": "XYZ Chemical Format",
-  "version": "1.0",
-  "extensions": [
-    ".xyz"
-  ],
-  "description": "XYZ chemical file format with atom coordinates",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Atom Count",
-      "offset": 0,
-      "length": 10,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Number of atoms (first line)"
-    }
-  ]
+﻿{
+    "formatName":  "XYZ Chemical Format",
+    "version":  "1.0",
+    "extensions":  [
+                       ".xyz"
+                   ],
+    "description":  "XYZ chemical file format with atom coordinates",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Atom Count",
+                       "offset":  0,
+                       "length":  10,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Number of atoms (first line)"
+                   }
+               ]
 }

@@ -1,45 +1,47 @@
-{
-  "formatName": "PDF Document",
-  "version": "1.0",
-  "extensions": [ ".pdf" ],
-  "description": "Portable Document Format by Adobe",
-  "author": "WPFHexaEditor Team",
+﻿{
+    "formatName":  "PDF Document",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pdf"
+                   ],
+    "description":  "Portable Document Format by Adobe",
+    "category":  "Documents",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "25504446",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
 
-  "detection": {
-    "signature": "25504446",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {},
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "PDF Signature",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "%PDF magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "PDF Version",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "PDF version (e.g., -1.4, -1.7)"
-    },
-    {
-      "type": "field",
-      "name": "Binary Marker Comment",
-      "offset": 8,
-      "length": 8,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Comment with binary chars (usually %âãÏÓ)"
-    }
-  ]
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PDF Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "%PDF magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "PDF Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "PDF version (e.g., -1.4, -1.7)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Binary Marker Comment",
+                       "offset":  8,
+                       "length":  8,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Comment with binary chars (usually %âãÏÓ)"
+                   }
+               ]
 }

@@ -1,38 +1,38 @@
-{
-  "formatName": "GIMP Image",
-  "version": "1.0",
-  "extensions": [ ".xcf" ],
-  "description": "GIMP native image format (eXperimental Computing Facility)",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "67696D702078636620",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "XCF Signature",
-      "offset": 0,
-      "length": 9,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "gimp xcf signature"
-    },
-    {
-      "type": "field",
-      "name": "Version",
-      "offset": 9,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "File format version"
-    }
-  ]
+﻿{
+    "formatName":  "GIMP Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".xcf"
+                   ],
+    "description":  "GIMP native image format (eXperimental Computing Facility)",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "67696D702078636620",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "XCF Signature",
+                       "offset":  0,
+                       "length":  9,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "gimp xcf signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  9,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "File format version"
+                   }
+               ]
 }

@@ -1,12 +1,31 @@
-{
-  "formatName": "Nintendo 64 ROM",
-  "version": "1.0",
-  "extensions": [ ".n64", ".z64", ".v64" ],
-  "description": "Nintendo 64 ROM image",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "80371240", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "N64 Header", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "N64 magic bytes" }
-  ]
+﻿{
+    "formatName":  "Nintendo 64 ROM",
+    "version":  "1.0",
+    "extensions":  [
+                       ".n64",
+                       ".z64",
+                       ".v64"
+                   ],
+    "description":  "Nintendo 64 ROM image",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "80371240",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "N64 Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "N64 magic bytes"
+                   }
+               ]
 }

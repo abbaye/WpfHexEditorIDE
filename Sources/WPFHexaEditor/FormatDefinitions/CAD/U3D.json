@@ -1,47 +1,47 @@
-{
-  "formatName": "Universal 3D",
-  "version": "1.0",
-  "extensions": [ ".u3d" ],
-  "description": "Universal 3D ECMA-363 format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "55334400",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "U3D Signature",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "U3D magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "Major Version",
-      "offset": 4,
-      "length": 2,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Major version number"
-    },
-    {
-      "type": "field",
-      "name": "Minor Version",
-      "offset": 6,
-      "length": 2,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Minor version number"
-    }
-  ]
+﻿{
+    "formatName":  "Universal 3D",
+    "version":  "1.0",
+    "extensions":  [
+                       ".u3d"
+                   ],
+    "description":  "Universal 3D ECMA-363 format",
+    "category":  "CAD",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "55334400",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "U3D Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "U3D magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Major Version",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Major version number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Minor Version",
+                       "offset":  6,
+                       "length":  2,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Minor version number"
+                   }
+               ]
 }

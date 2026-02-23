@@ -1,38 +1,38 @@
-{
-  "formatName": "Windows Event Log XML",
-  "version": "1.0",
-  "extensions": [ ".evtx" ],
-  "description": "Windows Event Log file (modern XML format)",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "456C6646696C6500",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "EVTX Magic",
-      "offset": 0,
-      "length": 8,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ElfFile\\0 signature"
-    },
-    {
-      "type": "field",
-      "name": "Oldest Chunk",
-      "offset": 8,
-      "length": 8,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Oldest chunk number"
-    }
-  ]
+﻿{
+    "formatName":  "Windows Event Log XML",
+    "version":  "1.0",
+    "extensions":  [
+                       ".evtx"
+                   ],
+    "description":  "Windows Event Log file (modern XML format)",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "456C6646696C6500",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "EVTX Magic",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ElfFile\\0 signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Oldest Chunk",
+                       "offset":  8,
+                       "length":  8,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Oldest chunk number"
+                   }
+               ]
 }

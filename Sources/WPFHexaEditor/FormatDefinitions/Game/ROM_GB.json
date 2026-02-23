@@ -1,12 +1,30 @@
-{
-  "formatName": "Game Boy ROM",
-  "version": "1.0",
-  "extensions": [ ".gb", ".gbc" ],
-  "description": "Game Boy/Color ROM",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "CEED6666CC0D", "offset": 260, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "Nintendo Logo", "offset": 260, "length": 6, "color": "#FF6B6B", "opacity": 0.4, "description": "Part of Nintendo logo" }
-  ]
+﻿{
+    "formatName":  "Game Boy ROM",
+    "version":  "1.0",
+    "extensions":  [
+                       ".gb",
+                       ".gbc"
+                   ],
+    "description":  "Game Boy/Color ROM",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "CEED6666CC0D",
+                      "offset":  260,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Nintendo Logo",
+                       "offset":  260,
+                       "length":  6,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Part of Nintendo logo"
+                   }
+               ]
 }

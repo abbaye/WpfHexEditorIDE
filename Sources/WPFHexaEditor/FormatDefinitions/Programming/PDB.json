@@ -1,54 +1,56 @@
-{
-  "formatName": "Program Database",
-  "version": "1.0",
-  "extensions": [ ".pdb" ],
-  "description": "Microsoft Program Database file containing debug symbols and debugging information for binaries",
-  "author": "WPFHexaEditor Team",
+﻿{
+    "formatName":  "Program Database",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pdb"
+                   ],
+    "description":  "Microsoft Program Database file containing debug symbols and debugging information for binaries",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4D6963726F736F667420432F43",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
 
-  "detection": {
-    "signature": "4D6963726F736F667420432F43",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {},
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "PDB Signature",
-      "offset": 0,
-      "length": 32,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "PDB 7.0 signature: 'Microsoft C/C++ MSF 7.00\\r\\n\\x1A DS\\0\\0\\0'"
-    },
-    {
-      "type": "data",
-      "name": "Page Size",
-      "offset": 32,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.4,
-      "description": "Page size (typically 4096 bytes, little-endian)"
-    },
-    {
-      "type": "data",
-      "name": "Free Page Map",
-      "offset": 36,
-      "length": 4,
-      "color": "#45B7D1",
-      "opacity": 0.4,
-      "description": "Free page map index"
-    },
-    {
-      "type": "data",
-      "name": "Page Count",
-      "offset": 40,
-      "length": 4,
-      "color": "#96CEB4",
-      "opacity": 0.4,
-      "description": "Total number of pages (little-endian)"
-    }
-  ]
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PDB Signature",
+                       "offset":  0,
+                       "length":  32,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PDB 7.0 signature: \u0027Microsoft C/C++ MSF 7.00\\r\\n\\x1A DS\\0\\0\\0\u0027"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Page Size",
+                       "offset":  32,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "Page size (typically 4096 bytes, little-endian)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Free Page Map",
+                       "offset":  36,
+                       "length":  4,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "Free page map index"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Page Count",
+                       "offset":  40,
+                       "length":  4,
+                       "color":  "#96CEB4",
+                       "opacity":  0.4,
+                       "description":  "Total number of pages (little-endian)"
+                   }
+               ]
 }

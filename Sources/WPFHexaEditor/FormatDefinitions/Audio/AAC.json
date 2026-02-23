@@ -1,29 +1,29 @@
-{
-  "formatName": "AAC Audio",
-  "version": "1.0",
-  "extensions": [ ".aac" ],
-  "description": "Advanced Audio Coding",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "FFF1",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "ADTS Sync Word",
-      "offset": 0,
-      "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "AAC ADTS frame sync (12 bits)"
-    }
-  ]
+﻿{
+    "formatName":  "AAC Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".aac"
+                   ],
+    "description":  "Advanced Audio Coding",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "FFF1",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ADTS Sync Word",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "AAC ADTS frame sync (12 bits)"
+                   }
+               ]
 }

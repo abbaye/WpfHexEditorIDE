@@ -1,26 +1,29 @@
-{
-  "formatName": "True Audio",
-  "version": "1.0",
-  "extensions": [
-    ".tta"
-  ],
-  "description": "True Audio lossless audio compression format",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "54544131",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "TTA Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "TTA1 - True Audio format signature"
-    }
-  ]
+﻿{
+    "formatName":  "True Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".tta"
+                   ],
+    "description":  "True Audio lossless audio compression format",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "54544131",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "TTA Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "TTA1 - True Audio format signature"
+                   }
+               ]
 }

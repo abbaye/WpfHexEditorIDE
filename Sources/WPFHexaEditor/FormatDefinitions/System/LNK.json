@@ -1,47 +1,47 @@
-{
-  "formatName": "Windows Shortcut",
-  "version": "1.0",
-  "extensions": [ ".lnk" ],
-  "description": "Windows shell link (shortcut)",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "4C0000000114020000000000C0000000",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Header Size",
-      "offset": 0,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Size of header (0x0000004C = 76 bytes)"
-    },
-    {
-      "type": "signature",
-      "name": "Link CLSID",
-      "offset": 4,
-      "length": 16,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Shell link class identifier"
-    },
-    {
-      "type": "field",
-      "name": "Link Flags",
-      "offset": 20,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Shortcut flags"
-    }
-  ]
+﻿{
+    "formatName":  "Windows Shortcut",
+    "version":  "1.0",
+    "extensions":  [
+                       ".lnk"
+                   ],
+    "description":  "Windows shell link (shortcut)",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4C0000000114020000000000C0000000",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Header Size",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Size of header (0x0000004C = 76 bytes)"
+                   },
+                   {
+                       "type":  "signature",
+                       "name":  "Link CLSID",
+                       "offset":  4,
+                       "length":  16,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Shell link class identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Link Flags",
+                       "offset":  20,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Shortcut flags"
+                   }
+               ]
 }

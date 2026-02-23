@@ -1,56 +1,56 @@
-{
-  "formatName": "Cabinet Archive",
-  "version": "1.0",
-  "extensions": [ ".cab" ],
-  "description": "Microsoft Cabinet archive format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "4D534346",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "CAB Signature",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MSCF magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "Reserved",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Reserved field"
-    },
-    {
-      "type": "field",
-      "name": "Cabinet Size",
-      "offset": 8,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Total cabinet file size"
-    },
-    {
-      "type": "field",
-      "name": "Files Offset",
-      "offset": 16,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Offset to first file entry"
-    }
-  ]
+﻿{
+    "formatName":  "Cabinet Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".cab"
+                   ],
+    "description":  "Microsoft Cabinet archive format",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4D534346",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "CAB Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MSCF magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Reserved",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Reserved field"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Cabinet Size",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Total cabinet file size"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Files Offset",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Offset to first file entry"
+                   }
+               ]
 }

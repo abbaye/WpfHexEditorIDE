@@ -1,36 +1,38 @@
-{
-  "formatName": "Sigma X3F RAW",
-  "version": "1.0",
-  "extensions": [ ".x3f" ],
-  "description": "Sigma Foveon X3 RAW format",
-  "author": "WPFHexaEditor Team",
+﻿{
+    "formatName":  "Sigma X3F RAW",
+    "version":  "1.0",
+    "extensions":  [
+                       ".x3f"
+                   ],
+    "description":  "Sigma Foveon X3 RAW format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "464F5678",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
 
-  "detection": {
-    "signature": "464F5678",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {},
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "X3F Magic",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "FOVx signature"
-    },
-    {
-      "type": "field",
-      "name": "Version",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Format version"
-    }
-  ]
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "X3F Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "FOVx signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Format version"
+                   }
+               ]
 }

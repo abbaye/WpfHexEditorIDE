@@ -1,38 +1,38 @@
-{
-  "formatName": "VirtualBox Disk Image",
-  "version": "1.0",
-  "extensions": [ ".vdi" ],
-  "description": "VirtualBox virtual disk format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "3C3C3C20",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "VDI Signature",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "<<< signature"
-    },
-    {
-      "type": "field",
-      "name": "Text",
-      "offset": 64,
-      "length": 32,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Oracle VM VirtualBox text"
-    }
-  ]
+﻿{
+    "formatName":  "VirtualBox Disk Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".vdi"
+                   ],
+    "description":  "VirtualBox virtual disk format",
+    "category":  "Disk",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "3C3C3C20",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "VDI Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "\u003c\u003c\u003c signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Text",
+                       "offset":  64,
+                       "length":  32,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Oracle VM VirtualBox text"
+                   }
+               ]
 }

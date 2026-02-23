@@ -1,29 +1,30 @@
-{
-  "formatName": "YAML (Binary)",
-  "version": "1.0",
-  "extensions": [
-    ".yaml",
-    ".yml"
-  ],
-  "description": "YAML Ain't Markup Language data serialization",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "data",
-      "name": "YAML Data",
-      "offset": 0,
-      "length": 256,
-      "color": "#CB4B16",
-      "opacity": 0.4,
-      "description": "YAML serialized data"
-    }
-  ]
+﻿{
+    "formatName":  "YAML (Binary)",
+    "version":  "1.0",
+    "extensions":  [
+                       ".yaml",
+                       ".yml"
+                   ],
+    "description":  "YAML Ain\u0027t Markup Language data serialization",
+    "category":  "Data",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "data",
+                       "name":  "YAML Data",
+                       "offset":  0,
+                       "length":  256,
+                       "color":  "#CB4B16",
+                       "opacity":  0.4,
+                       "description":  "YAML serialized data"
+                   }
+               ]
 }

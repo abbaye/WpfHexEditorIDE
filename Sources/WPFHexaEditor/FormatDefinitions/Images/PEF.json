@@ -1,36 +1,38 @@
-{
-  "formatName": "Pentax PEF RAW",
-  "version": "1.0",
-  "extensions": [ ".pef" ],
-  "description": "Pentax Electronic File (RAW)",
-  "author": "WPFHexaEditor Team",
+﻿{
+    "formatName":  "Pentax PEF RAW",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pef"
+                   ],
+    "description":  "Pentax Electronic File (RAW)",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "49492A00",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
 
-  "detection": {
-    "signature": "49492A00",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {},
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "TIFF Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "TIFF-based RAW (little-endian)"
-    },
-    {
-      "type": "field",
-      "name": "IFD Offset",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First IFD offset"
-    }
-  ]
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "TIFF Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "TIFF-based RAW (little-endian)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "IFD Offset",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "First IFD offset"
+                   }
+               ]
 }

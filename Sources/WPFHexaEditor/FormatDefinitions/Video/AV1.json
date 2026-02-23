@@ -1,27 +1,30 @@
-{
-  "formatName": "AV1 Video",
-  "version": "1.0",
-  "extensions": [
-    ".av1",
-    ".ivf"
-  ],
-  "description": "AOMedia Video 1 (AV1) open, royalty-free video coding format",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "444B4946",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "IVF Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DKIF - IVF container header for AV1"
-    }
-  ]
+﻿{
+    "formatName":  "AV1 Video",
+    "version":  "1.0",
+    "extensions":  [
+                       ".av1",
+                       ".ivf"
+                   ],
+    "description":  "AOMedia Video 1 (AV1) open, royalty-free video coding format",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "444B4946",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "IVF Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "DKIF - IVF container header for AV1"
+                   }
+               ]
 }

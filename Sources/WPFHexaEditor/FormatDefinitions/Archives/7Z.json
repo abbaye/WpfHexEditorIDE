@@ -1,56 +1,56 @@
-{
-  "formatName": "7-Zip Archive",
-  "version": "1.0",
-  "extensions": [ ".7z" ],
-  "description": "7-Zip archive format with LZMA compression",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "377ABCAF271C",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "7z Signature",
-      "offset": 0,
-      "length": 6,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "7z magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "Major Version",
-      "offset": 6,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Format major version"
-    },
-    {
-      "type": "field",
-      "name": "Minor Version",
-      "offset": 7,
-      "length": 1,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Format minor version"
-    },
-    {
-      "type": "field",
-      "name": "Start Header CRC",
-      "offset": 8,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "CRC of start header"
-    }
-  ]
+﻿{
+    "formatName":  "7-Zip Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".7z"
+                   ],
+    "description":  "7-Zip archive format with LZMA compression",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "377ABCAF271C",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "7z Signature",
+                       "offset":  0,
+                       "length":  6,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "7z magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Major Version",
+                       "offset":  6,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Format major version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Minor Version",
+                       "offset":  7,
+                       "length":  1,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Format minor version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Start Header CRC",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "CRC of start header"
+                   }
+               ]
 }

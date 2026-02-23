@@ -1,28 +1,29 @@
-{
-  "formatName": "InterBase/Firebird Database (Legacy)",
-  "version": "1.0",
-  "extensions": [
-    ".gdb"
-  ],
-  "description": "Legacy InterBase/Firebird database format",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "header",
-      "name": "GDB Header",
-      "offset": 0,
-      "length": 512,
-      "color": "#F1FAEE",
-      "opacity": 0.4,
-      "description": "Legacy database header page"
-    }
-  ]
+﻿{
+    "formatName":  "InterBase/Firebird Database (Legacy)",
+    "version":  "1.0",
+    "extensions":  [
+                       ".gdb"
+                   ],
+    "description":  "Legacy InterBase/Firebird database format",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "GDB Header",
+                       "offset":  0,
+                       "length":  512,
+                       "color":  "#F1FAEE",
+                       "opacity":  0.4,
+                       "description":  "Legacy database header page"
+                   }
+               ]
 }

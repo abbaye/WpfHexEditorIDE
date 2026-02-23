@@ -1,65 +1,66 @@
-{
-  "formatName": "MIDI Audio",
-  "version": "1.0",
-  "extensions": [ ".mid", ".midi" ],
-  "description": "Musical Instrument Digital Interface file",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "4D546864",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "MIDI Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MThd chunk identifier"
-    },
-    {
-      "type": "field",
-      "name": "Header Length",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Header data length (6)"
-    },
-    {
-      "type": "field",
-      "name": "Format",
-      "offset": 8,
-      "length": 2,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "0=single, 1=multiple, 2=patterns"
-    },
-    {
-      "type": "field",
-      "name": "Tracks",
-      "offset": 10,
-      "length": 2,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Number of track chunks"
-    },
-    {
-      "type": "field",
-      "name": "Division",
-      "offset": 12,
-      "length": 2,
-      "color": "#C7CEEA",
-      "opacity": 0.3,
-      "description": "Time division"
-    }
-  ]
+﻿{
+    "formatName":  "MIDI Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mid",
+                       ".midi"
+                   ],
+    "description":  "Musical Instrument Digital Interface file",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4D546864",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "MIDI Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MThd chunk identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Header Length",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Header data length (6)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Format",
+                       "offset":  8,
+                       "length":  2,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "0=single, 1=multiple, 2=patterns"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Tracks",
+                       "offset":  10,
+                       "length":  2,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Number of track chunks"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Division",
+                       "offset":  12,
+                       "length":  2,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Time division"
+                   }
+               ]
 }

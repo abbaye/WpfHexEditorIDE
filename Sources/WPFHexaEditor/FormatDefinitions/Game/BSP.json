@@ -1,28 +1,29 @@
-{
-  "formatName": "Quake BSP Map",
-  "version": "1.0",
-  "extensions": [
-    ".bsp"
-  ],
-  "description": "Binary Space Partition game map",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Version",
-      "offset": 0,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "BSP version number"
-    }
-  ]
+﻿{
+    "formatName":  "Quake BSP Map",
+    "version":  "1.0",
+    "extensions":  [
+                       ".bsp"
+                   ],
+    "description":  "Binary Space Partition game map",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "BSP version number"
+                   }
+               ]
 }

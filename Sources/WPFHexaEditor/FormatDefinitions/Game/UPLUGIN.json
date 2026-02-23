@@ -1,29 +1,29 @@
-{
-  "formatName": "Unreal Plugin",
-  "version": "1.0",
-  "extensions": [ ".uplugin" ],
-  "description": "Unreal Engine plugin descriptor file (JSON format)",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "7B",
-    "offset": 0,
-    "required": false
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "JSON Start",
-      "offset": 0,
-      "length": 1,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Opening brace { for JSON"
-    }
-  ]
+﻿{
+    "formatName":  "Unreal Plugin",
+    "version":  "1.0",
+    "extensions":  [
+                       ".uplugin"
+                   ],
+    "description":  "Unreal Engine plugin descriptor file (JSON format)",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7B",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "JSON Start",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Opening brace { for JSON"
+                   }
+               ]
 }

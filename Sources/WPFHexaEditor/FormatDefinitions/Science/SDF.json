@@ -1,29 +1,30 @@
-{
-  "formatName": "Structure Data File",
-  "version": "1.0",
-  "extensions": [
-    ".sdf",
-    ".sd"
-  ],
-  "description": "Structure Data File format (multiple MOL files)",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "field",
-      "name": "First Molecule",
-      "offset": 0,
-      "length": 240,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First MOL record (3 header lines)"
-    }
-  ]
+﻿{
+    "formatName":  "Structure Data File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".sdf",
+                       ".sd"
+                   ],
+    "description":  "Structure Data File format (multiple MOL files)",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "First Molecule",
+                       "offset":  0,
+                       "length":  240,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "First MOL record (3 header lines)"
+                   }
+               ]
 }

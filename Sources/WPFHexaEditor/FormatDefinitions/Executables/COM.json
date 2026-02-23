@@ -1,28 +1,29 @@
-{
-  "formatName": "DOS COM Executable",
-  "version": "1.0",
-  "extensions": [
-    ".com"
-  ],
-  "description": "DOS Command file - Simple executable",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Code Start",
-      "offset": 0,
-      "length": 2,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "COM files have no header"
-    }
-  ]
+﻿{
+    "formatName":  "DOS COM Executable",
+    "version":  "1.0",
+    "extensions":  [
+                       ".com"
+                   ],
+    "description":  "DOS Command file - Simple executable",
+    "category":  "Executables",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Code Start",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "COM files have no header"
+                   }
+               ]
 }

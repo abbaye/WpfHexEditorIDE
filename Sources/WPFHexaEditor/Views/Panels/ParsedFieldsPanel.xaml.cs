@@ -717,6 +717,7 @@ namespace WpfHexaEditor.Views.Panels
         private bool _isDetected;
         private string _name;
         private string _description;
+        private string _category;
 
         public bool IsDetected
         {
@@ -744,6 +745,16 @@ namespace WpfHexaEditor.Views.Panels
             set
             {
                 _description = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Category
+        {
+            get => _category;
+            set
+            {
+                _category = value;
                 OnPropertyChanged();
             }
         }

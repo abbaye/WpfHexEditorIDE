@@ -1,12 +1,29 @@
-{
-  "formatName": "Nikon Raw Image",
-  "version": "1.0",
-  "extensions": [ ".nef" ],
-  "description": "Nikon Electronic Format RAW",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "49492A00", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "TIFF Header", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "NEF uses TIFF structure" }
-  ]
+﻿{
+    "formatName":  "Nikon Raw Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".nef"
+                   ],
+    "description":  "Nikon Electronic Format RAW",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "49492A00",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "TIFF Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "NEF uses TIFF structure"
+                   }
+               ]
 }

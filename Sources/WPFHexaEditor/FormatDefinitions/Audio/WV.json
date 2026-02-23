@@ -1,26 +1,29 @@
-{
-  "formatName": "WavPack Audio",
-  "version": "1.0",
-  "extensions": [
-    ".wv"
-  ],
-  "description": "WavPack hybrid lossless audio compression format",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "7776706B",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "WavPack Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "wvpk - WavPack file signature"
-    }
-  ]
+﻿{
+    "formatName":  "WavPack Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".wv"
+                   ],
+    "description":  "WavPack hybrid lossless audio compression format",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7776706B",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "WavPack Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "wvpk - WavPack file signature"
+                   }
+               ]
 }

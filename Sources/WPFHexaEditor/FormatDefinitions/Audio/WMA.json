@@ -1,26 +1,29 @@
-{
-  "formatName": "Windows Media Audio",
-  "version": "1.0",
-  "extensions": [
-    ".wma"
-  ],
-  "description": "Microsoft Windows Media Audio lossy audio codec",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "3026B2758E66CF11A6D900AA0062CE6C",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "ASF Header GUID",
-      "offset": 0,
-      "length": 16,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ASF Header Object GUID for WMA"
-    }
-  ]
+﻿{
+    "formatName":  "Windows Media Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".wma"
+                   ],
+    "description":  "Microsoft Windows Media Audio lossy audio codec",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "3026B2758E66CF11A6D900AA0062CE6C",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ASF Header GUID",
+                       "offset":  0,
+                       "length":  16,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ASF Header Object GUID for WMA"
+                   }
+               ]
 }

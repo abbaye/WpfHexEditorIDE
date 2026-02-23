@@ -1,13 +1,39 @@
-{
-  "formatName": "SEG-Y Seismic Data",
-  "version": "1.0",
-  "extensions": [ ".sgy", ".segy" ],
-  "description": "Society of Exploration Geophysicists Y format for seismic data",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "C0C0C0C0", "offset": 3200, "required": false },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "field", "name": "Text Header", "offset": 0, "length": 3200, "color": "#4ECDC4", "opacity": 0.3, "description": "3200-byte EBCDIC text header" },
-    { "type": "field", "name": "Binary Header", "offset": 3200, "length": 400, "color": "#FF6B6B", "opacity": 0.4, "description": "400-byte binary header" }
-  ]
+﻿{
+    "formatName":  "SEG-Y Seismic Data",
+    "version":  "1.0",
+    "extensions":  [
+                       ".sgy",
+                       ".segy"
+                   ],
+    "description":  "Society of Exploration Geophysicists Y format for seismic data",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "C0C0C0C0",
+                      "offset":  3200,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Text Header",
+                       "offset":  0,
+                       "length":  3200,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "3200-byte EBCDIC text header"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Binary Header",
+                       "offset":  3200,
+                       "length":  400,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "400-byte binary header"
+                   }
+               ]
 }

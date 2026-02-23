@@ -1,29 +1,30 @@
-{
-  "formatName": "SVG Vector Image",
-  "version": "1.0",
-  "extensions": [ ".svg", ".svgz" ],
-  "description": "Scalable Vector Graphics - XML-based vector image",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "3C73766720",
-    "offset": 0,
-    "required": false
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "SVG Opening Tag",
-      "offset": 0,
-      "length": 5,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "<svg tag (may be preceded by XML declaration)"
-    }
-  ]
+﻿{
+    "formatName":  "SVG Vector Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".svg",
+                       ".svgz"
+                   ],
+    "description":  "Scalable Vector Graphics - XML-based vector image",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "3C73766720",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "SVG Opening Tag",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "\u003csvg tag (may be preceded by XML declaration)"
+                   }
+               ]
 }

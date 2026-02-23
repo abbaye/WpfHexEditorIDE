@@ -1,12 +1,30 @@
-{
-  "formatName": "HDF5 Data File",
-  "version": "1.0",
-  "extensions": [ ".h5", ".hdf5" ],
-  "description": "Hierarchical Data Format v5",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "894844460D0A1A0A", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "HDF5 Signature", "offset": 0, "length": 8, "color": "#FF6B6B", "opacity": 0.4, "description": "HDF5 format signature" }
-  ]
+﻿{
+    "formatName":  "HDF5 Data File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".h5",
+                       ".hdf5"
+                   ],
+    "description":  "Hierarchical Data Format v5",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "894844460D0A1A0A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "HDF5 Signature",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "HDF5 format signature"
+                   }
+               ]
 }

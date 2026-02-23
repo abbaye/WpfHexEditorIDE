@@ -1,38 +1,40 @@
-{
-  "formatName": "DER Certificate",
-  "version": "1.0",
-  "extensions": [ ".der", ".cer", ".crt" ],
-  "description": "Distinguished Encoding Rules - X.509 certificate",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "3082",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "ASN.1 Sequence",
-      "offset": 0,
-      "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ASN.1 sequence tag"
-    },
-    {
-      "type": "field",
-      "name": "Length",
-      "offset": 2,
-      "length": 2,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Certificate length"
-    }
-  ]
+﻿{
+    "formatName":  "DER Certificate",
+    "version":  "1.0",
+    "extensions":  [
+                       ".der",
+                       ".cer",
+                       ".crt"
+                   ],
+    "description":  "Distinguished Encoding Rules - X.509 certificate",
+    "category":  "Certificates",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "3082",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ASN.1 Sequence",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ASN.1 sequence tag"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Length",
+                       "offset":  2,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Certificate length"
+                   }
+               ]
 }

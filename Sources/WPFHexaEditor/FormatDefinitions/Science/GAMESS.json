@@ -1,12 +1,30 @@
-{
-  "formatName": "GAMESS Output",
-  "version": "1.0",
-  "extensions": [ ".log", ".out" ],
-  "description": "GAMESS quantum chemistry program output",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "2A2A2A2A2A2A", "offset": 0, "required": false },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "field", "name": "Header Banner", "offset": 0, "length": 80, "color": "#4ECDC4", "opacity": 0.3, "description": "GAMESS output header" }
-  ]
+﻿{
+    "formatName":  "GAMESS Output",
+    "version":  "1.0",
+    "extensions":  [
+                       ".log",
+                       ".out"
+                   ],
+    "description":  "GAMESS quantum chemistry program output",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2A2A2A2A2A2A",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Header Banner",
+                       "offset":  0,
+                       "length":  80,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "GAMESS output header"
+                   }
+               ]
 }

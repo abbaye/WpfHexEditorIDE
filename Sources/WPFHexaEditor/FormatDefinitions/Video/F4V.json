@@ -1,29 +1,32 @@
-{
-  "formatName": "Flash MP4 Video",
-  "version": "1.0",
-  "extensions": [
-    ".f4v",
-    ".f4p",
-    ".f4a",
-    ".f4b"
-  ],
-  "description": "Adobe Flash MP4-based video container format",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "66747970663476",
-    "offset": 4,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "File Type Box",
-      "offset": 4,
-      "length": 7,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ftypf4v - Flash Video file type"
-    }
-  ]
+﻿{
+    "formatName":  "Flash MP4 Video",
+    "version":  "1.0",
+    "extensions":  [
+                       ".f4v",
+                       ".f4p",
+                       ".f4a",
+                       ".f4b"
+                   ],
+    "description":  "Adobe Flash MP4-based video container format",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "66747970663476",
+                      "offset":  4,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "File Type Box",
+                       "offset":  4,
+                       "length":  7,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ftypf4v - Flash Video file type"
+                   }
+               ]
 }

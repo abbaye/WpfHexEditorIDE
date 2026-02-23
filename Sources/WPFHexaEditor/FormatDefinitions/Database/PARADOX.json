@@ -1,29 +1,30 @@
-{
-  "formatName": "Paradox Database",
-  "version": "1.0",
-  "extensions": [
-    ".db",
-    ".px"
-  ],
-  "description": "Borland Paradox database table format",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "header",
-      "name": "Paradox Header",
-      "offset": 0,
-      "length": 2048,
-      "color": "#293241",
-      "opacity": 0.4,
-      "description": "Paradox table header"
-    }
-  ]
+﻿{
+    "formatName":  "Paradox Database",
+    "version":  "1.0",
+    "extensions":  [
+                       ".db",
+                       ".px"
+                   ],
+    "description":  "Borland Paradox database table format",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "Paradox Header",
+                       "offset":  0,
+                       "length":  2048,
+                       "color":  "#293241",
+                       "opacity":  0.4,
+                       "description":  "Paradox table header"
+                   }
+               ]
 }

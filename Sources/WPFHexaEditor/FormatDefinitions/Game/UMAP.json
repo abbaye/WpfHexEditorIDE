@@ -1,47 +1,47 @@
-{
-  "formatName": "Unreal Map",
-  "version": "1.0",
-  "extensions": [ ".umap" ],
-  "description": "Unreal Engine map/level file",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "C1832A9E",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "Package Tag",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Unreal package signature"
-    },
-    {
-      "type": "field",
-      "name": "Legacy Version",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Legacy file version"
-    },
-    {
-      "type": "field",
-      "name": "Engine Version",
-      "offset": 8,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Unreal Engine version"
-    }
-  ]
+﻿{
+    "formatName":  "Unreal Map",
+    "version":  "1.0",
+    "extensions":  [
+                       ".umap"
+                   ],
+    "description":  "Unreal Engine map/level file",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "C1832A9E",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Package Tag",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Unreal package signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Legacy Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Legacy file version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Engine Version",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Unreal Engine version"
+                   }
+               ]
 }

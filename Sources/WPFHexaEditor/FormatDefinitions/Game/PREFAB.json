@@ -1,29 +1,29 @@
-{
-  "formatName": "Unity Prefab",
-  "version": "1.0",
-  "extensions": [ ".prefab" ],
-  "description": "Unity prefab object file",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "2559414D4C",
-    "offset": 0,
-    "required": false
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "YAML Header",
-      "offset": 0,
-      "length": 5,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "%YAML prefab format"
-    }
-  ]
+﻿{
+    "formatName":  "Unity Prefab",
+    "version":  "1.0",
+    "extensions":  [
+                       ".prefab"
+                   ],
+    "description":  "Unity prefab object file",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2559414D4C",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "YAML Header",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "%YAML prefab format"
+                   }
+               ]
 }

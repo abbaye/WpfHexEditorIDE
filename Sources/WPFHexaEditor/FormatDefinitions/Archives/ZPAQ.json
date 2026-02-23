@@ -1,29 +1,29 @@
-{
-  "formatName": "ZPAQ Archive",
-  "version": "1.0",
-  "extensions": [ ".zpaq" ],
-  "description": "ZPAQ incremental archiver format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "7A5041517E",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "ZPAQ Magic",
-      "offset": 0,
-      "length": 5,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "zPAQ\\x7E signature"
-    }
-  ]
+﻿{
+    "formatName":  "ZPAQ Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".zpaq"
+                   ],
+    "description":  "ZPAQ incremental archiver format",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7A5041517E",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ZPAQ Magic",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "zPAQ\\x7E signature"
+                   }
+               ]
 }

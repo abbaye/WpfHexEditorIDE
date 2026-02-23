@@ -1,28 +1,29 @@
-{
-  "formatName": "TOML Configuration",
-  "version": "1.0",
-  "extensions": [
-    ".toml"
-  ],
-  "description": "Tom's Obvious, Minimal Language configuration format",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "data",
-      "name": "TOML Data",
-      "offset": 0,
-      "length": 256,
-      "color": "#9C6644",
-      "opacity": 0.4,
-      "description": "TOML configuration data"
-    }
-  ]
+﻿{
+    "formatName":  "TOML Configuration",
+    "version":  "1.0",
+    "extensions":  [
+                       ".toml"
+                   ],
+    "description":  "Tom\u0027s Obvious, Minimal Language configuration format",
+    "category":  "Data",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "data",
+                       "name":  "TOML Data",
+                       "offset":  0,
+                       "length":  256,
+                       "color":  "#9C6644",
+                       "opacity":  0.4,
+                       "description":  "TOML configuration data"
+                   }
+               ]
 }

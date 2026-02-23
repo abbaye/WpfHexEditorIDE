@@ -1,38 +1,38 @@
-{
-  "formatName": "Windows Prefetch File",
-  "version": "1.0",
-  "extensions": [ ".pf" ],
-  "description": "Windows Prefetch file for application optimization",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "11000000534346",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Version",
-      "offset": 0,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Prefetch version"
-    },
-    {
-      "type": "signature",
-      "name": "Signature",
-      "offset": 4,
-      "length": 3,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "SCF signature"
-    }
-  ]
+﻿{
+    "formatName":  "Windows Prefetch File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pf"
+                   ],
+    "description":  "Windows Prefetch file for application optimization",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "11000000534346",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Prefetch version"
+                   },
+                   {
+                       "type":  "signature",
+                       "name":  "Signature",
+                       "offset":  4,
+                       "length":  3,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "SCF signature"
+                   }
+               ]
 }

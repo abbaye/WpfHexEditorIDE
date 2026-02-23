@@ -1,26 +1,29 @@
-{
-  "formatName": "Sound File",
-  "version": "1.0",
-  "extensions": [
-    ".snd"
-  ],
-  "description": "Generic sound file format used by various systems",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "2E736E64",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "SND Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": ".snd - Sound file header"
-    }
-  ]
+﻿{
+    "formatName":  "Sound File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".snd"
+                   ],
+    "description":  "Generic sound file format used by various systems",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2E736E64",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "SND Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  ".snd - Sound file header"
+                   }
+               ]
 }

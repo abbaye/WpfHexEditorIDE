@@ -1,13 +1,39 @@
-{
-  "formatName": "SP3 Orbit Data",
-  "version": "1.0",
-  "extensions": [ ".sp3", ".eph" ],
-  "description": "Standard Product 3 GPS precise orbit format",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "2373", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "SP3 Magic", "offset": 0, "length": 2, "color": "#FF6B6B", "opacity": 0.4, "description": "SP3 signature (#)" },
-    { "type": "field", "name": "Version", "offset": 2, "length": 1, "color": "#4ECDC4", "opacity": 0.3, "description": "SP3 version (a/c/d)" }
-  ]
+﻿{
+    "formatName":  "SP3 Orbit Data",
+    "version":  "1.0",
+    "extensions":  [
+                       ".sp3",
+                       ".eph"
+                   ],
+    "description":  "Standard Product 3 GPS precise orbit format",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2373",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "SP3 Magic",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "SP3 signature (#)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  2,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "SP3 version (a/c/d)"
+                   }
+               ]
 }

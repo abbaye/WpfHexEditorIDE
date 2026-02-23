@@ -1,29 +1,29 @@
-{
-  "formatName": "Lotus Notes NSF Database",
-  "version": "1.0",
-  "extensions": [ ".nsf" ],
-  "description": "IBM Lotus Notes/Domino database format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "1A0000",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "header",
-      "name": "NSF Header",
-      "offset": 0,
-      "length": 256,
-      "color": "#457B9D",
-      "opacity": 0.4,
-      "description": "Lotus Notes NSF database header"
-    }
-  ]
+﻿{
+    "formatName":  "Lotus Notes NSF Database",
+    "version":  "1.0",
+    "extensions":  [
+                       ".nsf"
+                   ],
+    "description":  "IBM Lotus Notes/Domino database format",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "1A0000",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "NSF Header",
+                       "offset":  0,
+                       "length":  256,
+                       "color":  "#457B9D",
+                       "opacity":  0.4,
+                       "description":  "Lotus Notes NSF database header"
+                   }
+               ]
 }

@@ -1,65 +1,67 @@
-{
-  "formatName": "PEM Certificate",
-  "version": "1.0",
-  "extensions": [ ".pem", ".crt", ".cer" ],
-  "description": "PEM-encoded X.509 certificate - Base64 encoded certificate",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "2D2D2D2D2D424547494E20434552544946494341544544",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "PEM Header",
-      "offset": 0,
-      "length": 27,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "-----BEGIN CERTIFICATE-----"
-    },
-    {
-      "type": "field",
-      "name": "Newline",
-      "offset": 27,
-      "length": 2,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "CRLF line ending"
-    },
-    {
-      "type": "field",
-      "name": "Base64 Line 1",
-      "offset": 29,
-      "length": 64,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "First line of Base64 encoded certificate"
-    },
-    {
-      "type": "field",
-      "name": "Newline",
-      "offset": 93,
-      "length": 2,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "CRLF line ending"
-    },
-    {
-      "type": "field",
-      "name": "Base64 Data",
-      "offset": 95,
-      "length": 512,
-      "color": "#FFA07A",
-      "opacity": 0.3,
-      "description": "Base64 encoded DER certificate data"
-    }
-  ]
+﻿{
+    "formatName":  "PEM Certificate",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pem",
+                       ".crt",
+                       ".cer"
+                   ],
+    "description":  "PEM-encoded X.509 certificate - Base64 encoded certificate",
+    "category":  "Certificates",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2D2D2D2D2D424547494E20434552544946494341544544",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PEM Header",
+                       "offset":  0,
+                       "length":  27,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "-----BEGIN CERTIFICATE-----"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Newline",
+                       "offset":  27,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "CRLF line ending"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Base64 Line 1",
+                       "offset":  29,
+                       "length":  64,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "First line of Base64 encoded certificate"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Newline",
+                       "offset":  93,
+                       "length":  2,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "CRLF line ending"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Base64 Data",
+                       "offset":  95,
+                       "length":  512,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Base64 encoded DER certificate data"
+                   }
+               ]
 }

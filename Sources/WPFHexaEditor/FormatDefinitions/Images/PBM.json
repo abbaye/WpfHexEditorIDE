@@ -1,36 +1,38 @@
-{
-  "formatName": "Portable Bitmap",
-  "version": "1.0",
-  "extensions": [ ".pbm" ],
-  "description": "Netpbm Portable Bitmap (monochrome)",
-  "author": "WPFHexaEditor Team",
+﻿{
+    "formatName":  "Portable Bitmap",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pbm"
+                   ],
+    "description":  "Netpbm Portable Bitmap (monochrome)",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5031",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
 
-  "detection": {
-    "signature": "5031",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {},
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "PBM Magic",
-      "offset": 0,
-      "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "P1 or P4 magic number"
-    },
-    {
-      "type": "field",
-      "name": "Header",
-      "offset": 2,
-      "length": 32,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "ASCII header (width, height)"
-    }
-  ]
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PBM Magic",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "P1 or P4 magic number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Header",
+                       "offset":  2,
+                       "length":  32,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "ASCII header (width, height)"
+                   }
+               ]
 }

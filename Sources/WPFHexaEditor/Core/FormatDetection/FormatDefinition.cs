@@ -39,6 +39,12 @@ namespace WpfHexaEditor.Core.FormatDetection
         public string Author { get; set; }
 
         /// <summary>
+        /// Category of this format (e.g., "Archives", "Images", "Documents")
+        /// Automatically set from folder structure when loading format definitions
+        /// </summary>
+        public string Category { get; set; }
+
+        /// <summary>
         /// Detection rule (signature check)
         /// </summary>
         public DetectionRule Detection { get; set; }

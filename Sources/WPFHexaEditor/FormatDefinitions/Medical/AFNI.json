@@ -1,12 +1,30 @@
-{
-  "formatName": "AFNI BRIK/HEAD",
-  "version": "1.0",
-  "extensions": [ ".head", ".brik" ],
-  "description": "AFNI medical imaging format",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "7479706520", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "AFNI Magic", "offset": 0, "length": 5, "color": "#FF6B6B", "opacity": 0.4, "description": "AFNI signature (type )" }
-  ]
+﻿{
+    "formatName":  "AFNI BRIK/HEAD",
+    "version":  "1.0",
+    "extensions":  [
+                       ".head",
+                       ".brik"
+                   ],
+    "description":  "AFNI medical imaging format",
+    "category":  "Medical",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7479706520",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "AFNI Magic",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "AFNI signature (type )"
+                   }
+               ]
 }

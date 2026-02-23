@@ -1,38 +1,38 @@
-{
-  "formatName": "Windows Memory Dump",
-  "version": "1.0",
-  "extensions": [ ".dmp" ],
-  "description": "Windows crash dump/minidump file",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "504147454455",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "Dump Signature",
-      "offset": 0,
-      "length": 6,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "PAGEDU or PAGEDUMP"
-    },
-    {
-      "type": "field",
-      "name": "Valid Dump",
-      "offset": 8,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Dump validation"
-    }
-  ]
+﻿{
+    "formatName":  "Windows Memory Dump",
+    "version":  "1.0",
+    "extensions":  [
+                       ".dmp"
+                   ],
+    "description":  "Windows crash dump/minidump file",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "504147454455",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Dump Signature",
+                       "offset":  0,
+                       "length":  6,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PAGEDU or PAGEDUMP"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Valid Dump",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Dump validation"
+                   }
+               ]
 }

@@ -1,46 +1,47 @@
-{
-  "formatName": "Unix lastlog",
-  "version": "1.0",
-  "extensions": [
-    ""
-  ],
-  "description": "Unix lastlog file - Last login information per user",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Timestamp",
-      "offset": 0,
-      "length": 8,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Last login time (time_t)"
-    },
-    {
-      "type": "field",
-      "name": "Line",
-      "offset": 8,
-      "length": 32,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Terminal line (tty)"
-    },
-    {
-      "type": "field",
-      "name": "Host",
-      "offset": 40,
-      "length": 256,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Hostname of remote login"
-    }
-  ]
+﻿{
+    "formatName":  "Unix lastlog",
+    "version":  "1.0",
+    "extensions":  [
+                       ""
+                   ],
+    "description":  "Unix lastlog file - Last login information per user",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Timestamp",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Last login time (time_t)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Line",
+                       "offset":  8,
+                       "length":  32,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Terminal line (tty)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Host",
+                       "offset":  40,
+                       "length":  256,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Hostname of remote login"
+                   }
+               ]
 }

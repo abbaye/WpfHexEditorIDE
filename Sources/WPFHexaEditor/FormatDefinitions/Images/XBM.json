@@ -1,27 +1,29 @@
-{
-  "formatName": "X BitMap",
-  "version": "1.0",
-  "extensions": [ ".xbm" ],
-  "description": "X Window System Bitmap (ASCII C source)",
-  "author": "WPFHexaEditor Team",
+﻿{
+    "formatName":  "X BitMap",
+    "version":  "1.0",
+    "extensions":  [
+                       ".xbm"
+                   ],
+    "description":  "X Window System Bitmap (ASCII C source)",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "23646566696E65",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
 
-  "detection": {
-    "signature": "23646566696E65",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {},
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "XBM Header",
-      "offset": 0,
-      "length": 7,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "#define keyword"
-    }
-  ]
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "XBM Header",
+                       "offset":  0,
+                       "length":  7,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "#define keyword"
+                   }
+               ]
 }

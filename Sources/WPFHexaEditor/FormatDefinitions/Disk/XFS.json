@@ -1,29 +1,29 @@
-{
-  "formatName": "XFS Filesystem",
-  "version": "1.0",
-  "extensions": [ ".xfs" ],
-  "description": "XFS high-performance journaling filesystem",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "58465342",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "header",
-      "name": "XFS Superblock",
-      "offset": 0,
-      "length": 512,
-      "color": "#E03C31",
-      "opacity": 0.4,
-      "description": "XFS superblock with magic 'XFSB'"
-    }
-  ]
+﻿{
+    "formatName":  "XFS Filesystem",
+    "version":  "1.0",
+    "extensions":  [
+                       ".xfs"
+                   ],
+    "description":  "XFS high-performance journaling filesystem",
+    "category":  "Disk",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "58465342",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "XFS Superblock",
+                       "offset":  0,
+                       "length":  512,
+                       "color":  "#E03C31",
+                       "opacity":  0.4,
+                       "description":  "XFS superblock with magic \u0027XFSB\u0027"
+                   }
+               ]
 }

@@ -1,38 +1,39 @@
-{
-  "formatName": "Gaussian Cube File",
-  "version": "1.0",
-  "extensions": [
-    ".cube",
-    ".cub"
-  ],
-  "description": "Gaussian volumetric data cube format",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Comment Line 1",
-      "offset": 0,
-      "length": 80,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First comment line"
-    },
-    {
-      "type": "field",
-      "name": "Comment Line 2",
-      "offset": 80,
-      "length": 80,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Second comment line"
-    }
-  ]
+﻿{
+    "formatName":  "Gaussian Cube File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".cube",
+                       ".cub"
+                   ],
+    "description":  "Gaussian volumetric data cube format",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Comment Line 1",
+                       "offset":  0,
+                       "length":  80,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "First comment line"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Comment Line 2",
+                       "offset":  80,
+                       "length":  80,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Second comment line"
+                   }
+               ]
 }

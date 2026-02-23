@@ -1,12 +1,29 @@
-{
-  "formatName": "Enterprise Archive",
-  "version": "1.0",
-  "extensions": [ ".ear" ],
-  "description": "Java Enterprise Application Archive",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "504B0304", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "ZIP/EAR Signature", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "PK ZIP header" }
-  ]
+﻿{
+    "formatName":  "Enterprise Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ear"
+                   ],
+    "description":  "Java Enterprise Application Archive",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "504B0304",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ZIP/EAR Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PK ZIP header"
+                   }
+               ]
 }

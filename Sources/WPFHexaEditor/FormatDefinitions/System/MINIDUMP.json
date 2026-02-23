@@ -1,83 +1,84 @@
-{
-  "formatName": "Windows Minidump",
-  "version": "1.0",
-  "extensions": [ ".dmp", ".mdmp" ],
-  "description": "Windows minidump crash file - Compact crash information",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "4D444D5093A7",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "Minidump Signature",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MDMP magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "Version",
-      "offset": 4,
-      "length": 2,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Minidump version (0x93A7)"
-    },
-    {
-      "type": "field",
-      "name": "Number of Streams",
-      "offset": 6,
-      "length": 2,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Count of data streams"
-    },
-    {
-      "type": "field",
-      "name": "Stream Directory RVA",
-      "offset": 8,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Offset to stream directory"
-    },
-    {
-      "type": "field",
-      "name": "Checksum",
-      "offset": 12,
-      "length": 4,
-      "color": "#FFA07A",
-      "opacity": 0.3,
-      "description": "CRC checksum (usually 0)"
-    },
-    {
-      "type": "field",
-      "name": "Timestamp",
-      "offset": 16,
-      "length": 4,
-      "color": "#C7CEEA",
-      "opacity": 0.3,
-      "description": "Unix timestamp of dump creation"
-    },
-    {
-      "type": "field",
-      "name": "Flags",
-      "offset": 20,
-      "length": 8,
-      "color": "#B8B8FF",
-      "opacity": 0.3,
-      "description": "Dump type flags"
-    }
-  ]
+﻿{
+    "formatName":  "Windows Minidump",
+    "version":  "1.0",
+    "extensions":  [
+                       ".dmp",
+                       ".mdmp"
+                   ],
+    "description":  "Windows minidump crash file - Compact crash information",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4D444D5093A7",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Minidump Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MDMP magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Minidump version (0x93A7)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Number of Streams",
+                       "offset":  6,
+                       "length":  2,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Count of data streams"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Stream Directory RVA",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Offset to stream directory"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Checksum",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "CRC checksum (usually 0)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Timestamp",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Unix timestamp of dump creation"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Flags",
+                       "offset":  20,
+                       "length":  8,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Dump type flags"
+                   }
+               ]
 }

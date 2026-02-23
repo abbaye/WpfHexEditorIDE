@@ -1,12 +1,30 @@
-{
-  "formatName": "HDF4 Data File",
-  "version": "1.0",
-  "extensions": [ ".hdf", ".hdf4" ],
-  "description": "Hierarchical Data Format v4",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "0E031301", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "HDF4 Signature", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "HDF4 format signature" }
-  ]
+﻿{
+    "formatName":  "HDF4 Data File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".hdf",
+                       ".hdf4"
+                   ],
+    "description":  "Hierarchical Data Format v4",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "0E031301",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "HDF4 Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "HDF4 format signature"
+                   }
+               ]
 }

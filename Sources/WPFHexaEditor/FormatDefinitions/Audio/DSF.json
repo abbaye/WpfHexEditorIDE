@@ -1,26 +1,29 @@
-{
-  "formatName": "DSD Stream File",
-  "version": "1.0",
-  "extensions": [
-    ".dsf"
-  ],
-  "description": "Sony DSD Stream File format for Direct Stream Digital audio",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "44534420",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "DSF Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DSD - DSF file chunk identifier"
-    }
-  ]
+﻿{
+    "formatName":  "DSD Stream File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".dsf"
+                   ],
+    "description":  "Sony DSD Stream File format for Direct Stream Digital audio",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "44534420",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "DSF Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "DSD - DSF file chunk identifier"
+                   }
+               ]
 }

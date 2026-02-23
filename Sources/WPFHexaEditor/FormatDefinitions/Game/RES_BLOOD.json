@@ -1,47 +1,47 @@
-{
-  "formatName": "Blood RFF",
-  "version": "1.0",
-  "extensions": [ ".rff" ],
-  "description": "Blood game RFF resource archive",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "52464618",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "RFF Signature",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "RFF magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "Version",
-      "offset": 4,
-      "length": 2,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "RFF format version"
-    },
-    {
-      "type": "field",
-      "name": "Directory Offset",
-      "offset": 8,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Offset to file directory"
-    }
-  ]
+﻿{
+    "formatName":  "Blood RFF",
+    "version":  "1.0",
+    "extensions":  [
+                       ".rff"
+                   ],
+    "description":  "Blood game RFF resource archive",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "52464618",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "RFF Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "RFF magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "RFF format version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Directory Offset",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Offset to file directory"
+                   }
+               ]
 }

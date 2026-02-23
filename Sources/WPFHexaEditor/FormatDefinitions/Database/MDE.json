@@ -1,29 +1,29 @@
-{
-  "formatName": "Microsoft Access Compiled (Legacy)",
-  "version": "1.0",
-  "extensions": [ ".mde" ],
-  "description": "Microsoft Access 97-2003 compiled database format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "5374616E6461726420204A6574",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "MDE Signature",
-      "offset": 0,
-      "length": 13,
-      "color": "#F4A261",
-      "opacity": 0.4,
-      "description": "Standard Jet DB (compiled)"
-    }
-  ]
+﻿{
+    "formatName":  "Microsoft Access Compiled (Legacy)",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mde"
+                   ],
+    "description":  "Microsoft Access 97-2003 compiled database format",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5374616E6461726420204A6574",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "MDE Signature",
+                       "offset":  0,
+                       "length":  13,
+                       "color":  "#F4A261",
+                       "opacity":  0.4,
+                       "description":  "Standard Jet DB (compiled)"
+                   }
+               ]
 }

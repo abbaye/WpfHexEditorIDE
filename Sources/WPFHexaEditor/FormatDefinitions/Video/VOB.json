@@ -1,38 +1,38 @@
-{
-  "formatName": "DVD Video Object",
-  "version": "1.0",
-  "extensions": [ ".vob" ],
-  "description": "DVD Video Object file - MPEG-2 container",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "000001BA",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "MPEG-PS Pack Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MPEG Program Stream pack start code"
-    },
-    {
-      "type": "field",
-      "name": "SCR",
-      "offset": 4,
-      "length": 6,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "System Clock Reference"
-    }
-  ]
+﻿{
+    "formatName":  "DVD Video Object",
+    "version":  "1.0",
+    "extensions":  [
+                       ".vob"
+                   ],
+    "description":  "DVD Video Object file - MPEG-2 container",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "000001BA",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "MPEG-PS Pack Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MPEG Program Stream pack start code"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "SCR",
+                       "offset":  4,
+                       "length":  6,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "System Clock Reference"
+                   }
+               ]
 }

@@ -1,101 +1,102 @@
-{
-  "formatName": "Unix Core Dump",
-  "version": "1.0",
-  "extensions": [ ".core", ".dump" ],
-  "description": "Unix/Linux core dump file - Process memory snapshot",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "7F454C46",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "ELF Magic",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ELF header (\\x7FELF)"
-    },
-    {
-      "type": "field",
-      "name": "Class",
-      "offset": 4,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "32-bit (1) or 64-bit (2)"
-    },
-    {
-      "type": "field",
-      "name": "Endianness",
-      "offset": 5,
-      "length": 1,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Little (1) or Big (2) endian"
-    },
-    {
-      "type": "field",
-      "name": "ELF Version",
-      "offset": 6,
-      "length": 1,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "ELF version (always 1)"
-    },
-    {
-      "type": "field",
-      "name": "OS/ABI",
-      "offset": 7,
-      "length": 1,
-      "color": "#FFA07A",
-      "opacity": 0.3,
-      "description": "Operating system ABI"
-    },
-    {
-      "type": "field",
-      "name": "Type",
-      "offset": 16,
-      "length": 2,
-      "color": "#C7CEEA",
-      "opacity": 0.3,
-      "description": "Core file type (4)"
-    },
-    {
-      "type": "field",
-      "name": "Machine",
-      "offset": 18,
-      "length": 2,
-      "color": "#B8B8FF",
-      "opacity": 0.3,
-      "description": "Architecture type"
-    },
-    {
-      "type": "field",
-      "name": "Version",
-      "offset": 20,
-      "length": 4,
-      "color": "#FF6B9D",
-      "opacity": 0.3,
-      "description": "Object file version"
-    },
-    {
-      "type": "field",
-      "name": "Entry Point",
-      "offset": 24,
-      "length": 8,
-      "color": "#98D8C8",
-      "opacity": 0.3,
-      "description": "Entry point virtual address (0 for core)"
-    }
-  ]
+﻿{
+    "formatName":  "Unix Core Dump",
+    "version":  "1.0",
+    "extensions":  [
+                       ".core",
+                       ".dump"
+                   ],
+    "description":  "Unix/Linux core dump file - Process memory snapshot",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7F454C46",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ELF Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ELF header (\\x7FELF)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Class",
+                       "offset":  4,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "32-bit (1) or 64-bit (2)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Endianness",
+                       "offset":  5,
+                       "length":  1,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Little (1) or Big (2) endian"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "ELF Version",
+                       "offset":  6,
+                       "length":  1,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "ELF version (always 1)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "OS/ABI",
+                       "offset":  7,
+                       "length":  1,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Operating system ABI"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Type",
+                       "offset":  16,
+                       "length":  2,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Core file type (4)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Machine",
+                       "offset":  18,
+                       "length":  2,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Architecture type"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  20,
+                       "length":  4,
+                       "color":  "#FF6B9D",
+                       "opacity":  0.3,
+                       "description":  "Object file version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Entry Point",
+                       "offset":  24,
+                       "length":  8,
+                       "color":  "#98D8C8",
+                       "opacity":  0.3,
+                       "description":  "Entry point virtual address (0 for core)"
+                   }
+               ]
 }

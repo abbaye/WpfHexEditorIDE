@@ -1,29 +1,30 @@
-{
-  "formatName": "Zstandard Compressed",
-  "version": "1.0",
-  "extensions": [ ".zst", ".zstd" ],
-  "description": "Zstandard compression format by Facebook",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "28B52FFD",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "Zstandard Magic",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Zstandard frame header"
-    }
-  ]
+﻿{
+    "formatName":  "Zstandard Compressed",
+    "version":  "1.0",
+    "extensions":  [
+                       ".zst",
+                       ".zstd"
+                   ],
+    "description":  "Zstandard compression format by Facebook",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "28B52FFD",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Zstandard Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Zstandard frame header"
+                   }
+               ]
 }

@@ -1,12 +1,30 @@
-{
-  "formatName": "HL7 Message",
-  "version": "1.0",
-  "extensions": [ ".hl7", ".txt" ],
-  "description": "Health Level 7 medical messaging format",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "4D53487C", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "HL7 Magic", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "HL7 message signature (MSH|)" }
-  ]
+﻿{
+    "formatName":  "HL7 Message",
+    "version":  "1.0",
+    "extensions":  [
+                       ".hl7",
+                       ".txt"
+                   ],
+    "description":  "Health Level 7 medical messaging format",
+    "category":  "Medical",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4D53487C",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "HL7 Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "HL7 message signature (MSH|)"
+                   }
+               ]
 }

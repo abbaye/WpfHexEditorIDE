@@ -1,12 +1,29 @@
-{
-  "formatName": "NuGet Package",
-  "version": "1.0",
-  "extensions": [ ".nupkg" ],
-  "description": "NuGet package for .NET",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "504B0304", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "ZIP/NuPkg Signature", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "PK ZIP header" }
-  ]
+﻿{
+    "formatName":  "NuGet Package",
+    "version":  "1.0",
+    "extensions":  [
+                       ".nupkg"
+                   ],
+    "description":  "NuGet package for .NET",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "504B0304",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ZIP/NuPkg Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PK ZIP header"
+                   }
+               ]
 }

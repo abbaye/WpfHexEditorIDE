@@ -43,6 +43,13 @@ namespace WpfHexaEditor.Services
 
                 if (format != null && format.IsValid())
                 {
+                    // Auto-detect category from file path
+                    // Example: "FormatDefinitions/Archives/ZIP.json" -> Category = "Archives"
+                    if (string.IsNullOrWhiteSpace(format.Category))
+                    {
+                        format.Category = ExtractCategoryFromPath(jsonPath);
+                    }
+
                     return AddFormatDefinition(format);
                 }
             }
@@ -125,6 +132,53 @@ namespace WpfHexaEditor.Services
         public void ClearFormats()
         {
             _loadedFormats.Clear();
+        }
+
+        /// <summary>
+        /// Extract category from file path
+        /// Examples:
+        /// - "C:/FormatDefinitions/Archives/ZIP.json" -> "Archives"
+        /// - "FormatDefinitions/Images/PNG.json" -> "Images"
+        /// - "WpfHexaEditor.FormatDefinitions.Archives.ZIP.json" (embedded) -> "Archives"
+        /// </summary>
+        private string ExtractCategoryFromPath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return "Other";
+
+            try
+            {
+                // Normalize path separators
+                path = path.Replace('\\', '/');
+
+                // Check if it's an embedded resource name (contains dots instead of slashes)
+                if (path.Contains("FormatDefinitions.") && path.Count(c => c == '.') >= 3)
+                {
+                    // Embedded resource format: "WpfHexaEditor.FormatDefinitions.Archives.ZIP.json"
+                    var parts = path.Split('.');
+                    var formatDefsIndex = Array.IndexOf(parts, "FormatDefinitions");
+                    if (formatDefsIndex >= 0 && formatDefsIndex < parts.Length - 2)
+                    {
+                        return parts[formatDefsIndex + 1]; // Category is next part after "FormatDefinitions"
+                    }
+                }
+                else
+                {
+                    // File path format: "C:/FormatDefinitions/Archives/ZIP.json"
+                    var parts = path.Split('/');
+                    var formatDefsIndex = Array.FindIndex(parts, p => p.Equals("FormatDefinitions", StringComparison.OrdinalIgnoreCase));
+                    if (formatDefsIndex >= 0 && formatDefsIndex < parts.Length - 2)
+                    {
+                        return parts[formatDefsIndex + 1]; // Category is next part after "FormatDefinitions"
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error extracting category from path {path}: {ex.Message}");
+            }
+
+            return "Other"; // Default category
         }
 
         #endregion

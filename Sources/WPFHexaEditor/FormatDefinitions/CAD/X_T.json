@@ -1,38 +1,38 @@
-{
-  "formatName": "Parasolid Text",
-  "version": "1.0",
-  "extensions": [ ".x_t" ],
-  "description": "Parasolid transmit text format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "2A2A",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "Header Marker",
-      "offset": 0,
-      "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "** header marker"
-    },
-    {
-      "type": "field",
-      "name": "Schema Version",
-      "offset": 2,
-      "length": 10,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Parasolid schema version"
-    }
-  ]
+﻿{
+    "formatName":  "Parasolid Text",
+    "version":  "1.0",
+    "extensions":  [
+                       ".x_t"
+                   ],
+    "description":  "Parasolid transmit text format",
+    "category":  "CAD",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2A2A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Header Marker",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "** header marker"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Schema Version",
+                       "offset":  2,
+                       "length":  10,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Parasolid schema version"
+                   }
+               ]
 }

@@ -1,29 +1,29 @@
-{
-  "formatName": "Maya ASCII",
-  "version": "1.0",
-  "extensions": [ ".ma" ],
-  "description": "Autodesk Maya ASCII scene file",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "2F2F4D61796120415343",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "Maya ASCII Header",
-      "offset": 0,
-      "length": 11,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "//Maya ASC signature"
-    }
-  ]
+﻿{
+    "formatName":  "Maya ASCII",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ma"
+                   ],
+    "description":  "Autodesk Maya ASCII scene file",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2F2F4D61796120415343",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Maya ASCII Header",
+                       "offset":  0,
+                       "length":  11,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "//Maya ASC signature"
+                   }
+               ]
 }

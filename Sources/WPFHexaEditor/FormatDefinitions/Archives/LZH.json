@@ -1,47 +1,48 @@
-{
-  "formatName": "LZH Archive",
-  "version": "1.0",
-  "extensions": [ ".lzh", ".lha" ],
-  "description": "LHA/LZH compressed archive",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "2D6C68",
-    "offset": 2,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Header Size",
-      "offset": 0,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Size of header"
-    },
-    {
-      "type": "field",
-      "name": "Header Checksum",
-      "offset": 1,
-      "length": 1,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Header checksum"
-    },
-    {
-      "type": "signature",
-      "name": "Method ID",
-      "offset": 2,
-      "length": 3,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "-lh compression method"
-    }
-  ]
+﻿{
+    "formatName":  "LZH Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".lzh",
+                       ".lha"
+                   ],
+    "description":  "LHA/LZH compressed archive",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2D6C68",
+                      "offset":  2,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Header Size",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Size of header"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Header Checksum",
+                       "offset":  1,
+                       "length":  1,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Header checksum"
+                   },
+                   {
+                       "type":  "signature",
+                       "name":  "Method ID",
+                       "offset":  2,
+                       "length":  3,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "-lh compression method"
+                   }
+               ]
 }

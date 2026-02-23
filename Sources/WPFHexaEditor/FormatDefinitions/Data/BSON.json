@@ -1,28 +1,29 @@
-{
-  "formatName": "BSON (Binary JSON)",
-  "version": "1.0",
-  "extensions": [
-    ".bson"
-  ],
-  "description": "Binary JSON format used by MongoDB",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "data",
-      "name": "BSON Document",
-      "offset": 0,
-      "length": 256,
-      "color": "#00ED64",
-      "opacity": 0.4,
-      "description": "BSON binary document"
-    }
-  ]
+﻿{
+    "formatName":  "BSON (Binary JSON)",
+    "version":  "1.0",
+    "extensions":  [
+                       ".bson"
+                   ],
+    "description":  "Binary JSON format used by MongoDB",
+    "category":  "Data",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "data",
+                       "name":  "BSON Document",
+                       "offset":  0,
+                       "length":  256,
+                       "color":  "#00ED64",
+                       "opacity":  0.4,
+                       "description":  "BSON binary document"
+                   }
+               ]
 }

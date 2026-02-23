@@ -1,38 +1,38 @@
-{
-  "formatName": "WebM Video",
-  "version": "1.0",
-  "extensions": [ ".webm" ],
-  "description": "WebM video format - Based on Matroska, optimized for web",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "1A45DFA3",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "EBML Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "EBML signature (same as MKV)"
-    },
-    {
-      "type": "field",
-      "name": "Header Size",
-      "offset": 4,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Size of header element"
-    }
-  ]
+﻿{
+    "formatName":  "WebM Video",
+    "version":  "1.0",
+    "extensions":  [
+                       ".webm"
+                   ],
+    "description":  "WebM video format - Based on Matroska, optimized for web",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "1A45DFA3",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "EBML Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "EBML signature (same as MKV)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Header Size",
+                       "offset":  4,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Size of header element"
+                   }
+               ]
 }

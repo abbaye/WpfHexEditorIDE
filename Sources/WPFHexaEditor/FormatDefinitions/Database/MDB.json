@@ -1,29 +1,29 @@
-{
-  "formatName": "Microsoft Access Database",
-  "version": "1.0",
-  "extensions": [ ".mdb" ],
-  "description": "Microsoft Access database file (Jet format)",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "5374616E64617264204A6574204442",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "Jet DB Signature",
-      "offset": 0,
-      "length": 15,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Standard Jet DB"
-    }
-  ]
+﻿{
+    "formatName":  "Microsoft Access Database",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mdb"
+                   ],
+    "description":  "Microsoft Access database file (Jet format)",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5374616E64617264204A6574204442",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Jet DB Signature",
+                       "offset":  0,
+                       "length":  15,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Standard Jet DB"
+                   }
+               ]
 }

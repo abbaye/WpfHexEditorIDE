@@ -1,12 +1,29 @@
-{
-  "formatName": "Valve Package",
-  "version": "1.0",
-  "extensions": [ ".vpk" ],
-  "description": "Valve Pak file for Source engine",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "55AA1234", "offset": 0, "required": false },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "field", "name": "Signature", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "VPK signature" }
-  ]
+﻿{
+    "formatName":  "Valve Package",
+    "version":  "1.0",
+    "extensions":  [
+                       ".vpk"
+                   ],
+    "description":  "Valve Pak file for Source engine",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "55AA1234",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "VPK signature"
+                   }
+               ]
 }

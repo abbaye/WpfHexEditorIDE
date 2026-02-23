@@ -1,29 +1,30 @@
-{
-  "formatName": "PostScript Document",
-  "version": "1.0",
-  "extensions": [ ".ps", ".eps" ],
-  "description": "PostScript document format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "25215053",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "PostScript Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "%!PS signature"
-    }
-  ]
+﻿{
+    "formatName":  "PostScript Document",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ps",
+                       ".eps"
+                   ],
+    "description":  "PostScript document format",
+    "category":  "Documents",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "25215053",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PostScript Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "%!PS signature"
+                   }
+               ]
 }

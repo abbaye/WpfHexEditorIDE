@@ -1,12 +1,29 @@
-{
-  "formatName": "AutoCAD Drawing",
-  "version": "1.0",
-  "extensions": [ ".dwg" ],
-  "description": "AutoCAD native drawing format",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "41433130", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "DWG Version", "offset": 0, "length": 6, "color": "#FF6B6B", "opacity": 0.4, "description": "AC10xx version string" }
-  ]
+﻿{
+    "formatName":  "AutoCAD Drawing",
+    "version":  "1.0",
+    "extensions":  [
+                       ".dwg"
+                   ],
+    "description":  "AutoCAD native drawing format",
+    "category":  "CAD",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "41433130",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "DWG Version",
+                       "offset":  0,
+                       "length":  6,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "AC10xx version string"
+                   }
+               ]
 }

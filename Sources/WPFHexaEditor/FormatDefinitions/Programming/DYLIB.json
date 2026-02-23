@@ -1,54 +1,56 @@
-{
-  "formatName": "macOS Dynamic Library",
-  "version": "1.0",
-  "extensions": [ ".dylib" ],
-  "description": "macOS Dynamic Library using Mach-O (Mach Object) file format for dynamic linking",
-  "author": "WPFHexaEditor Team",
+﻿{
+    "formatName":  "macOS Dynamic Library",
+    "version":  "1.0",
+    "extensions":  [
+                       ".dylib"
+                   ],
+    "description":  "macOS Dynamic Library using Mach-O (Mach Object) file format for dynamic linking",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "FEEDFACE",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
 
-  "detection": {
-    "signature": "FEEDFACE",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {},
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "Mach-O Magic (32-bit)",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Mach-O magic: 0xFEEDFACE (32-bit) or 0xFEEDFACF (64-bit)"
-    },
-    {
-      "type": "data",
-      "name": "CPU Type",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.4,
-      "description": "CPU type (e.g., x86, x86_64, ARM)"
-    },
-    {
-      "type": "data",
-      "name": "CPU Subtype",
-      "offset": 8,
-      "length": 4,
-      "color": "#45B7D1",
-      "opacity": 0.4,
-      "description": "CPU subtype"
-    },
-    {
-      "type": "data",
-      "name": "File Type",
-      "offset": 12,
-      "length": 4,
-      "color": "#96CEB4",
-      "opacity": 0.4,
-      "description": "File type (0x06=dylib, 0x08=bundle)"
-    }
-  ]
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Mach-O Magic (32-bit)",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Mach-O magic: 0xFEEDFACE (32-bit) or 0xFEEDFACF (64-bit)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "CPU Type",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "CPU type (e.g., x86, x86_64, ARM)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "CPU Subtype",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "CPU subtype"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "File Type",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#96CEB4",
+                       "opacity":  0.4,
+                       "description":  "File type (0x06=dylib, 0x08=bundle)"
+                   }
+               ]
 }

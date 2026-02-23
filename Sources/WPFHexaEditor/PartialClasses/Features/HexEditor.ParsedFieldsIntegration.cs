@@ -319,6 +319,7 @@ namespace WpfHexaEditor
                     ParsedFieldsPanel.FormatInfo.IsDetected = true;
                     ParsedFieldsPanel.FormatInfo.Name = _detectedFormat.FormatName;
                     ParsedFieldsPanel.FormatInfo.Description = _detectedFormat.Description;
+                    ParsedFieldsPanel.FormatInfo.Category = _detectedFormat.Category ?? "Other";
 
                     // Parse all blocks from the format definition
                     if (_detectedFormat.Blocks != null)

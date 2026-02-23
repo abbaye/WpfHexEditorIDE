@@ -1,45 +1,47 @@
-{
-  "formatName": "Khronos Texture",
-  "version": "1.0",
-  "extensions": [ ".ktx" ],
-  "description": "Khronos Texture format for OpenGL/Vulkan",
-  "author": "WPFHexaEditor Team",
+﻿{
+    "formatName":  "Khronos Texture",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ktx"
+                   ],
+    "description":  "Khronos Texture format for OpenGL/Vulkan",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "AB4B54582030310D0A1A0A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
 
-  "detection": {
-    "signature": "AB4B54582030310D0A1A0A",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {},
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "KTX Identifier",
-      "offset": 0,
-      "length": 12,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "KTX 1.0 magic bytes"
-    },
-    {
-      "type": "field",
-      "name": "Endianness",
-      "offset": 12,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "0x04030201 or 0x01020304"
-    },
-    {
-      "type": "field",
-      "name": "GL Type",
-      "offset": 16,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "OpenGL type"
-    }
-  ]
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "KTX Identifier",
+                       "offset":  0,
+                       "length":  12,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "KTX 1.0 magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Endianness",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "0x04030201 or 0x01020304"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "GL Type",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "OpenGL type"
+                   }
+               ]
 }

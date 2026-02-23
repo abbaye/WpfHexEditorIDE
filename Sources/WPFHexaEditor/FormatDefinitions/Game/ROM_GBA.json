@@ -1,28 +1,29 @@
-{
-  "formatName": "Game Boy Advance ROM",
-  "version": "1.0",
-  "extensions": [
-    ".gba"
-  ],
-  "description": "Game Boy Advance ROM",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Entry Point",
-      "offset": 0,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "ARM branch instruction"
-    }
-  ]
+﻿{
+    "formatName":  "Game Boy Advance ROM",
+    "version":  "1.0",
+    "extensions":  [
+                       ".gba"
+                   ],
+    "description":  "Game Boy Advance ROM",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Entry Point",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "ARM branch instruction"
+                   }
+               ]
 }

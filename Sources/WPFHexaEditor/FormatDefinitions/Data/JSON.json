@@ -1,29 +1,29 @@
-{
-  "formatName": "JSON Data",
-  "version": "1.0",
-  "extensions": [ ".json" ],
-  "description": "JavaScript Object Notation",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "7B",
-    "offset": 0,
-    "required": false
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Opening Brace",
-      "offset": 0,
-      "length": 1,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "JSON object start (may have whitespace)"
-    }
-  ]
+﻿{
+    "formatName":  "JSON Data",
+    "version":  "1.0",
+    "extensions":  [
+                       ".json"
+                   ],
+    "description":  "JavaScript Object Notation",
+    "category":  "Data",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7B",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Opening Brace",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "JSON object start (may have whitespace)"
+                   }
+               ]
 }

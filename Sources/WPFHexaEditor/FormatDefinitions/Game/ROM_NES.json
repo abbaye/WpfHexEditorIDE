@@ -1,12 +1,29 @@
-{
-  "formatName": "NES ROM",
-  "version": "1.0",
-  "extensions": [ ".nes" ],
-  "description": "Nintendo Entertainment System ROM",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "4E45531A", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "NES Header", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "NES\\x1A magic" }
-  ]
+﻿{
+    "formatName":  "NES ROM",
+    "version":  "1.0",
+    "extensions":  [
+                       ".nes"
+                   ],
+    "description":  "Nintendo Entertainment System ROM",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4E45531A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "NES Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "NES\\x1A magic"
+                   }
+               ]
 }

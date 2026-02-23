@@ -1,28 +1,29 @@
-{
-  "formatName": "NIfTI Medical Image",
-  "version": "1.0",
-  "extensions": [
-    ".nii"
-  ],
-  "description": "Neuroimaging Informatics Technology Initiative",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Header Size",
-      "offset": 0,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "348 bytes"
-    }
-  ]
+﻿{
+    "formatName":  "NIfTI Medical Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".nii"
+                   ],
+    "description":  "Neuroimaging Informatics Technology Initiative",
+    "category":  "Medical",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Header Size",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "348 bytes"
+                   }
+               ]
 }

@@ -1,12 +1,29 @@
-{
-  "formatName": "CATIA Part",
-  "version": "1.0",
-  "extensions": [ ".catpart" ],
-  "description": "CATIA V5 part file",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "56350500", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "CATIA Magic", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "CATIA V5 header" }
-  ]
+﻿{
+    "formatName":  "CATIA Part",
+    "version":  "1.0",
+    "extensions":  [
+                       ".catpart"
+                   ],
+    "description":  "CATIA V5 part file",
+    "category":  "CAD",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "56350500",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "CATIA Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "CATIA V5 header"
+                   }
+               ]
 }

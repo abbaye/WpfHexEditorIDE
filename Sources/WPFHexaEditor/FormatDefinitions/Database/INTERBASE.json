@@ -1,29 +1,30 @@
-{
-  "formatName": "InterBase Database",
-  "version": "1.0",
-  "extensions": [
-    ".ib",
-    ".ibd"
-  ],
-  "description": "Borland/Embarcadero InterBase database format",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "header",
-      "name": "InterBase Header",
-      "offset": 0,
-      "length": 512,
-      "color": "#EE6C4D",
-      "opacity": 0.4,
-      "description": "InterBase database header page"
-    }
-  ]
+﻿{
+    "formatName":  "InterBase Database",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ib",
+                       ".ibd"
+                   ],
+    "description":  "Borland/Embarcadero InterBase database format",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "InterBase Header",
+                       "offset":  0,
+                       "length":  512,
+                       "color":  "#EE6C4D",
+                       "opacity":  0.4,
+                       "description":  "InterBase database header page"
+                   }
+               ]
 }

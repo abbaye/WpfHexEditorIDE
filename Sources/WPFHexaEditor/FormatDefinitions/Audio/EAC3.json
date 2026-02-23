@@ -1,27 +1,30 @@
-{
-  "formatName": "Dolby Digital Plus",
-  "version": "1.0",
-  "extensions": [
-    ".eac3",
-    ".ec3"
-  ],
-  "description": "Dolby Digital Plus (Enhanced AC-3) advanced audio codec",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "0B77",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "E-AC-3 Sync Word",
-      "offset": 0,
-      "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Enhanced AC-3 synchronization word"
-    }
-  ]
+﻿{
+    "formatName":  "Dolby Digital Plus",
+    "version":  "1.0",
+    "extensions":  [
+                       ".eac3",
+                       ".ec3"
+                   ],
+    "description":  "Dolby Digital Plus (Enhanced AC-3) advanced audio codec",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "0B77",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "E-AC-3 Sync Word",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Enhanced AC-3 synchronization word"
+                   }
+               ]
 }

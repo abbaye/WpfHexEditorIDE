@@ -1,29 +1,30 @@
-{
-  "formatName": "SQLite Shared Memory",
-  "version": "1.0",
-  "extensions": [
-    ".shm",
-    "-shm"
-  ],
-  "description": "SQLite shared-memory file for WAL mode coordination",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "00",
-    "offset": 0,
-    "required": false
-  },
-  "variables": {
-    "currentOffset": 0
-  },
-  "blocks": [
-    {
-      "type": "header",
-      "name": "Shared Memory Header",
-      "offset": 0,
-      "length": 32,
-      "color": "#95E1D3",
-      "opacity": 0.4,
-      "description": "SQLite shared memory region"
-    }
-  ]
+﻿{
+    "formatName":  "SQLite Shared Memory",
+    "version":  "1.0",
+    "extensions":  [
+                       ".shm",
+                       "-shm"
+                   ],
+    "description":  "SQLite shared-memory file for WAL mode coordination",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "Shared Memory Header",
+                       "offset":  0,
+                       "length":  32,
+                       "color":  "#95E1D3",
+                       "opacity":  0.4,
+                       "description":  "SQLite shared memory region"
+                   }
+               ]
 }

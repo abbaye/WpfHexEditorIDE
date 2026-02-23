@@ -1,26 +1,29 @@
-{
-  "formatName": "Tom's Audio Kompressor",
-  "version": "1.0",
-  "extensions": [
-    ".tak"
-  ],
-  "description": "TAK lossless audio compression format with high compression ratios",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "7442614B",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "TAK Header",
-      "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "tBaK - TAK audio file signature"
-    }
-  ]
+﻿{
+    "formatName":  "Tom\u0027s Audio Kompressor",
+    "version":  "1.0",
+    "extensions":  [
+                       ".tak"
+                   ],
+    "description":  "TAK lossless audio compression format with high compression ratios",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7442614B",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "TAK Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "tBaK - TAK audio file signature"
+                   }
+               ]
 }

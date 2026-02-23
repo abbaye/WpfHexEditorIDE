@@ -334,9 +334,19 @@ namespace WpfHexaEditor
                         var json = reader.ReadToEnd();
 
                         var format = _formatDetectionService.ImportFromJson(json);
-                        if (format != null && _formatDetectionService.AddFormatDefinition(format))
+                        if (format != null)
                         {
-                            count++;
+                            // Extract category from embedded resource name
+                            // Example: "WpfHexaEditor.FormatDefinitions.Archives.ZIP.json" -> "Archives"
+                            if (string.IsNullOrWhiteSpace(format.Category))
+                            {
+                                format.Category = ExtractCategoryFromResourceName(resourceName);
+                            }
+
+                            if (_formatDetectionService.AddFormatDefinition(format))
+                            {
+                                count++;
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -353,6 +363,34 @@ namespace WpfHexaEditor
             }
 
             return count;
+        }
+
+        /// <summary>
+        /// Extract category from embedded resource name
+        /// Example: "WpfHexaEditor.FormatDefinitions.Archives.ZIP.json" -> "Archives"
+        /// </summary>
+        private string ExtractCategoryFromResourceName(string resourceName)
+        {
+            if (string.IsNullOrWhiteSpace(resourceName))
+                return "Other";
+
+            try
+            {
+                // Embedded resource format: "WpfHexaEditor.FormatDefinitions.Archives.ZIP.json"
+                var parts = resourceName.Split('.');
+                var formatDefsIndex = System.Array.IndexOf(parts, "FormatDefinitions");
+
+                if (formatDefsIndex >= 0 && formatDefsIndex < parts.Length - 2)
+                {
+                    return parts[formatDefsIndex + 1]; // Category is next part after "FormatDefinitions"
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error extracting category from resource name {resourceName}: {ex.Message}");
+            }
+
+            return "Other"; // Default category
         }
 
         #endregion

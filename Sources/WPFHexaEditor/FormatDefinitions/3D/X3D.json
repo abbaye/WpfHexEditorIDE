@@ -1,29 +1,29 @@
-{
-  "formatName": "Extensible 3D",
-  "version": "1.0",
-  "extensions": [ ".x3d" ],
-  "description": "Web3D X3D format (XML based)",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "3C3F786D6C",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "XML Declaration",
-      "offset": 0,
-      "length": 5,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "<?xml header"
-    }
-  ]
+﻿{
+    "formatName":  "Extensible 3D",
+    "version":  "1.0",
+    "extensions":  [
+                       ".x3d"
+                   ],
+    "description":  "Web3D X3D format (XML based)",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "3C3F786D6C",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "XML Declaration",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "\u003c?xml header"
+                   }
+               ]
 }

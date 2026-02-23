@@ -1,29 +1,29 @@
-{
-  "formatName": "Wavefront OBJ",
-  "version": "1.0",
-  "extensions": [ ".obj" ],
-  "description": "Wavefront 3D object format (text-based)",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "23",
-    "offset": 0,
-    "required": false
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "field",
-      "name": "Comment or Vertex",
-      "offset": 0,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "OBJ files start with # or v"
-    }
-  ]
+﻿{
+    "formatName":  "Wavefront OBJ",
+    "version":  "1.0",
+    "extensions":  [
+                       ".obj"
+                   ],
+    "description":  "Wavefront 3D object format (text-based)",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "23",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Comment or Vertex",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "OBJ files start with # or v"
+                   }
+               ]
 }

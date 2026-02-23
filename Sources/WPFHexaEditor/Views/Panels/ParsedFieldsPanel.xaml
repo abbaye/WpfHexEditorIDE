@@ -288,10 +288,29 @@
                 BorderBrush="#E0E0E0"
                 Visibility="{Binding FormatInfo.IsDetected, Converter={StaticResource BoolToVisibilityConverter}}">
             <StackPanel>
-                <TextBlock FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4">
-                    <Run Text="Format:"/>
-                    <Run Text="{Binding FormatInfo.Name}" Foreground="#2196F3"/>
-                </TextBlock>
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" FontWeight="SemiBold" FontSize="12">
+                        <Run Text="Format:"/>
+                        <Run Text="{Binding FormatInfo.Name}" Foreground="#2196F3"/>
+                    </TextBlock>
+                    <Border Grid.Column="2"
+                            Background="#FFE5B4"
+                            BorderBrush="#FFA500"
+                            BorderThickness="1"
+                            CornerRadius="3"
+                            Padding="6,2"
+                            Margin="8,0,0,0">
+                        <TextBlock FontSize="10"
+                                   FontWeight="SemiBold"
+                                   Foreground="#D2691E"
+                                   Text="{Binding FormatInfo.Category}"/>
+                    </Border>
+                </Grid>
                 <TextBlock FontSize="11" Foreground="#666666" TextWrapping="Wrap"
                            Text="{Binding FormatInfo.Description}"/>
             </StackPanel>

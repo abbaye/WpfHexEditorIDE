@@ -1,38 +1,38 @@
-{
-  "formatName": "No Cache File",
-  "version": "1.0",
-  "extensions": [ ".ncf" ],
-  "description": "Steam No Cache File format",
-  "author": "WPFHexaEditor Team",
-
-  "detection": {
-    "signature": "0100000001000000",
-    "offset": 0,
-    "required": true
-  },
-
-  "variables": {
-    "currentOffset": 0
-  },
-
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "NCF Header",
-      "offset": 0,
-      "length": 8,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "NCF format signature"
-    },
-    {
-      "type": "field",
-      "name": "Version",
-      "offset": 8,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "NCF version number"
-    }
-  ]
+﻿{
+    "formatName":  "No Cache File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ncf"
+                   ],
+    "description":  "Steam No Cache File format",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "0100000001000000",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "NCF Header",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "NCF format signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "NCF version number"
+                   }
+               ]
 }

@@ -1,12 +1,29 @@
-{
-  "formatName": "Panasonic Raw Image",
-  "version": "1.0",
-  "extensions": [ ".rw2" ],
-  "description": "Panasonic RAW camera image",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "49492A00", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "TIFF Header", "offset": 0, "length": 4, "color": "#FF6B6B", "opacity": 0.4, "description": "RW2 uses TIFF structure" }
-  ]
+﻿{
+    "formatName":  "Panasonic Raw Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".rw2"
+                   ],
+    "description":  "Panasonic RAW camera image",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "49492A00",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "TIFF Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "RW2 uses TIFF structure"
+                   }
+               ]
 }

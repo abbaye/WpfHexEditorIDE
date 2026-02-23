@@ -1,12 +1,29 @@
-{
-  "formatName": "3ds Max Scene",
-  "version": "1.0",
-  "extensions": [ ".max" ],
-  "description": "Autodesk 3ds Max scene file",
-  "author": "WPFHexaEditor Team",
-  "detection": { "signature": "D0CF11E0A1B11AE1", "offset": 0, "required": true },
-  "variables": { "currentOffset": 0 },
-  "blocks": [
-    { "type": "signature", "name": "OLE2 Header", "offset": 0, "length": 8, "color": "#FF6B6B", "opacity": 0.4, "description": "MAX uses OLE2 container" }
-  ]
+﻿{
+    "formatName":  "3ds Max Scene",
+    "version":  "1.0",
+    "extensions":  [
+                       ".max"
+                   ],
+    "description":  "Autodesk 3ds Max scene file",
+    "category":  "CAD",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "D0CF11E0A1B11AE1",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "OLE2 Header",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MAX uses OLE2 container"
+                   }
+               ]
 }

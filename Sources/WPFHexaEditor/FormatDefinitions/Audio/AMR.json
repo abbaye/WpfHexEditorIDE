@@ -1,26 +1,29 @@
-{
-  "formatName": "Adaptive Multi-Rate",
-  "version": "1.0",
-  "extensions": [
-    ".amr"
-  ],
-  "description": "AMR audio codec optimized for speech coding, used in GSM and 3G mobile networks",
-  "author": "WPFHexaEditor Team",
-  "detection": {
-    "signature": "2321414D520A",
-    "offset": 0,
-    "required": true
-  },
-  "variables": {},
-  "blocks": [
-    {
-      "type": "signature",
-      "name": "AMR Header",
-      "offset": 0,
-      "length": 6,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "#!AMR - AMR file signature"
-    }
-  ]
+﻿{
+    "formatName":  "Adaptive Multi-Rate",
+    "version":  "1.0",
+    "extensions":  [
+                       ".amr"
+                   ],
+    "description":  "AMR audio codec optimized for speech coding, used in GSM and 3G mobile networks",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2321414D520A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "AMR Header",
+                       "offset":  0,
+                       "length":  6,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "#!AMR - AMR file signature"
+                   }
+               ]
 }
