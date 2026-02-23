@@ -263,7 +263,7 @@ namespace WpfHexaEditor
         public int LoadFormatDefinitions(string directory)
         {
             var count = _formatDetectionService.LoadFormatDefinitionsFromDirectory(directory);
-            LoadedFormatCount = count;
+            LoadedFormatCount = _formatDetectionService.GetFormatCount(); // FIX: Use total count from service
             return count;
         }
 
