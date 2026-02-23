@@ -26,9 +26,20 @@ HexEditor uses a **modern MVVM architecture** designed with clean software engin
 - ✅ **Backward Compatible API** - Zero breaking changes from legacy architecture
 - ⚡ **99% Performance Improvement** with custom rendering (vs legacy ItemsControl)
 - 🏗️ **Clean MVVM Architecture** with separation of concerns
-- 📦 **Modular Service Layer** (15 specialized services)
+- 📦 **Modular Service Layer** (16 specialized services)
 - 🔄 **Comprehensive Undo/Redo** with granular control
 - 📊 **Rich Diagnostics** for profiling and monitoring
+
+### 🆕 Advanced Features (Feb 2026)
+
+- 🔍 **400+ File Format Auto-Detection** with binary templates and signature matching
+- 🎨 **Parsed Fields Panel** with structure overlay and field type visualization
+- 📊 **Data Inspector** with 15+ data type interpretations (int8/16/32/64, float, double, etc.)
+- ⚖️ **File Diff** for side-by-side binary comparison with highlighting
+- 📈 **BarChart Visualization** for byte distribution analysis
+- ✅ **Automatic Checksum Validation** with visual error highlighting
+- 📝 **Format Script Editor** with custom JsonEditor (61 Dependency Properties)
+- 🎯 **Insert/Overwrite Modes** with visual editing feedback (caret blink, bold nibble)
 
 ---
 
@@ -92,7 +103,9 @@ graph TB
         BookmarkService["BookmarkService<br/>(Navigation)"]
         HighlightService["HighlightService<br/>(Visual Markers)"]
         SelectionService["SelectionService<br/>(Text Selection)"]
-        Others["+ 10 More Services"]
+        FormatDetectionService["FormatDetectionService<br/>(400+ Formats)"]
+        DataInspectorService["DataInspectorService<br/>(Type Interpretation)"]
+        Others["+ 9 More Services"]
     end
 
     subgraph "💾 Data Access Layer"
@@ -119,11 +132,15 @@ graph TB
     ViewModel --> BookmarkService
     ViewModel --> HighlightService
     ViewModel --> SelectionService
+    ViewModel --> FormatDetectionService
+    ViewModel --> DataInspectorService
     ViewModel --> Others
 
     ViewModel --> ByteProvider
     SearchService --> ByteProvider
     ClipboardService --> ByteProvider
+    FormatDetectionService --> ByteProvider
+    DataInspectorService --> ByteProvider
 
     ByteProvider --> ByteReader
     ByteProvider --> EditsManager
@@ -163,7 +180,7 @@ graph LR
     end
 
     subgraph "Layer 3: Services"
-        Services["15 Services<br/>Search, Clipboard,<br/>Bookmark, etc."]
+        Services["16 Services<br/>Search, Clipboard,<br/>FormatDetection, DataInspector,<br/>Bookmark, etc."]
     end
 
     subgraph "Layer 4: Data Access"
@@ -197,9 +214,9 @@ graph LR
 
 | Layer | Components | Responsibility | Thread Safety |
 |-------|-----------|----------------|---------------|
-| **1. UI** | HexEditor, HexViewport | User interaction, rendering | UI thread only |
+| **1. UI** | HexEditor, HexViewport, ParsedFieldsPanel | User interaction, rendering | UI thread only |
 | **2. Presentation** | HexEditorViewModel | Business logic, state management | UI thread only |
-| **3. Services** | 15 specialized services | Feature implementation | UI thread only |
+| **3. Services** | 16 specialized services | Feature implementation (search, format detection, data inspection, etc.) | UI thread only |
 | **4. Data Access** | ByteProvider | API coordination, caching | UI thread only |
 | **5. Core** | ByteReader, EditsManager, etc. | Low-level operations | Thread-safe |
 | **6. Storage** | FileProvider, FileSystem | File I/O, persistence | Async-safe |
@@ -477,6 +494,169 @@ protected override void OnRender(DrawingContext dc)
 
 ---
 
+## 🆕 Advanced Services & Features (Feb 2026)
+
+### 8. FormatDetectionService (File Format Intelligence)
+
+**Location**: [FormatDetectionService.cs](../../Sources/WPFHexaEditor/Services/FormatDetectionService.cs)
+
+**Purpose**: Automatic detection of 400+ file formats using binary signatures and templates.
+
+**Key Features**:
+- 🔍 **Signature Matching** - Identifies file type from magic bytes
+- 📋 **Binary Templates** - Parses structured file formats (PNG, ZIP, ELF, PE, etc.)
+- 🎯 **Field Parsing** - Extracts fields with proper types (uint8, uint16, string, etc.)
+- ✅ **Checksum Validation** - Automatic validation with visual error display
+- 📊 **Structure Overlay** - Visual representation of file structure in hex view
+
+**Example Detection**:
+```csharp
+// PNG format detection
+var formatInfo = formatDetectionService.DetectFormat(byteProvider);
+// Returns: { FormatName: "PNG Image", Extension: "png", Confidence: 100% }
+
+// Parse PNG header fields
+var fields = formatDetectionService.ParseFields(byteProvider);
+// Returns: [
+//   { Name: "signature", Offset: 0, Length: 8, Type: "bytes", Value: [137, 80, 78, 71...] },
+//   { Name: "width", Offset: 16, Length: 4, Type: "uint32", Value: 1920 },
+//   { Name: "height", Offset: 20, Length: 4, Type: "uint32", Value: 1080 }
+// ]
+```
+
+**Supported Format Categories**:
+- 🖼️ **Images**: PNG, JPEG, GIF, BMP, TIFF, WebP, ICO
+- 📦 **Archives**: ZIP, RAR, 7Z, TAR, GZ
+- 🎵 **Audio**: MP3, WAV, FLAC, OGG, AAC
+- 🎬 **Video**: MP4, AVI, MKV, WebM, MOV
+- 📄 **Documents**: PDF, DOCX, XLSX, PPTX
+- 💾 **Executables**: EXE, DLL, ELF, Mach-O
+- 🎮 **Game ROMs**: NES, SNES, GB, GBA, N64
+- And 350+ more formats...
+
+### 9. DataInspectorService (Multi-Type Interpretation)
+
+**Location**: [DataInspectorService.cs](../../Sources/WPFHexaEditor/Services/DataInspectorService.cs)
+
+**Purpose**: Interprets selected bytes as multiple data types simultaneously.
+
+**Supported Interpretations** (15+ types):
+```csharp
+// Select 8 bytes at position 100
+var interpretations = dataInspectorService.Interpret(byteProvider, position: 100, length: 8);
+
+// Returns:
+// Int8:        127
+// UInt8:       255
+// Int16 (LE):  32767
+// Int16 (BE):  -32768
+// Int32 (LE):  2147483647
+// Int32 (BE):  -2147483648
+// Int64 (LE):  9223372036854775807
+// Float (LE):  3.14159
+// Double (LE): 2.718281828
+// ASCII:       "Hello!\n"
+// UTF-8:       "世界"
+// UTF-16:      "🚀"
+// Hex:         "48 65 6C 6C 6F 21 0A 00"
+// Binary:      "01001000 01100101 01101100..."
+// Timestamp:   "2026-02-22 14:30:00 UTC"
+```
+
+**UI Integration**:
+- 📊 **Data Inspector Panel** - Real-time display as cursor moves
+- 🎯 **Selection-based** - Updates automatically on selection change
+- 🔄 **Endianness Toggle** - Switch between Little/Big Endian
+- 📋 **Copy Values** - Right-click to copy specific interpretation
+
+### 10. ParsedFieldsPanel (Structure Visualization)
+
+**Location**: [ParsedFieldsPanel.xaml](../../Sources/WPFHexaEditor/Controls/ParsedFieldsPanel.xaml)
+
+**Purpose**: Displays parsed file structure in a hierarchical tree view.
+
+**Features**:
+- 🌳 **Tree View** - Hierarchical field structure
+- 🎨 **Color-Coded Types** - Visual distinction for different data types
+- 📍 **Click to Navigate** - Jump to field location in hex view
+- 🔍 **Field Details** - Name, offset, length, type, value
+- 📊 **Structure Overlay** - Highlights field boundaries in hex view
+
+**Example Display** (PNG file):
+```
+📄 PNG Image (1920x1080)
+├─ 📦 PNG Signature (0x00, 8 bytes)
+│  └─ Value: 89 50 4E 47 0D 0A 1A 0A
+├─ 📦 IHDR Chunk (0x08, 25 bytes)
+│  ├─ Length: 13 (uint32)
+│  ├─ Type: "IHDR" (string)
+│  ├─ Width: 1920 (uint32)
+│  ├─ Height: 1080 (uint32)
+│  ├─ Bit Depth: 8 (uint8)
+│  ├─ Color Type: 2 (uint8)
+│  └─ CRC: 0x1A2B3C4D (uint32) ✅
+├─ 📦 IDAT Chunk (0x21, 65536 bytes)
+│  └─ Compressed Data: [...]
+└─ 📦 IEND Chunk (0x10021, 12 bytes)
+   └─ CRC: 0xAE426082 (uint32) ✅
+```
+
+### 11. FileDiffService (Binary Comparison)
+
+**Location**: [FileDiffService.cs](../../Sources/WPFHexaEditor/Services/FileDiffService.cs)
+
+**Purpose**: Side-by-side comparison of two binary files with highlighting.
+
+**Features**:
+- ⚖️ **Dual View** - Two hex editors side-by-side
+- 🎨 **Diff Highlighting** - Added (green), removed (red), modified (yellow)
+- 🔄 **Synchronized Scrolling** - Both views scroll together
+- 📊 **Statistics** - Total differences, % similarity
+- 📍 **Navigation** - Jump to next/previous difference
+
+**Use Cases**:
+- 📝 Comparing file versions
+- 🔧 Analyzing patch differences
+- 🐛 Debugging binary protocol changes
+- 🎮 ROM hacking comparison
+
+### 12. FormatScriptEditor (Custom JsonEditor)
+
+**Location**: [FormatScriptEditor/](../../Sources/WPFHexaEditor/Controls/FormatScriptEditor/)
+
+**Purpose**: Professional JSON editor for creating binary format definitions.
+
+**JsonEditor Features** (61 Dependency Properties):
+- 🎨 **Syntax Highlighting** - 13+ token types (keys, values, keywords, etc.)
+- 💡 **IntelliSense** - Context-aware autocomplete with 9 contexts
+- ✅ **Real-time Validation** - 4-layer validation with squiggly lines
+- 🔤 **Line Numbers** - Configurable gutter
+- 🎯 **Bracket Matching** - Visual highlighting of matching {}, [], ()
+- ↩️ **Auto-Indent** - Smart indentation on Enter
+- 📋 **Clipboard** - Copy/Paste/Cut with formatting
+- ⏮️ **Undo/Redo** - Unlimited history
+- 🔍 **Find/Replace** - Regex support
+- 📄 **Code Folding** - Collapse/expand blocks
+
+**IntelliSense Contexts**:
+1. Root level (formatName, signature, fields, etc.)
+2. Field properties (name, type, offset, length, etc.)
+3. Type suggestions (uint8, uint16, string, etc.)
+4. Conditional expressions (calc:, var:)
+5. Loop constructs (count, body)
+6. Action definitions (onLoad, onParse)
+7. Validation rules (checksum, bounds)
+8. Display hints (color, format, label)
+9. Custom properties (metadata, tags)
+
+**Validation Layers**:
+1. **JSON Syntax** - Parse errors, unclosed brackets
+2. **Schema** - Missing required fields (formatName, signature)
+3. **Format Rules** - Invalid field types, offset conflicts
+4. **Semantic** - Undefined variable references, circular dependencies
+
+---
+
 ## 🔄 Data Flow
 
 ### File Open Sequence
@@ -683,22 +863,37 @@ finally
 - [Edit Tracking](core-systems/edit-tracking.md) - Modification management
 - [Undo/Redo System](core-systems/undo-redo-system.md) - History management
 - [Rendering System](core-systems/rendering-system.md) - Custom DrawingContext
-- [Service Layer](core-systems/service-layer.md) - 15 specialized services
+- [Service Layer](core-systems/service-layer.md) - 16 specialized services
+
+### Advanced Features Documentation (Feb 2026)
+- [Format Detection System](advanced-features/format-detection.md) - 400+ file format auto-detection
+- [Data Inspector](advanced-features/data-inspector.md) - Multi-type interpretation
+- [Parsed Fields Panel](advanced-features/parsed-fields.md) - Structure visualization
+- [File Diff System](advanced-features/file-diff.md) - Binary comparison
+- [Format Script Editor](advanced-features/format-script-editor.md) - JsonEditor with IntelliSense
 
 ### Data Flow Documentation
 - [File Operations](data-flow/file-operations.md) - Open, Close, Save sequences
 - [Edit Operations](data-flow/edit-operations.md) - Modify, Insert, Delete sequences
 - [Search Operations](data-flow/search-operations.md) - Find, Replace sequences
 - [Save Operations](data-flow/save-operations.md) - Smart save algorithm
+- [Format Detection Flow](data-flow/format-detection-flow.md) - Signature matching and field parsing
 
 ### Related Documentation
 - [API Reference](../api-reference/) - Complete method documentation
 - [PartialClasses README](../../Sources/WPFHexaEditor/PartialClasses/README.md) - Code organization
+- [Services README](../../Sources/WPFHexaEditor/Services/README.md) - Service layer details
 - [Performance Guide](../performance/) - Optimization tips
 - [Main README](../../README.md) - Project overview
 
 ---
 
-**Last Updated**: 2026-02-19
-**Version**: 2.0 (V2 architecture)
-**Status**: ✅ Complete (100% ByteProvider API + 100% Legacy V1 API compatibility)
+**Last Updated**: 2026-02-22
+**Version**: 2.0+ (V2 architecture with Advanced Features)
+**Status**: ✅ Production Ready
+- ✅ 100% ByteProvider API (186 methods)
+- ✅ 100% Legacy V1 API compatibility
+- ✅ 400+ file format auto-detection
+- ✅ 16 specialized services
+- ✅ JsonEditor with 61 Dependency Properties
+- ✅ Data Inspector, Parsed Fields, File Diff
