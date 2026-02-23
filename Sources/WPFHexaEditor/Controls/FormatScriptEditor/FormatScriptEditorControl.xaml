@@ -165,10 +165,11 @@
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="#E0E0E0"/>
 
             <!-- Editor Area (Right Panel) -->
-            <TabControl Grid.Column="2" BorderThickness="0">
+            <TabControl x:Name="MainTabControl" Grid.Column="2" BorderThickness="0"
+                       SelectionChanged="MainTabControl_SelectionChanged">
 
                 <!-- Editor Tab -->
-                <TabItem Header="Editor">
+                <TabItem x:Name="EditorTab" Header="Editor">
                     <Grid>
                         <jsonEditor:JsonEditor x:Name="JsonEditorControl"
                                               ShowLineNumbers="True"

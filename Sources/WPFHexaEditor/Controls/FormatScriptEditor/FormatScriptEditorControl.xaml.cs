@@ -79,6 +79,22 @@ namespace WpfHexaEditor.Controls.FormatScriptEditor
             }
         }
 
+        /// <summary>
+        /// When Editor tab is selected, automatically focus the JsonEditor
+        /// This allows immediate keyboard input without needing to click twice
+        /// </summary>
+        private void MainTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MainTabControl.SelectedItem == EditorTab && JsonEditorControl != null)
+            {
+                // Use Dispatcher to ensure the tab switch animation completes first
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    JsonEditorControl.Focus();
+                }), System.Windows.Threading.DispatcherPriority.Loaded);
+            }
+        }
+
         #endregion
 
         #region Load Embedded Formats
