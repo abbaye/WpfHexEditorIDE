@@ -164,6 +164,9 @@
   <data name="Menu_View_ShowASCII" xml:space="preserve">
     <value>ASCII Göster</value>
   </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>Ayrıştırılan Alanları Göster</value>
+  </data>
   <data name="Menu_View_BytesPerLine" xml:space="preserve">
     <value>Satır Başına Bayt</value>
   </data>

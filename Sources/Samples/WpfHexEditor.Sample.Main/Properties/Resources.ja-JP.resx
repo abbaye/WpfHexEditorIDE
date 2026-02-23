@@ -164,6 +164,9 @@
   <data name="Menu_View_ShowASCII" xml:space="preserve">
     <value>ASCIIを表示</value>
   </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>解析されたフィールドを表示</value>
+  </data>
   <data name="Menu_View_BytesPerLine" xml:space="preserve">
     <value>1行あたりのバイト数</value>
   </data>

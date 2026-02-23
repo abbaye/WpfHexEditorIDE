@@ -24,6 +24,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
 
         private bool _isSettingsPanelVisible = true;  // Open by default to show HexEditor options
         private bool _isSearchPanelVisible = true;
+        private bool _isParsedFieldsPanelVisible = false;  // Hidden by default
         private bool _isFileLoaded = false;
         private bool _isOperationActive = false;
         private string _currentFilePath;
@@ -63,6 +64,16 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             {
                 _isSearchPanelVisible = value;
                 OnPropertyChanged(nameof(IsSearchPanelVisible));
+            }
+        }
+
+        public bool IsParsedFieldsPanelVisible
+        {
+            get => _isParsedFieldsPanelVisible;
+            set
+            {
+                _isParsedFieldsPanelVisible = value;
+                OnPropertyChanged(nameof(IsParsedFieldsPanelVisible));
             }
         }
 
@@ -168,6 +179,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
         public ICommand SearchCommand { get; }
         public ICommand ToggleSettingsPanelCommand { get; }
         public ICommand ToggleSearchPanelCommand { get; }
+        public ICommand ToggleParsedFieldsPanelCommand { get; }
         public ICommand OpenAdvancedSearchCommand { get; }
         public ICommand ShowAboutCommand { get; }
         public ICommand ShowKeyboardShortcutsCommand { get; }
@@ -236,6 +248,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             SearchCommand = new RelayCommand(Search, () => IsFileLoaded && !IsOperationActive && !string.IsNullOrWhiteSpace(SearchQuery));
             ToggleSettingsPanelCommand = new RelayCommand(ToggleSettingsPanel);
             ToggleSearchPanelCommand = new RelayCommand(ToggleSearchPanel);
+            ToggleParsedFieldsPanelCommand = new RelayCommand(ToggleParsedFieldsPanel);
             OpenAdvancedSearchCommand = new RelayCommand(OpenAdvancedSearch, () => IsFileLoaded);
             ShowAboutCommand = new RelayCommand(ShowAbout);
             ShowKeyboardShortcutsCommand = new RelayCommand(ShowKeyboardShortcuts);
@@ -820,6 +833,11 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             IsSearchPanelVisible = !IsSearchPanelVisible;
         }
 
+        private void ToggleParsedFieldsPanel()
+        {
+            IsParsedFieldsPanelVisible = !IsParsedFieldsPanelVisible;
+        }
+
         private void OpenAdvancedSearch()
         {
             if (_hexEditor == null) return;
@@ -924,6 +942,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             var settings = Properties.Settings.Default;
             _isSettingsPanelVisible = settings.IsSettingsPanelVisible;
             _isSearchPanelVisible = settings.IsSearchPanelVisible;
+            _isParsedFieldsPanelVisible = settings.IsParsedFieldsPanelVisible;
 
             // Load last file path (if user opted in)
             if (settings.RememberLastFilePath && !string.IsNullOrEmpty(settings.LastFilePath))
@@ -937,6 +956,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
             var settings = Properties.Settings.Default;
             settings.IsSettingsPanelVisible = IsSettingsPanelVisible;
             settings.IsSearchPanelVisible = IsSearchPanelVisible;
+            settings.IsParsedFieldsPanelVisible = IsParsedFieldsPanelVisible;
             settings.SelectedSearchMode = SearchViewModel?.SelectedSearchMode.ToString() ?? "Text";
 
             if (settings.RememberLastFilePath)

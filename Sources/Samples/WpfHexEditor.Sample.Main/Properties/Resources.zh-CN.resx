@@ -785,6 +785,9 @@
   <data name="Menu_View_ShowASCII" xml:space="preserve">
     <value>显示 ASCII(A)</value>
   </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>显示解析的字段</value>
+  </data>
   <data name="Menu_View_BytesPerLine" xml:space="preserve">
     <value>每行字节数(B)</value>
   </data>

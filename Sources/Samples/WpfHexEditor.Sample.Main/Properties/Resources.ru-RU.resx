@@ -785,6 +785,9 @@
   <data name="Menu_View_ShowASCII" xml:space="preserve">
     <value>Показать ASCII</value>
   </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>Показать обработанные поля</value>
+  </data>
   <data name="Menu_View_BytesPerLine" xml:space="preserve">
     <value>Байтов в строке</value>
   </data>

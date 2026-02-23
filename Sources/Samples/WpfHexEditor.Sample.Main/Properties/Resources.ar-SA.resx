@@ -164,6 +164,9 @@
   <data name="Menu_View_ShowASCII" xml:space="preserve">
     <value>إظهار ASCII</value>
   </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>إظهار الحقول المُحللة</value>
+  </data>
   <data name="Menu_View_BytesPerLine" xml:space="preserve">
     <value>البايتات في كل سطر</value>
   </data>
