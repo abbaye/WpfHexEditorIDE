@@ -7,6 +7,19 @@
     "description":  "Apple macOS disk image format",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Apple Disk Image Format Specification",
+            "UDIF (Universal Disk Image Format)",
+            "HFS+ and APFS Disk Image Structure"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/Apple_Disk_Image",
+            "https://github.com/planetbeing/xpwn/wiki/UDIF",
+            "https://developer.apple.com/documentation/diskarbitration",
+            "http://fileformats.archiveteam.org/wiki/DMG"
+        ]
+    },
     "detection":  {
                       "signature":  "7801730D626260",
                       "offset":  0,

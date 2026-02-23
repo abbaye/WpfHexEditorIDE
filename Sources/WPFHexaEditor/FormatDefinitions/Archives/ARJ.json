@@ -7,6 +7,19 @@
     "description":  "ARJ compressed archive format",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ARJ Archive Format Specification - Robert K. Jung",
+            "ARJ File Format Technical Documentation",
+            "ARJ Compression Algorithm"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/ARJ",
+            "http://fileformats.archiveteam.org/wiki/ARJ",
+            "https://github.com/FarGroup/FarManager/blob/master/plugins/multiarc/arc.doc/arj.txt",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000337.shtml"
+        ]
+    },
     "detection":  {
                       "signature":  "60EA",
                       "offset":  0,

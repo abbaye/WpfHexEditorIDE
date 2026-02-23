@@ -8,6 +8,19 @@
     "description":  "LHA/LZH compressed archive",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "LHA/LZH Archive Format - Haruyasu Yoshizaki",
+            "LZH Compression Algorithm Specification",
+            "LZSS and Huffman Encoding in LHA"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/LHA_(file_format)",
+            "http://fileformats.archiveteam.org/wiki/LHA",
+            "https://github.com/jca02266/lha",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000339.shtml"
+        ]
+    },
     "detection":  {
                       "signature":  "2D6C68",
                       "offset":  2,

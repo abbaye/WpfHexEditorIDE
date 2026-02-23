@@ -7,6 +7,19 @@
     "description":  "ACE compressed archive format",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "WinACE Archive Format Specification",
+            "ACE Compression Algorithm",
+            "ACE Archive File Structure"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/ACE_(compressed_file_format)",
+            "http://fileformats.archiveteam.org/wiki/ACE",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000338.shtml",
+            "https://github.com/droe/acefile"
+        ]
+    },
     "detection":  {
                       "signature":  "2A2A4143452A2A",
                       "offset":  7,

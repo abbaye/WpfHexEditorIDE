@@ -7,6 +7,19 @@
     "description":  "ARC archive format, one of the earliest archive formats for MS-DOS, created by System Enhancement Associates",
     "category":  "Archives",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ARC Archive Format - System Enhancement Associates",
+            "ARC File Structure Specification",
+            "SEA ARC Compression Methods"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/ARC_(file_format)",
+            "http://fileformats.archiveteam.org/wiki/ARC_(SEA)",
+            "https://www.fileformat.info/format/arc/corion.htm",
+            "https://github.com/joncampbell123/arc"
+        ]
+    },
     "detection":  {
                       "signature":  "1A",
                       "offset":  0,
