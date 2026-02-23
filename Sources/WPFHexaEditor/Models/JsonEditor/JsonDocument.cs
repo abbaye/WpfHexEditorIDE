@@ -185,14 +185,21 @@ namespace WpfHexaEditor.Models.JsonEditor
             {
                 // Single line insertion
                 var jsonLine = Lines[position.Line];
-                jsonLine.Text = jsonLine.Text.Insert(position.Column, text);
+
+                // Clamp column to valid range
+                int col = Math.Max(0, Math.Min(position.Column, jsonLine.Text.Length));
+                jsonLine.Text = jsonLine.Text.Insert(col, text);
             }
             else
             {
                 // Multi-line insertion
                 var currentLine = Lines[position.Line];
-                var leftPart = currentLine.Text.Substring(0, position.Column);
-                var rightPart = currentLine.Text.Substring(position.Column);
+
+                // Clamp column to valid range
+                int col = Math.Max(0, Math.Min(position.Column, currentLine.Text.Length));
+
+                var leftPart = currentLine.Text.Substring(0, col);
+                var rightPart = currentLine.Text.Substring(col);
 
                 // Update first line
                 currentLine.Text = leftPart + lines[0];
@@ -339,8 +346,18 @@ namespace WpfHexaEditor.Models.JsonEditor
             if (start.Line == end.Line)
             {
                 var line = Lines[start.Line];
-                string deleted = line.Text.Substring(start.Column, end.Column - start.Column);
-                line.Text = line.Text.Remove(start.Column, end.Column - start.Column);
+
+                // Clamp columns to valid range
+                int startCol = Math.Max(0, Math.Min(start.Column, line.Text.Length));
+                int endCol = Math.Max(startCol, Math.Min(end.Column, line.Text.Length));
+                int length = endCol - startCol;
+
+                // Skip if nothing to delete
+                if (length <= 0)
+                    return;
+
+                string deleted = line.Text.Substring(startCol, length);
+                line.Text = line.Text.Remove(startCol, length);
 
                 OnTextChanged(new TextChangedEventArgs
                 {
@@ -356,8 +373,12 @@ namespace WpfHexaEditor.Models.JsonEditor
                 var firstLine = Lines[start.Line];
                 var lastLine = Lines[end.Line];
 
-                string leftPart = firstLine.Text.Substring(0, start.Column);
-                string rightPart = lastLine.Text.Substring(end.Column);
+                // Clamp columns to valid ranges
+                int startCol = Math.Max(0, Math.Min(start.Column, firstLine.Text.Length));
+                int endCol = Math.Max(0, Math.Min(end.Column, lastLine.Text.Length));
+
+                string leftPart = firstLine.Text.Substring(0, startCol);
+                string rightPart = lastLine.Text.Substring(endCol);
 
                 // Update first line
                 firstLine.Text = leftPart + rightPart;

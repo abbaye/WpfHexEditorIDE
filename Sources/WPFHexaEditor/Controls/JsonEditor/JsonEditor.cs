@@ -75,6 +75,13 @@ namespace WpfHexaEditor.Controls.JsonEditor
 
         #endregion
 
+        #region Fields - Virtual Scrolling (Phase 11)
+
+        private VirtualizationEngine _virtualizationEngine;
+        private double _verticalScrollOffset = 0;
+
+        #endregion
+
         #region Fields - Rendering State
 
         private Typeface _typeface;
