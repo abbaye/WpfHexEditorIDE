@@ -7,6 +7,19 @@
     "description":  "Generic game save file",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Generic Game Save File Format",
+                                              "Nintendo DS Save Format",
+                                              "Multi-Platform Save Game Data"
+                                          ],
+                       "web_links":  [
+                                         "https://fileformat.fandom.com/wiki/SAV",
+                                         "https://docs.fileformat.com/game/sav/",
+                                         "https://developer.valvesoftware.com/wiki/Save_Game_Files",
+                                         "https://cosmodoc.org/topics/save-file-format/"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "00",
                       "offset":  0,

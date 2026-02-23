@@ -7,6 +7,19 @@
     "description":  "Blizzard MoPaQ archive format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Blizzard MoPaQ Archive Format",
+                                              "Mike O'Brien Pack (MPQ) Specification",
+                                              "MPQ Archive Format v1.0"
+                                          ],
+                       "web_links":  [
+                                         "http://www.zezula.net/en/mpq/mpqformat.html",
+                                         "https://wowdev.wiki/MPQ",
+                                         "https://wowpedia.fandom.com/wiki/MPQ",
+                                         "https://github.com/icza/mpq"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "4D50511A",
                       "offset":  0,

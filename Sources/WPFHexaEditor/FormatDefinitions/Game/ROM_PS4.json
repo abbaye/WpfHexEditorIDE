@@ -7,6 +7,19 @@
     "description":  "PlayStation 4 PKG package format (encrypted game/update packages)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PlayStation 4 PKG Package Format Specification",
+            "OrbisOS PKG/PFS Structure",
+            "LibOrbisPkg - PS4 PKG/SFO/PFS Library"
+        ],
+        "web_links": [
+            "https://www.psdevwiki.com/ps4/PKG_files",
+            "https://github.com/maxton/LibOrbisPkg",
+            "https://github.com/pearlxcore/PS4-PKG-Tool",
+            "https://www.psxhax.com/threads/ps4-pkg-information-on-playstation-4-packages-and-keys-via-maxton.7280/"
+        ]
+    },
     "detection":  {
                       "signature":  "7F434E54",
                       "offset":  0,

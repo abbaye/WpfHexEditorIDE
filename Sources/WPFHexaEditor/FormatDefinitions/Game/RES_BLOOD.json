@@ -7,6 +7,19 @@
     "description":  "Blood game RFF resource archive",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Blood RFF Archive Format",
+                                              "Monolith RFF Resource File",
+                                              "Build Engine RFF Specification"
+                                          ],
+                       "web_links":  [
+                                         "https://moddingwiki.shikadi.net/wiki/RFF_Format",
+                                         "https://blood.sourceforge.net/rebuild.php",
+                                         "https://fileinfo.com/extension/rff",
+                                         "https://blood-wiki.org/index.php/Build"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "52464618",
                       "offset":  0,

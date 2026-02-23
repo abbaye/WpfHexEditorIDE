@@ -7,6 +7,19 @@
     "description":  "Generic game asset package",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Quake PAK/PACK Format Specification",
+                                              "id Software PAK Archive Format",
+                                              "Quake Engine PAK Structure"
+                                          ],
+                       "web_links":  [
+                                         "https://quakewiki.org/wiki/.pak",
+                                         "http://fileformats.archiveteam.org/wiki/Quake_PAK",
+                                         "https://formats.kaitai.io/quake_pak/",
+                                         "https://developer.valvesoftware.com/wiki/PAK"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "5041434B",
                       "offset":  0,

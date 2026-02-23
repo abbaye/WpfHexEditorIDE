@@ -7,6 +7,19 @@
     "description":  "Ragnarok Online game resource archive",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Ragnarok Online GRF Archive",
+                                              "Gravity GRF File Format",
+                                              "GRF Virtual File System"
+                                          ],
+                       "web_links":  [
+                                         "https://ragnarokresearchlab.github.io/file-formats/grf/",
+                                         "https://github.com/rathena/rathena/wiki/GRF",
+                                         "https://z0q.neocities.org/ragnarok-online-formats/grf/",
+                                         "https://github.com/vthibault/grf-loader"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "4D61737465722066204772617669747920466F7220",
                       "offset":  0,

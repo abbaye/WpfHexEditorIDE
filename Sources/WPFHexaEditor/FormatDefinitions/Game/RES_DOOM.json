@@ -7,6 +7,19 @@
     "description":  "Doom/Doom II WAD resource file",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Doom WAD File Format",
+                                              "IWAD/PWAD Specification",
+                                              "id Software WAD Structure"
+                                          ],
+                       "web_links":  [
+                                         "https://doomwiki.org/wiki/WAD",
+                                         "https://moddingwiki.shikadi.net/wiki/WAD_Format",
+                                         "https://coleton.io/posts/wad/",
+                                         "https://jordansavant.com/book/modding/doom/anatomy_of_a_doom_level_part_1_wad_structure.md"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "49574144",
                       "offset":  0,

@@ -9,14 +9,15 @@
     "author": "WPFHexaEditor Team",
     "references": {
         "specifications": [
-            "POSIX.1-1988 (IEEE Std 1003.1)",
-            "GNU tar Format Documentation",
-            "UStar Format Specification"
+            "Atari 7800 A78 Header Specification",
+            "ProSystem ROM Header Format",
+            "Atari 7800 Programming Reference"
         ],
         "web_links": [
-            "https://www.gnu.org/software/tar/manual/",
-            "https://en.wikipedia.org/wiki/Tar_(computing)",
-            "https://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html"
+            "http://7800.8bitdev.org/index.php/A78_Header_Specification",
+            "https://sites.google.com/site/atari7800wiki/a78-header",
+            "https://docs.libretro.com/library/prosystem/",
+            "https://en.wikipedia.org/wiki/Atari_7800"
         ]
     },
     "detection": {

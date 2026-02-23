@@ -7,6 +7,19 @@
     "description":  "Duke Nukem 3D GRP resource archive",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Duke Nukem 3D GRP Format",
+                                              "Ken Silverman GRP Archive",
+                                              "Build Engine Group File"
+                                          ],
+                       "web_links":  [
+                                         "https://moddingwiki.shikadi.net/wiki/GRP_Format",
+                                         "http://justsolve.archiveteam.org/wiki/GRP_(Duke_Nukem_3D)",
+                                         "https://wiki.eduke32.com/wiki/Utilities",
+                                         "https://www.file-extensions.org/grp-file-extension-duke-nukem-3d-archive"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "4B656E53696C766572696D616E",
                       "offset":  0,

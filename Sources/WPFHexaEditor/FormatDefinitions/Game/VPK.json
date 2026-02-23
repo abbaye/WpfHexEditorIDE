@@ -7,6 +7,19 @@
     "description":  "Valve Pak file for Source engine",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Valve Package (VPK) Format",
+                                              "Source Engine VPK Archive",
+                                              "Valve Pak File Specification"
+                                          ],
+                       "web_links":  [
+                                         "https://developer.valvesoftware.com/wiki/VPK",
+                                         "https://developer.valvesoftware.com/wiki/VPK_(file_format)",
+                                         "https://github.com/craftablescience/VPKEdit",
+                                         "https://github.com/ValvePython/vpk"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "55AA1234",
                       "offset":  0,

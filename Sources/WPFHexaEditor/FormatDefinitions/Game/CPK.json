@@ -7,6 +7,19 @@
     "description":  "CRI Middleware CPK archive",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "CRIWARE CPK Archive Format",
+                                              "CRI Middleware Resource Package",
+                                              "CPK File Structure Specification"
+                                          ],
+                       "web_links":  [
+                                         "https://wiki.vg-resource.com/CPK",
+                                         "https://amicitia.miraheze.org/wiki/CPK",
+                                         "https://github.com/esperknight/CriPakTools",
+                                         "https://github.com/Sewer56/CriFsV2Lib"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "43504B20",
                       "offset":  0,

@@ -8,6 +8,19 @@
     "description":  "Xbox Series X/S optimized package format (enhanced XVD)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Xbox Series X/S Enhanced XVD Format",
+            "Xbox Velocity Architecture Documentation",
+            "BCPack and DirectStorage API Specification"
+        ],
+        "web_links": [
+            "https://xboxoneresearch.github.io/wiki/operating-system/xbox-virtual-drive/",
+            "https://news.xbox.com/en-us/2020/07/14/a-closer-look-at-xbox-velocity-architecture/",
+            "https://learn.microsoft.com/en-us/gaming/gdk/_content/gc/system/overviews/directstorage/directstorage-overview",
+            "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S"
+        ]
+    },
     "detection":  {
                       "signature":  "6D737863",
                       "offset":  0,

@@ -7,6 +7,19 @@
     "description":  "Binary Space Partition game map",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Quake BSP Format Specification",
+                                              "Quake Specs v3.4",
+                                              "Binary Space Partitioning Format"
+                                          ],
+                       "web_links":  [
+                                         "https://quakewiki.org/wiki/Quake_BSP_Format",
+                                         "https://www.gamers.org/dEngine/quake/spec/quake-spec34/qkspec_4.htm",
+                                         "https://developer.valvesoftware.com/wiki/BSP",
+                                         "https://docs.fileformat.com/game/bsp/"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "00",
                       "offset":  0,

@@ -7,6 +7,19 @@
     "description":  "Universal Patching System (UPS) format - Enhanced ROM patching with CRC32 validation and bidirectional support",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Universal Patching System (UPS)",
+                                              "UPS Format by byuu",
+                                              "Bidirectional ROM Patch Format"
+                                          ],
+                       "web_links":  [
+                                         "https://docs.fileformat.com/game/ups/",
+                                         "https://rainbowdevs.com/2008/05/03/ups-patching-specification/",
+                                         "https://www.romhacking.net/utilities/606/",
+                                         "https://consolemods.org/wiki/Applying_ROM_Patches"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "55505331",
                       "offset":  0,

@@ -9,13 +9,15 @@
     "author": "WPFHexaEditor Team",
     "references": {
         "specifications": [
-            "Game Boy Programming Manual",
-            "Pan Docs - Game Boy Technical Reference"
+            "GBATEK - GBA Technical Specification",
+            "Game Boy Advance Cartridge Header",
+            "ARM7TDMI Programming Reference"
         ],
         "web_links": [
-            "https://gbdev.io/pandocs/",
-            "https://gekkio.fi/files/gb-docs/gbctr.pdf",
-            "https://en.wikipedia.org/wiki/Game_Boy"
+            "http://problemkaputt.de/gbatek.htm",
+            "https://problemkaputt.de/gbatek-gba-cartridge-header.htm",
+            "http://www.sizecoding.org/wiki/Gameboy_Advance",
+            "https://www.akkit.org/info/gbatek.htm"
         ]
     },
     "detection": {

@@ -7,6 +7,19 @@
     "description":  "Unreal Engine map/level file",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Unreal Engine Map/Level Format",
+                                              "UE Level Asset Specification",
+                                              "Epic Games Level Binary Format"
+                                          ],
+                       "web_links":  [
+                                         "https://fileinfo.com/extension/umap",
+                                         "https://dev.epicgames.com/documentation/en-us/unreal-engine/levels-in-unreal-engine",
+                                         "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-projects-and-gameplay",
+                                         "https://www.whatext.com/file/umap"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "C1832A9E",
                       "offset":  0,

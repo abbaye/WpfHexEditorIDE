@@ -8,6 +8,19 @@
     "description":  "PlayStation Portable UMD disc image (ISO or compressed CSO)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PSP UMD Disc Image Format (ISO)",
+            "CSO/CISO Compressed ISO Format",
+            "UMDGen PSP Backup Tool Documentation"
+        ],
+        "web_links": [
+            "https://www.ppsspp.org/docs/getting-started/dumping-games/",
+            "https://www.iso2cso.com/",
+            "https://github.com/meoow/cisoplus",
+            "https://archive.org/details/UMDGen-playstation-portable-2004-iso-to-cso"
+        ]
+    },
     "detection":  {
                       "signature":  "4349534F",
                       "offset":  0,

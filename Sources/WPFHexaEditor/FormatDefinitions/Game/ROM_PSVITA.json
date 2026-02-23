@@ -8,6 +8,19 @@
     "description":  "PlayStation Vita VPK/PKG package format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PlayStation Vita VPK Package Format",
+            "PS Vita PKG Format with NoNpDrm",
+            "Vita SDK and Homebrew Packaging"
+        ],
+        "web_links": [
+            "https://www.psdevwiki.com/vita/VPK",
+            "https://www.retroreversing.com/playstation-vita-file-formats",
+            "https://vitasdk.org/",
+            "https://github.com/blastrock/pkgj"
+        ]
+    },
     "detection":  {
                       "signature":  "7F504B47",
                       "offset":  0,

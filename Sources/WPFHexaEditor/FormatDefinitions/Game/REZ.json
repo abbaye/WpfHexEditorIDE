@@ -7,6 +7,19 @@
     "description":  "LithTech/various game resource archive",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "LithTech REZ Archive Format",
+                                              "Monolith REZ Resource Manager",
+                                              "Jupiter Engine REZ Specification"
+                                          ],
+                       "web_links":  [
+                                         "https://rewiki.miraheze.org/wiki/LithTech/Jupiter_Engine_REZ",
+                                         "https://github.com/jsj2008/lithtech/blob/master/libs/rezmgr/rezmgr.h",
+                                         "https://fileinfo.com/extension/rez",
+                                         "https://www.whatext.com/file/rez"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "00",
                       "offset":  0,

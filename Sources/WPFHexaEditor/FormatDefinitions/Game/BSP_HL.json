@@ -7,6 +7,19 @@
     "description":  "Half-Life/GoldSrc engine BSP map format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "BSP v30 GoldSrc Format",
+                                              "Half-Life BSP Specification",
+                                              "Valve GoldSrc Engine Format"
+                                          ],
+                       "web_links":  [
+                                         "https://developer.valvesoftware.com/wiki/BSP_(GoldSrc)",
+                                         "https://hlbsp.sourceforge.net/index.php?content=bspdef",
+                                         "http://abit.g6.cz/game_coding/formats/gold_source/bsp.html",
+                                         "https://github.com/AbitTheGray/BspLib"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "1E000000",
                       "offset":  0,

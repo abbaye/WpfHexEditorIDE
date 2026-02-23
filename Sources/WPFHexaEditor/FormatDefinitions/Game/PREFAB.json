@@ -7,6 +7,19 @@
     "description":  "Unity prefab object file",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Unity Prefab YAML Format",
+                                              "Unity Serialization Specification",
+                                              "Unity Text Serialized File Format"
+                                          ],
+                       "web_links":  [
+                                         "https://docs.unity3d.com/Manual/FormatDescription.html",
+                                         "https://unity.com/blog/engine-platform/understanding-unitys-serialization-language-yaml",
+                                         "https://github.com/socialpoint-labs/unity-yaml-parser",
+                                         "https://www.syntacticsugardaddy.com/blog/serialization-in-unity-explained"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "2559414D4C",
                       "offset":  0,

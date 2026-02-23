@@ -8,6 +8,19 @@
     "description":  "Generic game package/archive format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Generic Game Package Format",
+                                              "PAC/PACK Archive Container",
+                                              "Multi-Platform Game Archive"
+                                          ],
+                       "web_links":  [
+                                         "https://www.file-extensions.org/pac-file-extension-pacman-data",
+                                         "https://github.com/Ekey/REE.PAK.Tool",
+                                         "https://github.com/shawngmc/game-extraction-toolbox",
+                                         "https://www.romhacking.net/forum/index.php?topic=32578.0"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "00",
                       "offset":  0,

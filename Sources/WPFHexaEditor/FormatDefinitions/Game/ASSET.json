@@ -7,6 +7,19 @@
     "description":  "Unity asset/scene file",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Unity YAML Format Description",
+                                              "UnityYAML Specification",
+                                              "Unity Serialization Language"
+                                          ],
+                       "web_links":  [
+                                         "https://docs.unity3d.com/Manual/FormatDescription.html",
+                                         "https://docs.unity3d.com/Manual/UnityYAML.html",
+                                         "https://unity.com/blog/engine-platform/understanding-unitys-serialization-language-yaml",
+                                         "https://github.com/socialpoint-labs/unity-yaml-parser"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "2559414D4C",
                       "offset":  0,

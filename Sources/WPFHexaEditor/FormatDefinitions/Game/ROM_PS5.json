@@ -7,6 +7,19 @@
     "description":  "PlayStation 5 PKG package format (next-gen encrypted packages)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PlayStation 5 PKG Package Format",
+            "PS5 PKG/PFS Structure Documentation",
+            "PS5PKGReader and pkgdec5 Tools"
+        ],
+        "web_links": [
+            "https://www.psdevwiki.com/ps5/PKG_files",
+            "https://github.com/seregonwar/PkgToolBox",
+            "https://www.ps5pkg.com/",
+            "https://github.com/ps5-payload-dev/fetchpkg"
+        ]
+    },
     "detection":  {
                       "signature":  "7F434E54",
                       "offset":  0,

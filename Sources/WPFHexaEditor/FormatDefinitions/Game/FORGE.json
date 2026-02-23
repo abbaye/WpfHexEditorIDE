@@ -7,6 +7,19 @@
     "description":  "Ubisoft FORGE archive format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Ubisoft FORGE Archive Format",
+                                              "Ubisoft ANVIL Engine Archive",
+                                              "FORGE scimage Container"
+                                          ],
+                       "web_links":  [
+                                         "https://fileinfo.com/extension/forge",
+                                         "https://github.com/gentlegiantJGC/ACExplorer",
+                                         "https://www.zenhax.com/viewtopic.php@t=9138.html",
+                                         "https://www.moddb.com/groups/assassins-creed-fans/downloads/forge-extractorreplacer-by-turfster"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "7363696D61676500",
                       "offset":  0,

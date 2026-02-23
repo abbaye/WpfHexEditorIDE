@@ -7,6 +7,19 @@
     "description":  "Electronic Arts BIG archive format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "EA BIG/BIGF Archive Format",
+                                              "BIG File Format Specification",
+                                              "Electronic Arts Game Resource Package"
+                                          ],
+                       "web_links":  [
+                                         "https://rewiki.miraheze.org/wiki/EA_BIG_BIGF_Archive",
+                                         "https://github.com/TheAssemblyArmada/Thyme-Wiki/blob/master/BIG-File-Format.md",
+                                         "https://chipgw.com/2014/12/19/the-big-file-format/",
+                                         "https://github.com/withmorten/big4f"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "42494746",
                       "offset":  0,

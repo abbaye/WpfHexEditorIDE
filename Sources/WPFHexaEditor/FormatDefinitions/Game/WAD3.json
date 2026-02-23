@@ -7,6 +7,19 @@
     "description":  "Half-Life WAD3 texture archive",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Half-Life WAD3 Format",
+                                              "GoldSrc Texture Archive Specification",
+                                              "WAD3 MipTex Structure"
+                                          ],
+                       "web_links":  [
+                                         "https://developer.valvesoftware.com/wiki/WAD",
+                                         "https://twhl.info/wiki/page/Specification:_WAD3",
+                                         "https://developer.valvesoftware.com/wiki/WAD3_Structure",
+                                         "https://www.j0e.io/tutorials/wad3-format/"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "57414433",
                       "offset":  0,

@@ -7,6 +7,19 @@
     "description":  "RPG Maker Wolf RPG archive",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Wolf RPG Editor Archive Format",
+                                              "SmokingWOLF WOLF Encryption",
+                                              "Wolf RPG Editor Data.wolf Format"
+                                          ],
+                       "web_links":  [
+                                         "https://rpgm.fandom.com/wiki/Wolf_RPG_Editor",
+                                         "https://fileinfo.com/extension/wolf",
+                                         "https://www.moddb.com/engines/wolf-rpg-editor",
+                                         "https://archive.org/details/wolfrpgeditor"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "444C43",
                       "offset":  0,

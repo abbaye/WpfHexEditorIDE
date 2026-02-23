@@ -7,6 +7,19 @@
     "description":  "Steam Game Cache File",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Valve GCF Archive Format",
+                                              "Steam Game Cache File (Legacy)",
+                                              "GCF Virtual File System"
+                                          ],
+                       "web_links":  [
+                                         "https://developer.valvesoftware.com/wiki/GCF_archive",
+                                         "https://www.wunderboy.org/documentation/valve-gcf-file-format/",
+                                         "https://developer.valvesoftware.com/wiki/GCFScape",
+                                         "https://fileinfo.com/extension/gcf"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "01000000",
                       "offset":  0,

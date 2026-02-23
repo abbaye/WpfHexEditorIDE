@@ -7,6 +7,19 @@
     "description":  "International Patching System (IPS) format - Classic ROM patching format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "International Patching System (IPS)",
+                                              "IPS Binary Patch Format",
+                                              "Classic ROM Patching Standard"
+                                          ],
+                       "web_links":  [
+                                         "http://justsolve.archiveteam.org/wiki/IPS_(binary_patch_format)",
+                                         "https://docs.fileformat.com/game/ips/",
+                                         "https://consolemods.org/wiki/Applying_ROM_Patches",
+                                         "https://segaretro.org/IPS"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "5041544348",
                       "offset":  0,

@@ -9,6 +9,19 @@
     "description":  "Nintendo Switch 2 next-gen package formats (NSP2/XCI2/NCA2 - enhanced versions)",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Nintendo Switch File Formats (Base)",
+                                              "NSP/XCI/NCA Format Evolution",
+                                              "Next-Gen Nintendo Format Standards"
+                                          ],
+                       "web_links":  [
+                                         "https://www.retroreversing.com/SwitchFileFormats",
+                                         "https://www.oreateai.com/blog/understanding-the-differences-between-xci-and-nsp-formats-for-nintendo-switch/",
+                                         "https://switchrom101.com/what-file-formats-are-switch-roms-nsp-vs-xci-explained-simply/",
+                                         "https://github.com/jakcron/nstool"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "504653",
                       "offset":  0,

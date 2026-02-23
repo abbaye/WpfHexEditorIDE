@@ -7,6 +7,19 @@
     "description":  "Quake II WAD texture archive",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Quake WAD2 Texture Format",
+                                              "WAD2 File Specification",
+                                              "Quake Texture Archive Format"
+                                          ],
+                       "web_links":  [
+                                         "https://www.gamers.org/dEngine/quake/spec/quake-spec34/qkspec_7.htm",
+                                         "https://quakewiki.org/wiki/Texture_Wad",
+                                         "https://developer.valvesoftware.com/wiki/.wad",
+                                         "http://fileformats.archiveteam.org/wiki/Quake_WAD"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "57414432",
                       "offset":  0,

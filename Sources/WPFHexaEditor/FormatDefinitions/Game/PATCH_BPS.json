@@ -7,6 +7,19 @@
     "description":  "Beat Patching System (BPS) format - Modern ROM patching with metadata support, CRC32 validation, and optimal compression",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Beat Patching System (BPS) Format",
+                                              "BPS v1 Specification by byuu/Near",
+                                              "BPS ROM Patch Standard"
+                                          ],
+                       "web_links":  [
+                                         "https://github.com/blakesmith/rombp/blob/master/docs/bps_spec.md",
+                                         "https://github.com/btimofeev/UniPatcher/wiki/BPS",
+                                         "https://www.romhacking.net/utilities/893/",
+                                         "https://forums.nesdev.org/viewtopic.php?t=16803"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "42505331",
                       "offset":  0,

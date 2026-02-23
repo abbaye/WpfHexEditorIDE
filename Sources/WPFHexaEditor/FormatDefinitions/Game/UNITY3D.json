@@ -7,6 +7,19 @@
     "description":  "Unity Engine asset bundle file",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Unity AssetBundle Format",
+                                              "UnityFS Archive Structure",
+                                              "Unity Asset Bundle Internal Format"
+                                          ],
+                       "web_links":  [
+                                         "https://docs.unity3d.com/Manual/assetbundles-file-format.html",
+                                         "https://docs.unity3d.com/Manual/AssetBundlesIntro.html",
+                                         "https://imbushuo.net/blog/archives/505/",
+                                         "https://github.com/HearthSim/UnityPack/wiki/Format-Documentation"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "556E697479465300",
                       "offset":  0,

@@ -9,6 +9,19 @@
     "description":  "RPG Maker encrypted game archive",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "RPG Maker RGSSAD Encrypted Archive",
+                                              "RGSS2A/RGSS3A Format Specification",
+                                              "RPG Maker VX/VX Ace Archive"
+                                          ],
+                       "web_links":  [
+                                         "https://github.com/uuksu/RPGMakerDecrypter",
+                                         "https://deepwiki.com/uuksu/RPGMakerDecrypter/4.1-rgssad-library",
+                                         "https://github.com/RPG-Maker-Translation-Tools/rpgm-archive-decrypter",
+                                         "https://fileinfo.com/extension/rgssad"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "52475353414400",
                       "offset":  0,

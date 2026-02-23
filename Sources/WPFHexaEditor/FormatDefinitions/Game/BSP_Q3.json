@@ -7,6 +7,19 @@
     "description":  "Quake 3 engine BSP map format",
     "category":  "Game",
     "author":  "WPFHexaEditor Team",
+    "references":  {
+                       "specifications":  [
+                                              "Quake 3 Arena IBSP v46 Format",
+                                              "Unofficial Quake 3 Map Specs",
+                                              "id Software Quake III BSP"
+                                          ],
+                       "web_links":  [
+                                         "http://www.mralligator.com/q3/",
+                                         "https://gist.github.com/Polda18/e491dca3b8fa3be2c83c29ae32c8bb87",
+                                         "https://github.com/id-Software/Quake-III-Arena/blob/master/common/qfiles.h",
+                                         "https://github.com/zturtleman/bsp-sekai"
+                                     ]
+                   },
     "detection":  {
                       "signature":  "49425350",
                       "offset":  0,
