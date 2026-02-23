@@ -33,6 +33,14 @@
 
 **WPF HexEditor** is a powerful, high-performance hex editor control for .NET applications. Built with modern MVVM architecture and optimized for files from bytes to gigabytes, it delivers professional-grade binary editing with **99% faster rendering** and **10-100x faster search** than legacy versions.
 
+**Key Features:**
+- 🔍 **400+ file format** auto-detection with binary templates
+- ✏️ **Insert/Overwrite** editing modes with unlimited undo/redo
+- 📊 **Data Inspector** with 15+ data type interpretations
+- 🎨 **Multiple display modes** (Hex, Decimal, Binary, ASCII, EBCDIC)
+- 🔬 **Parsed Fields Panel** with structure overlay visualization
+- ⚖️ **File Diff** for side-by-side binary comparison
+
 **Perfect for:** binary file analysis, game ROM modding, data recovery, protocol debugging, security research, and any application requiring low-level data inspection.
 
 ---
