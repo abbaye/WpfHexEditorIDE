@@ -13,7 +13,7 @@ namespace WpfHexaEditor
         /// </summary>
         public void ApplyIPSPatch()
         {
-            if (!IsFileOpen)
+            if (!IsFileOrStreamLoaded)
             {
                 MessageBox.Show(
                     "Please open a ROM file first before applying a patch.",
@@ -71,7 +71,7 @@ namespace WpfHexaEditor
                 if (patchResult.Success)
                 {
                     // Update the editor with patched data
-                    LoadBytes(romData);
+                    OpenMemory(romData);
 
                     // Show success message
                     MessageBox.Show(
@@ -112,7 +112,7 @@ namespace WpfHexaEditor
         /// </summary>
         public void CreateIPSPatch()
         {
-            if (!IsFileOpen)
+            if (!IsFileOrStreamLoaded)
             {
                 MessageBox.Show(
                     "Please open a modified ROM file first.",
