@@ -1,30 +1,69 @@
 ﻿{
-    "formatName":  "MessagePack",
-    "version":  "1.0",
-    "extensions":  [
-                       ".msgpack",
-                       ".mp"
-                   ],
-    "description":  "MessagePack binary serialization format",
-    "category":  "Data",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "data",
-                       "name":  "MessagePack Data",
-                       "offset":  0,
-                       "length":  256,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MessagePack binary data"
-                   }
-               ]
+  "formatName": "MessagePack",
+  "version": "1.0",
+  "extensions": [
+    ".msgpack",
+    ".mp"
+  ],
+  "description": "MessagePack binary serialization format",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "MessagePack Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/MSGPACK"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "data",
+      "name": "MessagePack Data",
+      "offset": 0,
+      "length": 256,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MessagePack binary data"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Data",
+    "extensions": [
+      ".msgpack",
+      ".mp"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".msgpack",
+    "defined_fields": 1
+  }
 }

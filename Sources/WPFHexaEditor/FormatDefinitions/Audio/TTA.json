@@ -1,42 +1,74 @@
 ﻿{
-    "formatName":  "True Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".tta"
-                   ],
-    "description":  "True Audio lossless audio compression format",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "TTA - True Audio Lossless Format",
-            "TTA Codec Specification",
-            "True Audio Compression Algorithm"
-        ],
-        "web_links": [
-            "https://wiki.hydrogenaudio.org/index.php?title=TTA",
-            "http://www.audiodope.org/en/help/trueAudioFormat.html",
-            "https://sourceforge.net/projects/tta/",
-            "https://en.wikipedia.org/wiki/TTA_(codec)"
-        ]
-    },
-    "detection":  {
-                      "signature":  "54544131",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "TTA Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "TTA1 - True Audio format signature"
-                   }
-               ]
+  "formatName": "True Audio",
+  "version": "1.0",
+  "extensions": [
+    ".tta"
+  ],
+  "description": "True Audio lossless audio compression format",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "TTA - True Audio Lossless Format",
+      "TTA Codec Specification",
+      "True Audio Compression Algorithm"
+    ],
+    "web_links": [
+      "https://wiki.hydrogenaudio.org/index.php?title=TTA",
+      "http://www.audiodope.org/en/help/trueAudioFormat.html",
+      "https://sourceforge.net/projects/tta/",
+      "https://en.wikipedia.org/wiki/TTA_(codec)"
+    ]
+  },
+  "detection": {
+    "signature": "54544131",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "TTA Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "TTA1 - True Audio format signature"
+    }
+  ],
+  "mime_types": [
+    "audio/tta"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "TTA codec",
+    "Foobar2000"
+  ],
+  "use_cases": [
+    "Audio playback",
+    "Sound storage"
+  ],
+  "format_relationships": {
+    "category": "Audio",
+    "extensions": [
+      ".tta"
+    ]
+  },
+  "technical_details": {
+    "audio_format": true,
+    "primary_extension": ".tta",
+    "defined_fields": 1
+  }
 }

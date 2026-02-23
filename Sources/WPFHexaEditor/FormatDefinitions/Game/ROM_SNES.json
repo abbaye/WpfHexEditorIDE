@@ -1,165 +1,206 @@
 ﻿{
-    "formatName":  "Super Nintendo ROM",
-    "version":  "1.0",
-    "extensions":  [
-                       ".smc",
-                       ".sfc"
-                   ],
-    "description":  "Super Nintendo Entertainment System ROM (HiROM internal header)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "SNES Internal ROM Header Specification",
-            "SNESdev Wiki ROM Header Documentation",
-            "Super Nintendo Software Specification"
-        ],
-        "web_links": [
-            "https://snes.nesdev.org/wiki/ROM_header",
-            "https://sneslab.net/wiki/SNES_ROM_Header",
-            "https://wiki.superfamicom.org/writing-the-header",
-            "https://en.wikibooks.org/wiki/Super_NES_Programming/SNES_memory_map"
-        ]
+  "formatName": "Super Nintendo ROM",
+  "version": "1.0",
+  "extensions": [
+    ".smc",
+    ".sfc"
+  ],
+  "description": "Super Nintendo Entertainment System ROM (HiROM internal header)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "SNES Internal ROM Header Specification",
+      "SNESdev Wiki ROM Header Documentation",
+      "Super Nintendo Software Specification"
+    ],
+    "web_links": [
+      "https://snes.nesdev.org/wiki/ROM_header",
+      "https://sneslab.net/wiki/SNES_ROM_Header",
+      "https://wiki.superfamicom.org/writing-the-header",
+      "https://en.wikibooks.org/wiki/Super_NES_Programming/SNES_memory_map"
+    ]
+  },
+  "detection": {
+    "signature": "33",
+    "offset": 65498,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "romLayout": 0,
+    "romSize": 0,
+    "checksumComplement": 0,
+    "checksum": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Game Title",
+      "offset": 65472,
+      "length": 21,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Internal game title (ASCII padded with spaces)"
     },
-    "detection":  {
-                      "signature":  "33",
-                      "offset":  65498,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0,
-                      "romLayout":  0,
-                      "romSize":  0,
-                      "checksumComplement":  0,
-                      "checksum":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Game Title",
-                       "offset":  65472,
-                       "length":  21,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Internal game title (ASCII padded with spaces)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "ROM Layout",
-                       "offset":  65493,
-                       "length":  1,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "storeAs":  "romLayout",
-                       "description":  "ROM mapping mode: 0x20=LoROM, 0x21=HiROM, 0x22=SuperFX, 0x23=SA-1, 0x25=ExHiROM",
-                       "validationRules":  {
-                           "allowedValues":  [32, 33, 34, 35, 36, 37]
-                       }
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "ROM Type",
-                       "offset":  65494,
-                       "length":  1,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "Chipset: 0x00=ROM only, 0x01=ROM+RAM, 0x02=ROM+RAM+Battery, 0x03+=Enhancement chips"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "ROM Size",
-                       "offset":  65495,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "storeAs":  "romSize",
-                       "description":  "ROM size as power of 2 in KB (e.g., 0x08 = 256KB)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "RAM Size",
-                       "offset":  65496,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "Save RAM size as power of 2 in KB, 0 if no SRAM"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Region Code",
-                       "offset":  65497,
-                       "length":  1,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "Destination: 0x00=Japan, 0x01=USA, 0x02=Europe, 0x0D=Korea"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Developer ID",
-                       "offset":  65498,
-                       "length":  1,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "0x33 for post-1991 games, old format uses ASCII pair"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  65499,
-                       "length":  1,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "Mask ROM version (0 = first revision)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Checksum Complement",
-                       "offset":  65500,
-                       "length":  2,
-                       "color":  "#FF6B9D",
-                       "opacity":  0.3,
-                       "valueType":  "uint16",
-                       "storeAs":  "checksumComplement",
-                       "description":  "Bitwise complement of ROM checksum"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Checksum",
-                       "offset":  65502,
-                       "length":  2,
-                       "color":  "#FF6B9D",
-                       "opacity":  0.3,
-                       "valueType":  "uint16",
-                       "storeAs":  "checksum",
-                       "description":  "16-bit sum of all ROM bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Native Mode Vectors",
-                       "offset":  65520,
-                       "length":  16,
-                       "color":  "#B8B8FF",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Vectors: COP, BRK, ABORT, NMI, RESET, IRQ (native 65816)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Emulation Mode Vectors",
-                       "offset":  65536,
-                       "length":  16,
-                       "color":  "#B8B8FF",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Vectors: COP, -, ABORT, NMI, RESET, IRQ/BRK (emulation 6502)"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "ROM Layout",
+      "offset": 65493,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "romLayout",
+      "description": "ROM mapping mode: 0x20=LoROM, 0x21=HiROM, 0x22=SuperFX, 0x23=SA-1, 0x25=ExHiROM",
+      "validationRules": {
+        "allowedValues": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37
+        ]
+      }
+    },
+    {
+      "type": "field",
+      "name": "ROM Type",
+      "offset": 65494,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Chipset: 0x00=ROM only, 0x01=ROM+RAM, 0x02=ROM+RAM+Battery, 0x03+=Enhancement chips"
+    },
+    {
+      "type": "field",
+      "name": "ROM Size",
+      "offset": 65495,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "romSize",
+      "description": "ROM size as power of 2 in KB (e.g., 0x08 = 256KB)"
+    },
+    {
+      "type": "field",
+      "name": "RAM Size",
+      "offset": 65496,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Save RAM size as power of 2 in KB, 0 if no SRAM"
+    },
+    {
+      "type": "field",
+      "name": "Region Code",
+      "offset": 65497,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Destination: 0x00=Japan, 0x01=USA, 0x02=Europe, 0x0D=Korea"
+    },
+    {
+      "type": "field",
+      "name": "Developer ID",
+      "offset": 65498,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "0x33 for post-1991 games, old format uses ASCII pair"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 65499,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Mask ROM version (0 = first revision)"
+    },
+    {
+      "type": "field",
+      "name": "Checksum Complement",
+      "offset": 65500,
+      "length": 2,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "checksumComplement",
+      "description": "Bitwise complement of ROM checksum"
+    },
+    {
+      "type": "field",
+      "name": "Checksum",
+      "offset": 65502,
+      "length": 2,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "checksum",
+      "description": "16-bit sum of all ROM bytes"
+    },
+    {
+      "type": "field",
+      "name": "Native Mode Vectors",
+      "offset": 65520,
+      "length": 16,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Vectors: COP, BRK, ABORT, NMI, RESET, IRQ (native 65816)"
+    },
+    {
+      "type": "field",
+      "name": "Emulation Mode Vectors",
+      "offset": 65536,
+      "length": 16,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Vectors: COP, -, ABORT, NMI, RESET, IRQ/BRK (emulation 6502)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 12,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "Snes9x",
+    "ZSNES",
+    "bsnes",
+    "RetroArch"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".smc",
+      ".sfc"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".smc",
+    "defined_fields": 12
+  }
 }

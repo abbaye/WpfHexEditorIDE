@@ -1,60 +1,92 @@
 ﻿{
-    "formatName":  "ASTC Texture",
-    "version":  "1.0",
-    "extensions":  [
-                       ".astc"
-                   ],
-    "description":  "Adaptive Scalable Texture Compression",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ARM ASTC Specification - Khronos Extension",
-            "Adaptive Scalable Texture Compression User Guide",
-            "OpenGL/Vulkan ASTC Texture Format"
-        ],
-        "web_links": [
-            "https://www.arm.com/technologies/graphics-technologies/adaptive-scalable-texture-compression",
-            "https://developer.arm.com/documentation/102162/latest/",
-            "https://github.com/ARM-software/astc-encoder",
-            "https://en.wikipedia.org/wiki/Adaptive_scalable_texture_compression"
-        ]
+  "formatName": "ASTC Texture",
+  "version": "1.0",
+  "extensions": [
+    ".astc"
+  ],
+  "description": "Adaptive Scalable Texture Compression",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ARM ASTC Specification - Khronos Extension",
+      "Adaptive Scalable Texture Compression User Guide",
+      "OpenGL/Vulkan ASTC Texture Format"
+    ],
+    "web_links": [
+      "https://www.arm.com/technologies/graphics-technologies/adaptive-scalable-texture-compression",
+      "https://developer.arm.com/documentation/102162/latest/",
+      "https://github.com/ARM-software/astc-encoder",
+      "https://en.wikipedia.org/wiki/Adaptive_scalable_texture_compression"
+    ]
+  },
+  "detection": {
+    "signature": "13AB5CA1",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ASTC Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ASTC magic number"
     },
-    "detection":  {
-                      "signature":  "13AB5CA1",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ASTC Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ASTC magic number"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Block Dimensions",
-                       "offset":  4,
-                       "length":  3,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Block X, Y, Z dimensions"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Image Dimensions",
-                       "offset":  7,
-                       "length":  9,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Image X, Y, Z dimensions (3 bytes each)"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Block Dimensions",
+      "offset": 4,
+      "length": 3,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Block X, Y, Z dimensions"
+    },
+    {
+      "type": "field",
+      "name": "Image Dimensions",
+      "offset": 7,
+      "length": 9,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Image X, Y, Z dimensions (3 bytes each)"
+    }
+  ],
+  "mime_types": [
+    "image/astc"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Image viewers",
+    "GIMP"
+  ],
+  "use_cases": [
+    "Image viewing",
+    "Photo editing"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".astc"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".astc",
+    "defined_fields": 3
+  }
 }

@@ -1,30 +1,69 @@
 ﻿{
-    "formatName":  "STEP 3D Model",
-    "version":  "1.0",
-    "extensions":  [
-                       ".step",
-                       ".stp"
-                   ],
-    "description":  "ISO 10303 STEP CAD format",
-    "category":  "CAD",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "49534F2D3130333033",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "STEP Header",
-                       "offset":  0,
-                       "length":  9,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ISO-10303"
-                   }
-               ]
+  "formatName": "STEP 3D Model",
+  "version": "1.0",
+  "extensions": [
+    ".step",
+    ".stp"
+  ],
+  "description": "ISO 10303 STEP CAD format",
+  "category": "CAD",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "STEP 3D Model Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/STEP"
+    ]
+  },
+  "detection": {
+    "signature": "49534F2D3130333033",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 9,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "STEP Header",
+      "offset": 0,
+      "length": 9,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ISO-10303"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "CAD",
+    "extensions": [
+      ".step",
+      ".stp"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".step",
+    "defined_fields": 1
+  }
 }

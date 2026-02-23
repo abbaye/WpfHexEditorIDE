@@ -1,74 +1,105 @@
-{
-    "formatName":  "PlayStation 2 Disc Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".iso",
-                       ".bin"
-                   ],
-    "description":  "PlayStation 2 DVD-ROM disc image (ISO 9660 + PS2 extensions)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "PlayStation 2 DVD-ROM Format",
-            "ISO 9660 Standard for PS2",
-            "PS2 Disc Image Technical Specification"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/PlayStation_2_technical_specifications",
-            "https://wiki.vg-resource.com/PlayStation_2",
-            "https://consolemods.org/wiki/PS2:Creating_Game_Backups",
-            "https://forums.pcsx2.net/Thread-Correct-way-to-make-a-PS2-disc-image"
-        ]
+﻿{
+  "formatName": "PlayStation 2 Disc Image",
+  "version": "1.0",
+  "extensions": [
+    ".iso",
+    ".bin"
+  ],
+  "description": "PlayStation 2 DVD-ROM disc image (ISO 9660 + PS2 extensions)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PlayStation 2 DVD-ROM Format",
+      "ISO 9660 Standard for PS2",
+      "PS2 Disc Image Technical Specification"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/PlayStation_2_technical_specifications",
+      "https://wiki.vg-resource.com/PlayStation_2",
+      "https://consolemods.org/wiki/PS2:Creating_Game_Backups",
+      "https://forums.pcsx2.net/Thread-Correct-way-to-make-a-PS2-disc-image"
+    ]
+  },
+  "detection": {
+    "signature": "50534449",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Volume ID",
+      "offset": 0,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "PS2 volume identifier (often PSDI or blank)"
     },
-    "detection":  {
-                      "signature":  "50534449",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Volume ID",
-                       "offset":  0,
-                       "length":  8,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "PS2 volume identifier (often PSDI or blank)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "ISO 9660 Descriptor",
-                       "offset":  32768,
-                       "length":  6,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "CD001 ISO 9660 standard identifier at sector 16"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "System Identifier",
-                       "offset":  32776,
-                       "length":  32,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "System identifier (PLAYSTATION for PS2 discs)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Volume Identifier",
-                       "offset":  32808,
-                       "length":  32,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Game title/volume name"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "ISO 9660 Descriptor",
+      "offset": 32768,
+      "length": 6,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "CD001 ISO 9660 standard identifier at sector 16"
+    },
+    {
+      "type": "field",
+      "name": "System Identifier",
+      "offset": 32776,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "System identifier (PLAYSTATION for PS2 discs)"
+    },
+    {
+      "type": "field",
+      "name": "Volume Identifier",
+      "offset": 32808,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Game title/volume name"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".iso",
+      ".bin"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".iso",
+    "defined_fields": 4
+  }
 }

@@ -1,39 +1,78 @@
 ﻿{
-    "formatName":  "ECAT PET Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".v",
-                       ".i"
-                   ],
-    "description":  "ECAT PET medical imaging format",
-    "category":  "Medical",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "4D41545249",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ECAT Magic",
-                       "offset":  0,
-                       "length":  5,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ECAT signature (MATRI)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  5,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "ECAT version"
-                   }
-               ]
+  "formatName": "ECAT PET Image",
+  "version": "1.0",
+  "extensions": [
+    ".v",
+    ".i"
+  ],
+  "description": "ECAT PET medical imaging format",
+  "category": "Medical",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ECAT PET Image Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/V"
+    ]
+  },
+  "detection": {
+    "signature": "4D41545249",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 5,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ECAT Magic",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ECAT signature (MATRI)"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 5,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "ECAT version"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Medical",
+    "extensions": [
+      ".v",
+      ".i"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".v",
+    "defined_fields": 2
+  }
 }

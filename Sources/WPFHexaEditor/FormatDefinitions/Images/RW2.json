@@ -1,42 +1,77 @@
 ﻿{
-    "formatName":  "Panasonic Raw Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".rw2"
-                   ],
-    "description":  "Panasonic RAW camera image",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Panasonic RAW Version 2 (RW2) Format",
-            "Panasonic Lumix RAW Image Specification",
-            "RW2 TIFF-based RAW Format"
-        ],
-        "web_links": [
-            "http://fileformats.archiveteam.org/wiki/Panasonic_RAW/RW2",
-            "https://libopenraw.freedesktop.org/formats/rw2/",
-            "https://www.aftershotpro.com/en/pages/rw2-file/",
-            "https://www.paintshoppro.com/en/pages/rw2-file/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "49492A00",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "TIFF Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "RW2 uses TIFF structure"
-                   }
-               ]
+  "formatName": "Panasonic Raw Image",
+  "version": "1.0",
+  "extensions": [
+    ".rw2"
+  ],
+  "description": "Panasonic RAW camera image",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Panasonic RAW Version 2 (RW2) Format",
+      "Panasonic Lumix RAW Image Specification",
+      "RW2 TIFF-based RAW Format"
+    ],
+    "web_links": [
+      "http://fileformats.archiveteam.org/wiki/Panasonic_RAW/RW2",
+      "https://libopenraw.freedesktop.org/formats/rw2/",
+      "https://www.aftershotpro.com/en/pages/rw2-file/",
+      "https://www.paintshoppro.com/en/pages/rw2-file/"
+    ]
+  },
+  "detection": {
+    "signature": "49492A00",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "TIFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "RW2 uses TIFF structure"
+    }
+  ],
+  "mime_types": [
+    "image/rw2"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Image viewers",
+    "GIMP"
+  ],
+  "use_cases": [
+    "Professional photography",
+    "RAW editing",
+    "High-quality images"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".rw2"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".rw2",
+    "defined_fields": 1
+  }
 }

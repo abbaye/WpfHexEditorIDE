@@ -1,42 +1,77 @@
 ﻿{
-    "formatName":  "Canon Raw Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".cr2"
-                   ],
-    "description":  "Canon RAW v2 camera image",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Canon RAW 2 (CR2) Format - TIFF-based",
-            "Inside the Canon RAW Format Version 2",
-            "Canon CR2 EXIF and Metadata Structure"
-        ],
-        "web_links": [
-            "http://lclevy.free.fr/cr2/",
-            "http://fileformats.archiveteam.org/wiki/Canon_RAW_2",
-            "https://docs.fileformat.com/image/cr2/",
-            "https://libopenraw.freedesktop.org/formats/cr2/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "49492A00",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "TIFF Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "CR2 uses TIFF structure"
-                   }
-               ]
+  "formatName": "Canon Raw Image",
+  "version": "1.0",
+  "extensions": [
+    ".cr2"
+  ],
+  "description": "Canon RAW v2 camera image",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Canon RAW 2 (CR2) Format - TIFF-based",
+      "Inside the Canon RAW Format Version 2",
+      "Canon CR2 EXIF and Metadata Structure"
+    ],
+    "web_links": [
+      "http://lclevy.free.fr/cr2/",
+      "http://fileformats.archiveteam.org/wiki/Canon_RAW_2",
+      "https://docs.fileformat.com/image/cr2/",
+      "https://libopenraw.freedesktop.org/formats/cr2/"
+    ]
+  },
+  "detection": {
+    "signature": "49492A00",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "TIFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "CR2 uses TIFF structure"
+    }
+  ],
+  "mime_types": [
+    "image/cr2"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Image viewers",
+    "GIMP"
+  ],
+  "use_cases": [
+    "Professional photography",
+    "RAW editing",
+    "High-quality images"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".cr2"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".cr2",
+    "defined_fields": 1
+  }
 }

@@ -1,51 +1,96 @@
 ﻿{
-    "formatName":  "WebM Video",
-    "version":  "1.0",
-    "extensions":  [
-                       ".webm"
-                   ],
-    "description":  "WebM video format - Based on Matroska, optimized for web",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "WebM Container Guidelines",
-            "Matroska-based Container for VP8/VP9",
-            "WebM Open Media Format"
-        ],
-        "web_links": [
-            "https://www.webmproject.org/docs/container/",
-            "https://en.wikipedia.org/wiki/WebM",
-            "https://www.webmproject.org/about/",
-            "https://cloudinary.com/guides/video-formats/webm-format-what-you-should-know"
-        ]
+  "formatName": "WebM Video",
+  "version": "1.0",
+  "extensions": [
+    ".webm"
+  ],
+  "description": "WebM video format - Based on Matroska, optimized for web",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "WebM Container Guidelines",
+      "Matroska-based Container for VP8/VP9",
+      "WebM Open Media Format"
+    ],
+    "web_links": [
+      "https://www.webmproject.org/docs/container/",
+      "https://en.wikipedia.org/wiki/WebM",
+      "https://www.webmproject.org/about/",
+      "https://cloudinary.com/guides/video-formats/webm-format-what-you-should-know"
+    ]
+  },
+  "detection": {
+    "signature": "1A45DFA3",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "EBML Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "EBML signature (same as MKV)"
     },
-    "detection":  {
-                      "signature":  "1A45DFA3",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "EBML Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "EBML signature (same as MKV)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Header Size",
-                       "offset":  4,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Size of header element"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of header element"
+    }
+  ],
+  "mime_types": [
+    "video/webm"
+  ],
+  "quality_metrics": {
+    "completeness_score": 93,
+    "documentation_level": "comprehensive",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "manually_refined": true
+  },
+  "software": [
+    "Chrome",
+    "Firefox",
+    "VLC",
+    "Web browsers"
+  ],
+  "use_cases": [
+    "Web video streaming (YouTube)",
+    "HTML5 video",
+    "Open web media"
+  ],
+  "format_relationships": {
+    "open_source": true,
+    "google_format": true,
+    "based_on": "Matroska",
+    "replaces": "FLV"
+  },
+  "technical_details": {
+    "container": "Matroska subset",
+    "video_codecs": [
+      "VP8",
+      "VP9",
+      "AV1"
+    ],
+    "audio_codecs": [
+      "Vorbis",
+      "Opus"
+    ],
+    "royalty_free": true
+  }
 }

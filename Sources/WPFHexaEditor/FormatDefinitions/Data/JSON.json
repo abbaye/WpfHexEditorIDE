@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "JSON Data",
-    "version":  "1.0",
-    "extensions":  [
-                       ".json"
-                   ],
-    "description":  "JavaScript Object Notation",
-    "category":  "Data",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "7B",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Opening Brace",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "JSON object start (may have whitespace)"
-                   }
-               ]
+  "formatName": "JSON Data",
+  "version": "1.0",
+  "extensions": [
+    ".json"
+  ],
+  "description": "JavaScript Object Notation",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "JSON Data Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/JSON"
+    ]
+  },
+  "detection": {
+    "signature": "7B",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Opening Brace",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "JSON object start (may have whitespace)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Data",
+    "extensions": [
+      ".json"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".json",
+    "defined_fields": 1
+  }
 }

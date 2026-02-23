@@ -1,51 +1,84 @@
 ﻿{
-    "formatName":  "Pentax PEF RAW",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pef"
-                   ],
-    "description":  "Pentax Electronic File (RAW)",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Pentax Electronic File (PEF) - TIFF/EP Format",
-            "Pentax RAW Image Format Specification",
-            "PEF Lossless Huffman Compression"
-        ],
-        "web_links": [
-            "http://fileformats.archiveteam.org/wiki/Pentax_PEF",
-            "https://www.online-convert.com/file-format/pef",
-            "http://www.panix.com/~johnf/raw/",
-            "https://libopenraw.freedesktop.org/formats/pef/"
-        ]
+  "formatName": "Pentax PEF RAW",
+  "version": "1.0",
+  "extensions": [
+    ".pef"
+  ],
+  "description": "Pentax Electronic File (RAW)",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Pentax Electronic File (PEF) - TIFF/EP Format",
+      "Pentax RAW Image Format Specification",
+      "PEF Lossless Huffman Compression"
+    ],
+    "web_links": [
+      "http://fileformats.archiveteam.org/wiki/Pentax_PEF",
+      "https://www.online-convert.com/file-format/pef",
+      "http://www.panix.com/~johnf/raw/",
+      "https://libopenraw.freedesktop.org/formats/pef/"
+    ]
+  },
+  "detection": {
+    "signature": "49492A00",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "TIFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "TIFF-based RAW (little-endian)"
     },
-    "detection":  {
-                      "signature":  "49492A00",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "TIFF Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "TIFF-based RAW (little-endian)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "IFD Offset",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "First IFD offset"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "IFD Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "First IFD offset"
+    }
+  ],
+  "mime_types": [
+    "image/pef"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Image viewers",
+    "GIMP"
+  ],
+  "use_cases": [
+    "Professional photography",
+    "RAW editing",
+    "High-quality images"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".pef"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".pef",
+    "defined_fields": 2
+  }
 }

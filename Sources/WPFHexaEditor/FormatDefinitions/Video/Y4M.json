@@ -1,41 +1,75 @@
 ﻿{
-    "formatName":  "YUV4MPEG2",
-    "version":  "1.0",
-    "extensions":  [
-                       ".y4m"
-                   ],
-    "description":  "YUV4MPEG2 uncompressed video format used by the mjpegtools project",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "YUV4MPEG2 Stream Format",
-            "mjpegtools Video Stream Format",
-            "Uncompressed YCbCr 4:2:0 Format"
-        ],
-        "web_links": [
-            "https://wiki.multimedia.cx/index.php/YUV4MPEG2",
-            "https://linux.die.net/man/5/yuv4mpeg",
-            "https://manpages.ubuntu.com/manpages/jammy/man5/yuv4mpeg.5.html"
-        ]
-    },
-    "detection":  {
-                      "signature":  "595556344D50454732",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Y4M Header",
-                       "offset":  0,
-                       "length":  9,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "YUV4MPEG2 file signature"
-                   }
-               ]
+  "formatName": "YUV4MPEG2",
+  "version": "1.0",
+  "extensions": [
+    ".y4m"
+  ],
+  "description": "YUV4MPEG2 uncompressed video format used by the mjpegtools project",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "YUV4MPEG2 Stream Format",
+      "mjpegtools Video Stream Format",
+      "Uncompressed YCbCr 4:2:0 Format"
+    ],
+    "web_links": [
+      "https://wiki.multimedia.cx/index.php/YUV4MPEG2",
+      "https://linux.die.net/man/5/yuv4mpeg",
+      "https://manpages.ubuntu.com/manpages/jammy/man5/yuv4mpeg.5.html"
+    ]
+  },
+  "detection": {
+    "signature": "595556344D50454732",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 9,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Y4M Header",
+      "offset": 0,
+      "length": 9,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "YUV4MPEG2 file signature"
+    }
+  ],
+  "mime_types": [
+    "video/y4m"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Video editors",
+    "FFmpeg",
+    "YUV tools"
+  ],
+  "use_cases": [
+    "Video playback",
+    "Video editing"
+  ],
+  "format_relationships": {
+    "category": "Video",
+    "extensions": [
+      ".y4m"
+    ]
+  },
+  "technical_details": {
+    "video_format": true,
+    "primary_extension": ".y4m",
+    "defined_fields": 1,
+    "container_format": true
+  }
 }

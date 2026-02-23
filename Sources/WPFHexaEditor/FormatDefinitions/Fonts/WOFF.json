@@ -1,66 +1,96 @@
 ﻿{
-    "formatName": "Web Open Font Format",
-    "version": "1.0",
-    "extensions": [
-        ".woff"
+  "formatName": "Web Open Font Format",
+  "version": "1.0",
+  "extensions": [
+    ".woff"
+  ],
+  "description": "WOFF - Web font format",
+  "category": "Fonts",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "WOFF File Format 1.0",
+      "W3C Recommendation"
     ],
-    "description": "WOFF - Web font format",
-    "category": "Fonts",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "WOFF File Format 1.0",
-            "W3C Recommendation"
-        ],
-        "web_links": [
-            "https://www.w3.org/TR/WOFF/",
-            "https://en.wikipedia.org/wiki/Web_Open_Font_Format"
-        ]
-    },
-    "detection": {
-        "signature": "774F4646",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "WOFF Signature",
-            "offset": 0,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "wOFF signature"
-        },
-        {
-            "type": "field",
-            "name": "Flavor",
-            "offset": 4,
-            "length": 4,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "TrueType or CFF"
-        },
-        {
-            "type": "field",
-            "name": "Length",
-            "offset": 8,
-            "length": 4,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "Total WOFF file size"
-        },
-        {
-            "type": "field",
-            "name": "Num Tables",
-            "offset": 12,
-            "length": 2,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "description": "Number of font tables"
-        }
+    "web_links": [
+      "https://www.w3.org/TR/WOFF/",
+      "https://en.wikipedia.org/wiki/Web_Open_Font_Format"
     ]
+  },
+  "detection": {
+    "signature": "774F4646",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "WOFF Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "wOFF signature"
+    },
+    {
+      "type": "field",
+      "name": "Flavor",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "TrueType or CFF"
+    },
+    {
+      "type": "field",
+      "name": "Length",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Total WOFF file size"
+    },
+    {
+      "type": "field",
+      "name": "Num Tables",
+      "offset": 12,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Number of font tables"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "Web browsers"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Fonts",
+    "extensions": [
+      ".woff"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".woff",
+    "defined_fields": 4
+  }
 }

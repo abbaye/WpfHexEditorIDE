@@ -1,38 +1,79 @@
 ﻿{
-    "formatName":  "Excel Workbook (Legacy)",
-    "version":  "1.0",
-    "extensions":  [
-                       ".xls"
-                   ],
-    "description":  "Microsoft Excel 97-2003 workbook (OLE2)",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "D0CF11E0A1B11AE1",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "OLE2 Signature",
-                       "offset":  0,
-                       "length":  8,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Microsoft Office OLE2/CFB header"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Minor Version",
-                       "offset":  24,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Format minor version"
-                   }
-               ]
+  "formatName": "Excel Workbook (Legacy)",
+  "version": "1.0",
+  "extensions": [
+    ".xls"
+  ],
+  "description": "Microsoft Excel 97-2003 workbook (OLE2)",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Excel Workbook (Legacy) Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/XLS"
+    ]
+  },
+  "detection": {
+    "signature": "D0CF11E0A1B11AE1",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "OLE2 Signature",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Microsoft Office OLE2/CFB header"
+    },
+    {
+      "type": "field",
+      "name": "Minor Version",
+      "offset": 24,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Format minor version"
+    }
+  ],
+  "mime_types": [
+    "application/xls"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "PDF readers",
+    "Office suites"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Documents",
+    "extensions": [
+      ".xls"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".xls",
+    "defined_fields": 2
+  }
 }

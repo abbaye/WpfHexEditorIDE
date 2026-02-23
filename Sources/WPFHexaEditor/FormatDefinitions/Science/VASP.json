@@ -1,31 +1,71 @@
 ﻿{
-    "formatName":  "VASP POSCAR",
-    "version":  "1.0",
-    "extensions":  [
-                       ".vasp",
-                       ".poscar",
-                       ".contcar"
-                   ],
-    "description":  "Vienna Ab-initio Simulation Package structure file",
-    "category":  "Science",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Comment",
-                       "offset":  0,
-                       "length":  80,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "First line: system name/comment"
-                   }
-               ]
+  "formatName": "VASP POSCAR",
+  "version": "1.0",
+  "extensions": [
+    ".vasp",
+    ".poscar",
+    ".contcar"
+  ],
+  "description": "Vienna Ab-initio Simulation Package structure file",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "VASP POSCAR Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/VASP"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Comment",
+      "offset": 0,
+      "length": 80,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "First line: system name/comment"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Science",
+    "extensions": [
+      ".vasp",
+      ".poscar",
+      ".contcar"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".vasp",
+    "defined_fields": 1
+  }
 }

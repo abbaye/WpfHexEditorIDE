@@ -1,58 +1,98 @@
 ﻿{
-    "formatName": "FLAC Audio",
-    "version": "1.0",
-    "extensions": [
-        ".flac"
+  "formatName": "FLAC Audio",
+  "version": "1.0",
+  "extensions": [
+    ".flac"
+  ],
+  "description": "Free Lossless Audio Codec",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "FLAC Format Specification",
+      "Free Lossless Audio Codec Documentation"
     ],
-    "description": "Free Lossless Audio Codec",
-    "category": "Audio",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "FLAC Format Specification",
-            "Free Lossless Audio Codec Documentation"
-        ],
-        "web_links": [
-            "https://xiph.org/flac/format.html",
-            "https://xiph.org/flac/documentation.html",
-            "https://en.wikipedia.org/wiki/FLAC"
-        ]
-    },
-    "detection": {
-        "signature": "664C6143",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "FLAC Signature",
-            "offset": 0,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "fLaC stream marker"
-        },
-        {
-            "type": "field",
-            "name": "Metadata Block Header",
-            "offset": 4,
-            "length": 1,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "First metadata block type"
-        },
-        {
-            "type": "field",
-            "name": "Block Length",
-            "offset": 5,
-            "length": 3,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "Length of metadata block"
-        }
+    "web_links": [
+      "https://xiph.org/flac/format.html",
+      "https://xiph.org/flac/documentation.html",
+      "https://en.wikipedia.org/wiki/FLAC"
     ]
+  },
+  "detection": {
+    "signature": "664C6143",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "FLAC Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "fLaC stream marker"
+    },
+    {
+      "type": "field",
+      "name": "Metadata Block Header",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "First metadata block type"
+    },
+    {
+      "type": "field",
+      "name": "Block Length",
+      "offset": 5,
+      "length": 3,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Length of metadata block"
+    }
+  ],
+  "mime_types": [
+    "audio/flac"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "Foobar2000",
+    "VLC",
+    "Audiophile players"
+  ],
+  "use_cases": [
+    "Lossless audio",
+    "Music archiving",
+    "Audiophile playback"
+  ],
+  "format_relationships": {
+    "category": "Audio",
+    "extensions": [
+      ".flac"
+    ],
+    "xiph_format": true,
+    "lossless": true
+  },
+  "technical_details": {
+    "audio_format": true,
+    "primary_extension": ".flac",
+    "defined_fields": 3,
+    "compression_type": "Lossless"
+  }
 }

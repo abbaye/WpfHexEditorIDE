@@ -1,59 +1,96 @@
 ﻿{
-    "formatName": "TIFF Image",
-    "version": "1.0",
-    "extensions": [
-        ".tif",
-        ".tiff"
+  "formatName": "TIFF Image",
+  "version": "1.0",
+  "extensions": [
+    ".tif",
+    ".tiff"
+  ],
+  "description": "Tagged Image File Format - Professional image format",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "TIFF Revision 6.0 Specification",
+      "RFC 3302 - Tag Image File Format"
     ],
-    "description": "Tagged Image File Format - Professional image format",
-    "category": "Images",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "TIFF Revision 6.0 Specification",
-            "RFC 3302 - Tag Image File Format"
-        ],
-        "web_links": [
-            "https://www.adobe.io/open/standards/TIFF.html",
-            "https://www.ietf.org/rfc/rfc3302.txt",
-            "https://en.wikipedia.org/wiki/TIFF"
-        ]
-    },
-    "detection": {
-        "signature": "49492A00",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "Byte Order (Little Endian)",
-            "offset": 0,
-            "length": 2,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "II for little-endian or MM for big-endian"
-        },
-        {
-            "type": "field",
-            "name": "Version",
-            "offset": 2,
-            "length": 2,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "Always 42 (0x002A)"
-        },
-        {
-            "type": "field",
-            "name": "IFD Offset",
-            "offset": 4,
-            "length": 4,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "Offset to first Image File Directory"
-        }
+    "web_links": [
+      "https://www.adobe.io/open/standards/TIFF.html",
+      "https://www.ietf.org/rfc/rfc3302.txt",
+      "https://en.wikipedia.org/wiki/TIFF"
     ]
+  },
+  "detection": {
+    "signature": "49492A00",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Byte Order (Little Endian)",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "II for little-endian or MM for big-endian"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Always 42 (0x002A)"
+    },
+    {
+      "type": "field",
+      "name": "IFD Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Offset to first Image File Directory"
+    }
+  ],
+  "mime_types": [
+    "image/tif"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "Photoshop",
+    "GIMP",
+    "Professional scanners"
+  ],
+  "use_cases": [
+    "Image viewing",
+    "Photo editing"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".tif",
+      ".tiff"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".tif",
+    "defined_fields": 3
+  }
 }

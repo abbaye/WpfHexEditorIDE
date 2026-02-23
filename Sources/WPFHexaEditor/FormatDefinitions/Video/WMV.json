@@ -1,50 +1,87 @@
 ﻿{
-    "formatName": "Windows Media Video",
-    "version": "1.0",
-    "extensions": [
-        ".wmv",
-        ".wma",
-        ".asf"
+  "formatName": "Windows Media Video",
+  "version": "1.0",
+  "extensions": [
+    ".wmv",
+    ".wma",
+    ".asf"
+  ],
+  "description": "Windows Media Video/Audio format (ASF container)",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Microsoft AVI RIFF File Format",
+      "Audio Video Interleave Format"
     ],
-    "description": "Windows Media Video/Audio format (ASF container)",
-    "category": "Video",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Microsoft AVI RIFF File Format",
-            "Audio Video Interleave Format"
-        ],
-        "web_links": [
-            "https://docs.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference",
-            "https://en.wikipedia.org/wiki/Audio_Video_Interleave"
-        ]
-    },
-    "detection": {
-        "signature": "3026B2758E66CF11",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "ASF Header GUID",
-            "offset": 0,
-            "length": 16,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "Advanced Systems Format header"
-        },
-        {
-            "type": "field",
-            "name": "Object Size",
-            "offset": 16,
-            "length": 8,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "Size of header object"
-        }
+    "web_links": [
+      "https://docs.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference",
+      "https://en.wikipedia.org/wiki/Audio_Video_Interleave"
     ]
+  },
+  "detection": {
+    "signature": "3026B2758E66CF11",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ASF Header GUID",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Advanced Systems Format header"
+    },
+    {
+      "type": "field",
+      "name": "Object Size",
+      "offset": 16,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of header object"
+    }
+  ],
+  "mime_types": [
+    "video/wmv"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Windows Media Player",
+    "VLC"
+  ],
+  "use_cases": [
+    "Video playback",
+    "Video editing"
+  ],
+  "format_relationships": {
+    "category": "Video",
+    "extensions": [
+      ".wmv",
+      ".wma",
+      ".asf"
+    ]
+  },
+  "technical_details": {
+    "video_format": true,
+    "primary_extension": ".wmv",
+    "defined_fields": 2,
+    "container_format": true
+  }
 }

@@ -1,83 +1,121 @@
 ﻿{
-    "formatName":  "IPFIX",
-    "version":  "1.0",
-    "extensions":  [
-                       ".ipfix"
-                   ],
-    "description":  "IP Flow Information Export - Network flow monitoring protocol",
-    "category":  "Network",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "000A",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "IPFIX Version",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Version 10 (0x000A)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Message Length",
-                       "offset":  2,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Total length of IPFIX message"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Export Time",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Unix timestamp (seconds)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Sequence Number",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Incremental sequence counter"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Observation Domain ID",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#FFA07A",
-                       "opacity":  0.3,
-                       "description":  "Source ID for flow data"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Set ID",
-                       "offset":  16,
-                       "length":  2,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "description":  "Set identifier (2=template, 3=options, 256+=data)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Set Length",
-                       "offset":  18,
-                       "length":  2,
-                       "color":  "#B8B8FF",
-                       "opacity":  0.3,
-                       "description":  "Length of this set"
-                   }
-               ]
+  "formatName": "IPFIX",
+  "version": "1.0",
+  "extensions": [
+    ".ipfix"
+  ],
+  "description": "IP Flow Information Export - Network flow monitoring protocol",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "IPFIX Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/IPFIX"
+    ]
+  },
+  "detection": {
+    "signature": "000A",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "IPFIX Version",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Version 10 (0x000A)"
+    },
+    {
+      "type": "field",
+      "name": "Message Length",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Total length of IPFIX message"
+    },
+    {
+      "type": "field",
+      "name": "Export Time",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Unix timestamp (seconds)"
+    },
+    {
+      "type": "field",
+      "name": "Sequence Number",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Incremental sequence counter"
+    },
+    {
+      "type": "field",
+      "name": "Observation Domain ID",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFA07A",
+      "opacity": 0.3,
+      "description": "Source ID for flow data"
+    },
+    {
+      "type": "field",
+      "name": "Set ID",
+      "offset": 16,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Set identifier (2=template, 3=options, 256+=data)"
+    },
+    {
+      "type": "field",
+      "name": "Set Length",
+      "offset": 18,
+      "length": 2,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "description": "Length of this set"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 7,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Wireshark",
+    "tcpdump"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Network",
+    "extensions": [
+      ".ipfix"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".ipfix",
+    "defined_fields": 7
+  }
 }

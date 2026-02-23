@@ -1,51 +1,85 @@
 ﻿{
-    "formatName":  "Unix Compress",
-    "version":  "1.0",
-    "extensions":  [
-                       ".z"
-                   ],
-    "description":  "Unix compress (.Z) format - LZW compression",
-    "category":  "Archives",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Unix Compress .Z File Format",
-            "LZW Compression Algorithm",
-            "POSIX compress/uncompress Specification"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/Compress",
-            "http://justsolve.archiveteam.org/wiki/Compress_(Unix)",
-            "https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch",
-            "https://github.com/vapier/ncompress"
-        ]
+  "formatName": "Unix Compress",
+  "version": "1.0",
+  "extensions": [
+    ".z"
+  ],
+  "description": "Unix compress (.Z) format - LZW compression",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Unix Compress .Z File Format",
+      "LZW Compression Algorithm",
+      "POSIX compress/uncompress Specification"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/Compress",
+      "http://justsolve.archiveteam.org/wiki/Compress_(Unix)",
+      "https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch",
+      "https://github.com/vapier/ncompress"
+    ]
+  },
+  "detection": {
+    "signature": "1F9D",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Compress Magic",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Unix compress signature"
     },
-    "detection":  {
-                      "signature":  "1F9D",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Compress Magic",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Unix compress signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Compression Mode",
-                       "offset":  2,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "LZW bits and block mode"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Compression Mode",
+      "offset": 2,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "LZW bits and block mode"
+    }
+  ],
+  "mime_types": [
+    "application/x-z"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "compress/uncompress",
+    "7-Zip"
+  ],
+  "use_cases": [
+    "File archiving",
+    "Data compression"
+  ],
+  "format_relationships": {
+    "category": "Archives",
+    "extensions": [
+      ".z"
+    ]
+  },
+  "technical_details": {
+    "archives_format": true,
+    "primary_extension": ".z",
+    "defined_fields": 2
+  }
 }

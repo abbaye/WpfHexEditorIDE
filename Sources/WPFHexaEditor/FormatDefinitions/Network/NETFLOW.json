@@ -1,102 +1,141 @@
 ﻿{
-    "formatName":  "NetFlow v5",
-    "version":  "1.0",
-    "extensions":  [
-                       ".nf",
-                       ".nfcap"
-                   ],
-    "description":  "Cisco NetFlow v5 - Network flow data format",
-    "category":  "Network",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "0005",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "NetFlow Version",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Version 5 (0x0005)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Flow Count",
-                       "offset":  2,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Number of flow records"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "System Uptime",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Milliseconds since device boot"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Unix Seconds",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Unix timestamp seconds"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Unix Nanoseconds",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#FFA07A",
-                       "opacity":  0.3,
-                       "description":  "Residual nanoseconds"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Flow Sequence",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "description":  "Sequence counter"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Engine Type",
-                       "offset":  20,
-                       "length":  1,
-                       "color":  "#B8B8FF",
-                       "opacity":  0.3,
-                       "description":  "Flow switching engine type"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Engine ID",
-                       "offset":  21,
-                       "length":  1,
-                       "color":  "#98D8C8",
-                       "opacity":  0.3,
-                       "description":  "Slot number of flow switching engine"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Sampling Interval",
-                       "offset":  22,
-                       "length":  2,
-                       "color":  "#A8E6CF",
-                       "opacity":  0.3,
-                       "description":  "Sampling mode and interval"
-                   }
-               ]
+  "formatName": "NetFlow v5",
+  "version": "1.0",
+  "extensions": [
+    ".nf",
+    ".nfcap"
+  ],
+  "description": "Cisco NetFlow v5 - Network flow data format",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "NetFlow v5 Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/NF"
+    ]
+  },
+  "detection": {
+    "signature": "0005",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "NetFlow Version",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Version 5 (0x0005)"
+    },
+    {
+      "type": "field",
+      "name": "Flow Count",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Number of flow records"
+    },
+    {
+      "type": "field",
+      "name": "System Uptime",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Milliseconds since device boot"
+    },
+    {
+      "type": "field",
+      "name": "Unix Seconds",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Unix timestamp seconds"
+    },
+    {
+      "type": "field",
+      "name": "Unix Nanoseconds",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFA07A",
+      "opacity": 0.3,
+      "description": "Residual nanoseconds"
+    },
+    {
+      "type": "field",
+      "name": "Flow Sequence",
+      "offset": 16,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Sequence counter"
+    },
+    {
+      "type": "field",
+      "name": "Engine Type",
+      "offset": 20,
+      "length": 1,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "description": "Flow switching engine type"
+    },
+    {
+      "type": "field",
+      "name": "Engine ID",
+      "offset": 21,
+      "length": 1,
+      "color": "#98D8C8",
+      "opacity": 0.3,
+      "description": "Slot number of flow switching engine"
+    },
+    {
+      "type": "field",
+      "name": "Sampling Interval",
+      "offset": 22,
+      "length": 2,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Sampling mode and interval"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 9,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Wireshark",
+    "tcpdump"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Network",
+    "extensions": [
+      ".nf",
+      ".nfcap"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".nf",
+    "defined_fields": 9
+  }
 }

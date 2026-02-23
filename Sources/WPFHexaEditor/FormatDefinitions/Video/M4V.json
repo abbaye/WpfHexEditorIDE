@@ -1,41 +1,75 @@
 ﻿{
-    "formatName":  "iTunes Video",
-    "version":  "1.0",
-    "extensions":  [
-                       ".m4v"
-                   ],
-    "description":  "MPEG-4 video container developed by Apple for iTunes Store",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "MPEG-4 Part 14 Container (M4V variant)",
-            "ISO/IEC 14496-1 - MPEG-4 Systems",
-            "Apple FairPlay DRM Container"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/MP4_file_format",
-            "https://cloudinary.com/guides/video-formats/m4v-format-how-it-works-and-m4v-vs-mp4",
-            "https://www.movavi.com/learning-portal/m4v-file.html"
-        ]
-    },
-    "detection":  {
-                      "signature":  "66747970",
-                      "offset":  4,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "File Type Box",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ftyp - MP4 file type identifier"
-                   }
-               ]
+  "formatName": "iTunes Video",
+  "version": "1.0",
+  "extensions": [
+    ".m4v"
+  ],
+  "description": "MPEG-4 video container developed by Apple for iTunes Store",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "MPEG-4 Part 14 Container (M4V variant)",
+      "ISO/IEC 14496-1 - MPEG-4 Systems",
+      "Apple FairPlay DRM Container"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/MP4_file_format",
+      "https://cloudinary.com/guides/video-formats/m4v-format-how-it-works-and-m4v-vs-mp4",
+      "https://www.movavi.com/learning-portal/m4v-file.html"
+    ]
+  },
+  "detection": {
+    "signature": "66747970",
+    "offset": 4,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "File Type Box",
+      "offset": 4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ftyp - MP4 file type identifier"
+    }
+  ],
+  "mime_types": [
+    "video/m4v"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "iTunes",
+    "Apple TV",
+    "VLC"
+  ],
+  "use_cases": [
+    "Video playback",
+    "Video editing"
+  ],
+  "format_relationships": {
+    "category": "Video",
+    "extensions": [
+      ".m4v"
+    ]
+  },
+  "technical_details": {
+    "video_format": true,
+    "primary_extension": ".m4v",
+    "defined_fields": 1,
+    "container_format": true
+  }
 }

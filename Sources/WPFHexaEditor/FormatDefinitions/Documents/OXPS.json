@@ -1,56 +1,95 @@
 ﻿{
-    "formatName":  "Open XML Paper Specification",
-    "version":  "1.0",
-    "extensions":  [
-                       ".oxps"
-                   ],
-    "description":  "Open XPS document format, standardized version of XPS (ECMA-388), ZIP-based fixed-layout format",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "504B0304",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ZIP Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ZIP archive signature: \u0027PK\u0027 0x03 0x04 (OpenXPS uses ZIP format)"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Version",
-                       "offset":  4,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.4,
-                       "description":  "ZIP version needed to extract"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Flags",
-                       "offset":  6,
-                       "length":  2,
-                       "color":  "#45B7D1",
-                       "opacity":  0.4,
-                       "description":  "General purpose bit flag"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Compression Method",
-                       "offset":  8,
-                       "length":  2,
-                       "color":  "#96CEB4",
-                       "opacity":  0.4,
-                       "description":  "Compression method (0=stored, 8=deflated)"
-                   }
-               ]
+  "formatName": "Open XML Paper Specification",
+  "version": "1.0",
+  "extensions": [
+    ".oxps"
+  ],
+  "description": "Open XPS document format, standardized version of XPS (ECMA-388), ZIP-based fixed-layout format",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Open XML Paper Specification Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/OXPS"
+    ]
+  },
+  "detection": {
+    "signature": "504B0304",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ZIP Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ZIP archive signature: 'PK' 0x03 0x04 (OpenXPS uses ZIP format)"
+    },
+    {
+      "type": "data",
+      "name": "Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "ZIP version needed to extract"
+    },
+    {
+      "type": "data",
+      "name": "Flags",
+      "offset": 6,
+      "length": 2,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "General purpose bit flag"
+    },
+    {
+      "type": "data",
+      "name": "Compression Method",
+      "offset": 8,
+      "length": 2,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "Compression method (0=stored, 8=deflated)"
+    }
+  ],
+  "mime_types": [
+    "application/oxps"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "PDF readers",
+    "Office suites"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Documents",
+    "extensions": [
+      ".oxps"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".oxps",
+    "defined_fields": 4
+  }
 }

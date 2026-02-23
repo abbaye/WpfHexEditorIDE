@@ -1,51 +1,93 @@
 ﻿{
-    "formatName":  "Monkey\u0027s Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".ape"
-                   ],
-    "description":  "Monkey\u0027s Audio lossless compression",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Monkey's Audio Compression Algorithm",
-            "APE File Format Specification",
-            "APEv2 Tagging Format"
-        ],
-        "web_links": [
-            "https://www.monkeysaudio.com/",
-            "https://en.wikipedia.org/wiki/Monkey's_Audio",
-            "https://wiki.hydrogenaudio.org/index.php?title=Monkey's_Audio",
-            "https://docs.fileformat.com/audio/ape/"
-        ]
+  "formatName": "Monkey's Audio",
+  "version": "1.0",
+  "extensions": [
+    ".ape"
+  ],
+  "description": "Monkey's Audio lossless compression",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Monkey's Audio Compression Algorithm",
+      "APE File Format Specification",
+      "APEv2 Tagging Format"
+    ],
+    "web_links": [
+      "https://www.monkeysaudio.com/",
+      "https://en.wikipedia.org/wiki/Monkey's_Audio",
+      "https://wiki.hydrogenaudio.org/index.php?title=Monkey's_Audio",
+      "https://docs.fileformat.com/audio/ape/"
+    ]
+  },
+  "detection": {
+    "signature": "4D414320",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "APE Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MAC (Monkey's Audio Compression)"
     },
-    "detection":  {
-                      "signature":  "4D414320",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "APE Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MAC (Monkey\u0027s Audio Compression)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  4,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "File format version"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "File format version"
+    }
+  ],
+  "mime_types": [
+    "audio/ape"
+  ],
+  "quality_metrics": {
+    "completeness_score": 93,
+    "documentation_level": "comprehensive",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "manually_refined": true
+  },
+  "software": [
+    "Monkey's Audio",
+    "foobar2000",
+    "VLC"
+  ],
+  "use_cases": [
+    "Lossless audio archiving",
+    "CD ripping",
+    "High compression audio storage"
+  ],
+  "format_relationships": {
+    "proprietary": true,
+    "windows_only": "Original",
+    "alternative_to": "FLAC"
+  },
+  "technical_details": {
+    "compression": "Lossless",
+    "compression_ratio": "45-55%",
+    "compression_levels": [
+      "Fast",
+      "Normal",
+      "High",
+      "Extra High",
+      "Insane"
+    ],
+    "slower_than": "FLAC"
+  }
 }

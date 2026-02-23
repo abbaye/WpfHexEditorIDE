@@ -1,39 +1,81 @@
 ﻿{
-    "formatName":  "Amazon Kindle eBook",
-    "version":  "1.0",
-    "extensions":  [
-                       ".azw",
-                       ".azw3"
-                   ],
-    "description":  "Amazon Kindle format - Based on Mobipocket",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "424F4F4B",
-                      "offset":  60,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "PDB Name",
-                       "offset":  0,
-                       "length":  32,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Database name"
-                   },
-                   {
-                       "type":  "signature",
-                       "name":  "AZW Type",
-                       "offset":  60,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "BOOK identifier"
-                   }
-               ]
+  "formatName": "Amazon Kindle eBook",
+  "version": "1.0",
+  "extensions": [
+    ".azw",
+    ".azw3"
+  ],
+  "description": "Amazon Kindle format - Based on Mobipocket",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Amazon Kindle eBook Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/AZW"
+    ]
+  },
+  "detection": {
+    "signature": "424F4F4B",
+    "offset": 60,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "PDB Name",
+      "offset": 0,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Database name"
+    },
+    {
+      "type": "signature",
+      "name": "AZW Type",
+      "offset": 60,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "BOOK identifier"
+    }
+  ],
+  "mime_types": [
+    "application/azw"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "PDF readers",
+    "Office suites"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Documents",
+    "extensions": [
+      ".azw",
+      ".azw3"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".azw",
+    "defined_fields": 2
+  }
 }

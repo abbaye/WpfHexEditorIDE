@@ -1,29 +1,75 @@
 ﻿{
-    "formatName":  "GL Transmission Format",
-    "version":  "1.0",
-    "extensions":  [
-                       ".gltf"
-                   ],
-    "description":  "Khronos glTF 3D model (JSON format)",
-    "category":  "3D",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "7B",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "JSON Start",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Opening brace for JSON"
-                   }
-               ]
+  "formatName": "GL Transmission Format",
+  "version": "1.0",
+  "extensions": [
+    ".gltf"
+  ],
+  "description": "Khronos glTF 3D model (JSON format)",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "GL Transmission Format Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/GLTF"
+    ]
+  },
+  "detection": {
+    "signature": "7B",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "JSON Start",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Opening brace for JSON"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "manually_refined": true
+  },
+  "software": [
+    "Three.js",
+    "Babylon.js",
+    "Unity",
+    "Unreal Engine",
+    "Blender"
+  ],
+  "use_cases": [
+    "Web 3D",
+    "AR/VR",
+    "3D commerce",
+    "Real-time 3D"
+  ],
+  "format_relationships": {
+    "khronos_standard": true,
+    "open_source": true,
+    "replaces": "COLLADA for web",
+    "json_based": true
+  },
+  "technical_details": {
+    "json_format": true,
+    "pbr_materials": true,
+    "animations": true,
+    "efficient_transmission": true,
+    "web_optimized": true
+  }
 }

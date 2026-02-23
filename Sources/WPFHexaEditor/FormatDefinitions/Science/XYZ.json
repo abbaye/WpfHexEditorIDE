@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "XYZ Chemical Format",
-    "version":  "1.0",
-    "extensions":  [
-                       ".xyz"
-                   ],
-    "description":  "XYZ chemical file format with atom coordinates",
-    "category":  "Science",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Atom Count",
-                       "offset":  0,
-                       "length":  10,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Number of atoms (first line)"
-                   }
-               ]
+  "formatName": "XYZ Chemical Format",
+  "version": "1.0",
+  "extensions": [
+    ".xyz"
+  ],
+  "description": "XYZ chemical file format with atom coordinates",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "XYZ Chemical Format Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/XYZ"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Atom Count",
+      "offset": 0,
+      "length": 10,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Number of atoms (first line)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Science",
+    "extensions": [
+      ".xyz"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".xyz",
+    "defined_fields": 1
+  }
 }

@@ -1,57 +1,94 @@
 ﻿{
-    "formatName": "AVI Video",
-    "version": "1.0",
-    "extensions": [
-        ".avi"
+  "formatName": "AVI Video",
+  "version": "1.0",
+  "extensions": [
+    ".avi"
+  ],
+  "description": "Audio Video Interleave - Classic Windows video format",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Microsoft AVI RIFF File Format",
+      "Audio Video Interleave Format"
     ],
-    "description": "Audio Video Interleave - Classic Windows video format",
-    "category": "Video",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Microsoft AVI RIFF File Format",
-            "Audio Video Interleave Format"
-        ],
-        "web_links": [
-            "https://docs.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference",
-            "https://en.wikipedia.org/wiki/Audio_Video_Interleave"
-        ]
-    },
-    "detection": {
-        "signature": "52494646",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "RIFF Header",
-            "offset": 0,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "RIFF chunk descriptor"
-        },
-        {
-            "type": "field",
-            "name": "File Size",
-            "offset": 4,
-            "length": 4,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "File size minus 8 bytes"
-        },
-        {
-            "type": "signature",
-            "name": "AVI Format",
-            "offset": 8,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "AVI identifier"
-        }
+    "web_links": [
+      "https://docs.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference",
+      "https://en.wikipedia.org/wiki/Audio_Video_Interleave"
     ]
+  },
+  "detection": {
+    "signature": "52494646",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RIFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "RIFF chunk descriptor"
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "File size minus 8 bytes"
+    },
+    {
+      "type": "signature",
+      "name": "AVI Format",
+      "offset": 8,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "AVI identifier"
+    }
+  ],
+  "mime_types": [
+    "video/avi"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "VLC",
+    "Windows Media Player",
+    "MPlayer"
+  ],
+  "use_cases": [
+    "Video playback",
+    "Video editing"
+  ],
+  "format_relationships": {
+    "category": "Video",
+    "extensions": [
+      ".avi"
+    ]
+  },
+  "technical_details": {
+    "video_format": true,
+    "primary_extension": ".avi",
+    "defined_fields": 3,
+    "container_format": true
+  }
 }

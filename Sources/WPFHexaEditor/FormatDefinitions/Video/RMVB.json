@@ -1,41 +1,75 @@
 ﻿{
-    "formatName":  "RealMedia Variable Bitrate",
-    "version":  "1.0",
-    "extensions":  [
-                       ".rmvb"
-                   ],
-    "description":  "RealMedia variable bitrate container developed by RealNetworks",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "RealMedia Variable Bitrate Format",
-            "RMVB Container Extension",
-            "RealNetworks Variable Bitrate Encoding"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/RMVB",
-            "https://docs.fileformat.com/video/rmvb/",
-            "https://www.hitpaw.com/video-format-definition-tips/rmvb-file.html"
-        ]
-    },
-    "detection":  {
-                      "signature":  "2E524D46",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "RMF Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  ".RMF - RealMedia File header"
-                   }
-               ]
+  "formatName": "RealMedia Variable Bitrate",
+  "version": "1.0",
+  "extensions": [
+    ".rmvb"
+  ],
+  "description": "RealMedia variable bitrate container developed by RealNetworks",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "RealMedia Variable Bitrate Format",
+      "RMVB Container Extension",
+      "RealNetworks Variable Bitrate Encoding"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/RMVB",
+      "https://docs.fileformat.com/video/rmvb/",
+      "https://www.hitpaw.com/video-format-definition-tips/rmvb-file.html"
+    ]
+  },
+  "detection": {
+    "signature": "2E524D46",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RMF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": ".RMF - RealMedia File header"
+    }
+  ],
+  "mime_types": [
+    "video/rmvb"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "RealPlayer",
+    "VLC",
+    "KMPlayer"
+  ],
+  "use_cases": [
+    "Video playback",
+    "Video editing"
+  ],
+  "format_relationships": {
+    "category": "Video",
+    "extensions": [
+      ".rmvb"
+    ]
+  },
+  "technical_details": {
+    "video_format": true,
+    "primary_extension": ".rmvb",
+    "defined_fields": 1,
+    "container_format": true
+  }
 }

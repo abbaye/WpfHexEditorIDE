@@ -1,29 +1,72 @@
 ﻿{
-    "formatName":  "STL 3D Model",
-    "version":  "1.0",
-    "extensions":  [
-                       ".stl"
-                   ],
-    "description":  "Stereolithography CAD format - 3D model file",
-    "category":  "3D",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "736F6C6964",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ASCII STL Header",
-                       "offset":  0,
-                       "length":  5,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "solid keyword (ASCII STL)"
-                   }
-               ]
+  "formatName": "STL 3D Model",
+  "version": "1.0",
+  "extensions": [
+    ".stl"
+  ],
+  "description": "Stereolithography CAD format - 3D model file",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "STL 3D Model Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/STL"
+    ]
+  },
+  "detection": {
+    "signature": "736F6C6964",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 5,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ASCII STL Header",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "solid keyword (ASCII STL)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "3D printers",
+    "Blender",
+    "Meshmixer",
+    "Cura"
+  ],
+  "use_cases": [
+    "3D printing",
+    "CAD export",
+    "Mesh modeling"
+  ],
+  "format_relationships": {
+    "category": "3D",
+    "extensions": [
+      ".stl"
+    ],
+    "3d_printing_standard": true
+  },
+  "technical_details": {
+    "primary_extension": ".stl",
+    "defined_fields": 1,
+    "binary_format": true
+  }
 }

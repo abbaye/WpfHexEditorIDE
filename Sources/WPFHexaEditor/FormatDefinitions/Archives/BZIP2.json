@@ -1,50 +1,89 @@
 ﻿{
-    "formatName": "BZIP2 Compressed File",
-    "version": "1.0",
-    "extensions": [
-        ".bz2",
-        ".bzip2"
+  "formatName": "BZIP2 Compressed File",
+  "version": "1.0",
+  "extensions": [
+    ".bz2",
+    ".bzip2"
+  ],
+  "description": "BZIP2 compression format",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PKWARE APPNOTE.TXT - ZIP File Format Specification",
+      "ISO/IEC 21320-1:2015 - Document Container File"
     ],
-    "description": "BZIP2 compression format",
-    "category": "Archives",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "PKWARE APPNOTE.TXT - ZIP File Format Specification",
-            "ISO/IEC 21320-1:2015 - Document Container File"
-        ],
-        "web_links": [
-            "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
-            "https://en.wikipedia.org/wiki/ZIP_(file_format)",
-            "https://www.iso.org/standard/60101.html"
-        ]
-    },
-    "detection": {
-        "signature": "425A68",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "BZIP2 Signature",
-            "offset": 0,
-            "length": 3,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "BZh magic bytes"
-        },
-        {
-            "type": "field",
-            "name": "Block Size",
-            "offset": 3,
-            "length": 1,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "Block size (1-9) * 100KB"
-        }
+    "web_links": [
+      "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
+      "https://en.wikipedia.org/wiki/ZIP_(file_format)",
+      "https://www.iso.org/standard/60101.html"
     ]
+  },
+  "detection": {
+    "signature": "425A68",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "BZIP2 Signature",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "BZh magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Block Size",
+      "offset": 3,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Block size (1-9) * 100KB"
+    }
+  ],
+  "mime_types": [
+    "application/x-bz2"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "bzip2",
+    "7-Zip",
+    "PeaZip"
+  ],
+  "use_cases": [
+    "File compression",
+    "Archive distribution",
+    "Backup"
+  ],
+  "format_relationships": {
+    "category": "Archives",
+    "extensions": [
+      ".bz2",
+      ".bzip2"
+    ]
+  },
+  "technical_details": {
+    "archives_format": true,
+    "primary_extension": ".bz2",
+    "defined_fields": 2,
+    "compression_method": "Deflate"
+  }
 }

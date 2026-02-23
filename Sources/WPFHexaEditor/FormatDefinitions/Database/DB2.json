@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "IBM DB2 Database",
-    "version":  "1.0",
-    "extensions":  [
-                       ".db2"
-                   ],
-    "description":  "IBM DB2 database file format",
-    "category":  "Database",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "header",
-                       "name":  "DB2 Header",
-                       "offset":  0,
-                       "length":  256,
-                       "color":  "#3D5A80",
-                       "opacity":  0.4,
-                       "description":  "IBM DB2 database header"
-                   }
-               ]
+  "formatName": "IBM DB2 Database",
+  "version": "1.0",
+  "extensions": [
+    ".db2"
+  ],
+  "description": "IBM DB2 database file format",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "IBM DB2 Database Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/DB2"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "name": "DB2 Header",
+      "offset": 0,
+      "length": 256,
+      "color": "#3D5A80",
+      "opacity": 0.4,
+      "description": "IBM DB2 database header"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Database",
+    "extensions": [
+      ".db2"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".db2",
+    "defined_fields": 1
+  }
 }

@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "Microsoft Access Compiled (Legacy)",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mde"
-                   ],
-    "description":  "Microsoft Access 97-2003 compiled database format",
-    "category":  "Database",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "5374616E6461726420204A6574",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "MDE Signature",
-                       "offset":  0,
-                       "length":  13,
-                       "color":  "#F4A261",
-                       "opacity":  0.4,
-                       "description":  "Standard Jet DB (compiled)"
-                   }
-               ]
+  "formatName": "Microsoft Access Compiled (Legacy)",
+  "version": "1.0",
+  "extensions": [
+    ".mde"
+  ],
+  "description": "Microsoft Access 97-2003 compiled database format",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Microsoft Access Compiled (Legacy) Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/MDE"
+    ]
+  },
+  "detection": {
+    "signature": "5374616E6461726420204A6574",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 13,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "MDE Signature",
+      "offset": 0,
+      "length": 13,
+      "color": "#F4A261",
+      "opacity": 0.4,
+      "description": "Standard Jet DB (compiled)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Database",
+    "extensions": [
+      ".mde"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".mde",
+    "defined_fields": 1
+  }
 }

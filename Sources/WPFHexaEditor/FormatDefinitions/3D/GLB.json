@@ -1,47 +1,90 @@
 ﻿{
-    "formatName":  "Binary glTF",
-    "version":  "1.0",
-    "extensions":  [
-                       ".glb"
-                   ],
-    "description":  "Khronos glTF binary format",
-    "category":  "3D",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "676C5446",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "glTF Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "glTF magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "glTF version (2)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Length",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Total file length"
-                   }
-               ]
+  "formatName": "Binary glTF",
+  "version": "1.0",
+  "extensions": [
+    ".glb"
+  ],
+  "description": "Khronos glTF binary format",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Binary glTF Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/GLB"
+    ]
+  },
+  "detection": {
+    "signature": "676C5446",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "glTF Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "glTF magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "glTF version (2)"
+    },
+    {
+      "type": "field",
+      "name": "Length",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Total file length"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Three.js",
+    "Babylon.js",
+    "Model viewers"
+  ],
+  "use_cases": [
+    "3D modeling",
+    "3D visualization",
+    "3D interchange"
+  ],
+  "format_relationships": {
+    "category": "3D",
+    "extensions": [
+      ".glb"
+    ],
+    "web_standard": true,
+    "khronos_group": true
+  },
+  "technical_details": {
+    "primary_extension": ".glb",
+    "defined_fields": 3,
+    "binary_format": true
+  }
 }

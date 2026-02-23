@@ -1,44 +1,80 @@
 ﻿{
-    "formatName":  "MPEG Transport Stream",
-    "version":  "1.0",
-    "extensions":  [
-                       ".ts",
-                       ".tsv",
-                       ".tsa"
-                   ],
-    "description":  "MPEG-2 Transport Stream container format used for broadcasting and streaming",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ISO/IEC 13818-1 - MPEG-2 Systems Transport Stream",
-            "ITU-T Recommendation H.222.0",
-            "MPEG Transport Stream Standard"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/MPEG_transport_stream",
-            "https://www.iso.org/standard/74427.html",
-            "https://wiki.multimedia.cx/index.php/MPEG-2_Transport_Stream",
-            "https://tsduck.io/download/docs/mpegts-introduction.pdf"
-        ]
-    },
-    "detection":  {
-                      "signature":  "47",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Sync Byte",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MPEG-TS sync byte (0x47) appears every 188 bytes"
-                   }
-               ]
+  "formatName": "MPEG Transport Stream",
+  "version": "1.0",
+  "extensions": [
+    ".ts",
+    ".tsv",
+    ".tsa"
+  ],
+  "description": "MPEG-2 Transport Stream container format used for broadcasting and streaming",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ISO/IEC 13818-1 - MPEG-2 Systems Transport Stream",
+      "ITU-T Recommendation H.222.0",
+      "MPEG Transport Stream Standard"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/MPEG_transport_stream",
+      "https://www.iso.org/standard/74427.html",
+      "https://wiki.multimedia.cx/index.php/MPEG-2_Transport_Stream",
+      "https://tsduck.io/download/docs/mpegts-introduction.pdf"
+    ]
+  },
+  "detection": {
+    "signature": "47",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Sync Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MPEG-TS sync byte (0x47) appears every 188 bytes"
+    }
+  ],
+  "mime_types": [
+    "video/ts"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Media players",
+    "VLC",
+    "TV software"
+  ],
+  "use_cases": [
+    "Video playback",
+    "Video editing"
+  ],
+  "format_relationships": {
+    "category": "Video",
+    "extensions": [
+      ".ts",
+      ".tsv",
+      ".tsa"
+    ]
+  },
+  "technical_details": {
+    "video_format": true,
+    "primary_extension": ".ts",
+    "defined_fields": 1,
+    "container_format": true
+  }
 }

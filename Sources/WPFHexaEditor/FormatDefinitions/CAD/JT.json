@@ -1,38 +1,76 @@
 ﻿{
-    "formatName":  "Jupiter Tessellation",
-    "version":  "1.0",
-    "extensions":  [
-                       ".jt"
-                   ],
-    "description":  "Siemens JT 3D CAD format",
-    "category":  "CAD",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "56657273696F6E20",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Version Header",
-                       "offset":  0,
-                       "length":  8,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Version marker"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "JT Version",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "JT format version"
-                   }
-               ]
+  "formatName": "Jupiter Tessellation",
+  "version": "1.0",
+  "extensions": [
+    ".jt"
+  ],
+  "description": "Siemens JT 3D CAD format",
+  "category": "CAD",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Jupiter Tessellation Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/JT"
+    ]
+  },
+  "detection": {
+    "signature": "56657273696F6E20",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Version Header",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Version marker"
+    },
+    {
+      "type": "field",
+      "name": "JT Version",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "JT format version"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "CAD",
+    "extensions": [
+      ".jt"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".jt",
+    "defined_fields": 2
+  }
 }

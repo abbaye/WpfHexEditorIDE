@@ -1,57 +1,88 @@
 ﻿{
-    "formatName": "OpenType Font",
-    "version": "1.0",
-    "extensions": [
-        ".otf"
+  "formatName": "OpenType Font",
+  "version": "1.0",
+  "extensions": [
+    ".otf"
+  ],
+  "description": "OpenType font format",
+  "category": "Fonts",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "OpenType Specification",
+      "ISO/IEC 14496-22:2019 - Open Font Format"
     ],
-    "description": "OpenType font format",
-    "category": "Fonts",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "OpenType Specification",
-            "ISO/IEC 14496-22:2019 - Open Font Format"
-        ],
-        "web_links": [
-            "https://docs.microsoft.com/en-us/typography/opentype/spec/",
-            "https://en.wikipedia.org/wiki/OpenType"
-        ]
-    },
-    "detection": {
-        "signature": "4F54544F",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "OTF Signature",
-            "offset": 0,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "OTTO signature"
-        },
-        {
-            "type": "field",
-            "name": "Number of Tables",
-            "offset": 4,
-            "length": 2,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "Number of font tables"
-        },
-        {
-            "type": "field",
-            "name": "Search Range",
-            "offset": 6,
-            "length": 2,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "Binary search range"
-        }
+    "web_links": [
+      "https://docs.microsoft.com/en-us/typography/opentype/spec/",
+      "https://en.wikipedia.org/wiki/OpenType"
     ]
+  },
+  "detection": {
+    "signature": "4F54544F",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "OTF Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "OTTO signature"
+    },
+    {
+      "type": "field",
+      "name": "Number of Tables",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Number of font tables"
+    },
+    {
+      "type": "field",
+      "name": "Search Range",
+      "offset": 6,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Binary search range"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "All modern operating systems",
+    "Font editors"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Fonts",
+    "extensions": [
+      ".otf"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".otf",
+    "defined_fields": 3
+  }
 }

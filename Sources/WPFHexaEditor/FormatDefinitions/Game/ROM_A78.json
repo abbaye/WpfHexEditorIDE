@@ -1,154 +1,184 @@
 ﻿{
-    "formatName": "Atari 7800 ROM",
-    "version": "1.0",
-    "extensions": [
-        ".a78"
+  "formatName": "Atari 7800 ROM",
+  "version": "1.0",
+  "extensions": [
+    ".a78"
+  ],
+  "description": "Atari 7800 ROM format with A78 header (ProSystem standard)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Atari 7800 A78 Header Specification",
+      "ProSystem ROM Header Format",
+      "Atari 7800 Programming Reference"
     ],
-    "description": "Atari 7800 ROM format with A78 header (ProSystem standard)",
-    "category": "Game",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Atari 7800 A78 Header Specification",
-            "ProSystem ROM Header Format",
-            "Atari 7800 Programming Reference"
-        ],
-        "web_links": [
-            "http://7800.8bitdev.org/index.php/A78_Header_Specification",
-            "https://sites.google.com/site/atari7800wiki/a78-header",
-            "https://docs.libretro.com/library/prosystem/",
-            "https://en.wikipedia.org/wiki/Atari_7800"
-        ]
-    },
-    "detection": {
-        "signature": "415441524937383030",
-        "offset": 1,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0,
-        "gameTitle": "",
-        "romLength": 0
-    },
-    "blocks": [
-        {
-            "type": "field",
-            "name": "Header Version",
-            "offset": 0,
-            "length": 1,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "A78 header format version (1 or 2)"
-        },
-        {
-            "type": "signature",
-            "name": "ATARI7800 Magic",
-            "offset": 1,
-            "length": 16,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "valueType": "ascii",
-            "description": "ATARI7800 + spaces + null - ProSystem header identifier"
-        },
-        {
-            "type": "field",
-            "name": "Game Title",
-            "offset": 17,
-            "length": 32,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "valueType": "ascii",
-            "storeAs": "gameTitle",
-            "description": "Game title (null-terminated ASCII string)"
-        },
-        {
-            "type": "field",
-            "name": "ROM Data Length",
-            "offset": 49,
-            "length": 4,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "valueType": "uint32",
-            "storeAs": "romLength",
-            "description": "Length of ROM data following this 128-byte header (big-endian)"
-        },
-        {
-            "type": "field",
-            "name": "Special Byte",
-            "offset": 53,
-            "length": 2,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "valueType": "uint16",
-            "description": "Banking, PAL flag, and other special attributes"
-        },
-        {
-            "type": "field",
-            "name": "Controller 1",
-            "offset": 55,
-            "length": 1,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "Controller type for port 1: 0=Joystick, 1=Light gun, 2=Paddle, 4=Trak-Ball"
-        },
-        {
-            "type": "field",
-            "name": "Controller 2",
-            "offset": 56,
-            "length": 1,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "Controller type for port 2"
-        },
-        {
-            "type": "field",
-            "name": "TV Type",
-            "offset": 57,
-            "length": 1,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "0=NTSC, 1=PAL",
-            "validationRules": {
-                "allowedValues": [
-                    0,
-                    1
-                ]
-            }
-        },
-        {
-            "type": "field",
-            "name": "Save Data Type",
-            "offset": 58,
-            "length": 1,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "0=None, 1=High Score Cart, 2=SaveKey/AtariVox"
-        },
-        {
-            "type": "field",
-            "name": "Reserved",
-            "offset": 59,
-            "length": 69,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "bytes",
-            "hidden": true,
-            "description": "Reserved bytes and expansion area"
-        },
-        {
-            "type": "field",
-            "name": "ROM Data Start",
-            "offset": 128,
-            "length": 4096,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "valueType": "bytes",
-            "description": "Start of actual Atari 7800 ROM code (length from ROM Data Length field)"
-        }
+    "web_links": [
+      "http://7800.8bitdev.org/index.php/A78_Header_Specification",
+      "https://sites.google.com/site/atari7800wiki/a78-header",
+      "https://docs.libretro.com/library/prosystem/",
+      "https://en.wikipedia.org/wiki/Atari_7800"
     ]
+  },
+  "detection": {
+    "signature": "415441524937383030",
+    "offset": 1,
+    "required": true,
+    "validation": {
+      "min_file_size": 9,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "gameTitle": "",
+    "romLength": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Header Version",
+      "offset": 0,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "A78 header format version (1 or 2)"
+    },
+    {
+      "type": "signature",
+      "name": "ATARI7800 Magic",
+      "offset": 1,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "ascii",
+      "description": "ATARI7800 + spaces + null - ProSystem header identifier"
+    },
+    {
+      "type": "field",
+      "name": "Game Title",
+      "offset": 17,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameTitle",
+      "description": "Game title (null-terminated ASCII string)"
+    },
+    {
+      "type": "field",
+      "name": "ROM Data Length",
+      "offset": 49,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "romLength",
+      "description": "Length of ROM data following this 128-byte header (big-endian)"
+    },
+    {
+      "type": "field",
+      "name": "Special Byte",
+      "offset": 53,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "description": "Banking, PAL flag, and other special attributes"
+    },
+    {
+      "type": "field",
+      "name": "Controller 1",
+      "offset": 55,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Controller type for port 1: 0=Joystick, 1=Light gun, 2=Paddle, 4=Trak-Ball"
+    },
+    {
+      "type": "field",
+      "name": "Controller 2",
+      "offset": 56,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Controller type for port 2"
+    },
+    {
+      "type": "field",
+      "name": "TV Type",
+      "offset": 57,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "0=NTSC, 1=PAL",
+      "validationRules": {
+        "allowedValues": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "type": "field",
+      "name": "Save Data Type",
+      "offset": 58,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "0=None, 1=High Score Cart, 2=SaveKey/AtariVox"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 59,
+      "length": 69,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "hidden": true,
+      "description": "Reserved bytes and expansion area"
+    },
+    {
+      "type": "field",
+      "name": "ROM Data Start",
+      "offset": 128,
+      "length": 4096,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Start of actual Atari 7800 ROM code (length from ROM Data Length field)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 11,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".a78"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".a78",
+    "defined_fields": 11
+  }
 }

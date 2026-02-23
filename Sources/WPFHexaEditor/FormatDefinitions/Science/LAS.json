@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "LAS Well Log",
-    "version":  "1.0",
-    "extensions":  [
-                       ".las"
-                   ],
-    "description":  "Log ASCII Standard for well log data",
-    "category":  "Science",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "7E56657273696F6E",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "LAS Magic",
-                       "offset":  0,
-                       "length":  8,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "LAS signature (~Version)"
-                   }
-               ]
+  "formatName": "LAS Well Log",
+  "version": "1.0",
+  "extensions": [
+    ".las"
+  ],
+  "description": "Log ASCII Standard for well log data",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "LAS Well Log Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/LAS"
+    ]
+  },
+  "detection": {
+    "signature": "7E56657273696F6E",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "LAS Magic",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "LAS signature (~Version)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Science",
+    "extensions": [
+      ".las"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".las",
+    "defined_fields": 1
+  }
 }

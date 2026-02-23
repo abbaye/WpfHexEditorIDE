@@ -1,80 +1,112 @@
 ﻿{
-    "formatName":  "PEM Certificate",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pem",
-                       ".crt",
-                       ".cer"
-                   ],
-    "description":  "PEM-encoded X.509 certificate - Base64 encoded certificate",
-    "category":  "Certificates",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Privacy-Enhanced Mail (PEM) - RFC 1421",
-            "Textual Encodings of PKIX, PKCS, and CMS Structures - RFC 7468",
-            "X.509 Certificate Format - RFC 5280"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail",
-            "https://www.rfc-editor.org/rfc/rfc7468",
-            "https://datatracker.ietf.org/doc/html/rfc5280",
-            "https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/"
-        ]
+  "formatName": "PEM Certificate",
+  "version": "1.0",
+  "extensions": [
+    ".pem",
+    ".crt",
+    ".cer"
+  ],
+  "description": "PEM-encoded X.509 certificate - Base64 encoded certificate",
+  "category": "Certificates",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Privacy-Enhanced Mail (PEM) - RFC 1421",
+      "Textual Encodings of PKIX, PKCS, and CMS Structures - RFC 7468",
+      "X.509 Certificate Format - RFC 5280"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail",
+      "https://www.rfc-editor.org/rfc/rfc7468",
+      "https://datatracker.ietf.org/doc/html/rfc5280",
+      "https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/"
+    ]
+  },
+  "detection": {
+    "signature": "2D2D2D2D2D424547494E20434552544946494341544544",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 23,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PEM Header",
+      "offset": 0,
+      "length": 27,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "-----BEGIN CERTIFICATE-----"
     },
-    "detection":  {
-                      "signature":  "2D2D2D2D2D424547494E20434552544946494341544544",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "PEM Header",
-                       "offset":  0,
-                       "length":  27,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "-----BEGIN CERTIFICATE-----"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Newline",
-                       "offset":  27,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "CRLF line ending"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Base64 Line 1",
-                       "offset":  29,
-                       "length":  64,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "First line of Base64 encoded certificate"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Newline",
-                       "offset":  93,
-                       "length":  2,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "CRLF line ending"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Base64 Data",
-                       "offset":  95,
-                       "length":  512,
-                       "color":  "#FFA07A",
-                       "opacity":  0.3,
-                       "description":  "Base64 encoded DER certificate data"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Newline",
+      "offset": 27,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "CRLF line ending"
+    },
+    {
+      "type": "field",
+      "name": "Base64 Line 1",
+      "offset": 29,
+      "length": 64,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "First line of Base64 encoded certificate"
+    },
+    {
+      "type": "field",
+      "name": "Newline",
+      "offset": 93,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "CRLF line ending"
+    },
+    {
+      "type": "field",
+      "name": "Base64 Data",
+      "offset": 95,
+      "length": 512,
+      "color": "#FFA07A",
+      "opacity": 0.3,
+      "description": "Base64 encoded DER certificate data"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 5,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Certificates",
+    "extensions": [
+      ".pem",
+      ".crt",
+      ".cer"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".pem",
+    "defined_fields": 5
+  }
 }

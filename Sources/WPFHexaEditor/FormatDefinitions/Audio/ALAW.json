@@ -1,42 +1,75 @@
 ﻿{
-    "formatName":  "A-law Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".alaw",
-                       ".al"
-                   ],
-    "description":  "A-law algorithm compressed audio format used in telephony",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ITU-T Recommendation G.711 - PCM of Voice Frequencies",
-            "A-law Logarithmic Companding Algorithm",
-            "G.711 Telephony Codec Standard"
-        ],
-        "web_links": [
-            "https://www.itu.int/rec/T-REC-G.711/",
-            "https://en.wikipedia.org/wiki/G.711",
-            "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-G.711-198811-I!!PDF-E&type=items"
-        ]
-    },
-    "detection":  {
-                      "signature":  "2E736E64",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "AU/SND Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  ".snd - Audio file header for A-law"
-                   }
-               ]
+  "formatName": "A-law Audio",
+  "version": "1.0",
+  "extensions": [
+    ".alaw",
+    ".al"
+  ],
+  "description": "A-law algorithm compressed audio format used in telephony",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ITU-T Recommendation G.711 - PCM of Voice Frequencies",
+      "A-law Logarithmic Companding Algorithm",
+      "G.711 Telephony Codec Standard"
+    ],
+    "web_links": [
+      "https://www.itu.int/rec/T-REC-G.711/",
+      "https://en.wikipedia.org/wiki/G.711",
+      "https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-G.711-198811-I!!PDF-E&type=items"
+    ]
+  },
+  "detection": {
+    "signature": "2E736E64",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "AU/SND Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": ".snd - Audio file header for A-law"
+    }
+  ],
+  "mime_types": [
+    "audio/alaw"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Audio codecs",
+    "Telephony software"
+  ],
+  "use_cases": [
+    "Audio playback",
+    "Sound storage"
+  ],
+  "format_relationships": {
+    "category": "Audio",
+    "extensions": [
+      ".alaw",
+      ".al"
+    ]
+  },
+  "technical_details": {
+    "audio_format": true,
+    "primary_extension": ".alaw",
+    "defined_fields": 1
+  }
 }

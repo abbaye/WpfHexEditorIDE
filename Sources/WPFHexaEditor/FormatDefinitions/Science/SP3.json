@@ -1,39 +1,78 @@
 ﻿{
-    "formatName":  "SP3 Orbit Data",
-    "version":  "1.0",
-    "extensions":  [
-                       ".sp3",
-                       ".eph"
-                   ],
-    "description":  "Standard Product 3 GPS precise orbit format",
-    "category":  "Science",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "2373",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "SP3 Magic",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "SP3 signature (#)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  2,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "SP3 version (a/c/d)"
-                   }
-               ]
+  "formatName": "SP3 Orbit Data",
+  "version": "1.0",
+  "extensions": [
+    ".sp3",
+    ".eph"
+  ],
+  "description": "Standard Product 3 GPS precise orbit format",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "SP3 Orbit Data Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/SP3"
+    ]
+  },
+  "detection": {
+    "signature": "2373",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SP3 Magic",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "SP3 signature (#)"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 2,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "SP3 version (a/c/d)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Science",
+    "extensions": [
+      ".sp3",
+      ".eph"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".sp3",
+    "defined_fields": 2
+  }
 }

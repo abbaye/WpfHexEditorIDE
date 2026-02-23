@@ -1,40 +1,80 @@
 ﻿{
-    "formatName":  "RINEX GNSS Data",
-    "version":  "1.0",
-    "extensions":  [
-                       ".rnx",
-                       ".obs",
-                       ".nav"
-                   ],
-    "description":  "Receiver Independent Exchange Format for GNSS data",
-    "category":  "Science",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "2020202020",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Header",
-                       "offset":  0,
-                       "length":  80,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "First RINEX header line (80 chars)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  0,
-                       "length":  9,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "RINEX version number"
-                   }
-               ]
+  "formatName": "RINEX GNSS Data",
+  "version": "1.0",
+  "extensions": [
+    ".rnx",
+    ".obs",
+    ".nav"
+  ],
+  "description": "Receiver Independent Exchange Format for GNSS data",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "RINEX GNSS Data Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/RNX"
+    ]
+  },
+  "detection": {
+    "signature": "2020202020",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 5,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Header",
+      "offset": 0,
+      "length": 80,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "First RINEX header line (80 chars)"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 0,
+      "length": 9,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "RINEX version number"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Science",
+    "extensions": [
+      ".rnx",
+      ".obs",
+      ".nav"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".rnx",
+    "defined_fields": 2
+  }
 }

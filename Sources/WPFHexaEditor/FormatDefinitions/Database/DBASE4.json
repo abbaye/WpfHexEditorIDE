@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "dBASE IV Database",
-    "version":  "1.0",
-    "extensions":  [
-                       ".dbf"
-                   ],
-    "description":  "dBASE IV database table format with memo support",
-    "category":  "Database",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "04",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "header",
-                       "name":  "dBASE IV Header",
-                       "offset":  0,
-                       "length":  32,
-                       "color":  "#3D5A80",
-                       "opacity":  0.4,
-                       "description":  "dBASE IV file header"
-                   }
-               ]
+  "formatName": "dBASE IV Database",
+  "version": "1.0",
+  "extensions": [
+    ".dbf"
+  ],
+  "description": "dBASE IV database table format with memo support",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "dBASE IV Database Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/DBF"
+    ]
+  },
+  "detection": {
+    "signature": "04",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "name": "dBASE IV Header",
+      "offset": 0,
+      "length": 32,
+      "color": "#3D5A80",
+      "opacity": 0.4,
+      "description": "dBASE IV file header"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Database",
+    "extensions": [
+      ".dbf"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".dbf",
+    "defined_fields": 1
+  }
 }

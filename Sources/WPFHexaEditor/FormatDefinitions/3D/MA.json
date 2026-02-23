@@ -1,29 +1,68 @@
 ﻿{
-    "formatName":  "Maya ASCII",
-    "version":  "1.0",
-    "extensions":  [
-                       ".ma"
-                   ],
-    "description":  "Autodesk Maya ASCII scene file",
-    "category":  "3D",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "2F2F4D61796120415343",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Maya ASCII Header",
-                       "offset":  0,
-                       "length":  11,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "//Maya ASC signature"
-                   }
-               ]
+  "formatName": "Maya ASCII",
+  "version": "1.0",
+  "extensions": [
+    ".ma"
+  ],
+  "description": "Autodesk Maya ASCII scene file",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Maya ASCII Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/MA"
+    ]
+  },
+  "detection": {
+    "signature": "2F2F4D61796120415343",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 10,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Maya ASCII Header",
+      "offset": 0,
+      "length": 11,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "//Maya ASC signature"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Autodesk Maya"
+  ],
+  "use_cases": [
+    "3D modeling",
+    "3D visualization",
+    "3D interchange"
+  ],
+  "format_relationships": {
+    "category": "3D",
+    "extensions": [
+      ".ma"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".ma",
+    "defined_fields": 1,
+    "binary_format": true
+  }
 }

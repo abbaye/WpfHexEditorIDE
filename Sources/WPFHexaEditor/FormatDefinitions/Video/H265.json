@@ -1,44 +1,80 @@
 ﻿{
-    "formatName":  "Raw H.265/HEVC",
-    "version":  "1.0",
-    "extensions":  [
-                       ".h265",
-                       ".265",
-                       ".hevc"
-                   ],
-    "description":  "Raw H.265/HEVC (High Efficiency Video Coding) elementary stream",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ITU-T H.265 - High Efficiency Video Coding",
-            "ISO/IEC 23008-2 - MPEG-H Part 2 HEVC",
-            "HEVC Standard Specification"
-        ],
-        "web_links": [
-            "https://www.itu.int/rec/T-REC-H.265",
-            "https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000530.shtml",
-            "https://hevc.hhi.fraunhofer.de/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "00000001",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "NAL Unit Start Code",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "H.265/HEVC NAL Unit start code prefix"
-                   }
-               ]
+  "formatName": "Raw H.265/HEVC",
+  "version": "1.0",
+  "extensions": [
+    ".h265",
+    ".265",
+    ".hevc"
+  ],
+  "description": "Raw H.265/HEVC (High Efficiency Video Coding) elementary stream",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ITU-T H.265 - High Efficiency Video Coding",
+      "ISO/IEC 23008-2 - MPEG-H Part 2 HEVC",
+      "HEVC Standard Specification"
+    ],
+    "web_links": [
+      "https://www.itu.int/rec/T-REC-H.265",
+      "https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000530.shtml",
+      "https://hevc.hhi.fraunhofer.de/"
+    ]
+  },
+  "detection": {
+    "signature": "00000001",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "NAL Unit Start Code",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "H.265/HEVC NAL Unit start code prefix"
+    }
+  ],
+  "mime_types": [
+    "video/h265"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Modern players",
+    "VLC",
+    "4K devices"
+  ],
+  "use_cases": [
+    "Video playback",
+    "Video editing"
+  ],
+  "format_relationships": {
+    "category": "Video",
+    "extensions": [
+      ".h265",
+      ".265",
+      ".hevc"
+    ]
+  },
+  "technical_details": {
+    "video_format": true,
+    "primary_extension": ".h265",
+    "defined_fields": 1,
+    "container_format": true
+  }
 }

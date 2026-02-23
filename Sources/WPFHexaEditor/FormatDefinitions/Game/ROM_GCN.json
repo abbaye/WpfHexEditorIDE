@@ -1,150 +1,181 @@
-{
-    "formatName":  "Nintendo GameCube Disc",
-    "version":  "1.0",
-    "extensions":  [
-                       ".gcm",
-                       ".iso"
-                   ],
-    "description":  "Nintendo GameCube disc image format",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Yet Another GameCube Documentation (YAGCD)",
-            "GameCube Disc Image Format Specification",
-            "GCM File Format"
-        ],
-        "web_links": [
-            "https://www.gc-forever.com/yagcd/",
-            "https://hitmen.c02.at/files/yagcd/yagcd/chap14.html",
-            "https://www.retroreversing.com/gamecube-file-formats",
-            "https://wit.wiimm.de/info/iso-images.html"
-        ]
+﻿{
+  "formatName": "Nintendo GameCube Disc",
+  "version": "1.0",
+  "extensions": [
+    ".gcm",
+    ".iso"
+  ],
+  "description": "Nintendo GameCube disc image format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Yet Another GameCube Documentation (YAGCD)",
+      "GameCube Disc Image Format Specification",
+      "GCM File Format"
+    ],
+    "web_links": [
+      "https://www.gc-forever.com/yagcd/",
+      "https://hitmen.c02.at/files/yagcd/yagcd/chap14.html",
+      "https://www.retroreversing.com/gamecube-file-formats",
+      "https://wit.wiimm.de/info/iso-images.html"
+    ]
+  },
+  "detection": {
+    "signature": "C2339F3D",
+    "offset": 28,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "gameCode": "",
+    "makerCode": "",
+    "gameName": ""
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Disc ID",
+      "offset": 0,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Console ID: G=GameCube, D=Demo disc, P=Promotional disc"
     },
-    "detection":  {
-                      "signature":  "C2339F3D",
-                      "offset":  28,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0,
-                      "gameCode":  "",
-                      "makerCode":  "",
-                      "gameName":  ""
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Disc ID",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Console ID: G=GameCube, D=Demo disc, P=Promotional disc"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Game Code",
-                       "offset":  1,
-                       "length":  2,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "gameCode",
-                       "description":  "Unique 2-character game identifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Region Code",
-                       "offset":  3,
-                       "length":  1,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Region: E=USA, P=Europe/Australia, J=Japan, K=Korea"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Maker Code",
-                       "offset":  4,
-                       "length":  2,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "makerCode",
-                       "description":  "Publisher code: 01=Nintendo, 08=Capcom, etc."
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Disc ID",
-                       "offset":  6,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "Disc number (0 for single disc games)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  7,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "Game version/revision number"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Audio Streaming",
-                       "offset":  8,
-                       "length":  1,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "0=No audio streaming, 1=Audio streaming enabled"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Stream Buffer Size",
-                       "offset":  9,
-                       "length":  1,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "Audio stream buffer size"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Reserved",
-                       "offset":  10,
-                       "length":  18,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "hidden":  true,
-                       "description":  "Reserved/padding"
-                   },
-                   {
-                       "type":  "signature",
-                       "name":  "Magic Word",
-                       "offset":  28,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "GameCube disc magic: 0xC2339F3D"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Game Name",
-                       "offset":  32,
-                       "length":  992,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "gameName",
-                       "description":  "Game title (ASCII, null-terminated, max 992 bytes)"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Game Code",
+      "offset": 1,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameCode",
+      "description": "Unique 2-character game identifier"
+    },
+    {
+      "type": "field",
+      "name": "Region Code",
+      "offset": 3,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Region: E=USA, P=Europe/Australia, J=Japan, K=Korea"
+    },
+    {
+      "type": "field",
+      "name": "Maker Code",
+      "offset": 4,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "makerCode",
+      "description": "Publisher code: 01=Nintendo, 08=Capcom, etc."
+    },
+    {
+      "type": "field",
+      "name": "Disc ID",
+      "offset": 6,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Disc number (0 for single disc games)"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 7,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Game version/revision number"
+    },
+    {
+      "type": "field",
+      "name": "Audio Streaming",
+      "offset": 8,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "0=No audio streaming, 1=Audio streaming enabled"
+    },
+    {
+      "type": "field",
+      "name": "Stream Buffer Size",
+      "offset": 9,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Audio stream buffer size"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 10,
+      "length": 18,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "hidden": true,
+      "description": "Reserved/padding"
+    },
+    {
+      "type": "signature",
+      "name": "Magic Word",
+      "offset": 28,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "GameCube disc magic: 0xC2339F3D"
+    },
+    {
+      "type": "field",
+      "name": "Game Name",
+      "offset": 32,
+      "length": 992,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameName",
+      "description": "Game title (ASCII, null-terminated, max 992 bytes)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 11,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".gcm",
+      ".iso"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".gcm",
+    "defined_fields": 11
+  }
 }

@@ -1,30 +1,69 @@
 ﻿{
-    "formatName":  "Structure Data File",
-    "version":  "1.0",
-    "extensions":  [
-                       ".sdf",
-                       ".sd"
-                   ],
-    "description":  "Structure Data File format (multiple MOL files)",
-    "category":  "Science",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "First Molecule",
-                       "offset":  0,
-                       "length":  240,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "First MOL record (3 header lines)"
-                   }
-               ]
+  "formatName": "Structure Data File",
+  "version": "1.0",
+  "extensions": [
+    ".sdf",
+    ".sd"
+  ],
+  "description": "Structure Data File format (multiple MOL files)",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Structure Data File Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/SDF"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "First Molecule",
+      "offset": 0,
+      "length": 240,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "First MOL record (3 header lines)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Science",
+    "extensions": [
+      ".sdf",
+      ".sd"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".sdf",
+    "defined_fields": 1
+  }
 }

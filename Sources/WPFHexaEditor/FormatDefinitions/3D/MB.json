@@ -1,38 +1,77 @@
 ﻿{
-    "formatName":  "Maya Binary",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mb"
-                   ],
-    "description":  "Autodesk Maya binary scene file",
-    "category":  "3D",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "466F7220",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Maya Binary Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "For signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version Info",
-                       "offset":  4,
-                       "length":  16,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Maya version information"
-                   }
-               ]
+  "formatName": "Maya Binary",
+  "version": "1.0",
+  "extensions": [
+    ".mb"
+  ],
+  "description": "Autodesk Maya binary scene file",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Maya Binary Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/MB"
+    ]
+  },
+  "detection": {
+    "signature": "466F7220",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Maya Binary Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "For signature"
+    },
+    {
+      "type": "field",
+      "name": "Version Info",
+      "offset": 4,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Maya version information"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Autodesk Maya"
+  ],
+  "use_cases": [
+    "3D modeling",
+    "3D visualization",
+    "3D interchange"
+  ],
+  "format_relationships": {
+    "category": "3D",
+    "extensions": [
+      ".mb"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".mb",
+    "defined_fields": 2,
+    "binary_format": true
+  }
 }

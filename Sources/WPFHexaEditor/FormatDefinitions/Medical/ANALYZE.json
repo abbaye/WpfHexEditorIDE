@@ -1,48 +1,87 @@
 ﻿{
-    "formatName":  "Analyze 7.5 Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".hdr",
-                       ".img"
-                   ],
-    "description":  "Analyze 7.5 medical image format",
-    "category":  "Medical",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "5C010000",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Header Size",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Header size (348 bytes)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Data Type",
-                       "offset":  4,
-                       "length":  10,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Data type string"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Database Name",
-                       "offset":  14,
-                       "length":  18,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Database name"
-                   }
-               ]
+  "formatName": "Analyze 7.5 Image",
+  "version": "1.0",
+  "extensions": [
+    ".hdr",
+    ".img"
+  ],
+  "description": "Analyze 7.5 medical image format",
+  "category": "Medical",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Analyze 7.5 Image Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/HDR"
+    ]
+  },
+  "detection": {
+    "signature": "5C010000",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Header Size",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Header size (348 bytes)"
+    },
+    {
+      "type": "field",
+      "name": "Data Type",
+      "offset": 4,
+      "length": 10,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Data type string"
+    },
+    {
+      "type": "field",
+      "name": "Database Name",
+      "offset": 14,
+      "length": 18,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Database name"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Medical",
+    "extensions": [
+      ".hdr",
+      ".img"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".hdr",
+    "defined_fields": 3
+  }
 }

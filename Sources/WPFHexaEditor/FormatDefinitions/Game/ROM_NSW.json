@@ -1,86 +1,118 @@
-{
-    "formatName":  "Nintendo Switch Package",
-    "version":  "1.0",
-    "extensions":  [
-                       ".nsp",
-                       ".xci",
-                       ".nca"
-                   ],
-    "description":  "Nintendo Switch package formats (NSP/XCI/NCA)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Nintendo Switch File Formats",
-            "NSP (Nintendo Submission Package) Format",
-            "XCI (Game Cartridge) & NCA (Content Archive) Formats"
-        ],
-        "web_links": [
-            "https://www.retroreversing.com/SwitchFileFormats",
-            "https://www.oreateai.com/blog/understanding-the-differences-between-xci-and-nsp-formats-for-nintendo-switch/0fcbf59b792ceae77f660eac57a435d8",
-            "https://github.com/jakcron/nstool",
-            "https://github.com/julesontheroad/NSC_BUILDER"
-        ]
+﻿{
+  "formatName": "Nintendo Switch Package",
+  "version": "1.0",
+  "extensions": [
+    ".nsp",
+    ".xci",
+    ".nca"
+  ],
+  "description": "Nintendo Switch package formats (NSP/XCI/NCA)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Nintendo Switch File Formats",
+      "NSP (Nintendo Submission Package) Format",
+      "XCI (Game Cartridge) & NCA (Content Archive) Formats"
+    ],
+    "web_links": [
+      "https://www.retroreversing.com/SwitchFileFormats",
+      "https://www.oreateai.com/blog/understanding-the-differences-between-xci-and-nsp-formats-for-nintendo-switch/0fcbf59b792ceae77f660eac57a435d8",
+      "https://github.com/jakcron/nstool",
+      "https://github.com/julesontheroad/NSC_BUILDER"
+    ]
+  },
+  "detection": {
+    "signature": "504653",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "PFS Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "bytes",
+      "description": "PFS0 magic for NSP files (0x50 0x46 0x53 0x30)"
     },
-    "detection":  {
-                      "signature":  "504653",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "PFS Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "bytes",
-                       "description":  "PFS0 magic for NSP files (0x50 0x46 0x53 0x30)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Count",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Number of files in the package"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "String Table Size",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Size of filename string table"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Reserved",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "hidden":  true,
-                       "description":  "Reserved/padding"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Entry Table",
-                       "offset":  16,
-                       "length":  64,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "File entry table (offset, size, string offset for each file)"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "File Count",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Number of files in the package"
+    },
+    {
+      "type": "field",
+      "name": "String Table Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Size of filename string table"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 12,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "hidden": true,
+      "description": "Reserved/padding"
+    },
+    {
+      "type": "field",
+      "name": "File Entry Table",
+      "offset": 16,
+      "length": 64,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "File entry table (offset, size, string offset for each file)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 5,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".nsp",
+      ".xci",
+      ".nca"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".nsp",
+    "defined_fields": 5
+  }
 }

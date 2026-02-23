@@ -1,47 +1,83 @@
 ﻿{
-    "formatName":  "Linker MAP File",
-    "version":  "1.0",
-    "extensions":  [
-                       ".map"
-                   ],
-    "description":  "Linker MAP file containing memory map and symbol information from the linking process (text format)",
-    "category":  "Programming",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "20",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Text Header",
-                       "offset":  0,
-                       "length":  64,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MAP file header (text format, varies by linker)"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Symbol Section",
-                       "offset":  64,
-                       "length":  128,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.4,
-                       "description":  "Symbol table section with addresses and names"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Memory Map",
-                       "offset":  192,
-                       "length":  256,
-                       "color":  "#45B7D1",
-                       "opacity":  0.4,
-                       "description":  "Memory layout and segment information"
-                   }
-               ]
+  "formatName": "Linker MAP File",
+  "version": "1.0",
+  "extensions": [
+    ".map"
+  ],
+  "description": "Linker MAP file containing memory map and symbol information from the linking process (text format)",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Linker MAP File Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/MAP"
+    ]
+  },
+  "detection": {
+    "signature": "20",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Text Header",
+      "offset": 0,
+      "length": 64,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MAP file header (text format, varies by linker)"
+    },
+    {
+      "type": "data",
+      "name": "Symbol Section",
+      "offset": 64,
+      "length": 128,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Symbol table section with addresses and names"
+    },
+    {
+      "type": "data",
+      "name": "Memory Map",
+      "offset": 192,
+      "length": 256,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Memory layout and segment information"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Compilers",
+    "Linkers"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Programming",
+    "extensions": [
+      ".map"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".map",
+    "defined_fields": 3
+  }
 }

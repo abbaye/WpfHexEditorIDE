@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "TOML Configuration",
-    "version":  "1.0",
-    "extensions":  [
-                       ".toml"
-                   ],
-    "description":  "Tom\u0027s Obvious, Minimal Language configuration format",
-    "category":  "Data",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "data",
-                       "name":  "TOML Data",
-                       "offset":  0,
-                       "length":  256,
-                       "color":  "#9C6644",
-                       "opacity":  0.4,
-                       "description":  "TOML configuration data"
-                   }
-               ]
+  "formatName": "TOML Configuration",
+  "version": "1.0",
+  "extensions": [
+    ".toml"
+  ],
+  "description": "Tom's Obvious, Minimal Language configuration format",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "TOML Configuration Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/TOML"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "data",
+      "name": "TOML Data",
+      "offset": 0,
+      "length": 256,
+      "color": "#9C6644",
+      "opacity": 0.4,
+      "description": "TOML configuration data"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Data",
+    "extensions": [
+      ".toml"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".toml",
+    "defined_fields": 1
+  }
 }

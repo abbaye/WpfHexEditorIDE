@@ -1,29 +1,70 @@
 ﻿{
-    "formatName":  "XML Document",
-    "version":  "1.0",
-    "extensions":  [
-                       ".xml"
-                   ],
-    "description":  "Extensible Markup Language document",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "3C3F786D6C20",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "XML Declaration",
-                       "offset":  0,
-                       "length":  6,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "\u003c?xml declaration"
-                   }
-               ]
+  "formatName": "XML Document",
+  "version": "1.0",
+  "extensions": [
+    ".xml"
+  ],
+  "description": "Extensible Markup Language document",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "XML Document Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/XML"
+    ]
+  },
+  "detection": {
+    "signature": "3C3F786D6C20",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 6,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "XML Declaration",
+      "offset": 0,
+      "length": 6,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "<?xml declaration"
+    }
+  ],
+  "mime_types": [
+    "application/xml"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "PDF readers",
+    "Office suites"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Documents",
+    "extensions": [
+      ".xml"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".xml",
+    "defined_fields": 1
+  }
 }

@@ -1,47 +1,86 @@
 ﻿{
-    "formatName":  "FictionBook 2.0",
-    "version":  "1.0",
-    "extensions":  [
-                       ".fb2"
-                   ],
-    "description":  "FictionBook 2.0 e-book format, XML-based format popular in Russia for fiction books",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "3C3F786D6C",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "XML Declaration",
-                       "offset":  0,
-                       "length":  5,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "XML declaration: \u0027\u003c?xml\u0027"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "XML Version",
-                       "offset":  5,
-                       "length":  20,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.4,
-                       "description":  "XML version and encoding declaration"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "FictionBook Root",
-                       "offset":  25,
-                       "length":  50,
-                       "color":  "#45B7D1",
-                       "opacity":  0.4,
-                       "description":  "FictionBook root element with namespace"
-                   }
-               ]
+  "formatName": "FictionBook 2.0",
+  "version": "1.0",
+  "extensions": [
+    ".fb2"
+  ],
+  "description": "FictionBook 2.0 e-book format, XML-based format popular in Russia for fiction books",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "FictionBook 2.0 Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/FB2"
+    ]
+  },
+  "detection": {
+    "signature": "3C3F786D6C",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 5,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "XML Declaration",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "XML declaration: '<?xml'"
+    },
+    {
+      "type": "data",
+      "name": "XML Version",
+      "offset": 5,
+      "length": 20,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "XML version and encoding declaration"
+    },
+    {
+      "type": "data",
+      "name": "FictionBook Root",
+      "offset": 25,
+      "length": 50,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "FictionBook root element with namespace"
+    }
+  ],
+  "mime_types": [
+    "application/fb2"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "PDF readers",
+    "Office suites"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Documents",
+    "extensions": [
+      ".fb2"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".fb2",
+    "defined_fields": 3
+  }
 }

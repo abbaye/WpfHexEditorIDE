@@ -1,51 +1,83 @@
 ﻿{
-    "formatName":  "Multiple-image Network Graphics",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mng"
-                   ],
-    "description":  "MNG animation format (PNG-based)",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "MNG (Multiple-image Network Graphics) v1.0",
-            "MNG Animation Format Specification",
-            "PNG-based Animation Container Format"
-        ],
-        "web_links": [
-            "http://www.libpng.org/pub/mng/spec/",
-            "http://www.libpng.org/pub/mng/",
-            "https://en.wikipedia.org/wiki/Multiple-image_Network_Graphics",
-            "http://www.libpng.org/pub/png/book/chapter12.html"
-        ]
+  "formatName": "Multiple-image Network Graphics",
+  "version": "1.0",
+  "extensions": [
+    ".mng"
+  ],
+  "description": "MNG animation format (PNG-based)",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "MNG (Multiple-image Network Graphics) v1.0",
+      "MNG Animation Format Specification",
+      "PNG-based Animation Container Format"
+    ],
+    "web_links": [
+      "http://www.libpng.org/pub/mng/spec/",
+      "http://www.libpng.org/pub/mng/",
+      "https://en.wikipedia.org/wiki/Multiple-image_Network_Graphics",
+      "http://www.libpng.org/pub/png/book/chapter12.html"
+    ]
+  },
+  "detection": {
+    "signature": "8A4D4E470D0A1A0A",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "MNG Signature",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MNG magic bytes"
     },
-    "detection":  {
-                      "signature":  "8A4D4E470D0A1A0A",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "MNG Signature",
-                       "offset":  0,
-                       "length":  8,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MNG magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "MHDR Chunk Length",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "MHDR chunk size"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "MHDR Chunk Length",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "MHDR chunk size"
+    }
+  ],
+  "mime_types": [
+    "image/mng"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Image viewers",
+    "GIMP"
+  ],
+  "use_cases": [
+    "Image viewing",
+    "Photo editing"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".mng"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".mng",
+    "defined_fields": 2
+  }
 }

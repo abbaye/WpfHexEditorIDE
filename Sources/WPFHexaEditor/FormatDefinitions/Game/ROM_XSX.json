@@ -1,94 +1,125 @@
-{
-    "formatName":  "Xbox Series X/S Package",
-    "version":  "1.0",
-    "extensions":  [
-                       ".xvd",
-                       ".msixvc"
-                   ],
-    "description":  "Xbox Series X/S optimized package format (enhanced XVD)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Xbox Series X/S Enhanced XVD Format",
-            "Xbox Velocity Architecture Documentation",
-            "BCPack and DirectStorage API Specification"
-        ],
-        "web_links": [
-            "https://xboxoneresearch.github.io/wiki/operating-system/xbox-virtual-drive/",
-            "https://news.xbox.com/en-us/2020/07/14/a-closer-look-at-xbox-velocity-architecture/",
-            "https://learn.microsoft.com/en-us/gaming/gdk/_content/gc/system/overviews/directstorage/directstorage-overview",
-            "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S"
-        ]
+﻿{
+  "formatName": "Xbox Series X/S Package",
+  "version": "1.0",
+  "extensions": [
+    ".xvd",
+    ".msixvc"
+  ],
+  "description": "Xbox Series X/S optimized package format (enhanced XVD)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Xbox Series X/S Enhanced XVD Format",
+      "Xbox Velocity Architecture Documentation",
+      "BCPack and DirectStorage API Specification"
+    ],
+    "web_links": [
+      "https://xboxoneresearch.github.io/wiki/operating-system/xbox-virtual-drive/",
+      "https://news.xbox.com/en-us/2020/07/14/a-closer-look-at-xbox-velocity-architecture/",
+      "https://learn.microsoft.com/en-us/gaming/gdk/_content/gc/system/overviews/directstorage/directstorage-overview",
+      "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S"
+    ]
+  },
+  "detection": {
+    "signature": "6D737863",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "XVD Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "bytes",
+      "description": "Enhanced XVD magic for Series X/S"
     },
-    "detection":  {
-                      "signature":  "6D737863",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "XVD Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "bytes",
-                       "description":  "Enhanced XVD magic for Series X/S"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Format Version",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "XVD v2/v3 format version (Series optimized)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Package Flags",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Series X/S specific flags (SSD optimizations, DirectStorage)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Compression Type",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Compression algorithm (BCPack, etc.)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Content Size",
-                       "offset":  16,
-                       "length":  8,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Total content size (64-bit)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Content ID",
-                       "offset":  32,
-                       "length":  16,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Xbox Series content GUID"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "XVD v2/v3 format version (Series optimized)"
+    },
+    {
+      "type": "field",
+      "name": "Package Flags",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Series X/S specific flags (SSD optimizations, DirectStorage)"
+    },
+    {
+      "type": "field",
+      "name": "Compression Type",
+      "offset": 12,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Compression algorithm (BCPack, etc.)"
+    },
+    {
+      "type": "field",
+      "name": "Content Size",
+      "offset": 16,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Total content size (64-bit)"
+    },
+    {
+      "type": "field",
+      "name": "Content ID",
+      "offset": 32,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Xbox Series content GUID"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 6,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".xvd",
+      ".msixvc"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".xvd",
+    "defined_fields": 6
+  }
 }

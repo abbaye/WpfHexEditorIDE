@@ -1,38 +1,79 @@
 ﻿{
-    "formatName":  "PowerPoint Presentation",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pptx"
-                   ],
-    "description":  "Microsoft PowerPoint Open XML presentation",
-    "category":  "Documents",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "504B0304",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ZIP Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "PPTX is a ZIP container"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "ZIP Header",
-                       "offset":  4,
-                       "length":  26,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "ZIP local file header"
-                   }
-               ]
+  "formatName": "PowerPoint Presentation",
+  "version": "1.0",
+  "extensions": [
+    ".pptx"
+  ],
+  "description": "Microsoft PowerPoint Open XML presentation",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PowerPoint Presentation Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/PPTX"
+    ]
+  },
+  "detection": {
+    "signature": "504B0304",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ZIP Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "PPTX is a ZIP container"
+    },
+    {
+      "type": "field",
+      "name": "ZIP Header",
+      "offset": 4,
+      "length": 26,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "ZIP local file header"
+    }
+  ],
+  "mime_types": [
+    "application/pptx"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "PDF readers",
+    "Office suites"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Documents",
+    "extensions": [
+      ".pptx"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".pptx",
+    "defined_fields": 2
+  }
 }

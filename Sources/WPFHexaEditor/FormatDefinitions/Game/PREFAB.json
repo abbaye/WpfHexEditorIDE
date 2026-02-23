@@ -1,42 +1,72 @@
 ﻿{
-    "formatName":  "Unity Prefab",
-    "version":  "1.0",
-    "extensions":  [
-                       ".prefab"
-                   ],
-    "description":  "Unity prefab object file",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Unity Prefab YAML Format",
-                                              "Unity Serialization Specification",
-                                              "Unity Text Serialized File Format"
-                                          ],
-                       "web_links":  [
-                                         "https://docs.unity3d.com/Manual/FormatDescription.html",
-                                         "https://unity.com/blog/engine-platform/understanding-unitys-serialization-language-yaml",
-                                         "https://github.com/socialpoint-labs/unity-yaml-parser",
-                                         "https://www.syntacticsugardaddy.com/blog/serialization-in-unity-explained"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "2559414D4C",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "YAML Header",
-                       "offset":  0,
-                       "length":  5,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "%YAML prefab format"
-                   }
-               ]
+  "formatName": "Unity Prefab",
+  "version": "1.0",
+  "extensions": [
+    ".prefab"
+  ],
+  "description": "Unity prefab object file",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Unity Prefab YAML Format",
+      "Unity Serialization Specification",
+      "Unity Text Serialized File Format"
+    ],
+    "web_links": [
+      "https://docs.unity3d.com/Manual/FormatDescription.html",
+      "https://unity.com/blog/engine-platform/understanding-unitys-serialization-language-yaml",
+      "https://github.com/socialpoint-labs/unity-yaml-parser",
+      "https://www.syntacticsugardaddy.com/blog/serialization-in-unity-explained"
+    ]
+  },
+  "detection": {
+    "signature": "2559414D4C",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 5,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "YAML Header",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "%YAML prefab format"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".prefab"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".prefab",
+    "defined_fields": 1
+  }
 }

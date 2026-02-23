@@ -53,7 +53,8 @@ namespace WpfHexaEditor.Controls
         private List<Core.CustomBackgroundBlock> _customBackgroundBlocks = new();
         private CustomBackgroundRenderer _customBackgroundRenderer = new();
         private Core.CharacterTable.TblStream _tblStream; // Phase 7.5: TBL for character type detection
-        private bool _showByteToolTip = false; // V1 compatible: Show tooltip on byte hover
+        private ByteToolTipDisplayMode _byteToolTipDisplayMode = ByteToolTipDisplayMode.None;
+        private ByteToolTipDetailLevel _byteToolTipDetailLevel = ByteToolTipDetailLevel.Standard;
         private System.Windows.Controls.ToolTip _byteToolTip; // Custom tooltip that follows mouse
 
         // Viewport display properties (backing fields)
@@ -1172,19 +1173,38 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
-        /// Show tooltip on byte hover (V1 compatible - tooltip follows mouse)
+        /// Byte tooltip display mode (where to show tooltips)
         /// </summary>
-        public bool ShowByteToolTip
+        public ByteToolTipDisplayMode ByteToolTipDisplayMode
         {
-            get => _showByteToolTip;
+            get => _byteToolTipDisplayMode;
             set
             {
-                _showByteToolTip = value;
-                if (!value && _byteToolTip != null)
+                _byteToolTipDisplayMode = value;
+                if (value == ByteToolTipDisplayMode.None && _byteToolTip != null)
                 {
                     _byteToolTip.IsOpen = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Byte tooltip detail level (how much info to show)
+        /// </summary>
+        public ByteToolTipDetailLevel ByteToolTipDetailLevel
+        {
+            get => _byteToolTipDetailLevel;
+            set => _byteToolTipDetailLevel = value;
+        }
+
+        /// <summary>
+        /// Legacy V1 compatibility property - maps to ByteToolTipDisplayMode
+        /// </summary>
+        [Obsolete("Use ByteToolTipDisplayMode instead")]
+        public bool ShowByteToolTip
+        {
+            get => _byteToolTipDisplayMode != ByteToolTipDisplayMode.None;
+            set => _byteToolTipDisplayMode = value ? ByteToolTipDisplayMode.Everywhere : ByteToolTipDisplayMode.None;
         }
 
         /// <summary>
@@ -1284,6 +1304,12 @@ namespace WpfHexaEditor.Controls
 
             // Draw custom background blocks (using populated Rects)
             DrawCustomBackgroundBlocks(dc);
+
+            // Draw TBL backgrounds for special types (EndBlock, EndLine, Japonais)
+            DrawTblBackgrounds(dc);
+
+            // Draw highlights (selection, auto-highlight, search, hover)
+            DrawHighlights(dc);
 
             double y = TopMargin;
 
@@ -1459,9 +1485,46 @@ namespace WpfHexaEditor.Controls
 
                         var byteData = line.Bytes[i];
 
-                        // Calculate ASCII cell width (simplified - use AsciiCharWidth for now)
-                        // Note: For TBL, actual width varies, but this is close enough for backgrounds
+                        // Calculate ASCII cell width - must match DrawAsciiByte for accuracy
                         double cellWidth = AsciiCharWidth;
+
+                        // TBL rendering only supported in Bit8 mode
+                        if (_tblStream != null && byteData.ByteSize == Core.ByteSizeType.Bit8)
+                        {
+                            // TBL loaded in Bit8 mode: measure dynamic width for each character
+                            try
+                            {
+                                var displayChar = GetDisplayCharacter(line, i);
+                                var formattedText = new FormattedText(
+                                    displayChar,
+                                    System.Globalization.CultureInfo.CurrentCulture,
+                                    FlowDirection.LeftToRight,
+                                    _typeface,
+                                    13,
+                                    _asciiBrush,
+                                    VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+                                // Use actual text width if larger than single char width
+                                cellWidth = formattedText.Width > AsciiCharWidth
+                                    ? formattedText.Width
+                                    : AsciiCharWidth;
+                            }
+                            catch
+                            {
+                                // Fallback to default on error
+                                cellWidth = AsciiCharWidth;
+                            }
+                        }
+                        else
+                        {
+                            // No TBL or multi-byte mode: fixed uniform width based on byte count
+                            // Bit8: 1 char width, Bit16: 2 char widths, Bit32: 4 char widths
+                            if (byteData.Values != null && byteData.Values.Length > 1)
+                            {
+                                cellWidth = AsciiCharWidth * byteData.Values.Length;
+                            }
+                            // else: cellWidth already set to AsciiCharWidth for Bit8
+                        }
 
                         // Populate AsciiRect
                         byteData.AsciiRect = new Rect(asciiX, y, cellWidth, _lineHeight);
@@ -1495,6 +1558,168 @@ namespace WpfHexaEditor.Controls
 
             // Draw blocks using stored Rects
             _customBackgroundRenderer.DrawBlocks(dc, _linesCached, firstVisiblePos, lastVisiblePos);
+        }
+
+        /// <summary>
+        /// Draw TBL background colors using stored Rects from ByteData
+        /// Only draws backgrounds for special TBL types: EndBlock, EndLine, Japonais
+        /// Called before DrawHighlights to ensure correct rendering order
+        /// </summary>
+        private void DrawTblBackgrounds(DrawingContext dc)
+        {
+            if (_linesCached == null || _linesCached.Count == 0 || _tblStream == null || !ShowAscii)
+                return;
+
+            // TBL rendering only supported in Bit8 mode (8-bit)
+            // Check first line's first byte to determine current byte size mode
+            if (_linesCached.Count > 0 && _linesCached[0].Bytes != null && _linesCached[0].Bytes.Count > 0)
+            {
+                if (_linesCached[0].Bytes[0].ByteSize != Core.ByteSizeType.Bit8)
+                    return; // Skip TBL rendering in Bit16/Bit32 modes
+            }
+
+            foreach (var line in _linesCached)
+            {
+                if (line.Bytes == null || line.Bytes.Count == 0)
+                    continue;
+
+                for (int byteIndex = 0; byteIndex < line.Bytes.Count; byteIndex++)
+                {
+                    var byteData = line.Bytes[byteIndex];
+
+                    // Skip if AsciiRect not available (byte not visible)
+                    if (!byteData.AsciiRect.HasValue)
+                        continue;
+
+                    try
+                    {
+                        // Determine how many bytes this character consumes (uses greedy matching)
+                        int byteCount = GetCharacterByteCount(line, byteIndex);
+
+                        // Build hex key for the actual byte count
+                        var hexKey = new StringBuilder();
+
+                        // In multi-byte mode (Bit16/32), build hex key from ALL bytes in this ByteData group
+                        if (byteData.Values != null && byteData.Values.Length > 1)
+                        {
+                            // Multi-byte: use Values[] array (contains all bytes in the group)
+                            foreach (var b in byteData.Values)
+                                hexKey.Append(b.ToString("X2"));
+                        }
+                        else
+                        {
+                            // Single-byte mode (Bit8): build from consecutive ByteData objects
+                            for (int j = 0; j < byteCount && byteIndex + j < line.Bytes.Count; j++)
+                                hexKey.Append(line.Bytes[byteIndex + j].Value.ToString("X2"));
+                        }
+
+                        var (text, dteType) = _tblStream.FindMatch(hexKey.ToString(), showSpecialValue: true);
+
+                        // Only special types get background color
+                        bool isSpecialType = dteType == Core.CharacterTable.DteType.EndBlock ||
+                                             dteType == Core.CharacterTable.DteType.EndLine ||
+                                             dteType == Core.CharacterTable.DteType.Japonais;
+
+                        if (isSpecialType)
+                        {
+                            bool shouldShow = dteType switch
+                            {
+                                Core.CharacterTable.DteType.EndBlock => _showTblEndBlock,
+                                Core.CharacterTable.DteType.EndLine => _showTblEndLine,
+                                Core.CharacterTable.DteType.Japonais => _showTblJaponais,
+                                _ => false
+                            };
+
+                            if (shouldShow)
+                            {
+                                // Select background brush for special types
+                                Brush bgBrush = dteType switch
+                                {
+                                    Core.CharacterTable.DteType.Japonais => _tblJaponaisBrush,
+                                    Core.CharacterTable.DteType.EndBlock => _tblEndBlockBrush,
+                                    Core.CharacterTable.DteType.EndLine => _tblEndLineBrush,
+                                    _ => null
+                                };
+
+                                // Draw semi-transparent background for special types
+                                if (bgBrush != null)
+                                {
+                                    var semiBrush = bgBrush.Clone();
+                                    semiBrush.Opacity = 0.3; // Semi-transparent background
+                                    dc.DrawRectangle(semiBrush, null, byteData.AsciiRect.Value);
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // Ignore TBL lookup errors
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draw all highlight overlays using stored Rects from ByteData
+        /// Includes: selection, auto-highlight, double-click highlight, mouse hover
+        /// Centralized for consistency and performance
+        /// </summary>
+        private void DrawHighlights(DrawingContext dc)
+        {
+            if (_linesCached == null || _linesCached.Count == 0)
+                return;
+
+            foreach (var line in _linesCached)
+            {
+                if (line.Bytes == null || line.Bytes.Count == 0)
+                    continue;
+
+                foreach (var byteData in line.Bytes)
+                {
+                    long bytePos = byteData.VirtualPos;
+
+                    // Auto-highlight (yellow) - matching byte values
+                    if (_autoHighlightByteValue.HasValue && byteData.Value == _autoHighlightByteValue.Value)
+                    {
+                        if (byteData.HexRect.HasValue)
+                            dc.DrawRoundedRectangle(_autoHighLiteBrush, null, byteData.HexRect.Value, 2, 2);
+                        if (ShowAscii && byteData.AsciiRect.HasValue)
+                            dc.DrawRectangle(_autoHighLiteBrush, null, byteData.AsciiRect.Value);
+                    }
+
+                    // Double-click highlight (light blue) - search results
+                    if (_highlightedPositions?.Contains(bytePos) == true)
+                    {
+                        if (byteData.HexRect.HasValue)
+                            dc.DrawRoundedRectangle(_doubleClickHighlightBrush, null, byteData.HexRect.Value, 2, 2);
+                        if (ShowAscii && byteData.AsciiRect.HasValue)
+                            dc.DrawRectangle(_doubleClickHighlightBrush, null, byteData.AsciiRect.Value);
+                    }
+
+                    // Mouse hover preview
+                    if (_mouseHoverPosition >= 0 && bytePos == _mouseHoverPosition && _mouseHoverBrush != null)
+                    {
+                        // Only show in the area where mouse is hovering
+                        if (_mouseHoverInHexArea && byteData.HexRect.HasValue)
+                            dc.DrawRoundedRectangle(_mouseHoverBrush, null, byteData.HexRect.Value, 2, 2);
+                        else if (!_mouseHoverInHexArea && ShowAscii && byteData.AsciiRect.HasValue)
+                            dc.DrawRectangle(_mouseHoverBrush, null, byteData.AsciiRect.Value);
+                    }
+
+                    // Selection highlight (on top of other highlights)
+                    if (IsPositionSelected(bytePos))
+                    {
+                        var selectionBrush = (_activePanel == ActivePanelType.Hex && SelectionActiveBrush != null)
+                            ? SelectionActiveBrush
+                            : (SelectionInactiveBrush ?? _selectedBrush);
+
+                        if (byteData.HexRect.HasValue)
+                            dc.DrawRoundedRectangle(selectionBrush, null, byteData.HexRect.Value, 2, 2);
+                        if (ShowAscii && byteData.AsciiRect.HasValue)
+                            dc.DrawRectangle(selectionBrush, null, byteData.AsciiRect.Value);
+                    }
+                }
+            }
         }
 
         private void DrawOffset(DrawingContext dc, HexLine line, double y)
@@ -1551,40 +1776,8 @@ namespace WpfHexaEditor.Controls
             // Store rect for CustomBackgroundRenderer (guaranteed accurate)
             byteData.HexRect = rect;
 
-            // Note: Custom background blocks are now drawn globally via CustomBackgroundRenderer
-            // in DrawCustomBackgroundBlocks() for better performance and correct spacing handling
-
-            // Auto-highlight matching bytes (V1 compatible feature)
-            if (_autoHighlightByteValue.HasValue && byteData.Value == _autoHighlightByteValue.Value)
-            {
-                dc.DrawRoundedRectangle(_autoHighLiteBrush, null, rect, 2, 2);
-            }
-
-            // Double-click highlighted positions (V1 compatible feature) - light blue background
-            if (_highlightedPositions != null && _highlightedPositions.Contains(byteData.VirtualPos.Value))
-            {
-                dc.DrawRoundedRectangle(_doubleClickHighlightBrush, null, rect, 2, 2);
-            }
-
-            // Draw mouse hover preview (shows which byte will be selected on click)
-            // Only show in hex area if mouse is hovering in hex area (matches Legacy behavior)
-            if (_mouseHoverPosition >= 0 && _mouseHoverInHexArea &&
-                byteData.VirtualPos.Value == _mouseHoverPosition &&
-                _mouseHoverBrush != null)
-            {
-                dc.DrawRoundedRectangle(_mouseHoverBrush, null, rect, 2, 2);
-            }
-
-            // Draw selection background (on top of custom background and auto-highlight)
-            bool isSelected = IsPositionSelected(byteData.VirtualPos.Value);
-            if (isSelected)
-            {
-                // Use active or inactive brush based on which panel is active
-                Brush selectionBrush = (_activePanel == ActivePanelType.Hex && SelectionActiveBrush != null)
-                    ? SelectionActiveBrush
-                    : (SelectionInactiveBrush != null ? SelectionInactiveBrush : _selectedBrush);
-                dc.DrawRoundedRectangle(selectionBrush, null, rect, 2, 2);
-            }
+            // Note: Highlights (selection, auto-highlight, search, hover) are now drawn globally
+            // via DrawHighlights() for consistency and performance
 
             // Draw added byte background (light green) to make inserted bytes more visible
             if (byteData.Action == ByteAction.Added)
@@ -1767,102 +1960,62 @@ namespace WpfHexaEditor.Controls
                 }
             }
 
-            var formattedText = new FormattedText(
-                displayChar,
-                System.Globalization.CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                _typeface,
-                13,
-                textBrush, // Use TBL color for text
-                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            // STEP 2: Calculate cell width - must match PopulateByteRects logic exactly
+            double cellWidth;
+            FormattedText formattedText;
 
-            // Phase 4: AUTO-SIZING for TBL and multi-byte mode
-            // Use actual text width if larger than single char width
-            double cellWidth = formattedText.Width > AsciiCharWidth
-                ? formattedText.Width
-                : AsciiCharWidth;
+            // TBL rendering only supported in Bit8 mode
+            if (_tblStream != null && byteData.ByteSize == Core.ByteSizeType.Bit8)
+            {
+                // TBL loaded in Bit8 mode: measure dynamic width
+                formattedText = new FormattedText(
+                    displayChar,
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    _typeface,
+                    13,
+                    textBrush,
+                    VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
-            // STEP 2: Create rect with dynamic width
+                cellWidth = formattedText.Width > AsciiCharWidth
+                    ? formattedText.Width
+                    : AsciiCharWidth;
+            }
+            else
+            {
+                // No TBL or multi-byte mode: fixed uniform width
+                if (byteData.Values != null && byteData.Values.Length > 1)
+                {
+                    cellWidth = AsciiCharWidth * byteData.Values.Length;
+                }
+                else
+                {
+                    cellWidth = AsciiCharWidth;
+                }
+
+                // Create FormattedText with fixed width
+                formattedText = new FormattedText(
+                    displayChar,
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    _typeface,
+                    13,
+                    textBrush,
+                    VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            }
+
+            // Create rect with calculated width (matches PopulateByteRects)
             var rect = new Rect(x, y, cellWidth, _lineHeight);
 
             // Store rect for CustomBackgroundRenderer (guaranteed accurate)
             byteData.AsciiRect = rect;
 
             // STEP 3: Draw backgrounds and borders
-            // Phase 7.1: Draw custom background block FIRST (underneath everything)
-            // Note: Custom background blocks are now drawn globally via CustomBackgroundRenderer
-            // in DrawCustomBackgroundBlocks() for better performance and correct spacing handling
+            // Note: Custom background blocks and TBL backgrounds are now drawn globally
+            // via DrawCustomBackgroundBlocks() and DrawTblBackgrounds() for correct rendering order
 
-            // Phase 7.5: Draw TBL background ONLY for special types (EndBlock, EndLine, Japonais)
-            if (_tblStream != null && dteType != Core.CharacterTable.DteType.Invalid)
-            {
-                // Only special types get background color (in addition to text color)
-                bool isSpecialType = dteType == Core.CharacterTable.DteType.EndBlock ||
-                                     dteType == Core.CharacterTable.DteType.EndLine ||
-                                     dteType == Core.CharacterTable.DteType.Japonais;
-
-                if (isSpecialType)
-                {
-                    bool shouldShow = dteType switch
-                    {
-                        Core.CharacterTable.DteType.EndBlock => _showTblEndBlock,
-                        Core.CharacterTable.DteType.EndLine => _showTblEndLine,
-                        Core.CharacterTable.DteType.Japonais => _showTblJaponais,
-                        _ => false
-                    };
-
-                    if (shouldShow)
-                    {
-                        // Select background brush for special types
-                        Brush bgBrush = dteType switch
-                        {
-                            Core.CharacterTable.DteType.Japonais => _tblJaponaisBrush,
-                            Core.CharacterTable.DteType.EndBlock => _tblEndBlockBrush,
-                            Core.CharacterTable.DteType.EndLine => _tblEndLineBrush,
-                            _ => null
-                        };
-
-                        // Draw semi-transparent background for special types
-                        if (bgBrush != null)
-                        {
-                            var semiBrush = bgBrush.Clone();
-                            semiBrush.Opacity = 0.3; // Semi-transparent background
-                            dc.DrawRectangle(semiBrush, null, rect);
-                        }
-                    }
-                }
-            }
-
-            // Auto-highlight matching bytes (V1 compatible feature)
-            if (_autoHighlightByteValue.HasValue && byteData.Value == _autoHighlightByteValue.Value)
-            {
-                dc.DrawRectangle(_autoHighLiteBrush, null, rect);
-            }
-
-            // Double-click highlighted positions (V1 compatible feature) - light blue background
-            if (_highlightedPositions != null && _highlightedPositions.Contains(byteData.VirtualPos.Value))
-            {
-                var doubleClickBrush = new SolidColorBrush(Color.FromArgb(128, 135, 206, 250)); // Light sky blue, semi-transparent
-                dc.DrawRectangle(doubleClickBrush, null, rect);
-            }
-
-            // Draw mouse hover preview (shows which byte will be selected on click)
-            // Only show in ASCII area if mouse is hovering in ASCII area (matches Legacy behavior)
-            if (_mouseHoverPosition >= 0 && !_mouseHoverInHexArea && byteData.VirtualPos.Value == _mouseHoverPosition)
-            {
-                dc.DrawRectangle(_mouseHoverBrush, null, rect);
-            }
-
-            // Draw selection background (on top of custom background, TBL colors, and auto-highlight)
-            bool isSelected = IsPositionSelected(byteData.VirtualPos.Value);
-            if (isSelected)
-            {
-                // Use active or inactive brush based on which panel is active
-                Brush selectionBrush = (_activePanel == ActivePanelType.Ascii && SelectionActiveBrush != null)
-                    ? SelectionActiveBrush
-                    : (SelectionInactiveBrush != null ? SelectionInactiveBrush : _selectedBrush);
-                dc.DrawRoundedRectangle(selectionBrush, null, rect, 1, 1);
-            }
+            // Note: Highlights (selection, auto-highlight, search, hover) are now drawn globally
+            // via DrawHighlights() for consistency and performance
 
             // Draw added byte background (light green) to make inserted bytes more visible
             if (byteData.Action == ByteAction.Added)
@@ -2243,6 +2396,7 @@ namespace WpfHexaEditor.Controls
 
         /// <summary>
         /// Hit test to determine which byte position was clicked and which area (hex or ASCII)
+        /// Optimized: Uses stored HexRect/AsciiRect from ByteData instead of recalculating positions
         /// Phase 4: Changed to internal so HexEditor can use it for consistent hit testing
         /// </summary>
         internal (long? Position, bool IsHexArea) HitTestByteWithArea(Point mousePos)
@@ -2262,89 +2416,21 @@ namespace WpfHexaEditor.Controls
             if (line.Bytes == null || line.Bytes.Count == 0)
                 return (null, true);
 
-            double x = mousePos.X;
-
-            // Start position depends on ShowOffset setting (matches drawing logic)
-            double hexStartX = ShowOffset ? OffsetWidth : 0;
-
-            // Check if click is in hex area
-            // Must account for ByteSpacers to get accurate byte position
-            double hexX = hexStartX;
-
-            // Get stride for byte position calculation (matches drawing logic)
-            int stride = line.Bytes.Count > 0 ? (line.Bytes[0].ByteSize switch
+            // Optimized approach: Use stored Rects from PopulateByteRects()
+            // This eliminates ~100-200 arithmetic calculations per hit test
+            foreach (var byteData in line.Bytes)
             {
-                Core.ByteSizeType.Bit8 => 1,
-                Core.ByteSizeType.Bit16 => 2,
-                Core.ByteSizeType.Bit32 => 4,
-                _ => 1
-            }) : 1;
-
-            for (int i = 0; i < line.Bytes.Count; i++)
-            {
-                // Calculate byte position from group index (matches drawing logic)
-                int bytePosition = i * stride;
-
-                // Add ByteSpacer width if needed (matches drawing logic)
-                if (_bytesPerLine >= (int)ByteGrouping &&
-                    (ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                     ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel) &&
-                    bytePosition % (int)ByteGrouping == 0 && i > 0)
+                // Check hex area first (most common case)
+                if (byteData.HexRect.HasValue && byteData.HexRect.Value.Contains(mousePos))
                 {
-                    hexX += (int)ByteSpacerWidthTickness;
-                }
-
-                // Check if click is within this byte's rect
-                // Phase 6: Use dynamic CellWidth instead of fixed HexByteWidth
-                // Bug 4: Use GetDynamicCellWidth() for Font/DPI support
-                var byteData = line.Bytes[i];
-                double byteHitWidth = GetDynamicCellWidth(byteData) + HexByteSpacing;
-                if (x >= hexX && x < hexX + byteHitWidth)
-                {
-                    // Click is within this byte's area (including spacing after it)
                     return (byteData.VirtualPos.Value, true);
                 }
 
-                hexX += byteHitWidth;
-            }
-
-            // Phase 6: Use hexX final position as separator start (already accounts for dynamic widths)
-            // hexX now contains the end of the hex area (after all bytes + spacers)
-            double separatorX = hexX + 4; // Small margin before separator
-            double asciiX = separatorX + SeparatorWidth;
-
-            // Phase 4: ASCII hit testing - SAME LOGIC as Hex (simple and works for all cases)
-            // Iterate through bytes in ASCII area - simple loop like Hex panel
-            for (int i = 0; i < line.Bytes.Count; i++)
-            {
-                // Calculate byte position from group index (matches drawing logic)
-                int bytePosition = i * stride;
-
-                // Add ByteSpacer width if needed (matches drawing logic)
-                // IMPORTANT: Never account for ByteSpacers when TBL is loaded
-                // (TBL characters have variable byte consumption - spacers would be incorrect)
-                if (_tblStream == null &&
-                    _bytesPerLine >= (int)ByteGrouping &&
-                    (ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                     ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel) &&
-                    bytePosition % (int)ByteGrouping == 0 && i > 0)
+                // Check ASCII area if visible
+                if (ShowAscii && byteData.AsciiRect.HasValue && byteData.AsciiRect.Value.Contains(mousePos))
                 {
-                    asciiX += (int)ByteSpacerWidthTickness;
-                }
-
-                // Get ByteData and calculate character width (same approach as Hex)
-                var byteData = line.Bytes[i];
-                double charWidth = GetCharacterDisplayWidth(line, i);
-
-                // Check if click is within this ASCII character's rect
-                if (x >= asciiX && x < asciiX + charWidth)
-                {
-                    // Click is within this ASCII character's visual rect
                     return (byteData.VirtualPos.Value, false);
                 }
-
-                // Advance position (simple, no skipping - same as Hex)
-                asciiX += charWidth;
             }
 
             return (null, true);
@@ -2371,53 +2457,8 @@ namespace WpfHexaEditor.Controls
                 InvalidateVisual(); // Redraw to show/hide hover highlight
             }
 
-            // V1 compatible: Show byte tooltip on hover (follows mouse)
-            if (_showByteToolTip && _byteToolTip != null)
-            {
-
-                if (position.HasValue)
-                {
-                    // Find the byte data at this position
-                    var byteData = _linesCached?
-                        .SelectMany(line => line.Bytes)
-                        .FirstOrDefault(b => b.VirtualPos.IsValid && b.VirtualPos.Value == position.Value);
-
-                    if (byteData != null)
-                    {
-                        byte byteValue = byteData.Value;
-                        char asciiChar = (byteValue >= 32 && byteValue < 127) ? (char)byteValue : '.';
-
-                        string tooltipText = $"Position: 0x{position.Value:X8} ({position.Value})\n" +
-                                           $"Value: 0x{byteValue:X2} ({byteValue})\n" +
-                                           $"ASCII: '{asciiChar}'";
-
-                        // Check if this byte is part of a CustomBackgroundBlock (parsed field)
-                        var block = _customBackgroundBlocks?.FirstOrDefault(b =>
-                            position.Value >= b.StartOffset && position.Value < b.StopOffset);
-
-                        if (block != null && !string.IsNullOrWhiteSpace(block.Description))
-                        {
-                            tooltipText += $"\n\n📋 Field: {block.Description}";
-                            tooltipText += $"\nRange: 0x{block.StartOffset:X8} - 0x{block.StopOffset:X8}";
-                            tooltipText += $"\nLength: {block.Length} byte(s)";
-                        }
-
-                        // Update tooltip position to follow mouse
-                        _byteToolTip.HorizontalOffset = mousePos.X + 15;
-                        _byteToolTip.VerticalOffset = mousePos.Y + 20;
-                        _byteToolTip.Content = tooltipText;
-                        _byteToolTip.IsOpen = true;
-                        return;
-                    }
-                }
-
-                // Close tooltip if not over a byte
-                _byteToolTip.IsOpen = false;
-            }
-            else if (_byteToolTip != null)
-            {
-                _byteToolTip.IsOpen = false;
-            }
+            // Tooltip handling (new architecture with DisplayMode and DetailLevel)
+            UpdateByteTooltip(mousePos, position);
 
             // Mouse drag selection
             if (_isMouseDown && _dragStartPosition.HasValue)
@@ -2471,6 +2512,185 @@ namespace WpfHexaEditor.Controls
             {
                 _mouseHoverPosition = -1;
                 InvalidateVisual();
+            }
+        }
+
+        #endregion
+
+        #region Tooltip Helpers
+
+        /// <summary>
+        /// Updates byte tooltip based on display mode and detail level
+        /// </summary>
+        private void UpdateByteTooltip(Point mousePos, long? position)
+        {
+            // Disabled mode
+            if (_byteToolTipDisplayMode == ByteToolTipDisplayMode.None || _byteToolTip == null)
+            {
+                CloseTooltip();
+                return;
+            }
+
+            // No valid byte position
+            if (!position.HasValue)
+            {
+                CloseTooltip();
+                return;
+            }
+
+            // Find byte data at position
+            var byteData = FindByteDataAtPosition(position.Value);
+            if (byteData == null)
+            {
+                CloseTooltip();
+                return;
+            }
+
+            // Check if byte is in a CustomBackgroundBlock
+            var block = _customBackgroundBlocks?.FirstOrDefault(b =>
+                position.Value >= b.StartOffset && position.Value < b.StopOffset);
+
+            // OnCustomBackgroundBlocks mode: only show if in a CBB
+            if (_byteToolTipDisplayMode == ByteToolTipDisplayMode.OnCustomBackgroundBlocks)
+            {
+                if (block == null)
+                {
+                    CloseTooltip();
+                    return;
+                }
+            }
+
+            // Generate content based on detail level
+            string content = GenerateTooltipContent(byteData, block, _byteToolTipDetailLevel);
+
+            // Position tooltip (always mouse-follow for now)
+            PositionTooltip(mousePos);
+
+            // Update and show
+            _byteToolTip.Content = content;
+            _byteToolTip.IsOpen = true;
+        }
+
+        private ByteData FindByteDataAtPosition(long position)
+        {
+            return _linesCached?
+                .SelectMany(line => line.Bytes)
+                .FirstOrDefault(b => b.VirtualPos.IsValid && b.VirtualPos.Value == position);
+        }
+
+        private string GenerateTooltipContent(ByteData byteData, Core.CustomBackgroundBlock block, ByteToolTipDetailLevel detailLevel)
+        {
+            var sb = new StringBuilder();
+            byte byteValue = byteData.Value;
+            long position = byteData.VirtualPos.Value;
+            char asciiChar = (byteValue >= 32 && byteValue < 127) ? (char)byteValue : '.';
+
+            // === BASIC LEVEL (Always included) ===
+            sb.AppendLine($"Position: 0x{position:X8} ({position})");
+            sb.AppendLine($"Value: 0x{byteValue:X2} ({byteValue})");
+            sb.AppendLine($"ASCII: '{asciiChar}'");
+
+            // === STANDARD LEVEL (Add field info if available) ===
+            if (detailLevel >= ByteToolTipDetailLevel.Standard)
+            {
+                if (block != null && !string.IsNullOrWhiteSpace(block.Description))
+                {
+                    sb.AppendLine();
+                    sb.AppendLine($"📋 Field: {block.Description}");
+                    sb.AppendLine($"Range: 0x{block.StartOffset:X8} - 0x{block.StopOffset:X8}");
+                    sb.AppendLine($"Length: {block.Length} byte(s)");
+                }
+            }
+
+            // === DETAILED LEVEL (Add interpretations) ===
+            if (detailLevel >= ByteToolTipDetailLevel.Detailed)
+            {
+                AppendDetailedInfo(sb, byteValue, position);
+            }
+
+            return sb.ToString().TrimEnd();
+        }
+
+        private void AppendDetailedInfo(StringBuilder sb, byte byteValue, long position)
+        {
+            // Binary representation
+            string binary = Convert.ToString(byteValue, 2).PadLeft(8, '0');
+            sb.AppendLine($"Binary: {binary.Substring(0, 4)} {binary.Substring(4)}");
+
+            sb.AppendLine();
+            sb.AppendLine("━━━ INTERPRETATIONS ━━━");
+            sb.AppendLine($"Signed (int8): {(sbyte)byteValue}");
+            sb.AppendLine($"Unsigned (uint8): {byteValue}");
+
+            // Try to read multi-byte values from cached lines
+            if (_linesCached != null && _linesCached.Count > 0)
+            {
+                try
+                {
+                    // Collect up to 8 bytes starting from current position
+                    var bytesList = new List<byte>();
+                    foreach (var line in _linesCached)
+                    {
+                        if (line.Bytes != null)
+                        {
+                            foreach (var byteData in line.Bytes)
+                            {
+                                if (byteData.VirtualPos.IsValid && byteData.VirtualPos.Value >= position)
+                                {
+                                    bytesList.Add(byteData.Value);
+                                    if (bytesList.Count >= 8)
+                                        break;
+                                }
+                            }
+                        }
+                        if (bytesList.Count >= 8)
+                            break;
+                    }
+
+                    if (bytesList.Count >= 2)
+                    {
+                        var bytes = bytesList.ToArray();
+                        sb.AppendLine();
+                        sb.AppendLine("━━━ MULTI-BYTE ━━━");
+
+                        // Int16/UInt16 (Little Endian)
+                        if (bytes.Length >= 2)
+                        {
+                            short int16LE = BitConverter.ToInt16(bytes, 0);
+                            ushort uint16LE = BitConverter.ToUInt16(bytes, 0);
+                            sb.AppendLine($"Int16 LE: {int16LE}");
+                            sb.AppendLine($"UInt16 LE: {uint16LE}");
+                        }
+
+                        // Int32/Float (Little Endian)
+                        if (bytes.Length >= 4)
+                        {
+                            int int32LE = BitConverter.ToInt32(bytes, 0);
+                            float floatLE = BitConverter.ToSingle(bytes, 0);
+                            sb.AppendLine($"Int32 LE: {int32LE} (0x{int32LE:X8})");
+                            sb.AppendLine($"Float LE: {floatLE:F6}");
+                        }
+                    }
+                }
+                catch
+                {
+                    // Ignore errors (e.g., near end of file or data inconsistencies)
+                }
+            }
+        }
+
+        private void PositionTooltip(Point mousePos)
+        {
+            // Mouse-follow positioning (V1 behavior)
+            _byteToolTip.HorizontalOffset = mousePos.X + 15;
+            _byteToolTip.VerticalOffset = mousePos.Y + 20;
+        }
+
+        private void CloseTooltip()
+        {
+            if (_byteToolTip != null)
+            {
+                _byteToolTip.IsOpen = false;
             }
         }
 

@@ -1,29 +1,71 @@
 ﻿{
-    "formatName":  "USD ASCII",
-    "version":  "1.0",
-    "extensions":  [
-                       ".usda"
-                   ],
-    "description":  "Pixar USD ASCII text format",
-    "category":  "3D",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "23757364612031",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "USDA Header",
-                       "offset":  0,
-                       "length":  7,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "#usda 1 header"
-                   }
-               ]
+  "formatName": "USD ASCII",
+  "version": "1.0",
+  "extensions": [
+    ".usda"
+  ],
+  "description": "Pixar USD ASCII text format",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "USD ASCII Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/USDA"
+    ]
+  },
+  "detection": {
+    "signature": "23757364612031",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 7,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "USDA Header",
+      "offset": 0,
+      "length": 7,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "#usda 1 header"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Pixar USD tools",
+    "Text editors"
+  ],
+  "use_cases": [
+    "Film production",
+    "VFX pipelines",
+    "Universal scene description"
+  ],
+  "format_relationships": {
+    "category": "3D",
+    "extensions": [
+      ".usda"
+    ],
+    "pixar_format": true,
+    "film_industry": true
+  },
+  "technical_details": {
+    "primary_extension": ".usda",
+    "defined_fields": 1,
+    "binary_format": true
+  }
 }

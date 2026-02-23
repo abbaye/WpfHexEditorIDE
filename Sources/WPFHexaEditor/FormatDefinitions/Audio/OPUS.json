@@ -1,42 +1,87 @@
 ﻿{
-    "formatName":  "Opus Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".opus"
-                   ],
-    "description":  "Opus lossy audio codec designed for interactive speech and audio transmission",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "RFC 6716 - Definition of the Opus Audio Codec",
-            "RFC 8251 - Updates to the Opus Audio Codec",
-            "IETF Opus Specification"
-        ],
-        "web_links": [
-            "https://datatracker.ietf.org/doc/html/rfc6716",
-            "https://opus-codec.org/",
-            "https://en.wikipedia.org/wiki/Opus_(audio_format)",
-            "https://www.rfc-editor.org/info/rfc6716"
-        ]
-    },
-    "detection":  {
-                      "signature":  "4F676753",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Ogg Container",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "OggS - Ogg container for Opus audio"
-                   }
-               ]
+  "formatName": "Opus Audio",
+  "version": "1.0",
+  "extensions": [
+    ".opus"
+  ],
+  "description": "Opus lossy audio codec designed for interactive speech and audio transmission",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "RFC 6716 - Definition of the Opus Audio Codec",
+      "RFC 8251 - Updates to the Opus Audio Codec",
+      "IETF Opus Specification"
+    ],
+    "web_links": [
+      "https://datatracker.ietf.org/doc/html/rfc6716",
+      "https://opus-codec.org/",
+      "https://en.wikipedia.org/wiki/Opus_(audio_format)",
+      "https://www.rfc-editor.org/info/rfc6716"
+    ]
+  },
+  "detection": {
+    "signature": "4F676753",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Ogg Container",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "OggS - Ogg container for Opus audio"
+    }
+  ],
+  "mime_types": [
+    "audio/opus"
+  ],
+  "quality_metrics": {
+    "completeness_score": 93,
+    "documentation_level": "comprehensive",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "manually_refined": true
+  },
+  "software": [
+    "VLC",
+    "Firefox",
+    "Chrome",
+    "Discord",
+    "WhatsApp"
+  ],
+  "use_cases": [
+    "VoIP (Skype, Discord, WhatsApp)",
+    "Live streaming",
+    "Internet radio",
+    "WebRTC audio"
+  ],
+  "format_relationships": {
+    "open_source": true,
+    "based_on": [
+      "SILK",
+      "CELT"
+    ],
+    "replaces": [
+      "Vorbis",
+      "Speex"
+    ],
+    "container": "OGG/WEBM"
+  },
+  "technical_details": {
+    "compression": "Lossy",
+    "low_latency": "5-66.5 ms",
+    "bitrates": "6-510 kbps",
+    "adaptive": true,
+    "best_voip_codec": true
+  }
 }

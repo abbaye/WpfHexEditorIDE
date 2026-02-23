@@ -1,41 +1,73 @@
 ﻿{
-    "formatName":  "Tom\u0027s Audio Kompressor",
-    "version":  "1.0",
-    "extensions":  [
-                       ".tak"
-                   ],
-    "description":  "TAK lossless audio compression format with high compression ratios",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "TAK - Tom's lossless Audio Kompressor",
-            "TAK Lossless Audio Codec Specification",
-            "TAK Audio Format Documentation"
-        ],
-        "web_links": [
-            "https://wiki.hydrogenaudio.org/index.php?title=TAK",
-            "https://wiki.multimedia.cx/index.php/TAK",
-            "http://www.audiodope.org/en/help/musepackFormat.html"
-        ]
-    },
-    "detection":  {
-                      "signature":  "7442614B",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "TAK Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "tBaK - TAK audio file signature"
-                   }
-               ]
+  "formatName": "Tom's Audio Kompressor",
+  "version": "1.0",
+  "extensions": [
+    ".tak"
+  ],
+  "description": "TAK lossless audio compression format with high compression ratios",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "TAK - Tom's lossless Audio Kompressor",
+      "TAK Lossless Audio Codec Specification",
+      "TAK Audio Format Documentation"
+    ],
+    "web_links": [
+      "https://wiki.hydrogenaudio.org/index.php?title=TAK",
+      "https://wiki.multimedia.cx/index.php/TAK",
+      "http://www.audiodope.org/en/help/musepackFormat.html"
+    ]
+  },
+  "detection": {
+    "signature": "7442614B",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "TAK Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "tBaK - TAK audio file signature"
+    }
+  ],
+  "mime_types": [
+    "audio/tak"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "TAK decoder",
+    "Foobar2000"
+  ],
+  "use_cases": [
+    "Audio playback",
+    "Sound storage"
+  ],
+  "format_relationships": {
+    "category": "Audio",
+    "extensions": [
+      ".tak"
+    ]
+  },
+  "technical_details": {
+    "audio_format": true,
+    "primary_extension": ".tak",
+    "defined_fields": 1
+  }
 }

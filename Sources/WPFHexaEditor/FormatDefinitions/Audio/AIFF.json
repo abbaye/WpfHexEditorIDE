@@ -1,62 +1,99 @@
 ﻿{
-    "formatName":  "AIFF Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".aiff",
-                       ".aif",
-                       ".aifc"
-                   ],
-    "description":  "Audio Interchange File Format - Apple audio format",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "AIFF-1.3 Specification (1989)",
-            "AIFF-C Specification - IFF-AIFC",
-            "Audio Interchange File Format - Apple Standard"
-        ],
-        "web_links": [
-            "https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/AIFF/Docs/AIFF-1.3.pdf",
-            "https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/AIFF/AIFF.html",
-            "https://en.wikipedia.org/wiki/Audio_Interchange_File_Format",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000005.shtml"
-        ]
+  "formatName": "AIFF Audio",
+  "version": "1.0",
+  "extensions": [
+    ".aiff",
+    ".aif",
+    ".aifc"
+  ],
+  "description": "Audio Interchange File Format - Apple audio format",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "AIFF-1.3 Specification (1989)",
+      "AIFF-C Specification - IFF-AIFC",
+      "Audio Interchange File Format - Apple Standard"
+    ],
+    "web_links": [
+      "https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/AIFF/Docs/AIFF-1.3.pdf",
+      "https://www.mmsp.ece.mcgill.ca/Documents/AudioFormats/AIFF/AIFF.html",
+      "https://en.wikipedia.org/wiki/Audio_Interchange_File_Format",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000005.shtml"
+    ]
+  },
+  "detection": {
+    "signature": "464F524D",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "FORM Chunk",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "IFF FORM identifier"
     },
-    "detection":  {
-                      "signature":  "464F524D",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "FORM Chunk",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "IFF FORM identifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Chunk Size",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Size of data"
-                   },
-                   {
-                       "type":  "signature",
-                       "name":  "AIFF Type",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "AIFF or AIFC"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Chunk Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of data"
+    },
+    {
+      "type": "signature",
+      "name": "AIFF Type",
+      "offset": 8,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "AIFF or AIFC"
+    }
+  ],
+  "mime_types": [
+    "audio/aiff"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Apple software",
+    "Audio editors",
+    "iTunes"
+  ],
+  "use_cases": [
+    "Audio playback",
+    "Sound storage"
+  ],
+  "format_relationships": {
+    "category": "Audio",
+    "extensions": [
+      ".aiff",
+      ".aif",
+      ".aifc"
+    ]
+  },
+  "technical_details": {
+    "audio_format": true,
+    "primary_extension": ".aiff",
+    "defined_fields": 3
+  }
 }

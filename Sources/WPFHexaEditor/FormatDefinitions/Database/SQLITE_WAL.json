@@ -1,30 +1,69 @@
 ﻿{
-    "formatName":  "SQLite Write-Ahead Log",
-    "version":  "1.0",
-    "extensions":  [
-                       ".wal",
-                       "-wal"
-                   ],
-    "description":  "SQLite Write-Ahead Logging file for database transactions",
-    "category":  "Database",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "377F0682",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "WAL Magic Number",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.4,
-                       "description":  "WAL file magic number"
-                   }
-               ]
+  "formatName": "SQLite Write-Ahead Log",
+  "version": "1.0",
+  "extensions": [
+    ".wal",
+    "-wal"
+  ],
+  "description": "SQLite Write-Ahead Logging file for database transactions",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "SQLite Write-Ahead Log Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/WAL"
+    ]
+  },
+  "detection": {
+    "signature": "377F0682",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "WAL Magic Number",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "WAL file magic number"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Database",
+    "extensions": [
+      ".wal",
+      "-wal"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".wal",
+    "defined_fields": 1
+  }
 }

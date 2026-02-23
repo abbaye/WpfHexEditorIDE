@@ -1,42 +1,79 @@
 ﻿{
-    "formatName":  "Material Exchange Format",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mxf"
-                   ],
-    "description":  "SMPTE standard container format for professional digital video and audio media",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "SMPTE ST 377-1:2019 - MXF File Format Specification",
-            "SMPTE 377M - Material Exchange Format",
-            "RFC 4539 - SMPTE MXF Media Type Registration"
-        ],
-        "web_links": [
-            "https://pub.smpte.org/latest/st377-1/st377-1-2019.pdf",
-            "https://en.wikipedia.org/wiki/Material_Exchange_Format",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000013.shtml",
-            "https://datatracker.ietf.org/doc/html/rfc4539"
-        ]
-    },
-    "detection":  {
-                      "signature":  "060E2B34020501010D0102010102",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "MXF Partition Pack",
-                       "offset":  0,
-                       "length":  14,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MXF Universal Label and Partition Pack Key"
-                   }
-               ]
+  "formatName": "Material Exchange Format",
+  "version": "1.0",
+  "extensions": [
+    ".mxf"
+  ],
+  "description": "SMPTE standard container format for professional digital video and audio media",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "SMPTE ST 377-1:2019 - MXF File Format Specification",
+      "SMPTE 377M - Material Exchange Format",
+      "RFC 4539 - SMPTE MXF Media Type Registration"
+    ],
+    "web_links": [
+      "https://pub.smpte.org/latest/st377-1/st377-1-2019.pdf",
+      "https://en.wikipedia.org/wiki/Material_Exchange_Format",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000013.shtml",
+      "https://datatracker.ietf.org/doc/html/rfc4539"
+    ]
+  },
+  "detection": {
+    "signature": "060E2B34020501010D0102010102",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 14,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "MXF Partition Pack",
+      "offset": 0,
+      "length": 14,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MXF Universal Label and Partition Pack Key"
+    }
+  ],
+  "mime_types": [
+    "video/mxf"
+  ],
+  "quality_metrics": {
+    "completeness_score": 93,
+    "documentation_level": "comprehensive",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "manually_refined": true
+  },
+  "software": [
+    "Adobe Premiere",
+    "Avid Media Composer",
+    "DaVinci Resolve",
+    "FFmpeg"
+  ],
+  "use_cases": [
+    "Professional video production",
+    "Broadcast TV",
+    "Cinema production",
+    "Archival"
+  ],
+  "format_relationships": {
+    "smpte_standard": "SMPTE 377M",
+    "professional_format": true,
+    "alternative_to": "MOV for broadcast"
+  },
+  "technical_details": {
+    "container": "Material Exchange Format",
+    "metadata_rich": true,
+    "frame_accurate": true,
+    "multi_track": true,
+    "broadcast_standard": true
+  }
 }

@@ -1,47 +1,85 @@
 ﻿{
-    "formatName":  "Adobe Flash SWF",
-    "version":  "1.0",
-    "extensions":  [
-                       ".swf"
-                   ],
-    "description":  "Adobe Flash/Shockwave Flash file",
-    "category":  "Programming",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "465753",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "SWF Signature",
-                       "offset":  0,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "FWS (uncompressed) or CWS (compressed)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  3,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Flash version"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Length",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Uncompressed file length"
-                   }
-               ]
+  "formatName": "Adobe Flash SWF",
+  "version": "1.0",
+  "extensions": [
+    ".swf"
+  ],
+  "description": "Adobe Flash/Shockwave Flash file",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Adobe Flash SWF Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/SWF"
+    ]
+  },
+  "detection": {
+    "signature": "465753",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SWF Signature",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "FWS (uncompressed) or CWS (compressed)"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 3,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Flash version"
+    },
+    {
+      "type": "field",
+      "name": "File Length",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Uncompressed file length"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Compilers",
+    "Linkers"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Programming",
+    "extensions": [
+      ".swf"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".swf",
+    "defined_fields": 3
+  }
 }

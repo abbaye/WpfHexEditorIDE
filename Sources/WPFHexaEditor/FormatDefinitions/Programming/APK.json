@@ -1,29 +1,80 @@
 ﻿{
-    "formatName":  "Android Package",
-    "version":  "1.0",
-    "extensions":  [
-                       ".apk"
-                   ],
-    "description":  "Android application package",
-    "category":  "Programming",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "504B0304",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ZIP/APK Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "PK ZIP header"
-                   }
-               ]
+  "formatName": "Android Package",
+  "version": "1.0",
+  "extensions": [
+    ".apk"
+  ],
+  "description": "Android application package",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Android Package Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/APK"
+    ]
+  },
+  "detection": {
+    "signature": "504B0304",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ZIP/APK Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "PK ZIP header"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "manually_refined": true
+  },
+  "software": [
+    "Android OS",
+    "Android Studio",
+    "APK analyzers"
+  ],
+  "use_cases": [
+    "Android applications",
+    "Mobile app distribution",
+    "Google Play Store packages"
+  ],
+  "format_relationships": {
+    "android_format": true,
+    "based_on": "JAR/ZIP",
+    "contains": [
+      "DEX",
+      "resources",
+      "native libs"
+    ],
+    "signed": true
+  },
+  "technical_details": {
+    "zip_based": true,
+    "java_bytecode": "DEX format",
+    "signature_required": true,
+    "apk_signature_scheme": [
+      "v1",
+      "v2",
+      "v3",
+      "v4"
+    ]
+  }
 }

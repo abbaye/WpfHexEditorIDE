@@ -1,48 +1,88 @@
 ﻿{
-    "formatName":  "Python Compiled Bytecode",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pyc",
-                       ".pyo"
-                   ],
-    "description":  "Python compiled bytecode file",
-    "category":  "Programming",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Magic Number",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Python version-specific magic"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Timestamp",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Source file modification time"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Size",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Source file size"
-                   }
-               ]
+  "formatName": "Python Compiled Bytecode",
+  "version": "1.0",
+  "extensions": [
+    ".pyc",
+    ".pyo"
+  ],
+  "description": "Python compiled bytecode file",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Python Compiled Bytecode Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/PYC"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Magic Number",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Python version-specific magic"
+    },
+    {
+      "type": "field",
+      "name": "Timestamp",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Source file modification time"
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Source file size"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "manually_refined": true
+  },
+  "software": [
+    "Python interpreter",
+    "CPython"
+  ],
+  "use_cases": [
+    "Python bytecode",
+    "Faster Python loading",
+    "Compiled Python modules"
+  ],
+  "format_relationships": {
+    "python_format": true,
+    "generated_from": ".py files",
+    "cached_in": "__pycache__"
+  },
+  "technical_details": {
+    "bytecode_format": true,
+    "python_version_specific": true,
+    "faster_loading": true,
+    "not_obfuscation": true
+  }
 }

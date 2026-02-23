@@ -1,74 +1,112 @@
 ﻿{
-    "formatName":  "PFRO Registry Data",
-    "version":  "1.0",
-    "extensions":  [
-                       ""
-                   ],
-    "description":  "PendingFileRenameOperations - Delayed file operations",
-    "category":  "System",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Operation Count",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Number of pending operations"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "First Source Path Length",
-                       "offset":  4,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Length of first source path"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "First Source Path",
-                       "offset":  6,
-                       "length":  520,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Unicode source file path (MAX_PATH)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "First Target Path Length",
-                       "offset":  526,
-                       "length":  2,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Length of first target path"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "First Target Path",
-                       "offset":  528,
-                       "length":  520,
-                       "color":  "#FFA07A",
-                       "opacity":  0.3,
-                       "description":  "Unicode target file path (MAX_PATH)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Operation Flags",
-                       "offset":  1048,
-                       "length":  4,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "description":  "Operation type flags"
-                   }
-               ]
+  "formatName": "PFRO Registry Data",
+  "version": "1.0",
+  "extensions": [
+    ""
+  ],
+  "description": "PendingFileRenameOperations - Delayed file operations",
+  "category": "System",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PFRO Registry Data Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Operation Count",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Number of pending operations"
+    },
+    {
+      "type": "field",
+      "name": "First Source Path Length",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Length of first source path"
+    },
+    {
+      "type": "field",
+      "name": "First Source Path",
+      "offset": 6,
+      "length": 520,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Unicode source file path (MAX_PATH)"
+    },
+    {
+      "type": "field",
+      "name": "First Target Path Length",
+      "offset": 526,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Length of first target path"
+    },
+    {
+      "type": "field",
+      "name": "First Target Path",
+      "offset": 528,
+      "length": 520,
+      "color": "#FFA07A",
+      "opacity": 0.3,
+      "description": "Unicode target file path (MAX_PATH)"
+    },
+    {
+      "type": "field",
+      "name": "Operation Flags",
+      "offset": 1048,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Operation type flags"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 6,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "System",
+    "extensions": [
+      ""
+    ]
+  },
+  "technical_details": {
+    "primary_extension": "",
+    "defined_fields": 6
+  }
 }

@@ -1,52 +1,90 @@
 ﻿{
-    "formatName":  "QuickTime Movie",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mov",
-                       ".qt"
-                   ],
-    "description":  "Apple QuickTime movie format",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "QuickTime File Format Specification",
-            "ISO/IEC 14496-12 - ISO Base Media File Format",
-            "Apple QuickTime Container"
-        ],
-        "web_links": [
-            "https://developer.apple.com/documentation/quicktime-file-format",
-            "https://en.wikipedia.org/wiki/QuickTime_File_Format",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000052.shtml",
-            "http://fileformats.archiveteam.org/wiki/QuickTime"
-        ]
+  "formatName": "QuickTime Movie",
+  "version": "1.0",
+  "extensions": [
+    ".mov",
+    ".qt"
+  ],
+  "description": "Apple QuickTime movie format",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "QuickTime File Format Specification",
+      "ISO/IEC 14496-12 - ISO Base Media File Format",
+      "Apple QuickTime Container"
+    ],
+    "web_links": [
+      "https://developer.apple.com/documentation/quicktime-file-format",
+      "https://en.wikipedia.org/wiki/QuickTime_File_Format",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000052.shtml",
+      "http://fileformats.archiveteam.org/wiki/QuickTime"
+    ]
+  },
+  "detection": {
+    "signature": "6D6F6F76",
+    "offset": 4,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Atom Size",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of movie atom"
     },
-    "detection":  {
-                      "signature":  "6D6F6F76",
-                      "offset":  4,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Atom Size",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Size of movie atom"
-                   },
-                   {
-                       "type":  "signature",
-                       "name":  "Atom Type",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "moov atom identifier"
-                   }
-               ]
+    {
+      "type": "signature",
+      "name": "Atom Type",
+      "offset": 4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "moov atom identifier"
+    }
+  ],
+  "mime_types": [
+    "video/mov"
+  ],
+  "quality_metrics": {
+    "completeness_score": 93,
+    "documentation_level": "comprehensive",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "manually_refined": true
+  },
+  "software": [
+    "QuickTime Player",
+    "VLC",
+    "Final Cut Pro",
+    "Adobe Premiere"
+  ],
+  "use_cases": [
+    "Apple video files",
+    "Video editing",
+    "Screen recordings (macOS)",
+    "Professional video production"
+  ],
+  "format_relationships": {
+    "apple_format": true,
+    "similar_to": "MP4",
+    "basis_for": "MP4/MPEG-4 Part 14"
+  },
+  "technical_details": {
+    "container": "QuickTime",
+    "codecs": "Any",
+    "professional_features": true,
+    "timecode_support": true
+  }
 }

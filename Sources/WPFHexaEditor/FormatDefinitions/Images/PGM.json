@@ -1,51 +1,83 @@
 ﻿{
-    "formatName":  "Portable Graymap",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pgm"
-                   ],
-    "description":  "Netpbm Portable Graymap (grayscale)",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Netpbm PGM Format Specification",
-            "Portable Graymap Format (PGM) - Plain/Raw",
-            "PGM Grayscale Image Format"
-        ],
-        "web_links": [
-            "https://netpbm.sourceforge.net/doc/pgm.html",
-            "https://en.wikipedia.org/wiki/Netpbm",
-            "http://justsolve.archiveteam.org/wiki/Netpbm_formats",
-            "https://manpages.ubuntu.com/manpages/noble/man5/pgm.5.html"
-        ]
+  "formatName": "Portable Graymap",
+  "version": "1.0",
+  "extensions": [
+    ".pgm"
+  ],
+  "description": "Netpbm Portable Graymap (grayscale)",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Netpbm PGM Format Specification",
+      "Portable Graymap Format (PGM) - Plain/Raw",
+      "PGM Grayscale Image Format"
+    ],
+    "web_links": [
+      "https://netpbm.sourceforge.net/doc/pgm.html",
+      "https://en.wikipedia.org/wiki/Netpbm",
+      "http://justsolve.archiveteam.org/wiki/Netpbm_formats",
+      "https://manpages.ubuntu.com/manpages/noble/man5/pgm.5.html"
+    ]
+  },
+  "detection": {
+    "signature": "5032",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PGM Magic",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "P2 or P5 magic number"
     },
-    "detection":  {
-                      "signature":  "5032",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "PGM Magic",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "P2 or P5 magic number"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Header",
-                       "offset":  2,
-                       "length":  32,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "ASCII header (width, height, maxval)"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Header",
+      "offset": 2,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "ASCII header (width, height, maxval)"
+    }
+  ],
+  "mime_types": [
+    "image/pgm"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Image viewers",
+    "GIMP"
+  ],
+  "use_cases": [
+    "Image viewing",
+    "Photo editing"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".pgm"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".pgm",
+    "defined_fields": 2
+  }
 }

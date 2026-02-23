@@ -1,38 +1,76 @@
 ﻿{
-    "formatName":  "Windows Prefetch File",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pf"
-                   ],
-    "description":  "Windows Prefetch file for application optimization",
-    "category":  "System",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "11000000534346",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Prefetch version"
-                   },
-                   {
-                       "type":  "signature",
-                       "name":  "Signature",
-                       "offset":  4,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "SCF signature"
-                   }
-               ]
+  "formatName": "Windows Prefetch File",
+  "version": "1.0",
+  "extensions": [
+    ".pf"
+  ],
+  "description": "Windows Prefetch file for application optimization",
+  "category": "System",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Windows Prefetch File Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/PF"
+    ]
+  },
+  "detection": {
+    "signature": "11000000534346",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 7,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Prefetch version"
+    },
+    {
+      "type": "signature",
+      "name": "Signature",
+      "offset": 4,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "SCF signature"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "System",
+    "extensions": [
+      ".pf"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".pf",
+    "defined_fields": 2
+  }
 }

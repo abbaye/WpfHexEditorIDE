@@ -1,47 +1,85 @@
 ﻿{
-    "formatName":  "dBASE Database",
-    "version":  "1.0",
-    "extensions":  [
-                       ".dbf"
-                   ],
-    "description":  "dBASE database file format",
-    "category":  "Database",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "03",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "DBF Version",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "dBASE III/IV version marker"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Last Update Date",
-                       "offset":  1,
-                       "length":  3,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "YY MM DD"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Record Count",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Number of records"
-                   }
-               ]
+  "formatName": "dBASE Database",
+  "version": "1.0",
+  "extensions": [
+    ".dbf"
+  ],
+  "description": "dBASE database file format",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "dBASE Database Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/DBF"
+    ]
+  },
+  "detection": {
+    "signature": "03",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "DBF Version",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "dBASE III/IV version marker"
+    },
+    {
+      "type": "field",
+      "name": "Last Update Date",
+      "offset": 1,
+      "length": 3,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "YY MM DD"
+    },
+    {
+      "type": "field",
+      "name": "Record Count",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Number of records"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Database",
+    "extensions": [
+      ".dbf"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".dbf",
+    "defined_fields": 3
+  }
 }

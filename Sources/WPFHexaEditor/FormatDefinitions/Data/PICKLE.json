@@ -1,30 +1,69 @@
 ﻿{
-    "formatName":  "Python Pickle",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pkl",
-                       ".pickle"
-                   ],
-    "description":  "Python object serialization format",
-    "category":  "Data",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "80",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "header",
-                       "name":  "Pickle Protocol",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FFD43B",
-                       "opacity":  0.4,
-                       "description":  "Python pickle protocol version"
-                   }
-               ]
+  "formatName": "Python Pickle",
+  "version": "1.0",
+  "extensions": [
+    ".pkl",
+    ".pickle"
+  ],
+  "description": "Python object serialization format",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Python Pickle Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/PKL"
+    ]
+  },
+  "detection": {
+    "signature": "80",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "name": "Pickle Protocol",
+      "offset": 0,
+      "length": 2,
+      "color": "#FFD43B",
+      "opacity": 0.4,
+      "description": "Python pickle protocol version"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Data",
+    "extensions": [
+      ".pkl",
+      ".pickle"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".pkl",
+    "defined_fields": 1
+  }
 }

@@ -1,51 +1,85 @@
 ﻿{
-    "formatName":  "GIMP Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".xcf"
-                   ],
-    "description":  "GIMP native image format (eXperimental Computing Facility)",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "XCF (eXperimental Computing Facility) Format",
-            "GIMP Native Image Format Specification",
-            "XCF Layered Image File Format"
-        ],
-        "web_links": [
-            "https://gimp-web-devel-afedc3.pages.gitlab.gnome.org/01-core-development/standards/xcf/",
-            "https://en.wikipedia.org/wiki/XCF_(file_format)",
-            "https://github.com/j-jorge/xcftools/blob/master/xcfspec.txt",
-            "https://cloudinary.com/glossary/xcf-file"
-        ]
+  "formatName": "GIMP Image",
+  "version": "1.0",
+  "extensions": [
+    ".xcf"
+  ],
+  "description": "GIMP native image format (eXperimental Computing Facility)",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "XCF (eXperimental Computing Facility) Format",
+      "GIMP Native Image Format Specification",
+      "XCF Layered Image File Format"
+    ],
+    "web_links": [
+      "https://gimp-web-devel-afedc3.pages.gitlab.gnome.org/01-core-development/standards/xcf/",
+      "https://en.wikipedia.org/wiki/XCF_(file_format)",
+      "https://github.com/j-jorge/xcftools/blob/master/xcfspec.txt",
+      "https://cloudinary.com/glossary/xcf-file"
+    ]
+  },
+  "detection": {
+    "signature": "67696D702078636620",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 9,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "XCF Signature",
+      "offset": 0,
+      "length": 9,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "gimp xcf signature"
     },
-    "detection":  {
-                      "signature":  "67696D702078636620",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "XCF Signature",
-                       "offset":  0,
-                       "length":  9,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "gimp xcf signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  9,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "File format version"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 9,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "File format version"
+    }
+  ],
+  "mime_types": [
+    "image/xcf"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Image viewers",
+    "GIMP"
+  ],
+  "use_cases": [
+    "Image viewing",
+    "Photo editing"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".xcf"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".xcf",
+    "defined_fields": 2
+  }
 }

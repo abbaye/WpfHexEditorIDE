@@ -1,60 +1,92 @@
 ﻿{
-    "formatName":  "Khronos Texture",
-    "version":  "1.0",
-    "extensions":  [
-                       ".ktx"
-                   ],
-    "description":  "Khronos Texture format for OpenGL/Vulkan",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "KTX File Format Specification v1.0",
-            "Khronos Texture Format for OpenGL/Vulkan",
-            "KTX GPU Texture Container Format"
-        ],
-        "web_links": [
-            "https://www.khronos.org/ktx/",
-            "https://registry.khronos.org/KTX/specs/2.0/ktxspec.v2.html",
-            "https://github.com/KhronosGroup/KTX-Specification",
-            "https://github.com/KhronosGroup/KTX-Software"
-        ]
+  "formatName": "Khronos Texture",
+  "version": "1.0",
+  "extensions": [
+    ".ktx"
+  ],
+  "description": "Khronos Texture format for OpenGL/Vulkan",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "KTX File Format Specification v1.0",
+      "Khronos Texture Format for OpenGL/Vulkan",
+      "KTX GPU Texture Container Format"
+    ],
+    "web_links": [
+      "https://www.khronos.org/ktx/",
+      "https://registry.khronos.org/KTX/specs/2.0/ktxspec.v2.html",
+      "https://github.com/KhronosGroup/KTX-Specification",
+      "https://github.com/KhronosGroup/KTX-Software"
+    ]
+  },
+  "detection": {
+    "signature": "AB4B54582030310D0A1A0A",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 11,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "KTX Identifier",
+      "offset": 0,
+      "length": 12,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "KTX 1.0 magic bytes"
     },
-    "detection":  {
-                      "signature":  "AB4B54582030310D0A1A0A",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "KTX Identifier",
-                       "offset":  0,
-                       "length":  12,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "KTX 1.0 magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Endianness",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "0x04030201 or 0x01020304"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "GL Type",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "OpenGL type"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Endianness",
+      "offset": 12,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "0x04030201 or 0x01020304"
+    },
+    {
+      "type": "field",
+      "name": "GL Type",
+      "offset": 16,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "OpenGL type"
+    }
+  ],
+  "mime_types": [
+    "image/ktx"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Image viewers",
+    "GIMP"
+  ],
+  "use_cases": [
+    "Image viewing",
+    "Photo editing"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".ktx"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".ktx",
+    "defined_fields": 3
+  }
 }

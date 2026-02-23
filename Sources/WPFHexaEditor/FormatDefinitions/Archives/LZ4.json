@@ -1,60 +1,94 @@
 ﻿{
-    "formatName":  "LZ4 Compressed",
-    "version":  "1.0",
-    "extensions":  [
-                       ".lz4"
-                   ],
-    "description":  "LZ4 compression format - Extremely fast",
-    "category":  "Archives",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "LZ4 Frame Format Specification",
-            "LZ4 Block Format Specification",
-            "LZ4 Compression Algorithm"
-        ],
-        "web_links": [
-            "https://github.com/lz4/lz4/blob/dev/doc/lz4_Frame_format.md",
-            "https://github.com/lz4/lz4/blob/dev/doc/lz4_Block_format.md",
-            "https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)",
-            "https://docs.fileformat.com/compression/lz4/"
-        ]
+  "formatName": "LZ4 Compressed",
+  "version": "1.0",
+  "extensions": [
+    ".lz4"
+  ],
+  "description": "LZ4 compression format - Extremely fast",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "LZ4 Frame Format Specification",
+      "LZ4 Block Format Specification",
+      "LZ4 Compression Algorithm"
+    ],
+    "web_links": [
+      "https://github.com/lz4/lz4/blob/dev/doc/lz4_Frame_format.md",
+      "https://github.com/lz4/lz4/blob/dev/doc/lz4_Block_format.md",
+      "https://en.wikipedia.org/wiki/LZ4_(compression_algorithm)",
+      "https://docs.fileformat.com/compression/lz4/"
+    ]
+  },
+  "detection": {
+    "signature": "04224D18",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "LZ4 Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "LZ4 frame header"
     },
-    "detection":  {
-                      "signature":  "04224D18",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "LZ4 Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "LZ4 frame header"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "FLG Byte",
-                       "offset":  4,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Frame flags"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "BD Byte",
-                       "offset":  5,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Block descriptor"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "FLG Byte",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Frame flags"
+    },
+    {
+      "type": "field",
+      "name": "BD Byte",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Block descriptor"
+    }
+  ],
+  "mime_types": [
+    "application/x-lz4"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "LZ4 tools",
+    "Compression libraries"
+  ],
+  "use_cases": [
+    "File archiving",
+    "Data compression"
+  ],
+  "format_relationships": {
+    "category": "Archives",
+    "extensions": [
+      ".lz4"
+    ]
+  },
+  "technical_details": {
+    "archives_format": true,
+    "primary_extension": ".lz4",
+    "defined_fields": 3
+  }
 }

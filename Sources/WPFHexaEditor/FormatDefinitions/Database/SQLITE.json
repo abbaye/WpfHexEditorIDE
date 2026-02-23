@@ -1,59 +1,107 @@
 ﻿{
-    "formatName":  "SQLite Database",
-    "version":  "1.0",
-    "extensions":  [
-                       ".sqlite",
-                       ".db",
-                       ".sqlite3",
-                       ".db3"
-                   ],
-    "description":  "SQLite database file format",
-    "category":  "Database",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "53514C69746520666F726D6174203300",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "SQLite Header",
-                       "offset":  0,
-                       "length":  16,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "SQLite format 3\\0"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Page Size",
-                       "offset":  16,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Database page size"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Format Write Version",
-                       "offset":  18,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "1=legacy, 2=WAL"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Format Read Version",
-                       "offset":  19,
-                       "length":  1,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "1=legacy, 2=WAL"
-                   }
-               ]
+  "formatName": "SQLite Database",
+  "version": "1.0",
+  "extensions": [
+    ".sqlite",
+    ".db",
+    ".sqlite3",
+    ".db3"
+  ],
+  "description": "SQLite database file format",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "SQLite Database Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/SQLITE"
+    ]
+  },
+  "detection": {
+    "signature": "53514C69746520666F726D6174203300",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 16,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SQLite Header",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "SQLite format 3\\0"
+    },
+    {
+      "type": "field",
+      "name": "Page Size",
+      "offset": 16,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Database page size"
+    },
+    {
+      "type": "field",
+      "name": "File Format Write Version",
+      "offset": 18,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "1=legacy, 2=WAL"
+    },
+    {
+      "type": "field",
+      "name": "File Format Read Version",
+      "offset": 19,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "1=legacy, 2=WAL"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "manually_refined": true
+  },
+  "software": [
+    "SQLite",
+    "DB Browser for SQLite",
+    "Most applications"
+  ],
+  "use_cases": [
+    "Embedded databases",
+    "Mobile apps",
+    "Desktop apps",
+    "Browser storage"
+  ],
+  "format_relationships": {
+    "most_used_db": true,
+    "serverless": true,
+    "embedded": true,
+    "used_by": [
+      "iOS",
+      "Android",
+      "Browsers"
+    ]
+  },
+  "technical_details": {
+    "single_file_db": true,
+    "acid_compliant": true,
+    "cross_platform": true,
+    "no_server": true,
+    "public_domain": true
+  }
 }

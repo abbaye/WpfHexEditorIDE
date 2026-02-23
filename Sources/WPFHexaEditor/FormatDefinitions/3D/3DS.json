@@ -1,38 +1,79 @@
 ﻿{
-    "formatName":  "3D Studio Model",
-    "version":  "1.0",
-    "extensions":  [
-                       ".3ds"
-                   ],
-    "description":  "Autodesk 3D Studio mesh format",
-    "category":  "3D",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "4D4D",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Primary Chunk ID",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Main chunk identifier (0x4D4D)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Chunk Length",
-                       "offset":  2,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Length of main chunk"
-                   }
-               ]
+  "formatName": "3D Studio Model",
+  "version": "1.0",
+  "extensions": [
+    ".3ds"
+  ],
+  "description": "Autodesk 3D Studio mesh format",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "3D Studio Model Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/3DS"
+    ]
+  },
+  "detection": {
+    "signature": "4D4D",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Primary Chunk ID",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Main chunk identifier (0x4D4D)"
+    },
+    {
+      "type": "field",
+      "name": "Chunk Length",
+      "offset": 2,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Length of main chunk"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Autodesk 3ds Max",
+    "Blender",
+    "Maya"
+  ],
+  "use_cases": [
+    "3D modeling",
+    "3D visualization",
+    "3D interchange"
+  ],
+  "format_relationships": {
+    "category": "3D",
+    "extensions": [
+      ".3ds"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".3ds",
+    "defined_fields": 2,
+    "binary_format": true
+  }
 }

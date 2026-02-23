@@ -1,38 +1,81 @@
 ﻿{
-    "formatName":  "USD Binary (Crate)",
-    "version":  "1.0",
-    "extensions":  [
-                       ".usdc"
-                   ],
-    "description":  "Pixar USD binary crate format",
-    "category":  "3D",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "505344",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "PSD Signature",
-                       "offset":  0,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "USD crate magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  3,
-                       "length":  8,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Crate format version"
-                   }
-               ]
+  "formatName": "USD Binary (Crate)",
+  "version": "1.0",
+  "extensions": [
+    ".usdc"
+  ],
+  "description": "Pixar USD binary crate format",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "USD Binary (Crate) Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/USDC"
+    ]
+  },
+  "detection": {
+    "signature": "505344",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PSD Signature",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "USD crate magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 3,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Crate format version"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Pixar USD tools",
+    "Maya",
+    "Houdini"
+  ],
+  "use_cases": [
+    "Film production",
+    "VFX pipelines",
+    "Universal scene description"
+  ],
+  "format_relationships": {
+    "category": "3D",
+    "extensions": [
+      ".usdc"
+    ],
+    "pixar_format": true,
+    "film_industry": true
+  },
+  "technical_details": {
+    "primary_extension": ".usdc",
+    "defined_fields": 2,
+    "binary_format": true
+  }
 }

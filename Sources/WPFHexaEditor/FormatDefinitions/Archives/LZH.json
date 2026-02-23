@@ -1,61 +1,98 @@
 ﻿{
-    "formatName":  "LZH Archive",
-    "version":  "1.0",
-    "extensions":  [
-                       ".lzh",
-                       ".lha"
-                   ],
-    "description":  "LHA/LZH compressed archive",
-    "category":  "Archives",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "LHA/LZH Archive Format - Haruyasu Yoshizaki",
-            "LZH Compression Algorithm Specification",
-            "LZSS and Huffman Encoding in LHA"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/LHA_(file_format)",
-            "http://fileformats.archiveteam.org/wiki/LHA",
-            "https://github.com/jca02266/lha",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000339.shtml"
-        ]
+  "formatName": "LZH Archive",
+  "version": "1.0",
+  "extensions": [
+    ".lzh",
+    ".lha"
+  ],
+  "description": "LHA/LZH compressed archive",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "LHA/LZH Archive Format - Haruyasu Yoshizaki",
+      "LZH Compression Algorithm Specification",
+      "LZSS and Huffman Encoding in LHA"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/LHA_(file_format)",
+      "http://fileformats.archiveteam.org/wiki/LHA",
+      "https://github.com/jca02266/lha",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000339.shtml"
+    ]
+  },
+  "detection": {
+    "signature": "2D6C68",
+    "offset": 2,
+    "required": true,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 0,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of header"
     },
-    "detection":  {
-                      "signature":  "2D6C68",
-                      "offset":  2,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Header Size",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Size of header"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Header Checksum",
-                       "offset":  1,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Header checksum"
-                   },
-                   {
-                       "type":  "signature",
-                       "name":  "Method ID",
-                       "offset":  2,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "-lh compression method"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Header Checksum",
+      "offset": 1,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Header checksum"
+    },
+    {
+      "type": "signature",
+      "name": "Method ID",
+      "offset": 2,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "-lh compression method"
+    }
+  ],
+  "mime_types": [
+    "application/x-lzh"
+  ],
+  "quality_metrics": {
+    "completeness_score": 93,
+    "documentation_level": "comprehensive",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "manually_refined": true
+  },
+  "software": [
+    "LHA",
+    "7-Zip",
+    "WinRAR"
+  ],
+  "use_cases": [
+    "Japanese software archives",
+    "Retro software distribution",
+    "Amiga archives"
+  ],
+  "format_relationships": {
+    "legacy_format": true,
+    "popular_in": "Japan",
+    "related": [
+      "LHA"
+    ]
+  },
+  "technical_details": {
+    "compression_method": "LZSS + Huffman",
+    "created_by": "Haruyasu Yoshizaki",
+    "legacy": true
+  }
 }

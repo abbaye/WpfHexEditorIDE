@@ -1,136 +1,177 @@
 ﻿{
-    "formatName": "ZIP Archive",
-    "version": "1.0",
-    "extensions": [
-        ".zip",
-        ".jar",
-        ".apk",
-        ".docx",
-        ".xlsx",
-        ".pptx"
+  "formatName": "ZIP Archive",
+  "version": "1.0",
+  "extensions": [
+    ".zip",
+    ".jar",
+    ".apk",
+    ".docx",
+    ".xlsx",
+    ".pptx"
+  ],
+  "description": "ZIP archive format (PKZIP) - Used by many file types including Office documents",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PKWARE APPNOTE.TXT - ZIP File Format Specification",
+      "ISO/IEC 21320-1:2015 - Document Container File"
     ],
-    "description": "ZIP archive format (PKZIP) - Used by many file types including Office documents",
-    "category": "Archives",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "PKWARE APPNOTE.TXT - ZIP File Format Specification",
-            "ISO/IEC 21320-1:2015 - Document Container File"
-        ],
-        "web_links": [
-            "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
-            "https://en.wikipedia.org/wiki/ZIP_(file_format)",
-            "https://www.iso.org/standard/60101.html"
-        ]
-    },
-    "detection": {
-        "signature": "504B0304",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0,
-        "fileCount": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "ZIP Signature",
-            "offset": 0,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "PK\\x03\\x04 magic bytes"
-        },
-        {
-            "type": "field",
-            "name": "Version Needed",
-            "offset": 4,
-            "length": 2,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "Version needed to extract"
-        },
-        {
-            "type": "field",
-            "name": "General Purpose Flags",
-            "offset": 6,
-            "length": 2,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "Bit flags (encryption, compression, etc.)"
-        },
-        {
-            "type": "field",
-            "name": "Compression Method",
-            "offset": 8,
-            "length": 2,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "description": "0=Store, 8=Deflate"
-        },
-        {
-            "type": "field",
-            "name": "Last Mod Time",
-            "offset": 10,
-            "length": 2,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "description": "MS-DOS time"
-        },
-        {
-            "type": "field",
-            "name": "Last Mod Date",
-            "offset": 12,
-            "length": 2,
-            "color": "#B8B8FF",
-            "opacity": 0.3,
-            "description": "MS-DOS date"
-        },
-        {
-            "type": "field",
-            "name": "CRC-32",
-            "offset": 14,
-            "length": 4,
-            "color": "#FF6B9D",
-            "opacity": 0.3,
-            "description": "CRC-32 checksum"
-        },
-        {
-            "type": "field",
-            "name": "Compressed Size",
-            "offset": 18,
-            "length": 4,
-            "color": "#C44569",
-            "opacity": 0.3,
-            "description": "Compressed size in bytes"
-        },
-        {
-            "type": "field",
-            "name": "Uncompressed Size",
-            "offset": 22,
-            "length": 4,
-            "color": "#FFA07A",
-            "opacity": 0.3,
-            "description": "Uncompressed size in bytes"
-        },
-        {
-            "type": "field",
-            "name": "Filename Length",
-            "offset": 26,
-            "length": 2,
-            "color": "#98D8C8",
-            "opacity": 0.3,
-            "description": "Length of filename"
-        },
-        {
-            "type": "field",
-            "name": "Extra Field Length",
-            "offset": 28,
-            "length": 2,
-            "color": "#A8E6CF",
-            "opacity": 0.3,
-            "description": "Length of extra field"
-        }
+    "web_links": [
+      "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
+      "https://en.wikipedia.org/wiki/ZIP_(file_format)",
+      "https://www.iso.org/standard/60101.html"
     ]
+  },
+  "detection": {
+    "signature": "504B0304",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "fileCount": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ZIP Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "PK\\x03\\x04 magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Version Needed",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Version needed to extract"
+    },
+    {
+      "type": "field",
+      "name": "General Purpose Flags",
+      "offset": 6,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Bit flags (encryption, compression, etc.)"
+    },
+    {
+      "type": "field",
+      "name": "Compression Method",
+      "offset": 8,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "0=Store, 8=Deflate"
+    },
+    {
+      "type": "field",
+      "name": "Last Mod Time",
+      "offset": 10,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "MS-DOS time"
+    },
+    {
+      "type": "field",
+      "name": "Last Mod Date",
+      "offset": 12,
+      "length": 2,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "description": "MS-DOS date"
+    },
+    {
+      "type": "field",
+      "name": "CRC-32",
+      "offset": 14,
+      "length": 4,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "description": "CRC-32 checksum"
+    },
+    {
+      "type": "field",
+      "name": "Compressed Size",
+      "offset": 18,
+      "length": 4,
+      "color": "#C44569",
+      "opacity": 0.3,
+      "description": "Compressed size in bytes"
+    },
+    {
+      "type": "field",
+      "name": "Uncompressed Size",
+      "offset": 22,
+      "length": 4,
+      "color": "#FFA07A",
+      "opacity": 0.3,
+      "description": "Uncompressed size in bytes"
+    },
+    {
+      "type": "field",
+      "name": "Filename Length",
+      "offset": 26,
+      "length": 2,
+      "color": "#98D8C8",
+      "opacity": 0.3,
+      "description": "Length of filename"
+    },
+    {
+      "type": "field",
+      "name": "Extra Field Length",
+      "offset": 28,
+      "length": 2,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Length of extra field"
+    }
+  ],
+  "mime_types": [
+    "application/x-zip"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 11,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "WinZip",
+    "7-Zip",
+    "WinRAR",
+    "OS built-in"
+  ],
+  "use_cases": [
+    "File compression",
+    "Archive distribution",
+    "Backup"
+  ],
+  "format_relationships": {
+    "category": "Archives",
+    "extensions": [
+      ".zip",
+      ".jar",
+      ".apk"
+    ]
+  },
+  "technical_details": {
+    "archives_format": true,
+    "primary_extension": ".zip",
+    "defined_fields": 11,
+    "compression_method": "Deflate"
+  }
 }

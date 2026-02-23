@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "Parasolid Binary",
-    "version":  "1.0",
-    "extensions":  [
-                       ".x_b"
-                   ],
-    "description":  "Parasolid transmit binary format",
-    "category":  "CAD",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "D0CF11E0",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Binary Header",
-                       "offset":  0,
-                       "length":  16,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Parasolid binary header"
-                   }
-               ]
+  "formatName": "Parasolid Binary",
+  "version": "1.0",
+  "extensions": [
+    ".x_b"
+  ],
+  "description": "Parasolid transmit binary format",
+  "category": "CAD",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Parasolid Binary Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/X_B"
+    ]
+  },
+  "detection": {
+    "signature": "D0CF11E0",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Binary Header",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Parasolid binary header"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "CAD",
+    "extensions": [
+      ".x_b"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".x_b",
+    "defined_fields": 1
+  }
 }

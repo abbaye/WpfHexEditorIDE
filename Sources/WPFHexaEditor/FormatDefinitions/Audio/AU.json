@@ -1,70 +1,106 @@
 ﻿{
-    "formatName":  "AU Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".au",
-                       ".snd"
-                   ],
-    "description":  "Sun/NeXT audio file format",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Sun/NeXT AU Audio File Format Specification",
-            "Open Group AU Audio Format Standard",
-            "NeXT Soundfile Format"
-        ],
-        "web_links": [
-            "http://soundfile.sapp.org/doc/NextFormat/",
-            "https://pubs.opengroup.org/external/auformat.html",
-            "https://en.wikipedia.org/wiki/Au_file_format",
-            "https://www.file-recovery.com/au-signature-format.htm"
-        ]
+  "formatName": "AU Audio",
+  "version": "1.0",
+  "extensions": [
+    ".au",
+    ".snd"
+  ],
+  "description": "Sun/NeXT audio file format",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Sun/NeXT AU Audio File Format Specification",
+      "Open Group AU Audio Format Standard",
+      "NeXT Soundfile Format"
+    ],
+    "web_links": [
+      "http://soundfile.sapp.org/doc/NextFormat/",
+      "https://pubs.opengroup.org/external/auformat.html",
+      "https://en.wikipedia.org/wiki/Au_file_format",
+      "https://www.file-recovery.com/au-signature-format.htm"
+    ]
+  },
+  "detection": {
+    "signature": "2E736E64",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "AU Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": ".snd signature"
     },
-    "detection":  {
-                      "signature":  "2E736E64",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "AU Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  ".snd signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Data Offset",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Offset to audio data"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Data Size",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Audio data size"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Encoding",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Audio encoding format"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Data Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Offset to audio data"
+    },
+    {
+      "type": "field",
+      "name": "Data Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Audio data size"
+    },
+    {
+      "type": "field",
+      "name": "Encoding",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Audio encoding format"
+    }
+  ],
+  "mime_types": [
+    "audio/au"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Unix audio tools",
+    "VLC",
+    "Audacity"
+  ],
+  "use_cases": [
+    "Audio playback",
+    "Sound storage"
+  ],
+  "format_relationships": {
+    "category": "Audio",
+    "extensions": [
+      ".au",
+      ".snd"
+    ]
+  },
+  "technical_details": {
+    "audio_format": true,
+    "primary_extension": ".au",
+    "defined_fields": 4
+  }
 }

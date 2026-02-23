@@ -1,61 +1,99 @@
 ﻿{
-    "formatName": "JPEG 2000 Image",
-    "version": "1.0",
-    "extensions": [
-        ".jp2",
-        ".j2k",
-        ".jpf",
-        ".jpx",
-        ".jpm"
+  "formatName": "JPEG 2000 Image",
+  "version": "1.0",
+  "extensions": [
+    ".jp2",
+    ".j2k",
+    ".jpf",
+    ".jpx",
+    ".jpm"
+  ],
+  "description": "JPEG 2000 - Advanced wavelet-based image compression",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ISO/IEC 10918-1 - Digital Compression and Coding",
+      "JFIF File Format Specification",
+      "ITU-T T.81"
     ],
-    "description": "JPEG 2000 - Advanced wavelet-based image compression",
-    "category": "Images",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ISO/IEC 10918-1 - Digital Compression and Coding",
-            "JFIF File Format Specification",
-            "ITU-T T.81"
-        ],
-        "web_links": [
-            "https://www.w3.org/Graphics/JPEG/",
-            "https://jpeg.org/jpeg/",
-            "https://en.wikipedia.org/wiki/JPEG"
-        ]
-    },
-    "detection": {
-        "signature": "0000000C6A5020200D0A870A",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {},
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "JPEG 2000 Signature",
-            "offset": 0,
-            "length": 12,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "JP2 signature box"
-        },
-        {
-            "type": "field",
-            "name": "File Type Box",
-            "offset": 12,
-            "length": 8,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "ftyp box header"
-        },
-        {
-            "type": "field",
-            "name": "Brand",
-            "offset": 20,
-            "length": 4,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "Brand identifier (jp2 )"
-        }
+    "web_links": [
+      "https://www.w3.org/Graphics/JPEG/",
+      "https://jpeg.org/jpeg/",
+      "https://en.wikipedia.org/wiki/JPEG"
     ]
+  },
+  "detection": {
+    "signature": "0000000C6A5020200D0A870A",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 12,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "JPEG 2000 Signature",
+      "offset": 0,
+      "length": 12,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "JP2 signature box"
+    },
+    {
+      "type": "field",
+      "name": "File Type Box",
+      "offset": 12,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "ftyp box header"
+    },
+    {
+      "type": "field",
+      "name": "Brand",
+      "offset": 20,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Brand identifier (jp2 )"
+    }
+  ],
+  "mime_types": [
+    "image/jp2"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "IrfanView",
+    "XnView",
+    "Medical imaging software"
+  ],
+  "use_cases": [
+    "Image viewing",
+    "Photo editing"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".jp2",
+      ".j2k",
+      ".jpf"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".jp2",
+    "defined_fields": 3
+  }
 }

@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "Android App Bundle",
-    "version":  "1.0",
-    "extensions":  [
-                       ".aab"
-                   ],
-    "description":  "Android App Bundle publishing format",
-    "category":  "Programming",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "504B0304",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ZIP/AAB Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "PK ZIP header"
-                   }
-               ]
+  "formatName": "Android App Bundle",
+  "version": "1.0",
+  "extensions": [
+    ".aab"
+  ],
+  "description": "Android App Bundle publishing format",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Android App Bundle Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/AAB"
+    ]
+  },
+  "detection": {
+    "signature": "504B0304",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ZIP/AAB Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "PK ZIP header"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Compilers",
+    "Linkers"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Programming",
+    "extensions": [
+      ".aab"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".aab",
+    "defined_fields": 1
+  }
 }

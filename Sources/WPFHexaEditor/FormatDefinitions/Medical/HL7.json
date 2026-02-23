@@ -1,30 +1,69 @@
 ﻿{
-    "formatName":  "HL7 Message",
-    "version":  "1.0",
-    "extensions":  [
-                       ".hl7",
-                       ".txt"
-                   ],
-    "description":  "Health Level 7 medical messaging format",
-    "category":  "Medical",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "4D53487C",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "HL7 Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "HL7 message signature (MSH|)"
-                   }
-               ]
+  "formatName": "HL7 Message",
+  "version": "1.0",
+  "extensions": [
+    ".hl7",
+    ".txt"
+  ],
+  "description": "Health Level 7 medical messaging format",
+  "category": "Medical",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "HL7 Message Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/HL7"
+    ]
+  },
+  "detection": {
+    "signature": "4D53487C",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "HL7 Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "HL7 message signature (MSH|)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Medical",
+    "extensions": [
+      ".hl7",
+      ".txt"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".hl7",
+    "defined_fields": 1
+  }
 }

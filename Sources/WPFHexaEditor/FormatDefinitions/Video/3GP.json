@@ -1,61 +1,98 @@
 ﻿{
-    "formatName":  "3GPP Multimedia",
-    "version":  "1.0",
-    "extensions":  [
-                       ".3gp",
-                       ".3g2"
-                   ],
-    "description":  "3rd Generation Partnership Project multimedia format",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "3GPP File Format Specification",
-            "ISO/IEC 14496-12 - ISO Base Media File Format",
-            "MPEG-4 Part 12 Container"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/3GP_and_3G2",
-            "https://standards.globalspec.com/std/14494053/iso-iec-14496-12",
-            "https://www.3gpp.org/ftp/tsg_sa/tsg_sa/tsgs_22/docs/pdf/SP-030672.pdf",
-            "https://docs.fileformat.com/video/3gp/"
-        ]
+  "formatName": "3GPP Multimedia",
+  "version": "1.0",
+  "extensions": [
+    ".3gp",
+    ".3g2"
+  ],
+  "description": "3rd Generation Partnership Project multimedia format",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "3GPP File Format Specification",
+      "ISO/IEC 14496-12 - ISO Base Media File Format",
+      "MPEG-4 Part 12 Container"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/3GP_and_3G2",
+      "https://standards.globalspec.com/std/14494053/iso-iec-14496-12",
+      "https://www.3gpp.org/ftp/tsg_sa/tsg_sa/tsgs_22/docs/pdf/SP-030672.pdf",
+      "https://docs.fileformat.com/video/3gp/"
+    ]
+  },
+  "detection": {
+    "signature": "66747970",
+    "offset": 4,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Box Size",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of ftyp box"
     },
-    "detection":  {
-                      "signature":  "66747970",
-                      "offset":  4,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Box Size",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Size of ftyp box"
-                   },
-                   {
-                       "type":  "signature",
-                       "name":  "Box Type",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ftyp box identifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Major Brand",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "3gp or 3g2 brand"
-                   }
-               ]
+    {
+      "type": "signature",
+      "name": "Box Type",
+      "offset": 4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ftyp box identifier"
+    },
+    {
+      "type": "field",
+      "name": "Major Brand",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "3gp or 3g2 brand"
+    }
+  ],
+  "mime_types": [
+    "video/3gp"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Mobile phones",
+    "VLC",
+    "Media players"
+  ],
+  "use_cases": [
+    "Video playback",
+    "Video editing"
+  ],
+  "format_relationships": {
+    "category": "Video",
+    "extensions": [
+      ".3gp",
+      ".3g2"
+    ]
+  },
+  "technical_details": {
+    "video_format": true,
+    "primary_extension": ".3gp",
+    "defined_fields": 3,
+    "container_format": true
+  }
 }

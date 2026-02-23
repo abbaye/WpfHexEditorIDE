@@ -1,57 +1,93 @@
 ﻿{
-    "formatName": "AVIF Image",
-    "version": "1.0",
-    "extensions": [
-        ".avif"
+  "formatName": "AVIF Image",
+  "version": "1.0",
+  "extensions": [
+    ".avif"
+  ],
+  "description": "AV1 Image File Format - Modern image format",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Microsoft AVI RIFF File Format",
+      "Audio Video Interleave Format"
     ],
-    "description": "AV1 Image File Format - Modern image format",
-    "category": "Images",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Microsoft AVI RIFF File Format",
-            "Audio Video Interleave Format"
-        ],
-        "web_links": [
-            "https://docs.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference",
-            "https://en.wikipedia.org/wiki/Audio_Video_Interleave"
-        ]
-    },
-    "detection": {
-        "signature": "66747970",
-        "offset": 4,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "field",
-            "name": "Box Size",
-            "offset": 0,
-            "length": 4,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "Size of ftyp box"
-        },
-        {
-            "type": "signature",
-            "name": "Box Type",
-            "offset": 4,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "ftyp box identifier"
-        },
-        {
-            "type": "field",
-            "name": "Major Brand",
-            "offset": 8,
-            "length": 4,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "avif brand"
-        }
+    "web_links": [
+      "https://docs.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference",
+      "https://en.wikipedia.org/wiki/Audio_Video_Interleave"
     ]
+  },
+  "detection": {
+    "signature": "66747970",
+    "offset": 4,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Box Size",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of ftyp box"
+    },
+    {
+      "type": "signature",
+      "name": "Box Type",
+      "offset": 4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ftyp box identifier"
+    },
+    {
+      "type": "field",
+      "name": "Major Brand",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "avif brand"
+    }
+  ],
+  "mime_types": [
+    "image/avif"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "Chrome",
+    "Firefox",
+    "Modern image editors"
+  ],
+  "use_cases": [
+    "Image viewing",
+    "Photo editing"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".avif"
+    ]
+  },
+  "technical_details": {
+    "images_format": true,
+    "primary_extension": ".avif",
+    "defined_fields": 3
+  }
 }

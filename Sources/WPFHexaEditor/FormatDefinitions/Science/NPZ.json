@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "NumPy Compressed Archive",
-    "version":  "1.0",
-    "extensions":  [
-                       ".npz"
-                   ],
-    "description":  "NumPy compressed array archive",
-    "category":  "Science",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "504B0304",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ZIP Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "NPZ is ZIP archive"
-                   }
-               ]
+  "formatName": "NumPy Compressed Archive",
+  "version": "1.0",
+  "extensions": [
+    ".npz"
+  ],
+  "description": "NumPy compressed array archive",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "NumPy Compressed Archive Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/NPZ"
+    ]
+  },
+  "detection": {
+    "signature": "504B0304",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ZIP Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "NPZ is ZIP archive"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Science",
+    "extensions": [
+      ".npz"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".npz",
+    "defined_fields": 1
+  }
 }

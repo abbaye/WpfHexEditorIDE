@@ -1,42 +1,76 @@
 ﻿{
-    "formatName":  "Blu-ray MPEG-2 Transport Stream",
-    "version":  "1.0",
-    "extensions":  [
-                       ".m2ts"
-                   ],
-    "description":  "Blu-ray Disc Audio-Video (BDAV) MPEG-2 Transport Stream container",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Blu-ray Disc Format 2.B - BDAV MPEG-2 Transport Stream",
-            "ITU-T H.222.0 | ISO/IEC 13818-1",
-            "MPEG-2 Transport Stream for Blu-ray"
-        ],
-        "web_links": [
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000636.shtml",
-            "https://en.wikipedia.org/wiki/.m2ts",
-            "https://en.wikipedia.org/wiki/MPEG-2_transport_stream",
-            "https://docs.fileformat.com/video/m2ts/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "47",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Sync Byte",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MPEG-TS sync byte for Blu-ray format"
-                   }
-               ]
+  "formatName": "Blu-ray MPEG-2 Transport Stream",
+  "version": "1.0",
+  "extensions": [
+    ".m2ts"
+  ],
+  "description": "Blu-ray Disc Audio-Video (BDAV) MPEG-2 Transport Stream container",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Blu-ray Disc Format 2.B - BDAV MPEG-2 Transport Stream",
+      "ITU-T H.222.0 | ISO/IEC 13818-1",
+      "MPEG-2 Transport Stream for Blu-ray"
+    ],
+    "web_links": [
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000636.shtml",
+      "https://en.wikipedia.org/wiki/.m2ts",
+      "https://en.wikipedia.org/wiki/MPEG-2_transport_stream",
+      "https://docs.fileformat.com/video/m2ts/"
+    ]
+  },
+  "detection": {
+    "signature": "47",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Sync Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MPEG-TS sync byte for Blu-ray format"
+    }
+  ],
+  "mime_types": [
+    "video/m2ts"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Blu-ray players",
+    "VLC",
+    "Media players"
+  ],
+  "use_cases": [
+    "Video playback",
+    "Video editing"
+  ],
+  "format_relationships": {
+    "category": "Video",
+    "extensions": [
+      ".m2ts"
+    ]
+  },
+  "technical_details": {
+    "video_format": true,
+    "primary_extension": ".m2ts",
+    "defined_fields": 1,
+    "container_format": true
+  }
 }

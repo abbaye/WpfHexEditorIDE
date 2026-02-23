@@ -1,60 +1,93 @@
 ﻿{
-    "formatName":  "Qpress Compression",
-    "version":  "1.0",
-    "extensions":  [
-                       ".qp",
-                       ".qpress"
-                   ],
-    "description":  "Qpress archive format using QuickLZ compression, commonly used for MySQL/MariaDB backups",
-    "category":  "Archives",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Qpress QuickLZ Compression",
-            "Qpress Archive Format for MySQL/MariaDB",
-            "QuickLZ Algorithm Specification"
-        ],
-        "web_links": [
-            "https://www.percona.com/blog/the-deprecation-of-qpress-quicklz-compression-algorithm/",
-            "https://mariadb.com/kb/en/mariabackup-options/",
-            "https://www.percona.com/blog/compression-for-innodb-backup/"
-        ]
+  "formatName": "Qpress Compression",
+  "version": "1.0",
+  "extensions": [
+    ".qp",
+    ".qpress"
+  ],
+  "description": "Qpress archive format using QuickLZ compression, commonly used for MySQL/MariaDB backups",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Qpress QuickLZ Compression",
+      "Qpress Archive Format for MySQL/MariaDB",
+      "QuickLZ Algorithm Specification"
+    ],
+    "web_links": [
+      "https://www.percona.com/blog/the-deprecation-of-qpress-quicklz-compression-algorithm/",
+      "https://mariadb.com/kb/en/mariabackup-options/",
+      "https://www.percona.com/blog/compression-for-innodb-backup/"
+    ]
+  },
+  "detection": {
+    "signature": "7170730100",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 5,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Qpress Magic",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Magic bytes: 'qps'"
     },
-    "detection":  {
-                      "signature":  "7170730100",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Qpress Magic",
-                       "offset":  0,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Magic bytes: \u0027qps\u0027"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Version",
-                       "offset":  3,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.4,
-                       "description":  "Format version (0x01 0x00 for version 1.0)"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "File Entry",
-                       "offset":  5,
-                       "length":  11,
-                       "color":  "#45B7D1",
-                       "opacity":  0.4,
-                       "description":  "First file entry header"
-                   }
-               ]
+    {
+      "type": "data",
+      "name": "Version",
+      "offset": 3,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Format version (0x01 0x00 for version 1.0)"
+    },
+    {
+      "type": "data",
+      "name": "File Entry",
+      "offset": 5,
+      "length": 11,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "First file entry header"
+    }
+  ],
+  "mime_types": [
+    "application/x-qp"
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "7-Zip",
+    "WinRAR"
+  ],
+  "use_cases": [
+    "File archiving",
+    "Data compression"
+  ],
+  "format_relationships": {
+    "category": "Archives",
+    "extensions": [
+      ".qp",
+      ".qpress"
+    ]
+  },
+  "technical_details": {
+    "archives_format": true,
+    "primary_extension": ".qp",
+    "defined_fields": 3
+  }
 }

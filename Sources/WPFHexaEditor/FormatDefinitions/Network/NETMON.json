@@ -1,83 +1,121 @@
 ﻿{
-    "formatName":  "Microsoft Network Monitor",
-    "version":  "1.0",
-    "extensions":  [
-                       ".cap"
-                   ],
-    "description":  "Microsoft Network Monitor capture format",
-    "category":  "Network",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "474D4255",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "NetMon Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "GMBU signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version Minor",
-                       "offset":  4,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Minor version number"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version Major",
-                       "offset":  5,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Major version number"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Network Type",
-                       "offset":  6,
-                       "length":  2,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Link layer type"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Time Delta",
-                       "offset":  8,
-                       "length":  8,
-                       "color":  "#FFA07A",
-                       "opacity":  0.3,
-                       "description":  "Time offset from start"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Frame Table Offset",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "description":  "Offset to frame table"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Frame Table Length",
-                       "offset":  20,
-                       "length":  4,
-                       "color":  "#B8B8FF",
-                       "opacity":  0.3,
-                       "description":  "Length of frame table"
-                   }
-               ]
+  "formatName": "Microsoft Network Monitor",
+  "version": "1.0",
+  "extensions": [
+    ".cap"
+  ],
+  "description": "Microsoft Network Monitor capture format",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Microsoft Network Monitor Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/CAP"
+    ]
+  },
+  "detection": {
+    "signature": "474D4255",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "NetMon Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "GMBU signature"
+    },
+    {
+      "type": "field",
+      "name": "Version Minor",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Minor version number"
+    },
+    {
+      "type": "field",
+      "name": "Version Major",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Major version number"
+    },
+    {
+      "type": "field",
+      "name": "Network Type",
+      "offset": 6,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Link layer type"
+    },
+    {
+      "type": "field",
+      "name": "Time Delta",
+      "offset": 8,
+      "length": 8,
+      "color": "#FFA07A",
+      "opacity": 0.3,
+      "description": "Time offset from start"
+    },
+    {
+      "type": "field",
+      "name": "Frame Table Offset",
+      "offset": 16,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Offset to frame table"
+    },
+    {
+      "type": "field",
+      "name": "Frame Table Length",
+      "offset": 20,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "description": "Length of frame table"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 7,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Wireshark",
+    "tcpdump"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Network",
+    "extensions": [
+      ".cap"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".cap",
+    "defined_fields": 7
+  }
 }

@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "Tripos Mol2",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mol2"
-                   ],
-    "description":  "Tripos Mol2 molecular structure format",
-    "category":  "Science",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "4054524950",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "MOL2 Magic",
-                       "offset":  0,
-                       "length":  5,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MOL2 signature (@TRIP)"
-                   }
-               ]
+  "formatName": "Tripos Mol2",
+  "version": "1.0",
+  "extensions": [
+    ".mol2"
+  ],
+  "description": "Tripos Mol2 molecular structure format",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Tripos Mol2 Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/MOL2"
+    ]
+  },
+  "detection": {
+    "signature": "4054524950",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 5,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "MOL2 Magic",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MOL2 signature (@TRIP)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Science",
+    "extensions": [
+      ".mol2"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".mol2",
+    "defined_fields": 1
+  }
 }

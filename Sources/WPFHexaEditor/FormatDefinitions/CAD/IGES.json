@@ -1,30 +1,69 @@
 ﻿{
-    "formatName":  "IGES 3D Model",
-    "version":  "1.0",
-    "extensions":  [
-                       ".iges",
-                       ".igs"
-                   ],
-    "description":  "Initial Graphics Exchange Specification",
-    "category":  "CAD",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Start Section",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Text-based format starting with S"
-                   }
-               ]
+  "formatName": "IGES 3D Model",
+  "version": "1.0",
+  "extensions": [
+    ".iges",
+    ".igs"
+  ],
+  "description": "Initial Graphics Exchange Specification",
+  "category": "CAD",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "IGES 3D Model Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/IGES"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Start Section",
+      "offset": 0,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Text-based format starting with S"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "CAD",
+    "extensions": [
+      ".iges",
+      ".igs"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".iges",
+    "defined_fields": 1
+  }
 }

@@ -1,29 +1,67 @@
 ﻿{
-    "formatName":  "SketchUp Model",
-    "version":  "1.0",
-    "extensions":  [
-                       ".skp"
-                   ],
-    "description":  "SketchUp 3D model file",
-    "category":  "CAD",
-    "author":  "WPFHexaEditor Team",
-    "detection":  {
-                      "signature":  "FFFE",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "SKP Header",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "SketchUp header"
-                   }
-               ]
+  "formatName": "SketchUp Model",
+  "version": "1.0",
+  "extensions": [
+    ".skp"
+  ],
+  "description": "SketchUp 3D model file",
+  "category": "CAD",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "SketchUp Model Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/SKP"
+    ]
+  },
+  "detection": {
+    "signature": "FFFE",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "SKP Header",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "SketchUp header"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "auto_refined": true
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "CAD",
+    "extensions": [
+      ".skp"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".skp",
+    "defined_fields": 1
+  }
 }

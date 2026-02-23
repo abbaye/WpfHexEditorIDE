@@ -1,192 +1,226 @@
 ﻿{
-    "formatName": "Game Boy ROM",
-    "version": "1.0",
-    "extensions": [
-        ".gb",
-        ".gbc"
+  "formatName": "Game Boy ROM",
+  "version": "1.0",
+  "extensions": [
+    ".gb",
+    ".gbc"
+  ],
+  "description": "Game Boy/Game Boy Color ROM cartridge format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Game Boy Programming Manual",
+      "Pan Docs - Game Boy Technical Reference"
     ],
-    "description": "Game Boy/Game Boy Color ROM cartridge format",
-    "category": "Game",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Game Boy Programming Manual",
-            "Pan Docs - Game Boy Technical Reference"
-        ],
-        "web_links": [
-            "https://gbdev.io/pandocs/",
-            "https://gekkio.fi/files/gb-docs/gbctr.pdf",
-            "https://en.wikipedia.org/wiki/Game_Boy"
-        ]
-    },
-    "detection": {
-        "signature": "CEED6666CC0D000B03730083000C000D0008",
-        "offset": 260,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0,
-        "cgbFlag": 0,
-        "cartType": 0,
-        "headerChecksum": 0,
-        "gameTitle": ""
-    },
-    "blocks": [
-        {
-            "type": "field",
-            "name": "Entry Point",
-            "offset": 256,
-            "length": 4,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "valueType": "bytes",
-            "description": "Boot entry point (typically NOP; JP $0150)"
-        },
-        {
-            "type": "signature",
-            "name": "Nintendo Logo",
-            "offset": 260,
-            "length": 48,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "Nintendo bootrom logo (48 bytes - must match exactly for hardware to boot)"
-        },
-        {
-            "type": "field",
-            "name": "Game Title",
-            "offset": 308,
-            "length": 15,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "valueType": "ascii",
-            "storeAs": "gameTitle",
-            "description": "Game title in ASCII (padded with null bytes)"
-        },
-        {
-            "type": "field",
-            "name": "CGB Flag",
-            "offset": 323,
-            "length": 1,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "storeAs": "cgbFlag",
-            "description": "0x80=CGB compatible, 0xC0=CGB only, other=DMG only",
-            "validationRules": {
-                "allowedValues": [
-                    0,
-                    128,
-                    192
-                ]
-            }
-        },
-        {
-            "type": "field",
-            "name": "New Licensee Code",
-            "offset": 324,
-            "length": 2,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "ascii",
-            "description": "Two-character licensee code (used when old code = 0x33)"
-        },
-        {
-            "type": "field",
-            "name": "SGB Flag",
-            "offset": 326,
-            "length": 1,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "0x03=SGB functions supported, 0x00=no SGB"
-        },
-        {
-            "type": "field",
-            "name": "Cartridge Type",
-            "offset": 327,
-            "length": 1,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "storeAs": "cartType",
-            "description": "MBC type: 0x00=ROM only, 0x01=MBC1, 0x02=MBC1+RAM, 0x03=MBC1+RAM+BATTERY, etc."
-        },
-        {
-            "type": "field",
-            "name": "ROM Size Code",
-            "offset": 328,
-            "length": 1,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "ROM size: 0=32KB, 1=64KB, 2=128KB, 3=256KB, 4=512KB, 5=1MB, 6=2MB, 7=4MB, 8=8MB"
-        },
-        {
-            "type": "field",
-            "name": "RAM Size Code",
-            "offset": 329,
-            "length": 1,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "External RAM: 0=None, 2=8KB, 3=32KB, 4=128KB, 5=64KB"
-        },
-        {
-            "type": "field",
-            "name": "Destination Code",
-            "offset": 330,
-            "length": 1,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "0x00=Japan only, 0x01=Overseas",
-            "validationRules": {
-                "allowedValues": [
-                    0,
-                    1
-                ]
-            }
-        },
-        {
-            "type": "field",
-            "name": "Old Licensee Code",
-            "offset": 331,
-            "length": 1,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "Old licensee (0x33 = use new licensee code at 0x144)"
-        },
-        {
-            "type": "field",
-            "name": "Mask ROM Version",
-            "offset": 332,
-            "length": 1,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "Game revision number (usually 0x00)"
-        },
-        {
-            "type": "field",
-            "name": "Header Checksum",
-            "offset": 333,
-            "length": 1,
-            "color": "#FF6B9D",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "storeAs": "headerChecksum",
-            "description": "8-bit checksum of header bytes 0x0134-0x014C"
-        },
-        {
-            "type": "field",
-            "name": "Global Checksum",
-            "offset": 334,
-            "length": 2,
-            "color": "#FF6B9D",
-            "opacity": 0.3,
-            "valueType": "uint16",
-            "description": "16-bit big-endian sum of all bytes in ROM (not verified by hardware)"
-        }
+    "web_links": [
+      "https://gbdev.io/pandocs/",
+      "https://gekkio.fi/files/gb-docs/gbctr.pdf",
+      "https://en.wikipedia.org/wiki/Game_Boy"
     ]
+  },
+  "detection": {
+    "signature": "CEED6666CC0D000B03730083000C000D0008",
+    "offset": 260,
+    "required": true,
+    "validation": {
+      "min_file_size": 18,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "cgbFlag": 0,
+    "cartType": 0,
+    "headerChecksum": 0,
+    "gameTitle": ""
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Entry Point",
+      "offset": 256,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Boot entry point (typically NOP; JP $0150)"
+    },
+    {
+      "type": "signature",
+      "name": "Nintendo Logo",
+      "offset": 260,
+      "length": 48,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Nintendo bootrom logo (48 bytes - must match exactly for hardware to boot)"
+    },
+    {
+      "type": "field",
+      "name": "Game Title",
+      "offset": 308,
+      "length": 15,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameTitle",
+      "description": "Game title in ASCII (padded with null bytes)"
+    },
+    {
+      "type": "field",
+      "name": "CGB Flag",
+      "offset": 323,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "cgbFlag",
+      "description": "0x80=CGB compatible, 0xC0=CGB only, other=DMG only",
+      "validationRules": {
+        "allowedValues": [
+          0,
+          128,
+          192
+        ]
+      }
+    },
+    {
+      "type": "field",
+      "name": "New Licensee Code",
+      "offset": 324,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Two-character licensee code (used when old code = 0x33)"
+    },
+    {
+      "type": "field",
+      "name": "SGB Flag",
+      "offset": 326,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "0x03=SGB functions supported, 0x00=no SGB"
+    },
+    {
+      "type": "field",
+      "name": "Cartridge Type",
+      "offset": 327,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "cartType",
+      "description": "MBC type: 0x00=ROM only, 0x01=MBC1, 0x02=MBC1+RAM, 0x03=MBC1+RAM+BATTERY, etc."
+    },
+    {
+      "type": "field",
+      "name": "ROM Size Code",
+      "offset": 328,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "ROM size: 0=32KB, 1=64KB, 2=128KB, 3=256KB, 4=512KB, 5=1MB, 6=2MB, 7=4MB, 8=8MB"
+    },
+    {
+      "type": "field",
+      "name": "RAM Size Code",
+      "offset": 329,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "External RAM: 0=None, 2=8KB, 3=32KB, 4=128KB, 5=64KB"
+    },
+    {
+      "type": "field",
+      "name": "Destination Code",
+      "offset": 330,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "0x00=Japan only, 0x01=Overseas",
+      "validationRules": {
+        "allowedValues": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "type": "field",
+      "name": "Old Licensee Code",
+      "offset": 331,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Old licensee (0x33 = use new licensee code at 0x144)"
+    },
+    {
+      "type": "field",
+      "name": "Mask ROM Version",
+      "offset": 332,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Game revision number (usually 0x00)"
+    },
+    {
+      "type": "field",
+      "name": "Header Checksum",
+      "offset": 333,
+      "length": 1,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "headerChecksum",
+      "description": "8-bit checksum of header bytes 0x0134-0x014C"
+    },
+    {
+      "type": "field",
+      "name": "Global Checksum",
+      "offset": 334,
+      "length": 2,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "description": "16-bit big-endian sum of all bytes in ROM (not verified by hardware)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 92,
+    "documentation_level": "detailed",
+    "blocks_defined": 14,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23",
+    "priority_format": true,
+    "auto_refined": true
+  },
+  "software": [
+    "VisualBoyAdvance",
+    "BGB",
+    "mGBA",
+    "RetroArch"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".gb",
+      ".gbc"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".gb",
+    "defined_fields": 14
+  }
 }
