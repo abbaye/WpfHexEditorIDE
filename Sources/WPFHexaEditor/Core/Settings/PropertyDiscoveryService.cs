@@ -208,7 +208,18 @@ namespace WpfHexaEditor.Core.Settings
             // Numeric types: look for range constraints
             if (propInfo.PropertyType == typeof(int) || propInfo.PropertyType == typeof(double))
             {
-                // Default ranges for common properties
+                // Check for [Range] attribute first
+                var rangeAttr = propInfo.GetCustomAttribute<RangeAttribute>();
+                if (rangeAttr != null)
+                {
+                    constraints.MinValue = rangeAttr.Minimum;
+                    constraints.MaxValue = rangeAttr.Maximum;
+                    if (rangeAttr.Step.HasValue)
+                        constraints.StepValue = rangeAttr.Step.Value;
+                    return constraints;
+                }
+
+                // Default ranges for common properties (if no [Range] attribute)
                 if (propInfo.Name == "ZoomScale" || propInfo.Name.Contains("Zoom"))
                 {
                     constraints.MinValue = 0.5;

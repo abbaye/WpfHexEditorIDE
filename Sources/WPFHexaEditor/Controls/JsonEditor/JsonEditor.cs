@@ -17,6 +17,7 @@ using System.Windows.Media;
 using WpfHexaEditor.Models.JsonEditor;
 using WpfHexaEditor.Helpers.JsonEditor;
 using WpfHexaEditor.Services;
+using WpfHexaEditor.Core.Settings;
 
 namespace WpfHexaEditor.Controls.JsonEditor
 {
@@ -196,6 +197,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
         [Category("Appearance.Fonts")]
         [DisplayName("Editor Font Size")]
         [Description("Font size for editor text (points)")]
+        [Range(8, 72)]
         public double EditorFontSize
         {
             get => (double)GetValue(EditorFontSizeProperty);
@@ -209,6 +211,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
         [Category("Appearance.Fonts")]
         [DisplayName("Line Number Font Size")]
         [Description("Font size for line numbers (points)")]
+        [Range(6, 24)]
         public double LineNumberFontSize
         {
             get => (double)GetValue(LineNumberFontSizeProperty);
@@ -250,6 +253,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
         [Category("Appearance.Fonts")]
         [DisplayName("Line Height Multiplier")]
         [Description("Line height as a multiple of font size (1.0-3.0)")]
+        [Range(1.0, 3.0)]
         public double LineHeightMultiplier
         {
             get => (double)GetValue(LineHeightMultiplierProperty);
@@ -405,6 +409,114 @@ namespace WpfHexaEditor.Controls.JsonEditor
         {
             get => (int)GetValue(ValidationDelayProperty);
             set => SetValue(ValidationDelayProperty, value);
+        }
+
+        // ===== BEHAVIOR - SELECTION & CURSOR =====
+
+        public static readonly DependencyProperty ShowCurrentLineHighlightProperty =
+            DependencyProperty.Register(nameof(ShowCurrentLineHighlight), typeof(bool), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        [Category("Behavior.Selection")]
+        [DisplayName("Show Current Line Highlight")]
+        [Description("Highlight the line where the cursor is located")]
+        public bool ShowCurrentLineHighlight
+        {
+            get => (bool)GetValue(ShowCurrentLineHighlightProperty);
+            set => SetValue(ShowCurrentLineHighlightProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowCurrentLineBorderProperty =
+            DependencyProperty.Register(nameof(ShowCurrentLineBorder), typeof(bool), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        [Category("Behavior.Selection")]
+        [DisplayName("Show Current Line Border")]
+        [Description("Show border around the current line")]
+        public bool ShowCurrentLineBorder
+        {
+            get => (bool)GetValue(ShowCurrentLineBorderProperty);
+            set => SetValue(ShowCurrentLineBorderProperty, value);
+        }
+
+        public static readonly DependencyProperty CaretBlinkRateProperty =
+            DependencyProperty.Register(nameof(CaretBlinkRate), typeof(int), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(500));
+
+        [Category("Behavior.Selection")]
+        [DisplayName("Caret Blink Rate (ms)")]
+        [Description("Cursor blink speed in milliseconds (0 = no blink)")]
+        public int CaretBlinkRate
+        {
+            get => (int)GetValue(CaretBlinkRateProperty);
+            set => SetValue(CaretBlinkRateProperty, Math.Max(0, Math.Min(2000, value)));
+        }
+
+        public static readonly DependencyProperty CaretWidthProperty =
+            DependencyProperty.Register(nameof(CaretWidth), typeof(double), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(2.0, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        [Category("Behavior.Selection")]
+        [DisplayName("Caret Width")]
+        [Description("Width of the text cursor in pixels")]
+        public double CaretWidth
+        {
+            get => (double)GetValue(CaretWidthProperty);
+            set => SetValue(CaretWidthProperty, Math.Max(1.0, Math.Min(5.0, value)));
+        }
+
+        public static readonly DependencyProperty SmartBackspaceProperty =
+            DependencyProperty.Register(nameof(SmartBackspace), typeof(bool), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(true));
+
+        [Category("Behavior.Selection")]
+        [DisplayName("Smart Backspace")]
+        [Description("Backspace removes full indent when at start of indented line")]
+        public bool SmartBackspace
+        {
+            get => (bool)GetValue(SmartBackspaceProperty);
+            set => SetValue(SmartBackspaceProperty, value);
+        }
+
+        // ===== BEHAVIOR - ADVANCED FEATURES =====
+
+        public static readonly DependencyProperty EnableBracketMatchingProperty =
+            DependencyProperty.Register(nameof(EnableBracketMatching), typeof(bool), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        [Category("Behavior.Advanced")]
+        [DisplayName("Enable Bracket Matching")]
+        [Description("Highlight matching brackets/braces when cursor is on one")]
+        public bool EnableBracketMatching
+        {
+            get => (bool)GetValue(EnableBracketMatchingProperty);
+            set => SetValue(EnableBracketMatchingProperty, value);
+        }
+
+        public static readonly DependencyProperty EnableAutoClosingBracketsProperty =
+            DependencyProperty.Register(nameof(EnableAutoClosingBrackets), typeof(bool), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(true));
+
+        [Category("Behavior.Advanced")]
+        [DisplayName("Auto-Close Brackets")]
+        [Description("Automatically insert closing bracket/brace when typing opening one")]
+        public bool EnableAutoClosingBrackets
+        {
+            get => (bool)GetValue(EnableAutoClosingBracketsProperty);
+            set => SetValue(EnableAutoClosingBracketsProperty, value);
+        }
+
+        public static readonly DependencyProperty EnableAutoClosingQuotesProperty =
+            DependencyProperty.Register(nameof(EnableAutoClosingQuotes), typeof(bool), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(true));
+
+        [Category("Behavior.Advanced")]
+        [DisplayName("Auto-Close Quotes")]
+        [Description("Automatically insert closing quote when typing opening quote")]
+        public bool EnableAutoClosingQuotes
+        {
+            get => (bool)GetValue(EnableAutoClosingQuotesProperty);
+            set => SetValue(EnableAutoClosingQuotesProperty, value);
         }
 
         // ===== SYNTAX HIGHLIGHTING COLORS =====
