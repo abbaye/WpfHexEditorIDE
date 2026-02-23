@@ -271,6 +271,130 @@
                     </StackPanel>
                 </Border>
 
+                <!-- Technical Details Card -->
+                <Border Style="{StaticResource CardStyle}" x:Name="TechnicalDetailsCard">
+                    <StackPanel>
+                        <TextBlock Text="⚙️ Technical Details" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="TechnicalDetailsTextBlock"
+                                   Text="N/A"
+                                   Style="{StaticResource InfoValueStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Related Formats Card -->
+                <Border Style="{StaticResource CardStyle}" x:Name="RelatedFormatsCard">
+                    <StackPanel>
+                        <TextBlock Text="🔗 Related Formats" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="RelatedFormatsTextBlock"
+                                   Text="N/A"
+                                   Style="{StaticResource InfoValueStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Author & Version Card -->
+                <Border Style="{StaticResource CardStyle}" x:Name="AuthorVersionCard">
+                    <StackPanel>
+                        <TextBlock Text="👤 Definition Info" Style="{StaticResource SectionHeaderStyle}"/>
+
+                        <Grid Margin="0,4,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="Version:"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Margin="0,0,8,0"/>
+                            <TextBlock Grid.Column="1"
+                                       x:Name="VersionTextBlock"
+                                       Text="N/A"
+                                       Style="{StaticResource InfoValueStyle}"/>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="Author:"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Margin="0,0,8,0"/>
+                            <TextBlock Grid.Column="1"
+                                       x:Name="AuthorTextBlock"
+                                       Text="N/A"
+                                       Style="{StaticResource InfoValueStyle}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Detection Info Card -->
+                <Border Style="{StaticResource CardStyle}" x:Name="DetectionInfoCard">
+                    <StackPanel>
+                        <TextBlock Text="🔍 Detection Details" Style="{StaticResource SectionHeaderStyle}"/>
+
+                        <!-- Signature -->
+                        <Grid Margin="0,4,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="Signature:"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Margin="0,0,8,0"/>
+                            <TextBlock Grid.Column="1"
+                                       x:Name="SignatureHexTextBlock"
+                                       Text="N/A"
+                                       Style="{StaticResource InfoValueStyle}"
+                                       FontFamily="Consolas"/>
+                        </Grid>
+
+                        <!-- Offset -->
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="Offset:"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Margin="0,0,8,0"/>
+                            <TextBlock Grid.Column="1"
+                                       x:Name="OffsetDisplayTextBlock"
+                                       Text="N/A"
+                                       Style="{StaticResource InfoValueStyle}"
+                                       FontFamily="Consolas"/>
+                        </Grid>
+
+                        <!-- Required -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="Required:"
+                                       FontSize="10"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Margin="0,0,8,0"/>
+                            <TextBlock Grid.Column="1"
+                                       x:Name="RequiredDisplayTextBlock"
+                                       Text="N/A"
+                                       Style="{StaticResource InfoValueStyle}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
                 <!-- No Format Message -->
                 <Border x:Name="NoFormatMessage"
                         Style="{StaticResource CardStyle}"

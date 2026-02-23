@@ -72,6 +72,17 @@ namespace WpfHexaEditor.Views.Panels
             QualityScoreText.Text = _viewModel.CompletenessScoreDisplay;
             DocumentationLevelTextBlock.Text = CapitalizeFirst(_viewModel.DocumentationLevel);
 
+            // Update new cards
+            TechnicalDetailsTextBlock.Text = _viewModel.TechnicalSummary;
+            RelatedFormatsTextBlock.Text = _viewModel.RelatedFormatsDisplay;
+            VersionTextBlock.Text = string.IsNullOrEmpty(_viewModel.Version) ? "N/A" : _viewModel.Version;
+            AuthorTextBlock.Text = string.IsNullOrEmpty(_viewModel.Author) ? "N/A" : _viewModel.Author;
+
+            // Update detection info card
+            SignatureHexTextBlock.Text = _viewModel.SignatureHex;
+            OffsetDisplayTextBlock.Text = _viewModel.OffsetDisplay;
+            RequiredDisplayTextBlock.Text = _viewModel.RequiredDisplay;
+
             // Update quality score bar
             UpdateQualityScoreBar();
 
@@ -80,6 +91,9 @@ namespace WpfHexaEditor.Views.Panels
 
             // Update references card
             UpdateReferencesCard();
+
+            // Update card visibility
+            UpdateCardVisibility();
         }
 
         /// <summary>
@@ -231,6 +245,28 @@ namespace WpfHexaEditor.Views.Panels
         }
 
         /// <summary>
+        /// Update card visibility based on available data
+        /// </summary>
+        private void UpdateCardVisibility()
+        {
+            // Hide cards if they have no data
+            if (TechnicalDetailsCard != null)
+                TechnicalDetailsCard.Visibility = _viewModel.HasTechnicalDetails ? Visibility.Visible : Visibility.Collapsed;
+
+            if (RelatedFormatsCard != null)
+                RelatedFormatsCard.Visibility = _viewModel.HasRelatedFormats ? Visibility.Visible : Visibility.Collapsed;
+
+            if (AuthorVersionCard != null)
+            {
+                bool hasInfo = !string.IsNullOrEmpty(_viewModel.Version) || !string.IsNullOrEmpty(_viewModel.Author);
+                AuthorVersionCard.Visibility = hasInfo ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            if (DetectionInfoCard != null)
+                DetectionInfoCard.Visibility = _viewModel.HasDetectionInfo ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        /// <summary>
         /// Show the "no format selected" message
         /// </summary>
         private void ShowNoFormatMessage()
@@ -246,6 +282,10 @@ namespace WpfHexaEditor.Views.Panels
                 if (SoftwareCard != null) SoftwareCard.Visibility = Visibility.Collapsed;
                 if (UseCasesCard != null) UseCasesCard.Visibility = Visibility.Collapsed;
                 if (ReferencesCard != null) ReferencesCard.Visibility = Visibility.Collapsed;
+                if (TechnicalDetailsCard != null) TechnicalDetailsCard.Visibility = Visibility.Collapsed;
+                if (RelatedFormatsCard != null) RelatedFormatsCard.Visibility = Visibility.Collapsed;
+                if (AuthorVersionCard != null) AuthorVersionCard.Visibility = Visibility.Collapsed;
+                if (DetectionInfoCard != null) DetectionInfoCard.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -258,13 +298,14 @@ namespace WpfHexaEditor.Views.Panels
             {
                 NoFormatMessage.Visibility = Visibility.Collapsed;
 
-                // Show all cards
+                // Show all cards (except new cards which are conditionally shown)
                 if (HeaderCard != null) HeaderCard.Visibility = Visibility.Visible;
                 if (ExtensionsCard != null) ExtensionsCard.Visibility = Visibility.Visible;
                 if (MimeTypesCard != null) MimeTypesCard.Visibility = Visibility.Visible;
                 if (SoftwareCard != null) SoftwareCard.Visibility = Visibility.Visible;
                 if (UseCasesCard != null) UseCasesCard.Visibility = Visibility.Visible;
                 if (ReferencesCard != null) ReferencesCard.Visibility = Visibility.Visible;
+                // TechnicalDetailsCard, RelatedFormatsCard, AuthorVersionCard, DetectionInfoCard visibility handled by UpdateCardVisibility()
             }
         }
 
