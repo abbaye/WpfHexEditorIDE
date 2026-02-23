@@ -1,0 +1,71 @@
+{
+    "formatName":  "Nintendo Wii U Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".wud",
+                       ".wux"
+                   ],
+    "description":  "Nintendo Wii U disc image format (WUD/WUX compressed)",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "57555800",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "WUX Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "valueType":  "bytes",
+                       "description":  "WUX0 magic for compressed images (0x57 0x55 0x58 0x00)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Format Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "valueType":  "uint32",
+                       "description":  "WUX format version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Uncompressed Size",
+                       "offset":  8,
+                       "length":  8,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "valueType":  "bytes",
+                       "description":  "Original uncompressed WUD size (64-bit)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Sector Size",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "valueType":  "uint32",
+                       "description":  "Sector size for compression"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Sector Table",
+                       "offset":  20,
+                       "length":  32,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "valueType":  "bytes",
+                       "description":  "Sector offset table (compressed format)"
+                   }
+               ]
+}

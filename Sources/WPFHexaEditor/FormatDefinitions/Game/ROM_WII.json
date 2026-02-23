@@ -1,0 +1,157 @@
+{
+    "formatName":  "Nintendo Wii Disc",
+    "version":  "1.0",
+    "extensions":  [
+                       ".iso",
+                       ".wbfs"
+                   ],
+    "description":  "Nintendo Wii disc image format (similar to GameCube with Wii extensions)",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5D1C9EA3",
+                      "offset":  24,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0,
+                      "gameCode":  "",
+                      "makerCode":  "",
+                      "gameName":  ""
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Disc ID",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "valueType":  "ascii",
+                       "description":  "Console ID: R=Wii, S=Wii (alt)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Game Code",
+                       "offset":  1,
+                       "length":  2,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "valueType":  "ascii",
+                       "storeAs":  "gameCode",
+                       "description":  "Unique 2-character game identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Region Code",
+                       "offset":  3,
+                       "length":  1,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "valueType":  "ascii",
+                       "description":  "Region: E=USA, P=Europe, J=Japan, K=Korea, W=Taiwan"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Maker Code",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "valueType":  "ascii",
+                       "storeAs":  "makerCode",
+                       "description":  "Publisher code: 01=Nintendo, etc."
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Disc Number",
+                       "offset":  6,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "valueType":  "uint8",
+                       "description":  "Disc number for multi-disc games (0-based)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  7,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "valueType":  "uint8",
+                       "description":  "Game version/revision number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Audio Streaming",
+                       "offset":  8,
+                       "length":  1,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "valueType":  "uint8",
+                       "description":  "0=No streaming, 1=Streaming enabled"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Stream Buffer Size",
+                       "offset":  9,
+                       "length":  1,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "valueType":  "uint8",
+                       "description":  "Audio stream buffer size"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Reserved",
+                       "offset":  10,
+                       "length":  14,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "valueType":  "bytes",
+                       "hidden":  true,
+                       "description":  "Reserved/padding"
+                   },
+                   {
+                       "type":  "signature",
+                       "name":  "Wii Magic",
+                       "offset":  24,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Wii disc magic: 0x5D1C9EA3"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Game Title",
+                       "offset":  32,
+                       "length":  64,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "valueType":  "ascii",
+                       "storeAs":  "gameName",
+                       "description":  "Game title (ASCII, null-terminated)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Disable Hash Verification",
+                       "offset":  96,
+                       "length":  1,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "valueType":  "uint8",
+                       "description":  "0=Verify hashes, 1=Disable verification (debug)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Disable Disc Encryption",
+                       "offset":  97,
+                       "length":  1,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "valueType":  "uint8",
+                       "description":  "0=Encrypted, 1=Unencrypted (debug/dev)"
+                   }
+               ]
+}
