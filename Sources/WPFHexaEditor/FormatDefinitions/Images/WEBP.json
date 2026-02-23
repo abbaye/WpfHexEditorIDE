@@ -64,12 +64,13 @@
     "image/webp"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 3,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Chrome",
@@ -78,24 +79,18 @@
     "Image viewers"
   ],
   "use_cases": [
-    "Modern web graphics",
-    "High compression with quality",
-    "Animation replacement for GIF"
+    "Image viewing",
+    "Photo editing"
   ],
   "format_relationships": {
-    "replaces": [
-      "JPEG",
-      "PNG",
-      "GIF"
-    ],
-    "google_format": true
+    "category": "Images",
+    "extensions": [
+      ".webp"
+    ]
   },
   "technical_details": {
-    "compression_methods": [
-      "Lossy (VP8)",
-      "Lossless"
-    ],
-    "transparency_support": true,
-    "animation_support": true
+    "images_format": true,
+    "primary_extension": ".webp",
+    "defined_fields": 3
   }
 }

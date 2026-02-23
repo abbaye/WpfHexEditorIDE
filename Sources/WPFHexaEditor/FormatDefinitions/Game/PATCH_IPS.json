@@ -75,12 +75,13 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 80,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Lunar IPS",
@@ -88,26 +89,17 @@
     "UniPatcher"
   ],
   "use_cases": [
-    "ROM patching",
-    "Translation patches",
-    "Bug fixes",
-    "Mods"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "applies_to": [
-      "ROM_NES",
-      "ROM_SNES",
-      "ROM_GB",
-      "ROM_GBA"
-    ],
-    "related_formats": [
-      "UPS",
-      "BPS"
+    "category": "Game",
+    "extensions": [
+      ".ips"
     ]
   },
   "technical_details": {
-    "max_offset": "16MB (24-bit)",
-    "rle_support": true,
-    "simple_format": true
+    "primary_extension": ".ips",
+    "defined_fields": 4
   }
 }

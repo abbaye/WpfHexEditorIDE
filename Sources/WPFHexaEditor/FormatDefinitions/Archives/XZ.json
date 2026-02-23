@@ -56,19 +56,22 @@
     "application/x-xz"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
+    "xz",
     "7-Zip",
-    "WinRAR"
+    "PeaZip"
   ],
   "use_cases": [
     "File compression",
-    "Data archiving"
+    "Stream compression",
+    "Software packages"
   ],
   "format_relationships": {
     "category": "Archives",
@@ -77,8 +80,9 @@
     ]
   },
   "technical_details": {
-    "archive_format": true,
+    "archives_format": true,
     "primary_extension": ".xz",
-    "defined_fields": 2
+    "defined_fields": 2,
+    "compression_method": "LZMA"
   }
 }

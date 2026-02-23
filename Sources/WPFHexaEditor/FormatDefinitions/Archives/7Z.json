@@ -72,36 +72,34 @@
     "application/x-7z"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "7-Zip",
     "PeaZip",
-    "Keka"
+    "Bandizip"
   ],
   "use_cases": [
-    "Maximum compression",
-    "Open-source alternative to RAR"
+    "File compression",
+    "Archive distribution",
+    "Backup"
   ],
   "format_relationships": {
-    "related_formats": [
-      "ZIP",
-      "RAR"
-    ],
-    "open_source": true
+    "category": "Archives",
+    "extensions": [
+      ".7z"
+    ]
   },
   "technical_details": {
-    "compression_methods": [
-      "LZMA",
-      "LZMA2",
-      "BZIP2",
-      "PPMd"
-    ],
-    "encryption_support": "AES-256"
+    "archives_format": true,
+    "primary_extension": ".7z",
+    "defined_fields": 4,
+    "compression_method": "Deflate"
   }
 }

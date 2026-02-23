@@ -58,19 +58,20 @@
     "application/fb2"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
     "PDF readers",
     "Office suites"
   ],
   "use_cases": [
-    "Document viewing",
-    "Office productivity"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
     "category": "Documents",
@@ -79,7 +80,6 @@
     ]
   },
   "technical_details": {
-    "document_format": true,
     "primary_extension": ".fb2",
     "defined_fields": 3
   }

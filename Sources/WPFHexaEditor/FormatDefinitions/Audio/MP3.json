@@ -73,40 +73,34 @@
     "audio/mp3"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "All media players",
-    "Audacity",
-    "iTunes"
+    "iTunes",
+    "Spotify"
   ],
   "use_cases": [
     "Music distribution",
-    "Podcasts",
-    "Audio streaming"
+    "Streaming audio",
+    "Portable music"
   ],
   "format_relationships": {
-    "successor_to": "MPEG-1 Audio Layer II",
-    "related_formats": [
-      "AAC",
-      "OGG",
-      "FLAC"
+    "category": "Audio",
+    "extensions": [
+      ".mp3"
     ]
   },
   "technical_details": {
-    "compression_method": "Perceptual lossy",
-    "bitrates": [
-      "32-320 kbps",
-      "VBR"
-    ],
-    "id3_tags": [
-      "ID3v1",
-      "ID3v2"
-    ]
+    "audio_format": true,
+    "primary_extension": ".mp3",
+    "defined_fields": 4,
+    "compression_type": "Lossy"
   }
 }

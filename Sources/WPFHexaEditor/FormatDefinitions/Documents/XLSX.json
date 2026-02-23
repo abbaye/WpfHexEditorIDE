@@ -51,12 +51,13 @@
     "application/xlsx"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Microsoft Excel",
@@ -64,20 +65,17 @@
     "Google Sheets"
   ],
   "use_cases": [
-    "Spreadsheets",
-    "Data analysis",
-    "Financial reports"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "container_format": "ZIP",
-    "successor_to": "XLS",
-    "related_formats": [
-      "DOCX",
-      "PPTX"
+    "category": "Documents",
+    "extensions": [
+      ".xlsx"
     ]
   },
   "technical_details": {
-    "xml_based": true,
-    "ooxml_standard": "ISO/IEC 29500"
+    "primary_extension": ".xlsx",
+    "defined_fields": 2
   }
 }

@@ -45,11 +45,12 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
     "Common file viewers",

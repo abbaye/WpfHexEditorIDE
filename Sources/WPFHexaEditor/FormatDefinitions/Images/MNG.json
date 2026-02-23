@@ -54,11 +54,12 @@
     "image/mng"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
     "Image viewers",
@@ -75,7 +76,7 @@
     ]
   },
   "technical_details": {
-    "image_format": true,
+    "images_format": true,
     "primary_extension": ".mng",
     "defined_fields": 2
   }

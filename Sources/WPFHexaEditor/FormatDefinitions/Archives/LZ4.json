@@ -65,19 +65,20 @@
     "application/x-lz4"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
-    "7-Zip",
-    "WinRAR"
+    "LZ4 tools",
+    "Compression libraries"
   ],
   "use_cases": [
-    "File compression",
-    "Data archiving"
+    "File archiving",
+    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
@@ -86,7 +87,7 @@
     ]
   },
   "technical_details": {
-    "archive_format": true,
+    "archives_format": true,
     "primary_extension": ".lz4",
     "defined_fields": 3
   }

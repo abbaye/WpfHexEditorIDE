@@ -71,31 +71,30 @@
     "application/x-executabledll"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Windows OS",
     "Visual Studio"
   ],
   "use_cases": [
-    "Shared libraries",
-    "Windows components"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "microsoft_format": true,
-    "same_as": "PE_EXE",
-    "related_formats": [
-      "EXE"
+    "category": "Executables",
+    "extensions": [
+      ".dll"
     ]
   },
   "technical_details": {
-    "pe_format": true,
-    "export_table": true,
-    "import_table": true
+    "primary_extension": ".dll",
+    "defined_fields": 4
   }
 }

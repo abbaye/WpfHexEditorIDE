@@ -48,29 +48,34 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
-    "Blender",
-    "3ds Max"
+    "Pixar USD tools",
+    "Maya",
+    "Houdini"
   ],
   "use_cases": [
-    "3D modeling",
-    "Animation"
+    "Film production",
+    "VFX pipelines",
+    "Universal scene description"
   ],
   "format_relationships": {
     "category": "3D",
     "extensions": [
       ".usdc"
-    ]
+    ],
+    "pixar_format": true,
+    "film_industry": true
   },
   "technical_details": {
-    "3d_format": true,
     "primary_extension": ".usdc",
-    "defined_fields": 2
+    "defined_fields": 2,
+    "binary_format": true
   }
 }

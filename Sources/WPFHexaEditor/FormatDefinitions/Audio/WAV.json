@@ -73,39 +73,33 @@
     "audio/wav"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
-    "All audio editors",
-    "Windows Media Player"
+    "All audio software",
+    "Windows",
+    "Audacity"
   ],
   "use_cases": [
-    "Uncompressed audio",
-    "Audio editing",
-    "Professional audio"
+    "Audio playback",
+    "Sound storage"
   ],
   "format_relationships": {
-    "based_on": "RIFF",
-    "related_formats": [
-      "AIFF"
-    ],
-    "microsoft_format": true
+    "category": "Audio",
+    "extensions": [
+      ".wav",
+      ".wave"
+    ]
   },
   "technical_details": {
-    "encoding": "PCM (uncompressed)",
-    "sample_rates": [
-      "8-192 kHz"
-    ],
-    "bit_depths": [
-      "8",
-      "16",
-      "24",
-      "32-bit"
-    ]
+    "audio_format": true,
+    "primary_extension": ".wav",
+    "defined_fields": 4
   }
 }

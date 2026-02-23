@@ -174,12 +174,13 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 12,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Snes9x",
@@ -188,23 +189,18 @@
     "RetroArch"
   ],
   "use_cases": [
-    "SNES emulation",
-    "Romhacking",
-    "Game preservation"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "console": "Super Nintendo",
-    "related_formats": [
-      "PATCH_IPS",
-      "PATCH_BPS"
+    "category": "Game",
+    "extensions": [
+      ".smc",
+      ".sfc"
     ]
   },
   "technical_details": {
-    "header_format": "Internal header",
-    "variants": [
-      "LoROM",
-      "HiROM",
-      "ExHiROM"
-    ]
+    "primary_extension": ".smc",
+    "defined_fields": 12
   }
 }

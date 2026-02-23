@@ -80,38 +80,32 @@
     "application/x-tar"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 5,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
-    "tar (Unix)",
+    "tar",
     "7-Zip",
     "WinRAR"
   ],
   "use_cases": [
-    "Unix/Linux archiving",
-    "Software distribution",
-    "Backup archives"
+    "File archiving",
+    "Data compression"
   ],
   "format_relationships": {
-    "combined_with": [
-      "GZIP",
-      "BZIP2",
-      "XZ"
-    ],
-    "variants": [
-      "tar.gz",
-      "tar.bz2",
-      "tar.xz"
+    "category": "Archives",
+    "extensions": [
+      ".tar"
     ]
   },
   "technical_details": {
-    "no_compression": true,
-    "preserves_permissions": true,
-    "streaming_support": true
+    "archives_format": true,
+    "primary_extension": ".tar",
+    "defined_fields": 5
   }
 }

@@ -53,29 +53,30 @@
     "image/jxl"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Limited support - emerging format"
   ],
   "use_cases": [
-    "Next-generation image format",
-    "Replacing JPEG"
+    "Image viewing",
+    "Photo editing"
   ],
   "format_relationships": {
-    "successor_to": "JPEG",
-    "competes_with": [
-      "AVIF",
-      "WEBP"
+    "category": "Images",
+    "extensions": [
+      ".jxl"
     ]
   },
   "technical_details": {
-    "compression_method": "VarDCT + modular",
-    "lossless_jpeg_recompression": true
+    "images_format": true,
+    "primary_extension": ".jxl",
+    "defined_fields": 2
   }
 }

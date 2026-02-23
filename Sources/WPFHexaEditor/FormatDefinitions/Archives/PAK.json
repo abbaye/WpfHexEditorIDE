@@ -63,19 +63,21 @@
     "application/x-pak"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
-    "7-Zip",
-    "WinRAR"
+    "QuakePak",
+    "Game extractors",
+    "7-Zip"
   ],
   "use_cases": [
-    "File compression",
-    "Data archiving"
+    "File archiving",
+    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
@@ -84,7 +86,7 @@
     ]
   },
   "technical_details": {
-    "archive_format": true,
+    "archives_format": true,
     "primary_extension": ".pak",
     "defined_fields": 3
   }

@@ -166,12 +166,13 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 12,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "VisualBoyAdvance",
@@ -180,20 +181,17 @@
     "RetroArch"
   ],
   "use_cases": [
-    "Game Boy Advance emulation",
-    "Romhacking"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "console": "Game Boy Advance",
-    "successor_to": "ROM_GB"
+    "category": "Game",
+    "extensions": [
+      ".gba"
+    ]
   },
   "technical_details": {
-    "header_offset": "0x00",
-    "max_rom_size": "32MB",
-    "save_types": [
-      "SRAM",
-      "Flash",
-      "EEPROM"
-    ]
+    "primary_extension": ".gba",
+    "defined_fields": 12
   }
 }

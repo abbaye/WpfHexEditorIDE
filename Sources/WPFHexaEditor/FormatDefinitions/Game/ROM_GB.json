@@ -194,12 +194,13 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 14,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "VisualBoyAdvance",
@@ -208,23 +209,18 @@
     "RetroArch"
   ],
   "use_cases": [
-    "Game Boy emulation",
-    "Romhacking"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "console": "Game Boy / Game Boy Color",
-    "related_formats": [
-      "ROM_GBC",
-      "ROM_GBA"
+    "category": "Game",
+    "extensions": [
+      ".gb",
+      ".gbc"
     ]
   },
   "technical_details": {
-    "header_offset": "0x100",
-    "max_rom_size": "8MB",
-    "mbc_types": [
-      "MBC1",
-      "MBC3",
-      "MBC5"
-    ]
+    "primary_extension": ".gb",
+    "defined_fields": 14
   }
 }

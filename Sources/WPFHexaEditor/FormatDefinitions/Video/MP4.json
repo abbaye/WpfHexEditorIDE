@@ -73,12 +73,13 @@
     "video/mp4"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "VLC",
@@ -91,20 +92,17 @@
     "Mobile video"
   ],
   "format_relationships": {
-    "based_on": "MPEG-4 Part 14",
-    "container_for": [
-      "H.264",
-      "H.265",
-      "AAC"
-    ],
-    "related_formats": [
-      "MOV",
-      "M4V"
+    "category": "Video",
+    "extensions": [
+      ".mp4",
+      ".m4v",
+      ".m4a"
     ]
   },
   "technical_details": {
-    "container_format": true,
-    "streaming_support": true,
-    "iso_standard": "ISO/IEC 14496-14"
+    "video_format": true,
+    "primary_extension": ".mp4",
+    "defined_fields": 4,
+    "container_format": true
   }
 }

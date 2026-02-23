@@ -39,19 +39,22 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
-    "Blender",
-    "3ds Max"
+    "Web browsers",
+    "X3D viewers",
+    "Blender"
   ],
   "use_cases": [
     "3D modeling",
-    "Animation"
+    "3D visualization",
+    "3D interchange"
   ],
   "format_relationships": {
     "category": "3D",
@@ -60,8 +63,8 @@
     ]
   },
   "technical_details": {
-    "3d_format": true,
     "primary_extension": ".x3d",
-    "defined_fields": 1
+    "defined_fields": 1,
+    "binary_format": true
   }
 }

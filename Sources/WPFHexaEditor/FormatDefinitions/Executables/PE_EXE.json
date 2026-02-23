@@ -171,12 +171,13 @@
     "application/x-executableexe"
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 15,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Windows OS",
@@ -184,19 +185,19 @@
     "IDA Pro"
   ],
   "use_cases": [
-    "Windows programs",
-    "Software distribution"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "microsoft_format": true,
-    "related_formats": [
-      "DLL",
-      "SYS"
+    "category": "Executables",
+    "extensions": [
+      ".exe",
+      ".dll",
+      ".sys"
     ]
   },
   "technical_details": {
-    "pe_format": true,
-    "code_signing": true,
-    "relocations": true
+    "primary_extension": ".exe",
+    "defined_fields": 15
   }
 }

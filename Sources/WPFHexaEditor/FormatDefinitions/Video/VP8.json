@@ -46,19 +46,21 @@
     "video/vp8"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
-    "VLC Media Player",
-    "Media Player Classic"
+    "Web browsers",
+    "VLC",
+    "WEBM players"
   ],
   "use_cases": [
     "Video playback",
-    "Video streaming"
+    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
@@ -69,8 +71,8 @@
   },
   "technical_details": {
     "video_format": true,
-    "container": true,
     "primary_extension": ".vp8",
-    "defined_fields": 1
+    "defined_fields": 1,
+    "container_format": true
   }
 }

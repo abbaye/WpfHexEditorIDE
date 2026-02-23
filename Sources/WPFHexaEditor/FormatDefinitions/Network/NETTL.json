@@ -85,19 +85,20 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 91,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 6,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
     "Wireshark",
     "tcpdump"
   ],
   "use_cases": [
-    "Network analysis",
-    "Packet capture"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
     "category": "Network",
@@ -107,7 +108,6 @@
     ]
   },
   "technical_details": {
-    "network_format": true,
     "primary_extension": ".trc0",
     "defined_fields": 6
   }

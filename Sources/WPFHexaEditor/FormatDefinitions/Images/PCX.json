@@ -74,11 +74,12 @@
     "image/pcx"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
     "Image viewers",
@@ -86,18 +87,16 @@
   ],
   "use_cases": [
     "Image viewing",
-    "Photo editing",
-    "Legacy software support"
+    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
     "extensions": [
       ".pcx"
-    ],
-    "legacy_format": true
+    ]
   },
   "technical_details": {
-    "image_format": true,
+    "images_format": true,
     "primary_extension": ".pcx",
     "defined_fields": 4
   }

@@ -135,12 +135,13 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 90,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 9,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Nestopia",
@@ -149,23 +150,17 @@
     "Mesen"
   ],
   "use_cases": [
-    "NES emulation",
-    "Romhacking",
-    "Game preservation"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "console": "Nintendo Entertainment System",
-    "related_formats": [
-      "PATCH_IPS",
-      "PATCH_UPS"
+    "category": "Game",
+    "extensions": [
+      ".nes"
     ]
   },
   "technical_details": {
-    "header_format": "iNES",
-    "mapper_support": "256+ mappers",
-    "variants": [
-      "iNES",
-      "NES 2.0"
-    ]
+    "primary_extension": ".nes",
+    "defined_fields": 9
   }
 }

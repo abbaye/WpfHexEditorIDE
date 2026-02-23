@@ -73,38 +73,32 @@
     "application/x-cab"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
-    "Windows Cabinet Maker",
-    "7-Zip",
-    "expand.exe"
+    "makecab",
+    "expand",
+    "7-Zip"
   ],
   "use_cases": [
-    "Windows installers",
-    "System file distribution",
-    "Driver packages"
+    "File archiving",
+    "Data compression"
   ],
   "format_relationships": {
-    "used_by": [
-      "Windows Installer",
-      "Microsoft Office"
-    ],
-    "related_formats": [
-      "MSI"
+    "category": "Archives",
+    "extensions": [
+      ".cab"
     ]
   },
   "technical_details": {
-    "compression_methods": [
-      "LZX",
-      "Quantum",
-      "None"
-    ],
-    "microsoft_format": true
+    "archives_format": true,
+    "primary_extension": ".cab",
+    "defined_fields": 4
   }
 }

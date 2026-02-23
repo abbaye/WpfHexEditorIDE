@@ -61,12 +61,13 @@
     "application/pdf"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 3,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Adobe Acrobat",
@@ -75,18 +76,17 @@
     "Preview (macOS)"
   ],
   "use_cases": [
-    "Document distribution",
-    "Forms",
-    "Ebooks",
-    "Print-ready documents"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "adobe_format": true,
-    "iso_standard": "ISO 32000"
+    "category": "Documents",
+    "extensions": [
+      ".pdf"
+    ]
   },
   "technical_details": {
-    "page_description_language": "PostScript-based",
-    "encryption_support": true,
-    "digital_signatures": true
+    "primary_extension": ".pdf",
+    "defined_fields": 3
   }
 }

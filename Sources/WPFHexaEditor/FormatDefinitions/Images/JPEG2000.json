@@ -66,12 +66,13 @@
     "image/jp2"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 3,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "IrfanView",
@@ -79,19 +80,20 @@
     "Medical imaging software"
   ],
   "use_cases": [
-    "Medical imaging",
-    "Digital cinema",
-    "Archival"
+    "Image viewing",
+    "Photo editing"
   ],
   "format_relationships": {
-    "successor_to": "JPEG",
-    "related_formats": [
-      "JPEG"
+    "category": "Images",
+    "extensions": [
+      ".jp2",
+      ".j2k",
+      ".jpf"
     ]
   },
   "technical_details": {
-    "compression_method": "Wavelet",
-    "lossless_and_lossy": true,
-    "progressive_decoding": true
+    "images_format": true,
+    "primary_extension": ".jp2",
+    "defined_fields": 3
   }
 }

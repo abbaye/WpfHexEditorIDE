@@ -48,19 +48,20 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
-    "Blender",
-    "3ds Max"
+    "ZBrush"
   ],
   "use_cases": [
     "3D modeling",
-    "Animation"
+    "3D visualization",
+    "3D interchange"
   ],
   "format_relationships": {
     "category": "3D",
@@ -69,8 +70,8 @@
     ]
   },
   "technical_details": {
-    "3d_format": true,
     "primary_extension": ".ztl",
-    "defined_fields": 2
+    "defined_fields": 2,
+    "binary_format": true
   }
 }

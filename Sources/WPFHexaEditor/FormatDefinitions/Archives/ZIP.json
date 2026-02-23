@@ -141,48 +141,37 @@
     "application/x-zip"
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 11,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
-    "WinZIP",
+    "WinZip",
     "7-Zip",
     "WinRAR",
-    "Windows Explorer",
-    "macOS Archive Utility"
+    "OS built-in"
   ],
   "use_cases": [
     "File compression",
-    "Software distribution",
-    "Data backup",
-    "Office document containers (DOCX, XLSX)"
+    "Archive distribution",
+    "Backup"
   ],
   "format_relationships": {
-    "container_for": [
-      "DOCX",
-      "XLSX",
-      "PPTX",
-      "ODT",
-      "JAR",
-      "APK"
-    ],
-    "related_formats": [
-      "RAR",
-      "7Z",
-      "TAR"
+    "category": "Archives",
+    "extensions": [
+      ".zip",
+      ".jar",
+      ".apk"
     ]
   },
   "technical_details": {
-    "compression_methods": [
-      "Deflate",
-      "BZIP2",
-      "LZMA"
-    ],
-    "encryption_support": "AES-256",
-    "max_file_size": "4GB (ZIP32) / 16EB (ZIP64)"
+    "archives_format": true,
+    "primary_extension": ".zip",
+    "defined_fields": 11,
+    "compression_method": "Deflate"
   }
 }

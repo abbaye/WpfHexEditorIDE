@@ -71,12 +71,13 @@
     "application/x-rar"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "WinRAR",
@@ -84,20 +85,19 @@
     "The Unarchiver"
   ],
   "use_cases": [
-    "High compression ratio archives",
-    "Multi-volume archives",
-    "Recovery records"
+    "File compression",
+    "Archive distribution",
+    "Backup"
   ],
   "format_relationships": {
-    "related_formats": [
-      "ZIP",
-      "7Z"
-    ],
-    "proprietary": true
+    "category": "Archives",
+    "extensions": [
+      ".rar"
+    ]
   },
   "technical_details": {
-    "compression_method": "RAR proprietary",
-    "recovery_records": true,
-    "encryption_support": "AES-256"
+    "archives_format": true,
+    "primary_extension": ".rar",
+    "defined_fields": 4
   }
 }

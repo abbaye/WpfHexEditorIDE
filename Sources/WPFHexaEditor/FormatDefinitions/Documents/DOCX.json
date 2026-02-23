@@ -53,12 +53,13 @@
     "application/docx"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Microsoft Word",
@@ -66,20 +67,17 @@
     "Google Docs"
   ],
   "use_cases": [
-    "Word processing",
-    "Business documents",
-    "Reports"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "container_format": "ZIP",
-    "successor_to": "DOC",
-    "related_formats": [
-      "XLSX",
-      "PPTX"
+    "category": "Documents",
+    "extensions": [
+      ".docx"
     ]
   },
   "technical_details": {
-    "xml_based": true,
-    "ooxml_standard": "ISO/IEC 29500"
+    "primary_extension": ".docx",
+    "defined_fields": 2
   }
 }

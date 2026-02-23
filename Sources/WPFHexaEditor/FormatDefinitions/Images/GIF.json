@@ -98,12 +98,13 @@
     "image/gif"
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 7,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Web browsers",
@@ -111,24 +112,18 @@
     "Photoshop"
   ],
   "use_cases": [
-    "Animations",
-    "Simple graphics",
-    "Memes",
-    "Legacy web graphics"
+    "Image viewing",
+    "Photo editing"
   ],
   "format_relationships": {
-    "replaced_by": [
-      "PNG",
-      "WEBP",
-      "APNG"
-    ],
-    "related_formats": [
-      "APNG"
+    "category": "Images",
+    "extensions": [
+      ".gif"
     ]
   },
   "technical_details": {
-    "color_limit": "256 colors (8-bit)",
-    "compression_method": "LZW",
-    "animation_support": true
+    "images_format": true,
+    "primary_extension": ".gif",
+    "defined_fields": 7
   }
 }

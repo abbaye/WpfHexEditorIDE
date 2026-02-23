@@ -55,12 +55,13 @@
     "video/mkv"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "VLC",
@@ -68,24 +69,21 @@
     "PotPlayer"
   ],
   "use_cases": [
-    "HD video storage",
-    "Multi-audio tracks",
-    "Subtitle support"
+    "Video playback",
+    "Video editing"
   ],
   "format_relationships": {
-    "open_source": true,
-    "container_for": [
-      "H.264",
-      "H.265",
-      "VP9"
-    ],
-    "related_formats": [
-      "WEBM"
+    "category": "Video",
+    "extensions": [
+      ".mkv",
+      ".mka",
+      ".mks"
     ]
   },
   "technical_details": {
-    "container_format": true,
-    "unlimited_tracks": true,
-    "matroska_family": true
+    "video_format": true,
+    "primary_extension": ".mkv",
+    "defined_fields": 2,
+    "container_format": true
   }
 }

@@ -99,12 +99,13 @@
     "image/bmp"
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 7,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Windows Paint",
@@ -112,24 +113,19 @@
     "GIMP"
   ],
   "use_cases": [
-    "Windows applications",
-    "Uncompressed images",
-    "Texture files"
+    "Image viewing",
+    "Photo editing"
   ],
   "format_relationships": {
-    "related_formats": [
-      "DIB"
-    ],
-    "microsoft_format": true
+    "category": "Images",
+    "extensions": [
+      ".bmp",
+      ".dib"
+    ]
   },
   "technical_details": {
-    "compression": "None or RLE",
-    "color_depths": [
-      "1-bit",
-      "4-bit",
-      "8-bit",
-      "24-bit",
-      "32-bit"
-    ]
+    "images_format": true,
+    "primary_extension": ".bmp",
+    "defined_fields": 7
   }
 }

@@ -46,19 +46,21 @@
     "video/vp9"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
-    "VLC Media Player",
-    "Media Player Classic"
+    "YouTube",
+    "Chrome",
+    "Modern browsers"
   ],
   "use_cases": [
     "Video playback",
-    "Video streaming"
+    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
@@ -69,8 +71,8 @@
   },
   "technical_details": {
     "video_format": true,
-    "container": true,
     "primary_extension": ".vp9",
-    "defined_fields": 1
+    "defined_fields": 1,
+    "container_format": true
   }
 }

@@ -64,12 +64,13 @@
     "image/tif"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 3,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Photoshop",
@@ -77,33 +78,19 @@
     "Professional scanners"
   ],
   "use_cases": [
-    "Professional photography",
-    "Document scanning",
-    "Multi-page documents",
-    "Print production"
+    "Image viewing",
+    "Photo editing"
   ],
   "format_relationships": {
-    "related_formats": [
-      "BigTIFF",
-      "GeoTIFF"
-    ],
-    "variants": [
-      "TIFF/IT",
-      "TIFF/EP"
+    "category": "Images",
+    "extensions": [
+      ".tif",
+      ".tiff"
     ]
   },
   "technical_details": {
-    "compression_methods": [
-      "None",
-      "LZW",
-      "ZIP",
-      "JPEG"
-    ],
-    "multi_page": true,
-    "color_spaces": [
-      "RGB",
-      "CMYK",
-      "Lab"
-    ]
+    "images_format": true,
+    "primary_extension": ".tif",
+    "defined_fields": 3
   }
 }

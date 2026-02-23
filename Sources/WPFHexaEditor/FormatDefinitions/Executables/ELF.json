@@ -90,12 +90,13 @@
     "application/x-executable"
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 6,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Linux OS",
@@ -103,18 +104,17 @@
     "GDB"
   ],
   "use_cases": [
-    "Linux/Unix programs",
-    "Embedded systems"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "unix_format": true,
-    "related_formats": [
-      "a.out",
-      "COFF"
+    "category": "Executables",
+    "extensions": [
+      ""
     ]
   },
   "technical_details": {
-    "dynamic_linking": true,
-    "sections_and_segments": true
+    "primary_extension": "",
+    "defined_fields": 6
   }
 }

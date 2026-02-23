@@ -52,7 +52,7 @@
     "application/mobi"
   ],
   "quality_metrics": {
-    "completeness_score": 88,
+    "completeness_score": 93,
     "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,

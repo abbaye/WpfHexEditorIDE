@@ -39,29 +39,34 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
+    "3D printers",
     "Blender",
-    "3ds Max"
+    "Meshmixer",
+    "Cura"
   ],
   "use_cases": [
-    "3D modeling",
-    "Animation"
+    "3D printing",
+    "CAD export",
+    "Mesh modeling"
   ],
   "format_relationships": {
     "category": "3D",
     "extensions": [
       ".stl"
-    ]
+    ],
+    "3d_printing_standard": true
   },
   "technical_details": {
-    "3d_format": true,
     "primary_extension": ".stl",
-    "defined_fields": 1
+    "defined_fields": 1,
+    "binary_format": true
   }
 }

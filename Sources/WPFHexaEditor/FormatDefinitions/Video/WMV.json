@@ -55,19 +55,20 @@
     "video/wmv"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
-    "VLC Media Player",
-    "Media Player Classic"
+    "Windows Media Player",
+    "VLC"
   ],
   "use_cases": [
     "Video playback",
-    "Video streaming"
+    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
@@ -79,8 +80,8 @@
   },
   "technical_details": {
     "video_format": true,
-    "container": true,
     "primary_extension": ".wmv",
-    "defined_fields": 2
+    "defined_fields": 2,
+    "container_format": true
   }
 }

@@ -165,12 +165,13 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 12,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Project64",
@@ -178,20 +179,19 @@
     "RetroArch"
   ],
   "use_cases": [
-    "Nintendo 64 emulation",
-    "Romhacking"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "console": "Nintendo 64",
-    "byte_order_variants": [
-      ".z64",
+    "category": "Game",
+    "extensions": [
       ".n64",
+      ".z64",
       ".v64"
     ]
   },
   "technical_details": {
-    "byte_order": "Big-endian (z64)",
-    "header_size": "4KB",
-    "crc_check": "CRC1/CRC2"
+    "primary_extension": ".n64",
+    "defined_fields": 12
   }
 }

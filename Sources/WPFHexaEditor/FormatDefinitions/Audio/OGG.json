@@ -74,12 +74,13 @@
     "audio/ogg"
   ],
   "quality_metrics": {
-    "completeness_score": 85,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "VLC",
@@ -87,21 +88,22 @@
     "Audacity"
   ],
   "use_cases": [
-    "Open-source audio",
-    "Game audio",
-    "Web streaming"
+    "Music distribution",
+    "Streaming audio",
+    "Portable music"
   ],
   "format_relationships": {
-    "container_for": "Vorbis codec",
-    "related_formats": [
-      "MP3",
-      "AAC"
-    ],
-    "open_source": true
+    "category": "Audio",
+    "extensions": [
+      ".ogg",
+      ".oga",
+      ".ogv"
+    ]
   },
   "technical_details": {
-    "compression_method": "Vorbis lossy",
-    "free_patents": true,
-    "variable_bitrate": true
+    "audio_format": true,
+    "primary_extension": ".ogg",
+    "defined_fields": 4,
+    "compression_type": "Lossy"
   }
 }

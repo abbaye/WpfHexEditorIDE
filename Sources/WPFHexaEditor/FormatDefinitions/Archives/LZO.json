@@ -73,19 +73,20 @@
     "application/x-lzo"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
+    "completeness_score": 92,
     "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
-    "7-Zip",
-    "WinRAR"
+    "LZO tools",
+    "Compression libraries"
   ],
   "use_cases": [
-    "File compression",
-    "Data archiving"
+    "File archiving",
+    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
@@ -95,7 +96,7 @@
     ]
   },
   "technical_details": {
-    "archive_format": true,
+    "archives_format": true,
     "primary_extension": ".lzo",
     "defined_fields": 4
   }

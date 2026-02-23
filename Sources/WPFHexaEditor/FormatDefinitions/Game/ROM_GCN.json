@@ -152,19 +152,20 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 11,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "auto_refined": true
   },
   "software": [
     "Emulators",
     "Game engines"
   ],
   "use_cases": [
-    "Gaming",
-    "Game preservation"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
@@ -174,7 +175,6 @@
     ]
   },
   "technical_details": {
-    "game_format": true,
     "primary_extension": ".gcm",
     "defined_fields": 11
   }

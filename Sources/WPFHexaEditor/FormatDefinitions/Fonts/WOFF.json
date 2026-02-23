@@ -68,29 +68,29 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 80,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Web browsers"
   ],
   "use_cases": [
-    "Web fonts"
+    "General file usage",
+    "Data storage"
   ],
   "format_relationships": {
-    "container_for": [
-      "TTF",
-      "OTF"
-    ],
-    "web_format": true,
-    "successor": "WOFF2"
+    "category": "Fonts",
+    "extensions": [
+      ".woff"
+    ]
   },
   "technical_details": {
-    "compression_method": "ZLIB",
-    "metadata_support": true
+    "primary_extension": ".woff",
+    "defined_fields": 4
   }
 }

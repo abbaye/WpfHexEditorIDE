@@ -136,12 +136,13 @@
     "image/png"
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 11,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "Web browsers",
@@ -150,28 +151,18 @@
     "Paint.NET"
   ],
   "use_cases": [
-    "Web graphics",
-    "Lossless image compression",
-    "Transparency support",
-    "Screenshots"
+    "Image viewing",
+    "Photo editing"
   ],
   "format_relationships": {
-    "replaces": [
-      "GIF"
-    ],
-    "related_formats": [
-      "APNG",
-      "JPEG",
-      "WEBP"
+    "category": "Images",
+    "extensions": [
+      ".png"
     ]
   },
   "technical_details": {
-    "compression_method": "Deflate",
-    "color_depths": [
-      "8-bit indexed",
-      "24-bit RGB",
-      "32-bit RGBA"
-    ],
-    "interlacing": "Adam7"
+    "images_format": true,
+    "primary_extension": ".png",
+    "defined_fields": 11
   }
 }

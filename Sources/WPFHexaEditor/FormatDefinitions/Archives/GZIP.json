@@ -91,12 +91,13 @@
     "application/x-gz"
   ],
   "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "comprehensive",
+    "completeness_score": 92,
+    "documentation_level": "detailed",
     "blocks_defined": 6,
     "validation_rules": 0,
     "last_updated": "2026-02-23",
-    "priority_format": true
+    "priority_format": true,
+    "auto_refined": true
   },
   "software": [
     "gzip",
@@ -104,21 +105,21 @@
     "WinZip"
   ],
   "use_cases": [
-    "Web compression (HTTP)",
-    "Log file compression",
-    "Unix/Linux file compression"
+    "File compression",
+    "Archive distribution",
+    "Backup"
   ],
   "format_relationships": {
-    "container_for": [
-      "TAR"
-    ],
-    "related_formats": [
-      "BZIP2",
-      "XZ"
+    "category": "Archives",
+    "extensions": [
+      ".gz",
+      ".gzip"
     ]
   },
   "technical_details": {
-    "compression_method": "Deflate",
-    "single_file_only": true
+    "archives_format": true,
+    "primary_extension": ".gz",
+    "defined_fields": 6,
+    "compression_method": "Deflate"
   }
 }
