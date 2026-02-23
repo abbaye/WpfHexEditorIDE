@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using WpfHexaEditor.Core.Settings.Controls;
 using WpfHexaEditor.Controls;
+using WpfHexaEditor.Converters;
 
 namespace WpfHexaEditor.Core.Settings
 {
@@ -388,11 +389,22 @@ namespace WpfHexaEditor.Core.Settings
                     var textBlock = gridWithSlider.Children.OfType<TextBlock>().FirstOrDefault();
                     if (textBlock != null)
                     {
-                        textBlock.SetBinding(TextBlock.TextProperty, new Binding("Value")
+                        var valueBinding = new Binding("Value")
                         {
-                            Source = slider,
-                            StringFormat = "{0:F2}"
-                        });
+                            Source = slider
+                        };
+
+                        // Use ZoomToPercentConverter for ZoomScale property
+                        if (metadata.PropertyName == "ZoomScale")
+                        {
+                            valueBinding.Converter = new ZoomToPercentConverter();
+                        }
+                        else
+                        {
+                            valueBinding.StringFormat = "{0:F2}";
+                        }
+
+                        textBlock.SetBinding(TextBlock.TextProperty, valueBinding);
                     }
                 }
 
