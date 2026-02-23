@@ -213,6 +213,8 @@ dotnet add package WPFHexaEditor
 
 ## 📸 Screenshots
 
+> **📌 Note:** Screenshots below are from V1 Legacy (historical reference). New V2 Modern screenshots showcasing the latest features (Parsed Fields, Data Inspector, 400+ format detection, etc.) will be added soon!
+
 <table>
 <tr>
 <td width="50%" align="center">
