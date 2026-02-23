@@ -123,9 +123,6 @@ namespace WpfHexaEditor.Controls
         // Search results highlight (yellow for better visibility)
         private Brush _doubleClickHighlightBrush = new SolidColorBrush(Color.FromArgb(0x80, 0xFF, 0xFF, 0x00)); // 50% Yellow
 
-        // Caret for Insert mode (flashing vertical line)
-        private Caret _caret;
-
         // Cursor cell blink effect (simple on/off on active cursor)
         private bool _cursorBlinkVisible = true;     // État du clignotement (true = visible, false = caché)
         private System.Windows.Threading.DispatcherTimer _cursorBlinkTimer;  // Timer pour le clignotement
@@ -268,16 +265,6 @@ namespace WpfHexaEditor.Controls
             _tbl3ByteBrush.Freeze();
             _tbl4PlusByteBrush.Freeze();
 
-            // Initialize caret for Insert mode
-            _caret = new Caret(new SolidColorBrush(Color.FromRgb(0x00, 0x78, 0xD4))); // Blue caret
-            _caret.CaretHeight = _charHeight;
-            _caret.CaretWidth = _charWidth;
-            _caret.CaretMode = CaretMode.Insert; // Start in Insert mode (vertical line)
-            _caret.BlinkPeriod = 500; // Blink every 500ms
-            AddVisualChild(_caret);
-            AddLogicalChild(_caret);
-            _caret.Start(); // Start blinking
-
             // Initialize cursor cell blink timer (simple on/off blink)
             _cursorBlinkTimer = new System.Windows.Threading.DispatcherTimer(System.Windows.Threading.DispatcherPriority.Render)
             {
@@ -288,17 +275,16 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
-        /// Required for custom FrameworkElement with child visuals (caret)
+        /// No child visuals (direct rendering only)
         /// </summary>
-        protected override int VisualChildrenCount => 1; // Only the caret
+        protected override int VisualChildrenCount => 0;
 
         /// <summary>
-        /// Required for custom FrameworkElement with child visuals (caret)
+        /// No child visuals (direct rendering only)
         /// </summary>
         protected override Visual GetVisualChild(int index)
         {
-            if (index != 0) throw new ArgumentOutOfRangeException(nameof(index));
-            return _caret;
+            throw new ArgumentOutOfRangeException(nameof(index));
         }
 
         /// <summary>
@@ -1452,19 +1438,6 @@ namespace WpfHexaEditor.Controls
             if (byteData.VirtualPos.Value == _cursorPosition)
             {
                 dc.DrawRoundedRectangle(null, _cursorPen, rect, 2, 2);
-
-                // Position caret at cursor byte (only visible in Insert mode)
-                // Caret should appear as a flashing vertical line at the left edge of the byte (between bytes)
-                if (_caret != null && EditMode == EditMode.Insert)
-                {
-                    _caret.MoveCaret(x, y);
-                    _caret.CaretMode = CaretMode.Insert; // Vertical line
-                }
-                else if (_caret != null)
-                {
-                    // In Overwrite mode, use block caret or hide it (V1 shows block)
-                    _caret.Hide();
-                }
             }
 
             // Draw hex text centered in the cell
