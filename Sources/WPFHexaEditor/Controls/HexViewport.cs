@@ -53,7 +53,8 @@ namespace WpfHexaEditor.Controls
         private List<Core.CustomBackgroundBlock> _customBackgroundBlocks = new();
         private CustomBackgroundRenderer _customBackgroundRenderer = new();
         private Core.CharacterTable.TblStream _tblStream; // Phase 7.5: TBL for character type detection
-        private bool _showByteToolTip = false; // V1 compatible: Show tooltip on byte hover
+        private ByteToolTipDisplayMode _byteToolTipDisplayMode = ByteToolTipDisplayMode.None;
+        private ByteToolTipDetailLevel _byteToolTipDetailLevel = ByteToolTipDetailLevel.Standard;
         private System.Windows.Controls.ToolTip _byteToolTip; // Custom tooltip that follows mouse
 
         // Viewport display properties (backing fields)
@@ -1172,19 +1173,38 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
-        /// Show tooltip on byte hover (V1 compatible - tooltip follows mouse)
+        /// Byte tooltip display mode (where to show tooltips)
         /// </summary>
-        public bool ShowByteToolTip
+        public ByteToolTipDisplayMode ByteToolTipDisplayMode
         {
-            get => _showByteToolTip;
+            get => _byteToolTipDisplayMode;
             set
             {
-                _showByteToolTip = value;
-                if (!value && _byteToolTip != null)
+                _byteToolTipDisplayMode = value;
+                if (value == ByteToolTipDisplayMode.None && _byteToolTip != null)
                 {
                     _byteToolTip.IsOpen = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Byte tooltip detail level (how much info to show)
+        /// </summary>
+        public ByteToolTipDetailLevel ByteToolTipDetailLevel
+        {
+            get => _byteToolTipDetailLevel;
+            set => _byteToolTipDetailLevel = value;
+        }
+
+        /// <summary>
+        /// Legacy V1 compatibility property - maps to ByteToolTipDisplayMode
+        /// </summary>
+        [Obsolete("Use ByteToolTipDisplayMode instead")]
+        public bool ShowByteToolTip
+        {
+            get => _byteToolTipDisplayMode != ByteToolTipDisplayMode.None;
+            set => _byteToolTipDisplayMode = value ? ByteToolTipDisplayMode.Everywhere : ByteToolTipDisplayMode.None;
         }
 
         /// <summary>
@@ -2437,53 +2457,8 @@ namespace WpfHexaEditor.Controls
                 InvalidateVisual(); // Redraw to show/hide hover highlight
             }
 
-            // V1 compatible: Show byte tooltip on hover (follows mouse)
-            if (_showByteToolTip && _byteToolTip != null)
-            {
-
-                if (position.HasValue)
-                {
-                    // Find the byte data at this position
-                    var byteData = _linesCached?
-                        .SelectMany(line => line.Bytes)
-                        .FirstOrDefault(b => b.VirtualPos.IsValid && b.VirtualPos.Value == position.Value);
-
-                    if (byteData != null)
-                    {
-                        byte byteValue = byteData.Value;
-                        char asciiChar = (byteValue >= 32 && byteValue < 127) ? (char)byteValue : '.';
-
-                        string tooltipText = $"Position: 0x{position.Value:X8} ({position.Value})\n" +
-                                           $"Value: 0x{byteValue:X2} ({byteValue})\n" +
-                                           $"ASCII: '{asciiChar}'";
-
-                        // Check if this byte is part of a CustomBackgroundBlock (parsed field)
-                        var block = _customBackgroundBlocks?.FirstOrDefault(b =>
-                            position.Value >= b.StartOffset && position.Value < b.StopOffset);
-
-                        if (block != null && !string.IsNullOrWhiteSpace(block.Description))
-                        {
-                            tooltipText += $"\n\n📋 Field: {block.Description}";
-                            tooltipText += $"\nRange: 0x{block.StartOffset:X8} - 0x{block.StopOffset:X8}";
-                            tooltipText += $"\nLength: {block.Length} byte(s)";
-                        }
-
-                        // Update tooltip position to follow mouse
-                        _byteToolTip.HorizontalOffset = mousePos.X + 15;
-                        _byteToolTip.VerticalOffset = mousePos.Y + 20;
-                        _byteToolTip.Content = tooltipText;
-                        _byteToolTip.IsOpen = true;
-                        return;
-                    }
-                }
-
-                // Close tooltip if not over a byte
-                _byteToolTip.IsOpen = false;
-            }
-            else if (_byteToolTip != null)
-            {
-                _byteToolTip.IsOpen = false;
-            }
+            // Tooltip handling (new architecture with DisplayMode and DetailLevel)
+            UpdateByteTooltip(mousePos, position);
 
             // Mouse drag selection
             if (_isMouseDown && _dragStartPosition.HasValue)
@@ -2537,6 +2512,185 @@ namespace WpfHexaEditor.Controls
             {
                 _mouseHoverPosition = -1;
                 InvalidateVisual();
+            }
+        }
+
+        #endregion
+
+        #region Tooltip Helpers
+
+        /// <summary>
+        /// Updates byte tooltip based on display mode and detail level
+        /// </summary>
+        private void UpdateByteTooltip(Point mousePos, long? position)
+        {
+            // Disabled mode
+            if (_byteToolTipDisplayMode == ByteToolTipDisplayMode.None || _byteToolTip == null)
+            {
+                CloseTooltip();
+                return;
+            }
+
+            // No valid byte position
+            if (!position.HasValue)
+            {
+                CloseTooltip();
+                return;
+            }
+
+            // Find byte data at position
+            var byteData = FindByteDataAtPosition(position.Value);
+            if (byteData == null)
+            {
+                CloseTooltip();
+                return;
+            }
+
+            // Check if byte is in a CustomBackgroundBlock
+            var block = _customBackgroundBlocks?.FirstOrDefault(b =>
+                position.Value >= b.StartOffset && position.Value < b.StopOffset);
+
+            // OnCustomBackgroundBlocks mode: only show if in a CBB
+            if (_byteToolTipDisplayMode == ByteToolTipDisplayMode.OnCustomBackgroundBlocks)
+            {
+                if (block == null)
+                {
+                    CloseTooltip();
+                    return;
+                }
+            }
+
+            // Generate content based on detail level
+            string content = GenerateTooltipContent(byteData, block, _byteToolTipDetailLevel);
+
+            // Position tooltip (always mouse-follow for now)
+            PositionTooltip(mousePos);
+
+            // Update and show
+            _byteToolTip.Content = content;
+            _byteToolTip.IsOpen = true;
+        }
+
+        private ByteData FindByteDataAtPosition(long position)
+        {
+            return _linesCached?
+                .SelectMany(line => line.Bytes)
+                .FirstOrDefault(b => b.VirtualPos.IsValid && b.VirtualPos.Value == position);
+        }
+
+        private string GenerateTooltipContent(ByteData byteData, Core.CustomBackgroundBlock block, ByteToolTipDetailLevel detailLevel)
+        {
+            var sb = new StringBuilder();
+            byte byteValue = byteData.Value;
+            long position = byteData.VirtualPos.Value;
+            char asciiChar = (byteValue >= 32 && byteValue < 127) ? (char)byteValue : '.';
+
+            // === BASIC LEVEL (Always included) ===
+            sb.AppendLine($"Position: 0x{position:X8} ({position})");
+            sb.AppendLine($"Value: 0x{byteValue:X2} ({byteValue})");
+            sb.AppendLine($"ASCII: '{asciiChar}'");
+
+            // === STANDARD LEVEL (Add field info if available) ===
+            if (detailLevel >= ByteToolTipDetailLevel.Standard)
+            {
+                if (block != null && !string.IsNullOrWhiteSpace(block.Description))
+                {
+                    sb.AppendLine();
+                    sb.AppendLine($"📋 Field: {block.Description}");
+                    sb.AppendLine($"Range: 0x{block.StartOffset:X8} - 0x{block.StopOffset:X8}");
+                    sb.AppendLine($"Length: {block.Length} byte(s)");
+                }
+            }
+
+            // === DETAILED LEVEL (Add interpretations) ===
+            if (detailLevel >= ByteToolTipDetailLevel.Detailed)
+            {
+                AppendDetailedInfo(sb, byteValue, position);
+            }
+
+            return sb.ToString().TrimEnd();
+        }
+
+        private void AppendDetailedInfo(StringBuilder sb, byte byteValue, long position)
+        {
+            // Binary representation
+            string binary = Convert.ToString(byteValue, 2).PadLeft(8, '0');
+            sb.AppendLine($"Binary: {binary.Substring(0, 4)} {binary.Substring(4)}");
+
+            sb.AppendLine();
+            sb.AppendLine("━━━ INTERPRETATIONS ━━━");
+            sb.AppendLine($"Signed (int8): {(sbyte)byteValue}");
+            sb.AppendLine($"Unsigned (uint8): {byteValue}");
+
+            // Try to read multi-byte values from cached lines
+            if (_linesCached != null && _linesCached.Count > 0)
+            {
+                try
+                {
+                    // Collect up to 8 bytes starting from current position
+                    var bytesList = new List<byte>();
+                    foreach (var line in _linesCached)
+                    {
+                        if (line.Bytes != null)
+                        {
+                            foreach (var byteData in line.Bytes)
+                            {
+                                if (byteData.VirtualPos.IsValid && byteData.VirtualPos.Value >= position)
+                                {
+                                    bytesList.Add(byteData.Value);
+                                    if (bytesList.Count >= 8)
+                                        break;
+                                }
+                            }
+                        }
+                        if (bytesList.Count >= 8)
+                            break;
+                    }
+
+                    if (bytesList.Count >= 2)
+                    {
+                        var bytes = bytesList.ToArray();
+                        sb.AppendLine();
+                        sb.AppendLine("━━━ MULTI-BYTE ━━━");
+
+                        // Int16/UInt16 (Little Endian)
+                        if (bytes.Length >= 2)
+                        {
+                            short int16LE = BitConverter.ToInt16(bytes, 0);
+                            ushort uint16LE = BitConverter.ToUInt16(bytes, 0);
+                            sb.AppendLine($"Int16 LE: {int16LE}");
+                            sb.AppendLine($"UInt16 LE: {uint16LE}");
+                        }
+
+                        // Int32/Float (Little Endian)
+                        if (bytes.Length >= 4)
+                        {
+                            int int32LE = BitConverter.ToInt32(bytes, 0);
+                            float floatLE = BitConverter.ToSingle(bytes, 0);
+                            sb.AppendLine($"Int32 LE: {int32LE} (0x{int32LE:X8})");
+                            sb.AppendLine($"Float LE: {floatLE:F6}");
+                        }
+                    }
+                }
+                catch
+                {
+                    // Ignore errors (e.g., near end of file or data inconsistencies)
+                }
+            }
+        }
+
+        private void PositionTooltip(Point mousePos)
+        {
+            // Mouse-follow positioning (V1 behavior)
+            _byteToolTip.HorizontalOffset = mousePos.X + 15;
+            _byteToolTip.VerticalOffset = mousePos.Y + 20;
+        }
+
+        private void CloseTooltip()
+        {
+            if (_byteToolTip != null)
+            {
+                _byteToolTip.IsOpen = false;
             }
         }
 

@@ -325,8 +325,50 @@ namespace WpfHexaEditor.Core
         MaxScreenVisibleLine,
 
         /// <summary>
-        /// Load MaxScreenVisibleLine at control creation and the others lines will be loaded at first load of file/stream 
+        /// Load MaxScreenVisibleLine at control creation and the others lines will be loaded at first load of file/stream
         /// </summary>
         MaxScreenVisibleLineAtDataLoad
+    }
+
+    /// <summary>
+    /// Controls where byte tooltips are displayed
+    /// </summary>
+    public enum ByteToolTipDisplayMode
+    {
+        /// <summary>
+        /// Tooltips disabled
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// Show tooltips only on CustomBackgroundBlocks (parsed fields)
+        /// </summary>
+        OnCustomBackgroundBlocks,
+
+        /// <summary>
+        /// Show tooltips on all bytes
+        /// </summary>
+        Everywhere
+    }
+
+    /// <summary>
+    /// Controls the level of detail in byte tooltips
+    /// </summary>
+    public enum ByteToolTipDetailLevel
+    {
+        /// <summary>
+        /// Basic info: Position, Value, ASCII only
+        /// </summary>
+        Basic,
+
+        /// <summary>
+        /// Standard info: Basic + CustomBackgroundBlock field information
+        /// </summary>
+        Standard,
+
+        /// <summary>
+        /// Detailed info: Standard + Binary, Multi-byte interpretations (Int16/32, Float, etc.)
+        /// </summary>
+        Detailed
     }
 }

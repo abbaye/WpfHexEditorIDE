@@ -252,12 +252,13 @@ namespace WpfHexaEditor.Core.Settings
             {
                 "StatusBar" => 1,
                 "Display" => 2,
-                "Colors" => 3,
-                "ScrollMarkers" => 4,
-                "Behavior" => 5,
-                "Data" => 6,
-                "Visual" => 7,
-                "Keyboard" => 8,
+                "Tooltip" => 3,
+                "Colors" => 4,
+                "ScrollMarkers" => 5,
+                "Behavior" => 6,
+                "Data" => 7,
+                "Visual" => 8,
+                "Keyboard" => 9,
                 _ => 99 // Unknown categories last
             };
         }

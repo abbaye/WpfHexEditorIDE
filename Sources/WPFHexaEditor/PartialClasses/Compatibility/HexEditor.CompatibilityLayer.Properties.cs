@@ -22,14 +22,16 @@ namespace WpfHexaEditor
         #region Missing V1 Properties - Display/UI
 
         /// <summary>
-        /// Show tooltip on byte hover
+        /// Legacy V1 property - Use ByteToolTipDisplayMode for new code
         /// </summary>
         public static readonly DependencyProperty ShowByteToolTipProperty =
             DependencyProperty.Register(nameof(ShowByteToolTip), typeof(bool),
                 typeof(HexEditor), new PropertyMetadata(false, OnShowByteToolTipChanged));
 
         [System.ComponentModel.Category("Display")]
-        [System.ComponentModel.Description("Show detailed tooltip when hovering over bytes (includes parsed field information)")]
+        [System.ComponentModel.Browsable(false)] // Hidden from UI - superseded by ByteToolTipDisplayMode
+        [System.ComponentModel.Description("Legacy property - Use ByteToolTipDisplayMode instead")]
+        [Obsolete("Use ByteToolTipDisplayMode instead")]
         public bool ShowByteToolTip
         {
             get => (bool)GetValue(ShowByteToolTipProperty);
@@ -40,7 +42,90 @@ namespace WpfHexaEditor
         {
             if (d is HexEditor editor && editor.HexViewport != null)
             {
-                editor.HexViewport.ShowByteToolTip = (bool)e.NewValue;
+                bool enabled = (bool)e.NewValue;
+
+                // Map bool to enum
+                var mode = enabled ? ByteToolTipDisplayMode.Everywhere : ByteToolTipDisplayMode.None;
+
+                // Update HexViewport
+                editor.HexViewport.ByteToolTipDisplayMode = mode;
+
+                // Sync ByteToolTipDisplayMode DP (without triggering callback)
+                if ((ByteToolTipDisplayMode)editor.GetValue(ByteToolTipDisplayModeProperty) != mode)
+                {
+                    editor.SetValue(ByteToolTipDisplayModeProperty, mode);
+                }
+            }
+        }
+
+        // ===== NEW PROPERTY 1: Display Mode =====
+
+        /// <summary>
+        /// Identifies the ByteToolTipDisplayMode dependency property
+        /// </summary>
+        public static readonly DependencyProperty ByteToolTipDisplayModeProperty =
+            DependencyProperty.Register(nameof(ByteToolTipDisplayMode), typeof(ByteToolTipDisplayMode),
+                typeof(HexEditor), new PropertyMetadata(ByteToolTipDisplayMode.None, OnByteToolTipDisplayModeChanged));
+
+        /// <summary>
+        /// Controls where byte tooltips are displayed (None, OnCustomBackgroundBlocks, Everywhere)
+        /// </summary>
+        [System.ComponentModel.Category("Tooltip")]
+        [System.ComponentModel.Description("Controls where byte tooltips are displayed")]
+        public ByteToolTipDisplayMode ByteToolTipDisplayMode
+        {
+            get => (ByteToolTipDisplayMode)GetValue(ByteToolTipDisplayModeProperty);
+            set => SetValue(ByteToolTipDisplayModeProperty, value);
+        }
+
+        private static void OnByteToolTipDisplayModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is ByteToolTipDisplayMode mode)
+            {
+                // Update HexViewport
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.ByteToolTipDisplayMode = mode;
+                }
+
+                // Sync legacy ShowByteToolTip property (without triggering callback)
+                bool newBoolValue = (mode != ByteToolTipDisplayMode.None);
+                if (editor.ShowByteToolTip != newBoolValue)
+                {
+                    editor.SetValue(ShowByteToolTipProperty, newBoolValue);
+                }
+            }
+        }
+
+        // ===== NEW PROPERTY 2: Detail Level =====
+
+        /// <summary>
+        /// Identifies the ByteToolTipDetailLevel dependency property
+        /// </summary>
+        public static readonly DependencyProperty ByteToolTipDetailLevelProperty =
+            DependencyProperty.Register(nameof(ByteToolTipDetailLevel), typeof(ByteToolTipDetailLevel),
+                typeof(HexEditor), new PropertyMetadata(ByteToolTipDetailLevel.Standard, OnByteToolTipDetailLevelChanged));
+
+        /// <summary>
+        /// Controls the level of detail in byte tooltips (Basic, Standard, Detailed)
+        /// </summary>
+        [System.ComponentModel.Category("Tooltip")]
+        [System.ComponentModel.Description("Controls the level of detail shown in byte tooltips")]
+        public ByteToolTipDetailLevel ByteToolTipDetailLevel
+        {
+            get => (ByteToolTipDetailLevel)GetValue(ByteToolTipDetailLevelProperty);
+            set => SetValue(ByteToolTipDetailLevelProperty, value);
+        }
+
+        private static void OnByteToolTipDetailLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is ByteToolTipDetailLevel level)
+            {
+                // Update HexViewport
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.ByteToolTipDetailLevel = level;
+                }
             }
         }
 
