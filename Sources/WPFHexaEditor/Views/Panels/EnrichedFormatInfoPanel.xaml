@@ -1,0 +1,167 @@
+<UserControl x:Class="WpfHexaEditor.Views.Panels.EnrichedFormatInfoPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="350">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="HeaderBrush" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#7ED321"/>
+        <SolidColorBrush x:Key="PriorityBadgeBrush" Color="#FF6B6B"/>
+        <SolidColorBrush x:Key="SectionBackgroundBrush" Color="#F8F9FA"/>
+
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource HeaderBrush}"/>
+            <Setter Property="Margin" Value="0,12,0,6"/>
+        </Style>
+
+        <Style x:Key="InfoLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+
+        <Style x:Key="InfoValueStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+        </Style>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource SectionBackgroundBrush}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="12" x:Name="MainPanel">
+
+                <!-- Header Card -->
+                <Border Style="{StaticResource CardStyle}" x:Name="HeaderCard">
+                    <StackPanel>
+                        <TextBlock x:Name="FormatNameTextBlock"
+                                   Text="Format Name"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock x:Name="CategoryTextBlock"
+                                   Text="Category"
+                                   FontSize="10"
+                                   FontStyle="Italic"
+                                   Margin="0,4,0,0"
+                                   Foreground="{StaticResource HeaderBrush}"/>
+
+                        <TextBlock x:Name="DescriptionTextBlock"
+                                   Text="Description"
+                                   FontSize="10"
+                                   TextWrapping="Wrap"
+                                   Margin="0,8,0,0"/>
+
+                        <!-- Quality Score -->
+                        <Grid Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Quality:"
+                                       Style="{StaticResource InfoLabelStyle}"
+                                       VerticalAlignment="Center"/>
+
+                            <Border Grid.Column="1"
+                                    Height="8"
+                                    Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+                                    CornerRadius="4"
+                                    Margin="0,0,8,0">
+                                <Border x:Name="QualityScoreBar"
+                                        HorizontalAlignment="Left"
+                                        Background="{StaticResource AccentBrush}"
+                                        CornerRadius="4"/>
+                            </Border>
+
+                            <TextBlock Grid.Column="2"
+                                       x:Name="QualityScoreText"
+                                       Text="0%"
+                                       FontSize="10"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource AccentBrush}"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Extensions Card -->
+                <Border Style="{StaticResource CardStyle}" x:Name="ExtensionsCard">
+                    <StackPanel>
+                        <TextBlock Text="File Extensions" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="ExtensionsTextBlock"
+                                   Text="N/A"
+                                   Style="{StaticResource InfoValueStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- MIME Types Card -->
+                <Border Style="{StaticResource CardStyle}" x:Name="MimeTypesCard">
+                    <StackPanel>
+                        <TextBlock Text="MIME Types" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="MimeTypesTextBlock"
+                                   Text="N/A"
+                                   Style="{StaticResource InfoValueStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Software Card -->
+                <Border Style="{StaticResource CardStyle}" x:Name="SoftwareCard">
+                    <StackPanel>
+                        <TextBlock Text="Compatible Software" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="SoftwareTextBlock"
+                                   Text="N/A"
+                                   Style="{StaticResource InfoValueStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Use Cases Card -->
+                <Border Style="{StaticResource CardStyle}" x:Name="UseCasesCard">
+                    <StackPanel>
+                        <TextBlock Text="Common Use Cases" Style="{StaticResource SectionHeaderStyle}"/>
+                        <TextBlock x:Name="UseCasesTextBlock"
+                                   Text="N/A"
+                                   Style="{StaticResource InfoValueStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- No Format Message -->
+                <Border x:Name="NoFormatMessage"
+                        Style="{StaticResource CardStyle}"
+                        Padding="24"
+                        Visibility="Collapsed">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="No format detected"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,8,0,4"/>
+                        <TextBlock Text="Open a file to view format information"
+                                   FontSize="11"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

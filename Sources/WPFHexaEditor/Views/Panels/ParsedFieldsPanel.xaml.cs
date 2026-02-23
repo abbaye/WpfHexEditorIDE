@@ -133,6 +133,28 @@ namespace WpfHexaEditor.Views.Panels
         public event EventHandler RefreshRequested;
 
         /// <summary>
+        /// Set the format definition for enriched metadata display
+        /// </summary>
+        public void SetEnrichedFormat(Core.FormatDetection.FormatDefinition format)
+        {
+            if (EnrichedFormatPanel != null)
+            {
+                EnrichedFormatPanel.SetFormat(format);
+            }
+        }
+
+        /// <summary>
+        /// Clear the enriched format information
+        /// </summary>
+        public void ClearEnrichedFormat()
+        {
+            if (EnrichedFormatPanel != null)
+            {
+                EnrichedFormatPanel.ClearFormat();
+            }
+        }
+
+        /// <summary>
         /// Event fired when the formatter selection changes
         /// </summary>
         public event EventHandler<string> FormatterChanged;
@@ -256,6 +278,32 @@ namespace WpfHexaEditor.Views.Panels
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             RefreshRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Open Actions context menu
+        /// </summary>
+        private void ActionsMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.ContextMenu != null)
+            {
+                button.ContextMenu.PlacementTarget = button;
+                button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+                button.ContextMenu.IsOpen = true;
+            }
+        }
+
+        /// <summary>
+        /// Open Export context menu
+        /// </summary>
+        private void ExportMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.ContextMenu != null)
+            {
+                button.ContextMenu.PlacementTarget = button;
+                button.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+                button.ContextMenu.IsOpen = true;
+            }
         }
 
         private void QuickNavigate_Click(object sender, RoutedEventArgs e)

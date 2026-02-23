@@ -482,6 +482,9 @@ namespace WpfHexaEditor
                     // Parse fields for the parsed fields panel (Issue #111)
                     RefreshParsedFields();
 
+                    // Update enriched format panel with detected format
+                    UpdateEnrichedFormatPanel(result.Format);
+
                     // Raise event
                     FormatDetected?.Invoke(this, new FormatDetectedEventArgs
                     {
@@ -568,6 +571,9 @@ namespace WpfHexaEditor
                     // Parse fields for the parsed fields panel (Issue #111)
                     RefreshParsedFields();
 
+                    // Update enriched format panel with detected format
+                    UpdateEnrichedFormatPanel(format);
+
                     return true;
                 }
             }
@@ -619,6 +625,24 @@ namespace WpfHexaEditor
         public FormatStatistics GetFormatStatistics()
         {
             return _formatDetectionService.GetStatistics();
+        }
+
+        /// <summary>
+        /// Update the enriched format panel with detected format information
+        /// </summary>
+        private void UpdateEnrichedFormatPanel(FormatDefinition format)
+        {
+            if (ParsedFieldsPanel == null)
+                return;
+
+            try
+            {
+                ParsedFieldsPanel.SetEnrichedFormat(format);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[FormatDetection] Error updating enriched format panel: {ex.Message}");
+            }
         }
 
         #endregion

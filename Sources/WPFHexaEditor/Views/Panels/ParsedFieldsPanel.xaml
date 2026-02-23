@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WpfHexaEditor.Views.Panels"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="300"
              Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
@@ -383,58 +384,53 @@
                 Padding="8,6"
                 BorderThickness="0,0,0,1"
                 BorderBrush="#E0E0E0">
-            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="QuickEditButton"
-                        Content="✏️ Edit"
-                        Width="80" Height="32"
+            <!-- Phase C: Compact Menu System (2 menus instead of 5 buttons) -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <!-- Actions Menu -->
+                <Button x:Name="ActionsMenuButton"
+                        Content="📝 Actions ▼"
+                        Width="100" Height="28"
                         Margin="4,0"
                         FontSize="11"
-                        ToolTip="Edit selected field value (Enter)"
-                        Click="EditValue_Click"
-                        IsEnabled="{Binding HasSelection}"
-                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
+                        Click="ActionsMenuButton_Click"
+                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="ActionsContextMenu" Placement="Bottom">
+                            <MenuItem Header="✏️ _Edit" InputGestureText="Enter" Click="EditValue_Click" IsEnabled="{Binding HasSelection}"/>
+                            <MenuItem Header="📋 _Copy" InputGestureText="Ctrl+C" Click="CopyValue_Click" IsEnabled="{Binding HasSelection}"/>
+                            <MenuItem Header="📄 Copy _Details" Click="CopyDetails_Click" IsEnabled="{Binding HasSelection}"/>
+                            <MenuItem Header="📌 Copy _Offset" Click="CopyOffset_Click" IsEnabled="{Binding HasSelection}"/>
+                            <Separator/>
+                            <MenuItem Header="🎯 _Navigate" Click="QuickNavigate_Click" IsEnabled="{Binding HasSelection}"/>
+                            <MenuItem Header="🔍 _Jump to Offset..." Click="JumpToOffset_Click"/>
+                            <Separator/>
+                            <MenuItem Header="⭐ _Bookmark" InputGestureText="Space" Click="ToggleBookmark_Click" IsEnabled="{Binding HasSelection}"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
 
-                <Button x:Name="QuickCopyButton"
-                        Content="📋 Copy"
-                        Width="80" Height="32"
+                <Separator Margin="8,0" Width="1" Background="#E0E0E0" Height="20"/>
+
+                <!-- Export Menu -->
+                <Button x:Name="ExportMenuButton"
+                        Content="💾 Export ▼"
+                        Width="100" Height="28"
                         Margin="4,0"
                         FontSize="11"
-                        ToolTip="Copy field value (Ctrl+C)"
-                        Click="CopyValue_Click"
-                        IsEnabled="{Binding HasSelection}"
-                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
-
-                <Button x:Name="QuickNavigateButton"
-                        Content="🎯 Navigate"
-                        Width="90" Height="32"
-                        Margin="4,0"
-                        FontSize="11"
-                        ToolTip="Navigate to field position in hex editor"
-                        Click="QuickNavigate_Click"
-                        IsEnabled="{Binding HasSelection}"
-                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
-
-                <ToggleButton x:Name="QuickBookmarkButton"
-                              Content="⭐ Bookmark"
-                              Width="95" Height="32"
-                              Margin="4,0"
-                              FontSize="11"
-                              ToolTip="Toggle bookmark on selected field (Space)"
-                              Click="ToggleBookmark_Click"
-                              IsEnabled="{Binding HasSelection}"
-                              Style="{DynamicResource {x:Static ToolBar.ToggleButtonStyleKey}}"/>
-
-                <Separator Margin="8,0" Width="1" Background="#E0E0E0"/>
-
-                <Button x:Name="QuickExportButton"
-                        Content="💾 Export"
-                        Width="85" Height="32"
-                        Margin="4,0"
-                        FontSize="11"
-                        ToolTip="Export all fields to file"
-                        Click="ExportAsText_Click"
-                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
-            </WrapPanel>
+                        Click="ExportMenuButton_Click"
+                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="ExportContextMenu" Placement="Bottom">
+                            <MenuItem Header="📄 Text" Click="ExportAsText_Click"/>
+                            <MenuItem Header="{}{} JSON" Click="ExportAsJson_Click"/>
+                            <MenuItem Header="📊 CSV" Click="ExportAsCsv_Click"/>
+                            <MenuItem Header="📋 XML" Click="ExportAsXml_Click"/>
+                            <MenuItem Header="🌐 HTML" Click="ExportAsHtml_Click"/>
+                            <MenuItem Header="📝 Markdown" Click="ExportAsMarkdown_Click"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </StackPanel>
         </Border>
 
         <!-- Format info -->
@@ -551,6 +547,26 @@
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
+
+                <!-- Enriched Format Metadata Section -->
+                <Expander x:Name="EnrichedFormatExpander"
+                          IsExpanded="False"
+                          Margin="0,12,0,0"
+                          BorderBrush="#CCCCCC"
+                          BorderThickness="1"
+                          Background="White">
+                    <Expander.Header>
+                        <TextBlock Text="Enriched Format Metadata"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="#1976D2"/>
+                    </Expander.Header>
+                    <Border Padding="8">
+                        <local:EnrichedFormatInfoPanel x:Name="EnrichedFormatPanel"
+                                                       MaxHeight="400"/>
+                    </Border>
+                </Expander>
+
             </StackPanel>
         </Border>
 

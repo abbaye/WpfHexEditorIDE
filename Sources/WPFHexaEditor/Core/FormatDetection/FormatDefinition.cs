@@ -71,6 +71,36 @@ namespace WpfHexaEditor.Core.FormatDetection
         public FormatReferences References { get; set; }
 
         /// <summary>
+        /// MIME types associated with this format
+        /// </summary>
+        public List<string> MimeTypes { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Quality metrics for this format definition
+        /// </summary>
+        public QualityMetrics QualityMetrics { get; set; }
+
+        /// <summary>
+        /// Software that can open/create this format
+        /// </summary>
+        public List<string> Software { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Common use cases for this format
+        /// </summary>
+        public List<string> UseCases { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Format relationships and associations
+        /// </summary>
+        public FormatRelationships FormatRelationships { get; set; }
+
+        /// <summary>
+        /// Technical details specific to this format type
+        /// </summary>
+        public TechnicalDetails TechnicalDetails { get; set; }
+
+        /// <summary>
         /// Validate this format definition
         /// </summary>
         public bool IsValid()
@@ -208,5 +238,150 @@ namespace WpfHexaEditor.Core.FormatDetection
         /// List of web links to specifications and documentation
         /// </summary>
         public List<string> WebLinks { get; set; } = new List<string>();
+    }
+
+    /// <summary>
+    /// Quality metrics for format definition completeness
+    /// Added by enrichment automation - tracks metadata quality
+    /// </summary>
+    public class QualityMetrics
+    {
+        /// <summary>
+        /// Completeness score (0-100) indicating how well-documented this format is
+        /// </summary>
+        public int CompletenessScore { get; set; }
+
+        /// <summary>
+        /// Documentation level: "basic", "standard", "detailed", "comprehensive"
+        /// </summary>
+        public string DocumentationLevel { get; set; }
+
+        /// <summary>
+        /// Number of blocks defined in this format
+        /// </summary>
+        public int BlocksDefined { get; set; }
+
+        /// <summary>
+        /// Number of validation rules defined
+        /// </summary>
+        public int ValidationRules { get; set; }
+
+        /// <summary>
+        /// Last updated date (YYYY-MM-DD format)
+        /// </summary>
+        public string LastUpdated { get; set; }
+
+        /// <summary>
+        /// Whether this is a priority/critical format (top 100)
+        /// </summary>
+        public bool PriorityFormat { get; set; }
+
+        /// <summary>
+        /// Whether this format was auto-refined by enrichment script
+        /// </summary>
+        public bool AutoRefined { get; set; }
+    }
+
+    /// <summary>
+    /// Format relationships - how this format relates to other formats and categories
+    /// </summary>
+    public class FormatRelationships
+    {
+        /// <summary>
+        /// Primary category this format belongs to
+        /// </summary>
+        public string Category { get; set; }
+
+        /// <summary>
+        /// List of file extensions associated with this format
+        /// </summary>
+        public List<string> Extensions { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Related formats (variants, versions, compatible formats)
+        /// </summary>
+        public List<string> RelatedFormats { get; set; } = new List<string>();
+    }
+
+    /// <summary>
+    /// Technical details specific to the format type
+    /// Properties vary by category (archives, images, executables, etc.)
+    /// </summary>
+    public class TechnicalDetails
+    {
+        /// <summary>
+        /// Primary file extension (most common)
+        /// </summary>
+        public string PrimaryExtension { get; set; }
+
+        /// <summary>
+        /// Number of defined fields/blocks
+        /// </summary>
+        public int DefinedFields { get; set; }
+
+        /// <summary>
+        /// Compression method (for archives/compressed formats)
+        /// </summary>
+        public string CompressionMethod { get; set; }
+
+        /// <summary>
+        /// Whether this is an archive format
+        /// </summary>
+        public bool ArchivesFormat { get; set; }
+
+        /// <summary>
+        /// Whether this is an image format
+        /// </summary>
+        public bool ImagesFormat { get; set; }
+
+        /// <summary>
+        /// Whether this is an executable format
+        /// </summary>
+        public bool ExecutablesFormat { get; set; }
+
+        /// <summary>
+        /// Whether this is an audio format
+        /// </summary>
+        public bool AudioFormat { get; set; }
+
+        /// <summary>
+        /// Whether this is a video format
+        /// </summary>
+        public bool VideoFormat { get; set; }
+
+        /// <summary>
+        /// Whether this is a document format
+        /// </summary>
+        public bool DocumentFormat { get; set; }
+
+        /// <summary>
+        /// Bit depth (for images/audio)
+        /// </summary>
+        public int? BitDepth { get; set; }
+
+        /// <summary>
+        /// Color space (for images)
+        /// </summary>
+        public string ColorSpace { get; set; }
+
+        /// <summary>
+        /// Sample rate (for audio)
+        /// </summary>
+        public int? SampleRate { get; set; }
+
+        /// <summary>
+        /// Container format (for video/audio)
+        /// </summary>
+        public string Container { get; set; }
+
+        /// <summary>
+        /// Platform (for executables/ROMs)
+        /// </summary>
+        public string Platform { get; set; }
+
+        /// <summary>
+        /// Encryption support
+        /// </summary>
+        public bool SupportsEncryption { get; set; }
     }
 }
