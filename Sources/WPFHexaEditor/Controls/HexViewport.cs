@@ -1315,7 +1315,8 @@ namespace WpfHexaEditor.Controls
                 (int)ByteSpacerWidthTickness,
                 ShowOffset,
                 ShowAscii,
-                hasAsciiSpacers);
+                hasAsciiSpacers,
+                OffsetWidth);
 
             // Get visible range for culling
             long firstVisiblePos = _linesCached[0].Bytes[0].VirtualPos;
