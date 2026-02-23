@@ -995,7 +995,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Bar chart color - DependencyProperty
         /// </summary>
-        [Category("BarChart")]
+        [Category("Colors.Charts")]
         [DisplayName("Bar Color")]
         public System.Windows.Media.Color BarChartColor
         {
@@ -1006,7 +1006,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Inline bar chart color (for ASCII panel bar visualization) - DependencyProperty
         /// </summary>
-        [Category("BarChart")]
+        [Category("Colors.Charts")]
         [DisplayName("Inline Bar Color")]
         public System.Windows.Media.Color InlineBarChartColor
         {
@@ -2818,7 +2818,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Bar chart background color
         /// </summary>
-        [Category("BarChart")]
+        [Category("Colors.Charts")]
         [DisplayName("Background Color")]
         public Color BarChartBackgroundColor
         {
@@ -2842,7 +2842,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Bar chart text color for labels and statistics
         /// </summary>
-        [Category("BarChart")]
+        [Category("Colors.Charts")]
         [DisplayName("Text Color")]
         public Color BarChartTextColor
         {
