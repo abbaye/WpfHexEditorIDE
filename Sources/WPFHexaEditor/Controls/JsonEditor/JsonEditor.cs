@@ -2806,6 +2806,29 @@ namespace WpfHexaEditor.Controls.JsonEditor
             var pos = e.GetPosition(this);
             var textPos = PixelToTextPosition(pos);
 
+            // Right-click behavior: don't clear selection if clicking inside it
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                // Check if click is inside existing selection
+                if (!_selection.IsEmpty && IsPositionInSelection(textPos))
+                {
+                    // Don't clear selection, just let context menu open
+                    e.Handled = true;
+                    return;
+                }
+                else
+                {
+                    // Click outside selection - move cursor and clear selection
+                    _cursorLine = textPos.Line;
+                    _cursorColumn = textPos.Column;
+                    _selection.Start = textPos;
+                    _selection.End = textPos;
+                    InvalidateVisual();
+                    return;
+                }
+            }
+
+            // Left-click behavior (unchanged)
             _cursorLine = textPos.Line;
             _cursorColumn = textPos.Column;
 
@@ -2949,6 +2972,37 @@ namespace WpfHexaEditor.Controls.JsonEditor
 
             _selection.Start = new TextPosition(pos.Line, 0);
             _selection.End = new TextPosition(pos.Line, _document.Lines[pos.Line].Length);
+        }
+
+        /// <summary>
+        /// Check if a position is inside the current selection
+        /// </summary>
+        private bool IsPositionInSelection(TextPosition pos)
+        {
+            if (_selection.IsEmpty)
+                return false;
+
+            var start = _selection.NormalizedStart;
+            var end = _selection.NormalizedEnd;
+
+            // Single line selection
+            if (start.Line == end.Line)
+            {
+                return pos.Line == start.Line && pos.Column >= start.Column && pos.Column <= end.Column;
+            }
+
+            // Multi-line selection
+            if (pos.Line < start.Line || pos.Line > end.Line)
+                return false;
+
+            if (pos.Line == start.Line)
+                return pos.Column >= start.Column;
+
+            if (pos.Line == end.Line)
+                return pos.Column <= end.Column;
+
+            // Middle lines are always inside
+            return true;
         }
 
         /// <summary>
