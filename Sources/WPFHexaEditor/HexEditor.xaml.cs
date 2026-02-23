@@ -803,8 +803,10 @@ namespace WpfHexaEditor
 
         /// <summary>
         /// Actual offset column width (dynamically calculated based on OffSetStringVisual format)
+        /// This property is auto-calculated and should not be displayed in settings panel
         /// </summary>
         [Category("Display")]
+        [Browsable(false)]  // Hide from auto-generated settings panel (GridLength not supported)
         public GridLength ActualOffsetWidth
         {
             get => (GridLength)GetValue(ActualOffsetWidthProperty);
