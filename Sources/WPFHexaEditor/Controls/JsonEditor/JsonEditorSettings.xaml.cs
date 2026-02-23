@@ -1,22 +1,23 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
-// HexEditor Settings Panel - Auto-generated Configuration UI
-// Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// JsonEditor Settings Panel - Auto-generated Configuration UI
+// Author : Claude Sonnet 4.5
+// Contributors: Derek Tremblay (derektremblay666@gmail.com)
 // Pattern: Uses unified BaseEditorSettings<T> helper (composition)
 //////////////////////////////////////////////
 
 using System.Windows.Controls;
+using WpfHexaEditor.Controls;
 
-namespace WpfHexaEditor.Controls
+namespace WpfHexaEditor.Controls.JsonEditor
 {
     /// <summary>
-    /// Complete HexEditor Settings Panel - Auto-generated via Reflection.
+    /// Complete JsonEditor Settings Panel - Auto-generated via Reflection.
     /// Uses unified BaseEditorSettings helper with DynamicSettingsGenerator.
     ///
     /// <para><b>Usage:</b></para>
     /// <para>
-    /// 1. Set HexEditorControl property to the HexEditor instance you want to configure
+    /// 1. Set JsonEditorControl property to the JsonEditor instance you want to configure
     /// 2. The UI will be auto-generated based on [Category] attributes on Dependency Properties
     /// 3. Use GetSettingsJson() to save settings, LoadSettingsJson(json) to restore
     /// </para>
@@ -28,20 +29,20 @@ namespace WpfHexaEditor.Controls
     /// Use LoadSettingsJson(json) to restore settings from a saved JSON string.
     /// </para>
     /// </summary>
-    public partial class HexEditorSettings : UserControl
+    public partial class JsonEditorSettings : UserControl
     {
-        private HexEditor _hexEditorControl;
-        private BaseEditorSettings<HexEditor> _baseHelper;
+        private JsonEditor _jsonEditorControl;
+        private BaseEditorSettings<JsonEditor> _baseHelper;
 
         /// <summary>
-        /// Reference to the HexEditor control to configure
+        /// Reference to the JsonEditor control to configure
         /// </summary>
-        public HexEditor HexEditorControl
+        public JsonEditor JsonEditorControl
         {
-            get => _hexEditorControl;
+            get => _jsonEditorControl;
             set
             {
-                _hexEditorControl = value;
+                _jsonEditorControl = value;
 
                 // Generate UI if control is already loaded
                 if (value != null && IsLoaded)
@@ -51,29 +52,29 @@ namespace WpfHexaEditor.Controls
             }
         }
 
-        public HexEditorSettings()
+        public JsonEditorSettings()
         {
             InitializeComponent();
 
             // Initialize helper with composition
-            _baseHelper = new BaseEditorSettings<HexEditor>(
+            _baseHelper = new BaseEditorSettings<JsonEditor>(
                 this,
-                typeof(HexEditor),
-                () => _hexEditorControl,
+                typeof(JsonEditor),
+                () => _jsonEditorControl,
                 () => SettingsScrollViewer);
         }
 
         #region Public API - Delegate to Helper
 
         /// <summary>
-        /// Gets the current HexEditor settings as JSON string.
+        /// Gets the current JsonEditor settings as JSON string.
         /// The consumer is responsible for persisting this (file, database, registry, etc.)
         /// </summary>
         /// <returns>JSON string containing all settings</returns>
         public string GetSettingsJson() => _baseHelper.GetSettingsJson();
 
         /// <summary>
-        /// Loads HexEditor settings from JSON string.
+        /// Loads JsonEditor settings from JSON string.
         /// </summary>
         /// <param name="json">JSON string containing settings (obtained from GetSettingsJson)</param>
         public void LoadSettingsJson(string json) => _baseHelper.LoadSettingsJson(json);

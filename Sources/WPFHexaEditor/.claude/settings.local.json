@@ -129,7 +129,13 @@
       "Bash(\"/c/Users/khens/source/repos/WpfHexEditorControl/Sources/WPFHexaEditor/FormatDefinitions/Fonts/EOT.json\":*)",
       "Bash(do if grep -q \"name=\"\"$key\"\"\" \"Properties/Resources.resx\")",
       "Bash(then sed -i \"/<data name=\"\"$key\"\"/,/<\\\\/data>/d\" \"Properties/Resources.resx\")",
-      "Bash(git status:*)"
+      "Bash(git status:*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File test_json_files.ps1)",
+      "Bash(dotnet-script:*)",
+      "Bash(csc:*)",
+      "Bash(./TestJsonParser.exe:*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File find_multiline_strings.ps1)",
+      "Bash(dotnet add:*)"
     ]
   }
 }

@@ -27,8 +27,6 @@ namespace WpfHexEditor.Sample.Main
             // Check if this is first run or needs migration
             if (settings.SettingsVersion < 2)
             {
-                System.Diagnostics.Debug.WriteLine($"[Migration] Migrating from version {settings.SettingsVersion} to version 2");
-
                 // V1 -> V2 Migration
                 // BytesPerLine and ShowStatusBar were removed from SettingsPanelViewModel
                 // but were never persisted, so no migration needed
@@ -36,14 +34,11 @@ namespace WpfHexEditor.Sample.Main
                 // Mark as migrated
                 settings.SettingsVersion = 2;
                 settings.Save();
-
-                System.Diagnostics.Debug.WriteLine("[Migration] Migration complete");
             }
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine($"[App.OnStartup] Current UI Culture: {DynamicResourceManager.CurrentCulture.Name}");
             base.OnStartup(e);
         }
     }

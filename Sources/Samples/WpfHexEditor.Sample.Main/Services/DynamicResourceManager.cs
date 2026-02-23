@@ -52,14 +52,10 @@ namespace WpfHexEditor.Sample.Main.Services
             {
                 Properties.Settings.Default.PreferredCulture = newCulture.Name;
                 Properties.Settings.Default.Save();
-                System.Diagnostics.Debug.WriteLine($"[DynamicResourceManager] Saved culture '{newCulture.Name}' to settings");
             }
-
-            System.Diagnostics.Debug.WriteLine($"[DynamicResourceManager] Changed culture from '{oldCulture.Name}' to '{newCulture.Name}'");
 
             // Synchronize with HexEditor control's LocalizedResourceDictionary
             WpfHexaEditor.Services.LocalizedResourceDictionary.ChangeCulture(newCulture);
-            System.Diagnostics.Debug.WriteLine($"[DynamicResourceManager] Synchronized HexEditor control culture to '{newCulture.Name}'");
 
             // Notify all subscribers that culture has changed
             CultureChanged?.Invoke(null, new CultureChangedEventArgs(oldCulture, newCulture));
@@ -77,7 +73,6 @@ namespace WpfHexEditor.Sample.Main.Services
             {
                 // Use system default culture
                 cultureName = CultureInfo.CurrentUICulture.Name;
-                System.Diagnostics.Debug.WriteLine($"[DynamicResourceManager] No saved culture, using system default: {cultureName}");
             }
 
             try
@@ -95,7 +90,6 @@ namespace WpfHexEditor.Sample.Main.Services
             }
             catch (CultureNotFoundException ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[DynamicResourceManager] Invalid culture '{cultureName}': {ex.Message}");
                 // Fallback to English
                 var fallbackCulture = new CultureInfo("en");
 

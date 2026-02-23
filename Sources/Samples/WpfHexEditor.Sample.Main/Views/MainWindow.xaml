@@ -411,6 +411,18 @@
                          IsChecked="{Binding ElementName=HexEditorControl, Path=AllowByteCount, Mode=TwoWay}"/>
             </MenuItem>
 
+            <!-- Tools Menu -->
+            <MenuItem Header="Tools">
+                <MenuItem Click="JsonEditorDemoMenuItem_Click">
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📝 " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
+                            <TextBlock Text="JSON Editor Demo"/>
+                        </StackPanel>
+                    </MenuItem.Header>
+                </MenuItem>
+            </MenuItem>
+
             <MenuItem Header="{DynamicResource Menu_Help}">
                 <MenuItem Command="{Binding ShowAboutCommand}">
                     <MenuItem.Header>

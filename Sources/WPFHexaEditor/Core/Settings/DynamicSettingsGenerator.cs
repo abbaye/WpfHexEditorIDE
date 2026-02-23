@@ -270,8 +270,7 @@ namespace WpfHexaEditor.Core.Settings
             }
             catch (Exception ex)
             {
-                // Log error and return error placeholder
-                System.Diagnostics.Debug.WriteLine($"Error generating control for {metadata.PropertyName}: {ex.Message}");
+                // Return error placeholder
                 return new TextBlock
                 {
                     Text = $"⚠ Error: {metadata.PropertyName}",
@@ -410,35 +409,37 @@ namespace WpfHexaEditor.Core.Settings
             // ColorPicker (Color properties)
             if (control is ColorPicker colorPicker)
             {
-                colorPicker.SetBinding(ColorPicker.SelectedColorProperty, binding);
+                // ColorPicker sets its own DataContext to ColorPickerViewModel internally,
+                // so we need to use RelativeSource to bind to the ancestor panel's DataContext (HexEditor)
+                var ancestorBinding = new Binding(metadata.PropertyName)
+                {
+                    Mode = BindingMode.TwoWay,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                    RelativeSource = new System.Windows.Data.RelativeSource(
+                        System.Windows.Data.RelativeSourceMode.FindAncestor,
+                        typeof(StackPanel),
+                        1)
+                };
+
+                colorPicker.SetBinding(ColorPicker.SelectedColorProperty, ancestorBinding);
                 return CreateControlWithLabel(propertyControl.CreateLabel(metadata), colorPicker);
             }
 
             // Border placeholder for ColorPicker (will be replaced in HexEditorSettings.xaml.cs)
             if (control is Border border)
             {
-                System.Diagnostics.Debug.WriteLine($"  Found Border! Tag={border.Tag}, checking if == 'ColorPicker'...");
                 if (border.Tag?.ToString() == "ColorPicker")
                 {
                     // Mark with property name for later replacement
                     border.Tag = $"ColorPicker:{metadata.PropertyName}";
-                    System.Diagnostics.Debug.WriteLine($"  ✓ Set Border Tag to '{border.Tag}'");
 
                     var wrapper = CreateControlWithLabel(propertyControl.CreateLabel(metadata), border);
 
-                    // VERIFY: Tag still exists after wrapping
-                    System.Diagnostics.Debug.WriteLine($"  🔍 After CreateControlWithLabel: Border.Tag={border.Tag}");
-
                     return wrapper;
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"  ✗ Border Tag didn't match! Tag='{border.Tag}' != 'ColorPicker'");
                 }
             }
 
             // Default: just return the control
-            System.Diagnostics.Debug.WriteLine($"  Returning control as-is (Default)");
             return control;
         }
 

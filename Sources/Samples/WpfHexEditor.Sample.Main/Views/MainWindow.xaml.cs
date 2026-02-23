@@ -89,12 +89,11 @@ namespace WpfHexEditor.Sample.Main.Views
                 if (!string.IsNullOrEmpty(json) && HexEditorSettingsPanel != null)
                 {
                     HexEditorSettingsPanel.LoadSettingsJson(json);
-                    System.Diagnostics.Debug.WriteLine("[MainWindow] Settings loaded from persistence");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainWindow] Failed to load settings: {ex.Message}");
+                // Silently ignore settings load errors
             }
         }
 
@@ -111,12 +110,11 @@ namespace WpfHexEditor.Sample.Main.Views
                     var json = HexEditorSettingsPanel.GetSettingsJson();
                     Properties.Settings.Default.HexEditorSettings = json;
                     Properties.Settings.Default.Save();
-                    System.Diagnostics.Debug.WriteLine("[MainWindow] Settings saved to persistence");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainWindow] Failed to save settings: {ex.Message}");
+                // Silently ignore settings save errors
             }
         }
 
@@ -249,6 +247,18 @@ namespace WpfHexEditor.Sample.Main.Views
             // Show the Advanced Search dialog (HexEditor API)
             // Supports ultra-performant searching with TBL support and encoding discovery
             HexEditorControl.ShowAdvancedSearchDialog(this);
+        }
+
+        /// <summary>
+        /// Opens the JSON Editor Demo window with JsonEditor and Settings Panel
+        /// </summary>
+        private void JsonEditorDemoMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var demoWindow = new JsonEditorDemoWindow
+            {
+                Owner = this
+            };
+            demoWindow.Show();
         }
 
         #endregion
