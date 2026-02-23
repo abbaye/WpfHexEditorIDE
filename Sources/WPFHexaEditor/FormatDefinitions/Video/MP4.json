@@ -1,4 +1,4 @@
-﻿{
+{
   "formatName": "MP4 Video",
   "version": "1.0",
   "extensions": [
@@ -104,5 +104,37 @@
     "primary_extension": ".mp4",
     "defined_fields": 4,
     "container_format": true
+  },
+  "MimeTypes": [
+    "video/mp4",
+    "audio/mp4"
+  ],
+  "Software": [
+    "VLC",
+    "Windows Media Player",
+    "QuickTime",
+    "Chrome",
+    "All modern browsers"
+  ],
+  "UseCases": [
+    "Video streaming",
+    "Mobile video",
+    "Web video",
+    "YouTube",
+    "Social media"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 87,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2025-01-13",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Container": "MPEG-4 Part 14",
+    "VideoFormat": true,
+    "SupportsEncryption": true
   }
 }

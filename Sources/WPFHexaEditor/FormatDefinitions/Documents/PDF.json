@@ -1,4 +1,4 @@
-﻿{
+{
   "formatName": "PDF Document",
   "version": "1.0",
   "extensions": [
@@ -88,5 +88,35 @@
   "technical_details": {
     "primary_extension": ".pdf",
     "defined_fields": 3
+  },
+  "MimeTypes": [
+    "application/pdf"
+  ],
+  "Software": [
+    "Adobe Acrobat",
+    "Foxit Reader",
+    "Chrome",
+    "Edge",
+    "Preview (macOS)"
+  ],
+  "UseCases": [
+    "Document distribution",
+    "Forms",
+    "Ebooks",
+    "Print-ready files",
+    "Archival"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 7,
+    "ValidationRules": 2,
+    "LastUpdated": "2025-01-10",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "DocumentFormat": true,
+    "SupportsEncryption": true
   }
 }

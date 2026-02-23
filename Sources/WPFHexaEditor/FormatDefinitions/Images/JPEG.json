@@ -1,4 +1,4 @@
-﻿{
+{
   "formatName": "JPEG Image",
   "version": "1.0",
   "extensions": [
@@ -158,5 +158,38 @@
     "images_format": true,
     "primary_extension": ".jpg",
     "defined_fields": 10
+  },
+  "MimeTypes": [
+    "image/jpeg",
+    "image/jpg"
+  ],
+  "Software": [
+    "Photoshop",
+    "GIMP",
+    "Lightroom",
+    "Photos",
+    "All modern browsers"
+  ],
+  "UseCases": [
+    "Photography",
+    "Web images",
+    "Social media",
+    "Digital cameras",
+    "Compression"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 6,
+    "ValidationRules": 1,
+    "LastUpdated": "2025-01-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ColorSpace": "YCbCr, RGB",
+    "BitDepth": 8,
+    "ImagesFormat": true,
+    "CompressionMethod": "DCT (lossy)"
   }
 }

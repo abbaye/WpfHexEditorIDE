@@ -1,4 +1,4 @@
-﻿{
+{
   "formatName": "RAR Archive",
   "version": "1.0",
   "extensions": [
@@ -99,5 +99,35 @@
     "archives_format": true,
     "primary_extension": ".rar",
     "defined_fields": 4
+  },
+  "MimeTypes": [
+    "application/vnd.rar",
+    "application/x-rar-compressed"
+  ],
+  "Software": [
+    "WinRAR",
+    "7-Zip",
+    "The Unarchiver",
+    "PeaZip"
+  ],
+  "UseCases": [
+    "File compression",
+    "Multi-volume archives",
+    "Recovery records",
+    "Backup"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 7,
+    "ValidationRules": 2,
+    "LastUpdated": "2025-01-10",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "CompressionMethod": "RAR proprietary",
+    "ArchivesFormat": true,
+    "SupportsEncryption": true
   }
 }

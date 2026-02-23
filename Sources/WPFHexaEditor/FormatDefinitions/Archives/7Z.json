@@ -1,4 +1,4 @@
-﻿{
+{
   "formatName": "7-Zip Archive",
   "version": "1.0",
   "extensions": [
@@ -101,5 +101,34 @@
     "primary_extension": ".7z",
     "defined_fields": 4,
     "compression_method": "Deflate"
+  },
+  "MimeTypes": [
+    "application/x-7z-compressed"
+  ],
+  "Software": [
+    "7-Zip",
+    "WinRAR",
+    "PeaZip",
+    "Bandizip"
+  ],
+  "UseCases": [
+    "High compression",
+    "Backup archives",
+    "Large file compression",
+    "Multi-volume archives"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2025-01-12",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "CompressionMethod": "LZMA, LZMA2, BZIP2, DEFLATE",
+    "ArchivesFormat": true,
+    "SupportsEncryption": true
   }
 }

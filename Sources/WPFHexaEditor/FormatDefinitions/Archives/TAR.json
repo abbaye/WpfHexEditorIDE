@@ -1,4 +1,4 @@
-﻿{
+{
   "formatName": "TAR Archive",
   "version": "1.0",
   "extensions": [
@@ -107,5 +107,34 @@
     "archives_format": true,
     "primary_extension": ".tar",
     "defined_fields": 5
+  },
+  "MimeTypes": [
+    "application/x-tar"
+  ],
+  "Software": [
+    "tar (Unix)",
+    "7-Zip",
+    "WinRAR",
+    "The Unarchiver"
+  ],
+  "UseCases": [
+    "Unix/Linux archives",
+    "Software distribution",
+    "Backups",
+    "Container images"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2025-01-08",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "CompressionMethod": "None (often combined with GZIP)",
+    "ArchivesFormat": true,
+    "Platform": "Unix/Linux"
   }
 }

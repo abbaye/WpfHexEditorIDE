@@ -1,4 +1,4 @@
-﻿{
+{
   "formatName": "MP3 Audio",
   "version": "1.0",
   "extensions": [
@@ -102,5 +102,37 @@
     "primary_extension": ".mp3",
     "defined_fields": 4,
     "compression_type": "Lossy"
+  },
+  "MimeTypes": [
+    "audio/mpeg",
+    "audio/mp3"
+  ],
+  "Software": [
+    "iTunes",
+    "VLC",
+    "Windows Media Player",
+    "Spotify",
+    "Audacity"
+  ],
+  "UseCases": [
+    "Music playback",
+    "Podcasts",
+    "Audiobooks",
+    "Streaming",
+    "Portable audio"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2025-01-11",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "SampleRate": 44100,
+    "AudioFormat": true,
+    "CompressionMethod": "MPEG-1 Audio Layer III (lossy)"
   }
 }

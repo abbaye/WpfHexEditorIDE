@@ -1,4 +1,4 @@
-﻿{
+{
   "formatName": "PNG Image",
   "version": "1.0",
   "extensions": [
@@ -164,5 +164,37 @@
     "images_format": true,
     "primary_extension": ".png",
     "defined_fields": 11
+  },
+  "MimeTypes": [
+    "image/png"
+  ],
+  "Software": [
+    "Photoshop",
+    "GIMP",
+    "Paint.NET",
+    "Preview",
+    "Windows Photo Viewer"
+  ],
+  "UseCases": [
+    "Web graphics",
+    "Lossless image storage",
+    "Screenshots",
+    "Icons",
+    "Transparency support"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2025-01-12",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ColorSpace": "RGB, RGBA, Grayscale, Indexed",
+    "BitDepth": 8,
+    "ImagesFormat": true,
+    "SupportsEncryption": false
   }
 }

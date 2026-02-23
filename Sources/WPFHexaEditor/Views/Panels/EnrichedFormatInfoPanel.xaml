@@ -49,11 +49,45 @@
                 <!-- Header Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="HeaderCard">
                     <StackPanel>
-                        <TextBlock x:Name="FormatNameTextBlock"
-                                   Text="Format Name"
-                                   FontSize="14"
-                                   FontWeight="Bold"
-                                   TextWrapping="Wrap"/>
+                        <!-- Format Name with Priority Badge -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       x:Name="FormatNameTextBlock"
+                                       Text="Format Name"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"/>
+
+                            <!-- Priority Badge -->
+                            <Border Grid.Column="1"
+                                    x:Name="PriorityBadge"
+                                    Background="{StaticResource PriorityBadgeBrush}"
+                                    CornerRadius="3"
+                                    Padding="6,2"
+                                    Margin="8,0,0,0"
+                                    Visibility="Collapsed">
+                                <Border.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel MaxWidth="280">
+                                            <TextBlock Text="Priority Format" FontWeight="Bold" Margin="0,0,0,4"/>
+                                            <TextBlock TextWrapping="Wrap">
+                                                This is one of the most commonly used file formats (Top 100).
+                                                Format definition has been manually refined for maximum accuracy.
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </Border.ToolTip>
+                                <TextBlock Text="⭐ Priority"
+                                           FontSize="9"
+                                           FontWeight="Bold"
+                                           Foreground="White"/>
+                            </Border>
+                        </Grid>
 
                         <TextBlock x:Name="CategoryTextBlock"
                                    Text="Category"
@@ -68,8 +102,25 @@
                                    TextWrapping="Wrap"
                                    Margin="0,8,0,0"/>
 
-                        <!-- Quality Score -->
+                        <!-- Quality Score with Tooltip -->
                         <Grid Margin="0,12,0,0">
+                            <Grid.ToolTip>
+                                <ToolTip>
+                                    <StackPanel MaxWidth="300">
+                                        <TextBlock Text="Quality Score (0-100%)" FontWeight="Bold" Margin="0,0,0,4"/>
+                                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,6">
+                                            Indicates the completeness of this format definition based on:
+                                        </TextBlock>
+                                        <TextBlock TextWrapping="Wrap" Margin="4,0,0,2">• Number of fields defined</TextBlock>
+                                        <TextBlock TextWrapping="Wrap" Margin="4,0,0,2">• Enriched metadata (software, use cases)</TextBlock>
+                                        <TextBlock TextWrapping="Wrap" Margin="4,0,0,2">• Technical specifications and references</TextBlock>
+                                        <TextBlock TextWrapping="Wrap" Margin="4,0,0,6">• Validation rules</TextBlock>
+                                        <TextBlock TextWrapping="Wrap" FontStyle="Italic" Foreground="Gray">
+                                            Higher scores mean more detailed and reliable format analysis.
+                                        </TextBlock>
+                                    </StackPanel>
+                                </ToolTip>
+                            </Grid.ToolTip>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -99,6 +150,43 @@
                                        FontWeight="Bold"
                                        Foreground="{StaticResource AccentBrush}"
                                        VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <!-- Documentation Level -->
+                        <Grid Margin="0,8,0,0">
+                            <Grid.ToolTip>
+                                <ToolTip>
+                                    <StackPanel MaxWidth="280">
+                                        <TextBlock Text="Documentation Level" FontWeight="Bold" Margin="0,0,0,4"/>
+                                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,4">
+                                            • Basic: Magic bytes only
+                                        </TextBlock>
+                                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,4">
+                                            • Standard: Main header fields
+                                        </TextBlock>
+                                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,4">
+                                            • Detailed: Extended fields + metadata
+                                        </TextBlock>
+                                        <TextBlock TextWrapping="Wrap">
+                                            • Comprehensive: Complete specification
+                                        </TextBlock>
+                                    </StackPanel>
+                                </ToolTip>
+                            </Grid.ToolTip>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="Documentation:"
+                                       Style="{StaticResource InfoLabelStyle}"/>
+
+                            <TextBlock Grid.Column="1"
+                                       x:Name="DocumentationLevelTextBlock"
+                                       Text="basic"
+                                       Style="{StaticResource InfoValueStyle}"
+                                       FontWeight="SemiBold"/>
                         </Grid>
                     </StackPanel>
                 </Border>

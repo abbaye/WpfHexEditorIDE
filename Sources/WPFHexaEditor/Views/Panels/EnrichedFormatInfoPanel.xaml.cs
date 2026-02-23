@@ -69,9 +69,37 @@ namespace WpfHexaEditor.Views.Panels
             SoftwareTextBlock.Text = _viewModel.SoftwareDisplay;
             UseCasesTextBlock.Text = _viewModel.UseCasesDisplay;
             QualityScoreText.Text = _viewModel.CompletenessScoreDisplay;
+            DocumentationLevelTextBlock.Text = CapitalizeFirst(_viewModel.DocumentationLevel);
 
             // Update quality score bar
             UpdateQualityScoreBar();
+
+            // Update priority badge visibility
+            UpdatePriorityBadge();
+        }
+
+        /// <summary>
+        /// Capitalize first letter of a string
+        /// </summary>
+        private string CapitalizeFirst(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            return char.ToUpper(text[0]) + text.Substring(1).ToLower();
+        }
+
+        /// <summary>
+        /// Update priority badge visibility
+        /// </summary>
+        private void UpdatePriorityBadge()
+        {
+            if (PriorityBadge != null)
+            {
+                PriorityBadge.Visibility = _viewModel.IsPriorityFormat
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
         }
 
         /// <summary>

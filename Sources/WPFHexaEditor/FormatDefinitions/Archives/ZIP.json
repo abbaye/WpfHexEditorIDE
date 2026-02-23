@@ -1,4 +1,4 @@
-﻿{
+{
   "formatName": "ZIP Archive",
   "version": "1.0",
   "extensions": [
@@ -173,5 +173,36 @@
     "primary_extension": ".zip",
     "defined_fields": 11,
     "compression_method": "Deflate"
+  },
+  "MimeTypes": [
+    "application/zip",
+    "application/x-zip-compressed"
+  ],
+  "Software": [
+    "WinZip",
+    "7-Zip",
+    "WinRAR",
+    "Windows Explorer",
+    "macOS Archive Utility"
+  ],
+  "UseCases": [
+    "File compression",
+    "Software distribution",
+    "Backup archives",
+    "Document bundling"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 95,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 11,
+    "ValidationRules": 3,
+    "LastUpdated": "2025-01-15",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "CompressionMethod": "DEFLATE, BZIP2, LZMA",
+    "ArchivesFormat": true,
+    "SupportsEncryption": true
   }
 }

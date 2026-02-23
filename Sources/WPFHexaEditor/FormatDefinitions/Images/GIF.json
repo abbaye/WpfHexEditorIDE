@@ -1,4 +1,4 @@
-﻿{
+{
   "formatName": "GIF Image",
   "version": "1.0",
   "extensions": [
@@ -125,5 +125,36 @@
     "images_format": true,
     "primary_extension": ".gif",
     "defined_fields": 7
+  },
+  "MimeTypes": [
+    "image/gif"
+  ],
+  "Software": [
+    "Photoshop",
+    "GIMP",
+    "Web browsers",
+    "Discord",
+    "Slack"
+  ],
+  "UseCases": [
+    "Animations",
+    "Simple graphics",
+    "Memes",
+    "Web banners",
+    "Emojis"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2025-01-09",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ColorSpace": "Indexed (256 colors)",
+    "BitDepth": 8,
+    "ImagesFormat": true
   }
 }
