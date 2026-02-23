@@ -1,42 +1,54 @@
 ﻿{
-    "formatName":  "X PixMap",
-    "version":  "1.0",
-    "extensions":  [
-                       ".xpm"
-                   ],
-    "description":  "X Window System Pixmap (ASCII C source)",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "X PixMap (XPM) Format v3.4 - X Window System",
-            "XPM C Source Code Pixmap Format",
-            "X11 PixMap Format Specification"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/X_PixMap",
-            "https://www.xfree86.org/current/xpm.pdf",
-            "http://fileformats.archiveteam.org/wiki/XPM",
-            "http://www.ibiblio.org/pub/X11/contrib/libraries/xpm-FAQ.html"
-        ]
-    },
-    "detection":  {
-                      "signature":  "2F2A2058504D202A2F",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "XPM Comment",
-                       "offset":  0,
-                       "length":  9,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "/* XPM */ comment"
-                   }
-               ]
+  "formatName": "X PixMap",
+  "version": "1.0",
+  "extensions": [
+    ".xpm"
+  ],
+  "description": "X Window System Pixmap (ASCII C source)",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "X PixMap (XPM) Format v3.4 - X Window System",
+      "XPM C Source Code Pixmap Format",
+      "X11 PixMap Format Specification"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/X_PixMap",
+      "https://www.xfree86.org/current/xpm.pdf",
+      "http://fileformats.archiveteam.org/wiki/XPM",
+      "http://www.ibiblio.org/pub/X11/contrib/libraries/xpm-FAQ.html"
+    ]
+  },
+  "detection": {
+    "signature": "2F2A2058504D202A2F",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 9,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "XPM Comment",
+      "offset": 0,
+      "length": 9,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "/* XPM */ comment"
+    }
+  ],
+  "mime_types": [
+    "image/xpm"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

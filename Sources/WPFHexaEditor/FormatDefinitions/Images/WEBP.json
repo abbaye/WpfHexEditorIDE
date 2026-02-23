@@ -1,59 +1,73 @@
 ﻿{
-    "formatName": "WebP Image",
-    "version": "1.0",
-    "extensions": [
-        ".webp"
+  "formatName": "WebP Image",
+  "version": "1.0",
+  "extensions": [
+    ".webp"
+  ],
+  "description": "WebP image format - Modern web image format by Google",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "WebP Container Specification",
+      "WebP Lossy Bitstream Specification",
+      "WebP Lossless Bitstream Specification"
     ],
-    "description": "WebP image format - Modern web image format by Google",
-    "category": "Images",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "WebP Container Specification",
-            "WebP Lossy Bitstream Specification",
-            "WebP Lossless Bitstream Specification"
-        ],
-        "web_links": [
-            "https://developers.google.com/speed/webp/docs/riff_container",
-            "https://developers.google.com/speed/webp/docs/webp_lossless_bitstream_specification",
-            "https://en.wikipedia.org/wiki/WebP"
-        ]
-    },
-    "detection": {
-        "signature": "52494646",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "RIFF Header",
-            "offset": 0,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "RIFF container signature"
-        },
-        {
-            "type": "field",
-            "name": "File Size",
-            "offset": 4,
-            "length": 4,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "File size minus 8 bytes"
-        },
-        {
-            "type": "signature",
-            "name": "WEBP Signature",
-            "offset": 8,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "WEBP format signature"
-        }
+    "web_links": [
+      "https://developers.google.com/speed/webp/docs/riff_container",
+      "https://developers.google.com/speed/webp/docs/webp_lossless_bitstream_specification",
+      "https://en.wikipedia.org/wiki/WebP"
     ]
+  },
+  "detection": {
+    "signature": "52494646",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RIFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "RIFF container signature"
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "File size minus 8 bytes"
+    },
+    {
+      "type": "signature",
+      "name": "WEBP Signature",
+      "offset": 8,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "WEBP format signature"
+    }
+  ],
+  "mime_types": [
+    "image/webp"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

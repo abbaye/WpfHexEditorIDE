@@ -18,7 +18,11 @@
   "detection": {
     "signature": "D0CF11E0A1B11AE1",
     "offset": 0,
-    "required": true
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {
     "currentOffset": 0
@@ -51,5 +55,12 @@
       "opacity": 0.3,
       "description": "OLE2 major version"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

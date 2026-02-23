@@ -1,103 +1,114 @@
-{
-    "formatName":  "PlayStation 5 Package",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pkg"
-                   ],
-    "description":  "PlayStation 5 PKG package format (next-gen encrypted packages)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "PlayStation 5 PKG Package Format",
-            "PS5 PKG/PFS Structure Documentation",
-            "PS5PKGReader and pkgdec5 Tools"
-        ],
-        "web_links": [
-            "https://www.psdevwiki.com/ps5/PKG_files",
-            "https://github.com/seregonwar/PkgToolBox",
-            "https://www.ps5pkg.com/",
-            "https://github.com/ps5-payload-dev/fetchpkg"
-        ]
+﻿{
+  "formatName": "PlayStation 5 Package",
+  "version": "1.0",
+  "extensions": [
+    ".pkg"
+  ],
+  "description": "PlayStation 5 PKG package format (next-gen encrypted packages)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PlayStation 5 PKG Package Format",
+      "PS5 PKG/PFS Structure Documentation",
+      "PS5PKGReader and pkgdec5 Tools"
+    ],
+    "web_links": [
+      "https://www.psdevwiki.com/ps5/PKG_files",
+      "https://github.com/seregonwar/PkgToolBox",
+      "https://www.ps5pkg.com/",
+      "https://github.com/ps5-payload-dev/fetchpkg"
+    ]
+  },
+  "detection": {
+    "signature": "7F434E54",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CNT Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "bytes",
+      "description": "PS5 PKG magic: 0x7F 0x43 0x4E 0x54 (similar to PS4)"
     },
-    "detection":  {
-                      "signature":  "7F434E54",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "CNT Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "bytes",
-                       "description":  "PS5 PKG magic: 0x7F 0x43 0x4E 0x54 (similar to PS4)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Package Version",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Package format version (PS5 specific)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Package Flags",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "PS5 package flags and encryption mode"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Header Size",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Total header size"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Item Count",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Number of content items"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Package Size",
-                       "offset":  24,
-                       "length":  8,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Total package size (64-bit)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Content ID",
-                       "offset":  64,
-                       "length":  48,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "PS5 content identifier"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Package Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Package format version (PS5 specific)"
+    },
+    {
+      "type": "field",
+      "name": "Package Flags",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "PS5 package flags and encryption mode"
+    },
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 12,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Total header size"
+    },
+    {
+      "type": "field",
+      "name": "Item Count",
+      "offset": 16,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Number of content items"
+    },
+    {
+      "type": "field",
+      "name": "Package Size",
+      "offset": 24,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Total package size (64-bit)"
+    },
+    {
+      "type": "field",
+      "name": "Content ID",
+      "offset": 64,
+      "length": 48,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "PS5 content identifier"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 7,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

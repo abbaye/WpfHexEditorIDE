@@ -1,140 +1,151 @@
-{
-    "formatName":  "Sega Saturn Disc Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".iso",
-                       ".bin"
-                   ],
-    "description":  "Sega Saturn CD-ROM disc image format",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Sega Saturn Disc Format Standards Specification Sheet (ST-040-R4-051795)",
-            "Saturn IP.BIN Format",
-            "Sega Saturn File Formats"
-        ],
-        "web_links": [
-            "https://www.retroreversing.com/sega-saturn-file-formats/",
-            "https://segaxtreme.net/threads/about-ip-bin.6229/",
-            "https://antime.kapsi.fi/sega/docs.html",
-            "https://antime.kapsi.fi/sega/files/ST-040-R4-051795.pdf"
-        ]
+﻿{
+  "formatName": "Sega Saturn Disc Image",
+  "version": "1.0",
+  "extensions": [
+    ".iso",
+    ".bin"
+  ],
+  "description": "Sega Saturn CD-ROM disc image format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Sega Saturn Disc Format Standards Specification Sheet (ST-040-R4-051795)",
+      "Saturn IP.BIN Format",
+      "Sega Saturn File Formats"
+    ],
+    "web_links": [
+      "https://www.retroreversing.com/sega-saturn-file-formats/",
+      "https://segaxtreme.net/threads/about-ip-bin.6229/",
+      "https://antime.kapsi.fi/sega/docs.html",
+      "https://antime.kapsi.fi/sega/files/ST-040-R4-051795.pdf"
+    ]
+  },
+  "detection": {
+    "signature": "534547412053454741534154",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 12,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "productNumber": "",
+    "releaseDate": "",
+    "gameTitle": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Hardware ID",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "ascii",
+      "description": "SEGA SEGASATURN  - Saturn disc magic identifier"
     },
-    "detection":  {
-                      "signature":  "534547412053454741534154",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0,
-                      "productNumber":  "",
-                      "releaseDate":  "",
-                      "gameTitle":  ""
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Hardware ID",
-                       "offset":  0,
-                       "length":  16,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "ascii",
-                       "description":  "SEGA SEGASATURN  - Saturn disc magic identifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Maker ID",
-                       "offset":  16,
-                       "length":  16,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Publisher/licensee identifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Product Number",
-                       "offset":  32,
-                       "length":  10,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "productNumber",
-                       "description":  "Game product/catalog number"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  42,
-                       "length":  6,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Version string (e.g., V1.000)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Release Date",
-                       "offset":  48,
-                       "length":  8,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "releaseDate",
-                       "description":  "Release date in YYYYMMDD format"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Device Info",
-                       "offset":  56,
-                       "length":  8,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "CD type and disc number: CD-1/1 = single disc"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Area Symbols",
-                       "offset":  64,
-                       "length":  10,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Region codes: J=Japan, U=USA, E=Europe (space=not supported)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Peripherals",
-                       "offset":  74,
-                       "length":  16,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Peripheral support flags: J=joystick, M=mouse, K=keyboard, A=analog"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Game Title",
-                       "offset":  90,
-                       "length":  112,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "gameTitle",
-                       "description":  "Full game title string"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Boot Filename",
-                       "offset":  208,
-                       "length":  16,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Executable filename on disc (e.g., 0.PRG)"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Maker ID",
+      "offset": 16,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Publisher/licensee identifier"
+    },
+    {
+      "type": "field",
+      "name": "Product Number",
+      "offset": 32,
+      "length": 10,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "productNumber",
+      "description": "Game product/catalog number"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 42,
+      "length": 6,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Version string (e.g., V1.000)"
+    },
+    {
+      "type": "field",
+      "name": "Release Date",
+      "offset": 48,
+      "length": 8,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "releaseDate",
+      "description": "Release date in YYYYMMDD format"
+    },
+    {
+      "type": "field",
+      "name": "Device Info",
+      "offset": 56,
+      "length": 8,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "CD type and disc number: CD-1/1 = single disc"
+    },
+    {
+      "type": "field",
+      "name": "Area Symbols",
+      "offset": 64,
+      "length": 10,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Region codes: J=Japan, U=USA, E=Europe (space=not supported)"
+    },
+    {
+      "type": "field",
+      "name": "Peripherals",
+      "offset": 74,
+      "length": 16,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Peripheral support flags: J=joystick, M=mouse, K=keyboard, A=analog"
+    },
+    {
+      "type": "field",
+      "name": "Game Title",
+      "offset": 90,
+      "length": 112,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameTitle",
+      "description": "Full game title string"
+    },
+    {
+      "type": "field",
+      "name": "Boot Filename",
+      "offset": 208,
+      "length": 16,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Executable filename on disc (e.g., 0.PRG)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 10,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,42 +1,53 @@
 ﻿{
-    "formatName":  "ZFS Filesystem",
-    "version":  "1.0",
-    "extensions":  [
-                       ".zfs"
-                   ],
-    "description":  "Zettabyte File System",
-    "category":  "Disk",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "OpenZFS On-Disk Specification",
-            "ZFS vdev Label Structure",
-            "Zettabyte File System Architecture"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/ZFS",
-            "https://openzfs.github.io/openzfs-docs/",
-            "https://github.com/openzfs/zfs/blob/master/module/zfs/vdev_label.c",
-            "https://www.truenas.com/docs/references/zfsprimer/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "00000000000000000CBAD1BA",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "header",
-                       "name":  "ZFS Label",
-                       "offset":  0,
-                       "length":  262144,
-                       "color":  "#00BFFF",
-                       "opacity":  0.4,
-                       "description":  "ZFS vdev label"
-                   }
-               ]
+  "formatName": "ZFS Filesystem",
+  "version": "1.0",
+  "extensions": [
+    ".zfs"
+  ],
+  "description": "Zettabyte File System",
+  "category": "Disk",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "OpenZFS On-Disk Specification",
+      "ZFS vdev Label Structure",
+      "Zettabyte File System Architecture"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/ZFS",
+      "https://openzfs.github.io/openzfs-docs/",
+      "https://github.com/openzfs/zfs/blob/master/module/zfs/vdev_label.c",
+      "https://www.truenas.com/docs/references/zfsprimer/"
+    ]
+  },
+  "detection": {
+    "signature": "00000000000000000CBAD1BA",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 12,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "name": "ZFS Label",
+      "offset": 0,
+      "length": 262144,
+      "color": "#00BFFF",
+      "opacity": 0.4,
+      "description": "ZFS vdev label"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

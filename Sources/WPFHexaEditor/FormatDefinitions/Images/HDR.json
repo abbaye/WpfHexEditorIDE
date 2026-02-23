@@ -1,52 +1,64 @@
 ﻿{
-    "formatName":  "Radiance HDR Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".hdr",
-                       ".pic"
-                   ],
-    "description":  "Radiance RGBE High Dynamic Range image",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Radiance RGBE Image Format - Gregory Ward Larson",
-            "The Radiance Picture File Format",
-            "RGBE High Dynamic Range Encoding"
-        ],
-        "web_links": [
-            "https://radsite.lbl.gov/radiance/refer/Notes/picture_format.html",
-            "https://www.graphics.cornell.edu/~bjw/rgbe.html",
-            "http://fileformats.archiveteam.org/wiki/Radiance_HDR",
-            "https://en.wikipedia.org/wiki/RGBE_image_format"
-        ]
+  "formatName": "Radiance HDR Image",
+  "version": "1.0",
+  "extensions": [
+    ".hdr",
+    ".pic"
+  ],
+  "description": "Radiance RGBE High Dynamic Range image",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Radiance RGBE Image Format - Gregory Ward Larson",
+      "The Radiance Picture File Format",
+      "RGBE High Dynamic Range Encoding"
+    ],
+    "web_links": [
+      "https://radsite.lbl.gov/radiance/refer/Notes/picture_format.html",
+      "https://www.graphics.cornell.edu/~bjw/rgbe.html",
+      "http://fileformats.archiveteam.org/wiki/Radiance_HDR",
+      "https://en.wikipedia.org/wiki/RGBE_image_format"
+    ]
+  },
+  "detection": {
+    "signature": "233F52414449414E4345",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 10,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "HDR Magic",
+      "offset": 0,
+      "length": 10,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "#?RADIANCE ASCII header"
     },
-    "detection":  {
-                      "signature":  "233F52414449414E4345",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "HDR Magic",
-                       "offset":  0,
-                       "length":  10,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "#?RADIANCE ASCII header"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Header Info",
-                       "offset":  10,
-                       "length":  64,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "HDR header information"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Header Info",
+      "offset": 10,
+      "length": 64,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "HDR header information"
+    }
+  ],
+  "mime_types": [
+    "image/hdr"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

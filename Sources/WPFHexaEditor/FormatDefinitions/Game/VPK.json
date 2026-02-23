@@ -1,42 +1,53 @@
 ﻿{
-    "formatName":  "Valve Package",
-    "version":  "1.0",
-    "extensions":  [
-                       ".vpk"
-                   ],
-    "description":  "Valve Pak file for Source engine",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Valve Package (VPK) Format",
-                                              "Source Engine VPK Archive",
-                                              "Valve Pak File Specification"
-                                          ],
-                       "web_links":  [
-                                         "https://developer.valvesoftware.com/wiki/VPK",
-                                         "https://developer.valvesoftware.com/wiki/VPK_(file_format)",
-                                         "https://github.com/craftablescience/VPKEdit",
-                                         "https://github.com/ValvePython/vpk"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "55AA1234",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "VPK signature"
-                   }
-               ]
+  "formatName": "Valve Package",
+  "version": "1.0",
+  "extensions": [
+    ".vpk"
+  ],
+  "description": "Valve Pak file for Source engine",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Valve Package (VPK) Format",
+      "Source Engine VPK Archive",
+      "Valve Pak File Specification"
+    ],
+    "web_links": [
+      "https://developer.valvesoftware.com/wiki/VPK",
+      "https://developer.valvesoftware.com/wiki/VPK_(file_format)",
+      "https://github.com/craftablescience/VPKEdit",
+      "https://github.com/ValvePython/vpk"
+    ]
+  },
+  "detection": {
+    "signature": "55AA1234",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "VPK signature"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,69 +1,83 @@
 ﻿{
-    "formatName": "OGG Audio",
-    "version": "1.0",
-    "extensions": [
-        ".ogg",
-        ".oga",
-        ".ogv"
+  "formatName": "OGG Audio",
+  "version": "1.0",
+  "extensions": [
+    ".ogg",
+    ".oga",
+    ".ogv"
+  ],
+  "description": "Ogg container format - Often contains Vorbis audio",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "RFC 3533 - The Ogg Encapsulation Format",
+      "Ogg Bitstream Format"
     ],
-    "description": "Ogg container format - Often contains Vorbis audio",
-    "category": "Audio",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "RFC 3533 - The Ogg Encapsulation Format",
-            "Ogg Bitstream Format"
-        ],
-        "web_links": [
-            "https://www.ietf.org/rfc/rfc3533.txt",
-            "https://xiph.org/ogg/doc/",
-            "https://en.wikipedia.org/wiki/Ogg"
-        ]
-    },
-    "detection": {
-        "signature": "4F676753",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "OGG Signature",
-            "offset": 0,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "OggS capture pattern"
-        },
-        {
-            "type": "field",
-            "name": "Stream Version",
-            "offset": 4,
-            "length": 1,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "Always 0"
-        },
-        {
-            "type": "field",
-            "name": "Header Type",
-            "offset": 5,
-            "length": 1,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "Packet flags"
-        },
-        {
-            "type": "field",
-            "name": "Granule Position",
-            "offset": 6,
-            "length": 8,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "description": "PCM sample position"
-        }
+    "web_links": [
+      "https://www.ietf.org/rfc/rfc3533.txt",
+      "https://xiph.org/ogg/doc/",
+      "https://en.wikipedia.org/wiki/Ogg"
     ]
+  },
+  "detection": {
+    "signature": "4F676753",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "OGG Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "OggS capture pattern"
+    },
+    {
+      "type": "field",
+      "name": "Stream Version",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Always 0"
+    },
+    {
+      "type": "field",
+      "name": "Header Type",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Packet flags"
+    },
+    {
+      "type": "field",
+      "name": "Granule Position",
+      "offset": 6,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "PCM sample position"
+    }
+  ],
+  "mime_types": [
+    "audio/ogg"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

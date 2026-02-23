@@ -1,42 +1,56 @@
 ﻿{
-    "formatName":  "Fujifilm Raw Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".raf"
-                   ],
-    "description":  "Fujifilm RAW camera image",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Fujifilm RAF (RAW Image File) Format",
-            "RAF Proprietary Camera Format",
-            "Fuji RAW Image Specification"
-        ],
-        "web_links": [
-            "https://libopenraw.freedesktop.org/formats/raf/",
-            "https://docs.fileformat.com/image/raf/",
-            "http://fileformats.archiveteam.org/wiki/Fujifilm_RAF",
-            "https://www.paintshoppro.com/en/pages/raf-file/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "46554A4946494C4D",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "RAF Signature",
-                       "offset":  0,
-                       "length":  8,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "FUJIFILM signature"
-                   }
-               ]
+  "formatName": "Fujifilm Raw Image",
+  "version": "1.0",
+  "extensions": [
+    ".raf"
+  ],
+  "description": "Fujifilm RAW camera image",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Fujifilm RAF (RAW Image File) Format",
+      "RAF Proprietary Camera Format",
+      "Fuji RAW Image Specification"
+    ],
+    "web_links": [
+      "https://libopenraw.freedesktop.org/formats/raf/",
+      "https://docs.fileformat.com/image/raf/",
+      "http://fileformats.archiveteam.org/wiki/Fujifilm_RAF",
+      "https://www.paintshoppro.com/en/pages/raf-file/"
+    ]
+  },
+  "detection": {
+    "signature": "46554A4946494C4D",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RAF Signature",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "FUJIFILM signature"
+    }
+  ],
+  "mime_types": [
+    "image/raf"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

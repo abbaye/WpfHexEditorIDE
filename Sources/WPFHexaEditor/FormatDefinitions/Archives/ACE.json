@@ -1,51 +1,65 @@
 ﻿{
-    "formatName":  "ACE Archive",
-    "version":  "1.0",
-    "extensions":  [
-                       ".ace"
-                   ],
-    "description":  "ACE compressed archive format",
-    "category":  "Archives",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "WinACE Archive Format Specification",
-            "ACE Compression Algorithm",
-            "ACE Archive File Structure"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/ACE_(compressed_file_format)",
-            "http://fileformats.archiveteam.org/wiki/ACE",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000338.shtml",
-            "https://github.com/droe/acefile"
-        ]
+  "formatName": "ACE Archive",
+  "version": "1.0",
+  "extensions": [
+    ".ace"
+  ],
+  "description": "ACE compressed archive format",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "WinACE Archive Format Specification",
+      "ACE Compression Algorithm",
+      "ACE Archive File Structure"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/ACE_(compressed_file_format)",
+      "http://fileformats.archiveteam.org/wiki/ACE",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000338.shtml",
+      "https://github.com/droe/acefile"
+    ]
+  },
+  "detection": {
+    "signature": "2A2A4143452A2A",
+    "offset": 7,
+    "required": true,
+    "validation": {
+      "min_file_size": 7,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ACE Signature",
+      "offset": 7,
+      "length": 7,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "**ACE** signature"
     },
-    "detection":  {
-                      "signature":  "2A2A4143452A2A",
-                      "offset":  7,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ACE Signature",
-                       "offset":  7,
-                       "length":  7,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "**ACE** signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Header CRC",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Header CRC-16"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Header CRC",
+      "offset": 0,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Header CRC-16"
+    }
+  ],
+  "mime_types": [
+    "application/x-ace"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

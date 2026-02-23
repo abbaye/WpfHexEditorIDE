@@ -1,60 +1,71 @@
 ﻿{
-    "formatName":  "Half-Life BSP",
-    "version":  "1.0",
-    "extensions":  [
-                       ".bsp"
-                   ],
-    "description":  "Half-Life/GoldSrc engine BSP map format",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "BSP v30 GoldSrc Format",
-                                              "Half-Life BSP Specification",
-                                              "Valve GoldSrc Engine Format"
-                                          ],
-                       "web_links":  [
-                                         "https://developer.valvesoftware.com/wiki/BSP_(GoldSrc)",
-                                         "https://hlbsp.sourceforge.net/index.php?content=bspdef",
-                                         "http://abit.g6.cz/game_coding/formats/gold_source/bsp.html",
-                                         "https://github.com/AbitTheGray/BspLib"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "1E000000",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "BSP Version",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "GoldSrc BSP version (30)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Entities Lump Offset",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Offset to entities lump"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Entities Lump Size",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Size of entities lump"
-                   }
-               ]
+  "formatName": "Half-Life BSP",
+  "version": "1.0",
+  "extensions": [
+    ".bsp"
+  ],
+  "description": "Half-Life/GoldSrc engine BSP map format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "BSP v30 GoldSrc Format",
+      "Half-Life BSP Specification",
+      "Valve GoldSrc Engine Format"
+    ],
+    "web_links": [
+      "https://developer.valvesoftware.com/wiki/BSP_(GoldSrc)",
+      "https://hlbsp.sourceforge.net/index.php?content=bspdef",
+      "http://abit.g6.cz/game_coding/formats/gold_source/bsp.html",
+      "https://github.com/AbitTheGray/BspLib"
+    ]
+  },
+  "detection": {
+    "signature": "1E000000",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "BSP Version",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "GoldSrc BSP version (30)"
+    },
+    {
+      "type": "field",
+      "name": "Entities Lump Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Offset to entities lump"
+    },
+    {
+      "type": "field",
+      "name": "Entities Lump Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Size of entities lump"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

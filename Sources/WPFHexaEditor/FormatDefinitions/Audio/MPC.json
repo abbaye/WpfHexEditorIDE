@@ -1,44 +1,56 @@
 ﻿{
-    "formatName":  "Musepack Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mpc",
-                       ".mp+",
-                       ".mpp"
-                   ],
-    "description":  "Musepack lossy audio compression format optimized for transparency",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Musepack SV8 Specification",
-            "Musepack Audio Codec Standard",
-            "MPC Format Documentation"
-        ],
-        "web_links": [
-            "http://trac.musepack.net/musepack/wiki/SV8Specification",
-            "https://mutagen-specs.readthedocs.io/en/latest/mpc/sv8.html",
-            "https://en.wikipedia.org/wiki/Musepack",
-            "https://www.musepack.net/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "4D502B",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Musepack Header",
-                       "offset":  0,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MP+ - Musepack audio file signature"
-                   }
-               ]
+  "formatName": "Musepack Audio",
+  "version": "1.0",
+  "extensions": [
+    ".mpc",
+    ".mp+",
+    ".mpp"
+  ],
+  "description": "Musepack lossy audio compression format optimized for transparency",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Musepack SV8 Specification",
+      "Musepack Audio Codec Standard",
+      "MPC Format Documentation"
+    ],
+    "web_links": [
+      "http://trac.musepack.net/musepack/wiki/SV8Specification",
+      "https://mutagen-specs.readthedocs.io/en/latest/mpc/sv8.html",
+      "https://en.wikipedia.org/wiki/Musepack",
+      "https://www.musepack.net/"
+    ]
+  },
+  "detection": {
+    "signature": "4D502B",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Musepack Header",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MP+ - Musepack audio file signature"
+    }
+  ],
+  "mime_types": [
+    "audio/mpc"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

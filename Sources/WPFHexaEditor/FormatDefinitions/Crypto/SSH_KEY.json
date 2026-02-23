@@ -1,115 +1,126 @@
 ﻿{
-    "formatName":  "OpenSSH Private Key",
-    "version":  "1.0",
-    "extensions":  [
-                       "",
-                       ".pem"
-                   ],
-    "description":  "OpenSSH private key format - Encrypted SSH authentication key",
-    "category":  "Crypto",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "OpenSSH Private Key Format (openssh-key-v1)",
-            "Ed25519 and RSA Key Structures",
-            "SSH Key Format Documentation"
-        ],
-        "web_links": [
-            "https://coolaj86.com/articles/the-openssh-private-key-format/",
-            "https://dnaeon.github.io/openssh-private-key-binary-format/",
-            "https://peterlyons.com/problog/2017/12/openssh-ed25519-private-key-file-format/",
-            "https://www.thedigitalcatonline.com/blog/2021/06/03/public-key-cryptography-openssh-private-keys/"
-        ]
+  "formatName": "OpenSSH Private Key",
+  "version": "1.0",
+  "extensions": [
+    "",
+    ".pem"
+  ],
+  "description": "OpenSSH private key format - Encrypted SSH authentication key",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "OpenSSH Private Key Format (openssh-key-v1)",
+      "Ed25519 and RSA Key Structures",
+      "SSH Key Format Documentation"
+    ],
+    "web_links": [
+      "https://coolaj86.com/articles/the-openssh-private-key-format/",
+      "https://dnaeon.github.io/openssh-private-key-binary-format/",
+      "https://peterlyons.com/problog/2017/12/openssh-ed25519-private-key-file-format/",
+      "https://www.thedigitalcatonline.com/blog/2021/06/03/public-key-cryptography-openssh-private-keys/"
+    ]
+  },
+  "detection": {
+    "signature": "6F70656E7373682D6B65792D7631",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 14,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "OpenSSH Magic",
+      "offset": 0,
+      "length": 15,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "openssh-key-v1 magic bytes"
     },
-    "detection":  {
-                      "signature":  "6F70656E7373682D6B65792D7631",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "OpenSSH Magic",
-                       "offset":  0,
-                       "length":  15,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "openssh-key-v1 magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Null Terminator",
-                       "offset":  15,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Magic string null terminator"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Cipher Name Length",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Length of cipher name"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Cipher Name",
-                       "offset":  20,
-                       "length":  16,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Encryption cipher (none/aes256-ctr/etc.)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "KDF Name Length",
-                       "offset":  36,
-                       "length":  4,
-                       "color":  "#FFA07A",
-                       "opacity":  0.3,
-                       "description":  "Length of KDF name"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "KDF Name",
-                       "offset":  40,
-                       "length":  16,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "description":  "Key derivation function (none/bcrypt)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "KDF Options Length",
-                       "offset":  56,
-                       "length":  4,
-                       "color":  "#B8B8FF",
-                       "opacity":  0.3,
-                       "description":  "Length of KDF options"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Number of Keys",
-                       "offset":  60,
-                       "length":  4,
-                       "color":  "#98D8C8",
-                       "opacity":  0.3,
-                       "description":  "Number of keys in file (usually 1)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Public Key Length",
-                       "offset":  64,
-                       "length":  4,
-                       "color":  "#A8E6CF",
-                       "opacity":  0.3,
-                       "description":  "Length of public key blob"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Null Terminator",
+      "offset": 15,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Magic string null terminator"
+    },
+    {
+      "type": "field",
+      "name": "Cipher Name Length",
+      "offset": 16,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Length of cipher name"
+    },
+    {
+      "type": "field",
+      "name": "Cipher Name",
+      "offset": 20,
+      "length": 16,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Encryption cipher (none/aes256-ctr/etc.)"
+    },
+    {
+      "type": "field",
+      "name": "KDF Name Length",
+      "offset": 36,
+      "length": 4,
+      "color": "#FFA07A",
+      "opacity": 0.3,
+      "description": "Length of KDF name"
+    },
+    {
+      "type": "field",
+      "name": "KDF Name",
+      "offset": 40,
+      "length": 16,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Key derivation function (none/bcrypt)"
+    },
+    {
+      "type": "field",
+      "name": "KDF Options Length",
+      "offset": 56,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "description": "Length of KDF options"
+    },
+    {
+      "type": "field",
+      "name": "Number of Keys",
+      "offset": 60,
+      "length": 4,
+      "color": "#98D8C8",
+      "opacity": 0.3,
+      "description": "Number of keys in file (usually 1)"
+    },
+    {
+      "type": "field",
+      "name": "Public Key Length",
+      "offset": 64,
+      "length": 4,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Length of public key blob"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 9,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

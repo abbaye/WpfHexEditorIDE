@@ -1,60 +1,71 @@
 ﻿{
-    "formatName":  "Blood RFF",
-    "version":  "1.0",
-    "extensions":  [
-                       ".rff"
-                   ],
-    "description":  "Blood game RFF resource archive",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Blood RFF Archive Format",
-                                              "Monolith RFF Resource File",
-                                              "Build Engine RFF Specification"
-                                          ],
-                       "web_links":  [
-                                         "https://moddingwiki.shikadi.net/wiki/RFF_Format",
-                                         "https://blood.sourceforge.net/rebuild.php",
-                                         "https://fileinfo.com/extension/rff",
-                                         "https://blood-wiki.org/index.php/Build"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "52464618",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "RFF Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "RFF magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  4,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "RFF format version"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Directory Offset",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Offset to file directory"
-                   }
-               ]
+  "formatName": "Blood RFF",
+  "version": "1.0",
+  "extensions": [
+    ".rff"
+  ],
+  "description": "Blood game RFF resource archive",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Blood RFF Archive Format",
+      "Monolith RFF Resource File",
+      "Build Engine RFF Specification"
+    ],
+    "web_links": [
+      "https://moddingwiki.shikadi.net/wiki/RFF_Format",
+      "https://blood.sourceforge.net/rebuild.php",
+      "https://fileinfo.com/extension/rff",
+      "https://blood-wiki.org/index.php/Build"
+    ]
+  },
+  "detection": {
+    "signature": "52464618",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RFF Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "RFF magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "RFF format version"
+    },
+    {
+      "type": "field",
+      "name": "Directory Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Offset to file directory"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

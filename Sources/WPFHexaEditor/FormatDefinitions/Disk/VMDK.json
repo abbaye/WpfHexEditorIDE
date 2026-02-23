@@ -1,51 +1,62 @@
 ﻿{
-    "formatName":  "VMware Virtual Disk",
-    "version":  "1.0",
-    "extensions":  [
-                       ".vmdk"
-                   ],
-    "description":  "VMware virtual disk format",
-    "category":  "Disk",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "VMware Virtual Machine Disk (VMDK) Format",
-            "VMDK Sparse Extent File Structure",
-            "VMware Virtual Disk API"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/VMDK",
-            "https://github.com/libyal/libvmdk/blob/main/documentation/VMWare%20Virtual%20Disk%20Format%20(VMDK).asciidoc",
-            "https://formats.kaitai.io/vmware_vmdk/",
-            "https://www.forensicxlab.com/blog/vmdk"
-        ]
+  "formatName": "VMware Virtual Disk",
+  "version": "1.0",
+  "extensions": [
+    ".vmdk"
+  ],
+  "description": "VMware virtual disk format",
+  "category": "Disk",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "VMware Virtual Machine Disk (VMDK) Format",
+      "VMDK Sparse Extent File Structure",
+      "VMware Virtual Disk API"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/VMDK",
+      "https://github.com/libyal/libvmdk/blob/main/documentation/VMWare%20Virtual%20Disk%20Format%20(VMDK).asciidoc",
+      "https://formats.kaitai.io/vmware_vmdk/",
+      "https://www.forensicxlab.com/blog/vmdk"
+    ]
+  },
+  "detection": {
+    "signature": "4B444D",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "VMDK Signature",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "KDM magic bytes"
     },
-    "detection":  {
-                      "signature":  "4B444D",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "VMDK Signature",
-                       "offset":  0,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "KDM magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "VMDK version"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "VMDK version"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

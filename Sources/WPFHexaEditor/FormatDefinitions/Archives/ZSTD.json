@@ -1,43 +1,57 @@
 ﻿{
-    "formatName":  "Zstandard Compressed",
-    "version":  "1.0",
-    "extensions":  [
-                       ".zst",
-                       ".zstd"
-                   ],
-    "description":  "Zstandard compression format by Facebook",
-    "category":  "Archives",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "RFC 8878 - Zstandard Compression Format",
-            "RFC 8478 - Zstandard (Obsolete)",
-            "Zstandard Frame Format"
-        ],
-        "web_links": [
-            "https://datatracker.ietf.org/doc/html/rfc8878",
-            "https://datatracker.ietf.org/doc/html/rfc8478",
-            "https://en.wikipedia.org/wiki/Zstd",
-            "https://github.com/facebook/zstd"
-        ]
-    },
-    "detection":  {
-                      "signature":  "28B52FFD",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Zstandard Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Zstandard frame header"
-                   }
-               ]
+  "formatName": "Zstandard Compressed",
+  "version": "1.0",
+  "extensions": [
+    ".zst",
+    ".zstd"
+  ],
+  "description": "Zstandard compression format by Facebook",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "RFC 8878 - Zstandard Compression Format",
+      "RFC 8478 - Zstandard (Obsolete)",
+      "Zstandard Frame Format"
+    ],
+    "web_links": [
+      "https://datatracker.ietf.org/doc/html/rfc8878",
+      "https://datatracker.ietf.org/doc/html/rfc8478",
+      "https://en.wikipedia.org/wiki/Zstd",
+      "https://github.com/facebook/zstd"
+    ]
+  },
+  "detection": {
+    "signature": "28B52FFD",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Zstandard Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Zstandard frame header"
+    }
+  ],
+  "mime_types": [
+    "application/x-zst"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

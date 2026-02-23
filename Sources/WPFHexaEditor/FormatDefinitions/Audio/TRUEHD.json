@@ -1,43 +1,55 @@
 ﻿{
-    "formatName":  "Dolby TrueHD",
-    "version":  "1.0",
-    "extensions":  [
-                       ".thd",
-                       ".truehd"
-                   ],
-    "description":  "Dolby TrueHD lossless multi-channel audio codec for Blu-ray",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Dolby TrueHD High-Level Bitstream Description",
-            "Dolby TrueHD Lossless Audio Codec",
-            "MLP for Blu-ray Specification"
-        ],
-        "web_links": [
-            "https://developer.dolby.com/globalassets/technology/dolby-truehd/dolbytruehdhighlevelbitstreamdescription.pdf",
-            "https://developer.dolby.com/technology/dolby-audio/dolby-truehd",
-            "https://en.wikipedia.org/wiki/Dolby_TrueHD",
-            "https://grokipedia.com/page/Dolby_TrueHD"
-        ]
-    },
-    "detection":  {
-                      "signature":  "18E371F3",
-                      "offset":  4,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "TrueHD Sync Word",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Dolby TrueHD major sync word"
-                   }
-               ]
+  "formatName": "Dolby TrueHD",
+  "version": "1.0",
+  "extensions": [
+    ".thd",
+    ".truehd"
+  ],
+  "description": "Dolby TrueHD lossless multi-channel audio codec for Blu-ray",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Dolby TrueHD High-Level Bitstream Description",
+      "Dolby TrueHD Lossless Audio Codec",
+      "MLP for Blu-ray Specification"
+    ],
+    "web_links": [
+      "https://developer.dolby.com/globalassets/technology/dolby-truehd/dolbytruehdhighlevelbitstreamdescription.pdf",
+      "https://developer.dolby.com/technology/dolby-audio/dolby-truehd",
+      "https://en.wikipedia.org/wiki/Dolby_TrueHD",
+      "https://grokipedia.com/page/Dolby_TrueHD"
+    ]
+  },
+  "detection": {
+    "signature": "18E371F3",
+    "offset": 4,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "TrueHD Sync Word",
+      "offset": 4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Dolby TrueHD major sync word"
+    }
+  ],
+  "mime_types": [
+    "audio/thd"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

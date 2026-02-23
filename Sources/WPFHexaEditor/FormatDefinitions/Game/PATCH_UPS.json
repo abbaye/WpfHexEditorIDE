@@ -1,74 +1,85 @@
-{
-    "formatName":  "UPS Patch",
-    "version":  "1.0",
-    "extensions":  [
-                       ".ups"
-                   ],
-    "description":  "Universal Patching System (UPS) format - Enhanced ROM patching with CRC32 validation and bidirectional support",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Universal Patching System (UPS)",
-                                              "UPS Format by byuu",
-                                              "Bidirectional ROM Patch Format"
-                                          ],
-                       "web_links":  [
-                                         "https://docs.fileformat.com/game/ups/",
-                                         "https://rainbowdevs.com/2008/05/03/ups-patching-specification/",
-                                         "https://www.romhacking.net/utilities/606/",
-                                         "https://consolemods.org/wiki/Applying_ROM_Patches"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "55505331",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0,
-                      "srcSizeByte1":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "UPS Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "UPS1 magic identifier - Universal Patching System v1"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Source Size (VLI byte 1)",
-                       "offset":  4,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "storeAs":  "srcSizeByte1",
-                       "description":  "First byte of VLI-encoded source file size (MSB=continuation bit, remaining 7 bits=data)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Patch Data Start",
-                       "offset":  5,
-                       "length":  8,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Start of variable-length integer encoded patch data (VLI format - cannot be parsed with fixed offsets)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Patch Data Region",
-                       "offset":  13,
-                       "length":  100,
-                       "color":  "#FFE66D",
-                       "opacity":  0.2,
-                       "valueType":  "bytes",
-                       "description":  "Variable-length patch commands region (structure depends on VLI decoding)"
-                   }
-               ]
+﻿{
+  "formatName": "UPS Patch",
+  "version": "1.0",
+  "extensions": [
+    ".ups"
+  ],
+  "description": "Universal Patching System (UPS) format - Enhanced ROM patching with CRC32 validation and bidirectional support",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Universal Patching System (UPS)",
+      "UPS Format by byuu",
+      "Bidirectional ROM Patch Format"
+    ],
+    "web_links": [
+      "https://docs.fileformat.com/game/ups/",
+      "https://rainbowdevs.com/2008/05/03/ups-patching-specification/",
+      "https://www.romhacking.net/utilities/606/",
+      "https://consolemods.org/wiki/Applying_ROM_Patches"
+    ]
+  },
+  "detection": {
+    "signature": "55505331",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "srcSizeByte1": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "UPS Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "UPS1 magic identifier - Universal Patching System v1"
+    },
+    {
+      "type": "field",
+      "name": "Source Size (VLI byte 1)",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "srcSizeByte1",
+      "description": "First byte of VLI-encoded source file size (MSB=continuation bit, remaining 7 bits=data)"
+    },
+    {
+      "type": "field",
+      "name": "Patch Data Start",
+      "offset": 5,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Start of variable-length integer encoded patch data (VLI format - cannot be parsed with fixed offsets)"
+    },
+    {
+      "type": "field",
+      "name": "Patch Data Region",
+      "offset": 13,
+      "length": 100,
+      "color": "#FFE66D",
+      "opacity": 0.2,
+      "valueType": "bytes",
+      "description": "Variable-length patch commands region (structure depends on VLI decoding)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

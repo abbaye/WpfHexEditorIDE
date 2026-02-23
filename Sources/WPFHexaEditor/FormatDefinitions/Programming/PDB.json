@@ -18,7 +18,11 @@
   "detection": {
     "signature": "4D6963726F736F667420432F43",
     "offset": 0,
-    "required": true
+    "required": true,
+    "validation": {
+      "min_file_size": 13,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {},
   "blocks": [
@@ -58,5 +62,12 @@
       "opacity": 0.4,
       "description": "Total number of pages (little-endian)"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,42 +1,56 @@
 ﻿{
-    "formatName":  "AAC Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".aac"
-                   ],
-    "description":  "Advanced Audio Coding",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ISO/IEC 13818-7:2006 - Advanced Audio Coding (AAC)",
-            "MPEG-2 Part 7 Specification",
-            "AAC ADTS Format"
-        ],
-        "web_links": [
-            "https://www.iso.org/standard/43345.html",
-            "https://en.wikipedia.org/wiki/Advanced_Audio_Coding",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000036.shtml",
-            "https://www.mpeg.org/standards/MPEG-2/7/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "FFF1",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ADTS Sync Word",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "AAC ADTS frame sync (12 bits)"
-                   }
-               ]
+  "formatName": "AAC Audio",
+  "version": "1.0",
+  "extensions": [
+    ".aac"
+  ],
+  "description": "Advanced Audio Coding",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ISO/IEC 13818-7:2006 - Advanced Audio Coding (AAC)",
+      "MPEG-2 Part 7 Specification",
+      "AAC ADTS Format"
+    ],
+    "web_links": [
+      "https://www.iso.org/standard/43345.html",
+      "https://en.wikipedia.org/wiki/Advanced_Audio_Coding",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000036.shtml",
+      "https://www.mpeg.org/standards/MPEG-2/7/"
+    ]
+  },
+  "detection": {
+    "signature": "FFF1",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ADTS Sync Word",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "AAC ADTS frame sync (12 bits)"
+    }
+  ],
+  "mime_types": [
+    "audio/aac"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

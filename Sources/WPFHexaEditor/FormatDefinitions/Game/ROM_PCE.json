@@ -1,54 +1,65 @@
-{
-    "formatName":  "PC Engine/TurboGrafx-16 ROM",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pce",
-                       ".sgx"
-                   ],
-    "description":  "PC Engine / TurboGrafx-16 HuCard ROM format (no standard header)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "PC Engine / TurboGrafx-16 HuCard Format",
-            "HuCard ROM Cartridge Specification",
-            "PC Engine Architecture Documentation"
-        ],
-        "web_links": [
-            "https://www.copetti.org/writings/consoles/pc-engine/",
-            "https://en.wikipedia.org/wiki/HuCard",
-            "https://cc65.github.io/doc/pce.html",
-            "https://wiki.batocera.org/systems:pcengine"
-        ]
+﻿{
+  "formatName": "PC Engine/TurboGrafx-16 ROM",
+  "version": "1.0",
+  "extensions": [
+    ".pce",
+    ".sgx"
+  ],
+  "description": "PC Engine / TurboGrafx-16 HuCard ROM format (no standard header)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PC Engine / TurboGrafx-16 HuCard Format",
+      "HuCard ROM Cartridge Specification",
+      "PC Engine Architecture Documentation"
+    ],
+    "web_links": [
+      "https://www.copetti.org/writings/consoles/pc-engine/",
+      "https://en.wikipedia.org/wiki/HuCard",
+      "https://cc65.github.io/doc/pce.html",
+      "https://wiki.batocera.org/systems:pcengine"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Reset Vector / Entry",
+      "offset": 0,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "description": "CPU start address (little-endian)"
     },
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Reset Vector / Entry",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint16",
-                       "description":  "CPU start address (little-endian)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "ROM Bank 0",
-                       "offset":  0,
-                       "length":  8192,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "First 8KB ROM bank (Bank 0)"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "ROM Bank 0",
+      "offset": 0,
+      "length": 8192,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "First 8KB ROM bank (Bank 0)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

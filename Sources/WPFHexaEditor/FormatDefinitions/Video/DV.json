@@ -1,43 +1,55 @@
 ﻿{
-    "formatName":  "Digital Video",
-    "version":  "1.0",
-    "extensions":  [
-                       ".dv",
-                       ".dif"
-                   ],
-    "description":  "Digital Video format for storing digital video, commonly used in camcorders",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "IEC 61834 - Digital Video (DV) Standard",
-            "DV Blue Book Specification",
-            "RFC 6469 - RTP Payload Format for DV (IEC 61834)"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/DV_(video_format)",
-            "https://www.rfc-editor.org/rfc/rfc6469.html",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000183.shtml",
-            "https://www.adamwilt.com/DV-tech.html"
-        ]
-    },
-    "detection":  {
-                      "signature":  "1F0700",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "DV Header",
-                       "offset":  0,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "DV file header marker"
-                   }
-               ]
+  "formatName": "Digital Video",
+  "version": "1.0",
+  "extensions": [
+    ".dv",
+    ".dif"
+  ],
+  "description": "Digital Video format for storing digital video, commonly used in camcorders",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "IEC 61834 - Digital Video (DV) Standard",
+      "DV Blue Book Specification",
+      "RFC 6469 - RTP Payload Format for DV (IEC 61834)"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/DV_(video_format)",
+      "https://www.rfc-editor.org/rfc/rfc6469.html",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000183.shtml",
+      "https://www.adamwilt.com/DV-tech.html"
+    ]
+  },
+  "detection": {
+    "signature": "1F0700",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "DV Header",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "DV file header marker"
+    }
+  ],
+  "mime_types": [
+    "video/dv"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

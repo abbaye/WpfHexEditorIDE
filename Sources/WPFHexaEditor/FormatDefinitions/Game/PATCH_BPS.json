@@ -1,74 +1,85 @@
-{
-    "formatName":  "BPS Patch",
-    "version":  "1.0",
-    "extensions":  [
-                       ".bps"
-                   ],
-    "description":  "Beat Patching System (BPS) format - Modern ROM patching with metadata support, CRC32 validation, and optimal compression",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Beat Patching System (BPS) Format",
-                                              "BPS v1 Specification by byuu/Near",
-                                              "BPS ROM Patch Standard"
-                                          ],
-                       "web_links":  [
-                                         "https://github.com/blakesmith/rombp/blob/master/docs/bps_spec.md",
-                                         "https://github.com/btimofeev/UniPatcher/wiki/BPS",
-                                         "https://www.romhacking.net/utilities/893/",
-                                         "https://forums.nesdev.org/viewtopic.php?t=16803"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "42505331",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0,
-                      "srcSizeByte":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "BPS Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "BPS1 magic identifier - Beat Patching System format (created by byuu/Near)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Source Size (VLI)",
-                       "offset":  4,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "storeAs":  "srcSizeByte",
-                       "description":  "First byte of VLI source file size. LSB=continuation bit, remaining 7 bits=data"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Patch Header Data",
-                       "offset":  5,
-                       "length":  16,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "VLI-encoded target size, metadata length, and metadata content (variable structure)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Patch Commands Region",
-                       "offset":  21,
-                       "length":  100,
-                       "color":  "#FFE66D",
-                       "opacity":  0.2,
-                       "valueType":  "bytes",
-                       "description":  "Variable-length patch commands: SourceRead(0), TargetRead(1), SourceCopy(2), TargetCopy(3)"
-                   }
-               ]
+﻿{
+  "formatName": "BPS Patch",
+  "version": "1.0",
+  "extensions": [
+    ".bps"
+  ],
+  "description": "Beat Patching System (BPS) format - Modern ROM patching with metadata support, CRC32 validation, and optimal compression",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Beat Patching System (BPS) Format",
+      "BPS v1 Specification by byuu/Near",
+      "BPS ROM Patch Standard"
+    ],
+    "web_links": [
+      "https://github.com/blakesmith/rombp/blob/master/docs/bps_spec.md",
+      "https://github.com/btimofeev/UniPatcher/wiki/BPS",
+      "https://www.romhacking.net/utilities/893/",
+      "https://forums.nesdev.org/viewtopic.php?t=16803"
+    ]
+  },
+  "detection": {
+    "signature": "42505331",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "srcSizeByte": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "BPS Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "BPS1 magic identifier - Beat Patching System format (created by byuu/Near)"
+    },
+    {
+      "type": "field",
+      "name": "Source Size (VLI)",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "srcSizeByte",
+      "description": "First byte of VLI source file size. LSB=continuation bit, remaining 7 bits=data"
+    },
+    {
+      "type": "field",
+      "name": "Patch Header Data",
+      "offset": 5,
+      "length": 16,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "VLI-encoded target size, metadata length, and metadata content (variable structure)"
+    },
+    {
+      "type": "field",
+      "name": "Patch Commands Region",
+      "offset": 21,
+      "length": 100,
+      "color": "#FFE66D",
+      "opacity": 0.2,
+      "valueType": "bytes",
+      "description": "Variable-length patch commands: SourceRead(0), TargetRead(1), SourceCopy(2), TargetCopy(3)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

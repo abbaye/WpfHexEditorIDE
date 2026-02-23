@@ -1,51 +1,62 @@
 ﻿{
-    "formatName":  "Duke Nukem GRP",
-    "version":  "1.0",
-    "extensions":  [
-                       ".grp"
-                   ],
-    "description":  "Duke Nukem 3D GRP resource archive",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Duke Nukem 3D GRP Format",
-                                              "Ken Silverman GRP Archive",
-                                              "Build Engine Group File"
-                                          ],
-                       "web_links":  [
-                                         "https://moddingwiki.shikadi.net/wiki/GRP_Format",
-                                         "http://justsolve.archiveteam.org/wiki/GRP_(Duke_Nukem_3D)",
-                                         "https://wiki.eduke32.com/wiki/Utilities",
-                                         "https://www.file-extensions.org/grp-file-extension-duke-nukem-3d-archive"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "4B656E53696C766572696D616E",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "GRP Signature",
-                       "offset":  0,
-                       "length":  12,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "KenSilverman signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Number of Files",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Total number of files"
-                   }
-               ]
+  "formatName": "Duke Nukem GRP",
+  "version": "1.0",
+  "extensions": [
+    ".grp"
+  ],
+  "description": "Duke Nukem 3D GRP resource archive",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Duke Nukem 3D GRP Format",
+      "Ken Silverman GRP Archive",
+      "Build Engine Group File"
+    ],
+    "web_links": [
+      "https://moddingwiki.shikadi.net/wiki/GRP_Format",
+      "http://justsolve.archiveteam.org/wiki/GRP_(Duke_Nukem_3D)",
+      "https://wiki.eduke32.com/wiki/Utilities",
+      "https://www.file-extensions.org/grp-file-extension-duke-nukem-3d-archive"
+    ]
+  },
+  "detection": {
+    "signature": "4B656E53696C766572696D616E",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 13,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "GRP Signature",
+      "offset": 0,
+      "length": 12,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "KenSilverman signature"
+    },
+    {
+      "type": "field",
+      "name": "Number of Files",
+      "offset": 12,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Total number of files"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

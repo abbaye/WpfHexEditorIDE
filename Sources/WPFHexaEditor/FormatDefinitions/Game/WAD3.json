@@ -1,60 +1,71 @@
 ﻿{
-    "formatName":  "Half-Life WAD",
-    "version":  "1.0",
-    "extensions":  [
-                       ".wad"
-                   ],
-    "description":  "Half-Life WAD3 texture archive",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Half-Life WAD3 Format",
-                                              "GoldSrc Texture Archive Specification",
-                                              "WAD3 MipTex Structure"
-                                          ],
-                       "web_links":  [
-                                         "https://developer.valvesoftware.com/wiki/WAD",
-                                         "https://twhl.info/wiki/page/Specification:_WAD3",
-                                         "https://developer.valvesoftware.com/wiki/WAD3_Structure",
-                                         "https://www.j0e.io/tutorials/wad3-format/"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "57414433",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "WAD3 Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "WAD3 magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Number of Lumps",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Total number of lumps"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Directory Offset",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Offset to directory"
-                   }
-               ]
+  "formatName": "Half-Life WAD",
+  "version": "1.0",
+  "extensions": [
+    ".wad"
+  ],
+  "description": "Half-Life WAD3 texture archive",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Half-Life WAD3 Format",
+      "GoldSrc Texture Archive Specification",
+      "WAD3 MipTex Structure"
+    ],
+    "web_links": [
+      "https://developer.valvesoftware.com/wiki/WAD",
+      "https://twhl.info/wiki/page/Specification:_WAD3",
+      "https://developer.valvesoftware.com/wiki/WAD3_Structure",
+      "https://www.j0e.io/tutorials/wad3-format/"
+    ]
+  },
+  "detection": {
+    "signature": "57414433",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "WAD3 Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "WAD3 magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Number of Lumps",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Total number of lumps"
+    },
+    {
+      "type": "field",
+      "name": "Directory Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Offset to directory"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

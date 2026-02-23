@@ -1,42 +1,53 @@
 ﻿{
-    "formatName":  "Minecraft DAT",
-    "version":  "1.0",
-    "extensions":  [
-                       ".dat"
-                   ],
-    "description":  "Minecraft data file (NBT format)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Named Binary Tag (NBT) Format",
-                                              "Minecraft NBT Specification",
-                                              "Mojang NBT Reference Implementation"
-                                          ],
-                       "web_links":  [
-                                         "https://wiki.vg/NBT",
-                                         "https://minecraft.fandom.com/wiki/NBT_format",
-                                         "https://wiki.bedrock.dev/nbt/nbt-in-depth",
-                                         "https://github.com/acfoltzer/nbt/blob/master/NBT-spec.txt"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "0A",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "NBT Compound Tag",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "NBT compound tag (0x0A)"
-                   }
-               ]
+  "formatName": "Minecraft DAT",
+  "version": "1.0",
+  "extensions": [
+    ".dat"
+  ],
+  "description": "Minecraft data file (NBT format)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Named Binary Tag (NBT) Format",
+      "Minecraft NBT Specification",
+      "Mojang NBT Reference Implementation"
+    ],
+    "web_links": [
+      "https://wiki.vg/NBT",
+      "https://minecraft.fandom.com/wiki/NBT_format",
+      "https://wiki.bedrock.dev/nbt/nbt-in-depth",
+      "https://github.com/acfoltzer/nbt/blob/master/NBT-spec.txt"
+    ]
+  },
+  "detection": {
+    "signature": "0A",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "NBT Compound Tag",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "NBT compound tag (0x0A)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

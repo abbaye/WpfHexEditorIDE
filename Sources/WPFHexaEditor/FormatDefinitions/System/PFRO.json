@@ -18,7 +18,11 @@
   "detection": {
     "signature": "00",
     "offset": 0,
-    "required": false
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {
     "currentOffset": 0
@@ -78,5 +82,12 @@
       "opacity": 0.3,
       "description": "Operation type flags"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 6,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

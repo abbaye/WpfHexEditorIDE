@@ -1,42 +1,53 @@
 ﻿{
-    "formatName":  "Embedded OpenType Font",
-    "version":  "1.0",
-    "extensions":  [
-                       ".eot"
-                   ],
-    "description":  "Microsoft Embedded OpenType font format for web",
-    "category":  "Fonts",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Embedded OpenType (EOT) File Format Specification",
-            "Microsoft Web Embedding Fonts Tool (WEFT)",
-            "W3C EOT Submission"
-        ],
-        "web_links": [
-            "https://www.w3.org/submissions/EOT/",
-            "https://en.wikipedia.org/wiki/Embedded_OpenType",
-            "https://www.w3.org/submissions/2008/01/",
-            "https://docs.fileformat.com/font/eot/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  34,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "header",
-                       "name":  "EOT Header",
-                       "offset":  0,
-                       "length":  82,
-                       "color":  "#5E81AC",
-                       "opacity":  0.4,
-                       "description":  "EOT font file header"
-                   }
-               ]
+  "formatName": "Embedded OpenType Font",
+  "version": "1.0",
+  "extensions": [
+    ".eot"
+  ],
+  "description": "Microsoft Embedded OpenType font format for web",
+  "category": "Fonts",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Embedded OpenType (EOT) File Format Specification",
+      "Microsoft Web Embedding Fonts Tool (WEFT)",
+      "W3C EOT Submission"
+    ],
+    "web_links": [
+      "https://www.w3.org/submissions/EOT/",
+      "https://en.wikipedia.org/wiki/Embedded_OpenType",
+      "https://www.w3.org/submissions/2008/01/",
+      "https://docs.fileformat.com/font/eot/"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 34,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "name": "EOT Header",
+      "offset": 0,
+      "length": 82,
+      "color": "#5E81AC",
+      "opacity": 0.4,
+      "description": "EOT font file header"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

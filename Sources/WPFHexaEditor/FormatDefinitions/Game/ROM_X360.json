@@ -1,85 +1,96 @@
-{
-    "formatName":  "Xbox 360 Disc Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".iso",
-                       ".xex"
-                   ],
-    "description":  "Microsoft Xbox 360 disc image and executable format",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "XEX (Xbox 360 Executable) File Format",
-            "Xbox 360 Executable Container Specification",
-            "Free60 XEX Documentation"
-        ],
-        "web_links": [
-            "https://free60.org/System-Software/Formats/XEX/",
-            "https://docs.fileformat.com/executable/xex/",
-            "http://www.noxa.org/blog/2011/08/13/building-an-xbox-360-emulator-part-5-xex-files/",
-            "https://fileinfo.com/extension/xex"
-        ]
+﻿{
+  "formatName": "Xbox 360 Disc Image",
+  "version": "1.0",
+  "extensions": [
+    ".iso",
+    ".xex"
+  ],
+  "description": "Microsoft Xbox 360 disc image and executable format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "XEX (Xbox 360 Executable) File Format",
+      "Xbox 360 Executable Container Specification",
+      "Free60 XEX Documentation"
+    ],
+    "web_links": [
+      "https://free60.org/System-Software/Formats/XEX/",
+      "https://docs.fileformat.com/executable/xex/",
+      "http://www.noxa.org/blog/2011/08/13/building-an-xbox-360-emulator-part-5-xex-files/",
+      "https://fileinfo.com/extension/xex"
+    ]
+  },
+  "detection": {
+    "signature": "58455832",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "XEX2 Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "ascii",
+      "description": "XEX2 executable magic (0x58 0x45 0x58 0x32)"
     },
-    "detection":  {
-                      "signature":  "58455832",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "XEX2 Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "ascii",
-                       "description":  "XEX2 executable magic (0x58 0x45 0x58 0x32)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Module Flags",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Module flags (title, exports, debugger, etc.)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "PE Data Offset",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Offset to PE executable data"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Reserved",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "hidden":  true,
-                       "description":  "Reserved"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Security Info Offset",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#FF6B9D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Offset to security/certificate data"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Module Flags",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Module flags (title, exports, debugger, etc.)"
+    },
+    {
+      "type": "field",
+      "name": "PE Data Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Offset to PE executable data"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 12,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "hidden": true,
+      "description": "Reserved"
+    },
+    {
+      "type": "field",
+      "name": "Security Info Offset",
+      "offset": 16,
+      "length": 4,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Offset to security/certificate data"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 5,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

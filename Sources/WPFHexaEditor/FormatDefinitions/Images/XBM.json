@@ -1,42 +1,54 @@
 ﻿{
-    "formatName":  "X BitMap",
-    "version":  "1.0",
-    "extensions":  [
-                       ".xbm"
-                   ],
-    "description":  "X Window System Bitmap (ASCII C source)",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "X BitMap (XBM) Format - X Window System",
-            "X11 Bitmap Format Specification",
-            "XBM C Source Code Image Format"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/X_BitMap",
-            "https://www.fileformat.info/format/xbm/egff.htm",
-            "https://www.vertopal.com/en/format/xbm",
-            "https://www.oreilly.com/library/view/x-window-system/9780937175149/ChapterG.html"
-        ]
-    },
-    "detection":  {
-                      "signature":  "23646566696E65",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "XBM Header",
-                       "offset":  0,
-                       "length":  7,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "#define keyword"
-                   }
-               ]
+  "formatName": "X BitMap",
+  "version": "1.0",
+  "extensions": [
+    ".xbm"
+  ],
+  "description": "X Window System Bitmap (ASCII C source)",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "X BitMap (XBM) Format - X Window System",
+      "X11 Bitmap Format Specification",
+      "XBM C Source Code Image Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/X_BitMap",
+      "https://www.fileformat.info/format/xbm/egff.htm",
+      "https://www.vertopal.com/en/format/xbm",
+      "https://www.oreilly.com/library/view/x-window-system/9780937175149/ChapterG.html"
+    ]
+  },
+  "detection": {
+    "signature": "23646566696E65",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 7,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "XBM Header",
+      "offset": 0,
+      "length": 7,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "#define keyword"
+    }
+  ],
+  "mime_types": [
+    "image/xbm"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

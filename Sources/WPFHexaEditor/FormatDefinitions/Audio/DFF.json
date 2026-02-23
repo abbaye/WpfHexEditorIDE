@@ -1,42 +1,54 @@
 ﻿{
-    "formatName":  "DSD Interchange File Format",
-    "version":  "1.0",
-    "extensions":  [
-                       ".dff"
-                   ],
-    "description":  "Philips DSDIFF format for Direct Stream Digital audio interchange",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "DSDIFF 1.5 - Direct Stream Digital Interchange File Format",
-            "Philips DSD Specification",
-            "DSD Audio Format Standard"
-        ],
-        "web_links": [
-            "https://www.sonicstudio.com/pdf/dsd/DSDIFF_1.5_Spec.pdf",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000245.shtml",
-            "https://en.wikipedia.org/wiki/Direct_Stream_Digital",
-            "https://dsd-guide.com/philips-dsdiff-spec-15"
-        ]
-    },
-    "detection":  {
-                      "signature":  "46524D38",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "DFF Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "FRM8 - IFF container for DSD"
-                   }
-               ]
+  "formatName": "DSD Interchange File Format",
+  "version": "1.0",
+  "extensions": [
+    ".dff"
+  ],
+  "description": "Philips DSDIFF format for Direct Stream Digital audio interchange",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "DSDIFF 1.5 - Direct Stream Digital Interchange File Format",
+      "Philips DSD Specification",
+      "DSD Audio Format Standard"
+    ],
+    "web_links": [
+      "https://www.sonicstudio.com/pdf/dsd/DSDIFF_1.5_Spec.pdf",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000245.shtml",
+      "https://en.wikipedia.org/wiki/Direct_Stream_Digital",
+      "https://dsd-guide.com/philips-dsdiff-spec-15"
+    ]
+  },
+  "detection": {
+    "signature": "46524D38",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "DFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "FRM8 - IFF container for DSD"
+    }
+  ],
+  "mime_types": [
+    "audio/dff"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

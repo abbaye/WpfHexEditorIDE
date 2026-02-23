@@ -1,42 +1,53 @@
 ﻿{
-    "formatName":  "NTFS Filesystem",
-    "version":  "1.0",
-    "extensions":  [
-                       ".ntfs"
-                   ],
-    "description":  "Windows NT File System",
-    "category":  "Disk",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "NTFS Partition Boot Sector Specification",
-            "NTFS Master File Table (MFT) Structure",
-            "Windows NT File System Documentation"
-        ],
-        "web_links": [
-            "http://ntfs.com/ntfs-partition-boot-sector.htm",
-            "https://en.wikipedia.org/wiki/NTFS",
-            "https://www.ntfs.com/ntfs-mft.htm",
-            "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc781134(v=ws.10)"
-        ]
-    },
-    "detection":  {
-                      "signature":  "4E54465320202020",
-                      "offset":  3,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "header",
-                       "name":  "NTFS Boot Sector",
-                       "offset":  0,
-                       "length":  512,
-                       "color":  "#0078D4",
-                       "opacity":  0.4,
-                       "description":  "NTFS boot sector and BPB"
-                   }
-               ]
+  "formatName": "NTFS Filesystem",
+  "version": "1.0",
+  "extensions": [
+    ".ntfs"
+  ],
+  "description": "Windows NT File System",
+  "category": "Disk",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "NTFS Partition Boot Sector Specification",
+      "NTFS Master File Table (MFT) Structure",
+      "Windows NT File System Documentation"
+    ],
+    "web_links": [
+      "http://ntfs.com/ntfs-partition-boot-sector.htm",
+      "https://en.wikipedia.org/wiki/NTFS",
+      "https://www.ntfs.com/ntfs-mft.htm",
+      "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc781134(v=ws.10)"
+    ]
+  },
+  "detection": {
+    "signature": "4E54465320202020",
+    "offset": 3,
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "name": "NTFS Boot Sector",
+      "offset": 0,
+      "length": 512,
+      "color": "#0078D4",
+      "opacity": 0.4,
+      "description": "NTFS boot sector and BPB"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

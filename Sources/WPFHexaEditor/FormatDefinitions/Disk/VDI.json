@@ -1,51 +1,62 @@
 ﻿{
-    "formatName":  "VirtualBox Disk Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".vdi"
-                   ],
-    "description":  "VirtualBox virtual disk format",
-    "category":  "Disk",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "VirtualBox Virtual Disk Image (VDI) Format",
-            "Oracle VM VirtualBox Storage Documentation",
-            "VDI Dynamic and Fixed Allocation"
-        ],
-        "web_links": [
-            "https://docs.oracle.com/en/virtualization/virtualbox/6.0/user/vdidetails.html",
-            "https://www.virtualbox.org/manual/ch05.html",
-            "https://docs.fileformat.com/disc-and-media/vdi/",
-            "https://docs.oracle.com/en/virtualization/virtualbox/7.0/user/storage.html"
-        ]
+  "formatName": "VirtualBox Disk Image",
+  "version": "1.0",
+  "extensions": [
+    ".vdi"
+  ],
+  "description": "VirtualBox virtual disk format",
+  "category": "Disk",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "VirtualBox Virtual Disk Image (VDI) Format",
+      "Oracle VM VirtualBox Storage Documentation",
+      "VDI Dynamic and Fixed Allocation"
+    ],
+    "web_links": [
+      "https://docs.oracle.com/en/virtualization/virtualbox/6.0/user/vdidetails.html",
+      "https://www.virtualbox.org/manual/ch05.html",
+      "https://docs.fileformat.com/disc-and-media/vdi/",
+      "https://docs.oracle.com/en/virtualization/virtualbox/7.0/user/storage.html"
+    ]
+  },
+  "detection": {
+    "signature": "3C3C3C20",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "VDI Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "<<< signature"
     },
-    "detection":  {
-                      "signature":  "3C3C3C20",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "VDI Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "\u003c\u003c\u003c signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Text",
-                       "offset":  64,
-                       "length":  32,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Oracle VM VirtualBox text"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Text",
+      "offset": 64,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Oracle VM VirtualBox text"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

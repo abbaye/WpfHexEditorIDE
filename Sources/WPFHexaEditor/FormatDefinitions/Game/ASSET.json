@@ -1,42 +1,53 @@
 ﻿{
-    "formatName":  "Unity Asset",
-    "version":  "1.0",
-    "extensions":  [
-                       ".asset"
-                   ],
-    "description":  "Unity asset/scene file",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Unity YAML Format Description",
-                                              "UnityYAML Specification",
-                                              "Unity Serialization Language"
-                                          ],
-                       "web_links":  [
-                                         "https://docs.unity3d.com/Manual/FormatDescription.html",
-                                         "https://docs.unity3d.com/Manual/UnityYAML.html",
-                                         "https://unity.com/blog/engine-platform/understanding-unitys-serialization-language-yaml",
-                                         "https://github.com/socialpoint-labs/unity-yaml-parser"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "2559414D4C",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "YAML Header",
-                       "offset":  0,
-                       "length":  5,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "%YAML text format marker"
-                   }
-               ]
+  "formatName": "Unity Asset",
+  "version": "1.0",
+  "extensions": [
+    ".asset"
+  ],
+  "description": "Unity asset/scene file",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Unity YAML Format Description",
+      "UnityYAML Specification",
+      "Unity Serialization Language"
+    ],
+    "web_links": [
+      "https://docs.unity3d.com/Manual/FormatDescription.html",
+      "https://docs.unity3d.com/Manual/UnityYAML.html",
+      "https://unity.com/blog/engine-platform/understanding-unitys-serialization-language-yaml",
+      "https://github.com/socialpoint-labs/unity-yaml-parser"
+    ]
+  },
+  "detection": {
+    "signature": "2559414D4C",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 5,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "YAML Header",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "%YAML text format marker"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

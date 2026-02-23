@@ -1,42 +1,53 @@
 ﻿{
-    "formatName":  "Unreal Plugin",
-    "version":  "1.0",
-    "extensions":  [
-                       ".uplugin"
-                   ],
-    "description":  "Unreal Engine plugin descriptor file (JSON format)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Unreal Engine Plugin Descriptor",
-                                              "FPluginDescriptor JSON Format",
-                                              "UE Plugin Configuration Specification"
-                                          ],
-                       "web_links":  [
-                                         "https://dev.epicgames.com/documentation/en-us/unreal-engine/plugins-in-unreal-engine",
-                                         "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Projects/FPluginDescriptor",
-                                         "https://unrealcommunity.wiki/anatomy-of-plugin-q27u0jkc",
-                                         "https://ericbuchholz.com/unreal-tools/plugins-modules/plugin-descriptor-file/"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "7B",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "JSON Start",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Opening brace { for JSON"
-                   }
-               ]
+  "formatName": "Unreal Plugin",
+  "version": "1.0",
+  "extensions": [
+    ".uplugin"
+  ],
+  "description": "Unreal Engine plugin descriptor file (JSON format)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Unreal Engine Plugin Descriptor",
+      "FPluginDescriptor JSON Format",
+      "UE Plugin Configuration Specification"
+    ],
+    "web_links": [
+      "https://dev.epicgames.com/documentation/en-us/unreal-engine/plugins-in-unreal-engine",
+      "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Projects/FPluginDescriptor",
+      "https://unrealcommunity.wiki/anatomy-of-plugin-q27u0jkc",
+      "https://ericbuchholz.com/unreal-tools/plugins-modules/plugin-descriptor-file/"
+    ]
+  },
+  "detection": {
+    "signature": "7B",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "JSON Start",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Opening brace { for JSON"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

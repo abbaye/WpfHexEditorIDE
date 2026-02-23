@@ -1,42 +1,54 @@
 ﻿{
-    "formatName":  "Canon RAW (CRW)",
-    "version":  "1.0",
-    "extensions":  [
-                       ".crw"
-                   ],
-    "description":  "Canon RAW format (older cameras)",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Canon CRW Format - Camera Image File Format (CIFF)",
-            "CIFF Specification v1.0 - Canon Proprietary",
-            "Canon RAW Format (CRW) Technical Documentation"
-        ],
-        "web_links": [
-            "https://exiftool.org/canon_raw.html",
-            "http://fileformats.archiveteam.org/wiki/Camera_Image_File_Format",
-            "https://en.wikipedia.org/wiki/Camera_Image_File_Format",
-            "https://www.leadtools.com/help/sdk/dh/to/file-formats-canon-raw-format-crw.html"
-        ]
-    },
-    "detection":  {
-                      "signature":  "49491A000000484541",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "CRW Header",
-                       "offset":  0,
-                       "length":  9,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Canon CRW signature"
-                   }
-               ]
+  "formatName": "Canon RAW (CRW)",
+  "version": "1.0",
+  "extensions": [
+    ".crw"
+  ],
+  "description": "Canon RAW format (older cameras)",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Canon CRW Format - Camera Image File Format (CIFF)",
+      "CIFF Specification v1.0 - Canon Proprietary",
+      "Canon RAW Format (CRW) Technical Documentation"
+    ],
+    "web_links": [
+      "https://exiftool.org/canon_raw.html",
+      "http://fileformats.archiveteam.org/wiki/Camera_Image_File_Format",
+      "https://en.wikipedia.org/wiki/Camera_Image_File_Format",
+      "https://www.leadtools.com/help/sdk/dh/to/file-formats-canon-raw-format-crw.html"
+    ]
+  },
+  "detection": {
+    "signature": "49491A000000484541",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 9,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CRW Header",
+      "offset": 0,
+      "length": 9,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Canon CRW signature"
+    }
+  ],
+  "mime_types": [
+    "image/crw"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

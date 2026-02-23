@@ -1,43 +1,55 @@
 ﻿{
-    "formatName":  "Apple Lossless Audio Codec",
-    "version":  "1.0",
-    "extensions":  [
-                       ".alac",
-                       ".m4a"
-                   ],
-    "description":  "Apple Lossless Audio Codec for lossless compression of digital music",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Apple Lossless Audio Codec Specification",
-            "ALAC Open Source Format",
-            "Apple Lossless in MPEG-4 Container"
-        ],
-        "web_links": [
-            "https://macosforge.github.io/alac/",
-            "https://github.com/macosforge/alac",
-            "https://en.wikipedia.org/wiki/Apple_Lossless_Audio_Codec",
-            "https://docs.fileformat.com/audio/alac/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "66747970",
-                      "offset":  4,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "File Type Box",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ftyp - MP4 container for ALAC"
-                   }
-               ]
+  "formatName": "Apple Lossless Audio Codec",
+  "version": "1.0",
+  "extensions": [
+    ".alac",
+    ".m4a"
+  ],
+  "description": "Apple Lossless Audio Codec for lossless compression of digital music",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Apple Lossless Audio Codec Specification",
+      "ALAC Open Source Format",
+      "Apple Lossless in MPEG-4 Container"
+    ],
+    "web_links": [
+      "https://macosforge.github.io/alac/",
+      "https://github.com/macosforge/alac",
+      "https://en.wikipedia.org/wiki/Apple_Lossless_Audio_Codec",
+      "https://docs.fileformat.com/audio/alac/"
+    ]
+  },
+  "detection": {
+    "signature": "66747970",
+    "offset": 4,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "File Type Box",
+      "offset": 4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ftyp - MP4 container for ALAC"
+    }
+  ],
+  "mime_types": [
+    "audio/alac"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

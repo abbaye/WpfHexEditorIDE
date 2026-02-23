@@ -1,151 +1,162 @@
-{
-    "formatName":  "Sega Dreamcast Disc Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".gdi",
-                       ".cdi",
-                       ".iso"
-                   ],
-    "description":  "Sega Dreamcast GD-ROM disc image format (IP.BIN header)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Dreamcast GD-ROM IP.BIN Format",
-            "Dreamcast Programming Documentation",
-            "GDI Disc Image Format"
-        ],
-        "web_links": [
-            "https://mc.pp.se/dc/ip.bin.html",
-            "https://dreamcast.wiki/GDI_format",
-            "https://segaxtreme.net/threads/about-ip-bin.6229/",
-            "https://fabiensanglard.net/dreamcast_hacking/"
-        ]
+﻿{
+  "formatName": "Sega Dreamcast Disc Image",
+  "version": "1.0",
+  "extensions": [
+    ".gdi",
+    ".cdi",
+    ".iso"
+  ],
+  "description": "Sega Dreamcast GD-ROM disc image format (IP.BIN header)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Dreamcast GD-ROM IP.BIN Format",
+      "Dreamcast Programming Documentation",
+      "GDI Disc Image Format"
+    ],
+    "web_links": [
+      "https://mc.pp.se/dc/ip.bin.html",
+      "https://dreamcast.wiki/GDI_format",
+      "https://segaxtreme.net/threads/about-ip-bin.6229/",
+      "https://fabiensanglard.net/dreamcast_hacking/"
+    ]
+  },
+  "detection": {
+    "signature": "534547412053454741",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 9,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "productNumber": "",
+    "releaseDate": "",
+    "gameTitle": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Hardware ID",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "ascii",
+      "description": "SEGA SEGAKATANA  - Dreamcast disc magic identifier"
     },
-    "detection":  {
-                      "signature":  "534547412053454741",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0,
-                      "productNumber":  "",
-                      "releaseDate":  "",
-                      "gameTitle":  ""
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Hardware ID",
-                       "offset":  0,
-                       "length":  16,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "ascii",
-                       "description":  "SEGA SEGAKATANA  - Dreamcast disc magic identifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Maker ID",
-                       "offset":  16,
-                       "length":  16,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Publisher identifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Device Info",
-                       "offset":  32,
-                       "length":  16,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "GD-ROM disc information and disc count"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Area Symbols",
-                       "offset":  48,
-                       "length":  8,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Region support flags"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Peripherals",
-                       "offset":  56,
-                       "length":  8,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Peripheral support flags"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Product Number",
-                       "offset":  64,
-                       "length":  10,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "productNumber",
-                       "description":  "Catalog/product number"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  74,
-                       "length":  6,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Version string (V1.000)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Release Date",
-                       "offset":  80,
-                       "length":  8,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "releaseDate",
-                       "description":  "Release date YYYYMMDD"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Boot Filename",
-                       "offset":  88,
-                       "length":  16,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Boot executable: 1ST_READ.BIN"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Developer ID",
-                       "offset":  104,
-                       "length":  16,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Developer/studio identifier"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Game Title",
-                       "offset":  120,
-                       "length":  128,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "storeAs":  "gameTitle",
-                       "description":  "Full game title"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Maker ID",
+      "offset": 16,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Publisher identifier"
+    },
+    {
+      "type": "field",
+      "name": "Device Info",
+      "offset": 32,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "GD-ROM disc information and disc count"
+    },
+    {
+      "type": "field",
+      "name": "Area Symbols",
+      "offset": 48,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Region support flags"
+    },
+    {
+      "type": "field",
+      "name": "Peripherals",
+      "offset": 56,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Peripheral support flags"
+    },
+    {
+      "type": "field",
+      "name": "Product Number",
+      "offset": 64,
+      "length": 10,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "productNumber",
+      "description": "Catalog/product number"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 74,
+      "length": 6,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Version string (V1.000)"
+    },
+    {
+      "type": "field",
+      "name": "Release Date",
+      "offset": 80,
+      "length": 8,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "releaseDate",
+      "description": "Release date YYYYMMDD"
+    },
+    {
+      "type": "field",
+      "name": "Boot Filename",
+      "offset": 88,
+      "length": 16,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Boot executable: 1ST_READ.BIN"
+    },
+    {
+      "type": "field",
+      "name": "Developer ID",
+      "offset": 104,
+      "length": 16,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Developer/studio identifier"
+    },
+    {
+      "type": "field",
+      "name": "Game Title",
+      "offset": 120,
+      "length": 128,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameTitle",
+      "description": "Full game title"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 80,
+    "documentation_level": "detailed",
+    "blocks_defined": 11,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -18,7 +18,11 @@
   "detection": {
     "signature": "6465780A",
     "offset": 0,
-    "required": true
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {
     "currentOffset": 0
@@ -60,5 +64,12 @@
       "opacity": 0.3,
       "description": "SHA-1 hash of file"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

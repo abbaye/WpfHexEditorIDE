@@ -1,53 +1,64 @@
 ﻿{
-    "formatName":  "DER Certificate",
-    "version":  "1.0",
-    "extensions":  [
-                       ".der",
-                       ".cer",
-                       ".crt"
-                   ],
-    "description":  "Distinguished Encoding Rules - X.509 certificate",
-    "category":  "Certificates",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Distinguished Encoding Rules (DER) - ITU-T X.690",
-            "X.509 Certificate Format - RFC 5280",
-            "ASN.1 Distinguished Encoding Rules"
-        ],
-        "web_links": [
-            "https://datatracker.ietf.org/doc/html/rfc5280",
-            "https://en.wikipedia.org/wiki/X.509",
-            "https://www.oss.com/asn1/resources/asn1-made-simple/asn1-quick-reference/distinguished-encoding-rules.html",
-            "https://luca.ntop.org/Teaching/Appunti/asn1.html"
-        ]
+  "formatName": "DER Certificate",
+  "version": "1.0",
+  "extensions": [
+    ".der",
+    ".cer",
+    ".crt"
+  ],
+  "description": "Distinguished Encoding Rules - X.509 certificate",
+  "category": "Certificates",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Distinguished Encoding Rules (DER) - ITU-T X.690",
+      "X.509 Certificate Format - RFC 5280",
+      "ASN.1 Distinguished Encoding Rules"
+    ],
+    "web_links": [
+      "https://datatracker.ietf.org/doc/html/rfc5280",
+      "https://en.wikipedia.org/wiki/X.509",
+      "https://www.oss.com/asn1/resources/asn1-made-simple/asn1-quick-reference/distinguished-encoding-rules.html",
+      "https://luca.ntop.org/Teaching/Appunti/asn1.html"
+    ]
+  },
+  "detection": {
+    "signature": "3082",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ASN.1 Sequence",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ASN.1 sequence tag"
     },
-    "detection":  {
-                      "signature":  "3082",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ASN.1 Sequence",
-                       "offset":  0,
-                       "length":  2,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ASN.1 sequence tag"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Length",
-                       "offset":  2,
-                       "length":  2,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Certificate length"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Length",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Certificate length"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,43 +1,55 @@
 ﻿{
-    "formatName":  "Advanced Systems Format",
-    "version":  "1.0",
-    "extensions":  [
-                       ".asf",
-                       ".wma",
-                       ".wmv"
-                   ],
-    "description":  "Microsoft Advanced Systems Format multimedia container",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Advanced Systems Format (ASF) Specification Rev 01.20.03",
-            "Microsoft ASF Container Format",
-            "Windows Media Container"
-        ],
-        "web_links": [
-            "https://learn.microsoft.com/en-us/windows/win32/wmformat/overview-of-the-asf-format",
-            "https://en.wikipedia.org/wiki/Advanced_Systems_Format",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000067.shtml"
-        ]
-    },
-    "detection":  {
-                      "signature":  "3026B2758E66CF11A6D900AA0062CE6C",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "ASF Header GUID",
-                       "offset":  0,
-                       "length":  16,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ASF Header Object GUID"
-                   }
-               ]
+  "formatName": "Advanced Systems Format",
+  "version": "1.0",
+  "extensions": [
+    ".asf",
+    ".wma",
+    ".wmv"
+  ],
+  "description": "Microsoft Advanced Systems Format multimedia container",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Advanced Systems Format (ASF) Specification Rev 01.20.03",
+      "Microsoft ASF Container Format",
+      "Windows Media Container"
+    ],
+    "web_links": [
+      "https://learn.microsoft.com/en-us/windows/win32/wmformat/overview-of-the-asf-format",
+      "https://en.wikipedia.org/wiki/Advanced_Systems_Format",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000067.shtml"
+    ]
+  },
+  "detection": {
+    "signature": "3026B2758E66CF11A6D900AA0062CE6C",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 16,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ASF Header GUID",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ASF Header Object GUID"
+    }
+  ],
+  "mime_types": [
+    "video/asf"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

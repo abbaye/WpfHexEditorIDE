@@ -19,7 +19,11 @@
   "detection": {
     "signature": "424F4F4B",
     "offset": 60,
-    "required": true
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {
     "currentOffset": 0
@@ -43,5 +47,15 @@
       "opacity": 0.4,
       "description": "BOOK identifier"
     }
-  ]
+  ],
+  "mime_types": [
+    "application/azw"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

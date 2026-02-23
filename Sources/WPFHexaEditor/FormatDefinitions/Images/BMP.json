@@ -1,94 +1,108 @@
 ﻿{
-    "formatName": "BMP Image",
-    "version": "1.0",
-    "extensions": [
-        ".bmp",
-        ".dib"
+  "formatName": "BMP Image",
+  "version": "1.0",
+  "extensions": [
+    ".bmp",
+    ".dib"
+  ],
+  "description": "Windows Bitmap image format",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Microsoft BMP File Format",
+      "Windows Bitmap Format Specification"
     ],
-    "description": "Windows Bitmap image format",
-    "category": "Images",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Microsoft BMP File Format",
-            "Windows Bitmap Format Specification"
-        ],
-        "web_links": [
-            "https://docs.microsoft.com/en-us/windows/win32/gdi/bitmap-storage",
-            "https://en.wikipedia.org/wiki/BMP_file_format"
-        ]
-    },
-    "detection": {
-        "signature": "424D",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "BMP Signature",
-            "offset": 0,
-            "length": 2,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "BM magic bytes"
-        },
-        {
-            "type": "field",
-            "name": "File Size",
-            "offset": 2,
-            "length": 4,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "Total file size in bytes"
-        },
-        {
-            "type": "field",
-            "name": "Reserved",
-            "offset": 6,
-            "length": 4,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "Reserved (must be 0)"
-        },
-        {
-            "type": "field",
-            "name": "Data Offset",
-            "offset": 10,
-            "length": 4,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "description": "Offset to pixel data"
-        },
-        {
-            "type": "field",
-            "name": "Header Size",
-            "offset": 14,
-            "length": 4,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "description": "DIB header size"
-        },
-        {
-            "type": "field",
-            "name": "Width",
-            "offset": 18,
-            "length": 4,
-            "color": "#B8B8FF",
-            "opacity": 0.3,
-            "description": "Image width in pixels"
-        },
-        {
-            "type": "field",
-            "name": "Height",
-            "offset": 22,
-            "length": 4,
-            "color": "#FF6B9D",
-            "opacity": 0.3,
-            "description": "Image height in pixels"
-        }
+    "web_links": [
+      "https://docs.microsoft.com/en-us/windows/win32/gdi/bitmap-storage",
+      "https://en.wikipedia.org/wiki/BMP_file_format"
     ]
+  },
+  "detection": {
+    "signature": "424D",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "BMP Signature",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "BM magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 2,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Total file size in bytes"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 6,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Reserved (must be 0)"
+    },
+    {
+      "type": "field",
+      "name": "Data Offset",
+      "offset": 10,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Offset to pixel data"
+    },
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 14,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "DIB header size"
+    },
+    {
+      "type": "field",
+      "name": "Width",
+      "offset": 18,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "description": "Image width in pixels"
+    },
+    {
+      "type": "field",
+      "name": "Height",
+      "offset": 22,
+      "length": 4,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "description": "Image height in pixels"
+    }
+  ],
+  "mime_types": [
+    "image/bmp"
+  ],
+  "quality_metrics": {
+    "completeness_score": 80,
+    "documentation_level": "moderate",
+    "blocks_defined": 7,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,42 +1,53 @@
 ﻿{
-    "formatName":  "Game Save File",
-    "version":  "1.0",
-    "extensions":  [
-                       ".sav"
-                   ],
-    "description":  "Generic game save file",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Generic Game Save File Format",
-                                              "Nintendo DS Save Format",
-                                              "Multi-Platform Save Game Data"
-                                          ],
-                       "web_links":  [
-                                         "https://fileformat.fandom.com/wiki/SAV",
-                                         "https://docs.fileformat.com/game/sav/",
-                                         "https://developer.valvesoftware.com/wiki/Save_Game_Files",
-                                         "https://cosmodoc.org/topics/save-file-format/"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Save Data",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Game-specific format"
-                   }
-               ]
+  "formatName": "Game Save File",
+  "version": "1.0",
+  "extensions": [
+    ".sav"
+  ],
+  "description": "Generic game save file",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Generic Game Save File Format",
+      "Nintendo DS Save Format",
+      "Multi-Platform Save Game Data"
+    ],
+    "web_links": [
+      "https://fileformat.fandom.com/wiki/SAV",
+      "https://docs.fileformat.com/game/sav/",
+      "https://developer.valvesoftware.com/wiki/Save_Game_Files",
+      "https://cosmodoc.org/topics/save-file-format/"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Save Data",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Game-specific format"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

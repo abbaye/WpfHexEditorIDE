@@ -19,7 +19,11 @@
   "detection": {
     "signature": "D4C3B2A1",
     "offset": 0,
-    "required": true
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {
     "currentOffset": 0
@@ -88,5 +92,12 @@
       "opacity": 0.3,
       "description": "Data link type (Ethernet, etc.)"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 7,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

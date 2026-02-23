@@ -1,84 +1,95 @@
-{
-    "formatName":  "PlayStation Portable ISO",
-    "version":  "1.0",
-    "extensions":  [
-                       ".iso",
-                       ".cso"
-                   ],
-    "description":  "PlayStation Portable UMD disc image (ISO or compressed CSO)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "PSP UMD Disc Image Format (ISO)",
-            "CSO/CISO Compressed ISO Format",
-            "UMDGen PSP Backup Tool Documentation"
-        ],
-        "web_links": [
-            "https://www.ppsspp.org/docs/getting-started/dumping-games/",
-            "https://www.iso2cso.com/",
-            "https://github.com/meoow/cisoplus",
-            "https://archive.org/details/UMDGen-playstation-portable-2004-iso-to-cso"
-        ]
+﻿{
+  "formatName": "PlayStation Portable ISO",
+  "version": "1.0",
+  "extensions": [
+    ".iso",
+    ".cso"
+  ],
+  "description": "PlayStation Portable UMD disc image (ISO or compressed CSO)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PSP UMD Disc Image Format (ISO)",
+      "CSO/CISO Compressed ISO Format",
+      "UMDGen PSP Backup Tool Documentation"
+    ],
+    "web_links": [
+      "https://www.ppsspp.org/docs/getting-started/dumping-games/",
+      "https://www.iso2cso.com/",
+      "https://github.com/meoow/cisoplus",
+      "https://archive.org/details/UMDGen-playstation-portable-2004-iso-to-cso"
+    ]
+  },
+  "detection": {
+    "signature": "4349534F",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "CSO Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "ascii",
+      "description": "CISO magic for compressed format (0x43 0x49 0x53 0x4F)"
     },
-    "detection":  {
-                      "signature":  "4349534F",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "CSO Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "ascii",
-                       "description":  "CISO magic for compressed format (0x43 0x49 0x53 0x4F)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Header Size",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "CSO header size (typically 0x18 = 24 bytes)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Uncompressed Size",
-                       "offset":  8,
-                       "length":  8,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Original uncompressed ISO size (64-bit)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Block Size",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Compression block size (typically 2048 bytes)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  20,
-                       "length":  1,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint8",
-                       "description":  "CSO format version"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "CSO header size (typically 0x18 = 24 bytes)"
+    },
+    {
+      "type": "field",
+      "name": "Uncompressed Size",
+      "offset": 8,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Original uncompressed ISO size (64-bit)"
+    },
+    {
+      "type": "field",
+      "name": "Block Size",
+      "offset": 16,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Compression block size (typically 2048 bytes)"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 20,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "CSO format version"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 5,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

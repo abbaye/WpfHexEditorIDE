@@ -1,69 +1,83 @@
 ﻿{
-    "formatName":  "PCX Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pcx"
-                   ],
-    "description":  "ZSoft PC Paintbrush image format",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ZSoft PCX File Format Technical Reference Manual",
-            "PC Paintbrush (PCX) Format Specification",
-            "PCX RLE Compression Format"
-        ],
-        "web_links": [
-            "https://www.fileformat.info/format/pcx/egff.htm",
-            "http://fileformats.archiveteam.org/wiki/PCX",
-            "https://en.wikipedia.org/wiki/PCX",
-            "https://loc.gov/preservation/digital/formats/fdd/fdd000585.shtml"
-        ]
+  "formatName": "PCX Image",
+  "version": "1.0",
+  "extensions": [
+    ".pcx"
+  ],
+  "description": "ZSoft PC Paintbrush image format",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ZSoft PCX File Format Technical Reference Manual",
+      "PC Paintbrush (PCX) Format Specification",
+      "PCX RLE Compression Format"
+    ],
+    "web_links": [
+      "https://www.fileformat.info/format/pcx/egff.htm",
+      "http://fileformats.archiveteam.org/wiki/PCX",
+      "https://en.wikipedia.org/wiki/PCX",
+      "https://loc.gov/preservation/digital/formats/fdd/fdd000585.shtml"
+    ]
+  },
+  "detection": {
+    "signature": "0A",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PCX Manufacturer",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ZSoft (0x0A)"
     },
-    "detection":  {
-                      "signature":  "0A",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "PCX Manufacturer",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ZSoft (0x0A)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  1,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "PCX version number"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Encoding",
-                       "offset":  2,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "1=RLE encoding"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Bits Per Pixel",
-                       "offset":  3,
-                       "length":  1,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Bits per pixel per plane"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "PCX version number"
+    },
+    {
+      "type": "field",
+      "name": "Encoding",
+      "offset": 2,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "1=RLE encoding"
+    },
+    {
+      "type": "field",
+      "name": "Bits Per Pixel",
+      "offset": 3,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Bits per pixel per plane"
+    }
+  ],
+  "mime_types": [
+    "image/pcx"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

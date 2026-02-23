@@ -1,86 +1,100 @@
 ﻿{
-    "formatName": "GZIP Compressed File",
-    "version": "1.0",
-    "extensions": [
-        ".gz",
-        ".gzip"
+  "formatName": "GZIP Compressed File",
+  "version": "1.0",
+  "extensions": [
+    ".gz",
+    ".gzip"
+  ],
+  "description": "GZIP compression format - Common in Unix/Linux systems",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PKWARE APPNOTE.TXT - ZIP File Format Specification",
+      "ISO/IEC 21320-1:2015 - Document Container File"
     ],
-    "description": "GZIP compression format - Common in Unix/Linux systems",
-    "category": "Archives",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "PKWARE APPNOTE.TXT - ZIP File Format Specification",
-            "ISO/IEC 21320-1:2015 - Document Container File"
-        ],
-        "web_links": [
-            "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
-            "https://en.wikipedia.org/wiki/ZIP_(file_format)",
-            "https://www.iso.org/standard/60101.html"
-        ]
-    },
-    "detection": {
-        "signature": "1F8B",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "GZIP Magic",
-            "offset": 0,
-            "length": 2,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "GZIP identification bytes"
-        },
-        {
-            "type": "field",
-            "name": "Compression Method",
-            "offset": 2,
-            "length": 1,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "0-7 reserved, 8=deflate"
-        },
-        {
-            "type": "field",
-            "name": "Flags",
-            "offset": 3,
-            "length": 1,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "FTEXT, FHCRC, FEXTRA, FNAME, FCOMMENT"
-        },
-        {
-            "type": "field",
-            "name": "Modification Time",
-            "offset": 4,
-            "length": 4,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "description": "Unix timestamp"
-        },
-        {
-            "type": "field",
-            "name": "Compression Flags",
-            "offset": 8,
-            "length": 1,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "description": "Extra flags"
-        },
-        {
-            "type": "field",
-            "name": "OS",
-            "offset": 9,
-            "length": 1,
-            "color": "#B8B8FF",
-            "opacity": 0.3,
-            "description": "Operating system ID"
-        }
+    "web_links": [
+      "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
+      "https://en.wikipedia.org/wiki/ZIP_(file_format)",
+      "https://www.iso.org/standard/60101.html"
     ]
+  },
+  "detection": {
+    "signature": "1F8B",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "GZIP Magic",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "GZIP identification bytes"
+    },
+    {
+      "type": "field",
+      "name": "Compression Method",
+      "offset": 2,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "0-7 reserved, 8=deflate"
+    },
+    {
+      "type": "field",
+      "name": "Flags",
+      "offset": 3,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "FTEXT, FHCRC, FEXTRA, FNAME, FCOMMENT"
+    },
+    {
+      "type": "field",
+      "name": "Modification Time",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Unix timestamp"
+    },
+    {
+      "type": "field",
+      "name": "Compression Flags",
+      "offset": 8,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Extra flags"
+    },
+    {
+      "type": "field",
+      "name": "OS",
+      "offset": 9,
+      "length": 1,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "description": "Operating system ID"
+    }
+  ],
+  "mime_types": [
+    "application/x-gz"
+  ],
+  "quality_metrics": {
+    "completeness_score": 80,
+    "documentation_level": "moderate",
+    "blocks_defined": 6,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

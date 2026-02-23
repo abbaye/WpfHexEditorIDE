@@ -1,91 +1,102 @@
 ﻿{
-    "formatName": "Static Library Archive",
-    "version": "1.0",
-    "extensions": [
-        ".a"
+  "formatName": "Static Library Archive",
+  "version": "1.0",
+  "extensions": [
+    ".a"
+  ],
+  "description": "Unix static library archive (ar format) containing compiled object files for static linking",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Unix Archive (ar) Format",
+      "System V/BSD ar Archive Format"
     ],
-    "description": "Unix static library archive (ar format) containing compiled object files for static linking",
-    "category": "Programming",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Unix Archive (ar) Format",
-            "System V/BSD ar Archive Format"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/Ar_(Unix)",
-            "https://man7.org/linux/man-pages/man1/ar.1.html"
-        ]
-    },
-    "detection": {
-        "signature": "213C617263683E0A",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {},
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "Archive Signature",
-            "offset": 0,
-            "length": 8,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "AR archive magic: '!<arch>' 0x0A"
-        },
-        {
-            "type": "data",
-            "name": "File Name",
-            "offset": 8,
-            "length": 16,
-            "color": "#4ECDC4",
-            "opacity": 0.4,
-            "description": "File identifier (first member, usually '/' for symbol table)"
-        },
-        {
-            "type": "data",
-            "name": "Timestamp",
-            "offset": 24,
-            "length": 12,
-            "color": "#45B7D1",
-            "opacity": 0.4,
-            "description": "File modification timestamp (decimal ASCII)"
-        },
-        {
-            "type": "data",
-            "name": "Owner ID",
-            "offset": 36,
-            "length": 6,
-            "color": "#96CEB4",
-            "opacity": 0.4,
-            "description": "Owner user ID (decimal ASCII)"
-        },
-        {
-            "type": "data",
-            "name": "Group ID",
-            "offset": 42,
-            "length": 6,
-            "color": "#FFEAA7",
-            "opacity": 0.4,
-            "description": "Group ID (decimal ASCII)"
-        },
-        {
-            "type": "data",
-            "name": "File Mode",
-            "offset": 48,
-            "length": 8,
-            "color": "#DFE6E9",
-            "opacity": 0.4,
-            "description": "File permissions (octal ASCII)"
-        },
-        {
-            "type": "data",
-            "name": "File Size",
-            "offset": 56,
-            "length": 10,
-            "color": "#74B9FF",
-            "opacity": 0.4,
-            "description": "File size in bytes (decimal ASCII)"
-        }
+    "web_links": [
+      "https://en.wikipedia.org/wiki/Ar_(Unix)",
+      "https://man7.org/linux/man-pages/man1/ar.1.html"
     ]
+  },
+  "detection": {
+    "signature": "213C617263683E0A",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Archive Signature",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "AR archive magic: '!<arch>' 0x0A"
+    },
+    {
+      "type": "data",
+      "name": "File Name",
+      "offset": 8,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "File identifier (first member, usually '/' for symbol table)"
+    },
+    {
+      "type": "data",
+      "name": "Timestamp",
+      "offset": 24,
+      "length": 12,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "File modification timestamp (decimal ASCII)"
+    },
+    {
+      "type": "data",
+      "name": "Owner ID",
+      "offset": 36,
+      "length": 6,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "Owner user ID (decimal ASCII)"
+    },
+    {
+      "type": "data",
+      "name": "Group ID",
+      "offset": 42,
+      "length": 6,
+      "color": "#FFEAA7",
+      "opacity": 0.4,
+      "description": "Group ID (decimal ASCII)"
+    },
+    {
+      "type": "data",
+      "name": "File Mode",
+      "offset": 48,
+      "length": 8,
+      "color": "#DFE6E9",
+      "opacity": 0.4,
+      "description": "File permissions (octal ASCII)"
+    },
+    {
+      "type": "data",
+      "name": "File Size",
+      "offset": 56,
+      "length": 10,
+      "color": "#74B9FF",
+      "opacity": 0.4,
+      "description": "File size in bytes (decimal ASCII)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 7,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

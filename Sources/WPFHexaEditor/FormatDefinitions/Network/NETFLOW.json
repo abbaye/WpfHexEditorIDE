@@ -19,7 +19,11 @@
   "detection": {
     "signature": "0005",
     "offset": 0,
-    "required": true
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {
     "currentOffset": 0
@@ -106,5 +110,12 @@
       "opacity": 0.3,
       "description": "Sampling mode and interval"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 9,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

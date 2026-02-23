@@ -1,84 +1,95 @@
-{
-    "formatName":  "Xbox One Package",
-    "version":  "1.0",
-    "extensions":  [
-                       ".xvd",
-                       ".msixvc"
-                   ],
-    "description":  "Xbox One XVD (Xbox Virtual Disk) format",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Xbox Virtual Disk (XVD) Format",
-            "XVC (Xbox Virtual Container) Specification",
-            "XanaduXVD Technical Documentation"
-        ],
-        "web_links": [
-            "https://xboxoneresearch.github.io/wiki/operating-system/xbox-virtual-drive/",
-            "https://github.com/xboxoneresearch/XanaduXVD",
-            "https://github.com/xboxoneresearch/wiki/blob/master/docs/operating-system/xbox-virtual-drive.md",
-            "https://fileinfo.com/extension/xvd"
-        ]
+﻿{
+  "formatName": "Xbox One Package",
+  "version": "1.0",
+  "extensions": [
+    ".xvd",
+    ".msixvc"
+  ],
+  "description": "Xbox One XVD (Xbox Virtual Disk) format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Xbox Virtual Disk (XVD) Format",
+      "XVC (Xbox Virtual Container) Specification",
+      "XanaduXVD Technical Documentation"
+    ],
+    "web_links": [
+      "https://xboxoneresearch.github.io/wiki/operating-system/xbox-virtual-drive/",
+      "https://github.com/xboxoneresearch/XanaduXVD",
+      "https://github.com/xboxoneresearch/wiki/blob/master/docs/operating-system/xbox-virtual-drive.md",
+      "https://fileinfo.com/extension/xvd"
+    ]
+  },
+  "detection": {
+    "signature": "6D737863",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "XVD Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "bytes",
+      "description": "XVD magic bytes"
     },
-    "detection":  {
-                      "signature":  "6D737863",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "XVD Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "bytes",
-                       "description":  "XVD magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Format Version",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "XVD format version"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Flags",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Format flags (encryption, compression)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Content Size",
-                       "offset":  16,
-                       "length":  8,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Total content size (64-bit)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Content ID",
-                       "offset":  32,
-                       "length":  16,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Xbox One content GUID (128-bit)"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "XVD format version"
+    },
+    {
+      "type": "field",
+      "name": "Flags",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Format flags (encryption, compression)"
+    },
+    {
+      "type": "field",
+      "name": "Content Size",
+      "offset": 16,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Total content size (64-bit)"
+    },
+    {
+      "type": "field",
+      "name": "Content ID",
+      "offset": 32,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Xbox One content GUID (128-bit)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 5,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

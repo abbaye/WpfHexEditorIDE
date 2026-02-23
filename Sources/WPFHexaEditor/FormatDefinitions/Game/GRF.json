@@ -1,60 +1,71 @@
 ﻿{
-    "formatName":  "Game Resource File",
-    "version":  "1.0",
-    "extensions":  [
-                       ".grf"
-                   ],
-    "description":  "Ragnarok Online game resource archive",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Ragnarok Online GRF Archive",
-                                              "Gravity GRF File Format",
-                                              "GRF Virtual File System"
-                                          ],
-                       "web_links":  [
-                                         "https://ragnarokresearchlab.github.io/file-formats/grf/",
-                                         "https://github.com/rathena/rathena/wiki/GRF",
-                                         "https://z0q.neocities.org/ragnarok-online-formats/grf/",
-                                         "https://github.com/vthibault/grf-loader"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "4D61737465722066204772617669747920466F7220",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "GRF Signature",
-                       "offset":  0,
-                       "length":  15,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Master of Gravity For"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Encryption Key",
-                       "offset":  15,
-                       "length":  14,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Archive encryption key"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Table Offset",
-                       "offset":  29,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Offset to file allocation table"
-                   }
-               ]
+  "formatName": "Game Resource File",
+  "version": "1.0",
+  "extensions": [
+    ".grf"
+  ],
+  "description": "Ragnarok Online game resource archive",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Ragnarok Online GRF Archive",
+      "Gravity GRF File Format",
+      "GRF Virtual File System"
+    ],
+    "web_links": [
+      "https://ragnarokresearchlab.github.io/file-formats/grf/",
+      "https://github.com/rathena/rathena/wiki/GRF",
+      "https://z0q.neocities.org/ragnarok-online-formats/grf/",
+      "https://github.com/vthibault/grf-loader"
+    ]
+  },
+  "detection": {
+    "signature": "4D61737465722066204772617669747920466F7220",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 21,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "GRF Signature",
+      "offset": 0,
+      "length": 15,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Master of Gravity For"
+    },
+    {
+      "type": "field",
+      "name": "Encryption Key",
+      "offset": 15,
+      "length": 14,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Archive encryption key"
+    },
+    {
+      "type": "field",
+      "name": "File Table Offset",
+      "offset": 29,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Offset to file allocation table"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

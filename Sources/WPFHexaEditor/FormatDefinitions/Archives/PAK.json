@@ -1,60 +1,72 @@
 ﻿{
-    "formatName":  "PAK Archive",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pak"
-                   ],
-    "description":  "PAK archive format commonly used in game engines (Quake, Unreal Engine) for packaging game assets and resources",
-    "category":  "Archives",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Quake PAK File Format",
-            "Unreal Engine PAK Container",
-            "id Software PAK Archive Specification"
-        ],
-        "web_links": [
-            "https://quakewiki.org/wiki/.pak",
-            "http://fileformats.archiveteam.org/wiki/Quake_PAK",
-            "https://unrealpak.com/",
-            "https://developer.valvesoftware.com/wiki/PAK"
-        ]
+  "formatName": "PAK Archive",
+  "version": "1.0",
+  "extensions": [
+    ".pak"
+  ],
+  "description": "PAK archive format commonly used in game engines (Quake, Unreal Engine) for packaging game assets and resources",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Quake PAK File Format",
+      "Unreal Engine PAK Container",
+      "id Software PAK Archive Specification"
+    ],
+    "web_links": [
+      "https://quakewiki.org/wiki/.pak",
+      "http://fileformats.archiveteam.org/wiki/Quake_PAK",
+      "https://unrealpak.com/",
+      "https://developer.valvesoftware.com/wiki/PAK"
+    ]
+  },
+  "detection": {
+    "signature": "5041434B",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PAK Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Magic bytes: 'PACK'"
     },
-    "detection":  {
-                      "signature":  "5041434B",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "PAK Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Magic bytes: \u0027PACK\u0027"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Directory Offset",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.4,
-                       "description":  "Offset to directory table (little-endian)"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Directory Size",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#45B7D1",
-                       "opacity":  0.4,
-                       "description":  "Size of directory table (little-endian)"
-                   }
-               ]
+    {
+      "type": "data",
+      "name": "Directory Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Offset to directory table (little-endian)"
+    },
+    {
+      "type": "data",
+      "name": "Directory Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Size of directory table (little-endian)"
+    }
+  ],
+  "mime_types": [
+    "application/x-pak"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,53 +1,67 @@
 ﻿{
-    "formatName":  "MPEG Video",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mpg",
-                       ".mpeg",
-                       ".m2v"
-                   ],
-    "description":  "MPEG-1/2 video stream",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ISO/IEC 11172 - MPEG-1 Video Standard",
-            "ISO/IEC 13818-2 - MPEG-2 Video Standard",
-            "MPEG Video Coding"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/MPEG-1",
-            "https://en.wikipedia.org/wiki/MPEG-2",
-            "https://blog.ansi.org/ansi/iso-iec-11172-mpeg-1-coding-15-mbits/",
-            "https://blog.ansi.org/ansi/iso-iec-13818-mpeg-2-coding-moving-pictures/"
-        ]
+  "formatName": "MPEG Video",
+  "version": "1.0",
+  "extensions": [
+    ".mpg",
+    ".mpeg",
+    ".m2v"
+  ],
+  "description": "MPEG-1/2 video stream",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ISO/IEC 11172 - MPEG-1 Video Standard",
+      "ISO/IEC 13818-2 - MPEG-2 Video Standard",
+      "MPEG Video Coding"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/MPEG-1",
+      "https://en.wikipedia.org/wiki/MPEG-2",
+      "https://blog.ansi.org/ansi/iso-iec-11172-mpeg-1-coding-15-mbits/",
+      "https://blog.ansi.org/ansi/iso-iec-13818-mpeg-2-coding-moving-pictures/"
+    ]
+  },
+  "detection": {
+    "signature": "000001B3",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "MPEG Sequence Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MPEG sequence start code"
     },
-    "detection":  {
-                      "signature":  "000001B3",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "MPEG Sequence Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MPEG sequence start code"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Picture Size",
-                       "offset":  4,
-                       "length":  3,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Width and height"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Picture Size",
+      "offset": 4,
+      "length": 3,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Width and height"
+    }
+  ],
+  "mime_types": [
+    "video/mpg"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

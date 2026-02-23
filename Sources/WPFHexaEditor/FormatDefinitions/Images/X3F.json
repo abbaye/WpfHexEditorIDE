@@ -1,51 +1,63 @@
 ﻿{
-    "formatName":  "Sigma X3F RAW",
-    "version":  "1.0",
-    "extensions":  [
-                       ".x3f"
-                   ],
-    "description":  "Sigma Foveon X3 RAW format",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Sigma X3F RAW Format - Foveon Sensor",
-            "X3F Proprietary RAW Image Format",
-            "Sigma Foveon X3 Camera Format"
-        ],
-        "web_links": [
-            "https://libopenraw.freedesktop.org/formats/x3f/",
-            "http://fileformats.archiveteam.org/wiki/X3F",
-            "http://www.sigma-sd.com/SD15/technology-capability.html",
-            "https://www.vertopal.com/en/format/x3f"
-        ]
+  "formatName": "Sigma X3F RAW",
+  "version": "1.0",
+  "extensions": [
+    ".x3f"
+  ],
+  "description": "Sigma Foveon X3 RAW format",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Sigma X3F RAW Format - Foveon Sensor",
+      "X3F Proprietary RAW Image Format",
+      "Sigma Foveon X3 Camera Format"
+    ],
+    "web_links": [
+      "https://libopenraw.freedesktop.org/formats/x3f/",
+      "http://fileformats.archiveteam.org/wiki/X3F",
+      "http://www.sigma-sd.com/SD15/technology-capability.html",
+      "https://www.vertopal.com/en/format/x3f"
+    ]
+  },
+  "detection": {
+    "signature": "464F5678",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "X3F Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "FOVx signature"
     },
-    "detection":  {
-                      "signature":  "464F5678",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "X3F Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "FOVx signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Format version"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Format version"
+    }
+  ],
+  "mime_types": [
+    "image/x3f"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

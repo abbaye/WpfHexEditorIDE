@@ -18,7 +18,11 @@
   "detection": {
     "signature": "7F454C46",
     "offset": 0,
-    "required": true
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {},
   "blocks": [
@@ -67,5 +71,12 @@
       "opacity": 0.4,
       "description": "Target OS/ABI (0=System V, 3=Linux, etc.)"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 5,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

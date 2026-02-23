@@ -1,42 +1,56 @@
 ﻿{
-    "formatName":  "Digital Negative",
-    "version":  "1.0",
-    "extensions":  [
-                       ".dng"
-                   ],
-    "description":  "Adobe Digital Negative RAW format",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Adobe Digital Negative (DNG) Specification v1.7.0.0",
-            "DNG Format - TIFF/EP Extension",
-            "ISO 12234-4 Digital Negative Format"
-        ],
-        "web_links": [
-            "https://helpx.adobe.com/content/dam/help/en/photoshop/pdf/DNG_Spec_1_7_0_0.pdf",
-            "https://helpx.adobe.com/camera-raw/digital-negative.html",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000628.shtml",
-            "https://en.wikipedia.org/wiki/Digital_Negative"
-        ]
-    },
-    "detection":  {
-                      "signature":  "49492A00",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "TIFF Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "DNG uses TIFF structure"
-                   }
-               ]
+  "formatName": "Digital Negative",
+  "version": "1.0",
+  "extensions": [
+    ".dng"
+  ],
+  "description": "Adobe Digital Negative RAW format",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Adobe Digital Negative (DNG) Specification v1.7.0.0",
+      "DNG Format - TIFF/EP Extension",
+      "ISO 12234-4 Digital Negative Format"
+    ],
+    "web_links": [
+      "https://helpx.adobe.com/content/dam/help/en/photoshop/pdf/DNG_Spec_1_7_0_0.pdf",
+      "https://helpx.adobe.com/camera-raw/digital-negative.html",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000628.shtml",
+      "https://en.wikipedia.org/wiki/Digital_Negative"
+    ]
+  },
+  "detection": {
+    "signature": "49492A00",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "TIFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "DNG uses TIFF structure"
+    }
+  ],
+  "mime_types": [
+    "image/dng"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

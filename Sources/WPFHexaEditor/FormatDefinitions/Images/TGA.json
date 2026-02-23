@@ -1,61 +1,75 @@
 ﻿{
-    "formatName":  "TGA Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".tga",
-                       ".tpic"
-                   ],
-    "description":  "Truevision TGA/TARGA image format",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Truevision TGA File Format Specification Version 2.0",
-            "TARGA Raster Graphics Format",
-            "TGA Image Format"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/Truevision_TGA",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000180.shtml",
-            "https://formats.kaitai.io/tga/",
-            "https://www.fileformat.info/format/tga/egff.htm"
-        ]
+  "formatName": "TGA Image",
+  "version": "1.0",
+  "extensions": [
+    ".tga",
+    ".tpic"
+  ],
+  "description": "Truevision TGA/TARGA image format",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Truevision TGA File Format Specification Version 2.0",
+      "TARGA Raster Graphics Format",
+      "TGA Image Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/Truevision_TGA",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000180.shtml",
+      "https://formats.kaitai.io/tga/",
+      "https://www.fileformat.info/format/tga/egff.htm"
+    ]
+  },
+  "detection": {
+    "signature": "54525545564953494F4E2D5846494C45",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 16,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "ID Length",
+      "offset": 0,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Length of image ID field"
     },
-    "detection":  {
-                      "signature":  "54525545564953494F4E2D5846494C45",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "ID Length",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Length of image ID field"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Color Map Type",
-                       "offset":  1,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "0=no palette, 1=has palette"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Image Type",
-                       "offset":  2,
-                       "length":  1,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Image type code"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Color Map Type",
+      "offset": 1,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "0=no palette, 1=has palette"
+    },
+    {
+      "type": "field",
+      "name": "Image Type",
+      "offset": 2,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Image type code"
+    }
+  ],
+  "mime_types": [
+    "image/tga"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

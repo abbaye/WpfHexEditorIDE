@@ -1,73 +1,84 @@
-{
-    "formatName":  "IPS Patch",
-    "version":  "1.0",
-    "extensions":  [
-                       ".ips"
-                   ],
-    "description":  "International Patching System (IPS) format - Classic ROM patching format",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "International Patching System (IPS)",
-                                              "IPS Binary Patch Format",
-                                              "Classic ROM Patching Standard"
-                                          ],
-                       "web_links":  [
-                                         "http://justsolve.archiveteam.org/wiki/IPS_(binary_patch_format)",
-                                         "https://docs.fileformat.com/game/ips/",
-                                         "https://consolemods.org/wiki/Applying_ROM_Patches",
-                                         "https://segaretro.org/IPS"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "5041544348",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0,
-                      "firstRecordSize":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "IPS Header",
-                       "offset":  0,
-                       "length":  5,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "PATCH magic identifier - IPS format header"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "First Record Offset",
-                       "offset":  5,
-                       "length":  3,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "First patch record: 24-bit big-endian target file offset"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "First Record Size",
-                       "offset":  8,
-                       "length":  2,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint16",
-                       "storeAs":  "firstRecordSize",
-                       "description":  "Payload size (0 = RLE record, >0 = raw data record)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "First Record Data",
-                       "offset":  10,
-                       "length":  16,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Start of patch data (RLE or raw bytes - structure varies by size field)"
-                   }
-               ]
+﻿{
+  "formatName": "IPS Patch",
+  "version": "1.0",
+  "extensions": [
+    ".ips"
+  ],
+  "description": "International Patching System (IPS) format - Classic ROM patching format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "International Patching System (IPS)",
+      "IPS Binary Patch Format",
+      "Classic ROM Patching Standard"
+    ],
+    "web_links": [
+      "http://justsolve.archiveteam.org/wiki/IPS_(binary_patch_format)",
+      "https://docs.fileformat.com/game/ips/",
+      "https://consolemods.org/wiki/Applying_ROM_Patches",
+      "https://segaretro.org/IPS"
+    ]
+  },
+  "detection": {
+    "signature": "5041544348",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 5,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "firstRecordSize": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "IPS Header",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "PATCH magic identifier - IPS format header"
+    },
+    {
+      "type": "field",
+      "name": "First Record Offset",
+      "offset": 5,
+      "length": 3,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "First patch record: 24-bit big-endian target file offset"
+    },
+    {
+      "type": "field",
+      "name": "First Record Size",
+      "offset": 8,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "firstRecordSize",
+      "description": "Payload size (0 = RLE record, >0 = raw data record)"
+    },
+    {
+      "type": "field",
+      "name": "First Record Data",
+      "offset": 10,
+      "length": 16,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Start of patch data (RLE or raw bytes - structure varies by size field)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

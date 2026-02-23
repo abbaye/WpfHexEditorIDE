@@ -18,7 +18,11 @@
   "detection": {
     "signature": "4954534603000000",
     "offset": 0,
-    "required": true
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {},
   "blocks": [
@@ -58,5 +62,15 @@
       "opacity": 0.4,
       "description": "Unknown field (usually 1)"
     }
-  ]
+  ],
+  "mime_types": [
+    "application/lit"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -18,7 +18,11 @@
   "detection": {
     "signature": "20",
     "offset": 0,
-    "required": false
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {},
   "blocks": [
@@ -49,5 +53,12 @@
       "opacity": 0.4,
       "description": "Memory layout and segment information"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,41 +1,53 @@
 ﻿{
-    "formatName":  "Xvid Video",
-    "version":  "1.0",
-    "extensions":  [
-                       ".xvid"
-                   ],
-    "description":  "Xvid MPEG-4 video codec, typically stored in AVI container",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ISO/IEC 14496-2 - MPEG-4 Part 2 Visual",
-            "Xvid Advanced Simple Profile Implementation",
-            "Open Source MPEG-4 ASP Codec"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/Xvid",
-            "https://en.wikipedia.org/wiki/MPEG-4_Part_2",
-            "https://www.videoproc.com/resource/xvid-video-codec.htm"
-        ]
-    },
-    "detection":  {
-                      "signature":  "52494646",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "RIFF Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "RIFF container header for Xvid"
-                   }
-               ]
+  "formatName": "Xvid Video",
+  "version": "1.0",
+  "extensions": [
+    ".xvid"
+  ],
+  "description": "Xvid MPEG-4 video codec, typically stored in AVI container",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ISO/IEC 14496-2 - MPEG-4 Part 2 Visual",
+      "Xvid Advanced Simple Profile Implementation",
+      "Open Source MPEG-4 ASP Codec"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/Xvid",
+      "https://en.wikipedia.org/wiki/MPEG-4_Part_2",
+      "https://www.videoproc.com/resource/xvid-video-codec.htm"
+    ]
+  },
+  "detection": {
+    "signature": "52494646",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RIFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "RIFF container header for Xvid"
+    }
+  ],
+  "mime_types": [
+    "video/xvid"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

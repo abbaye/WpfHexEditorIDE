@@ -1,42 +1,56 @@
 ﻿{
-    "formatName":  "Olympus Raw Image",
-    "version":  "1.0",
-    "extensions":  [
-                       ".orf"
-                   ],
-    "description":  "Olympus RAW Format camera image",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Olympus RAW Format (ORF) - TIFF-based",
-            "ORF Digital Camera RAW Format",
-            "Olympus Proprietary RAW Image Format"
-        ],
-        "web_links": [
-            "http://fileformats.archiveteam.org/wiki/Olympus_ORF",
-            "https://en.wikipedia.org/wiki/ORF_format",
-            "https://learnandsupport.getolympus.com/learn-center/photography-tips/basics-of-photography/why-shoot-in-raw",
-            "https://www.aftershotpro.com/en/pages/orf-file/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "49492A00",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "TIFF Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "ORF uses TIFF structure"
-                   }
-               ]
+  "formatName": "Olympus Raw Image",
+  "version": "1.0",
+  "extensions": [
+    ".orf"
+  ],
+  "description": "Olympus RAW Format camera image",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Olympus RAW Format (ORF) - TIFF-based",
+      "ORF Digital Camera RAW Format",
+      "Olympus Proprietary RAW Image Format"
+    ],
+    "web_links": [
+      "http://fileformats.archiveteam.org/wiki/Olympus_ORF",
+      "https://en.wikipedia.org/wiki/ORF_format",
+      "https://learnandsupport.getolympus.com/learn-center/photography-tips/basics-of-photography/why-shoot-in-raw",
+      "https://www.aftershotpro.com/en/pages/orf-file/"
+    ]
+  },
+  "detection": {
+    "signature": "49492A00",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "TIFF Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ORF uses TIFF structure"
+    }
+  ],
+  "mime_types": [
+    "image/orf"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

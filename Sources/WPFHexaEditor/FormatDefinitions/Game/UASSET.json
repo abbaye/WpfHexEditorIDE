@@ -1,69 +1,80 @@
 ﻿{
-    "formatName":  "Unreal Engine Asset",
-    "version":  "1.0",
-    "extensions":  [
-                       ".uasset"
-                   ],
-    "description":  "Unreal Engine 4/5 asset file format",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Unreal Engine Asset Package Format",
-                                              "UE4/UE5 Binary Asset Structure",
-                                              "Epic Games Asset Serialization"
-                                          ],
-                       "web_links":  [
-                                         "https://docs.fileformat.com/game/uasset/",
-                                         "https://dev.epicgames.com/documentation/en-us/unreal-engine/assets-and-packages",
-                                         "https://docs.rs/uasset",
-                                         "https://unofficial-modding-guide.com/posts/uassetmodding/"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "C1832A9E",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Package Tag",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Unreal package signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Legacy UE3 Version",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Legacy version from UE3"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "UE4 Version",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Unreal Engine 4 version number"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Version",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Package file version"
-                   }
-               ]
+  "formatName": "Unreal Engine Asset",
+  "version": "1.0",
+  "extensions": [
+    ".uasset"
+  ],
+  "description": "Unreal Engine 4/5 asset file format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Unreal Engine Asset Package Format",
+      "UE4/UE5 Binary Asset Structure",
+      "Epic Games Asset Serialization"
+    ],
+    "web_links": [
+      "https://docs.fileformat.com/game/uasset/",
+      "https://dev.epicgames.com/documentation/en-us/unreal-engine/assets-and-packages",
+      "https://docs.rs/uasset",
+      "https://unofficial-modding-guide.com/posts/uassetmodding/"
+    ]
+  },
+  "detection": {
+    "signature": "C1832A9E",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Package Tag",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Unreal package signature"
+    },
+    {
+      "type": "field",
+      "name": "Legacy UE3 Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Legacy version from UE3"
+    },
+    {
+      "type": "field",
+      "name": "UE4 Version",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Unreal Engine 4 version number"
+    },
+    {
+      "type": "field",
+      "name": "File Version",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Package file version"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,51 +1,63 @@
 ﻿{
-    "formatName":  "Brotli Compression",
-    "version":  "1.0",
-    "extensions":  [
-                       ".br"
-                   ],
-    "description":  "Brotli compressed format developed by Google, used for web compression and file compression",
-    "category":  "Archives",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "RFC 7932 - Brotli Compressed Data Format",
-            "RFC 9841 - Shared Brotli Format",
-            "Brotli Compression Algorithm by Google"
-        ],
-        "web_links": [
-            "https://datatracker.ietf.org/doc/html/rfc7932",
-            "https://github.com/google/brotli",
-            "https://en.wikipedia.org/wiki/Brotli",
-            "https://www.brotli.org/"
-        ]
+  "formatName": "Brotli Compression",
+  "version": "1.0",
+  "extensions": [
+    ".br"
+  ],
+  "description": "Brotli compressed format developed by Google, used for web compression and file compression",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "RFC 7932 - Brotli Compressed Data Format",
+      "RFC 9841 - Shared Brotli Format",
+      "Brotli Compression Algorithm by Google"
+    ],
+    "web_links": [
+      "https://datatracker.ietf.org/doc/html/rfc7932",
+      "https://github.com/google/brotli",
+      "https://en.wikipedia.org/wiki/Brotli",
+      "https://www.brotli.org/"
+    ]
+  },
+  "detection": {
+    "signature": "CE",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Window Bits",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "First byte contains window size bits (usually 0xCE for typical files)"
     },
-    "detection":  {
-                      "signature":  "CE",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "Window Bits",
-                       "offset":  0,
-                       "length":  1,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "First byte contains window size bits (usually 0xCE for typical files)"
-                   },
-                   {
-                       "type":  "data",
-                       "name":  "Compressed Data",
-                       "offset":  1,
-                       "length":  32,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.4,
-                       "description":  "Brotli compressed data stream (bit-packed format)"
-                   }
-               ]
+    {
+      "type": "data",
+      "name": "Compressed Data",
+      "offset": 1,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Brotli compressed data stream (bit-packed format)"
+    }
+  ],
+  "mime_types": [
+    "application/x-br"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

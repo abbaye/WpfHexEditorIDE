@@ -1,94 +1,105 @@
-{
-    "formatName":  "PlayStation 3 Disc/Package",
-    "version":  "1.0",
-    "extensions":  [
-                       ".iso",
-                       ".pkg"
-                   ],
-    "description":  "PlayStation 3 Blu-ray disc image or PKG package format",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "PS3 PKG Package Format",
-            "PlayStation 3 Blu-ray Disc Format",
-            "PS3 Developer Wiki Specifications"
-        ],
-        "web_links": [
-            "https://www.psdevwiki.com/ps3/PKG_files",
-            "https://www.psdevwiki.com/ps3/Bluray_disc",
-            "https://wiki.rpcs3.net/index.php?title=Help:Dumping_PlayStation_3_games",
-            "https://ps2bios.gitlab.io/home/is-it-possible-to-convert-ps3iso-to-pkg/"
-        ]
+﻿{
+  "formatName": "PlayStation 3 Disc/Package",
+  "version": "1.0",
+  "extensions": [
+    ".iso",
+    ".pkg"
+  ],
+  "description": "PlayStation 3 Blu-ray disc image or PKG package format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PS3 PKG Package Format",
+      "PlayStation 3 Blu-ray Disc Format",
+      "PS3 Developer Wiki Specifications"
+    ],
+    "web_links": [
+      "https://www.psdevwiki.com/ps3/PKG_files",
+      "https://www.psdevwiki.com/ps3/Bluray_disc",
+      "https://wiki.rpcs3.net/index.php?title=Help:Dumping_PlayStation_3_games",
+      "https://ps2bios.gitlab.io/home/is-it-possible-to-convert-ps3iso-to-pkg/"
+    ]
+  },
+  "detection": {
+    "signature": "7F504B47",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PKG Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "bytes",
+      "description": "PKG magic: 0x7F 0x50 0x4B 0x47"
     },
-    "detection":  {
-                      "signature":  "7F504B47",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "PKG Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "bytes",
-                       "description":  "PKG magic: 0x7F 0x50 0x4B 0x47"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Package Type",
-                       "offset":  4,
-                       "length":  2,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint16",
-                       "description":  "Package type: 0x0001=PS3, 0x0002=PSP"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Package Flags",
-                       "offset":  6,
-                       "length":  2,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint16",
-                       "description":  "Package flags and attributes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Data Offset",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Offset to package data"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Data Size",
-                       "offset":  12,
-                       "length":  8,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Package data size (64-bit big-endian)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Content ID",
-                       "offset":  48,
-                       "length":  36,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Content ID string (title identifier)"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Package Type",
+      "offset": 4,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "description": "Package type: 0x0001=PS3, 0x0002=PSP"
+    },
+    {
+      "type": "field",
+      "name": "Package Flags",
+      "offset": 6,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "description": "Package flags and attributes"
+    },
+    {
+      "type": "field",
+      "name": "Data Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Offset to package data"
+    },
+    {
+      "type": "field",
+      "name": "Data Size",
+      "offset": 12,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Package data size (64-bit big-endian)"
+    },
+    {
+      "type": "field",
+      "name": "Content ID",
+      "offset": 48,
+      "length": 36,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Content ID string (title identifier)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 6,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

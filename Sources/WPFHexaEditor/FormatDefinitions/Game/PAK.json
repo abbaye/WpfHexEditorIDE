@@ -1,42 +1,53 @@
 ﻿{
-    "formatName":  "Game Package Archive",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pak"
-                   ],
-    "description":  "Generic game asset package",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Quake PAK/PACK Format Specification",
-                                              "id Software PAK Archive Format",
-                                              "Quake Engine PAK Structure"
-                                          ],
-                       "web_links":  [
-                                         "https://quakewiki.org/wiki/.pak",
-                                         "http://fileformats.archiveteam.org/wiki/Quake_PAK",
-                                         "https://formats.kaitai.io/quake_pak/",
-                                         "https://developer.valvesoftware.com/wiki/PAK"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "5041434B",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "PAK Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "PACK or variant"
-                   }
-               ]
+  "formatName": "Game Package Archive",
+  "version": "1.0",
+  "extensions": [
+    ".pak"
+  ],
+  "description": "Generic game asset package",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Quake PAK/PACK Format Specification",
+      "id Software PAK Archive Format",
+      "Quake Engine PAK Structure"
+    ],
+    "web_links": [
+      "https://quakewiki.org/wiki/.pak",
+      "http://fileformats.archiveteam.org/wiki/Quake_PAK",
+      "https://formats.kaitai.io/quake_pak/",
+      "https://developer.valvesoftware.com/wiki/PAK"
+    ]
+  },
+  "detection": {
+    "signature": "5041434B",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "PAK Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "PACK or variant"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

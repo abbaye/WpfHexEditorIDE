@@ -1,78 +1,92 @@
 ﻿{
-    "formatName":  "DirectDraw Surface",
-    "version":  "1.0",
-    "extensions":  [
-                       ".dds"
-                   ],
-    "description":  "DirectX texture format",
-    "category":  "Images",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Microsoft DirectDraw Surface (DDS) Format",
-            "DDS Programming Guide - DirectX Graphics",
-            "DDS_HEADER and DDS_PIXELFORMAT Specification"
-        ],
-        "web_links": [
-            "https://learn.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds",
-            "https://learn.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds-pguide",
-            "https://en.wikipedia.org/wiki/DirectDraw_Surface",
-            "https://docs.fileformat.com/image/dds/"
-        ]
+  "formatName": "DirectDraw Surface",
+  "version": "1.0",
+  "extensions": [
+    ".dds"
+  ],
+  "description": "DirectX texture format",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Microsoft DirectDraw Surface (DDS) Format",
+      "DDS Programming Guide - DirectX Graphics",
+      "DDS_HEADER and DDS_PIXELFORMAT Specification"
+    ],
+    "web_links": [
+      "https://learn.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds",
+      "https://learn.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds-pguide",
+      "https://en.wikipedia.org/wiki/DirectDraw_Surface",
+      "https://docs.fileformat.com/image/dds/"
+    ]
+  },
+  "detection": {
+    "signature": "44445320",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "DDS Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "DDS magic bytes"
     },
-    "detection":  {
-                      "signature":  "44445320",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "DDS Signature",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "DDS magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Header Size",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Size of header structure (124)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Flags",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Surface description flags"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Height",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Height in pixels"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Width",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "description":  "Width in pixels"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of header structure (124)"
+    },
+    {
+      "type": "field",
+      "name": "Flags",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Surface description flags"
+    },
+    {
+      "type": "field",
+      "name": "Height",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Height in pixels"
+    },
+    {
+      "type": "field",
+      "name": "Width",
+      "offset": 16,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Width in pixels"
+    }
+  ],
+  "mime_types": [
+    "image/dds"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 5,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,103 +1,114 @@
-{
-    "formatName":  "PlayStation 4 Package",
-    "version":  "1.0",
-    "extensions":  [
-                       ".pkg"
-                   ],
-    "description":  "PlayStation 4 PKG package format (encrypted game/update packages)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "PlayStation 4 PKG Package Format Specification",
-            "OrbisOS PKG/PFS Structure",
-            "LibOrbisPkg - PS4 PKG/SFO/PFS Library"
-        ],
-        "web_links": [
-            "https://www.psdevwiki.com/ps4/PKG_files",
-            "https://github.com/maxton/LibOrbisPkg",
-            "https://github.com/pearlxcore/PS4-PKG-Tool",
-            "https://www.psxhax.com/threads/ps4-pkg-information-on-playstation-4-packages-and-keys-via-maxton.7280/"
-        ]
+﻿{
+  "formatName": "PlayStation 4 Package",
+  "version": "1.0",
+  "extensions": [
+    ".pkg"
+  ],
+  "description": "PlayStation 4 PKG package format (encrypted game/update packages)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PlayStation 4 PKG Package Format Specification",
+      "OrbisOS PKG/PFS Structure",
+      "LibOrbisPkg - PS4 PKG/SFO/PFS Library"
+    ],
+    "web_links": [
+      "https://www.psdevwiki.com/ps4/PKG_files",
+      "https://github.com/maxton/LibOrbisPkg",
+      "https://github.com/pearlxcore/PS4-PKG-Tool",
+      "https://www.psxhax.com/threads/ps4-pkg-information-on-playstation-4-packages-and-keys-via-maxton.7280/"
+    ]
+  },
+  "detection": {
+    "signature": "7F434E54",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CNT Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "bytes",
+      "description": "PS4 PKG magic: 0x7F 0x43 0x4E 0x54 (CNT)"
     },
-    "detection":  {
-                      "signature":  "7F434E54",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "CNT Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "bytes",
-                       "description":  "PS4 PKG magic: 0x7F 0x43 0x4E 0x54 (CNT)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Package Type",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Package type flags (PS4 specific)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Package Flags",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Package flags and encryption info"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Offset",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Offset to file table"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Count",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Number of files in package"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Package Size",
-                       "offset":  24,
-                       "length":  8,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Total package size (64-bit big-endian)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Content ID",
-                       "offset":  64,
-                       "length":  36,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "ascii",
-                       "description":  "Content identifier (title ID)"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Package Type",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Package type flags (PS4 specific)"
+    },
+    {
+      "type": "field",
+      "name": "Package Flags",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Package flags and encryption info"
+    },
+    {
+      "type": "field",
+      "name": "File Offset",
+      "offset": 12,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Offset to file table"
+    },
+    {
+      "type": "field",
+      "name": "File Count",
+      "offset": 16,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Number of files in package"
+    },
+    {
+      "type": "field",
+      "name": "Package Size",
+      "offset": 24,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Total package size (64-bit big-endian)"
+    },
+    {
+      "type": "field",
+      "name": "Content ID",
+      "offset": 64,
+      "length": 36,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Content identifier (title ID)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 7,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

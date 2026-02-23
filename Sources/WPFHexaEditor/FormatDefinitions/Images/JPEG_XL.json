@@ -1,48 +1,62 @@
 ﻿{
-    "formatName": "JPEG XL Image",
-    "version": "1.0",
-    "extensions": [
-        ".jxl"
+  "formatName": "JPEG XL Image",
+  "version": "1.0",
+  "extensions": [
+    ".jxl"
+  ],
+  "description": "JPEG XL - Next-generation image format",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ISO/IEC 10918-1 - Digital Compression and Coding",
+      "JFIF File Format Specification",
+      "ITU-T T.81"
     ],
-    "description": "JPEG XL - Next-generation image format",
-    "category": "Images",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ISO/IEC 10918-1 - Digital Compression and Coding",
-            "JFIF File Format Specification",
-            "ITU-T T.81"
-        ],
-        "web_links": [
-            "https://www.w3.org/Graphics/JPEG/",
-            "https://jpeg.org/jpeg/",
-            "https://en.wikipedia.org/wiki/JPEG"
-        ]
-    },
-    "detection": {
-        "signature": "FF0A",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {},
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "JPEG XL Signature",
-            "offset": 0,
-            "length": 2,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "0xFF 0x0A magic bytes"
-        },
-        {
-            "type": "field",
-            "name": "Codestream Header",
-            "offset": 2,
-            "length": 8,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "JPEG XL codestream header"
-        }
+    "web_links": [
+      "https://www.w3.org/Graphics/JPEG/",
+      "https://jpeg.org/jpeg/",
+      "https://en.wikipedia.org/wiki/JPEG"
     ]
+  },
+  "detection": {
+    "signature": "FF0A",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 2,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "JPEG XL Signature",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "0xFF 0x0A magic bytes"
+    },
+    {
+      "type": "field",
+      "name": "Codestream Header",
+      "offset": 2,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "JPEG XL codestream header"
+    }
+  ],
+  "mime_types": [
+    "image/jxl"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,164 +1,175 @@
 ﻿{
-    "formatName": "Game Boy Advance ROM",
-    "version": "1.0",
-    "extensions": [
-        ".gba"
+  "formatName": "Game Boy Advance ROM",
+  "version": "1.0",
+  "extensions": [
+    ".gba"
+  ],
+  "description": "Game Boy Advance ROM cartridge format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "GBATEK - GBA Technical Specification",
+      "Game Boy Advance Cartridge Header",
+      "ARM7TDMI Programming Reference"
     ],
-    "description": "Game Boy Advance ROM cartridge format",
-    "category": "Game",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "GBATEK - GBA Technical Specification",
-            "Game Boy Advance Cartridge Header",
-            "ARM7TDMI Programming Reference"
-        ],
-        "web_links": [
-            "http://problemkaputt.de/gbatek.htm",
-            "https://problemkaputt.de/gbatek-gba-cartridge-header.htm",
-            "http://www.sizecoding.org/wiki/Gameboy_Advance",
-            "https://www.akkit.org/info/gbatek.htm"
-        ]
-    },
-    "detection": {
-        "signature": "96",
-        "offset": 178,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0,
-        "gameTitle": "",
-        "gameCode": "",
-        "complement": 0
-    },
-    "blocks": [
-        {
-            "type": "field",
-            "name": "Entry Point",
-            "offset": 0,
-            "length": 4,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "valueType": "bytes",
-            "description": "ARM branch instruction jumping past header (EA xxxxxx = B xxxxxxx)"
-        },
-        {
-            "type": "signature",
-            "name": "Nintendo Logo",
-            "offset": 4,
-            "length": 156,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "GBA Nintendo logo bitmap (156 bytes, verified by boot ROM at 0x04-0x9F)"
-        },
-        {
-            "type": "field",
-            "name": "Game Title",
-            "offset": 160,
-            "length": 12,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "valueType": "ascii",
-            "storeAs": "gameTitle",
-            "description": "Game title in uppercase ASCII (null-padded)"
-        },
-        {
-            "type": "field",
-            "name": "Game Code",
-            "offset": 172,
-            "length": 4,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "valueType": "ascii",
-            "storeAs": "gameCode",
-            "description": "4-character game code: AGB-AAEE (A=game ID, E=region: E=USA, J=Japan, P=Europe)"
-        },
-        {
-            "type": "field",
-            "name": "Maker Code",
-            "offset": 176,
-            "length": 2,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "ascii",
-            "description": "2-character licensee/maker code"
-        },
-        {
-            "type": "signature",
-            "name": "Fixed Value 0x96",
-            "offset": 178,
-            "length": 1,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "Must be 0x96 for hardware authentication (verified at boot)"
-        },
-        {
-            "type": "field",
-            "name": "Main Unit Code",
-            "offset": 179,
-            "length": 1,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "Always 0x00 for standard GBA games",
-            "validationRules": {
-                "allowedValues": [
-                    0
-                ]
-            }
-        },
-        {
-            "type": "field",
-            "name": "Device Type",
-            "offset": 180,
-            "length": 1,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "0x00=normal, 0x80=DACS debug cartridge"
-        },
-        {
-            "type": "field",
-            "name": "Reserved Area",
-            "offset": 181,
-            "length": 7,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "bytes",
-            "hidden": true,
-            "description": "Reserved - must be zero"
-        },
-        {
-            "type": "field",
-            "name": "Software Version",
-            "offset": 188,
-            "length": 1,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "description": "Game revision number (0x00 = first version)"
-        },
-        {
-            "type": "field",
-            "name": "Header Checksum",
-            "offset": 189,
-            "length": 1,
-            "color": "#FF6B9D",
-            "opacity": 0.3,
-            "valueType": "uint8",
-            "storeAs": "complement",
-            "description": "Complement check: -(sum of bytes 0xA0-0xBC) - 0x19"
-        },
-        {
-            "type": "field",
-            "name": "Reserved",
-            "offset": 190,
-            "length": 2,
-            "color": "#C7CEEA",
-            "opacity": 0.3,
-            "valueType": "bytes",
-            "hidden": true,
-            "description": "Reserved, must be zero"
-        }
+    "web_links": [
+      "http://problemkaputt.de/gbatek.htm",
+      "https://problemkaputt.de/gbatek-gba-cartridge-header.htm",
+      "http://www.sizecoding.org/wiki/Gameboy_Advance",
+      "https://www.akkit.org/info/gbatek.htm"
     ]
+  },
+  "detection": {
+    "signature": "96",
+    "offset": 178,
+    "required": true,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "gameTitle": "",
+    "gameCode": "",
+    "complement": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Entry Point",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "ARM branch instruction jumping past header (EA xxxxxx = B xxxxxxx)"
+    },
+    {
+      "type": "signature",
+      "name": "Nintendo Logo",
+      "offset": 4,
+      "length": 156,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "GBA Nintendo logo bitmap (156 bytes, verified by boot ROM at 0x04-0x9F)"
+    },
+    {
+      "type": "field",
+      "name": "Game Title",
+      "offset": 160,
+      "length": 12,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameTitle",
+      "description": "Game title in uppercase ASCII (null-padded)"
+    },
+    {
+      "type": "field",
+      "name": "Game Code",
+      "offset": 172,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameCode",
+      "description": "4-character game code: AGB-AAEE (A=game ID, E=region: E=USA, J=Japan, P=Europe)"
+    },
+    {
+      "type": "field",
+      "name": "Maker Code",
+      "offset": 176,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "2-character licensee/maker code"
+    },
+    {
+      "type": "signature",
+      "name": "Fixed Value 0x96",
+      "offset": 178,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Must be 0x96 for hardware authentication (verified at boot)"
+    },
+    {
+      "type": "field",
+      "name": "Main Unit Code",
+      "offset": 179,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Always 0x00 for standard GBA games",
+      "validationRules": {
+        "allowedValues": [
+          0
+        ]
+      }
+    },
+    {
+      "type": "field",
+      "name": "Device Type",
+      "offset": 180,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "0x00=normal, 0x80=DACS debug cartridge"
+    },
+    {
+      "type": "field",
+      "name": "Reserved Area",
+      "offset": 181,
+      "length": 7,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "hidden": true,
+      "description": "Reserved - must be zero"
+    },
+    {
+      "type": "field",
+      "name": "Software Version",
+      "offset": 188,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "description": "Game revision number (0x00 = first version)"
+    },
+    {
+      "type": "field",
+      "name": "Header Checksum",
+      "offset": 189,
+      "length": 1,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "complement",
+      "description": "Complement check: -(sum of bytes 0xA0-0xBC) - 0x19"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 190,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "hidden": true,
+      "description": "Reserved, must be zero"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 80,
+    "documentation_level": "detailed",
+    "blocks_defined": 12,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -1,43 +1,55 @@
 ﻿{
-    "formatName":  "DTS Audio",
-    "version":  "1.0",
-    "extensions":  [
-                       ".dts",
-                       ".dtshd"
-                   ],
-    "description":  "DTS (Digital Theater Systems) multi-channel audio codec",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "DTS Coherent Acoustics - ETSI TS 102 114",
-            "DTS Digital Surround Specification",
-            "DTS-HD Master Audio Format"
-        ],
-        "web_links": [
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000232.shtml",
-            "https://en.wikipedia.org/wiki/DTS,_Inc.",
-            "https://en.wikipedia.org/wiki/DTS-HD_Master_Audio",
-            "https://dts.com/"
-        ]
-    },
-    "detection":  {
-                      "signature":  "7FFE8001",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "DTS Sync Word",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "DTS core substream sync word"
-                   }
-               ]
+  "formatName": "DTS Audio",
+  "version": "1.0",
+  "extensions": [
+    ".dts",
+    ".dtshd"
+  ],
+  "description": "DTS (Digital Theater Systems) multi-channel audio codec",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "DTS Coherent Acoustics - ETSI TS 102 114",
+      "DTS Digital Surround Specification",
+      "DTS-HD Master Audio Format"
+    ],
+    "web_links": [
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000232.shtml",
+      "https://en.wikipedia.org/wiki/DTS,_Inc.",
+      "https://en.wikipedia.org/wiki/DTS-HD_Master_Audio",
+      "https://dts.com/"
+    ]
+  },
+  "detection": {
+    "signature": "7FFE8001",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "DTS Sync Word",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "DTS core substream sync word"
+    }
+  ],
+  "mime_types": [
+    "audio/dts"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

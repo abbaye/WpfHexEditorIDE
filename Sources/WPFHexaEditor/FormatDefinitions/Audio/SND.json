@@ -1,42 +1,54 @@
 ﻿{
-    "formatName":  "Sound File",
-    "version":  "1.0",
-    "extensions":  [
-                       ".snd"
-                   ],
-    "description":  "Generic sound file format used by various systems",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "NeXT/Sun Soundfile Format Specification",
-            "Digital Sound File Format (.snd)",
-            "Sun Microsystems Audio File Standard"
-        ],
-        "web_links": [
-            "http://soundfile.sapp.org/doc/NextFormat/",
-            "https://en.wikipedia.org/wiki/Digital_sound_file_formats_using_the_.snd_extension",
-            "https://www.file-recovery.com/au-signature-format.htm",
-            "http://fileformats.archiveteam.org/wiki/AU"
-        ]
-    },
-    "detection":  {
-                      "signature":  "2E736E64",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "SND Header",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  ".snd - Sound file header"
-                   }
-               ]
+  "formatName": "Sound File",
+  "version": "1.0",
+  "extensions": [
+    ".snd"
+  ],
+  "description": "Generic sound file format used by various systems",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "NeXT/Sun Soundfile Format Specification",
+      "Digital Sound File Format (.snd)",
+      "Sun Microsystems Audio File Standard"
+    ],
+    "web_links": [
+      "http://soundfile.sapp.org/doc/NextFormat/",
+      "https://en.wikipedia.org/wiki/Digital_sound_file_formats_using_the_.snd_extension",
+      "https://www.file-recovery.com/au-signature-format.htm",
+      "http://fileformats.archiveteam.org/wiki/AU"
+    ]
+  },
+  "detection": {
+    "signature": "2E736E64",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SND Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": ".snd - Sound file header"
+    }
+  ],
+  "mime_types": [
+    "audio/snd"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

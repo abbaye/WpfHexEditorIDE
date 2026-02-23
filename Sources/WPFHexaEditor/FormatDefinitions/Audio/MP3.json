@@ -1,68 +1,82 @@
 ﻿{
-    "formatName": "MP3 Audio",
-    "version": "1.0",
-    "extensions": [
-        ".mp3"
+  "formatName": "MP3 Audio",
+  "version": "1.0",
+  "extensions": [
+    ".mp3"
+  ],
+  "description": "MPEG-1/2 Audio Layer III format",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "ISO/IEC 11172-3 - MPEG-1 Audio Layer III",
+      "ISO/IEC 13818-3 - MPEG-2 Audio",
+      "ID3v2 Tag Specification"
     ],
-    "description": "MPEG-1/2 Audio Layer III format",
-    "category": "Audio",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "ISO/IEC 11172-3 - MPEG-1 Audio Layer III",
-            "ISO/IEC 13818-3 - MPEG-2 Audio",
-            "ID3v2 Tag Specification"
-        ],
-        "web_links": [
-            "https://www.mp3-tech.org/",
-            "https://id3.org/",
-            "https://en.wikipedia.org/wiki/MP3"
-        ]
-    },
-    "detection": {
-        "signature": "494433",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "ID3 Header",
-            "offset": 0,
-            "length": 3,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "ID3 tag signature"
-        },
-        {
-            "type": "field",
-            "name": "Version",
-            "offset": 3,
-            "length": 2,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "ID3v2 version"
-        },
-        {
-            "type": "field",
-            "name": "Flags",
-            "offset": 5,
-            "length": 1,
-            "color": "#95E1D3",
-            "opacity": 0.3,
-            "description": "Tag flags"
-        },
-        {
-            "type": "field",
-            "name": "Size",
-            "offset": 6,
-            "length": 4,
-            "color": "#FFE66D",
-            "opacity": 0.3,
-            "description": "Tag size (syncsafe integer)"
-        }
+    "web_links": [
+      "https://www.mp3-tech.org/",
+      "https://id3.org/",
+      "https://en.wikipedia.org/wiki/MP3"
     ]
+  },
+  "detection": {
+    "signature": "494433",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ID3 Header",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "ID3 tag signature"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 3,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "ID3v2 version"
+    },
+    {
+      "type": "field",
+      "name": "Flags",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Tag flags"
+    },
+    {
+      "type": "field",
+      "name": "Size",
+      "offset": 6,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Tag size (syncsafe integer)"
+    }
+  ],
+  "mime_types": [
+    "audio/mp3"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

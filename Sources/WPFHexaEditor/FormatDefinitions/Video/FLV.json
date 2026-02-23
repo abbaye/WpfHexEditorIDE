@@ -1,69 +1,83 @@
 ﻿{
-    "formatName":  "Flash Video",
-    "version":  "1.0",
-    "extensions":  [
-                       ".flv"
-                   ],
-    "description":  "Adobe Flash Video format",
-    "category":  "Video",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Adobe Flash Video File Format Specification Version 10.1",
-            "FLV Container Format",
-            "Flash Video Specification"
-        ],
-        "web_links": [
-            "https://download.macromedia.com/f4v/video_file_format_spec_v10_1.pdf",
-            "https://en.wikipedia.org/wiki/Flash_Video",
-            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000131.shtml",
-            "https://www.adobe.com/creativecloud/file-types/video/container/flv.html"
-        ]
+  "formatName": "Flash Video",
+  "version": "1.0",
+  "extensions": [
+    ".flv"
+  ],
+  "description": "Adobe Flash Video format",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Adobe Flash Video File Format Specification Version 10.1",
+      "FLV Container Format",
+      "Flash Video Specification"
+    ],
+    "web_links": [
+      "https://download.macromedia.com/f4v/video_file_format_spec_v10_1.pdf",
+      "https://en.wikipedia.org/wiki/Flash_Video",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000131.shtml",
+      "https://www.adobe.com/creativecloud/file-types/video/container/flv.html"
+    ]
+  },
+  "detection": {
+    "signature": "464C56",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "FLV Signature",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "FLV magic bytes"
     },
-    "detection":  {
-                      "signature":  "464C56",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "FLV Signature",
-                       "offset":  0,
-                       "length":  3,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "FLV magic bytes"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Version",
-                       "offset":  3,
-                       "length":  1,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "FLV version (usually 1)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Type Flags",
-                       "offset":  4,
-                       "length":  1,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "Audio/Video presence flags"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Data Offset",
-                       "offset":  5,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "description":  "Offset to first tag"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 3,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "FLV version (usually 1)"
+    },
+    {
+      "type": "field",
+      "name": "Type Flags",
+      "offset": 4,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Audio/Video presence flags"
+    },
+    {
+      "type": "field",
+      "name": "Data Offset",
+      "offset": 5,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "Offset to first tag"
+    }
+  ],
+  "mime_types": [
+    "video/flv"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 4,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

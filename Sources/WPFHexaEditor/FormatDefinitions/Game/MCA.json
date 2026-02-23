@@ -1,51 +1,62 @@
 ﻿{
-    "formatName":  "Minecraft Anvil Region",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mca"
-                   ],
-    "description":  "Minecraft Anvil world region format",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Minecraft Anvil Region Format",
-                                              "Anvil Chunk Storage Format",
-                                              "Region File Format (32×32 chunks)"
-                                          ],
-                       "web_links":  [
-                                         "https://minecraft.fandom.com/wiki/Anvil_file_format",
-                                         "https://minecraft.fandom.com/wiki/Region_file_format",
-                                         "https://wiki.vg/Map_Format",
-                                         "https://docs.fileformat.com/game/mca/"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "00",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "Location Table",
-                       "offset":  0,
-                       "length":  4096,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "Chunk location table (1024 entries)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Timestamp Table",
-                       "offset":  4096,
-                       "length":  4096,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Chunk timestamp table"
-                   }
-               ]
+  "formatName": "Minecraft Anvil Region",
+  "version": "1.0",
+  "extensions": [
+    ".mca"
+  ],
+  "description": "Minecraft Anvil world region format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Minecraft Anvil Region Format",
+      "Anvil Chunk Storage Format",
+      "Region File Format (32×32 chunks)"
+    ],
+    "web_links": [
+      "https://minecraft.fandom.com/wiki/Anvil_file_format",
+      "https://minecraft.fandom.com/wiki/Region_file_format",
+      "https://wiki.vg/Map_Format",
+      "https://docs.fileformat.com/game/mca/"
+    ]
+  },
+  "detection": {
+    "signature": "00",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 1,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Location Table",
+      "offset": 0,
+      "length": 4096,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Chunk location table (1024 entries)"
+    },
+    {
+      "type": "field",
+      "name": "Timestamp Table",
+      "offset": 4096,
+      "length": 4096,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Chunk timestamp table"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

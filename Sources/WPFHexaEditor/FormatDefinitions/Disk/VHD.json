@@ -1,60 +1,71 @@
 ﻿{
-    "formatName":  "Virtual Hard Disk",
-    "version":  "1.0",
-    "extensions":  [
-                       ".vhd"
-                   ],
-    "description":  "Microsoft Virtual Hard Disk format",
-    "category":  "Disk",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Virtual Hard Disk (VHD) Image Format Specification",
-            "Microsoft Hyper-V VHD Format",
-            "Connectix Virtual PC Disk Format"
-        ],
-        "web_links": [
-            "https://en.wikipedia.org/wiki/VHD_(file_format)",
-            "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831446(v=ws.11)",
-            "https://github.com/libyal/libvhdi/blob/main/documentation/Virtual%20Hard%20Disk%20(VHD)%20image%20format.asciidoc",
-            "https://learn.microsoft.com/en-us/windows-server/storage/disk-management/manage-virtual-hard-disks"
-        ]
+  "formatName": "Virtual Hard Disk",
+  "version": "1.0",
+  "extensions": [
+    ".vhd"
+  ],
+  "description": "Microsoft Virtual Hard Disk format",
+  "category": "Disk",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Virtual Hard Disk (VHD) Image Format Specification",
+      "Microsoft Hyper-V VHD Format",
+      "Connectix Virtual PC Disk Format"
+    ],
+    "web_links": [
+      "https://en.wikipedia.org/wiki/VHD_(file_format)",
+      "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831446(v=ws.11)",
+      "https://github.com/libyal/libvhdi/blob/main/documentation/Virtual%20Hard%20Disk%20(VHD)%20image%20format.asciidoc",
+      "https://learn.microsoft.com/en-us/windows-server/storage/disk-management/manage-virtual-hard-disks"
+    ]
+  },
+  "detection": {
+    "signature": "636F6E6563746978",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "VHD Cookie",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "conectix signature"
     },
-    "detection":  {
-                      "signature":  "636F6E6563746978",
-                      "offset":  0,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "VHD Cookie",
-                       "offset":  0,
-                       "length":  8,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "conectix signature"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Features",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "description":  "Feature flags"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Format Version",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "description":  "File format version"
-                   }
-               ]
+    {
+      "type": "field",
+      "name": "Features",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Feature flags"
+    },
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 12,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "File format version"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

@@ -18,7 +18,11 @@
   "detection": {
     "signature": "4C0000000114020000000000C0000000",
     "offset": 0,
-    "required": true
+    "required": true,
+    "validation": {
+      "min_file_size": 16,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {
     "currentOffset": 0
@@ -51,5 +55,12 @@
       "opacity": 0.3,
       "description": "Shortcut flags"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 3,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

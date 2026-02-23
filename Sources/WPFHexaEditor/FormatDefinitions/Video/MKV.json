@@ -1,50 +1,64 @@
 ﻿{
-    "formatName": "Matroska Video",
-    "version": "1.0",
-    "extensions": [
-        ".mkv",
-        ".mka",
-        ".mks"
+  "formatName": "Matroska Video",
+  "version": "1.0",
+  "extensions": [
+    ".mkv",
+    ".mka",
+    ".mks"
+  ],
+  "description": "Matroska multimedia container - Open standard",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Microsoft AVI RIFF File Format",
+      "Audio Video Interleave Format"
     ],
-    "description": "Matroska multimedia container - Open standard",
-    "category": "Video",
-    "author": "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Microsoft AVI RIFF File Format",
-            "Audio Video Interleave Format"
-        ],
-        "web_links": [
-            "https://docs.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference",
-            "https://en.wikipedia.org/wiki/Audio_Video_Interleave"
-        ]
-    },
-    "detection": {
-        "signature": "1A45DFA3",
-        "offset": 0,
-        "required": true
-    },
-    "variables": {
-        "currentOffset": 0
-    },
-    "blocks": [
-        {
-            "type": "signature",
-            "name": "EBML Header",
-            "offset": 0,
-            "length": 4,
-            "color": "#FF6B6B",
-            "opacity": 0.4,
-            "description": "EBML signature"
-        },
-        {
-            "type": "field",
-            "name": "Header Size",
-            "offset": 4,
-            "length": 1,
-            "color": "#4ECDC4",
-            "opacity": 0.3,
-            "description": "Size of header element"
-        }
+    "web_links": [
+      "https://docs.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference",
+      "https://en.wikipedia.org/wiki/Audio_Video_Interleave"
     ]
+  },
+  "detection": {
+    "signature": "1A45DFA3",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "EBML Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "EBML signature"
+    },
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Size of header element"
+    }
+  ],
+  "mime_types": [
+    "video/mkv"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

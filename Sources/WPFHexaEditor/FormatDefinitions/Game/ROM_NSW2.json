@@ -1,150 +1,161 @@
-{
-    "formatName":  "Nintendo Switch 2 Package",
-    "version":  "1.0",
-    "extensions":  [
-                       ".nsp",
-                       ".xci",
-                       ".nca"
-                   ],
-    "description":  "Nintendo Switch 2 next-gen package formats (NSP2/XCI2/NCA2 - enhanced versions)",
-    "category":  "Game",
-    "author":  "WPFHexaEditor Team",
-    "references":  {
-                       "specifications":  [
-                                              "Nintendo Switch File Formats (Base)",
-                                              "NSP/XCI/NCA Format Evolution",
-                                              "Next-Gen Nintendo Format Standards"
-                                          ],
-                       "web_links":  [
-                                         "https://www.retroreversing.com/SwitchFileFormats",
-                                         "https://www.oreateai.com/blog/understanding-the-differences-between-xci-and-nsp-formats-for-nintendo-switch/",
-                                         "https://switchrom101.com/what-file-formats-are-switch-roms-nsp-vs-xci-explained-simply/",
-                                         "https://github.com/jakcron/nstool"
-                                     ]
-                   },
-    "detection":  {
-                      "signature":  "504653",
-                      "offset":  0,
-                      "required":  false
-                  },
-    "variables":  {
-                      "currentOffset":  0,
-                      "formatVersion":  0,
-                      "fileCount":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "field",
-                       "name":  "PFS Magic",
-                       "offset":  0,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "valueType":  "bytes",
-                       "description":  "PFS0/PFS1 magic for Switch 2 NSP files (0x50 0x46 0x53 0x30/0x31)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Format Version",
-                       "offset":  4,
-                       "length":  2,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint16",
-                       "storeAs":  "formatVersion",
-                       "description":  "Format version (v2+ for Switch 2 enhanced features)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Reserved",
-                       "offset":  6,
-                       "length":  2,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint16",
-                       "hidden":  true,
-                       "description":  "Reserved/alignment"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Count",
-                       "offset":  8,
-                       "length":  4,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "storeAs":  "fileCount",
-                       "description":  "Number of files in the package"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "String Table Size",
-                       "offset":  12,
-                       "length":  4,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Size of filename string table"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Compression Type",
-                       "offset":  16,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Compression algorithm (0=None, 1=ZSTD, 2=LZ4, 3=Switch 2 enhanced)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Encryption Flags",
-                       "offset":  20,
-                       "length":  4,
-                       "color":  "#FF6B9D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Switch 2 enhanced encryption flags"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Title ID",
-                       "offset":  24,
-                       "length":  8,
-                       "color":  "#4ECDC4",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "Switch 2 title identifier (64-bit)"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "SDK Version",
-                       "offset":  32,
-                       "length":  4,
-                       "color":  "#C7CEEA",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Nintendo Switch 2 SDK version used to build package"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "Content Type",
-                       "offset":  36,
-                       "length":  4,
-                       "color":  "#FFE66D",
-                       "opacity":  0.3,
-                       "valueType":  "uint32",
-                       "description":  "Content type: 0=Application, 1=Update, 2=DLC, 3=AOC, 4=Switch 2 exclusive"
-                   },
-                   {
-                       "type":  "field",
-                       "name":  "File Entry Table",
-                       "offset":  40,
-                       "length":  64,
-                       "color":  "#95E1D3",
-                       "opacity":  0.3,
-                       "valueType":  "bytes",
-                       "description":  "File entry table (offset, size, hash, string offset for each file)"
-                   }
-               ]
+﻿{
+  "formatName": "Nintendo Switch 2 Package",
+  "version": "1.0",
+  "extensions": [
+    ".nsp",
+    ".xci",
+    ".nca"
+  ],
+  "description": "Nintendo Switch 2 next-gen package formats (NSP2/XCI2/NCA2 - enhanced versions)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Nintendo Switch File Formats (Base)",
+      "NSP/XCI/NCA Format Evolution",
+      "Next-Gen Nintendo Format Standards"
+    ],
+    "web_links": [
+      "https://www.retroreversing.com/SwitchFileFormats",
+      "https://www.oreateai.com/blog/understanding-the-differences-between-xci-and-nsp-formats-for-nintendo-switch/",
+      "https://switchrom101.com/what-file-formats-are-switch-roms-nsp-vs-xci-explained-simply/",
+      "https://github.com/jakcron/nstool"
+    ]
+  },
+  "detection": {
+    "signature": "504653",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "formatVersion": 0,
+    "fileCount": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "PFS Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "bytes",
+      "description": "PFS0/PFS1 magic for Switch 2 NSP files (0x50 0x46 0x53 0x30/0x31)"
+    },
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "formatVersion",
+      "description": "Format version (v2+ for Switch 2 enhanced features)"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 6,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "hidden": true,
+      "description": "Reserved/alignment"
+    },
+    {
+      "type": "field",
+      "name": "File Count",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "fileCount",
+      "description": "Number of files in the package"
+    },
+    {
+      "type": "field",
+      "name": "String Table Size",
+      "offset": 12,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Size of filename string table"
+    },
+    {
+      "type": "field",
+      "name": "Compression Type",
+      "offset": 16,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Compression algorithm (0=None, 1=ZSTD, 2=LZ4, 3=Switch 2 enhanced)"
+    },
+    {
+      "type": "field",
+      "name": "Encryption Flags",
+      "offset": 20,
+      "length": 4,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Switch 2 enhanced encryption flags"
+    },
+    {
+      "type": "field",
+      "name": "Title ID",
+      "offset": 24,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "Switch 2 title identifier (64-bit)"
+    },
+    {
+      "type": "field",
+      "name": "SDK Version",
+      "offset": 32,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Nintendo Switch 2 SDK version used to build package"
+    },
+    {
+      "type": "field",
+      "name": "Content Type",
+      "offset": 36,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Content type: 0=Application, 1=Update, 2=DLC, 3=AOC, 4=Switch 2 exclusive"
+    },
+    {
+      "type": "field",
+      "name": "File Entry Table",
+      "offset": 40,
+      "length": 64,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "description": "File entry table (offset, size, hash, string offset for each file)"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 80,
+    "documentation_level": "detailed",
+    "blocks_defined": 11,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

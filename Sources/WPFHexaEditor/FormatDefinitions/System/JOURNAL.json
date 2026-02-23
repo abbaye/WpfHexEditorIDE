@@ -18,7 +18,11 @@
   "detection": {
     "signature": "4C50484844524800",
     "offset": 0,
-    "required": true
+    "required": true,
+    "validation": {
+      "min_file_size": 8,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {
     "currentOffset": 0
@@ -114,5 +118,12 @@
       "opacity": 0.3,
       "description": "Size of data arena"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 10,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

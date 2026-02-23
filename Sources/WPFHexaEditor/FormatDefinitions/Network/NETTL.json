@@ -19,7 +19,11 @@
   "detection": {
     "signature": "00000001",
     "offset": 0,
-    "required": false
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {
     "currentOffset": 0
@@ -79,5 +83,12 @@
       "opacity": 0.3,
       "description": "Time zone string"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 75,
+    "documentation_level": "moderate",
+    "blocks_defined": 6,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

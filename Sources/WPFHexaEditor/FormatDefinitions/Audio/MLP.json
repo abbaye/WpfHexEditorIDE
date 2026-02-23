@@ -1,42 +1,54 @@
 ﻿{
-    "formatName":  "Meridian Lossless Packing",
-    "version":  "1.0",
-    "extensions":  [
-                       ".mlp"
-                   ],
-    "description":  "Meridian Lossless Packing lossless audio compression for DVD-Audio",
-    "category":  "Audio",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Meridian Lossless Packing Specification",
-            "MLP DVD-Audio Standard",
-            "Packed PCM Audio Codec"
-        ],
-        "web_links": [
-            "https://www.ambisonic.net/pdf/mlp_pr.pdf",
-            "https://en.wikipedia.org/wiki/Meridian_Lossless_Packing",
-            "https://wiki.hydrogenaudio.org/index.php?title=Meridian_Lossless_Packing",
-            "https://www.meridian-audio.info/public/mlp_jap_new%5B2521%5D.pdf"
-        ]
-    },
-    "detection":  {
-                      "signature":  "18E371F3",
-                      "offset":  4,
-                      "required":  true
-                  },
-    "variables":  {
-
-                  },
-    "blocks":  [
-                   {
-                       "type":  "signature",
-                       "name":  "MLP Sync Word",
-                       "offset":  4,
-                       "length":  4,
-                       "color":  "#FF6B6B",
-                       "opacity":  0.4,
-                       "description":  "MLP major sync word"
-                   }
-               ]
+  "formatName": "Meridian Lossless Packing",
+  "version": "1.0",
+  "extensions": [
+    ".mlp"
+  ],
+  "description": "Meridian Lossless Packing lossless audio compression for DVD-Audio",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Meridian Lossless Packing Specification",
+      "MLP DVD-Audio Standard",
+      "Packed PCM Audio Codec"
+    ],
+    "web_links": [
+      "https://www.ambisonic.net/pdf/mlp_pr.pdf",
+      "https://en.wikipedia.org/wiki/Meridian_Lossless_Packing",
+      "https://wiki.hydrogenaudio.org/index.php?title=Meridian_Lossless_Packing",
+      "https://www.meridian-audio.info/public/mlp_jap_new%5B2521%5D.pdf"
+    ]
+  },
+  "detection": {
+    "signature": "18E371F3",
+    "offset": 4,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "MLP Sync Word",
+      "offset": 4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "MLP major sync word"
+    }
+  ],
+  "mime_types": [
+    "audio/mlp"
+  ],
+  "quality_metrics": {
+    "completeness_score": 70,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

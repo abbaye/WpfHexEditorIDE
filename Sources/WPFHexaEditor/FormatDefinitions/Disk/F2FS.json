@@ -1,42 +1,53 @@
 ﻿{
-    "formatName":  "F2FS (Flash-Friendly File System)",
-    "version":  "1.0",
-    "extensions":  [
-                       ".f2fs"
-                   ],
-    "description":  "Flash-Friendly File System for NAND flash devices",
-    "category":  "Disk",
-    "author":  "WPFHexaEditor Team",
-    "references": {
-        "specifications": [
-            "Flash-Friendly File System (F2FS) Documentation",
-            "F2FS: A New File System for Flash Storage",
-            "Linux Kernel F2FS Implementation"
-        ],
-        "web_links": [
-            "https://docs.kernel.org/filesystems/f2fs.html",
-            "https://en.wikipedia.org/wiki/F2FS",
-            "https://www.usenix.org/conference/fast15/technical-sessions/presentation/lee",
-            "https://wiki.archlinux.org/title/F2FS"
-        ]
-    },
-    "detection":  {
-                      "signature":  "F2F52010",
-                      "offset":  1024,
-                      "required":  true
-                  },
-    "variables":  {
-                      "currentOffset":  0
-                  },
-    "blocks":  [
-                   {
-                       "type":  "header",
-                       "name":  "F2FS Superblock",
-                       "offset":  1024,
-                       "length":  4096,
-                       "color":  "#34A853",
-                       "opacity":  0.4,
-                       "description":  "F2FS superblock structure"
-                   }
-               ]
+  "formatName": "F2FS (Flash-Friendly File System)",
+  "version": "1.0",
+  "extensions": [
+    ".f2fs"
+  ],
+  "description": "Flash-Friendly File System for NAND flash devices",
+  "category": "Disk",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Flash-Friendly File System (F2FS) Documentation",
+      "F2FS: A New File System for Flash Storage",
+      "Linux Kernel F2FS Implementation"
+    ],
+    "web_links": [
+      "https://docs.kernel.org/filesystems/f2fs.html",
+      "https://en.wikipedia.org/wiki/F2FS",
+      "https://www.usenix.org/conference/fast15/technical-sessions/presentation/lee",
+      "https://wiki.archlinux.org/title/F2FS"
+    ]
+  },
+  "detection": {
+    "signature": "F2F52010",
+    "offset": 1024,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "header",
+      "name": "F2FS Superblock",
+      "offset": 1024,
+      "length": 4096,
+      "color": "#34A853",
+      "opacity": 0.4,
+      "description": "F2FS superblock structure"
+    }
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 1,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }

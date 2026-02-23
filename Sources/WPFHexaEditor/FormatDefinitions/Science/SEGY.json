@@ -19,7 +19,11 @@
   "detection": {
     "signature": "C0C0C0C0",
     "offset": 3200,
-    "required": false
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
   },
   "variables": {
     "currentOffset": 0
@@ -43,5 +47,12 @@
       "opacity": 0.4,
       "description": "400-byte binary header"
     }
-  ]
+  ],
+  "quality_metrics": {
+    "completeness_score": 65,
+    "documentation_level": "basic",
+    "blocks_defined": 2,
+    "validation_rules": 0,
+    "last_updated": "2026-02-23"
+  }
 }
