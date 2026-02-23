@@ -7,6 +7,19 @@
     "description":  "MNG animation format (PNG-based)",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "MNG (Multiple-image Network Graphics) v1.0",
+            "MNG Animation Format Specification",
+            "PNG-based Animation Container Format"
+        ],
+        "web_links": [
+            "http://www.libpng.org/pub/mng/spec/",
+            "http://www.libpng.org/pub/mng/",
+            "https://en.wikipedia.org/wiki/Multiple-image_Network_Graphics",
+            "http://www.libpng.org/pub/png/book/chapter12.html"
+        ]
+    },
     "detection":  {
                       "signature":  "8A4D4E470D0A1A0A",
                       "offset":  0,

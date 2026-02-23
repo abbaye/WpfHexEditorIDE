@@ -7,6 +7,19 @@
     "description":  "Sigma Foveon X3 RAW format",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Sigma X3F RAW Format - Foveon Sensor",
+            "X3F Proprietary RAW Image Format",
+            "Sigma Foveon X3 Camera Format"
+        ],
+        "web_links": [
+            "https://libopenraw.freedesktop.org/formats/x3f/",
+            "http://fileformats.archiveteam.org/wiki/X3F",
+            "http://www.sigma-sd.com/SD15/technology-capability.html",
+            "https://www.vertopal.com/en/format/x3f"
+        ]
+    },
     "detection":  {
                       "signature":  "464F5678",
                       "offset":  0,

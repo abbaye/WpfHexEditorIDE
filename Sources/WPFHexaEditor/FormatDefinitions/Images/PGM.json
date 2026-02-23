@@ -7,6 +7,19 @@
     "description":  "Netpbm Portable Graymap (grayscale)",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Netpbm PGM Format Specification",
+            "Portable Graymap Format (PGM) - Plain/Raw",
+            "PGM Grayscale Image Format"
+        ],
+        "web_links": [
+            "https://netpbm.sourceforge.net/doc/pgm.html",
+            "https://en.wikipedia.org/wiki/Netpbm",
+            "http://justsolve.archiveteam.org/wiki/Netpbm_formats",
+            "https://manpages.ubuntu.com/manpages/noble/man5/pgm.5.html"
+        ]
+    },
     "detection":  {
                       "signature":  "5032",
                       "offset":  0,

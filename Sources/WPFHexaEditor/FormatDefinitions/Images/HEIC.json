@@ -8,6 +8,19 @@
     "description":  "High Efficiency Image Format - Apple photos",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ISO/IEC 23008-12 - HEIF Container Format",
+            "High Efficiency Image File Format (HEIF)",
+            "MPEG-H Part 12 - HEVC Image Storage"
+        ],
+        "web_links": [
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000525.shtml",
+            "https://www.iso.org/standard/66067.html",
+            "https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format",
+            "https://nokiatech.github.io/heif/technical.html"
+        ]
+    },
     "detection":  {
                       "signature":  "66747970",
                       "offset":  4,

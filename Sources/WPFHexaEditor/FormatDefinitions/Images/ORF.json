@@ -7,6 +7,19 @@
     "description":  "Olympus RAW Format camera image",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Olympus RAW Format (ORF) - TIFF-based",
+            "ORF Digital Camera RAW Format",
+            "Olympus Proprietary RAW Image Format"
+        ],
+        "web_links": [
+            "http://fileformats.archiveteam.org/wiki/Olympus_ORF",
+            "https://en.wikipedia.org/wiki/ORF_format",
+            "https://learnandsupport.getolympus.com/learn-center/photography-tips/basics-of-photography/why-shoot-in-raw",
+            "https://www.aftershotpro.com/en/pages/orf-file/"
+        ]
+    },
     "detection":  {
                       "signature":  "49492A00",
                       "offset":  0,

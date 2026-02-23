@@ -7,6 +7,19 @@
     "description":  "DirectX texture format",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Microsoft DirectDraw Surface (DDS) Format",
+            "DDS Programming Guide - DirectX Graphics",
+            "DDS_HEADER and DDS_PIXELFORMAT Specification"
+        ],
+        "web_links": [
+            "https://learn.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds",
+            "https://learn.microsoft.com/en-us/windows/win32/direct3ddds/dx-graphics-dds-pguide",
+            "https://en.wikipedia.org/wiki/DirectDraw_Surface",
+            "https://docs.fileformat.com/image/dds/"
+        ]
+    },
     "detection":  {
                       "signature":  "44445320",
                       "offset":  0,

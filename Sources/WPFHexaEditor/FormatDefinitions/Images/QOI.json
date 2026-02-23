@@ -7,6 +7,19 @@
     "description":  "Quite OK Image Format - Fast lossless compression",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "QOI (Quite OK Image) Specification v1.0",
+            "QOI Lossless Image Format - Dominic Szablewski",
+            "Fast Lossless Compression Format"
+        ],
+        "web_links": [
+            "https://qoiformat.org/",
+            "https://qoiformat.org/qoi-specification.pdf",
+            "https://github.com/phoboslab/qoi",
+            "https://en.wikipedia.org/wiki/QOI_(image_format)"
+        ]
+    },
     "detection":  {
                       "signature":  "716F6966",
                       "offset":  0,

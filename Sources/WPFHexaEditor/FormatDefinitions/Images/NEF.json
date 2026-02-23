@@ -7,6 +7,19 @@
     "description":  "Nikon Electronic Format RAW",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Nikon Electronic Format (NEF) - TIFF-based RAW",
+            "NEF RAW Image Format Specification",
+            "Nikon Digital Camera RAW Format"
+        ],
+        "web_links": [
+            "http://lclevy.free.fr/nef/",
+            "https://docs.fileformat.com/image/nef/",
+            "http://fileformats.archiveteam.org/wiki/Nikon",
+            "https://wiki.archivematica.org/Nikon_Electronic_Format"
+        ]
+    },
     "detection":  {
                       "signature":  "49492A00",
                       "offset":  0,

@@ -7,6 +7,19 @@
     "description":  "Netpbm Portable Pixmap (RGB color)",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Netpbm PPM Format Specification",
+            "Portable Pixmap Format (PPM) - Plain/Raw",
+            "PPM RGB Color Image Format"
+        ],
+        "web_links": [
+            "https://netpbm.sourceforge.net/doc/ppm.html",
+            "https://en.wikipedia.org/wiki/Netpbm",
+            "http://justsolve.archiveteam.org/wiki/Netpbm_formats",
+            "https://www.adobe.com/creativecloud/file-types/image/raster/ppm-file.html"
+        ]
+    },
     "detection":  {
                       "signature":  "5033",
                       "offset":  0,

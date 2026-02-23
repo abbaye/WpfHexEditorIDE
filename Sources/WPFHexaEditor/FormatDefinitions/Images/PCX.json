@@ -7,6 +7,19 @@
     "description":  "ZSoft PC Paintbrush image format",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ZSoft PCX File Format Technical Reference Manual",
+            "PC Paintbrush (PCX) Format Specification",
+            "PCX RLE Compression Format"
+        ],
+        "web_links": [
+            "https://www.fileformat.info/format/pcx/egff.htm",
+            "http://fileformats.archiveteam.org/wiki/PCX",
+            "https://en.wikipedia.org/wiki/PCX",
+            "https://loc.gov/preservation/digital/formats/fdd/fdd000585.shtml"
+        ]
+    },
     "detection":  {
                       "signature":  "0A",
                       "offset":  0,

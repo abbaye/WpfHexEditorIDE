@@ -7,6 +7,19 @@
     "description":  "GIMP native image format (eXperimental Computing Facility)",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "XCF (eXperimental Computing Facility) Format",
+            "GIMP Native Image Format Specification",
+            "XCF Layered Image File Format"
+        ],
+        "web_links": [
+            "https://gimp-web-devel-afedc3.pages.gitlab.gnome.org/01-core-development/standards/xcf/",
+            "https://en.wikipedia.org/wiki/XCF_(file_format)",
+            "https://github.com/j-jorge/xcftools/blob/master/xcfspec.txt",
+            "https://cloudinary.com/glossary/xcf-file"
+        ]
+    },
     "detection":  {
                       "signature":  "67696D702078636620",
                       "offset":  0,

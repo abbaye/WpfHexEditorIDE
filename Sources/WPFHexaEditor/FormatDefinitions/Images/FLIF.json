@@ -7,6 +7,19 @@
     "description":  "FLIF - Free Lossless Image Format",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "FLIF16 Specification - Free Lossless Image Format",
+            "FLIF MANIAC Compression Algorithm",
+            "Free Lossless Image Format v1.0"
+        ],
+        "web_links": [
+            "https://flif.info/",
+            "https://flif.info/spec.html",
+            "https://github.com/FLIF-hub/FLIF",
+            "https://en.wikipedia.org/wiki/Free_Lossless_Image_Format"
+        ]
+    },
     "detection":  {
                       "signature":  "464C4946",
                       "offset":  0,

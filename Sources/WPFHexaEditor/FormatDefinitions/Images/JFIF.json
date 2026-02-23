@@ -9,6 +9,19 @@
     "description":  "JPEG File Interchange Format",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ITU-T T.871 - JPEG File Interchange Format",
+            "ISO/IEC 10918-5 - JFIF Specification",
+            "ECMA TR-98 - JFIF Technical Report"
+        ],
+        "web_links": [
+            "https://www.itu.int/rec/T-REC-T.871-201105-I/en",
+            "https://www.ecma-international.org/wp-content/uploads/ECMA_TR-98_1st_edition_june_2009.pdf",
+            "https://www.loc.gov/preservation/digital/formats/fdd/fdd000018.shtml",
+            "https://en.wikipedia.org/wiki/JPEG_File_Interchange_Format"
+        ]
+    },
     "detection":  {
                       "signature":  "FFD8FFE0",
                       "offset":  0,

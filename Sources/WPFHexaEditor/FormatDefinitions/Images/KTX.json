@@ -7,6 +7,19 @@
     "description":  "Khronos Texture format for OpenGL/Vulkan",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "KTX File Format Specification v1.0",
+            "Khronos Texture Format for OpenGL/Vulkan",
+            "KTX GPU Texture Container Format"
+        ],
+        "web_links": [
+            "https://www.khronos.org/ktx/",
+            "https://registry.khronos.org/KTX/specs/2.0/ktxspec.v2.html",
+            "https://github.com/KhronosGroup/KTX-Specification",
+            "https://github.com/KhronosGroup/KTX-Software"
+        ]
+    },
     "detection":  {
                       "signature":  "AB4B54582030310D0A1A0A",
                       "offset":  0,

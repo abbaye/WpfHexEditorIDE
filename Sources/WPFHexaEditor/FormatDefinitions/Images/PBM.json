@@ -7,6 +7,19 @@
     "description":  "Netpbm Portable Bitmap (monochrome)",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Netpbm PBM Format Specification",
+            "Portable Bitmap Format (PBM) - Plain/Raw",
+            "PBM Bi-level Image Format"
+        ],
+        "web_links": [
+            "https://netpbm.sourceforge.net/doc/pbm.html",
+            "https://en.wikipedia.org/wiki/Netpbm",
+            "http://justsolve.archiveteam.org/wiki/Netpbm_formats",
+            "https://manpages.ubuntu.com/manpages/jammy/man5/pbm.5.html"
+        ]
+    },
     "detection":  {
                       "signature":  "5031",
                       "offset":  0,

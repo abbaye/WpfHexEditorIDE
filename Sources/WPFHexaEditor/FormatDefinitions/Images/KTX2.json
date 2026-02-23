@@ -7,6 +7,19 @@
     "description":  "Khronos Texture 2.0 format with Basis Universal",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "KTX File Format Specification v2.0",
+            "Khronos Texture 2.0 with Basis Universal",
+            "KTX2 Supercompression and GPU Texture Format"
+        ],
+        "web_links": [
+            "https://registry.khronos.org/KTX/specs/2.0/ktxspec.v2.html",
+            "https://www.khronos.org/ktx/",
+            "https://github.com/KhronosGroup/KTX-Specification",
+            "https://www.khronos.org/news/press/khronos-ktx-2-0-textures-enable-compact-visually-rich-gltf-3d-assets"
+        ]
+    },
     "detection":  {
                       "signature":  "AB4B54582032300D0A1A0A",
                       "offset":  0,

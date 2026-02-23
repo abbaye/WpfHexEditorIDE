@@ -7,6 +7,19 @@
     "description":  "Panasonic RAW camera image",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Panasonic RAW Version 2 (RW2) Format",
+            "Panasonic Lumix RAW Image Specification",
+            "RW2 TIFF-based RAW Format"
+        ],
+        "web_links": [
+            "http://fileformats.archiveteam.org/wiki/Panasonic_RAW/RW2",
+            "https://libopenraw.freedesktop.org/formats/rw2/",
+            "https://www.aftershotpro.com/en/pages/rw2-file/",
+            "https://www.paintshoppro.com/en/pages/rw2-file/"
+        ]
+    },
     "detection":  {
                       "signature":  "49492A00",
                       "offset":  0,

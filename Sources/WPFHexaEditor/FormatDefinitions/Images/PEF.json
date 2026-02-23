@@ -7,6 +7,19 @@
     "description":  "Pentax Electronic File (RAW)",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Pentax Electronic File (PEF) - TIFF/EP Format",
+            "Pentax RAW Image Format Specification",
+            "PEF Lossless Huffman Compression"
+        ],
+        "web_links": [
+            "http://fileformats.archiveteam.org/wiki/Pentax_PEF",
+            "https://www.online-convert.com/file-format/pef",
+            "http://www.panix.com/~johnf/raw/",
+            "https://libopenraw.freedesktop.org/formats/pef/"
+        ]
+    },
     "detection":  {
                       "signature":  "49492A00",
                       "offset":  0,

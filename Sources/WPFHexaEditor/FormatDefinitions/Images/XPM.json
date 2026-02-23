@@ -7,6 +7,19 @@
     "description":  "X Window System Pixmap (ASCII C source)",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "X PixMap (XPM) Format v3.4 - X Window System",
+            "XPM C Source Code Pixmap Format",
+            "X11 PixMap Format Specification"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/X_PixMap",
+            "https://www.xfree86.org/current/xpm.pdf",
+            "http://fileformats.archiveteam.org/wiki/XPM",
+            "http://www.ibiblio.org/pub/X11/contrib/libraries/xpm-FAQ.html"
+        ]
+    },
     "detection":  {
                       "signature":  "2F2A2058504D202A2F",
                       "offset":  0,

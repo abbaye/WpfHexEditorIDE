@@ -7,6 +7,19 @@
     "description":  "Canon RAW v2 camera image",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Canon RAW 2 (CR2) Format - TIFF-based",
+            "Inside the Canon RAW Format Version 2",
+            "Canon CR2 EXIF and Metadata Structure"
+        ],
+        "web_links": [
+            "http://lclevy.free.fr/cr2/",
+            "http://fileformats.archiveteam.org/wiki/Canon_RAW_2",
+            "https://docs.fileformat.com/image/cr2/",
+            "https://libopenraw.freedesktop.org/formats/cr2/"
+        ]
+    },
     "detection":  {
                       "signature":  "49492A00",
                       "offset":  0,

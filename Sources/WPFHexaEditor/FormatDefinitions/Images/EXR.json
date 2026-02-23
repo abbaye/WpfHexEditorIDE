@@ -7,6 +7,19 @@
     "description":  "OpenEXR High Dynamic Range image format",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "OpenEXR Format Specification - ILM",
+            "OpenEXR HDR Image File Format",
+            "Academy Software Foundation OpenEXR"
+        ],
+        "web_links": [
+            "https://www.openexr.com/",
+            "https://github.com/AcademySoftwareFoundation/openexr",
+            "https://developer.nvidia.com/gpugems/gpugems/part-iv-image-processing/chapter-26-openexr-image-file-format",
+            "https://en.wikipedia.org/wiki/OpenEXR"
+        ]
+    },
     "detection":  {
                       "signature":  "762F3101",
                       "offset":  0,

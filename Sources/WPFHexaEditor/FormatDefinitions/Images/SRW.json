@@ -7,6 +7,19 @@
     "description":  "Samsung RAW format",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Samsung RAW (SRW) Image Format",
+            "Samsung Camera RAW Specification",
+            "SRW TIFF-based RAW Format"
+        ],
+        "web_links": [
+            "http://fileformats.archiveteam.org/wiki/Samsung_SRW",
+            "https://www.file-extensions.org/srw-file-extension-samsung-raw-picture-image",
+            "https://www.cleverfiles.com/howto/recover-deleted-srw.html",
+            "https://howto.reaconverter.com/convert-srw-photos/"
+        ]
+    },
     "detection":  {
                       "signature":  "49492A00",
                       "offset":  0,

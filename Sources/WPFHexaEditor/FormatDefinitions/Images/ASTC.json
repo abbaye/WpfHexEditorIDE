@@ -7,6 +7,19 @@
     "description":  "Adaptive Scalable Texture Compression",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "ARM ASTC Specification - Khronos Extension",
+            "Adaptive Scalable Texture Compression User Guide",
+            "OpenGL/Vulkan ASTC Texture Format"
+        ],
+        "web_links": [
+            "https://www.arm.com/technologies/graphics-technologies/adaptive-scalable-texture-compression",
+            "https://developer.arm.com/documentation/102162/latest/",
+            "https://github.com/ARM-software/astc-encoder",
+            "https://en.wikipedia.org/wiki/Adaptive_scalable_texture_compression"
+        ]
+    },
     "detection":  {
                       "signature":  "13AB5CA1",
                       "offset":  0,

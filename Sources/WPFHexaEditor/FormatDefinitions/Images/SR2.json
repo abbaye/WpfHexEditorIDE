@@ -7,6 +7,19 @@
     "description":  "Sony RAW format (DSLR cameras)",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Sony RAW Format 2 (SR2) Specification",
+            "SR2 DSLR Camera RAW Format",
+            "Sony Raw File Formats (SRF, SR2, ARW)"
+        ],
+        "web_links": [
+            "https://github.com/lclevy/sony_raw",
+            "https://github.com/lclevy/sony_raw/blob/main/readme.md",
+            "https://www.online-convert.com/file-format/sr2",
+            "https://www.leadtools.com/help/sdk/v21/dh/to/file-formats-digital-file-formatdcf-arw-sr2-srf-dng-cr2-raf-nef-nrw-orf-rw2-raw.html"
+        ]
+    },
     "detection":  {
                       "signature":  "49492A00",
                       "offset":  0,

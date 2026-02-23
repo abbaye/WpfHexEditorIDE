@@ -7,6 +7,19 @@
     "description":  "Sony Alpha RAW camera image",
     "category":  "Images",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Sony Alpha RAW (ARW) Format - TIFF-based",
+            "Sony RAW File Formats (SRF, SR2, ARW) Documentation",
+            "Digital Photography RAW Formats Information"
+        ],
+        "web_links": [
+            "https://github.com/lclevy/sony_raw",
+            "https://docs.fileformat.com/image/arw/",
+            "http://fileformats.archiveteam.org/wiki/Sony_ARW",
+            "http://lclevy.free.fr/raw/"
+        ]
+    },
     "detection":  {
                       "signature":  "49492A00",
                       "offset":  0,
