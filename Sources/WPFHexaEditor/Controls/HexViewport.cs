@@ -1278,6 +1278,13 @@ namespace WpfHexaEditor.Controls
                 _linesCached == null || _linesCached.Count == 0)
                 return;
 
+            // Determine if ASCII area should have spacers
+            // Spacers appear in ASCII when: no TBL is loaded AND ByteSpacerPositioning allows it
+            bool hasAsciiSpacers = _tblStream == null &&
+                                   _bytesPerLine >= (int)ByteGrouping &&
+                                   (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                                    ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel);
+
             // Prepare blocks with current viewport state (uses cache if unchanged)
             _customBackgroundRenderer.PrepareBlocks(
                 _customBackgroundBlocks,
@@ -1290,7 +1297,8 @@ namespace WpfHexaEditor.Controls
                 ByteGrouping,
                 (int)ByteSpacerWidthTickness,
                 ShowOffset,
-                ShowAscii);
+                ShowAscii,
+                hasAsciiSpacers);
 
             // Get visible range for culling
             long firstVisiblePos = _linesCached[0].Bytes[0].VirtualPos;

@@ -24,7 +24,7 @@ namespace WpfHexaEditor.Views.Panels
             DataContext = this;
 
             _field = field;
-            _editedValue = field.FormattedValue;
+            _editedValue = GetEditableValue(field);
 
             OnPropertyChanged(nameof(FieldName));
             OnPropertyChanged(nameof(FieldType));
@@ -36,6 +36,48 @@ namespace WpfHexaEditor.Views.Panels
 
             ValueTextBox.Focus();
             ValueTextBox.SelectAll();
+        }
+
+        /// <summary>
+        /// Get the editable representation of the field value
+        /// Returns a string format suitable for editing based on the value type
+        /// </summary>
+        private string GetEditableValue(ParsedFieldViewModel field)
+        {
+            if (field.RawValue == null)
+                return string.Empty;
+
+            try
+            {
+                return field.ValueType?.ToLowerInvariant() switch
+                {
+                    // Numeric types - return decimal representation (easier to read/edit than hex)
+                    "uint8" or "byte" => field.RawValue.ToString(),
+                    "int8" or "sbyte" => field.RawValue.ToString(),
+                    "uint16" or "ushort" => field.RawValue.ToString(),
+                    "int16" or "short" => field.RawValue.ToString(),
+                    "uint32" or "uint" => field.RawValue.ToString(),
+                    "int32" or "int" => field.RawValue.ToString(),
+                    "uint64" or "ulong" => field.RawValue.ToString(),
+                    "int64" or "long" => field.RawValue.ToString(),
+                    "float" => field.RawValue.ToString(),
+                    "double" => field.RawValue.ToString(),
+
+                    // String types - return plain string without quotes
+                    "string" or "ascii" or "utf8" or "utf16" => field.RawValue.ToString(),
+
+                    // Bytes - return hex representation without separators
+                    "bytes" when field.RawValue is byte[] bytes =>
+                        System.BitConverter.ToString(bytes).Replace("-", " "),
+
+                    // Fallback to formatted value
+                    _ => field.FormattedValue
+                };
+            }
+            catch
+            {
+                return field.FormattedValue;
+            }
         }
 
         public string FieldName => _field.Name;

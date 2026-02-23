@@ -11,21 +11,44 @@
         <!-- Converter -->
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
-        <!-- Style for field items -->
+        <!-- Style for field items with improved colors -->
         <Style x:Key="FieldItemStyle" TargetType="ListBoxItem">
-            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Padding" Value="10,6"/>
             <Setter Property="Margin" Value="0,1"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderBrush" Value="#EEEEEE"/>
             <EventSetter Event="MouseDoubleClick" Handler="FieldItem_MouseDoubleClick"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#E3F2FD"/>
-                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#E1F5FE" Offset="0"/>
+                                <GradientStop Color="#B3E5FC" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Foreground" Value="#01579B"/>
+                    <Setter Property="BorderBrush" Value="#81D4FA"/>
                 </Trigger>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F5F5F5"/>
+                    <Setter Property="Background" Value="#FAFAFA"/>
+                    <Setter Property="BorderBrush" Value="#E0E0E0"/>
                 </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="True"/>
+                        <Condition Property="IsMouseOver" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#B3E5FC" Offset="0"/>
+                                <GradientStop Color="#81D4FA" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </MultiTrigger>
             </Style.Triggers>
         </Style>
 
@@ -180,32 +203,39 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/> <!-- Search box -->
+            <RowDefinition Height="Auto"/> <!-- Quick Actions -->
             <RowDefinition Height="Auto"/> <!-- Format info -->
             <RowDefinition Height="*"/>    <!-- Fields list -->
             <RowDefinition Height="Auto"/> <!-- Status bar -->
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <Border Grid.Row="0"
-                Background="#2196F3"
-                Padding="12,8">
+        <!-- Header with gradient -->
+        <Border Grid.Row="0" Padding="12,8">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#1E88E5" Offset="0"/>
+                    <GradientStop Color="#1976D2" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0"
-                           Text="Parsed Fields"
-                           FontSize="14"
-                           FontWeight="SemiBold"
-                           Foreground="White"
-                           VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="📋" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Parsed Fields"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="White"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <ToggleButton x:Name="ShowBookmarksButton"
                                   Content="⭐"
-                                  Width="30" Height="30"
+                                  Width="32" Height="32"
                                   Margin="4,0,0,0"
                                   ToolTip="Show bookmarked fields only"
                                   Checked="ShowBookmarksButton_Checked"
@@ -213,9 +243,9 @@
                                   Style="{DynamicResource {x:Static ToolBar.ToggleButtonStyleKey}}"/>
                     <Button x:Name="RefreshButton"
                             Content="🔄"
-                            Width="30" Height="30"
+                            Width="32" Height="32"
                             Margin="4,0,0,0"
-                            ToolTip="Refresh field values"
+                            ToolTip="Refresh field values (F5)"
                             Click="RefreshButton_Click"
                             Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
                 </StackPanel>
@@ -291,8 +321,68 @@
             </Grid>
         </Border>
 
-        <!-- Format info -->
+        <!-- Quick Actions Toolbar -->
         <Border Grid.Row="2"
+                Background="#FAFAFA"
+                Padding="8,6"
+                BorderThickness="0,0,0,1"
+                BorderBrush="#E0E0E0">
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="QuickEditButton"
+                        Content="✏️ Edit"
+                        Width="80" Height="32"
+                        Margin="4,0"
+                        FontSize="11"
+                        ToolTip="Edit selected field value (Enter)"
+                        Click="EditValue_Click"
+                        IsEnabled="{Binding HasSelection}"
+                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
+
+                <Button x:Name="QuickCopyButton"
+                        Content="📋 Copy"
+                        Width="80" Height="32"
+                        Margin="4,0"
+                        FontSize="11"
+                        ToolTip="Copy field value (Ctrl+C)"
+                        Click="CopyValue_Click"
+                        IsEnabled="{Binding HasSelection}"
+                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
+
+                <Button x:Name="QuickNavigateButton"
+                        Content="🎯 Navigate"
+                        Width="90" Height="32"
+                        Margin="4,0"
+                        FontSize="11"
+                        ToolTip="Navigate to field position in hex editor"
+                        Click="QuickNavigate_Click"
+                        IsEnabled="{Binding HasSelection}"
+                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
+
+                <ToggleButton x:Name="QuickBookmarkButton"
+                              Content="⭐ Bookmark"
+                              Width="95" Height="32"
+                              Margin="4,0"
+                              FontSize="11"
+                              ToolTip="Toggle bookmark on selected field (Space)"
+                              Click="ToggleBookmark_Click"
+                              IsEnabled="{Binding HasSelection}"
+                              Style="{DynamicResource {x:Static ToolBar.ToggleButtonStyleKey}}"/>
+
+                <Separator Margin="8,0" Width="1" Background="#E0E0E0"/>
+
+                <Button x:Name="QuickExportButton"
+                        Content="💾 Export"
+                        Width="85" Height="32"
+                        Margin="4,0"
+                        FontSize="11"
+                        ToolTip="Export all fields to file"
+                        Click="ExportAsText_Click"
+                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
+            </WrapPanel>
+        </Border>
+
+        <!-- Format info -->
+        <Border Grid.Row="3"
                 Background="#F5F5F5"
                 Padding="12,8"
                 BorderThickness="0,0,0,1"
@@ -329,7 +419,7 @@
 
         <!-- Fields list -->
         <ListBox x:Name="FieldsListBox"
-                 Grid.Row="3"
+                 Grid.Row="4"
                  ItemsSource="{Binding FilteredFields}"
                  ItemTemplate="{StaticResource FieldTemplate}"
                  ItemContainerStyle="{StaticResource FieldItemStyle}"
@@ -438,7 +528,7 @@
         </ListBox>
 
         <!-- Status bar -->
-        <Border Grid.Row="4"
+        <Border Grid.Row="5"
                 Background="#F5F5F5"
                 Padding="12,6"
                 BorderThickness="0,1,0,0"

@@ -65,6 +65,7 @@ namespace WpfHexaEditor
         /// </summary>
         [Category("Format Detection")]
         [Description("Directory path containing format definition JSON files (.zip, .png, .pdf, etc.)")]
+        [System.ComponentModel.Browsable(false)]
         public string FormatDefinitionsPath
         {
             get => (string)GetValue(FormatDefinitionsPathProperty);
@@ -356,6 +357,14 @@ namespace WpfHexaEditor
                             {
                                 count++;
                             }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (invalid): {resourceName} - {format.FormatName}");
+                            }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (null format): {resourceName}");
                         }
                     }
                     catch (Exception ex)

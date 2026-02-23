@@ -127,10 +127,36 @@ namespace WpfHexaEditor.Models.JsonEditor
         /// </summary>
         public JsonDocument()
         {
-            Lines = new ObservableCollection<JsonLine>
-            {
-                new JsonLine(string.Empty, 0)
-            };
+            // Initialize with example format definition for demo/testing
+            var defaultContent = @"{
+  ""formatName"": ""PNG Image"",
+  ""description"": ""Portable Network Graphics format"",
+  ""fileExtensions"": [""png""],
+  ""mimeType"": ""image/png"",
+
+  ""detection"": {
+    ""signatures"": [
+      {
+        ""offset"": 0,
+        ""bytes"": ""89 50 4E 47 0D 0A 1A 0A"",
+        ""description"": ""PNG magic bytes""
+      }
+    ]
+  },
+
+  ""blocks"": [
+    {
+      ""name"": ""Header"",
+      ""fields"": [
+        { ""name"": ""Magic"", ""valueType"": ""bytes"", ""size"": 8 },
+        { ""name"": ""ChunkLength"", ""valueType"": ""uint32"", ""endianness"": ""big"" },
+        { ""name"": ""ChunkType"", ""valueType"": ""string"", ""size"": 4 }
+      ]
+    }
+  ]
+}";
+
+            LoadFromString(defaultContent);
             IsModified = false;
         }
 
@@ -347,7 +373,7 @@ namespace WpfHexaEditor.Models.JsonEditor
             {
                 var line = Lines[start.Line];
 
-                // Clamp columns to valid range
+                //crash Clamp columns to valid range
                 int startCol = Math.Max(0, Math.Min(start.Column, line.Text.Length));
                 int endCol = Math.Max(startCol, Math.Min(end.Column, line.Text.Length));
                 int length = endCol - startCol;

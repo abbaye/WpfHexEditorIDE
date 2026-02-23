@@ -139,7 +139,8 @@
       "Bash(pwsh -File Add-CategoryToJsonFiles.ps1)",
       "Bash(powershell.exe -ExecutionPolicy Bypass -File Add-CategoryToJsonFiles.ps1)",
       "Bash(powershell.exe -ExecutionPolicy Bypass -File:*)",
-      "Bash(/tmp/color_dps.txt:*)"
+      "Bash(/tmp/color_dps.txt:*)",
+      "Bash(shuf)"
     ]
   }
 }

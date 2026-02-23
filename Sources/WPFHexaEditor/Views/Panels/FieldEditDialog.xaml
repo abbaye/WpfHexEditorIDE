@@ -76,10 +76,15 @@
                          FontFamily="Consolas"
                          FontSize="13"
                          Padding="8"
-                         BorderThickness="0"
+                         BorderThickness="1"
+                         BorderBrush="#CCCCCC"
+                         Background="White"
                          VerticalScrollBarVisibility="Auto"
                          AcceptsReturn="False"
-                         TextWrapping="Wrap"/>
+                         TextWrapping="Wrap"
+                         IsReadOnly="False"
+                         IsEnabled="True"
+                         MinHeight="60"/>
 
                 <TextBlock Grid.Row="2"
                            Text="{Binding FormatHint}"

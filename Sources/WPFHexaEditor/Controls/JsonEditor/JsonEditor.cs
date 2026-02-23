@@ -71,7 +71,6 @@ namespace WpfHexaEditor.Controls.JsonEditor
         private List<Models.JsonEditor.ValidationError> _validationErrors = new List<Models.JsonEditor.ValidationError>();
         private FormatSchemaValidator _validator;
         private System.Windows.Threading.DispatcherTimer _validationTimer;
-        private bool _enableValidation = true;
 
         #endregion
 
@@ -82,16 +81,41 @@ namespace WpfHexaEditor.Controls.JsonEditor
 
         #endregion
 
+        #region Fields - Smooth Scrolling
+
+        private System.Windows.Threading.DispatcherTimer _smoothScrollTimer;
+        private double _targetScrollOffset = 0;
+        private double _currentScrollOffset = 0;
+        private const double SmoothScrollSpeed = 0.2; // Interpolation factor (0-1)
+
+        #endregion
+
+        #region Fields - Find/Replace
+
+        private List<TextPosition> _findResults = new List<TextPosition>();
+        private int _currentFindMatchIndex = -1;
+        private int _findMatchLength = 0;
+
+        #endregion
+
         #region Fields - Rendering State
 
         private Typeface _typeface;
         private Typeface _boldTypeface;
+        private Typeface _lineNumberTypeface;
         private double _fontSize = 12.0;
         private double _charWidth;          // Cached character width
         private double _charHeight;         // Cached character height
         private double _lineHeight;         // Line height with padding
         private int _firstVisibleLine = 0;  // Scrolling support (Phase 1: always 0)
         private int _lastVisibleLine = 0;   // Will be calculated in Phase 1
+
+        #endregion
+
+        #region Fields - Caret Blinking
+
+        private System.Windows.Threading.DispatcherTimer _caretTimer;
+        private bool _caretVisible = true;
 
         #endregion
 
@@ -106,13 +130,6 @@ namespace WpfHexaEditor.Controls.JsonEditor
         #endregion
 
         #region Fields - Colors (Brushes)
-
-        private Brush _editorBackground = Brushes.White;
-        private Brush _editorForeground = Brushes.Black;
-        private Brush _lineNumberBackground;
-        private Brush _lineNumberForeground;
-        private Brush _currentLineBackground;
-        private Brush _selectionBackground;
 
         #endregion
 
@@ -173,7 +190,6 @@ namespace WpfHexaEditor.Controls.JsonEditor
             set
             {
                 SetValue(EnableValidationProperty, value);
-                _enableValidation = value;
                 if (value)
                     TriggerValidation();
                 else
@@ -516,7 +532,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
 
         public static readonly DependencyProperty CaretBlinkRateProperty =
             DependencyProperty.Register(nameof(CaretBlinkRate), typeof(int), typeof(JsonEditor),
-                new FrameworkPropertyMetadata(500));
+                new FrameworkPropertyMetadata(500, OnCaretBlinkRateChanged));
 
         [Category("Behavior.Selection")]
         [DisplayName("Caret Blink Rate (ms)")]
@@ -525,6 +541,14 @@ namespace WpfHexaEditor.Controls.JsonEditor
         {
             get => (int)GetValue(CaretBlinkRateProperty);
             set => SetValue(CaretBlinkRateProperty, Math.Max(0, Math.Min(2000, value)));
+        }
+
+        private static void OnCaretBlinkRateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is JsonEditor editor)
+            {
+                editor.UpdateCaretBlinkTimer();
+            }
         }
 
         public static readonly DependencyProperty CaretWidthProperty =
@@ -1103,12 +1127,23 @@ namespace WpfHexaEditor.Controls.JsonEditor
 
             // Initialize Context Menu (Phase C)
             InitializeContextMenu();
+
+            // Initialize caret blink timer
+            _caretTimer = new System.Windows.Threading.DispatcherTimer();
+            _caretTimer.Tick += CaretTimer_Tick;
+            UpdateCaretBlinkTimer();
+
+            // Initialize smooth scroll timer
+            _smoothScrollTimer = new System.Windows.Threading.DispatcherTimer();
+            _smoothScrollTimer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
+            _smoothScrollTimer.Tick += SmoothScrollTimer_Tick;
         }
 
         private void UpdateTypefacesFromDPs()
         {
             _typeface = new Typeface(EditorFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
             _boldTypeface = new Typeface(EditorFontFamily, FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+            _lineNumberTypeface = new Typeface(LineNumberFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
             _fontSize = EditorFontSize;
         }
 
@@ -1116,6 +1151,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
         {
             if (_highlighter == null) return;
 
+            _highlighter.DefaultColor = EditorForeground; // Default text color
             _highlighter.BraceColor = SyntaxBraceColor;
             _highlighter.BracketColor = SyntaxBracketColor;
             _highlighter.KeyColor = SyntaxKeyColor;
@@ -1129,6 +1165,101 @@ namespace WpfHexaEditor.Controls.JsonEditor
             _highlighter.CalcExpressionColor = SyntaxCalcExpressionColor;
             _highlighter.VariableReferenceColor = SyntaxVariableReferenceColor;
             _highlighter.ErrorColor = SyntaxErrorColor;
+
+            // Phase 10.5: Additional syntax colors
+            _highlighter.CommaColor = SyntaxCommaColor;
+            _highlighter.ColonColor = SyntaxColonColor;
+
+            // Phase 100%: Escape sequences, URLs, and deprecated keywords
+            _highlighter.EscapeSequenceColor = SyntaxEscapeSequenceColor;
+            _highlighter.UrlColor = SyntaxUrlColor;
+            _highlighter.DeprecatedColor = SyntaxDeprecatedColor;
+        }
+
+        /// <summary>
+        /// Update caret blink timer based on CaretBlinkRate DP
+        /// </summary>
+        private void UpdateCaretBlinkTimer()
+        {
+            if (_caretTimer == null) return;
+
+            int blinkRate = CaretBlinkRate;
+
+            if (blinkRate <= 0)
+            {
+                // No blinking - always visible
+                _caretTimer.Stop();
+                _caretVisible = true;
+                InvalidateVisual();
+            }
+            else
+            {
+                _caretTimer.Interval = TimeSpan.FromMilliseconds(blinkRate);
+                _caretTimer.Start();
+                _caretVisible = true;
+                InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Caret blink timer tick handler - toggles visibility
+        /// </summary>
+        private void CaretTimer_Tick(object sender, EventArgs e)
+        {
+            _caretVisible = !_caretVisible;
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Reset caret to visible and restart blink timer
+        /// Called when user types or moves cursor
+        /// </summary>
+        private void ResetCaretBlink()
+        {
+            _caretVisible = true;
+            if (_caretTimer != null && _caretTimer.IsEnabled)
+            {
+                _caretTimer.Stop();
+                _caretTimer.Start();
+            }
+        }
+
+        /// <summary>
+        /// Smooth scroll timer tick handler - interpolates scroll position
+        /// </summary>
+        private void SmoothScrollTimer_Tick(object sender, EventArgs e)
+        {
+            if (!SmoothScrolling)
+            {
+                _smoothScrollTimer.Stop();
+                return;
+            }
+
+            // Interpolate between current and target offset
+            double diff = _targetScrollOffset - _currentScrollOffset;
+
+            if (Math.Abs(diff) < 0.5)
+            {
+                // Close enough - snap to target and stop
+                _currentScrollOffset = _targetScrollOffset;
+                _verticalScrollOffset = _targetScrollOffset;
+                _smoothScrollTimer.Stop();
+            }
+            else
+            {
+                // Interpolate (ease out)
+                _currentScrollOffset += diff * SmoothScrollSpeed;
+                _verticalScrollOffset = _currentScrollOffset;
+            }
+
+            // Update virtualization engine and repaint
+            if (_virtualizationEngine != null)
+            {
+                _virtualizationEngine.ScrollOffset = _verticalScrollOffset;
+                _virtualizationEngine.CalculateVisibleRange();
+            }
+
+            InvalidateVisual();
         }
 
         #endregion
@@ -1152,7 +1283,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
 
             _charWidth = formattedText.Width;
             _charHeight = formattedText.Height;
-            _lineHeight = _charHeight + 4; // Add 4px padding
+            _lineHeight = (_charHeight + 4) * LineHeightMultiplier; // Apply line height multiplier DP
         }
 
 
@@ -1431,11 +1562,30 @@ namespace WpfHexaEditor.Controls.JsonEditor
                 return;
 
             double newOffset = _virtualizationEngine.ScrollByPixels(delta * ScrollSpeedMultiplier);
-            _verticalScrollOffset = newOffset;
-            _virtualizationEngine.ScrollOffset = newOffset;
-            _virtualizationEngine.CalculateVisibleRange();
 
-            InvalidateVisual();
+            if (SmoothScrolling)
+            {
+                // Smooth scrolling - animate to target
+                _targetScrollOffset = newOffset;
+
+                // Initialize current offset if first scroll
+                if (_currentScrollOffset == 0 && _verticalScrollOffset == 0)
+                    _currentScrollOffset = _verticalScrollOffset;
+
+                // Start animation timer
+                if (!_smoothScrollTimer.IsEnabled)
+                    _smoothScrollTimer.Start();
+            }
+            else
+            {
+                // Instant scrolling - jump directly
+                _verticalScrollOffset = newOffset;
+                _currentScrollOffset = newOffset;
+                _targetScrollOffset = newOffset;
+                _virtualizationEngine.ScrollOffset = newOffset;
+                _virtualizationEngine.CalculateVisibleRange();
+                InvalidateVisual();
+            }
         }
 
         /// <summary>
@@ -1486,28 +1636,31 @@ namespace WpfHexaEditor.Controls.JsonEditor
             // 3. Draw current line highlight (before text)
             RenderCurrentLineHighlight(dc);
 
-            // 4. Draw selection (before text)
+            // 4. Draw find results (background highlights)
+            RenderFindResults(dc);
+
+            // 5. Draw selection (before text)
             RenderSelection(dc);
 
-            // 5. Draw line numbers
+            // 6. Draw line numbers
             if (ShowLineNumbers)
             {
                 RenderLineNumbers(dc);
             }
 
-            // 6. Draw text content
+            // 7. Draw text content
             RenderTextContent(dc);
 
-            // 7. Draw validation errors (Phase 5 - squiggly lines)
-            if (_enableValidation)
+            // 8. Draw validation errors (Phase 5 - squiggly lines)
+            if (EnableValidation)
             {
                 RenderValidationErrors(dc);
             }
 
-            // 8. Draw bracket matching (Phase 6)
+            // 9. Draw bracket matching (Phase 6)
             RenderBracketMatching(dc);
 
-            // 9. Draw cursor (blinking will be added later)
+            // 10. Draw cursor (with blinking animation)
             RenderCursor(dc);
 
             // Phase 11.4: Periodically cleanup token cache to respect MaxCachedLines
@@ -1602,7 +1755,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
                     lineNumber,
                     CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight,
-                    _typeface,
+                    _lineNumberTypeface, // Use separate line number typeface
                     LineNumberFontSize,
                     LineNumberForeground,
                     VisualTreeHelper.GetDpi(this).PixelsPerDip);
@@ -1611,12 +1764,76 @@ namespace WpfHexaEditor.Controls.JsonEditor
                 double x = LineNumberWidth - formattedText.Width - LineNumberMargin;
 
                 dc.DrawText(formattedText, new Point(x, y));
+
+                // Render validation glyphs (error/warning icons) in left margin
+                RenderValidationGlyph(dc, i, y);
             }
 
             // Draw separator line between line numbers and text
             var pen = new Pen(new SolidColorBrush(Color.FromRgb(200, 200, 200)), 1);
             pen.Freeze();
             dc.DrawLine(pen, new Point(LineNumberWidth, 0), new Point(LineNumberWidth, ActualHeight));
+        }
+
+        /// <summary>
+        /// Render validation glyph (error/warning icon) for a line if it has validation errors
+        /// </summary>
+        private void RenderValidationGlyph(DrawingContext dc, int line, double y)
+        {
+            if (!EnableValidation || _validationErrors == null || _validationErrors.Count == 0)
+                return;
+
+            // Find errors for this line
+            var lineErrors = _validationErrors.Where(e => e.Line == line).ToList();
+            if (lineErrors.Count == 0)
+                return;
+
+            // Determine severity - show worst one (Error > Warning > Info)
+            ValidationSeverity worstSeverity = lineErrors.Max(e => e.Severity);
+
+            // Determine glyph color based on severity
+            Brush glyphBrush;
+            if (worstSeverity == ValidationSeverity.Error)
+                glyphBrush = new SolidColorBrush(ValidationErrorGlyphColor);
+            else if (worstSeverity == ValidationSeverity.Warning)
+                glyphBrush = new SolidColorBrush(ValidationWarningGlyphColor);
+            else
+                return; // No glyph for Info severity
+
+            glyphBrush.Freeze();
+
+            // Draw circle glyph in left margin area (before line numbers)
+            double glyphSize = Math.Min(_lineHeight * 0.6, 12);
+            double glyphX = 5; // Left margin
+            double glyphY = y + (_lineHeight - glyphSize) / 2;
+
+            // Draw filled circle
+            dc.DrawEllipse(glyphBrush, null, new Point(glyphX + glyphSize / 2, glyphY + glyphSize / 2), glyphSize / 2, glyphSize / 2);
+
+            // Draw exclamation mark or X symbol inside
+            var pen = new Pen(Brushes.White, 1.5);
+            pen.Freeze();
+
+            if (worstSeverity == ValidationSeverity.Error)
+            {
+                // Draw X for errors
+                double offset = glyphSize * 0.25;
+                dc.DrawLine(pen,
+                    new Point(glyphX + offset, glyphY + offset),
+                    new Point(glyphX + glyphSize - offset, glyphY + glyphSize - offset));
+                dc.DrawLine(pen,
+                    new Point(glyphX + glyphSize - offset, glyphY + offset),
+                    new Point(glyphX + offset, glyphY + glyphSize - offset));
+            }
+            else
+            {
+                // Draw ! for warnings
+                double centerX = glyphX + glyphSize / 2;
+                dc.DrawLine(pen,
+                    new Point(centerX, glyphY + glyphSize * 0.2),
+                    new Point(centerX, glyphY + glyphSize * 0.6));
+                dc.DrawEllipse(Brushes.White, null, new Point(centerX, glyphY + glyphSize * 0.8), 1, 1);
+            }
         }
 
         /// <summary>
@@ -1634,8 +1851,23 @@ namespace WpfHexaEditor.Controls.JsonEditor
 
             double x = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
-            dc.DrawRectangle(CurrentLineBackground, null,
-                new Rect(x, y, ActualWidth - x, _lineHeight));
+            // Draw background highlight
+            if (ShowCurrentLineHighlight)
+            {
+                dc.DrawRectangle(CurrentLineBackground, null,
+                    new Rect(x, y, ActualWidth - x, _lineHeight));
+            }
+
+            // Draw border if enabled
+            if (ShowCurrentLineBorder)
+            {
+                var borderBrush = new SolidColorBrush(CurrentLineBorderColor);
+                borderBrush.Freeze();
+                var borderPen = new Pen(borderBrush, 1);
+                borderPen.Freeze();
+                dc.DrawRectangle(null, borderPen,
+                    new Rect(x, y, ActualWidth - x, _lineHeight));
+            }
         }
 
         /// <summary>
@@ -1645,6 +1877,9 @@ namespace WpfHexaEditor.Controls.JsonEditor
         {
             if (_selection.IsEmpty)
                 return;
+
+            // Use InactiveSelectionBackground when not focused
+            Brush selectionBrush = IsFocused ? SelectionBackground : new SolidColorBrush(InactiveSelectionBackground);
 
             var start = _selection.NormalizedStart;
             var end = _selection.NormalizedEnd;
@@ -1662,7 +1897,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
                     double x1 = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (start.Column * _charWidth);
                     double x2 = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (end.Column * _charWidth);
 
-                    dc.DrawRectangle(SelectionBackground, null, new Rect(x1, y, x2 - x1, _lineHeight));
+                    dc.DrawRectangle(selectionBrush, null, new Rect(x1, y, x2 - x1, _lineHeight));
                 }
             }
             else // Multi-line selection (Phase 3)
@@ -1676,7 +1911,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
                     double x1 = leftEdge + (start.Column * _charWidth);
                     double x2 = leftEdge + (_document.Lines[start.Line].Length * _charWidth);
 
-                    dc.DrawRectangle(SelectionBackground, null, new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight));
+                    dc.DrawRectangle(selectionBrush, null, new Rect(x1, y, Math.Max(x2 - x1, _charWidth), _lineHeight));
                 }
 
                 // Render middle lines (entire line width)
@@ -1687,7 +1922,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
                         double y = TopMargin + (line - _firstVisibleLine) * _lineHeight;
                         double width = _document.Lines[line].Length * _charWidth;
 
-                        dc.DrawRectangle(SelectionBackground, null, new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight));
+                        dc.DrawRectangle(selectionBrush, null, new Rect(leftEdge, y, Math.Max(width, _charWidth), _lineHeight));
                     }
                 }
 
@@ -1697,8 +1932,45 @@ namespace WpfHexaEditor.Controls.JsonEditor
                     double y = TopMargin + (end.Line - _firstVisibleLine) * _lineHeight;
                     double x2 = leftEdge + (end.Column * _charWidth);
 
-                    dc.DrawRectangle(SelectionBackground, null, new Rect(leftEdge, y, x2 - leftEdge, _lineHeight));
+                    dc.DrawRectangle(selectionBrush, null, new Rect(leftEdge, y, x2 - leftEdge, _lineHeight));
                 }
+            }
+        }
+
+        /// <summary>
+        /// Render find/replace results highlighting
+        /// </summary>
+        private void RenderFindResults(DrawingContext dc)
+        {
+            if (_findResults == null || _findResults.Count == 0)
+                return;
+
+            double leftEdge = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+
+            // Render all find results with FindResultColor
+            for (int i = 0; i < _findResults.Count; i++)
+            {
+                var result = _findResults[i];
+
+                if (result.Line < _firstVisibleLine || result.Line > _lastVisibleLine)
+                    continue;
+
+                // Calculate Y position with virtual scrolling support
+                double y = EnableVirtualScrolling && _virtualizationEngine != null
+                    ? TopMargin + _virtualizationEngine.GetLineYPosition(result.Line)
+                    : TopMargin + (result.Line - _firstVisibleLine) * _lineHeight;
+
+                double x1 = leftEdge + (result.Column * _charWidth);
+                double x2 = leftEdge + ((result.Column + _findMatchLength) * _charWidth);
+
+                // Use HighlightMatchColor for current match, FindResultColor for others
+                Brush highlightBrush = (i == _currentFindMatchIndex)
+                    ? HighlightMatchColor
+                    : FindResultColor;
+                if (highlightBrush.IsFrozen == false)
+                    highlightBrush.Freeze();
+
+                dc.DrawRectangle(highlightBrush, null, new Rect(x1, y, x2 - x1, _lineHeight));
             }
         }
 
@@ -1757,6 +2029,10 @@ namespace WpfHexaEditor.Controls.JsonEditor
             if (!IsFocused)
                 return;
 
+            // Check caret visibility for blinking effect
+            if (!_caretVisible)
+                return;
+
             if (_cursorLine < _firstVisibleLine || _cursorLine > _lastVisibleLine)
                 return;
 
@@ -1767,8 +2043,8 @@ namespace WpfHexaEditor.Controls.JsonEditor
 
             double x = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) + (_cursorColumn * _charWidth);
 
-            // Draw cursor as vertical line (Insert mode style)
-            var cursorPen = new Pen(new SolidColorBrush(Color.FromRgb(0, 0, 0)), 1.5);
+            // Draw cursor as vertical line using DPs for color and width
+            var cursorPen = new Pen(new SolidColorBrush(CaretColor), CaretWidth);
             cursorPen.Freeze();
 
             dc.DrawLine(cursorPen,
@@ -2091,6 +2367,9 @@ namespace WpfHexaEditor.Controls.JsonEditor
         {
             base.OnKeyDown(e);
 
+            // Reset caret blink on keypress
+            ResetCaretBlink();
+
             bool ctrlPressed = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
             bool shiftPressed = (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
 
@@ -2214,6 +2493,9 @@ namespace WpfHexaEditor.Controls.JsonEditor
         {
             base.OnTextInput(e);
 
+            // Reset caret blink on text input
+            ResetCaretBlink();
+
             if (!string.IsNullOrEmpty(e.Text))
             {
                 foreach (char ch in e.Text)
@@ -2224,8 +2506,17 @@ namespace WpfHexaEditor.Controls.JsonEditor
 
                     InsertChar(ch);
 
+                    // Auto-close brackets and quotes
+                    if (ShouldAutoClose(ch))
+                    {
+                        char closingChar = GetClosingChar(ch);
+                        InsertChar(closingChar);
+                        // Move cursor back one position to be inside the pair
+                        _cursorColumn--;
+                    }
+
                     // Auto-trigger IntelliSense on specific characters (Phase 4)
-                    if (_enableIntelliSense && ShouldAutoTriggerIntelliSense(ch))
+                    if (EnableIntelliSense && ShouldAutoTriggerIntelliSense(ch))
                     {
                         TriggerIntelliSenseWithDelay();
                     }
@@ -2353,12 +2644,70 @@ namespace WpfHexaEditor.Controls.JsonEditor
             }
         }
 
+        /// <summary>
+        /// Check if a character should trigger auto-closing
+        /// </summary>
+        private bool ShouldAutoClose(char ch)
+        {
+            switch (ch)
+            {
+                case '{':
+                case '[':
+                case '(':
+                    return EnableAutoClosingBrackets;
+                case '"':
+                case '\'':
+                    return EnableAutoClosingQuotes;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Get the closing character for an opening character
+        /// </summary>
+        private char GetClosingChar(char ch)
+        {
+            switch (ch)
+            {
+                case '{': return '}';
+                case '[': return ']';
+                case '(': return ')';
+                case '"': return '"';
+                case '\'': return '\'';
+                default: return ch;
+            }
+        }
+
         private void DeleteCharBefore()
         {
             if (_cursorColumn > 0)
             {
-                _cursorColumn--;
-                _document.DeleteChar(_cursorLine, _cursorColumn);
+                // SmartBackspace: Delete by indent level if on leading whitespace
+                if (SmartBackspace && IsOnLeadingWhitespace())
+                {
+                    var line = _document.Lines[_cursorLine];
+                    int spaces = _cursorColumn;
+                    int indentSize = IndentSize;
+
+                    // Calculate how many spaces to delete to reach previous indent level
+                    int spacesToDelete = spaces % indentSize;
+                    if (spacesToDelete == 0)
+                        spacesToDelete = indentSize;
+
+                    // Delete multiple spaces
+                    for (int i = 0; i < spacesToDelete && _cursorColumn > 0; i++)
+                    {
+                        _cursorColumn--;
+                        _document.DeleteChar(_cursorLine, _cursorColumn);
+                    }
+                }
+                else
+                {
+                    // Regular backspace - delete single character
+                    _cursorColumn--;
+                    _document.DeleteChar(_cursorLine, _cursorColumn);
+                }
             }
             else if (_cursorLine > 0)
             {
@@ -2369,6 +2718,26 @@ namespace WpfHexaEditor.Controls.JsonEditor
                 _cursorLine--;
                 _cursorColumn = prevLineLength;
             }
+        }
+
+        /// <summary>
+        /// Check if cursor is on leading whitespace
+        /// </summary>
+        private bool IsOnLeadingWhitespace()
+        {
+            if (_cursorLine >= _document.Lines.Count)
+                return false;
+
+            var line = _document.Lines[_cursorLine];
+
+            // Check if all characters before cursor are spaces
+            for (int i = 0; i < _cursorColumn && i < line.Text.Length; i++)
+            {
+                if (line.Text[i] != ' ')
+                    return false;
+            }
+
+            return true;
         }
 
         private void DeleteCharAfter()
@@ -2489,6 +2858,36 @@ namespace WpfHexaEditor.Controls.JsonEditor
                 _isSelecting = false;
                 ReleaseMouseCapture();
             }
+        }
+
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            base.OnGotFocus(e);
+
+            // Start caret blinking when focused
+            if (_caretTimer != null && CaretBlinkRate > 0)
+            {
+                _caretVisible = true;
+                _caretTimer.Start();
+            }
+
+            // Repaint to show active selection
+            InvalidateVisual();
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            base.OnLostFocus(e);
+
+            // Stop caret blinking when not focused
+            if (_caretTimer != null)
+            {
+                _caretTimer.Stop();
+                _caretVisible = false;
+            }
+
+            // Repaint to show inactive selection
+            InvalidateVisual();
         }
 
         /// <summary>
@@ -2748,7 +3147,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
             }
 
             // Phase 5: Trigger validation with debounce
-            if (_enableValidation)
+            if (EnableValidation)
             {
                 _validationTimer.Stop();
                 _validationTimer.Start();
@@ -2810,7 +3209,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
         /// </summary>
         private void PerformValidation()
         {
-            if (!_enableValidation || _validator == null || _document == null)
+            if (!EnableValidation || _validator == null || _document == null)
                 return;
 
             try
@@ -2831,7 +3230,7 @@ namespace WpfHexaEditor.Controls.JsonEditor
         /// </summary>
         public void TriggerValidation()
         {
-            if (_enableValidation)
+            if (EnableValidation)
             {
                 PerformValidation();
             }

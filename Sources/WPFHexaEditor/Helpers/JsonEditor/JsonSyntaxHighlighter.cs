@@ -39,6 +39,9 @@ namespace WpfHexaEditor.Helpers.JsonEditor
             ValueType,       // uint8, uint16, string, etc.
             CalcExpression,  // calc:headerSize + 16
             VariableRef,     // var:chunkCount
+            EscapeSequence,  // \n, \t, \\, \", etc. in strings
+            Url,             // http://, https:// URLs in strings
+            Deprecated,      // Deprecated keywords
             Error            // Invalid syntax
         }
 
@@ -46,6 +49,7 @@ namespace WpfHexaEditor.Helpers.JsonEditor
 
         #region Color Configuration (Bindings to DPs)
 
+        public Brush DefaultColor { get; set; } = Brushes.Black; // EditorForeground
         public Brush BraceColor { get; set; } = Brushes.Black;
         public Brush BracketColor { get; set; } = Brushes.Black;
         public Brush CommaColor { get; set; } = Brushes.Black;
@@ -60,6 +64,9 @@ namespace WpfHexaEditor.Helpers.JsonEditor
         public Brush ValueTypeColor { get; set; } = new SolidColorBrush(Color.FromRgb(43, 145, 175)); // Cyan
         public Brush CalcExpressionColor { get; set; } = new SolidColorBrush(Color.FromRgb(128, 0, 128)); // Purple
         public Brush VariableReferenceColor { get; set; } = new SolidColorBrush(Color.FromRgb(128, 0, 128)); // Purple
+        public Brush EscapeSequenceColor { get; set; } = new SolidColorBrush(Color.FromRgb(255, 140, 0)); // Dark Orange
+        public Brush UrlColor { get; set; } = new SolidColorBrush(Color.FromRgb(0, 102, 204)); // Blue
+        public Brush DeprecatedColor { get; set; } = Brushes.Gray;
         public Brush ErrorColor { get; set; } = Brushes.Red;
 
         #endregion
@@ -78,6 +85,12 @@ namespace WpfHexaEditor.Helpers.JsonEditor
             "float", "double",
             "string", "ascii", "utf8", "utf16",
             "bytes"
+        };
+
+        private static readonly HashSet<string> DeprecatedKeywords = new HashSet<string>
+        {
+            // Example deprecated keywords - adjust based on actual format definition spec
+            "oldFormat", "legacyField", "deprecatedType"
         };
 
         #endregion
@@ -252,6 +265,12 @@ namespace WpfHexaEditor.Helpers.JsonEditor
                         foreground = KeyColor;
                         isBold = true;
                     }
+                    else if (DeprecatedKeywords.Contains(str))
+                    {
+                        tokenType = TokenType.Deprecated;
+                        foreground = DeprecatedColor;
+                        isBold = true;
+                    }
                     else if (Keywords.Contains(str))
                     {
                         tokenType = TokenType.Keyword;
@@ -263,22 +282,39 @@ namespace WpfHexaEditor.Helpers.JsonEditor
                         tokenType = TokenType.ValueType;
                         foreground = ValueTypeColor;
                     }
+                    else if (str.StartsWith("http://") || str.StartsWith("https://"))
+                    {
+                        // URL detection
+                        tokenType = TokenType.Url;
+                        foreground = UrlColor;
+                    }
                     else
                     {
                         tokenType = TokenType.StringValue;
                         foreground = StringValueColor;
                     }
 
-                    tokens.Add(new SyntaxToken
+                    // Check if string contains escape sequences and needs sub-token parsing
+                    if (tokenType == TokenType.StringValue && ContainsEscapeSequences(str))
                     {
-                        Type = tokenType,
-                        StartColumn = i,
-                        Length = end - i + 1,
-                        Text = text.Substring(i, end - i + 1),
-                        Foreground = foreground,
-                        IsBold = isBold,
-                        IsItalic = isItalic
-                    });
+                        // Parse string with escape sequences as sub-tokens
+                        var stringTokens = ParseStringWithEscapeSequences(text, i, end, foreground);
+                        tokens.AddRange(stringTokens);
+                    }
+                    else
+                    {
+                        // Add as single token
+                        tokens.Add(new SyntaxToken
+                        {
+                            Type = tokenType,
+                            StartColumn = i,
+                            Length = end - i + 1,
+                            Text = text.Substring(i, end - i + 1),
+                            Foreground = foreground,
+                            IsBold = isBold,
+                            IsItalic = isItalic
+                        });
+                    }
 
                     i = end + 1;
                     continue;
@@ -394,6 +430,104 @@ namespace WpfHexaEditor.Helpers.JsonEditor
             }
 
             return text.Length - 1; // Unterminated string
+        }
+
+        /// <summary>
+        /// Check if string contains escape sequences that should be highlighted
+        /// </summary>
+        private bool ContainsEscapeSequences(string str)
+        {
+            return str.Contains("\\");
+        }
+
+        /// <summary>
+        /// Parse string with escape sequences into sub-tokens
+        /// </summary>
+        private List<SyntaxToken> ParseStringWithEscapeSequences(string text, int start, int end, Brush defaultForeground)
+        {
+            var tokens = new List<SyntaxToken>();
+
+            // Add opening quote
+            tokens.Add(new SyntaxToken
+            {
+                Type = TokenType.StringValue,
+                StartColumn = start,
+                Length = 1,
+                Text = "\"",
+                Foreground = defaultForeground
+            });
+
+            int i = start + 1; // Skip opening quote
+            int segmentStart = i;
+
+            while (i < end)
+            {
+                if (text[i] == '\\' && i + 1 < end)
+                {
+                    // Add text before escape sequence
+                    if (i > segmentStart)
+                    {
+                        tokens.Add(new SyntaxToken
+                        {
+                            Type = TokenType.StringValue,
+                            StartColumn = segmentStart,
+                            Length = i - segmentStart,
+                            Text = text.Substring(segmentStart, i - segmentStart),
+                            Foreground = defaultForeground
+                        });
+                    }
+
+                    // Add escape sequence token (\ and next char)
+                    int escLength = 2;
+                    // Handle unicode escapes like \uXXXX
+                    if (text[i + 1] == 'u' && i + 5 < end)
+                    {
+                        escLength = 6;
+                    }
+
+                    tokens.Add(new SyntaxToken
+                    {
+                        Type = TokenType.EscapeSequence,
+                        StartColumn = i,
+                        Length = escLength,
+                        Text = text.Substring(i, Math.Min(escLength, end - i)),
+                        Foreground = EscapeSequenceColor,
+                        IsBold = true
+                    });
+
+                    i += escLength;
+                    segmentStart = i;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            // Add remaining text before closing quote
+            if (i > segmentStart && segmentStart < end)
+            {
+                tokens.Add(new SyntaxToken
+                {
+                    Type = TokenType.StringValue,
+                    StartColumn = segmentStart,
+                    Length = end - segmentStart,
+                    Text = text.Substring(segmentStart, end - segmentStart),
+                    Foreground = defaultForeground
+                });
+            }
+
+            // Add closing quote
+            tokens.Add(new SyntaxToken
+            {
+                Type = TokenType.StringValue,
+                StartColumn = end,
+                Length = 1,
+                Text = "\"",
+                Foreground = defaultForeground
+            });
+
+            return tokens;
         }
     }
 

@@ -26,6 +26,7 @@ namespace WpfHexaEditor.Views.Panels
         private string _searchText;
         private bool _showBookmarksOnly;
         private string _searchResultText;
+        private bool _hasSelection;
 
         public ParsedFieldsPanel()
         {
@@ -96,6 +97,19 @@ namespace WpfHexaEditor.Views.Panels
         }
 
         /// <summary>
+        /// Indicates whether a field is currently selected
+        /// </summary>
+        public bool HasSelection
+        {
+            get => _hasSelection;
+            private set
+            {
+                _hasSelection = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
         /// Information about the detected format
         /// </summary>
         public FormatInfo FormatInfo
@@ -130,6 +144,8 @@ namespace WpfHexaEditor.Views.Panels
 
         private void FieldsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            HasSelection = FieldsListBox.SelectedItem != null;
+
             if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
             {
                 FieldSelected?.Invoke(this, field);
@@ -166,6 +182,15 @@ namespace WpfHexaEditor.Views.Panels
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             RefreshRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void QuickNavigate_Click(object sender, RoutedEventArgs e)
+        {
+            // Trigger selection changed to navigate to field position
+            if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
+            {
+                FieldSelected?.Invoke(this, field);
+            }
         }
 
         private void FormatterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -448,6 +448,7 @@ namespace WpfHexaEditor
             {
                 int intOffset => intOffset,
                 long longOffset => longOffset,
+                System.Text.Json.JsonElement jsonElement => ResolveJsonElementAsLong(jsonElement),
                 string strOffset when strOffset.StartsWith("var:") =>
                     _variableContext?.GetVariableAsLong(strOffset.Substring(4)) ?? 0,
                 string strOffset when strOffset.StartsWith("calc:") =>
@@ -465,12 +466,40 @@ namespace WpfHexaEditor
             {
                 int intLength => intLength,
                 long longLength => (int)longLength, // JSON.NET deserializes numbers as Int64
+                System.Text.Json.JsonElement jsonElement => (int)ResolveJsonElementAsLong(jsonElement),
                 string strLength when strLength.StartsWith("var:") =>
                     (int)(_variableContext?.GetVariableAsLong(strLength.Substring(4)) ?? 0),
                 string strLength when strLength.StartsWith("calc:") =>
                     (int)(_expressionEvaluator?.Evaluate(strLength.Substring(5)) ?? 0),
                 _ => 1
             };
+        }
+
+        /// <summary>
+        /// Resolve a JsonElement to a long value
+        /// Handles numbers and strings (including var: and calc: prefixes)
+        /// </summary>
+        private long ResolveJsonElementAsLong(System.Text.Json.JsonElement element)
+        {
+            switch (element.ValueKind)
+            {
+                case System.Text.Json.JsonValueKind.Number:
+                    return element.TryGetInt64(out long longValue) ? longValue :
+                           element.TryGetInt32(out int intValue) ? intValue : 0;
+
+                case System.Text.Json.JsonValueKind.String:
+                    string strValue = element.GetString();
+                    if (strValue.StartsWith("var:"))
+                        return _variableContext?.GetVariableAsLong(strValue.Substring(4)) ?? 0;
+                    else if (strValue.StartsWith("calc:"))
+                        return _expressionEvaluator?.Evaluate(strValue.Substring(5)) ?? 0;
+                    else if (long.TryParse(strValue, out long parsed))
+                        return parsed;
+                    return 0;
+
+                default:
+                    return 0;
+            }
         }
 
         /// <summary>

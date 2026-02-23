@@ -43,6 +43,7 @@ namespace WpfHexaEditor.Rendering
             public int ByteSpacerWidth;
             public bool ShowOffset;
             public bool ShowAscii;
+            public bool HasAsciiSpacers; // Whether ASCII area should have spacers
 
             public bool Equals(ViewportState other)
             {
@@ -55,7 +56,8 @@ namespace WpfHexaEditor.Rendering
                        ByteGrouping == other.ByteGrouping &&
                        ByteSpacerWidth == other.ByteSpacerWidth &&
                        ShowOffset == other.ShowOffset &&
-                       ShowAscii == other.ShowAscii;
+                       ShowAscii == other.ShowAscii &&
+                       HasAsciiSpacers == other.HasAsciiSpacers;
             }
 
             public override bool Equals(object obj) => obj is ViewportState state && Equals(state);
@@ -69,6 +71,7 @@ namespace WpfHexaEditor.Rendering
                     hash = hash * 31 + FontSize.GetHashCode();
                     hash = hash * 31 + (FontFamily?.GetHashCode() ?? 0);
                     hash = hash * 31 + ByteGrouping.GetHashCode();
+                    hash = hash * 31 + HasAsciiSpacers.GetHashCode();
                     return hash;
                 }
             }
@@ -122,6 +125,7 @@ namespace WpfHexaEditor.Rendering
         /// <param name="byteSpacerWidth">Width of each spacer in pixels</param>
         /// <param name="showOffset">Whether offset column is visible</param>
         /// <param name="showAscii">Whether ASCII column is visible</param>
+        /// <param name="hasAsciiSpacers">Whether ASCII area should have spacers (depends on ByteSpacerPositioning and TBL)</param>
         public void PrepareBlocks(
             IEnumerable<CustomBackgroundBlock> blocks,
             int bytesPerLine,
@@ -133,7 +137,8 @@ namespace WpfHexaEditor.Rendering
             ByteSpacerGroup byteGrouping,
             int byteSpacerWidth,
             bool showOffset,
-            bool showAscii)
+            bool showAscii,
+            bool hasAsciiSpacers = false)
         {
             var newState = new ViewportState
             {
@@ -146,7 +151,8 @@ namespace WpfHexaEditor.Rendering
                 ByteGrouping = byteGrouping,
                 ByteSpacerWidth = byteSpacerWidth,
                 ShowOffset = showOffset,
-                ShowAscii = showAscii
+                ShowAscii = showAscii,
+                HasAsciiSpacers = hasAsciiSpacers
             };
 
             // Check if cache is still valid
@@ -366,38 +372,50 @@ namespace WpfHexaEditor.Rendering
 
         /// <summary>
         /// Calculate rectangle for ASCII area background
+        /// Note: ASCII area may have spacers depending on ByteSpacerPositioning and TBL settings
         /// </summary>
         private Rect CalculateAsciiRectangle(
             int startByteIndex, int endByteIndex, double asciiStartX, double y)
         {
-            double x = asciiStartX;
-
-            // Account for spacers before start byte
-            for (int i = 0; i < startByteIndex; i++)
+            if (!_cachedState.HasAsciiSpacers)
             {
-                if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
-                    i > 0 && i % (int)_cachedState.ByteGrouping == 0)
-                {
-                    x += _cachedState.ByteSpacerWidth;
-                }
-                x += _cachedState.AsciiCharWidth;
+                // No spacers in ASCII area - simple calculation
+                double startX = asciiStartX + (startByteIndex * _cachedState.AsciiCharWidth);
+                double width = (endByteIndex - startByteIndex + 1) * _cachedState.AsciiCharWidth;
+                return new Rect(startX, y, width, _cachedState.LineHeight);
             }
-
-            double startX = x;
-            double width = 0;
-
-            // Calculate width including spacers
-            for (int i = startByteIndex; i <= endByteIndex; i++)
+            else
             {
-                if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
-                    i > 0 && i % (int)_cachedState.ByteGrouping == 0)
-                {
-                    width += _cachedState.ByteSpacerWidth;
-                }
-                width += _cachedState.AsciiCharWidth;
-            }
+                // ASCII area has spacers - use same logic as hex area
+                double x = asciiStartX;
 
-            return new Rect(startX, y, width, _cachedState.LineHeight);
+                // Account for spacers before start byte
+                for (int i = 0; i < startByteIndex; i++)
+                {
+                    if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
+                        i > 0 && i % (int)_cachedState.ByteGrouping == 0)
+                    {
+                        x += _cachedState.ByteSpacerWidth;
+                    }
+                    x += _cachedState.AsciiCharWidth;
+                }
+
+                double startX = x;
+                double width = 0;
+
+                // Calculate width including spacers
+                for (int i = startByteIndex; i <= endByteIndex; i++)
+                {
+                    if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
+                        i > 0 && i % (int)_cachedState.ByteGrouping == 0)
+                    {
+                        width += _cachedState.ByteSpacerWidth;
+                    }
+                    width += _cachedState.AsciiCharWidth;
+                }
+
+                return new Rect(startX, y, width, _cachedState.LineHeight);
+            }
         }
 
         /// <summary>
