@@ -1,0 +1,47 @@
+﻿{
+    "formatName":  "FLAC Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".flac"
+                   ],
+    "description":  "Free Lossless Audio Codec",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "664C6143",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "FLAC Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "fLaC stream marker"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Metadata Block Header",
+                       "offset":  4,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "First metadata block type"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Block Length",
+                       "offset":  5,
+                       "length":  3,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Length of metadata block"
+                   }
+               ]
+}

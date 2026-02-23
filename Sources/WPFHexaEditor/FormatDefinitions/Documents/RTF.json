@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "Rich Text Format",
+    "version":  "1.0",
+    "extensions":  [
+                       ".rtf"
+                   ],
+    "description":  "Rich Text Format document",
+    "category":  "Documents",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7B5C727466",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "RTF Header",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "{\\rtf signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  5,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "RTF version number (ASCII)"
+                   }
+               ]
+}

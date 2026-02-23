@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Crystallographic Information File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".cif"
+                   ],
+    "description":  "Crystallographic Information File for crystal structures",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "646174615F",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "CIF Data Block",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "CIF data_ keyword"
+                   }
+               ]
+}

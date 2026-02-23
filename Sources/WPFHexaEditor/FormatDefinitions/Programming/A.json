@@ -1,0 +1,83 @@
+﻿{
+    "formatName":  "Static Library Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".a"
+                   ],
+    "description":  "Unix static library archive (ar format) containing compiled object files for static linking",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "213C617263683E0A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Archive Signature",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "AR archive magic: \u0027!\u003carch\u003e\u0027 0x0A"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "File Name",
+                       "offset":  8,
+                       "length":  16,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "File identifier (first member, usually \u0027/\u0027 for symbol table)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Timestamp",
+                       "offset":  24,
+                       "length":  12,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "File modification timestamp (decimal ASCII)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Owner ID",
+                       "offset":  36,
+                       "length":  6,
+                       "color":  "#96CEB4",
+                       "opacity":  0.4,
+                       "description":  "Owner user ID (decimal ASCII)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Group ID",
+                       "offset":  42,
+                       "length":  6,
+                       "color":  "#FFEAA7",
+                       "opacity":  0.4,
+                       "description":  "Group ID (decimal ASCII)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "File Mode",
+                       "offset":  48,
+                       "length":  8,
+                       "color":  "#DFE6E9",
+                       "opacity":  0.4,
+                       "description":  "File permissions (octal ASCII)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "File Size",
+                       "offset":  56,
+                       "length":  10,
+                       "color":  "#74B9FF",
+                       "opacity":  0.4,
+                       "description":  "File size in bytes (decimal ASCII)"
+                   }
+               ]
+}

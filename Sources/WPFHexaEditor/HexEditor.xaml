@@ -7,6 +7,7 @@
              xmlns:models="clr-namespace:WpfHexaEditor.Models"
              xmlns:converters="clr-namespace:WpfHexaEditor.Converters"
              xmlns:controls="clr-namespace:WpfHexaEditor.Controls"
+             xmlns:panels="clr-namespace:WpfHexaEditor.Views.Panels"
              xmlns:prop="clr-namespace:WpfHexaEditor.Properties"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -285,7 +286,7 @@
         <Border x:Name="HeaderBorder" Grid.Row="0" Background="{StaticResource HeaderBrush}" BorderBrush="#D0D0D0" BorderThickness="0,0,0,1" Padding="0,5,0,5">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="110"/> <!-- Offset: matches OffsetWidth -->
+                    <ColumnDefinition Width="{Binding ActualOffsetWidth, RelativeSource={RelativeSource AncestorType=local:HexEditor}}"/> <!-- Offset: dynamic width based on format -->
                     <ColumnDefinition Width="Auto"/>   <!-- Hex: auto-size for all columns with spacers -->
                     <ColumnDefinition Width="20"/> <!-- Separator: matches SeparatorWidth -->
                     <ColumnDefinition Width="Auto"/> <!-- ASCII: auto-size -->
@@ -304,11 +305,13 @@
             </Grid>
         </Border>
 
-        <!-- Content area with scrollbar -->
+        <!-- Content area with scrollbar and parsed fields panel -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/> <!-- Scrollbar -->
+                <ColumnDefinition Width="Auto"/> <!-- GridSplitter -->
+                <ColumnDefinition Width="300" MinWidth="200" MaxWidth="600"/> <!-- ParsedFieldsPanel -->
             </Grid.ColumnDefinitions>
 
             <!-- Lines display - Custom high-performance rendering -->
@@ -343,10 +346,28 @@
                                          HorizontalAlignment="Right"
                                          Margin="0,18,0,18"/>
 
+            <!-- Grid Splitter for resizing parsed fields panel -->
+            <GridSplitter Grid.Column="2"
+                         Width="5"
+                         Background="#E0E0E0"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Stretch"
+                         ShowsPreview="True"
+                         ResizeBehavior="PreviousAndNext"
+                         Visibility="{Binding ParsedFieldsPanelVisibility, RelativeSource={RelativeSource AncestorType=local:HexEditor}}"/>
+
+            <!-- Parsed Fields Panel (Issue #111) -->
+            <Border Grid.Column="3"
+                    BorderBrush="#D0D0D0"
+                    BorderThickness="1,0,0,0"
+                    Visibility="{Binding ParsedFieldsPanelVisibility, RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
+                <panels:ParsedFieldsPanel x:Name="ParsedFieldsPanel"/>
+            </Border>
+
             <!-- Progress overlay for long-running operations -->
             <controls:ProgressOverlay x:Name="ProgressOverlay"
                                       Grid.Column="0"
-                                      Grid.ColumnSpan="2"
+                                      Grid.ColumnSpan="4"
                                       Panel.ZIndex="10"
                                       Visibility="Collapsed"/>
         </Grid>

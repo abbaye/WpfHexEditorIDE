@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "MINC Medical Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mnc",
+                       ".minc"
+                   ],
+    "description":  "Medical Image NetCDF format",
+    "category":  "Medical",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "43444601",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "NetCDF Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "NetCDF/MINC signature (CDF\\1)"
+                   }
+               ]
+}

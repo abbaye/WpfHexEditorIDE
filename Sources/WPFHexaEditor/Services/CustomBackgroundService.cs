@@ -4,10 +4,12 @@
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using WpfHexaEditor.Core;
+using WpfHexaEditor.Events;
 
 namespace WpfHexaEditor.Services
 {
@@ -75,6 +77,58 @@ namespace WpfHexaEditor.Services
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// Raised when a block or blocks are added
+        /// </summary>
+        public event EventHandler<CustomBackgroundBlockEventArgs> BlockAdded;
+
+        /// <summary>
+        /// Raised when a block or blocks are removed
+        /// </summary>
+        public event EventHandler<CustomBackgroundBlockEventArgs> BlockRemoved;
+
+        /// <summary>
+        /// Raised when all blocks are cleared
+        /// </summary>
+        public event EventHandler<CustomBackgroundBlockEventArgs> BlocksCleared;
+
+        /// <summary>
+        /// Raised for any change (added, removed, cleared)
+        /// Convenience event for subscribers that want all notifications
+        /// </summary>
+        public event EventHandler<CustomBackgroundBlockEventArgs> BlocksChanged;
+
+        /// <summary>
+        /// Raise BlockAdded event
+        /// </summary>
+        protected virtual void OnBlockAdded(CustomBackgroundBlockEventArgs e)
+        {
+            BlockAdded?.Invoke(this, e);
+            BlocksChanged?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Raise BlockRemoved event
+        /// </summary>
+        protected virtual void OnBlockRemoved(CustomBackgroundBlockEventArgs e)
+        {
+            BlockRemoved?.Invoke(this, e);
+            BlocksChanged?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Raise BlocksCleared event
+        /// </summary>
+        protected virtual void OnBlocksCleared(CustomBackgroundBlockEventArgs e)
+        {
+            BlocksCleared?.Invoke(this, e);
+            BlocksChanged?.Invoke(this, e);
+        }
+
+        #endregion
+
         #region Add Operations
 
         /// <summary>
@@ -88,6 +142,13 @@ namespace WpfHexaEditor.Services
                 return false;
 
             _backgroundBlocks.Add(block);
+
+            // Raise event
+            OnBlockAdded(new CustomBackgroundBlockEventArgs(
+                BlockChangeType.Added,
+                block,
+                _backgroundBlocks.Count));
+
             return true;
         }
 
@@ -106,6 +167,13 @@ namespace WpfHexaEditor.Services
 
             var block = new CustomBackgroundBlock(startOffset, length, color, description);
             _backgroundBlocks.Add(block);
+
+            // Raise event
+            OnBlockAdded(new CustomBackgroundBlockEventArgs(
+                BlockChangeType.Added,
+                block,
+                _backgroundBlocks.Count));
+
             return true;
         }
 
@@ -119,14 +187,27 @@ namespace WpfHexaEditor.Services
             if (blocks == null)
                 return 0;
 
-            var count = 0;
+            var addedBlocks = new List<CustomBackgroundBlock>();
+
             foreach (var block in blocks)
             {
-                if (AddBlock(block))
-                    count++;
+                if (block != null && block.Length > 0 && block.StartOffset >= 0)
+                {
+                    _backgroundBlocks.Add(block);
+                    addedBlocks.Add(block);
+                }
             }
 
-            return count;
+            // Raise event if any blocks were added
+            if (addedBlocks.Count > 0)
+            {
+                OnBlockAdded(new CustomBackgroundBlockEventArgs(
+                    BlockChangeType.AddedMultiple,
+                    addedBlocks.AsReadOnly(),
+                    _backgroundBlocks.Count));
+            }
+
+            return addedBlocks.Count;
         }
 
         #endregion
@@ -143,7 +224,18 @@ namespace WpfHexaEditor.Services
             if (block == null)
                 return false;
 
-            return _backgroundBlocks.Remove(block);
+            bool removed = _backgroundBlocks.Remove(block);
+
+            if (removed)
+            {
+                // Raise event
+                OnBlockRemoved(new CustomBackgroundBlockEventArgs(
+                    BlockChangeType.Removed,
+                    block,
+                    _backgroundBlocks.Count));
+            }
+
+            return removed;
         }
 
         /// <summary>
@@ -156,8 +248,24 @@ namespace WpfHexaEditor.Services
             if (position < 0)
                 return 0;
 
-            return _backgroundBlocks.RemoveAll(block =>
+            // Collect blocks to remove first
+            var removedBlocks = _backgroundBlocks
+                .Where(block => position >= block.StartOffset && position < block.StopOffset)
+                .ToList();
+
+            int count = _backgroundBlocks.RemoveAll(block =>
                 position >= block.StartOffset && position < block.StopOffset);
+
+            if (count > 0)
+            {
+                // Raise event
+                OnBlockRemoved(new CustomBackgroundBlockEventArgs(
+                    BlockChangeType.RemovedMultiple,
+                    removedBlocks.AsReadOnly(),
+                    _backgroundBlocks.Count));
+            }
+
+            return count;
         }
 
         /// <summary>
@@ -171,9 +279,27 @@ namespace WpfHexaEditor.Services
             if (startPosition < 0 || endPosition < startPosition)
                 return 0;
 
-            return _backgroundBlocks.RemoveAll(block =>
+            // Collect blocks to remove first
+            var removedBlocks = _backgroundBlocks
+                .Where(block =>
+                    block.StartOffset >= startPosition && block.StartOffset <= endPosition ||
+                    block.StopOffset >= startPosition && block.StopOffset <= endPosition)
+                .ToList();
+
+            int count = _backgroundBlocks.RemoveAll(block =>
                 block.StartOffset >= startPosition && block.StartOffset <= endPosition ||
                 block.StopOffset >= startPosition && block.StopOffset <= endPosition);
+
+            if (count > 0)
+            {
+                // Raise event
+                OnBlockRemoved(new CustomBackgroundBlockEventArgs(
+                    BlockChangeType.RemovedMultiple,
+                    removedBlocks.AsReadOnly(),
+                    _backgroundBlocks.Count));
+            }
+
+            return count;
         }
 
         /// <summary>
@@ -183,7 +309,20 @@ namespace WpfHexaEditor.Services
         public int ClearAll()
         {
             var count = _backgroundBlocks.Count;
-            _backgroundBlocks.Clear();
+
+            if (count > 0)
+            {
+                _backgroundBlocks.Clear();
+
+                // Raise event
+                OnBlocksCleared(new CustomBackgroundBlockEventArgs
+                {
+                    ChangeType = BlockChangeType.Cleared,
+                    AffectedCount = count,
+                    TotalBlockCount = 0
+                });
+            }
+
             return count;
         }
 

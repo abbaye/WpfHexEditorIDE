@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "JPEG XL Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".jxl"
+                   ],
+    "description":  "JPEG XL - Next-generation image format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "FF0A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "JPEG XL Signature",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "0xFF 0x0A magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Codestream Header",
+                       "offset":  2,
+                       "length":  8,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "JPEG XL codestream header"
+                   }
+               ]
+}

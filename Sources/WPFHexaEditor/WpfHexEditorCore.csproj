@@ -195,6 +195,12 @@
     </Content>
   </ItemGroup>
 
+  <!-- Embed all FormatDefinitions JSON files as resources (400 formats built-in) -->
+  <!-- Embedded resources are compiled into the DLL for portability -->
+  <ItemGroup>
+    <EmbeddedResource Include="FormatDefinitions\**\*.json" />
+  </ItemGroup>
+
   <!-- Span<T> and System.Text.Json support for .NET Framework 4.8 -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <PackageReference Include="System.Memory" Version="4.5.5" />
@@ -262,5 +268,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 </Project>

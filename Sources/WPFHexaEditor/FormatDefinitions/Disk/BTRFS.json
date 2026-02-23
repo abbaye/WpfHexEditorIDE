@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Btrfs Filesystem",
+    "version":  "1.0",
+    "extensions":  [
+                       ".btrfs"
+                   ],
+    "description":  "B-tree Filesystem with copy-on-write",
+    "category":  "Disk",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5F42486D5F4D",
+                      "offset":  65600,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "Btrfs Superblock",
+                       "offset":  65536,
+                       "length":  4096,
+                       "color":  "#F77F00",
+                       "opacity":  0.4,
+                       "description":  "Btrfs superblock \u0027_BHm_M\u0027"
+                   }
+               ]
+}

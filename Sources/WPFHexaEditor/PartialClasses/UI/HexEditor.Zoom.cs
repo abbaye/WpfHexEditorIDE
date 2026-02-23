@@ -5,8 +5,10 @@
 //////////////////////////////////////////////
 
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
+using WpfHexaEditor.Core.Settings;
 
 namespace WpfHexaEditor
 {
@@ -22,6 +24,8 @@ namespace WpfHexaEditor
         /// Get or set the zoom scale
         /// Possible Scale: 0.5 to 2.0 (50% to 200%)
         /// </summary>
+        [Category("Behavior")]
+        [Range(0.5, 2.0, Step = 0.1)]
         public double ZoomScale
         {
             get => (double)GetValue(ZoomScaleProperty);

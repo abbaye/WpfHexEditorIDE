@@ -1,0 +1,652 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
+using WpfHexaEditor.Core.FormatDetection;
+
+namespace WpfHexaEditor.Core.FormatDetection
+{
+    /// <summary>
+    /// Interpreter for executing format detection scripts
+    /// Processes BlockDefinition lists and generates CustomBackgroundBlocks
+    /// </summary>
+    public class FormatScriptInterpreter
+    {
+        private readonly byte[] _data;
+        private readonly Dictionary<string, object> _variables;
+        private readonly List<CustomBackgroundBlock> _generatedBlocks;
+        private int _executionDepth = 0;
+        private const int MaxExecutionDepth = 50; // Prevent infinite recursion
+
+        /// <summary>
+        /// Initialize interpreter with file data
+        /// </summary>
+        public FormatScriptInterpreter(byte[] data, Dictionary<string, object> initialVariables = null)
+        {
+            _data = data ?? throw new ArgumentNullException(nameof(data));
+            _variables = initialVariables != null
+                ? new Dictionary<string, object>(initialVariables)
+                : new Dictionary<string, object>();
+            _generatedBlocks = new List<CustomBackgroundBlock>();
+
+            // Initialize common variables if not provided
+            if (!_variables.ContainsKey("currentOffset"))
+                _variables["currentOffset"] = 0L;
+            if (!_variables.ContainsKey("fileCount"))
+                _variables["fileCount"] = 0;
+        }
+
+        /// <summary>
+        /// Execute block definitions and return generated blocks
+        /// </summary>
+        public List<CustomBackgroundBlock> ExecuteBlocks(List<BlockDefinition> blocks)
+        {
+            if (blocks == null || blocks.Count == 0)
+                return _generatedBlocks;
+
+            _executionDepth++;
+            if (_executionDepth > MaxExecutionDepth)
+            {
+                throw new InvalidOperationException($"Maximum execution depth ({MaxExecutionDepth}) exceeded. Possible infinite loop in format definition.");
+            }
+
+            try
+            {
+                foreach (var block in blocks)
+                {
+                    ExecuteBlock(block);
+                }
+            }
+            finally
+            {
+                _executionDepth--;
+            }
+
+            return _generatedBlocks;
+        }
+
+        #region Block Execution
+
+        /// <summary>
+        /// Execute a single block definition
+        /// </summary>
+        private void ExecuteBlock(BlockDefinition block)
+        {
+            if (block == null || !block.IsValid())
+                return;
+
+            switch (block.Type.ToLowerInvariant())
+            {
+                case "signature":
+                case "field":
+                    ExecuteFieldBlock(block);
+                    break;
+
+                case "conditional":
+                    ExecuteConditionalBlock(block);
+                    break;
+
+                case "loop":
+                    ExecuteLoopBlock(block);
+                    break;
+
+                case "action":
+                    ExecuteActionBlock(block);
+                    break;
+
+                default:
+                    // Unknown block type, skip
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Execute a field/signature block (creates a CustomBackgroundBlock)
+        /// </summary>
+        private void ExecuteFieldBlock(BlockDefinition block)
+        {
+            // Resolve offset
+            var offset = EvaluateOffset(block.Offset);
+            if (offset == null || offset < 0 || offset >= _data.Length)
+                return; // Invalid offset
+
+            // Resolve length
+            var length = EvaluateLength(block.Length);
+            if (length == null || length <= 0)
+                return; // Invalid length
+
+            // Parse color
+            var brush = ParseColor(block.Color);
+            if (brush == null)
+                brush = Brushes.Gray; // Fallback
+
+            // Create block
+            var customBlock = new CustomBackgroundBlock(
+                offset.Value,
+                length.Value,
+                brush,
+                block.Description ?? block.Name ?? "Unknown",
+                block.Opacity);
+
+            _generatedBlocks.Add(customBlock);
+        }
+
+        /// <summary>
+        /// Execute a conditional block
+        /// </summary>
+        private void ExecuteConditionalBlock(BlockDefinition block)
+        {
+            if (block.Condition == null)
+                return;
+
+            bool conditionMet = EvaluateCondition(block.Condition);
+
+            if (conditionMet && block.Then != null)
+            {
+                ExecuteBlocks(block.Then);
+            }
+            else if (!conditionMet && block.Else != null)
+            {
+                ExecuteBlocks(block.Else);
+            }
+        }
+
+        /// <summary>
+        /// Execute a loop block
+        /// </summary>
+        private void ExecuteLoopBlock(BlockDefinition block)
+        {
+            if (block.Condition == null || block.Body == null)
+                return;
+
+            int iteration = 0;
+            int maxIterations = Math.Min(block.MaxIterations, 100000); // Safety limit
+
+            // Store original variable for $iteration$ replacement
+            var originalIteration = _variables.ContainsKey("iteration") ? _variables["iteration"] : null;
+
+            while (iteration < maxIterations)
+            {
+                // Check condition
+                bool continueLoop = EvaluateCondition(block.Condition);
+                if (!continueLoop)
+                    break;
+
+                // Set iteration variable
+                _variables["iteration"] = iteration;
+
+                // Execute body
+                ExecuteBlocks(block.Body);
+
+                iteration++;
+            }
+
+            // Restore original iteration variable
+            if (originalIteration != null)
+                _variables["iteration"] = originalIteration;
+            else
+                _variables.Remove("iteration");
+        }
+
+        /// <summary>
+        /// Execute an action block (variable manipulation)
+        /// </summary>
+        private void ExecuteActionBlock(BlockDefinition block)
+        {
+            if (string.IsNullOrWhiteSpace(block.Action) || string.IsNullOrWhiteSpace(block.Variable))
+                return;
+
+            switch (block.Action.ToLowerInvariant())
+            {
+                case "increment":
+                    if (_variables.TryGetValue(block.Variable, out var incValue))
+                    {
+                        _variables[block.Variable] = Convert.ToInt64(incValue) + 1;
+                    }
+                    break;
+
+                case "decrement":
+                    if (_variables.TryGetValue(block.Variable, out var decValue))
+                    {
+                        _variables[block.Variable] = Convert.ToInt64(decValue) - 1;
+                    }
+                    break;
+
+                case "setvariable":
+                    var value = EvaluateValue(block.Value);
+                    if (value != null)
+                    {
+                        _variables[block.Variable] = value;
+                    }
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Evaluation Methods
+
+        /// <summary>
+        /// Evaluate offset expression (supports int, var:name, calc:expression)
+        /// </summary>
+        private long? EvaluateOffset(object offsetExpr)
+        {
+            if (offsetExpr == null)
+                return null;
+
+            // Handle JsonElement (from System.Text.Json deserialization)
+            if (offsetExpr is System.Text.Json.JsonElement jsonElement)
+            {
+                if (jsonElement.ValueKind == System.Text.Json.JsonValueKind.Number)
+                {
+                    if (jsonElement.TryGetInt64(out long jsonValue))
+                        return jsonValue;
+                }
+                else if (jsonElement.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    // Convert to string and process as string expression
+                    offsetExpr = jsonElement.GetString();
+                }
+            }
+
+            // Direct integer
+            if (offsetExpr is int intOffset)
+                return intOffset;
+
+            if (offsetExpr is long longOffset)
+                return longOffset;
+
+            // String expression
+            if (offsetExpr is string strOffset)
+            {
+                if (strOffset.StartsWith("var:"))
+                {
+                    var varName = strOffset.Substring(4);
+                    if (_variables.TryGetValue(varName, out var value))
+                    {
+                        return Convert.ToInt64(value);
+                    }
+                }
+                else if (strOffset.StartsWith("calc:"))
+                {
+                    var expression = strOffset.Substring(5);
+                    return EvaluateExpression(expression);
+                }
+                else
+                {
+                    // Try parse as number
+                    if (long.TryParse(strOffset, out var parsed))
+                        return parsed;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Evaluate length expression
+        /// </summary>
+        private int? EvaluateLength(object lengthExpr)
+        {
+            var offset = EvaluateOffset(lengthExpr);
+            return offset.HasValue ? (int)offset.Value : null;
+        }
+
+        /// <summary>
+        /// Evaluate generic value (for action blocks)
+        /// </summary>
+        private object EvaluateValue(object valueExpr)
+        {
+            if (valueExpr == null)
+                return null;
+
+            // Direct value
+            if (valueExpr is int || valueExpr is long || valueExpr is double)
+                return valueExpr;
+
+            // String expression
+            if (valueExpr is string strValue)
+            {
+                if (strValue.StartsWith("var:"))
+                {
+                    var varName = strValue.Substring(4);
+                    if (_variables.TryGetValue(varName, out var value))
+                    {
+                        return value;
+                    }
+                }
+                else if (strValue.StartsWith("calc:"))
+                {
+                    var expression = strValue.Substring(5);
+                    return EvaluateExpression(expression);
+                }
+                else
+                {
+                    // Try parse as number
+                    if (long.TryParse(strValue, out var parsed))
+                        return parsed;
+                }
+            }
+
+            return valueExpr;
+        }
+
+        /// <summary>
+        /// Evaluate condition
+        /// </summary>
+        private bool EvaluateCondition(ConditionDefinition condition)
+        {
+            if (condition == null)
+                return false;
+
+            // Get field value
+            long? fieldValue = null;
+
+            if (condition.Field.StartsWith("offset:"))
+            {
+                var offsetStr = condition.Field.Substring(7);
+                if (long.TryParse(offsetStr, out var offset))
+                {
+                    fieldValue = ReadInteger(offset, condition.Length);
+                }
+            }
+            else if (condition.Field.StartsWith("var:"))
+            {
+                var varName = condition.Field.Substring(4);
+                if (_variables.TryGetValue(varName, out var value))
+                {
+                    fieldValue = Convert.ToInt64(value);
+                }
+            }
+
+            if (!fieldValue.HasValue)
+                return false;
+
+            // Get comparison value
+            long compareValue = 0;
+            if (condition.Value.StartsWith("0x") || condition.Value.StartsWith("0X"))
+            {
+                // Hex value
+                if (long.TryParse(condition.Value.Substring(2), System.Globalization.NumberStyles.HexNumber, null, out var hexValue))
+                {
+                    compareValue = hexValue;
+                }
+            }
+            else
+            {
+                // Decimal value
+                if (long.TryParse(condition.Value, out var decValue))
+                {
+                    compareValue = decValue;
+                }
+            }
+
+            // Compare
+            switch (condition.Operator?.ToLowerInvariant())
+            {
+                case "equals":
+                    return fieldValue.Value == compareValue;
+                case "notequals":
+                    return fieldValue.Value != compareValue;
+                case "greaterthan":
+                    return fieldValue.Value > compareValue;
+                case "lessthan":
+                    return fieldValue.Value < compareValue;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Evaluate arithmetic expression
+        /// Supports: +, -, *, /, variable references
+        /// Example: "currentOffset + 46", "length * 2"
+        /// </summary>
+        private long EvaluateExpression(string expression)
+        {
+            if (string.IsNullOrWhiteSpace(expression))
+                return 0;
+
+            // Simple expression evaluator (supports +, -, *, /)
+            // Replace variables with values
+            var expr = expression.Trim();
+
+            // Replace variable names with their values
+            foreach (var kvp in _variables)
+            {
+                expr = expr.Replace(kvp.Key, Convert.ToString(kvp.Value));
+            }
+
+            // Simple calculator (left-to-right evaluation)
+            try
+            {
+                var tokens = TokenizeExpression(expr);
+                return EvaluateTokens(tokens);
+            }
+            catch
+            {
+                return 0; // Fallback on error
+            }
+        }
+
+        /// <summary>
+        /// Tokenize expression into numbers and operators
+        /// </summary>
+        private List<object> TokenizeExpression(string expr)
+        {
+            var tokens = new List<object>();
+            var currentNumber = "";
+
+            foreach (char c in expr)
+            {
+                if (char.IsDigit(c) || c == '.')
+                {
+                    currentNumber += c;
+                }
+                else if (c == '+' || c == '-' || c == '*' || c == '/')
+                {
+                    if (currentNumber.Length > 0)
+                    {
+                        tokens.Add(long.Parse(currentNumber));
+                        currentNumber = "";
+                    }
+                    tokens.Add(c);
+                }
+                else if (c == '(' || c == ')')
+                {
+                    // Ignore parentheses for now (simple evaluator)
+                }
+                else if (!char.IsWhiteSpace(c))
+                {
+                    currentNumber += c; // Allow function calls like readUInt16
+                }
+            }
+
+            if (currentNumber.Length > 0)
+            {
+                // Check if it's a function call
+                if (currentNumber.StartsWith("readUInt"))
+                {
+                    tokens.Add(0L); // Placeholder for function result
+                }
+                else
+                {
+                    tokens.Add(long.Parse(currentNumber));
+                }
+            }
+
+            return tokens;
+        }
+
+        /// <summary>
+        /// Evaluate tokenized expression (left-to-right)
+        /// </summary>
+        private long EvaluateTokens(List<object> tokens)
+        {
+            if (tokens.Count == 0)
+                return 0;
+
+            long result = Convert.ToInt64(tokens[0]);
+
+            for (int i = 1; i < tokens.Count; i += 2)
+            {
+                if (i + 1 >= tokens.Count)
+                    break;
+
+                char op = (char)tokens[i];
+                long operand = Convert.ToInt64(tokens[i + 1]);
+
+                switch (op)
+                {
+                    case '+':
+                        result += operand;
+                        break;
+                    case '-':
+                        result -= operand;
+                        break;
+                    case '*':
+                        result *= operand;
+                        break;
+                    case '/':
+                        if (operand != 0)
+                            result /= operand;
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region Data Reading Methods
+
+        /// <summary>
+        /// Read integer from data (little-endian)
+        /// </summary>
+        private long ReadInteger(long offset, int length)
+        {
+            if (offset < 0 || offset >= _data.Length)
+                return 0;
+
+            long value = 0;
+            int bytesToRead = Math.Min(length, (int)(_data.Length - offset));
+            bytesToRead = Math.Min(bytesToRead, 8); // Max 8 bytes for long
+
+            for (int i = 0; i < bytesToRead; i++)
+            {
+                value |= ((long)_data[offset + i]) << (i * 8);
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// Read uint16 (2 bytes, little-endian)
+        /// </summary>
+        public ushort ReadUInt16(long offset)
+        {
+            if (offset < 0 || offset + 1 >= _data.Length)
+                return 0;
+
+            return (ushort)(_data[offset] | (_data[offset + 1] << 8));
+        }
+
+        /// <summary>
+        /// Read uint32 (4 bytes, little-endian)
+        /// </summary>
+        public uint ReadUInt32(long offset)
+        {
+            if (offset < 0 || offset + 3 >= _data.Length)
+                return 0;
+
+            return (uint)(_data[offset] |
+                          (_data[offset + 1] << 8) |
+                          (_data[offset + 2] << 16) |
+                          (_data[offset + 3] << 24));
+        }
+
+        /// <summary>
+        /// Read string (ASCII)
+        /// </summary>
+        public string ReadString(long offset, int length)
+        {
+            if (offset < 0 || offset >= _data.Length)
+                return "";
+
+            int bytesToRead = Math.Min(length, (int)(_data.Length - offset));
+            var bytes = new byte[bytesToRead];
+            Array.Copy(_data, offset, bytes, 0, bytesToRead);
+
+            return System.Text.Encoding.ASCII.GetString(bytes);
+        }
+
+        /// <summary>
+        /// Check signature at offset
+        /// </summary>
+        public bool CheckSignature(long offset, string hexSignature)
+        {
+            if (string.IsNullOrWhiteSpace(hexSignature))
+                return false;
+
+            var bytes = HexStringToBytes(hexSignature);
+            if (bytes == null || offset + bytes.Length > _data.Length)
+                return false;
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                if (_data[offset + i] != bytes[i])
+                    return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Parse color from hex string (#RRGGBB)
+        /// </summary>
+        private SolidColorBrush ParseColor(string colorStr)
+        {
+            if (string.IsNullOrWhiteSpace(colorStr))
+                return null;
+
+            try
+            {
+                var color = (Color)ColorConverter.ConvertFromString(colorStr);
+                return new SolidColorBrush(color);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Convert hex string to byte array
+        /// </summary>
+        private byte[] HexStringToBytes(string hex)
+        {
+            if (hex.Length % 2 != 0)
+                return null;
+
+            var bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+            }
+
+            return bytes;
+        }
+
+        #endregion
+    }
+}

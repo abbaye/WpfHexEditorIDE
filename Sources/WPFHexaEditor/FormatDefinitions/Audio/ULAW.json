@@ -1,0 +1,31 @@
+﻿{
+    "formatName":  "μ-law Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ulaw",
+                       ".ul",
+                       ".mu"
+                   ],
+    "description":  "μ-law (mu-law) algorithm compressed audio format used in telephony",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2E736E64",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "AU/SND Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  ".snd - Audio file header for μ-law"
+                   }
+               ]
+}

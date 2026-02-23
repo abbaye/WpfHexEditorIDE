@@ -1,0 +1,56 @@
+﻿{
+    "formatName":  "ARC Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".arc"
+                   ],
+    "description":  "ARC archive format, one of the earliest archive formats for MS-DOS, created by System Enhancement Associates",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "1A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Archive Marker",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Archive marker byte (0x1A)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Compression Method",
+                       "offset":  1,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "Compression method (0x00=stored, 0x01-0x09=various methods)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Filename",
+                       "offset":  2,
+                       "length":  13,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "Filename (null-terminated, 8.3 format)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Compressed Size",
+                       "offset":  15,
+                       "length":  4,
+                       "color":  "#96CEB4",
+                       "opacity":  0.4,
+                       "description":  "Compressed file size (little-endian)"
+                   }
+               ]
+}

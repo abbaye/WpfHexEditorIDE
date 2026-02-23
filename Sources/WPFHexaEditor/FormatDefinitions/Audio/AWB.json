@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "AMR-WB Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".awb"
+                   ],
+    "description":  "Adaptive Multi-Rate Wideband audio codec for improved speech quality",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2321414D522D57420A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "AMR-WB Header",
+                       "offset":  0,
+                       "length":  9,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "#!AMR-WB - AMR Wideband file signature"
+                   }
+               ]
+}

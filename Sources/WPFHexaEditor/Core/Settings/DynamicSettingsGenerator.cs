@@ -11,6 +11,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using WpfHexaEditor.Core.Settings.Controls;
+using WpfHexaEditor.Controls;
+using WpfHexaEditor.Converters;
 
 namespace WpfHexaEditor.Core.Settings
 {
@@ -31,6 +33,7 @@ namespace WpfHexaEditor.Core.Settings
 
         /// <summary>
         /// Generates the complete settings panel with Expanders grouped by category.
+        /// Supports hierarchical categories (e.g., "Colors.Selection" creates nested expanders).
         /// Returns a StackPanel containing all UI elements.
         /// </summary>
         public StackPanel GenerateSettingsPanel()
@@ -40,13 +43,19 @@ namespace WpfHexaEditor.Core.Settings
             // 1. Header
             rootPanel.Children.Add(CreateHeader());
 
-            // 2. Group properties by category
-            var propertiesByCategory = _discoveryService.GroupByCategory();
+            // 2. Group properties by hierarchical categories
+            var hierarchy = _discoveryService.GroupByHierarchy();
 
-            // 3. Create an Expander for each category
-            foreach (var category in propertiesByCategory)
+            // 3. Create an Expander for each parent category
+            // Sort parent categories by custom order
+            var sortedParents = hierarchy.Keys
+                .OrderBy(cat => GetCategoryOrder(cat))
+                .ThenBy(cat => cat);
+
+            foreach (var parentCategory in sortedParents)
             {
-                var expander = CreateCategoryExpander(category.Key, category.Value);
+                var subcategories = hierarchy[parentCategory];
+                var expander = CreateHierarchicalCategoryExpander(parentCategory, subcategories);
                 rootPanel.Children.Add(expander);
             }
 
@@ -96,11 +105,12 @@ namespace WpfHexaEditor.Core.Settings
 
             // Use DynamicResource for Header so it updates when language changes
             var resourceKey = $"HexSettings_{category}_Title";
-            try
+            var resource = TryFindResource(resourceKey);
+            if (resource != null)
             {
                 expander.SetResourceReference(Expander.HeaderProperty, resourceKey);
             }
-            catch
+            else
             {
                 // Fallback if resource doesn't exist
                 expander.Header = GetCategoryHeader(category);
@@ -115,6 +125,121 @@ namespace WpfHexaEditor.Core.Settings
             foreach (var property in properties)
             {
                 // Include read-only properties but make them disabled
+                var controlElement = GeneratePropertyControl(property);
+                if (controlElement != null)
+                    contentPanel.Children.Add(controlElement);
+            }
+
+            expander.Content = contentPanel;
+            return expander;
+        }
+
+        /// <summary>
+        /// Creates a hierarchical Expander for a parent category with optional subcategories.
+        /// If subcategories exist, creates nested Expanders within the parent.
+        /// </summary>
+        private Expander CreateHierarchicalCategoryExpander(string parentCategory, Dictionary<string, List<PropertyMetadata>> subcategories)
+        {
+            var expander = new Expander
+            {
+                IsExpanded = (parentCategory == "Display"), // Display category open by default
+                Margin = new Thickness(0, 0, 0, 8),
+                BorderThickness = new Thickness(1),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200))
+            };
+
+            // Set header for parent category
+            var resourceKey = $"HexSettings_{parentCategory}_Title";
+            var resource = TryFindResource(resourceKey);
+            if (resource != null)
+            {
+                expander.SetResourceReference(Expander.HeaderProperty, resourceKey);
+            }
+            else
+            {
+                expander.Header = GetCategoryHeader(parentCategory);
+            }
+
+            var contentPanel = new StackPanel
+            {
+                Margin = new Thickness(16, 8, 0, 0)
+            };
+
+            // Check if there are direct properties (no subcategory) and subcategories
+            var hasDirectProperties = subcategories.ContainsKey(string.Empty) && subcategories[string.Empty].Any();
+            var hasSubcategories = subcategories.Keys.Any(k => !string.IsNullOrEmpty(k));
+
+            // Add direct properties first (properties without subcategory)
+            if (hasDirectProperties)
+            {
+                foreach (var property in subcategories[string.Empty])
+                {
+                    var controlElement = GeneratePropertyControl(property);
+                    if (controlElement != null)
+                        contentPanel.Children.Add(controlElement);
+                }
+
+                // Add separator if we also have subcategories
+                if (hasSubcategories)
+                {
+                    contentPanel.Children.Add(new Separator { Margin = new Thickness(0, 8, 0, 8) });
+                }
+            }
+
+            // Create nested Expanders for subcategories
+            if (hasSubcategories)
+            {
+                // Sort subcategories alphabetically
+                var sortedSubcategories = subcategories.Keys
+                    .Where(k => !string.IsNullOrEmpty(k))
+                    .OrderBy(k => GetSubcategoryOrder(k))
+                    .ThenBy(k => k);
+
+                foreach (var subcategoryName in sortedSubcategories)
+                {
+                    var subExpander = CreateSubcategoryExpander(parentCategory, subcategoryName, subcategories[subcategoryName]);
+                    contentPanel.Children.Add(subExpander);
+                }
+            }
+
+            expander.Content = contentPanel;
+            return expander;
+        }
+
+        /// <summary>
+        /// Creates a nested Expander for a subcategory within a parent category.
+        /// </summary>
+        private Expander CreateSubcategoryExpander(string parentCategory, string subcategoryName, List<PropertyMetadata> properties)
+        {
+            var expander = new Expander
+            {
+                IsExpanded = true, // Subcategories expanded by default
+                Margin = new Thickness(0, 0, 0, 8),
+                BorderThickness = new Thickness(1),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(220, 220, 220)),
+                Background = new SolidColorBrush(Color.FromRgb(250, 250, 250))
+            };
+
+            // Try to use localized resource, fallback to formatted name
+            var resourceKey = $"HexSettings_{parentCategory}_{subcategoryName}_Title";
+            var resource = TryFindResource(resourceKey);
+            if (resource != null)
+            {
+                expander.SetResourceReference(Expander.HeaderProperty, resourceKey);
+            }
+            else
+            {
+                expander.Header = GetSubcategoryHeader(subcategoryName);
+            }
+
+            var contentPanel = new StackPanel
+            {
+                Margin = new Thickness(16, 8, 0, 8)
+            };
+
+            // Generate controls for each property in this subcategory
+            foreach (var property in properties)
+            {
                 var controlElement = GeneratePropertyControl(property);
                 if (controlElement != null)
                     contentPanel.Children.Add(controlElement);
@@ -146,8 +271,7 @@ namespace WpfHexaEditor.Core.Settings
             }
             catch (Exception ex)
             {
-                // Log error and return error placeholder
-                System.Diagnostics.Debug.WriteLine($"Error generating control for {metadata.PropertyName}: {ex.Message}");
+                // Return error placeholder
                 return new TextBlock
                 {
                     Text = $"⚠ Error: {metadata.PropertyName}",
@@ -166,6 +290,12 @@ namespace WpfHexaEditor.Core.Settings
             PropertyMetadata metadata,
             IPropertyControl propertyControl)
         {
+            // Adjust binding mode for read-only properties
+            if (metadata.IsReadOnly)
+            {
+                binding.Mode = BindingMode.OneWay;
+            }
+
             // Disable control if property is read-only
             if (metadata.IsReadOnly && control is Control ctrl)
             {
@@ -177,7 +307,26 @@ namespace WpfHexaEditor.Core.Settings
             if (control is CheckBox checkBox)
             {
                 checkBox.SetBinding(CheckBox.IsCheckedProperty, binding);
-                checkBox.Content = metadata.GetDisplayName();
+
+                // Try to use localized resource for CheckBox content
+                var resourceKey = $"HexSettings_{metadata.PropertyName}";
+                try
+                {
+                    var resource = TryFindResource(resourceKey);
+                    if (resource != null)
+                    {
+                        checkBox.SetResourceReference(System.Windows.Controls.ContentControl.ContentProperty, resourceKey);
+                    }
+                    else
+                    {
+                        checkBox.Content = metadata.GetDisplayName();
+                    }
+                }
+                catch
+                {
+                    checkBox.Content = metadata.GetDisplayName();
+                }
+
                 return checkBox;
             }
 
@@ -246,11 +395,22 @@ namespace WpfHexaEditor.Core.Settings
                     var textBlock = gridWithSlider.Children.OfType<TextBlock>().FirstOrDefault();
                     if (textBlock != null)
                     {
-                        textBlock.SetBinding(TextBlock.TextProperty, new Binding("Value")
+                        var valueBinding = new Binding("Value")
                         {
-                            Source = slider,
-                            StringFormat = "{0:F2}"
-                        });
+                            Source = slider
+                        };
+
+                        // Use ZoomToPercentConverter for ZoomScale property
+                        if (metadata.PropertyName == "ZoomScale")
+                        {
+                            valueBinding.Converter = new ZoomToPercentConverter();
+                        }
+                        else
+                        {
+                            valueBinding.StringFormat = "{0:F2}";
+                        }
+
+                        textBlock.SetBinding(TextBlock.TextProperty, valueBinding);
                     }
                 }
 
@@ -264,31 +424,60 @@ namespace WpfHexaEditor.Core.Settings
                 return CreateControlWithLabel(propertyControl.CreateLabel(metadata), textBox);
             }
 
+            // ColorPicker (Color properties)
+            if (control is ColorPicker colorPicker)
+            {
+                // CRITICAL FIX: ColorPicker sets its own DataContext internally, breaking inheritance.
+                // RelativeSource with fixed level doesn't work due to variable nesting (subcategories).
+                // Solution: Find DataContext dynamically when control is loaded.
+
+                var propName = metadata.PropertyName;
+                var converter = binding.Converter;
+
+                colorPicker.Loaded += (s, e) =>
+                {
+                    if (s is ColorPicker cp)
+                    {
+                        // Walk up visual tree to find first element with DataContext
+                        DependencyObject parent = System.Windows.Media.VisualTreeHelper.GetParent(cp);
+                        while (parent != null)
+                        {
+                            if (parent is FrameworkElement fe && fe.DataContext != null)
+                            {
+                                // Found! Bind directly to this DataContext
+                                var directBinding = new Binding(propName)
+                                {
+                                    Source = fe.DataContext,
+                                    Mode = BindingMode.TwoWay,
+                                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                                    Converter = converter
+                                };
+                                cp.SetBinding(ColorPicker.SelectedColorProperty, directBinding);
+                                return;
+                            }
+                            parent = System.Windows.Media.VisualTreeHelper.GetParent(parent);
+                        }
+                    }
+                };
+
+                return CreateControlWithLabel(propertyControl.CreateLabel(metadata), colorPicker);
+            }
+
             // Border placeholder for ColorPicker (will be replaced in HexEditorSettings.xaml.cs)
             if (control is Border border)
             {
-                System.Diagnostics.Debug.WriteLine($"  Found Border! Tag={border.Tag}, checking if == 'ColorPicker'...");
                 if (border.Tag?.ToString() == "ColorPicker")
                 {
                     // Mark with property name for later replacement
                     border.Tag = $"ColorPicker:{metadata.PropertyName}";
-                    System.Diagnostics.Debug.WriteLine($"  ✓ Set Border Tag to '{border.Tag}'");
 
                     var wrapper = CreateControlWithLabel(propertyControl.CreateLabel(metadata), border);
 
-                    // VERIFY: Tag still exists after wrapping
-                    System.Diagnostics.Debug.WriteLine($"  🔍 After CreateControlWithLabel: Border.Tag={border.Tag}");
-
                     return wrapper;
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"  ✗ Border Tag didn't match! Tag='{border.Tag}' != 'ColorPicker'");
                 }
             }
 
             // Default: just return the control
-            System.Diagnostics.Debug.WriteLine($"  Returning control as-is (Default)");
             return control;
         }
 
@@ -327,12 +516,68 @@ namespace WpfHexaEditor.Core.Settings
                 "StatusBar" => "📊 Status Bar",
                 "Display" => "🖥️ Display",
                 "Colors" => "🌈 Colors",
+                "ScrollMarkers" => "📍 Scroll Markers",
                 "Behavior" => "⚙️ Behavior",
                 "Data" => "💾 Data",
                 "Visual" => "👁️ Visual",
                 "Keyboard" => "⌨️ Keyboard & Mouse",
                 "TBL" => "📝 Character Table",
+                "BarChart" => "📈 Bar Chart",
                 _ => category
+            };
+        }
+
+        /// <summary>
+        /// Gets the display name for a subcategory with emoji icons.
+        /// </summary>
+        private string GetSubcategoryHeader(string subcategory)
+        {
+            return subcategory switch
+            {
+                "Selection" => "🎯 Selection",
+                "ByteStates" => "🔄 Byte States",
+                "Foreground" => "✍️ Foreground",
+                "CharacterTable" => "📝 Character Table (TBL)",
+                "Charts" => "📊 Charts",
+                "Legacy" => "⚠️ Legacy (Compatibility)",
+                _ => subcategory
+            };
+        }
+
+        /// <summary>
+        /// Gets the sort order for subcategories within Colors category.
+        /// </summary>
+        private int GetSubcategoryOrder(string subcategory)
+        {
+            return subcategory switch
+            {
+                "Selection" => 1,
+                "ByteStates" => 2,
+                "Foreground" => 3,
+                "CharacterTable" => 4,
+                "Charts" => 5,
+                "Legacy" => 99, // Legacy last
+                _ => 50 // Unknown subcategories in middle
+            };
+        }
+
+        /// <summary>
+        /// Gets the sort order for parent categories.
+        /// </summary>
+        private int GetCategoryOrder(string category)
+        {
+            return category switch
+            {
+                "StatusBar" => 1,
+                "Display" => 2,
+                "Colors" => 3,
+                "ScrollMarkers" => 4,
+                "Behavior" => 5,
+                "Data" => 6,
+                "Visual" => 7,
+                "Keyboard" => 8,
+                "BarChart" => 9,
+                _ => 99 // Unknown categories last
             };
         }
 

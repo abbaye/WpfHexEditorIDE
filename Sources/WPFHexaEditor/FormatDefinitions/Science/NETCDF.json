@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "NetCDF Data File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".nc",
+                       ".netcdf"
+                   ],
+    "description":  "Network Common Data Form - Scientific data",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "43444601",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "NetCDF Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "CDF\\x01 signature"
+                   }
+               ]
+}

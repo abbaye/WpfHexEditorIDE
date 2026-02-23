@@ -1,0 +1,56 @@
+﻿{
+    "formatName":  "Microsoft Reader",
+    "version":  "1.0",
+    "extensions":  [
+                       ".lit"
+                   ],
+    "description":  "Microsoft Reader e-book format with DRM support, based on Microsoft\u0027s LIT (Literature) format",
+    "category":  "Documents",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4954534603000000",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ITSF Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ITSF (Info-Tech Storage Format) signature: \u0027ITSF\u0027"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "ITSF version (usually 3)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Header Length",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "Total header length (little-endian)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Unknown",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#96CEB4",
+                       "opacity":  0.4,
+                       "description":  "Unknown field (usually 1)"
+                   }
+               ]
+}

@@ -1,0 +1,49 @@
+﻿{
+    "formatName":  "JFIF Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".jfif",
+                       ".jpg",
+                       ".jpeg"
+                   ],
+    "description":  "JPEG File Interchange Format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "FFD8FFE0",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "JPEG SOI + APP0",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Start of Image + APP0 marker"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "APP0 Length",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "APP0 segment length"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "JFIF Identifier",
+                       "offset":  6,
+                       "length":  5,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "JFIF\\0 identifier"
+                   }
+               ]
+}

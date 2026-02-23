@@ -1,0 +1,84 @@
+﻿{
+    "formatName":  "PCAP Network Capture",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pcap",
+                       ".cap"
+                   ],
+    "description":  "Packet Capture file - Network traffic recording",
+    "category":  "Network",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "D4C3B2A1",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PCAP Magic (Little Endian)",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PCAP file magic number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version Major",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Major version (2)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version Minor",
+                       "offset":  6,
+                       "length":  2,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Minor version (4)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Time Zone Offset",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "GMT to local correction"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Timestamp Accuracy",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Accuracy of timestamps"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Snapshot Length",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Max length of captured packets"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Link Layer Type",
+                       "offset":  20,
+                       "length":  4,
+                       "color":  "#FF6B9D",
+                       "opacity":  0.3,
+                       "description":  "Data link type (Ethernet, etc.)"
+                   }
+               ]
+}

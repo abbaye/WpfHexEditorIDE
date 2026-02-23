@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "ASN.1 DER Encoding",
+    "version":  "1.0",
+    "extensions":  [
+                       ".der",
+                       ".cer"
+                   ],
+    "description":  "Abstract Syntax Notation One Distinguished Encoding Rules",
+    "category":  "Data",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "30",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "ASN.1 Sequence",
+                       "offset":  0,
+                       "length":  16,
+                       "color":  "#6C757D",
+                       "opacity":  0.4,
+                       "description":  "ASN.1 DER sequence tag"
+                   }
+               ]
+}

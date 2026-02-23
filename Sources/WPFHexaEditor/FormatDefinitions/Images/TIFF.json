@@ -1,0 +1,48 @@
+﻿{
+    "formatName":  "TIFF Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".tif",
+                       ".tiff"
+                   ],
+    "description":  "Tagged Image File Format - Professional image format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "49492A00",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Byte Order (Little Endian)",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "II for little-endian or MM for big-endian"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  2,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Always 42 (0x002A)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "IFD Offset",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Offset to first Image File Directory"
+                   }
+               ]
+}

@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "DivX Video",
+    "version":  "1.0",
+    "extensions":  [
+                       ".divx"
+                   ],
+    "description":  "DivX MPEG-4 Part 2 video codec container format",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "52494646",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "RIFF Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "RIFF container header for DivX"
+                   }
+               ]
+}

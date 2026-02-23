@@ -1,0 +1,47 @@
+﻿{
+    "formatName":  "PAK Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pak"
+                   ],
+    "description":  "PAK archive format commonly used in game engines (Quake, Unreal Engine) for packaging game assets and resources",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5041434B",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PAK Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Magic bytes: \u0027PACK\u0027"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Directory Offset",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "Offset to directory table (little-endian)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Directory Size",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "Size of directory table (little-endian)"
+                   }
+               ]
+}

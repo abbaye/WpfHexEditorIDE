@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Canon RAW (CRW)",
+    "version":  "1.0",
+    "extensions":  [
+                       ".crw"
+                   ],
+    "description":  "Canon RAW format (older cameras)",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "49491A000000484541",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "CRW Header",
+                       "offset":  0,
+                       "length":  9,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Canon CRW signature"
+                   }
+               ]
+}

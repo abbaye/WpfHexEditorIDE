@@ -2018,5 +2018,113 @@ namespace WpfHexaEditor.Properties {
                 return ResourceManager.GetString("RelativeSearchExportTooltipString", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No data to display.
+        /// </summary>
+        public static string BarChart_NoData {
+            get {
+                return ResourceManager.GetString("BarChart_NoData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        public static string BarChart_Total {
+            get {
+                return ResourceManager.GetString("BarChart_Total", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Max.
+        /// </summary>
+        public static string BarChart_Max {
+            get {
+                return ResourceManager.GetString("BarChart_Max", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Entropy.
+        /// </summary>
+        public static string BarChart_Entropy {
+            get {
+                return ResourceManager.GetString("BarChart_Entropy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to bytes.
+        /// </summary>
+        public static string BarChart_Bytes {
+            get {
+                return ResourceManager.GetString("BarChart_Bytes", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to bits/byte.
+        /// </summary>
+        public static string BarChart_BitsPerByte {
+            get {
+                return ResourceManager.GetString("BarChart_BitsPerByte", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Scroll Markers.
+        /// </summary>
+        public static string HexSettings_ScrollMarkers_Title {
+            get {
+                return ResourceManager.GetString("HexSettings_ScrollMarkers_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show Bookmark Markers.
+        /// </summary>
+        public static string HexSettings_ShowBookmarkMarkers {
+            get {
+                return ResourceManager.GetString("HexSettings_ShowBookmarkMarkers", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show Modified Byte Markers.
+        /// </summary>
+        public static string HexSettings_ShowModifiedMarkers {
+            get {
+                return ResourceManager.GetString("HexSettings_ShowModifiedMarkers", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show Inserted Byte Markers.
+        /// </summary>
+        public static string HexSettings_ShowInsertedMarkers {
+            get {
+                return ResourceManager.GetString("HexSettings_ShowInsertedMarkers", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show Deleted Byte Markers.
+        /// </summary>
+        public static string HexSettings_ShowDeletedMarkers {
+            get {
+                return ResourceManager.GetString("HexSettings_ShowDeletedMarkers", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Show Search Result Markers.
+        /// </summary>
+        public static string HexSettings_ShowSearchResultMarkers {
+            get {
+                return ResourceManager.GetString("HexSettings_ShowSearchResultMarkers", resourceCulture);
+            }
+        }
     }
 }

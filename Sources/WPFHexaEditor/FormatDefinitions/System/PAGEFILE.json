@@ -1,0 +1,74 @@
+﻿{
+    "formatName":  "Windows Page File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".sys"
+                   ],
+    "description":  "Windows page file (pagefile.sys) - Virtual memory swap",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Page File Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Page file marker"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Size",
+                       "offset":  4,
+                       "length":  8,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Total page file size"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Free Pages",
+                       "offset":  12,
+                       "length":  8,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Number of free pages"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Used Pages",
+                       "offset":  20,
+                       "length":  8,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Number of used pages"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Page Size",
+                       "offset":  28,
+                       "length":  4,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Size of each page (4096)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Creation Time",
+                       "offset":  32,
+                       "length":  8,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Page file creation time"
+                   }
+               ]
+}

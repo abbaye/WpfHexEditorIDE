@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "STEP 3D Model",
+    "version":  "1.0",
+    "extensions":  [
+                       ".step",
+                       ".stp"
+                   ],
+    "description":  "ISO 10303 STEP CAD format",
+    "category":  "CAD",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "49534F2D3130333033",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "STEP Header",
+                       "offset":  0,
+                       "length":  9,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ISO-10303"
+                   }
+               ]
+}

@@ -1,0 +1,56 @@
+﻿{
+    "formatName":  "Android ODEX",
+    "version":  "1.0",
+    "extensions":  [
+                       ".odex"
+                   ],
+    "description":  "Android ODEX (Optimized DEX) format, contains optimized Dalvik bytecode for Android",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "6465790A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "DEX Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Magic bytes: \u0027dey\u0027 0x0A (optimized DEX)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "DEX Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "DEX version (e.g., \u0027036\u0027 or \u0027037\u0027)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Checksum",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "Adler32 checksum (little-endian)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "SHA-1 Signature",
+                       "offset":  12,
+                       "length":  20,
+                       "color":  "#96CEB4",
+                       "opacity":  0.4,
+                       "description":  "SHA-1 hash signature"
+                   }
+               ]
+}

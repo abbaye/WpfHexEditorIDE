@@ -1,0 +1,102 @@
+﻿{
+    "formatName":  "TLS Session Ticket",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ticket",
+                       ".session"
+                   ],
+    "description":  "TLS Session Ticket - Encrypted session resumption data",
+    "category":  "Crypto",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Ticket Lifetime Hint",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Server\u0027s hint for ticket lifetime (seconds)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Ticket Length",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Length of ticket data"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Ticket Key Name",
+                       "offset":  6,
+                       "length":  16,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Key name for ticket decryption"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Initialization Vector",
+                       "offset":  22,
+                       "length":  16,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "AES-128 CBC IV"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "State Length",
+                       "offset":  38,
+                       "length":  2,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Length of encrypted state"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Encrypted State",
+                       "offset":  40,
+                       "length":  256,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Encrypted session state data"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "HMAC",
+                       "offset":  296,
+                       "length":  32,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "HMAC-SHA256 for integrity"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "TLS Version",
+                       "offset":  328,
+                       "length":  2,
+                       "color":  "#98D8C8",
+                       "opacity":  0.3,
+                       "description":  "TLS protocol version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Cipher Suite",
+                       "offset":  330,
+                       "length":  2,
+                       "color":  "#A8E6CF",
+                       "opacity":  0.3,
+                       "description":  "Negotiated cipher suite"
+                   }
+               ]
+}

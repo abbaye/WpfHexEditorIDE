@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "ZBrush Tool",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ztl"
+                   ],
+    "description":  "Pixologic ZBrush tool file",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5A544F4F4C",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ZBrush Tool Signature",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ZTOOL magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  5,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Tool version"
+                   }
+               ]
+}

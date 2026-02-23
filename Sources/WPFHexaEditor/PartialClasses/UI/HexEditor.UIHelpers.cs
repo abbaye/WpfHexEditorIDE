@@ -152,11 +152,18 @@ namespace WpfHexaEditor
                     AddByteSpacer(_hexHeaderStackPanel, i, forceEmpty: true);
                 }
 
-                // Add byte position header (00, 02, 04... for Bit16)
+                // Add byte position header (format follows DataStringVisual: 00/0/00000000 for Hex/Decimal/Binary)
                 bool isSelectionColumn = (i == selectionStartColumn);
+                string headerFormat = DataStringVisual switch
+                {
+                    Core.DataVisualType.Hexadecimal => i.ToString("X2"),
+                    Core.DataVisualType.Decimal => i.ToString(),
+                    Core.DataVisualType.Binary => Convert.ToString(i, 2).PadLeft(8, '0'),
+                    _ => i.ToString("X2")
+                };
                 var headerText = new TextBlock
                 {
-                    Text = i.ToString("X2"),
+                    Text = headerFormat,
                     Width = cellWidth, // Phase 4: Dynamic width (24/52/106px)
                     TextAlignment = TextAlignment.Center,
                     FontSize = 11,
@@ -753,6 +760,46 @@ namespace WpfHexaEditor
         private void SelectAllMenuItem_Click(object sender, RoutedEventArgs e)
         {
             SelectAll();
+        }
+
+        #endregion
+
+        #region Scroll Markers Management
+
+        /// <summary>
+        /// Update scroll markers visibility based on ShowXxxxMarkers properties
+        /// </summary>
+        internal void UpdateScrollMarkersVisibility()
+        {
+            if (_scrollMarkers == null)
+                return;
+
+            // Temporarily store marker data
+            var bookmarks = ShowBookmarkMarkers ? _scrollMarkers.BookmarkPositions : new HashSet<long>();
+            var modified = ShowModifiedMarkers ? _scrollMarkers.ModifiedPositions : new HashSet<long>();
+            var inserted = ShowInsertedMarkers ? _scrollMarkers.InsertedPositions : new HashSet<long>();
+            var deleted = ShowDeletedMarkers ? _scrollMarkers.DeletedPositions : new HashSet<long>();
+            var searchResults = ShowSearchResultMarkers ? _scrollMarkers.SearchResultPositions : new HashSet<long>();
+
+            // Clear and restore only visible markers
+            // This forces a redraw with only the enabled marker types
+            if (!ShowBookmarkMarkers)
+                _scrollMarkers.ClearMarkers(ScrollMarkerType.Bookmark);
+
+            if (!ShowModifiedMarkers)
+                _scrollMarkers.ClearMarkers(ScrollMarkerType.Modified);
+
+            if (!ShowInsertedMarkers)
+                _scrollMarkers.ClearMarkers(ScrollMarkerType.Inserted);
+
+            if (!ShowDeletedMarkers)
+                _scrollMarkers.ClearMarkers(ScrollMarkerType.Deleted);
+
+            if (!ShowSearchResultMarkers)
+                _scrollMarkers.ClearMarkers(ScrollMarkerType.SearchResult);
+
+            // Force visual refresh
+            _scrollMarkers.InvalidateVisual();
         }
 
         #endregion

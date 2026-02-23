@@ -1,0 +1,56 @@
+﻿{
+    "formatName":  "Blender 3D File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".blend"
+                   ],
+    "description":  "Blender 3D scene/model file",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "424C454E444552",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Blender Signature",
+                       "offset":  0,
+                       "length":  7,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "BLENDER signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Pointer Size",
+                       "offset":  7,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "_ (32-bit) or - (64-bit)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Endianness",
+                       "offset":  8,
+                       "length":  1,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "v (little) or V (big endian)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  9,
+                       "length":  3,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Blender version (e.g., 293)"
+                   }
+               ]
+}

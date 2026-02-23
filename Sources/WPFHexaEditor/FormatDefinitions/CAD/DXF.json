@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "AutoCAD DXF",
+    "version":  "1.0",
+    "extensions":  [
+                       ".dxf"
+                   ],
+    "description":  "Drawing Exchange Format - CAD interchange",
+    "category":  "CAD",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "3020",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Section Code",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "DXF is text-based"
+                   }
+               ]
+}

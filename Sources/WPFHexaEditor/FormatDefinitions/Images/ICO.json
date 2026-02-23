@@ -1,0 +1,47 @@
+﻿{
+    "formatName":  "ICO Icon",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ico"
+                   ],
+    "description":  "Windows Icon format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00000100",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Reserved",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Must be 0"
+                   },
+                   {
+                       "type":  "signature",
+                       "name":  "Type",
+                       "offset":  2,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "1 for icon, 2 for cursor"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Image Count",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Number of images in file"
+                   }
+               ]
+}

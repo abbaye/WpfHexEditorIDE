@@ -1,0 +1,56 @@
+﻿{
+    "formatName":  "Parallel Compression Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pz"
+                   ],
+    "description":  "Parallel compression archive format optimized for multi-threaded compression and decompression",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "50434F4D50",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PCompress Magic",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Magic bytes: \u0027PCOMP\u0027"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Version",
+                       "offset":  5,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "Format version"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Algorithm",
+                       "offset":  6,
+                       "length":  1,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "Compression algorithm identifier"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Chunk Size",
+                       "offset":  7,
+                       "length":  4,
+                       "color":  "#96CEB4",
+                       "opacity":  0.4,
+                       "description":  "Chunk size for parallel processing (little-endian)"
+                   }
+               ]
+}

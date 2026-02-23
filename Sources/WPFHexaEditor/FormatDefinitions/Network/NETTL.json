@@ -1,0 +1,75 @@
+﻿{
+    "formatName":  "HP-UX nettl",
+    "version":  "1.0",
+    "extensions":  [
+                       ".trc0",
+                       ".trc1"
+                   ],
+    "description":  "HP-UX network tracing and logging format",
+    "category":  "Network",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00000001",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "File Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "nettl file magic number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "File Type",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Trace file type identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Start Time",
+                       "offset":  8,
+                       "length":  8,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Trace start time (timeval)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Hostname Length",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Length of hostname"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Hostname",
+                       "offset":  20,
+                       "length":  64,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "System hostname"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Time Zone",
+                       "offset":  84,
+                       "length":  64,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Time zone string"
+                   }
+               ]
+}

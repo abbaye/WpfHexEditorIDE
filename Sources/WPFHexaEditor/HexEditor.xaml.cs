@@ -67,12 +67,14 @@ namespace WpfHexaEditor
         // Zoom support 
         private ScaleTransform _scaler;
 
-        // Hex editing state
+        // Byte editing state (format-aware for Hex/Decimal/Binary)
         private bool _isEditingByte = false;
         private VirtualPosition _editingPosition = VirtualPosition.Invalid;
         private byte _editingValue = 0;
-        private bool _editingHighNibble = true; // true = high nibble, false = low nibble
-        private bool _isAsciiEditMode = false; // true = editing in ASCII area, false = editing in Hex area
+        private int _editingCharIndex = 0;      // Current character index (0-based) - replaces _editingHighNibble
+        private int _editingMaxChars = 2;       // Max chars for current format (Hex=2, Decimal=3, Binary=8)
+        private string _editingBuffer = "";     // Accumulated input buffer ("2" → "25" → "255")
+        private bool _isAsciiEditMode = false;  // true = editing in ASCII area, false = editing in Hex/Decimal/Binary area
 
         // Auto-scroll during mouse drag selection
         private DispatcherTimer _autoScrollTimer;
@@ -86,6 +88,15 @@ namespace WpfHexaEditor
         public HexEditor()
         {
             InitializeComponent();
+
+            // Initialize custom background blocks system
+            InitializeCustomBackgroundBlocks();
+
+            // Initialize format detection system
+            InitializeFormatDetection();
+
+            // Initialize parsed fields panel (Issue #111)
+            InitializeParsedFieldsPanel();
 
             // Initialize auto-scroll timer
             _autoScrollTimer = new DispatcherTimer
@@ -135,6 +146,13 @@ namespace WpfHexaEditor
                 // Initialize mouse hover brush
                 HexViewport.MouseHoverBrush = new SolidColorBrush(MouseOverColor);
 
+                // Initialize data visual format settings
+                HexViewport.DataStringVisual = DataStringVisual;
+                HexViewport.OffSetStringVisual = OffSetStringVisual;
+
+                // Initialize ActualOffsetWidth based on current format
+                ActualOffsetWidth = new GridLength(HexViewport.ActualOffsetWidth);
+
                 // Bug 4: Subscribe to FontSize/FontFamily changes to update dynamic CellWidth cache
                 var fontSizeDescriptor = System.ComponentModel.DependencyPropertyDescriptor.FromProperty(
                     Control.FontSizeProperty, typeof(HexEditor));
@@ -178,6 +196,9 @@ namespace WpfHexaEditor
 
             // Update HexViewport font and invalidate CellWidth cache
             HexViewport.UpdateFont(fontFamily, fontSize);
+
+            // Update ActualOffsetWidth since it depends on font settings
+            ActualOffsetWidth = new GridLength(HexViewport.ActualOffsetWidth);
 
             // Refresh column headers with new widths
             RefreshColumnHeader();
@@ -781,6 +802,18 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
+        /// Actual offset column width (dynamically calculated based on OffSetStringVisual format)
+        /// This property is auto-calculated and should not be displayed in settings panel
+        /// </summary>
+        [Category("Display")]
+        [Browsable(false)]  // Hide from auto-generated settings panel (GridLength not supported)
+        public GridLength ActualOffsetWidth
+        {
+            get => (GridLength)GetValue(ActualOffsetWidthProperty);
+            set => SetValue(ActualOffsetWidthProperty, value);
+        }
+
+        /// <summary>
         /// Byte order (Lo-Hi / Hi-Lo) - DependencyProperty
         /// </summary>
         [Category("Visual")]
@@ -890,7 +923,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// DTE (Dual-Tile Encoding) color - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblDteColor
         {
             get => (System.Windows.Media.Color)GetValue(TblDteColorProperty);
@@ -900,7 +933,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// MTE (Multi-Title Encoding) color - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblMteColor
         {
             get => (System.Windows.Media.Color)GetValue(TblMteColorProperty);
@@ -910,7 +943,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// End block color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblEndBlockColor
         {
             get => (System.Windows.Media.Color)GetValue(TblEndBlockColorProperty);
@@ -920,7 +953,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// End line color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblEndLineColor
         {
             get => (System.Windows.Media.Color)GetValue(TblEndLineColorProperty);
@@ -930,7 +963,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// ASCII color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblAsciiColor
         {
             get => (System.Windows.Media.Color)GetValue(TblAsciiColorProperty);
@@ -940,7 +973,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Japanese characters color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblJaponaisColor
         {
             get => (System.Windows.Media.Color)GetValue(TblJaponaisColorProperty);
@@ -950,7 +983,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// 3-byte sequences color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color Tbl3ByteColor
         {
             get => (System.Windows.Media.Color)GetValue(Tbl3ByteColorProperty);
@@ -960,7 +993,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// 4+ byte sequences color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color Tbl4PlusByteColor
         {
             get => (System.Windows.Media.Color)GetValue(Tbl4PlusByteColorProperty);
@@ -970,7 +1003,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Default color for TBL - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.CharacterTable")]
         public System.Windows.Media.Color TblDefaultColor
         {
             get => (System.Windows.Media.Color)GetValue(TblDefaultColorProperty);
@@ -982,7 +1015,8 @@ namespace WpfHexaEditor
         /// <summary>
         /// Bar chart color - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Charts")]
+        [DisplayName("Bar Color")]
         public System.Windows.Media.Color BarChartColor
         {
             get => (System.Windows.Media.Color)GetValue(BarChartColorProperty);
@@ -992,7 +1026,8 @@ namespace WpfHexaEditor
         /// <summary>
         /// Inline bar chart color (for ASCII panel bar visualization) - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Charts")]
+        [DisplayName("Inline Bar Color")]
         public System.Windows.Media.Color InlineBarChartColor
         {
             get => (System.Windows.Media.Color)GetValue(InlineBarChartColorProperty);
@@ -1002,7 +1037,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Selection brush for the active panel (Hex or ASCII) - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Selection")]
         public Brush SelectionActiveBrush
         {
             get => (Brush)GetValue(SelectionActiveBrushProperty);
@@ -1012,7 +1047,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Selection brush for the inactive panel (Hex or ASCII) - DependencyProperty
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Selection")]
         public Brush SelectionInactiveBrush
         {
             get => (Brush)GetValue(SelectionInactiveBrushProperty);
@@ -1550,7 +1585,8 @@ namespace WpfHexaEditor
         /// Show inline bar chart in ASCII panel (replaces ASCII chars with vertical bars representing byte values)
         /// V1 Legacy feature compatibility
         /// </summary>
-        [Category("Display")]
+        [Category("BarChart")]
+        [DisplayName("Show Inline Bar Chart")]
         public bool ShowInlineBarChart
         {
             get => (bool)GetValue(ShowInlineBarChartProperty);
@@ -1723,7 +1759,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// First selection gradient color
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Selection")]
         public Color SelectionFirstColor
         {
             get => (Color)GetValue(SelectionFirstColorProperty);
@@ -1756,7 +1792,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Second selection gradient color
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Selection")]
         public Color SelectionSecondColor
         {
             get => (Color)GetValue(SelectionSecondColorProperty);
@@ -1783,7 +1819,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Color for modified bytes
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.ByteStates")]
         public Color ByteModifiedColor
         {
             get => (Color)GetValue(ByteModifiedColorProperty);
@@ -1810,7 +1846,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Color for added bytes
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.ByteStates")]
         public Color ByteAddedColor
         {
             get => (Color)GetValue(ByteAddedColorProperty);
@@ -1837,7 +1873,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Color for highlighted bytes
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.ByteStates")]
         public Color HighLightColor
         {
             get => (Color)GetValue(HighLightColorProperty);
@@ -1860,7 +1896,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Mouse over color
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.ByteStates")]
         public Color MouseOverColor
         {
             get => (Color)GetValue(MouseOverColorProperty);
@@ -1869,7 +1905,7 @@ namespace WpfHexaEditor
 
         public static readonly DependencyProperty MouseOverColorProperty =
             DependencyProperty.Register(nameof(MouseOverColor), typeof(Color), typeof(HexEditor),
-                new PropertyMetadata(Color.FromRgb(0, 102, 204), OnMouseOverColorChanged)); // Deep Blue - HDR visible
+                new PropertyMetadata(Color.FromArgb(0x50, 100, 150, 255), OnMouseOverColorChanged)); // Light Blue semi-transparent (31% opacity)
 
         private static void OnMouseOverColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -1889,7 +1925,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground color for normal bytes (even columns: 00, 02, 04...)
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Foreground")]
         public Color ForegroundFirstColor
         {
             get => (Color)GetValue(ForegroundFirstColorProperty);
@@ -1916,7 +1952,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground color for alternate bytes (odd columns: 01, 03, 05...)
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Foreground")]
         public Color ForegroundSecondColor
         {
             get => (Color)GetValue(ForegroundSecondColorProperty);
@@ -1943,7 +1979,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground color for offset header
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Foreground")]
         public Color ForegroundOffSetHeaderColor
         {
             get => (Color)GetValue(ForegroundOffSetHeaderColorProperty);
@@ -1970,7 +2006,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground highlight offset header color
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Foreground")]
         public Color ForegroundHighLightOffSetHeaderColor
         {
             get => (Color)GetValue(ForegroundHighLightOffSetHeaderColorProperty);
@@ -1994,7 +2030,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground contrast color
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Foreground")]
         public Color ForegroundContrast
         {
             get => (Color)GetValue(ForegroundContrastProperty);
@@ -2666,14 +2702,65 @@ namespace WpfHexaEditor
         /// </summary>
         public static readonly DependencyProperty DataStringVisualProperty =
             DependencyProperty.Register(nameof(DataStringVisual), typeof(DataVisualType), typeof(HexEditor),
-                new PropertyMetadata(DataVisualType.Hexadecimal));
+                new PropertyMetadata(DataVisualType.Hexadecimal, OnDataStringVisualChanged));
+
+        private static void OnDataStringVisualChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is DataVisualType visualType)
+            {
+                // Cancel any in-progress byte edit (format-specific editing state no longer valid)
+                if (editor._isEditingByte)
+                {
+                    editor._isEditingByte = false;
+                    editor._editingPosition = VirtualPosition.Invalid;
+                    editor.HexViewport.EditingBytePosition = -1; // Clear bold nibble feedback
+                    editor._editingValue = 0;
+                    editor._editingCharIndex = 0;
+                    editor._editingMaxChars = 2;
+                    editor._editingBuffer = "";
+                }
+
+                // Update HexViewport's DataStringVisual property
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.DataStringVisual = visualType;
+                    editor.HexViewport.InvalidateVisual();
+
+                    // Refresh column headers to match the new format
+                    editor.RefreshColumnHeader();
+                }
+            }
+        }
 
         /// <summary>
         /// OffSetStringVisual DependencyProperty for XAML binding
         /// </summary>
         public static readonly DependencyProperty OffSetStringVisualProperty =
             DependencyProperty.Register(nameof(OffSetStringVisual), typeof(DataVisualType), typeof(HexEditor),
-                new PropertyMetadata(DataVisualType.Hexadecimal));
+                new PropertyMetadata(DataVisualType.Hexadecimal, OnOffSetStringVisualChanged));
+
+        private static void OnOffSetStringVisualChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is DataVisualType visualType)
+            {
+                // Update HexViewport's OffSetStringVisual property
+                if (editor.HexViewport != null)
+                {
+                    editor.HexViewport.OffSetStringVisual = visualType;
+                    editor.HexViewport.InvalidateVisual();
+
+                    // Update ActualOffsetWidth to reflect the new format
+                    editor.ActualOffsetWidth = new GridLength(editor.HexViewport.ActualOffsetWidth);
+                }
+            }
+        }
+
+        /// <summary>
+        /// ActualOffsetWidth DependencyProperty for XAML binding
+        /// </summary>
+        public static readonly DependencyProperty ActualOffsetWidthProperty =
+            DependencyProperty.Register(nameof(ActualOffsetWidth), typeof(GridLength), typeof(HexEditor),
+                new PropertyMetadata(new GridLength(110.0))); // Default value matches hexadecimal format
 
         /// <summary>
         /// ByteOrder DependencyProperty for XAML binding
@@ -2745,6 +2832,155 @@ namespace WpfHexaEditor
                     editor.UpdateBarChart();
             }
         }
+
+        #region Bar Chart Properties
+
+        /// <summary>
+        /// Bar chart panel height in pixels
+        /// </summary>
+        [Category("BarChart")]
+        [DisplayName("Panel Height")]
+        [Description("Height of the bar chart panel in pixels")]
+        public int BarChartPanelHeight
+        {
+            get => (int)GetValue(BarChartPanelHeightProperty);
+            set => SetValue(BarChartPanelHeightProperty, value);
+        }
+
+        public static readonly DependencyProperty BarChartPanelHeightProperty =
+            DependencyProperty.Register(nameof(BarChartPanelHeight), typeof(int), typeof(HexEditor),
+                new PropertyMetadata(200, OnBarChartPanelHeightChanged));
+
+        private static void OnBarChartPanelHeightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is int height)
+            {
+                if (editor._barChartPanel != null)
+                    editor._barChartPanel.Height = height;
+            }
+        }
+
+        /// <summary>
+        /// Bar chart background color
+        /// </summary>
+        [Category("Colors.Charts")]
+        [DisplayName("Background Color")]
+        public Color BarChartBackgroundColor
+        {
+            get => (Color)GetValue(BarChartBackgroundColorProperty);
+            set => SetValue(BarChartBackgroundColorProperty, value);
+        }
+
+        public static readonly DependencyProperty BarChartBackgroundColorProperty =
+            DependencyProperty.Register(nameof(BarChartBackgroundColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.White, OnBarChartBackgroundColorChanged));
+
+        private static void OnBarChartBackgroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is Color color && editor._barChartPanel != null)
+            {
+                editor._barChartPanel.BackgroundColor = color;
+                editor._barChartPanel.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Bar chart text color for labels and statistics
+        /// </summary>
+        [Category("Colors.Charts")]
+        [DisplayName("Text Color")]
+        public Color BarChartTextColor
+        {
+            get => (Color)GetValue(BarChartTextColorProperty);
+            set => SetValue(BarChartTextColorProperty, value);
+        }
+
+        public static readonly DependencyProperty BarChartTextColorProperty =
+            DependencyProperty.Register(nameof(BarChartTextColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(0x42, 0x42, 0x42), OnBarChartTextColorChanged));
+
+        private static void OnBarChartTextColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is Color color && editor._barChartPanel != null)
+            {
+                editor._barChartPanel.TextColor = color;
+                editor._barChartPanel.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Show bar chart axis labels (00-FF)
+        /// </summary>
+        [Category("BarChart")]
+        [DisplayName("Show Axis Labels")]
+        public bool BarChartShowAxisLabels
+        {
+            get => (bool)GetValue(BarChartShowAxisLabelsProperty);
+            set => SetValue(BarChartShowAxisLabelsProperty, value);
+        }
+
+        public static readonly DependencyProperty BarChartShowAxisLabelsProperty =
+            DependencyProperty.Register(nameof(BarChartShowAxisLabels), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnBarChartShowAxisLabelsChanged));
+
+        private static void OnBarChartShowAxisLabelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool show && editor._barChartPanel != null)
+            {
+                editor._barChartPanel.ShowAxisLabels = show;
+                editor._barChartPanel.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Show bar chart grid lines
+        /// </summary>
+        [Category("BarChart")]
+        [DisplayName("Show Grid Lines")]
+        public bool BarChartShowGridLines
+        {
+            get => (bool)GetValue(BarChartShowGridLinesProperty);
+            set => SetValue(BarChartShowGridLinesProperty, value);
+        }
+
+        public static readonly DependencyProperty BarChartShowGridLinesProperty =
+            DependencyProperty.Register(nameof(BarChartShowGridLines), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(false, OnBarChartShowGridLinesChanged));
+
+        private static void OnBarChartShowGridLinesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool show && editor._barChartPanel != null)
+            {
+                editor._barChartPanel.ShowGridLines = show;
+                editor._barChartPanel.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Show bar chart statistics overlay
+        /// </summary>
+        [Category("BarChart")]
+        [DisplayName("Show Statistics")]
+        public bool BarChartShowStatistics
+        {
+            get => (bool)GetValue(BarChartShowStatisticsProperty);
+            set => SetValue(BarChartShowStatisticsProperty, value);
+        }
+
+        public static readonly DependencyProperty BarChartShowStatisticsProperty =
+            DependencyProperty.Register(nameof(BarChartShowStatistics), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnBarChartShowStatisticsChanged));
+
+        private static void OnBarChartShowStatisticsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor && e.NewValue is bool show && editor._barChartPanel != null)
+            {
+                editor._barChartPanel.ShowStatistics = show;
+                editor._barChartPanel.InvalidateVisual();
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// DefaultCopyToClipboardMode DependencyProperty for XAML binding
@@ -2832,7 +3068,9 @@ namespace WpfHexaEditor
                 // Sync with HexViewport - pass blocks if enabled, empty list if disabled
                 if (editor.HexViewport != null)
                 {
-                    editor.HexViewport.CustomBackgroundBlocks = allowed ? editor._customBackgroundBlocks : new List<Core.CustomBackgroundBlock>();
+                    editor.HexViewport.CustomBackgroundBlocks = allowed
+                        ? editor._customBackgroundService.GetAllBlocks().ToList()
+                        : new List<Core.CustomBackgroundBlock>();
                     editor.HexViewport.InvalidateVisual();
                 }
             }
@@ -2873,7 +3111,7 @@ namespace WpfHexaEditor
         /// <remarks>
         /// This property is provided for V1 compatibility. New code should use the Color-based property.
         /// </remarks>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         [Obsolete("Use SelectionFirstColor (Color property) instead. This Brush wrapper is for V1 compatibility only.", false)]
         public Brush SelectionFirstColorBrush
         {
@@ -2888,7 +3126,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Selection second color as Brush. Use SelectionSecondColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush SelectionSecondColorBrush
         {
             get => new SolidColorBrush(SelectionSecondColor);
@@ -2902,7 +3140,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Modified byte color as Brush. Use ByteModifiedColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ByteModifiedColorBrush
         {
             get => new SolidColorBrush(ByteModifiedColor);
@@ -2916,7 +3154,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Added byte color as Brush. Use ByteAddedColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ByteAddedColorBrush
         {
             get => new SolidColorBrush(ByteAddedColor);
@@ -2930,7 +3168,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Highlight color as Brush. Use HighLightColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush HighLightColorBrush
         {
             get => new SolidColorBrush(HighLightColor);
@@ -2944,7 +3182,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Mouse over color as Brush. Use MouseOverColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush MouseOverColorBrush
         {
             get => new SolidColorBrush(MouseOverColor);
@@ -2958,7 +3196,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground second color as Brush. Use ForegroundSecondColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ForegroundSecondColorBrush
         {
             get => new SolidColorBrush(ForegroundSecondColor);
@@ -2972,7 +3210,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Offset header foreground color as Brush. Use ForegroundOffSetHeaderColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ForegroundOffSetHeaderColorBrush
         {
             get => new SolidColorBrush(ForegroundOffSetHeaderColor);
@@ -2986,7 +3224,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Highlighted offset header foreground color as Brush. Use ForegroundHighLightOffSetHeaderColor (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ForegroundHighLightOffSetHeaderColorBrush
         {
             get => new SolidColorBrush(ForegroundHighLightOffSetHeaderColor);
@@ -3000,7 +3238,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Foreground contrast color as Brush. Use ForegroundContrast (Color) for V2 code.
         /// </summary>
-        [Category("Colors")]
+        [Category("Colors.Legacy")]
         public Brush ForegroundContrastBrush
         {
             get => new SolidColorBrush(ForegroundContrast);
@@ -3008,6 +3246,92 @@ namespace WpfHexaEditor
             {
                 if (value is SolidColorBrush solidBrush)
                     ForegroundContrast = solidBrush.Color;
+            }
+        }
+
+        #endregion
+
+        #region Scroll Markers Properties
+
+        /// <summary>
+        /// Show bookmark markers on the scrollbar
+        /// </summary>
+        [Category("ScrollMarkers")]
+        public bool ShowBookmarkMarkers
+        {
+            get => (bool)GetValue(ShowBookmarkMarkersProperty);
+            set => SetValue(ShowBookmarkMarkersProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowBookmarkMarkersProperty =
+            DependencyProperty.Register(nameof(ShowBookmarkMarkers), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnScrollMarkerVisibilityChanged));
+
+        /// <summary>
+        /// Show modified byte markers on the scrollbar
+        /// </summary>
+        [Category("ScrollMarkers")]
+        public bool ShowModifiedMarkers
+        {
+            get => (bool)GetValue(ShowModifiedMarkersProperty);
+            set => SetValue(ShowModifiedMarkersProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowModifiedMarkersProperty =
+            DependencyProperty.Register(nameof(ShowModifiedMarkers), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnScrollMarkerVisibilityChanged));
+
+        /// <summary>
+        /// Show inserted byte markers on the scrollbar
+        /// </summary>
+        [Category("ScrollMarkers")]
+        public bool ShowInsertedMarkers
+        {
+            get => (bool)GetValue(ShowInsertedMarkersProperty);
+            set => SetValue(ShowInsertedMarkersProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowInsertedMarkersProperty =
+            DependencyProperty.Register(nameof(ShowInsertedMarkers), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnScrollMarkerVisibilityChanged));
+
+        /// <summary>
+        /// Show deleted byte markers on the scrollbar
+        /// </summary>
+        [Category("ScrollMarkers")]
+        public bool ShowDeletedMarkers
+        {
+            get => (bool)GetValue(ShowDeletedMarkersProperty);
+            set => SetValue(ShowDeletedMarkersProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowDeletedMarkersProperty =
+            DependencyProperty.Register(nameof(ShowDeletedMarkers), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnScrollMarkerVisibilityChanged));
+
+        /// <summary>
+        /// Show search result markers on the scrollbar
+        /// </summary>
+        [Category("ScrollMarkers")]
+        public bool ShowSearchResultMarkers
+        {
+            get => (bool)GetValue(ShowSearchResultMarkersProperty);
+            set => SetValue(ShowSearchResultMarkersProperty, value);
+        }
+
+        public static readonly DependencyProperty ShowSearchResultMarkersProperty =
+            DependencyProperty.Register(nameof(ShowSearchResultMarkers), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true, OnScrollMarkerVisibilityChanged));
+
+        /// <summary>
+        /// Callback when any scroll marker visibility changes
+        /// </summary>
+        private static void OnScrollMarkerVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                // Force update of scroll markers panel
+                editor.UpdateScrollMarkersVisibility();
             }
         }
 
@@ -3142,7 +3466,8 @@ namespace WpfHexaEditor
         /// <summary>
         /// Bar chart panel visibility
         /// </summary>
-        [Category("Display")]
+        [Category("BarChart")]
+        [DisplayName("Panel Visibility")]
         public Visibility BarChartPanelVisibility
         {
             get => (Visibility)GetValue(BarChartPanelVisibilityProperty);

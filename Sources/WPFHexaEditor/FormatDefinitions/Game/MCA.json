@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "Minecraft Anvil Region",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mca"
+                   ],
+    "description":  "Minecraft Anvil world region format",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Location Table",
+                       "offset":  0,
+                       "length":  4096,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Chunk location table (1024 entries)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Timestamp Table",
+                       "offset":  4096,
+                       "length":  4096,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Chunk timestamp table"
+                   }
+               ]
+}

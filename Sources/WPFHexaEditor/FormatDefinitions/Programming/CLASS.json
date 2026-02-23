@@ -1,0 +1,47 @@
+﻿{
+    "formatName":  "Java Class File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".class"
+                   ],
+    "description":  "Java compiled bytecode",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "CAFEBABE",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Java Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "CAFEBABE signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Minor Version",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Class file minor version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Major Version",
+                       "offset":  6,
+                       "length":  2,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Class file major version"
+                   }
+               ]
+}

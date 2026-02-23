@@ -1,0 +1,110 @@
+﻿{
+    "formatName":  "Unix UTMP",
+    "version":  "1.0",
+    "extensions":  [
+                       ""
+                   ],
+    "description":  "Unix UTMP file - Current user login records",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Type",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Record type (0-8)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "PID",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Process ID"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Line",
+                       "offset":  8,
+                       "length":  32,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Device name (tty line)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "ID",
+                       "offset":  40,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Terminal ID suffix"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "User",
+                       "offset":  44,
+                       "length":  32,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Username"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Host",
+                       "offset":  76,
+                       "length":  256,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Hostname for remote login"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Exit Status",
+                       "offset":  332,
+                       "length":  4,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Exit status (termination/exit)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Session ID",
+                       "offset":  336,
+                       "length":  4,
+                       "color":  "#98D8C8",
+                       "opacity":  0.3,
+                       "description":  "Session ID"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Timestamp",
+                       "offset":  340,
+                       "length":  8,
+                       "color":  "#A8E6CF",
+                       "opacity":  0.3,
+                       "description":  "Login time (timeval)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Address",
+                       "offset":  348,
+                       "length":  16,
+                       "color":  "#FF6B9D",
+                       "opacity":  0.3,
+                       "description":  "IPv4/IPv6 address"
+                   }
+               ]
+}

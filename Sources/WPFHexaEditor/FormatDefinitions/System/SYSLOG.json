@@ -1,0 +1,93 @@
+﻿{
+    "formatName":  "Syslog Binary Format",
+    "version":  "1.0",
+    "extensions":  [
+                       ".syslog",
+                       ".log"
+                   ],
+    "description":  "Unix syslog binary format - System logging",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Priority",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Facility (high 3 bits) and severity (low 3 bits)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Timestamp",
+                       "offset":  1,
+                       "length":  8,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Unix timestamp (64-bit)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Hostname Length",
+                       "offset":  9,
+                       "length":  2,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Length of hostname string"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Hostname",
+                       "offset":  11,
+                       "length":  256,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Source hostname"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "App Name Length",
+                       "offset":  267,
+                       "length":  2,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Length of application name"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "App Name",
+                       "offset":  269,
+                       "length":  48,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Application name"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Process ID",
+                       "offset":  317,
+                       "length":  4,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Process identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Message Length",
+                       "offset":  321,
+                       "length":  4,
+                       "color":  "#98D8C8",
+                       "opacity":  0.3,
+                       "description":  "Length of log message"
+                   }
+               ]
+}

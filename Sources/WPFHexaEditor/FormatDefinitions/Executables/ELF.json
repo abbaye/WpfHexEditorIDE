@@ -1,0 +1,74 @@
+﻿{
+    "formatName":  "ELF Executable",
+    "version":  "1.0",
+    "extensions":  [
+                       ""
+                   ],
+    "description":  "Executable and Linkable Format - Linux/Unix executable",
+    "category":  "Executables",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7F454C46",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ELF Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "\\x7FELF magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Class",
+                       "offset":  4,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "1=32-bit, 2=64-bit"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Endianness",
+                       "offset":  5,
+                       "length":  1,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "1=Little, 2=Big endian"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  6,
+                       "length":  1,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "ELF version (1)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "OS/ABI",
+                       "offset":  7,
+                       "length":  1,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Target OS ABI"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Type",
+                       "offset":  16,
+                       "length":  2,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "1=Relocatable, 2=Executable, 3=Shared, 4=Core"
+                   }
+               ]
+}

@@ -1,0 +1,40 @@
+﻿{
+    "formatName":  "RPG Maker Encrypted Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".rgssad",
+                       ".rgss2a",
+                       ".rgss3a"
+                   ],
+    "description":  "RPG Maker encrypted game archive",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "52475353414400",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "RGSSAD Signature",
+                       "offset":  0,
+                       "length":  7,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "RGSSAD magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  7,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Archive version"
+                   }
+               ]
+}

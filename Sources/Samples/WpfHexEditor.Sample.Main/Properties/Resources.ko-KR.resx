@@ -121,6 +121,10 @@
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>이전 찾기(P)</value>
   </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>상대 검색</value>
+    <comment>Search menu - Relative Search command</comment>
+  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>도구(T)</value>
   </data>
@@ -159,6 +163,9 @@
   </data>
   <data name="Menu_View_ShowASCII" xml:space="preserve">
     <value>ASCII 표시</value>
+  </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>파싱된 필드 표시</value>
   </data>
   <data name="Menu_View_BytesPerLine" xml:space="preserve">
     <value>줄당 바이트 수</value>

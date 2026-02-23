@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "STL 3D Model",
+    "version":  "1.0",
+    "extensions":  [
+                       ".stl"
+                   ],
+    "description":  "Stereolithography CAD format - 3D model file",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "736F6C6964",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ASCII STL Header",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "solid keyword (ASCII STL)"
+                   }
+               ]
+}

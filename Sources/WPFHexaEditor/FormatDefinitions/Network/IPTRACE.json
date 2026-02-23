@@ -1,0 +1,74 @@
+﻿{
+    "formatName":  "AIX iptrace",
+    "version":  "1.0",
+    "extensions":  [
+                       ".iptrace"
+                   ],
+    "description":  "AIX iptrace network capture format",
+    "category":  "Network",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "69707472616365",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "iptrace Signature",
+                       "offset":  0,
+                       "length":  7,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "iptrace ASCII signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  7,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "iptrace format version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Endian Flag",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Byte order indicator"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Packet Length",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "First packet length"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Packet Type",
+                       "offset":  16,
+                       "length":  2,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Packet type identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Interface Type",
+                       "offset":  18,
+                       "length":  2,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Network interface type"
+                   }
+               ]
+}

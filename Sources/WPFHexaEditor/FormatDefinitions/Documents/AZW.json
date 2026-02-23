@@ -1,0 +1,39 @@
+﻿{
+    "formatName":  "Amazon Kindle eBook",
+    "version":  "1.0",
+    "extensions":  [
+                       ".azw",
+                       ".azw3"
+                   ],
+    "description":  "Amazon Kindle format - Based on Mobipocket",
+    "category":  "Documents",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "424F4F4B",
+                      "offset":  60,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "PDB Name",
+                       "offset":  0,
+                       "length":  32,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Database name"
+                   },
+                   {
+                       "type":  "signature",
+                       "name":  "AZW Type",
+                       "offset":  60,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "BOOK identifier"
+                   }
+               ]
+}

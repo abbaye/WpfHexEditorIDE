@@ -1,0 +1,119 @@
+﻿{
+    "formatName":  "PNG Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".png"
+                   ],
+    "description":  "Portable Network Graphics image format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "89504E470D0A1A0A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  8
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PNG Signature",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PNG magic bytes (\\x89PNG\\r\\n\\x1A\\n)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "IHDR Chunk Length",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "IHDR chunk length (always 13)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "IHDR Chunk Type",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "IHDR chunk type identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Image Width",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Image width in pixels"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Image Height",
+                       "offset":  20,
+                       "length":  4,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Image height in pixels"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Bit Depth",
+                       "offset":  24,
+                       "length":  1,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Bits per sample (1, 2, 4, 8, 16)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Color Type",
+                       "offset":  25,
+                       "length":  1,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "0=Gray, 2=RGB, 3=Palette, 4=GrayAlpha, 6=RGBA"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Compression",
+                       "offset":  26,
+                       "length":  1,
+                       "color":  "#FF6B9D",
+                       "opacity":  0.3,
+                       "description":  "Compression method (always 0 for deflate)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Filter Method",
+                       "offset":  27,
+                       "length":  1,
+                       "color":  "#C44569",
+                       "opacity":  0.3,
+                       "description":  "Filter method (always 0)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Interlace Method",
+                       "offset":  28,
+                       "length":  1,
+                       "color":  "#98D8C8",
+                       "opacity":  0.3,
+                       "description":  "0=None, 1=Adam7"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "IHDR CRC",
+                       "offset":  29,
+                       "length":  4,
+                       "color":  "#A8E6CF",
+                       "opacity":  0.3,
+                       "description":  "CRC-32 of IHDR chunk"
+                   }
+               ]
+}

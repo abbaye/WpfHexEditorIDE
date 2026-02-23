@@ -22,12 +22,14 @@ namespace WpfHexaEditor
         #region Missing V1 Properties - Display/UI
 
         /// <summary>
-        /// Show tooltip on byte hover 
+        /// Show tooltip on byte hover
         /// </summary>
         public static readonly DependencyProperty ShowByteToolTipProperty =
             DependencyProperty.Register(nameof(ShowByteToolTip), typeof(bool),
                 typeof(HexEditor), new PropertyMetadata(false, OnShowByteToolTipChanged));
 
+        [System.ComponentModel.Category("Display")]
+        [System.ComponentModel.Description("Show detailed tooltip when hovering over bytes (includes parsed field information)")]
         public bool ShowByteToolTip
         {
             get => (bool)GetValue(ShowByteToolTipProperty);

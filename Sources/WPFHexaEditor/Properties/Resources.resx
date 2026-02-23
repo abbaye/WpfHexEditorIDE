@@ -1,110 +1,52 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -475,7 +417,7 @@
   <data name="ModeOverwriteString" xml:space="preserve">
     <value>Mode: Overwrite</value>
   </data>
-  <!-- Find & Replace Dialog -->
+  
   <data name="FindAndReplaceDialogTitle" xml:space="preserve">
     <value>Find and Replace</value>
   </data>
@@ -536,7 +478,7 @@
   <data name="ReplacedFormat" xml:space="preserve">
     <value>{0} replaced</value>
   </data>
-  <!-- Search Panel -->
+  
   <data name="SearchPanelTitle" xml:space="preserve">
     <value>Search</value>
   </data>
@@ -576,7 +518,7 @@
   <data name="TotalMatchesLabel" xml:space="preserve">
     <value>Total matches</value>
   </data>
-  <!-- Quick Search Bar -->
+  
   <data name="QuickSearchTooltip" xml:space="preserve">
     <value>Quick search (Ctrl+F)</value>
   </data>
@@ -592,7 +534,7 @@
   <data name="SearchOptionsTooltip" xml:space="preserve">
     <value>Search options</value>
   </data>
-  <!-- Status Messages -->
+  
   <data name="StatusSearching" xml:space="preserve">
     <value>Searching...</value>
   </data>
@@ -677,7 +619,7 @@
   <data name="StatusNoMoreBookmarksBefore" xml:space="preserve">
     <value>No more bookmarks before current position</value>
   </data>
-  <!-- Bookmark Messages -->
+  
   <data name="BookmarkSetFormat" xml:space="preserve">
     <value>Bookmark set at 0x{0:X8}</value>
   </data>
@@ -690,14 +632,14 @@
   <data name="BookmarkAllCleared" xml:space="preserve">
     <value>All bookmarks cleared</value>
   </data>
-  <!-- Copy Menu Items -->
+  
   <data name="CopySelectionString" xml:space="preserve">
     <value>Copy Selection</value>
   </data>
   <data name="CutSelectionString" xml:space="preserve">
     <value>Cut Selection</value>
   </data>
-  <!-- Additional Context Menu -->
+  
   <data name="InsertByteString" xml:space="preserve">
     <value>Insert Byte...</value>
   </data>
@@ -713,7 +655,7 @@
   <data name="PropertiesString" xml:space="preserve">
     <value>Properties</value>
   </data>
-  <!-- Progress Overlay Strings -->
+  
   <data name="ProgressTitleOpeningFile" xml:space="preserve">
     <value>Opening file</value>
   </data>
@@ -774,7 +716,7 @@
   <data name="InvertSelectionTooltipString" xml:space="preserve">
     <value>Invert all bits in each byte (XOR with 0xFF)</value>
   </data>
-  <!-- Relative Search (ROM Encoding Discovery) -->
+  
   <data name="RelativeSearchMenuString" xml:space="preserve">
     <value>Relative Search...</value>
   </data>
@@ -1040,15 +982,7 @@
     <value>HEX EDITOR SETTINGS</value>
     <comment>Hex editor settings - Main header</comment>
   </data>
-<data name="HexSettings_Header" xml:space="preserve">
-    <value>HEX EDITOR SETTINGS</value>
-    <comment>Hex editor settings - Main header</comment>
-  </data>
 <data name="HexSettings_Display_Title" xml:space="preserve">
-    <value>📺 Display Options</value>
-    <comment>Hex editor settings - Display Options expander header</comment>
-  </data>
-<data name="HexSettings_Display_Header" xml:space="preserve">
     <value>📺 Display Options</value>
     <comment>Hex editor settings - Display Options expander header</comment>
   </data>
@@ -1085,10 +1019,6 @@
     <comment>Hex editor settings - Zoom scale label</comment>
   </data>
 <data name="HexSettings_Editing_Title" xml:space="preserve">
-    <value>✏️ Editing Options</value>
-    <comment>Hex editor settings - Editing Options expander header</comment>
-  </data>
-<data name="HexSettings_Editing_Header" xml:space="preserve">
     <value>✏️ Editing Options</value>
     <comment>Hex editor settings - Editing Options expander header</comment>
   </data>
@@ -1148,10 +1078,6 @@
     <value>📋 Clipboard Options</value>
     <comment>Hex editor settings - Clipboard Options expander header</comment>
   </data>
-<data name="HexSettings_Clipboard_Header" xml:space="preserve">
-    <value>📋 Clipboard Options</value>
-    <comment>Hex editor settings - Clipboard Options expander header</comment>
-  </data>
 <data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
     <value>Default Copy Mode:</value>
     <comment>Hex editor settings - Default copy mode label</comment>
@@ -1184,10 +1110,6 @@
     <value>📎 Drag &amp; Drop Options</value>
     <comment>Hex editor settings - Drag &amp; Drop Options expander header</comment>
   </data>
-<data name="HexSettings_DragDrop_Header" xml:space="preserve">
-    <value>📎 Drag &amp; Drop Options</value>
-    <comment>Hex editor settings - Drag &amp; Drop Options expander header</comment>
-  </data>
 <data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
     <value>Allow File Drop</value>
     <comment>Hex editor settings - Allow file drop checkbox</comment>
@@ -1213,10 +1135,6 @@
     <comment>Hex editor settings - Allow text drop checkbox</comment>
   </data>
 <data name="HexSettings_Highlight_Title" xml:space="preserve">
-    <value>🎨 Highlight &amp; Selection</value>
-    <comment>Hex editor settings - Highlight &amp; Selection expander header</comment>
-  </data>
-<data name="HexSettings_Highlight_Header" xml:space="preserve">
     <value>🎨 Highlight &amp; Selection</value>
     <comment>Hex editor settings - Highlight &amp; Selection expander header</comment>
   </data>
@@ -1252,10 +1170,6 @@
     <value>🔍 Search Options</value>
     <comment>Hex editor settings - Search Options expander header</comment>
   </data>
-<data name="HexSettings_Search_Header" xml:space="preserve">
-    <value>🔍 Search Options</value>
-    <comment>Hex editor settings - Search Options expander header</comment>
-  </data>
 <data name="HexSettings_Search_EnableParallel" xml:space="preserve">
     <value>Enable Parallel Search</value>
     <comment>Hex editor settings - Enable parallel search checkbox</comment>
@@ -1284,10 +1198,6 @@
     <value>📊 Statistics</value>
     <comment>Hex editor settings - Statistics expander header</comment>
   </data>
-<data name="HexSettings_Statistics_Header" xml:space="preserve">
-    <value>📊 Statistics</value>
-    <comment>Hex editor settings - Statistics expander header</comment>
-  </data>
 <data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
     <value>Allow Byte Count</value>
     <comment>Hex editor settings - Allow byte count checkbox</comment>
@@ -1297,10 +1207,6 @@
     <comment>Hex editor settings - Allow byte count checkbox</comment>
   </data>
 <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>⚙️ Advanced Options</value>
-    <comment>Hex editor settings - Advanced Options expander header</comment>
-  </data>
-<data name="HexSettings_Advanced_Header" xml:space="preserve">
     <value>⚙️ Advanced Options</value>
     <comment>Hex editor settings - Advanced Options expander header</comment>
   </data>
@@ -1332,15 +1238,35 @@
     <value>🔄 Reset All to Defaults</value>
     <comment>Hex editor settings - Reset all to defaults button</comment>
   </data>
-<data name="HexSettings_Button_Reset" xml:space="preserve">
-    <value>🔄 Reset All to Defaults</value>
-    <comment>Hex editor settings - Reset all to defaults button</comment>
-  </data>
 <data name="HexSettings_StatusBar_Title" xml:space="preserve">
     <value>Status Bar</value>
   </data>
 <data name="HexSettings_Colors_Title" xml:space="preserve">
     <value>Colors</value>
+  </data>
+<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+    <value>Scroll Markers</value>
+    <comment>Hex editor settings - Scroll Markers category header</comment>
+  </data>
+<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Show Bookmark Markers</value>
+    <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
+    <value>Show Modified Byte Markers</value>
+    <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+    <value>Show Inserted Byte Markers</value>
+    <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+    <value>Show Deleted Byte Markers</value>
+    <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Show Search Result Markers</value>
+    <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
   </data>
 <data name="HexSettings_Behavior_Title" xml:space="preserve">
     <value>Behavior</value>
@@ -1356,5 +1282,73 @@
   </data>
 <data name="HexSettings_TBL_Title" xml:space="preserve">
     <value>Character Table</value>
+  </data>
+  <data name="HexSettings_BarChart_Title" xml:space="preserve">
+    <value>📈 Bar Chart</value>
+    <comment>Hex editor settings - Bar Chart category header</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelVisibility" xml:space="preserve">
+    <value>Panel Visibility</value>
+    <comment>Bar Chart - Show/hide the bar chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_BarColor" xml:space="preserve">
+    <value>Bar Color</value>
+    <comment>Bar Chart - Color of the frequency bars</comment>
+  </data>
+  <data name="HexSettings_BarChart_BackgroundColor" xml:space="preserve">
+    <value>Background Color</value>
+    <comment>Bar Chart - Background color of the chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_TextColor" xml:space="preserve">
+    <value>Text Color</value>
+    <comment>Bar Chart - Color for labels and statistics text</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelHeight" xml:space="preserve">
+    <value>Panel Height</value>
+    <comment>Bar Chart - Height of the chart panel in pixels</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowAxisLabels" xml:space="preserve">
+    <value>Show Axis Labels</value>
+    <comment>Bar Chart - Display byte value labels (00-FF)</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowGridLines" xml:space="preserve">
+    <value>Show Grid Lines</value>
+    <comment>Bar Chart - Display horizontal reference grid lines</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
+    <value>Show Statistics</value>
+    <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
+  </data>
+  <data name="HexSettings_BarChart_InlineBarColor" xml:space="preserve">
+    <value>Inline Bar Color</value>
+    <comment>Bar Chart - Color for inline bar visualization in ASCII panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowInlineBarChart" xml:space="preserve">
+    <value>Show Inline Bar Chart</value>
+    <comment>Bar Chart - Enable inline bar chart in ASCII panel</comment>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>No data to display</value>
+    <comment>Bar Chart - Message when no data is available</comment>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Total</value>
+    <comment>Bar Chart - Statistics label for total bytes</comment>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Max</value>
+    <comment>Bar Chart - Statistics label for maximum frequency</comment>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropy</value>
+    <comment>Bar Chart - Statistics label for Shannon entropy</comment>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>bits/byte</value>
+    <comment>Bar Chart - Unit for entropy measurement</comment>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>bytes</value>
+    <comment>Bar Chart - Unit for byte count</comment>
   </data>
 </root>

@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "AVCHD Video",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mts",
+                       ".m2ts"
+                   ],
+    "description":  "AVCHD (Advanced Video Coding High Definition) video format used by camcorders",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "47",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Sync Byte",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MPEG-TS sync byte for AVCHD format"
+                   }
+               ]
+}

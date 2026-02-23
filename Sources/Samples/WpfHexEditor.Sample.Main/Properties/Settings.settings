@@ -35,6 +35,9 @@
     <Setting Name="IsSearchPanelVisible" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="IsParsedFieldsPanelVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="SelectedSearchMode" Type="System.String" Scope="User">
       <Value Profile="(Default)">Text</Value>
     </Setting>

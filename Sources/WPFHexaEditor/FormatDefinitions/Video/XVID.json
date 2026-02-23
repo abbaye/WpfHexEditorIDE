@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Xvid Video",
+    "version":  "1.0",
+    "extensions":  [
+                       ".xvid"
+                   ],
+    "description":  "Xvid MPEG-4 video codec, typically stored in AVI container",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "52494646",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "RIFF Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "RIFF container header for Xvid"
+                   }
+               ]
+}

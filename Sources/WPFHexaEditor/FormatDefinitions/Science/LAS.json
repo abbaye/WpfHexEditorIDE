@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "LAS Well Log",
+    "version":  "1.0",
+    "extensions":  [
+                       ".las"
+                   ],
+    "description":  "Log ASCII Standard for well log data",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7E56657273696F6E",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "LAS Magic",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "LAS signature (~Version)"
+                   }
+               ]
+}

@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "Philips PAR/REC",
+    "version":  "1.0",
+    "extensions":  [
+                       ".par",
+                       ".rec"
+                   ],
+    "description":  "Philips PAR/REC medical imaging format",
+    "category":  "Medical",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "2320205041",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PAR Magic",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PAR file signature (#  PA)"
+                   }
+               ]
+}

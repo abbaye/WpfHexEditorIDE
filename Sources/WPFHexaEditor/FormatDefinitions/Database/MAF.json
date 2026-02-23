@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Microsoft Access Form",
+    "version":  "1.0",
+    "extensions":  [
+                       ".maf"
+                   ],
+    "description":  "Microsoft Access form module file",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "MAF Header",
+                       "offset":  0,
+                       "length":  128,
+                       "color":  "#A8DADC",
+                       "opacity":  0.4,
+                       "description":  "Access form file header"
+                   }
+               ]
+}

@@ -1,0 +1,48 @@
+﻿{
+    "formatName":  "APNG Animated Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".apng",
+                       ".png"
+                   ],
+    "description":  "Animated Portable Network Graphics",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "89504E470D0A1A0A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PNG Signature",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PNG magic bytes (same as PNG)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "IHDR Chunk Length",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "IHDR chunk size"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "IHDR Type",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "IHDR chunk type"
+                   }
+               ]
+}

@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -145,18 +146,71 @@ namespace WpfHexaEditor.Models
         /// </summary>
         public string GetHexText()
         {
+            return GetHexText(Core.DataVisualType.Hexadecimal);
+        }
+
+        /// <summary>
+        /// Get text representation with specified format (Hexadecimal, Decimal, Binary)
+        /// </summary>
+        public string GetHexText(Core.DataVisualType visualType)
+        {
             if (ByteSize == Core.ByteSizeType.Bit8 || Values == null || Values.Length == 0)
             {
                 // Bit8 mode: use single Value
-                return Value.ToString("X2");
+                return FormatByte(Value, visualType);
             }
 
             // Multi-byte mode: apply ByteOrder
             var bytes = (ByteOrder == Core.ByteOrderType.HiLo)
-                ? Values.Reverse().ToArray()
+                ? Values.AsEnumerable().Reverse().ToArray()
                 : Values;
 
-            return string.Concat(bytes.Select(b => b.ToString("X2")));
+            // For multi-byte, format each byte and concatenate
+            return visualType switch
+            {
+                Core.DataVisualType.Hexadecimal => string.Concat(bytes.Select(b => b.ToString("X2"))),
+                Core.DataVisualType.Decimal => ConvertToDecimal(bytes),
+                Core.DataVisualType.Binary => string.Concat(bytes.Select(b => Convert.ToString(b, 2).PadLeft(8, '0'))),
+                _ => string.Concat(bytes.Select(b => b.ToString("X2")))
+            };
+        }
+
+        /// <summary>
+        /// Format a single byte according to the visual type
+        /// </summary>
+        private string FormatByte(byte value, Core.DataVisualType visualType)
+        {
+            return visualType switch
+            {
+                Core.DataVisualType.Hexadecimal => value.ToString("X2"),
+                Core.DataVisualType.Decimal => value.ToString("D3").PadLeft(3, ' '),
+                Core.DataVisualType.Binary => Convert.ToString(value, 2).PadLeft(8, '0'),
+                _ => value.ToString("X2")
+            };
+        }
+
+        /// <summary>
+        /// Convert multi-byte array to decimal string representation
+        /// </summary>
+        private string ConvertToDecimal(byte[] bytes)
+        {
+            if (bytes.Length == 1)
+                return bytes[0].ToString("D3").PadLeft(3, ' ');
+
+            if (bytes.Length == 2)
+            {
+                ushort value = BitConverter.ToUInt16(bytes, 0);
+                return value.ToString("D5").PadLeft(5, ' ');
+            }
+
+            if (bytes.Length == 4)
+            {
+                uint value = BitConverter.ToUInt32(bytes, 0);
+                return value.ToString("D10").PadLeft(10, ' ');
+            }
+
+            // Fallback: show each byte separately
+            return string.Concat(bytes.Select(b => b.ToString("D3")));
         }
 
 

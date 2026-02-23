@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "Portable Graymap",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pgm"
+                   ],
+    "description":  "Netpbm Portable Graymap (grayscale)",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5032",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PGM Magic",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "P2 or P5 magic number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Header",
+                       "offset":  2,
+                       "length":  32,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "ASCII header (width, height, maxval)"
+                   }
+               ]
+}

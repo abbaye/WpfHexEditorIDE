@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "VP8 Video",
+    "version":  "1.0",
+    "extensions":  [
+                       ".vp8",
+                       ".ivf"
+                   ],
+    "description":  "VP8 video codec, open video compression format developed by Google",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "444B4946",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "IVF Header",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "DKIF - IVF container header for VP8"
+                   }
+               ]
+}

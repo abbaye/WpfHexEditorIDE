@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Apache Parquet",
+    "version":  "1.0",
+    "extensions":  [
+                       ".parquet"
+                   ],
+    "description":  "Apache Parquet columnar storage format",
+    "category":  "Data",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "504152",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Parquet Magic",
+                       "offset":  0,
+                       "length":  3,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PAR1 signature"
+                   }
+               ]
+}

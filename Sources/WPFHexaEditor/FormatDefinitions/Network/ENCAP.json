@@ -1,0 +1,92 @@
+﻿{
+    "formatName":  "Encapsulated Packet",
+    "version":  "1.0",
+    "extensions":  [
+                       ".encap"
+                   ],
+    "description":  "Generic encapsulated packet format for tunneling protocols",
+    "category":  "Network",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Encapsulation Type",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Encapsulation protocol identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  2,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Encapsulation version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Flags",
+                       "offset":  3,
+                       "length":  1,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Encapsulation flags"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Total Length",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Total packet length"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Header Length",
+                       "offset":  6,
+                       "length":  2,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Encapsulation header length"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Protocol ID",
+                       "offset":  8,
+                       "length":  2,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Inner protocol identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Sequence Number",
+                       "offset":  10,
+                       "length":  4,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Packet sequence number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Tunnel ID",
+                       "offset":  14,
+                       "length":  4,
+                       "color":  "#98D8C8",
+                       "opacity":  0.3,
+                       "description":  "Tunnel identifier"
+                   }
+               ]
+}

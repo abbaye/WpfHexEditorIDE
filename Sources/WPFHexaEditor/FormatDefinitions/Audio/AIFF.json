@@ -1,0 +1,49 @@
+﻿{
+    "formatName":  "AIFF Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".aiff",
+                       ".aif",
+                       ".aifc"
+                   ],
+    "description":  "Audio Interchange File Format - Apple audio format",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "464F524D",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "FORM Chunk",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "IFF FORM identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Chunk Size",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Size of data"
+                   },
+                   {
+                       "type":  "signature",
+                       "name":  "AIFF Type",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "AIFF or AIFC"
+                   }
+               ]
+}

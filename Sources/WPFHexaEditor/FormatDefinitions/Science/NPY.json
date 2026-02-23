@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "NumPy Array",
+    "version":  "1.0",
+    "extensions":  [
+                       ".npy"
+                   ],
+    "description":  "NumPy array binary format",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "934E554D5059",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "NumPy Magic",
+                       "offset":  0,
+                       "length":  6,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "\\x93NUMPY"
+                   }
+               ]
+}

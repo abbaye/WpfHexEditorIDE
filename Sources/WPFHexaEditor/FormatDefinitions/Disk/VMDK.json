@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "VMware Virtual Disk",
+    "version":  "1.0",
+    "extensions":  [
+                       ".vmdk"
+                   ],
+    "description":  "VMware virtual disk format",
+    "category":  "Disk",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4B444D",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "VMDK Signature",
+                       "offset":  0,
+                       "length":  3,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "KDM magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "VMDK version"
+                   }
+               ]
+}

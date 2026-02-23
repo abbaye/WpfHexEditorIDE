@@ -1,0 +1,51 @@
+﻿{
+    "formatName":  "JPEG 2000 Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".jp2",
+                       ".j2k",
+                       ".jpf",
+                       ".jpx",
+                       ".jpm"
+                   ],
+    "description":  "JPEG 2000 - Advanced wavelet-based image compression",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "0000000C6A5020200D0A870A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "JPEG 2000 Signature",
+                       "offset":  0,
+                       "length":  12,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "JP2 signature box"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "File Type Box",
+                       "offset":  12,
+                       "length":  8,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "ftyp box header"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Brand",
+                       "offset":  20,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Brand identifier (jp2 )"
+                   }
+               ]
+}

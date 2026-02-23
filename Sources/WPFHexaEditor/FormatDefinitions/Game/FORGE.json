@@ -1,0 +1,47 @@
+﻿{
+    "formatName":  "Ubisoft FORGE",
+    "version":  "1.0",
+    "extensions":  [
+                       ".forge"
+                   ],
+    "description":  "Ubisoft FORGE archive format",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7363696D61676500",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "FORGE Signature",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "scimage signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "FORGE version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "File Size",
+                       "offset":  12,
+                       "length":  8,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Total file size"
+                   }
+               ]
+}

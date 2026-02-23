@@ -121,6 +121,10 @@
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>Rechercher le précédent</value>
   </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Recherche relative</value>
+    <comment>Search menu - Relative Search command</comment>
+  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>Outils</value>
   </data>
@@ -159,6 +163,9 @@
   </data>
   <data name="Menu_View_ShowASCII" xml:space="preserve">
     <value>Afficher ASCII</value>
+  </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>Afficher les champs analysés</value>
   </data>
   <data name="Menu_View_BytesPerLine" xml:space="preserve">
     <value>Octets par ligne</value>

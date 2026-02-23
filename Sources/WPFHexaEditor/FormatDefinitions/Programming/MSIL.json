@@ -1,0 +1,48 @@
+﻿{
+    "formatName":  ".NET MSIL Assembly",
+    "version":  "1.0",
+    "extensions":  [
+                       ".dll",
+                       ".exe"
+                   ],
+    "description":  ".NET Microsoft Intermediate Language (MSIL/CIL) assembly format using PE/COFF structure",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4D5A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "DOS Signature",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "DOS MZ header: \u0027MZ\u0027 (0x4D 0x5A)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "DOS Stub",
+                       "offset":  2,
+                       "length":  58,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "DOS stub program"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "PE Offset",
+                       "offset":  60,
+                       "length":  4,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "Offset to PE header (little-endian)"
+                   }
+               ]
+}

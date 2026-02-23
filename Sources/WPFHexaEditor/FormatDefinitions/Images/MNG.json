@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "Multiple-image Network Graphics",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mng"
+                   ],
+    "description":  "MNG animation format (PNG-based)",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "8A4D4E470D0A1A0A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "MNG Signature",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MNG magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "MHDR Chunk Length",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "MHDR chunk size"
+                   }
+               ]
+}

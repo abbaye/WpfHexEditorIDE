@@ -1,0 +1,47 @@
+﻿{
+    "formatName":  "Khronos Texture 2",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ktx2"
+                   ],
+    "description":  "Khronos Texture 2.0 format with Basis Universal",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "AB4B54582032300D0A1A0A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "KTX2 Identifier",
+                       "offset":  0,
+                       "length":  12,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "KTX 2.0 magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "VK Format",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Vulkan format enum"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Type Size",
+                       "offset":  16,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Type size in bytes"
+                   }
+               ]
+}

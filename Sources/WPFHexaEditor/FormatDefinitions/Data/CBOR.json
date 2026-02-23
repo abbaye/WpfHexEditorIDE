@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "CBOR (Concise Binary Object Representation)",
+    "version":  "1.0",
+    "extensions":  [
+                       ".cbor"
+                   ],
+    "description":  "CBOR binary data format (RFC 7049)",
+    "category":  "Data",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "data",
+                       "name":  "CBOR Data",
+                       "offset":  0,
+                       "length":  256,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "CBOR binary object data"
+                   }
+               ]
+}

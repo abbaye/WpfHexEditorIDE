@@ -1,0 +1,111 @@
+﻿{
+    "formatName":  "Windows Registry Hive",
+    "version":  "1.0",
+    "extensions":  [
+                       "",
+                       ".hiv"
+                   ],
+    "description":  "Windows Registry hive file - Binary registry database",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "72656766",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Registry Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "regf magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Primary Sequence",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Primary sequence number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Secondary Sequence",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Secondary sequence number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Last Written",
+                       "offset":  12,
+                       "length":  8,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Last write timestamp (FILETIME)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Major Version",
+                       "offset":  20,
+                       "length":  4,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Hive major version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Minor Version",
+                       "offset":  24,
+                       "length":  4,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Hive minor version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "File Type",
+                       "offset":  28,
+                       "length":  4,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "File type (0=normal, 1=log)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Root Cell Offset",
+                       "offset":  36,
+                       "length":  4,
+                       "color":  "#98D8C8",
+                       "opacity":  0.3,
+                       "description":  "Offset to root key cell"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Hive Length",
+                       "offset":  40,
+                       "length":  4,
+                       "color":  "#A8E6CF",
+                       "opacity":  0.3,
+                       "description":  "Length of hive in bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Checksum",
+                       "offset":  508,
+                       "length":  4,
+                       "color":  "#FF6B9D",
+                       "opacity":  0.3,
+                       "description":  "Header checksum (XOR of first 508 bytes)"
+                   }
+               ]
+}

@@ -876,13 +876,7 @@
 <data name="HexSettings_Title" xml:space="preserve">
     <value>HEX संपादक सेटिंग्स</value>
   </data>
-<data name="HexSettings_Header" xml:space="preserve">
-    <value>HEX संपादक सेटिंग्स</value>
-  </data>
 <data name="HexSettings_Display_Title" xml:space="preserve">
-    <value>📺 प्रदर्शन विकल्प</value>
-  </data>
-<data name="HexSettings_Display_Header" xml:space="preserve">
     <value>📺 प्रदर्शन विकल्प</value>
   </data>
 <data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
@@ -910,9 +904,6 @@
     <value>ज़ूम स्केल:</value>
   </data>
 <data name="HexSettings_Editing_Title" xml:space="preserve">
-    <value>✏️ संपादन विकल्प</value>
-  </data>
-<data name="HexSettings_Editing_Header" xml:space="preserve">
     <value>✏️ संपादन विकल्प</value>
   </data>
 <data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
@@ -957,9 +948,6 @@
 <data name="HexSettings_Clipboard_Title" xml:space="preserve">
     <value>📋 क्लिपबोर्ड विकल्प</value>
   </data>
-<data name="HexSettings_Clipboard_Header" xml:space="preserve">
-    <value>📋 क्लिपबोर्ड विकल्प</value>
-  </data>
 <data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
     <value>डिफ़ॉल्ट कॉपी मोड:</value>
   </data>
@@ -984,9 +972,6 @@
 <data name="HexSettings_DragDrop_Title" xml:space="preserve">
     <value>📎 ड्रैग एंड ड्रॉप विकल्प</value>
   </data>
-<data name="HexSettings_DragDrop_Header" xml:space="preserve">
-    <value>📎 ड्रैग एंड ड्रॉप विकल्प</value>
-  </data>
 <data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
     <value>फ़ाइल ड्रॉप की अनुमति दें</value>
   </data>
@@ -1006,9 +991,6 @@
     <value>टेक्स्ट ड्रॉप की अनुमति दें</value>
   </data>
 <data name="HexSettings_Highlight_Title" xml:space="preserve">
-    <value>🎨 हाइलाइट एंड चयन</value>
-  </data>
-<data name="HexSettings_Highlight_Header" xml:space="preserve">
     <value>🎨 हाइलाइट एंड चयन</value>
   </data>
 <data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
@@ -1035,9 +1017,6 @@
 <data name="HexSettings_Search_Title" xml:space="preserve">
     <value>🔍 खोज विकल्प</value>
   </data>
-<data name="HexSettings_Search_Header" xml:space="preserve">
-    <value>🔍 खोज विकल्प</value>
-  </data>
 <data name="HexSettings_Search_EnableParallel" xml:space="preserve">
     <value>समानांतर खोज सक्षम करें</value>
   </data>
@@ -1059,9 +1038,6 @@
 <data name="HexSettings_Statistics_Title" xml:space="preserve">
     <value>📊 सांख्यिकी</value>
   </data>
-<data name="HexSettings_Statistics_Header" xml:space="preserve">
-    <value>📊 सांख्यिकी</value>
-  </data>
 <data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
     <value>बाइट गणना की अनुमति दें</value>
   </data>
@@ -1069,9 +1045,6 @@
     <value>बाइट गणना की अनुमति दें</value>
   </data>
 <data name="HexSettings_Advanced_Title" xml:space="preserve">
-    <value>⚙️ उन्नत विकल्प</value>
-  </data>
-<data name="HexSettings_Advanced_Header" xml:space="preserve">
     <value>⚙️ उन्नत विकल्प</value>
   </data>
 <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
@@ -1089,14 +1062,35 @@
 <data name="HexSettings_ResetButton" xml:space="preserve">
     <value>🔄 सभी को डिफ़ॉल्ट पर रीसेट करें</value>
   </data>
-<data name="HexSettings_Button_Reset" xml:space="preserve">
-    <value>🔄 सभी को डिफ़ॉल्ट पर रीसेट करें</value>
-  </data>
 <data name="HexSettings_StatusBar_Title" xml:space="preserve">
     <value>स्थिति पट्टी</value>
   </data>
 <data name="HexSettings_Colors_Title" xml:space="preserve">
     <value>रंग</value>
+  </data>
+<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+    <value>स्क्रॉल मार्कर</value>
+    <comment>Hex editor settings - Scroll Markers category header</comment>
+  </data>
+<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+    <value>बुकमार्क मार्कर दिखाएं</value>
+    <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
+    <value>संशोधित बाइट मार्कर दिखाएं</value>
+    <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+    <value>सम्मिलित बाइट मार्कर दिखाएं</value>
+    <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+    <value>हटाए गए बाइट मार्कर दिखाएं</value>
+    <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+    <value>खोज परिणाम मार्कर दिखाएं</value>
+    <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
   </data>
 <data name="HexSettings_Behavior_Title" xml:space="preserve">
     <value>व्यवहार</value>
@@ -1115,4 +1109,72 @@
   </data>
 <data name="HexSettings_SaveButton" xml:space="preserve"><value>स्थिति सहेजें</value></data>
 <data name="HexSettings_LoadButton" xml:space="preserve"><value>स्थिति लोड करें</value></data>
+  <data name="HexSettings_BarChart_Title" xml:space="preserve">
+    <value>📈 Bar Chart</value>
+    <comment>Hex editor settings - Bar Chart category header</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelVisibility" xml:space="preserve">
+    <value>Panel Visibility</value>
+    <comment>Bar Chart - Show/hide the bar chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_BarColor" xml:space="preserve">
+    <value>Bar Color</value>
+    <comment>Bar Chart - Color of the frequency bars</comment>
+  </data>
+  <data name="HexSettings_BarChart_BackgroundColor" xml:space="preserve">
+    <value>Background Color</value>
+    <comment>Bar Chart - Background color of the chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_TextColor" xml:space="preserve">
+    <value>Text Color</value>
+    <comment>Bar Chart - Color for labels and statistics text</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelHeight" xml:space="preserve">
+    <value>Panel Height</value>
+    <comment>Bar Chart - Height of the chart panel in pixels</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowAxisLabels" xml:space="preserve">
+    <value>Show Axis Labels</value>
+    <comment>Bar Chart - Display byte value labels (00-FF)</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowGridLines" xml:space="preserve">
+    <value>Show Grid Lines</value>
+    <comment>Bar Chart - Display horizontal reference grid lines</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
+    <value>Show Statistics</value>
+    <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
+  </data>
+  <data name="HexSettings_BarChart_InlineBarColor" xml:space="preserve">
+    <value>Inline Bar Color</value>
+    <comment>Bar Chart - Color for inline bar visualization in ASCII panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowInlineBarChart" xml:space="preserve">
+    <value>Show Inline Bar Chart</value>
+    <comment>Bar Chart - Enable inline bar chart in ASCII panel</comment>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>No data to display</value>
+    <comment>Bar Chart - Message when no data is available</comment>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Total</value>
+    <comment>Bar Chart - Statistics label for total bytes</comment>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Max</value>
+    <comment>Bar Chart - Statistics label for maximum frequency</comment>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropy</value>
+    <comment>Bar Chart - Statistics label for Shannon entropy</comment>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>bits/byte</value>
+    <comment>Bar Chart - Unit for entropy measurement</comment>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>bytes</value>
+    <comment>Bar Chart - Unit for byte count</comment>
+  </data>
 </root>

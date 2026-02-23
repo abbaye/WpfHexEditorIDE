@@ -1,0 +1,74 @@
+﻿{
+    "formatName":  "Windows Heap Dump",
+    "version":  "1.0",
+    "extensions":  [
+                       ".hdmp"
+                   ],
+    "description":  "Windows heap dump file - Heap memory analysis",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4D444D50",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Heap Dump Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MDMP header"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Heap dump version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Heap Count",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Number of heaps captured"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Process ID",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Process identifier"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Timestamp",
+                       "offset":  16,
+                       "length":  8,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Dump creation timestamp"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Flags",
+                       "offset":  24,
+                       "length":  4,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Heap dump flags"
+                   }
+               ]
+}

@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "RPG Maker WOLF",
+    "version":  "1.0",
+    "extensions":  [
+                       ".wolf"
+                   ],
+    "description":  "RPG Maker Wolf RPG archive",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "444C43",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "DLC Signature",
+                       "offset":  0,
+                       "length":  3,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Wolf archive signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  3,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Archive version"
+                   }
+               ]
+}

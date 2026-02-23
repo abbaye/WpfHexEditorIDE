@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Meridian Lossless Packing",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mlp"
+                   ],
+    "description":  "Meridian Lossless Packing lossless audio compression for DVD-Audio",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "18E371F3",
+                      "offset":  4,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "MLP Sync Word",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MLP major sync word"
+                   }
+               ]
+}

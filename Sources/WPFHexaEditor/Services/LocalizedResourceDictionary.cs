@@ -41,9 +41,6 @@ namespace WpfHexaEditor.Services
                     var oldCulture = _currentCulture;
                     _currentCulture = value;
 
-                    System.Diagnostics.Debug.WriteLine(
-                        $"[LocalizedResourceDictionary] Culture changed from '{oldCulture.Name}' to '{value.Name}'");
-
                     CultureChanged?.Invoke(null, new CultureChangedEventArgs(oldCulture, value));
                 }
             }
@@ -61,9 +58,6 @@ namespace WpfHexaEditor.Services
 
             // Load initial resources
             UpdateResources();
-
-            System.Diagnostics.Debug.WriteLine(
-                $"[LocalizedResourceDictionary] Initialized with culture: {CurrentCulture.Name}");
         }
 
         /// <summary>
@@ -73,9 +67,6 @@ namespace WpfHexaEditor.Services
         private void OnCultureChanged(object? sender, CultureChangedEventArgs e)
 #pragma warning restore CS8632
         {
-            System.Diagnostics.Debug.WriteLine(
-                $"[LocalizedResourceDictionary] OnCultureChanged: '{e.OldCulture.Name}' -> '{e.NewCulture.Name}'");
-
             UpdateResources();
         }
 
@@ -84,9 +75,6 @@ namespace WpfHexaEditor.Services
         /// </summary>
         private void UpdateResources()
         {
-            System.Diagnostics.Debug.WriteLine(
-                $"[LocalizedResourceDictionary] UpdateResources called for culture: {CurrentCulture.Name}");
-
             // Clear existing resources
             Clear();
 
@@ -97,29 +85,21 @@ namespace WpfHexaEditor.Services
 
                 if (resourceSet == null)
                 {
-                    System.Diagnostics.Debug.WriteLine(
-                        $"[LocalizedResourceDictionary] WARNING: ResourceSet is null for culture {CurrentCulture.Name}");
                     return;
                 }
 
                 // Add all resources to the dictionary
-                var count = 0;
                 foreach (DictionaryEntry entry in resourceSet)
                 {
                     if (entry.Key is string key && entry.Value is string value)
                     {
                         this[key] = value;
-                        count++;
                     }
                 }
-
-                System.Diagnostics.Debug.WriteLine(
-                    $"[LocalizedResourceDictionary] Loaded {count} resources for culture {CurrentCulture.Name}");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(
-                    $"[LocalizedResourceDictionary] ERROR loading resources: {ex.Message}");
+                // Silently ignore resource loading errors
             }
         }
 
@@ -129,9 +109,6 @@ namespace WpfHexaEditor.Services
         /// <param name="newCulture">The new culture to switch to</param>
         public static void ChangeCulture(CultureInfo newCulture)
         {
-            System.Diagnostics.Debug.WriteLine(
-                $"[LocalizedResourceDictionary.ChangeCulture] Changing culture to: {newCulture.Name}");
-
             CurrentCulture = newCulture;
         }
     }

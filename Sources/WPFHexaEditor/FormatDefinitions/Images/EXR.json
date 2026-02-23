@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "OpenEXR Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".exr"
+                   ],
+    "description":  "OpenEXR High Dynamic Range image format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "762F3101",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "EXR Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "OpenEXR magic number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Version and flags"
+                   }
+               ]
+}

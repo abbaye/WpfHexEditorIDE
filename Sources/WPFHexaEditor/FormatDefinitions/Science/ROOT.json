@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "ROOT Data File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".root"
+                   ],
+    "description":  "ROOT data analysis framework file format (CERN)",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "726F6F7400",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ROOT Magic",
+                       "offset":  0,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ROOT signature (root\\0)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  5,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "ROOT file version"
+                   }
+               ]
+}

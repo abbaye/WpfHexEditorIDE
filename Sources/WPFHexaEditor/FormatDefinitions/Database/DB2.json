@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "IBM DB2 Database",
+    "version":  "1.0",
+    "extensions":  [
+                       ".db2"
+                   ],
+    "description":  "IBM DB2 database file format",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "DB2 Header",
+                       "offset":  0,
+                       "length":  256,
+                       "color":  "#3D5A80",
+                       "opacity":  0.4,
+                       "description":  "IBM DB2 database header"
+                   }
+               ]
+}

@@ -1,0 +1,56 @@
+﻿{
+    "formatName":  "MP3 Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mp3"
+                   ],
+    "description":  "MPEG-1/2 Audio Layer III format",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "494433",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ID3 Header",
+                       "offset":  0,
+                       "length":  3,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ID3 tag signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  3,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "ID3v2 version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Flags",
+                       "offset":  5,
+                       "length":  1,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Tag flags"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Size",
+                       "offset":  6,
+                       "length":  4,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Tag size (syncsafe integer)"
+                   }
+               ]
+}

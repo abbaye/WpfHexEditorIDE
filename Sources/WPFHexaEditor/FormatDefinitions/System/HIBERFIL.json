@@ -1,0 +1,83 @@
+﻿{
+    "formatName":  "Windows Hibernation File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".sys"
+                   ],
+    "description":  "Windows hibernation file (hiberfil.sys) - Suspended system state",
+    "category":  "System",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "68696265",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Hibernation Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "hibe signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Hibernation file version"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Compression",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Compression type (0=none, 1=Xpress, 2=LZ)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "System Time",
+                       "offset":  12,
+                       "length":  8,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "System time at hibernation (FILETIME)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Page Count",
+                       "offset":  20,
+                       "length":  8,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "Number of memory pages"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Page Size",
+                       "offset":  28,
+                       "length":  4,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Size of memory page (4096)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Feature Flags",
+                       "offset":  32,
+                       "length":  4,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Hibernation feature flags"
+                   }
+               ]
+}

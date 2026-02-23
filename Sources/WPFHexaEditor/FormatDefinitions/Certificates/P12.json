@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "PKCS#12 Certificate",
+    "version":  "1.0",
+    "extensions":  [
+                       ".p12",
+                       ".pfx"
+                   ],
+    "description":  "Personal Information Exchange - Certificate bundle",
+    "category":  "Certificates",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "3082",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ASN.1 Sequence",
+                       "offset":  0,
+                       "length":  2,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PKCS#12 structure"
+                   }
+               ]
+}

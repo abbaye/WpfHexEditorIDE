@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "IGES 3D Model",
+    "version":  "1.0",
+    "extensions":  [
+                       ".iges",
+                       ".igs"
+                   ],
+    "description":  "Initial Graphics Exchange Specification",
+    "category":  "CAD",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Start Section",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Text-based format starting with S"
+                   }
+               ]
+}

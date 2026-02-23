@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "Protein Data Bank",
+    "version":  "1.0",
+    "extensions":  [
+                       ".pdb",
+                       ".ent"
+                   ],
+    "description":  "Protein Data Bank format for 3D molecular structures",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "484541444552",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PDB Header",
+                       "offset":  0,
+                       "length":  6,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "HEADER keyword"
+                   }
+               ]
+}

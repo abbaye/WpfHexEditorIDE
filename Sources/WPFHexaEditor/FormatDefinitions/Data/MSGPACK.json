@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "MessagePack",
+    "version":  "1.0",
+    "extensions":  [
+                       ".msgpack",
+                       ".mp"
+                   ],
+    "description":  "MessagePack binary serialization format",
+    "category":  "Data",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "data",
+                       "name":  "MessagePack Data",
+                       "offset":  0,
+                       "length":  256,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MessagePack binary data"
+                   }
+               ]
+}

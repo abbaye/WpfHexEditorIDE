@@ -1,0 +1,65 @@
+﻿{
+    "formatName":  "TAR Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".tar"
+                   ],
+    "description":  "TAR archive format - Unix tape archive",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7573746172",
+                      "offset":  257,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "File Name",
+                       "offset":  0,
+                       "length":  100,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Name of archived file"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "File Mode",
+                       "offset":  100,
+                       "length":  8,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "File permissions (octal)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Owner ID",
+                       "offset":  108,
+                       "length":  8,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "User ID (octal)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Group ID",
+                       "offset":  116,
+                       "length":  8,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Group ID (octal)"
+                   },
+                   {
+                       "type":  "signature",
+                       "name":  "USTAR Magic",
+                       "offset":  257,
+                       "length":  5,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ustar indicator"
+                   }
+               ]
+}

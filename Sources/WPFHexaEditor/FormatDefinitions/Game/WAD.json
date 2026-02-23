@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Doom WAD File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".wad"
+                   ],
+    "description":  "Doom/Quake WAD archive",
+    "category":  "Game",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "49574144",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "WAD Type",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "IWAD or PWAD"
+                   }
+               ]
+}

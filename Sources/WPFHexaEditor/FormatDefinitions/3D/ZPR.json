@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "ZBrush Project",
+    "version":  "1.0",
+    "extensions":  [
+                       ".zpr"
+                   ],
+    "description":  "Pixologic ZBrush project file",
+    "category":  "3D",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5A50524F4A454354",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ZBrush Project Signature",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ZPROJECT magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Project version"
+                   }
+               ]
+}

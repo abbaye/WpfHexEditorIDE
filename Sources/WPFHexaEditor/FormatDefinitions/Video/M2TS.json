@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Blu-ray MPEG-2 Transport Stream",
+    "version":  "1.0",
+    "extensions":  [
+                       ".m2ts"
+                   ],
+    "description":  "Blu-ray Disc Audio-Video (BDAV) MPEG-2 Transport Stream container",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "47",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "Sync Byte",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MPEG-TS sync byte for Blu-ray format"
+                   }
+               ]
+}

@@ -1,0 +1,48 @@
+﻿{
+    "formatName":  "TGA Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".tga",
+                       ".tpic"
+                   ],
+    "description":  "Truevision TGA/TARGA image format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "54525545564953494F4E2D5846494C45",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "ID Length",
+                       "offset":  0,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Length of image ID field"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Color Map Type",
+                       "offset":  1,
+                       "length":  1,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "0=no palette, 1=has palette"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Image Type",
+                       "offset":  2,
+                       "length":  1,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Image type code"
+                   }
+               ]
+}

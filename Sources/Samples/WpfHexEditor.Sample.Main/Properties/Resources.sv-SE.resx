@@ -121,6 +121,10 @@
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>Sök föregående</value>
   </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Relativ sökning</value>
+    <comment>Search menu - Relative Search command</comment>
+  </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>Verktyg</value>
   </data>
@@ -159,6 +163,9 @@
   </data>
   <data name="Menu_View_ShowASCII" xml:space="preserve">
     <value>Visa ASCII</value>
+  </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>Visa tolkade fält</value>
   </data>
   <data name="Menu_View_BytesPerLine" xml:space="preserve">
     <value>Bytes per rad</value>

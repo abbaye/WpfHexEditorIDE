@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Material Exchange Format",
+    "version":  "1.0",
+    "extensions":  [
+                       ".mxf"
+                   ],
+    "description":  "SMPTE standard container format for professional digital video and audio media",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "060E2B34020501010D0102010102",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "MXF Partition Pack",
+                       "offset":  0,
+                       "length":  14,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MXF Universal Label and Partition Pack Key"
+                   }
+               ]
+}

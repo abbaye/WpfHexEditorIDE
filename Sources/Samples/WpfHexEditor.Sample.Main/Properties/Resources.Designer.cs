@@ -2232,5 +2232,14 @@ namespace WpfHexEditor.Sample.Main.Properties {
                 return ResourceManager.GetString("Settings_Title", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Relative Search.
+        /// </summary>
+        public static string RelativeSearchMenuString {
+            get {
+                return ResourceManager.GetString("RelativeSearchMenuString", resourceCulture);
+            }
+        }
     }
 }

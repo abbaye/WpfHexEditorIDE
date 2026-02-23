@@ -1,0 +1,65 @@
+﻿{
+    "formatName":  "QOI Image",
+    "version":  "1.0",
+    "extensions":  [
+                       ".qoi"
+                   ],
+    "description":  "Quite OK Image Format - Fast lossless compression",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "716F6966",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "QOI Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "qoif magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Width",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Image width (big-endian)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Height",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Image height (big-endian)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Channels",
+                       "offset":  12,
+                       "length":  1,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "3=RGB, 4=RGBA"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Colorspace",
+                       "offset":  13,
+                       "length":  1,
+                       "color":  "#FFA07A",
+                       "opacity":  0.3,
+                       "description":  "0=sRGB, 1=linear"
+                   }
+               ]
+}

@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Microsoft Access 2007+ Database",
+    "version":  "1.0",
+    "extensions":  [
+                       ".accdb"
+                   ],
+    "description":  "Microsoft Access 2007+ database file",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "5374616E64617264204143452044617461626173",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ACE DB Signature",
+                       "offset":  0,
+                       "length":  21,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Standard ACE Databas"
+                   }
+               ]
+}

@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "NTFS Filesystem",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ntfs"
+                   ],
+    "description":  "Windows NT File System",
+    "category":  "Disk",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4E54465320202020",
+                      "offset":  3,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "NTFS Boot Sector",
+                       "offset":  0,
+                       "length":  512,
+                       "color":  "#0078D4",
+                       "opacity":  0.4,
+                       "description":  "NTFS boot sector and BPB"
+                   }
+               ]
+}

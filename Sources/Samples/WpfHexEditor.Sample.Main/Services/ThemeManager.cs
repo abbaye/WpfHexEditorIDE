@@ -52,7 +52,6 @@ namespace WpfHexEditor.Sample.Main.Services
                 if (existingTheme != null)
                 {
                     Application.Current.Resources.MergedDictionaries.Remove(existingTheme);
-                    System.Diagnostics.Debug.WriteLine($"[ThemeManager] Removed old theme: {oldTheme}");
                 }
 
                 // Load new theme ResourceDictionary
@@ -63,7 +62,6 @@ namespace WpfHexEditor.Sample.Main.Services
 
                 // Add to merged dictionaries
                 Application.Current.Resources.MergedDictionaries.Add(themeDictionary);
-                System.Diagnostics.Debug.WriteLine($"[ThemeManager] Loaded new theme: {themeName}");
 
                 // Update current theme
                 CurrentTheme = themeName;
@@ -73,21 +71,16 @@ namespace WpfHexEditor.Sample.Main.Services
                 {
                     Properties.Settings.Default.PreferredTheme = themeName;
                     Properties.Settings.Default.Save();
-                    System.Diagnostics.Debug.WriteLine($"[ThemeManager] Saved theme '{themeName}' to settings");
                 }
 
                 // Notify all subscribers that theme has changed
                 ThemeChanged?.Invoke(null, new ThemeChangedEventArgs(oldTheme, themeName));
-                System.Diagnostics.Debug.WriteLine($"[ThemeManager] Changed theme from '{oldTheme}' to '{themeName}'");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ThemeManager] Failed to load theme '{themeName}': {ex.Message}");
-
                 // If the requested theme fails, try to fallback to Office
                 if (themeName != "Office")
                 {
-                    System.Diagnostics.Debug.WriteLine("[ThemeManager] Attempting fallback to Office theme");
                     ChangeTheme("Office", persistent: false);
                 }
                 else
@@ -109,7 +102,6 @@ namespace WpfHexEditor.Sample.Main.Services
             {
                 // Use default theme
                 themeName = "Office";
-                System.Diagnostics.Debug.WriteLine($"[ThemeManager] No saved theme, using default: {themeName}");
             }
 
             try
@@ -118,7 +110,6 @@ namespace WpfHexEditor.Sample.Main.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ThemeManager] Invalid theme '{themeName}': {ex.Message}");
                 // Fallback to Office is handled in ChangeTheme
             }
         }
@@ -146,7 +137,6 @@ namespace WpfHexEditor.Sample.Main.Services
                     }
                     catch
                     {
-                        System.Diagnostics.Debug.WriteLine($"[ThemeManager] Color resource '{key}' not found, using fallback");
                         return fallback;
                     }
                 }
@@ -197,12 +187,10 @@ namespace WpfHexEditor.Sample.Main.Services
 
                 hexEditor.TblEndLineColor = GetColorResource("HexEditor_TblEndLineColor",
                     Colors.Orange);
-
-                System.Diagnostics.Debug.WriteLine($"[ThemeManager] Synchronized HexEditor colors with theme '{CurrentTheme}'");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[ThemeManager] Failed to sync HexEditor colors: {ex.Message}");
+                // Silently ignore color sync errors
             }
         }
     }

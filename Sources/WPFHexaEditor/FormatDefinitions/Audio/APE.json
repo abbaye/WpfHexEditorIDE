@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "Monkey\u0027s Audio",
+    "version":  "1.0",
+    "extensions":  [
+                       ".ape"
+                   ],
+    "description":  "Monkey\u0027s Audio lossless compression",
+    "category":  "Audio",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "4D414320",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "APE Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "MAC (Monkey\u0027s Audio Compression)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "File format version"
+                   }
+               ]
+}

@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "IGES",
+    "version":  "1.0",
+    "extensions":  [
+                       ".igs",
+                       ".iges"
+                   ],
+    "description":  "Initial Graphics Exchange Specification (ASCII format)",
+    "category":  "CAD",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "Start Section",
+                       "offset":  0,
+                       "length":  80,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "IGES start section (80 chars per line)"
+                   }
+               ]
+}

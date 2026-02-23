@@ -69,7 +69,7 @@ namespace WpfHexaEditor.Core.Settings.Controls
                 var item = new ComboBoxItem
                 {
                     Content = GetEnumDisplayName(value),
-                    Tag = value.ToString()
+                    Tag = value  // Store actual enum value, not string
                 };
                 comboBox.Items.Add(item);
             }

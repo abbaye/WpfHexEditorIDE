@@ -1,0 +1,74 @@
+﻿{
+    "formatName":  "Photoshop Document",
+    "version":  "1.0",
+    "extensions":  [
+                       ".psd"
+                   ],
+    "description":  "Adobe Photoshop native format",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "38425053",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "PSD Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "8BPS signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Always 1"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Reserved",
+                       "offset":  6,
+                       "length":  6,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Reserved (must be 0)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Channels",
+                       "offset":  12,
+                       "length":  2,
+                       "color":  "#FFE66D",
+                       "opacity":  0.3,
+                       "description":  "Number of channels (1-56)"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Height",
+                       "offset":  14,
+                       "length":  4,
+                       "color":  "#C7CEEA",
+                       "opacity":  0.3,
+                       "description":  "Height in pixels"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Width",
+                       "offset":  18,
+                       "length":  4,
+                       "color":  "#B8B8FF",
+                       "opacity":  0.3,
+                       "description":  "Width in pixels"
+                   }
+               ]
+}

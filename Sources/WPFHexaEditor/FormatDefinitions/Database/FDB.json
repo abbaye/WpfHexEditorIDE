@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Firebird Database",
+    "version":  "1.0",
+    "extensions":  [
+                       ".fdb"
+                   ],
+    "description":  "Firebird SQL database format",
+    "category":  "Database",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "header",
+                       "name":  "Firebird Header",
+                       "offset":  0,
+                       "length":  512,
+                       "color":  "#E63946",
+                       "opacity":  0.4,
+                       "description":  "Firebird database header page"
+                   }
+               ]
+}

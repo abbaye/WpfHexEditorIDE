@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "Common Data Format",
+    "version":  "1.0",
+    "extensions":  [
+                       ".cdf"
+                   ],
+    "description":  "NASA Common Data Format for scientific data",
+    "category":  "Science",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "CDF30001",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "CDF Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "CDF3 format signature"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "CDF version identifier"
+                   }
+               ]
+}

@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "XZ Compressed File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".xz"
+                   ],
+    "description":  "XZ/LZMA2 compression format",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "FD377A585A00",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "XZ Magic",
+                       "offset":  0,
+                       "length":  6,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "XZ file magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Stream Flags",
+                       "offset":  6,
+                       "length":  2,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Stream header flags"
+                   }
+               ]
+}

@@ -157,6 +157,18 @@ namespace WpfHexEditor.Sample.Main.Properties {
 
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsParsedFieldsPanelVisible {
+            get {
+                return ((bool)(this["IsParsedFieldsPanelVisible"]));
+            }
+            set {
+                this["IsParsedFieldsPanelVisible"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Text")]
         public string SelectedSearchMode {
             get {

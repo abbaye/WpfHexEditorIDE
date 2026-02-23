@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "JPEG Network Graphics",
+    "version":  "1.0",
+    "extensions":  [
+                       ".jng"
+                   ],
+    "description":  "JNG format (JPEG with alpha channel)",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "8B4A4E470D0A1A0A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "JNG Signature",
+                       "offset":  0,
+                       "length":  8,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "JNG magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "JHDR Chunk Length",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "JHDR chunk size"
+                   }
+               ]
+}

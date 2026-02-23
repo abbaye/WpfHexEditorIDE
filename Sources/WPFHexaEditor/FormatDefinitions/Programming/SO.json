@@ -1,0 +1,65 @@
+﻿{
+    "formatName":  "Linux Shared Object",
+    "version":  "1.0",
+    "extensions":  [
+                       ".so"
+                   ],
+    "description":  "Linux Shared Object library file using ELF (Executable and Linkable Format) structure",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "7F454C46",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ELF Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ELF magic bytes: 0x7F \u0027ELF\u0027"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "ELF Class",
+                       "offset":  4,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "ELF class: 1=32-bit, 2=64-bit"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Data Encoding",
+                       "offset":  5,
+                       "length":  1,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "Data encoding: 1=little-endian, 2=big-endian"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "ELF Version",
+                       "offset":  6,
+                       "length":  1,
+                       "color":  "#96CEB4",
+                       "opacity":  0.4,
+                       "description":  "ELF version (current version is 1)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "OS/ABI",
+                       "offset":  7,
+                       "length":  1,
+                       "color":  "#FFEAA7",
+                       "opacity":  0.4,
+                       "description":  "Target OS/ABI (0=System V, 3=Linux, etc.)"
+                   }
+               ]
+}

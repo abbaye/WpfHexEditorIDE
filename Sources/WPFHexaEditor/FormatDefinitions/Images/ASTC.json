@@ -1,0 +1,47 @@
+﻿{
+    "formatName":  "ASTC Texture",
+    "version":  "1.0",
+    "extensions":  [
+                       ".astc"
+                   ],
+    "description":  "Adaptive Scalable Texture Compression",
+    "category":  "Images",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "13AB5CA1",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ASTC Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "ASTC magic number"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Block Dimensions",
+                       "offset":  4,
+                       "length":  3,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Block X, Y, Z dimensions"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Image Dimensions",
+                       "offset":  7,
+                       "length":  9,
+                       "color":  "#95E1D3",
+                       "opacity":  0.3,
+                       "description":  "Image X, Y, Z dimensions (3 bytes each)"
+                   }
+               ]
+}

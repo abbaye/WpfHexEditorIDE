@@ -870,14 +870,6 @@
     <value>Ostatnie kolory</value>
     <comment>ColorPicker - Section RecentColors</comment>
   </data>
-<data name="HexSettings_Header" xml:space="preserve">
-    <value>USTAWIENIA EDYTORA SZESNASTKOWEGO</value>
-    <comment>Hex editor settings - Main header</comment>
-  </data>
-<data name="HexSettings_Display_Header" xml:space="preserve">
-    <value>📺 Opcje wyświetlania</value>
-    <comment>Hex editor settings - Display Options expander header</comment>
-  </data>
 <data name="HexSettings_Display_LineNumbers" xml:space="preserve">
     <value>Pokazuj numery linii (placeholder)</value>
     <comment>Hex editor settings - Show line numbers (disabled)</comment>
@@ -897,10 +889,6 @@
 <data name="HexSettings_Display_ZoomScale" xml:space="preserve">
     <value>Skala powiększenia:</value>
     <comment>Hex editor settings - Zoom scale label</comment>
-  </data>
-<data name="HexSettings_Editing_Header" xml:space="preserve">
-    <value>✏️ Opcje edycji</value>
-    <comment>Hex editor settings - Editing Options expander header</comment>
   </data>
 <data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
     <value>Tryb tylko do odczytu</value>
@@ -938,10 +926,6 @@
     <value>Tryb kursora:</value>
     <comment>Hex editor settings - Caret mode label</comment>
   </data>
-<data name="HexSettings_Clipboard_Header" xml:space="preserve">
-    <value>📋 Opcje schowka</value>
-    <comment>Hex editor settings - Clipboard Options expander header</comment>
-  </data>
 <data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
     <value>Domyślny tryb kopiowania:</value>
     <comment>Hex editor settings - Default copy mode label</comment>
@@ -970,10 +954,6 @@
     <value>Kod Java</value>
     <comment>Hex editor settings - Java code copy mode option</comment>
   </data>
-<data name="HexSettings_DragDrop_Header" xml:space="preserve">
-    <value>📎 Opcje przeciągania i upuszczania</value>
-    <comment>Hex editor settings - Drag &amp; Drop Options expander header</comment>
-  </data>
 <data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
     <value>Zezwól na upuszczanie pliku</value>
     <comment>Hex editor settings - Allow file drop checkbox</comment>
@@ -985,10 +965,6 @@
 <data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
     <value>Zezwól na upuszczanie tekstu</value>
     <comment>Hex editor settings - Allow text drop checkbox</comment>
-  </data>
-<data name="HexSettings_Highlight_Header" xml:space="preserve">
-    <value>🎨 Wyróżnianie i zaznaczenie</value>
-    <comment>Hex editor settings - Highlight &amp; Selection expander header</comment>
   </data>
 <data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
     <value>Automatyczne wyróżnianie wybranego bajtu</value>
@@ -1006,10 +982,6 @@
     <value>Kolor automatycznego wyróżniania:</value>
     <comment>Hex editor settings - Auto-highlight color label</comment>
   </data>
-<data name="HexSettings_Search_Header" xml:space="preserve">
-    <value>🔍 Opcje wyszukiwania</value>
-    <comment>Hex editor settings - Search Options expander header</comment>
-  </data>
 <data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
     <value>Włącz równoległe wyszukiwanie</value>
     <comment>Hex editor settings - Enable parallel search checkbox</comment>
@@ -1026,17 +998,9 @@
     <value>Limit wyników wyszukiwania:</value>
     <comment>Hex editor settings - Search result limit label</comment>
   </data>
-<data name="HexSettings_Statistics_Header" xml:space="preserve">
-    <value>📊 Statystyka</value>
-    <comment>Hex editor settings - Statistics expander header</comment>
-  </data>
 <data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
     <value>Zezwól na liczenie bajtów</value>
     <comment>Hex editor settings - Allow byte count checkbox</comment>
-  </data>
-<data name="HexSettings_Advanced_Header" xml:space="preserve">
-    <value>⚙️ Opcje zaawansowane</value>
-    <comment>Hex editor settings - Advanced Options expander header</comment>
   </data>
 <data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
     <value>Przesunięcie bajtu w lewo:</value>
@@ -1049,10 +1013,6 @@
 <data name="HexSettings_Advanced_LoadState" xml:space="preserve">
     <value>Załaduj zapisany stan</value>
     <comment>Hex editor settings - Load saved state button</comment>
-  </data>
-<data name="HexSettings_Button_Reset" xml:space="preserve">
-    <value>🔄 Przywróć wszystkie ustawienia domyślne</value>
-    <comment>Hex editor settings - Reset all to defaults button</comment>
   </data>
 <data name="HexSettings_Title" xml:space="preserve">
     <value>USTAWIENIA EDYTORA HEX</value>
@@ -1141,6 +1101,30 @@
 <data name="HexSettings_Colors_Title" xml:space="preserve">
     <value>Kolory</value>
   </data>
+<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+    <value>Znaczniki przewijania</value>
+    <comment>Hex editor settings - Scroll Markers category header</comment>
+  </data>
+<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Pokaż znaczniki zakładek</value>
+    <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
+    <value>Pokaż znaczniki zmodyfikowanych bajtów</value>
+    <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+    <value>Pokaż znaczniki wstawionych bajtów</value>
+    <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+    <value>Pokaż znaczniki usuniętych bajtów</value>
+    <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Pokaż znaczniki wyników wyszukiwania</value>
+    <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
+  </data>
 <data name="HexSettings_Behavior_Title" xml:space="preserve">
     <value>Zachowanie</value>
   </data>
@@ -1158,4 +1142,72 @@
   </data>
 <data name="HexSettings_SaveButton" xml:space="preserve"><value>Zapisz stan</value></data>
 <data name="HexSettings_LoadButton" xml:space="preserve"><value>Wczytaj stan</value></data>
+  <data name="HexSettings_BarChart_Title" xml:space="preserve">
+    <value>📈 Bar Chart</value>
+    <comment>Hex editor settings - Bar Chart category header</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelVisibility" xml:space="preserve">
+    <value>Panel Visibility</value>
+    <comment>Bar Chart - Show/hide the bar chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_BarColor" xml:space="preserve">
+    <value>Bar Color</value>
+    <comment>Bar Chart - Color of the frequency bars</comment>
+  </data>
+  <data name="HexSettings_BarChart_BackgroundColor" xml:space="preserve">
+    <value>Background Color</value>
+    <comment>Bar Chart - Background color of the chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_TextColor" xml:space="preserve">
+    <value>Text Color</value>
+    <comment>Bar Chart - Color for labels and statistics text</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelHeight" xml:space="preserve">
+    <value>Panel Height</value>
+    <comment>Bar Chart - Height of the chart panel in pixels</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowAxisLabels" xml:space="preserve">
+    <value>Show Axis Labels</value>
+    <comment>Bar Chart - Display byte value labels (00-FF)</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowGridLines" xml:space="preserve">
+    <value>Show Grid Lines</value>
+    <comment>Bar Chart - Display horizontal reference grid lines</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
+    <value>Show Statistics</value>
+    <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
+  </data>
+  <data name="HexSettings_BarChart_InlineBarColor" xml:space="preserve">
+    <value>Inline Bar Color</value>
+    <comment>Bar Chart - Color for inline bar visualization in ASCII panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowInlineBarChart" xml:space="preserve">
+    <value>Show Inline Bar Chart</value>
+    <comment>Bar Chart - Enable inline bar chart in ASCII panel</comment>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>No data to display</value>
+    <comment>Bar Chart - Message when no data is available</comment>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Total</value>
+    <comment>Bar Chart - Statistics label for total bytes</comment>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Max</value>
+    <comment>Bar Chart - Statistics label for maximum frequency</comment>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropy</value>
+    <comment>Bar Chart - Statistics label for Shannon entropy</comment>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>bits/byte</value>
+    <comment>Bar Chart - Unit for entropy measurement</comment>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>bytes</value>
+    <comment>Bar Chart - Unit for byte count</comment>
+  </data>
 </root>

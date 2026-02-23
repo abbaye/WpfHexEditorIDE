@@ -1,0 +1,39 @@
+﻿{
+    "formatName":  "BZIP2 Compressed File",
+    "version":  "1.0",
+    "extensions":  [
+                       ".bz2",
+                       ".bzip2"
+                   ],
+    "description":  "BZIP2 compression format",
+    "category":  "Archives",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "425A68",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "BZIP2 Signature",
+                       "offset":  0,
+                       "length":  3,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "BZh magic bytes"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "Block Size",
+                       "offset":  3,
+                       "length":  1,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "Block size (1-9) * 100KB"
+                   }
+               ]
+}

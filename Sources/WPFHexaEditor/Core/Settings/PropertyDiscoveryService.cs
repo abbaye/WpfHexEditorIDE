@@ -43,6 +43,11 @@ namespace WpfHexaEditor.Core.Settings
                 if (categoryAttr == null)
                     continue;
 
+                // 2.5. Skip properties marked with [Browsable(false)]
+                var browsableAttr = propInfo.GetCustomAttribute<BrowsableAttribute>();
+                if (browsableAttr != null && !browsableAttr.Browsable)
+                    continue;
+
                 // 3. Verify there's a corresponding DependencyProperty static field
                 // DependencyProperty fields are named "{PropertyName}Property" (e.g., ShowOffsetProperty)
                 var dpField = _targetType.GetField(
@@ -94,12 +99,62 @@ namespace WpfHexaEditor.Core.Settings
         /// <summary>
         /// Groups discovered properties by category.
         /// Returns Dictionary where key=category name, value=list of properties in that category.
+        /// Supports hierarchical categories using dot notation (e.g., "Colors.Selection").
+        /// Top-level categories are returned with their full path.
         /// </summary>
         public Dictionary<string, List<PropertyMetadata>> GroupByCategory()
         {
             return DiscoverProperties()
                 .GroupBy(p => p.Category)
                 .ToDictionary(g => g.Key, g => g.ToList());
+        }
+
+        /// <summary>
+        /// Parses a category string into parent and subcategory.
+        /// E.g., "Colors.Selection" → ("Colors", "Selection")
+        ///       "Display" → ("Display", null)
+        /// </summary>
+        public (string Parent, string Subcategory) ParseCategory(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+                return (string.Empty, null);
+
+            var parts = category.Split(new[] { '.' }, 2);
+            if (parts.Length == 2)
+                return (parts[0], parts[1]);
+
+            return (parts[0], null);
+        }
+
+        /// <summary>
+        /// Groups properties by parent category and subcategory hierarchy.
+        /// Returns nested dictionary: ParentCategory → Subcategory → Properties
+        /// Properties without subcategories are stored with null subcategory key.
+        /// </summary>
+        public Dictionary<string, Dictionary<string, List<PropertyMetadata>>> GroupByHierarchy()
+        {
+            var result = new Dictionary<string, Dictionary<string, List<PropertyMetadata>>>();
+            var properties = DiscoverProperties();
+
+            foreach (var prop in properties)
+            {
+                var (parent, subcategory) = ParseCategory(prop.Category);
+
+                // Ensure parent category exists
+                if (!result.ContainsKey(parent))
+                    result[parent] = new Dictionary<string, List<PropertyMetadata>>();
+
+                // Use empty string instead of null for direct properties (easier to work with)
+                var subKey = subcategory ?? string.Empty;
+
+                // Ensure subcategory list exists
+                if (!result[parent].ContainsKey(subKey))
+                    result[parent][subKey] = new List<PropertyMetadata>();
+
+                result[parent][subKey].Add(prop);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -158,7 +213,18 @@ namespace WpfHexaEditor.Core.Settings
             // Numeric types: look for range constraints
             if (propInfo.PropertyType == typeof(int) || propInfo.PropertyType == typeof(double))
             {
-                // Default ranges for common properties
+                // Check for [Range] attribute first
+                var rangeAttr = propInfo.GetCustomAttribute<RangeAttribute>();
+                if (rangeAttr != null)
+                {
+                    constraints.MinValue = rangeAttr.Minimum;
+                    constraints.MaxValue = rangeAttr.Maximum;
+                    if (rangeAttr.Step > 0)
+                        constraints.StepValue = rangeAttr.Step;
+                    return constraints;
+                }
+
+                // Default ranges for common properties (if no [Range] attribute)
                 if (propInfo.Name == "ZoomScale" || propInfo.Name.Contains("Zoom"))
                 {
                     constraints.MinValue = 0.5;
@@ -187,10 +253,11 @@ namespace WpfHexaEditor.Core.Settings
                 "StatusBar" => 1,
                 "Display" => 2,
                 "Colors" => 3,
-                "Behavior" => 4,
-                "Data" => 5,
-                "Visual" => 6,
-                "Keyboard" => 7,
+                "ScrollMarkers" => 4,
+                "Behavior" => 5,
+                "Data" => 6,
+                "Visual" => 7,
+                "Keyboard" => 8,
                 _ => 99 // Unknown categories last
             };
         }

@@ -1,0 +1,38 @@
+﻿{
+    "formatName":  "Excel Workbook",
+    "version":  "1.0",
+    "extensions":  [
+                       ".xlsx"
+                   ],
+    "description":  "Microsoft Excel Open XML spreadsheet",
+    "category":  "Documents",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "504B0304",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ZIP Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "XLSX is a ZIP container"
+                   },
+                   {
+                       "type":  "field",
+                       "name":  "ZIP Header",
+                       "offset":  4,
+                       "length":  26,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.3,
+                       "description":  "ZIP local file header"
+                   }
+               ]
+}

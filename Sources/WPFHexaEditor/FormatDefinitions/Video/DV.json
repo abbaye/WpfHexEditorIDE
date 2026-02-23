@@ -1,0 +1,30 @@
+﻿{
+    "formatName":  "Digital Video",
+    "version":  "1.0",
+    "extensions":  [
+                       ".dv",
+                       ".dif"
+                   ],
+    "description":  "Digital Video format for storing digital video, commonly used in camcorders",
+    "category":  "Video",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "1F0700",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "DV Header",
+                       "offset":  0,
+                       "length":  3,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "DV file header marker"
+                   }
+               ]
+}

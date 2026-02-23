@@ -1,0 +1,56 @@
+﻿{
+    "formatName":  "Android OAT",
+    "version":  "1.0",
+    "extensions":  [
+                       ".oat"
+                   ],
+    "description":  "Android OAT (Ahead-of-Time compiled) file format, contains native code compiled from DEX",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "6F61740A",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "OAT Magic",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Magic bytes: \u0027oat\u0027 0x0A"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "OAT Version",
+                       "offset":  4,
+                       "length":  4,
+                       "color":  "#4ECDC4",
+                       "opacity":  0.4,
+                       "description":  "OAT format version (e.g., \u0027088\u0027 for Android 8.0)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "DEX File Count",
+                       "offset":  8,
+                       "length":  4,
+                       "color":  "#45B7D1",
+                       "opacity":  0.4,
+                       "description":  "Number of DEX files (little-endian)"
+                   },
+                   {
+                       "type":  "data",
+                       "name":  "Executable Offset",
+                       "offset":  12,
+                       "length":  4,
+                       "color":  "#96CEB4",
+                       "opacity":  0.4,
+                       "description":  "Offset to executable section (little-endian)"
+                   }
+               ]
+}

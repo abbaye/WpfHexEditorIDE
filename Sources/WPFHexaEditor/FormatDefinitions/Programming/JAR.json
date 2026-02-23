@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Java Archive",
+    "version":  "1.0",
+    "extensions":  [
+                       ".jar"
+                   ],
+    "description":  "Java Archive - ZIP-based JAR file",
+    "category":  "Programming",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "504B0304",
+                      "offset":  0,
+                      "required":  true
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "signature",
+                       "name":  "ZIP/JAR Signature",
+                       "offset":  0,
+                       "length":  4,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "PK ZIP header"
+                   }
+               ]
+}

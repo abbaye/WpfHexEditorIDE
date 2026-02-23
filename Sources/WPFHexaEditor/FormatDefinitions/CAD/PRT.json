@@ -1,0 +1,29 @@
+﻿{
+    "formatName":  "Pro/ENGINEER Part",
+    "version":  "1.0",
+    "extensions":  [
+                       ".prt"
+                   ],
+    "description":  "Pro/ENGINEER (Creo) part file",
+    "category":  "CAD",
+    "author":  "WPFHexaEditor Team",
+    "detection":  {
+                      "signature":  "00",
+                      "offset":  0,
+                      "required":  false
+                  },
+    "variables":  {
+                      "currentOffset":  0
+                  },
+    "blocks":  [
+                   {
+                       "type":  "field",
+                       "name":  "File Header",
+                       "offset":  0,
+                       "length":  16,
+                       "color":  "#FF6B6B",
+                       "opacity":  0.4,
+                       "description":  "Pro/ENGINEER part header"
+                   }
+               ]
+}

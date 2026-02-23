@@ -4,6 +4,7 @@
 // Contributors: Derek Tremblay (derektremblay666@gmail.com)
 
 using System;
+using System.Windows;
 using System.Windows.Media;
 using WpfHexaEditor.Core.Settings.Controls;
 
@@ -34,6 +35,10 @@ namespace WpfHexaEditor.Core.Settings
             if (metadata.PropertyType == typeof(Color))
                 return new ColorPropertyControl();
 
+            // 2b. Brush → BrushPicker (wraps ColorPicker with Brush conversion)
+            if (metadata.PropertyType == typeof(Brush) || metadata.PropertyType.IsSubclassOf(typeof(Brush)))
+                return new BrushPropertyControl();
+
             // 3. enum → ComboBox with enum values
             if (metadata.PropertyType.IsEnum)
                 return new EnumPropertyControl();
@@ -59,10 +64,18 @@ namespace WpfHexaEditor.Core.Settings
             if (metadata.PropertyType == typeof(string))
                 return new StringTextBoxPropertyControl();
 
+            // 8. FontFamily → ComboBox with common fonts
+            if (metadata.PropertyType == typeof(FontFamily))
+                return new FontFamilyPropertyControl();
+
+            // 9. FontWeight → ComboBox with weight values
+            if (metadata.PropertyType == typeof(FontWeight))
+                return new FontWeightPropertyControl();
+
             // Unsupported type
             throw new NotSupportedException(
                 $"Property type '{metadata.PropertyType.Name}' is not supported. " +
-                $"Supported types: bool, Color, enum, int, double, long, string.");
+                $"Supported types: bool, Color, Brush, enum, int, double, long, string, FontFamily, FontWeight.");
         }
     }
 }
