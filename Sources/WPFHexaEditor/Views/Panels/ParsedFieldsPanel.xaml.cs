@@ -549,6 +549,112 @@ namespace WpfHexaEditor.Views.Panels
             }
         }
 
+        private void CopyValueHex_Click(object sender, RoutedEventArgs e)
+        {
+            if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
+            {
+                try
+                {
+                    var hexValue = field.GetValueAsHex();
+                    System.Windows.Clipboard.SetText(hexValue);
+                    System.Windows.MessageBox.Show($"Hex value copied to clipboard:\n{hexValue}", "Copied",
+                        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error copying hex value: {ex.Message}");
+                }
+            }
+        }
+
+        private void CopyValueDecimal_Click(object sender, RoutedEventArgs e)
+        {
+            if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
+            {
+                try
+                {
+                    var decValue = field.GetValueAsDecimal();
+                    System.Windows.Clipboard.SetText(decValue);
+                    System.Windows.MessageBox.Show($"Decimal value copied to clipboard:\n{decValue}", "Copied",
+                        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error copying decimal value: {ex.Message}");
+                }
+            }
+        }
+
+        private void CopyValueBinary_Click(object sender, RoutedEventArgs e)
+        {
+            if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
+            {
+                try
+                {
+                    var binValue = field.GetValueAsBinary();
+                    System.Windows.Clipboard.SetText(binValue);
+                    System.Windows.MessageBox.Show($"Binary value copied to clipboard:\n{binValue}", "Copied",
+                        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error copying binary value: {ex.Message}");
+                }
+            }
+        }
+
+        private void FindSimilar_Click(object sender, RoutedEventArgs e)
+        {
+            if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
+            {
+                try
+                {
+                    // Search for fields with similar values
+                    var searchValue = field.FormattedValue;
+                    SearchTextBox.Text = searchValue;
+                    ApplyFilter();
+
+                    System.Windows.MessageBox.Show($"Searching for fields with value: {searchValue}", "Find Similar",
+                        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error finding similar values: {ex.Message}");
+                }
+            }
+        }
+
+        private void ShowInDataInspector_Click(object sender, RoutedEventArgs e)
+        {
+            if (FieldsListBox.SelectedItem is ParsedFieldViewModel field)
+            {
+                try
+                {
+                    // Get raw bytes from RawValue
+                    byte[] data = field.RawValue is byte[] bytes ? bytes : null;
+
+                    // Request to show this field's data in Data Inspector
+                    DataInspectorRequested?.Invoke(this, new DataInspectorEventArgs
+                    {
+                        Offset = field.Offset,
+                        Length = field.Length,
+                        Data = data
+                    });
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error showing in data inspector: {ex.Message}");
+                    System.Windows.MessageBox.Show("Data Inspector feature not yet connected to this panel.", "Feature Unavailable",
+                        System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Event raised when user requests to view data in Data Inspector
+        /// </summary>
+        public event EventHandler<DataInspectorEventArgs> DataInspectorRequested;
+
         private void ShowBookmarksButton_Checked(object sender, RoutedEventArgs e)
         {
             _showBookmarksOnly = true;
@@ -1303,5 +1409,15 @@ namespace WpfHexaEditor.Views.Panels
             Field = field;
             NewBytes = newBytes;
         }
+    }
+
+    /// <summary>
+    /// Event args for Data Inspector request
+    /// </summary>
+    public class DataInspectorEventArgs : EventArgs
+    {
+        public long Offset { get; set; }
+        public int Length { get; set; }
+        public byte[] Data { get; set; }
     }
 }
