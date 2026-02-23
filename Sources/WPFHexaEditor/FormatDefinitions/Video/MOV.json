@@ -57,10 +57,31 @@
     "video/mov"
   ],
   "quality_metrics": {
-    "completeness_score": 70,
-    "documentation_level": "basic",
+    "completeness_score": 83,
+    "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "VLC Media Player",
+    "Media Player Classic"
+  ],
+  "use_cases": [
+    "Video playback",
+    "Video streaming"
+  ],
+  "format_relationships": {
+    "category": "Video",
+    "extensions": [
+      ".mov",
+      ".qt"
+    ]
+  },
+  "technical_details": {
+    "video_format": true,
+    "container": true,
+    "primary_extension": ".mov",
+    "defined_fields": 2
   }
 }

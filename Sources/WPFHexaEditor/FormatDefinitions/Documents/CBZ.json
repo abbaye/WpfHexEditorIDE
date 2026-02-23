@@ -70,10 +70,29 @@
     "application/cbz"
   ],
   "quality_metrics": {
-    "completeness_score": 70,
-    "documentation_level": "basic",
+    "completeness_score": 83,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "PDF readers",
+    "Office suites"
+  ],
+  "use_cases": [
+    "Document viewing",
+    "Office productivity"
+  ],
+  "format_relationships": {
+    "category": "Documents",
+    "extensions": [
+      ".cbz"
+    ]
+  },
+  "technical_details": {
+    "document_format": true,
+    "primary_extension": ".cbz",
+    "defined_fields": 4
   }
 }

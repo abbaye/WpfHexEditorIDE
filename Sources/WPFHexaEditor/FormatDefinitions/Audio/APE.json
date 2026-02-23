@@ -56,10 +56,29 @@
     "audio/ape"
   ],
   "quality_metrics": {
-    "completeness_score": 70,
-    "documentation_level": "basic",
+    "completeness_score": 83,
+    "documentation_level": "detailed",
     "blocks_defined": 2,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "VLC Media Player",
+    "foobar2000"
+  ],
+  "use_cases": [
+    "Audio playback",
+    "Music storage"
+  ],
+  "format_relationships": {
+    "category": "Audio",
+    "extensions": [
+      ".ape"
+    ]
+  },
+  "technical_details": {
+    "audio_format": true,
+    "primary_extension": ".ape",
+    "defined_fields": 2
   }
 }

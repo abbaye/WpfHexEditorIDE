@@ -84,10 +84,29 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 75,
-    "documentation_level": "moderate",
+    "completeness_score": 91,
+    "documentation_level": "comprehensive",
     "blocks_defined": 6,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "Wireshark",
+    "tcpdump"
+  ],
+  "use_cases": [
+    "Network analysis",
+    "Packet capture"
+  ],
+  "format_relationships": {
+    "category": "Network",
+    "extensions": [
+      ".iptrace"
+    ]
+  },
+  "technical_details": {
+    "network_format": true,
+    "primary_extension": ".iptrace",
+    "defined_fields": 6
   }
 }

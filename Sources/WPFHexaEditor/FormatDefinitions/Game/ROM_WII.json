@@ -172,10 +172,30 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 80,
-    "documentation_level": "detailed",
+    "completeness_score": 95,
+    "documentation_level": "comprehensive",
     "blocks_defined": 13,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "use_cases": [
+    "Gaming",
+    "Game preservation"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".iso",
+      ".wbfs"
+    ]
+  },
+  "technical_details": {
+    "game_format": true,
+    "primary_extension": ".iso",
+    "defined_fields": 13
   }
 }

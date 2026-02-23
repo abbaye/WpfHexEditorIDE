@@ -93,10 +93,29 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 75,
-    "documentation_level": "moderate",
+    "completeness_score": 91,
+    "documentation_level": "comprehensive",
     "blocks_defined": 7,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "Compilers",
+    "Linkers"
+  ],
+  "use_cases": [
+    "Software compilation",
+    "Development"
+  ],
+  "format_relationships": {
+    "category": "Programming",
+    "extensions": [
+      ".a"
+    ]
+  },
+  "technical_details": {
+    "programming_format": true,
+    "primary_extension": ".a",
+    "defined_fields": 7
   }
 }

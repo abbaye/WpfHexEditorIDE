@@ -74,10 +74,31 @@
     "image/pcx"
   ],
   "quality_metrics": {
-    "completeness_score": 70,
-    "documentation_level": "basic",
+    "completeness_score": 83,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "Image viewers",
+    "GIMP"
+  ],
+  "use_cases": [
+    "Image viewing",
+    "Photo editing",
+    "Legacy software support"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".pcx"
+    ],
+    "legacy_format": true
+  },
+  "technical_details": {
+    "image_format": true,
+    "primary_extension": ".pcx",
+    "defined_fields": 4
   }
 }

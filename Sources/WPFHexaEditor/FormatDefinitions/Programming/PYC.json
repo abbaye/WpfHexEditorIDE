@@ -58,10 +58,30 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 65,
-    "documentation_level": "basic",
+    "completeness_score": 78,
+    "documentation_level": "detailed",
     "blocks_defined": 3,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "Compilers",
+    "Linkers"
+  ],
+  "use_cases": [
+    "Software compilation",
+    "Development"
+  ],
+  "format_relationships": {
+    "category": "Programming",
+    "extensions": [
+      ".pyc",
+      ".pyo"
+    ]
+  },
+  "technical_details": {
+    "programming_format": true,
+    "primary_extension": ".pyc",
+    "defined_fields": 3
   }
 }

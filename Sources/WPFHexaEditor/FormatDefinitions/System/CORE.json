@@ -112,10 +112,29 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 75,
-    "documentation_level": "moderate",
+    "completeness_score": 91,
+    "documentation_level": "comprehensive",
     "blocks_defined": 9,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "Common file viewers",
+    "Specialized software"
+  ],
+  "use_cases": [
+    "General file usage",
+    "Data storage"
+  ],
+  "format_relationships": {
+    "category": "System",
+    "extensions": [
+      ".core",
+      ".dump"
+    ]
+  },
+  "technical_details": {
+    "primary_extension": ".core",
+    "defined_fields": 9
   }
 }

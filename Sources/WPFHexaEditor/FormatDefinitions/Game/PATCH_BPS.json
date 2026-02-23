@@ -76,10 +76,29 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 65,
-    "documentation_level": "basic",
+    "completeness_score": 78,
+    "documentation_level": "detailed",
     "blocks_defined": 4,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "use_cases": [
+    "Gaming",
+    "Game preservation"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".bps"
+    ]
+  },
+  "technical_details": {
+    "game_format": true,
+    "primary_extension": ".bps",
+    "defined_fields": 4
   }
 }

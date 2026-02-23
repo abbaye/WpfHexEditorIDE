@@ -101,10 +101,30 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 75,
-    "documentation_level": "moderate",
+    "completeness_score": 91,
+    "documentation_level": "comprehensive",
     "blocks_defined": 6,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "use_cases": [
+    "Gaming",
+    "Game preservation"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".sms",
+      ".gg"
+    ]
+  },
+  "technical_details": {
+    "game_format": true,
+    "primary_extension": ".sms",
+    "defined_fields": 6
   }
 }

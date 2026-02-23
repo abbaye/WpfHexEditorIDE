@@ -92,10 +92,29 @@
     "image/psd"
   ],
   "quality_metrics": {
-    "completeness_score": 80,
-    "documentation_level": "moderate",
+    "completeness_score": 95,
+    "documentation_level": "comprehensive",
     "blocks_defined": 6,
     "validation_rules": 0,
     "last_updated": "2026-02-23"
+  },
+  "software": [
+    "Image viewers",
+    "GIMP"
+  ],
+  "use_cases": [
+    "Image viewing",
+    "Photo editing"
+  ],
+  "format_relationships": {
+    "category": "Images",
+    "extensions": [
+      ".psd"
+    ]
+  },
+  "technical_details": {
+    "image_format": true,
+    "primary_extension": ".psd",
+    "defined_fields": 6
   }
 }
