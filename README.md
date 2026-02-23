@@ -14,7 +14,7 @@
 
   <br/>
 
-  <img src="Images/SampleV2_001.png?raw=true" alt="WPF HexEditor" width="700"/>
+  <img src="Images/Sample2026-001.png?raw=true" alt="WPF HexEditor" width="900"/>
   <br/>
   <sub><i>Modern HexEditor with MVVM architecture</i></sub>
 
