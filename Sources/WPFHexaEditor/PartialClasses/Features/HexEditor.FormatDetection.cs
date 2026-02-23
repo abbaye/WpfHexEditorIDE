@@ -236,10 +236,14 @@ namespace WpfHexaEditor
                     int userCount = LoadFormatDefinitions(userDir);
                     totalLoaded += userCount;
                 }
+
+                // Update the LoadedFormatCount property for UI display
+                LoadedFormatCount = totalLoaded;
             }
             catch (Exception ex)
             {
                 // Silently ignore format loading errors
+                LoadedFormatCount = totalLoaded; // Update even if there was an error
             }
         }
 
