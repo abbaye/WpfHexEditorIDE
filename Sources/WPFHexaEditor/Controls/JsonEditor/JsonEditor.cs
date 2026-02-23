@@ -370,6 +370,73 @@ namespace WpfHexaEditor.Controls.JsonEditor
             set => SetValue(SelectionBackgroundProperty, value);
         }
 
+        // ===== APPEARANCE - EDITOR COLORS (Advanced) =====
+
+        public static readonly DependencyProperty CaretColorProperty =
+            DependencyProperty.Register(nameof(CaretColor), typeof(Color), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(Colors.Black, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        [Category("Appearance.Colors")]
+        [DisplayName("Caret Color")]
+        [Description("Color of the text cursor")]
+        public Color CaretColor
+        {
+            get => (Color)GetValue(CaretColorProperty);
+            set => SetValue(CaretColorProperty, value);
+        }
+
+        public static readonly DependencyProperty CurrentLineBorderColorProperty =
+            DependencyProperty.Register(nameof(CurrentLineBorderColor), typeof(Color), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(Color.FromArgb(80, 0, 120, 215), FrameworkPropertyMetadataOptions.AffectsRender));
+
+        [Category("Appearance.Colors")]
+        [DisplayName("Current Line Border Color")]
+        [Description("Border color around the current line (when ShowCurrentLineBorder is enabled)")]
+        public Color CurrentLineBorderColor
+        {
+            get => (Color)GetValue(CurrentLineBorderColorProperty);
+            set => SetValue(CurrentLineBorderColorProperty, value);
+        }
+
+        public static readonly DependencyProperty InactiveSelectionBackgroundProperty =
+            DependencyProperty.Register(nameof(InactiveSelectionBackground), typeof(Color), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(Color.FromArgb(50, 128, 128, 128), FrameworkPropertyMetadataOptions.AffectsRender));
+
+        [Category("Appearance.Colors")]
+        [DisplayName("Inactive Selection Background")]
+        [Description("Selection background color when editor loses focus")]
+        public Color InactiveSelectionBackground
+        {
+            get => (Color)GetValue(InactiveSelectionBackgroundProperty);
+            set => SetValue(InactiveSelectionBackgroundProperty, value);
+        }
+
+        public static readonly DependencyProperty ValidationErrorGlyphColorProperty =
+            DependencyProperty.Register(nameof(ValidationErrorGlyphColor), typeof(Color), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(Colors.Red, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        [Category("Appearance.Colors")]
+        [DisplayName("Validation Error Glyph")]
+        [Description("Color for error icons in gutter")]
+        public Color ValidationErrorGlyphColor
+        {
+            get => (Color)GetValue(ValidationErrorGlyphColorProperty);
+            set => SetValue(ValidationErrorGlyphColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ValidationWarningGlyphColorProperty =
+            DependencyProperty.Register(nameof(ValidationWarningGlyphColor), typeof(Color), typeof(JsonEditor),
+                new FrameworkPropertyMetadata(Color.FromRgb(255, 165, 0), FrameworkPropertyMetadataOptions.AffectsRender));
+
+        [Category("Appearance.Colors")]
+        [DisplayName("Validation Warning Glyph")]
+        [Description("Color for warning icons in gutter")]
+        public Color ValidationWarningGlyphColor
+        {
+            get => (Color)GetValue(ValidationWarningGlyphColorProperty);
+            set => SetValue(ValidationWarningGlyphColorProperty, value);
+        }
+
         // ===== BEHAVIOR =====
 
         public static readonly DependencyProperty IndentSizeProperty =

@@ -214,8 +214,8 @@ namespace WpfHexaEditor.Core.Settings
                 {
                     constraints.MinValue = rangeAttr.Minimum;
                     constraints.MaxValue = rangeAttr.Maximum;
-                    if (rangeAttr.Step.HasValue)
-                        constraints.StepValue = rangeAttr.Step.Value;
+                    if (rangeAttr.Step > 0)
+                        constraints.StepValue = rangeAttr.Step;
                     return constraints;
                 }
 

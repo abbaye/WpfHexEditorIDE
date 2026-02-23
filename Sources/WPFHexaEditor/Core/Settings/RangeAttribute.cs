@@ -26,9 +26,9 @@ namespace WpfHexaEditor.Core.Settings
         public double Maximum { get; }
 
         /// <summary>
-        /// Optional step value for slider tick frequency
+        /// Optional step value for slider tick frequency (0 or negative = not set)
         /// </summary>
-        public double? Step { get; set; }
+        public double Step { get; set; } = 0.0;
 
         /// <summary>
         /// Creates a range constraint for numeric properties
