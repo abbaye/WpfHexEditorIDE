@@ -47,29 +47,35 @@
     "application/x-executablecom"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Operating systems",
-    "Debuggers"
+    "MS-DOS",
+    "DOSBox",
+    "FreeDOS"
   ],
   "use_cases": [
-    "Program execution",
-    "Software development"
+    "DOS programs",
+    "Legacy software",
+    "Tiny executables",
+    "Boot sector code"
   ],
   "format_relationships": {
-    "category": "Executables",
-    "extensions": [
-      ".com"
-    ]
+    "dos_format": true,
+    "legacy": true,
+    "simple_format": true,
+    "no_header": true
   },
   "technical_details": {
-    "executable_format": true,
-    "primary_extension": ".com",
-    "defined_fields": 1
+    "no_header": true,
+    "max_size": "64 KB",
+    "loaded_at": "0x0100",
+    "16_bit": true,
+    "obsolete": true
   }
 }

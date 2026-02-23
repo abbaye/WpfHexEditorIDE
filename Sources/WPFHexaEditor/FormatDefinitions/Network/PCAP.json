@@ -94,30 +94,34 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 91,
+    "completeness_score": 96,
     "documentation_level": "comprehensive",
     "blocks_defined": 7,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
     "Wireshark",
-    "tcpdump"
+    "tcpdump",
+    "Tshark",
+    "NetworkMiner"
   ],
   "use_cases": [
+    "Packet capture",
     "Network analysis",
-    "Packet capture"
+    "Security analysis",
+    "Network troubleshooting"
   ],
   "format_relationships": {
-    "category": "Network",
-    "extensions": [
-      ".pcap",
-      ".cap"
-    ]
+    "libpcap_format": true,
+    "universal_standard": true,
+    "successor": "PCAPNG"
   },
   "technical_details": {
-    "network_format": true,
-    "primary_extension": ".pcap",
-    "defined_fields": 7
+    "packet_capture": true,
+    "timestamp_precision": "Microseconds",
+    "link_layer_types": "100+",
+    "simple_format": true
   }
 }

@@ -42,29 +42,36 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
     "Blender",
-    "3ds Max"
+    "Maya",
+    "3ds Max",
+    "All 3D software"
   ],
   "use_cases": [
-    "3D modeling",
-    "Animation"
+    "3D model interchange",
+    "Simple 3D exports",
+    "3D printing",
+    "Basic 3D storage"
   ],
   "format_relationships": {
-    "category": "3D",
-    "extensions": [
-      ".obj"
-    ]
+    "wavefront_format": true,
+    "text_based": true,
+    "universal_support": true,
+    "material_file": "MTL"
   },
   "technical_details": {
-    "3d_format": true,
-    "primary_extension": ".obj",
-    "defined_fields": 1
+    "text_format": true,
+    "geometry_only": true,
+    "no_animations": true,
+    "no_hierarchy": true,
+    "simple_and_universal": true
   }
 }

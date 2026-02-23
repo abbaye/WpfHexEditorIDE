@@ -39,28 +39,31 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Microsoft Access",
+    "MS Office"
   ],
   "use_cases": [
-    "General file usage",
-    "Data storage"
+    "Desktop databases",
+    "Small business databases",
+    "Rapid application development"
   ],
   "format_relationships": {
-    "category": "Database",
-    "extensions": [
-      ".accdb"
-    ]
+    "microsoft_format": true,
+    "successor_to": "MDB",
+    "access_2007_plus": true
   },
   "technical_details": {
-    "primary_extension": ".accdb",
-    "defined_fields": 1
+    "jet_engine": false,
+    "ace_engine": true,
+    "max_size": "2 GB",
+    "access_only": true
   }
 }

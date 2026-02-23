@@ -66,30 +66,33 @@
     "application/x-lzh"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
+    "LHA",
     "7-Zip",
     "WinRAR"
   ],
   "use_cases": [
-    "File compression",
-    "Data archiving"
+    "Japanese software archives",
+    "Retro software distribution",
+    "Amiga archives"
   ],
   "format_relationships": {
-    "category": "Archives",
-    "extensions": [
-      ".lzh",
-      ".lha"
+    "legacy_format": true,
+    "popular_in": "Japan",
+    "related": [
+      "LHA"
     ]
   },
   "technical_details": {
-    "archive_format": true,
-    "primary_extension": ".lzh",
-    "defined_fields": 3
+    "compression_method": "LZSS + Huffman",
+    "created_by": "Haruyasu Yoshizaki",
+    "legacy": true
   }
 }

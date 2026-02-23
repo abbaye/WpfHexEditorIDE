@@ -66,29 +66,32 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 4,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Compilers",
-    "Linkers"
+    "macOS",
+    "iOS",
+    "Dynamic linker"
   ],
   "use_cases": [
-    "Software compilation",
-    "Development"
+    "macOS shared libraries",
+    "iOS frameworks",
+    "Dynamic code loading"
   ],
   "format_relationships": {
-    "category": "Programming",
-    "extensions": [
-      ".dylib"
-    ]
+    "apple_format": true,
+    "mach_o_based": true,
+    "equivalent_to": "DLL (Windows) / SO (Linux)"
   },
   "technical_details": {
-    "programming_format": true,
-    "primary_extension": ".dylib",
-    "defined_fields": 4
+    "shared_library": true,
+    "mach_o_format": true,
+    "dynamic_linking": true,
+    "two_level_namespaces": true
   }
 }

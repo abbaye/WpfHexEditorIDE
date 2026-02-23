@@ -57,31 +57,34 @@
     "video/mov"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "VLC Media Player",
-    "Media Player Classic"
+    "QuickTime Player",
+    "VLC",
+    "Final Cut Pro",
+    "Adobe Premiere"
   ],
   "use_cases": [
-    "Video playback",
-    "Video streaming"
+    "Apple video files",
+    "Video editing",
+    "Screen recordings (macOS)",
+    "Professional video production"
   ],
   "format_relationships": {
-    "category": "Video",
-    "extensions": [
-      ".mov",
-      ".qt"
-    ]
+    "apple_format": true,
+    "similar_to": "MP4",
+    "basis_for": "MP4/MPEG-4 Part 14"
   },
   "technical_details": {
-    "video_format": true,
-    "container": true,
-    "primary_extension": ".mov",
-    "defined_fields": 2
+    "container": "QuickTime",
+    "codecs": "Any",
+    "professional_features": true,
+    "timecode_support": true
   }
 }

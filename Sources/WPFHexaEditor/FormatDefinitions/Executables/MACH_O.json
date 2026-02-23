@@ -71,29 +71,40 @@
     "application/x-executable"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 4,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Operating systems",
-    "Debuggers"
+    "macOS",
+    "iOS",
+    "Xcode",
+    "otool",
+    "lipo"
   ],
   "use_cases": [
-    "Program execution",
-    "Software development"
+    "macOS/iOS applications",
+    "macOS libraries",
+    "Apple system binaries"
   ],
   "format_relationships": {
-    "category": "Executables",
-    "extensions": [
-      ""
+    "apple_format": true,
+    "replaces": "a.out on macOS",
+    "related": [
+      "DYLIB"
     ]
   },
   "technical_details": {
     "executable_format": true,
-    "primary_extension": "",
-    "defined_fields": 4
+    "architectures": [
+      "x86_64",
+      "ARM64",
+      "ARM64e"
+    ],
+    "fat_binary": true,
+    "dynamic_linking": true
   }
 }

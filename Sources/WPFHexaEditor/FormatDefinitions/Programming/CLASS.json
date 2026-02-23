@@ -57,29 +57,32 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Compilers",
-    "Linkers"
+    "Java Virtual Machine",
+    "Java IDEs",
+    "Bytecode tools"
   ],
   "use_cases": [
-    "Software compilation",
-    "Development"
+    "Java compiled code",
+    "JVM execution",
+    "Java applications"
   ],
   "format_relationships": {
-    "category": "Programming",
-    "extensions": [
-      ".class"
-    ]
+    "java_format": true,
+    "contained_in": "JAR",
+    "jvm_bytecode": true
   },
   "technical_details": {
-    "programming_format": true,
-    "primary_extension": ".class",
-    "defined_fields": 3
+    "bytecode_format": true,
+    "stack_based_vm": true,
+    "constant_pool": true,
+    "method_bytecode": true
   }
 }

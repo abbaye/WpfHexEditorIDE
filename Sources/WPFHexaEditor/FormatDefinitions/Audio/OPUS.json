@@ -45,29 +45,43 @@
     "audio/opus"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "VLC Media Player",
-    "foobar2000"
+    "VLC",
+    "Firefox",
+    "Chrome",
+    "Discord",
+    "WhatsApp"
   ],
   "use_cases": [
-    "Audio playback",
-    "Music storage"
+    "VoIP (Skype, Discord, WhatsApp)",
+    "Live streaming",
+    "Internet radio",
+    "WebRTC audio"
   ],
   "format_relationships": {
-    "category": "Audio",
-    "extensions": [
-      ".opus"
-    ]
+    "open_source": true,
+    "based_on": [
+      "SILK",
+      "CELT"
+    ],
+    "replaces": [
+      "Vorbis",
+      "Speex"
+    ],
+    "container": "OGG/WEBM"
   },
   "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".opus",
-    "defined_fields": 1
+    "compression": "Lossy",
+    "low_latency": "5-66.5 ms",
+    "bitrates": "6-510 kbps",
+    "adaptive": true,
+    "best_voip_codec": true
   }
 }

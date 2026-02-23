@@ -56,30 +56,29 @@
     "application/x-ace"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "7-Zip",
-    "WinRAR"
+    "WinACE (discontinued)",
+    "7-Zip"
   ],
   "use_cases": [
-    "File compression",
-    "Data archiving"
+    "Legacy archives",
+    "High compression archives"
   ],
   "format_relationships": {
-    "category": "Archives",
-    "extensions": [
-      ".ace"
-    ],
-    "proprietary": true
+    "proprietary": true,
+    "discontinued": true,
+    "security_issues": "CVE-2018-20250"
   },
   "technical_details": {
-    "archive_format": true,
-    "primary_extension": ".ace",
-    "defined_fields": 2
+    "compression_method": "Proprietary",
+    "discontinued": "2007",
+    "security_vulnerable": true
   }
 }

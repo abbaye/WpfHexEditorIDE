@@ -44,29 +44,34 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Font managers",
-    "Operating systems"
+    "Internet Explorer (legacy)",
+    "Font converters"
   ],
   "use_cases": [
-    "Typography",
-    "Web fonts"
+    "Legacy web fonts (IE only)",
+    "Obsolete web typography"
   ],
   "format_relationships": {
-    "category": "Fonts",
-    "extensions": [
-      ".eot"
+    "microsoft_format": true,
+    "deprecated": true,
+    "ie_only": true,
+    "replaced_by": [
+      "WOFF",
+      "WOFF2"
     ]
   },
   "technical_details": {
-    "font_format": true,
-    "primary_extension": ".eot",
-    "defined_fields": 1
+    "embedded_opentype": true,
+    "compression": "MicroType Express",
+    "drm": true,
+    "obsolete": true
   }
 }

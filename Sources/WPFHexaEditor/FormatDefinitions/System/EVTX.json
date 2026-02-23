@@ -48,28 +48,33 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Event Viewer",
+    "Windows",
+    "Log analysis tools"
   ],
   "use_cases": [
-    "General file usage",
-    "Data storage"
+    "Windows event logs",
+    "System monitoring",
+    "Security auditing",
+    "Troubleshooting"
   ],
   "format_relationships": {
-    "category": "System",
-    "extensions": [
-      ".evtx"
-    ]
+    "microsoft_format": true,
+    "successor_to": "EVT",
+    "windows_vista_plus": true
   },
   "technical_details": {
-    "primary_extension": ".evtx",
-    "defined_fields": 2
+    "binary_xml": true,
+    "structured_logs": true,
+    "queryable": true,
+    "compressed": true
   }
 }

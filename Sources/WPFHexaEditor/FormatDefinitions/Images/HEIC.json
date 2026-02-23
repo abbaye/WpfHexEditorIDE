@@ -66,30 +66,35 @@
     "image/heic"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Image viewers",
-    "GIMP"
+    "Apple Photos",
+    "iOS devices",
+    "macOS Preview",
+    "Image viewers with HEIF support"
   ],
   "use_cases": [
-    "Image viewing",
-    "Photo editing"
+    "iPhone/iPad photos",
+    "High-efficiency image storage",
+    "Modern photography"
   ],
   "format_relationships": {
-    "category": "Images",
-    "extensions": [
-      ".heic",
-      ".heif"
-    ]
+    "based_on": "HEIF",
+    "apple_default": "iOS 11+",
+    "replaces": "JPEG on Apple",
+    "better_than": "JPEG (40% smaller)"
   },
   "technical_details": {
-    "image_format": true,
-    "primary_extension": ".heic",
-    "defined_fields": 3
+    "compression": "HEVC (H.265)",
+    "better_compression": "40% over JPEG",
+    "10_bit_color": true,
+    "hdr_support": true,
+    "transparency": true
   }
 }

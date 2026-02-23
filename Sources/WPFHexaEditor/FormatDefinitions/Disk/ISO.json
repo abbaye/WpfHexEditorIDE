@@ -53,28 +53,42 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Virtual CD/DVD software",
+    "7-Zip",
+    "WinRAR",
+    "Windows Explorer",
+    "ImgBurn"
   ],
   "use_cases": [
-    "General file usage",
-    "Data storage"
+    "Disc image creation",
+    "Software distribution",
+    "Bootable media",
+    "OS installation media"
   ],
   "format_relationships": {
-    "category": "Disk",
+    "iso_9660_standard": true,
     "extensions": [
-      ".iso"
+      "Joliet",
+      "Rock Ridge",
+      "UDF"
+    ],
+    "related": [
+      "BIN",
+      "CUE"
     ]
   },
   "technical_details": {
-    "primary_extension": ".iso",
-    "defined_fields": 2
+    "disc_image_format": true,
+    "iso_9660": true,
+    "max_file_size": "4GB (ISO9660) / 16EB (UDF)",
+    "bootable_support": true
   }
 }

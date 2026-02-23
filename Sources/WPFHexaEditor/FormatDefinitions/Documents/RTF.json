@@ -51,29 +51,35 @@
     "application/rtf"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "PDF readers",
-    "Office suites"
+    "WordPad",
+    "Microsoft Word",
+    "LibreOffice",
+    "Text editors"
   ],
   "use_cases": [
-    "Document viewing",
-    "Office productivity"
+    "Cross-platform text documents",
+    "Simple formatted documents",
+    "Legacy document exchange"
   ],
   "format_relationships": {
-    "category": "Documents",
-    "extensions": [
-      ".rtf"
-    ]
+    "microsoft_format": true,
+    "text_based": true,
+    "predecessor_to": "DOCX",
+    "universal_support": true
   },
   "technical_details": {
-    "document_format": true,
-    "primary_extension": ".rtf",
-    "defined_fields": 2
+    "text_format": true,
+    "ascii_based": true,
+    "formatting_codes": true,
+    "created": "1987",
+    "simple_formatting": true
   }
 }

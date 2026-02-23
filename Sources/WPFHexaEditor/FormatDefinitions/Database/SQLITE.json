@@ -69,30 +69,39 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 4,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "SQLite",
+    "DB Browser for SQLite",
+    "Most applications"
   ],
   "use_cases": [
-    "General file usage",
-    "Data storage"
+    "Embedded databases",
+    "Mobile apps",
+    "Desktop apps",
+    "Browser storage"
   ],
   "format_relationships": {
-    "category": "Database",
-    "extensions": [
-      ".sqlite",
-      ".db",
-      ".sqlite3"
+    "most_used_db": true,
+    "serverless": true,
+    "embedded": true,
+    "used_by": [
+      "iOS",
+      "Android",
+      "Browsers"
     ]
   },
   "technical_details": {
-    "primary_extension": ".sqlite",
-    "defined_fields": 4
+    "single_file_db": true,
+    "acid_compliant": true,
+    "cross_platform": true,
+    "no_server": true,
+    "public_domain": true
   }
 }

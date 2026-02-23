@@ -48,30 +48,40 @@
     "image/svg"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Image viewers",
-    "GIMP"
+    "Web browsers",
+    "Inkscape",
+    "Adobe Illustrator",
+    "Figma"
   ],
   "use_cases": [
-    "Image viewing",
-    "Photo editing"
+    "Web graphics",
+    "Scalable icons",
+    "Logos",
+    "Infographics",
+    "Responsive design"
   ],
   "format_relationships": {
-    "category": "Images",
-    "extensions": [
-      ".svg",
-      ".svgz"
+    "w3c_standard": true,
+    "xml_based": true,
+    "vector_format": true,
+    "related": [
+      "PDF",
+      "EPS"
     ]
   },
   "technical_details": {
-    "image_format": true,
-    "primary_extension": ".svg",
-    "defined_fields": 1
+    "vector_graphics": true,
+    "xml_format": true,
+    "scripting": "JavaScript",
+    "styling": "CSS",
+    "animation": "SMIL"
   }
 }

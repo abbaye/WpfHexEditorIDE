@@ -57,28 +57,33 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Windows Explorer",
+    "LNK analyzers",
+    "Forensic tools"
   ],
   "use_cases": [
-    "General file usage",
-    "Data storage"
+    "Windows shortcuts",
+    "File links",
+    "Forensic analysis"
   ],
   "format_relationships": {
-    "category": "System",
-    "extensions": [
-      ".lnk"
-    ]
+    "microsoft_format": true,
+    "shell_link": true,
+    "forensic_value": true
   },
   "technical_details": {
-    "primary_extension": ".lnk",
-    "defined_fields": 3
+    "binary_format": true,
+    "target_info": true,
+    "timestamps": true,
+    "metadata": true,
+    "forensic_artifact": true
   }
 }

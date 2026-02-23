@@ -52,30 +52,36 @@
     "application/mobi"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "PDF readers",
-    "Office suites"
+    "Amazon Kindle",
+    "Calibre",
+    "FBReader"
   ],
   "use_cases": [
-    "Document viewing",
-    "Office productivity"
+    "Kindle e-books",
+    "Amazon publishing",
+    "E-book distribution"
   ],
   "format_relationships": {
-    "category": "Documents",
-    "extensions": [
-      ".mobi",
-      ".prc"
+    "amazon_format": true,
+    "based_on": "PalmDOC",
+    "replaced_by": "AZW/KF8",
+    "related": [
+      "AZW",
+      "AZW3"
     ]
   },
   "technical_details": {
-    "document_format": true,
-    "primary_extension": ".mobi",
-    "defined_fields": 2
+    "e_book_format": true,
+    "drm_support": true,
+    "reflow": true,
+    "mobipocket_format": true
   }
 }

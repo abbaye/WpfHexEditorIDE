@@ -73,29 +73,35 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 5,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Compilers",
-    "Linkers"
+    "Linux",
+    "Unix",
+    "Dynamic linker"
   ],
   "use_cases": [
-    "Software compilation",
-    "Development"
+    "Linux shared libraries",
+    "Plugin systems",
+    "Dynamic loading"
   ],
   "format_relationships": {
-    "category": "Programming",
-    "extensions": [
-      ".so"
+    "linux_format": true,
+    "elf_based": true,
+    "equivalent_to": "DLL (Windows)",
+    "related": [
+      "DYLIB"
     ]
   },
   "technical_details": {
-    "programming_format": true,
-    "primary_extension": ".so",
-    "defined_fields": 5
+    "shared_library": true,
+    "elf_format": true,
+    "dynamic_linking": true,
+    "position_independent": true
   }
 }

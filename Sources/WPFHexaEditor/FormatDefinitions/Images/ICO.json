@@ -65,29 +65,42 @@
     "image/ico"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Image viewers",
-    "GIMP"
+    "Windows",
+    "Icon editors",
+    "GIMP",
+    "Photoshop"
   ],
   "use_cases": [
-    "Image viewing",
-    "Photo editing"
+    "Application icons",
+    "Favicon (websites)",
+    "Windows icons",
+    "Cursor files (.cur)"
   ],
   "format_relationships": {
-    "category": "Images",
-    "extensions": [
-      ".ico"
-    ]
+    "microsoft_format": true,
+    "related": [
+      "CUR"
+    ],
+    "used_in": "Windows executables"
   },
   "technical_details": {
-    "image_format": true,
-    "primary_extension": ".ico",
-    "defined_fields": 3
+    "multi_resolution": true,
+    "max_size": "256x256",
+    "color_depths": [
+      "1-bit",
+      "4-bit",
+      "8-bit",
+      "24-bit",
+      "32-bit"
+    ],
+    "transparency": true
   }
 }

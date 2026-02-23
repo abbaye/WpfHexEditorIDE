@@ -51,29 +51,34 @@
     "application/odt"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "PDF readers",
-    "Office suites"
+    "LibreOffice Writer",
+    "OpenOffice Writer",
+    "Google Docs",
+    "Microsoft Word"
   ],
   "use_cases": [
-    "Document viewing",
-    "Office productivity"
+    "Word processing",
+    "Open document format",
+    "Cross-platform documents"
   ],
   "format_relationships": {
-    "category": "Documents",
-    "extensions": [
-      ".odt"
-    ]
+    "open_source": true,
+    "oasis_standard": "ISO/IEC 26300",
+    "alternative_to": "DOCX",
+    "container": "ZIP"
   },
   "technical_details": {
-    "document_format": true,
-    "primary_extension": ".odt",
-    "defined_fields": 2
+    "xml_based": true,
+    "odf_standard": true,
+    "zip_container": true,
+    "open_source": true
   }
 }

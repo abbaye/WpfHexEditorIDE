@@ -60,29 +60,33 @@
     "application/chm"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "PDF readers",
-    "Office suites"
+    "Windows Help Viewer",
+    "7-Zip",
+    "CHM readers"
   ],
   "use_cases": [
-    "Document viewing",
-    "Office productivity"
+    "Windows help files",
+    "Software documentation",
+    "E-books"
   ],
   "format_relationships": {
-    "category": "Documents",
-    "extensions": [
-      ".chm"
-    ]
+    "microsoft_format": true,
+    "html_based": true,
+    "compressed": true,
+    "replaces": "HLP"
   },
   "technical_details": {
-    "document_format": true,
-    "primary_extension": ".chm",
-    "defined_fields": 3
+    "html_help_format": true,
+    "lzx_compression": true,
+    "full_text_search": true,
+    "table_of_contents": true
   }
 }

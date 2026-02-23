@@ -40,29 +40,39 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "ncview",
+    "Panoply",
+    "MATLAB",
+    "Python (netCDF4)"
   ],
   "use_cases": [
-    "General file usage",
-    "Data storage"
+    "Climate data",
+    "Oceanography",
+    "Atmospheric science",
+    "Weather modeling"
   ],
   "format_relationships": {
-    "category": "Science",
-    "extensions": [
-      ".nc",
-      ".netcdf"
-    ]
+    "unidata_format": true,
+    "self_describing": true,
+    "scientific_standard": true,
+    "based_on": "HDF5 (NetCDF-4)"
   },
   "technical_details": {
-    "primary_extension": ".nc",
-    "defined_fields": 1
+    "array_oriented": true,
+    "metadata_rich": true,
+    "versions": [
+      "Classic",
+      "64-bit",
+      "NetCDF-4"
+    ],
+    "cf_conventions": true
   }
 }

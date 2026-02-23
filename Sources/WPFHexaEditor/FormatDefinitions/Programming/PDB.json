@@ -64,29 +64,38 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 4,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Compilers",
-    "Linkers"
+    "Visual Studio",
+    "WinDbg",
+    "IDA Pro"
   ],
   "use_cases": [
-    "Software compilation",
-    "Development"
+    "Debugging symbols",
+    "Crash analysis",
+    "Performance profiling"
   ],
   "format_relationships": {
-    "category": "Programming",
-    "extensions": [
-      ".pdb"
-    ]
+    "microsoft_format": true,
+    "associated_with": [
+      "EXE",
+      "DLL"
+    ],
+    "debug_info": true
   },
   "technical_details": {
-    "programming_format": true,
-    "primary_extension": ".pdb",
-    "defined_fields": 4
+    "debug_symbols": true,
+    "source_line_info": true,
+    "function_names": true,
+    "pdb_format": [
+      "PDB 2.0",
+      "PDB 7.0"
+    ]
   }
 }

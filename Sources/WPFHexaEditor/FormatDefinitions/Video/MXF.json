@@ -45,30 +45,35 @@
     "video/mxf"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "VLC Media Player",
-    "Media Player Classic"
+    "Adobe Premiere",
+    "Avid Media Composer",
+    "DaVinci Resolve",
+    "FFmpeg"
   ],
   "use_cases": [
-    "Video playback",
-    "Video streaming"
+    "Professional video production",
+    "Broadcast TV",
+    "Cinema production",
+    "Archival"
   ],
   "format_relationships": {
-    "category": "Video",
-    "extensions": [
-      ".mxf"
-    ]
+    "smpte_standard": "SMPTE 377M",
+    "professional_format": true,
+    "alternative_to": "MOV for broadcast"
   },
   "technical_details": {
-    "video_format": true,
-    "container": true,
-    "primary_extension": ".mxf",
-    "defined_fields": 1
+    "container": "Material Exchange Format",
+    "metadata_rich": true,
+    "frame_accurate": true,
+    "multi_track": true,
+    "broadcast_standard": true
   }
 }

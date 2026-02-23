@@ -56,29 +56,32 @@
     "application/x-executablesys"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Operating systems",
-    "Debuggers"
+    "Windows",
+    "Linux",
+    "Device driver loaders"
   ],
   "use_cases": [
-    "Program execution",
-    "Software development"
+    "Device drivers",
+    "Kernel modules",
+    "System drivers"
   ],
   "format_relationships": {
-    "category": "Executables",
-    "extensions": [
-      ".sys"
-    ]
+    "windows_format": true,
+    "pe_format": true,
+    "kernel_mode": true
   },
   "technical_details": {
-    "executable_format": true,
-    "primary_extension": ".sys",
-    "defined_fields": 2
+    "driver_format": true,
+    "kernel_mode": true,
+    "pe_based": true,
+    "privileged_execution": true
   }
 }

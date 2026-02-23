@@ -92,29 +92,47 @@
     "image/psd"
   ],
   "quality_metrics": {
-    "completeness_score": 95,
+    "completeness_score": 98,
     "documentation_level": "comprehensive",
     "blocks_defined": 6,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Image viewers",
-    "GIMP"
+    "Adobe Photoshop",
+    "GIMP",
+    "Affinity Photo",
+    "Photopea"
   ],
   "use_cases": [
-    "Image viewing",
-    "Photo editing"
+    "Professional photo editing",
+    "Graphic design",
+    "Digital art",
+    "Layer-based editing"
   ],
   "format_relationships": {
-    "category": "Images",
-    "extensions": [
-      ".psd"
+    "adobe_format": true,
+    "proprietary": true,
+    "related": [
+      "PSB",
+      "AI"
     ]
   },
   "technical_details": {
-    "image_format": true,
-    "primary_extension": ".psd",
-    "defined_fields": 6
+    "layered_format": true,
+    "max_size": "30000x30000 px",
+    "color_modes": [
+      "Bitmap",
+      "Grayscale",
+      "RGB",
+      "CMYK",
+      "Lab"
+    ],
+    "bit_depths": [
+      "8",
+      "16",
+      "32-bit"
+    ]
   }
 }

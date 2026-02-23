@@ -76,29 +76,37 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 4,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Emulators",
-    "Game engines"
+    "beat",
+    "Floating IPS",
+    "Rom patchers"
   ],
   "use_cases": [
-    "Gaming",
-    "Game preservation"
+    "ROM patching",
+    "Delta patches",
+    "Binary patching",
+    "Best patch format"
   ],
   "format_relationships": {
-    "category": "Game",
-    "extensions": [
-      ".bps"
-    ]
+    "created_by": "byuu/Near",
+    "successor_to": [
+      "IPS",
+      "UPS"
+    ],
+    "most_efficient": true
   },
   "technical_details": {
-    "game_format": true,
-    "primary_extension": ".bps",
-    "defined_fields": 4
+    "delta_encoding": true,
+    "crc32_validation": true,
+    "smallest_patches": true,
+    "copy_on_write": true,
+    "best_compression": true
   }
 }

@@ -44,29 +44,32 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
     "Emulators",
-    "Game engines"
+    "Flash carts",
+    "Save managers"
   ],
   "use_cases": [
-    "Gaming",
-    "Game preservation"
+    "Game save states",
+    "Battery backup saves",
+    "Game progress storage"
   ],
   "format_relationships": {
-    "category": "Game",
-    "extensions": [
-      ".sav"
-    ]
+    "gaming_format": true,
+    "console_specific": true,
+    "associated_with": "ROM files"
   },
   "technical_details": {
-    "game_format": true,
-    "primary_extension": ".sav",
-    "defined_fields": 1
+    "save_format": true,
+    "sram_dump": true,
+    "eeprom_dump": true,
+    "console_specific": true
   }
 }

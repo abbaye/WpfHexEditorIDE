@@ -48,29 +48,36 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Compilers",
-    "Linkers"
+    "Web browsers",
+    "Node.js",
+    "Wasmer",
+    "Wasmtime"
   ],
   "use_cases": [
-    "Software compilation",
-    "Development"
+    "Web applications",
+    "High-performance web code",
+    "Cross-platform binaries",
+    "Sandboxed execution"
   ],
   "format_relationships": {
-    "category": "Programming",
-    "extensions": [
-      ".wasm"
-    ]
+    "w3c_standard": true,
+    "portable": true,
+    "complements": "JavaScript",
+    "alternative_to": "Native executables"
   },
   "technical_details": {
-    "programming_format": true,
-    "primary_extension": ".wasm",
-    "defined_fields": 2
+    "bytecode_format": true,
+    "stack_machine": true,
+    "near_native_speed": true,
+    "sandboxed": true,
+    "text_format": "WAT"
   }
 }

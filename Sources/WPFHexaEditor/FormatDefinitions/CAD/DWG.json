@@ -39,28 +39,35 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "AutoCAD",
+    "BricsCAD",
+    "LibreCAD",
+    "DWG viewers"
   ],
   "use_cases": [
-    "General file usage",
-    "Data storage"
+    "CAD drawings",
+    "Architecture",
+    "Engineering design",
+    "Technical drawings"
   ],
   "format_relationships": {
-    "category": "CAD",
-    "extensions": [
-      ".dwg"
-    ]
+    "autodesk_format": true,
+    "proprietary": true,
+    "industry_standard": "CAD",
+    "alternative": "DXF"
   },
   "technical_details": {
-    "primary_extension": ".dwg",
-    "defined_fields": 1
+    "binary_format": true,
+    "vector_graphics": true,
+    "3d_support": true,
+    "proprietary_and_closed": true
   }
 }

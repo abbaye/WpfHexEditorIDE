@@ -47,29 +47,39 @@
     "audio/aac"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "VLC Media Player",
-    "foobar2000"
+    "iTunes",
+    "VLC",
+    "foobar2000",
+    "All modern media players"
   ],
   "use_cases": [
-    "Audio playback",
-    "Music storage"
+    "Music streaming (Apple Music, YouTube)",
+    "Digital audio broadcasting",
+    "Video game audio",
+    "Mobile audio"
   ],
   "format_relationships": {
-    "category": "Audio",
-    "extensions": [
-      ".aac"
-    ]
+    "successor_to": "MP3",
+    "container": "MP4/M4A",
+    "part_of": "MPEG-4",
+    "better_than": "MP3 at same bitrate"
   },
   "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".aac",
-    "defined_fields": 1
+    "compression": "Lossy perceptual",
+    "codecs": [
+      "AAC-LC",
+      "HE-AAC",
+      "HE-AACv2"
+    ],
+    "max_channels": 48,
+    "bitrates": "8-529 kbps"
   }
 }

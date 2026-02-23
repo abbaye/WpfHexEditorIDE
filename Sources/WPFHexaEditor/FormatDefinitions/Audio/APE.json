@@ -56,29 +56,38 @@
     "audio/ape"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "VLC Media Player",
-    "foobar2000"
+    "Monkey's Audio",
+    "foobar2000",
+    "VLC"
   ],
   "use_cases": [
-    "Audio playback",
-    "Music storage"
+    "Lossless audio archiving",
+    "CD ripping",
+    "High compression audio storage"
   ],
   "format_relationships": {
-    "category": "Audio",
-    "extensions": [
-      ".ape"
-    ]
+    "proprietary": true,
+    "windows_only": "Original",
+    "alternative_to": "FLAC"
   },
   "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".ape",
-    "defined_fields": 2
+    "compression": "Lossless",
+    "compression_ratio": "45-55%",
+    "compression_levels": [
+      "Fast",
+      "Normal",
+      "High",
+      "Extra High",
+      "Insane"
+    ],
+    "slower_than": "FLAC"
   }
 }

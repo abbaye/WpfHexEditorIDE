@@ -49,29 +49,35 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "OsiriX",
+    "Horos",
+    "3D Slicer",
+    "Medical imaging systems"
   ],
   "use_cases": [
-    "General file usage",
-    "Data storage"
+    "Medical imaging",
+    "Radiology",
+    "CT/MRI scans",
+    "Healthcare"
   ],
   "format_relationships": {
-    "category": "Medical",
-    "extensions": [
-      ".dcm",
-      ".dicom"
-    ]
+    "medical_standard": "NEMA",
+    "iso_standard": "ISO 12052",
+    "universal_medical": true
   },
   "technical_details": {
-    "primary_extension": ".dcm",
-    "defined_fields": 2
+    "medical_imaging": true,
+    "embedded_metadata": true,
+    "patient_info": true,
+    "pixel_data": true,
+    "network_protocol": "DICOM C-STORE"
   }
 }

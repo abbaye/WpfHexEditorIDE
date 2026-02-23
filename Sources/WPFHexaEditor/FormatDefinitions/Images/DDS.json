@@ -83,29 +83,38 @@
     "image/dds"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 5,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Image viewers",
-    "GIMP"
+    "DirectX",
+    "NVIDIA Texture Tools",
+    "AMD Compressonator",
+    "Game engines"
   ],
   "use_cases": [
-    "Image viewing",
-    "Photo editing"
+    "Video game textures",
+    "3D graphics",
+    "Real-time rendering"
   ],
   "format_relationships": {
-    "category": "Images",
-    "extensions": [
-      ".dds"
-    ]
+    "microsoft_format": true,
+    "directx_format": true,
+    "used_in": "Game development"
   },
   "technical_details": {
-    "image_format": true,
-    "primary_extension": ".dds",
-    "defined_fields": 5
+    "gpu_compressed": true,
+    "mipmaps": true,
+    "texture_compression": [
+      "DXT1",
+      "DXT3",
+      "DXT5",
+      "BC7"
+    ],
+    "cubemaps": true
   }
 }

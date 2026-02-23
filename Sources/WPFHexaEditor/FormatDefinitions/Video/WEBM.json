@@ -56,30 +56,41 @@
     "video/webm"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "VLC Media Player",
-    "Media Player Classic"
+    "Chrome",
+    "Firefox",
+    "VLC",
+    "Web browsers"
   ],
   "use_cases": [
-    "Video playback",
-    "Video streaming"
+    "Web video streaming (YouTube)",
+    "HTML5 video",
+    "Open web media"
   ],
   "format_relationships": {
-    "category": "Video",
-    "extensions": [
-      ".webm"
-    ]
+    "open_source": true,
+    "google_format": true,
+    "based_on": "Matroska",
+    "replaces": "FLV"
   },
   "technical_details": {
-    "video_format": true,
-    "container": true,
-    "primary_extension": ".webm",
-    "defined_fields": 2
+    "container": "Matroska subset",
+    "video_codecs": [
+      "VP8",
+      "VP9",
+      "AV1"
+    ],
+    "audio_codecs": [
+      "Vorbis",
+      "Opus"
+    ],
+    "royalty_free": true
   }
 }

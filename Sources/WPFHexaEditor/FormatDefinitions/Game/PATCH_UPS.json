@@ -76,29 +76,37 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 4,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Emulators",
-    "Game engines"
+    "NUPS",
+    "Lunar IPS",
+    "Rom patcher tools"
   ],
   "use_cases": [
-    "Gaming",
-    "Game preservation"
+    "ROM patching",
+    "Translation patches",
+    "Mod patches",
+    "Better than IPS"
   ],
   "format_relationships": {
-    "category": "Game",
-    "extensions": [
-      ".ups"
+    "successor_to": "IPS",
+    "supports_larger_files": true,
+    "crc_validation": true,
+    "related": [
+      "BPS",
+      "IPS"
     ]
   },
   "technical_details": {
-    "game_format": true,
-    "primary_extension": ".ups",
-    "defined_fields": 4
+    "max_size": "Unlimited",
+    "crc32_checksums": true,
+    "variable_length_encoding": true,
+    "more_robust": "than IPS"
   }
 }

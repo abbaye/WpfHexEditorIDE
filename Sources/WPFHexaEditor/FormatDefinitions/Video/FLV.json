@@ -74,30 +74,44 @@
     "video/flv"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 4,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "VLC Media Player",
-    "Media Player Classic"
+    "Adobe Flash Player (discontinued)",
+    "VLC",
+    "FFmpeg"
   ],
   "use_cases": [
-    "Video playback",
-    "Video streaming"
+    "Legacy web video",
+    "Flash animations",
+    "Old YouTube videos"
   ],
   "format_relationships": {
-    "category": "Video",
-    "extensions": [
-      ".flv"
+    "adobe_format": true,
+    "deprecated": true,
+    "flash_required": "Originally",
+    "replaced_by": [
+      "MP4",
+      "WEBM"
     ]
   },
   "technical_details": {
-    "video_format": true,
-    "container": true,
-    "primary_extension": ".flv",
-    "defined_fields": 4
+    "container": "FLV",
+    "video_codecs": [
+      "H.263",
+      "VP6",
+      "H.264"
+    ],
+    "audio_codecs": [
+      "MP3",
+      "AAC"
+    ],
+    "streaming": true,
+    "obsolete": true
   }
 }

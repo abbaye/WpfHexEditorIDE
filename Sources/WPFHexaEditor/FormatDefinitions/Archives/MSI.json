@@ -56,29 +56,38 @@
     "application/x-msi"
   ],
   "quality_metrics": {
-    "completeness_score": 83,
-    "documentation_level": "detailed",
+    "completeness_score": 88,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "7-Zip",
-    "WinRAR"
+    "Windows Installer",
+    "msiexec",
+    "Orca",
+    "InstallShield",
+    "Advanced Installer"
   ],
   "use_cases": [
-    "File compression",
-    "Data archiving"
+    "Software installation",
+    "Windows application packages",
+    "Deployment automation",
+    "Enterprise software distribution"
   ],
   "format_relationships": {
-    "category": "Archives",
-    "extensions": [
-      ".msi"
+    "microsoft_format": true,
+    "based_on": "Compound File Binary (CFB)",
+    "related": [
+      "EXE",
+      "CAB"
     ]
   },
   "technical_details": {
-    "archive_format": true,
-    "primary_extension": ".msi",
-    "defined_fields": 2
+    "windows_installer_format": true,
+    "compound_document": true,
+    "database_tables": true,
+    "compression": "CAB embedded"
   }
 }

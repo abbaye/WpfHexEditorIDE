@@ -61,29 +61,33 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
     "Wireshark",
-    "tcpdump"
+    "tcpdump 4.x+",
+    "Modern capture tools"
   ],
   "use_cases": [
-    "Network analysis",
-    "Packet capture"
+    "Advanced packet capture",
+    "Multi-interface capture",
+    "Enhanced network analysis"
   ],
   "format_relationships": {
-    "category": "Network",
-    "extensions": [
-      ".pcapng"
-    ]
+    "successor_to": "PCAP",
+    "more_features": true,
+    "extensible": true
   },
   "technical_details": {
-    "network_format": true,
-    "primary_extension": ".pcapng",
-    "defined_fields": 3
+    "next_generation": true,
+    "multiple_interfaces": true,
+    "annotations": true,
+    "name_resolution": true,
+    "better_timestamps": true
   }
 }

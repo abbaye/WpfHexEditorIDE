@@ -58,30 +58,31 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 3,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Compilers",
-    "Linkers"
+    "Python interpreter",
+    "CPython"
   ],
   "use_cases": [
-    "Software compilation",
-    "Development"
+    "Python bytecode",
+    "Faster Python loading",
+    "Compiled Python modules"
   ],
   "format_relationships": {
-    "category": "Programming",
-    "extensions": [
-      ".pyc",
-      ".pyo"
-    ]
+    "python_format": true,
+    "generated_from": ".py files",
+    "cached_in": "__pycache__"
   },
   "technical_details": {
-    "programming_format": true,
-    "primary_extension": ".pyc",
-    "defined_fields": 3
+    "bytecode_format": true,
+    "python_version_specific": true,
+    "faster_loading": true,
+    "not_obfuscation": true
   }
 }

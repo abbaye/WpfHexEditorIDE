@@ -40,29 +40,39 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "HDFView",
+    "MATLAB",
+    "Python (h5py)",
+    "Scientific software"
   ],
   "use_cases": [
-    "General file usage",
-    "Data storage"
+    "Scientific data storage",
+    "Big data",
+    "Numerical simulations",
+    "Astronomy data"
   ],
   "format_relationships": {
-    "category": "Science",
-    "extensions": [
-      ".h5",
-      ".hdf5"
+    "hdf_group": true,
+    "hierarchical": true,
+    "successor_to": "HDF4",
+    "used_by": [
+      "NASA",
+      "CERN"
     ]
   },
   "technical_details": {
-    "primary_extension": ".h5",
-    "defined_fields": 1
+    "hierarchical_format": true,
+    "multi_dimensional_arrays": true,
+    "compression": true,
+    "parallel_io": true,
+    "self_describing": true
   }
 }

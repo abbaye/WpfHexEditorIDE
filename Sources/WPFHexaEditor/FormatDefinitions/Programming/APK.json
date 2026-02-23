@@ -39,29 +39,42 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 1,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Compilers",
-    "Linkers"
+    "Android OS",
+    "Android Studio",
+    "APK analyzers"
   ],
   "use_cases": [
-    "Software compilation",
-    "Development"
+    "Android applications",
+    "Mobile app distribution",
+    "Google Play Store packages"
   ],
   "format_relationships": {
-    "category": "Programming",
-    "extensions": [
-      ".apk"
-    ]
+    "android_format": true,
+    "based_on": "JAR/ZIP",
+    "contains": [
+      "DEX",
+      "resources",
+      "native libs"
+    ],
+    "signed": true
   },
   "technical_details": {
-    "programming_format": true,
-    "primary_extension": ".apk",
-    "defined_fields": 1
+    "zip_based": true,
+    "java_bytecode": "DEX format",
+    "signature_required": true,
+    "apk_signature_scheme": [
+      "v1",
+      "v2",
+      "v3",
+      "v4"
+    ]
   }
 }

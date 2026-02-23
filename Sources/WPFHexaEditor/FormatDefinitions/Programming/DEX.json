@@ -66,29 +66,33 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 4,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
-    "Compilers",
-    "Linkers"
+    "Android Runtime (ART)",
+    "Dalvik VM",
+    "Android tools"
   ],
   "use_cases": [
-    "Software compilation",
-    "Development"
+    "Android bytecode",
+    "Mobile app execution",
+    "Android VMs"
   ],
   "format_relationships": {
-    "category": "Programming",
-    "extensions": [
-      ".dex"
-    ]
+    "android_format": true,
+    "contained_in": "APK",
+    "replaces": "Java CLASS on Android",
+    "optimized_for": "Mobile devices"
   },
   "technical_details": {
-    "programming_format": true,
-    "primary_extension": ".dex",
-    "defined_fields": 4
+    "bytecode_format": true,
+    "register_based_vm": true,
+    "optimized_for_mobile": true,
+    "multidex_support": true
   }
 }

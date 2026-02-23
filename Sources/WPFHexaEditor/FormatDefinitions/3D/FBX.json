@@ -48,29 +48,37 @@
     }
   ],
   "quality_metrics": {
-    "completeness_score": 78,
-    "documentation_level": "detailed",
+    "completeness_score": 83,
+    "documentation_level": "comprehensive",
     "blocks_defined": 2,
     "validation_rules": 0,
-    "last_updated": "2026-02-23"
+    "last_updated": "2026-02-23",
+    "manually_refined": true
   },
   "software": [
+    "Maya",
+    "3ds Max",
     "Blender",
-    "3ds Max"
+    "Unity",
+    "Unreal Engine"
   ],
   "use_cases": [
-    "3D modeling",
-    "Animation"
+    "3D model interchange",
+    "Game development",
+    "Animation exchange",
+    "VFX pipelines"
   ],
   "format_relationships": {
-    "category": "3D",
-    "extensions": [
-      ".fbx"
-    ]
+    "autodesk_format": true,
+    "proprietary": true,
+    "industry_standard": true,
+    "alternative_to": "COLLADA"
   },
   "technical_details": {
-    "3d_format": true,
-    "primary_extension": ".fbx",
-    "defined_fields": 2
+    "binary_and_ascii": true,
+    "animations": true,
+    "cameras_lights": true,
+    "embedded_media": true,
+    "versions": "7.x"
   }
 }
