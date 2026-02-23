@@ -66,13 +66,16 @@ namespace WpfHexaEditor.Controls
         private double _lineHeight;
 
         // Layout constants
-        private const double OffsetWidth = 110;
+        // Note: OffsetWidth is now dynamic - use OffsetWidth property instead of constant
         private const double HexByteWidth = 24;
         private const double HexByteSpacing = 2;
         private const double SeparatorWidth = 20;
         private const double AsciiCharWidth = 10;
         private const double LeftMargin = 8;
         private const double TopMargin = 2;
+
+        // Dynamic OffsetWidth property - calculates based on OffSetStringVisual format
+        private double OffsetWidth => CalculateOffsetWidth();
 
         // Colors
         private Brush _offsetBrush = new SolidColorBrush(Color.FromRgb(0x75, 0x75, 0x75));
@@ -136,11 +139,16 @@ namespace WpfHexaEditor.Controls
         private long _lastRefreshTimeMs = 0;
 
         // Phase 6 (Bug 4): Dynamic CellWidth cache for Font/DPI support
-        // Cache stores calculated cell widths based on byte count, font size, and font family
-        // Key: (byteCount, fontSize, fontFamily) → Value: calculated width in pixels
-        // Invalidated when font settings change (FontSize, FontFamily, DPI)
-        private Dictionary<(int byteCount, double fontSize, string fontFamily), double> _cellWidthCache = new();
+        // Cache stores calculated cell widths based on byte count, font size, font family, and data visual type
+        // Key: (byteCount, fontSize, fontFamily, dataVisualType) → Value: calculated width in pixels
+        // Invalidated when font settings change (FontSize, FontFamily, DPI) or DataStringVisual changes
+        private Dictionary<(int byteCount, double fontSize, string fontFamily, Core.DataVisualType visualType), double> _cellWidthCache = new();
         private double _dpi = 1.0; // DPI scale factor (1.0 = 96 DPI, 1.5 = 144 DPI, etc.)
+
+        // Dynamic OffsetWidth cache for different visual formats
+        // Key: (fontSize, fontFamily, offsetVisualType) → Value: calculated width in pixels
+        // Invalidated when font settings change or OffSetStringVisual changes
+        private Dictionary<(double fontSize, string fontFamily, Core.DataVisualType visualType), double> _offsetWidthCache = new();
 
         /// <summary>
         /// Get the last visible byte position in the viewport (matches Legacy behavior)
@@ -284,23 +292,30 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
-        /// Phase 6 (Bug 4): Calculate dynamic cell width based on actual font/DPI settings
+        /// Phase 6 (Bug 4): Calculate dynamic cell width based on actual font/DPI settings and data visual type
         /// Uses FormattedText to measure real text width and caches results for performance
         /// </summary>
         /// <param name="byteCount">Number of bytes in the cell (1, 2, 3, or 4)</param>
         /// <returns>Cell width in pixels (includes 4px padding)</returns>
         private double CalculateCellWidth(int byteCount)
         {
-            // Create cache key based on current font settings
-            var key = (byteCount, _fontSize, _typeface.FontFamily.Source);
+            // Create cache key based on current font settings and visual type
+            var key = (byteCount, _fontSize, _typeface.FontFamily.Source, DataStringVisual);
 
             // Return cached value if available
             if (_cellWidthCache.TryGetValue(key, out double cachedWidth))
                 return cachedWidth;
 
-            // Measure actual text width using FormattedText
-            // Use "FF" repeated to simulate hex string (1 byte = "FF", 2 bytes = "FFFF", etc.)
-            string sampleText = new string('F', byteCount * 2);
+            // Generate sample text based on data visual type
+            // Use maximum-width characters for each format to ensure proper spacing
+            string sampleText = DataStringVisual switch
+            {
+                Core.DataVisualType.Hexadecimal => new string('F', byteCount * 2), // 1 byte = "FF", 2 bytes = "FFFF", etc.
+                Core.DataVisualType.Decimal => new string('8', byteCount * 3),     // 1 byte = "255" (3 chars), 2 bytes = "65535" (5 chars but use 6 for safety)
+                Core.DataVisualType.Binary => new string('1', byteCount * 8),      // 1 byte = "11111111", 2 bytes = "1111111111111111", etc.
+                _ => new string('F', byteCount * 2)
+            };
+
             var formattedText = new FormattedText(
                 sampleText,
                 System.Globalization.CultureInfo.CurrentCulture,
@@ -332,6 +347,50 @@ namespace WpfHexaEditor.Controls
                 return CalculateCellWidth(1); // Fallback to 1-byte width
 
             return CalculateCellWidth(byteData.Values.Length);
+        }
+
+        /// <summary>
+        /// Calculate dynamic offset column width based on OffSetStringVisual format
+        /// Uses FormattedText to measure real text width and caches results for performance
+        /// </summary>
+        /// <returns>Offset column width in pixels (includes padding)</returns>
+        private double CalculateOffsetWidth()
+        {
+            // Create cache key based on current font settings and offset visual type
+            var key = (_fontSize, _typeface.FontFamily.Source, OffSetStringVisual);
+
+            // Return cached value if available
+            if (_offsetWidthCache.TryGetValue(key, out double cachedWidth))
+                return cachedWidth;
+
+            // Generate sample text based on offset visual type
+            // Use maximum-width offset value to ensure proper spacing
+            string sampleText = OffSetStringVisual switch
+            {
+                Core.DataVisualType.Hexadecimal => "0xFFFFFFFF",                              // 10 characters
+                Core.DataVisualType.Decimal => "4294967295",                                   // 10 characters
+                Core.DataVisualType.Binary => "0b11111111111111111111111111111111",          // 34 characters
+                _ => "0xFFFFFFFF"
+            };
+
+            // Use fixed font size 13 for offsets (matches DrawOffset method)
+            var formattedText = new FormattedText(
+                sampleText,
+                System.Globalization.CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                _typeface,
+                13, // Fixed font size for offsets
+                Brushes.Black,
+                _dpi
+            );
+
+            // Add padding for left margin and spacing (20px total)
+            double width = formattedText.Width + 20;
+
+            // Cache the result
+            _offsetWidthCache[key] = width;
+
+            return width;
         }
 
         #endregion
@@ -426,15 +485,46 @@ namespace WpfHexaEditor.Controls
             }
         }
 
+        private Core.DataVisualType _dataStringVisual = Core.DataVisualType.Hexadecimal;
+        private Core.DataVisualType _offSetStringVisual = Core.DataVisualType.Hexadecimal;
+
         /// <summary>
         /// Data string display format (Hexadecimal, Decimal, Binary)
+        /// Invalidates cell width cache when changed to recalculate column widths
         /// </summary>
-        public Core.DataVisualType DataStringVisual { get; set; } = Core.DataVisualType.Hexadecimal;
+        public Core.DataVisualType DataStringVisual
+        {
+            get => _dataStringVisual;
+            set
+            {
+                if (_dataStringVisual != value)
+                {
+                    _dataStringVisual = value;
+                    // Invalidate cell width cache since different formats have different widths
+                    _cellWidthCache.Clear();
+                    InvalidateVisual();
+                }
+            }
+        }
 
         /// <summary>
         /// Offset string display format (Hexadecimal, Decimal, Binary)
+        /// Invalidates offset width cache when changed to recalculate offset column width
         /// </summary>
-        public Core.DataVisualType OffSetStringVisual { get; set; } = Core.DataVisualType.Hexadecimal;
+        public Core.DataVisualType OffSetStringVisual
+        {
+            get => _offSetStringVisual;
+            set
+            {
+                if (_offSetStringVisual != value)
+                {
+                    _offSetStringVisual = value;
+                    // Invalidate offset width cache since different formats have different widths
+                    _offsetWidthCache.Clear();
+                    InvalidateVisual();
+                }
+            }
+        }
 
         /// <summary>
         /// Cursor position
@@ -981,6 +1071,9 @@ namespace WpfHexaEditor.Controls
 
             // CRITICAL: Invalidate cell width cache (Bug 4 fix)
             _cellWidthCache.Clear();
+
+            // Invalidate offset width cache (format-aware widths)
+            _offsetWidthCache.Clear();
 
             // Invalidate custom background renderer cache
             InvalidateCustomBackgroundCache();
