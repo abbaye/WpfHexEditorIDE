@@ -409,19 +409,39 @@ namespace WpfHexaEditor.Core.Settings
             // ColorPicker (Color properties)
             if (control is ColorPicker colorPicker)
             {
-                // ColorPicker sets its own DataContext to ColorPickerViewModel internally,
-                // so we need to use RelativeSource to bind to the ancestor panel's DataContext (HexEditor)
-                var ancestorBinding = new Binding(metadata.PropertyName)
+                // CRITICAL FIX: ColorPicker sets its own DataContext internally, breaking inheritance.
+                // RelativeSource with fixed level doesn't work due to variable nesting (subcategories).
+                // Solution: Find DataContext dynamically when control is loaded.
+
+                var propName = metadata.PropertyName;
+                var converter = binding.Converter;
+
+                colorPicker.Loaded += (s, e) =>
                 {
-                    Mode = BindingMode.TwoWay,
-                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                    RelativeSource = new System.Windows.Data.RelativeSource(
-                        System.Windows.Data.RelativeSourceMode.FindAncestor,
-                        typeof(StackPanel),
-                        1)
+                    if (s is ColorPicker cp)
+                    {
+                        // Walk up visual tree to find first element with DataContext
+                        DependencyObject parent = System.Windows.Media.VisualTreeHelper.GetParent(cp);
+                        while (parent != null)
+                        {
+                            if (parent is FrameworkElement fe && fe.DataContext != null)
+                            {
+                                // Found! Bind directly to this DataContext
+                                var directBinding = new Binding(propName)
+                                {
+                                    Source = fe.DataContext,
+                                    Mode = BindingMode.TwoWay,
+                                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                                    Converter = converter
+                                };
+                                cp.SetBinding(ColorPicker.SelectedColorProperty, directBinding);
+                                return;
+                            }
+                            parent = System.Windows.Media.VisualTreeHelper.GetParent(parent);
+                        }
+                    }
                 };
 
-                colorPicker.SetBinding(ColorPicker.SelectedColorProperty, ancestorBinding);
                 return CreateControlWithLabel(propertyControl.CreateLabel(metadata), colorPicker);
             }
 
