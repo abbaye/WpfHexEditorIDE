@@ -7,6 +7,19 @@
     "description":  "Microsoft Embedded OpenType font format for web",
     "category":  "Fonts",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Embedded OpenType (EOT) File Format Specification",
+            "Microsoft Web Embedding Fonts Tool (WEFT)",
+            "W3C EOT Submission"
+        ],
+        "web_links": [
+            "https://www.w3.org/submissions/EOT/",
+            "https://en.wikipedia.org/wiki/Embedded_OpenType",
+            "https://www.w3.org/submissions/2008/01/",
+            "https://docs.fileformat.com/font/eot/"
+        ]
+    },
     "detection":  {
                       "signature":  "00",
                       "offset":  34,

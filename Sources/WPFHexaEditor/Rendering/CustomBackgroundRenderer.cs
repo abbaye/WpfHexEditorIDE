@@ -28,56 +28,16 @@ namespace WpfHexaEditor.Rendering
         #region Viewport State (Cache Key)
 
         /// <summary>
-        /// Immutable struct representing viewport rendering configuration
-        /// Used as cache key to detect when recalculation is needed
+        /// Simplified viewport state - only tracks whether ASCII area should be drawn
+        /// All position calculations now use actual Rects stored on ByteData
         /// </summary>
         private struct ViewportState : IEquatable<ViewportState>
         {
-            public int BytesPerLine;
-            public double FontSize;
-            public string FontFamily;
-            public double LineHeight;
-            public double HexByteWidth;
-            public double AsciiCharWidth;
-            public ByteSpacerGroup ByteGrouping;
-            public int ByteSpacerWidth;
-            public bool ShowOffset;
-            public bool ShowAscii;
-            public bool HasAsciiSpacers; // Whether ASCII area should have spacers
-            public double OffsetWidth; // Dynamic offset column width
+            public bool ShowAscii;  // Only need this to know whether to draw ASCII backgrounds
 
-            public bool Equals(ViewportState other)
-            {
-                return BytesPerLine == other.BytesPerLine &&
-                       Math.Abs(FontSize - other.FontSize) < 0.001 &&
-                       FontFamily == other.FontFamily &&
-                       Math.Abs(LineHeight - other.LineHeight) < 0.001 &&
-                       Math.Abs(HexByteWidth - other.HexByteWidth) < 0.001 &&
-                       Math.Abs(AsciiCharWidth - other.AsciiCharWidth) < 0.001 &&
-                       ByteGrouping == other.ByteGrouping &&
-                       ByteSpacerWidth == other.ByteSpacerWidth &&
-                       ShowOffset == other.ShowOffset &&
-                       ShowAscii == other.ShowAscii &&
-                       HasAsciiSpacers == other.HasAsciiSpacers &&
-                       Math.Abs(OffsetWidth - other.OffsetWidth) < 0.001;
-            }
-
+            public bool Equals(ViewportState other) => ShowAscii == other.ShowAscii;
             public override bool Equals(object obj) => obj is ViewportState state && Equals(state);
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    int hash = 17;
-                    hash = hash * 31 + BytesPerLine.GetHashCode();
-                    hash = hash * 31 + FontSize.GetHashCode();
-                    hash = hash * 31 + (FontFamily?.GetHashCode() ?? 0);
-                    hash = hash * 31 + ByteGrouping.GetHashCode();
-                    hash = hash * 31 + HasAsciiSpacers.GetHashCode();
-                    hash = hash * 31 + OffsetWidth.GetHashCode();
-                    return hash;
-                }
-            }
+            public override int GetHashCode() => ShowAscii.GetHashCode();
         }
 
         #endregion
@@ -114,61 +74,24 @@ namespace WpfHexaEditor.Rendering
 
         /// <summary>
         /// Prepare blocks for rendering by pre-computing frozen brushes
-        /// Call this when blocks change or viewport properties change
+        /// Simplified - all position calculations now use actual Rects from ByteData
         /// </summary>
         /// <param name="blocks">Blocks to prepare</param>
-        /// <param name="bytesPerLine">Bytes per line</param>
-        /// <param name="fontSize">Font size</param>
-        /// <param name="fontFamily">Font family name</param>
-        /// <param name="lineHeight">Line height in pixels</param>
-        /// <param name="hexByteWidth">Width of hex byte cell</param>
-        /// <param name="asciiCharWidth">Width of ASCII character</param>
-        /// <param name="byteGrouping">Byte grouping (4, 8, 16 bytes)</param>
-        /// <param name="byteSpacerWidth">Width of each spacer in pixels</param>
-        /// <param name="showOffset">Whether offset column is visible</param>
         /// <param name="showAscii">Whether ASCII column is visible</param>
-        /// <param name="hasAsciiSpacers">Whether ASCII area should have spacers (depends on ByteSpacerPositioning and TBL)</param>
-        /// <param name="offsetWidth">Width of offset column (dynamic, depends on format)</param>
         public void PrepareBlocks(
             IEnumerable<CustomBackgroundBlock> blocks,
-            int bytesPerLine,
-            double fontSize,
-            string fontFamily,
-            double lineHeight,
-            double hexByteWidth,
-            double asciiCharWidth,
-            ByteSpacerGroup byteGrouping,
-            int byteSpacerWidth,
-            bool showOffset,
-            bool showAscii,
-            bool hasAsciiSpacers = false,
-            double offsetWidth = 110)
+            bool showAscii)
         {
-            var newState = new ViewportState
-            {
-                BytesPerLine = bytesPerLine,
-                FontSize = fontSize,
-                FontFamily = fontFamily,
-                LineHeight = lineHeight,
-                HexByteWidth = hexByteWidth,
-                AsciiCharWidth = asciiCharWidth,
-                ByteGrouping = byteGrouping,
-                ByteSpacerWidth = byteSpacerWidth,
-                ShowOffset = showOffset,
-                ShowAscii = showAscii,
-                HasAsciiSpacers = hasAsciiSpacers,
-                OffsetWidth = offsetWidth
-            };
+            var newState = new ViewportState { ShowAscii = showAscii };
 
-            // Check if cache is still valid
+            // Check cache validity
             if (_cacheValid && _cachedState.Equals(newState) &&
                 _preparedBlocks.Count == (blocks?.Count() ?? 0))
             {
-                // Cache hit - no preparation needed
-                return;
+                return; // Cache hit
             }
 
-            // Cache miss - rebuild
+            // Rebuild cache
             _cacheValid = false;
             _preparedBlocks.Clear();
 
@@ -179,20 +102,18 @@ namespace WpfHexaEditor.Rendering
                 return;
             }
 
-            // Prepare each block (create frozen brushes)
+            // Prepare frozen brushes
             foreach (var block in blocks)
             {
                 if (block == null || !block.IsValid)
                     continue;
 
-                var prepared = new PreparedBlock
+                _preparedBlocks.Add(new PreparedBlock
                 {
                     Block = block,
-                    FrozenBrush = block.GetTransparentBrush(), // Already frozen from CustomBackgroundBlock
+                    FrozenBrush = block.GetTransparentBrush(),
                     IsValid = true
-                };
-
-                _preparedBlocks.Add(prepared);
+                });
             }
 
             _cachedState = newState;
@@ -200,7 +121,7 @@ namespace WpfHexaEditor.Rendering
         }
 
         /// <summary>
-        /// Draw prepared blocks to the viewport
+        /// Draw prepared blocks to the viewport using actual Rects from ByteData
         /// Optimized for performance with visible range culling
         /// </summary>
         /// <param name="dc">Drawing context</param>
@@ -217,16 +138,6 @@ namespace WpfHexaEditor.Rendering
                 linesCached == null || linesCached.Count == 0)
                 return;
 
-            double hexStartX = _cachedState.ShowOffset ? _cachedState.OffsetWidth : 0;
-            double asciiStartX = hexStartX +
-                (_cachedState.BytesPerLine * (_cachedState.HexByteWidth + HexByteSpacing)) +
-                4 + SeparatorWidth;
-
-            // Calculate spacers width once
-            int numSpacers = CalculateSpacerCount(_cachedState.BytesPerLine, (int)_cachedState.ByteGrouping);
-            double spacersWidth = numSpacers * _cachedState.ByteSpacerWidth;
-            asciiStartX += spacersWidth;
-
             // Draw each prepared block
             foreach (var prepared in _preparedBlocks)
             {
@@ -235,7 +146,7 @@ namespace WpfHexaEditor.Rendering
                     prepared.Block.StopOffset <= firstVisiblePos)
                     continue;
 
-                DrawBlock(dc, prepared, linesCached, hexStartX, asciiStartX);
+                DrawBlock(dc, prepared, linesCached, 0, 0); // Parameters unused now
             }
         }
 
@@ -264,7 +175,9 @@ namespace WpfHexaEditor.Rendering
         #region Private Helper Methods
 
         /// <summary>
-        /// Draw a single block across multiple lines
+        /// Draw a single block using actual rendered Rects from ByteData
+        /// Guaranteed accurate positioning - no calculation, just read and draw
+        /// Optimized: line-level culling only (byte-level foreach is faster than index search)
         /// </summary>
         private void DrawBlock(
             DrawingContext dc,
@@ -273,192 +186,46 @@ namespace WpfHexaEditor.Rendering
             double hexStartX,
             double asciiStartX)
         {
-            double y = TopMargin;
             var block = prepared.Block;
             var brush = prepared.FrozenBrush;
 
+            // Iterate through all visible lines
             foreach (var line in linesCached)
             {
                 if (line.Bytes == null || line.Bytes.Count == 0)
-                {
-                    y += _cachedState.LineHeight;
                     continue;
-                }
 
+                // Get line byte range for quick line-level culling
                 long lineStartPos = line.Bytes[0].VirtualPos;
                 long lineEndPos = line.Bytes[line.Bytes.Count - 1].VirtualPos;
 
-                // Check if block overlaps with this line
-                if (block.StartOffset < lineEndPos + 1 && block.StopOffset > lineStartPos)
+                // Skip entire line if block doesn't overlap with it
+                if (block.StartOffset >= lineEndPos + 1 || block.StopOffset <= lineStartPos)
+                    continue;
+
+                // Iterate through bytes in overlapping lines
+                // Note: foreach with range check is faster than finding indices first
+                foreach (var byteData in line.Bytes)
                 {
-                    // Find byte range in line that intersects with block
-                    int startByteIndex = FindStartByteIndex(line, block.StartOffset);
-                    int endByteIndex = FindEndByteIndex(line, block.StopOffset);
+                    long bytePos = byteData.VirtualPos;
 
-                    // Draw hex area background
-                    var hexRect = CalculateHexRectangle(
-                        startByteIndex, endByteIndex, hexStartX, y);
-                    dc.DrawRectangle(brush, null, hexRect);
+                    // Skip bytes outside block range (fast early exit)
+                    if (bytePos < block.StartOffset || bytePos >= block.StopOffset)
+                        continue;
 
-                    // Draw ASCII area background (if visible)
-                    if (_cachedState.ShowAscii)
+                    // Draw hex area background using stored Rect
+                    if (byteData.HexRect.HasValue)
                     {
-                        var asciiRect = CalculateAsciiRectangle(
-                            startByteIndex, endByteIndex, asciiStartX, y);
-                        dc.DrawRectangle(brush, null, asciiRect);
+                        dc.DrawRectangle(brush, null, byteData.HexRect.Value);
+                    }
+
+                    // Draw ASCII area background using stored Rect (if visible)
+                    if (_cachedState.ShowAscii && byteData.AsciiRect.HasValue)
+                    {
+                        dc.DrawRectangle(brush, null, byteData.AsciiRect.Value);
                     }
                 }
-
-                y += _cachedState.LineHeight;
             }
-        }
-
-        /// <summary>
-        /// Find the starting byte index in a line for a block
-        /// </summary>
-        private int FindStartByteIndex(HexLine line, long blockStart)
-        {
-            for (int i = 0; i < line.Bytes.Count; i++)
-            {
-                if (line.Bytes[i].VirtualPos >= blockStart)
-                    return i;
-            }
-            return 0;
-        }
-
-        /// <summary>
-        /// Find the ending byte index in a line for a block
-        /// </summary>
-        private int FindEndByteIndex(HexLine line, long blockStop)
-        {
-            for (int i = line.Bytes.Count - 1; i >= 0; i--)
-            {
-                if (line.Bytes[i].VirtualPos < blockStop)
-                    return i;
-            }
-            return line.Bytes.Count - 1;
-        }
-
-        /// <summary>
-        /// Calculate rectangle for hex area background
-        /// </summary>
-        private Rect CalculateHexRectangle(
-            int startByteIndex, int endByteIndex, double hexStartX, double y)
-        {
-            double x = hexStartX;
-
-            // Account for spacers before start byte
-            for (int i = 0; i < startByteIndex; i++)
-            {
-                if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
-                    i > 0 && i % (int)_cachedState.ByteGrouping == 0)
-                {
-                    x += _cachedState.ByteSpacerWidth;
-                }
-                x += _cachedState.HexByteWidth + HexByteSpacing;
-            }
-
-            // Bug fix: Check if startByteIndex itself needs a spacer before it
-            // (the loop above doesn't reach startByteIndex, so we check it separately)
-            if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
-                startByteIndex > 0 && startByteIndex % (int)_cachedState.ByteGrouping == 0)
-            {
-                x += _cachedState.ByteSpacerWidth;
-            }
-
-            double startX = x;
-            double width = 0;
-
-            // Calculate width including spacers
-            // Bug fix: Match the actual rendering logic where each byte rect is (cellWidth - HexByteSpacing)
-            // and bytes are spaced by (cellWidth + HexByteSpacing) between them
-            for (int i = startByteIndex; i <= endByteIndex; i++)
-            {
-                if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
-                    i > 0 && i % (int)_cachedState.ByteGrouping == 0)
-                {
-                    width += _cachedState.ByteSpacerWidth;
-                }
-
-                // Each byte rect has width (cellWidth - HexByteSpacing)
-                width += _cachedState.HexByteWidth - HexByteSpacing;
-
-                // Add gap between bytes (2*HexByteSpacing between rect edges)
-                if (i < endByteIndex)
-                {
-                    width += 2 * HexByteSpacing;
-                }
-            }
-
-            return new Rect(startX, y, width, _cachedState.LineHeight);
-        }
-
-        /// <summary>
-        /// Calculate rectangle for ASCII area background
-        /// Note: ASCII area may have spacers depending on ByteSpacerPositioning and TBL settings
-        /// </summary>
-        private Rect CalculateAsciiRectangle(
-            int startByteIndex, int endByteIndex, double asciiStartX, double y)
-        {
-            if (!_cachedState.HasAsciiSpacers)
-            {
-                // No spacers in ASCII area - simple calculation
-                double startX = asciiStartX + (startByteIndex * _cachedState.AsciiCharWidth);
-                double width = (endByteIndex - startByteIndex + 1) * _cachedState.AsciiCharWidth;
-                return new Rect(startX, y, width, _cachedState.LineHeight);
-            }
-            else
-            {
-                // ASCII area has spacers - use EXACT same logic as hex area
-                double x = asciiStartX;
-
-                // Account for spacers before start byte (same as hex)
-                for (int i = 0; i < startByteIndex; i++)
-                {
-                    if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
-                        i > 0 && i % (int)_cachedState.ByteGrouping == 0)
-                    {
-                        x += _cachedState.ByteSpacerWidth;
-                    }
-                    x += _cachedState.AsciiCharWidth;
-                }
-
-                // Bug fix: Check if startByteIndex itself needs a spacer before it
-                // (same as hex area)
-                if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
-                    startByteIndex > 0 && startByteIndex % (int)_cachedState.ByteGrouping == 0)
-                {
-                    x += _cachedState.ByteSpacerWidth;
-                }
-
-                double startX = x;
-                double width = 0;
-
-                // Calculate width including spacers (same as hex)
-                for (int i = startByteIndex; i <= endByteIndex; i++)
-                {
-                    if (_cachedState.BytesPerLine >= (int)_cachedState.ByteGrouping &&
-                        i > 0 && i % (int)_cachedState.ByteGrouping == 0)
-                    {
-                        width += _cachedState.ByteSpacerWidth;
-                    }
-                    width += _cachedState.AsciiCharWidth;
-                }
-
-                return new Rect(startX, y, width, _cachedState.LineHeight);
-            }
-        }
-
-        /// <summary>
-        /// Calculate number of spacers for byte grouping
-        /// </summary>
-        private int CalculateSpacerCount(int bytesPerLine, int grouping)
-        {
-            if (bytesPerLine < grouping || grouping <= 0) return 0;
-
-            return (bytesPerLine % grouping == 0)
-                ? (bytesPerLine / grouping) - 1
-                : bytesPerLine / grouping;
         }
 
         #endregion

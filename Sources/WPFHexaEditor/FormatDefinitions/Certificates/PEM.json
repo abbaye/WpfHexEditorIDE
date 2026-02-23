@@ -9,6 +9,19 @@
     "description":  "PEM-encoded X.509 certificate - Base64 encoded certificate",
     "category":  "Certificates",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Privacy-Enhanced Mail (PEM) - RFC 1421",
+            "Textual Encodings of PKIX, PKCS, and CMS Structures - RFC 7468",
+            "X.509 Certificate Format - RFC 5280"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail",
+            "https://www.rfc-editor.org/rfc/rfc7468",
+            "https://datatracker.ietf.org/doc/html/rfc5280",
+            "https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/"
+        ]
+    },
     "detection":  {
                       "signature":  "2D2D2D2D2D424547494E20434552544946494341544544",
                       "offset":  0,

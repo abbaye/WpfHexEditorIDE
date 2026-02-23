@@ -8,6 +8,19 @@
     "description":  "TLS Session Ticket - Encrypted session resumption data",
     "category":  "Crypto",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "TLS Session Resumption without Server-Side State - RFC 5077",
+            "Session Ticket Encryption Key (STEK)",
+            "NewSessionTicket TLS Handshake Message"
+        ],
+        "web_links": [
+            "https://datatracker.ietf.org/doc/html/rfc5077",
+            "https://www.rfc-editor.org/rfc/rfc5077.html",
+            "https://blog.cloudflare.com/tls-session-resumption-full-speed-and-secure/",
+            "https://upb-syssec.github.io/blog/2023/session-tickets/"
+        ]
+    },
     "detection":  {
                       "signature":  "00",
                       "offset":  0,

@@ -7,6 +7,19 @@
     "description":  "Fourth Extended Filesystem for Linux",
     "category":  "Disk",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Ext4 Disk Layout Documentation",
+            "Fourth Extended Filesystem Specification",
+            "Linux Ext4 Filesystem Structure"
+        ],
+        "web_links": [
+            "https://ext4.wiki.kernel.org/index.php/Ext4_Disk_Layout",
+            "https://opensource.com/article/17/5/introduction-ext4-filesystem",
+            "https://wiki.osdev.org/Ext4",
+            "https://metebalci.com/blog/a-minimum-complete-tutorial-of-linux-ext4-file-system/"
+        ]
+    },
     "detection":  {
                       "signature":  "53EF",
                       "offset":  1080,

@@ -10,6 +10,19 @@
     "description":  "PKCS#7 Cryptographic Message Syntax - Certificate chain format",
     "category":  "Crypto",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PKCS #7: Cryptographic Message Syntax - RFC 2315",
+            "Cryptographic Message Syntax (CMS) - RFC 5652",
+            "PKCS #7 SignedData Structure"
+        ],
+        "web_links": [
+            "https://tools.ietf.org/html/rfc5652",
+            "https://en.wikipedia.org/wiki/PKCS_7",
+            "https://datatracker.ietf.org/doc/html/rfc2315",
+            "https://learn.microsoft.com/en-us/windows/win32/seccertenroll/pkcs--7-attributes"
+        ]
+    },
     "detection":  {
                       "signature":  "3082",
                       "offset":  0,

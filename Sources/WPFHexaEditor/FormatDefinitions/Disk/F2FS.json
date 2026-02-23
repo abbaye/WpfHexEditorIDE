@@ -7,6 +7,19 @@
     "description":  "Flash-Friendly File System for NAND flash devices",
     "category":  "Disk",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Flash-Friendly File System (F2FS) Documentation",
+            "F2FS: A New File System for Flash Storage",
+            "Linux Kernel F2FS Implementation"
+        ],
+        "web_links": [
+            "https://docs.kernel.org/filesystems/f2fs.html",
+            "https://en.wikipedia.org/wiki/F2FS",
+            "https://www.usenix.org/conference/fast15/technical-sessions/presentation/lee",
+            "https://wiki.archlinux.org/title/F2FS"
+        ]
+    },
     "detection":  {
                       "signature":  "F2F52010",
                       "offset":  1024,

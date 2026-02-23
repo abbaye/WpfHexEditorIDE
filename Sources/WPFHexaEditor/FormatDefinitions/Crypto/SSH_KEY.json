@@ -8,6 +8,19 @@
     "description":  "OpenSSH private key format - Encrypted SSH authentication key",
     "category":  "Crypto",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "OpenSSH Private Key Format (openssh-key-v1)",
+            "Ed25519 and RSA Key Structures",
+            "SSH Key Format Documentation"
+        ],
+        "web_links": [
+            "https://coolaj86.com/articles/the-openssh-private-key-format/",
+            "https://dnaeon.github.io/openssh-private-key-binary-format/",
+            "https://peterlyons.com/problog/2017/12/openssh-ed25519-private-key-file-format/",
+            "https://www.thedigitalcatonline.com/blog/2021/06/03/public-key-cryptography-openssh-private-keys/"
+        ]
+    },
     "detection":  {
                       "signature":  "6F70656E7373682D6B65792D7631",
                       "offset":  0,

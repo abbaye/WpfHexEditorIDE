@@ -8,6 +8,19 @@
     "description":  "Personal Information Exchange - Certificate bundle",
     "category":  "Certificates",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "PKCS #12: Personal Information Exchange Syntax v1.1 - RFC 7292",
+            "Microsoft PFX (Personal Information Exchange)",
+            "PKCS #12 Archive Format"
+        ],
+        "web_links": [
+            "https://datatracker.ietf.org/doc/html/rfc7292",
+            "https://en.wikipedia.org/wiki/PKCS_12",
+            "https://learn.microsoft.com/en-us/windows-hardware/drivers/install/personal-information-exchange---pfx--files",
+            "https://docs.fileformat.com/misc/pfx/"
+        ]
+    },
     "detection":  {
                       "signature":  "3082",
                       "offset":  0,

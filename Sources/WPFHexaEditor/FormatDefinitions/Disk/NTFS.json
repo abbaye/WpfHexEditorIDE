@@ -7,6 +7,19 @@
     "description":  "Windows NT File System",
     "category":  "Disk",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "NTFS Partition Boot Sector Specification",
+            "NTFS Master File Table (MFT) Structure",
+            "Windows NT File System Documentation"
+        ],
+        "web_links": [
+            "http://ntfs.com/ntfs-partition-boot-sector.htm",
+            "https://en.wikipedia.org/wiki/NTFS",
+            "https://www.ntfs.com/ntfs-mft.htm",
+            "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc781134(v=ws.10)"
+        ]
+    },
     "detection":  {
                       "signature":  "4E54465320202020",
                       "offset":  3,

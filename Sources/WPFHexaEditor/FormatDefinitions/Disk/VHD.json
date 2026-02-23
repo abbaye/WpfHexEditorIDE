@@ -7,6 +7,19 @@
     "description":  "Microsoft Virtual Hard Disk format",
     "category":  "Disk",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Virtual Hard Disk (VHD) Image Format Specification",
+            "Microsoft Hyper-V VHD Format",
+            "Connectix Virtual PC Disk Format"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/VHD_(file_format)",
+            "https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831446(v=ws.11)",
+            "https://github.com/libyal/libvhdi/blob/main/documentation/Virtual%20Hard%20Disk%20(VHD)%20image%20format.asciidoc",
+            "https://learn.microsoft.com/en-us/windows-server/storage/disk-management/manage-virtual-hard-disks"
+        ]
+    },
     "detection":  {
                       "signature":  "636F6E6563746978",
                       "offset":  0,

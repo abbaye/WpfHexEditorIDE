@@ -7,6 +7,19 @@
     "description":  "VMware virtual disk format",
     "category":  "Disk",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "VMware Virtual Machine Disk (VMDK) Format",
+            "VMDK Sparse Extent File Structure",
+            "VMware Virtual Disk API"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/VMDK",
+            "https://github.com/libyal/libvmdk/blob/main/documentation/VMWare%20Virtual%20Disk%20Format%20(VMDK).asciidoc",
+            "https://formats.kaitai.io/vmware_vmdk/",
+            "https://www.forensicxlab.com/blog/vmdk"
+        ]
+    },
     "detection":  {
                       "signature":  "4B444D",
                       "offset":  0,

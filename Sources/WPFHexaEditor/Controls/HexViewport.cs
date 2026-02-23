@@ -1279,7 +1279,10 @@ namespace WpfHexaEditor.Controls
             // Draw white background
             dc.DrawRectangle(Brushes.White, null, new Rect(0, 0, ActualWidth, ActualHeight));
 
-            // Draw custom background blocks (before drawing bytes)
+            // PASS 1: Populate Rects first (fast pre-pass without drawing)
+            PopulateByteRects();
+
+            // Draw custom background blocks (using populated Rects)
             DrawCustomBackgroundBlocks(dc);
 
             double y = TopMargin;
@@ -1383,6 +1386,95 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
+        /// Pre-populate HexRect and AsciiRect on all visible ByteData objects
+        /// Called before DrawCustomBackgroundBlocks to ensure Rects are available
+        /// Fast: only calculates positions, no drawing
+        /// </summary>
+        private void PopulateByteRects()
+        {
+            if (_linesCached == null || _linesCached.Count == 0)
+                return;
+
+            double y = TopMargin;
+
+            foreach (var line in _linesCached)
+            {
+                if (line.Bytes == null || line.Bytes.Count == 0)
+                    continue;
+
+                // Calculate hex and ASCII positions (same as drawing loop)
+                double hexX = ShowOffset ? OffsetWidth : 0;
+
+                int stride = line.Bytes.Count > 0 ? (line.Bytes[0].ByteSize switch
+                {
+                    Core.ByteSizeType.Bit8 => 1,
+                    Core.ByteSizeType.Bit16 => 2,
+                    Core.ByteSizeType.Bit32 => 4,
+                    _ => 1
+                }) : 1;
+
+                // Populate HexRects
+                for (int i = 0; i < line.Bytes.Count; i++)
+                {
+                    int bytePosition = i * stride;
+
+                    // Account for byte spacers (same logic as drawing)
+                    if (_bytesPerLine >= (int)ByteGrouping &&
+                        (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                         ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel) &&
+                        bytePosition % (int)ByteGrouping == 0 && i > 0)
+                    {
+                        hexX += (int)ByteSpacerWidthTickness;
+                    }
+
+                    var byteData = line.Bytes[i];
+                    double cellWidth = GetDynamicCellWidth(byteData);
+                    double byteWidth = cellWidth - HexByteSpacing;
+
+                    // Populate HexRect
+                    byteData.HexRect = new Rect(hexX, y, byteWidth, _lineHeight);
+
+                    hexX += cellWidth + HexByteSpacing;
+                }
+
+                // Populate AsciiRects (if visible)
+                if (ShowAscii)
+                {
+                    double separatorX = hexX + 4;
+                    double asciiX = separatorX + SeparatorWidth;
+
+                    for (int i = 0; i < line.Bytes.Count; i++)
+                    {
+                        int bytePosition = i * stride;
+
+                        // Account for byte spacers in ASCII (same logic as drawing)
+                        if (_tblStream == null &&
+                            _bytesPerLine >= (int)ByteGrouping &&
+                            (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                             ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel) &&
+                            bytePosition % (int)ByteGrouping == 0 && i > 0)
+                        {
+                            asciiX += (int)ByteSpacerWidthTickness;
+                        }
+
+                        var byteData = line.Bytes[i];
+
+                        // Calculate ASCII cell width (simplified - use AsciiCharWidth for now)
+                        // Note: For TBL, actual width varies, but this is close enough for backgrounds
+                        double cellWidth = AsciiCharWidth;
+
+                        // Populate AsciiRect
+                        byteData.AsciiRect = new Rect(asciiX, y, cellWidth, _lineHeight);
+
+                        asciiX += cellWidth;
+                    }
+                }
+
+                y += _lineHeight;
+            }
+        }
+
+        /// <summary>
         /// Draw custom background blocks for visible lines
         /// Uses CustomBackgroundRenderer for performance (cached brushes, viewport state caching)
         /// Performance: 95%+ reduction in allocations via frozen brush caching
@@ -1393,41 +1485,15 @@ namespace WpfHexaEditor.Controls
                 _linesCached == null || _linesCached.Count == 0)
                 return;
 
-            // Determine if ASCII area should have spacers
-            // Spacers appear in ASCII when: no TBL is loaded AND ByteSpacerPositioning allows it
-            bool hasAsciiSpacers = _tblStream == null &&
-                                   _bytesPerLine >= (int)ByteGrouping &&
-                                   (ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                                    ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel);
+            // Prepare blocks (uses cache if unchanged)
+            // Simplified - all position calculations now use actual Rects from ByteData
+            _customBackgroundRenderer.PrepareBlocks(_customBackgroundBlocks, ShowAscii);
 
-            // Calculate dynamic hex byte width based on current ByteSize mode
-            // Bug fix: Use actual cell width instead of constant HexByteWidth to prevent misalignment
-            int byteCount = _linesCached[0].Bytes.Count > 0 && _linesCached[0].Bytes[0].Values != null
-                ? _linesCached[0].Bytes[0].Values.Length
-                : 1; // Fallback to 1 byte if no data
-            double dynamicHexByteWidth = CalculateCellWidth(byteCount);
-
-            // Prepare blocks with current viewport state (uses cache if unchanged)
-            _customBackgroundRenderer.PrepareBlocks(
-                _customBackgroundBlocks,
-                _bytesPerLine,
-                _fontSize,
-                _typeface.FontFamily.Source,
-                _lineHeight,
-                dynamicHexByteWidth,
-                AsciiCharWidth,
-                ByteGrouping,
-                (int)ByteSpacerWidthTickness,
-                ShowOffset,
-                ShowAscii,
-                hasAsciiSpacers,
-                OffsetWidth);
-
-            // Get visible range for culling
+            // Get visible range for block culling
             long firstVisiblePos = _linesCached[0].Bytes[0].VirtualPos;
             long lastVisiblePos = _linesCached[_linesCached.Count - 1].Bytes[_linesCached[_linesCached.Count - 1].Bytes.Count - 1].VirtualPos;
 
-            // Draw blocks (renderer handles all rectangle calculations)
+            // Draw blocks using stored Rects
             _customBackgroundRenderer.DrawBlocks(dc, _linesCached, firstVisiblePos, lastVisiblePos);
         }
 
@@ -1481,6 +1547,9 @@ namespace WpfHexaEditor.Controls
             double cellWidth = GetDynamicCellWidth(byteData);
             double byteWidth = cellWidth - HexByteSpacing;
             var rect = new Rect(x, y, byteWidth, _lineHeight);
+
+            // Store rect for CustomBackgroundRenderer (guaranteed accurate)
+            byteData.HexRect = rect;
 
             // Note: Custom background blocks are now drawn globally via CustomBackgroundRenderer
             // in DrawCustomBackgroundBlocks() for better performance and correct spacing handling
@@ -1715,6 +1784,9 @@ namespace WpfHexaEditor.Controls
 
             // STEP 2: Create rect with dynamic width
             var rect = new Rect(x, y, cellWidth, _lineHeight);
+
+            // Store rect for CustomBackgroundRenderer (guaranteed accurate)
+            byteData.AsciiRect = rect;
 
             // STEP 3: Draw backgrounds and borders
             // Phase 7.1: Draw custom background block FIRST (underneath everything)

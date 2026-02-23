@@ -7,6 +7,19 @@
     "description":  "Windows device driver file",
     "category":  "Executables",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Portable Executable (PE) Format Specification",
+            "Windows Driver Model (WDM) Architecture",
+            "Kernel-Mode Driver Development"
+        ],
+        "web_links": [
+            "https://learn.microsoft.com/en-us/windows/win32/debug/pe-format",
+            "https://en.wikipedia.org/wiki/Windows_Driver_Model",
+            "https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/",
+            "https://en.wikipedia.org/wiki/Portable_Executable"
+        ]
+    },
     "detection":  {
                       "signature":  "4D5A",
                       "offset":  0,

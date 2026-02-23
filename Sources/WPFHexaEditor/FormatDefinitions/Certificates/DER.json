@@ -9,6 +9,19 @@
     "description":  "Distinguished Encoding Rules - X.509 certificate",
     "category":  "Certificates",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "Distinguished Encoding Rules (DER) - ITU-T X.690",
+            "X.509 Certificate Format - RFC 5280",
+            "ASN.1 Distinguished Encoding Rules"
+        ],
+        "web_links": [
+            "https://datatracker.ietf.org/doc/html/rfc5280",
+            "https://en.wikipedia.org/wiki/X.509",
+            "https://www.oss.com/asn1/resources/asn1-made-simple/asn1-quick-reference/distinguished-encoding-rules.html",
+            "https://luca.ntop.org/Teaching/Appunti/asn1.html"
+        ]
+    },
     "detection":  {
                       "signature":  "3082",
                       "offset":  0,

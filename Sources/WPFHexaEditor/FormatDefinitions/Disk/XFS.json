@@ -7,6 +7,19 @@
     "description":  "XFS high-performance journaling filesystem",
     "category":  "Disk",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "XFS Filesystem Specification (SGI)",
+            "The SGI XFS Filesystem - Linux Kernel",
+            "XFS Journaling and Metadata"
+        ],
+        "web_links": [
+            "https://en.wikipedia.org/wiki/XFS",
+            "https://docs.kernel.org/admin-guide/xfs.html",
+            "https://wiki.osdev.org/XFS",
+            "https://www.ufsexplorer.com/articles/storage-technologies/xfs-file-system/"
+        ]
+    },
     "detection":  {
                       "signature":  "58465342",
                       "offset":  0,

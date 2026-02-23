@@ -8,6 +8,19 @@
     "description":  "Pretty Good Privacy encrypted/signed message",
     "category":  "Crypto",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "OpenPGP Message Format - RFC 4880",
+            "OpenPGP Protocol - RFC 9580 (latest)",
+            "Pretty Good Privacy (PGP) Standards"
+        ],
+        "web_links": [
+            "https://datatracker.ietf.org/doc/html/rfc4880",
+            "https://www.openpgp.org/about/standard/",
+            "https://en.wikipedia.org/wiki/Pretty_Good_Privacy",
+            "https://www.rfc-editor.org/rfc/rfc4880"
+        ]
+    },
     "detection":  {
                       "signature":  "2D2D2D2D2D424547494E20504750",
                       "offset":  0,

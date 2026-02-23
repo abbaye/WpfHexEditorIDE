@@ -142,6 +142,20 @@ namespace WpfHexaEditor.Models
         public char AsciiChar => Value >= 32 && Value <= 126 ? (char)Value : '.';
 
         /// <summary>
+        /// Rendered rectangle for this byte in hex area (screen coordinates)
+        /// Populated during OnRender, used by CustomBackgroundRenderer
+        /// Null if byte not currently visible or not yet rendered
+        /// </summary>
+        public System.Windows.Rect? HexRect { get; set; }
+
+        /// <summary>
+        /// Rendered rectangle for this byte in ASCII area (screen coordinates)
+        /// Populated during OnRender, used by CustomBackgroundRenderer
+        /// Null if byte not currently visible or not yet rendered
+        /// </summary>
+        public System.Windows.Rect? AsciiRect { get; set; }
+
+        /// <summary>
         /// Get hex text representation based on ByteSize and ByteOrder - Phase 1: ByteSize/ByteOrder
         /// </summary>
         public string GetHexText()

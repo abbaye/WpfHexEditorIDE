@@ -7,6 +7,19 @@
     "description":  "VirtualBox virtual disk format",
     "category":  "Disk",
     "author":  "WPFHexaEditor Team",
+    "references": {
+        "specifications": [
+            "VirtualBox Virtual Disk Image (VDI) Format",
+            "Oracle VM VirtualBox Storage Documentation",
+            "VDI Dynamic and Fixed Allocation"
+        ],
+        "web_links": [
+            "https://docs.oracle.com/en/virtualization/virtualbox/6.0/user/vdidetails.html",
+            "https://www.virtualbox.org/manual/ch05.html",
+            "https://docs.fileformat.com/disc-and-media/vdi/",
+            "https://docs.oracle.com/en/virtualization/virtualbox/7.0/user/storage.html"
+        ]
+    },
     "detection":  {
                       "signature":  "3C3C3C20",
                       "offset":  0,
