@@ -407,15 +407,6 @@ namespace WpfHexaEditor.Views.Panels
     }
 
     /// <summary>
-    /// Anomaly information
-    /// </summary>
-    public class AnomalyInfo
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-    }
-
-    /// <summary>
     /// Byte array comparer for dictionary keys
     /// </summary>
     public class ByteArrayComparer : IEqualityComparer<byte[]>

@@ -15,6 +15,8 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexaEditor.Core.FormatDetection;
+using WpfHexaEditor.Services;
+using WpfHexaEditor.Events;
 
 namespace WpfHexaEditor.Views.Panels
 {
@@ -71,18 +73,32 @@ namespace WpfHexaEditor.Views.Panels
             try
             {
                 var fileBytes = File.ReadAllBytes(filePath);
-                var detector = new FormatDetector();
-                var detectedFormat = detector.DetectFormat(fileBytes, Path.GetExtension(filePath));
+                var detectionService = new FormatDetectionService();
 
-                if (detectedFormat != null && detectedFormat.Blocks != null)
+                // Load format definitions (you may want to cache this)
+                var formatDefsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FormatDefinitions");
+                if (Directory.Exists(formatDefsPath))
                 {
-                    foreach (var block in detectedFormat.Blocks)
-                    {
-                        if (block.Offset >= fileBytes.Length) continue;
+                    detectionService.LoadFormatDefinitionsFromDirectory(formatDefsPath);
+                }
 
-                        var length = Math.Min(block.Length, fileBytes.Length - block.Offset);
-                        var data = new byte[length];
-                        Array.Copy(fileBytes, block.Offset, data, 0, length);
+                var result = detectionService.DetectFormat(fileBytes, Path.GetFileName(filePath));
+
+                if (result.Success && result.Format != null && result.Format.Blocks != null)
+                {
+                    var variables = result.Format.Variables ?? new Dictionary<string, object>();
+
+                    foreach (var block in result.Format.Blocks)
+                    {
+                        var offset = block.GetOffsetValue(variables);
+                        var length = block.GetLengthValue(variables);
+
+                        if (!offset.HasValue || !length.HasValue) continue;
+                        if (offset.Value >= fileBytes.Length) continue;
+
+                        var actualLength = Math.Min(length.Value, fileBytes.Length - (int)offset.Value);
+                        var data = new byte[actualLength];
+                        Array.Copy(fileBytes, offset.Value, data, 0, actualLength);
 
                         var value = ParseBlockValue(data, block.ValueType);
 
@@ -91,8 +107,8 @@ namespace WpfHexaEditor.Views.Panels
                             Name = block.Name,
                             Value = value,
                             ValueType = block.ValueType,
-                            Offset = block.Offset,
-                            Length = length
+                            Offset = (int)offset.Value,
+                            Length = actualLength
                         });
                     }
                 }
