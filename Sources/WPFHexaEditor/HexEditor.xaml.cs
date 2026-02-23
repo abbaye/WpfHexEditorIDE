@@ -2713,6 +2713,7 @@ namespace WpfHexaEditor
                 {
                     editor._isEditingByte = false;
                     editor._editingPosition = VirtualPosition.Invalid;
+                    editor.HexViewport.EditingBytePosition = -1; // Clear bold nibble feedback
                     editor._editingValue = 0;
                     editor._editingCharIndex = 0;
                     editor._editingMaxChars = 2;

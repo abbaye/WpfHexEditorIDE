@@ -127,6 +127,9 @@ namespace WpfHexaEditor.Models.JsonEditor
         /// </summary>
         public JsonDocument()
         {
+            // CRITICAL: Initialize Lines collection FIRST before calling any methods
+            Lines = new ObservableCollection<JsonLine>();
+
             // Initialize with example format definition for demo/testing
             var defaultContent = @"{
   ""formatName"": ""PNG Image"",

@@ -128,6 +128,10 @@ namespace WpfHexaEditor.Controls
         private System.Windows.Threading.DispatcherTimer _cursorBlinkTimer;  // Timer pour le clignotement
         private const int CURSOR_BLINK_INTERVAL = 500; // Intervalle en ms (500ms comme le caret)
 
+        // Nibble editing visual feedback (bold the nibble being edited)
+        private long _editingBytePosition = -1;      // Position of byte being edited (-1 = none)
+        private int _editingNibbleIndex = 0;         // Which nibble is being edited (0 = first, 1 = second)
+
         // Mouse drag selection support
         private bool _isMouseDown = false;
         private long? _dragStartPosition = null;
@@ -581,29 +585,35 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
-        /// Position of the cell currently being edited (for blinking highlight)
+        /// Position of the byte currently being edited (-1 if none)
+        /// Used to display the edited nibble in bold
         /// </summary>
-        public long EditingCellPosition
+        public long EditingBytePosition
         {
-            get => _editingCellPosition;
+            get => _editingBytePosition;
             set
             {
-                if (_editingCellPosition == value) return;
-                _editingCellPosition = value;
+                if (_editingBytePosition != value)
+                {
+                    _editingBytePosition = value;
+                    InvalidateVisual();
+                }
+            }
+        }
 
-                if (value >= 0)
+        /// <summary>
+        /// Which nibble is being edited (0 = first hex char, 1 = second hex char)
+        /// </summary>
+        public int EditingNibbleIndex
+        {
+            get => _editingNibbleIndex;
+            set
+            {
+                if (_editingNibbleIndex != value)
                 {
-                    // Start blinking: immediately show the highlight, then start timer
-                    _editingBlinkVisible = true;
-                    _editingBlinkTimer.Start();
+                    _editingNibbleIndex = value;
+                    InvalidateVisual();
                 }
-                else
-                {
-                    // Stop blinking
-                    _editingBlinkTimer.Stop();
-                    _editingBlinkVisible = false;
-                }
-                InvalidateVisual();
             }
         }
 
@@ -1456,24 +1466,55 @@ namespace WpfHexaEditor.Controls
 
             Brush textBrush = useAlternateColor ? _alternateByteBrush : _normalByteBrush;
 
-            // Phase 3: Use GetHexText() for multi-byte support with ByteOrder and DataStringVisual
-            var formattedText = new FormattedText(
-                byteData.GetHexText(DataStringVisual),
-                System.Globalization.CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                _typeface,
-                _fontSize,
-                textBrush,
-                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            string hexText = byteData.GetHexText(DataStringVisual);
 
-            // Phase 3: Set max width to prevent text overflow in multi-byte cells
-            formattedText.MaxTextWidth = byteWidth;
+            // Check if this byte is being edited - if so, draw characters separately with bold
+            bool isBeingEdited = _editingBytePosition >= 0 && bytePosition == _editingBytePosition;
 
-            // Center the text within the byte cell
-            double textX = x + (byteWidth - formattedText.Width) / 2;
-            double textY = y + (_lineHeight - formattedText.Height) / 2;
+            if (isBeingEdited && hexText.Length > 0) // For all formats (hex=2, decimal=3, binary=8)
+            {
+                // Draw each character separately with the one being edited in bold
+                var boldTypeface = new Typeface(_typeface.FontFamily, FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+                double charX = x;
 
-            dc.DrawText(formattedText, new Point(textX, textY));
+                for (int i = 0; i < hexText.Length; i++)
+                {
+                    var charTypeface = (i == _editingNibbleIndex) ? boldTypeface : _typeface;
+                    var charText = new FormattedText(
+                        hexText[i].ToString(),
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        FlowDirection.LeftToRight,
+                        charTypeface,
+                        _fontSize,
+                        textBrush,
+                        VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+                    double charY = y + (_lineHeight - charText.Height) / 2;
+                    dc.DrawText(charText, new Point(charX, charY));
+                    charX += charText.Width;
+                }
+            }
+            else
+            {
+                // Normal rendering: draw full text at once
+                var formattedText = new FormattedText(
+                    hexText,
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    _typeface,
+                    _fontSize,
+                    textBrush,
+                    VisualTreeHelper.GetDpi(this).PixelsPerDip);
+
+                // Phase 3: Set max width to prevent text overflow in multi-byte cells
+                formattedText.MaxTextWidth = byteWidth;
+
+                // Center the text within the byte cell
+                double textX = x + (byteWidth - formattedText.Width) / 2;
+                double textY = y + (_lineHeight - formattedText.Height) / 2;
+
+                dc.DrawText(formattedText, new Point(textX, textY));
+            }
         }
 
         /// <summary>

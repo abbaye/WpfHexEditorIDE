@@ -868,6 +868,18 @@ namespace WpfHexaEditor
                     HexViewport.CursorPosition = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value :
                                                  (_viewModel.SelectionStart.IsValid ? _viewModel.SelectionStart.Value : 0);
                     HexViewport.SelectionStop = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value : -1;
+
+                    // Initialize editing visual feedback: show first character/nibble as bold and ready to edit
+                    if (!_viewModel.ReadOnlyMode && _viewModel.SelectionStop.IsValid)
+                    {
+                        HexViewport.EditingBytePosition = _viewModel.SelectionStop.Value;
+                        HexViewport.EditingNibbleIndex = 0; // First character is ready to edit
+                    }
+                    else
+                    {
+                        HexViewport.EditingBytePosition = -1; // Clear if read-only or invalid
+                    }
+
                     // Sync DependencyProperty for TwoWay binding in settings panel
                     var newStop = _viewModel.SelectionStop.IsValid ? _viewModel.SelectionStop.Value : -1L;
                     if (SelectionStop != newStop)
@@ -1234,6 +1246,10 @@ namespace WpfHexaEditor
                 _editingMaxChars = 2;  // Hexadecimal: 2 characters
                 _editingBuffer = "";
 
+                // Update HexViewport to show bold nibble
+                HexViewport.EditingBytePosition = currentPos.Value;
+                HexViewport.EditingNibbleIndex = 0;
+
                 // Initialize editing value based on mode
                 // Insert mode: start with 0x00 (creating new byte)
                 // Overwrite mode: start with existing byte value (modifying it)
@@ -1259,6 +1275,7 @@ namespace WpfHexaEditor
                 _editingValue = (byte)((_editingValue & 0x0F) | (hexValue << 4));
 
                 _editingCharIndex = 1; // Move to second character (low nibble)
+                HexViewport.EditingNibbleIndex = 1; // Update visual feedback
 
                 // IN INSERT MODE: Insert byte IMMEDIATELY after first nibble (don't wait for second nibble)
                 if (_viewModel.EditMode == EditMode.Insert)
@@ -1315,6 +1332,7 @@ namespace WpfHexaEditor
                 else
                 {
                     _isEditingByte = false;
+                    HexViewport.EditingBytePosition = -1; // Clear bold nibble feedback
                 }
             }
         }
@@ -1338,6 +1356,10 @@ namespace WpfHexaEditor
                 _editingMaxChars = 3;  // Decimal: 3 digits (000-255)
                 _editingBuffer = "";
 
+                // Update HexViewport to show bold character
+                HexViewport.EditingBytePosition = currentPos.Value;
+                HexViewport.EditingNibbleIndex = 0;
+
                 // Get existing byte value in Overwrite mode, or 0 in Insert mode
                 if (_viewModel.EditMode == EditMode.Insert)
                 {
@@ -1355,9 +1377,14 @@ namespace WpfHexaEditor
             // Append digit to buffer
             _editingBuffer += decimalDigit.ToString();
             _editingCharIndex++;
+            HexViewport.EditingNibbleIndex = _editingCharIndex; // Update visual feedback
 
-            // Parse current buffer value
-            if (int.TryParse(_editingBuffer, out int decimalValue))
+            // Parse buffer with position-by-position logic (left to right like Hex)
+            // Pad right with zeros for remaining positions: "1" → "100", "12" → "120", "123" → "123"
+            int charsRemaining = _editingMaxChars - _editingCharIndex; // How many positions left
+            string paddedBuffer = _editingBuffer.PadRight(_editingBuffer.Length + charsRemaining, '0');
+
+            if (int.TryParse(paddedBuffer, out int decimalValue))
             {
                 // Validate range (0-255)
                 if (decimalValue > 255)
@@ -1365,6 +1392,7 @@ namespace WpfHexaEditor
                     // Invalid: reset to previous state
                     _editingBuffer = _editingBuffer.Substring(0, _editingBuffer.Length - 1);
                     _editingCharIndex--;
+                    HexViewport.EditingNibbleIndex = _editingCharIndex;
                     return;
                 }
 
@@ -1374,9 +1402,9 @@ namespace WpfHexaEditor
                 // Show preview
                 UpdateBytePreview(_editingPosition, _editingValue);
 
-                // Commit if reached max chars OR user typed a valid 2-digit value that can't grow
+                // Commit if reached max chars OR user typed a 2-digit value where adding any third digit would exceed 255
                 bool shouldCommit = (_editingCharIndex >= _editingMaxChars) ||
-                                   (decimalValue >= 26 && _editingCharIndex == 2);  // "26" can't become valid 3-digit
+                                   (_editingCharIndex == 2 && int.TryParse(_editingBuffer, out int bufferValue) && bufferValue >= 26);  // "26"-"99" can't become valid 3-digit
 
                 if (shouldCommit)
                 {
@@ -1413,6 +1441,10 @@ namespace WpfHexaEditor
                 _editingMaxChars = 8;  // Binary: 8 bits
                 _editingBuffer = "";
 
+                // Update HexViewport to show bold character
+                HexViewport.EditingBytePosition = currentPos.Value;
+                HexViewport.EditingNibbleIndex = 0;
+
                 // Get existing byte value in Overwrite mode, or 0 in Insert mode
                 if (_viewModel.EditMode == EditMode.Insert)
                 {
@@ -1430,9 +1462,12 @@ namespace WpfHexaEditor
             // Append bit to buffer
             _editingBuffer += binaryDigit.ToString();
             _editingCharIndex++;
+            HexViewport.EditingNibbleIndex = _editingCharIndex; // Update visual feedback
 
-            // Parse current buffer as binary (pad left with zeros to 8 bits)
-            string paddedBinary = _editingBuffer.PadLeft(8, '0');
+            // Parse buffer with position-by-position logic (left to right like Hex)
+            // Pad right with zeros for remaining positions: "1" → "10000000", "10" → "10000000", etc.
+            int bitsRemaining = _editingMaxChars - _editingCharIndex; // How many bits left
+            string paddedBinary = _editingBuffer.PadRight(_editingBuffer.Length + bitsRemaining, '0');
             _editingValue = Convert.ToByte(paddedBinary, 2);
 
             // Show preview
@@ -1489,6 +1524,7 @@ namespace WpfHexaEditor
             // Reset all editing state variables
             _isEditingByte = false;
             _editingPosition = VirtualPosition.Invalid;
+            HexViewport.EditingBytePosition = -1; // Clear bold nibble feedback
             _editingValue = 0;
             _editingCharIndex = 0;
             _editingMaxChars = 2;
