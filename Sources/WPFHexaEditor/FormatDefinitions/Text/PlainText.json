@@ -1,0 +1,299 @@
+{
+  "formatName": "Plain Text File",
+  "category": "Text Documents",
+  "description": "Plain text document with character encoding support",
+  "fileExtensions": [ ".txt", ".text", ".log", ".md", ".csv", ".json", ".xml", ".html", ".css", ".js" ],
+
+  "detection": {
+    "signature": null,
+    "offset": 0,
+    "required": false,
+    "strength": "None",
+    "isTextFormat": true,
+    "contentPatterns": [
+      "^[\\x20-\\x7E\\x09\\x0A\\x0D]+$",
+      "^[\\w\\s\\p{P}]+$"
+    ],
+    "minConfidenceThreshold": 0.7
+  },
+
+  "enrichedMetadata": {
+    "priority": "Standard",
+    "quality": 90,
+    "documentation": "Comprehensive",
+    "developedBy": "Universal",
+    "firstRelease": "1960",
+    "latestVersion": "UTF-8",
+    "website": "https://en.wikipedia.org/wiki/Plain_text",
+
+    "technicalDetails": {
+      "encoding": "ASCII, UTF-8, UTF-16, ISO-8859-1",
+      "lineEndings": "LF (\\n), CRLF (\\r\\n), CR (\\r)",
+      "byteOrderMark": "Optional (UTF-8: EF BB BF, UTF-16LE: FF FE)",
+      "maxFileSize": "Unlimited",
+      "compression": "None (uncompressed)"
+    },
+
+    "mimeTypes": [
+      "text/plain",
+      "text/plain; charset=utf-8",
+      "application/txt"
+    ],
+
+    "compatibleSoftware": [
+      "Notepad (Windows)",
+      "TextEdit (macOS)",
+      "gedit (Linux)",
+      "Vim, Emacs",
+      "Visual Studio Code",
+      "Sublime Text",
+      "Atom",
+      "Any text editor"
+    ],
+
+    "useCases": [
+      "Configuration files",
+      "Log files",
+      "Source code",
+      "Documentation",
+      "Data export/import",
+      "Notes and memos"
+    ],
+
+    "advantages": [
+      "Universal compatibility",
+      "Human-readable",
+      "No proprietary format",
+      "Small file size",
+      "Easy to parse and process",
+      "Version control friendly"
+    ],
+
+    "limitations": [
+      "No formatting (bold, italic, colors)",
+      "No embedded images",
+      "No metadata support",
+      "Encoding ambiguity without BOM",
+      "No built-in structure validation"
+    ],
+
+    "relatedFormats": [
+      "Markdown (.md)",
+      "reStructuredText (.rst)",
+      "AsciiDoc (.adoc)",
+      "CSV (Comma-Separated Values)",
+      "JSON (JavaScript Object Notation)",
+      "XML (Extensible Markup Language)"
+    ],
+
+    "fileStructure": {
+      "header": "None (optional BOM for UTF-8/UTF-16)",
+      "body": "Sequence of characters with line breaks",
+      "footer": "None",
+      "encoding": "Character encoding determines byte representation"
+    },
+
+    "securityConsiderations": [
+      "May contain sensitive information in plain form",
+      "No built-in encryption",
+      "Can be easily read and modified",
+      "Should be secured at filesystem level"
+    ],
+
+    "bestPractices": [
+      "Use UTF-8 encoding for international characters",
+      "Consistent line endings (LF for Unix, CRLF for Windows)",
+      "Include BOM for UTF-8 if compatibility needed",
+      "Limit line length to 80-120 characters for readability",
+      "Use .txt extension for clarity"
+    ]
+  },
+
+  "variables": {
+    "encoding": "UTF-8",
+    "bomDetected": false,
+    "lineCount": 0,
+    "characterCount": 0,
+    "lineEnding": "Mixed"
+  },
+
+  "blocks": [
+    {
+      "name": "BOM (Byte Order Mark)",
+      "offset": 0,
+      "length": 3,
+      "valueType": "hex",
+      "color": "#FFD700",
+      "description": "UTF-8 BOM (EF BB BF) if present",
+      "condition": "offset == 0 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF",
+      "optional": true
+    },
+    {
+      "name": "Text Content",
+      "offset": "bomDetected ? 3 : 0",
+      "length": "fileSize - (bomDetected ? 3 : 0)",
+      "valueType": "string",
+      "color": "#E8F5E9",
+      "description": "Plain text content with character encoding"
+    },
+    {
+      "name": "Line 1",
+      "offset": "bomDetected ? 3 : 0",
+      "length": "indexOf(0x0A) - offset",
+      "valueType": "utf8",
+      "color": "#BBDEFB",
+      "description": "First line of text",
+      "optional": true
+    },
+    {
+      "name": "Line 2",
+      "offset": "indexOf(0x0A, 1) + 1",
+      "length": "indexOf(0x0A, 2) - offset",
+      "valueType": "utf8",
+      "color": "#C5CAE9",
+      "description": "Second line of text",
+      "optional": true
+    },
+    {
+      "name": "Line 3",
+      "offset": "indexOf(0x0A, 2) + 1",
+      "length": "indexOf(0x0A, 3) - offset",
+      "valueType": "utf8",
+      "color": "#D1C4E9",
+      "description": "Third line of text",
+      "optional": true
+    }
+  ],
+
+  "validationRules": {
+    "textRatio": {
+      "min": 0.85,
+      "max": 1.0,
+      "description": "At least 85% printable characters"
+    },
+    "nullBytes": {
+      "allowed": false,
+      "description": "Plain text should not contain null bytes"
+    },
+    "validEncoding": {
+      "types": [ "ASCII", "UTF-8", "UTF-16LE", "UTF-16BE", "ISO-8859-1" ],
+      "description": "Must be valid text encoding"
+    }
+  },
+
+  "parsingInstructions": {
+    "detectEncoding": {
+      "step": 1,
+      "description": "Detect BOM or analyze byte patterns for UTF-8/UTF-16"
+    },
+    "analyzeLineEndings": {
+      "step": 2,
+      "description": "Count LF (0x0A), CRLF (0x0D 0x0A), CR (0x0D) to determine line ending style"
+    },
+    "countLines": {
+      "step": 3,
+      "description": "Count total number of lines in the file"
+    },
+    "parseLines": {
+      "step": 4,
+      "description": "Split content into individual lines for display"
+    }
+  },
+
+  "statisticsToCollect": [
+    {
+      "name": "Total Lines",
+      "description": "Number of lines (line breaks)"
+    },
+    {
+      "name": "Total Characters",
+      "description": "Number of characters (including whitespace)"
+    },
+    {
+      "name": "Total Words",
+      "description": "Number of words (space-separated)"
+    },
+    {
+      "name": "File Size",
+      "description": "Size in bytes"
+    },
+    {
+      "name": "Encoding",
+      "description": "Detected character encoding"
+    },
+    {
+      "name": "Line Ending Style",
+      "description": "LF, CRLF, CR, or Mixed"
+    },
+    {
+      "name": "Average Line Length",
+      "description": "Average characters per line"
+    },
+    {
+      "name": "Longest Line",
+      "description": "Length of longest line in characters"
+    }
+  ],
+
+  "exportFormats": [
+    {
+      "name": "UTF-8 (No BOM)",
+      "description": "Plain text with UTF-8 encoding, no byte order mark"
+    },
+    {
+      "name": "UTF-8 with BOM",
+      "description": "Plain text with UTF-8 encoding and BOM (EF BB BF)"
+    },
+    {
+      "name": "UTF-16 LE",
+      "description": "Plain text with UTF-16 Little Endian encoding"
+    },
+    {
+      "name": "ASCII",
+      "description": "Plain text with ASCII encoding (7-bit)"
+    },
+    {
+      "name": "Markdown",
+      "description": "Convert to Markdown format with basic formatting"
+    }
+  ],
+
+  "commonIssues": [
+    {
+      "issue": "Mojibake (garbled text)",
+      "cause": "Incorrect encoding detection or conversion",
+      "solution": "Try different encodings: UTF-8, ISO-8859-1, Windows-1252"
+    },
+    {
+      "issue": "Line ending inconsistency",
+      "cause": "Mixed LF and CRLF in same file",
+      "solution": "Normalize to single line ending style"
+    },
+    {
+      "issue": "BOM visibility",
+      "cause": "UTF-8 BOM shown as characters in some editors",
+      "solution": "Remove BOM or use BOM-aware editor"
+    },
+    {
+      "issue": "File size limit",
+      "cause": "Very large files may be slow to open",
+      "solution": "Use streaming or chunk-based reading for large files"
+    }
+  ],
+
+  "tags": [
+    "text",
+    "plain",
+    "document",
+    "utf-8",
+    "ascii",
+    "encoding",
+    "universal",
+    "human-readable"
+  ],
+
+  "icon": "📄",
+  "color": "#4CAF50",
+
+  "notes": "This format definition handles plain text files with various encodings. The detection relies on content analysis rather than magic bytes, as plain text has no standard signature. The multi-tier detection system will analyze the text ratio and encoding validity to determine if a file is plain text."
+}

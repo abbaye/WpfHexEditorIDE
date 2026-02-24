@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using WpfHexaEditor.Core.FormatDetection;
 using WpfHexaEditor.Services;
 using WpfHexaEditor.Events;
+using WpfHexaEditor.Views.Dialogs;
 
 namespace WpfHexaEditor.Views.Panels
 {
@@ -84,6 +85,17 @@ namespace WpfHexaEditor.Views.Panels
 
                 var result = detectionService.DetectFormat(fileBytes, Path.GetFileName(filePath));
 
+                // Handle ambiguous detection - prompt user to select format
+                if (result.Success && result.RequiresUserSelection && result.Candidates != null && result.Candidates.Count > 1)
+                {
+                    var selectedCandidate = ShowFormatSelectionDialog(result.Candidates);
+                    if (selectedCandidate != null)
+                    {
+                        result.Format = selectedCandidate.Format;
+                        result.Blocks = selectedCandidate.Blocks;
+                    }
+                }
+
                 if (result.Success && result.Format != null && result.Format.Blocks != null)
                 {
                     var variables = result.Format.Variables ?? new Dictionary<string, object>();
@@ -110,6 +122,24 @@ namespace WpfHexaEditor.Views.Panels
                             Offset = (int)offset.Value,
                             Length = actualLength
                         });
+                    }
+                }
+                else
+                {
+                    // No format detected - this is expected for plain text files or unknown formats
+                    // Fields list is already empty, which is correct
+                    var fileName = Path.GetFileName(filePath);
+
+                    // Check if it's likely a text file
+                    if (result.ContentAnalysis != null && result.ContentAnalysis.IsLikelyText)
+                    {
+                        // Informational message for text files
+                        System.Diagnostics.Debug.WriteLine($"No structured format detected for {fileName} - appears to be plain text");
+                    }
+                    else if (!result.Success)
+                    {
+                        // Detection failed
+                        System.Diagnostics.Debug.WriteLine($"Format detection failed for {fileName}: {result.ErrorMessage}");
                     }
                 }
             }
@@ -160,6 +190,51 @@ namespace WpfHexaEditor.Views.Panels
             if (_file1Fields == null || _file2Fields == null)
             {
                 ComparisonInfoText.Text = "Select both files to compare";
+
+                // Update individual file displays even if only one is loaded
+                if (_file1Fields != null)
+                {
+                    var file1Display = _file1Fields.Select(f => new DiffField
+                    {
+                        Name = f.Name,
+                        Value = f.Value,
+                        DiffStatus = DiffStatus.Unchanged
+                    }).ToList();
+                    File1Fields.ItemsSource = file1Display;
+
+                    // Show message if no fields detected
+                    if (_file1Fields.Count == 0 && !string.IsNullOrEmpty(_file1Path))
+                    {
+                        File1NameText.Text = $"File 1: {Path.GetFileName(_file1Path)} (No structured format detected)";
+                    }
+                }
+                else
+                {
+                    File1Fields.ItemsSource = null;
+                }
+
+                if (_file2Fields != null)
+                {
+                    var file2Display = _file2Fields.Select(f => new DiffField
+                    {
+                        Name = f.Name,
+                        Value = f.Value,
+                        DiffStatus = DiffStatus.Unchanged
+                    }).ToList();
+                    File2Fields.ItemsSource = file2Display;
+
+                    // Show message if no fields detected
+                    if (_file2Fields.Count == 0 && !string.IsNullOrEmpty(_file2Path))
+                    {
+                        File2NameText.Text = $"File 2: {Path.GetFileName(_file2Path)} (No structured format detected)";
+                    }
+                }
+                else
+                {
+                    File2Fields.ItemsSource = null;
+                }
+
+                UpdateStatistics(0, 0, 0, 0);
                 return;
             }
 
@@ -271,6 +346,31 @@ namespace WpfHexaEditor.Views.Panels
             AddedFieldsText.Text = $"Added: {added}";
             ModifiedFieldsText.Text = $"Modified: {modified}";
             RemovedFieldsText.Text = $"Removed: {removed}";
+        }
+
+        /// <summary>
+        /// Shows dialog for user to select format when detection is ambiguous
+        /// </summary>
+        private FormatMatchCandidate ShowFormatSelectionDialog(List<FormatMatchCandidate> candidates)
+        {
+            try
+            {
+                var dialog = new FormatSelectionDialog
+                {
+                    Owner = Window.GetWindow(this),
+                    Title = "Multiple Formats Detected - File Comparison",
+                    Message = "Multiple file formats match this file. Please select the most appropriate format:",
+                    Candidates = candidates.Take(5).ToList() // Show top 5 candidates
+                };
+
+                return dialog.ShowDialog() == true ? dialog.SelectedCandidate : candidates[0];
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error showing format selection: {ex.Message}\nUsing default format.",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return candidates.FirstOrDefault();
+            }
         }
     }
 

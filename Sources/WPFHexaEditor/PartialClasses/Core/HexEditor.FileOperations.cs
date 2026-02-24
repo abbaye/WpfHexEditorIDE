@@ -267,6 +267,8 @@ namespace WpfHexaEditor
             if (HexViewport != null)
             {
                 HexViewport.LinesSource = null;
+                HexViewport.InvalidateCustomBackgroundCache();
+                HexViewport.Refresh();
             }
 
             // 3. Clear search state (highlights, search markers, scrollbar opacity)
@@ -277,6 +279,9 @@ namespace WpfHexaEditor
 
             // 5. Clear selection state (selection, cursor position)
             ClearSelectionState();
+
+            // 5.5. Clear format detection state (parsed fields, detected format)
+            ClearFormatDetectionState();
 
             // 6. Reset file info
             FileName = string.Empty;
