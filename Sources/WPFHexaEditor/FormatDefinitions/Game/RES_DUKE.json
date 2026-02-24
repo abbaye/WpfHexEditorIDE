@@ -1,6 +1,6 @@
 {
   "formatName": "Duke Nukem GRP",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".grp"
   ],
@@ -30,7 +30,10 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "fileCount": 0,
+    "totalSize": 0,
+    "version": 0
   },
   "blocks": [
     {
@@ -50,6 +53,18 @@
       "color": "#4ECDC4",
       "opacity": 0.3,
       "description": "Total number of files"
+    },
+    {
+      "type": "metadata",
+      "name": "File Count",
+      "variable": "fileCount",
+      "description": "File Count"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Size",
+      "variable": "totalSize",
+      "description": "Total Size"
     }
   ],
   "quality_metrics": {
@@ -110,5 +125,9 @@
     "commit_count": 9,
     "change_percentage": 294.5,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt32LE": "Read GRP resource header",
+    "extractASCIIString": "Extract file names"
   }
 }

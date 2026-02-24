@@ -1,6 +1,6 @@
 {
   "formatName": "NetFlow v5",
-  "version": "1.8",
+  "version": "1.9",
   "extensions": [
     ".nf",
     ".nfcap"
@@ -26,7 +26,11 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "version": 0,
+    "flowCount": 0,
+    "sysUptime": 0,
+    "unixSecs": 0
   },
   "blocks": [
     {
@@ -109,6 +113,18 @@
       "color": "#A8E6CF",
       "opacity": 0.3,
       "description": "Sampling mode and interval"
+    },
+    {
+      "type": "metadata",
+      "name": "Version",
+      "variable": "version",
+      "description": "Version"
+    },
+    {
+      "type": "metadata",
+      "name": "Flow Count",
+      "variable": "flowCount",
+      "description": "Flow Count"
     }
   ],
   "quality_metrics": {
@@ -168,5 +184,9 @@
     "commit_count": 8,
     "change_percentage": 356.29,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt16BE": "Read NetFlow header",
+    "readUInt32BE": "Read timestamps and counts"
   }
 }

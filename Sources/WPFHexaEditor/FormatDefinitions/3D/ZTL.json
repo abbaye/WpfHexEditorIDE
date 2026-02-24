@@ -1,6 +1,6 @@
 {
   "formatName": "ZBrush Tool",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".ztl"
   ],
@@ -25,7 +25,10 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "polyCount": 0,
+    "pointCount": 0,
+    "version": 0
   },
   "blocks": [
     {
@@ -45,6 +48,18 @@
       "color": "#4ECDC4",
       "opacity": 0.3,
       "description": "Tool version"
+    },
+    {
+      "type": "metadata",
+      "name": "Polygon Count",
+      "variable": "polyCount",
+      "description": "Polygon Count"
+    },
+    {
+      "type": "metadata",
+      "name": "Point Count",
+      "variable": "pointCount",
+      "description": "Point Count"
     }
   ],
   "quality_metrics": {
@@ -104,5 +119,9 @@
     "commit_count": 9,
     "change_percentage": 286.41,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt32LE": "Read ZBrush tool header",
+    "multiply": "Calculate polygon count"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "Protocol Buffers",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".pb",
     ".protobuf"
@@ -26,7 +26,10 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "tagCount": 0,
+    "messageDepth": 0,
+    "wireType": 0
   },
   "blocks": [
     {
@@ -37,6 +40,18 @@
       "color": "#4285F4",
       "opacity": 0.4,
       "description": "Protocol buffer binary data"
+    },
+    {
+      "type": "metadata",
+      "name": "Tag Count",
+      "variable": "tagCount",
+      "description": "Tag Count"
+    },
+    {
+      "type": "metadata",
+      "name": "Message Depth",
+      "variable": "messageDepth",
+      "description": "Message Depth"
     }
   ],
   "quality_metrics": {
@@ -93,5 +108,9 @@
     "commit_count": 9,
     "change_percentage": 254.35,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt8": "Read varint tag bytes",
+    "extractASCIIString": "Extract field names"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "HP-UX nettl",
-  "version": "1.8",
+  "version": "1.9",
   "extensions": [
     ".trc0",
     ".trc1"
@@ -26,7 +26,10 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "subsystem": 0,
+    "packetCount": 0,
+    "captureLength": 0
   },
   "blocks": [
     {
@@ -82,6 +85,18 @@
       "color": "#C7CEEA",
       "opacity": 0.3,
       "description": "Time zone string"
+    },
+    {
+      "type": "metadata",
+      "name": "Subsystem",
+      "variable": "subsystem",
+      "description": "Subsystem"
+    },
+    {
+      "type": "metadata",
+      "name": "Packet Count",
+      "variable": "packetCount",
+      "description": "Packet Count"
     }
   ],
   "quality_metrics": {
@@ -141,5 +156,9 @@
     "commit_count": 8,
     "change_percentage": 328.57,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt32BE": "Read HP-UX nettl header",
+    "readUInt16BE": "Read subsystem ID"
   }
 }

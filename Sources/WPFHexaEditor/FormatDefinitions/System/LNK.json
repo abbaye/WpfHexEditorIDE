@@ -1,6 +1,6 @@
 {
   "formatName": "Windows Shortcut",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".lnk"
   ],
@@ -25,7 +25,11 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "flags": 0,
+    "attributes": 0,
+    "targetSize": 0,
+    "iconIndex": 0
   },
   "blocks": [
     {
@@ -54,6 +58,18 @@
       "color": "#95E1D3",
       "opacity": 0.3,
       "description": "Shortcut flags"
+    },
+    {
+      "type": "metadata",
+      "name": "Flags",
+      "variable": "flags",
+      "description": "Flags"
+    },
+    {
+      "type": "metadata",
+      "name": "File Attributes",
+      "variable": "attributes",
+      "description": "File Attributes"
     }
   ],
   "quality_metrics": {
@@ -113,5 +129,9 @@
     "commit_count": 9,
     "change_percentage": 301.79,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt32LE": "Read Windows shortcut header",
+    "extractUTF8String": "Extract target path"
   }
 }

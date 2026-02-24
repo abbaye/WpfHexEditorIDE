@@ -1,6 +1,6 @@
 {
   "formatName": "ZBrush Project",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".zpr"
   ],
@@ -25,7 +25,10 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "vertexCount": 0,
+    "faceCount": 0,
+    "totalElements": 0
   },
   "blocks": [
     {
@@ -45,6 +48,18 @@
       "color": "#4ECDC4",
       "opacity": 0.3,
       "description": "Project version"
+    },
+    {
+      "type": "metadata",
+      "name": "Vertex Count",
+      "variable": "vertexCount",
+      "description": "Vertex Count"
+    },
+    {
+      "type": "metadata",
+      "name": "Face Count",
+      "variable": "faceCount",
+      "description": "Face Count"
     }
   ],
   "quality_metrics": {
@@ -104,5 +119,9 @@
     "commit_count": 9,
     "change_percentage": 288.35,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt32LE": "Read header fields",
+    "multiply": "Calculate mesh size"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "Tripos Mol2",
-  "version": "1.8",
+  "version": "1.9",
   "extensions": [
     ".mol2"
   ],
@@ -25,7 +25,10 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "atomCount": 0,
+    "bondCount": 0,
+    "moleculeName": ""
   },
   "blocks": [
     {
@@ -36,6 +39,18 @@
       "color": "#FF6B6B",
       "opacity": 0.4,
       "description": "MOL2 signature (@TRIP)"
+    },
+    {
+      "type": "metadata",
+      "name": "Atom Count",
+      "variable": "atomCount",
+      "description": "Atom Count"
+    },
+    {
+      "type": "metadata",
+      "name": "Bond Count",
+      "variable": "bondCount",
+      "description": "Bond Count"
     }
   ],
   "quality_metrics": {
@@ -91,5 +106,9 @@
     "commit_count": 8,
     "change_percentage": 206.67,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "extractASCIIString": "Extract molecule data",
+    "extractUTF8String": "Extract annotations"
   }
 }

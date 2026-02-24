@@ -1,6 +1,6 @@
 {
   "formatName": "Motion JPEG",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".mjpeg",
     ".mjpg"
@@ -29,7 +29,12 @@
       "max_signature_offset": 1024
     }
   },
-  "variables": {},
+  "variables": {
+    "jpegWidth": 0,
+    "jpegHeight": 0,
+    "jpegComponents": 0,
+    "frameRate": 0
+  },
   "blocks": [
     {
       "type": "signature",
@@ -39,6 +44,18 @@
       "color": "#FF6B6B",
       "opacity": 0.4,
       "description": "JPEG Start of Image marker"
+    },
+    {
+      "type": "metadata",
+      "name": "Frame Width",
+      "variable": "jpegWidth",
+      "description": "Frame Width"
+    },
+    {
+      "type": "metadata",
+      "name": "Frame Height",
+      "variable": "jpegHeight",
+      "description": "Frame Height"
     }
   ],
   "mime_types": [
@@ -106,5 +123,8 @@
     "commit_count": 9,
     "change_percentage": 298.1,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "parseJPEGDimensions": "Extract frame dimensions from JPEG data"
   }
 }

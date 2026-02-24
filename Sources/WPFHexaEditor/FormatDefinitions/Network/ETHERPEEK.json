@@ -1,6 +1,6 @@
 {
   "formatName": "EtherPeek/OmniPeek",
-  "version": "1.8",
+  "version": "1.9",
   "extensions": [
     ".pkt",
     ".apc",
@@ -27,7 +27,10 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "packetCount": 0,
+    "captureLength": 0,
+    "version": 0
   },
   "blocks": [
     {
@@ -83,6 +86,18 @@
       "color": "#C7CEEA",
       "opacity": 0.3,
       "description": "Packet capture timestamp"
+    },
+    {
+      "type": "metadata",
+      "name": "Packet Count",
+      "variable": "packetCount",
+      "description": "Packet Count"
+    },
+    {
+      "type": "metadata",
+      "name": "Capture Length",
+      "variable": "captureLength",
+      "description": "Capture Length"
     }
   ],
   "quality_metrics": {
@@ -143,5 +158,9 @@
     "commit_count": 8,
     "change_percentage": 326.76,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt32BE": "Read capture header (big-endian)",
+    "readUInt64BE": "Read timestamps"
   }
 }

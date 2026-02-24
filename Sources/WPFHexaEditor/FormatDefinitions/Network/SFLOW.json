@@ -1,6 +1,6 @@
 {
   "formatName": "sFlow",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".sflow"
   ],
@@ -25,7 +25,11 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "version": 0,
+    "agentAddress": 0,
+    "sampleCount": 0,
+    "uptime": 0
   },
   "blocks": [
     {
@@ -90,6 +94,18 @@
       "color": "#B8B8FF",
       "opacity": 0.3,
       "description": "Number of flow/counter samples"
+    },
+    {
+      "type": "metadata",
+      "name": "Version",
+      "variable": "version",
+      "description": "Version"
+    },
+    {
+      "type": "metadata",
+      "name": "Sample Count",
+      "variable": "sampleCount",
+      "description": "Sample Count"
     }
   ],
   "quality_metrics": {
@@ -148,5 +164,9 @@
     "commit_count": 9,
     "change_percentage": 378.91,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt32BE": "Read sFlow datagram header",
+    "readUInt16BE": "Read version"
   }
 }

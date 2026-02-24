@@ -1,6 +1,6 @@
 {
   "formatName": "IPFIX",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".ipfix"
   ],
@@ -25,7 +25,11 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "version": 0,
+    "messageLength": 0,
+    "exportTime": 0,
+    "sequenceNumber": 0
   },
   "blocks": [
     {
@@ -90,6 +94,18 @@
       "color": "#B8B8FF",
       "opacity": 0.3,
       "description": "Length of this set"
+    },
+    {
+      "type": "metadata",
+      "name": "Version",
+      "variable": "version",
+      "description": "Version"
+    },
+    {
+      "type": "metadata",
+      "name": "Message Length",
+      "variable": "messageLength",
+      "description": "Message Length"
     }
   ],
   "quality_metrics": {
@@ -148,5 +164,9 @@
     "commit_count": 9,
     "change_percentage": 378.91,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt16BE": "Read message header",
+    "readUInt32BE": "Read sequence numbers"
   }
 }

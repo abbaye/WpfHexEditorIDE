@@ -1,6 +1,6 @@
 {
   "formatName": "Nintendo Wii Disc",
-  "version": "2.1",
+  "version": "2.2",
   "extensions": [
     ".iso",
     ".wbfs"
@@ -34,7 +34,9 @@
     "currentOffset": 0,
     "gameCode": "",
     "makerCode": "",
-    "gameName": ""
+    "gameName": "",
+    "discNumber": 0,
+    "version": 0
   },
   "blocks": [
     {
@@ -169,6 +171,18 @@
       "opacity": 0.3,
       "valueType": "uint8",
       "description": "0=Encrypted, 1=Unencrypted (debug/dev)"
+    },
+    {
+      "type": "metadata",
+      "name": "Game Code",
+      "variable": "gameCode",
+      "description": "Game Code"
+    },
+    {
+      "type": "metadata",
+      "name": "Maker Code",
+      "variable": "makerCode",
+      "description": "Maker Code"
     }
   ],
   "quality_metrics": {
@@ -230,5 +244,9 @@
     "commit_count": 11,
     "change_percentage": 354.15,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt32BE": "Read Wii disc header (big-endian)",
+    "extractASCIIString": "Extract game title"
   }
 }

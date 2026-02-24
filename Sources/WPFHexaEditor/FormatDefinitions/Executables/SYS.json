@@ -1,6 +1,6 @@
 {
   "formatName": "Windows System Driver",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".sys"
   ],
@@ -30,7 +30,10 @@
     }
   },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "machineType": "",
+    "sectionCount": 0,
+    "timestamp": 0
   },
   "blocks": [
     {
@@ -50,6 +53,18 @@
       "color": "#4ECDC4",
       "opacity": 0.3,
       "description": "Offset to PE header"
+    },
+    {
+      "type": "metadata",
+      "name": "Machine Type",
+      "variable": "machineType",
+      "description": "Machine Type"
+    },
+    {
+      "type": "metadata",
+      "name": "Section Count",
+      "variable": "sectionCount",
+      "description": "Section Count"
     }
   ],
   "mime_types": [
@@ -116,5 +131,9 @@
     "commit_count": 9,
     "change_percentage": 282.61,
     "last_updated": "2026-02-24"
+  },
+  "functions": {
+    "readUInt32LE": "Read Windows driver header",
+    "extractASCIIString": "Extract driver name"
   }
 }
