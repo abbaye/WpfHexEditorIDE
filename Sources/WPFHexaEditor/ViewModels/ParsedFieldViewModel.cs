@@ -309,8 +309,20 @@ namespace WpfHexaEditor.ViewModels
 
         /// <summary>
         /// Display string for byte range (e.g., "0x10-0x13 (4 bytes)")
+        /// For metadata fields, shows "Metadata (computed value)"
         /// </summary>
-        public string RangeDisplay => $"{OffsetHex}-0x{EndOffset:X8} ({Length} byte{(Length != 1 ? "s" : "")})";
+        public string RangeDisplay
+        {
+            get
+            {
+                // Special handling for metadata fields
+                if (ValueType == "metadata" || Offset < 0)
+                {
+                    return "Metadata (computed value)";
+                }
+                return $"{OffsetHex}-0x{EndOffset:X8} ({Length} byte{(Length != 1 ? "s" : "")})";
+            }
+        }
 
         /// <summary>
         /// Comprehensive tooltip text with all field details

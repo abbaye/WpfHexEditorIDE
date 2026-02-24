@@ -4,6 +4,7 @@
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -69,6 +70,7 @@ namespace WpfHexaEditor
         private readonly FieldValidator _fieldValidator = new FieldValidator();
         private readonly ChecksumValidator _checksumValidator = new ChecksumValidator();
         private FormatDefinition _detectedFormat;
+        private Dictionary<string, object> _detectionVariables; // Variables from function execution
         private VariableContext _variableContext;
         private ExpressionEvaluator _expressionEvaluator;
         private readonly FormattedValueCache _formattedValueCache = new FormattedValueCache();
@@ -149,6 +151,15 @@ namespace WpfHexaEditor
 
             try
             {
+                // Special handling for metadata fields (no byte offset in file)
+                if (field.ValueType == "metadata" || field.Offset < 0)
+                {
+                    // Clear selection for metadata fields since they don't represent bytes
+                    ClearSelection();
+                    System.Diagnostics.Debug.WriteLine($"[FieldSelected] Metadata field '{field.Name}' selected - clearing hex selection");
+                    return;
+                }
+
                 // Set selection in hex editor to match the field
                 // SetPosition automatically scrolls to make position visible
                 SetPosition(field.Offset, 1);
@@ -313,10 +324,27 @@ namespace WpfHexaEditor
                     // Load format-defined variables
                     if (_detectedFormat.Variables != null)
                     {
+                        System.Diagnostics.Debug.WriteLine($"[ParseFieldsAsync] Loading {_detectedFormat.Variables.Count} format-defined variables");
                         foreach (var kvp in _detectedFormat.Variables)
                         {
+                            System.Diagnostics.Debug.WriteLine($"  Format var: {kvp.Key} = {kvp.Value}");
                             _variableContext?.SetVariable(kvp.Key, kvp.Value);
                         }
+                    }
+
+                    // Load variables from detection (includes function execution results)
+                    if (_detectionVariables != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[ParseFieldsAsync] Loading {_detectionVariables.Count} detection variables");
+                        foreach (var kvp in _detectionVariables)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"  Detection var: {kvp.Key} = {kvp.Value}");
+                            _variableContext?.SetVariable(kvp.Key, kvp.Value);
+                        }
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("[ParseFieldsAsync] WARNING: _detectionVariables is NULL!");
                     }
 
                     // Update format info
@@ -364,6 +392,38 @@ namespace WpfHexaEditor
             {
                 try
                 {
+                    // Handle metadata blocks (from function execution)
+                    if (block.Type == "metadata")
+                    {
+                        // Get variable value from context
+                        if (!string.IsNullOrWhiteSpace(block.Variable))
+                        {
+                            var value = _variableContext?.GetVariable(block.Variable);
+                            if (value != null)
+                            {
+                                // Create a field view model for the metadata
+                                var metadataField = new ParsedFieldViewModel
+                                {
+                                    Name = block.Name,
+                                    Offset = -1,  // Special value to indicate "not a byte range"
+                                    Length = 0,
+                                    ValueType = "metadata",
+                                    RawValue = value,
+                                    FormattedValue = value.ToString(),
+                                    Description = block.Description ?? "",
+                                    Color = "#E3F2FD",  // Light blue background for metadata
+                                    IsValid = true,  // Mark as valid (not an error/warning)
+                                    FieldIcon = "ℹ️",  // Information icon for metadata
+                                    IndentLevel = depth
+                                };
+
+                                ParsedFieldsPanel.ParsedFields.Add(metadataField);
+                                _parsedFieldCount++;
+                            }
+                        }
+                        continue;
+                    }
+
                     // Handle conditional blocks
                     if (block.Type == "conditional")
                     {

@@ -246,9 +246,10 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Try to detect a specific format
         /// </summary>
-        private bool TryDetectFormat(byte[] data, FormatDefinition format, out List<CustomBackgroundBlock> blocks)
+        private bool TryDetectFormat(byte[] data, FormatDefinition format, out List<CustomBackgroundBlock> blocks, out Dictionary<string, object> variables)
         {
             blocks = new List<CustomBackgroundBlock>();
+            variables = new Dictionary<string, object>();
 
             if (format == null || !format.IsValid())
                 return false;
@@ -264,7 +265,23 @@ namespace WpfHexaEditor.Services
             try
             {
                 var interpreter = new FormatScriptInterpreter(data, format.Variables);
+
+                // Execute built-in functions first (populates variables)
+                if (format.Functions != null && format.Functions.Count > 0)
+                {
+                    interpreter.ExecuteFunctions(format.Functions);
+                }
+
                 blocks = interpreter.ExecuteBlocks(format.Blocks);
+
+                // Copy variables from interpreter (includes function results)
+                variables = new Dictionary<string, object>(interpreter.Variables);
+                System.Diagnostics.Debug.WriteLine($"[TryDetectFormat] Copied {variables.Count} variables from interpreter for format {format.FormatName}");
+                foreach (var kvp in variables)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  TryDetectFormat var: {kvp.Key} = {kvp.Value}");
+                }
+
                 return blocks.Count > 0;
             }
             catch (Exception ex)
@@ -294,12 +311,13 @@ namespace WpfHexaEditor.Services
 
             foreach (var format in formatsByPriority)
             {
-                if (TryDetectFormat(data, format, out var blocks))
+                if (TryDetectFormat(data, format, out var blocks, out var variables))
                 {
                     var candidate = new FormatMatchCandidate
                     {
                         Format = format,
                         Blocks = blocks,
+                        Variables = variables,
                         Tier = MatchTier.StrongSignature,
                         SignatureConfidence = CalculateSignatureConfidence(format.Detection)
                     };
@@ -344,17 +362,25 @@ namespace WpfHexaEditor.Services
                 }
 
                 // Try block generation
-                if (TryDetectFormat(data, format, out var blocks))
+                if (TryDetectFormat(data, format, out var blocks, out var variables))
                 {
                     contentScore += 0.2;
+                    System.Diagnostics.Debug.WriteLine($"[DetectTextFormats] Received {variables.Count} variables from TryDetectFormat");
 
                     var candidate = new FormatMatchCandidate
                     {
                         Format = format,
                         Blocks = blocks,
+                        Variables = variables,
                         Tier = MatchTier.ContentBased,
                         ContentConfidence = contentScore
                     };
+
+                    System.Diagnostics.Debug.WriteLine($"[DetectTextFormats] Candidate.Variables count: {candidate.Variables.Count}");
+                    foreach (var kvp in candidate.Variables)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  Candidate var: {kvp.Key} = {kvp.Value}");
+                    }
 
                     candidates.Add(candidate);
                 }
@@ -380,12 +406,13 @@ namespace WpfHexaEditor.Services
 
             foreach (var format in extensionMatches)
             {
-                if (TryDetectFormat(data, format, out var blocks))
+                if (TryDetectFormat(data, format, out var blocks, out var variables))
                 {
                     var candidate = new FormatMatchCandidate
                     {
                         Format = format,
                         Blocks = blocks,
+                        Variables = variables,
                         Tier = MatchTier.FallbackWeak,
                         ExtensionConfidence = 0.6  // Lower confidence for weak matches
                     };
@@ -484,6 +511,7 @@ namespace WpfHexaEditor.Services
             {
                 Format = best.Format,
                 Blocks = best.Blocks,
+                Variables = best.Variables,  // FIX: Copy variables from candidate
                 Confidence = best.ConfidenceScore,
                 Candidates = candidates,
                 ContentAnalysis = contentAnalysis,
@@ -521,17 +549,38 @@ namespace WpfHexaEditor.Services
                                                    ContentAnalysisResult contentAnalysis, Stopwatch sw)
         {
             sw.Stop();
-            return new FormatDetectionResult
+            System.Diagnostics.Debug.WriteLine($"[CreateResult] Candidate.Variables count: {candidate.Variables?.Count ?? -1}");
+            if (candidate.Variables != null)
+            {
+                foreach (var kvp in candidate.Variables)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  CreateResult candidate var: {kvp.Key} = {kvp.Value}");
+                }
+            }
+
+            var result = new FormatDetectionResult
             {
                 Success = true,
                 Format = candidate.Format,
                 Blocks = candidate.Blocks,
+                Variables = candidate.Variables,
                 Confidence = candidate.ConfidenceScore,
                 Candidates = allCandidates,
                 ContentAnalysis = contentAnalysis,
                 RequiresUserSelection = false,
                 DetectionTimeMs = sw.Elapsed.TotalMilliseconds
             };
+
+            System.Diagnostics.Debug.WriteLine($"[CreateResult] Result.Variables count: {result.Variables?.Count ?? -1}");
+            if (result.Variables != null)
+            {
+                foreach (var kvp in result.Variables)
+                {
+                    System.Diagnostics.Debug.WriteLine($"  CreateResult result var: {kvp.Key} = {kvp.Value}");
+                }
+            }
+
+            return result;
         }
 
         #endregion
@@ -685,6 +734,13 @@ namespace WpfHexaEditor.Services
             try
             {
                 var interpreter = new FormatScriptInterpreter(data, format.Variables);
+
+                // Execute built-in functions first (populates variables)
+                if (format.Functions != null && format.Functions.Count > 0)
+                {
+                    interpreter.ExecuteFunctions(format.Functions);
+                }
+
                 return interpreter.ExecuteBlocks(format.Blocks);
             }
             catch (Exception ex)

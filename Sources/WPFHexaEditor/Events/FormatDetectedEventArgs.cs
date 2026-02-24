@@ -103,6 +103,12 @@ namespace WpfHexaEditor.Events
         /// </summary>
         public ContentAnalysisResult ContentAnalysis { get; set; }
 
+        /// <summary>
+        /// Variables populated by built-in functions during format detection.
+        /// Includes values like encoding, bomDetected, lineCount, etc.
+        /// </summary>
+        public Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
+
         public override string ToString()
         {
             if (Success)

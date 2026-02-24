@@ -109,14 +109,42 @@
       "color": "Transparent",
       "description": "Plain text file content",
       "tags": [ "text" ]
+    },
+    {
+      "type": "metadata",
+      "name": "Encoding",
+      "variable": "encoding",
+      "description": "Detected text encoding (UTF-8, UTF-16LE, etc.)"
+    },
+    {
+      "type": "metadata",
+      "name": "BOM Detected",
+      "variable": "bomDetected",
+      "description": "Whether a Byte Order Mark was found"
+    },
+    {
+      "type": "metadata",
+      "name": "BOM Size",
+      "variable": "bomSize",
+      "description": "Size of the Byte Order Mark in bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Line Count",
+      "variable": "lineCount",
+      "description": "Total number of lines (LF count)"
+    },
+    {
+      "type": "metadata",
+      "name": "Line Ending",
+      "variable": "lineEnding",
+      "description": "Detected line ending style (LF, CRLF, CR, or None)"
     }
   ],
 
   "functions": {
-    "detectBOM": "if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) { encoding = 'UTF-8'; bomDetected = true; return 3; } else if (bytes[0] == 0xFF && bytes[1] == 0xFE) { encoding = 'UTF-16LE'; bomDetected = true; return 2; } else if (bytes[0] == 0xFE && bytes[1] == 0xFF) { encoding = 'UTF-16BE'; bomDetected = true; return 2; } else { bomDetected = false; return 0; }",
-
-    "countLines": "var count = 0; for (var i = 0; i < fileSize; i++) { if (bytes[i] == 0x0A) count++; } return count;",
-
-    "detectLineEnding": "var lf = 0; var crlf = 0; var cr = 0; for (var i = 0; i < min(8192, fileSize); i++) { if (bytes[i] == 0x0D && i+1 < fileSize && bytes[i+1] == 0x0A) { crlf++; i++; } else if (bytes[i] == 0x0A) { lf++; } else if (bytes[i] == 0x0D) { cr++; } } if (crlf > lf && crlf > cr) return 'CRLF'; else if (lf > cr) return 'LF'; else if (cr > 0) return 'CR'; else return 'None';"
+    "detectBOM": "Detects Byte Order Mark (BOM) and sets encoding, bomDetected, and bomSize variables. Supports UTF-8, UTF-16LE/BE, UTF-32LE/BE.",
+    "countLines": "Counts the number of lines in the file by counting line feed (LF, 0x0A) characters. Sets lineCount variable.",
+    "detectLineEnding": "Analyzes first 8KB to detect predominant line ending style. Sets lineEnding, lfCount, crlfCount, and crCount variables."
   }
 }
