@@ -1,23 +1,25 @@
 {
   "formatName": "Dolby Digital AC-3",
-  "version": "1.11",
+  "version": "2.0",
   "extensions": [
-    ".ac3"
+    ".ac3",
+    ".eac3"
   ],
-  "description": "Dolby Digital (AC-3) audio codec for surround sound",
+  "description": "Dolby Digital (AC-3) audio bitstream - standard surround sound codec for DVD, Blu-ray, HDTV (ATSC A/52)",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "references": {
     "specifications": [
-      "ATSC A/52:2018 - Digital Audio Compression (AC-3)",
-      "Dolby Digital Specification",
-      "AC-3 Audio Codec Standard"
+      "ATSC A/52:2018 - Digital Audio Compression (AC-3, E-AC-3)",
+      "ETSI TS 102 366 - Digital Audio Compression",
+      "Dolby Digital / Dolby Digital Plus Specification"
     ],
     "WebLinks": [
       "https://www.atsc.org/atsc-documents/a522012-digital-audio-compression-ac-3-e-ac-3-standard-12172012/",
       "https://en.wikipedia.org/wiki/Dolby_Digital",
       "https://www.loc.gov/preservation/digital/formats/fdd/fdd000209.shtml",
-      "https://wiki.videolan.org/AC3/"
+      "https://wiki.videolan.org/AC3/",
+      "https://wiki.multimedia.cx/index.php/AC-3"
     ]
   },
   "detection": {
@@ -25,25 +27,35 @@
     "offset": 0,
     "required": true,
     "validation": {
-      "min_file_size": 2,
+      "min_file_size": 8,
       "max_signature_offset": 1024
     }
   },
-  "functions": {
-    "readUInt16BE": "Read 16-bit big-endian for sync word and frame header",
-    "bitwiseAnd": "Extract sample rate, bitrate, and channel configuration",
-    "bitwiseShiftRight": "Parse AC-3 frame header bits",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
   "variables": {
     "currentOffset": 0,
-    "sampleRate": 48000,
+    "ac3SyncWord": 0,
+    "crc1": 0,
+    "fscod_frmsizecod": 0,
+    "fscod": 0,
+    "frmsizecod": 0,
+    "bsid_bsmod": 0,
+    "bsid": 0,
+    "bsmod": 0,
+    "acmod_flags": 0,
+    "acmod": 0,
+    "dialnorm_compre": 0,
+    "dialnorm": 0,
+    "sampleRate": 0,
     "bitrate": 0,
     "channels": 0,
-    "bsid": 0,
     "frameSize": 0,
-    "ac3SyncWord": 0,
-    "samplesPerSecond": 0
+    "samplesPerSecond": 0,
+    "formattedBitrate": ""
+  },
+  "functions": {
+    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate total samples per second (all channels)",
+    "validateFieldRange(bsid, 0, 16)": "Validate bit stream ID (0-8=AC-3, 16=E-AC-3)",
+    "validateFieldRange(fscod, 0, 2)": "Validate sample rate code (0=48kHz, 1=44.1kHz, 2=32kHz)"
   },
   "blocks": [
     {
@@ -53,79 +65,128 @@
       "length": 2,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "AC-3 synchronization word",
+      "description": "Synchronization word 0x0B77 - marks start of each AC-3 frame",
       "storeAs": "ac3SyncWord",
       "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "CRC1",
+      "offset": 2,
+      "length": 2,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "crc1",
+      "description": "CRC-16 error check covering first 5/8ths of the frame"
+    },
+    {
+      "type": "field",
+      "name": "Sample Rate + Frame Size Code",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "fscod_frmsizecod",
+      "description": "Bits 7-6: fscod (00=48kHz, 01=44.1kHz, 10=32kHz, 11=reserved) | Bits 5-0: frmsizecod (frame size code → determines bitrate)",
+      "validationRules": {
+        "minValue": 0,
+        "maxValue": 191
+      }
+    },
+    {
+      "type": "field",
+      "name": "Bit Stream ID + Mode",
+      "offset": 5,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "bsid_bsmod",
+      "description": "Bits 7-3: bsid (8=AC-3, 6=alternate, 16=E-AC-3) | Bits 2-0: bsmod (000=main complete, 001=music&effects, 010=visually impaired, 011=hearing impaired, 100=dialogue, 101=commentary, 110=emergency, 111=voice-over)"
+    },
+    {
+      "type": "field",
+      "name": "Audio Coding Mode + Flags",
+      "offset": 6,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "acmod_flags",
+      "description": "Bits 7-5: acmod (000=1+1 dual mono, 001=1/0 C, 010=2/0 L+R stereo, 011=3/0 L+C+R, 100=2/1 L+R+S, 101=3/1 L+C+R+S, 110=2/2 L+R+SL+SR, 111=3/2 L+C+R+SL+SR) | Lower bits: cmixlev, surmixlev, dsurmod depending on acmod"
+    },
+    {
+      "type": "field",
+      "name": "Dialogue Norm + Compression",
+      "offset": 7,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "dialnorm_compre",
+      "description": "Bits 7-3: dialnorm (-1 to -31 dB, dialogue normalization level) | Bit 2: compre (compression gain word exists) | Bits 1-0: varies"
     },
     {
       "type": "metadata",
       "name": "Samples/Second",
       "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "description": "Total samples per second across all channels"
+    },
+    {
+      "type": "metadata",
+      "name": "Formatted Bitrate",
+      "variable": "formattedBitrate",
+      "description": "Human-readable bitrate (e.g., 384 kbps, 640 kbps)"
     }
   ],
-  "mime_types": [
-    "audio/ac3"
-  ],
   "quality_metrics": {
-    "completeness_score": 92,
+    "completeness_score": 88,
     "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
+    "blocks_defined": 8,
+    "validation_rules": 3,
+    "last_updated": "2026-02-24",
+    "priority_format": true,
+    "auto_refined": false
   },
   "software": [
     "VLC",
-    "Media players",
-    "FFmpeg"
+    "FFmpeg",
+    "Audacity",
+    "Foobar2000",
+    "MediaInfo"
   ],
   "use_cases": [
-    "Audio playback",
-    "Sound storage"
+    "DVD / Blu-ray surround audio",
+    "HDTV broadcast (ATSC)",
+    "Streaming",
+    "Audio transcoding"
   ],
-  "format_relationships": {
-    "category": "Audio",
-    "extensions": [
-      ".ac3"
-    ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".ac3",
-    "defined_fields": 1
-  },
   "MimeTypes": [
-    "audio/ac3"
+    "audio/ac3",
+    "audio/eac3"
   ],
   "Software": [
     "VLC",
+    "FFmpeg",
     "Audacity",
     "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
+    "MediaInfo",
+    "Hex Editor"
   ],
   "UseCases": [
-    "Music playback",
+    "Surround sound playback",
     "Audio editing",
-    "Sound production",
+    "Broadcasting",
     "Streaming"
   ],
-  "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
   "TechnicalDetails": {
-    "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 223.48,
-    "last_updated": "2026-02-24"
+    "AudioFormat": true,
+    "primary_extension": ".ac3",
+    "defined_fields": 8,
+    "max_channels": "5.1",
+    "sample_rates": "48000, 44100, 32000 Hz",
+    "max_bitrate": "640 kbps"
   }
 }
