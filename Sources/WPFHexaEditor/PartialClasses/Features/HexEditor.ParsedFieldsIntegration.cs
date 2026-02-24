@@ -889,6 +889,7 @@ namespace WpfHexaEditor
 
                 // Clear detected format
                 _detectedFormat = null;
+                _detectionVariables = null; // Clear function execution results
 
                 // Clear variable context
                 _variableContext = null;
