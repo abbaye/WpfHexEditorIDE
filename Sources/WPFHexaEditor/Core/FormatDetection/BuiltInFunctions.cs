@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using WpfHexaEditor.Core.Bytes;
 
 namespace WpfHexaEditor.Core.FormatDetection
 {
@@ -13,11 +14,13 @@ namespace WpfHexaEditor.Core.FormatDetection
     {
         private readonly byte[] _data;
         private readonly Dictionary<string, object> _variables;
+        private readonly ByteProvider _byteProvider;
 
-        public BuiltInFunctions(byte[] data, Dictionary<string, object> variables)
+        public BuiltInFunctions(byte[] data, Dictionary<string, object> variables, ByteProvider byteProvider = null)
         {
             _data = data ?? throw new ArgumentNullException(nameof(data));
             _variables = variables ?? new Dictionary<string, object>();
+            _byteProvider = byteProvider; // Optional - for reading beyond _data buffer
         }
 
         /// <summary>
@@ -991,50 +994,60 @@ namespace WpfHexaEditor.Core.FormatDetection
         {
             try
             {
-                // Search for EOCD signature (0x504B0506) from end of file
-                // EOCD is typically at the end, so search backwards
-                long eocdOffset = -1;
+                byte[] searchBuffer;
+                long fileLength;
+                long bufferStartOffset;
+
+                if (_byteProvider != null && _byteProvider.IsOpen)
+                {
+                    fileLength = _byteProvider.VirtualLength;
+                    int searchSize = (int)Math.Min(65579, fileLength);
+                    bufferStartOffset = fileLength - searchSize;
+                    searchBuffer = _byteProvider.GetBytes(bufferStartOffset, searchSize);
+                }
+                else
+                {
+                    fileLength = _data.Length;
+                    searchBuffer = _data;
+                    bufferStartOffset = 0;
+                }
+
+                long eocdOffsetInBuffer = -1;
                 bool isZip64 = false;
 
-                // Start from end and search backwards (max 65KB + 22 bytes for comment)
-                long searchStart = Math.Max(0, _data.Length - 65557);
-
-                for (long i = _data.Length - 22; i >= searchStart; i--)
+                for (long i = searchBuffer.Length - 22; i >= 0; i--)
                 {
-                    if (i + 4 <= _data.Length &&
-                        _data[i] == 0x50 && _data[i + 1] == 0x4B &&
-                        _data[i + 2] == 0x05 && _data[i + 3] == 0x06)
+                    if (i + 4 <= searchBuffer.Length &&
+                        searchBuffer[i] == 0x50 && searchBuffer[i + 1] == 0x4B &&
+                        searchBuffer[i + 2] == 0x05 && searchBuffer[i + 3] == 0x06)
                     {
-                        eocdOffset = i;
+                        eocdOffsetInBuffer = i;
                         break;
                     }
                 }
 
-                // If standard EOCD not found, try ZIP64 EOCD Locator (0x504B0607)
-                if (eocdOffset < 0)
+                if (eocdOffsetInBuffer < 0)
                 {
-                    for (long i = _data.Length - 20; i >= searchStart; i--)
+                    for (long i = searchBuffer.Length - 20; i >= 0; i--)
                     {
-                        if (i + 4 <= _data.Length &&
-                            _data[i] == 0x50 && _data[i + 1] == 0x4B &&
-                            _data[i + 2] == 0x06 && _data[i + 3] == 0x07)
+                        if (i + 4 <= searchBuffer.Length &&
+                            searchBuffer[i] == 0x50 && searchBuffer[i + 1] == 0x4B &&
+                            searchBuffer[i + 2] == 0x06 && searchBuffer[i + 3] == 0x07)
                         {
-                            // Found ZIP64 EOCD Locator
-                            // The EOCD64 offset is at i+8 (8 bytes, little-endian)
-                            if (i + 16 <= _data.Length)
+                            if (i + 16 <= searchBuffer.Length)
                             {
-                                long eocd64Offset = _data[i + 8] | ((long)_data[i + 9] << 8) |
-                                                   ((long)_data[i + 10] << 16) | ((long)_data[i + 11] << 24) |
-                                                   ((long)_data[i + 12] << 32) | ((long)_data[i + 13] << 40) |
-                                                   ((long)_data[i + 14] << 48) | ((long)_data[i + 15] << 56);
+                                long eocd64Offset = searchBuffer[i + 8] | ((long)searchBuffer[i + 9] << 8) |
+                                                   ((long)searchBuffer[i + 10] << 16) | ((long)searchBuffer[i + 11] << 24) |
+                                                   ((long)searchBuffer[i + 12] << 32) | ((long)searchBuffer[i + 13] << 40) |
+                                                   ((long)searchBuffer[i + 14] << 48) | ((long)searchBuffer[i + 15] << 56);
 
-                                if (eocd64Offset >= 0 && eocd64Offset + 56 <= _data.Length)
+                                long eocd64RelativeOffset = eocd64Offset - bufferStartOffset;
+                                if (eocd64RelativeOffset >= 0 && eocd64RelativeOffset + 56 <= searchBuffer.Length)
                                 {
-                                    // Verify ZIP64 EOCD signature (0x504B0606)
-                                    if (_data[eocd64Offset] == 0x50 && _data[eocd64Offset + 1] == 0x4B &&
-                                        _data[eocd64Offset + 2] == 0x06 && _data[eocd64Offset + 3] == 0x06)
+                                    if (searchBuffer[eocd64RelativeOffset] == 0x50 && searchBuffer[eocd64RelativeOffset + 1] == 0x4B &&
+                                        searchBuffer[eocd64RelativeOffset + 2] == 0x06 && searchBuffer[eocd64RelativeOffset + 3] == 0x06)
                                     {
-                                        eocdOffset = eocd64Offset;
+                                        eocdOffsetInBuffer = eocd64RelativeOffset;
                                         isZip64 = true;
                                         break;
                                     }
@@ -1044,7 +1057,9 @@ namespace WpfHexaEditor.Core.FormatDetection
                     }
                 }
 
-                if (eocdOffset < 0 || eocdOffset + (isZip64 ? 56 : 22) > _data.Length)
+                long eocdOffset = eocdOffsetInBuffer >= 0 ? bufferStartOffset + eocdOffsetInBuffer : -1;
+
+                if (eocdOffsetInBuffer < 0 || eocdOffsetInBuffer + (isZip64 ? 56 : 22) > searchBuffer.Length)
                 {
                     _variables["zipFileCount"] = 0;
                     _variables["zipCentralDirSize"] = 0L;
@@ -1058,77 +1073,45 @@ namespace WpfHexaEditor.Core.FormatDetection
                 _variables["eocdOffset"] = eocdOffset;
                 _variables["isZip64"] = isZip64;
 
-                // Parse EOCD structure (little-endian)
-                long offset = eocdOffset;
-
+                long offset = eocdOffsetInBuffer;
                 long totalEntries;
                 long centralDirSize;
                 int commentLength = 0;
 
                 if (isZip64)
                 {
-                    // ZIP64 EOCD structure
-                    // Skip signature (4 bytes)
-                    offset += 4;
-
-                    // Size of EOCD64 (8 bytes) - skip
+                    offset += 24;
+                    long entriesOnDisk = searchBuffer[offset] | ((long)searchBuffer[offset + 1] << 8) |
+                                        ((long)searchBuffer[offset + 2] << 16) | ((long)searchBuffer[offset + 3] << 24) |
+                                        ((long)searchBuffer[offset + 4] << 32) | ((long)searchBuffer[offset + 5] << 40) |
+                                        ((long)searchBuffer[offset + 6] << 48) | ((long)searchBuffer[offset + 7] << 56);
                     offset += 8;
 
-                    // Version made by (2 bytes) + version needed (2 bytes) - skip
-                    offset += 4;
-
-                    // Disk numbers (8 bytes) - skip
+                    totalEntries = searchBuffer[offset] | ((long)searchBuffer[offset + 1] << 8) |
+                                  ((long)searchBuffer[offset + 2] << 16) | ((long)searchBuffer[offset + 3] << 24) |
+                                  ((long)searchBuffer[offset + 4] << 32) | ((long)searchBuffer[offset + 5] << 40) |
+                                  ((long)searchBuffer[offset + 6] << 48) | ((long)searchBuffer[offset + 7] << 56);
                     offset += 8;
 
-                    // Total number of entries on this disk (8 bytes)
-                    long entriesOnDisk = _data[offset] | ((long)_data[offset + 1] << 8) |
-                                        ((long)_data[offset + 2] << 16) | ((long)_data[offset + 3] << 24) |
-                                        ((long)_data[offset + 4] << 32) | ((long)_data[offset + 5] << 40) |
-                                        ((long)_data[offset + 6] << 48) | ((long)_data[offset + 7] << 56);
-                    offset += 8;
-
-                    // Total number of entries (8 bytes)
-                    totalEntries = _data[offset] | ((long)_data[offset + 1] << 8) |
-                                  ((long)_data[offset + 2] << 16) | ((long)_data[offset + 3] << 24) |
-                                  ((long)_data[offset + 4] << 32) | ((long)_data[offset + 5] << 40) |
-                                  ((long)_data[offset + 6] << 48) | ((long)_data[offset + 7] << 56);
-                    offset += 8;
-
-                    // Size of central directory (8 bytes)
-                    centralDirSize = _data[offset] | ((long)_data[offset + 1] << 8) |
-                                    ((long)_data[offset + 2] << 16) | ((long)_data[offset + 3] << 24) |
-                                    ((long)_data[offset + 4] << 32) | ((long)_data[offset + 5] << 40) |
-                                    ((long)_data[offset + 6] << 48) | ((long)_data[offset + 7] << 56);
+                    centralDirSize = searchBuffer[offset] | ((long)searchBuffer[offset + 1] << 8) |
+                                    ((long)searchBuffer[offset + 2] << 16) | ((long)searchBuffer[offset + 3] << 24) |
+                                    ((long)searchBuffer[offset + 4] << 32) | ((long)searchBuffer[offset + 5] << 40) |
+                                    ((long)searchBuffer[offset + 6] << 48) | ((long)searchBuffer[offset + 7] << 56);
 
                     _variables["zipEntriesOnDisk"] = entriesOnDisk;
                 }
                 else
                 {
-                    // ZIP32 EOCD structure
-                    // Skip signature (4 bytes), disk numbers (4 bytes)
                     offset += 8;
-
-                    // Number of entries on this disk (2 bytes)
-                    ushort entriesOnDisk = (ushort)(_data[offset] | (_data[offset + 1] << 8));
+                    ushort entriesOnDisk = (ushort)(searchBuffer[offset] | (searchBuffer[offset + 1] << 8));
                     offset += 2;
-
-                    // Total number of entries (2 bytes)
-                    totalEntries = (ushort)(_data[offset] | (_data[offset + 1] << 8));
+                    totalEntries = (ushort)(searchBuffer[offset] | (searchBuffer[offset + 1] << 8));
                     offset += 2;
-
-                    // Size of central directory (4 bytes)
-                    centralDirSize = (uint)(_data[offset] |
-                                          (_data[offset + 1] << 8) |
-                                          (_data[offset + 2] << 16) |
-                                          (_data[offset + 3] << 24));
+                    centralDirSize = (uint)(searchBuffer[offset] | (searchBuffer[offset + 1] << 8) |
+                                          (searchBuffer[offset + 2] << 16) | (searchBuffer[offset + 3] << 24));
                     offset += 4;
-
-                    // Offset of central directory (4 bytes) - skip
                     offset += 4;
-
-                    // Comment length (2 bytes)
-                    commentLength = (ushort)(_data[offset] | (_data[offset + 1] << 8));
-
+                    commentLength = (ushort)(searchBuffer[offset] | (searchBuffer[offset + 1] << 8));
                     _variables["zipEntriesOnDisk"] = (int)entriesOnDisk;
                 }
 
@@ -1136,11 +1119,10 @@ namespace WpfHexaEditor.Core.FormatDetection
                 _variables["zipCentralDirSize"] = centralDirSize;
                 _variables["zipCommentLength"] = commentLength;
 
-                // Extract comment if present (only in ZIP32)
-                if (!isZip64 && commentLength > 0 && eocdOffset + 22 + commentLength <= _data.Length)
+                if (!isZip64 && commentLength > 0 && eocdOffsetInBuffer + 22 + commentLength <= searchBuffer.Length)
                 {
                     byte[] commentBytes = new byte[commentLength];
-                    Array.Copy(_data, eocdOffset + 22, commentBytes, 0, commentLength);
+                    Array.Copy(searchBuffer, eocdOffsetInBuffer + 22, commentBytes, 0, commentLength);
                     string comment = Encoding.UTF8.GetString(commentBytes);
                     _variables["zipComment"] = comment;
                 }
@@ -1149,15 +1131,16 @@ namespace WpfHexaEditor.Core.FormatDetection
                     _variables["zipComment"] = string.Empty;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 _variables["zipFileCount"] = 0;
                 _variables["zipCentralDirSize"] = 0L;
                 _variables["zipCommentLength"] = 0;
                 _variables["eocdOffset"] = -1L;
-                _variables["zipComment"] = string.Empty;
+                _variables["zipComment"] = $"Error: {ex.Message}";
             }
         }
+
 
         /// <summary>
         /// Calculates compression ratio as percentage.

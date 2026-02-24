@@ -462,8 +462,9 @@ namespace WpfHexaEditor
                     Array.Resize(ref data, bytesRead);
                 }
 
-                // Detect format
-                var result = _formatDetectionService.DetectFormat(data, fileName);
+                // Detect format (pass ByteProvider for reading beyond sample buffer)
+                var byteProvider = GetByteProvider();
+                var result = _formatDetectionService.DetectFormat(data, fileName, byteProvider);
 
                 if (result.Success && result.Blocks != null && result.Blocks.Count > 0)
                 {
@@ -479,16 +480,6 @@ namespace WpfHexaEditor
                     // Store the detected format and variables for parsed fields panel
                     _detectedFormat = result.Format;
                     _detectionVariables = result.Variables; // Variables from function execution
-
-                    System.Diagnostics.Debug.WriteLine($"[FormatDetection] result.Variables count: {result.Variables?.Count ?? -1}");
-                    if (result.Variables != null)
-                    {
-                        foreach (var kvp in result.Variables)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"  result.Variables: {kvp.Key} = {kvp.Value}");
-                        }
-                    }
-                    System.Diagnostics.Debug.WriteLine($"[FormatDetection] _detectionVariables count: {_detectionVariables?.Count ?? -1}");
 
                     // Parse fields for the parsed fields panel (Issue #111)
                     RefreshParsedFields();
@@ -562,8 +553,9 @@ namespace WpfHexaEditor
                     Array.Resize(ref data, bytesRead);
                 }
 
-                // Generate blocks
-                var blocks = _formatDetectionService.GenerateBlocks(data, format);
+                // Generate blocks (pass ByteProvider for reading beyond sample buffer)
+                var byteProvider = GetByteProvider();
+                var blocks = _formatDetectionService.GenerateBlocks(data, format, byteProvider);
 
                 if (blocks != null && blocks.Count > 0)
                 {

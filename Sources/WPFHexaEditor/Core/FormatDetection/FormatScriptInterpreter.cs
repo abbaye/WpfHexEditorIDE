@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using WpfHexaEditor.Core.FormatDetection;
+using WpfHexaEditor.Core.Bytes;
 
 namespace WpfHexaEditor.Core.FormatDetection
 {
@@ -20,6 +21,7 @@ namespace WpfHexaEditor.Core.FormatDetection
         private readonly byte[] _data;
         private readonly Dictionary<string, object> _variables;
         private readonly List<CustomBackgroundBlock> _generatedBlocks;
+        private readonly ByteProvider _byteProvider;
         private int _executionDepth = 0;
         private const int MaxExecutionDepth = 50; // Prevent infinite recursion
 
@@ -31,13 +33,14 @@ namespace WpfHexaEditor.Core.FormatDetection
         /// <summary>
         /// Initialize interpreter with file data
         /// </summary>
-        public FormatScriptInterpreter(byte[] data, Dictionary<string, object> initialVariables = null)
+        public FormatScriptInterpreter(byte[] data, Dictionary<string, object> initialVariables = null, ByteProvider byteProvider = null)
         {
             _data = data ?? throw new ArgumentNullException(nameof(data));
             _variables = initialVariables != null
                 ? new Dictionary<string, object>(initialVariables)
                 : new Dictionary<string, object>();
             _generatedBlocks = new List<CustomBackgroundBlock>();
+            _byteProvider = byteProvider; // Optional - for reading beyond sample buffer
 
             // Initialize common variables if not provided
             if (!_variables.ContainsKey("currentOffset"))
@@ -45,7 +48,7 @@ namespace WpfHexaEditor.Core.FormatDetection
             if (!_variables.ContainsKey("fileCount"))
                 _variables["fileCount"] = 0;
             if (!_variables.ContainsKey("fileSize"))
-                _variables["fileSize"] = (long)_data.Length;
+                _variables["fileSize"] = byteProvider != null && byteProvider.IsOpen ? byteProvider.VirtualLength : (long)_data.Length;
         }
 
         /// <summary>
@@ -62,7 +65,7 @@ namespace WpfHexaEditor.Core.FormatDetection
 
             System.Diagnostics.Debug.WriteLine($"[ExecuteFunctions] Executing {functions.Count} functions");
 
-            var builtInFunctions = new BuiltInFunctions(_data, _variables);
+            var builtInFunctions = new BuiltInFunctions(_data, _variables, _byteProvider);
 
             foreach (var function in functions)
             {

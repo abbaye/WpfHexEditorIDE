@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using WpfHexaEditor.Core;
+using WpfHexaEditor.Core.Bytes;
 using WpfHexaEditor.Core.FormatDetection;
 using WpfHexaEditor.Events;
 
@@ -191,8 +192,9 @@ namespace WpfHexaEditor.Services
         /// </summary>
         /// <param name="data">File data (at least first 1KB recommended)</param>
         /// <param name="fileName">Optional filename for extension-based hints</param>
+        /// <param name="byteProvider">Optional ByteProvider for reading beyond data buffer</param>
         /// <returns>Detection result with confidence scores and multiple candidates</returns>
-        public FormatDetectionResult DetectFormat(byte[] data, string fileName = null)
+        public FormatDetectionResult DetectFormat(byte[] data, string fileName = null, ByteProvider byteProvider = null)
         {
             if (data == null || data.Length == 0)
             {
@@ -212,7 +214,7 @@ namespace WpfHexaEditor.Services
             // Step 2: Multi-tier detection
 
             // TIER 1: Strong signatures (required: true, unique/strong)
-            var tier1 = DetectWithStrongSignatures(data, fileName, contentAnalysis);
+            var tier1 = DetectWithStrongSignatures(data, fileName, contentAnalysis, byteProvider);
             candidates.AddRange(tier1);
 
             // Early exit if high-confidence match found
@@ -225,14 +227,14 @@ namespace WpfHexaEditor.Services
             // TIER 2: Text format detection (if appears to be text)
             if (contentAnalysis.IsLikelyText)
             {
-                var tier2 = DetectTextFormats(data, fileName, contentAnalysis);
+                var tier2 = DetectTextFormats(data, fileName, contentAnalysis, byteProvider);
                 candidates.AddRange(tier2);
             }
 
             // TIER 3: Weak signatures (only if no strong match)
             if (!candidates.Any())
             {
-                var tier3 = DetectWithWeakSignatures(data, fileName, contentAnalysis);
+                var tier3 = DetectWithWeakSignatures(data, fileName, contentAnalysis, byteProvider);
                 candidates.AddRange(tier3);
             }
 
@@ -246,7 +248,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// Try to detect a specific format
         /// </summary>
-        private bool TryDetectFormat(byte[] data, FormatDefinition format, out List<CustomBackgroundBlock> blocks, out Dictionary<string, object> variables)
+        private bool TryDetectFormat(byte[] data, FormatDefinition format, out List<CustomBackgroundBlock> blocks, out Dictionary<string, object> variables, ByteProvider byteProvider = null)
         {
             blocks = new List<CustomBackgroundBlock>();
             variables = new Dictionary<string, object>();
@@ -264,7 +266,7 @@ namespace WpfHexaEditor.Services
             // Generate blocks using interpreter
             try
             {
-                var interpreter = new FormatScriptInterpreter(data, format.Variables);
+                var interpreter = new FormatScriptInterpreter(data, format.Variables, byteProvider);
 
                 // Execute built-in functions first (populates variables)
                 if (format.Functions != null && format.Functions.Count > 0)
@@ -276,11 +278,6 @@ namespace WpfHexaEditor.Services
 
                 // Copy variables from interpreter (includes function results)
                 variables = new Dictionary<string, object>(interpreter.Variables);
-                System.Diagnostics.Debug.WriteLine($"[TryDetectFormat] Copied {variables.Count} variables from interpreter for format {format.FormatName}");
-                foreach (var kvp in variables)
-                {
-                    System.Diagnostics.Debug.WriteLine($"  TryDetectFormat var: {kvp.Key} = {kvp.Value}");
-                }
 
                 return blocks.Count > 0;
             }
@@ -296,7 +293,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// TIER 1: Detect formats with strong signatures (required: true, unique/strong)
         /// </summary>
-        private List<FormatMatchCandidate> DetectWithStrongSignatures(byte[] data, string fileName, ContentAnalysisResult contentAnalysis)
+        private List<FormatMatchCandidate> DetectWithStrongSignatures(byte[] data, string fileName, ContentAnalysisResult contentAnalysis, ByteProvider byteProvider)
         {
             var candidates = new List<FormatMatchCandidate>();
 
@@ -311,7 +308,7 @@ namespace WpfHexaEditor.Services
 
             foreach (var format in formatsByPriority)
             {
-                if (TryDetectFormat(data, format, out var blocks, out var variables))
+                if (TryDetectFormat(data, format, out var blocks, out var variables, byteProvider))
                 {
                     var candidate = new FormatMatchCandidate
                     {
@@ -336,7 +333,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// TIER 2: Detect text-based formats using content heuristics
         /// </summary>
-        private List<FormatMatchCandidate> DetectTextFormats(byte[] data, string fileName, ContentAnalysisResult contentAnalysis)
+        private List<FormatMatchCandidate> DetectTextFormats(byte[] data, string fileName, ContentAnalysisResult contentAnalysis, ByteProvider byteProvider)
         {
             var candidates = new List<FormatMatchCandidate>();
 
@@ -362,10 +359,9 @@ namespace WpfHexaEditor.Services
                 }
 
                 // Try block generation
-                if (TryDetectFormat(data, format, out var blocks, out var variables))
+                if (TryDetectFormat(data, format, out var blocks, out var variables, byteProvider))
                 {
                     contentScore += 0.2;
-                    System.Diagnostics.Debug.WriteLine($"[DetectTextFormats] Received {variables.Count} variables from TryDetectFormat");
 
                     var candidate = new FormatMatchCandidate
                     {
@@ -375,12 +371,6 @@ namespace WpfHexaEditor.Services
                         Tier = MatchTier.ContentBased,
                         ContentConfidence = contentScore
                     };
-
-                    System.Diagnostics.Debug.WriteLine($"[DetectTextFormats] Candidate.Variables count: {candidate.Variables.Count}");
-                    foreach (var kvp in candidate.Variables)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"  Candidate var: {kvp.Key} = {kvp.Value}");
-                    }
 
                     candidates.Add(candidate);
                 }
@@ -392,7 +382,7 @@ namespace WpfHexaEditor.Services
         /// <summary>
         /// TIER 3: Detect formats with weak/no signatures (last resort)
         /// </summary>
-        private List<FormatMatchCandidate> DetectWithWeakSignatures(byte[] data, string fileName, ContentAnalysisResult contentAnalysis)
+        private List<FormatMatchCandidate> DetectWithWeakSignatures(byte[] data, string fileName, ContentAnalysisResult contentAnalysis, ByteProvider byteProvider)
         {
             var candidates = new List<FormatMatchCandidate>();
 
@@ -406,7 +396,7 @@ namespace WpfHexaEditor.Services
 
             foreach (var format in extensionMatches)
             {
-                if (TryDetectFormat(data, format, out var blocks, out var variables))
+                if (TryDetectFormat(data, format, out var blocks, out var variables, byteProvider))
                 {
                     var candidate = new FormatMatchCandidate
                     {
@@ -549,14 +539,6 @@ namespace WpfHexaEditor.Services
                                                    ContentAnalysisResult contentAnalysis, Stopwatch sw)
         {
             sw.Stop();
-            System.Diagnostics.Debug.WriteLine($"[CreateResult] Candidate.Variables count: {candidate.Variables?.Count ?? -1}");
-            if (candidate.Variables != null)
-            {
-                foreach (var kvp in candidate.Variables)
-                {
-                    System.Diagnostics.Debug.WriteLine($"  CreateResult candidate var: {kvp.Key} = {kvp.Value}");
-                }
-            }
 
             var result = new FormatDetectionResult
             {
@@ -570,15 +552,6 @@ namespace WpfHexaEditor.Services
                 RequiresUserSelection = false,
                 DetectionTimeMs = sw.Elapsed.TotalMilliseconds
             };
-
-            System.Diagnostics.Debug.WriteLine($"[CreateResult] Result.Variables count: {result.Variables?.Count ?? -1}");
-            if (result.Variables != null)
-            {
-                foreach (var kvp in result.Variables)
-                {
-                    System.Diagnostics.Debug.WriteLine($"  CreateResult result var: {kvp.Key} = {kvp.Value}");
-                }
-            }
 
             return result;
         }
@@ -725,15 +698,16 @@ namespace WpfHexaEditor.Services
         /// </summary>
         /// <param name="data">File data</param>
         /// <param name="format">Format to apply</param>
+        /// <param name="byteProvider">Optional ByteProvider for reading beyond data buffer</param>
         /// <returns>Generated blocks</returns>
-        public List<CustomBackgroundBlock> GenerateBlocks(byte[] data, FormatDefinition format)
+        public List<CustomBackgroundBlock> GenerateBlocks(byte[] data, FormatDefinition format, ByteProvider byteProvider = null)
         {
             if (data == null || format == null || !format.IsValid())
                 return new List<CustomBackgroundBlock>();
 
             try
             {
-                var interpreter = new FormatScriptInterpreter(data, format.Variables);
+                var interpreter = new FormatScriptInterpreter(data, format.Variables, byteProvider);
 
                 // Execute built-in functions first (populates variables)
                 if (format.Functions != null && format.Functions.Count > 0)
