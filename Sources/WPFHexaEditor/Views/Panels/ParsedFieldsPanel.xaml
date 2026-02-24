@@ -526,14 +526,45 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem Header="Copy Value" Click="CopyValue_Click">
+                    <MenuItem Header="Copy Value">
                         <MenuItem.Icon>
                             <TextBlock Text="📋" FontSize="14"/>
                         </MenuItem.Icon>
+                        <MenuItem Header="As Displayed" Click="CopyValue_Click">
+                            <MenuItem.Icon>
+                                <TextBlock Text="📄" FontSize="12"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="As Hex" Click="CopyValueHex_Click">
+                            <MenuItem.Icon>
+                                <TextBlock Text="🔢" FontSize="12"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="As Decimal" Click="CopyValueDecimal_Click">
+                            <MenuItem.Icon>
+                                <TextBlock Text="🔟" FontSize="12"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="As Binary" Click="CopyValueBinary_Click">
+                            <MenuItem.Icon>
+                                <TextBlock Text="01" FontSize="12" FontFamily="Consolas"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                     <MenuItem Header="Copy Details" Click="CopyDetails_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="📄" FontSize="14"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator/>
+                    <MenuItem Header="Find Similar Values..." Click="FindSimilar_Click">
+                        <MenuItem.Icon>
+                            <TextBlock Text="🔍" FontSize="14"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Show in Data Inspector" Click="ShowInDataInspector_Click">
+                        <MenuItem.Icon>
+                            <TextBlock Text="🔬" FontSize="14"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator/>

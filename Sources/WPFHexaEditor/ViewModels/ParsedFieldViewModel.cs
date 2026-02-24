@@ -177,6 +177,8 @@ namespace WpfHexaEditor.ViewModels
             {
                 _validationMessage = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(ValidationIcon));
+                OnPropertyChanged(nameof(ValidationColor));
             }
         }
 
@@ -206,6 +208,20 @@ namespace WpfHexaEditor.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        /// <summary>
+        /// Validation status icon
+        /// </summary>
+        public string ValidationIcon =>
+            !IsValid && !string.IsNullOrEmpty(ValidationMessage) ? "⚠️" :
+            IsValid ? "✅" : "";
+
+        /// <summary>
+        /// Validation status color
+        /// </summary>
+        public string ValidationColor =>
+            !IsValid && !string.IsNullOrEmpty(ValidationMessage) ? "#FF6B6B" :
+            IsValid ? "#7ED321" : "#CCCCCC";
 
         /// <summary>
         /// Whether this field can be edited by the user
@@ -596,6 +612,105 @@ namespace WpfHexaEditor.ViewModels
                 bytes[i] = System.Convert.ToByte(value.Substring(i * 2, 2), 16);
             }
             return bytes;
+        }
+
+        /// <summary>
+        /// Get value as hex string
+        /// </summary>
+        public string GetValueAsHex()
+        {
+            if (RawValue == null)
+                return "N/A";
+
+            if (RawValue is byte[] bytes && bytes.Length > 0)
+                return System.BitConverter.ToString(bytes).Replace("-", " ");
+
+            // Convert numeric types to hex
+            return ValueType?.ToLowerInvariant() switch
+            {
+                "uint8" or "byte" when RawValue is byte b => $"0x{b:X2}",
+                "int8" or "sbyte" when RawValue is sbyte sb => $"0x{(byte)sb:X2}",
+                "uint16" or "ushort" when RawValue is ushort us => $"0x{us:X4}",
+                "int16" or "short" when RawValue is short s => $"0x{(ushort)s:X4}",
+                "uint32" or "uint" when RawValue is uint ui => $"0x{ui:X8}",
+                "int32" or "int" when RawValue is int i => $"0x{(uint)i:X8}",
+                "uint64" or "ulong" when RawValue is ulong ul => $"0x{ul:X16}",
+                "int64" or "long" when RawValue is long l => $"0x{(ulong)l:X16}",
+                _ => "N/A"
+            };
+        }
+
+        /// <summary>
+        /// Get value as decimal string
+        /// </summary>
+        public string GetValueAsDecimal()
+        {
+            if (RawValue == null)
+                return "N/A";
+
+            return ValueType?.ToLowerInvariant() switch
+            {
+                "uint8" or "byte" when RawValue is byte b => b.ToString(),
+                "int8" or "sbyte" when RawValue is sbyte sb => sb.ToString(),
+                "uint16" or "ushort" when RawValue is ushort us => us.ToString(),
+                "int16" or "short" when RawValue is short s => s.ToString(),
+                "uint32" or "uint" when RawValue is uint ui => ui.ToString(),
+                "int32" or "int" when RawValue is int i => i.ToString(),
+                "uint64" or "ulong" when RawValue is ulong ul => ul.ToString(),
+                "int64" or "long" when RawValue is long l => l.ToString(),
+                "float" when RawValue is float f => f.ToString("F6"),
+                "double" when RawValue is double d => d.ToString("F6"),
+                _ => RawValue.ToString()
+            };
+        }
+
+        /// <summary>
+        /// Get value as binary string
+        /// </summary>
+        public string GetValueAsBinary()
+        {
+            if (RawValue == null)
+                return "N/A";
+
+            if (RawValue is byte[] bytes)
+            {
+                var binary = new System.Text.StringBuilder();
+                foreach (var b in bytes)
+                {
+                    if (binary.Length > 0)
+                        binary.Append(' ');
+                    binary.Append(System.Convert.ToString(b, 2).PadLeft(8, '0'));
+                }
+                return binary.ToString();
+            }
+
+            // Convert numeric types to binary
+            byte[] numBytes = ValueType?.ToLowerInvariant() switch
+            {
+                "uint8" or "byte" when RawValue is byte b => new[] { b },
+                "int8" or "sbyte" when RawValue is sbyte sb => new[] { (byte)sb },
+                "uint16" or "ushort" when RawValue is ushort us => System.BitConverter.GetBytes(us),
+                "int16" or "short" when RawValue is short s => System.BitConverter.GetBytes(s),
+                "uint32" or "uint" when RawValue is uint ui => System.BitConverter.GetBytes(ui),
+                "int32" or "int" when RawValue is int i => System.BitConverter.GetBytes(i),
+                "uint64" or "ulong" when RawValue is ulong ul => System.BitConverter.GetBytes(ul),
+                "int64" or "long" when RawValue is long l => System.BitConverter.GetBytes(l),
+                _ => null
+            };
+
+            if (numBytes != null)
+            {
+                var binary = new System.Text.StringBuilder();
+                foreach (var b in numBytes)
+                {
+                    if (binary.Length > 0)
+                        binary.Append(' ');
+                    binary.Append(System.Convert.ToString(b, 2).PadLeft(8, '0'));
+                }
+                return binary.ToString();
+            }
+
+            return "N/A";
         }
     }
 

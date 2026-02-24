@@ -1310,7 +1310,509 @@
     <comment>Bar Chart - Unit for entropy measurement</comment>
   </data>
   <data name="BarChart_Bytes" xml:space="preserve">
-    <value>bytes</value>
+    <value>octets</value>
     <comment>Bar Chart - Unit for byte count</comment>
+  </data>
+
+  <!-- Panneau d'analyse de motifs -->
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>📊 Analyse de motifs</value>
+    <comment>Pattern Analysis Panel - Panel title</comment>
+  </data>
+  <data name="PatternAnalysis_Entropy" xml:space="preserve">
+    <value>Entropie</value>
+    <comment>Pattern Analysis - Entropy section title</comment>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>Distribution des octets</value>
+    <comment>Pattern Analysis - Byte distribution histogram title</comment>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>Motifs détectés</value>
+    <comment>Pattern Analysis - Detected patterns list title</comment>
+  </data>
+  <data name="PatternAnalysis_NoPatternsDetected" xml:space="preserve">
+    <value>Aucun motif détecté</value>
+    <comment>Pattern Analysis - No patterns found message</comment>
+  </data>
+  <data name="PatternAnalysis_Anomalies" xml:space="preserve">
+    <value>Anomalies</value>
+    <comment>Pattern Analysis - Anomalies section title</comment>
+  </data>
+  <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
+    <value>✅ Aucune anomalie détectée</value>
+    <comment>Pattern Analysis - No anomalies found message</comment>
+  </data>
+  <data name="PatternAnalysis_BitsPerByte" xml:space="preserve">
+    <value>bits/octet</value>
+    <comment>Pattern Analysis - Entropy unit</comment>
+  </data>
+  <data name="PatternAnalysis_HighEntropy" xml:space="preserve">
+    <value>Entropie élevée détectée</value>
+    <comment>Pattern Analysis - High entropy anomaly title</comment>
+  </data>
+  <data name="PatternAnalysis_HighEntropyDesc" xml:space="preserve">
+    <value>Les données semblent compressées ou chiffrées</value>
+    <comment>Pattern Analysis - High entropy description</comment>
+  </data>
+  <data name="PatternAnalysis_LowEntropy" xml:space="preserve">
+    <value>Entropie très faible détectée</value>
+    <comment>Pattern Analysis - Low entropy anomaly title</comment>
+  </data>
+  <data name="PatternAnalysis_LowEntropyDesc" xml:space="preserve">
+    <value>Les données contiennent de nombreux octets répétés ou similaires</value>
+    <comment>Pattern Analysis - Low entropy description</comment>
+  </data>
+  <data name="PatternAnalysis_SkewedDistribution" xml:space="preserve">
+    <value>Distribution d'octets asymétrique</value>
+    <comment>Pattern Analysis - Skewed distribution anomaly title</comment>
+  </data>
+  <data name="PatternAnalysis_SkewedDesc" xml:space="preserve">
+    <value>Une valeur d'octet apparaît plus de 20 % du temps</value>
+    <comment>Pattern Analysis - Skewed distribution description</comment>
+  </data>
+  <data name="PatternAnalysis_NullBytes" xml:space="preserve">
+    <value>Octets NULL (0x00)</value>
+    <comment>Pattern Analysis - NULL bytes pattern</comment>
+  </data>
+  <data name="PatternAnalysis_RepeatedSequence" xml:space="preserve">
+    <value>Séquence répétée</value>
+    <comment>Pattern Analysis - Repeated sequence pattern</comment>
+  </data>
+  <data name="PatternAnalysis_AsciiText" xml:space="preserve">
+    <value>Texte ASCII détecté</value>
+    <comment>Pattern Analysis - ASCII text pattern</comment>
+  </data>
+
+  <!-- Panneau de statistiques de fichier -->
+  <data name="FileStats_Title" xml:space="preserve">
+    <value>📊 Statistiques du fichier</value>
+    <comment>File Statistics Panel - Panel title</comment>
+  </data>
+  <data name="FileStats_OverallHealth" xml:space="preserve">
+    <value>État de santé général</value>
+    <comment>File Statistics - Overall health section title</comment>
+  </data>
+  <data name="FileStats_HealthyStructure" xml:space="preserve">
+    <value>La structure du fichier est valide et saine</value>
+    <comment>File Statistics - Healthy structure message</comment>
+  </data>
+  <data name="FileStats_Structure" xml:space="preserve">
+    <value>Structure</value>
+    <comment>File Statistics - Structure section title</comment>
+  </data>
+  <data name="FileStats_Valid" xml:space="preserve">
+    <value>Valide</value>
+    <comment>File Statistics - Valid status</comment>
+  </data>
+  <data name="FileStats_Invalid" xml:space="preserve">
+    <value>Invalide</value>
+    <comment>File Statistics - Invalid status</comment>
+  </data>
+  <data name="FileStats_Checksums" xml:space="preserve">
+    <value>Sommes de contrôle</value>
+    <comment>File Statistics - Checksums section title</comment>
+  </data>
+  <data name="FileStats_AllPass" xml:space="preserve">
+    <value>Toutes passées</value>
+    <comment>File Statistics - All checksums pass message</comment>
+  </data>
+  <data name="FileStats_SomeFailed" xml:space="preserve">
+    <value>Certaines sommes de contrôle ont échoué</value>
+    <comment>File Statistics - Some checksums failed message</comment>
+  </data>
+  <data name="FileStats_Compression" xml:space="preserve">
+    <value>Compression</value>
+    <comment>File Statistics - Compression section title</comment>
+  </data>
+  <data name="FileStats_Ratio" xml:space="preserve">
+    <value>Ratio :</value>
+    <comment>File Statistics - Compression ratio label</comment>
+  </data>
+  <data name="FileStats_SubOptimalCompression" xml:space="preserve">
+    <value>⚠️ Compression sous-optimale</value>
+    <comment>File Statistics - Sub-optimal compression warning</comment>
+  </data>
+  <data name="FileStats_EntropyAnalysis" xml:space="preserve">
+    <value>Analyse d'entropie</value>
+    <comment>File Statistics - Entropy analysis section title</comment>
+  </data>
+  <data name="FileStats_Level" xml:space="preserve">
+    <value>Niveau :</value>
+    <comment>File Statistics - Entropy level label</comment>
+  </data>
+  <data name="FileStats_CompressedOrEncrypted" xml:space="preserve">
+    <value>Données probablement compressées ou chiffrées</value>
+    <comment>File Statistics - Compressed/encrypted data message</comment>
+  </data>
+  <data name="FileStats_DetectedIssues" xml:space="preserve">
+    <value>Problèmes détectés</value>
+    <comment>File Statistics - Detected issues section title</comment>
+  </data>
+  <data name="FileStats_NoIssues" xml:space="preserve">
+    <value>✅ Aucun problème détecté</value>
+    <comment>File Statistics - No issues message</comment>
+  </data>
+  <data name="FileStats_FileInformation" xml:space="preserve">
+    <value>Informations du fichier</value>
+    <comment>File Statistics - File information section title</comment>
+  </data>
+  <data name="FileStats_Size" xml:space="preserve">
+    <value>Taille :</value>
+    <comment>File Statistics - Size label</comment>
+  </data>
+  <data name="FileStats_Fields" xml:space="preserve">
+    <value>Champs :</value>
+    <comment>File Statistics - Fields count label</comment>
+  </data>
+  <data name="FileStats_Format" xml:space="preserve">
+    <value>Format :</value>
+    <comment>File Statistics - Format label</comment>
+  </data>
+  <data name="FileStats_Unknown" xml:space="preserve">
+    <value>Inconnu</value>
+    <comment>File Statistics - Unknown format</comment>
+  </data>
+
+  <!-- Panneau de structure d'archive -->
+  <data name="ArchiveStructure_Title" xml:space="preserve">
+    <value>📦 Structure d'archive</value>
+    <comment>Archive Structure Panel - Panel title</comment>
+  </data>
+  <data name="ArchiveStructure_NoArchive" xml:space="preserve">
+    <value>Aucune archive chargée</value>
+    <comment>Archive Structure - No archive message</comment>
+  </data>
+  <data name="ArchiveStructure_Extract" xml:space="preserve">
+    <value>Extraire...</value>
+    <comment>Archive Structure - Extract menu item</comment>
+  </data>
+  <data name="ArchiveStructure_ViewDetails" xml:space="preserve">
+    <value>Voir les détails</value>
+    <comment>Archive Structure - View details menu item</comment>
+  </data>
+  <data name="ArchiveStructure_ExpandAll" xml:space="preserve">
+    <value>Tout développer</value>
+    <comment>Archive Structure - Expand all menu item</comment>
+  </data>
+  <data name="ArchiveStructure_CollapseAll" xml:space="preserve">
+    <value>Tout réduire</value>
+    <comment>Archive Structure - Collapse all menu item</comment>
+  </data>
+  <data name="ArchiveStructure_Files" xml:space="preserve">
+    <value>fichiers</value>
+    <comment>Archive Structure - Files unit</comment>
+  </data>
+  <data name="ArchiveStructure_Folders" xml:space="preserve">
+    <value>dossiers</value>
+    <comment>Archive Structure - Folders unit</comment>
+  </data>
+  <data name="ArchiveStructure_TotalSize" xml:space="preserve">
+    <value>Taille totale :</value>
+    <comment>Archive Structure - Total size label</comment>
+  </data>
+  <data name="ArchiveStructure_CompressionRatio" xml:space="preserve">
+    <value>Ratio :</value>
+    <comment>Archive Structure - Compression ratio label</comment>
+  </data>
+  <data name="ArchiveStructure_ExtractFunctionality" xml:space="preserve">
+    <value>Fonctionnalité d'extraction - à implémenter avec une bibliothèque d'archive</value>
+    <comment>Archive Structure - Extract not implemented message</comment>
+  </data>
+  <data name="ArchiveStructure_ExtractTitle" xml:space="preserve">
+    <value>Extraire</value>
+    <comment>Archive Structure - Extract dialog title</comment>
+  </data>
+  <data name="ArchiveStructure_DetailsTitle" xml:space="preserve">
+    <value>Détails</value>
+    <comment>Archive Structure - Details dialog title</comment>
+  </data>
+  <data name="ArchiveStructure_DetailName" xml:space="preserve">
+    <value>Nom :</value>
+    <comment>Archive Structure - Detail name label</comment>
+  </data>
+  <data name="ArchiveStructure_DetailType" xml:space="preserve">
+    <value>Type :</value>
+    <comment>Archive Structure - Detail type label</comment>
+  </data>
+  <data name="ArchiveStructure_DetailFolder" xml:space="preserve">
+    <value>Dossier</value>
+    <comment>Archive Structure - Folder type</comment>
+  </data>
+  <data name="ArchiveStructure_DetailFile" xml:space="preserve">
+    <value>Fichier</value>
+    <comment>Archive Structure - File type</comment>
+  </data>
+  <data name="ArchiveStructure_DetailCompressed" xml:space="preserve">
+    <value>Compressé :</value>
+    <comment>Archive Structure - Compressed size label</comment>
+  </data>
+  <data name="ArchiveStructure_DetailCRC" xml:space="preserve">
+    <value>CRC :</value>
+    <comment>Archive Structure - CRC label</comment>
+  </data>
+  <data name="ArchiveStructure_DetailMethod" xml:space="preserve">
+    <value>Méthode :</value>
+    <comment>Archive Structure - Compression method label</comment>
+  </data>
+
+  <!-- Panneau de comparaison de fichiers -->
+  <data name="FileComparison_Title" xml:space="preserve">
+    <value>⚖️ Comparaison de fichiers</value>
+    <comment>File Comparison Panel - Panel title</comment>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Sélectionner les fichiers à comparer</value>
+    <comment>File Comparison - Select files message</comment>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>Charger fichier 1...</value>
+    <comment>File Comparison - Load file 1 button</comment>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>Charger fichier 2...</value>
+    <comment>File Comparison - Load file 2 button</comment>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>Fichier 1</value>
+    <comment>File Comparison - File 1 label</comment>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>Fichier 2</value>
+    <comment>File Comparison - File 2 label</comment>
+  </data>
+  <data name="FileComparison_Matching" xml:space="preserve">
+    <value>Correspondants :</value>
+    <comment>File Comparison - Matching fields label</comment>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>Ajoutés :</value>
+    <comment>File Comparison - Added fields label</comment>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>Modifiés :</value>
+    <comment>File Comparison - Modified fields label</comment>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>Supprimés :</value>
+    <comment>File Comparison - Removed fields label</comment>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>Sélectionner le fichier 1 à comparer</value>
+    <comment>File Comparison - Select file 1 dialog title</comment>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>Sélectionner le fichier 2 à comparer</value>
+    <comment>File Comparison - Select file 2 dialog title</comment>
+  </data>
+  <data name="FileComparison_AllFiles" xml:space="preserve">
+    <value>Tous les fichiers (*.*)|*.*</value>
+    <comment>File Comparison - File filter</comment>
+  </data>
+  <data name="FileComparison_ErrorLoading" xml:space="preserve">
+    <value>Erreur lors du chargement du fichier : {0}</value>
+    <comment>File Comparison - Error loading file message</comment>
+  </data>
+  <data name="FileComparison_Error" xml:space="preserve">
+    <value>Erreur</value>
+    <comment>File Comparison - Error dialog title</comment>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Sélectionner les deux fichiers à comparer</value>
+    <comment>File Comparison - Select both files message</comment>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>Comparaison de {0} ↔ {1}</value>
+    <comment>File Comparison - Comparing message</comment>
+  </data>
+
+  <!-- Panneau de modèles de parseur personnalisé -->
+  <data name="CustomTemplate_Title" xml:space="preserve">
+    <value>📝 Modèles</value>
+    <comment>Custom Parser Template Panel - Panel title</comment>
+  </data>
+  <data name="CustomTemplate_NewTemplate" xml:space="preserve">
+    <value>➕ Nouveau modèle</value>
+    <comment>Custom Template - New template button</comment>
+  </data>
+  <data name="CustomTemplate_DeleteTemplate" xml:space="preserve">
+    <value>🗑️ Supprimer le modèle</value>
+    <comment>Custom Template - Delete template button</comment>
+  </data>
+  <data name="CustomTemplate_EditorTitle" xml:space="preserve">
+    <value>📋 Éditeur de modèle</value>
+    <comment>Custom Template - Editor title</comment>
+  </data>
+  <data name="CustomTemplate_Name" xml:space="preserve">
+    <value>Nom :</value>
+    <comment>Custom Template - Name label</comment>
+  </data>
+  <data name="CustomTemplate_Description" xml:space="preserve">
+    <value>Description :</value>
+    <comment>Custom Template - Description label</comment>
+  </data>
+  <data name="CustomTemplate_Extensions" xml:space="preserve">
+    <value>Extensions :</value>
+    <comment>Custom Template - Extensions label</comment>
+  </data>
+  <data name="CustomTemplate_ExtensionsTooltip" xml:space="preserve">
+    <value>Séparées par des virgules, ex. .bin,.dat</value>
+    <comment>Custom Template - Extensions tooltip</comment>
+  </data>
+  <data name="CustomTemplate_SaveTemplate" xml:space="preserve">
+    <value>💾 Enregistrer le modèle</value>
+    <comment>Custom Template - Save template button</comment>
+  </data>
+  <data name="CustomTemplate_FormatBlocks" xml:space="preserve">
+    <value>Blocs de format</value>
+    <comment>Custom Template - Format blocks section title</comment>
+  </data>
+  <data name="CustomTemplate_AddBlock" xml:space="preserve">
+    <value>➕ Ajouter un bloc</value>
+    <comment>Custom Template - Add block button</comment>
+  </data>
+  <data name="CustomTemplate_RemoveBlock" xml:space="preserve">
+    <value>🗑️ Supprimer le bloc</value>
+    <comment>Custom Template - Remove block button</comment>
+  </data>
+  <data name="CustomTemplate_ApplyToFile" xml:space="preserve">
+    <value>Appliquer au fichier actuel</value>
+    <comment>Custom Template - Apply to file section title</comment>
+  </data>
+  <data name="CustomTemplate_ApplyDescription" xml:space="preserve">
+    <value>Appliquer ce modèle pour analyser le fichier actuellement chargé dans l'éditeur hexadécimal.</value>
+    <comment>Custom Template - Apply description</comment>
+  </data>
+  <data name="CustomTemplate_ApplyButton" xml:space="preserve">
+    <value>✨ Appliquer le modèle au fichier</value>
+    <comment>Custom Template - Apply button</comment>
+  </data>
+  <data name="CustomTemplate_ExportImport" xml:space="preserve">
+    <value>Exporter/Importer</value>
+    <comment>Custom Template - Export/Import section title</comment>
+  </data>
+  <data name="CustomTemplate_ExportJSON" xml:space="preserve">
+    <value>📤 Exporter vers JSON</value>
+    <comment>Custom Template - Export to JSON button</comment>
+  </data>
+  <data name="CustomTemplate_ImportJSON" xml:space="preserve">
+    <value>📥 Importer depuis JSON</value>
+    <comment>Custom Template - Import from JSON button</comment>
+  </data>
+  <data name="CustomTemplate_NoTemplateSelected" xml:space="preserve">
+    <value>Aucun modèle sélectionné à enregistrer.</value>
+    <comment>Custom Template - No template selected message</comment>
+  </data>
+  <data name="CustomTemplate_SavedSuccessfully" xml:space="preserve">
+    <value>Modèle '{0}' enregistré avec succès !</value>
+    <comment>Custom Template - Saved successfully message</comment>
+  </data>
+  <data name="CustomTemplate_ErrorSaving" xml:space="preserve">
+    <value>Erreur lors de l'enregistrement du modèle : {0}</value>
+    <comment>Custom Template - Error saving message</comment>
+  </data>
+  <data name="CustomTemplate_SelectOrCreate" xml:space="preserve">
+    <value>Sélectionnez ou créez d'abord un modèle.</value>
+    <comment>Custom Template - Select or create message</comment>
+  </data>
+  <data name="CustomTemplate_AddBlockTitle" xml:space="preserve">
+    <value>Ajouter un bloc</value>
+    <comment>Custom Template - Add block dialog title</comment>
+  </data>
+  <data name="CustomTemplate_DeleteConfirm" xml:space="preserve">
+    <value>Supprimer le modèle '{0}' ?</value>
+    <comment>Custom Template - Delete confirmation message</comment>
+  </data>
+  <data name="CustomTemplate_ConfirmDelete" xml:space="preserve">
+    <value>Confirmer la suppression</value>
+    <comment>Custom Template - Confirm delete dialog title</comment>
+  </data>
+  <data name="CustomTemplate_ErrorDeleting" xml:space="preserve">
+    <value>Erreur lors de la suppression du fichier : {0}</value>
+    <comment>Custom Template - Error deleting message</comment>
+  </data>
+  <data name="CustomTemplate_DeleteError" xml:space="preserve">
+    <value>Erreur de suppression</value>
+    <comment>Custom Template - Delete error dialog title</comment>
+  </data>
+  <data name="CustomTemplate_ApplyingTemplate" xml:space="preserve">
+    <value>Application du modèle '{0}' au fichier actuel.\n\nCeci analysera {1} blocs selon votre définition de modèle.\n\nRemarque : L'intégration complète avec HexEditor nécessite une connexion au modèle de vue principal.</value>
+    <comment>Custom Template - Applying template message</comment>
+  </data>
+  <data name="CustomTemplate_ApplyTitle" xml:space="preserve">
+    <value>Appliquer le modèle</value>
+    <comment>Custom Template - Apply dialog title</comment>
+  </data>
+  <data name="CustomTemplate_NoTemplateToApply" xml:space="preserve">
+    <value>Aucun modèle sélectionné à appliquer.</value>
+    <comment>Custom Template - No template to apply message</comment>
+  </data>
+  <data name="CustomTemplate_ExportTitle" xml:space="preserve">
+    <value>Exporter le modèle en JSON</value>
+    <comment>Custom Template - Export dialog title</comment>
+  </data>
+  <data name="CustomTemplate_JSONFiles" xml:space="preserve">
+    <value>Fichiers JSON (*.json)|*.json</value>
+    <comment>Custom Template - JSON file filter</comment>
+  </data>
+  <data name="CustomTemplate_ExportedTo" xml:space="preserve">
+    <value>Modèle exporté vers :\n{0}</value>
+    <comment>Custom Template - Exported to message</comment>
+  </data>
+  <data name="CustomTemplate_ExportSuccess" xml:space="preserve">
+    <value>Exportation réussie</value>
+    <comment>Custom Template - Export success dialog title</comment>
+  </data>
+  <data name="CustomTemplate_ErrorExporting" xml:space="preserve">
+    <value>Erreur lors de l'exportation du modèle : {0}</value>
+    <comment>Custom Template - Error exporting message</comment>
+  </data>
+  <data name="CustomTemplate_ExportError" xml:space="preserve">
+    <value>Erreur d'exportation</value>
+    <comment>Custom Template - Export error dialog title</comment>
+  </data>
+  <data name="CustomTemplate_ImportTitle" xml:space="preserve">
+    <value>Importer le modèle depuis JSON</value>
+    <comment>Custom Template - Import dialog title</comment>
+  </data>
+  <data name="CustomTemplate_ImportedSuccessfully" xml:space="preserve">
+    <value>Modèle '{0}' importé avec succès !</value>
+    <comment>Custom Template - Imported successfully message</comment>
+  </data>
+  <data name="CustomTemplate_ImportSuccess" xml:space="preserve">
+    <value>Importation réussie</value>
+    <comment>Custom Template - Import success dialog title</comment>
+  </data>
+  <data name="CustomTemplate_ErrorImporting" xml:space="preserve">
+    <value>Erreur lors de l'importation du modèle : {0}</value>
+    <comment>Custom Template - Error importing message</comment>
+  </data>
+  <data name="CustomTemplate_ImportError" xml:space="preserve">
+    <value>Erreur d'importation</value>
+    <comment>Custom Template - Import error dialog title</comment>
+  </data>
+  <data name="CustomTemplate_ColumnName" xml:space="preserve">
+    <value>Nom</value>
+    <comment>Custom Template - Name column header</comment>
+  </data>
+  <data name="CustomTemplate_ColumnOffset" xml:space="preserve">
+    <value>Décalage</value>
+    <comment>Custom Template - Offset column header</comment>
+  </data>
+  <data name="CustomTemplate_ColumnLength" xml:space="preserve">
+    <value>Longueur</value>
+    <comment>Custom Template - Length column header</comment>
+  </data>
+  <data name="CustomTemplate_ColumnType" xml:space="preserve">
+    <value>Type</value>
+    <comment>Custom Template - Type column header</comment>
+  </data>
+  <data name="CustomTemplate_ColumnColor" xml:space="preserve">
+    <value>Couleur</value>
+    <comment>Custom Template - Color column header</comment>
+  </data>
+  <data name="CustomTemplate_ColumnDescription" xml:space="preserve">
+    <value>Description</value>
+    <comment>Custom Template - Description column header</comment>
   </data>
 </root>

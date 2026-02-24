@@ -1,0 +1,122 @@
+{
+  "formatName": "Plain Text",
+  "version": "1.0",
+  "extensions": [ ".txt", ".text", ".log", ".md", ".csv", ".json", ".xml", ".html", ".css", ".js", ".cs", ".c", ".cpp", ".h" ],
+  "description": "Plain text document with character encoding support (ASCII, UTF-8, UTF-16)",
+  "author": "Derek Tremblay",
+  "category": "Text Documents",
+
+  "detection": {
+    "signature": null,
+    "offset": 0,
+    "required": false,
+    "strength": 0,
+    "isTextFormat": true,
+    "contentPatterns": [
+      "^[\\x20-\\x7E\\x09\\x0A\\x0D]+$",
+      "^[\\w\\s\\p{P}]+$"
+    ],
+    "minConfidenceThreshold": 0.7
+  },
+
+  "mimeTypes": [
+    "text/plain",
+    "text/plain; charset=utf-8",
+    "application/txt",
+    "text/x-log",
+    "text/markdown",
+    "text/csv"
+  ],
+
+  "software": [
+    "Notepad (Windows)",
+    "TextEdit (macOS)",
+    "gedit (Linux)",
+    "Vim",
+    "Emacs",
+    "Visual Studio Code",
+    "Sublime Text",
+    "Atom",
+    "Notepad++",
+    "Any text editor"
+  ],
+
+  "useCases": [
+    "Configuration files (.ini, .conf, .cfg)",
+    "Log files and debugging output",
+    "Source code files (.cs, .js, .py, .java)",
+    "Documentation and README files",
+    "Data export/import (CSV, TSV)",
+    "Notes and memos",
+    "Scripts and batch files"
+  ],
+
+  "qualityMetrics": {
+    "completenessScore": 90,
+    "documentationLevel": "Comprehensive",
+    "blocksDefined": 5,
+    "validationRules": 3,
+    "lastUpdated": "2026-02-23",
+    "priorityFormat": false,
+    "autoRefined": true
+  },
+
+  "references": {
+    "specifications": [
+      "ASCII - ANSI X3.4-1986",
+      "UTF-8 - RFC 3629",
+      "UTF-16 - RFC 2781",
+      "Unicode Standard 15.0"
+    ],
+    "webLinks": [
+      "https://en.wikipedia.org/wiki/Plain_text",
+      "https://en.wikipedia.org/wiki/UTF-8",
+      "https://www.unicode.org/standard/standard.html"
+    ]
+  },
+
+  "technicalDetails": {
+    "encoding": "ASCII, UTF-8, UTF-16LE, UTF-16BE, ISO-8859-1",
+    "lineEndings": "LF (\\n), CRLF (\\r\\n), CR (\\r)",
+    "byteOrderMark": "Optional - UTF-8: EF BB BF, UTF-16LE: FF FE, UTF-16BE: FE FF",
+    "maxFileSize": "Unlimited (performance depends on editor)",
+    "compression": "None (plain uncompressed text)",
+    "structure": "Linear sequence of characters with line breaks",
+    "specialFeatures": "Human-readable, universal compatibility, no proprietary format"
+  },
+
+  "formatRelationships": {
+    "category": "Text",
+    "extensions": [ ".md", ".rst", ".adoc", ".csv", ".tsv", ".json", ".xml", ".yaml", ".yml", ".ini", ".conf" ]
+  },
+
+  "variables": {
+    "encoding": "UTF-8",
+    "bomDetected": false,
+    "lineCount": 0,
+    "characterCount": 0,
+    "lineEnding": "Mixed",
+    "textRatio": 1.0
+  },
+
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Text Content",
+      "offset": "0",
+      "length": "var:fileSize",
+      "valueType": "utf8",
+      "color": "Transparent",
+      "description": "Plain text file content",
+      "tags": [ "text" ]
+    }
+  ],
+
+  "functions": {
+    "detectBOM": "if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) { encoding = 'UTF-8'; bomDetected = true; return 3; } else if (bytes[0] == 0xFF && bytes[1] == 0xFE) { encoding = 'UTF-16LE'; bomDetected = true; return 2; } else if (bytes[0] == 0xFE && bytes[1] == 0xFF) { encoding = 'UTF-16BE'; bomDetected = true; return 2; } else { bomDetected = false; return 0; }",
+
+    "countLines": "var count = 0; for (var i = 0; i < fileSize; i++) { if (bytes[i] == 0x0A) count++; } return count;",
+
+    "detectLineEnding": "var lf = 0; var crlf = 0; var cr = 0; for (var i = 0; i < min(8192, fileSize); i++) { if (bytes[i] == 0x0D && i+1 < fileSize && bytes[i+1] == 0x0A) { crlf++; i++; } else if (bytes[i] == 0x0A) { lf++; } else if (bytes[i] == 0x0D) { cr++; } } if (crlf > lf && crlf > cr) return 'CRLF'; else if (lf > cr) return 'LF'; else if (cr > 0) return 'CR'; else return 'None';"
+  }
+}

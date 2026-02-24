@@ -145,12 +145,39 @@ namespace WpfHexaEditor.Core.FormatDetection
         public bool Required { get; set; } = true;
 
         /// <summary>
+        /// Strength of the signature (for confidence scoring)
+        /// Default: Medium for backward compatibility
+        /// </summary>
+        public SignatureStrength Strength { get; set; } = SignatureStrength.Medium;
+
+        /// <summary>
+        /// Whether this format is text-based (e.g., YAML, JSON, CSV)
+        /// Text-based formats are handled differently in content analysis
+        /// </summary>
+        public bool IsTextFormat { get; set; } = false;
+
+        /// <summary>
+        /// Content validation patterns (regex) for text formats
+        /// Used to validate content matches expected format structure
+        /// </summary>
+        public List<string> ContentPatterns { get; set; }
+
+        /// <summary>
+        /// Minimum confidence threshold for auto-selection (0.0 - 1.0)
+        /// If confidence is below this, user selection may be prompted
+        /// </summary>
+        public double MinConfidenceThreshold { get; set; } = 0.7;
+
+        /// <summary>
         /// Validate this detection rule
         /// </summary>
         public bool IsValid()
         {
+            // Allow empty signature if not required (for text formats without magic bytes)
             if (string.IsNullOrWhiteSpace(Signature))
-                return false;
+            {
+                return !Required; // Valid if signature is optional
+            }
 
             // Signature must be valid hex string (even number of hex digits)
             if (Signature.Length % 2 != 0)
@@ -187,6 +214,38 @@ namespace WpfHexaEditor.Core.FormatDetection
         {
             return $"Signature: {Signature} at offset {Offset} (required: {Required})";
         }
+    }
+
+    /// <summary>
+    /// Signature strength classification for confidence scoring.
+    /// Higher values indicate more unique/reliable signatures.
+    /// </summary>
+    public enum SignatureStrength
+    {
+        /// <summary>
+        /// No signature or required: false (lowest confidence)
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Weak signature - matches many files (e.g., 0x00, 0xFF, single byte)
+        /// </summary>
+        Weak = 20,
+
+        /// <summary>
+        /// Medium signature - somewhat specific (e.g., GIF "GIF", BMP "BM")
+        /// </summary>
+        Medium = 50,
+
+        /// <summary>
+        /// Strong signature - highly specific but still common (e.g., PDF, ELF)
+        /// </summary>
+        Strong = 80,
+
+        /// <summary>
+        /// Unique signature - highly distinctive (e.g., PNG, ZIP, JPEG)
+        /// </summary>
+        Unique = 100
     }
 
     /// <summary>

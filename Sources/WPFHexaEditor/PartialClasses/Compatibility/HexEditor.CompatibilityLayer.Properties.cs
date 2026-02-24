@@ -65,7 +65,7 @@ namespace WpfHexaEditor
         /// </summary>
         public static readonly DependencyProperty ByteToolTipDisplayModeProperty =
             DependencyProperty.Register(nameof(ByteToolTipDisplayMode), typeof(ByteToolTipDisplayMode),
-                typeof(HexEditor), new PropertyMetadata(ByteToolTipDisplayMode.None, OnByteToolTipDisplayModeChanged));
+                typeof(HexEditor), new PropertyMetadata(ByteToolTipDisplayMode.OnCustomBackgroundBlocks, OnByteToolTipDisplayModeChanged));
 
         /// <summary>
         /// Controls where byte tooltips are displayed (None, OnCustomBackgroundBlocks, Everywhere)

@@ -815,6 +815,47 @@ namespace WpfHexaEditor
             ParseFieldsAsync();
         }
 
+        /// <summary>
+        /// Clear format detection state (called when file is closed)
+        /// Resets detected format, parsed fields, and variable context
+        /// </summary>
+        internal void ClearFormatDetectionState()
+        {
+            try
+            {
+                // NOTE: Don't clear CustomBackgroundBlocks here - AutoDetectAndApplyFormat()
+                // will clear them before applying new ones. Clearing here interferes with
+                // automatic detection at startup.
+
+                // Clear detected format
+                _detectedFormat = null;
+
+                // Clear variable context
+                _variableContext = null;
+                _expressionEvaluator = null;
+
+                // Clear formatted value cache
+                _formattedValueCache?.Clear();
+
+                // Clear buffered reader
+                _bufferedReader?.Dispose();
+                _bufferedReader = null;
+
+                // Clear parsed fields panel
+                if (ParsedFieldsPanel != null)
+                {
+                    ParsedFieldsPanel.Clear();
+                }
+
+                // Reset performance tracking
+                _parsedFieldCount = 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[HexEditor] Error clearing format detection state: {ex.Message}");
+            }
+        }
+
         #endregion
     }
 }
