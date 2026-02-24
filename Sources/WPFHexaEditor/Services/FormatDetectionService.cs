@@ -323,15 +323,16 @@ namespace WpfHexaEditor.Services
             var candidates = new List<FormatMatchCandidate>();
 
             // Only consider formats marked as text-based
-            var textFormats = _loadedFormats.Where(f => f.Detection?.IsTextFormat == true);
+            var textFormats = _loadedFormats.Where(f => f.Detection?.IsTextFormat == true).ToList();
 
             foreach (var format in textFormats)
             {
                 double contentScore = 0.0;
 
                 // Check if content matches expected pattern
+                var formatHint = format.FormatName.Split(' ')[0];
                 if (contentAnalysis.TextFormatHints != null &&
-                    contentAnalysis.TextFormatHints.Contains(format.FormatName.Split(' ')[0]))
+                    contentAnalysis.TextFormatHints.Contains(formatHint))
                 {
                     contentScore += 0.5;
                 }

@@ -10,7 +10,7 @@
     "signature": null,
     "offset": 0,
     "required": false,
-    "strength": "None",
+    "strength": 0,
     "isTextFormat": true,
     "contentPatterns": [
       "^[\\x20-\\x7E\\x09\\x0A\\x0D]+$",
@@ -101,31 +101,14 @@
 
   "blocks": [
     {
-      "name": "Text Header",
-      "offset": 0,
-      "length": 64,
-      "valueType": "utf8",
-      "color": "#FFEB3B",
-      "description": "First 64 bytes of text",
-      "tags": [ "header", "text" ]
-    },
-    {
+      "type": "field",
       "name": "Text Content",
-      "offset": 64,
-      "length": 256,
+      "offset": "0",
+      "length": "var:fileSize",
       "valueType": "utf8",
-      "color": "#E8F5E9",
-      "description": "Text content (bytes 64-320)",
-      "tags": [ "content", "text" ]
-    },
-    {
-      "name": "Text Sample",
-      "offset": 320,
-      "length": 256,
-      "valueType": "utf8",
-      "color": "#BBDEFB",
-      "description": "Text content (bytes 320-576)",
-      "tags": [ "content", "text" ]
+      "color": "Transparent",
+      "description": "Plain text file content",
+      "tags": [ "text" ]
     }
   ],
 

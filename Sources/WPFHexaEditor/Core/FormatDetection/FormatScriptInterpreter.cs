@@ -39,6 +39,8 @@ namespace WpfHexaEditor.Core.FormatDetection
                 _variables["currentOffset"] = 0L;
             if (!_variables.ContainsKey("fileCount"))
                 _variables["fileCount"] = 0;
+            if (!_variables.ContainsKey("fileSize"))
+                _variables["fileSize"] = (long)_data.Length;
         }
 
         /// <summary>
