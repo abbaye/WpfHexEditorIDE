@@ -98,10 +98,45 @@ namespace WpfHexaEditor.Views.Panels
 
                 if (result.Success && result.Format != null && result.Format.Blocks != null)
                 {
-                    var variables = result.Format.Variables ?? new Dictionary<string, object>();
+                    // Use variables from detection result (includes function execution results)
+                    var variables = result.Variables ?? result.Format.Variables ?? new Dictionary<string, object>();
+
+                    System.Diagnostics.Debug.WriteLine($"[FileComparisonPanel] Format: {result.Format.FormatName}, Variables count: {variables.Count}");
+                    foreach (var v in variables)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  Variable: {v.Key} = {v.Value}");
+                    }
 
                     foreach (var block in result.Format.Blocks)
                     {
+                        System.Diagnostics.Debug.WriteLine($"[FileComparisonPanel] Block: Name={block.Name}, Type={block.Type}, Variable={block.Variable}");
+
+                        // Handle metadata blocks differently
+                        if (block.Type != null && block.Type.Equals("metadata", StringComparison.OrdinalIgnoreCase))
+                        {
+                            System.Diagnostics.Debug.WriteLine($"  -> Metadata block detected");
+
+                            // For metadata blocks, get value from variable
+                            if (!string.IsNullOrWhiteSpace(block.Variable) && variables.TryGetValue(block.Variable, out var varValue))
+                            {
+                                System.Diagnostics.Debug.WriteLine($"  -> Variable '{block.Variable}' = '{varValue}'");
+                                fields.Add(new ParsedField
+                                {
+                                    Name = block.Name,
+                                    Value = varValue?.ToString() ?? "",
+                                    ValueType = "metadata",
+                                    Offset = 0,
+                                    Length = 0
+                                });
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"  -> Variable '{block.Variable}' NOT FOUND");
+                            }
+                            continue;
+                        }
+
+                        // Handle regular field blocks
                         var offset = block.GetOffsetValue(variables);
                         var length = block.GetLengthValue(variables);
 

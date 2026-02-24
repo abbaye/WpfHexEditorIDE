@@ -64,6 +64,11 @@ namespace WpfHexaEditor.Core.FormatDetection
         /// </summary>
         public double StructureConfidence { get; set; }
 
+        /// <summary>
+        /// Variables populated by built-in functions (e.g., encoding, lineCount, etc.)
+        /// </summary>
+        public Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
+
         public override string ToString()
         {
             return $"{Format?.FormatName} (Tier {(int)Tier}, Confidence: {ConfidenceScore:P0})";

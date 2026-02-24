@@ -90,7 +90,7 @@ namespace WPFHexaEditor.Tests.Integration
                 Console.WriteLine($"\n=== First 10 Loaded Formats ===");
                 foreach (var format in formats.Take(10))
                 {
-                    Console.WriteLine($"  - {format.FormatName} ({string.Join(", ", format.FileExtensions ?? new string[0])})");
+                    Console.WriteLine($"  - {format.FormatName} ({string.Join(", ", format.Extensions ?? new List<string>())})");
                 }
 
                 // Get statistics
@@ -98,7 +98,7 @@ namespace WPFHexaEditor.Tests.Integration
                 Console.WriteLine($"\n=== Statistics ===");
                 Console.WriteLine($"Total Formats: {stats.TotalFormats}");
                 Console.WriteLine($"Total Extensions: {stats.TotalExtensions}");
-                Console.WriteLine($"Categories: {stats.Categories?.Count ?? 0}");
+                Console.WriteLine($"Categories: {stats.FormatsByCategory?.Count ?? 0}");
             }
             else
             {

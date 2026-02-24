@@ -31,7 +31,17 @@
       "max_signature_offset": 1024
     }
   },
-  "variables": {},
+  "functions": {
+    "parseJPEGDimensions": "Find and parse SOF marker to extract image dimensions"
+  },
+  "variables": {
+    "jpegWidth": 0,
+    "jpegHeight": 0,
+    "jpegComponents": 0,
+    "jpegPrecision": 0,
+    "jpegProgressive": false,
+    "sofOffset": -1
+  },
   "blocks": [
     {
       "type": "signature",
@@ -122,6 +132,42 @@
       "color": "#98D8C8",
       "opacity": 0.3,
       "description": "Embedded thumbnail height"
+    },
+    {
+      "type": "metadata",
+      "name": "Image Width (pixels)",
+      "variable": "jpegWidth",
+      "description": "Actual image width from SOF marker"
+    },
+    {
+      "type": "metadata",
+      "name": "Image Height (pixels)",
+      "variable": "jpegHeight",
+      "description": "Actual image height from SOF marker"
+    },
+    {
+      "type": "metadata",
+      "name": "Color Components",
+      "variable": "jpegComponents",
+      "description": "Number of color components (1=Grayscale, 3=RGB, 4=CMYK)"
+    },
+    {
+      "type": "metadata",
+      "name": "Bit Precision",
+      "variable": "jpegPrecision",
+      "description": "Bits per sample (usually 8)"
+    },
+    {
+      "type": "metadata",
+      "name": "Progressive JPEG",
+      "variable": "jpegProgressive",
+      "description": "true if progressive encoding, false if baseline"
+    },
+    {
+      "type": "metadata",
+      "name": "SOF Marker Offset",
+      "variable": "sofOffset",
+      "description": "Byte offset where SOF marker was found"
     }
   ],
   "mime_types": [

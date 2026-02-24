@@ -24,6 +24,11 @@ namespace WpfHexaEditor.Core.FormatDetection
         private const int MaxExecutionDepth = 50; // Prevent infinite recursion
 
         /// <summary>
+        /// Get the variables dictionary (includes values set by functions)
+        /// </summary>
+        public Dictionary<string, object> Variables => _variables;
+
+        /// <summary>
         /// Initialize interpreter with file data
         /// </summary>
         public FormatScriptInterpreter(byte[] data, Dictionary<string, object> initialVariables = null)
@@ -41,6 +46,104 @@ namespace WpfHexaEditor.Core.FormatDetection
                 _variables["fileCount"] = 0;
             if (!_variables.ContainsKey("fileSize"))
                 _variables["fileSize"] = (long)_data.Length;
+        }
+
+        /// <summary>
+        /// Execute built-in functions from format definition.
+        /// Functions can analyze file content and populate variables for use in blocks.
+        /// </summary>
+        public void ExecuteFunctions(Dictionary<string, string> functions)
+        {
+            if (functions == null || functions.Count == 0)
+            {
+                System.Diagnostics.Debug.WriteLine("[ExecuteFunctions] No functions to execute");
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[ExecuteFunctions] Executing {functions.Count} functions");
+
+            var builtInFunctions = new BuiltInFunctions(_data, _variables);
+
+            foreach (var function in functions)
+            {
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine($"  Executing function: {function.Key}");
+
+                    // Parse function name and parameters
+                    // Supports: "functionName" or "functionName(arg1, arg2, ...)"
+                    string functionName;
+                    object[] args = Array.Empty<object>();
+
+                    int parenIndex = function.Key.IndexOf('(');
+                    if (parenIndex > 0 && function.Key.EndsWith(")"))
+                    {
+                        // Has parameters
+                        functionName = function.Key.Substring(0, parenIndex).Trim();
+                        string paramsStr = function.Key.Substring(parenIndex + 1, function.Key.Length - parenIndex - 2);
+
+                        if (!string.IsNullOrWhiteSpace(paramsStr))
+                        {
+                            var paramTokens = paramsStr.Split(',');
+                            var argsList = new List<object>();
+
+                            foreach (var token in paramTokens)
+                            {
+                                string param = token.Trim();
+
+                                // Variable reference: "var:name"
+                                if (param.StartsWith("var:"))
+                                {
+                                    string varName = param.Substring(4);
+                                    if (_variables.TryGetValue(varName, out var value))
+                                    {
+                                        argsList.Add(value);
+                                    }
+                                    else
+                                    {
+                                        argsList.Add(0);
+                                    }
+                                }
+                                // Literal number
+                                else if (long.TryParse(param, out long numValue))
+                                {
+                                    argsList.Add(numValue);
+                                }
+                                // Hex literal: "0x1234"
+                                else if (param.StartsWith("0x") && long.TryParse(param.Substring(2),
+                                    System.Globalization.NumberStyles.HexNumber, null, out long hexValue))
+                                {
+                                    argsList.Add(hexValue);
+                                }
+                                else
+                                {
+                                    argsList.Add(param); // String literal
+                                }
+                            }
+
+                            args = argsList.ToArray();
+                        }
+                    }
+                    else
+                    {
+                        // No parameters
+                        functionName = function.Key.Trim();
+                    }
+
+                    builtInFunctions.Execute(functionName, args);
+                    System.Diagnostics.Debug.WriteLine($"  Function {functionName} completed");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error executing function '{function.Key}': {ex.Message}");
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine($"[ExecuteFunctions] Variables after execution: {_variables.Count}");
+            foreach (var v in _variables)
+            {
+                System.Diagnostics.Debug.WriteLine($"  {v.Key} = {v.Value}");
+            }
         }
 
         /// <summary>
@@ -89,6 +192,10 @@ namespace WpfHexaEditor.Core.FormatDetection
                     ExecuteFieldBlock(block);
                     break;
 
+                case "metadata":
+                    ExecuteMetadataBlock(block);
+                    break;
+
                 case "conditional":
                     ExecuteConditionalBlock(block);
                     break;
@@ -134,6 +241,34 @@ namespace WpfHexaEditor.Core.FormatDetection
                 brush,
                 block.Description ?? block.Name ?? "Unknown",
                 block.Opacity);
+
+            _generatedBlocks.Add(customBlock);
+        }
+
+        /// <summary>
+        /// Execute a metadata block (displays variable value without highlighting bytes)
+        /// </summary>
+        private void ExecuteMetadataBlock(BlockDefinition block)
+        {
+            // Get variable value
+            if (string.IsNullOrWhiteSpace(block.Variable))
+                return;
+
+            if (!_variables.TryGetValue(block.Variable, out var value))
+                return; // Variable doesn't exist
+
+            // Create a block with minimal footprint (offset=0, length=1)
+            // The key info is in the Description which includes the variable value
+            var description = $"{block.Name}: {value}";
+            if (!string.IsNullOrWhiteSpace(block.Description))
+                description += $" ({block.Description})";
+
+            var customBlock = new CustomBackgroundBlock(
+                0, // Metadata doesn't correspond to a specific offset
+                1, // Minimal length to pass validation
+                System.Windows.Media.Brushes.Transparent, // Invisible in hex editor
+                description,
+                0.0); // Fully transparent
 
             _generatedBlocks.Add(customBlock);
         }

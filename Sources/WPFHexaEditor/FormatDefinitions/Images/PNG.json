@@ -28,8 +28,18 @@
       "max_signature_offset": 1024
     }
   },
+  "functions": {
+    "readPNGDimensions": "Read image width and height from IHDR chunk",
+    "validatePNGIHDR": "Validate IHDR chunk CRC integrity"
+  },
   "variables": {
-    "currentOffset": 8
+    "currentOffset": 8,
+    "imageWidth": 0,
+    "imageHeight": 0,
+    "totalPixels": 0,
+    "calculatedCRC32": 0,
+    "ihdrCRC": 0,
+    "crc32Valid": false
   },
   "blocks": [
     {
@@ -130,6 +140,30 @@
       "color": "#A8E6CF",
       "opacity": 0.3,
       "description": "CRC-32 of IHDR chunk"
+    },
+    {
+      "type": "metadata",
+      "name": "Image Width (pixels)",
+      "variable": "imageWidth",
+      "description": "Calculated image width from IHDR chunk"
+    },
+    {
+      "type": "metadata",
+      "name": "Image Height (pixels)",
+      "variable": "imageHeight",
+      "description": "Calculated image height from IHDR chunk"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Pixels",
+      "variable": "totalPixels",
+      "description": "Width × Height (total pixel count)"
+    },
+    {
+      "type": "metadata",
+      "name": "IHDR CRC Valid",
+      "variable": "crc32Valid",
+      "description": "IHDR chunk integrity validation result"
     }
   ],
   "mime_types": [

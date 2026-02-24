@@ -32,9 +32,17 @@
       "max_signature_offset": 1024
     }
   },
+  "functions": {
+    "parseZIPArchive": "Parse End of Central Directory for archive statistics"
+  },
   "variables": {
     "currentOffset": 0,
-    "fileCount": 0
+    "fileCount": 0,
+    "zipFileCount": 0,
+    "zipCentralDirSize": 0,
+    "zipCommentLength": 0,
+    "zipComment": "",
+    "eocdOffset": -1
   },
   "blocks": [
     {
@@ -135,6 +143,36 @@
       "color": "#A8E6CF",
       "opacity": 0.3,
       "description": "Length of extra field"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Files in Archive",
+      "variable": "zipFileCount",
+      "description": "Total number of files/entries in the ZIP archive"
+    },
+    {
+      "type": "metadata",
+      "name": "Central Directory Size",
+      "variable": "zipCentralDirSize",
+      "description": "Size of the central directory in bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Archive Comment Length",
+      "variable": "zipCommentLength",
+      "description": "Length of ZIP archive comment (if present)"
+    },
+    {
+      "type": "metadata",
+      "name": "Archive Comment",
+      "variable": "zipComment",
+      "description": "ZIP archive comment text (if present)"
+    },
+    {
+      "type": "metadata",
+      "name": "EOCD Offset",
+      "variable": "eocdOffset",
+      "description": "Byte offset of End of Central Directory record"
     }
   ],
   "mime_types": [

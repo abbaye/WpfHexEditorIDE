@@ -476,8 +476,19 @@ namespace WpfHexaEditor
                         AddCustomBackgroundBlock(block);
                     }
 
-                    // Store the detected format for parsed fields panel
+                    // Store the detected format and variables for parsed fields panel
                     _detectedFormat = result.Format;
+                    _detectionVariables = result.Variables; // Variables from function execution
+
+                    System.Diagnostics.Debug.WriteLine($"[FormatDetection] result.Variables count: {result.Variables?.Count ?? -1}");
+                    if (result.Variables != null)
+                    {
+                        foreach (var kvp in result.Variables)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"  result.Variables: {kvp.Key} = {kvp.Value}");
+                        }
+                    }
+                    System.Diagnostics.Debug.WriteLine($"[FormatDetection] _detectionVariables count: {_detectionVariables?.Count ?? -1}");
 
                     // Parse fields for the parsed fields panel (Issue #111)
                     RefreshParsedFields();
@@ -567,6 +578,7 @@ namespace WpfHexaEditor
 
                     // Store the detected format for parsed fields panel
                     _detectedFormat = format;
+                    _detectionVariables = null; // No function execution in manual format application
 
                     // Parse fields for the parsed fields panel (Issue #111)
                     RefreshParsedFields();

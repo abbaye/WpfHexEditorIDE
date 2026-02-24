@@ -162,6 +162,10 @@ namespace WpfHexaEditor.Core.FormatDetection
                     // Must have offset, length, and color
                     return Offset != null && Length != null && !string.IsNullOrWhiteSpace(Color);
 
+                case "metadata":
+                    // Metadata blocks just need a name and variable
+                    return !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Variable);
+
                 case "conditional":
                     // Must have condition and then blocks
                     return Condition != null && Then != null && Then.Count > 0;

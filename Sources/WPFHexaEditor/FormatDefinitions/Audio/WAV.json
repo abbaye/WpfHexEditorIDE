@@ -28,8 +28,16 @@
       "max_signature_offset": 1024
     }
   },
+  "functions": {
+    "parseWAVFormatChunk(20)": "Parse fmt chunk to extract audio format details"
+  },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "wavFormat": "Unknown",
+    "channels": 0,
+    "sampleRate": 0,
+    "byteRate": 0,
+    "bitDepth": 0
   },
   "blocks": [
     {
@@ -67,6 +75,36 @@
       "color": "#95E1D3",
       "opacity": 0.3,
       "description": "Format chunk marker"
+    },
+    {
+      "type": "metadata",
+      "name": "Audio Format",
+      "variable": "wavFormat",
+      "description": "PCM, IEEE Float, A-law, μ-law, or other"
+    },
+    {
+      "type": "metadata",
+      "name": "Channels",
+      "variable": "channels",
+      "description": "Number of audio channels (1=Mono, 2=Stereo, etc.)"
+    },
+    {
+      "type": "metadata",
+      "name": "Sample Rate (Hz)",
+      "variable": "sampleRate",
+      "description": "Samples per second (44100, 48000, etc.)"
+    },
+    {
+      "type": "metadata",
+      "name": "Byte Rate",
+      "variable": "byteRate",
+      "description": "Bytes per second (SampleRate × Channels × BitsPerSample / 8)"
+    },
+    {
+      "type": "metadata",
+      "name": "Bit Depth",
+      "variable": "bitDepth",
+      "description": "Bits per sample (8, 16, 24, 32, etc.)"
     }
   ],
   "mime_types": [

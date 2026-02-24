@@ -28,8 +28,17 @@
       "max_signature_offset": 1024
     }
   },
+  "functions": {
+    "parseMP3Header": "Find and parse first MP3 frame header for bitrate and format info"
+  },
   "variables": {
-    "currentOffset": 0
+    "currentOffset": 0,
+    "mp3Version": "Unknown",
+    "mp3Layer": "Unknown",
+    "bitrate": 0,
+    "sampleRate": 0,
+    "channelMode": "Unknown",
+    "frameOffset": -1
   },
   "blocks": [
     {
@@ -67,6 +76,42 @@
       "color": "#FFE66D",
       "opacity": 0.3,
       "description": "Tag size (syncsafe integer)"
+    },
+    {
+      "type": "metadata",
+      "name": "MPEG Version",
+      "variable": "mp3Version",
+      "description": "MPEG audio version (MPEG 1, MPEG 2, MPEG 2.5)"
+    },
+    {
+      "type": "metadata",
+      "name": "Audio Layer",
+      "variable": "mp3Layer",
+      "description": "MPEG audio layer (usually Layer III for MP3)"
+    },
+    {
+      "type": "metadata",
+      "name": "Bitrate (kbps)",
+      "variable": "bitrate",
+      "description": "Audio bitrate in kilobits per second"
+    },
+    {
+      "type": "metadata",
+      "name": "Sample Rate (Hz)",
+      "variable": "sampleRate",
+      "description": "Audio sample rate (44100, 48000, 32000, etc.)"
+    },
+    {
+      "type": "metadata",
+      "name": "Channel Mode",
+      "variable": "channelMode",
+      "description": "Stereo, Joint Stereo, Dual Channel, or Mono"
+    },
+    {
+      "type": "metadata",
+      "name": "Frame Start Offset",
+      "variable": "frameOffset",
+      "description": "Byte offset where first MP3 frame was found"
     }
   ],
   "mime_types": [
