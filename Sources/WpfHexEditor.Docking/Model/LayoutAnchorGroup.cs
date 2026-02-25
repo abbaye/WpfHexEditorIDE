@@ -3,6 +3,7 @@
 
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Windows.Threading;
 
 namespace WpfHexEditor.Docking.Model;
 
@@ -38,12 +39,20 @@ public class LayoutAnchorGroup : LayoutElement
             }
         }
 
-        // Auto-remove empty group
+        OnPropertyChanged(nameof(Children));
+
+        // Defer auto-remove to avoid modifying parent collection during event
+        if (Children.Count == 0 && Parent is LayoutAnchorSide)
+        {
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Normal, AutoRemoveEmpty);
+        }
+    }
+
+    private void AutoRemoveEmpty()
+    {
         if (Children.Count == 0 && Parent is LayoutAnchorSide side)
         {
             side.Children.Remove(this);
         }
-
-        OnPropertyChanged(nameof(Children));
     }
 }

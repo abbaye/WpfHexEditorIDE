@@ -3,6 +3,7 @@
 
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Windows.Threading;
 
 namespace WpfHexEditor.Docking.Model;
 
@@ -14,7 +15,6 @@ namespace WpfHexEditor.Docking.Model;
 public class LayoutPanel : LayoutElement
 {
     private LayoutOrientation _orientation = LayoutOrientation.Horizontal;
-    private bool _isProcessingCollectionChange;
 
     public LayoutPanel()
     {
@@ -63,46 +63,42 @@ public class LayoutPanel : LayoutElement
 
     private void OnChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (_isProcessingCollectionChange) return;
-        _isProcessingCollectionChange = true;
-
-        try
+        // Set parent on added items
+        if (e.NewItems != null)
         {
-            // Set parent on added items
-            if (e.NewItems != null)
-            {
-                foreach (LayoutElement item in e.NewItems)
-                    item.Parent = this;
-            }
-
-            // Clear parent on removed items
-            if (e.OldItems != null)
-            {
-                foreach (LayoutElement item in e.OldItems)
-                {
-                    if (item.Parent == this)
-                        item.Parent = null;
-                }
-            }
-
-            // Auto-cleanup: if this panel has only one child, promote it
-            if (Children.Count == 1 && Parent is LayoutPanel parentPanel)
-            {
-                var onlyChild = Children[0];
-                Children.Clear();
-                parentPanel.ReplaceChild(this, onlyChild);
-            }
-            // If this panel is now empty, remove from parent
-            else if (Children.Count == 0 && Parent is LayoutPanel pp)
-            {
-                pp.Children.Remove(this);
-            }
-
-            OnPropertyChanged(nameof(Children));
+            foreach (LayoutElement item in e.NewItems)
+                item.Parent = this;
         }
-        finally
+
+        // Clear parent on removed items
+        if (e.OldItems != null)
         {
-            _isProcessingCollectionChange = false;
+            foreach (LayoutElement item in e.OldItems)
+            {
+                if (item.Parent == this)
+                    item.Parent = null;
+            }
+        }
+
+        OnPropertyChanged(nameof(Children));
+
+        // Defer auto-cleanup to avoid modifying the collection during its own event
+        Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Normal, AutoCleanup);
+    }
+
+    private void AutoCleanup()
+    {
+        // Promote single child: if this panel has only one child, replace self with that child
+        if (Children.Count == 1 && Parent is LayoutPanel parentPanel)
+        {
+            var onlyChild = Children[0];
+            Children.Clear();
+            parentPanel.ReplaceChild(this, onlyChild);
+        }
+        // Remove empty panel from parent
+        else if (Children.Count == 0 && Parent is LayoutPanel pp)
+        {
+            pp.Children.Remove(this);
         }
     }
 }

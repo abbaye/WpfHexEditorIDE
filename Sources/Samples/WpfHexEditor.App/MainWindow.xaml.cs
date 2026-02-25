@@ -10,7 +10,7 @@ namespace WpfHexEditor.App;
 public partial class MainWindow : Window
 {
     private int _documentCounter;
-    private string _currentTheme = "Dark";
+    private string _currentTheme = "Light";
 
     // Keep references to anchorables for View menu toggle
     private LayoutAnchorable? _explorerAnchorable;

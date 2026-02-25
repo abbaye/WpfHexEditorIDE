@@ -4,6 +4,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace WpfHexEditor.Docking.Model;
 
@@ -119,12 +120,20 @@ public class LayoutAnchorablePane : LayoutElement
         if (SelectedContent != null && !Children.Contains(SelectedContent))
             SelectedContent = Children.Count > 0 ? Children[^1] : null;
 
-        // Auto-remove empty pane from parent panel
+        OnPropertyChanged(nameof(Children));
+
+        // Defer auto-remove to avoid modifying parent collection during event
+        if (Children.Count == 0 && Parent is LayoutPanel)
+        {
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Normal, AutoRemoveEmpty);
+        }
+    }
+
+    private void AutoRemoveEmpty()
+    {
         if (Children.Count == 0 && Parent is LayoutPanel panel)
         {
             panel.Children.Remove(this);
         }
-
-        OnPropertyChanged(nameof(Children));
     }
 }

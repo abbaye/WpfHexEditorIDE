@@ -53,9 +53,9 @@
 
             <MenuItem Header="_Theme">
                 <MenuItem x:Name="MenuThemeLight" Header="_Light"
-                          IsCheckable="True" Tag="Light" Click="OnThemeSelected"/>
+                          IsCheckable="True" IsChecked="True" Tag="Light" Click="OnThemeSelected"/>
                 <MenuItem x:Name="MenuThemeDark" Header="_Dark"
-                          IsCheckable="True" IsChecked="True" Tag="Dark" Click="OnThemeSelected"/>
+                          IsCheckable="True" Tag="Dark" Click="OnThemeSelected"/>
                 <MenuItem x:Name="MenuThemeVS" Header="_Visual Studio"
                           IsCheckable="True" Tag="VisualStudio" Click="OnThemeSelected"/>
             </MenuItem>
@@ -75,7 +75,7 @@
                 </Button>
                 <Separator/>
                 <TextBlock Text="Theme:" VerticalAlignment="Center" Margin="4,0"/>
-                <ComboBox x:Name="ThemeCombo" Width="120" SelectedIndex="1"
+                <ComboBox x:Name="ThemeCombo" Width="120" SelectedIndex="0"
                           SelectionChanged="OnThemeComboChanged">
                     <ComboBoxItem Content="Light" Tag="Light"/>
                     <ComboBoxItem Content="Dark" Tag="Dark"/>
@@ -90,7 +90,7 @@
         <!-- ==================== STATUS BAR ==================== -->
         <Border Grid.Row="3" Background="{DynamicResource AccentBrush}" Padding="6,3">
             <DockPanel>
-                <TextBlock x:Name="ThemeStatusText" Text="Theme: Dark"
+                <TextBlock x:Name="ThemeStatusText" Text="Theme: Light"
                            Foreground="White" FontSize="11"
                            DockPanel.Dock="Right" Margin="8,0"/>
                 <TextBlock x:Name="StatusText" Text="Ready"

@@ -18,10 +18,23 @@ public class LayoutPanelControl : ContentControl
 {
     private Grid? _grid;
     private LayoutPanel? _subscribedModel;
+    private bool _isLoaded;
 
     public static readonly DependencyProperty ModelProperty =
         DependencyProperty.Register(nameof(Model), typeof(LayoutPanel), typeof(LayoutPanelControl),
             new PropertyMetadata(null, OnModelChanged));
+
+    public LayoutPanelControl()
+    {
+        Loaded += (_, _) =>
+        {
+            if (!_isLoaded)
+            {
+                _isLoaded = true;
+                RebuildGrid();
+            }
+        };
+    }
 
     /// <summary>The layout panel model this control renders.</summary>
     public LayoutPanel? Model
@@ -53,7 +66,8 @@ public class LayoutPanelControl : ContentControl
             newModel.PropertyChanged += OnModelPropertyChanged;
         }
 
-        RebuildGrid();
+        if (_isLoaded)
+            RebuildGrid();
     }
 
     private void OnModelChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -142,30 +156,36 @@ public class LayoutPanelControl : ContentControl
         };
     }
 
+    private Brush SafeBrush(string key, Brush fallback) =>
+        TryFindResource(key) as Brush ?? Application.Current.TryFindResource(key) as Brush ?? fallback;
+
     private GridSplitter CreateSplitter(bool isHorizontal)
     {
+        var normalBrush = SafeBrush("DockSplitterBrush", Brushes.Transparent);
+        var hoverBrush = SafeBrush("DockSplitterHoverBrush", Brushes.Gray);
+
         var splitter = new GridSplitter
         {
             ResizeDirection = isHorizontal ? GridResizeDirection.Columns : GridResizeDirection.Rows,
-            HorizontalAlignment = isHorizontal ? HorizontalAlignment.Stretch : HorizontalAlignment.Stretch,
-            VerticalAlignment = isHorizontal ? VerticalAlignment.Stretch : VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
             ShowsPreview = false,
-            Background = (Brush)FindResource("DockSplitterBrush"),
+            Background = normalBrush,
             Cursor = isHorizontal
                 ? System.Windows.Input.Cursors.SizeWE
                 : System.Windows.Input.Cursors.SizeNS
         };
 
         // Hover effect
-        splitter.MouseEnter += (s, e) =>
+        splitter.MouseEnter += (s, _) =>
         {
             if (s is GridSplitter gs)
-                gs.Background = (Brush)FindResource("DockSplitterHoverBrush");
+                gs.Background = SafeBrush("DockSplitterHoverBrush", Brushes.Gray);
         };
-        splitter.MouseLeave += (s, e) =>
+        splitter.MouseLeave += (s, _) =>
         {
             if (s is GridSplitter gs)
-                gs.Background = (Brush)FindResource("DockSplitterBrush");
+                gs.Background = SafeBrush("DockSplitterBrush", Brushes.Transparent);
         };
 
         if (isHorizontal)
