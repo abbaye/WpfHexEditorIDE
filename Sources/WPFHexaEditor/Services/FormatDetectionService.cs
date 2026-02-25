@@ -696,38 +696,37 @@ namespace WpfHexaEditor.Services
             var formatName = format.FormatName?.ToLowerInvariant() ?? "";
             var category = format.Category?.ToLowerInvariant() ?? "";
 
-            // OOXML detection: [Content_Types].xml is always the first entry
+            // OOXML detection: [Content_Types].xml is the definitive OOXML marker
             if (name.Contains("[content_types].xml") || name.StartsWith("word/") ||
                 name.StartsWith("xl/") || name.StartsWith("ppt/") ||
                 name.StartsWith("_rels/"))
             {
-                // DOCX/XLSX/PPTX/generic OOXML
-                if (formatName.Contains("word") || formatName.Contains("docx") ||
-                    (category == "documents" && format.Extensions?.Any(e => e == ".docx") == true))
+                // Specific OOXML format matching
+                if (formatName.Contains("word") || format.Extensions?.Any(e => e == ".docx") == true)
                 {
                     if (name.StartsWith("word/")) return 1.0;
                     if (name.Contains("[content_types]")) return 0.8;
                 }
-                if (formatName.Contains("excel") || formatName.Contains("xlsx") ||
-                    (category == "documents" && format.Extensions?.Any(e => e == ".xlsx") == true))
+                if (formatName.Contains("excel") || format.Extensions?.Any(e => e == ".xlsx") == true)
                 {
                     if (name.StartsWith("xl/")) return 1.0;
                     if (name.Contains("[content_types]")) return 0.8;
                 }
-                if (formatName.Contains("powerpoint") || formatName.Contains("pptx") ||
-                    (category == "documents" && format.Extensions?.Any(e => e == ".pptx") == true))
+                if (formatName.Contains("powerpoint") || format.Extensions?.Any(e => e == ".pptx") == true)
                 {
                     if (name.StartsWith("ppt/")) return 1.0;
                     if (name.Contains("[content_types]")) return 0.8;
                 }
 
-                // Any OOXML format gets a boost vs plain ZIP
-                if (category == "documents")
+                // Other known OOXML-based formats (XPS, OXPS, Visio, etc.)
+                var ooxmlExtensions = new[] { ".xps", ".oxps", ".vsdx", ".docm", ".xlsm",
+                    ".pptm", ".dotx", ".xltx", ".potx", ".odt", ".ods", ".odp" };
+                if (format.Extensions?.Any(e => ooxmlExtensions.Contains(e.ToLowerInvariant())) == true)
                     return 0.6;
 
-                // Plain ZIP gets penalized for OOXML content
-                if (formatName.Contains("zip") && category.Contains("archive"))
-                    return 0.0;
+                // Content is definitively OOXML — non-OOXML formats get NO score
+                // (prevents CBZ, Keynote, generic ZIP, etc. from matching OOXML files)
+                return 0.0;
             }
 
             // JAR detection: META-INF/ directory
@@ -735,8 +734,9 @@ namespace WpfHexaEditor.Services
             {
                 if (format.Extensions?.Any(e => e == ".jar") == true)
                     return 1.0;
-                if (formatName.Contains("zip") && category.Contains("archive"))
-                    return 0.0;
+                if (format.Extensions?.Any(e => e == ".war" || e == ".ear") == true)
+                    return 0.8;
+                return 0.0;  // Not a JAR-family format
             }
 
             // APK detection: AndroidManifest.xml or classes.dex
@@ -744,17 +744,21 @@ namespace WpfHexaEditor.Services
             {
                 if (format.Extensions?.Any(e => e == ".apk") == true)
                     return 1.0;
-                if (formatName.Contains("zip") && category.Contains("archive"))
-                    return 0.0;
+                if (format.Extensions?.Any(e => e == ".aab") == true)
+                    return 0.8;
+                return 0.0;  // Not an Android format
             }
 
-            // EPUB detection: mimetype file (must be first entry, uncompressed)
+            // mimetype file detection: EPUB and ODF formats use 'mimetype' as first entry
             if (name == "mimetype")
             {
                 if (format.Extensions?.Any(e => e == ".epub") == true)
                     return 1.0;
-                if (formatName.Contains("zip") && category.Contains("archive"))
-                    return 0.0;
+                // ODF formats (ODT, ODS, ODP) also use mimetype as first entry
+                if (format.Extensions?.Any(e => e == ".odt" || e == ".ods" || e == ".odp" ||
+                    e == ".odg" || e == ".odf") == true)
+                    return 0.8;
+                return 0.0;  // Not an EPUB or ODF format
             }
 
             // iWork detection: Index/ directory or .iwa files (Keynote, Pages, Numbers)
@@ -767,11 +771,7 @@ namespace WpfHexaEditor.Services
                 if (formatName.Contains("numbers") || format.Extensions?.Any(e => e == ".numbers") == true)
                     return 0.9;
                 // Generic iWork format
-                if (category == "documents")
-                    return 0.4;
-                // Not a ZIP archive
-                if (formatName.Contains("zip") && category.Contains("archive"))
-                    return 0.0;
+                return 0.0;  // Not an iWork format
             }
 
             // No specific content match

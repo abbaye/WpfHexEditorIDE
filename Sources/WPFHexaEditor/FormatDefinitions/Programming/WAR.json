@@ -1,18 +1,20 @@
 {
   "formatName": "Web Application Archive",
-  "version": "1.12",
+  "version": "2.0",
   "extensions": [
     ".war"
   ],
-  "description": "Java Web Application Archive",
+  "description": "Java Web Application Archive - a ZIP container for web applications deployed to Java servlet containers. The file begins with a ZIP Local File Header containing the first entry of the WAR package.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
   "references": {
     "specifications": [
-      "Web Application Archive Format"
+      "Java Servlet Specification - Web Application Archive",
+      "PKWARE APPNOTE.TXT - ZIP File Format Specification"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/WAR"
+      "https://en.wikipedia.org/wiki/WAR_(file_format)",
+      "https://docs.oracle.com/javaee/7/tutorial/packaging003.htm"
     ]
   },
   "detection": {
@@ -20,95 +22,275 @@
     "offset": 0,
     "required": true,
     "validation": {
-      "min_file_size": 4,
-      "max_signature_offset": 1024
+      "minFileSize": 100,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "fileCount": 0,
-    "totalSize": 0,
-    "compressionMethod": "",
-    "headerCRC": 0,
-    "zipWarSignature": "",
-    "formattedSize": ""
+    "zipSignature": 0,
+    "versionNeeded": 0,
+    "generalPurposeFlags": 0,
+    "compressionMethod": 0,
+    "lastModTime": 0,
+    "lastModDate": 0,
+    "crc32": 0,
+    "compressedSize": 0,
+    "uncompressedSize": 0,
+    "filenameLength": 0,
+    "extraFieldLength": 0,
+    "compressionRatio": 0,
+    "zipFileCount": 0,
+    "zipCentralDirSize": 0,
+    "zipCommentLength": 0,
+    "zipComment": "",
+    "eocdOffset": -1,
+    "isZip64": false,
+    "formattedSize": "",
+    "zipFirstEntryName": "",
+    "zipEntryList": "",
+    "zipTotalUncompressedSize": 0,
+    "zipEntryCount": 0
+  },
+  "functions": {
+    "parseZIPArchive": "Parse End of Central Directory for archive statistics",
+    "parseZipEntries": "Parse Central Directory to extract entry names and total uncompressed size",
+    "formatFileSize(var:zipCentralDirSize)": "Format central directory size"
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "ZIP/WAR Signature",
+      "name": "ZIP Local File Header Signature",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "PK ZIP header",
-      "storeAs": "zipWarSignature",
-      "valueType": "ascii"
+      "description": "PK\\x03\\x04 magic number identifying a ZIP Local File Header (0x04034B50 LE)",
+      "storeAs": "zipSignature",
+      "valueType": "uint32",
+      "validation": {
+        "expectedValue": "0x04034B50"
+      }
     },
     {
-      "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "type": "field",
+      "name": "Version Needed to Extract",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Minimum ZIP specification version needed to extract this entry",
+      "storeAs": "versionNeeded",
+      "valueType": "uint16",
+      "valueMap": {
+        "10": "1.0 (Default)",
+        "20": "2.0 (Deflate)",
+        "45": "4.5 (ZIP64)",
+        "63": "6.3 (LZMA)"
+      }
     },
     {
-      "type": "metadata",
-      "name": "Total Size",
-      "variable": "totalSize",
-      "description": "Total Size"
+      "type": "field",
+      "name": "General Purpose Bit Flags",
+      "offset": 6,
+      "length": 2,
+      "color": "#45B7D1",
+      "opacity": 0.3,
+      "description": "Bit flags controlling encryption, compression options, and data descriptor presence",
+      "storeAs": "generalPurposeFlags",
+      "valueType": "uint16",
+      "bitfields": [
+        {
+          "bit": 0,
+          "name": "Encrypted",
+          "description": "If set, the file data is encrypted",
+          "valueMap": {
+            "0": "Not encrypted",
+            "1": "Encrypted"
+          }
+        },
+        {
+          "bit": 3,
+          "name": "Data Descriptor",
+          "description": "If set, CRC-32 and sizes are in a data descriptor after the file data",
+          "valueMap": {
+            "0": "No data descriptor",
+            "1": "Data descriptor follows file data"
+          }
+        }
+      ]
     },
     {
-      "type": "metadata",
+      "type": "field",
       "name": "Compression Method",
-      "variable": "compressionMethod",
-      "description": "Compression Method"
+      "offset": 8,
+      "length": 2,
+      "color": "#96CEB4",
+      "opacity": 0.3,
+      "description": "Algorithm used to compress the file data in this entry",
+      "storeAs": "compressionMethod",
+      "valueType": "uint16",
+      "valueMap": {
+        "0": "Stored (no compression)",
+        "8": "Deflate",
+        "14": "LZMA"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Last Modification Time",
+      "offset": 10,
+      "length": 2,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "File last modification time in MS-DOS format (5-bit hour, 6-bit minute, 5-bit second/2)",
+      "storeAs": "lastModTime",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Last Modification Date",
+      "offset": 12,
+      "length": 2,
+      "color": "#DDA0DD",
+      "opacity": 0.3,
+      "description": "File last modification date in MS-DOS format (7-bit year+1980, 4-bit month, 5-bit day)",
+      "storeAs": "lastModDate",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "CRC-32",
+      "offset": 14,
+      "length": 4,
+      "color": "#FF8C69",
+      "opacity": 0.3,
+      "description": "CRC-32 checksum of the uncompressed file data",
+      "storeAs": "crc32",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Compressed Size",
+      "offset": 18,
+      "length": 4,
+      "color": "#87CEEB",
+      "opacity": 0.3,
+      "description": "Size of the compressed file data in bytes (0xFFFFFFFF if ZIP64)",
+      "storeAs": "compressedSize",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Uncompressed Size",
+      "offset": 22,
+      "length": 4,
+      "color": "#98D8C8",
+      "opacity": 0.3,
+      "description": "Original uncompressed size of the file data in bytes (0xFFFFFFFF if ZIP64)",
+      "storeAs": "uncompressedSize",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Filename Length",
+      "offset": 26,
+      "length": 2,
+      "color": "#F7DC6F",
+      "opacity": 0.3,
+      "description": "Length of the filename field that follows this header",
+      "storeAs": "filenameLength",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Extra Field Length",
+      "offset": 28,
+      "length": 2,
+      "color": "#BB8FCE",
+      "opacity": 0.3,
+      "description": "Length of the extra field that follows the filename",
+      "storeAs": "extraFieldLength",
+      "valueType": "uint16"
+    },
+    {
+      "type": "computeFromVariables",
+      "name": "Compression Ratio",
+      "expression": "uncompressedSize > 0 ? ((1 - compressedSize / uncompressedSize) * 100) : 0",
+      "storeAs": "compressionRatio",
+      "description": "Percentage reduction from compression of the first ZIP entry"
+    },
+    {
+      "type": "conditional",
+      "name": "Encryption Check",
+      "condition": "(generalPurposeFlags & 1) == 1",
+      "trueLabel": "This WAR file is encrypted",
+      "falseLabel": "This WAR file is not encrypted",
+      "description": "Checks bit 0 of general purpose flags to determine if the archive entry is encrypted"
     },
     {
       "type": "metadata",
-      "name": "Formatted Size",
+      "name": "Total Files in Archive",
+      "variable": "zipFileCount",
+      "description": "Total number of files/entries in the WAR archive"
+    },
+    {
+      "type": "metadata",
+      "name": "Central Directory Size",
       "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "description": "Human-readable size of the ZIP central directory"
+    },
+    {
+      "type": "metadata",
+      "name": "ZIP64 Format",
+      "variable": "isZip64",
+      "description": "true if ZIP64 format, false if standard ZIP"
+    },
+    {
+      "type": "metadata",
+      "name": "First Entry Name",
+      "variable": "zipFirstEntryName",
+      "description": "Name of the first file in the ZIP archive (typically META-INF/ for WAR files)"
+    },
+    {
+      "type": "metadata",
+      "name": "Package Contents",
+      "variable": "zipEntryList",
+      "description": "List of all files/entries inside the WAR archive"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Uncompressed Size",
+      "variable": "zipTotalUncompressedSize",
+      "description": "Total uncompressed size of all entries in the archive (bytes)"
     }
   ],
-  "software": [
-    "Compilers",
-    "Linkers"
-  ],
-  "format_relationships": {
-    "category": "Programming",
-    "extensions": [
-      ".war"
-    ]
-  },
   "MimeTypes": [
-    "application/octet-stream"
+    "application/x-webarchive"
   ],
   "Software": [
-    "Visual Studio",
-    "GCC",
-    "LLVM",
-    "IDA Pro",
-    "Ghidra"
+    "Apache Tomcat",
+    "Eclipse IDE",
+    "IntelliJ IDEA",
+    "WildFly"
   ],
   "UseCases": [
-    "Software development",
-    "Compilation",
-    "Linking",
-    "Analysis"
+    "Java web app deployment",
+    "Servlet container deployment",
+    "Enterprise web application packaging"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
+    "CompletenessScore": 76,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 19,
+    "ValidationRules": 3,
     "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read header",
-    "calculateCRC32": "Validate",
-    "formatFileSize(var:totalSize)": "Format totalSize as readable size"
+  "TechnicalDetails": {
+    "Container": "ZIP",
+    "Endianness": "little-endian",
+    "HeaderSize": 30
   }
 }

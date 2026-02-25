@@ -1,18 +1,20 @@
 {
   "formatName": "OpenDocument Text",
-  "version": "1.11",
+  "version": "2.0",
   "extensions": [
     ".odt"
   ],
-  "description": "OpenDocument text document (LibreOffice/OpenOffice)",
+  "description": "OpenDocument Text - a ZIP-based open standard word processing document format used by LibreOffice and OpenOffice. The first entry is typically 'mimetype' (stored uncompressed) containing 'application/vnd.oasis.opendocument.text'.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "references": {
     "specifications": [
-      "OpenDocument Text Format"
+      "OASIS OpenDocument Format v1.3 (ISO/IEC 26300)",
+      "PKWARE APPNOTE.TXT - ZIP File Format Specification"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/ODT"
+      "https://en.wikipedia.org/wiki/OpenDocument",
+      "https://docs.oasis-open.org/office/OpenDocument/v1.3/"
     ]
   },
   "detection": {
@@ -20,89 +22,278 @@
     "offset": 0,
     "required": true,
     "validation": {
-      "min_file_size": 4,
-      "max_signature_offset": 1024
+      "minFileSize": 100,
+      "maxSignatureOffset": 0
     }
-  },
-  "functions": {
-    "parseZIPArchive": "Parse OpenDocument as ZIP archive to extract content.xml and meta.xml",
-    "extractUTF8String": "Extract document metadata (title, author, subject)",
-    "readUInt32LE": "Read ZIP header fields (signatures, sizes, CRC)"
   },
   "variables": {
     "currentOffset": 0,
-    "fileCount": 0,
-    "title": "Unknown",
-    "author": "Unknown",
-    "subject": "Unknown",
-    "pages": 0,
-    "words": 0,
-    "generator": "Unknown",
-    "zipSignature": "",
-    "zipHeader": ""
+    "zipSignature": 0,
+    "versionNeeded": 0,
+    "generalPurposeFlags": 0,
+    "compressionMethod": 0,
+    "lastModTime": 0,
+    "lastModDate": 0,
+    "crc32": 0,
+    "compressedSize": 0,
+    "uncompressedSize": 0,
+    "filenameLength": 0,
+    "extraFieldLength": 0,
+    "compressionRatio": 0,
+    "zipFileCount": 0,
+    "zipCentralDirSize": 0,
+    "zipCommentLength": 0,
+    "zipComment": "",
+    "eocdOffset": -1,
+    "isZip64": false,
+    "formattedSize": "",
+    "zipFirstEntryName": "",
+    "zipEntryList": "",
+    "zipTotalUncompressedSize": 0,
+    "zipEntryCount": 0
+  },
+  "functions": {
+    "parseZIPArchive": "Parse End of Central Directory for archive statistics",
+    "parseZipEntries": "Parse Central Directory to extract entry names and total uncompressed size",
+    "formatFileSize(var:zipCentralDirSize)": "Format central directory size"
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "ZIP Signature",
+      "name": "ZIP Local File Header Signature",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "ODT is a ZIP container",
+      "description": "PK\\x03\\x04 magic number identifying a ZIP Local File Header (0x04034B50 LE)",
       "storeAs": "zipSignature",
-      "valueType": "ascii"
+      "valueType": "uint32",
+      "validation": {
+        "expectedValue": "0x04034B50"
+      }
     },
     {
       "type": "field",
-      "name": "ZIP Header",
+      "name": "Version Needed to Extract",
       "offset": 4,
-      "length": 26,
+      "length": 2,
       "color": "#4ECDC4",
       "opacity": 0.3,
-      "description": "ZIP local file header",
-      "storeAs": "zipHeader",
-      "valueType": "ascii"
+      "description": "Minimum ZIP specification version needed to extract this entry",
+      "storeAs": "versionNeeded",
+      "valueType": "uint16",
+      "valueMap": {
+        "10": "1.0 (Default)",
+        "20": "2.0 (Deflate)",
+        "45": "4.5 (ZIP64)",
+        "63": "6.3 (LZMA)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "General Purpose Bit Flags",
+      "offset": 6,
+      "length": 2,
+      "color": "#45B7D1",
+      "opacity": 0.3,
+      "description": "Bit flags controlling encryption, compression options, and data descriptor presence",
+      "storeAs": "generalPurposeFlags",
+      "valueType": "uint16",
+      "bitfields": [
+        {
+          "bit": 0,
+          "name": "Encrypted",
+          "description": "If set, the file data is encrypted",
+          "valueMap": {
+            "0": "Not encrypted",
+            "1": "Encrypted"
+          }
+        },
+        {
+          "bit": 3,
+          "name": "Data Descriptor",
+          "description": "If set, CRC-32 and sizes are in a data descriptor after the file data",
+          "valueMap": {
+            "0": "No data descriptor",
+            "1": "Data descriptor follows file data"
+          }
+        }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "Compression Method",
+      "offset": 8,
+      "length": 2,
+      "color": "#96CEB4",
+      "opacity": 0.3,
+      "description": "Algorithm used to compress the file data in this entry",
+      "storeAs": "compressionMethod",
+      "valueType": "uint16",
+      "valueMap": {
+        "0": "Stored (no compression)",
+        "8": "Deflate",
+        "14": "LZMA"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Last Modification Time",
+      "offset": 10,
+      "length": 2,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "File last modification time in MS-DOS format",
+      "storeAs": "lastModTime",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Last Modification Date",
+      "offset": 12,
+      "length": 2,
+      "color": "#DDA0DD",
+      "opacity": 0.3,
+      "description": "File last modification date in MS-DOS format",
+      "storeAs": "lastModDate",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "CRC-32",
+      "offset": 14,
+      "length": 4,
+      "color": "#FF8C69",
+      "opacity": 0.3,
+      "description": "CRC-32 checksum of the uncompressed file data",
+      "storeAs": "crc32",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Compressed Size",
+      "offset": 18,
+      "length": 4,
+      "color": "#87CEEB",
+      "opacity": 0.3,
+      "description": "Size of the compressed file data in bytes",
+      "storeAs": "compressedSize",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Uncompressed Size",
+      "offset": 22,
+      "length": 4,
+      "color": "#98D8C8",
+      "opacity": 0.3,
+      "description": "Original uncompressed size of the file data in bytes",
+      "storeAs": "uncompressedSize",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Filename Length",
+      "offset": 26,
+      "length": 2,
+      "color": "#F7DC6F",
+      "opacity": 0.3,
+      "description": "Length of the filename field that follows this header",
+      "storeAs": "filenameLength",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Extra Field Length",
+      "offset": 28,
+      "length": 2,
+      "color": "#BB8FCE",
+      "opacity": 0.3,
+      "description": "Length of the extra field that follows the filename",
+      "storeAs": "extraFieldLength",
+      "valueType": "uint16"
+    },
+    {
+      "type": "computeFromVariables",
+      "name": "Compression Ratio",
+      "expression": "uncompressedSize > 0 ? ((1 - compressedSize / uncompressedSize) * 100) : 0",
+      "storeAs": "compressionRatio",
+      "description": "Percentage reduction from compression of the first ZIP entry"
+    },
+    {
+      "type": "conditional",
+      "name": "Encryption Check",
+      "condition": "(generalPurposeFlags & 1) == 1",
+      "trueLabel": "This ODT file is encrypted",
+      "falseLabel": "This ODT file is not encrypted",
+      "description": "Checks bit 0 of general purpose flags"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Files in Archive",
+      "variable": "zipFileCount",
+      "description": "Total number of files/entries in the ODF package"
+    },
+    {
+      "type": "metadata",
+      "name": "Central Directory Size",
+      "variable": "formattedSize",
+      "description": "Human-readable size of the ZIP central directory"
+    },
+    {
+      "type": "metadata",
+      "name": "ZIP64 Format",
+      "variable": "isZip64",
+      "description": "true if ZIP64 format, false if standard ZIP"
+    },
+    {
+      "type": "metadata",
+      "name": "First Entry Name",
+      "variable": "zipFirstEntryName",
+      "description": "Name of the first file (typically 'mimetype' for ODF)"
+    },
+    {
+      "type": "metadata",
+      "name": "Package Contents",
+      "variable": "zipEntryList",
+      "description": "List of all files/entries inside the ODT package"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Uncompressed Size",
+      "variable": "zipTotalUncompressedSize",
+      "description": "Total uncompressed size of all entries (bytes)"
     }
   ],
-  "software": [
-    "LibreOffice Writer",
-    "OpenOffice Writer",
-    "Google Docs",
-    "Microsoft Word"
-  ],
-  "format_relationships": {
-    "open_source": true,
-    "oasis_standard": "ISO/IEC 26300",
-    "alternative_to": "DOCX",
-    "container": "ZIP"
-  },
   "MimeTypes": [
-    "application/odt"
+    "application/vnd.oasis.opendocument.text"
   ],
   "Software": [
-    "Adobe Acrobat",
-    "Microsoft Office",
-    "LibreOffice",
-    "FoxIt Reader",
-    "Calibre"
+    "LibreOffice Writer",
+    "Apache OpenOffice Writer",
+    "Google Docs",
+    "Microsoft Word (import)"
   ],
   "UseCases": [
-    "Document viewing",
-    "Reading",
-    "Publishing",
-    "Archival"
+    "Open-source word processing",
+    "Cross-platform document exchange",
+    "Government and public sector documents",
+    "ODF-compliant document creation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 0,
+    "CompletenessScore": 76,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 19,
+    "ValidationRules": 3,
     "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "DocumentFormat": true
+    "DocumentFormat": true,
+    "Container": "ZIP (OpenDocument)",
+    "Endianness": "little-endian",
+    "HeaderSize": 30,
+    "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
   }
 }
