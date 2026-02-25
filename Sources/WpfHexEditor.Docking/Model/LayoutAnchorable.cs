@@ -111,9 +111,10 @@ public class LayoutAnchorable : LayoutContent
     /// <summary>Hide this anchorable completely (DockState = Hidden).</summary>
     public void Hide()
     {
+        var root = Root; // Capture before RemoveFromParent sets Parent to null
         RemoveFromParent();
         DockState = DockState.Hidden;
-        Root?.HiddenAnchorables.Add(this);
+        root?.HiddenAnchorables.Add(this);
     }
 
     /// <summary>Toggle between Docked and AutoHidden states.</summary>
@@ -127,11 +128,11 @@ public class LayoutAnchorable : LayoutContent
             if (Parent is LayoutAnchorablePane pane)
                 PreviousDockSide = pane.DockSide;
 
+            var root = Root; // Capture before RemoveFromParent sets Parent to null
             RemoveFromParent();
             DockState = DockState.AutoHidden;
 
             // Add to appropriate anchor side
-            var root = Root;
             if (root != null)
             {
                 var side = PreviousDockSide switch

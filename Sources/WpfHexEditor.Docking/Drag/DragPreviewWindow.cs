@@ -21,6 +21,7 @@ internal class DragPreviewWindow : Window
         IsHitTestVisible = false;
         Focusable = false;
         ResizeMode = ResizeMode.NoResize;
+        ShowActivated = false;
         Background = new SolidColorBrush(Color.FromArgb(77, 0, 122, 204)); // AccentColor at 30%
         BorderBrush = new SolidColorBrush(Color.FromArgb(102, 0, 122, 204)); // AccentColor at 40%
         BorderThickness = new Thickness(1);

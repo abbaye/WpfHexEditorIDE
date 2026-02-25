@@ -56,6 +56,11 @@ public static class DragBehavior
     {
         if (sender is not FrameworkElement element) return;
 
+        // Don't initiate drag when clicking on buttons inside the drag area
+        // (e.g., pin/close buttons in the tool window header)
+        if (IsClickOnButton(e.OriginalSource as DependencyObject, element))
+            return;
+
         var content = GetDragContent(element);
         if (content == null) return;
 
@@ -78,6 +83,21 @@ public static class DragBehavior
         manager.DragManager.BeginDragTracking(content, screenPoint, element);
 
         // Don't mark as handled - allow the click to also select the tab
+    }
+
+    /// <summary>
+    /// Check if the click originated from within a ButtonBase between the source and the drag element.
+    /// </summary>
+    private static bool IsClickOnButton(DependencyObject? source, DependencyObject dragElement)
+    {
+        var current = source;
+        while (current != null && current != dragElement)
+        {
+            if (current is System.Windows.Controls.Primitives.ButtonBase)
+                return true;
+            current = VisualTreeHelper.GetParent(current);
+        }
+        return false;
     }
 
     private static T? FindAncestor<T>(DependencyObject? obj) where T : DependencyObject

@@ -107,11 +107,12 @@
                                                         Width="16" Height="16" Margin="6,0,0,0"
                                                         Background="Transparent" BorderThickness="0"
                                                         Padding="0" Cursor="Hand"
+                                                        Foreground="{DynamicResource DockButtonForegroundBrush}"
                                                         Visibility="{Binding CanClose, Converter={StaticResource BoolToVisConverter}}"
                                                         Command="{x:Static controls:DockCommands.CloseDocumentCommand}"
                                                         CommandParameter="{Binding}">
                                                     <Path Data="M 0,0 L 6,6 M 6,0 L 0,6"
-                                                          Stroke="{DynamicResource DockButtonForegroundBrush}"
+                                                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                                           StrokeThickness="1.5"
                                                           Width="6" Height="6"
                                                           Stretch="Uniform"/>
@@ -179,24 +180,26 @@
                                         <Button x:Name="PinBtn" Width="22" Height="22" Margin="1,0"
                                                 Background="Transparent" BorderThickness="0"
                                                 Padding="3" Cursor="Hand"
+                                                Foreground="{DynamicResource DockButtonForegroundBrush}"
                                                 ToolTip="{DynamicResource Dock_Pin}"
                                                 Command="{x:Static controls:DockCommands.ToggleAutoHideCommand}"
                                                 CommandParameter="{Binding Model.SelectedContent, RelativeSource={RelativeSource AncestorType=controls:LayoutAnchorablePaneControl}}">
                                             <!-- Pushpin icon -->
-                                            <Path Data="M 5,0 L 5,2 L 1,2 L 0,3 L 0,7 L 1,8 L 4,8 L 4,12 L 6,12 L 6,8 L 9,8 L 10,7 L 10,3 L 9,2 L 5,2"
-                                                  Fill="{DynamicResource DockButtonForegroundBrush}"
+                                            <Path Data="M 5,0 L 5,2 L 1,2 L 0,3 L 0,7 L 1,8 L 4,8 L 4,12 L 6,12 L 6,8 L 9,8 L 10,7 L 10,3 L 9,2 L 5,2 Z"
+                                                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                                   Width="12" Height="14" Stretch="Uniform"/>
                                         </Button>
                                         <!-- Close button (hide) -->
                                         <Button x:Name="CloseBtn" Width="22" Height="22" Margin="1,0"
                                                 Background="Transparent" BorderThickness="0"
                                                 Padding="3" Cursor="Hand"
+                                                Foreground="{DynamicResource DockButtonForegroundBrush}"
                                                 ToolTip="{DynamicResource Dock_Close}"
                                                 Command="{x:Static controls:DockCommands.CloseAnchorableCommand}"
                                                 CommandParameter="{Binding Model.SelectedContent, RelativeSource={RelativeSource AncestorType=controls:LayoutAnchorablePaneControl}}">
                                             <!-- X icon -->
                                             <Path Data="M 0,0 L 8,8 M 8,0 L 0,8"
-                                                  Stroke="{DynamicResource DockButtonForegroundBrush}"
+                                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                                   StrokeThickness="2"
                                                   Width="10" Height="10" Stretch="Uniform"/>
                                         </Button>
@@ -269,6 +272,10 @@
                             <Setter TargetName="TitleText" Property="Foreground"
                                     Value="{DynamicResource DockToolHeaderActiveForegroundBrush}"/>
                             <Setter TargetName="TitleText" Property="FontWeight" Value="SemiBold"/>
+                            <Setter TargetName="PinBtn" Property="Foreground"
+                                    Value="{DynamicResource DockToolHeaderActiveForegroundBrush}"/>
+                            <Setter TargetName="CloseBtn" Property="Foreground"
+                                    Value="{DynamicResource DockToolHeaderActiveForegroundBrush}"/>
                         </Trigger>
                         <Trigger SourceName="CloseBtn" Property="IsMouseOver" Value="True">
                             <Setter TargetName="CloseBtn" Property="Background"

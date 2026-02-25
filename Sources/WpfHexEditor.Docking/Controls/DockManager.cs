@@ -89,7 +89,10 @@ public class DockManager : Control
     private void OnCloseAnchorable(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is LayoutAnchorable anch)
+        {
             anch.Hide();
+            RebuildLayoutControls();
+        }
     }
 
     private void OnToggleAutoHide(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)

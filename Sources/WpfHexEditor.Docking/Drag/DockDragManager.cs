@@ -1,8 +1,10 @@
 // Apache 2.0 - 2026
 // WpfHexEditor.Docking - VS-Like Docking Framework
 
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using WpfHexEditor.Docking.Controls;
 using WpfHexEditor.Docking.Model;
 
@@ -11,10 +13,35 @@ namespace WpfHexEditor.Docking.Drag;
 /// <summary>
 /// State machine managing the full lifecycle of a drag-and-dock operation.
 /// States: Idle → DragStarting → Dragging → Dropping → Idle
+///
+/// DragStarting phase uses WPF mouse capture (no extra windows shown yet).
+/// Dragging phase switches to Win32 message-level tracking via ComponentDispatcher,
+/// which survives showing overlay windows that would otherwise disrupt WPF capture.
 /// </summary>
 internal class DockDragManager
 {
     private const double DragThreshold = 5.0; // Pixels before drag activates
+
+    #region Win32 interop
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr SetCapture(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    private static extern bool ReleaseCapture();
+
+    [DllImport("user32.dll")]
+    private static extern bool GetCursorPos(out POINT lpPoint);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct POINT { public int X, Y; }
+
+    private const int WM_MOUSEMOVE = 0x0200;
+    private const int WM_LBUTTONUP = 0x0202;
+    private const int WM_KEYDOWN = 0x0100;
+    private const int VK_ESCAPE = 0x1B;
+
+    #endregion
 
     private readonly DockManager _manager;
     private DragPreviewWindow? _previewWindow;
@@ -24,10 +51,11 @@ internal class DockDragManager
     private DragState _state = DragState.Idle;
     private LayoutContent? _draggedContent;
     private Point _dragStartScreenPoint;
-    private FrameworkElement? _dragSource; // The element that initiated the drag (for mouse capture)
+    private FrameworkElement? _dragSource; // Element with WPF capture (DragStarting phase only)
+    private bool _win32Hooked;
 
     // Cache last known pane model and bounds, so compass rose guides still work
-    // even if the cursor moves slightly off the pane between MouseMove and MouseUp
+    // even if the cursor moves slightly off the pane between moves
     private LayoutElement? _lastPaneModel;
     private Rect? _lastPaneBounds;
 
@@ -56,7 +84,7 @@ internal class DockDragManager
         _dragSource = source;
         _state = DragState.DragStarting;
 
-        // Capture mouse on the source element
+        // Use WPF capture during DragStarting phase (no extra windows shown yet)
         source.CaptureMouse();
         source.MouseMove += OnMouseMove;
         source.MouseUp += OnMouseUp;
@@ -71,43 +99,26 @@ internal class DockDragManager
         CleanupDrag();
     }
 
-    #region Mouse event handlers
+    #region WPF event handlers (DragStarting phase only)
 
     private void OnMouseMove(object sender, MouseEventArgs e)
     {
+        if (_state != DragState.DragStarting) return;
+
         var screenPoint = GetScreenPoint(e, sender as FrameworkElement);
-
-        switch (_state)
+        var delta = screenPoint - _dragStartScreenPoint;
+        if (Math.Abs(delta.X) > DragThreshold || Math.Abs(delta.Y) > DragThreshold)
         {
-            case DragState.DragStarting:
-                // Check if we've exceeded the drag threshold
-                var delta = screenPoint - _dragStartScreenPoint;
-                if (Math.Abs(delta.X) > DragThreshold || Math.Abs(delta.Y) > DragThreshold)
-                {
-                    ActivateDrag(screenPoint);
-                }
-                break;
-
-            case DragState.Dragging:
-                ProcessDragOver(screenPoint);
-                break;
+            ActivateDrag(screenPoint);
         }
     }
 
     private void OnMouseUp(object sender, MouseButtonEventArgs e)
     {
-        var screenPoint = GetScreenPoint(e, sender as FrameworkElement);
-
-        switch (_state)
+        if (_state == DragState.DragStarting)
         {
-            case DragState.DragStarting:
-                // Mouse released before threshold reached - this was just a click, not a drag
-                CleanupDrag();
-                break;
-
-            case DragState.Dragging:
-                ExecuteDrop(screenPoint);
-                break;
+            // Mouse released before threshold - just a click, not a drag
+            CleanupDrag();
         }
     }
 
@@ -122,10 +133,49 @@ internal class DockDragManager
 
     private void OnLostCapture(object sender, MouseEventArgs e)
     {
-        // If we lose capture unexpectedly during a drag, cancel it
-        if (_state == DragState.Dragging || _state == DragState.DragStarting)
+        // Lost WPF capture during DragStarting - cancel
+        if (_state == DragState.DragStarting)
         {
             CleanupDrag();
+        }
+        // Note: During Dragging phase, we don't use WPF capture, so this won't fire
+    }
+
+    #endregion
+
+    #region Win32 message handler (Dragging phase)
+
+    private void OnThreadFilterMessage(ref MSG msg, ref bool handled)
+    {
+        if (_state != DragState.Dragging) return;
+
+        switch (msg.message)
+        {
+            case WM_MOUSEMOVE:
+            {
+                GetCursorPos(out var pt);
+                ProcessDragOver(new Point(pt.X, pt.Y));
+                handled = true;
+                break;
+            }
+
+            case WM_LBUTTONUP:
+            {
+                GetCursorPos(out var pt);
+                ExecuteDrop(new Point(pt.X, pt.Y));
+                handled = true;
+                break;
+            }
+
+            case WM_KEYDOWN:
+            {
+                if ((int)msg.wParam == VK_ESCAPE)
+                {
+                    CancelDrag();
+                    handled = true;
+                }
+                break;
+            }
         }
     }
 
@@ -134,19 +184,35 @@ internal class DockDragManager
     #region Core drag logic
 
     /// <summary>
-    /// Transition from DragStarting to Dragging. Creates the preview and overlay windows.
+    /// Transition from DragStarting to Dragging.
+    /// Switches from WPF mouse capture to Win32 message-level tracking,
+    /// then creates the overlay windows.
     /// </summary>
     private void ActivateDrag(Point screenPoint)
     {
         _state = DragState.Dragging;
 
-        // Create the translucent preview window
-        _previewWindow = new DragPreviewWindow();
+        // Detach WPF event handlers and release WPF capture
+        DetachFromDragSource();
 
-        // Create the guide overlay
+        // Hook Win32 messages BEFORE showing any new windows.
+        // ComponentDispatcher.ThreadFilterMessage intercepts all Win32 messages
+        // on the UI thread before WPF dispatches them - immune to WPF capture loss.
+        ComponentDispatcher.ThreadFilterMessage += OnThreadFilterMessage;
+        _win32Hooked = true;
+
+        // Set Win32 capture on the main window HWND so mouse messages
+        // reach our thread even when cursor is outside all our windows
+        var hwndSource = PresentationSource.FromVisual(_manager) as HwndSource;
+        if (hwndSource != null)
+            SetCapture(hwndSource.Handle);
+
+        // Now safe to create and show overlay windows - they won't disrupt
+        // our Win32 message hook (unlike WPF CaptureMouse)
+        _previewWindow = new DragPreviewWindow();
         _guideOverlay = new DockingGuideOverlay();
 
-        // Update position immediately
+        // Initial position and hit-test
         ProcessDragOver(screenPoint);
     }
 
@@ -193,7 +259,6 @@ internal class DockDragManager
         _currentTarget = null;
 
         // Use cached pane if current pane not found but a guide is hit
-        // (cursor may have moved slightly off the pane onto the guide button area)
         var effectivePaneModel = paneModel ?? _lastPaneModel;
         var effectivePaneBounds = paneBounds ?? _lastPaneBounds;
 
@@ -249,10 +314,6 @@ internal class DockDragManager
                 }
             }
         }
-        // Note: we intentionally do NOT clear _lastPaneModel/_lastPaneBounds here.
-        // The cache persists throughout the drag so the compass rose stays visible
-        // when the cursor passes over splitters/borders between the pane and a guide.
-        // It's only updated when a new pane is found, and cleared in CleanupDrag.
 
         // Update preview window
         if (_currentTarget != null)
@@ -272,8 +333,7 @@ internal class DockDragManager
     {
         _state = DragState.Dropping;
 
-        // Do one final hit-test at the exact drop position, because the last
-        // MouseMove may have fired at a slightly different spot than the MouseUp.
+        // Final hit-test at exact drop position
         ProcessDragOver(screenPoint);
 
         if (_currentTarget != null && _draggedContent != null)
@@ -288,11 +348,41 @@ internal class DockDragManager
     }
 
     /// <summary>
+    /// Detach WPF event handlers from the drag source and release WPF capture.
+    /// Used during transition from DragStarting to Dragging, and during cleanup.
+    /// </summary>
+    private void DetachFromDragSource()
+    {
+        if (_dragSource == null) return;
+
+        _dragSource.MouseMove -= OnMouseMove;
+        _dragSource.MouseUp -= OnMouseUp;
+        _dragSource.LostMouseCapture -= OnLostCapture;
+        _dragSource.KeyDown -= OnKeyDown;
+
+        if (_dragSource.IsMouseCaptured)
+            _dragSource.ReleaseMouseCapture();
+
+        _dragSource = null;
+    }
+
+    /// <summary>
     /// Clean up all drag state, windows, and event handlers.
     /// </summary>
     private void CleanupDrag()
     {
         _state = DragState.Idle;
+
+        // Unhook Win32 message filter and release Win32 capture
+        if (_win32Hooked)
+        {
+            ComponentDispatcher.ThreadFilterMessage -= OnThreadFilterMessage;
+            _win32Hooked = false;
+            ReleaseCapture();
+        }
+
+        // Detach WPF handlers (for DragStarting phase, if still attached)
+        DetachFromDragSource();
 
         // Close windows
         _previewWindow?.Close();
@@ -305,21 +395,6 @@ internal class DockDragManager
         _currentTarget = null;
         _lastPaneModel = null;
         _lastPaneBounds = null;
-
-        // Unhook events from source
-        if (_dragSource != null)
-        {
-            _dragSource.MouseMove -= OnMouseMove;
-            _dragSource.MouseUp -= OnMouseUp;
-            _dragSource.LostMouseCapture -= OnLostCapture;
-            _dragSource.KeyDown -= OnKeyDown;
-
-            if (_dragSource.IsMouseCaptured)
-                _dragSource.ReleaseMouseCapture();
-
-            _dragSource = null;
-        }
-
         _draggedContent = null;
     }
 

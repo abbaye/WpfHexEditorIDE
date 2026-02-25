@@ -18,6 +18,7 @@ public class AutoHidePopup : ContentControl
 {
     private DispatcherTimer? _hideTimer;
     private TranslateTransform _translateTransform = new();
+    private bool _isAnimatingOut;
 
     static AutoHidePopup()
     {
@@ -28,6 +29,7 @@ public class AutoHidePopup : ContentControl
     public AutoHidePopup()
     {
         RenderTransform = _translateTransform;
+        UseLayoutRounding = true;
         _hideTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
         _hideTimer.Tick += (s, e) => HidePopup();
     }
@@ -82,6 +84,8 @@ public class AutoHidePopup : ContentControl
     public void ShowForAnchorable(LayoutAnchorable anchorable, DockSide side)
     {
         _hideTimer?.Stop();
+        _isAnimatingOut = false;
+
         CurrentAnchorable = anchorable;
         Side = side;
         Content = anchorable.Content;
@@ -106,9 +110,31 @@ public class AutoHidePopup : ContentControl
         };
 
         if (side is DockSide.Left or DockSide.Right)
+        {
             Width = PopupSize;
+            Height = double.NaN;
+        }
         else
+        {
+            Width = double.NaN;
             Height = PopupSize;
+        }
+
+        // Clear any running animations and pre-position off-screen
+        // BEFORE making visible to prevent the one-frame flash at final position
+        _translateTransform.BeginAnimation(TranslateTransform.XProperty, null);
+        _translateTransform.BeginAnimation(TranslateTransform.YProperty, null);
+
+        if (side is DockSide.Left or DockSide.Right)
+        {
+            _translateTransform.X = side == DockSide.Left ? -PopupSize : PopupSize;
+            _translateTransform.Y = 0;
+        }
+        else
+        {
+            _translateTransform.X = 0;
+            _translateTransform.Y = side == DockSide.Top ? -PopupSize : PopupSize;
+        }
 
         Visibility = Visibility.Visible;
         SlideIn();
@@ -118,17 +144,24 @@ public class AutoHidePopup : ContentControl
     public void HidePopup()
     {
         _hideTimer?.Stop();
+
+        if (_isAnimatingOut || Visibility != Visibility.Visible)
+            return;
+
+        _isAnimatingOut = true;
         SlideOut(() =>
         {
             Visibility = Visibility.Collapsed;
             Content = null;
             CurrentAnchorable = null;
+            _isAnimatingOut = false;
         });
     }
 
     /// <summary>Start the delayed hide timer.</summary>
     public void StartHideTimer()
     {
+        if (_isAnimatingOut) return;
         _hideTimer?.Start();
     }
 
@@ -152,22 +185,14 @@ public class AutoHidePopup : ContentControl
 
     private void SlideIn()
     {
-        var from = Side switch
-        {
-            DockSide.Left => -PopupSize,
-            DockSide.Right => PopupSize,
-            DockSide.Top => -PopupSize,
-            DockSide.Bottom => PopupSize,
-            _ => 0
-        };
-
         var property = Side is DockSide.Left or DockSide.Right
             ? TranslateTransform.XProperty
             : TranslateTransform.YProperty;
 
-        var animation = new DoubleAnimation(from, 0, TimeSpan.FromMilliseconds(200))
+        // Animate from current position (already set to off-screen) to 0
+        var animation = new DoubleAnimation(0, TimeSpan.FromMilliseconds(250))
         {
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            EasingFunction = new QuarticEase { EasingMode = EasingMode.EaseOut }
         };
 
         _translateTransform.BeginAnimation(property, animation);
@@ -188,9 +213,9 @@ public class AutoHidePopup : ContentControl
             ? TranslateTransform.XProperty
             : TranslateTransform.YProperty;
 
-        var animation = new DoubleAnimation(to, TimeSpan.FromMilliseconds(150))
+        var animation = new DoubleAnimation(to, TimeSpan.FromMilliseconds(200))
         {
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
+            EasingFunction = new QuarticEase { EasingMode = EasingMode.EaseIn }
         };
 
         if (onCompleted != null)

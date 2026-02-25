@@ -48,6 +48,7 @@ internal class DockingGuideOverlay : Window
         ResizeMode = ResizeMode.NoResize;
         Background = Brushes.Transparent;
         Topmost = true;
+        ShowActivated = false;
 
         _canvas = new Canvas();
         Content = _canvas;
