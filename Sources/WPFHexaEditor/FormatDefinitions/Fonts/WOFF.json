@@ -1,6 +1,6 @@
 {
   "formatName": "Web Open Font Format",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".woff"
   ],
@@ -107,31 +107,14 @@
       "description": "Table Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Web browsers"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Fonts",
     "extensions": [
       ".woff"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".woff",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "font/woff"
@@ -145,21 +128,16 @@
     "Online typography"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 72,
+    "CompletenessScore": 44,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-08",
+    "BlocksDefined": 8,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "CompressionMethod": "WOFF compression"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 414.29,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32BE": "Read font tables",

@@ -1,6 +1,6 @@
 {
   "formatName": "ELF Executable",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ""
   ],
@@ -153,36 +153,16 @@
       "description": "Virtual address of entry point"
     }
   ],
-  "mime_types": [
-    "application/x-executable"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 6,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Linux OS",
     "GCC",
     "GDB"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Executables",
     "extensions": [
       ""
     ]
-  },
-  "technical_details": {
-    "primary_extension": "",
-    "defined_fields": 6
   },
   "MimeTypes": [
     "application/x-executable",
@@ -199,21 +179,16 @@
     "Embedded systems"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 82,
+    "CompletenessScore": 53,
     "DocumentationLevel": "detailed",
-    "BlocksDefined": 6,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-11",
+    "BlocksDefined": 11,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "ExecutablesFormat": true,
     "Platform": "Linux/Unix"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 388.27,
-    "last_updated": "2026-02-24"
   }
 }

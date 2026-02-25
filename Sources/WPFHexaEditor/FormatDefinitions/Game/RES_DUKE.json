@@ -1,6 +1,6 @@
 {
   "formatName": "Duke Nukem GRP",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".grp"
   ],
@@ -80,31 +80,15 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
     "extensions": [
       ".grp"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".grp",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -123,21 +107,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 294.5,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read GRP resource header",

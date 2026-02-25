@@ -1,6 +1,6 @@
 {
   "formatName": "Dolby Digital AC-3",
-  "version": "2.0",
+  "version": "3.1",
   "extensions": [
     ".ac3",
     ".eac3"
@@ -46,11 +46,8 @@
     "dialnorm_compre": 0,
     "dialnorm": 0,
     "sampleRate": 0,
-    "bitrate": 0,
     "channels": 0,
-    "frameSize": 0,
-    "samplesPerSecond": 0,
-    "formattedBitrate": ""
+    "samplesPerSecond": 0
   },
   "functions": {
     "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate total samples per second (all channels)",
@@ -89,11 +86,31 @@
       "opacity": 0.3,
       "valueType": "uint8",
       "storeAs": "fscod_frmsizecod",
-      "description": "Bits 7-6: fscod (00=48kHz, 01=44.1kHz, 10=32kHz, 11=reserved) | Bits 5-0: frmsizecod (frame size code → determines bitrate)",
+      "description": "fscod (bits 7-6) + frmsizecod (bits 5-0)",
       "validationRules": {
         "minValue": 0,
         "maxValue": 191
-      }
+      },
+      "bitfields": [
+        {
+          "name": "Sample Rate Code (fscod)",
+          "bits": "7-6",
+          "storeAs": "fscod",
+          "description": "Audio sample rate",
+          "valueMap": {
+            "0": "48 kHz",
+            "1": "44.1 kHz",
+            "2": "32 kHz",
+            "3": "Reserved"
+          }
+        },
+        {
+          "name": "Frame Size Code (frmsizecod)",
+          "bits": "5-0",
+          "storeAs": "frmsizecod",
+          "description": "Determines frame size and nominal bitrate (0-37 valid range)"
+        }
+      ]
     },
     {
       "type": "field",
@@ -104,7 +121,36 @@
       "opacity": 0.3,
       "valueType": "uint8",
       "storeAs": "bsid_bsmod",
-      "description": "Bits 7-3: bsid (8=AC-3, 6=alternate, 16=E-AC-3) | Bits 2-0: bsmod (000=main complete, 001=music&effects, 010=visually impaired, 011=hearing impaired, 100=dialogue, 101=commentary, 110=emergency, 111=voice-over)"
+      "description": "bsid (bits 7-3) + bsmod (bits 2-0)",
+      "bitfields": [
+        {
+          "name": "Bit Stream ID (bsid)",
+          "bits": "7-3",
+          "storeAs": "bsid",
+          "description": "Bit stream version",
+          "valueMap": {
+            "6": "AC-3 (alternate)",
+            "8": "AC-3 (standard)",
+            "16": "E-AC-3"
+          }
+        },
+        {
+          "name": "Bit Stream Mode (bsmod)",
+          "bits": "2-0",
+          "storeAs": "bsmod",
+          "description": "Type of audio service",
+          "valueMap": {
+            "0": "Main: Complete",
+            "1": "Music & Effects",
+            "2": "Visually Impaired",
+            "3": "Hearing Impaired",
+            "4": "Dialogue",
+            "5": "Commentary",
+            "6": "Emergency",
+            "7": "Voice Over"
+          }
+        }
+      ]
     },
     {
       "type": "field",
@@ -115,7 +161,25 @@
       "opacity": 0.3,
       "valueType": "uint8",
       "storeAs": "acmod_flags",
-      "description": "Bits 7-5: acmod (000=1+1 dual mono, 001=1/0 C, 010=2/0 L+R stereo, 011=3/0 L+C+R, 100=2/1 L+R+S, 101=3/1 L+C+R+S, 110=2/2 L+R+SL+SR, 111=3/2 L+C+R+SL+SR) | Lower bits: cmixlev, surmixlev, dsurmod depending on acmod"
+      "description": "acmod (bits 7-5) + mixing/surround flags",
+      "bitfields": [
+        {
+          "name": "Audio Coding Mode (acmod)",
+          "bits": "7-5",
+          "storeAs": "acmod",
+          "description": "Channel layout configuration",
+          "valueMap": {
+            "0": "1+1 (Dual Mono)",
+            "1": "1/0 (Center)",
+            "2": "2/0 (Stereo L+R)",
+            "3": "3/0 (L+C+R)",
+            "4": "2/1 (L+R+Surr)",
+            "5": "3/1 (L+C+R+Surr)",
+            "6": "2/2 (L+R+SL+SR)",
+            "7": "3/2 (L+C+R+SL+SR = 5.0)"
+          }
+        }
+      ]
     },
     {
       "type": "field",
@@ -126,43 +190,42 @@
       "opacity": 0.3,
       "valueType": "uint8",
       "storeAs": "dialnorm_compre",
-      "description": "Bits 7-3: dialnorm (-1 to -31 dB, dialogue normalization level) | Bit 2: compre (compression gain word exists) | Bits 1-0: varies"
+      "description": "dialnorm (bits 7-3) + compre flag (bit 2)",
+      "bitfields": [
+        {
+          "name": "Dialogue Normalization (dialnorm)",
+          "bits": "7-3",
+          "storeAs": "dialnorm",
+          "description": "Dialogue level below digital 100% (-1 to -31 dB)"
+        },
+        {
+          "name": "Compression Gain Exists (compre)",
+          "bits": "2",
+          "storeAs": "compre",
+          "description": "Heavy compression gain word present",
+          "valueMap": {
+            "0": "No",
+            "1": "Yes"
+          }
+        }
+      ]
     },
     {
       "type": "metadata",
       "name": "Samples/Second",
       "variable": "samplesPerSecond",
       "description": "Total samples per second across all channels"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Bitrate",
-      "variable": "formattedBitrate",
-      "description": "Human-readable bitrate (e.g., 384 kbps, 640 kbps)"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "detailed",
-    "blocks_defined": 8,
-    "validation_rules": 3,
-    "last_updated": "2026-02-24",
-    "priority_format": true,
-    "auto_refined": false
+  "QualityMetrics": {
+    "CompletenessScore": 79,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 7,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-02-24",
+    "PriorityFormat": true,
+    "AutoRefined": false
   },
-  "software": [
-    "VLC",
-    "FFmpeg",
-    "Audacity",
-    "Foobar2000",
-    "MediaInfo"
-  ],
-  "use_cases": [
-    "DVD / Blu-ray surround audio",
-    "HDTV broadcast (ATSC)",
-    "Streaming",
-    "Audio transcoding"
-  ],
   "MimeTypes": [
     "audio/ac3",
     "audio/eac3"
@@ -172,19 +235,18 @@
     "FFmpeg",
     "Audacity",
     "Foobar2000",
-    "MediaInfo",
-    "Hex Editor"
+    "MediaInfo"
   ],
   "UseCases": [
     "Surround sound playback",
-    "Audio editing",
-    "Broadcasting",
-    "Streaming"
+    "DVD / Blu-ray audio",
+    "HDTV broadcast (ATSC)",
+    "Audio transcoding"
   ],
   "TechnicalDetails": {
     "AudioFormat": true,
     "primary_extension": ".ac3",
-    "defined_fields": 8,
+    "defined_fields": 13,
     "max_channels": "5.1",
     "sample_rates": "48000, 44100, 32000 Hz",
     "max_bitrate": "640 kbps"

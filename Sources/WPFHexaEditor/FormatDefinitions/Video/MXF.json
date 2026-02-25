@@ -1,6 +1,6 @@
 {
   "formatName": "Material Exchange Format",
-  "version": "2.2",
+  "version": "2.3",
   "extensions": [
     ".mxf"
   ],
@@ -66,40 +66,16 @@
       "description": "Array Count"
     }
   ],
-  "mime_types": [
-    "video/mxf"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Adobe Premiere",
     "Avid Media Composer",
     "DaVinci Resolve",
     "FFmpeg"
   ],
-  "use_cases": [
-    "Professional video production",
-    "Broadcast TV",
-    "Cinema production",
-    "Archival"
-  ],
   "format_relationships": {
     "smpte_standard": "SMPTE 377M",
     "professional_format": true,
     "alternative_to": "MOV for broadcast"
-  },
-  "technical_details": {
-    "container": "Material Exchange Format",
-    "metadata_rich": true,
-    "frame_accurate": true,
-    "multi_track": true,
-    "broadcast_standard": true
   },
   "MimeTypes": [
     "video/mxf"
@@ -118,21 +94,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 264.49,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32BE": "Read scientific header",

@@ -1,6 +1,6 @@
 {
   "formatName": "AIX iptrace",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".iptrace"
   ],
@@ -134,31 +134,15 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 6,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Wireshark",
     "tcpdump"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Network",
     "extensions": [
       ".iptrace"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".iptrace",
-    "defined_fields": 6
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -177,20 +161,15 @@
     "Security analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 53,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 10,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 368.12,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",

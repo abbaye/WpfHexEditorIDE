@@ -1,6 +1,6 @@
 {
   "formatName": "WebAssembly Binary",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".wasm"
   ],
@@ -64,38 +64,17 @@
       "valueType": "ascii"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Web browsers",
     "Node.js",
     "Wasmer",
     "Wasmtime"
   ],
-  "use_cases": [
-    "Web applications",
-    "High-performance web code",
-    "Cross-platform binaries",
-    "Sandboxed execution"
-  ],
   "format_relationships": {
     "w3c_standard": true,
     "portable": true,
     "complements": "JavaScript",
     "alternative_to": "Native executables"
-  },
-  "technical_details": {
-    "bytecode_format": true,
-    "stack_machine": true,
-    "near_native_speed": true,
-    "sandboxed": true,
-    "text_format": "WAT"
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -114,18 +93,13 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 248.76,
-    "last_updated": "2026-02-24"
-  }
+  "TechnicalDetails": {}
 }

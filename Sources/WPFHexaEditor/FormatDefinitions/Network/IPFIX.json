@@ -1,6 +1,6 @@
 {
   "formatName": "IPFIX",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".ipfix"
   ],
@@ -126,31 +126,15 @@
       "description": "Message Length"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 7,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Wireshark",
     "tcpdump"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Network",
     "extensions": [
       ".ipfix"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".ipfix",
-    "defined_fields": 7
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -169,20 +153,15 @@
     "Security analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 56,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 378.91,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt16BE": "Read message header",
     "readUInt32BE": "Read sequence numbers"

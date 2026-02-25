@@ -1,6 +1,6 @@
 {
   "formatName": "7-Zip Archive",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".7z"
   ],
@@ -99,39 +99,16 @@
       "description": "Start header CRC-32 integrity check result"
     }
   ],
-  "mime_types": [
-    "application/x-7z"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "7-Zip",
     "PeaZip",
     "Bandizip"
-  ],
-  "use_cases": [
-    "File compression",
-    "Archive distribution",
-    "Backup"
   ],
   "format_relationships": {
     "category": "Archives",
     "extensions": [
       ".7z"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".7z",
-    "defined_fields": 4,
-    "compression_method": "Deflate"
   },
   "MimeTypes": [
     "application/x-7z-compressed"
@@ -149,11 +126,11 @@
     "Multi-volume archives"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 90,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 8,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-12",
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -161,10 +138,5 @@
     "CompressionMethod": "LZMA, LZMA2, BZIP2, DEFLATE",
     "ArchivesFormat": true,
     "SupportsEncryption": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 341.18,
-    "last_updated": "2026-02-24"
   }
 }

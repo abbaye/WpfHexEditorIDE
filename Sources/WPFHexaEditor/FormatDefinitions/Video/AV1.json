@@ -1,6 +1,6 @@
 {
   "formatName": "AV1 Video",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".av1",
     ".ivf"
@@ -69,26 +69,10 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/av1"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Modern browsers",
     "VLC",
     "AV1 players"
-  ],
-  "use_cases": [
-    "Next-gen video",
-    "4K/8K streaming",
-    "Efficient compression"
   ],
   "format_relationships": {
     "category": "Video",
@@ -98,12 +82,6 @@
     ],
     "aom_format": true,
     "royalty_free": true
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".av1",
-    "defined_fields": 1,
-    "container_format": true
   },
   "MimeTypes": [
     "video/av1"
@@ -122,21 +100,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 252.29,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read video header",

@@ -1,6 +1,6 @@
 {
   "formatName": "TGA Image",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".tga",
     ".tpic"
@@ -80,24 +80,9 @@
       "description": "TGA image type code"
     }
   ],
-  "mime_types": [
-    "image/tga"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Image viewers",
     "GIMP"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
@@ -105,11 +90,6 @@
       ".tga",
       ".tpic"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".tga",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "image/tga"
@@ -128,21 +108,16 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 33,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 271.32,
-    "last_updated": "2026-02-24"
   }
 }

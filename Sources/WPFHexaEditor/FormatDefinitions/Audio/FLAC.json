@@ -1,6 +1,6 @@
 {
   "formatName": "FLAC Audio",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".flac"
   ],
@@ -127,27 +127,10 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/flac"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Foobar2000",
     "VLC",
     "Audiophile players"
-  ],
-  "use_cases": [
-    "Lossless audio",
-    "Music archiving",
-    "Audiophile playback"
   ],
   "format_relationships": {
     "category": "Audio",
@@ -156,12 +139,6 @@
     ],
     "xiph_format": true,
     "lossless": true
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".flac",
-    "defined_fields": 3,
-    "compression_type": "Lossless"
   },
   "MimeTypes": [
     "audio/flac",
@@ -179,21 +156,16 @@
     "Music archiving"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 82,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 5,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-12",
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 9,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "AudioFormat": true,
     "CompressionMethod": "Lossless"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 334.31,
-    "last_updated": "2026-02-24"
   }
 }

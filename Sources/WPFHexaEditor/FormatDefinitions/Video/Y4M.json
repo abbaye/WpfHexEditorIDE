@@ -1,6 +1,6 @@
 {
   "formatName": "YUV4MPEG2",
-  "version": "2.2",
+  "version": "2.3",
   "extensions": [
     ".y4m"
   ],
@@ -73,37 +73,16 @@
       "description": "Total duration in seconds"
     }
   ],
-  "mime_types": [
-    "video/y4m"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Video editors",
     "FFmpeg",
     "YUV tools"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
     "extensions": [
       ".y4m"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".y4m",
-    "defined_fields": 1,
-    "container_format": true
   },
   "MimeTypes": [
     "video/y4m"
@@ -122,21 +101,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 268.93,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read video metadata"

@@ -1,6 +1,6 @@
 {
   "formatName": "WebM Video",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".webm"
   ],
@@ -94,46 +94,17 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/webm"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Chrome",
     "Firefox",
     "VLC",
     "Web browsers"
   ],
-  "use_cases": [
-    "Web video streaming (YouTube)",
-    "HTML5 video",
-    "Open web media"
-  ],
   "format_relationships": {
     "open_source": true,
     "google_format": true,
     "based_on": "Matroska",
     "replaces": "FLV"
-  },
-  "technical_details": {
-    "container": "Matroska subset",
-    "video_codecs": [
-      "VP8",
-      "VP9",
-      "AV1"
-    ],
-    "audio_codecs": [
-      "Vorbis",
-      "Opus"
-    ],
-    "royalty_free": true
   },
   "MimeTypes": [
     "video/webm"
@@ -152,20 +123,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 247.06,
-    "last_updated": "2026-02-24"
   }
 }

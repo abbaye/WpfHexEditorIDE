@@ -1,6 +1,6 @@
 {
   "formatName": "EPUB eBook",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".epub"
   ],
@@ -67,37 +67,17 @@
       "valueType": "ascii"
     }
   ],
-  "mime_types": [
-    "application/epub"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Calibre",
     "Apple Books",
     "Adobe Digital Editions",
     "E-readers"
   ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
-  ],
   "format_relationships": {
     "category": "Documents",
     "extensions": [
       ".epub"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".epub",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "application/epub+zip"
@@ -114,21 +94,16 @@
     "Reading apps"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 75,
+    "CompletenessScore": 32,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-09",
+    "BlocksDefined": 2,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "DocumentFormat": true,
     "Container": "ZIP"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 319.51,
-    "last_updated": "2026-02-24"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "STL 3D Model",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".stl"
   ],
@@ -70,24 +70,11 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "3D printers",
     "Blender",
     "Meshmixer",
     "Cura"
-  ],
-  "use_cases": [
-    "3D printing",
-    "CAD export",
-    "Mesh modeling"
   ],
   "format_relationships": {
     "category": "3D",
@@ -95,11 +82,6 @@
       ".stl"
     ],
     "3d_printing_standard": true
-  },
-  "technical_details": {
-    "primary_extension": ".stl",
-    "defined_fields": 1,
-    "binary_format": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -118,20 +100,15 @@
     "Game development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 244.9,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",

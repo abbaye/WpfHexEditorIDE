@@ -1,6 +1,6 @@
 {
   "formatName": "IPS Patch",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".ips"
   ],
@@ -97,33 +97,16 @@
       "description": "Sections"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Lunar IPS",
     "Floating IPS",
     "UniPatcher"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
     "extensions": [
       ".ips"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".ips",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -142,21 +125,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 7,
-    "change_percentage": 245.86,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read executable header"

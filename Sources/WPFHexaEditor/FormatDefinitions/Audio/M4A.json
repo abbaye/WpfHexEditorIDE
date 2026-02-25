@@ -1,6 +1,6 @@
 {
   "formatName": "M4A Audio",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".m4a",
     ".m4b",
@@ -99,27 +99,11 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/m4a"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "iTunes",
     "Apple Music",
     "VLC",
     "All modern players"
-  ],
-  "use_cases": [
-    "Apple music files",
-    "iTunes Store audio",
-    "AAC/ALAC container"
   ],
   "format_relationships": {
     "container_for": [
@@ -128,16 +112,6 @@
     ],
     "based_on": "MP4",
     "apple_format": true
-  },
-  "technical_details": {
-    "container_format": true,
-    "audio_only": true,
-    "supports": [
-      "AAC",
-      "ALAC",
-      "Apple Lossless"
-    ],
-    "metadata": "iTunes tags"
   },
   "MimeTypes": [
     "audio/m4a"
@@ -156,20 +130,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 267.59,
-    "last_updated": "2026-02-24"
   }
 }

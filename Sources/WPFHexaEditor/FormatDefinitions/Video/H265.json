@@ -1,6 +1,6 @@
 {
   "formatName": "Raw H.265/HEVC",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".h265",
     ".265",
@@ -70,25 +70,10 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/h265"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Modern players",
     "VLC",
     "4K devices"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
@@ -97,12 +82,6 @@
       ".265",
       ".hevc"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".h265",
-    "defined_fields": 1,
-    "container_format": true
   },
   "MimeTypes": [
     "video/h265"
@@ -121,21 +100,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 253.7,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read video header",

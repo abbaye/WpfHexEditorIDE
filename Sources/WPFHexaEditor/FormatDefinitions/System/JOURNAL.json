@@ -1,6 +1,6 @@
 {
   "formatName": "systemd Journal",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".journal"
   ],
@@ -164,31 +164,15 @@
       "description": "Sections"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 10,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "System",
     "extensions": [
       ".journal"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".journal",
-    "defined_fields": 10
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -204,20 +188,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 12,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 366.67,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read executable header"
   }

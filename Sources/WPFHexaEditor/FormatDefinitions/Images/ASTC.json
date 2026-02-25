@@ -1,6 +1,6 @@
 {
   "formatName": "ASTC Texture",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".astc"
   ],
@@ -84,35 +84,15 @@
       "description": "Sections"
     }
   ],
-  "mime_types": [
-    "image/astc"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Image viewers",
     "GIMP"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
     "extensions": [
       ".astc"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".astc",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "image/astc"
@@ -131,22 +111,17 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 306.61,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read executable header"

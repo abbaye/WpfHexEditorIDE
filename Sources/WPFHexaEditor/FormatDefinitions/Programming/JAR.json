@@ -1,6 +1,6 @@
 {
   "formatName": "Java Archive",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".jar"
   ],
@@ -71,36 +71,16 @@
       "description": "ZIP64 Format"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Java Runtime",
     "Java IDEs",
     "7-Zip"
-  ],
-  "use_cases": [
-    "Java applications",
-    "Java libraries",
-    "Java applets (legacy)"
   ],
   "format_relationships": {
     "java_format": true,
     "based_on": "ZIP",
     "contains": "CLASS files",
     "manifest": "META-INF/MANIFEST.MF"
-  },
-  "technical_details": {
-    "zip_format": true,
-    "java_archive": true,
-    "manifest": true,
-    "signature_support": true,
-    "executable": "java -jar"
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -119,20 +99,15 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 224.49,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "parseZIPArchive": "Parse ZIP archive metadata"
   }

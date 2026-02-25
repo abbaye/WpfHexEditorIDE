@@ -1,6 +1,6 @@
 {
   "formatName": "Portable Pixmap",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".ppm"
   ],
@@ -67,35 +67,15 @@
       "description": "P3 (ASCII) or P6 (binary)"
     }
   ],
-  "mime_types": [
-    "image/ppm"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Image viewers",
     "GIMP"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
     "extensions": [
       ".ppm"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".ppm",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "image/ppm"
@@ -114,21 +94,16 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 256.91,
-    "last_updated": "2026-02-24"
   }
 }

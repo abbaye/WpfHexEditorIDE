@@ -1,6 +1,6 @@
 {
   "formatName": "Steam Game Cache",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".gcf"
   ],
@@ -66,31 +66,15 @@
       "description": "Index Offset"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
     "extensions": [
       ".gcf"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".gcf",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -109,21 +93,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
+    "CompletenessScore": 21,
     "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 222.0,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read game header",

@@ -1,6 +1,6 @@
 {
   "formatName": "Mobipocket eBook",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".mobi",
     ".prc"
@@ -64,26 +64,10 @@
       "valueType": "ascii"
     }
   ],
-  "mime_types": [
-    "application/mobi"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Amazon Kindle",
     "Calibre",
     "FBReader"
-  ],
-  "use_cases": [
-    "Kindle e-books",
-    "Amazon publishing",
-    "E-book distribution"
   ],
   "format_relationships": {
     "amazon_format": true,
@@ -93,12 +77,6 @@
       "AZW",
       "AZW3"
     ]
-  },
-  "technical_details": {
-    "e_book_format": true,
-    "drm_support": true,
-    "reflow": true,
-    "mobipocket_format": true
   },
   "MimeTypes": [
     "application/x-mobipocket-ebook"
@@ -114,20 +92,15 @@
     "Legacy ebook format"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 70,
+    "CompletenessScore": 32,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-05",
+    "BlocksDefined": 2,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "DocumentFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 247.15,
-    "last_updated": "2026-02-24"
   }
 }

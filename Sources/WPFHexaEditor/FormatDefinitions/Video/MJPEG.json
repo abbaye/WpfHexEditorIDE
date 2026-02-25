@@ -1,6 +1,6 @@
 {
   "formatName": "Motion JPEG",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".mjpeg",
     ".mjpg"
@@ -68,25 +68,10 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/mjpeg"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Video editors",
     "VLC",
     "Surveillance software"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
@@ -94,12 +79,6 @@
       ".mjpeg",
       ".mjpg"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".mjpeg",
-    "defined_fields": 1,
-    "container_format": true
   },
   "MimeTypes": [
     "video/mjpeg"
@@ -118,21 +97,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 298.1,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "parseJPEGDimensions": "Extract frame dimensions from JPEG data",

@@ -1,6 +1,6 @@
 {
   "formatName": "PlayStation 5 Package",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".pkg"
   ],
@@ -133,31 +133,15 @@
       "description": "Original Size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 7,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
     "extensions": [
       ".pkg"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".pkg",
-    "defined_fields": 7
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -176,21 +160,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 56,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 7,
-    "change_percentage": 239.13,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "calculateCRC32": "Validate CRC",

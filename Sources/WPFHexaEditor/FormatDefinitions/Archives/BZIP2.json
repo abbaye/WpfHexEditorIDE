@@ -1,6 +1,6 @@
 {
   "formatName": "BZIP2 Compressed File",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".bz2",
     ".bzip2"
@@ -67,27 +67,10 @@
       "description": "Compression block size in kilobytes (100-900KB)"
     }
   ],
-  "mime_types": [
-    "application/x-bz2"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "bzip2",
     "7-Zip",
     "PeaZip"
-  ],
-  "use_cases": [
-    "File compression",
-    "Archive distribution",
-    "Backup"
   ],
   "format_relationships": {
     "category": "Archives",
@@ -95,12 +78,6 @@
       ".bz2",
       ".bzip2"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".bz2",
-    "defined_fields": 2,
-    "compression_method": "Deflate"
   },
   "MimeTypes": [
     "application/x-bzip2"
@@ -117,21 +94,16 @@
     "Source code distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 72,
+    "CompletenessScore": 32,
     "DocumentationLevel": "standard",
     "BlocksDefined": 3,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-09",
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "CompressionMethod": "Burrows-Wheeler",
     "ArchivesFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 310.24,
-    "last_updated": "2026-02-24"
   }
 }

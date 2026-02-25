@@ -1,6 +1,6 @@
 {
   "formatName": "PKCS#7 Certificate",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".p7b",
     ".p7c",
@@ -185,21 +185,9 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 10,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Crypto",
@@ -208,10 +196,6 @@
       ".p7c",
       ".p7m"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".p7b",
-    "defined_fields": 10
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -227,20 +211,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 14,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 366.3,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32BE": "Read certificate",
     "extractASCIIString": "Read subject",

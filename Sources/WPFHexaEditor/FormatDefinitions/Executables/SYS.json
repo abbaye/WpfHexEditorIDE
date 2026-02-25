@@ -1,6 +1,6 @@
 {
   "formatName": "Windows System Driver",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".sys"
   ],
@@ -73,37 +73,15 @@
       "description": "Section Count"
     }
   ],
-  "mime_types": [
-    "application/x-executablesys"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Windows",
     "Linux",
     "Device driver loaders"
   ],
-  "use_cases": [
-    "Device drivers",
-    "Kernel modules",
-    "System drivers"
-  ],
   "format_relationships": {
     "windows_format": true,
     "pe_format": true,
     "kernel_mode": true
-  },
-  "technical_details": {
-    "driver_format": true,
-    "kernel_mode": true,
-    "pe_based": true,
-    "privileged_execution": true
   },
   "MimeTypes": [
     "application/x-executable"
@@ -122,21 +100,16 @@
     "Debugging"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ExecutablesFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 282.61,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read Windows driver header",

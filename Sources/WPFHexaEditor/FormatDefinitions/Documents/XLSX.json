@@ -1,18 +1,22 @@
 {
   "formatName": "Excel Workbook",
-  "version": "1.9",
+  "version": "2.0",
   "extensions": [
     ".xlsx"
   ],
-  "description": "Microsoft Excel Open XML spreadsheet",
+  "description": "Microsoft Excel Open XML spreadsheet stored as a ZIP container. The file begins with a ZIP Local File Header containing the first entry of the Office Open XML package, typically [Content_Types].xml.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "references": {
     "specifications": [
-      "Excel Workbook Format"
+      "ECMA-376 - Office Open XML File Formats",
+      "ISO/IEC 29500 - Information Technology",
+      "PKWARE APPNOTE.TXT - ZIP File Format Specification"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/XLSX"
+      "https://www.ecma-international.org/publications-and-standards/standards/ecma-376/",
+      "https://en.wikipedia.org/wiki/Office_Open_XML",
+      "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT"
     ]
   },
   "detection": {
@@ -20,14 +24,9 @@
     "offset": 0,
     "required": true,
     "validation": {
-      "min_file_size": 4,
-      "max_signature_offset": 1024
+      "minFileSize": 100,
+      "maxSignatureOffset": 0
     }
-  },
-  "functions": {
-    "parseZIPArchive": "Parse Office document as ZIP archive to extract worksheet data",
-    "extractUTF8String": "Extract workbook properties (title, author, subject)",
-    "readUInt32LE": "Read ZIP header fields (signatures, sizes, CRC)"
   },
   "variables": {
     "currentOffset": 0,
@@ -38,64 +37,198 @@
     "sheets": 0,
     "rows": 0,
     "columns": 0,
-    "zipSignature": "",
-    "zipHeader": ""
+    "zipSignature": 0,
+    "versionNeeded": 0,
+    "generalPurposeFlags": 0,
+    "compressionMethod": 0,
+    "lastModTime": 0,
+    "lastModDate": 0,
+    "crc32": 0,
+    "compressedSize": 0,
+    "uncompressedSize": 0,
+    "filenameLength": 0,
+    "extraFieldLength": 0,
+    "compressionRatio": 0
+  },
+  "functions": {
+    "parseZIPArchive": "Walk ZIP local file headers and central directory to enumerate all entries in the OOXML package",
+    "formatFileSize": "Format raw byte counts into human-readable sizes (KB, MB)",
+    "readUInt32LE": "Read 4-byte little-endian unsigned integer from buffer",
+    "readUInt16LE": "Read 2-byte little-endian unsigned integer from buffer",
+    "extractUTF8String": "Extract workbook properties (title, author, subject) from core.xml inside the ZIP"
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "ZIP Signature",
+      "name": "ZIP Local File Header Signature",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "XLSX is a ZIP container",
+      "description": "PK\\x03\\x04 magic number identifying a ZIP Local File Header (0x04034B50 LE)",
       "storeAs": "zipSignature",
-      "valueType": "ascii"
+      "valueType": "uint32",
+      "validation": {
+        "expectedValue": "0x04034B50"
+      }
     },
     {
       "type": "field",
-      "name": "ZIP Header",
+      "name": "Version Needed to Extract",
       "offset": 4,
-      "length": 26,
+      "length": 2,
       "color": "#4ECDC4",
       "opacity": 0.3,
-      "description": "ZIP local file header",
-      "storeAs": "zipHeader",
-      "valueType": "ascii"
+      "description": "Minimum ZIP specification version needed to extract this entry",
+      "storeAs": "versionNeeded",
+      "valueType": "uint16",
+      "valueMap": {
+        "10": "1.0 (Default)",
+        "20": "2.0 (Deflate)",
+        "45": "4.5 (ZIP64)",
+        "63": "6.3 (LZMA)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "General Purpose Bit Flags",
+      "offset": 6,
+      "length": 2,
+      "color": "#45B7D1",
+      "opacity": 0.3,
+      "description": "Bit flags controlling encryption, compression options, and data descriptor presence",
+      "storeAs": "generalPurposeFlags",
+      "valueType": "uint16",
+      "bitfields": [
+        {
+          "bit": 0,
+          "name": "Encrypted",
+          "description": "If set, the file data is encrypted",
+          "valueMap": {
+            "0": "Not encrypted",
+            "1": "Encrypted"
+          }
+        },
+        {
+          "bit": 3,
+          "name": "Data Descriptor",
+          "description": "If set, CRC-32 and sizes are in a data descriptor after the file data",
+          "valueMap": {
+            "0": "No data descriptor",
+            "1": "Data descriptor follows file data"
+          }
+        }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "Compression Method",
+      "offset": 8,
+      "length": 2,
+      "color": "#96CEB4",
+      "opacity": 0.3,
+      "description": "Algorithm used to compress the file data in this entry",
+      "storeAs": "compressionMethod",
+      "valueType": "uint16",
+      "valueMap": {
+        "0": "Stored (no compression)",
+        "8": "Deflate",
+        "14": "LZMA"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Last Modification Time",
+      "offset": 10,
+      "length": 2,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "File last modification time in MS-DOS format (5-bit hour, 6-bit minute, 5-bit second/2)",
+      "storeAs": "lastModTime",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Last Modification Date",
+      "offset": 12,
+      "length": 2,
+      "color": "#DDA0DD",
+      "opacity": 0.3,
+      "description": "File last modification date in MS-DOS format (7-bit year+1980, 4-bit month, 5-bit day)",
+      "storeAs": "lastModDate",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "CRC-32",
+      "offset": 14,
+      "length": 4,
+      "color": "#FF8C69",
+      "opacity": 0.3,
+      "description": "CRC-32 checksum of the uncompressed file data",
+      "storeAs": "crc32",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Compressed Size",
+      "offset": 18,
+      "length": 4,
+      "color": "#87CEEB",
+      "opacity": 0.3,
+      "description": "Size of the compressed file data in bytes (0xFFFFFFFF if ZIP64)",
+      "storeAs": "compressedSize",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Uncompressed Size",
+      "offset": 22,
+      "length": 4,
+      "color": "#98D8C8",
+      "opacity": 0.3,
+      "description": "Original uncompressed size of the file data in bytes (0xFFFFFFFF if ZIP64)",
+      "storeAs": "uncompressedSize",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Filename Length",
+      "offset": 26,
+      "length": 2,
+      "color": "#F7DC6F",
+      "opacity": 0.3,
+      "description": "Length of the filename field that follows this header",
+      "storeAs": "filenameLength",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Extra Field Length",
+      "offset": 28,
+      "length": 2,
+      "color": "#BB8FCE",
+      "opacity": 0.3,
+      "description": "Length of the extra field that follows the filename",
+      "storeAs": "extraFieldLength",
+      "valueType": "uint16"
+    },
+    {
+      "type": "computeFromVariables",
+      "name": "Compression Ratio",
+      "expression": "uncompressedSize > 0 ? ((1 - compressedSize / uncompressedSize) * 100) : 0",
+      "storeAs": "compressionRatio",
+      "description": "Percentage reduction from compression of the first ZIP entry"
+    },
+    {
+      "type": "conditional",
+      "name": "Encryption Check",
+      "condition": "(generalPurposeFlags & 1) == 1",
+      "trueLabel": "This XLSX file is encrypted",
+      "falseLabel": "This XLSX file is not encrypted",
+      "description": "Checks bit 0 of general purpose flags to determine if the archive entry is encrypted"
     }
   ],
-  "mime_types": [
-    "application/xlsx"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
-  "software": [
-    "Microsoft Excel",
-    "LibreOffice Calc",
-    "Google Sheets"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
-  ],
-  "format_relationships": {
-    "category": "Documents",
-    "extensions": [
-      ".xlsx"
-    ]
-  },
-  "technical_details": {
-    "primary_extension": ".xlsx",
-    "defined_fields": 2
-  },
   "MimeTypes": [
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   ],
@@ -103,30 +236,28 @@
     "Microsoft Excel",
     "LibreOffice Calc",
     "Google Sheets",
-    "Numbers"
+    "Apple Numbers"
   ],
   "UseCases": [
-    "Spreadsheets",
-    "Data analysis",
-    "Finance",
-    "Budgets"
+    "Spreadsheets and data tables",
+    "Financial analysis and budgets",
+    "Data visualization and charts",
+    "Scientific and statistical data"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 80,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 5,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-11",
+    "CompletenessScore": 88,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 13,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "DocumentFormat": true,
-    "Container": "ZIP (Office Open XML)"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 245.45,
-    "last_updated": "2026-02-24"
+    "Container": "ZIP (Office Open XML)",
+    "Endianness": "little-endian",
+    "HeaderSize": 30,
+    "VariableLengthFields": "filename and extra field follow the fixed 30-byte header"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "TIFF Image",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".tif",
     ".tiff"
@@ -141,26 +141,10 @@
       "description": "tiffWidth x tiffHeight total pixel count"
     }
   ],
-  "mime_types": [
-    "image/tif"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Photoshop",
     "GIMP",
     "Professional scanners"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
@@ -168,11 +152,6 @@
       ".tif",
       ".tiff"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".tif",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "image/tiff"
@@ -190,11 +169,11 @@
     "Medical imaging"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 78,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 5,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-10",
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 12,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -202,10 +181,5 @@
     "ImagesFormat": true,
     "BitDepth": 16,
     "ColorSpace": "RGB, CMYK, Lab"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 320.67,
-    "last_updated": "2026-02-24"
   }
 }

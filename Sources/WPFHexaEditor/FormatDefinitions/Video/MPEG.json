@@ -1,6 +1,6 @@
 {
   "formatName": "MPEG Video",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".mpg",
     ".mpeg",
@@ -80,24 +80,9 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/mpg"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "VLC Media Player",
     "Media Player Classic"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
@@ -106,12 +91,6 @@
       ".mpeg",
       ".m2v"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".mpg",
-    "defined_fields": 2,
-    "container_format": true
   },
   "MimeTypes": [
     "video/mpeg"
@@ -130,20 +109,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 240.0,
-    "last_updated": "2026-02-24"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "μ-law Audio",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".ulaw",
     ".ul",
@@ -77,24 +77,9 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/ulaw"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Audio codecs",
     "Telephony software"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
@@ -103,11 +88,6 @@
       ".ul",
       ".mu"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".ulaw",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "audio/ulaw"
@@ -126,21 +106,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 252.83,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32BE": "Read audio header",

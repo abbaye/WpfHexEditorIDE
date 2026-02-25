@@ -1,6 +1,6 @@
 {
   "formatName": "AVI Video",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".avi"
   ],
@@ -94,38 +94,16 @@
       "description": "Human-readable file size"
     }
   ],
-  "mime_types": [
-    "video/avi"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "VLC",
     "Windows Media Player",
     "MPlayer"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
     "extensions": [
       ".avi"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".avi",
-    "defined_fields": 3,
-    "container_format": true
   },
   "MimeTypes": [
     "video/x-msvideo",
@@ -143,11 +121,11 @@
     "Video editing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 75,
+    "CompletenessScore": 38,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-10",
+    "BlocksDefined": 5,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -155,10 +133,5 @@
     "VideoFormat": true,
     "Container": "AVI (Audio Video Interleave)",
     "Platform": "Windows"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 337.04,
-    "last_updated": "2026-02-24"
   }
 }

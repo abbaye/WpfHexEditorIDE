@@ -1,6 +1,6 @@
 {
   "formatName": "OpenDocument Spreadsheet",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".ods"
   ],
@@ -65,34 +65,15 @@
       "valueType": "ascii"
     }
   ],
-  "mime_types": [
-    "application/ods"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "PDF readers",
     "Office suites"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Documents",
     "extensions": [
       ".ods"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".ods",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "application/ods"
@@ -111,20 +92,15 @@
     "Archival"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "DocumentFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 232.77,
-    "last_updated": "2026-02-24"
   }
 }

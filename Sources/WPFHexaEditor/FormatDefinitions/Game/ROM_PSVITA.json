@@ -1,6 +1,6 @@
 {
   "formatName": "PlayStation Vita Package",
-  "version": "2.2",
+  "version": "2.3",
   "extensions": [
     ".vpk",
     ".pkg"
@@ -110,21 +110,9 @@
       "description": "Original Size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 5,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
@@ -132,10 +120,6 @@
       ".vpk",
       ".pkg"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".vpk",
-    "defined_fields": 5
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -155,20 +139,15 @@
   ],
   "QualityMetrics": {
     "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 7,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 411.89,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "calculateCRC32": "Validate CRC",

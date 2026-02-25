@@ -1,6 +1,6 @@
 {
   "formatName": "Android DEX File",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".dex"
   ],
@@ -98,35 +98,16 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Android Runtime (ART)",
     "Dalvik VM",
     "Android tools"
-  ],
-  "use_cases": [
-    "Android bytecode",
-    "Mobile app execution",
-    "Android VMs"
   ],
   "format_relationships": {
     "android_format": true,
     "contained_in": "APK",
     "replaces": "Java CLASS on Android",
     "optimized_for": "Mobile devices"
-  },
-  "technical_details": {
-    "bytecode_format": true,
-    "register_based_vm": true,
-    "optimized_for_mobile": true,
-    "multidex_support": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -145,18 +126,13 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 279.14,
-    "last_updated": "2026-02-24"
-  }
+  "TechnicalDetails": {}
 }

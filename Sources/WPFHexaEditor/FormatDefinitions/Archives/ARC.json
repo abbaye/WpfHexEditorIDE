@@ -1,6 +1,6 @@
 {
   "formatName": "ARC Archive",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".arc"
   ],
@@ -105,36 +105,16 @@
       "description": "Human-readable file size"
     }
   ],
-  "mime_types": [
-    "application/x-arc"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "ARC",
     "7-Zip",
     "Archive utilities"
-  ],
-  "use_cases": [
-    "File archiving",
-    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
     "extensions": [
       ".arc"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".arc",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "application/x-arc-compressed"
@@ -153,21 +133,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 8,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 246.5,
-    "last_updated": "2026-02-24"
   }
 }

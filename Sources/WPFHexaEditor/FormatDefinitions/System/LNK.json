@@ -1,6 +1,6 @@
 {
   "formatName": "Windows Shortcut",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".lnk"
   ],
@@ -81,35 +81,15 @@
       "description": "File Attributes"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Windows Explorer",
     "LNK analyzers",
     "Forensic tools"
   ],
-  "use_cases": [
-    "Windows shortcuts",
-    "File links",
-    "Forensic analysis"
-  ],
   "format_relationships": {
     "microsoft_format": true,
     "shell_link": true,
     "forensic_value": true
-  },
-  "technical_details": {
-    "binary_format": true,
-    "target_info": true,
-    "timestamps": true,
-    "metadata": true,
-    "forensic_artifact": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -125,20 +105,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 301.79,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read Windows shortcut header",
     "extractUTF8String": "Extract target path"

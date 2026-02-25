@@ -1,6 +1,6 @@
 {
   "formatName": "PC Engine/TurboGrafx-16 ROM",
-  "version": "2.2",
+  "version": "2.3",
   "extensions": [
     ".pce",
     ".sgx"
@@ -74,21 +74,9 @@
       "description": "Sections"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
@@ -96,10 +84,6 @@
       ".pce",
       ".sgx"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".pce",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -118,21 +102,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 27,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 310.62,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read executable header"

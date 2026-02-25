@@ -1,6 +1,6 @@
 {
   "formatName": "Windows Media Video",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".wmv",
     ".wma",
@@ -76,24 +76,9 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/wmv"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Windows Media Player",
     "VLC"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
@@ -102,12 +87,6 @@
       ".wma",
       ".asf"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".wmv",
-    "defined_fields": 2,
-    "container_format": true
   },
   "MimeTypes": [
     "video/x-ms-wmv"
@@ -123,21 +102,16 @@
     "Legacy video"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 72,
+    "CompletenessScore": 32,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-09",
+    "BlocksDefined": 3,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "VideoFormat": true,
     "Platform": "Windows"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 303.2,
-    "last_updated": "2026-02-24"
   }
 }

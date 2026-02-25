@@ -1,6 +1,6 @@
 {
   "formatName": "Musepack Audio",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".mpc",
     ".mp+",
@@ -66,24 +66,9 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/mpc"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Musepack tools",
     "Foobar2000"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
@@ -92,11 +77,6 @@
       ".mp+",
       ".mpp"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".mpc",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "audio/mpc"
@@ -115,20 +95,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 227.12,
-    "last_updated": "2026-02-24"
   }
 }

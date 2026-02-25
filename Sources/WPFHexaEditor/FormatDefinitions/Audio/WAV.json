@@ -1,6 +1,6 @@
 {
   "formatName": "WAV Audio",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".wav",
     ".wave"
@@ -145,26 +145,10 @@
       "description": "Human-readable file size"
     }
   ],
-  "mime_types": [
-    "audio/wav"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "All audio software",
     "Windows",
     "Audacity"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
@@ -172,11 +156,6 @@
       ".wav",
       ".wave"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".wav",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "audio/wav",
@@ -196,21 +175,16 @@
     "CD audio"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 78,
+    "CompletenessScore": 44,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-10",
+    "BlocksDefined": 12,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "AudioFormat": true,
     "SampleRate": 44100
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 333.53,
-    "last_updated": "2026-02-24"
   }
 }

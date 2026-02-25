@@ -1,6 +1,6 @@
 {
   "formatName": "Creative Voice File",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".voc"
   ],
@@ -65,36 +65,16 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/voc"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Sound Blaster",
     "DOSBox",
     "Retro audio"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
     "extensions": [
       ".voc"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".voc",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "audio/voc"
@@ -113,20 +93,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 221.55,
-    "last_updated": "2026-02-24"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "FictionBook 2.0",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".fb2"
   ],
@@ -70,34 +70,15 @@
       "description": "FictionBook root element with namespace"
     }
   ],
-  "mime_types": [
-    "application/fb2"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "PDF readers",
     "Office suites"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Documents",
     "extensions": [
       ".fb2"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".fb2",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "application/fb2"
@@ -116,20 +97,15 @@
     "Archival"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "DocumentFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 245.67,
-    "last_updated": "2026-02-24"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "HEIF/HEIC Image",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".heic",
     ".heif"
@@ -88,40 +88,17 @@
       "description": "HEIC/HEIF brand identifier"
     }
   ],
-  "mime_types": [
-    "image/heic"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Apple Photos",
     "iOS devices",
     "macOS Preview",
     "Image viewers with HEIF support"
   ],
-  "use_cases": [
-    "iPhone/iPad photos",
-    "High-efficiency image storage",
-    "Modern photography"
-  ],
   "format_relationships": {
     "based_on": "HEIF",
     "apple_default": "iOS 11+",
     "replaces": "JPEG on Apple",
     "better_than": "JPEG (40% smaller)"
-  },
-  "technical_details": {
-    "compression": "HEVC (H.265)",
-    "better_compression": "40% over JPEG",
-    "10_bit_color": true,
-    "hdr_support": true,
-    "transparency": true
   },
   "MimeTypes": [
     "image/heic",
@@ -139,21 +116,16 @@
     "Space-saving images"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 73,
+    "CompletenessScore": 38,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-13",
+    "BlocksDefined": 5,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "CompressionMethod": "HEVC-based"
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 258.9,
-    "last_updated": "2026-02-24"
   }
 }

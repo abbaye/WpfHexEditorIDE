@@ -1,6 +1,6 @@
 {
   "formatName": "LZH Archive",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".lzh",
     ".lha"
@@ -88,26 +88,10 @@
       "description": "Compression method identifier (e.g., -lh5-, -lh6-)"
     }
   ],
-  "mime_types": [
-    "application/x-lzh"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "LHA",
     "7-Zip",
     "WinRAR"
-  ],
-  "use_cases": [
-    "Japanese software archives",
-    "Retro software distribution",
-    "Amiga archives"
   ],
   "format_relationships": {
     "legacy_format": true,
@@ -115,11 +99,6 @@
     "related": [
       "LHA"
     ]
-  },
-  "technical_details": {
-    "compression_method": "LZSS + Huffman",
-    "created_by": "Haruyasu Yoshizaki",
-    "legacy": true
   },
   "MimeTypes": [
     "application/x-lzh-compressed"
@@ -138,21 +117,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 254.11,
-    "last_updated": "2026-02-24"
   }
 }

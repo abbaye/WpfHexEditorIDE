@@ -1,6 +1,6 @@
 {
   "formatName": "Windows Heap Dump",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".hdmp"
   ],
@@ -121,31 +121,15 @@
       "description": "Type"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 6,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "System",
     "extensions": [
       ".hdmp"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".hdmp",
-    "defined_fields": 6
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -161,20 +145,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 53,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 351.85,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read system header",
     "extractASCIIString": "Read info"

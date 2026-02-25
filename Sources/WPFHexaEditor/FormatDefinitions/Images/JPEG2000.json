@@ -1,6 +1,6 @@
 {
   "formatName": "JPEG 2000 Image",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".jp2",
     ".j2k",
@@ -94,26 +94,10 @@
       "description": "Total Pixels"
     }
   ],
-  "mime_types": [
-    "image/jp2"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "IrfanView",
     "XnView",
     "Medical imaging software"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
@@ -122,11 +106,6 @@
       ".j2k",
       ".jpf"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".jp2",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "image/jpeg2000"
@@ -145,22 +124,17 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 359.38,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read dimensions",

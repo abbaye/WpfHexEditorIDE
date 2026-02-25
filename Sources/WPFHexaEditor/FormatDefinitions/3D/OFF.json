@@ -1,6 +1,6 @@
 {
   "formatName": "Object File Format",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".off"
   ],
@@ -81,34 +81,16 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "MeshLab",
     "Blender",
     "3D viewers"
-  ],
-  "use_cases": [
-    "3D model interchange",
-    "Game assets",
-    "Animation exchange"
   ],
   "format_relationships": {
     "category": "3D",
     "extensions": [
       ".off"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".off",
-    "defined_fields": 2,
-    "binary_format": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -127,20 +109,15 @@
     "Game development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 286.67,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",

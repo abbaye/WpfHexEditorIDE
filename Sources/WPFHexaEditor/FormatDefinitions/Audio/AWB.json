@@ -1,6 +1,6 @@
 {
   "formatName": "AMR-WB Audio",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".awb"
   ],
@@ -75,35 +75,15 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/awb"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Game audio tools",
     "CRI Middleware"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
     "extensions": [
       ".awb"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".awb",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "audio/awb"
@@ -122,21 +102,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 250.98,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32BE": "Read audio header",

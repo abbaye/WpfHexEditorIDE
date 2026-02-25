@@ -1,6 +1,6 @@
 {
   "formatName": "MINC Medical Image",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".mnc",
     ".minc"
@@ -77,21 +77,9 @@
       "description": "Width x Height"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Medical",
@@ -99,10 +87,6 @@
       ".mnc",
       ".minc"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".mnc",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -118,20 +102,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 215.22,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read medical header",
     "extractASCIIString": "Read patient",

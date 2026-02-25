@@ -1,6 +1,6 @@
 {
   "formatName": "TrueType Font",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".ttf"
   ],
@@ -108,32 +108,15 @@
       "description": "Table Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "All operating systems",
     "Font editors"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Fonts",
     "extensions": [
       ".ttf"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".ttf",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "font/ttf",
@@ -150,20 +133,15 @@
     "Typography"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 78,
+    "CompletenessScore": 44,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-10",
+    "BlocksDefined": 8,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 413.11,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32BE": "Read font tables",
     "extractASCIIString": "Read font name"

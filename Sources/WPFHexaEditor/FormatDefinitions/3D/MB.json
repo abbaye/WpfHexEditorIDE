@@ -1,6 +1,6 @@
 {
   "formatName": "Maya Binary",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".mb"
   ],
@@ -75,32 +75,14 @@
       "description": "Entry Point"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Autodesk Maya"
-  ],
-  "use_cases": [
-    "3D modeling",
-    "3D visualization",
-    "3D interchange"
   ],
   "format_relationships": {
     "category": "3D",
     "extensions": [
       ".mb"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".mb",
-    "defined_fields": 2,
-    "binary_format": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -119,20 +101,15 @@
     "Game development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 290.29,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read executable header",
     "calculateCRC32": "Validate"

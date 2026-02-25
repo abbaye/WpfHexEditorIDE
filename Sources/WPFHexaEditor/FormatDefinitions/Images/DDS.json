@@ -1,6 +1,6 @@
 {
   "formatName": "DirectDraw Surface",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".dds"
   ],
@@ -121,43 +121,16 @@
       "description": "Width × Height (total pixel count)"
     }
   ],
-  "mime_types": [
-    "image/dds"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 5,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "DirectX",
     "NVIDIA Texture Tools",
     "AMD Compressonator",
     "Game engines"
   ],
-  "use_cases": [
-    "Video game textures",
-    "3D graphics",
-    "Real-time rendering"
-  ],
   "format_relationships": {
     "microsoft_format": true,
     "directx_format": true,
     "used_in": "Game development"
-  },
-  "technical_details": {
-    "gpu_compressed": true,
-    "mipmaps": true,
-    "texture_compression": [
-      "DXT1",
-      "DXT3",
-      "DXT5",
-      "BC7"
-    ],
-    "cubemaps": true
   },
   "MimeTypes": [
     "image/dds"
@@ -176,21 +149,16 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 50,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 8,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 268.39,
-    "last_updated": "2026-02-24"
   }
 }

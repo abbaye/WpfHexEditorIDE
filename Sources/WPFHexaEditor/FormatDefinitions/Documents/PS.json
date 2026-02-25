@@ -1,6 +1,6 @@
 {
   "formatName": "PostScript Document",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".ps",
     ".eps"
@@ -65,24 +65,9 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "application/ps"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "PDF readers",
     "Office suites"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Documents",
@@ -90,10 +75,6 @@
       ".ps",
       ".eps"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".ps",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/ps"
@@ -112,21 +93,16 @@
     "Archival"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "DocumentFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 236.0,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read video header",

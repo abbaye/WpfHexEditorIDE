@@ -1,6 +1,6 @@
 {
   "formatName": "USD Binary (Crate)",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".usdc"
   ],
@@ -75,23 +75,10 @@
       "description": "Entry Point"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Pixar USD tools",
     "Maya",
     "Houdini"
-  ],
-  "use_cases": [
-    "Film production",
-    "VFX pipelines",
-    "Universal scene description"
   ],
   "format_relationships": {
     "category": "3D",
@@ -100,11 +87,6 @@
     ],
     "pixar_format": true,
     "film_industry": true
-  },
-  "technical_details": {
-    "primary_extension": ".usdc",
-    "defined_fields": 2,
-    "binary_format": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -123,20 +105,15 @@
     "Game development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 285.05,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read executable header",
     "calculateCRC32": "Validate"

@@ -1,6 +1,6 @@
 {
   "formatName": "Monkey's Audio",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".ape"
   ],
@@ -84,43 +84,15 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/ape"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Monkey's Audio",
     "foobar2000",
     "VLC"
   ],
-  "use_cases": [
-    "Lossless audio archiving",
-    "CD ripping",
-    "High compression audio storage"
-  ],
   "format_relationships": {
     "proprietary": true,
     "windows_only": "Original",
     "alternative_to": "FLAC"
-  },
-  "technical_details": {
-    "compression": "Lossless",
-    "compression_ratio": "45-55%",
-    "compression_levels": [
-      "Fast",
-      "Normal",
-      "High",
-      "Extra High",
-      "Insane"
-    ],
-    "slower_than": "FLAC"
   },
   "MimeTypes": [
     "audio/ape"
@@ -139,20 +111,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 250.76,
-    "last_updated": "2026-02-24"
   }
 }

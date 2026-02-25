@@ -1,6 +1,6 @@
 {
   "formatName": "SPIR-V Binary",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".spv",
     ".spirv"
@@ -90,21 +90,9 @@
       "description": "Entry Point"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Compilers",
     "Linkers"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Programming",
@@ -112,10 +100,6 @@
       ".spv",
       ".spirv"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".spv",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -134,20 +118,15 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 7,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 298.33,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read executable header",
     "calculateCRC32": "Validate"

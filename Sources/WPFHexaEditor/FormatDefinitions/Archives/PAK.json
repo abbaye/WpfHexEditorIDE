@@ -1,6 +1,6 @@
 {
   "formatName": "PAK Archive",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".pak"
   ],
@@ -80,36 +80,16 @@
       "description": "Size of the directory table"
     }
   ],
-  "mime_types": [
-    "application/x-pak"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "QuakePak",
     "Game extractors",
     "7-Zip"
-  ],
-  "use_cases": [
-    "File archiving",
-    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
     "extensions": [
       ".pak"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".pak",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "application/x-pak-compressed"
@@ -128,21 +108,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 245.71,
-    "last_updated": "2026-02-24"
   }
 }

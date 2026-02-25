@@ -1,6 +1,6 @@
 {
   "formatName": "NetCDF Data File",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".nc",
     ".netcdf"
@@ -63,41 +63,17 @@
       "description": "Array Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "ncview",
     "Panoply",
     "MATLAB",
     "Python (netCDF4)"
   ],
-  "use_cases": [
-    "Climate data",
-    "Oceanography",
-    "Atmospheric science",
-    "Weather modeling"
-  ],
   "format_relationships": {
     "unidata_format": true,
     "self_describing": true,
     "scientific_standard": true,
     "based_on": "HDF5 (NetCDF-4)"
-  },
-  "technical_details": {
-    "array_oriented": true,
-    "metadata_rich": true,
-    "versions": [
-      "Classic",
-      "64-bit",
-      "NetCDF-4"
-    ],
-    "cf_conventions": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -113,20 +89,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 222.77,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"

@@ -87,6 +87,26 @@ namespace WpfHexaEditor.Core.FormatDetection
         /// </summary>
         public string Endianness { get; set; }
 
+        /// <summary>
+        /// Bitfield definitions for extracting sub-values from packed bytes.
+        /// Each bitfield extracts a range of bits from the field's raw value.
+        /// Example: fscod (bits 7-6) + frmsizecod (bits 5-0) from a single byte.
+        /// </summary>
+        public List<BitfieldDefinition> Bitfields { get; set; }
+
+        /// <summary>
+        /// Lookup table mapping raw integer values to human-readable names.
+        /// Keys are string representations of integer values.
+        /// Example: { "0": "Grayscale", "2": "RGB", "6": "RGBA" }
+        /// </summary>
+        public Dictionary<string, string> ValueMap { get; set; }
+
+        /// <summary>
+        /// Variable name to store the mapped/translated value from ValueMap.
+        /// Example: "colorTypeName" stores "RGB" when colorType=2
+        /// </summary>
+        public string MappedValueStoreAs { get; set; }
+
         #region Conditional Block Properties
 
         /// <summary>
@@ -270,6 +290,70 @@ namespace WpfHexaEditor.Core.FormatDetection
         public override string ToString()
         {
             return $"{Type}: {Name} @ {Offset} (len: {Length})";
+        }
+    }
+
+    /// <summary>
+    /// Defines a bitfield extraction from a packed byte field.
+    /// Extracts a range of bits and stores the result as a separate variable.
+    /// </summary>
+    public class BitfieldDefinition
+    {
+        /// <summary>Display name for this bitfield (e.g., "Sample Rate Code")</summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Bit range specification: "7-6" for bits 7 down to 6, or "3" for a single bit.
+        /// Bit 0 is the least significant bit.
+        /// </summary>
+        public string Bits { get; set; }
+
+        /// <summary>Variable name to store the extracted value</summary>
+        public string StoreAs { get; set; }
+
+        /// <summary>Human-readable description of this bitfield</summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Optional lookup table mapping extracted values to human-readable names.
+        /// Example: { "0": "48 kHz", "1": "44.1 kHz", "2": "32 kHz" }
+        /// </summary>
+        public Dictionary<string, string> ValueMap { get; set; }
+
+        /// <summary>
+        /// Parse the Bits string into (highBit, lowBit) tuple.
+        /// "7-6" → (7, 6), "3" → (3, 3)
+        /// </summary>
+        public (int high, int low) ParseBitRange()
+        {
+            if (string.IsNullOrWhiteSpace(Bits))
+                return (0, 0);
+
+            if (Bits.Contains("-"))
+            {
+                var parts = Bits.Split('-');
+                if (parts.Length == 2 && int.TryParse(parts[0], out int h) && int.TryParse(parts[1], out int l))
+                    return (h, l);
+            }
+
+            if (int.TryParse(Bits, out int single))
+                return (single, single);
+
+            return (0, 0);
+        }
+
+        /// <summary>
+        /// Extract the bitfield value from a raw integer.
+        /// Shifts right by lowBit and masks to the field width.
+        /// </summary>
+        public long ExtractValue(long rawValue)
+        {
+            var (high, low) = ParseBitRange();
+            int width = high - low + 1;
+            if (width <= 0 || width > 63)
+                return 0;
+            long mask = (1L << width) - 1;
+            return (rawValue >> low) & mask;
         }
     }
 }

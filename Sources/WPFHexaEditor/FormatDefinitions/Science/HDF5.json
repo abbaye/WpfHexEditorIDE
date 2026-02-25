@@ -1,6 +1,6 @@
 {
   "formatName": "HDF5 Data File",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".h5",
     ".hdf5"
@@ -63,25 +63,11 @@
       "description": "Array Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "HDFView",
     "MATLAB",
     "Python (h5py)",
     "Scientific software"
-  ],
-  "use_cases": [
-    "Scientific data storage",
-    "Big data",
-    "Numerical simulations",
-    "Astronomy data"
   ],
   "format_relationships": {
     "hdf_group": true,
@@ -91,13 +77,6 @@
       "NASA",
       "CERN"
     ]
-  },
-  "technical_details": {
-    "hierarchical_format": true,
-    "multi_dimensional_arrays": true,
-    "compression": true,
-    "parallel_io": true,
-    "self_describing": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -113,20 +92,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 220.79,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"

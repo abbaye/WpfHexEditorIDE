@@ -1,6 +1,6 @@
 {
   "formatName": "BPS Patch",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".bps"
   ],
@@ -97,24 +97,10 @@
       "description": "Sections"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "beat",
     "Floating IPS",
     "Rom patchers"
-  ],
-  "use_cases": [
-    "ROM patching",
-    "Delta patches",
-    "Binary patching",
-    "Best patch format"
   ],
   "format_relationships": {
     "created_by": "byuu/Near",
@@ -123,13 +109,6 @@
       "UPS"
     ],
     "most_efficient": true
-  },
-  "technical_details": {
-    "delta_encoding": true,
-    "crc32_validation": true,
-    "smallest_patches": true,
-    "copy_on_write": true,
-    "best_compression": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -148,21 +127,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 232.86,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read executable header"

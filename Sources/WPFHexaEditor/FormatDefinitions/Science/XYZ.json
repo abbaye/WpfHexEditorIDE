@@ -1,6 +1,6 @@
 {
   "formatName": "XYZ Chemical Format",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".xyz"
   ],
@@ -62,31 +62,15 @@
       "description": "Array Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Science",
     "extensions": [
       ".xyz"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".xyz",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -102,20 +86,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
+    "CompletenessScore": 21,
     "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 251.11,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"

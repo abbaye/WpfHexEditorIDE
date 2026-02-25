@@ -1,6 +1,6 @@
 {
   "formatName": "3GPP Multimedia",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".3gp",
     ".3g2"
@@ -91,25 +91,10 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/3gp"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Mobile phones",
     "VLC",
     "Media players"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
@@ -117,12 +102,6 @@
       ".3gp",
       ".3g2"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".3gp",
-    "defined_fields": 3,
-    "container_format": true
   },
   "MimeTypes": [
     "video/3gp"
@@ -141,20 +120,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 259.42,
-    "last_updated": "2026-02-24"
   }
 }

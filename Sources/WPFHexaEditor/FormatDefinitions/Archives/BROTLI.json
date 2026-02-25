@@ -1,6 +1,6 @@
 {
   "formatName": "Brotli Compression",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".br"
   ],
@@ -63,25 +63,9 @@
       "description": "Window size configuration for decompression"
     }
   ],
-  "mime_types": [
-    "application/x-br"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "7-Zip",
     "WinRAR"
-  ],
-  "use_cases": [
-    "Modern compression",
-    "Web compression",
-    "Real-time compression"
   ],
   "format_relationships": {
     "category": "Archives",
@@ -90,12 +74,6 @@
     ],
     "google_format": true,
     "web_optimized": true
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".br",
-    "defined_fields": 2,
-    "compression_method": "Brotli"
   },
   "MimeTypes": [
     "application/x-brotli-compressed"
@@ -114,21 +92,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 237.8,
-    "last_updated": "2026-02-24"
   }
 }

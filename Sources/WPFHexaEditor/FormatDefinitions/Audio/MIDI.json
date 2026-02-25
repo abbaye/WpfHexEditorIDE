@@ -1,6 +1,6 @@
 {
   "formatName": "MIDI Audio",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".mid",
     ".midi"
@@ -105,24 +105,9 @@
       "endianness": "big"
     }
   ],
-  "mime_types": [
-    "audio/mid"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 5,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "VLC Media Player",
     "foobar2000"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
@@ -130,11 +115,6 @@
       ".mid",
       ".midi"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".mid",
-    "defined_fields": 5
   },
   "MimeTypes": [
     "audio/midi",
@@ -153,20 +133,15 @@
     "MIDI sequencing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 72,
+    "CompletenessScore": 50,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-07",
+    "BlocksDefined": 5,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 288.16,
-    "last_updated": "2026-02-24"
   }
 }

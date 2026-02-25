@@ -1,6 +1,6 @@
 {
   "formatName": "VP9 Video",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".vp9",
     ".ivf"
@@ -69,25 +69,10 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/vp9"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "YouTube",
     "Chrome",
     "Modern browsers"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
@@ -95,12 +80,6 @@
       ".vp9",
       ".ivf"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".vp9",
-    "defined_fields": 1,
-    "container_format": true
   },
   "MimeTypes": [
     "video/vp9"
@@ -119,21 +98,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 252.83,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read video header",

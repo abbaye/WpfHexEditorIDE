@@ -1,6 +1,6 @@
 {
   "formatName": "Windows Event Log XML",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".evtx"
   ],
@@ -75,35 +75,15 @@
       "description": "Type"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Event Viewer",
     "Windows",
     "Log analysis tools"
   ],
-  "use_cases": [
-    "Windows event logs",
-    "System monitoring",
-    "Security auditing",
-    "Troubleshooting"
-  ],
   "format_relationships": {
     "microsoft_format": true,
     "successor_to": "EVT",
     "windows_vista_plus": true
-  },
-  "technical_details": {
-    "binary_xml": true,
-    "structured_logs": true,
-    "queryable": true,
-    "compressed": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -119,20 +99,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 284.47,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read system header",
     "extractASCIIString": "Read info"

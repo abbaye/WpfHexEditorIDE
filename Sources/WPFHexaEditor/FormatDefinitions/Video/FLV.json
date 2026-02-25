@@ -1,6 +1,6 @@
 {
   "formatName": "Flash Video",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".flv"
   ],
@@ -101,26 +101,10 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/flv"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Adobe Flash Player (discontinued)",
     "VLC",
     "FFmpeg"
-  ],
-  "use_cases": [
-    "Legacy web video",
-    "Flash animations",
-    "Old YouTube videos"
   ],
   "format_relationships": {
     "adobe_format": true,
@@ -130,20 +114,6 @@
       "MP4",
       "WEBM"
     ]
-  },
-  "technical_details": {
-    "container": "FLV",
-    "video_codecs": [
-      "H.263",
-      "VP6",
-      "H.264"
-    ],
-    "audio_codecs": [
-      "MP3",
-      "AAC"
-    ],
-    "streaming": true,
-    "obsolete": true
   },
   "MimeTypes": [
     "video/x-flv"
@@ -159,20 +129,15 @@
     "Old streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 68,
+    "CompletenessScore": 44,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-06",
+    "BlocksDefined": 5,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 273.55,
-    "last_updated": "2026-02-24"
   }
 }

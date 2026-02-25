@@ -1,6 +1,6 @@
 {
   "formatName": "APNG Animated Image",
-  "version": "2.2",
+  "version": "2.3",
   "extensions": [
     ".apng",
     ".png"
@@ -106,24 +106,9 @@
       "description": "IHDR chunk integrity validation result"
     }
   ],
-  "mime_types": [
-    "image/apng"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Image viewers",
     "GIMP"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
@@ -131,11 +116,6 @@
       ".apng",
       ".png"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".apng",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "image/apng"
@@ -154,21 +134,16 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 7,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 307.59,
-    "last_updated": "2026-02-24"
   }
 }

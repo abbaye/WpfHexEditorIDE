@@ -1,21 +1,9 @@
 {
   "formatName": "Plain Text",
-  "version": "1.4",
+  "version": "1.5",
   "extensions": [
     ".txt",
-    ".text",
-    ".log",
-    ".md",
-    ".csv",
-    ".json",
-    ".xml",
-    ".html",
-    ".css",
-    ".js",
-    ".cs",
-    ".c",
-    ".cpp",
-    ".h"
+    ".text"
   ],
   "description": "Plain text document with character encoding support (ASCII, UTF-8, UTF-16)",
   "author": "Derek Tremblay",
@@ -39,18 +27,6 @@
     "text/x-log",
     "text/markdown",
     "text/csv"
-  ],
-  "software": [
-    "Notepad (Windows)",
-    "TextEdit (macOS)",
-    "gedit (Linux)",
-    "Vim",
-    "Emacs",
-    "Visual Studio Code",
-    "Sublime Text",
-    "Atom",
-    "Notepad++",
-    "Any text editor"
   ],
   "useCases": [
     "Configuration files (.ini, .conf, .cfg)",
@@ -165,9 +141,11 @@
     "countLines": "Counts the number of lines in the file by counting line feed (LF, 0x0A) characters. Sets lineCount variable.",
     "detectLineEnding": "Analyzes first 8KB to detect predominant line ending style. Sets lineEnding, lfCount, crlfCount, and crCount variables."
   },
-  "version_history": {
-    "commit_count": 4,
-    "change_percentage": 472.0,
-    "last_updated": "2026-02-24"
+  "QualityMetrics": {
+    "CompletenessScore": 14,
+    "DocumentationLevel": "basic",
+    "BlocksDefined": 6,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "Microsoft Reader",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".lit"
   ],
@@ -79,34 +79,15 @@
       "description": "Unknown field (usually 1)"
     }
   ],
-  "mime_types": [
-    "application/lit"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "PDF readers",
     "Office suites"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Documents",
     "extensions": [
       ".lit"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".lit",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "application/lit"
@@ -125,20 +106,15 @@
     "Archival"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "DocumentFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 262.5,
-    "last_updated": "2026-02-24"
   }
 }

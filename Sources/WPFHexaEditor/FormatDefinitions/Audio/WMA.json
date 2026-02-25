@@ -1,6 +1,6 @@
 {
   "formatName": "Windows Media Audio",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".wma"
   ],
@@ -65,35 +65,15 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/wma"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Windows Media Player",
     "VLC"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
     "extensions": [
       ".wma"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".wma",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "audio/x-ms-wma"
@@ -109,21 +89,16 @@
     "Digital music"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 70,
+    "CompletenessScore": 26,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-08",
+    "BlocksDefined": 2,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "AudioFormat": true,
     "Platform": "Windows"
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 224.78,
-    "last_updated": "2026-02-24"
   }
 }

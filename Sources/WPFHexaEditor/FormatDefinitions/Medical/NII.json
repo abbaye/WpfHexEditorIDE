@@ -1,6 +1,6 @@
 {
   "formatName": "NIfTI Medical Image",
-  "version": "2.3",
+  "version": "2.4",
   "extensions": [
     ".nii"
   ],
@@ -76,36 +76,16 @@
       "description": "Width x Height"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "FSL",
     "SPM",
     "AFNI",
     "3D Slicer"
   ],
-  "use_cases": [
-    "Neuroimaging",
-    "Brain imaging research",
-    "fMRI analysis",
-    "Medical research"
-  ],
   "format_relationships": {
     "nifti_format": true,
     "successor_to": "ANALYZE",
     "neuroimaging_standard": true
-  },
-  "technical_details": {
-    "neuroimaging": true,
-    "3d_4d_volumes": true,
-    "orientation_info": true,
-    "nifti_1_and_2": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -121,20 +101,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
+    "CompletenessScore": 21,
     "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 268.42,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read medical header",
     "extractASCIIString": "Read patient",

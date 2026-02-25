@@ -1,6 +1,6 @@
 {
   "formatName": "Apple Lossless Audio Codec",
-  "version": "2.2",
+  "version": "2.3",
   "extensions": [
     ".alac",
     ".m4a"
@@ -74,43 +74,17 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/alac"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "iTunes",
     "Apple Music",
     "foobar2000",
     "VLC"
   ],
-  "use_cases": [
-    "Apple lossless music",
-    "iTunes Store purchases",
-    "Audiophile music on Apple devices"
-  ],
   "format_relationships": {
     "apple_format": true,
     "open_source_since": "2011",
     "container": "MP4/M4A",
     "alternative_to": "FLAC"
-  },
-  "technical_details": {
-    "compression": "Lossless",
-    "compression_ratio": "40-60%",
-    "bit_depths": [
-      "16-bit",
-      "24-bit",
-      "32-bit"
-    ],
-    "sample_rates": "Up to 384 kHz"
   },
   "MimeTypes": [
     "audio/alac"
@@ -129,20 +103,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 234.68,
-    "last_updated": "2026-02-24"
   }
 }

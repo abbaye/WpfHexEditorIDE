@@ -1,6 +1,6 @@
 {
   "formatName": "Cabinet Archive",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".cab"
   ],
@@ -94,37 +94,16 @@
       "description": "Byte offset to first file entry"
     }
   ],
-  "mime_types": [
-    "application/x-cab"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "makecab",
     "expand",
     "7-Zip"
-  ],
-  "use_cases": [
-    "File archiving",
-    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
     "extensions": [
       ".cab"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".cab",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "application/vnd.ms-cab-compressed"
@@ -141,11 +120,11 @@
     "System updates"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 68,
+    "CompletenessScore": 41,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-07",
+    "BlocksDefined": 6,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
@@ -153,10 +132,5 @@
     "CompressionMethod": "LZX, Quantum",
     "ArchivesFormat": true,
     "Platform": "Windows"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 352.0,
-    "last_updated": "2026-02-24"
   }
 }

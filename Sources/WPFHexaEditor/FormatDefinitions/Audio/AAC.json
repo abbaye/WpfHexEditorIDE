@@ -1,23 +1,23 @@
 {
   "formatName": "AAC Audio",
-  "version": "1.11",
+  "version": "2.0",
   "extensions": [
     ".aac"
   ],
-  "description": "Advanced Audio Coding",
+  "description": "Advanced Audio Coding (ADTS framing) - high-quality lossy audio codec (ISO/IEC 13818-7, MPEG-2/4)",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "references": {
     "specifications": [
-      "ISO/IEC 13818-7:2006 - Advanced Audio Coding (AAC)",
-      "MPEG-2 Part 7 Specification",
-      "AAC ADTS Format"
+      "ISO/IEC 13818-7:2006 - MPEG-2 AAC",
+      "ISO/IEC 14496-3 - MPEG-4 Audio",
+      "ADTS Header Format Specification"
     ],
     "WebLinks": [
-      "https://www.iso.org/standard/43345.html",
+      "https://wiki.multimedia.cx/index.php/ADTS",
       "https://en.wikipedia.org/wiki/Advanced_Audio_Coding",
       "https://www.loc.gov/preservation/digital/formats/fdd/fdd000036.shtml",
-      "https://www.mpeg.org/standards/MPEG-2/7/"
+      "https://www.p23.nl/projects/aac-header/"
     ]
   },
   "detection": {
@@ -25,25 +25,32 @@
     "offset": 0,
     "required": true,
     "validation": {
-      "min_file_size": 2,
+      "min_file_size": 7,
       "max_signature_offset": 1024
     }
   },
-  "functions": {
-    "readUInt16BE": "Read 16-bit big-endian for ADTS header parsing",
-    "bitwiseAnd": "Extract bitrate and sample rate from ADTS header",
-    "bitwiseShiftRight": "Shift bits to extract audio configuration",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
   "variables": {
     "currentOffset": 0,
+    "adtsSyncWord": 0,
+    "adtsHeader1": 0,
+    "adtsId": 0,
+    "adtsLayer": 0,
+    "adtsProtection": 0,
+    "adtsHeader2": 0,
+    "adtsProfile": 0,
+    "adtsSamplingIndex": 0,
+    "adtsPrivate": 0,
+    "adtsChannelConfig": 0,
+    "adtsHeader3": 0,
+    "adtsFrameLength": 0,
     "sampleRate": 0,
     "channels": 0,
-    "profile": "Unknown",
-    "bitrate": 0,
-    "frameLength": 0,
-    "adtsSyncWord": 0,
     "samplesPerSecond": 0
+  },
+  "functions": {
+    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate total samples per second",
+    "validateFieldRange(adtsProfile, 0, 3)": "Validate AAC profile (0=Main, 1=LC, 2=SSR, 3=LTP)",
+    "validateFieldRange(adtsSamplingIndex, 0, 12)": "Validate sampling frequency index"
   },
   "blocks": [
     {
@@ -53,57 +60,166 @@
       "length": 2,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "AAC ADTS frame sync (12 bits)",
+      "description": "ADTS frame sync (0xFFF) + header bits",
       "storeAs": "adtsSyncWord",
       "valueType": "uint16",
-      "endianness": "big"
+      "endianness": "big",
+      "bitfields": [
+        {
+          "name": "MPEG ID",
+          "bits": "3",
+          "storeAs": "adtsId",
+          "description": "MPEG version identifier",
+          "valueMap": {
+            "0": "MPEG-4",
+            "1": "MPEG-2"
+          }
+        },
+        {
+          "name": "Layer",
+          "bits": "2-1",
+          "storeAs": "adtsLayer",
+          "description": "Must be 00",
+          "valueMap": {
+            "0": "AAC"
+          }
+        },
+        {
+          "name": "Protection Absent",
+          "bits": "0",
+          "storeAs": "adtsProtection",
+          "description": "CRC protection",
+          "valueMap": {
+            "0": "CRC present",
+            "1": "No CRC"
+          }
+        }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "ADTS Header Byte 3",
+      "offset": 2,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "adtsHeader2",
+      "description": "Profile + Sampling Freq Index + Private + Channel (high)",
+      "bitfields": [
+        {
+          "name": "AAC Profile",
+          "bits": "7-6",
+          "storeAs": "adtsProfile",
+          "description": "Audio Object Type minus 1",
+          "valueMap": {
+            "0": "Main",
+            "1": "LC (Low Complexity)",
+            "2": "SSR (Scalable Sample Rate)",
+            "3": "LTP (Long Term Prediction)"
+          }
+        },
+        {
+          "name": "Sampling Frequency Index",
+          "bits": "5-2",
+          "storeAs": "adtsSamplingIndex",
+          "description": "Sample rate code",
+          "valueMap": {
+            "0": "96000 Hz",
+            "1": "88200 Hz",
+            "2": "64000 Hz",
+            "3": "48000 Hz",
+            "4": "44100 Hz",
+            "5": "32000 Hz",
+            "6": "24000 Hz",
+            "7": "22050 Hz",
+            "8": "16000 Hz",
+            "9": "12000 Hz",
+            "10": "11025 Hz",
+            "11": "8000 Hz",
+            "12": "7350 Hz"
+          }
+        },
+        {
+          "name": "Private Bit",
+          "bits": "1",
+          "storeAs": "adtsPrivate"
+        },
+        {
+          "name": "Channel Config (high bit)",
+          "bits": "0",
+          "storeAs": "adtsChannelHigh",
+          "description": "MSB of channel configuration"
+        }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "ADTS Header Byte 4",
+      "offset": 3,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "adtsHeader3",
+      "description": "Channel config (low) + originality + home + copyright + frame length (high)",
+      "bitfields": [
+        {
+          "name": "Channel Config (low bits)",
+          "bits": "7-6",
+          "storeAs": "adtsChannelLow",
+          "description": "Lower 2 bits of channel configuration"
+        }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "Frame Length (high byte)",
+      "offset": 4,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "frameLenHigh",
+      "description": "Frame length bits 12-5 (13-bit field spans bytes 4-5-6)"
+    },
+    {
+      "type": "field",
+      "name": "Frame Length (low byte) + Buffer Fullness",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "frameLenLow",
+      "description": "Frame length bits 4-0 + buffer fullness bits 10-6"
+    },
+    {
+      "type": "field",
+      "name": "Buffer Fullness + AAC Frames",
+      "offset": 6,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "bufferAndFrames",
+      "description": "Buffer fullness (low) + number of raw data blocks in frame",
+      "bitfields": [
+        {
+          "name": "Raw Data Blocks",
+          "bits": "1-0",
+          "storeAs": "rawDataBlocks",
+          "description": "Number of AAC frames minus 1 (usually 0 = 1 frame)"
+        }
+      ]
     },
     {
       "type": "metadata",
       "name": "Samples/Second",
       "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "description": "Total samples per second across all channels"
     }
   ],
-  "mime_types": [
-    "audio/aac"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
-  "software": [
-    "iTunes",
-    "VLC",
-    "foobar2000",
-    "All modern media players"
-  ],
-  "use_cases": [
-    "Music streaming (Apple Music, YouTube)",
-    "Digital audio broadcasting",
-    "Video game audio",
-    "Mobile audio"
-  ],
-  "format_relationships": {
-    "successor_to": "MP3",
-    "container": "MP4/M4A",
-    "part_of": "MPEG-4",
-    "better_than": "MP3 at same bitrate"
-  },
-  "technical_details": {
-    "compression": "Lossy perceptual",
-    "codecs": [
-      "AAC-LC",
-      "HE-AAC",
-      "HE-AACv2"
-    ],
-    "max_channels": 48,
-    "bitrates": "8-529 kbps"
-  },
   "MimeTypes": [
     "audio/aac",
     "audio/x-aac",
@@ -112,30 +228,31 @@
   "Software": [
     "iTunes",
     "VLC",
-    "Smartphones",
-    "Streaming services"
+    "foobar2000",
+    "FFmpeg",
+    "MediaInfo"
   ],
   "UseCases": [
     "Apple Music",
     "YouTube audio",
     "Mobile audio",
-    "Podcasts"
+    "Podcasts",
+    "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 77,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-11",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
-    "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 233.87,
-    "last_updated": "2026-02-24"
+    "AudioFormat": true,
+    "primary_extension": ".aac",
+    "defined_fields": 8,
+    "sample_rates": "8000-96000 Hz",
+    "max_channels": "7.1"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "X BitMap",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".xbm"
   ],
@@ -73,35 +73,15 @@
       "description": "Bits Per Pixel"
     }
   ],
-  "mime_types": [
-    "image/xbm"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Image viewers",
     "GIMP"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
     "extensions": [
       ".xbm"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".xbm",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "image/xbm"
@@ -120,22 +100,17 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 247.57,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read dimensions",

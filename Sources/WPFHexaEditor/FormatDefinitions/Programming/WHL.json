@@ -1,6 +1,6 @@
 {
   "formatName": "Python Wheel Package",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".whl"
   ],
@@ -56,31 +56,15 @@
       "description": "Original Size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Compilers",
     "Linkers"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Programming",
     "extensions": [
       ".whl"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".whl",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -99,20 +83,15 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 209.68,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "calculateCRC32": "Validate CRC",
     "readUInt32LE": "Read size"

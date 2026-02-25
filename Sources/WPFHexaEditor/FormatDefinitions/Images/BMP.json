@@ -1,6 +1,6 @@
 {
   "formatName": "BMP Image",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".bmp",
     ".dib"
@@ -190,26 +190,10 @@
       "description": "Human-readable file size"
     }
   ],
-  "mime_types": [
-    "image/bmp"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 7,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Windows Paint",
     "Photoshop",
     "GIMP"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
@@ -217,11 +201,6 @@
       ".bmp",
       ".dib"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".bmp",
-    "defined_fields": 7
   },
   "MimeTypes": [
     "image/bmp",
@@ -239,21 +218,16 @@
     "Uncompressed images"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 72,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-08",
+    "CompletenessScore": 56,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 17,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "Platform": "Windows"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 372.25,
-    "last_updated": "2026-02-24"
   }
 }

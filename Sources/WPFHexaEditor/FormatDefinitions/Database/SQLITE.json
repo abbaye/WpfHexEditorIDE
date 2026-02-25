@@ -1,6 +1,6 @@
 {
   "formatName": "SQLite Database",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".sqlite",
     ".db",
@@ -124,24 +124,10 @@
       "description": "SQLite library version that created the database"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "SQLite",
     "DB Browser for SQLite",
     "Most applications"
-  ],
-  "use_cases": [
-    "Embedded databases",
-    "Mobile apps",
-    "Desktop apps",
-    "Browser storage"
   ],
   "format_relationships": {
     "most_used_db": true,
@@ -152,13 +138,6 @@
       "Android",
       "Browsers"
     ]
-  },
-  "technical_details": {
-    "single_file_db": true,
-    "acid_compliant": true,
-    "cross_platform": true,
-    "no_server": true,
-    "public_domain": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -177,18 +156,13 @@
     "Backup"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 8,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 272.3,
-    "last_updated": "2026-02-24"
-  }
+  "TechnicalDetails": {}
 }

@@ -1,22 +1,26 @@
 {
   "formatName": "Matroska Video",
-  "version": "1.11",
+  "version": "2.0",
   "extensions": [
     ".mkv",
     ".mka",
-    ".mks"
+    ".mks",
+    ".mk3d"
   ],
-  "description": "Matroska multimedia container - Open standard",
+  "description": "Matroska multimedia container (EBML-based) - open standard for video, audio, subtitles",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "references": {
     "specifications": [
-      "Microsoft AVI RIFF File Format",
-      "Audio Video Interleave Format"
+      "IETF RFC 8794 - Matroska Media Container",
+      "EBML (Extensible Binary Meta Language) RFC 8794",
+      "Matroska Specification"
     ],
     "WebLinks": [
-      "https://docs.microsoft.com/en-us/windows/win32/directshow/avi-riff-file-reference",
-      "https://en.wikipedia.org/wiki/Audio_Video_Interleave"
+      "https://www.matroska.org/technical/elements.html",
+      "https://en.wikipedia.org/wiki/Matroska",
+      "https://wiki.multimedia.cx/index.php/Matroska",
+      "https://www.ietf.org/rfc/rfc8794.txt"
     ]
   },
   "detection": {
@@ -24,62 +28,139 @@
     "offset": 0,
     "required": true,
     "validation": {
-      "min_file_size": 4,
-      "max_signature_offset": 1024
+      "min_file_size": 32,
+      "max_signature_offset": 0
     }
-  },
-  "functions": {
-    "readUInt32BE": "Read 32-bit big-endian for EBML element IDs and sizes",
-    "readUInt16BE": "Read 16-bit values for video dimensions",
-    "extractASCIIString": "Extract string values (DocType, CodecID, Title)",
-    "parseMKVHeader()": "Parse EBML/MKV header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
   },
   "variables": {
     "currentOffset": 0,
-    "ebmlVersion": 1,
-    "docType": "matroska",
-    "width": 0,
-    "height": 0,
-    "duration": 0,
-    "timecodeScale": 1000000,
-    "videoCodec": "Unknown",
-    "audioCodec": "Unknown",
-    "ebmlHeader": 0,
-    "headerSize": 0,
+    "ebmlSignature": 0,
+    "ebmlHeaderSize": 0,
+    "ebmlVersionId": 0,
+    "ebmlVersionValue": 0,
+    "ebmlReadVersionId": 0,
+    "ebmlReadVersionValue": 0,
+    "ebmlMaxIdLenId": 0,
+    "ebmlMaxIdLenValue": 0,
+    "ebmlMaxSizeLenId": 0,
+    "ebmlMaxSizeLenValue": 0,
+    "ebmlDocTypeId": 0,
     "mkvDocType": "",
     "mkvDocTypeVersion": 0,
     "mkvEBMLVersion": 0,
     "totalPixels": 0
   },
+  "functions": {
+    "parseMKVHeader()": "Parse EBML/MKV header structure",
+    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  },
   "blocks": [
     {
       "type": "signature",
-      "name": "EBML Header",
+      "name": "EBML Signature",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "EBML signature",
-      "storeAs": "ebmlHeader",
-      "valueType": "uint32"
+      "description": "EBML magic: 0x1A45DFA3 - identifies Matroska/WebM container",
+      "storeAs": "ebmlSignature",
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "field",
-      "name": "Header Size",
+      "name": "EBML Header Size",
       "offset": 4,
       "length": 1,
       "color": "#4ECDC4",
       "opacity": 0.3,
-      "description": "Size of header element",
-      "storeAs": "headerSize",
+      "description": "VINT-encoded size of EBML header element (variable-length integer)",
+      "storeAs": "ebmlHeaderSize",
       "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "EBMLVersion Element ID",
+      "offset": 5,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "EBML element ID 0x4286 = EBMLVersion",
+      "storeAs": "ebmlVersionId",
+      "valueType": "uint16",
+      "endianness": "big",
+      "valueMap": {
+        "17030": "EBMLVersion (0x4286)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "EBMLVersion Size + Value",
+      "offset": 7,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "VINT size (0x81=1 byte) + version number (typically 1)",
+      "storeAs": "ebmlVersionValue",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "EBMLReadVersion Element ID",
+      "offset": 9,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "EBML element ID 0x42F7 = EBMLReadVersion",
+      "storeAs": "ebmlReadVersionId",
+      "valueType": "uint16",
+      "endianness": "big",
+      "valueMap": {
+        "17143": "EBMLReadVersion (0x42F7)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "EBMLReadVersion Size + Value",
+      "offset": 11,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "VINT size + minimum EBML version to read this file",
+      "storeAs": "ebmlReadVersionValue",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "EBMLMaxIDLength Element ID",
+      "offset": 13,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "EBML element ID 0x42F2 = EBMLMaxIDLength",
+      "storeAs": "ebmlMaxIdLenId",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "EBMLMaxIDLength Size + Value",
+      "offset": 15,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "VINT size + max element ID length (typically 4 bytes)",
+      "storeAs": "ebmlMaxIdLenValue",
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "metadata",
       "name": "Container Type",
       "variable": "mkvDocType",
-      "description": "EBML document type (matroska)"
+      "description": "EBML document type (matroska or webm)"
     },
     {
       "type": "metadata",
@@ -94,72 +175,39 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/mkv"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
-  "software": [
-    "VLC",
-    "MPC-HC",
-    "PotPlayer"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
-  ],
-  "format_relationships": {
-    "category": "Video",
-    "extensions": [
-      ".mkv",
-      ".mka",
-      ".mks"
-    ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".mkv",
-    "defined_fields": 2,
-    "container_format": true
-  },
   "MimeTypes": [
-    "video/x-matroska"
+    "video/x-matroska",
+    "audio/x-matroska",
+    "video/webm"
   ],
   "Software": [
     "VLC",
     "MPC-HC",
     "PotPlayer",
-    "Plex"
+    "FFmpeg",
+    "MKVToolNix"
   ],
   "UseCases": [
-    "HD video",
-    "Anime",
-    "Multi-track video",
-    "Subtitles"
+    "HD/4K video",
+    "Multi-track audio",
+    "Subtitles",
+    "Anime distribution",
+    "Blu-ray remux"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 82,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 6,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-13",
+    "CompletenessScore": 50,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 11,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "VideoFormat": true,
-    "Container": "Matroska"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 311.54,
-    "last_updated": "2026-02-24"
+    "primary_extension": ".mkv",
+    "defined_fields": 11,
+    "Container": "Matroska (EBML)",
+    "max_resolution": "Unlimited"
   }
 }

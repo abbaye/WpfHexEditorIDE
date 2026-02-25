@@ -1,6 +1,6 @@
 {
   "formatName": "RealMedia Variable Bitrate",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".rmvb"
   ],
@@ -74,37 +74,16 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "video/rmvb"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "RealPlayer",
     "VLC",
     "KMPlayer"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
     "extensions": [
       ".rmvb"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".rmvb",
-    "defined_fields": 1,
-    "container_format": true
   },
   "MimeTypes": [
     "video/rmvb"
@@ -123,21 +102,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 251.46,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32BE": "Read audio header",

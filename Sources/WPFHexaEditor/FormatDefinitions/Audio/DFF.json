@@ -1,6 +1,6 @@
 {
   "formatName": "DSD Interchange File Format",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".dff"
   ],
@@ -65,37 +65,16 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/dff"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "DSD audio players",
     "Foobar2000",
     "Audiophile software"
-  ],
-  "use_cases": [
-    "High-resolution audio",
-    "SACD ripping",
-    "Audiophile music"
   ],
   "format_relationships": {
     "category": "Audio",
     "extensions": [
       ".dff"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".dff",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "audio/dff"
@@ -114,20 +93,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 222.22,
-    "last_updated": "2026-02-24"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "Unix Core Dump",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".core",
     ".dump"
@@ -158,21 +158,9 @@
       "description": "Type"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 9,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "System",
@@ -180,10 +168,6 @@
       ".core",
       ".dump"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".core",
-    "defined_fields": 9
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -199,20 +183,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 12,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 370.73,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read system header",
     "extractASCIIString": "Read info"

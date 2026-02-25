@@ -1,6 +1,6 @@
 {
   "formatName": "Atari 7800 ROM",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".a78"
   ],
@@ -201,31 +201,15 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 11,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
     "extensions": [
       ".a78"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".a78",
-    "defined_fields": 11
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -244,21 +228,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "CompletenessScore": 67,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 15,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 383.96,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "extractASCIIString": "Read filenames",

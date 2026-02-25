@@ -1,6 +1,6 @@
 {
   "formatName": "XZ Compressed File",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".xz"
   ],
@@ -76,38 +76,16 @@
       "description": "Stream header CRC-32 validation result"
     }
   ],
-  "mime_types": [
-    "application/x-xz"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "xz",
     "7-Zip",
     "PeaZip"
-  ],
-  "use_cases": [
-    "File compression",
-    "Stream compression",
-    "Software packages"
   ],
   "format_relationships": {
     "category": "Archives",
     "extensions": [
       ".xz"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".xz",
-    "defined_fields": 2,
-    "compression_method": "LZMA"
   },
   "MimeTypes": [
     "application/x-xz"
@@ -123,21 +101,16 @@
     "Kernel archives"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 70,
+    "CompletenessScore": 32,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-08",
+    "BlocksDefined": 4,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "CompressionMethod": "LZMA2",
     "ArchivesFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 230.08,
-    "last_updated": "2026-02-24"
   }
 }

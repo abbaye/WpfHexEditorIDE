@@ -1,6 +1,6 @@
 {
   "formatName": "Java Class File",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".class"
   ],
@@ -79,34 +79,15 @@
       "endianness": "big"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Java Virtual Machine",
     "Java IDEs",
     "Bytecode tools"
   ],
-  "use_cases": [
-    "Java compiled code",
-    "JVM execution",
-    "Java applications"
-  ],
   "format_relationships": {
     "java_format": true,
     "contained_in": "JAR",
     "jvm_bytecode": true
-  },
-  "technical_details": {
-    "bytecode_format": true,
-    "stack_based_vm": true,
-    "constant_pool": true,
-    "method_bytecode": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -125,18 +106,13 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 269.29,
-    "last_updated": "2026-02-24"
-  }
+  "TechnicalDetails": {}
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "Radiotap 802.11",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".pcap",
     ".pcapng"
@@ -165,21 +165,9 @@
       "description": "Sections"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 10,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Wireshark",
     "tcpdump"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Network",
@@ -187,10 +175,6 @@
       ".pcap",
       ".pcapng"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".pcap",
-    "defined_fields": 10
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -209,20 +193,15 @@
     "Security analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 12,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 363.64,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read executable header"
   }

@@ -1,149 +1,154 @@
 {
   "formatName": "QuickTime Movie",
-  "version": "1.11",
+  "version": "2.0",
   "extensions": [
     ".mov",
     ".qt"
   ],
-  "description": "Apple QuickTime movie format",
+  "description": "Apple QuickTime Movie - atom/box-based multimedia container (ISO Base Media File Format ancestor)",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "references": {
     "specifications": [
-      "QuickTime File Format Specification",
+      "Apple QuickTime File Format Specification",
       "ISO/IEC 14496-12 - ISO Base Media File Format",
-      "Apple QuickTime Container"
+      "MPEG-4 Part 12"
     ],
     "WebLinks": [
       "https://developer.apple.com/documentation/quicktime-file-format",
       "https://en.wikipedia.org/wiki/QuickTime_File_Format",
       "https://www.loc.gov/preservation/digital/formats/fdd/fdd000052.shtml",
-      "http://fileformats.archiveteam.org/wiki/QuickTime"
+      "https://wiki.multimedia.cx/index.php/QuickTime_container"
     ]
   },
   "detection": {
-    "signature": "6D6F6F76",
+    "signature": "6674797071742020",
     "offset": 4,
-    "required": true,
+    "required": false,
     "validation": {
-      "min_file_size": 4,
+      "min_file_size": 8,
       "max_signature_offset": 1024
     }
   },
-  "functions": {
-    "readUInt32BE": "Read 32-bit big-endian for atom sizes and timestamps",
-    "extractASCIIString": "Extract atom type identifiers (moov, trak, mdia, hdlr)",
-    "readUInt16BE": "Read 16-bit values for video dimensions",
-    "multiply": "Calculate duration from timescale",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
   "variables": {
     "currentOffset": 0,
-    "atomSize": 0,
-    "atomType": "Unknown",
-    "width": 0,
-    "height": 0,
-    "duration": 0,
-    "timescale": 0,
-    "videoCodec": "Unknown",
+    "firstAtomSize": 0,
+    "firstAtomType": "",
+    "ftypBrand": "",
+    "ftypMinorVer": 0,
+    "compatBrands": "",
     "totalPixels": 0
+  },
+  "functions": {
+    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
   },
   "blocks": [
     {
       "type": "field",
-      "name": "Atom Size",
+      "name": "First Atom Size",
       "offset": 0,
       "length": 4,
       "color": "#4ECDC4",
       "opacity": 0.3,
-      "description": "Size of movie atom",
-      "storeAs": "atomSize",
+      "description": "Size of first atom in bytes (big-endian 32-bit). 0=extends to EOF, 1=64-bit extended size follows.",
+      "storeAs": "firstAtomSize",
       "valueType": "uint32",
       "endianness": "big"
     },
     {
       "type": "signature",
-      "name": "Atom Type",
+      "name": "First Atom Type",
       "offset": 4,
       "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "moov atom identifier",
-      "storeAs": "atomType",
+      "description": "Atom type FourCC: 'ftyp'=File Type Box, 'moov'=Movie, 'wide'=Wide, 'mdat'=Media Data",
+      "storeAs": "firstAtomType",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Major Brand",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "description": "ftyp major brand FourCC identifying the best-use specification",
+      "storeAs": "ftypBrand",
+      "valueType": "ascii",
+      "valueMap": {
+        "qt  ": "QuickTime",
+        "isom": "ISO Base Media (MP4)",
+        "mp41": "MP4 v1",
+        "mp42": "MP4 v2",
+        "M4V ": "iTunes Video",
+        "M4A ": "iTunes Audio",
+        "3gp4": "3GPP Release 4",
+        "avc1": "AVC/H.264",
+        "dash": "MPEG-DASH"
+      },
+      "mappedValueStoreAs": "brandName"
+    },
+    {
+      "type": "field",
+      "name": "Minor Version",
+      "offset": 12,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Minor version of the major brand (informational, big-endian)",
+      "storeAs": "ftypMinorVer",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Compatible Brands",
+      "offset": 16,
+      "length": 16,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "List of compatible brand FourCCs (4 bytes each, up to 4 shown)",
+      "storeAs": "compatBrands",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
       "name": "Total Pixels",
       "variable": "totalPixels",
-      "description": "Width x Height"
+      "description": "Width x Height (from track header, if parsed)"
     }
   ],
-  "mime_types": [
-    "video/mov"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
-  "software": [
-    "QuickTime Player",
-    "VLC",
-    "Final Cut Pro",
-    "Adobe Premiere"
-  ],
-  "use_cases": [
-    "Apple video files",
-    "Video editing",
-    "Screen recordings (macOS)",
-    "Professional video production"
-  ],
-  "format_relationships": {
-    "apple_format": true,
-    "similar_to": "MP4",
-    "basis_for": "MP4/MPEG-4 Part 14"
-  },
-  "technical_details": {
-    "container": "QuickTime",
-    "codecs": "Any",
-    "professional_features": true,
-    "timecode_support": true
-  },
   "MimeTypes": [
     "video/quicktime"
   ],
   "Software": [
-    "QuickTime",
+    "QuickTime Player",
     "VLC",
     "iMovie",
-    "Final Cut Pro"
+    "Final Cut Pro",
+    "FFmpeg"
   ],
   "UseCases": [
-    "Apple video",
+    "Apple video editing",
     "Professional video",
-    "iPhone recordings"
+    "iPhone/iPad recordings",
+    "ProRes workflows"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 78,
+    "CompletenessScore": 47,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-11",
+    "BlocksDefined": 6,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "VideoFormat": true,
-    "Container": "QuickTime",
-    "Platform": "macOS"
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 254.96,
-    "last_updated": "2026-02-24"
+    "primary_extension": ".mov",
+    "defined_fields": 6,
+    "Container": "QuickTime (ISO BMFF)",
+    "Platform": "macOS / iOS"
   }
 }

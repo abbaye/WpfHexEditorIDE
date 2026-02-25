@@ -1,6 +1,6 @@
 {
   "formatName": "AU Audio",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".au",
     ".snd"
@@ -109,25 +109,10 @@
       "description": "Human-readable file size"
     }
   ],
-  "mime_types": [
-    "audio/au"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Unix audio tools",
     "VLC",
     "Audacity"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
@@ -135,11 +120,6 @@
       ".au",
       ".snd"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".au",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "audio/au"
@@ -158,20 +138,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 278.32,
-    "last_updated": "2026-02-24"
   }
 }

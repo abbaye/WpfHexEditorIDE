@@ -1,17 +1,22 @@
 {
   "formatName": "JSON Data",
-  "version": "1.10",
+  "version": "2.0",
   "extensions": [
     ".json"
   ],
-  "description": "JavaScript Object Notation",
+  "description": "JavaScript Object Notation - a lightweight text-based data interchange format. JSON files begin with either an opening brace { for objects or an opening bracket [ for arrays. Optionally preceded by a UTF-8 BOM.",
   "category": "Data",
   "author": "WPFHexaEditor Team",
   "references": {
     "specifications": [
-      "JSON Data Format"
+      "ECMA-404 - The JSON Data Interchange Standard",
+      "RFC 8259 - The JavaScript Object Notation (JSON) Data Interchange Format",
+      "ISO/IEC 21778:2017 - Information technology - JSON"
     ],
     "WebLinks": [
+      "https://www.json.org/json-en.html",
+      "https://www.ecma-international.org/publications-and-standards/standards/ecma-404/",
+      "https://datatracker.ietf.org/doc/html/rfc8259",
       "https://en.wikipedia.org/wiki/JSON"
     ]
   },
@@ -20,105 +25,75 @@
     "offset": 0,
     "required": false,
     "validation": {
-      "min_file_size": 1,
-      "max_signature_offset": 1024
+      "minFileSize": 2,
+      "maxSignatureOffset": 3
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "openingBrace": 0
+    "openingCharacter": 0,
+    "firstContentCharacter": 0
+  },
+  "functions": {
+    "detectBOM": "Detect byte order mark (EF BB BF for UTF-8) that may precede JSON content and adjust parsing offset accordingly"
   },
   "blocks": [
     {
-      "type": "field",
-      "name": "Opening Brace",
+      "type": "signature",
+      "name": "Opening Character",
       "offset": 0,
       "length": 1,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "JSON object start (may have whitespace)",
-      "storeAs": "openingBrace",
+      "description": "First structural character: { (0x7B) for a JSON object or [ (0x5B) for a JSON array",
+      "storeAs": "openingCharacter",
+      "valueType": "uint8",
+      "valueMap": {
+        "123": "Object {",
+        "91": "Array ["
+      }
+    },
+    {
+      "type": "field",
+      "name": "First Content Character",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "First character after the opening delimiter - typically a quote (\"), whitespace, or nested structure character",
+      "storeAs": "firstContentCharacter",
       "valueType": "uint8"
-    },
-    {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
-    },
-    {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
-    },
-    {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
-  "software": [
-    "Common file viewers",
-    "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
-  ],
-  "format_relationships": {
-    "category": "Data",
-    "extensions": [
-      ".json"
-    ]
-  },
-  "technical_details": {
-    "primary_extension": ".json",
-    "defined_fields": 1
-  },
   "MimeTypes": [
     "application/json"
   ],
   "Software": [
-    "Text editors",
-    "All modern browsers",
-    "Most applications"
+    "Text editors (VS Code, Notepad++, Sublime Text)",
+    "Web browsers (Chrome, Firefox, Edge)",
+    "REST clients (Postman, Insomnia)",
+    "All modern programming languages"
   ],
   "UseCases": [
-    "APIs",
-    "Configuration",
-    "Data exchange",
-    "Web services"
+    "REST API request and response payloads",
+    "Application configuration (package.json, tsconfig.json)",
+    "Data exchange between services",
+    "NoSQL database storage (MongoDB, CouchDB)"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 80,
+    "CompletenessScore": 38,
     "DocumentationLevel": "standard",
     "BlocksDefined": 2,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-12",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 242.86,
-    "last_updated": "2026-02-24"
-  },
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "TextFormat": true,
+    "Encoding": "UTF-8 (required by RFC 8259)",
+    "StrictSyntax": true,
+    "TrailingCommas": "Not allowed per specification",
+    "Comments": "Not allowed per specification"
   }
 }

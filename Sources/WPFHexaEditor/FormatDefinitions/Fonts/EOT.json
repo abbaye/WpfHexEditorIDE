@@ -1,6 +1,6 @@
 {
   "formatName": "Embedded OpenType Font",
-  "version": "2.1",
+  "version": "2.2",
   "extensions": [
     ".eot"
   ],
@@ -71,21 +71,9 @@
       "description": "Table Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Internet Explorer (legacy)",
     "Font converters"
-  ],
-  "use_cases": [
-    "Legacy web fonts (IE only)",
-    "Obsolete web typography"
   ],
   "format_relationships": {
     "microsoft_format": true,
@@ -95,12 +83,6 @@
       "WOFF",
       "WOFF2"
     ]
-  },
-  "technical_details": {
-    "embedded_opentype": true,
-    "compression": "MicroType Express",
-    "drm": true,
-    "obsolete": true
   },
   "MimeTypes": [
     "font/eot"
@@ -119,20 +101,15 @@
     "Publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
+    "CompletenessScore": 15,
     "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 280.58,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32BE": "Read font tables",
     "extractASCIIString": "Read font name"

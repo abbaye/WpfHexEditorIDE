@@ -1,6 +1,6 @@
 {
   "formatName": "Gaussian Cube File",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".cube",
     ".cub"
@@ -84,21 +84,9 @@
       "description": "Total samples per second"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Science",
@@ -106,10 +94,6 @@
       ".cube",
       ".cub"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".cube",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -125,20 +109,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 27,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 276.24,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32BE": "Read audio header",
     "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",

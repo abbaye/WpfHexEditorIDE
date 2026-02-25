@@ -1,13 +1,8 @@
 {
   "formatName": "ZIP Archive",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
-    ".zip",
-    ".jar",
-    ".apk",
-    ".docx",
-    ".xlsx",
-    ".pptx"
+    ".zip"
   ],
   "description": "ZIP archive format (PKZIP) - Used by many file types including Office documents",
   "category": "Archives",
@@ -223,28 +218,11 @@
       "description": "Human-readable central directory size"
     }
   ],
-  "mime_types": [
-    "application/x-zip"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 11,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "WinZip",
     "7-Zip",
     "WinRAR",
     "OS built-in"
-  ],
-  "use_cases": [
-    "File compression",
-    "Archive distribution",
-    "Backup"
   ],
   "format_relationships": {
     "category": "Archives",
@@ -253,12 +231,6 @@
       ".jar",
       ".apk"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".zip",
-    "defined_fields": 11,
-    "compression_method": "Deflate"
   },
   "MimeTypes": [
     "application/zip",
@@ -278,11 +250,11 @@
     "Document bundling"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 95,
-    "DocumentationLevel": "comprehensive",
-    "BlocksDefined": 11,
-    "ValidationRules": 3,
-    "LastUpdated": "2025-01-15",
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 18,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -290,10 +262,5 @@
     "CompressionMethod": "DEFLATE, BZIP2, LZMA",
     "ArchivesFormat": true,
     "SupportsEncryption": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 418.97,
-    "last_updated": "2026-02-24"
   }
 }

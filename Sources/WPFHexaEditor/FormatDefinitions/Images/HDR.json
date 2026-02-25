@@ -1,6 +1,6 @@
 {
   "formatName": "Radiance HDR Image",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".hdr",
     ".pic"
@@ -80,24 +80,9 @@
       "description": "Total Pixels"
     }
   ],
-  "mime_types": [
-    "image/hdr"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Image viewers",
     "GIMP"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
@@ -105,11 +90,6 @@
       ".hdr",
       ".pic"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".hdr",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "image/hdr"
@@ -128,22 +108,17 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 259.65,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read dimensions",

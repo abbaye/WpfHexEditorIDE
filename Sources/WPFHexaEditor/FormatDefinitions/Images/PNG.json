@@ -1,6 +1,6 @@
 {
   "formatName": "PNG Image",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".png"
   ],
@@ -210,38 +210,17 @@
       "description": "IHDR chunk integrity validation result"
     }
   ],
-  "mime_types": [
-    "image/png"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 11,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Web browsers",
     "GIMP",
     "Photoshop",
     "Paint.NET"
   ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
-  ],
   "format_relationships": {
     "category": "Images",
     "extensions": [
       ".png"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".png",
-    "defined_fields": 11
   },
   "MimeTypes": [
     "image/png"
@@ -261,11 +240,11 @@
     "Transparency support"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 92,
-    "DocumentationLevel": "comprehensive",
-    "BlocksDefined": 8,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-12",
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 16,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -274,10 +253,5 @@
     "BitDepth": 8,
     "ImagesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 431.62,
-    "last_updated": "2026-02-24"
   }
 }

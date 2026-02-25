@@ -1,6 +1,6 @@
 {
   "formatName": "UPS Patch",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".ups"
   ],
@@ -97,24 +97,10 @@
       "description": "Sections"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "NUPS",
     "Lunar IPS",
     "Rom patcher tools"
-  ],
-  "use_cases": [
-    "ROM patching",
-    "Translation patches",
-    "Mod patches",
-    "Better than IPS"
   ],
   "format_relationships": {
     "successor_to": "IPS",
@@ -124,12 +110,6 @@
       "BPS",
       "IPS"
     ]
-  },
-  "technical_details": {
-    "max_size": "Unlimited",
-    "crc32_checksums": true,
-    "variable_length_encoding": true,
-    "more_robust": "than IPS"
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -148,21 +128,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 231.43,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read executable header"

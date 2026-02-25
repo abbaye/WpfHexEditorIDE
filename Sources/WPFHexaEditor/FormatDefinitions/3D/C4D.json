@@ -1,6 +1,6 @@
 {
   "formatName": "Cinema 4D",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".c4d"
   ],
@@ -68,33 +68,15 @@
       "description": "Sections"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Cinema 4D",
     "After Effects"
-  ],
-  "use_cases": [
-    "3D modeling",
-    "3D visualization",
-    "3D interchange"
   ],
   "format_relationships": {
     "category": "3D",
     "extensions": [
       ".c4d"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".c4d",
-    "defined_fields": 2,
-    "binary_format": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -113,20 +95,15 @@
     "Game development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 286.54,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read executable header"
   }

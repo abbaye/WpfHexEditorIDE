@@ -1,6 +1,6 @@
 {
   "formatName": "Nintendo Wii U Image",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".wud",
     ".wux"
@@ -124,21 +124,9 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 5,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
@@ -146,10 +134,6 @@
       ".wud",
       ".wux"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".wud",
-    "defined_fields": 5
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -168,21 +152,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 45,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 9,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 371.33,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read dimensions",

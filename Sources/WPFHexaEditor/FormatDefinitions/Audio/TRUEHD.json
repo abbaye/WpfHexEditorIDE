@@ -1,6 +1,6 @@
 {
   "formatName": "Dolby TrueHD",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".thd",
     ".truehd"
@@ -76,24 +76,9 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/thd"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "VLC Media Player",
     "foobar2000"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
@@ -101,11 +86,6 @@
       ".thd",
       ".truehd"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".thd",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "audio/truehd"
@@ -124,21 +104,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 248.08,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32BE": "Read audio header",

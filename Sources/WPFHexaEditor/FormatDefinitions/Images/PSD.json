@@ -1,6 +1,6 @@
 {
   "formatName": "Photoshop Document",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".psd"
   ],
@@ -136,28 +136,11 @@
       "description": "Number of color channels (1-56)"
     }
   ],
-  "mime_types": [
-    "image/psd"
-  ],
-  "quality_metrics": {
-    "completeness_score": 98,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 6,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Adobe Photoshop",
     "GIMP",
     "Affinity Photo",
     "Photopea"
-  ],
-  "use_cases": [
-    "Professional photo editing",
-    "Graphic design",
-    "Digital art",
-    "Layer-based editing"
   ],
   "format_relationships": {
     "adobe_format": true,
@@ -165,22 +148,6 @@
     "related": [
       "PSB",
       "AI"
-    ]
-  },
-  "technical_details": {
-    "layered_format": true,
-    "max_size": "30000x30000 px",
-    "color_modes": [
-      "Bitmap",
-      "Grayscale",
-      "RGB",
-      "CMYK",
-      "Lab"
-    ],
-    "bit_depths": [
-      "8",
-      "16",
-      "32-bit"
     ]
   },
   "MimeTypes": [
@@ -198,20 +165,15 @@
     "Digital art"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 80,
+    "CompletenessScore": 53,
     "DocumentationLevel": "detailed",
-    "BlocksDefined": 6,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-11",
+    "BlocksDefined": 10,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "ImagesFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 261.22,
-    "last_updated": "2026-02-24"
   }
 }

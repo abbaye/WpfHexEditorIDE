@@ -1,6 +1,6 @@
 {
   "formatName": "Maya ASCII",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".ma"
   ],
@@ -56,32 +56,14 @@
       "description": "Sections"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Autodesk Maya"
-  ],
-  "use_cases": [
-    "3D modeling",
-    "3D visualization",
-    "3D interchange"
   ],
   "format_relationships": {
     "category": "3D",
     "extensions": [
       ".ma"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".ma",
-    "defined_fields": 1,
-    "binary_format": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -100,20 +82,15 @@
     "Game development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 263.83,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read executable header"
   }

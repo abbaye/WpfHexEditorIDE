@@ -1,6 +1,6 @@
 {
   "formatName": "LZ4 Compressed",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".lz4"
   ],
@@ -87,35 +87,15 @@
       "description": "Block size and independence flags"
     }
   ],
-  "mime_types": [
-    "application/x-lz4"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "LZ4 tools",
     "Compression libraries"
-  ],
-  "use_cases": [
-    "File archiving",
-    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
     "extensions": [
       ".lz4"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".lz4",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "application/x-lz4-compressed"
@@ -134,21 +114,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 252.14,
-    "last_updated": "2026-02-24"
   }
 }

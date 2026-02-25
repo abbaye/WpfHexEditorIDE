@@ -1,6 +1,6 @@
 {
   "formatName": "Windows Installer Package",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".msi"
   ],
@@ -68,29 +68,12 @@
       "description": "MSI format minor version"
     }
   ],
-  "mime_types": [
-    "application/x-msi"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Windows Installer",
     "msiexec",
     "Orca",
     "InstallShield",
     "Advanced Installer"
-  ],
-  "use_cases": [
-    "Software installation",
-    "Windows application packages",
-    "Deployment automation",
-    "Enterprise software distribution"
   ],
   "format_relationships": {
     "microsoft_format": true,
@@ -99,12 +82,6 @@
       "EXE",
       "CAB"
     ]
-  },
-  "technical_details": {
-    "windows_installer_format": true,
-    "compound_document": true,
-    "database_tables": true,
-    "compression": "CAB embedded"
   },
   "MimeTypes": [
     "application/x-msi-compressed"
@@ -123,21 +100,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 248.12,
-    "last_updated": "2026-02-24"
   }
 }

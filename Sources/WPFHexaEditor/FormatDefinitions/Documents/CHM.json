@@ -1,6 +1,6 @@
 {
   "formatName": "Compiled HTML Help",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".chm"
   ],
@@ -74,38 +74,16 @@
       "valueType": "uint32"
     }
   ],
-  "mime_types": [
-    "application/chm"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Windows Help Viewer",
     "7-Zip",
     "CHM readers"
-  ],
-  "use_cases": [
-    "Windows help files",
-    "Software documentation",
-    "E-books"
   ],
   "format_relationships": {
     "microsoft_format": true,
     "html_based": true,
     "compressed": true,
     "replaces": "HLP"
-  },
-  "technical_details": {
-    "html_help_format": true,
-    "lzx_compression": true,
-    "full_text_search": true,
-    "table_of_contents": true
   },
   "MimeTypes": [
     "application/chm"
@@ -124,20 +102,15 @@
     "Archival"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "DocumentFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 264.12,
-    "last_updated": "2026-02-24"
   }
 }

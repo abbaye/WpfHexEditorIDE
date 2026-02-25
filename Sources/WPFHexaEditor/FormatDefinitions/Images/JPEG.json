@@ -1,6 +1,6 @@
 {
   "formatName": "JPEG Image",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".jpg",
     ".jpeg",
@@ -214,27 +214,11 @@
       "description": "jpegWidth x jpegHeight total pixel count"
     }
   ],
-  "mime_types": [
-    "image/jpg"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 10,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "All image viewers",
     "Photoshop",
     "GIMP",
     "Cameras"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
@@ -243,11 +227,6 @@
       ".jpeg",
       ".jpe"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".jpg",
-    "defined_fields": 10
   },
   "MimeTypes": [
     "image/jpeg",
@@ -268,11 +247,11 @@
     "Compression"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 90,
-    "DocumentationLevel": "comprehensive",
-    "BlocksDefined": 6,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-14",
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 17,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -281,10 +260,5 @@
     "BitDepth": 8,
     "ImagesFormat": true,
     "CompressionMethod": "DCT (lossy)"
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 399.59,
-    "last_updated": "2026-02-24"
   }
 }

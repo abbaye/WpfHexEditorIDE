@@ -1,6 +1,6 @@
 {
   "formatName": "Extensible 3D",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".x3d"
   ],
@@ -70,34 +70,16 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Web browsers",
     "X3D viewers",
     "Blender"
-  ],
-  "use_cases": [
-    "3D modeling",
-    "3D visualization",
-    "3D interchange"
   ],
   "format_relationships": {
     "category": "3D",
     "extensions": [
       ".x3d"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".x3d",
-    "defined_fields": 1,
-    "binary_format": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -116,20 +98,15 @@
     "Game development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 258.33,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",

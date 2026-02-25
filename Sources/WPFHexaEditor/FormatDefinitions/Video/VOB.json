@@ -1,6 +1,6 @@
 {
   "formatName": "DVD Video Object",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".vob"
   ],
@@ -77,37 +77,16 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/vob"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "DVD players",
     "VLC",
     "Media players"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
     "extensions": [
       ".vob"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".vob",
-    "defined_fields": 2,
-    "container_format": true
   },
   "MimeTypes": [
     "video/vob"
@@ -126,20 +105,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 242.86,
-    "last_updated": "2026-02-24"
   }
 }

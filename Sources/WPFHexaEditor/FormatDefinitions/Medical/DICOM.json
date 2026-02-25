@@ -1,6 +1,6 @@
 {
   "formatName": "DICOM Medical Image",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".dcm",
     ".dicom"
@@ -82,37 +82,16 @@
       "description": "Color depth"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "OsiriX",
     "Horos",
     "3D Slicer",
     "Medical imaging systems"
   ],
-  "use_cases": [
-    "Medical imaging",
-    "Radiology",
-    "CT/MRI scans",
-    "Healthcare"
-  ],
   "format_relationships": {
     "medical_standard": "NEMA",
     "iso_standard": "ISO 12052",
     "universal_medical": true
-  },
-  "technical_details": {
-    "medical_imaging": true,
-    "embedded_metadata": true,
-    "patient_info": true,
-    "pixel_data": true,
-    "network_protocol": "DICOM C-STORE"
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -128,20 +107,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 235.85,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read width and height",
     "multiply": "Calculate total pixels",

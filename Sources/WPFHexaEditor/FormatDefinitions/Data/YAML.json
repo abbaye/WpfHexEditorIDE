@@ -1,6 +1,6 @@
 {
   "formatName": "YAML (Binary)",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".yaml",
     ".yml"
@@ -61,21 +61,9 @@
       "description": "Entry Point"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Data",
@@ -83,10 +71,6 @@
       ".yaml",
       ".yml"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".yaml",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/x-yaml",
@@ -105,20 +89,15 @@
     "CI/CD"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 72,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-10",
+    "CompletenessScore": 15,
+    "DocumentationLevel": "basic",
+    "BlocksDefined": 4,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 249.47,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read executable header",
     "calculateCRC32": "Validate"

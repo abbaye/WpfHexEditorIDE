@@ -1,6 +1,6 @@
 {
   "formatName": "Blu-ray MPEG-2 Transport Stream",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".m2ts"
   ],
@@ -65,37 +65,16 @@
       "description": "Width x Height"
     }
   ],
-  "mime_types": [
-    "video/m2ts"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Blu-ray players",
     "VLC",
     "Media players"
-  ],
-  "use_cases": [
-    "Video playback",
-    "Video editing"
   ],
   "format_relationships": {
     "category": "Video",
     "extensions": [
       ".m2ts"
     ]
-  },
-  "technical_details": {
-    "video_format": true,
-    "primary_extension": ".m2ts",
-    "defined_fields": 1,
-    "container_format": true
   },
   "MimeTypes": [
     "video/m2ts"
@@ -114,20 +93,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "VideoFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 215.25,
-    "last_updated": "2026-02-24"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "XML Paper Specification",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".xps"
   ],
@@ -110,34 +110,15 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "application/xps"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "PDF readers",
     "Office suites"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Documents",
     "extensions": [
       ".xps"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".xps",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "application/xps"
@@ -156,21 +137,16 @@
     "Archival"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 10,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "DocumentFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 290.24,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32BE": "Read audio metadata",

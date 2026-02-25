@@ -1,6 +1,6 @@
 {
   "formatName": "Zstandard Compressed",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".zst",
     ".zstd"
@@ -57,24 +57,9 @@
       "description": "Zstandard magic number (0x28B52FFD)"
     }
   ],
-  "mime_types": [
-    "application/x-zst"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "7-Zip",
     "WinRAR"
-  ],
-  "use_cases": [
-    "File archiving",
-    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
@@ -82,11 +67,6 @@
       ".zst",
       ".zstd"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".zst",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/x-zstd-compressed"
@@ -105,21 +85,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 226.5,
-    "last_updated": "2026-02-24"
   }
 }

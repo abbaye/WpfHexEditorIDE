@@ -1,6 +1,6 @@
 {
   "formatName": "DLL Library",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".dll"
   ],
@@ -108,35 +108,15 @@
       "description": "Human-readable file size"
     }
   ],
-  "mime_types": [
-    "application/x-executabledll"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Windows OS",
     "Visual Studio"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Executables",
     "extensions": [
       ".dll"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".dll",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "application/x-msdownload"
@@ -150,22 +130,17 @@
     "Shared libraries"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 80,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 7,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-12",
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 8,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "ExecutablesFormat": true,
     "Platform": "Windows"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 401.61,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read header",

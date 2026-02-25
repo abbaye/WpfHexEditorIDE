@@ -1,6 +1,6 @@
 {
   "formatName": "Meridian Lossless Packing",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".mlp"
   ],
@@ -60,35 +60,15 @@
       "description": "Original Size"
     }
   ],
-  "mime_types": [
-    "audio/mlp"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Dolby TrueHD players",
     "Blu-ray players"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
     "extensions": [
       ".mlp"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".mlp",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "audio/mlp"
@@ -107,21 +87,16 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 250.98,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "calculateCRC32": "Validate CRC",

@@ -1,6 +1,6 @@
 {
   "formatName": "Game Boy Advance ROM",
-  "version": "2.3",
+  "version": "2.4",
   "extensions": [
     ".gba"
   ],
@@ -202,34 +202,17 @@
       "description": "Index Offset"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 12,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "VisualBoyAdvance",
     "mGBA",
     "NO$GBA",
     "RetroArch"
   ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
-  ],
   "format_relationships": {
     "category": "Game",
     "extensions": [
       ".gba"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".gba",
-    "defined_fields": 12
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -248,21 +231,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "CompletenessScore": 67,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 15,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 11,
-    "change_percentage": 425.33,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read game header",

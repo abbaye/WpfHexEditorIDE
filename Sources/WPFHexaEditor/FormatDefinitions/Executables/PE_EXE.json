@@ -1,10 +1,8 @@
 {
   "formatName": "Windows Executable (PE)",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".exe",
-    ".dll",
-    ".sys",
     ".scr"
   ],
   "description": "Windows Portable Executable format",
@@ -269,26 +267,10 @@
       "description": "Number of sections in the PE file"
     }
   ],
-  "mime_types": [
-    "application/x-executableexe"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 15,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Windows OS",
     "Visual Studio",
     "IDA Pro"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Executables",
@@ -297,10 +279,6 @@
       ".dll",
       ".sys"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".exe",
-    "defined_fields": 15
   },
   "MimeTypes": [
     "application/x-msdownload",
@@ -315,21 +293,16 @@
     "Applications"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 85,
+    "CompletenessScore": 65,
     "DocumentationLevel": "detailed",
-    "BlocksDefined": 7,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-12",
+    "BlocksDefined": 20,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "ExecutablesFormat": true,
     "Platform": "Windows"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 487.8,
-    "last_updated": "2026-02-24"
   }
 }

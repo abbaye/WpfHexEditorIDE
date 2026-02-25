@@ -1,6 +1,6 @@
 {
   "formatName": "GIMP Image",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".xcf"
   ],
@@ -67,35 +67,15 @@
       "description": "GIMP XCF format version"
     }
   ],
-  "mime_types": [
-    "image/xcf"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Image viewers",
     "GIMP"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
     "extensions": [
       ".xcf"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".xcf",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "image/xcf"
@@ -114,21 +94,16 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 241.94,
-    "last_updated": "2026-02-24"
   }
 }

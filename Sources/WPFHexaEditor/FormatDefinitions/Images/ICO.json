@@ -1,6 +1,6 @@
 {
   "formatName": "ICO Icon",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".ico"
   ],
@@ -76,28 +76,11 @@
       "description": "Number of icon images in the file"
     }
   ],
-  "mime_types": [
-    "image/ico"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Windows",
     "Icon editors",
     "GIMP",
     "Photoshop"
-  ],
-  "use_cases": [
-    "Application icons",
-    "Favicon (websites)",
-    "Windows icons",
-    "Cursor files (.cur)"
   ],
   "format_relationships": {
     "microsoft_format": true,
@@ -105,18 +88,6 @@
       "CUR"
     ],
     "used_in": "Windows executables"
-  },
-  "technical_details": {
-    "multi_resolution": true,
-    "max_size": "256x256",
-    "color_depths": [
-      "1-bit",
-      "4-bit",
-      "8-bit",
-      "24-bit",
-      "32-bit"
-    ],
-    "transparency": true
   },
   "MimeTypes": [
     "image/x-icon",
@@ -134,21 +105,16 @@
     "Application icons"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 68,
+    "CompletenessScore": 35,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-06",
+    "BlocksDefined": 4,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "Platform": "Windows"
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 263.89,
-    "last_updated": "2026-02-24"
   }
 }

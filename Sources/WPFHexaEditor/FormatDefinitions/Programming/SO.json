@@ -1,6 +1,6 @@
 {
   "formatName": "Linux Shared Object",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".so"
   ],
@@ -105,23 +105,10 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 5,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Linux",
     "Unix",
     "Dynamic linker"
-  ],
-  "use_cases": [
-    "Linux shared libraries",
-    "Plugin systems",
-    "Dynamic loading"
   ],
   "format_relationships": {
     "linux_format": true,
@@ -130,12 +117,6 @@
     "related": [
       "DYLIB"
     ]
-  },
-  "technical_details": {
-    "shared_library": true,
-    "elf_format": true,
-    "dynamic_linking": true,
-    "position_independent": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -154,20 +135,15 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 9,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 318.05,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",

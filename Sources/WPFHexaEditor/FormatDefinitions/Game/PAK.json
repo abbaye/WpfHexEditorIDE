@@ -1,6 +1,6 @@
 {
   "formatName": "Game Package Archive",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".pak"
   ],
@@ -75,32 +75,16 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "QuakePak",
     "Game extractors",
     "7-Zip"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
     "extensions": [
       ".pak"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".pak",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -119,21 +103,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
+    "CompletenessScore": 21,
     "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 224.75,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read header",

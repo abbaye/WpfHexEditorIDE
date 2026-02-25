@@ -1,6 +1,6 @@
 {
   "formatName": "GIF Image",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".gif"
   ],
@@ -183,37 +183,16 @@
       "description": "gifWidth x gifHeight computed total pixels"
     }
   ],
-  "mime_types": [
-    "image/gif"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 7,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Web browsers",
     "GIMP",
     "Photoshop"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
     "extensions": [
       ".gif"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".gif",
-    "defined_fields": 7
   },
   "MimeTypes": [
     "image/gif"
@@ -233,11 +212,11 @@
     "Emojis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 80,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-09",
+    "CompletenessScore": 56,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 16,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -245,10 +224,5 @@
     "ColorSpace": "Indexed (256 colors)",
     "BitDepth": 8,
     "ImagesFormat": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 367.71,
-    "last_updated": "2026-02-24"
   }
 }

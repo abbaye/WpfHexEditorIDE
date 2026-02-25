@@ -1,6 +1,6 @@
 {
   "formatName": "InterBase Database",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".ib",
     ".ibd"
@@ -67,21 +67,9 @@
       "description": "Version"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Database",
@@ -89,10 +77,6 @@
       ".ib",
       ".ibd"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".ib",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -111,20 +95,15 @@
     "Backup"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
+    "CompletenessScore": 15,
     "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 249.47,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"

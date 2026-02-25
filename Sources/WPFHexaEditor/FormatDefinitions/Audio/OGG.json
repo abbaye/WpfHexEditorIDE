@@ -1,10 +1,9 @@
 {
   "formatName": "OGG Audio",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".ogg",
-    ".oga",
-    ".ogv"
+    ".oga"
   ],
   "description": "Ogg container format - Often contains Vorbis audio",
   "category": "Audio",
@@ -114,27 +113,10 @@
       "description": "Logical stream serial number"
     }
   ],
-  "mime_types": [
-    "audio/ogg"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "VLC",
     "Firefox",
     "Audacity"
-  ],
-  "use_cases": [
-    "Music distribution",
-    "Streaming audio",
-    "Portable music"
   ],
   "format_relationships": {
     "category": "Audio",
@@ -143,12 +125,6 @@
       ".oga",
       ".ogv"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".ogg",
-    "defined_fields": 4,
-    "compression_type": "Lossy"
   },
   "MimeTypes": [
     "audio/ogg",
@@ -167,21 +143,16 @@
     "Web audio"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 75,
+    "CompletenessScore": 44,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-09",
+    "BlocksDefined": 7,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "AudioFormat": true,
     "CompressionMethod": "Vorbis codec"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 354.36,
-    "last_updated": "2026-02-24"
   }
 }

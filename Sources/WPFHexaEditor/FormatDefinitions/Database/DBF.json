@@ -1,6 +1,6 @@
 {
   "formatName": "dBASE Database",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".dbf"
   ],
@@ -93,31 +93,15 @@
       "description": "Version"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Database",
     "extensions": [
       ".dbf"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".dbf",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -136,20 +120,15 @@
     "Backup"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 7,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 281.98,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"

@@ -490,11 +490,69 @@ namespace WpfHexaEditor
                         _variableContext?.SetVariable(block.StoreAs, fieldVm.RawValue);
                     }
 
+                    // Apply field-level valueMap (translate raw value to human name)
+                    if (block.ValueMap != null && fieldVm.RawValue != null)
+                    {
+                        string mapKey = fieldVm.RawValue.ToString();
+                        if (block.ValueMap.TryGetValue(mapKey, out string mappedName))
+                        {
+                            fieldVm.FormattedValue = $"{fieldVm.RawValue} ({mappedName})";
+                            if (!string.IsNullOrWhiteSpace(block.MappedValueStoreAs))
+                                _variableContext?.SetVariable(block.MappedValueStoreAs, mappedName);
+                        }
+                    }
+
                     // Add to panel (skip hidden fields)
                     if (block.Hidden != true)
                     {
                         ParsedFieldsPanel.ParsedFields.Add(fieldVm);
                         _parsedFieldCount++;
+
+                    // Process bitfield extractions (create sub-field ViewModels)
+                    if (block.Bitfields != null && fieldVm.RawValue != null)
+                    {
+                        try
+                        {
+                            long rawVal = Convert.ToInt64(fieldVm.RawValue);
+                            foreach (var bf in block.Bitfields)
+                            {
+                                long bfValue = bf.ExtractValue(rawVal);
+
+                                // Store in variable context
+                                if (!string.IsNullOrWhiteSpace(bf.StoreAs))
+                                    _variableContext?.SetVariable(bf.StoreAs, bfValue);
+
+                                // Determine display value (with optional valueMap)
+                                string displayValue = bfValue.ToString();
+                                if (bf.ValueMap != null && bf.ValueMap.TryGetValue(bfValue.ToString(), out string bfMapped))
+                                {
+                                    displayValue = $"{bfValue} ({bfMapped})";
+                                    if (!string.IsNullOrWhiteSpace(bf.StoreAs))
+                                        _variableContext?.SetVariable(bf.StoreAs + "Name", bfMapped);
+                                }
+
+                                // Create sub-field ViewModel
+                                var subField = new ParsedFieldViewModel
+                                {
+                                    Name = bf.Name ?? $"Bits {bf.Bits}",
+                                    Offset = fieldVm.Offset,
+                                    Length = fieldVm.Length,
+                                    ValueType = "bitfield",
+                                    RawValue = bfValue,
+                                    FormattedValue = displayValue,
+                                    Description = bf.Description ?? $"Bits {bf.Bits} of {fieldVm.Name}",
+                                    Color = fieldVm.Color,
+                                    IndentLevel = depth + 1,
+                                    GroupName = "Bitfields",
+                                    IsValid = true,
+                                    FieldIcon = "\U0001f527"
+                                };
+                                ParsedFieldsPanel.ParsedFields.Add(subField);
+                                _parsedFieldCount++;
+                            }
+                        }
+                        catch { /* Bitfield extraction failed, continue */ }
+                    }
 
                         // Check limit after adding
                         if (_parsedFieldCount >= MaxFieldsLimit)

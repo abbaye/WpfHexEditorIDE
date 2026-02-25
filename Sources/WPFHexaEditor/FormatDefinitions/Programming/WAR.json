@@ -1,6 +1,6 @@
 {
   "formatName": "Web Application Archive",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".war"
   ],
@@ -70,31 +70,15 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Compilers",
     "Linkers"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Programming",
     "extensions": [
       ".war"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".war",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -113,20 +97,15 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 209.68,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read header",
     "calculateCRC32": "Validate",

@@ -1,6 +1,6 @@
 {
   "formatName": "Sega Master System ROM",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".sms",
     ".gg"
@@ -121,21 +121,9 @@
       "description": "Sections"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 6,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
@@ -143,10 +131,6 @@
       ".sms",
       ".gg"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".sms",
-    "defined_fields": 6
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -165,21 +149,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 53,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 7,
-    "change_percentage": 236.71,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read executable header"

@@ -1,6 +1,6 @@
 {
   "formatName": "DICOM Structured Report",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".dcm",
     ".sr"
@@ -82,21 +82,9 @@
       "description": "Color depth"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Medical",
@@ -104,10 +92,6 @@
       ".dcm",
       ".sr"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".dcm",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -123,20 +107,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 222.77,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read width and height",
     "multiply": "Calculate total pixels",

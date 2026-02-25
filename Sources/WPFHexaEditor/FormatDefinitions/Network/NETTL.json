@@ -1,6 +1,6 @@
 {
   "formatName": "HP-UX nettl",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".trc0",
     ".trc1"
@@ -117,21 +117,9 @@
       "description": "Packet Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 6,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Wireshark",
     "tcpdump"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Network",
@@ -139,10 +127,6 @@
       ".trc0",
       ".trc1"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".trc0",
-    "defined_fields": 6
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -161,20 +145,15 @@
     "Security analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 48,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 8,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 328.57,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32BE": "Read HP-UX nettl header",
     "readUInt16BE": "Read subsystem ID"

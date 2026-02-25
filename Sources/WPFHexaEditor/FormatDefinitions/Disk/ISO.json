@@ -1,6 +1,6 @@
 {
   "formatName": "ISO Disk Image",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".iso"
   ],
@@ -72,26 +72,12 @@
       "valueType": "uint8"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Virtual CD/DVD software",
     "7-Zip",
     "WinRAR",
     "Windows Explorer",
     "ImgBurn"
-  ],
-  "use_cases": [
-    "Disc image creation",
-    "Software distribution",
-    "Bootable media",
-    "OS installation media"
   ],
   "format_relationships": {
     "iso_9660_standard": true,
@@ -104,12 +90,6 @@
       "BIN",
       "CUE"
     ]
-  },
-  "technical_details": {
-    "disc_image_format": true,
-    "iso_9660": true,
-    "max_file_size": "4GB (ISO9660) / 16EB (UDF)",
-    "bootable_support": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -128,18 +108,13 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 243.28,
-    "last_updated": "2026-02-24"
-  }
+  "TechnicalDetails": {}
 }

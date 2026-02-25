@@ -240,6 +240,40 @@ namespace WpfHexaEditor.Core.FormatDetection
                 if (extractedValue != null)
                 {
                     _variables[block.StoreAs] = extractedValue;
+
+                    // Process bitfield extractions
+                    if (block.Bitfields != null)
+                    {
+                        try
+                        {
+                            long rawVal = Convert.ToInt64(extractedValue);
+                            foreach (var bf in block.Bitfields)
+                            {
+                                long bfValue = bf.ExtractValue(rawVal);
+                                if (!string.IsNullOrWhiteSpace(bf.StoreAs))
+                                    _variables[bf.StoreAs] = bfValue;
+
+                                // Apply bitfield-level valueMap
+                                if (bf.ValueMap != null && bf.ValueMap.TryGetValue(bfValue.ToString(), out string bfMapped))
+                                {
+                                    if (!string.IsNullOrWhiteSpace(bf.StoreAs))
+                                        _variables[bf.StoreAs + "Name"] = bfMapped;
+                                }
+                            }
+                        }
+                        catch { /* Bitfield extraction failed, continue */ }
+                    }
+
+                    // Apply field-level valueMap
+                    if (block.ValueMap != null)
+                    {
+                        string key = extractedValue.ToString();
+                        if (block.ValueMap.TryGetValue(key, out string mappedName))
+                        {
+                            if (!string.IsNullOrWhiteSpace(block.MappedValueStoreAs))
+                                _variables[block.MappedValueStoreAs] = mappedName;
+                        }
+                    }
                 }
             }
 
@@ -684,123 +718,16 @@ namespace WpfHexaEditor.Core.FormatDetection
         }
 
         /// <summary>
-        /// Evaluate arithmetic expression
-        /// Supports: +, -, *, /, variable references
-        /// Example: "currentOffset + 46", "length * 2"
+        /// Evaluate arithmetic expression using the proper recursive descent parser
+        /// with correct operator precedence (* / before + -) and parentheses support.
+        /// Delegates to ExpressionEvaluator.EvaluateStatic.
         /// </summary>
         private long EvaluateExpression(string expression)
         {
             if (string.IsNullOrWhiteSpace(expression))
                 return 0;
 
-            // Simple expression evaluator (supports +, -, *, /)
-            // Replace variables with values
-            var expr = expression.Trim();
-
-            // Replace variable names with their values
-            foreach (var kvp in _variables)
-            {
-                expr = expr.Replace(kvp.Key, Convert.ToString(kvp.Value));
-            }
-
-            // Simple calculator (left-to-right evaluation)
-            try
-            {
-                var tokens = TokenizeExpression(expr);
-                return EvaluateTokens(tokens);
-            }
-            catch
-            {
-                return 0; // Fallback on error
-            }
-        }
-
-        /// <summary>
-        /// Tokenize expression into numbers and operators
-        /// </summary>
-        private List<object> TokenizeExpression(string expr)
-        {
-            var tokens = new List<object>();
-            var currentNumber = "";
-
-            foreach (char c in expr)
-            {
-                if (char.IsDigit(c) || c == '.')
-                {
-                    currentNumber += c;
-                }
-                else if (c == '+' || c == '-' || c == '*' || c == '/')
-                {
-                    if (currentNumber.Length > 0)
-                    {
-                        tokens.Add(long.Parse(currentNumber));
-                        currentNumber = "";
-                    }
-                    tokens.Add(c);
-                }
-                else if (c == '(' || c == ')')
-                {
-                    // Ignore parentheses for now (simple evaluator)
-                }
-                else if (!char.IsWhiteSpace(c))
-                {
-                    currentNumber += c; // Allow function calls like readUInt16
-                }
-            }
-
-            if (currentNumber.Length > 0)
-            {
-                // Check if it's a function call
-                if (currentNumber.StartsWith("readUInt"))
-                {
-                    tokens.Add(0L); // Placeholder for function result
-                }
-                else
-                {
-                    tokens.Add(long.Parse(currentNumber));
-                }
-            }
-
-            return tokens;
-        }
-
-        /// <summary>
-        /// Evaluate tokenized expression (left-to-right)
-        /// </summary>
-        private long EvaluateTokens(List<object> tokens)
-        {
-            if (tokens.Count == 0)
-                return 0;
-
-            long result = Convert.ToInt64(tokens[0]);
-
-            for (int i = 1; i < tokens.Count; i += 2)
-            {
-                if (i + 1 >= tokens.Count)
-                    break;
-
-                char op = (char)tokens[i];
-                long operand = Convert.ToInt64(tokens[i + 1]);
-
-                switch (op)
-                {
-                    case '+':
-                        result += operand;
-                        break;
-                    case '-':
-                        result -= operand;
-                        break;
-                    case '*':
-                        result *= operand;
-                        break;
-                    case '/':
-                        if (operand != 0)
-                            result /= operand;
-                        break;
-                }
-            }
-
-            return result;
+            return ExpressionEvaluator.EvaluateStatic(expression, _variables);
         }
 
         #endregion

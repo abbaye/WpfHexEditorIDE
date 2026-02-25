@@ -1,6 +1,6 @@
 {
   "formatName": "PDF Document",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".pdf"
   ],
@@ -109,37 +109,17 @@
       "description": "true if PDF is linearized for fast web viewing"
     }
   ],
-  "mime_types": [
-    "application/pdf"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Adobe Acrobat",
     "Web browsers",
     "Foxit Reader",
     "Preview (macOS)"
   ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
-  ],
   "format_relationships": {
     "category": "Documents",
     "extensions": [
       ".pdf"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".pdf",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "application/pdf"
@@ -159,22 +139,17 @@
     "Archival"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 88,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 7,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-10",
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 9,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "DocumentFormat": true,
     "SupportsEncryption": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 357.38,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read document header",

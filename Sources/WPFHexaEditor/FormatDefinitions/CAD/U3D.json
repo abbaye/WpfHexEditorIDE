@@ -1,6 +1,6 @@
 {
   "formatName": "Universal 3D",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".u3d"
   ],
@@ -94,31 +94,15 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "CAD",
     "extensions": [
       ".u3d"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".u3d",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -134,20 +118,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 7,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 305.56,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read mesh data",
     "multiply": "Calculate vertices",

@@ -1,6 +1,6 @@
 {
   "formatName": "RAR Archive",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".rar"
   ],
@@ -98,38 +98,16 @@
       "description": "Header CRC-32 integrity check result"
     }
   ],
-  "mime_types": [
-    "application/x-rar"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "WinRAR",
     "7-Zip",
     "The Unarchiver"
-  ],
-  "use_cases": [
-    "File compression",
-    "Archive distribution",
-    "Backup"
   ],
   "format_relationships": {
     "category": "Archives",
     "extensions": [
       ".rar"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".rar",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "application/vnd.rar",
@@ -148,11 +126,11 @@
     "Backup"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 88,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 7,
-    "ValidationRules": 2,
-    "LastUpdated": "2025-01-10",
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -160,10 +138,5 @@
     "CompressionMethod": "RAR proprietary",
     "ArchivesFormat": true,
     "SupportsEncryption": true
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 336.18,
-    "last_updated": "2026-02-24"
   }
 }

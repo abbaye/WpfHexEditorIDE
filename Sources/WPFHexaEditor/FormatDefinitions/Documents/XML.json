@@ -1,138 +1,109 @@
 {
   "formatName": "XML Document",
-  "version": "1.11",
+  "version": "2.0",
   "extensions": [
     ".xml"
   ],
-  "description": "Extensible Markup Language document",
+  "description": "Extensible Markup Language document. XML is a text-based markup language that defines rules for encoding documents in a format readable by both humans and machines. Files begin with the XML declaration <?xml followed by version and encoding attributes.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "references": {
     "specifications": [
-      "XML Document Format"
+      "W3C XML 1.0 (Fifth Edition) Recommendation",
+      "W3C XML 1.1 (Second Edition) Recommendation",
+      "W3C Namespaces in XML 1.0 (Third Edition)"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/XML"
+      "https://www.w3.org/TR/xml/",
+      "https://www.w3.org/TR/xml11/",
+      "https://en.wikipedia.org/wiki/XML",
+      "https://developer.mozilla.org/en-US/docs/Web/XML/XML_introduction"
     ]
   },
   "detection": {
-    "signature": "3C3F786D6C20",
+    "signature": "3C3F786D6C",
     "offset": 0,
     "required": true,
     "validation": {
-      "min_file_size": 6,
-      "max_signature_offset": 1024
+      "minFileSize": 6,
+      "maxSignatureOffset": 3
     }
   },
   "variables": {
     "currentOffset": 0,
-    "sampleRate": 0,
-    "channels": 0,
-    "bitDepth": 0,
-    "duration": 0,
-    "xmlDeclaration": "",
-    "byteRate": 0,
-    "samplesPerSecond": 0
+    "xmlDeclarationStart": "",
+    "spaceAfterXml": "",
+    "declarationAttributes": ""
+  },
+  "functions": {
+    "parseXMLDeclaration": "Parse the <?xml ... ?> processing instruction to extract version and encoding",
+    "extractUTF8String": "Extract text content from an XML document as UTF-8",
+    "detectBOM": "Detect byte order mark (EF BB BF for UTF-8, FF FE for UTF-16 LE, FE FF for UTF-16 BE) preceding the XML declaration"
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "XML Declaration",
+      "name": "XML Declaration Start",
       "offset": 0,
-      "length": 6,
+      "length": 5,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "<?xml declaration",
-      "storeAs": "xmlDeclaration",
+      "description": "The opening <?xml sequence that identifies this file as an XML document (hex 3C 3F 78 6D 6C)",
+      "storeAs": "xmlDeclarationStart",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Sample Rate",
-      "variable": "sampleRate",
-      "description": "Sample Rate"
+      "type": "field",
+      "name": "Space After Declaration",
+      "offset": 5,
+      "length": 1,
+      "color": "#C0C0C0",
+      "opacity": 0.2,
+      "description": "Mandatory whitespace character (0x20) separating <?xml from the version attribute",
+      "storeAs": "spaceAfterXml",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Channels",
-      "variable": "channels",
-      "description": "Channels"
-    },
-    {
-      "type": "metadata",
-      "name": "Byte Rate",
-      "variable": "byteRate",
-      "description": "Calculated byte rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "type": "field",
+      "name": "Version and Encoding Region",
+      "offset": 6,
+      "length": 30,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Region containing version and encoding attributes, e.g. version=\"1.0\" encoding=\"UTF-8\"?>. Actual length varies per file; this captures the typical declaration.",
+      "storeAs": "declarationAttributes",
+      "valueType": "ascii"
     }
   ],
-  "mime_types": [
-    "application/xml"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
-  "software": [
-    "PDF readers",
-    "Office suites"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
-  ],
-  "format_relationships": {
-    "category": "Documents",
-    "extensions": [
-      ".xml"
-    ]
-  },
-  "technical_details": {
-    "primary_extension": ".xml",
-    "defined_fields": 1
-  },
   "MimeTypes": [
     "application/xml",
     "text/xml"
   ],
   "Software": [
-    "Text editors",
-    "All browsers",
-    "XML editors"
+    "Text editors (VS Code, Notepad++, Sublime Text)",
+    "Web browsers (Chrome, Firefox, Edge)",
+    "XML editors (XMLSpy, Oxygen XML)",
+    "All major programming languages and frameworks"
   ],
   "UseCases": [
-    "Data structure",
-    "Configuration",
-    "SOAP",
-    "Document markup"
+    "Data interchange and serialization",
+    "Configuration files (Maven, Spring, .NET)",
+    "Web services (SOAP, RSS, Atom)",
+    "Document markup (XHTML, DocBook, SVG)"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 78,
+    "CompletenessScore": 42,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-11",
+    "BlocksDefined": 3,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 243.16,
-    "last_updated": "2026-02-24"
-  },
-  "functions": {
-    "readUInt32BE": "Read audio header",
-    "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
+  "TechnicalDetails": {
+    "TextFormat": true,
+    "Encoding": "UTF-8 (most common), UTF-16, ISO-8859-1",
+    "DeclarationRequired": "Recommended but technically optional in XML 1.0",
+    "CaseSensitive": true
   }
 }

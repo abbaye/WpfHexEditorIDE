@@ -1,6 +1,6 @@
 {
   "formatName": "Rich Text Format",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".rtf"
   ],
@@ -63,40 +63,17 @@
       "valueType": "uint8"
     }
   ],
-  "mime_types": [
-    "application/rtf"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "WordPad",
     "Microsoft Word",
     "LibreOffice",
     "Text editors"
   ],
-  "use_cases": [
-    "Cross-platform text documents",
-    "Simple formatted documents",
-    "Legacy document exchange"
-  ],
   "format_relationships": {
     "microsoft_format": true,
     "text_based": true,
     "predecessor_to": "DOCX",
     "universal_support": true
-  },
-  "technical_details": {
-    "text_format": true,
-    "ascii_based": true,
-    "formatting_codes": true,
-    "created": "1987",
-    "simple_formatting": true
   },
   "MimeTypes": [
     "application/rtf",
@@ -114,20 +91,15 @@
     "Legacy compatibility"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 65,
+    "CompletenessScore": 32,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-06",
+    "BlocksDefined": 2,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "DocumentFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 245.53,
-    "last_updated": "2026-02-24"
   }
 }

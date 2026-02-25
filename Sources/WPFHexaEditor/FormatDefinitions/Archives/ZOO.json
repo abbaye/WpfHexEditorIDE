@@ -1,6 +1,6 @@
 {
   "formatName": "ZOO Archive",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".zoo"
   ],
@@ -67,36 +67,16 @@
       "description": "Byte offset to first archived file"
     }
   ],
-  "mime_types": [
-    "application/x-zoo"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "zoo",
     "7-Zip",
     "Legacy archivers"
-  ],
-  "use_cases": [
-    "File archiving",
-    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
     "extensions": [
       ".zoo"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".zoo",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "application/x-zoo-compressed"
@@ -115,21 +95,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 3,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 245.6,
-    "last_updated": "2026-02-24"
   }
 }

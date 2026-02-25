@@ -1,6 +1,6 @@
 {
   "formatName": "Program Database",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".pdb"
   ],
@@ -95,23 +95,10 @@
       "description": "Version"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Visual Studio",
     "WinDbg",
     "IDA Pro"
-  ],
-  "use_cases": [
-    "Debugging symbols",
-    "Crash analysis",
-    "Performance profiling"
   ],
   "format_relationships": {
     "microsoft_format": true,
@@ -120,15 +107,6 @@
       "DLL"
     ],
     "debug_info": true
-  },
-  "technical_details": {
-    "debug_symbols": true,
-    "source_line_info": true,
-    "function_names": true,
-    "pdb_format": [
-      "PDB 2.0",
-      "PDB 7.0"
-    ]
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -147,20 +125,15 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 8,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 301.57,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read DB header",
     "extractASCIIString": "Read schema"

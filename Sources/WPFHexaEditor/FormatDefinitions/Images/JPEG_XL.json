@@ -1,6 +1,6 @@
 {
   "formatName": "JPEG XL Image",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".jxl"
   ],
@@ -61,35 +61,14 @@
       "endianness": "big"
     }
   ],
-  "mime_types": [
-    "image/jxl"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Limited support - emerging format"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
     "extensions": [
       ".jxl"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".jxl",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "image/jpeg_xl"
@@ -108,21 +87,16 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 348.25,
-    "last_updated": "2026-02-24"
   }
 }

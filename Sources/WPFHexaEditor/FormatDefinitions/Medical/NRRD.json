@@ -1,6 +1,6 @@
 {
   "formatName": "NRRD Medical Image",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".nrrd",
     ".nhdr"
@@ -89,21 +89,9 @@
       "description": "Width x Height"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Medical",
@@ -111,10 +99,6 @@
       ".nrrd",
       ".nhdr"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".nrrd",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -130,20 +114,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 7,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 216.83,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read medical header",
     "extractASCIIString": "Read patient",

@@ -1,6 +1,6 @@
 {
   "formatName": "Super Nintendo ROM",
-  "version": "3.0",
+  "version": "3.1",
   "extensions": [
     ".smc",
     ".sfc"
@@ -75,7 +75,20 @@
       "storeAs": "romLayout",
       "description": "0x20=LoROM | 0x21=HiROM | 0x22=LoROM+S-DD1 | 0x23=LoROM+SA-1 | 0x25=ExHiROM | +0x10=FastROM",
       "validationRules": {
-        "allowedValues": [32, 33, 34, 35, 36, 37, 48, 49, 50, 51, 52, 53]
+        "allowedValues": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53
+        ]
       }
     },
     {
@@ -190,27 +203,12 @@
       "description": "Human-readable ROM size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 96,
-    "documentation_level": "detailed",
-    "blocks_defined": 13,
-    "validation_rules": 3,
-    "last_updated": "2026-02-24",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Snes9x",
     "ZSNES",
     "bsnes/higan",
     "RetroArch",
     "Mesen-S"
-  ],
-  "use_cases": [
-    "ROM hacking",
-    "Emulation",
-    "Preservation",
-    "Translation patching"
   ],
   "MimeTypes": [
     "application/octet-stream"
@@ -232,5 +230,12 @@
     "Platform": "Super Nintendo Entertainment System",
     "primary_extension": ".smc",
     "defined_fields": 13
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 66,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 13,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-02-24"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "TAR Archive",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".tar"
   ],
@@ -117,37 +117,16 @@
       "description": "Human-readable file size"
     }
   ],
-  "mime_types": [
-    "application/x-tar"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 5,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "tar",
     "7-Zip",
     "WinRAR"
-  ],
-  "use_cases": [
-    "File archiving",
-    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
     "extensions": [
       ".tar"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".tar",
-    "defined_fields": 5
   },
   "MimeTypes": [
     "application/x-tar"
@@ -165,11 +144,11 @@
     "Container images"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 82,
+    "CompletenessScore": 50,
     "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-08",
+    "BlocksDefined": 8,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -177,10 +156,5 @@
     "CompressionMethod": "None (often combined with GZIP)",
     "ArchivesFormat": true,
     "Platform": "Unix/Linux"
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 366.04,
-    "last_updated": "2026-02-24"
   }
 }

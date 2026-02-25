@@ -1,9 +1,8 @@
 {
   "formatName": "LZMA Compression",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
-    ".lzma",
-    ".xz"
+    ".lzma"
   ],
   "description": "LZMA (Lempel-Ziv-Markov chain Algorithm) compressed file format, used in 7-Zip and XZ Utils",
   "category": "Archives",
@@ -89,25 +88,10 @@
       "description": "Human-readable file size"
     }
   ],
-  "mime_types": [
-    "application/x-lzma"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "LZMA utils",
     "7-Zip",
     "xz"
-  ],
-  "use_cases": [
-    "File archiving",
-    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
@@ -115,12 +99,6 @@
       ".lzma",
       ".xz"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".lzma",
-    "defined_fields": 3,
-    "compression_method": "LZMA"
   },
   "MimeTypes": [
     "application/x-lzma-compressed"
@@ -139,21 +117,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 6,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 244.06,
-    "last_updated": "2026-02-24"
   }
 }

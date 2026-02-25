@@ -1,6 +1,6 @@
 {
   "formatName": "ACE Archive",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".ace"
   ],
@@ -75,34 +75,14 @@
       "description": "Header integrity validation result"
     }
   ],
-  "mime_types": [
-    "application/x-ace"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "WinACE (discontinued)",
     "7-Zip"
-  ],
-  "use_cases": [
-    "Legacy archives",
-    "High compression archives"
   ],
   "format_relationships": {
     "proprietary": true,
     "discontinued": true,
     "security_issues": "CVE-2018-20250"
-  },
-  "technical_details": {
-    "compression_method": "Proprietary",
-    "discontinued": "2007",
-    "security_vulnerable": true
   },
   "MimeTypes": [
     "application/x-ace-compressed"
@@ -121,21 +101,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 32,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 250.0,
-    "last_updated": "2026-02-24"
   }
 }

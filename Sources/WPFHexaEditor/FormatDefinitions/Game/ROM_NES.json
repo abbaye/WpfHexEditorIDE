@@ -1,6 +1,6 @@
 {
   "formatName": "NES ROM",
-  "version": "2.0",
+  "version": "2.1",
   "extensions": [
     ".nes"
   ],
@@ -181,26 +181,11 @@
       "description": "Human-readable total ROM size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 95,
-    "documentation_level": "detailed",
-    "blocks_defined": 12,
-    "validation_rules": 2,
-    "last_updated": "2026-02-24",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Nestopia",
     "FCEUX",
     "RetroArch",
     "Mesen"
-  ],
-  "use_cases": [
-    "ROM hacking",
-    "Emulation",
-    "Preservation",
-    "Homebrew development"
   ],
   "MimeTypes": [
     "application/octet-stream"
@@ -222,5 +207,12 @@
     "Platform": "Nintendo Entertainment System",
     "primary_extension": ".nes",
     "defined_fields": 12
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 66,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 13,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-02-24"
   }
 }

@@ -1481,76 +1481,14 @@ namespace WpfHexaEditor.Core.FormatDetection
 
             try
             {
-                // Tokenize: split on operators while keeping them
-                var tokens = new List<string>();
-                string current = "";
-                foreach (char c in expression)
-                {
-                    if (c == '+' || c == '-' || c == '*' || c == '/')
-                    {
-                        if (current.Trim().Length > 0)
-                            tokens.Add(current.Trim());
-                        tokens.Add(c.ToString());
-                        current = "";
-                    }
-                    else
-                    {
-                        current += c;
-                    }
-                }
-                if (current.Trim().Length > 0)
-                    tokens.Add(current.Trim());
-
-                if (tokens.Count == 0) return;
-
-                // Evaluate: resolve values then compute left-to-right
-                double result = ResolveTokenValue(tokens[0]);
-
-                for (int i = 1; i < tokens.Count - 1; i += 2)
-                {
-                    string op = tokens[i];
-                    double right = ResolveTokenValue(tokens[i + 1]);
-
-                    switch (op)
-                    {
-                        case "+": result += right; break;
-                        case "-": result -= right; break;
-                        case "*": result *= right; break;
-                        case "/": result = right != 0 ? result / right : 0; break;
-                    }
-                }
-
-                // Store as long if integer, otherwise double
-                if (result == Math.Floor(result) && !double.IsInfinity(result))
-                    _variables[targetVariable] = (long)result;
-                else
-                    _variables[targetVariable] = result;
+                // Use the proper recursive descent parser with operator precedence
+                long result = ExpressionEvaluator.EvaluateStatic(expression, _variables);
+                _variables[targetVariable] = result;
             }
             catch
             {
                 _variables[targetVariable] = 0L;
             }
-        }
-
-        private double ResolveTokenValue(string token)
-        {
-            // Check if it's a variable reference (with or without var: prefix)
-            string varName = token.StartsWith("var:") ? token.Substring(4) : token;
-
-            if (_variables.TryGetValue(varName, out var val))
-                return Convert.ToDouble(val);
-
-            // Try parse as number
-            if (double.TryParse(token, System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture, out double num))
-                return num;
-
-            // Try hex
-            if (token.StartsWith("0x") && long.TryParse(token.Substring(2),
-                System.Globalization.NumberStyles.HexNumber, null, out long hex))
-                return hex;
-
-            return 0;
         }
 
         /// <summary>

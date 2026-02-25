@@ -1,6 +1,6 @@
 {
   "formatName": "Python Compiled Bytecode",
-  "version": "2.2",
+  "version": "2.3",
   "extensions": [
     ".pyc",
     ".pyo"
@@ -83,33 +83,14 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Python interpreter",
     "CPython"
-  ],
-  "use_cases": [
-    "Python bytecode",
-    "Faster Python loading",
-    "Compiled Python modules"
   ],
   "format_relationships": {
     "python_format": true,
     "generated_from": ".py files",
     "cached_in": "__pycache__"
-  },
-  "technical_details": {
-    "bytecode_format": true,
-    "python_version_specific": true,
-    "faster_loading": true,
-    "not_obfuscation": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -128,18 +109,13 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 33,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 284.8,
-    "last_updated": "2026-02-24"
-  }
+  "TechnicalDetails": {}
 }

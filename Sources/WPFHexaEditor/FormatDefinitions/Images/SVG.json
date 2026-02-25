@@ -1,18 +1,18 @@
 {
   "formatName": "SVG Vector Image",
-  "version": "1.10",
+  "version": "2.0",
   "extensions": [
     ".svg",
     ".svgz"
   ],
-  "description": "Scalable Vector Graphics - XML-based vector image",
+  "description": "Scalable Vector Graphics - an XML-based vector image format for two-dimensional graphics. SVG files begin with either an <svg root element directly or an <?xml declaration followed by the <svg element. SVGZ files are gzip-compressed SVG.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "references": {
     "specifications": [
       "W3C SVG 2 Specification",
-      "Scalable Vector Graphics Recommendation",
-      "SVG 1.1 (Second Edition) W3C Recommendation"
+      "W3C SVG 1.1 (Second Edition) Recommendation",
+      "W3C Scalable Vector Graphics Recommendation"
     ],
     "WebLinks": [
       "https://www.w3.org/TR/SVG2/",
@@ -26,101 +26,73 @@
     "offset": 0,
     "required": false,
     "validation": {
-      "min_file_size": 5,
-      "max_signature_offset": 1024
+      "minFileSize": 5,
+      "maxSignatureOffset": 1024
     }
-  },
-  "functions": {
-    "extractASCIIString": "Extract SVG XML content and metadata",
-    "extractUTF8String": "Extract Unicode SVG text content"
   },
   "variables": {
     "currentOffset": 0,
-    "svgOpeningTag": ""
+    "svgTagStart": "",
+    "svgAttributes": ""
+  },
+  "functions": {
+    "extractASCIIString": "Extract SVG XML content and tag attributes as ASCII text",
+    "extractUTF8String": "Extract Unicode text content from SVG elements",
+    "detectBOM": "Detect byte order mark that may precede the XML/SVG content"
   },
   "blocks": [
     {
       "type": "signature",
       "name": "SVG Opening Tag",
       "offset": 0,
-      "length": 5,
+      "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "<svg tag (may be preceded by XML declaration)",
-      "storeAs": "svgOpeningTag",
+      "description": "Opening <svg tag (hex 3C 73 76 67). May be preceded by an <?xml declaration in which case detection falls back to maxSignatureOffset search.",
+      "storeAs": "svgTagStart",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "SVG Tag Attributes Region",
+      "offset": 4,
+      "length": 30,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Region capturing the SVG root element attributes such as xmlns, viewBox, width, and height. Actual length varies per file; this captures a typical opening.",
+      "storeAs": "svgAttributes",
       "valueType": "ascii"
     }
   ],
-  "mime_types": [
-    "image/svg"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
-  "software": [
-    "Web browsers",
-    "Inkscape",
-    "Adobe Illustrator",
-    "Figma"
-  ],
-  "use_cases": [
-    "Web graphics",
-    "Scalable icons",
-    "Logos",
-    "Infographics",
-    "Responsive design"
-  ],
-  "format_relationships": {
-    "w3c_standard": true,
-    "xml_based": true,
-    "vector_format": true,
-    "related": [
-      "PDF",
-      "EPS"
-    ]
-  },
-  "technical_details": {
-    "vector_graphics": true,
-    "xml_format": true,
-    "scripting": "JavaScript",
-    "styling": "CSS",
-    "animation": "SMIL"
-  },
   "MimeTypes": [
     "image/svg+xml"
   ],
   "Software": [
     "Inkscape",
     "Adobe Illustrator",
-    "Web browsers",
-    "Sketch"
+    "Web browsers (Chrome, Firefox, Edge, Safari)",
+    "Figma and Sketch"
   ],
   "UseCases": [
-    "Vector graphics",
-    "Logos",
-    "Icons",
-    "Web graphics"
+    "Scalable vector graphics and illustrations",
+    "Logos and brand identity assets",
+    "Icons and UI elements",
+    "Interactive web graphics and data visualizations"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 70,
+    "CompletenessScore": 36,
     "DocumentationLevel": "standard",
     "BlocksDefined": 2,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-07",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
   "TechnicalDetails": {
-    "ImagesFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 247.46,
-    "last_updated": "2026-02-24"
+    "TextFormat": true,
+    "XMLBased": true,
+    "Encoding": "UTF-8 (most common)",
+    "W3CStandard": true,
+    "CompressedVariant": "SVGZ (gzip-compressed SVG)"
   }
 }

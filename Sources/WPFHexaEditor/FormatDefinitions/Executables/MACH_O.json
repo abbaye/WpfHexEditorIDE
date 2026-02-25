@@ -1,6 +1,6 @@
 {
   "formatName": "Mach-O Executable",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ""
   ],
@@ -89,17 +89,6 @@
       "valueType": "ascii"
     }
   ],
-  "mime_types": [
-    "application/x-executable"
-  ],
-  "quality_metrics": {
-    "completeness_score": 93,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "macOS",
     "iOS",
@@ -107,27 +96,12 @@
     "otool",
     "lipo"
   ],
-  "use_cases": [
-    "macOS/iOS applications",
-    "macOS libraries",
-    "Apple system binaries"
-  ],
   "format_relationships": {
     "apple_format": true,
     "replaces": "a.out on macOS",
     "related": [
       "DYLIB"
     ]
-  },
-  "technical_details": {
-    "executable_format": true,
-    "architectures": [
-      "x86_64",
-      "ARM64",
-      "ARM64e"
-    ],
-    "fat_binary": true,
-    "dynamic_linking": true
   },
   "MimeTypes": [
     "application/x-executable"
@@ -146,20 +120,15 @@
     "Debugging"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ExecutablesFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 339.07,
-    "last_updated": "2026-02-24"
   }
 }

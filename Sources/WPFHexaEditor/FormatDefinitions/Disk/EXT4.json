@@ -1,6 +1,6 @@
 {
   "formatName": "Ext4 Filesystem",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".ext4"
   ],
@@ -65,31 +65,15 @@
       "description": "Human-readable file size"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Disk",
     "extensions": [
       ".ext4"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".ext4",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -108,20 +92,15 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
+    "CompletenessScore": 15,
     "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 255.1,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read file header",
     "formatFileSize(var:fileSize)": "Format fileSize as readable size"

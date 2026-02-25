@@ -1,6 +1,6 @@
 {
   "formatName": "Android Package",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".apk"
   ],
@@ -55,23 +55,10 @@
       "valueType": "ascii"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Android OS",
     "Android Studio",
     "APK analyzers"
-  ],
-  "use_cases": [
-    "Android applications",
-    "Mobile app distribution",
-    "Google Play Store packages"
   ],
   "format_relationships": {
     "android_format": true,
@@ -82,17 +69,6 @@
       "native libs"
     ],
     "signed": true
-  },
-  "technical_details": {
-    "zip_based": true,
-    "java_bytecode": "DEX format",
-    "signature_required": true,
-    "apk_signature_scheme": [
-      "v1",
-      "v2",
-      "v3",
-      "v4"
-    ]
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -111,18 +87,13 @@
     "Analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 1,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
-  "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 190.0,
-    "last_updated": "2026-02-24"
-  }
+  "TechnicalDetails": {}
 }

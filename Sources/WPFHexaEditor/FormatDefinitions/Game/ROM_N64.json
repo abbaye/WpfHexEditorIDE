@@ -1,6 +1,6 @@
 {
   "formatName": "Nintendo 64 ROM",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".n64",
     ".z64",
@@ -190,23 +190,10 @@
       "description": "Version"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 12,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Project64",
     "Mupen64Plus",
     "RetroArch"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
@@ -215,10 +202,6 @@
       ".z64",
       ".v64"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".n64",
-    "defined_fields": 12
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -237,21 +220,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 14,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 402.22,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read game header"

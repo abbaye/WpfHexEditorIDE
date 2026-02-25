@@ -1,6 +1,6 @@
 {
   "formatName": "AutoCAD Drawing",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".dwg"
   ],
@@ -62,37 +62,17 @@
       "description": "Layer Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "AutoCAD",
     "BricsCAD",
     "LibreCAD",
     "DWG viewers"
   ],
-  "use_cases": [
-    "CAD drawings",
-    "Architecture",
-    "Engineering design",
-    "Technical drawings"
-  ],
   "format_relationships": {
     "autodesk_format": true,
     "proprietary": true,
     "industry_standard": "CAD",
     "alternative": "DXF"
-  },
-  "technical_details": {
-    "binary_format": true,
-    "vector_graphics": true,
-    "3d_support": true,
-    "proprietary_and_closed": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -108,20 +88,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 225.0,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read CAD header",
     "extractASCIIString": "Read metadata"

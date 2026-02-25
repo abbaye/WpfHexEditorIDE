@@ -1,6 +1,6 @@
 {
   "formatName": "AutoCAD DXF",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".dxf"
   ],
@@ -63,35 +63,17 @@
       "description": "Layer Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "AutoCAD",
     "LibreCAD",
     "QCAD",
     "All CAD software"
   ],
-  "use_cases": [
-    "CAD interchange",
-    "Open CAD format",
-    "Cross-software compatibility"
-  ],
   "format_relationships": {
     "autodesk_format": true,
     "open_format": true,
     "interchange_for": "DWG",
     "text_based": true
-  },
-  "technical_details": {
-    "ascii_or_binary": true,
-    "human_readable": "ASCII version",
-    "universal_cad_exchange": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -107,20 +89,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
+    "CompletenessScore": 21,
     "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 227.66,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read CAD header",
     "extractASCIIString": "Read metadata"

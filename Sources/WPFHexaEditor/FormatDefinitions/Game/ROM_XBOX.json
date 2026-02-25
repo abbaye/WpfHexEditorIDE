@@ -1,6 +1,6 @@
 {
   "formatName": "Microsoft Xbox (Original) Image",
-  "version": "2.3",
+  "version": "2.4",
   "extensions": [
     ".iso",
     ".xiso"
@@ -105,21 +105,9 @@
       "description": "Total Pixels"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
@@ -127,10 +115,6 @@
       ".iso",
       ".xiso"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".iso",
-    "defined_fields": 4
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -149,21 +133,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 39,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 7,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 421.8,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read dimensions",

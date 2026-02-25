@@ -1,6 +1,6 @@
 {
   "formatName": "Encapsulated Packet",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".encap"
   ],
@@ -146,31 +146,15 @@
       "description": "Link Type"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 8,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Wireshark",
     "tcpdump"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Network",
     "extensions": [
       ".encap"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".encap",
-    "defined_fields": 8
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -189,20 +173,15 @@
     "Security analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 54,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 11,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 355.13,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read PCAP header",
     "divide": "Calculate duration"

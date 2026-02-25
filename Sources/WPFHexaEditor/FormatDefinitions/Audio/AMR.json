@@ -1,6 +1,6 @@
 {
   "formatName": "Adaptive Multi-Rate",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".amr"
   ],
@@ -64,36 +64,16 @@
       "description": "Total samples per second"
     }
   ],
-  "mime_types": [
-    "audio/amr"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Mobile phones",
     "VLC",
     "FFmpeg"
-  ],
-  "use_cases": [
-    "Audio playback",
-    "Sound storage"
   ],
   "format_relationships": {
     "category": "Audio",
     "extensions": [
       ".amr"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".amr",
-    "defined_fields": 1
   },
   "MimeTypes": [
     "audio/amr"
@@ -112,20 +92,15 @@
     "Streaming"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "AudioFormat": true
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 223.48,
-    "last_updated": "2026-02-24"
   }
 }

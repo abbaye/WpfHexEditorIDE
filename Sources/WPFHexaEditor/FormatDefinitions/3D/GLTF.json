@@ -1,6 +1,6 @@
 {
   "formatName": "GL Transmission Format",
-  "version": "2.2",
+  "version": "2.3",
   "extensions": [
     ".gltf"
   ],
@@ -62,14 +62,6 @@
       "description": "Array Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 88,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 1,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Three.js",
     "Babylon.js",
@@ -77,24 +69,11 @@
     "Unreal Engine",
     "Blender"
   ],
-  "use_cases": [
-    "Web 3D",
-    "AR/VR",
-    "3D commerce",
-    "Real-time 3D"
-  ],
   "format_relationships": {
     "khronos_standard": true,
     "open_source": true,
     "replaces": "COLLADA for web",
     "json_based": true
-  },
-  "technical_details": {
-    "json_format": true,
-    "pbr_materials": true,
-    "animations": true,
-    "efficient_transmission": true,
-    "web_optimized": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -113,20 +92,15 @@
     "Game development"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 10,
-    "change_percentage": 266.34,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"

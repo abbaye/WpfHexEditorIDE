@@ -4,6 +4,7 @@
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace WpfHexaEditor.Core.FormatDetection
@@ -194,6 +195,35 @@ namespace WpfHexaEditor.Core.FormatDetection
         private bool IsHexDigit(char c)
         {
             return char.IsDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+        }
+
+        /// <summary>
+        /// Static helper: evaluate an arithmetic expression with variables from a Dictionary.
+        /// Creates a temporary VariableContext, resolves variable names, and uses the
+        /// recursive descent parser with proper operator precedence and parentheses.
+        /// Used by FormatScriptInterpreter and BuiltInFunctions.ComputeFromVariables.
+        /// </summary>
+        public static long EvaluateStatic(string expression, Dictionary<string, object> variables)
+        {
+            if (string.IsNullOrWhiteSpace(expression))
+                return 0;
+
+            try
+            {
+                var context = new VariableContext();
+                if (variables != null)
+                {
+                    foreach (var kvp in variables)
+                        context.SetVariable(kvp.Key, kvp.Value);
+                }
+
+                var evaluator = new ExpressionEvaluator(context);
+                return evaluator.Evaluate(expression);
+            }
+            catch
+            {
+                return 0;
+            }
         }
     }
 }

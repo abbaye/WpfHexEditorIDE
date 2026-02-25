@@ -1,6 +1,6 @@
 {
   "formatName": "Snappy Compression",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".snappy",
     ".sz"
@@ -81,25 +81,10 @@
       "description": "Length of chunk data in bytes"
     }
   ],
-  "mime_types": [
-    "application/x-snappy"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Snappy tools",
     "Hadoop",
     "Databases"
-  ],
-  "use_cases": [
-    "File archiving",
-    "Data compression"
   ],
   "format_relationships": {
     "category": "Archives",
@@ -107,11 +92,6 @@
       ".snappy",
       ".sz"
     ]
-  },
-  "technical_details": {
-    "archives_format": true,
-    "primary_extension": ".snappy",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "application/x-snappy-compressed"
@@ -130,21 +110,16 @@
     "Distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 26,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
     "SupportsEncryption": false
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 245.07,
-    "last_updated": "2026-02-24"
   }
 }

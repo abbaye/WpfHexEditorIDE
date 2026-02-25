@@ -1,6 +1,6 @@
 {
   "formatName": "MP3 Audio",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".mp3"
   ],
@@ -126,39 +126,16 @@
       "description": "Byte offset where first MP3 frame was found"
     }
   ],
-  "mime_types": [
-    "audio/mp3"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 4,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "All media players",
     "iTunes",
     "Spotify"
-  ],
-  "use_cases": [
-    "Music distribution",
-    "Streaming audio",
-    "Portable music"
   ],
   "format_relationships": {
     "category": "Audio",
     "extensions": [
       ".mp3"
     ]
-  },
-  "technical_details": {
-    "audio_format": true,
-    "primary_extension": ".mp3",
-    "defined_fields": 4,
-    "compression_type": "Lossy"
   },
   "MimeTypes": [
     "audio/mpeg",
@@ -179,11 +156,11 @@
     "Portable audio"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 85,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 5,
-    "ValidationRules": 1,
-    "LastUpdated": "2025-01-11",
+    "CompletenessScore": 44,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 10,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": true,
     "AutoRefined": false
   },
@@ -191,10 +168,5 @@
     "SampleRate": 44100,
     "AudioFormat": true,
     "CompressionMethod": "MPEG-1 Audio Layer III (lossy)"
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 317.49,
-    "last_updated": "2026-02-24"
   }
 }

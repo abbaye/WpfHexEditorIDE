@@ -1,6 +1,6 @@
 {
   "formatName": "SEG-Y Seismic Data",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".sgy",
     ".segy"
@@ -75,21 +75,9 @@
       "description": "Array Count"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 2,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Common file viewers",
     "Specialized software"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Science",
@@ -97,10 +85,6 @@
       ".sgy",
       ".segy"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".sgy",
-    "defined_fields": 2
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -116,20 +100,15 @@
     "Archive"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 27,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 216.83,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32BE": "Read scientific header",
     "multiply": "Calculate dimensions"

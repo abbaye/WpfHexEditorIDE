@@ -1,6 +1,6 @@
 {
   "formatName": "Blood RFF",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".rff"
   ],
@@ -83,31 +83,15 @@
       "description": "Directory Offset"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
     "extensions": [
       ".rff"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".rff",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -126,21 +110,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 310.17,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read RFF resource header",

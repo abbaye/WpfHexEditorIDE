@@ -1,6 +1,6 @@
 {
   "formatName": "PCAP Network Capture",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".pcap",
     ".cap"
@@ -136,36 +136,16 @@
       "description": "Link Type"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 98,
-    "documentation_level": "comprehensive",
-    "blocks_defined": 7,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "manually_refined": true
-  },
   "software": [
     "Wireshark",
     "tcpdump",
     "Tshark",
     "NetworkMiner"
   ],
-  "use_cases": [
-    "Packet capture",
-    "Network analysis",
-    "Security analysis",
-    "Network troubleshooting"
-  ],
   "format_relationships": {
     "libpcap_format": true,
     "universal_standard": true,
     "successor": "PCAPNG"
-  },
-  "technical_details": {
-    "packet_capture": true,
-    "timestamp_precision": "Microseconds",
-    "link_layer_types": "100+",
-    "simple_format": true
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -184,20 +164,15 @@
     "Security analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 56,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 10,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {},
-  "version_history": {
-    "commit_count": 9,
-    "change_percentage": 341.83,
-    "last_updated": "2026-02-24"
-  },
   "functions": {
     "readUInt32LE": "Read PCAP header",
     "divide": "Calculate duration"

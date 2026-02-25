@@ -1,6 +1,6 @@
 {
   "formatName": "AVIF Image",
-  "version": "1.9",
+  "version": "1.10",
   "extensions": [
     ".avif"
   ],
@@ -84,37 +84,16 @@
       "description": "AVIF brand identifier"
     }
   ],
-  "mime_types": [
-    "image/avif"
-  ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 3,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "priority_format": true,
-    "auto_refined": true
-  },
   "software": [
     "Chrome",
     "Firefox",
     "Modern image editors"
-  ],
-  "use_cases": [
-    "Image viewing",
-    "Photo editing"
   ],
   "format_relationships": {
     "category": "Images",
     "extensions": [
       ".avif"
     ]
-  },
-  "technical_details": {
-    "images_format": true,
-    "primary_extension": ".avif",
-    "defined_fields": 3
   },
   "MimeTypes": [
     "image/avif"
@@ -133,21 +112,16 @@
     "Web publishing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 38,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "ImagesFormat": true,
     "BitDepth": 8
-  },
-  "version_history": {
-    "commit_count": 8,
-    "change_percentage": 318.57,
-    "last_updated": "2026-02-24"
   }
 }

@@ -1,6 +1,6 @@
 {
   "formatName": "Nintendo GameCube Disc",
-  "version": "2.3",
+  "version": "2.4",
   "extensions": [
     ".gcm",
     ".iso"
@@ -186,21 +186,9 @@
       "description": "Index Offset"
     }
   ],
-  "quality_metrics": {
-    "completeness_score": 92,
-    "documentation_level": "detailed",
-    "blocks_defined": 11,
-    "validation_rules": 0,
-    "last_updated": "2026-02-23",
-    "auto_refined": true
-  },
   "software": [
     "Emulators",
     "Game engines"
-  ],
-  "use_cases": [
-    "General file usage",
-    "Data storage"
   ],
   "format_relationships": {
     "category": "Game",
@@ -208,10 +196,6 @@
       ".gcm",
       ".iso"
     ]
-  },
-  "technical_details": {
-    "primary_extension": ".gcm",
-    "defined_fields": 11
   },
   "MimeTypes": [
     "application/octet-stream"
@@ -230,21 +214,16 @@
     "Preservation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 0,
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 14,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-23",
+    "LastUpdated": "2026-02-24",
     "PriorityFormat": false,
     "AutoRefined": true
   },
   "TechnicalDetails": {
     "Platform": "Various"
-  },
-  "version_history": {
-    "commit_count": 11,
-    "change_percentage": 364.11,
-    "last_updated": "2026-02-24"
   },
   "functions": {
     "readUInt32LE": "Read game header",
