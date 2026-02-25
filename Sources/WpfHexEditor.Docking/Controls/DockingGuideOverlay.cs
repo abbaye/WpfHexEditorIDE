@@ -122,9 +122,9 @@ internal class DockingGuideOverlay : Window
 
     /// <summary>
     /// Hit-test the screen point against the guide buttons.
-    /// Returns the DockSide that's hovered, and whether it's a root-level guide.
+    /// Returns: side = dock direction, isRoot = root-level guide, hitGuide = whether any guide was hit.
     /// </summary>
-    public (DockSide side, bool isRoot) HitTestGuides(Point screenPoint)
+    public (DockSide side, bool isRoot, bool hitGuide) HitTestGuides(Point screenPoint)
     {
         var localPoint = new Point(screenPoint.X - Left, screenPoint.Y - Top);
 
@@ -132,21 +132,21 @@ internal class DockingGuideOverlay : Window
         ClearHoverStates();
 
         // Check pane-level compass guides first
-        if (HitTestGuide(_centerGuide, localPoint)) { _hoveredSide = DockSide.None; _isRootHovered = false; SetHover(_centerGuide); return (DockSide.None, false); }
-        if (HitTestGuide(_leftGuide, localPoint)) { _hoveredSide = DockSide.Left; _isRootHovered = false; SetHover(_leftGuide); return (DockSide.Left, false); }
-        if (HitTestGuide(_rightGuide, localPoint)) { _hoveredSide = DockSide.Right; _isRootHovered = false; SetHover(_rightGuide); return (DockSide.Right, false); }
-        if (HitTestGuide(_topGuide, localPoint)) { _hoveredSide = DockSide.Top; _isRootHovered = false; SetHover(_topGuide); return (DockSide.Top, false); }
-        if (HitTestGuide(_bottomGuide, localPoint)) { _hoveredSide = DockSide.Bottom; _isRootHovered = false; SetHover(_bottomGuide); return (DockSide.Bottom, false); }
+        if (HitTestGuide(_centerGuide, localPoint)) { _hoveredSide = DockSide.None; _isRootHovered = false; SetHover(_centerGuide); return (DockSide.None, false, true); }
+        if (HitTestGuide(_leftGuide, localPoint)) { _hoveredSide = DockSide.Left; _isRootHovered = false; SetHover(_leftGuide); return (DockSide.Left, false, true); }
+        if (HitTestGuide(_rightGuide, localPoint)) { _hoveredSide = DockSide.Right; _isRootHovered = false; SetHover(_rightGuide); return (DockSide.Right, false, true); }
+        if (HitTestGuide(_topGuide, localPoint)) { _hoveredSide = DockSide.Top; _isRootHovered = false; SetHover(_topGuide); return (DockSide.Top, false, true); }
+        if (HitTestGuide(_bottomGuide, localPoint)) { _hoveredSide = DockSide.Bottom; _isRootHovered = false; SetHover(_bottomGuide); return (DockSide.Bottom, false, true); }
 
         // Check root-level guides
-        if (HitTestGuide(_rootLeftGuide, localPoint)) { _hoveredSide = DockSide.Left; _isRootHovered = true; SetHover(_rootLeftGuide); return (DockSide.Left, true); }
-        if (HitTestGuide(_rootRightGuide, localPoint)) { _hoveredSide = DockSide.Right; _isRootHovered = true; SetHover(_rootRightGuide); return (DockSide.Right, true); }
-        if (HitTestGuide(_rootTopGuide, localPoint)) { _hoveredSide = DockSide.Top; _isRootHovered = true; SetHover(_rootTopGuide); return (DockSide.Top, true); }
-        if (HitTestGuide(_rootBottomGuide, localPoint)) { _hoveredSide = DockSide.Bottom; _isRootHovered = true; SetHover(_rootBottomGuide); return (DockSide.Bottom, true); }
+        if (HitTestGuide(_rootLeftGuide, localPoint)) { _hoveredSide = DockSide.Left; _isRootHovered = true; SetHover(_rootLeftGuide); return (DockSide.Left, true, true); }
+        if (HitTestGuide(_rootRightGuide, localPoint)) { _hoveredSide = DockSide.Right; _isRootHovered = true; SetHover(_rootRightGuide); return (DockSide.Right, true, true); }
+        if (HitTestGuide(_rootTopGuide, localPoint)) { _hoveredSide = DockSide.Top; _isRootHovered = true; SetHover(_rootTopGuide); return (DockSide.Top, true, true); }
+        if (HitTestGuide(_rootBottomGuide, localPoint)) { _hoveredSide = DockSide.Bottom; _isRootHovered = true; SetHover(_rootBottomGuide); return (DockSide.Bottom, true, true); }
 
         _hoveredSide = DockSide.None;
         _isRootHovered = false;
-        return (DockSide.None, false);
+        return (DockSide.None, false, false);
     }
 
     /// <summary>

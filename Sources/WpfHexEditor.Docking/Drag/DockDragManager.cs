@@ -179,12 +179,12 @@ internal class DockDragManager
         _guideOverlay?.ShowOverlay(managerBounds, paneBounds);
 
         // Hit-test the guides
-        var (side, isRoot) = _guideOverlay?.HitTestGuides(screenPoint) ?? (DockSide.None, false);
+        var (side, isRoot, hitGuide) = _guideOverlay?.HitTestGuides(screenPoint) ?? (DockSide.None, false, false);
 
         // Determine drop target
         _currentTarget = null;
 
-        if (side != DockSide.None || (side == DockSide.None && paneBounds.HasValue && !isRoot))
+        if (hitGuide)
         {
             if (isRoot)
             {

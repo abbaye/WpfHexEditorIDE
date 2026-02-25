@@ -53,6 +53,14 @@ public class DockDropTarget
     /// </summary>
     public void Execute(LayoutContent draggedContent)
     {
+        // For TabInto, verify type compatibility first - don't remove from parent if drop would fail
+        if (Type == DropType.TabInto && !IsTabIntoCompatible(draggedContent))
+        {
+            // Incompatible types: convert to a split instead
+            ExecuteAsSplit(draggedContent);
+            return;
+        }
+
         // Remove from source
         draggedContent.RemoveFromParent();
 
@@ -75,6 +83,77 @@ public class DockDropTarget
             case DropType.RootBottom:
                 ExecuteRootDock(draggedContent);
                 break;
+        }
+    }
+
+    private bool IsTabIntoCompatible(LayoutContent content) =>
+        (content is LayoutAnchorable && TargetElement is LayoutAnchorablePane) ||
+        (content is LayoutDocument && TargetElement is LayoutDocumentPane);
+
+    /// <summary>
+    /// Fallback: when TabInto is incompatible, do a bottom split instead.
+    /// E.g. dropping anchorable onto document pane → split below document.
+    /// </summary>
+    private void ExecuteAsSplit(LayoutContent content)
+    {
+        draggedContent_RemoveAndSplit(content, DropType.SplitBottom, DockSide.Bottom);
+    }
+
+    private void draggedContent_RemoveAndSplit(LayoutContent content, DropType splitType, DockSide side)
+    {
+        content.RemoveFromParent();
+
+        var isHorizontalSplit = splitType is DropType.SplitLeft or DropType.SplitRight;
+        var insertBefore = splitType is DropType.SplitLeft or DropType.SplitTop;
+        var newOrientation = isHorizontalSplit ? LayoutOrientation.Horizontal : LayoutOrientation.Vertical;
+
+        LayoutElement newPane;
+        if (content is LayoutAnchorable anchorable)
+        {
+            var anchPane = new LayoutAnchorablePane
+            {
+                DockWidth = new GridLength(200, GridUnitType.Pixel),
+                DockHeight = new GridLength(200, GridUnitType.Pixel),
+                DockSide = side
+            };
+            anchPane.Children.Add(anchorable);
+            newPane = anchPane;
+        }
+        else if (content is LayoutDocument document)
+        {
+            var docPane = new LayoutDocumentPane();
+            docPane.Children.Add(document);
+            newPane = docPane;
+        }
+        else return;
+
+        if (TargetElement.Parent is LayoutPanel parentPanel && parentPanel.Orientation == newOrientation)
+        {
+            var targetIndex = parentPanel.Children.IndexOf(TargetElement);
+            if (targetIndex >= 0)
+            {
+                var insertIndex = insertBefore ? targetIndex : targetIndex + 1;
+                parentPanel.InsertChildAt(insertIndex, newPane);
+                return;
+            }
+        }
+
+        if (TargetElement.Parent is LayoutPanel parent)
+        {
+            var wrapper = new LayoutPanel(newOrientation);
+            var targetIndex = parent.Children.IndexOf(TargetElement);
+            parent.Children[targetIndex] = wrapper;
+
+            if (insertBefore)
+            {
+                wrapper.Children.Add(newPane);
+                wrapper.Children.Add(TargetElement);
+            }
+            else
+            {
+                wrapper.Children.Add(TargetElement);
+                wrapper.Children.Add(newPane);
+            }
         }
     }
 
