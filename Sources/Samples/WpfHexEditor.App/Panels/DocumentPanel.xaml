@@ -1,0 +1,22 @@
+<UserControl x:Class="WpfHexEditor.App.Panels.DocumentPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Background="{DynamicResource BackgroundBrush}">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock x:Name="TitleText"
+                       FontSize="32" FontWeight="Light"
+                       Foreground="{DynamicResource ForegroundSecondaryBrush}"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Text="Document content area"
+                       FontSize="14"
+                       Foreground="{DynamicResource ForegroundSecondaryBrush}"
+                       HorizontalAlignment="Center" Margin="0,8,0,0"
+                       Opacity="0.6"/>
+            <TextBlock Text="This is a LayoutDocument tab. Close it with the X button."
+                       FontSize="12"
+                       Foreground="{DynamicResource ForegroundSecondaryBrush}"
+                       HorizontalAlignment="Center" Margin="0,4,0,0"
+                       Opacity="0.4"/>
+        </StackPanel>
+    </Border>
+</UserControl>

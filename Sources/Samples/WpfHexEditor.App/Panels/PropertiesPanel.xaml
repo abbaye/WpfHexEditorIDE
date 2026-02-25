@@ -1,0 +1,18 @@
+<UserControl x:Class="WpfHexEditor.App.Panels.PropertiesPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Background="#2A2A4A">
+        <StackPanel Margin="12" VerticalAlignment="Top">
+            <TextBlock Text="Properties Panel"
+                       FontWeight="Bold" FontSize="14"
+                       Foreground="#9090EE" Margin="0,0,0,8"/>
+            <TextBlock Text="Right-side tool window"
+                       FontSize="11" Foreground="#8080C8" TextWrapping="Wrap"/>
+            <Separator Margin="0,8" Background="#3A3A6A"/>
+            <TextBlock Text="Property A: Value 1" Foreground="#8080C8" FontSize="11" Margin="0,2"/>
+            <TextBlock Text="Property B: Value 2" Foreground="#8080C8" FontSize="11" Margin="0,2"/>
+            <TextBlock Text="Property C: Value 3" Foreground="#8080C8" FontSize="11" Margin="0,2"/>
+            <TextBlock Text="Property D: Value 4" Foreground="#8080C8" FontSize="11" Margin="0,2"/>
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -1,0 +1,27 @@
+<UserControl x:Class="WpfHexEditor.App.Panels.OutputPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Background="#2A1A1A">
+        <DockPanel Margin="8">
+            <TextBlock DockPanel.Dock="Top"
+                       Text="Output" FontWeight="Bold" FontSize="14"
+                       Foreground="#EE9090" Margin="0,0,0,4"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#CC8080"
+                           TextWrapping="Wrap">
+[Demo] Docking framework initialized.
+[Demo] Layout: LayoutRoot → LayoutPanel (H) → [Left, Center, Right]
+[Demo] Center: LayoutPanel (V) → [DocumentPane, BottomPane]
+[Demo]
+[Demo] Try these:
+[Demo]   File → New Document    (adds document tabs)
+[Demo]   View → Toggle panels   (hide/show tool windows)
+[Demo]   Theme menu             (switch visual theme)
+[Demo]   Window → Reset Layout  (restore default layout)
+[Demo]   Drag title bars        (re-dock panels)
+[Demo]   Drag splitters         (resize panels)
+                </TextBlock>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</UserControl>

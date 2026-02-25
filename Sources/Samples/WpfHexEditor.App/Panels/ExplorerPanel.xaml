@@ -1,0 +1,19 @@
+<UserControl x:Class="WpfHexEditor.App.Panels.ExplorerPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Background="#1A4A2A">
+        <StackPanel Margin="12" VerticalAlignment="Top">
+            <TextBlock Text="Explorer Panel"
+                       FontWeight="Bold" FontSize="14"
+                       Foreground="#90EE90" Margin="0,0,0,8"/>
+            <TextBlock Text="Left-side tool window"
+                       FontSize="11" Foreground="#80B880" TextWrapping="Wrap"/>
+            <Separator Margin="0,8" Background="#2A6A3A"/>
+            <TextBlock Text="Test features:" Foreground="#90EE90" FontSize="11" FontWeight="SemiBold" Margin="0,0,0,4"/>
+            <TextBlock Text="- Drag splitter to resize" Foreground="#80B880" FontSize="11" Margin="0,2"/>
+            <TextBlock Text="- Drag title bar to re-dock" Foreground="#80B880" FontSize="11" Margin="0,2"/>
+            <TextBlock Text="- Click Pin to auto-hide" Foreground="#80B880" FontSize="11" Margin="0,2"/>
+            <TextBlock Text="- View menu to toggle" Foreground="#80B880" FontSize="11" Margin="0,2"/>
+        </StackPanel>
+    </Border>
+</UserControl>
