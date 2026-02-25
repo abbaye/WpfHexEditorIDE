@@ -1,0 +1,67 @@
+<!-- Apache 2.0 - 2026 -->
+<!-- WpfHexEditor.Docking - Color bridge to host application themes -->
+<!-- Uses DynamicResource to reference the host app's theme color keys -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ==================== CONTENT AREA ==================== -->
+    <SolidColorBrush x:Key="DockContentBackgroundBrush" Color="{DynamicResource BackgroundColor}"/>
+
+    <!-- ==================== DOCUMENT TAB STRIP ==================== -->
+    <SolidColorBrush x:Key="DockDocTabStripBrush" Color="{DynamicResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="DockDocTabActiveBrush" Color="{DynamicResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="DockDocTabInactiveBrush" Color="{DynamicResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="DockDocTabActiveIndicatorBrush" Color="{DynamicResource AccentColor}"/>
+    <SolidColorBrush x:Key="DockDocTabHoverBrush" Color="{DynamicResource HoverColor}"/>
+    <SolidColorBrush x:Key="DockDocTabForegroundBrush" Color="{DynamicResource ForegroundColor}"/>
+    <SolidColorBrush x:Key="DockDocTabSecondaryBrush" Color="{DynamicResource ForegroundSecondaryColor}"/>
+
+    <!-- ==================== TOOL WINDOW HEADER ==================== -->
+    <SolidColorBrush x:Key="DockToolHeaderActiveBrush" Color="{DynamicResource AccentColor}"/>
+    <SolidColorBrush x:Key="DockToolHeaderInactiveBrush" Color="{DynamicResource SurfaceElevatedColor}"/>
+    <SolidColorBrush x:Key="DockToolHeaderActiveForegroundBrush" Color="White"/>
+    <SolidColorBrush x:Key="DockToolHeaderInactiveForegroundBrush" Color="{DynamicResource ForegroundSecondaryColor}"/>
+
+    <!-- ==================== TOOL WINDOW TAB STRIP ==================== -->
+    <SolidColorBrush x:Key="DockToolTabStripBrush" Color="{DynamicResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="DockToolTabActiveBrush" Color="{DynamicResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="DockToolTabInactiveBrush" Color="{DynamicResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="DockToolTabForegroundBrush" Color="{DynamicResource ForegroundColor}"/>
+    <SolidColorBrush x:Key="DockToolTabSecondaryBrush" Color="{DynamicResource ForegroundSecondaryColor}"/>
+
+    <!-- ==================== SPLITTER ==================== -->
+    <SolidColorBrush x:Key="DockSplitterBrush" Color="Transparent"/>
+    <SolidColorBrush x:Key="DockSplitterHoverBrush" Color="{DynamicResource BorderColor}" Opacity="0.5"/>
+    <SolidColorBrush x:Key="DockSplitterDragBrush" Color="{DynamicResource AccentColor}" Opacity="0.5"/>
+
+    <!-- ==================== AUTO-HIDE ==================== -->
+    <SolidColorBrush x:Key="DockAutoHideStripBrush" Color="{DynamicResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="DockAutoHideTabHoverBrush" Color="{DynamicResource HoverColor}"/>
+    <SolidColorBrush x:Key="DockAutoHideTabActiveBrush" Color="{DynamicResource AccentColor}"/>
+    <SolidColorBrush x:Key="DockAutoHideTabForegroundBrush" Color="{DynamicResource ForegroundColor}"/>
+
+    <!-- ==================== BUTTONS ==================== -->
+    <SolidColorBrush x:Key="DockCloseButtonHoverBrush" Color="{DynamicResource ErrorColor}"/>
+    <SolidColorBrush x:Key="DockButtonHoverBrush" Color="{DynamicResource HoverColor}"/>
+    <SolidColorBrush x:Key="DockButtonForegroundBrush" Color="{DynamicResource ForegroundSecondaryColor}"/>
+
+    <!-- ==================== DRAG GUIDES ==================== -->
+    <SolidColorBrush x:Key="DockGuideNormalBrush" Color="{DynamicResource SurfaceColor}" Opacity="0.85"/>
+    <SolidColorBrush x:Key="DockGuideHoverBrush" Color="{DynamicResource AccentColor}" Opacity="0.85"/>
+    <SolidColorBrush x:Key="DockGuideBorderBrush" Color="{DynamicResource BorderColor}"/>
+    <SolidColorBrush x:Key="DockDropPreviewBrush" Color="{DynamicResource AccentColor}" Opacity="0.3"/>
+
+    <!-- ==================== BORDERS ==================== -->
+    <SolidColorBrush x:Key="DockBorderBrush" Color="{DynamicResource BorderColor}"/>
+
+    <!-- ==================== LOCALIZED STRINGS (default English) ==================== -->
+    <sys:String x:Key="Dock_Close">Close</sys:String>
+    <sys:String x:Key="Dock_Pin">Pin</sys:String>
+    <sys:String x:Key="Dock_Unpin">Unpin</sys:String>
+    <sys:String x:Key="Dock_AutoHide">Auto Hide</sys:String>
+    <sys:String x:Key="Dock_Float">Float</sys:String>
+    <sys:String x:Key="Dock_CloseAll">Close All</sys:String>
+    <sys:String x:Key="Dock_CloseOthers">Close All But This</sys:String>
+
+</ResourceDictionary>

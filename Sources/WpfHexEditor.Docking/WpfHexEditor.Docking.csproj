@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
+    <RootNamespace>WpfHexEditor.Docking</RootNamespace>
+    <AssemblyName>WpfHexEditor.Docking</AssemblyName>
+    <Description>Custom VS-like docking framework for WPF. Zero external dependencies.</Description>
+    <Copyright>Apache 2.0 - 2026</Copyright>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+</Project>

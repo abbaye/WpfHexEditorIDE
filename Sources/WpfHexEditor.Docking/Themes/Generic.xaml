@@ -1,0 +1,414 @@
+<!-- Apache 2.0 - 2026 -->
+<!-- WpfHexEditor.Docking - Default styles for all custom controls -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:WpfHexEditor.Docking.Controls"
+                    xmlns:model="clr-namespace:WpfHexEditor.Docking.Model"
+                    xmlns:drag="clr-namespace:WpfHexEditor.Docking.Drag"
+                    xmlns:converters="clr-namespace:WpfHexEditor.Docking.Converters">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/WpfHexEditor.Docking;component/Themes/DockingColors.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- ==================== CONVERTERS ==================== -->
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
+    <converters:NotNullToVisibilityConverter x:Key="NotNullToVisConverter"/>
+    <converters:CountGreaterThanOneToVisibilityConverter x:Key="CountGt1ToVisConverter"/>
+
+    <!-- ==================== DOCK MANAGER ==================== -->
+    <Style TargetType="{x:Type controls:DockManager}">
+        <Setter Property="Background" Value="{DynamicResource DockContentBackgroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:DockManager}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Auto-hide strips (4 edges) -->
+                            <controls:AutoHideTabStrip x:Name="PART_TopAutoHideStrip"
+                                Grid.Row="0" Grid.Column="1" Side="Top"/>
+                            <controls:AutoHideTabStrip x:Name="PART_LeftAutoHideStrip"
+                                Grid.Row="1" Grid.Column="0" Side="Left"/>
+                            <controls:AutoHideTabStrip x:Name="PART_RightAutoHideStrip"
+                                Grid.Row="1" Grid.Column="2" Side="Right"/>
+                            <controls:AutoHideTabStrip x:Name="PART_BottomAutoHideStrip"
+                                Grid.Row="2" Grid.Column="1" Side="Bottom"/>
+
+                            <!-- Main layout area -->
+                            <Grid Grid.Row="1" Grid.Column="1">
+                                <ContentPresenter x:Name="PART_RootPanel"/>
+
+                                <!-- Auto-hide popup overlay -->
+                                <controls:AutoHidePopup x:Name="PART_AutoHidePopup"
+                                    Visibility="Collapsed"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ==================== DOCUMENT PANE CONTROL ==================== -->
+    <Style TargetType="{x:Type controls:LayoutDocumentPaneControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:LayoutDocumentPaneControl}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Tab Strip -->
+                        <Border Grid.Row="0"
+                                Background="{DynamicResource DockDocTabStripBrush}"
+                                BorderBrush="{DynamicResource DockBorderBrush}"
+                                BorderThickness="0,0,0,1">
+                            <ItemsControl ItemsSource="{Binding Model.Children, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type model:LayoutDocument}">
+                                        <Border x:Name="TabBorder"
+                                                Padding="8,4" Cursor="Hand"
+                                                Background="{DynamicResource DockDocTabInactiveBrush}"
+                                                BorderThickness="0,0,0,2"
+                                                BorderBrush="Transparent"
+                                                drag:DragBehavior.DragContent="{Binding}">
+                                            <Border.InputBindings>
+                                                <MouseBinding Gesture="LeftClick"
+                                                              Command="{x:Static controls:DockCommands.SelectDocumentCommand}"
+                                                              CommandParameter="{Binding}"/>
+                                            </Border.InputBindings>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Title}"
+                                                           Foreground="{DynamicResource DockDocTabSecondaryBrush}"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12" FontFamily="Segoe UI"/>
+                                                <!-- Close button -->
+                                                <Button x:Name="CloseBtn"
+                                                        Width="16" Height="16" Margin="6,0,0,0"
+                                                        Background="Transparent" BorderThickness="0"
+                                                        Padding="0" Cursor="Hand"
+                                                        Visibility="{Binding CanClose, Converter={StaticResource BoolToVisConverter}}"
+                                                        Command="{x:Static controls:DockCommands.CloseDocumentCommand}"
+                                                        CommandParameter="{Binding}">
+                                                    <Path Data="M 0,0 L 6,6 M 6,0 L 0,6"
+                                                          Stroke="{DynamicResource DockButtonForegroundBrush}"
+                                                          StrokeThickness="1.5"
+                                                          Width="6" Height="6"
+                                                          Stretch="Uniform"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </Border>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                <Setter TargetName="TabBorder" Property="Background"
+                                                        Value="{DynamicResource DockDocTabActiveBrush}"/>
+                                                <Setter TargetName="TabBorder" Property="BorderBrush"
+                                                        Value="{DynamicResource DockDocTabActiveIndicatorBrush}"/>
+                                            </DataTrigger>
+                                            <Trigger SourceName="TabBorder" Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="TabBorder" Property="Background"
+                                                        Value="{DynamicResource DockDocTabHoverBrush}"/>
+                                            </Trigger>
+                                            <Trigger SourceName="CloseBtn" Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="CloseBtn" Property="Background"
+                                                        Value="{DynamicResource DockCloseButtonHoverBrush}"/>
+                                            </Trigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+
+                        <!-- Content Area -->
+                        <ContentPresenter Grid.Row="1"
+                                          Content="{Binding Model.SelectedContent.Content, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Margin="0"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ==================== ANCHORABLE PANE CONTROL ==================== -->
+    <Style TargetType="{x:Type controls:LayoutAnchorablePaneControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:LayoutAnchorablePaneControl}">
+                    <Border BorderBrush="{DynamicResource DockBorderBrush}"
+                            BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Header Bar (drag handle) -->
+                            <Border x:Name="HeaderBorder" Grid.Row="0"
+                                    Background="{DynamicResource DockToolHeaderInactiveBrush}"
+                                    Padding="6,0"
+                                    drag:DragBehavior.DragContent="{Binding Model.SelectedContent, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Cursor="SizeAll">
+                                <DockPanel>
+                                    <!-- Buttons on the right -->
+                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                        <!-- Pin button -->
+                                        <Button x:Name="PinBtn" Width="16" Height="16" Margin="2,0"
+                                                Background="Transparent" BorderThickness="0"
+                                                Padding="0" Cursor="Hand"
+                                                ToolTip="{DynamicResource Dock_Pin}"
+                                                Command="{x:Static controls:DockCommands.ToggleAutoHideCommand}"
+                                                CommandParameter="{Binding Model.SelectedContent, RelativeSource={RelativeSource AncestorType=controls:LayoutAnchorablePaneControl}}">
+                                            <Path Data="M 3,0 L 3,7 M 1,7 L 5,7 M 0,3 L 6,3 L 6,1 L 5,0 L 1,0 L 0,1 Z"
+                                                  Stroke="{DynamicResource DockButtonForegroundBrush}"
+                                                  StrokeThickness="1" Width="7" Height="8" Stretch="Uniform"/>
+                                        </Button>
+                                        <!-- Close button -->
+                                        <Button x:Name="CloseBtn" Width="16" Height="16" Margin="2,0"
+                                                Background="Transparent" BorderThickness="0"
+                                                Padding="0" Cursor="Hand"
+                                                ToolTip="{DynamicResource Dock_Close}"
+                                                Command="{x:Static controls:DockCommands.CloseAnchorableCommand}"
+                                                CommandParameter="{Binding Model.SelectedContent, RelativeSource={RelativeSource AncestorType=controls:LayoutAnchorablePaneControl}}">
+                                            <Path Data="M 0,0 L 6,6 M 6,0 L 0,6"
+                                                  Stroke="{DynamicResource DockButtonForegroundBrush}"
+                                                  StrokeThickness="1.5"
+                                                  Width="6" Height="6" Stretch="Uniform"/>
+                                        </Button>
+                                    </StackPanel>
+
+                                    <!-- Title -->
+                                    <TextBlock x:Name="TitleText"
+                                               Text="{Binding Model.SelectedContent.Title, RelativeSource={RelativeSource TemplatedParent}}"
+                                               Foreground="{DynamicResource DockToolHeaderInactiveForegroundBrush}"
+                                               VerticalAlignment="Center"
+                                               FontSize="11" FontFamily="Segoe UI"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </DockPanel>
+                            </Border>
+
+                            <!-- Tab Strip (visible only if multiple items) -->
+                            <Border Grid.Row="1"
+                                    Background="{DynamicResource DockToolTabStripBrush}"
+                                    Visibility="{Binding Model.Children.Count, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource CountGt1ToVisConverter}}">
+                                <ItemsControl ItemsSource="{Binding Model.Children, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Height="24">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type model:LayoutAnchorable}">
+                                            <Border x:Name="TabBorder"
+                                                    Padding="8,2" Cursor="Hand"
+                                                    Background="{DynamicResource DockToolTabInactiveBrush}"
+                                                    drag:DragBehavior.DragContent="{Binding}">
+                                                <TextBlock Text="{Binding Title}"
+                                                           Foreground="{DynamicResource DockToolTabSecondaryBrush}"
+                                                           FontSize="11" FontFamily="Segoe UI"
+                                                           VerticalAlignment="Center"/>
+                                            </Border>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter TargetName="TabBorder" Property="Background"
+                                                            Value="{DynamicResource DockToolTabActiveBrush}"/>
+                                                </DataTrigger>
+                                                <Trigger SourceName="TabBorder" Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="TabBorder" Property="Background"
+                                                            Value="{DynamicResource DockDocTabHoverBrush}"/>
+                                                </Trigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
+
+                            <!-- Content Area -->
+                            <Border Grid.Row="2"
+                                    Background="{DynamicResource DockContentBackgroundBrush}">
+                                <ContentPresenter Content="{Binding Model.SelectedContent.Content, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsActive" Value="True">
+                            <Setter TargetName="HeaderBorder" Property="Background"
+                                    Value="{DynamicResource DockToolHeaderActiveBrush}"/>
+                            <Setter TargetName="TitleText" Property="Foreground"
+                                    Value="{DynamicResource DockToolHeaderActiveForegroundBrush}"/>
+                            <Setter TargetName="TitleText" Property="FontWeight" Value="SemiBold"/>
+                        </Trigger>
+                        <Trigger SourceName="CloseBtn" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="CloseBtn" Property="Background"
+                                    Value="{DynamicResource DockCloseButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger SourceName="PinBtn" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PinBtn" Property="Background"
+                                    Value="{DynamicResource DockButtonHoverBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ==================== AUTO-HIDE TAB STRIP ==================== -->
+    <Style TargetType="{x:Type controls:AutoHideTabStrip}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AutoHideTabStrip}">
+                    <Border Background="{DynamicResource DockAutoHideStripBrush}">
+                        <ItemsControl ItemsSource="{Binding Model.Children, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel>
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Orientation" Value="Vertical"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Side, RelativeSource={RelativeSource AncestorType=controls:AutoHideTabStrip}}"
+                                                                 Value="Top">
+                                                        <Setter Property="Orientation" Value="Horizontal"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Side, RelativeSource={RelativeSource AncestorType=controls:AutoHideTabStrip}}"
+                                                                 Value="Bottom">
+                                                        <Setter Property="Orientation" Value="Horizontal"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                    </StackPanel>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type model:LayoutAnchorGroup}">
+                                    <ItemsControl ItemsSource="{Binding Children}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Vertical"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type model:LayoutAnchorable}">
+                                                <Border x:Name="AutoHideTab"
+                                                        Padding="4,6" Cursor="Hand"
+                                                        Background="Transparent"
+                                                        BorderBrush="{DynamicResource DockBorderBrush}"
+                                                        BorderThickness="0,0,1,0">
+                                                    <TextBlock Text="{Binding Title}"
+                                                               Foreground="{DynamicResource DockAutoHideTabForegroundBrush}"
+                                                               FontSize="11" FontFamily="Segoe UI">
+                                                        <TextBlock.LayoutTransform>
+                                                            <RotateTransform Angle="90"/>
+                                                        </TextBlock.LayoutTransform>
+                                                    </TextBlock>
+                                                </Border>
+                                                <DataTemplate.Triggers>
+                                                    <Trigger SourceName="AutoHideTab" Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="AutoHideTab" Property="Background"
+                                                                Value="{DynamicResource DockAutoHideTabHoverBrush}"/>
+                                                    </Trigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!-- Collapse when empty -->
+            <DataTrigger Binding="{Binding Model.Children.Count, RelativeSource={RelativeSource Self}}" Value="0">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ==================== AUTO-HIDE POPUP ==================== -->
+    <Style TargetType="{x:Type controls:AutoHidePopup}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AutoHidePopup}">
+                    <Border Background="{DynamicResource DockContentBackgroundBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            BorderThickness="1">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" ShadowDepth="2" BlurRadius="8" Opacity="0.3"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Mini header -->
+                            <Border Grid.Row="0"
+                                    Background="{DynamicResource DockToolHeaderActiveBrush}"
+                                    Padding="6,0">
+                                <DockPanel>
+                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                        <Button Width="16" Height="16" Margin="2,0"
+                                                Background="Transparent" BorderThickness="0"
+                                                ToolTip="{DynamicResource Dock_Pin}" Cursor="Hand"
+                                                Command="{x:Static controls:DockCommands.PinAnchorableCommand}"
+                                                CommandParameter="{Binding CurrentAnchorable, RelativeSource={RelativeSource AncestorType=controls:AutoHidePopup}}">
+                                            <Path Data="M 3,0 L 3,7 M 1,7 L 5,7 M 0,3 L 6,3 L 6,1 L 5,0 L 1,0 L 0,1 Z"
+                                                  Stroke="White" StrokeThickness="1"
+                                                  Width="7" Height="8" Stretch="Uniform"/>
+                                        </Button>
+                                        <Button x:Name="PopupCloseBtn"
+                                                Width="16" Height="16" Margin="2,0"
+                                                Background="Transparent" BorderThickness="0"
+                                                ToolTip="{DynamicResource Dock_Close}" Cursor="Hand"
+                                                Command="{x:Static controls:DockCommands.CloseAnchorableCommand}"
+                                                CommandParameter="{Binding CurrentAnchorable, RelativeSource={RelativeSource AncestorType=controls:AutoHidePopup}}">
+                                            <Path Data="M 0,0 L 6,6 M 6,0 L 0,6"
+                                                  Stroke="White" StrokeThickness="1.5"
+                                                  Width="6" Height="6" Stretch="Uniform"/>
+                                        </Button>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding CurrentAnchorable.Title, RelativeSource={RelativeSource TemplatedParent}}"
+                                               Foreground="White" FontWeight="SemiBold"
+                                               VerticalAlignment="Center"
+                                               FontSize="11" FontFamily="Segoe UI"/>
+                                </DockPanel>
+                            </Border>
+
+                            <!-- Content -->
+                            <ContentPresenter Grid.Row="1"
+                                              Content="{TemplateBinding Content}"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
