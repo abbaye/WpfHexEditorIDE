@@ -477,9 +477,10 @@ namespace WpfHexaEditor
                         AddCustomBackgroundBlock(block);
                     }
 
-                    // Store the detected format and variables for parsed fields panel
+                    // Store the detected format, variables, and candidates for parsed fields panel
                     _detectedFormat = result.Format;
                     _detectionVariables = result.Variables; // Variables from function execution
+                    _detectionCandidates = result.Candidates; // All candidates for format selector
 
                     // Parse fields for the parsed fields panel (Issue #111)
                     RefreshParsedFields();

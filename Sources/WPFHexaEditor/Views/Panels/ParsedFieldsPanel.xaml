@@ -11,6 +11,7 @@
     <UserControl.Resources>
         <!-- Converter -->
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
 
         <!-- Style for field items with improved colors -->
         <Style x:Key="FieldItemStyle" TargetType="ListBoxItem">
@@ -499,10 +500,26 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" FontWeight="SemiBold" FontSize="12">
-                        <Run Text="Format:"/>
-                        <Run Text="{Binding FormatInfo.Name, Mode=OneWay}" Foreground="#2196F3"/>
-                    </TextBlock>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <TextBlock FontWeight="SemiBold" FontSize="12"
+                                   VerticalAlignment="Center" Margin="0,0,4,0"
+                                   Text="Format:"/>
+                        <!-- Dropdown when multiple candidates detected -->
+                        <ComboBox x:Name="FormatCandidateCombo"
+                                  ItemsSource="{Binding FormatInfo.Candidates}"
+                                  SelectedItem="{Binding FormatInfo.SelectedCandidate, Mode=TwoWay}"
+                                  DisplayMemberPath="DisplayName"
+                                  Visibility="{Binding FormatInfo.HasMultipleCandidates, Converter={StaticResource BoolToVisibilityConverter}}"
+                                  FontSize="11" FontWeight="SemiBold" Foreground="#2196F3"
+                                  MinWidth="180" MaxWidth="280"
+                                  VerticalAlignment="Center"
+                                  SelectionChanged="FormatCandidateCombo_SelectionChanged"/>
+                        <!-- Static text when single format -->
+                        <TextBlock Text="{Binding FormatInfo.Name, Mode=OneWay}"
+                                   Foreground="#2196F3" FontWeight="SemiBold" FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding FormatInfo.HasMultipleCandidates, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                    </StackPanel>
                     <Border Grid.Column="2"
                             Background="#FFE5B4"
                             BorderBrush="#FFA500"

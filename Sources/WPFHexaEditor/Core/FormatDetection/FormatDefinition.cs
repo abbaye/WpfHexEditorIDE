@@ -3,7 +3,10 @@
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
+using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace WpfHexaEditor.Core.FormatDetection
 {
@@ -249,8 +252,99 @@ namespace WpfHexaEditor.Core.FormatDetection
     }
 
     /// <summary>
+    /// JSON converter that handles ConditionDefinition as either a JSON object or a string expression.
+    /// String conditions like "(generalPurposeFlags &amp; 1) == 1" are parsed into Field/Operator/Value
+    /// when possible, or stored as an expression string for future evaluation.
+    /// </summary>
+    public class ConditionDefinitionConverter : JsonConverter<ConditionDefinition>
+    {
+        public override ConditionDefinition Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.Null)
+                return null;
+
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                // String condition like "(generalPurposeFlags & 1) == 1"
+                // Store as expression - the interpreter can evaluate it later
+                var expression = reader.GetString();
+                if (string.IsNullOrWhiteSpace(expression))
+                    return null;
+
+                // Try to parse simple "var op value" patterns
+                return ParseStringCondition(expression);
+            }
+
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                // Standard object format: { "field": "...", "operator": "...", "value": "..." }
+                var condition = new ConditionDefinition();
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+                {
+                    if (reader.TokenType == JsonTokenType.PropertyName)
+                    {
+                        var propertyName = reader.GetString()?.ToLowerInvariant();
+                        reader.Read();
+                        switch (propertyName)
+                        {
+                            case "field":
+                                condition.Field = reader.GetString();
+                                break;
+                            case "operator":
+                                condition.Operator = reader.GetString();
+                                break;
+                            case "value":
+                                condition.Value = reader.GetString();
+                                break;
+                            case "length":
+                                condition.Length = reader.GetInt32();
+                                break;
+                        }
+                    }
+                }
+                return condition;
+            }
+
+            // Skip unexpected token types
+            reader.Skip();
+            return null;
+        }
+
+        public override void Write(Utf8JsonWriter writer, ConditionDefinition value, JsonSerializerOptions options)
+        {
+            if (value == null)
+            {
+                writer.WriteNullValue();
+                return;
+            }
+
+            writer.WriteStartObject();
+            if (value.Field != null) writer.WriteString("field", value.Field);
+            if (value.Operator != null) writer.WriteString("operator", value.Operator);
+            if (value.Value != null) writer.WriteString("value", value.Value);
+            writer.WriteNumber("length", value.Length);
+            writer.WriteEndObject();
+        }
+
+        private static ConditionDefinition ParseStringCondition(string expression)
+        {
+            // Try to parse patterns like "(var & mask) == value" or "var == value"
+            // For now, store the expression as-is in the Field property with a special prefix
+            // The interpreter can handle "expr:" prefix for expression-based conditions
+            return new ConditionDefinition
+            {
+                Field = "expr:" + expression,
+                Operator = "expression",
+                Value = expression,
+                Length = 0
+            };
+        }
+    }
+
+    /// <summary>
     /// Condition definition for conditional blocks
     /// </summary>
+    [JsonConverter(typeof(ConditionDefinitionConverter))]
     public class ConditionDefinition
     {
         /// <summary>

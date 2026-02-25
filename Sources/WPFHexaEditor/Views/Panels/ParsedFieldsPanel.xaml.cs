@@ -6,6 +6,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -214,6 +215,20 @@ namespace WpfHexaEditor.Views.Panels
         /// Event fired when a field value is edited
         /// </summary>
         public event EventHandler<FieldEditedEventArgs> FieldValueEdited;
+
+        /// <summary>
+        /// Raised when user selects a different format candidate from the dropdown
+        /// </summary>
+        public event EventHandler<FormatCandidateSelectedEventArgs> FormatCandidateSelected;
+
+        private void FormatCandidateCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (FormatInfo?.SelectedCandidate?.Candidate != null && e.AddedItems.Count > 0)
+            {
+                FormatCandidateSelected?.Invoke(this,
+                    new FormatCandidateSelectedEventArgs(FormatInfo.SelectedCandidate.Candidate));
+            }
+        }
 
         private void FieldsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1662,6 +1677,9 @@ namespace WpfHexaEditor.Views.Panels
         private string _name;
         private string _description;
         private string _category;
+        private ObservableCollection<FormatCandidateItem> _candidates;
+        private FormatCandidateItem _selectedCandidate;
+        private bool _isUpdatingSelection;
 
         public bool IsDetected
         {
@@ -1703,6 +1721,50 @@ namespace WpfHexaEditor.Views.Panels
             }
         }
 
+        /// <summary>
+        /// List of format candidates for the dropdown selector
+        /// </summary>
+        public ObservableCollection<FormatCandidateItem> Candidates
+        {
+            get => _candidates;
+            set
+            {
+                _candidates = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasMultipleCandidates));
+            }
+        }
+
+        /// <summary>
+        /// Currently selected format candidate in the dropdown
+        /// </summary>
+        public FormatCandidateItem SelectedCandidate
+        {
+            get => _selectedCandidate;
+            set
+            {
+                if (_isUpdatingSelection) return;
+                _selectedCandidate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// True when multiple candidates are available (shows dropdown instead of static text)
+        /// </summary>
+        public bool HasMultipleCandidates => _candidates?.Count > 1;
+
+        /// <summary>
+        /// Set selected candidate without triggering change events (for initial population)
+        /// </summary>
+        public void SetSelectedCandidateSilently(FormatCandidateItem item)
+        {
+            _isUpdatingSelection = true;
+            _selectedCandidate = item;
+            OnPropertyChanged(nameof(SelectedCandidate));
+            _isUpdatingSelection = false;
+        }
+
         private WpfHexaEditor.Core.FormatDetection.FormatReferences _references;
 
         /// <summary>
@@ -1730,6 +1792,30 @@ namespace WpfHexaEditor.Views.Panels
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    /// <summary>
+    /// Lightweight wrapper for displaying a format candidate in a ComboBox
+    /// </summary>
+    public class FormatCandidateItem
+    {
+        public string DisplayName { get; set; }
+        public WpfHexaEditor.Core.FormatDetection.FormatMatchCandidate Candidate { get; set; }
+
+        public override string ToString() => DisplayName;
+    }
+
+    /// <summary>
+    /// Event args when user selects a different format candidate
+    /// </summary>
+    public class FormatCandidateSelectedEventArgs : EventArgs
+    {
+        public WpfHexaEditor.Core.FormatDetection.FormatMatchCandidate Candidate { get; }
+
+        public FormatCandidateSelectedEventArgs(WpfHexaEditor.Core.FormatDetection.FormatMatchCandidate candidate)
+        {
+            Candidate = candidate;
         }
     }
 
@@ -1766,5 +1852,23 @@ namespace WpfHexaEditor.Views.Panels
         public string Icon { get; set; }
         public string Value { get; set; }
         public System.Windows.Media.Brush Background { get; set; }
+    }
+
+    /// <summary>
+    /// Converts bool to inverse Visibility (true=Collapsed, false=Visible)
+    /// </summary>
+    public class InverseBoolToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool boolValue)
+                return boolValue ? Visibility.Collapsed : Visibility.Visible;
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

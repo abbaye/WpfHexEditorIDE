@@ -146,6 +146,16 @@ namespace WpfHexaEditor.Core.FormatDetection
 
         #endregion
 
+        #region ComputeFromVariables Block Properties
+
+        /// <summary>
+        /// Expression to evaluate for computeFromVariables blocks
+        /// Example: "uncompressedSize > 0 ? ((1 - compressedSize / uncompressedSize) * 100) : 0"
+        /// </summary>
+        public string Expression { get; set; }
+
+        #endregion
+
         #region Action Block Properties
 
         /// <summary>
@@ -197,6 +207,10 @@ namespace WpfHexaEditor.Core.FormatDetection
                 case "action":
                     // Must have action and variable
                     return !string.IsNullOrWhiteSpace(Action) && !string.IsNullOrWhiteSpace(Variable);
+
+                case "computefromvariables":
+                    // Must have expression and storeAs
+                    return !string.IsNullOrWhiteSpace(Expression) && !string.IsNullOrWhiteSpace(StoreAs);
 
                 default:
                     return false;

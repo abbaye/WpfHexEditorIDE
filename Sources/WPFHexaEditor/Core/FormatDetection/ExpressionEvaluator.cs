@@ -93,6 +93,34 @@ namespace WpfHexaEditor.Core.FormatDetection
 
         private long ParseExpression(string expr, ref int pos)
         {
+            long result = ParseAddSub(expr, ref pos);
+
+            // Handle bitwise operators (lowest arithmetic precedence)
+            while (pos < expr.Length)
+            {
+                char op = expr[pos];
+                if (op == '&' || op == '|' || op == '^')
+                {
+                    pos++;
+                    long right = ParseAddSub(expr, ref pos);
+                    switch (op)
+                    {
+                        case '&': result = result & right; break;
+                        case '|': result = result | right; break;
+                        case '^': result = result ^ right; break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        private long ParseAddSub(string expr, ref int pos)
+        {
             long result = ParseTerm(expr, ref pos);
 
             while (pos < expr.Length)

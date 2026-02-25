@@ -211,6 +211,10 @@ namespace WpfHexaEditor.Core.FormatDetection
                     ExecuteActionBlock(block);
                     break;
 
+                case "computefromvariables":
+                    ExecuteComputeFromVariablesBlock(block);
+                    break;
+
                 default:
                     // Unknown block type, skip
                     break;
@@ -542,6 +546,26 @@ namespace WpfHexaEditor.Core.FormatDetection
             }
         }
 
+        /// <summary>
+        /// Execute a computeFromVariables block - evaluates an expression and stores the result
+        /// </summary>
+        private void ExecuteComputeFromVariablesBlock(BlockDefinition block)
+        {
+            if (string.IsNullOrWhiteSpace(block.Expression) || string.IsNullOrWhiteSpace(block.StoreAs))
+                return;
+
+            try
+            {
+                var result = EvaluateExpression(block.Expression);
+                _variables[block.StoreAs] = result;
+            }
+            catch
+            {
+                // Expression evaluation failed, set default value
+                _variables[block.StoreAs] = 0L;
+            }
+        }
+
         #endregion
 
         #region Evaluation Methods
@@ -659,6 +683,12 @@ namespace WpfHexaEditor.Core.FormatDetection
             if (condition == null)
                 return false;
 
+            // Handle expression-based conditions (from string format like "(var & 1) == 1")
+            if (condition.Operator == "expression" && condition.Field?.StartsWith("expr:") == true)
+            {
+                return EvaluateBooleanExpression(condition.Value);
+            }
+
             // Get field value
             long? fieldValue = null;
 
@@ -728,6 +758,52 @@ namespace WpfHexaEditor.Core.FormatDetection
                 return 0;
 
             return ExpressionEvaluator.EvaluateStatic(expression, _variables);
+        }
+
+        /// <summary>
+        /// Evaluate a boolean expression like "(generalPurposeFlags &amp; 1) == 1"
+        /// Supports comparison operators: ==, !=, &gt;, &lt;, &gt;=, &lt;=
+        /// Each side of the comparison is evaluated as an arithmetic expression.
+        /// </summary>
+        private bool EvaluateBooleanExpression(string expression)
+        {
+            if (string.IsNullOrWhiteSpace(expression))
+                return false;
+
+            try
+            {
+                // Try to find comparison operator
+                string[] compOps = { "==", "!=", ">=", "<=", ">", "<" };
+                foreach (var op in compOps)
+                {
+                    int idx = expression.IndexOf(op);
+                    if (idx > 0)
+                    {
+                        var left = expression.Substring(0, idx).Trim();
+                        var right = expression.Substring(idx + op.Length).Trim();
+
+                        long leftVal = ExpressionEvaluator.EvaluateStatic(left, _variables);
+                        long rightVal = ExpressionEvaluator.EvaluateStatic(right, _variables);
+
+                        switch (op)
+                        {
+                            case "==": return leftVal == rightVal;
+                            case "!=": return leftVal != rightVal;
+                            case ">=": return leftVal >= rightVal;
+                            case "<=": return leftVal <= rightVal;
+                            case ">": return leftVal > rightVal;
+                            case "<": return leftVal < rightVal;
+                        }
+                    }
+                }
+
+                // No comparison operator found - evaluate as numeric (non-zero = true)
+                return ExpressionEvaluator.EvaluateStatic(expression, _variables) != 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         #endregion

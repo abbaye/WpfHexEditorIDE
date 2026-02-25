@@ -71,6 +71,7 @@ namespace WpfHexaEditor
         private readonly ChecksumValidator _checksumValidator = new ChecksumValidator();
         private FormatDefinition _detectedFormat;
         private Dictionary<string, object> _detectionVariables; // Variables from function execution
+        private List<FormatMatchCandidate> _detectionCandidates; // All candidates from detection
         private VariableContext _variableContext;
         private ExpressionEvaluator _expressionEvaluator;
         private readonly FormattedValueCache _formattedValueCache = new FormattedValueCache();
@@ -117,6 +118,7 @@ namespace WpfHexaEditor
                 ParsedFieldsPanel.RefreshRequested += ParsedFieldsPanel_RefreshRequested;
                 ParsedFieldsPanel.FormatterChanged += ParsedFieldsPanel_FormatterChanged;
                 ParsedFieldsPanel.FieldValueEdited += ParsedFieldsPanel_FieldValueEdited;
+                ParsedFieldsPanel.FormatCandidateSelected += ParsedFieldsPanel_FormatCandidateSelected;
             }
 
             // Subscribe to byte modification events for auto-refresh
@@ -186,6 +188,42 @@ namespace WpfHexaEditor
         private void ParsedFieldsPanel_RefreshRequested(object sender, EventArgs e)
         {
             ParseFieldsAsync();
+        }
+
+        /// <summary>
+        /// Handle format candidate selection from the dropdown
+        /// Switches the active format, re-applies blocks and re-parses fields
+        /// </summary>
+        private void ParsedFieldsPanel_FormatCandidateSelected(object sender, FormatCandidateSelectedEventArgs e)
+        {
+            if (e?.Candidate == null) return;
+
+            try
+            {
+                var candidate = e.Candidate;
+
+                // Clear and re-apply blocks from the selected candidate
+                ClearCustomBackgroundBlock();
+                if (candidate.Blocks != null)
+                {
+                    foreach (var block in candidate.Blocks)
+                        AddCustomBackgroundBlock(block);
+                }
+
+                // Update stored format and variables
+                _detectedFormat = candidate.Format;
+                _detectionVariables = candidate.Variables;
+
+                // Re-parse fields with new format (but preserve candidate list)
+                RefreshParsedFields();
+
+                // Update enriched format panel
+                UpdateEnrichedFormatPanel(candidate.Format);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error switching format candidate: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -353,6 +391,30 @@ namespace WpfHexaEditor
                     ParsedFieldsPanel.FormatInfo.Description = _detectedFormat.Description;
                     ParsedFieldsPanel.FormatInfo.Category = _detectedFormat.Category ?? "Other";
                     ParsedFieldsPanel.FormatInfo.References = _detectedFormat.References;
+
+                    // Populate format candidates dropdown (only on initial detection, not on switch)
+                    if (_detectionCandidates?.Count > 1 && ParsedFieldsPanel.FormatInfo.Candidates == null)
+                    {
+                        var items = new ObservableCollection<FormatCandidateItem>();
+                        foreach (var c in _detectionCandidates.Take(8))
+                        {
+                            items.Add(new FormatCandidateItem
+                            {
+                                DisplayName = $"{c.Format.FormatName} ({c.ConfidenceScore:P0})",
+                                Candidate = c
+                            });
+                        }
+                        ParsedFieldsPanel.FormatInfo.Candidates = items;
+                        ParsedFieldsPanel.FormatInfo.SetSelectedCandidateSilently(items[0]);
+                    }
+                    else if (_detectionCandidates?.Count > 1)
+                    {
+                        // Update selected candidate to match current format (after switch)
+                        var match = ParsedFieldsPanel.FormatInfo.Candidates?
+                            .FirstOrDefault(c => c.Candidate?.Format?.FormatName == _detectedFormat.FormatName);
+                        if (match != null)
+                            ParsedFieldsPanel.FormatInfo.SetSelectedCandidateSilently(match);
+                    }
 
                     // Set total file size for coverage bar (C6)
                     ParsedFieldsPanel.TotalFileSize = Length;
@@ -702,9 +764,8 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// Evaluate a conditional expression (string format)
-        /// Supports: ==, !=, <, >, <=, >=
-        /// Example: "width > 0", "type == 1", "var:flags != 0"
+        /// Evaluate a conditional expression (string format).
+        /// Supports comparison operators and variable references.
         /// </summary>
         private bool EvaluateCondition(string condition)
         {
@@ -959,6 +1020,13 @@ namespace WpfHexaEditor
                 // Clear detected format
                 _detectedFormat = null;
                 _detectionVariables = null; // Clear function execution results
+                _detectionCandidates = null; // Clear candidates for format selector
+
+                // Clear format candidates dropdown
+                if (ParsedFieldsPanel?.FormatInfo != null)
+                {
+                    ParsedFieldsPanel.FormatInfo.Candidates = null;
+                }
 
                 // Clear variable context (don't set to null - just clear contents to preserve object)
                 _variableContext?.Clear();
