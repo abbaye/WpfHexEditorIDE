@@ -4,7 +4,7 @@
     <!-- 9 Color keys required by DockingColors.xaml -->
     <Color x:Key="BackgroundColor">#FFFFFF</Color>
     <Color x:Key="SurfaceColor">#F5F5F5</Color>
-    <Color x:Key="SurfaceElevatedColor">#FAFAFA</Color>
+    <Color x:Key="SurfaceElevatedColor">#EAEAEA</Color>
     <Color x:Key="ForegroundColor">#1F1F1F</Color>
     <Color x:Key="ForegroundSecondaryColor">#616161</Color>
     <Color x:Key="AccentColor">#0078D7</Color>

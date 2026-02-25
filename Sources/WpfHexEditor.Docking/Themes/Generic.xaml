@@ -158,7 +158,7 @@
                             BorderThickness="1">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="26"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
@@ -166,6 +166,8 @@
                             <!-- Header Bar (drag handle) -->
                             <Border x:Name="HeaderBorder" Grid.Row="0"
                                     Background="{DynamicResource DockToolHeaderInactiveBrush}"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    BorderThickness="0,0,0,1"
                                     Padding="6,0"
                                     drag:DragBehavior.DragContent="{Binding Model.SelectedContent, RelativeSource={RelativeSource TemplatedParent}}"
                                     Cursor="SizeAll">
@@ -173,28 +175,28 @@
                                     <!-- Buttons on the right -->
                                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
                                                 VerticalAlignment="Center">
-                                        <!-- Pin button -->
-                                        <Button x:Name="PinBtn" Width="16" Height="16" Margin="2,0"
+                                        <!-- Pin button (auto-hide toggle) -->
+                                        <Button x:Name="PinBtn" Width="20" Height="20" Margin="1,0"
                                                 Background="Transparent" BorderThickness="0"
-                                                Padding="0" Cursor="Hand"
+                                                Padding="2" Cursor="Hand"
                                                 ToolTip="{DynamicResource Dock_Pin}"
                                                 Command="{x:Static controls:DockCommands.ToggleAutoHideCommand}"
                                                 CommandParameter="{Binding Model.SelectedContent, RelativeSource={RelativeSource AncestorType=controls:LayoutAnchorablePaneControl}}">
                                             <Path Data="M 3,0 L 3,7 M 1,7 L 5,7 M 0,3 L 6,3 L 6,1 L 5,0 L 1,0 L 0,1 Z"
                                                   Stroke="{DynamicResource DockButtonForegroundBrush}"
-                                                  StrokeThickness="1" Width="7" Height="8" Stretch="Uniform"/>
+                                                  StrokeThickness="1.2" Width="8" Height="10" Stretch="Uniform"/>
                                         </Button>
-                                        <!-- Close button -->
-                                        <Button x:Name="CloseBtn" Width="16" Height="16" Margin="2,0"
+                                        <!-- Close button (hide) -->
+                                        <Button x:Name="CloseBtn" Width="20" Height="20" Margin="1,0"
                                                 Background="Transparent" BorderThickness="0"
-                                                Padding="0" Cursor="Hand"
+                                                Padding="2" Cursor="Hand"
                                                 ToolTip="{DynamicResource Dock_Close}"
                                                 Command="{x:Static controls:DockCommands.CloseAnchorableCommand}"
                                                 CommandParameter="{Binding Model.SelectedContent, RelativeSource={RelativeSource AncestorType=controls:LayoutAnchorablePaneControl}}">
                                             <Path Data="M 0,0 L 6,6 M 6,0 L 0,6"
                                                   Stroke="{DynamicResource DockButtonForegroundBrush}"
                                                   StrokeThickness="1.5"
-                                                  Width="6" Height="6" Stretch="Uniform"/>
+                                                  Width="8" Height="8" Stretch="Uniform"/>
                                         </Button>
                                     </StackPanel>
 
@@ -225,6 +227,11 @@
                                                     Padding="8,2" Cursor="Hand"
                                                     Background="{DynamicResource DockToolTabInactiveBrush}"
                                                     drag:DragBehavior.DragContent="{Binding}">
+                                                <Border.InputBindings>
+                                                    <MouseBinding Gesture="LeftClick"
+                                                                  Command="{x:Static controls:DockCommands.SelectAnchorableCommand}"
+                                                                  CommandParameter="{Binding}"/>
+                                                </Border.InputBindings>
                                                 <TextBlock Text="{Binding Title}"
                                                            Foreground="{DynamicResource DockToolTabSecondaryBrush}"
                                                            FontSize="11" FontFamily="Segoe UI"
@@ -318,6 +325,11 @@
                                                         Background="Transparent"
                                                         BorderBrush="{DynamicResource DockBorderBrush}"
                                                         BorderThickness="0,0,1,0">
+                                                    <Border.InputBindings>
+                                                        <MouseBinding Gesture="LeftClick"
+                                                                      Command="{x:Static controls:DockCommands.ShowAutoHidePopupCommand}"
+                                                                      CommandParameter="{Binding}"/>
+                                                    </Border.InputBindings>
                                                     <TextBlock Text="{Binding Title}"
                                                                Foreground="{DynamicResource DockAutoHideTabForegroundBrush}"
                                                                FontSize="11" FontFamily="Segoe UI">

@@ -249,18 +249,25 @@ public class DockDropTarget
         var newOrientation = isHorizontal ? LayoutOrientation.Horizontal : LayoutOrientation.Vertical;
 
         // Create pane for content
-        LayoutAnchorablePane? anchPane = null;
+        LayoutElement newPane;
         if (content is LayoutAnchorable anchorable)
         {
-            anchPane = new LayoutAnchorablePane
+            var anchPane = new LayoutAnchorablePane
             {
                 DockWidth = new GridLength(250, GridUnitType.Pixel),
                 DockHeight = new GridLength(200, GridUnitType.Pixel),
                 DockSide = Side
             };
             anchPane.Children.Add(anchorable);
+            newPane = anchPane;
         }
-        else return; // Only anchorables can root-dock
+        else if (content is LayoutDocument document)
+        {
+            var docPane = new LayoutDocumentPane();
+            docPane.Children.Add(document);
+            newPane = docPane;
+        }
+        else return;
 
         var currentRoot = root.RootPanel;
 
@@ -268,9 +275,9 @@ public class DockDropTarget
         {
             // Just insert into existing root panel
             if (insertBefore)
-                currentRoot.InsertChildAt(0, anchPane);
+                currentRoot.InsertChildAt(0, newPane);
             else
-                currentRoot.Children.Add(anchPane);
+                currentRoot.Children.Add(newPane);
         }
         else
         {
@@ -280,13 +287,13 @@ public class DockDropTarget
 
             if (insertBefore)
             {
-                newRoot.Children.Add(anchPane);
+                newRoot.Children.Add(newPane);
                 newRoot.Children.Add(currentRoot);
             }
             else
             {
                 newRoot.Children.Add(currentRoot);
-                newRoot.Children.Add(anchPane);
+                newRoot.Children.Add(newPane);
             }
         }
     }

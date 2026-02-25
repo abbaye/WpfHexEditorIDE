@@ -17,9 +17,10 @@ namespace WpfHexEditor.Docking.Controls;
 /// </summary>
 internal class DockingGuideOverlay : Window
 {
-    private const double GuideSize = 32;
-    private const double GuideSpacing = 4;
-    private const double RootGuideSize = 24;
+    private const double GuideSize = 40;
+    private const double GuideSpacing = 6;
+    private const double RootGuideSize = 32;
+    private const double HitTestPadding = 6; // Extra pixels around guides for easier hit-testing
 
     private readonly Canvas _canvas;
     private readonly DockGuideButton _centerGuide;
@@ -256,9 +257,11 @@ internal class DockingGuideOverlay : Window
         if (guide.Visibility != Visibility.Visible)
             return false;
 
-        var left = Canvas.GetLeft(guide);
-        var top = Canvas.GetTop(guide);
-        var bounds = new Rect(left, top, guide.Width, guide.Height);
+        var left = Canvas.GetLeft(guide) - HitTestPadding;
+        var top = Canvas.GetTop(guide) - HitTestPadding;
+        var width = guide.Width + HitTestPadding * 2;
+        var height = guide.Height + HitTestPadding * 2;
+        var bounds = new Rect(left, top, width, height);
         return bounds.Contains(localPoint);
     }
 
@@ -284,10 +287,10 @@ internal class DockingGuideOverlay : Window
     {
         var path = new Path
         {
-            StrokeThickness = 2,
-            Stroke = new SolidColorBrush(Color.FromRgb(200, 200, 200)),
-            Width = 12,
-            Height = 12,
+            StrokeThickness = 2.5,
+            Stroke = new SolidColorBrush(Color.FromRgb(220, 220, 220)),
+            Width = 16,
+            Height = 16,
             Stretch = Stretch.Uniform,
             Data = direction switch
             {
@@ -306,9 +309,9 @@ internal class DockingGuideOverlay : Window
         var path = new Path
         {
             StrokeThickness = 1.5,
-            Stroke = new SolidColorBrush(Color.FromRgb(200, 200, 200)),
-            Width = 14,
-            Height = 12,
+            Stroke = new SolidColorBrush(Color.FromRgb(220, 220, 220)),
+            Width = 18,
+            Height = 14,
             Stretch = Stretch.Uniform,
             // Tab icon: overlapping rectangles
             Data = Geometry.Parse("M 0,4 L 0,12 L 12,12 L 12,4 L 6,4 L 6,0 L 0,0 Z M 6,4 L 12,4")

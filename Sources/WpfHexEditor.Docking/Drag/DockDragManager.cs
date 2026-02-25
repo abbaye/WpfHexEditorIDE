@@ -26,6 +26,11 @@ internal class DockDragManager
     private Point _dragStartScreenPoint;
     private FrameworkElement? _dragSource; // The element that initiated the drag (for mouse capture)
 
+    // Cache last known pane model and bounds, so compass rose guides still work
+    // even if the cursor moves slightly off the pane between MouseMove and MouseUp
+    private LayoutElement? _lastPaneModel;
+    private Rect? _lastPaneBounds;
+
     public DockDragManager(DockManager manager)
     {
         _manager = manager;
@@ -173,16 +178,24 @@ internal class DockDragManager
         if (paneControl != null)
         {
             paneBounds = HitTestHelper.GetScreenBounds(paneControl);
+            // Cache the pane so we can use it if the cursor drifts slightly off
+            _lastPaneModel = paneModel;
+            _lastPaneBounds = paneBounds;
         }
 
-        // Show/update the guide overlay
-        _guideOverlay?.ShowOverlay(managerBounds, paneBounds);
+        // Show/update the guide overlay (uses current pane bounds, or keeps previous compass rose visible)
+        _guideOverlay?.ShowOverlay(managerBounds, paneBounds ?? _lastPaneBounds);
 
         // Hit-test the guides
         var (side, isRoot, hitGuide) = _guideOverlay?.HitTestGuides(screenPoint) ?? (DockSide.None, false, false);
 
         // Determine drop target
         _currentTarget = null;
+
+        // Use cached pane if current pane not found but a guide is hit
+        // (cursor may have moved slightly off the pane onto the guide button area)
+        var effectivePaneModel = paneModel ?? _lastPaneModel;
+        var effectivePaneBounds = paneBounds ?? _lastPaneBounds;
 
         if (hitGuide)
         {
@@ -202,10 +215,10 @@ internal class DockDragManager
                 {
                     _currentTarget = new DockDropTarget(_manager.Layout.RootPanel, side, dropType.Value);
                     _currentTarget.PreviewBounds = DockingGuideOverlay.CalculatePreviewBounds(
-                        paneBounds ?? managerBounds, side, true, managerBounds);
+                        effectivePaneBounds ?? managerBounds, side, true, managerBounds);
                 }
             }
-            else if (paneModel != null)
+            else if (effectivePaneModel != null && effectivePaneBounds.HasValue)
             {
                 // Pane-level docking
                 DropType dropType;
@@ -227,13 +240,23 @@ internal class DockDragManager
                 }
 
                 // Don't allow dropping onto the same pane if it's a tab-into and it's the source
-                var isSamePane = _draggedContent.Parent == paneModel;
+                var isSamePane = _draggedContent.Parent == effectivePaneModel;
                 if (!(dropType == DropType.TabInto && isSamePane))
                 {
-                    _currentTarget = new DockDropTarget(paneModel, side, dropType);
+                    _currentTarget = new DockDropTarget(effectivePaneModel, side, dropType);
                     _currentTarget.PreviewBounds = DockingGuideOverlay.CalculatePreviewBounds(
-                        paneBounds!.Value, side, false, managerBounds);
+                        effectivePaneBounds.Value, side, false, managerBounds);
                 }
+            }
+        }
+        else
+        {
+            // Not hovering over any guide - clear the pane cache so we don't use stale data
+            // when the cursor moves to a completely different area
+            if (paneModel == null)
+            {
+                _lastPaneModel = null;
+                _lastPaneBounds = null;
             }
         }
 
@@ -254,6 +277,10 @@ internal class DockDragManager
     private void ExecuteDrop(Point screenPoint)
     {
         _state = DragState.Dropping;
+
+        // Do one final hit-test at the exact drop position, because the last
+        // MouseMove may have fired at a slightly different spot than the MouseUp.
+        ProcessDragOver(screenPoint);
 
         if (_currentTarget != null && _draggedContent != null)
         {
@@ -282,6 +309,8 @@ internal class DockDragManager
         _guideOverlay = null;
 
         _currentTarget = null;
+        _lastPaneModel = null;
+        _lastPaneBounds = null;
 
         // Unhook events from source
         if (_dragSource != null)
