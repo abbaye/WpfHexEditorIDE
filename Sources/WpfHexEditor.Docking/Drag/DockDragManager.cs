@@ -249,16 +249,10 @@ internal class DockDragManager
                 }
             }
         }
-        else
-        {
-            // Not hovering over any guide - clear the pane cache so we don't use stale data
-            // when the cursor moves to a completely different area
-            if (paneModel == null)
-            {
-                _lastPaneModel = null;
-                _lastPaneBounds = null;
-            }
-        }
+        // Note: we intentionally do NOT clear _lastPaneModel/_lastPaneBounds here.
+        // The cache persists throughout the drag so the compass rose stays visible
+        // when the cursor passes over splitters/borders between the pane and a guide.
+        // It's only updated when a new pane is found, and cleared in CleanupDrag.
 
         // Update preview window
         if (_currentTarget != null)

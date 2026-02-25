@@ -21,7 +21,7 @@
     <SolidColorBrush x:Key="DockToolHeaderActiveBrush" Color="{DynamicResource AccentColor}"/>
     <SolidColorBrush x:Key="DockToolHeaderInactiveBrush" Color="{DynamicResource SurfaceElevatedColor}"/>
     <SolidColorBrush x:Key="DockToolHeaderActiveForegroundBrush" Color="White"/>
-    <SolidColorBrush x:Key="DockToolHeaderInactiveForegroundBrush" Color="{DynamicResource ForegroundSecondaryColor}"/>
+    <SolidColorBrush x:Key="DockToolHeaderInactiveForegroundBrush" Color="{DynamicResource ForegroundColor}"/>
 
     <!-- ==================== TOOL WINDOW TAB STRIP ==================== -->
     <SolidColorBrush x:Key="DockToolTabStripBrush" Color="{DynamicResource SurfaceColor}"/>
@@ -44,7 +44,7 @@
     <!-- ==================== BUTTONS ==================== -->
     <SolidColorBrush x:Key="DockCloseButtonHoverBrush" Color="{DynamicResource ErrorColor}"/>
     <SolidColorBrush x:Key="DockButtonHoverBrush" Color="{DynamicResource HoverColor}"/>
-    <SolidColorBrush x:Key="DockButtonForegroundBrush" Color="{DynamicResource ForegroundSecondaryColor}"/>
+    <SolidColorBrush x:Key="DockButtonForegroundBrush" Color="{DynamicResource ForegroundColor}"/>
 
     <!-- ==================== DRAG GUIDES ==================== -->
     <SolidColorBrush x:Key="DockGuideNormalBrush" Color="{DynamicResource SurfaceColor}" Opacity="0.85"/>

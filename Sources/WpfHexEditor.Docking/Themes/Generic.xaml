@@ -176,27 +176,29 @@
                                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
                                                 VerticalAlignment="Center">
                                         <!-- Pin button (auto-hide toggle) -->
-                                        <Button x:Name="PinBtn" Width="20" Height="20" Margin="1,0"
+                                        <Button x:Name="PinBtn" Width="22" Height="22" Margin="1,0"
                                                 Background="Transparent" BorderThickness="0"
-                                                Padding="2" Cursor="Hand"
+                                                Padding="3" Cursor="Hand"
                                                 ToolTip="{DynamicResource Dock_Pin}"
                                                 Command="{x:Static controls:DockCommands.ToggleAutoHideCommand}"
                                                 CommandParameter="{Binding Model.SelectedContent, RelativeSource={RelativeSource AncestorType=controls:LayoutAnchorablePaneControl}}">
-                                            <Path Data="M 3,0 L 3,7 M 1,7 L 5,7 M 0,3 L 6,3 L 6,1 L 5,0 L 1,0 L 0,1 Z"
-                                                  Stroke="{DynamicResource DockButtonForegroundBrush}"
-                                                  StrokeThickness="1.2" Width="8" Height="10" Stretch="Uniform"/>
+                                            <!-- Pushpin icon -->
+                                            <Path Data="M 5,0 L 5,2 L 1,2 L 0,3 L 0,7 L 1,8 L 4,8 L 4,12 L 6,12 L 6,8 L 9,8 L 10,7 L 10,3 L 9,2 L 5,2"
+                                                  Fill="{DynamicResource DockButtonForegroundBrush}"
+                                                  Width="12" Height="14" Stretch="Uniform"/>
                                         </Button>
                                         <!-- Close button (hide) -->
-                                        <Button x:Name="CloseBtn" Width="20" Height="20" Margin="1,0"
+                                        <Button x:Name="CloseBtn" Width="22" Height="22" Margin="1,0"
                                                 Background="Transparent" BorderThickness="0"
-                                                Padding="2" Cursor="Hand"
+                                                Padding="3" Cursor="Hand"
                                                 ToolTip="{DynamicResource Dock_Close}"
                                                 Command="{x:Static controls:DockCommands.CloseAnchorableCommand}"
                                                 CommandParameter="{Binding Model.SelectedContent, RelativeSource={RelativeSource AncestorType=controls:LayoutAnchorablePaneControl}}">
-                                            <Path Data="M 0,0 L 6,6 M 6,0 L 0,6"
+                                            <!-- X icon -->
+                                            <Path Data="M 0,0 L 8,8 M 8,0 L 0,8"
                                                   Stroke="{DynamicResource DockButtonForegroundBrush}"
-                                                  StrokeThickness="1.5"
-                                                  Width="8" Height="8" Stretch="Uniform"/>
+                                                  StrokeThickness="2"
+                                                  Width="10" Height="10" Stretch="Uniform"/>
                                         </Button>
                                     </StackPanel>
 
