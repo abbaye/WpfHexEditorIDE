@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WPFHexaEditor\WpfHexEditorCore.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

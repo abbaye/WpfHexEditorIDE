@@ -16,6 +16,7 @@
         xmlns:hexEditor="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
         xmlns:hexControls="clr-namespace:WpfHexaEditor.Controls;assembly=WPFHexaEditor"
         xmlns:hexPanels="clr-namespace:WpfHexEditor.WindowPanels.Panels;assembly=WpfHexEditor.WindowPanels"
+        xmlns:barChart="clr-namespace:WpfHexEditor.BarChart.Controls;assembly=WpfHexEditor.BarChart"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Height="900" Width="1600"
@@ -481,8 +482,12 @@
             </ToggleButton>
         </ToolBar>
 
-        <!-- Main Content : HexEditor | Splitter | ParsedFieldsPanel | SettingsPanel -->
+        <!-- Main Content : HexEditor | Splitter | ParsedFieldsPanel | SettingsPanel + BarChart (bottom) -->
         <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>    <!-- Row 0: HexEditor + side panels -->
+                <RowDefinition Height="Auto"/> <!-- Row 1: BarChart (byte distribution) -->
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>    <!-- HexEditor -->
                 <ColumnDefinition x:Name="SplitterColumn" Width="0"/> <!-- GridSplitter (géré en code-behind) -->
@@ -526,6 +531,11 @@
                     </Style>
                 </hexControls:HexEditorSettings.Style>
             </hexControls:HexEditorSettings>
+
+            <!-- BarChart : byte frequency distribution (standalone panel, Row 1) -->
+            <barChart:BarChartPanel x:Name="ByteDistChartPanel"
+                                    Grid.Row="1" Grid.ColumnSpan="3"
+                                    Height="150"/>
 
         </Grid>
 

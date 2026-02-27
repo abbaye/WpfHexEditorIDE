@@ -75,6 +75,11 @@ public class DockEngine
 
         if (direction == DockDirection.Center)
         {
+            // Inherit the group's dock side so the item's LastDockSide stays consistent
+            // with its container (important for tab strip placement and re-dock direction).
+            if (target.Items.Count > 0)
+                item.LastDockSide = target.Items[0].LastDockSide;
+
             target.AddItem(item);
             target.ActiveItem = item;
         }
@@ -343,9 +348,10 @@ public class DockEngine
         }
 
         AutoNormalize();
-        if (!IsInTransaction) LayoutChanged?.Invoke();
 
-        // Build the floating group (outside the layout tree)
+        // Build the floating group (outside the layout tree) and fire GroupFloated BEFORE
+        // LayoutChanged, so CreateFloatingWindowForGroup registers the window before
+        // RestoreFloatingWindows runs during the subsequent RebuildVisualTree.
         var floatingGroup = new DockGroupNode();
         foreach (var item in items)
             floatingGroup.AddItem(item);
@@ -354,6 +360,7 @@ public class DockEngine
             floatingGroup.ActiveItem = originalActive;
 
         GroupFloated?.Invoke(floatingGroup);
+        if (!IsInTransaction) LayoutChanged?.Invoke();
     }
 
     private void AutoNormalize()

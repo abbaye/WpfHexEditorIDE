@@ -171,6 +171,24 @@ public class DockControl : ContentControl
 
         _centerHost.Content = CreateVisualForNode(Layout.RootNode);
         UpdateAutoHideBars();
+        RestoreFloatingWindows();
+    }
+
+    /// <summary>
+    /// Ensures every item in <see cref="DockLayoutRoot.FloatingItems"/> has a visible
+    /// <see cref="FloatingWindow"/>. Called after each visual tree rebuild so that
+    /// floating items persisted in a saved layout are shown on restore.
+    /// Items that already have a window (floated interactively) are skipped.
+    /// </summary>
+    private void RestoreFloatingWindows()
+    {
+        if (Layout is null || _floatingManager is null) return;
+
+        foreach (var item in Layout.FloatingItems)
+        {
+            if (_floatingManager.FindWindowForItem(item) is null)
+                _floatingManager.CreateFloatingWindow(item);
+        }
     }
 
     private UIElement CreateVisualForNode(DockNode node)
@@ -212,77 +230,70 @@ public class DockControl : ContentControl
     {
         var tabControl = new DockTabControl();
 
-        if (group.Items.FirstOrDefault()?.LastDockSide == DockSide.Bottom)
-        {
-            // VS2026: bottom panels — tab strip at bottom, title bar at top
-            tabControl.TabStripPlacement = Dock.Bottom;
-            tabControl.Bind(group, ContentFactory);
-            WireTabControlEvents(tabControl);
-
-            // Dynamic title block shows the active tab name
-            var titleBlock = new TextBlock
-            {
-                Text              = group.ActiveItem?.Title ?? "",
-                FontWeight        = FontWeights.SemiBold,
-                FontSize          = 11,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin            = new Thickness(8, 2, 8, 2)
-            };
-            titleBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockTabTextBrush");
-
-            // Update title when the active tab changes
-            tabControl.SelectionChanged += (_, _) =>
-            {
-                if (tabControl.SelectedItem is TabItem tab && tab.Tag is DockItem di)
-                    titleBlock.Text = di.Title;
-            };
-
-            var titleBar = new Border { Child = titleBlock, Cursor = Cursors.SizeAll };
-            titleBar.SetResourceReference(Border.BackgroundProperty, "DockMenuBackgroundBrush");
-
-            // Drag threshold state (local to this title bar instance)
-            var titleDragStart   = new Point();
-            var titleDragPending = false;
-
-            titleBar.MouseLeftButtonDown += (_, e) =>
-            {
-                if (e.ClickCount >= 2) return;
-                titleDragStart   = e.GetPosition(titleBar);
-                titleDragPending = true;
-                titleBar.CaptureMouse();
-            };
-
-            titleBar.MouseMove += (_, e) =>
-            {
-                if (!titleDragPending || e.LeftButton != MouseButtonState.Pressed) return;
-                var diff = e.GetPosition(titleBar) - titleDragStart;
-                if (Math.Abs(diff.X) <= SystemParameters.MinimumHorizontalDragDistance &&
-                    Math.Abs(diff.Y) <= SystemParameters.MinimumVerticalDragDistance) return;
-
-                titleDragPending = false;
-                titleBar.ReleaseMouseCapture();
-                var activeItem = group.ActiveItem;
-                if (activeItem is null) return;
-                _dragManager?.BeginGroupDrag(group, activeItem);
-            };
-
-            titleBar.MouseLeftButtonUp += (_, _) =>
-            {
-                titleDragPending = false;
-                titleBar.ReleaseMouseCapture();
-            };
-
-            var layout = new DockPanel { LastChildFill = true };
-            DockPanel.SetDock(titleBar, Dock.Top);
-            layout.Children.Add(titleBar);
-            layout.Children.Add(tabControl);
-
-            return CreateFocusBorder(layout);
-        }
-
+        // All side panels: tab strip at bottom, title bar at top (VS-style)
+        tabControl.TabStripPlacement = Dock.Bottom;
         tabControl.Bind(group, ContentFactory);
         WireTabControlEvents(tabControl);
-        return CreateFocusBorder(tabControl);
+
+        // Dynamic title block shows the active tab name
+        var titleBlock = new TextBlock
+        {
+            Text              = group.ActiveItem?.Title ?? "",
+            FontWeight        = FontWeights.SemiBold,
+            FontSize          = 11,
+            VerticalAlignment = VerticalAlignment.Center,
+            Margin            = new Thickness(8, 2, 8, 2)
+        };
+        titleBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockTabTextBrush");
+
+        // Update title when the active tab changes
+        tabControl.SelectionChanged += (_, _) =>
+        {
+            if (tabControl.SelectedItem is TabItem tab && tab.Tag is DockItem di)
+                titleBlock.Text = di.Title;
+        };
+
+        var titleBar = new Border { Child = titleBlock, Cursor = Cursors.SizeAll };
+        titleBar.SetResourceReference(Border.BackgroundProperty, "DockMenuBackgroundBrush");
+
+        // Drag threshold state (local to this title bar instance)
+        var titleDragStart   = new Point();
+        var titleDragPending = false;
+
+        titleBar.MouseLeftButtonDown += (_, e) =>
+        {
+            if (e.ClickCount >= 2) return;
+            titleDragStart   = e.GetPosition(titleBar);
+            titleDragPending = true;
+            titleBar.CaptureMouse();
+        };
+
+        titleBar.MouseMove += (_, e) =>
+        {
+            if (!titleDragPending || e.LeftButton != MouseButtonState.Pressed) return;
+            var diff = e.GetPosition(titleBar) - titleDragStart;
+            if (Math.Abs(diff.X) <= SystemParameters.MinimumHorizontalDragDistance &&
+                Math.Abs(diff.Y) <= SystemParameters.MinimumVerticalDragDistance) return;
+
+            titleDragPending = false;
+            titleBar.ReleaseMouseCapture();
+            var activeItem = group.ActiveItem;
+            if (activeItem is null) return;
+            _dragManager?.BeginGroupDrag(group, activeItem);
+        };
+
+        titleBar.MouseLeftButtonUp += (_, _) =>
+        {
+            titleDragPending = false;
+            titleBar.ReleaseMouseCapture();
+        };
+
+        var layout = new DockPanel { LastChildFill = true };
+        DockPanel.SetDock(titleBar, Dock.Top);
+        layout.Children.Add(titleBar);
+        layout.Children.Add(tabControl);
+
+        return CreateFocusBorder(layout);
     }
 
     /// <summary>

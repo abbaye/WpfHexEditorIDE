@@ -520,6 +520,17 @@ namespace WpfHexaEditor
                         continue;
                     }
 
+                    // Handle computeFromVariables blocks (evaluate expression, store result)
+                    if (block.Type?.ToLowerInvariant() == "computefromvariables")
+                    {
+                        if (!string.IsNullOrWhiteSpace(block.Expression) && !string.IsNullOrWhiteSpace(block.StoreAs))
+                        {
+                            long result = _expressionEvaluator?.Evaluate(block.Expression) ?? 0;
+                            _variableContext?.SetVariable(block.StoreAs, result);
+                        }
+                        continue;
+                    }
+
                     // Regular field blocks
                     // Calculate offset (handle variables and calculations)
                     long offset = ResolveOffset(block.Offset);

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +20,7 @@ using WpfHexEditor.JsonEditor.Models;
 using WpfHexEditor.JsonEditor.Helpers;
 using WpfHexEditor.JsonEditor.Services;
 using WpfHexaEditor.Core.Settings;
+using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.JsonEditor.Controls
 {
@@ -28,7 +30,7 @@ namespace WpfHexEditor.JsonEditor.Controls
     /// Phase 2: Syntax highlighting with JsonSyntaxHighlighter
     /// Future phases will add: IntelliSense, validation
     /// </summary>
-    public class JsonEditor : FrameworkElement
+    public class JsonEditor : FrameworkElement, IDocumentEditor
     {
         #region Fields - Document Model
 
@@ -49,6 +51,8 @@ namespace WpfHexEditor.JsonEditor.Controls
 
         private UndoRedoStack _undoRedoStack;
         private bool _isInternalEdit = false; // Prevent undo during undo/redo operations
+        private bool _isDirty = false;        // IDocumentEditor: unsaved changes flag
+        private string? _currentFilePath;     // IDocumentEditor: last saved file path
 
         #endregion
 
@@ -2377,6 +2381,16 @@ namespace WpfHexEditor.JsonEditor.Controls
             // Reset caret blink on keypress
             ResetCaretBlink();
 
+            // Block editing input when read-only (navigation keys still allowed below)
+            if (IsReadOnly)
+            {
+                bool isNavigationOrCopy = e.Key is Key.Left or Key.Right or Key.Up or Key.Down
+                    or Key.Home or Key.End or Key.PageUp or Key.PageDown or Key.Escape
+                    || (e.Key == Key.C && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+                    || (e.Key == Key.A && (Keyboard.Modifiers & ModifierKeys.Control) != 0);
+                if (!isNavigationOrCopy) { e.Handled = true; return; }
+            }
+
             bool ctrlPressed = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
             bool shiftPressed = (Keyboard.Modifiers & ModifierKeys.Shift) != 0;
 
@@ -3125,7 +3139,7 @@ namespace WpfHexEditor.JsonEditor.Controls
 
         #region Undo/Redo Operations (Phase 3)
 
-        private void Undo()
+        public void Undo()
         {
             if (!_undoRedoStack.CanUndo)
                 return;
@@ -3145,9 +3159,12 @@ namespace WpfHexEditor.JsonEditor.Controls
             {
                 _isInternalEdit = false;
             }
+
+            CanUndoChanged?.Invoke(this, EventArgs.Empty);
+            CanRedoChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void Redo()
+        public void Redo()
         {
             if (!_undoRedoStack.CanRedo)
                 return;
@@ -3167,6 +3184,9 @@ namespace WpfHexEditor.JsonEditor.Controls
             {
                 _isInternalEdit = false;
             }
+
+            CanUndoChanged?.Invoke(this, EventArgs.Empty);
+            CanRedoChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void ApplyEdit(TextEdit edit)
@@ -3214,6 +3234,15 @@ namespace WpfHexEditor.JsonEditor.Controls
                 var editType = (TextEditType)((int)e.ChangeType);
                 var textEdit = new TextEdit(editType, e.Position, e.Text);
                 _undoRedoStack.Push(textEdit);
+
+                if (!_isDirty)
+                {
+                    _isDirty = true;
+                    ModifiedChanged?.Invoke(this, EventArgs.Empty);
+                    TitleChanged?.Invoke(this, BuildTitle());
+                }
+                CanUndoChanged?.Invoke(this, EventArgs.Empty);
+                CanRedoChanged?.Invoke(this, EventArgs.Empty);
             }
 
             // Phase 5: Trigger validation with debounce
@@ -3371,5 +3400,90 @@ namespace WpfHexEditor.JsonEditor.Controls
         public int ValidationWarningCount => _validationErrors?.Count(e => e.Severity == ValidationSeverity.Warning) ?? 0;
 
         #endregion
+
+        #region IDocumentEditor
+
+        // ── State ──────────────────────────────────────────────────────────
+
+        /// <summary>True when the document has unsaved changes.</summary>
+        public bool IsDirty => _isDirty;
+
+        // ── IsReadOnly DP ─────────────────────────────────────────────────
+
+        public static readonly DependencyProperty IsReadOnlyProperty =
+            DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(JsonEditor),
+                new System.Windows.PropertyMetadata(false, (_, _) => { }));
+
+        public bool IsReadOnly
+        {
+            get => (bool)GetValue(IsReadOnlyProperty);
+            set => SetValue(IsReadOnlyProperty, value);
+        }
+
+        // ── Commands ──────────────────────────────────────────────────────
+
+        public System.Windows.Input.ICommand UndoCommand => new JsonRelayCommand(_ => Undo(), _ => CanUndo);
+        public System.Windows.Input.ICommand RedoCommand => new JsonRelayCommand(_ => Redo(), _ => CanRedo);
+        public System.Windows.Input.ICommand SaveCommand => new JsonRelayCommand(_ => Save());
+
+        // ── Methods ───────────────────────────────────────────────────────
+
+        public void Save()
+        {
+            if (!string.IsNullOrEmpty(_currentFilePath))
+            {
+                File.WriteAllText(_currentFilePath, GetText(), System.Text.Encoding.UTF8);
+                _isDirty = false;
+                ModifiedChanged?.Invoke(this, EventArgs.Empty);
+                TitleChanged?.Invoke(this, BuildTitle());
+                StatusMessage?.Invoke(this, "Saved");
+            }
+        }
+
+        public async System.Threading.Tasks.Task SaveAsync(System.Threading.CancellationToken ct = default)
+        {
+            if (!string.IsNullOrEmpty(_currentFilePath))
+                await SaveAsAsync(_currentFilePath, ct);
+        }
+
+        public async System.Threading.Tasks.Task SaveAsAsync(string filePath, System.Threading.CancellationToken ct = default)
+        {
+            var text = GetText();
+            await System.Threading.Tasks.Task.Run(() => File.WriteAllText(filePath, text, System.Text.Encoding.UTF8), ct);
+            _currentFilePath = filePath;
+            _isDirty = false;
+            ModifiedChanged?.Invoke(this, EventArgs.Empty);
+            TitleChanged?.Invoke(this, BuildTitle());
+            StatusMessage?.Invoke(this, $"Saved: {Path.GetFileName(filePath)}");
+        }
+
+        // ── Events ────────────────────────────────────────────────────────
+
+        public event EventHandler? ModifiedChanged;
+        public event EventHandler? CanUndoChanged;
+        public event EventHandler? CanRedoChanged;
+        public event EventHandler<string>? TitleChanged;
+        public event EventHandler<string>? StatusMessage;
+
+        // ── Helpers ───────────────────────────────────────────────────────
+
+        private string BuildTitle()
+        {
+            var name = !string.IsNullOrEmpty(_currentFilePath)
+                ? Path.GetFileName(_currentFilePath)
+                : "untitled.json";
+            return _isDirty ? name + " *" : name;
+        }
+
+        #endregion
+    }
+
+    // ── File-scoped RelayCommand ──────────────────────────────────────────────
+    file sealed class JsonRelayCommand(Action<object?> execute, Predicate<object?>? canExecute = null)
+        : System.Windows.Input.ICommand
+    {
+        public bool CanExecute(object? p)  => canExecute?.Invoke(p) ?? true;
+        public void Execute(object? p)     => execute(p);
+        public event EventHandler? CanExecuteChanged;
     }
 }

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <!-- UseWPF: required for System.Windows.Input.ICommand (WindowsBase.dll) -->
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.Editor.Core</RootNamespace>
+    <AssemblyName>WpfHexEditor.Editor.Core</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+</Project>

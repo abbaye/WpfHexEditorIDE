@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using WpfHexaEditor.Models.Patterns;
+using WpfHexEditor.BinaryAnalysis.Models.Patterns;
 
 namespace WpfHexaEditor.Services
 {

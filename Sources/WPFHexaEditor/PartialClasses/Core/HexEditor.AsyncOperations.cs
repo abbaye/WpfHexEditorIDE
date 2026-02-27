@@ -430,7 +430,7 @@ namespace WpfHexaEditor
             // Defer expensive operations to background
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                UpdateBarChart();
+                NotifyByteDistributionPanel();
             }), System.Windows.Threading.DispatcherPriority.Background);
 
             if (_scrollMarkers != null)

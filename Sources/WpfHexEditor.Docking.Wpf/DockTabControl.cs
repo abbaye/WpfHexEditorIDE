@@ -24,6 +24,7 @@ public class DockTabControl : TabControl
         SetResourceReference(BackgroundProperty, "DockBackgroundBrush");
         SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
         SetResourceReference(BorderBrushProperty, "DockBorderBrush");
+        SetResourceReference(StyleProperty, "DockTabControlStyle");
     }
 
     public event Action<DockItem>? TabDragStarted;
@@ -72,6 +73,7 @@ public class DockTabControl : TabControl
             },
             Tag = item
         };
+        tabItem.SetResourceReference(StyleProperty, "DockTabItemStyle");
 
         return tabItem;
     }

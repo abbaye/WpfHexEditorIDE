@@ -160,103 +160,22 @@ namespace WpfHexaEditor
         public TblStream TBL => _tblStream;
 
         /// <summary>
-        /// Open the TBL Editor dialog
+        /// Fired when the user requests to open the TBL editor.
+        /// The host application (Sample.Main, docking host, etc.) handles this event
+        /// by creating a TblEditorControl and passing <see cref="TBL"/> as its Source.
+        /// </summary>
+        public event EventHandler? TblEditorRequested;
+
+        /// <summary>
+        /// Request the host to open a TBL Editor for the current TBL stream.
+        /// If no TBL is loaded, creates an empty one first so the editor starts fresh.
         /// </summary>
         public void OpenTblEditor()
         {
-            try
-            {
-                // Create empty TBL if none loaded
-                bool wasEmpty = _tblStream == null;
-                if (wasEmpty)
-                {
-                    _tblStream = new TblStream();
-                }
+            if (_tblStream == null)
+                _tblStream = new TblStream();
 
-                var dialog = new TBLEditorModule.Views.TblEditorDialog
-                {
-                    Owner = System.Windows.Window.GetWindow(this),
-                    DataContext = new TBLEditorModule.ViewModels.TblEditorViewModel(_tblStream)
-                };
-
-                if (dialog.ShowDialog() == true)
-                {
-                    // If TBL was created in editor and has entries, bind it to HexEditor
-                    if (wasEmpty && _tblStream.Length > 0)
-                    {
-                        _characterTableType = CharacterTableType.TblFile;
-
-                        // Sync TblStream to HexViewport
-                        if (HexViewport != null)
-                        {
-                            HexViewport.TblStream = _tblStream;
-                            HexViewport.ShowTblMte = true;
-                        }
-
-                        // Show TBL status icon
-                        TblStatusIcon.Visibility = System.Windows.Visibility.Visible;
-                    }
-
-                    // Refresh viewport to reflect TBL changes
-                    HexViewport?.Refresh();
-
-                    // Update TBL statistics in status bar
-                    string fileName = !string.IsNullOrEmpty(_tblStream.FileName)
-                        ? System.IO.Path.GetFileName(_tblStream.FileName)
-                        : "Unsaved TBL";
-
-                    StatusText.Text = wasEmpty && _tblStream.Length > 0
-                        ? $"TBL created: {_tblStream.Length} entries"
-                        : $"TBL updated: {fileName}";
-
-                    // Update tooltip with new statistics
-                    var tooltipText = new System.Text.StringBuilder();
-                    tooltipText.AppendLine($"📋 TBL File: {fileName}");
-                    tooltipText.AppendLine($"━━━━━━━━━━━━━━━━━━━━━━━━━");
-                    tooltipText.AppendLine($"Total Entries: {_tblStream.Length}");
-                    tooltipText.AppendLine();
-
-                    // Show breakdown by type (only non-zero counts)
-                    if (_tblStream.TotalAscii > 0)
-                        tooltipText.AppendLine($"  • ASCII: {_tblStream.TotalAscii}");
-                    if (_tblStream.TotalDte > 0)
-                        tooltipText.AppendLine($"  • DTE (Dual): {_tblStream.TotalDte}");
-                    if (_tblStream.TotalMte > 0)
-                        tooltipText.AppendLine($"  • MTE (Multi): {_tblStream.TotalMte}");
-                    if (_tblStream.Total3Byte > 0)
-                        tooltipText.AppendLine($"  • 3-Byte: {_tblStream.Total3Byte}");
-                    if (_tblStream.Total4Byte > 0)
-                        tooltipText.AppendLine($"  • 4-Byte: {_tblStream.Total4Byte}");
-                    if (_tblStream.Total5PlusByte > 0)
-                        tooltipText.AppendLine($"  • 5+ Byte: {_tblStream.Total5PlusByte}");
-                    if (_tblStream.TotalJaponais > 0)
-                        tooltipText.AppendLine($"  • Japanese: {_tblStream.TotalJaponais}");
-                    if (_tblStream.TotalEndBlock > 0)
-                        tooltipText.AppendLine($"  • End Block: {_tblStream.TotalEndBlock}");
-                    if (_tblStream.TotalEndLine > 0)
-                        tooltipText.AppendLine($"  • End Line: {_tblStream.TotalEndLine}");
-
-                    tooltipText.AppendLine();
-                    tooltipText.AppendLine("⚠️ Edit only in HEX panel when TBL is loaded");
-                    tooltipText.AppendLine("💡 Click to open TBL Editor");
-
-                    TblStatusTooltipText.Text = tooltipText.ToString();
-                }
-                else if (wasEmpty)
-                {
-                    // Dialog was cancelled and TBL was empty, clear it
-                    _tblStream = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(
-                    $"Error opening TBL Editor: {ex.Message}",
-                    "TBL Editor Error",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Error
-                );
-            }
+            TblEditorRequested?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

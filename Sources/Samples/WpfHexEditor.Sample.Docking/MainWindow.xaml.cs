@@ -1,9 +1,10 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,6 +19,10 @@ namespace WpfHexEditor.Sample.Docking;
 
 public partial class MainWindow : Window
 {
+    private static readonly string LayoutFilePath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "WpfHexEditor", "Sample.Docking", "layout.json");
+
     private DockLayoutRoot _layout = null!;
     private DockEngine _engine = null!;
     private int _documentCounter;
@@ -26,42 +31,124 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        Closing += OnWindowClosing;
         Loaded += OnLoaded;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        LoadSavedLayoutOrDefault();
+    }
+
+    private void OnWindowClosing(object? sender, CancelEventArgs e)
+    {
+        AutoSaveLayout();
+    }
+
+    // ─── Layout persistence ────────────────────────────────────────────
+
+    private void LoadSavedLayoutOrDefault()
+    {
+        if (File.Exists(LayoutFilePath))
+        {
+            try
+            {
+                var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(LayoutFilePath));
+                ApplyLayout(layout);
+                StatusText.Text = "Layout restored from previous session.";
+                return;
+            }
+            catch
+            {
+                // Fichier corrompu ou incompatible — fall through vers le layout par défaut
+            }
+        }
+
         SetupDefaultLayout();
     }
 
+    private void AutoSaveLayout()
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(LayoutFilePath)!);
+            File.WriteAllText(LayoutFilePath, DockLayoutSerializer.Serialize(_layout));
+        }
+        catch
+        {
+            // Non-critique — la persistance du layout ne doit pas bloquer la fermeture
+        }
+    }
+
+    // ─── Layout helpers ────────────────────────────────────────────────
+
     private void SetupDefaultLayout()
     {
-        _layout = new DockLayoutRoot();
-        _engine = new DockEngine(_layout);
+        var layout = new DockLayoutRoot();
+        var engine = new DockEngine(layout);
 
-        // Add a welcome document to the main host
-        var welcomeDoc = new DockItem { Title = "Welcome", ContentId = "doc-welcome" };
-        _layout.MainDocumentHost.AddItem(welcomeDoc);
+        layout.MainDocumentHost.AddItem(new DockItem { Title = "Welcome", ContentId = "doc-welcome" });
 
-        // Create left panel group (Solution Explorer)
         var solutionExplorer = new DockItem { Title = "Solution Explorer", ContentId = "panel-solution-explorer" };
-        _engine.Dock(solutionExplorer, _layout.MainDocumentHost, DockDirection.Left);
+        engine.Dock(solutionExplorer, layout.MainDocumentHost, DockDirection.Left);
 
-        // Create bottom panel group (Output)
         var output = new DockItem { Title = "Output", ContentId = "panel-output" };
-        _engine.Dock(output, _layout.MainDocumentHost, DockDirection.Bottom);
+        engine.Dock(output, layout.MainDocumentHost, DockDirection.Bottom);
 
-        // Create right panel group (Properties)
         var properties = new DockItem { Title = "Properties", ContentId = "panel-properties" };
-        _engine.Dock(properties, _layout.MainDocumentHost, DockDirection.Right);
+        engine.Dock(properties, layout.MainDocumentHost, DockDirection.Right);
 
-        // Set up content factory and bind to DockControl
+        ApplyLayout(layout, engine);
+    }
+
+    /// <summary>
+    /// Câble un layout au DockControl. Utilisé par SetupDefaultLayout, LoadSavedLayoutOrDefault
+    /// et OnLoadLayout. Gère la souscription unique à TabCloseRequested et synchronise
+    /// le compteur de documents.
+    /// </summary>
+    private void ApplyLayout(DockLayoutRoot layout, DockEngine? engine = null)
+    {
+        // Évite les doublons si ApplyLayout est appelé plusieurs fois (Reset, Load…)
+        DockHost.TabCloseRequested -= OnTabCloseRequested;
+
+        _layout = layout;
+        _engine = engine ?? new DockEngine(_layout);
+        _isLocked = false;
+        LockMenuItem.IsChecked = false;
+
         DockHost.ContentFactory = CreateContentForItem;
         DockHost.TabCloseRequested += OnTabCloseRequested;
         DockHost.Layout = _layout;
 
+        SyncDocumentCounter();
         UpdateStatusBar();
     }
+
+    /// <summary>
+    /// Synchronise <see cref="_documentCounter"/> avec les ContentId existants après
+    /// un restore, pour éviter des collisions de ContentId lors de la création de nouveaux docs.
+    /// </summary>
+    private void SyncDocumentCounter()
+    {
+        var allItems = _layout.GetAllGroups()
+            .SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems);
+
+        var max = 0;
+        foreach (var item in allItems)
+        {
+            var id = item.ContentId;
+            if (id.StartsWith("doc-hex-") && int.TryParse(id["doc-hex-".Length..], out var n1))
+                max = Math.Max(max, n1);
+            else if (id.StartsWith("doc-") && int.TryParse(id["doc-".Length..], out var n2))
+                max = Math.Max(max, n2);
+        }
+
+        _documentCounter = max;
+    }
+
+    // ─── Content factory ───────────────────────────────────────────────
 
     private object CreateContentForItem(DockItem item)
     {
@@ -128,7 +215,6 @@ public partial class MainWindow : Window
             Background = System.Windows.Media.Brushes.Transparent
         };
 
-        // Generate some random sample data and write to a temp file
         var random = new Random();
         var data = new byte[1024];
         random.NextBytes(data);
@@ -157,6 +243,8 @@ public partial class MainWindow : Window
         };
         return textBox;
     }
+
+    // ─── Tab / panel management ────────────────────────────────────────
 
     private void OnTabCloseRequested(DockItem item)
     {
@@ -244,7 +332,6 @@ public partial class MainWindow : Window
         var existing = _layout.FindItemByContentId(contentId);
         if (existing is not null)
         {
-            // Already visible, activate it
             existing.Owner?.ActiveItem?.Equals(existing);
             StatusText.Text = $"Activated: {title}";
             return;
@@ -257,6 +344,8 @@ public partial class MainWindow : Window
         StatusText.Text = $"Opened: {title}";
     }
 
+    // ─── Menu: Layout ──────────────────────────────────────────────────
+
     private void OnSaveLayout(object sender, RoutedEventArgs e)
     {
         var dialog = new SaveFileDialog
@@ -268,8 +357,7 @@ public partial class MainWindow : Window
 
         if (dialog.ShowDialog() == true)
         {
-            var json = DockLayoutSerializer.Serialize(_layout);
-            File.WriteAllText(dialog.FileName, json);
+            File.WriteAllText(dialog.FileName, DockLayoutSerializer.Serialize(_layout));
             StatusText.Text = $"Layout saved: {dialog.FileName}";
         }
     }
@@ -286,12 +374,8 @@ public partial class MainWindow : Window
         {
             try
             {
-                var json = File.ReadAllText(dialog.FileName);
-                _layout = DockLayoutSerializer.Deserialize(json);
-                _engine = new DockEngine(_layout);
-                DockHost.ContentFactory = CreateContentForItem;
-                DockHost.Layout = _layout;
-                UpdateStatusBar();
+                var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(dialog.FileName));
+                ApplyLayout(layout);
                 StatusText.Text = $"Layout loaded: {dialog.FileName}";
             }
             catch (Exception ex)
@@ -307,12 +391,13 @@ public partial class MainWindow : Window
         StatusText.Text = "Layout reset to default";
     }
 
+    // ─── Menu: other ───────────────────────────────────────────────────
+
     private void OnToggleLock(object sender, RoutedEventArgs e)
     {
         _isLocked = LockMenuItem.IsChecked;
         _layout.MainDocumentHost.LockMode = _isLocked ? DockLockMode.Full : DockLockMode.None;
 
-        // Apply lock to all groups
         foreach (var group in _layout.GetAllGroups())
             group.LockMode = _isLocked ? DockLockMode.Full : DockLockMode.None;
 
@@ -340,6 +425,8 @@ public partial class MainWindow : Window
     {
         Close();
     }
+
+    // ─── Status bar ────────────────────────────────────────────────────
 
     private void UpdateStatusBar()
     {

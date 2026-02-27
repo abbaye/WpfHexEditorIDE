@@ -38,4 +38,13 @@ public class DockItem
     /// The group this item belongs to (null if floating or hidden).
     /// </summary>
     public DockGroupNode? Owner { get; internal set; }
+
+    /// <summary>
+    /// Last known position of the floating window (null = not yet set / use default centering).
+    /// Updated automatically by <see cref="FloatingWindowManager"/> as the window is moved.
+    /// </summary>
+    public double? FloatLeft { get; set; }
+
+    /// <inheritdoc cref="FloatLeft"/>
+    public double? FloatTop { get; set; }
 }

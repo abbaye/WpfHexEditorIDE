@@ -131,11 +131,6 @@ namespace WpfHexaEditor.Models
         /// </summary>
         public string MouseOverColor { get; set; } = "#FFE5F3FB";
 
-        /// <summary>
-        /// Bar chart color (ARGB hex string).
-        /// </summary>
-        public string BarChartColor { get; set; } = "#FF0078D4";
-
         #endregion
 
         /// <summary>

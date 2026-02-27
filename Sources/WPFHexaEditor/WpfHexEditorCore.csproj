@@ -276,6 +276,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.BinaryAnalysis\WpfHexEditor.BinaryAnalysis.csproj" />
   </ItemGroup>
 
 </Project>

@@ -213,6 +213,12 @@ public class FloatingWindow : Window
     {
         Node = node;
         Item = item;
+
+        // Floating windows always use bottom tab placement: the custom title bar
+        // already occupies the top, so tabs at the bottom is the consistent choice
+        // regardless of which side the panel was originally docked to.
+        _tabControl.TabStripPlacement = Dock.Bottom;
+
         _tabControl.Bind(node, contentFactory);
 
         // Hide the tab strip completely when single item (title bar already shows the name)
@@ -248,6 +254,8 @@ public class FloatingWindowManager
 
     /// <summary>
     /// Creates a floating window for the given item.
+    /// Position priority: saved <see cref="DockItem.FloatLeft"/>/<see cref="DockItem.FloatTop"/>,
+    /// then explicit <paramref name="position"/>, then centered relative to the owner window.
     /// </summary>
     public FloatingWindow CreateFloatingWindow(DockItem item, Point? position = null)
     {
@@ -257,10 +265,15 @@ public class FloatingWindowManager
         var window = new FloatingWindow();
         window.Bind(group, item, _dockControl.ContentFactory);
 
-        if (position.HasValue)
+        if (item.FloatLeft.HasValue && item.FloatTop.HasValue)
+        {
+            window.Left = item.FloatLeft.Value;
+            window.Top  = item.FloatTop.Value;
+        }
+        else if (position.HasValue)
         {
             window.Left = position.Value.X;
-            window.Top = position.Value.Y;
+            window.Top  = position.Value.Y;
         }
         else
         {
@@ -269,9 +282,16 @@ public class FloatingWindowManager
             if (owner is not null)
             {
                 window.Left = owner.Left + (owner.Width - window.Width) / 2;
-                window.Top = owner.Top + (owner.Height - window.Height) / 2;
+                window.Top  = owner.Top  + (owner.Height - window.Height) / 2;
             }
         }
+
+        // Keep the saved position in sync so it is persisted on next save
+        window.LocationChanged += (_, _) =>
+        {
+            item.FloatLeft = window.Left;
+            item.FloatTop  = window.Top;
+        };
 
         window.Closed += (_, _) =>
         {
@@ -413,10 +433,14 @@ public class FloatingWindowManager
 
     /// <summary>
     /// Finds a floating window containing the given item.
+    /// Checks both the primary <see cref="FloatingWindow.Item"/> and all items inside
+    /// <see cref="FloatingWindow.Node"/>, so non-active items in a multi-tab group are found.
     /// </summary>
     public FloatingWindow? FindWindowForItem(DockItem item)
     {
-        return _windows.FirstOrDefault(w => w.Item == item);
+        return _windows.FirstOrDefault(w =>
+            w.Item == item ||
+            (w.Node is not null && w.Node.Items.Contains(item)));
     }
 
     /// <summary>
