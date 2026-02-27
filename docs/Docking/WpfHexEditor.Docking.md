@@ -51,7 +51,7 @@ WpfHexeditor.Docking
 ├── Core
 ├── Wpf
 ├── Serialization
-└── Themes (optionnel)
+└── Themes (Dark, Light, VS2022, VS2026)
 ```
 
 - **Core** : Logique et modèle, aucune dépendance WPF  

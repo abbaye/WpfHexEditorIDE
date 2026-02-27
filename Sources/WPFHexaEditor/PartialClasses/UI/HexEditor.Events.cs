@@ -771,9 +771,11 @@ namespace WpfHexaEditor
                 return;
             }
 
-            // Standard behavior: scroll 3 lines per wheel notch
-            // Delta is typically 120 per notch, so divide by 40 to get 3 lines
-            int linesToScroll = -e.Delta / 40;
+            // Use MouseWheelSpeed DP to determine lines scrolled per notch
+            int speed = MouseWheelSpeed == Core.MouseWheelSpeed.System
+                ? SystemParameters.WheelScrollLines
+                : (int)MouseWheelSpeed;
+            int linesToScroll = -Math.Sign(e.Delta) * speed;
 
             long newScrollPos = _viewModel.ScrollPosition + linesToScroll;
             long maxScroll = Math.Max(0, _viewModel.TotalLines - _viewModel.VisibleLines);

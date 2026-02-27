@@ -2387,7 +2387,7 @@ namespace WpfHexaEditor
         /// </summary>
         public static readonly DependencyProperty MouseWheelSpeedProperty =
             DependencyProperty.Register(nameof(MouseWheelSpeed), typeof(MouseWheelSpeed), typeof(HexEditor),
-                new PropertyMetadata(Core.MouseWheelSpeed.Normal));
+                new PropertyMetadata(Core.MouseWheelSpeed.System));
 
         /// <summary>
         /// AllowAutoHighLightSelectionByte DependencyProperty for XAML binding
