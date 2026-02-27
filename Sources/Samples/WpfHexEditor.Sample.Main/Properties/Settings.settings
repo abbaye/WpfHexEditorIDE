@@ -36,7 +36,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="IsParsedFieldsPanelVisible" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="SelectedSearchMode" Type="System.String" Scope="User">
       <Value Profile="(Default)">Text</Value>
@@ -48,7 +48,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SettingsVersion" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2</Value>
+      <Value Profile="(Default)">3</Value>
     </Setting>
   </Settings>
 </SettingsFile>
