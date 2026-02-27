@@ -331,8 +331,10 @@ namespace WpfHexaEditor
                 _barChartPanel.ShowGridLines = BarChartShowGridLines;
                 _barChartPanel.ShowStatistics = BarChartShowStatistics;
 
-                // Use efficient ViewModel-based update for large files
-                _barChartPanel.UpdateDataFromViewModel(_viewModel);
+                // Read first 1MB from provider and update chart
+                var maxBytes = Math.Min(_viewModel.Provider.Length, 1024 * 1024);
+                var bytes = _viewModel.Provider.GetBytes(0, (int)maxBytes);
+                _barChartPanel.UpdateData(bytes);
             }
             catch (Exception ex)
             {

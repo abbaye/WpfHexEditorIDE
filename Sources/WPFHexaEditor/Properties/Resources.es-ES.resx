@@ -1215,28 +1215,4 @@
     <value>Show Inline Bar Chart</value>
     <comment>Bar Chart - Enable inline bar chart in ASCII panel</comment>
   </data>
-  <data name="BarChart_NoData" xml:space="preserve">
-    <value>No data to display</value>
-    <comment>Bar Chart - Message when no data is available</comment>
-  </data>
-  <data name="BarChart_Total" xml:space="preserve">
-    <value>Total</value>
-    <comment>Bar Chart - Statistics label for total bytes</comment>
-  </data>
-  <data name="BarChart_Max" xml:space="preserve">
-    <value>Max</value>
-    <comment>Bar Chart - Statistics label for maximum frequency</comment>
-  </data>
-  <data name="BarChart_Entropy" xml:space="preserve">
-    <value>Entropy</value>
-    <comment>Bar Chart - Statistics label for Shannon entropy</comment>
-  </data>
-  <data name="BarChart_BitsPerByte" xml:space="preserve">
-    <value>bits/byte</value>
-    <comment>Bar Chart - Unit for entropy measurement</comment>
-  </data>
-  <data name="BarChart_Bytes" xml:space="preserve">
-    <value>bytes</value>
-    <comment>Bar Chart - Unit for byte count</comment>
-  </data>
 </root>

@@ -7,6 +7,7 @@
              xmlns:models="clr-namespace:WpfHexaEditor.Models"
              xmlns:converters="clr-namespace:WpfHexaEditor.Converters"
              xmlns:controls="clr-namespace:WpfHexaEditor.Controls"
+             xmlns:barChart="clr-namespace:WpfHexEditor.BarChart.Controls;assembly=WpfHexEditor.BarChart"
 
              xmlns:prop="clr-namespace:WpfHexaEditor.Properties"
              mc:Ignorable="d"
@@ -356,7 +357,7 @@
         <Border x:Name="BarChartBorder" Grid.Row="2"
                 BorderBrush="#D0D0D0" BorderThickness="0,1,0,0"
                 Visibility="{Binding BarChartPanelVisibility, RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
-            <controls:BarChartPanel x:Name="BarChartPanel"
+            <barChart:BarChartPanel x:Name="BarChartPanel"
                                      Height="150"
                                      Margin="5"/>
         </Border>

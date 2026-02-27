@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using static WpfHexEditor.BarChart.Properties.Resources;
 
-namespace WpfHexaEditor.Controls
+namespace WpfHexEditor.BarChart.Controls
 {
     /// <summary>
     /// Bar chart panel displaying byte frequency distribution (0x00-0xFF).
@@ -209,43 +209,6 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
-        /// Update the chart with data from ViewModel (efficient for large files).
-        /// </summary>
-        public void UpdateDataFromViewModel(ViewModels.HexEditorViewModel viewModel)
-        {
-            if (viewModel == null || viewModel.VirtualLength == 0)
-            {
-                Clear();
-                return;
-            }
-
-            // Reset frequencies
-            Array.Clear(_byteFrequencies, 0, 256);
-            _totalBytes = viewModel.VirtualLength;
-
-            // Sample large files (analyze first 1MB for performance)
-            long bytesToAnalyze = Math.Min(_totalBytes, 1024 * 1024);
-
-            for (long i = 0; i < bytesToAnalyze; i++)
-            {
-                try
-                {
-                    byte b = viewModel.GetByteAt(new Models.VirtualPosition(i));
-                    _byteFrequencies[b]++;
-                }
-                catch
-                {
-                    // Skip invalid positions
-                }
-            }
-
-            // Find max frequency for scaling
-            _maxFrequency = _byteFrequencies.Max();
-
-            InvalidateVisual();
-        }
-
-        /// <summary>
         /// Clear the chart.
         /// </summary>
         public void Clear()
@@ -310,7 +273,7 @@ namespace WpfHexaEditor.Controls
             if (_totalBytes == 0 || _maxFrequency == 0)
             {
                 // Draw "No data" message (localized)
-                var noDataText = Properties.Resources.BarChart_NoData ?? "No data to display";
+                var noDataText = BarChart_NoData ?? "No data to display";
                 var formattedText = new FormattedText(
                     noDataText,
                     System.Globalization.CultureInfo.CurrentCulture,
@@ -385,11 +348,11 @@ namespace WpfHexaEditor.Controls
                 double entropy = CalculateEntropy();
 
                 // Localized labels
-                var totalLabel = Properties.Resources.BarChart_Total ?? "Total";
-                var maxLabel = Properties.Resources.BarChart_Max ?? "Max";
-                var entropyLabel = Properties.Resources.BarChart_Entropy ?? "Entropy";
-                var bytesLabel = Properties.Resources.BarChart_Bytes ?? "bytes";
-                var bitsPerByteLabel = Properties.Resources.BarChart_BitsPerByte ?? "bits/byte";
+                var totalLabel = BarChart_Total ?? "Total";
+                var maxLabel = BarChart_Max ?? "Max";
+                var entropyLabel = BarChart_Entropy ?? "Entropy";
+                var bytesLabel = BarChart_Bytes ?? "bytes";
+                var bitsPerByteLabel = BarChart_BitsPerByte ?? "bits/byte";
 
                 var statsText = $"{totalLabel}: {_totalBytes:N0} {bytesLabel}  |  {maxLabel}: {_maxFrequency:N0} ({GetPercentage((byte)Array.IndexOf(_byteFrequencies, _maxFrequency)):F2}%)  |  {entropyLabel}: {entropy:F2} {bitsPerByteLabel}";
 

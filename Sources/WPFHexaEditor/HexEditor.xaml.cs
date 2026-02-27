@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexaEditor.Controls;
 using WpfHexaEditor.Core;
+using WpfHexEditor.BarChart.Controls;
 using WpfHexaEditor.Core.Bytes;
 using WpfHexaEditor.Core.CharacterTable;
 using WpfHexaEditor.Events;
@@ -41,7 +42,7 @@ namespace WpfHexaEditor
         private System.Windows.Controls.Primitives.StatusBar _statusBar;
         private StackPanel _hexHeaderStackPanel;
         private StackPanel _asciiHeaderStackPanel;
-        private Controls.BarChartPanel _barChartPanel;
+        private BarChartPanel _barChartPanel;
         private Controls.ScrollMarkerPanel _scrollMarkers;
 
         // Bookmarks
@@ -117,7 +118,7 @@ namespace WpfHexaEditor
             _statusBar = this.FindName("StatusBar") as System.Windows.Controls.Primitives.StatusBar;
             _hexHeaderStackPanel = this.FindName("HexHeaderStackPanel") as StackPanel;
             _asciiHeaderStackPanel = this.FindName("AsciiHeaderStackPanel") as StackPanel;
-            _barChartPanel = this.FindName("BarChartPanel") as Controls.BarChartPanel;
+            _barChartPanel = this.FindName("BarChartPanel") as BarChartPanel;
             _scrollMarkers = this.FindName("ScrollMarkers") as Controls.ScrollMarkerPanel;
 
             // Subscribe to scroll marker click event for navigation
