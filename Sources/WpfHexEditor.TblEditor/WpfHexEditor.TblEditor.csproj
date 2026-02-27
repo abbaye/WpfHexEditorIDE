@@ -1,22 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <RootNamespace>WpfHexEditor.JsonEditor</RootNamespace>
-    <AssemblyName>WpfHexEditor.JsonEditor</AssemblyName>
+    <RootNamespace>WpfHexEditor.TblEditor</RootNamespace>
+    <AssemblyName>WpfHexEditor.TblEditor</AssemblyName>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\WPFHexaEditor\WpfHexEditorCore.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
-
 </Project>

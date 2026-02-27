@@ -20,7 +20,7 @@
                 <MenuItem Header="_New Document" Click="OnNewDocument" />
                 <MenuItem Header="New _Hex Editor Document" Click="OnNewHexDocument" />
                 <MenuItem Header="_Open File..." Click="OnOpenFile" />
-                <Separator />
+                <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
                 <MenuItem Header="E_xit" Click="OnExit" />
             </MenuItem>
             <MenuItem Header="_View" Style="{DynamicResource DockDarkMenuItemStyle}">
@@ -32,7 +32,7 @@
                 <MenuItem Header="_Save Layout" Click="OnSaveLayout" />
                 <MenuItem Header="_Load Layout" Click="OnLoadLayout" />
                 <MenuItem Header="_Reset Layout" Click="OnResetLayout" />
-                <Separator />
+                <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
                 <MenuItem Header="Toggle _Locked Layout" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem" />
             </MenuItem>
             <MenuItem Header="_Theme" Style="{DynamicResource DockDarkMenuItemStyle}">
