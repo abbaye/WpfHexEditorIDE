@@ -171,6 +171,24 @@ public class DockControl : ContentControl
 
         _centerHost.Content = CreateVisualForNode(Layout.RootNode);
         UpdateAutoHideBars();
+        RestoreFloatingWindows();
+    }
+
+    /// <summary>
+    /// Ensures every item in <see cref="DockLayoutRoot.FloatingItems"/> has a visible
+    /// <see cref="FloatingWindow"/>. Called after each visual tree rebuild so that
+    /// floating items persisted in a saved layout are shown on restore.
+    /// Items that already have a window (floated interactively) are skipped.
+    /// </summary>
+    private void RestoreFloatingWindows()
+    {
+        if (Layout is null || _floatingManager is null) return;
+
+        foreach (var item in Layout.FloatingItems)
+        {
+            if (_floatingManager.FindWindowForItem(item) is null)
+                _floatingManager.CreateFloatingWindow(item);
+        }
     }
 
     private UIElement CreateVisualForNode(DockNode node)

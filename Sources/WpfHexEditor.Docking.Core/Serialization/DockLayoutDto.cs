@@ -53,6 +53,8 @@ public class DockItemDto
     public bool CanClose { get; set; } = true;
     public bool CanFloat { get; set; } = true;
     public DockItemState State { get; set; }
+    public double? FloatLeft { get; set; }
+    public double? FloatTop { get; set; }
 }
 
 /// <summary>

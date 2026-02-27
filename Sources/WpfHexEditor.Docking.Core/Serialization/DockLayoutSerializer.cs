@@ -93,7 +93,9 @@ public static class DockLayoutSerializer
             ContentId = item.ContentId,
             CanClose = item.CanClose,
             CanFloat = item.CanFloat,
-            State = item.State
+            State = item.State,
+            FloatLeft = item.FloatLeft,
+            FloatTop = item.FloatTop
         };
     }
 
@@ -171,7 +173,9 @@ public static class DockLayoutSerializer
             ContentId = dto.ContentId,
             CanClose = dto.CanClose,
             CanFloat = dto.CanFloat,
-            State = dto.State
+            State = dto.State,
+            FloatLeft = dto.FloatLeft,
+            FloatTop = dto.FloatTop
         };
     }
 }
