@@ -54,6 +54,7 @@ public class FloatingWindow : Window
         Width = 400;
         Height = 300;
         ResizeMode = ResizeMode.CanResizeWithGrip;
+        SetResourceReference(BackgroundProperty, "DockBackgroundBrush");
 
         // --- Title bar ---
         _titleBlock = new TextBlock
@@ -189,9 +190,8 @@ public class FloatingWindow : Window
         outerBorder.SetResourceReference(Border.BackgroundProperty, "DockBackgroundBrush");
         outerBorder.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
 
-        // Propagate theme foreground to all text content inside the floating window
-        TextElement.SetForeground(outerBorder,
-            TryFindResource("DockMenuForegroundBrush") as Brush ?? Brushes.White);
+        // Propagate theme foreground dynamically to all text content inside the floating window
+        outerBorder.SetResourceReference(TextElement.ForegroundProperty, "DockMenuForegroundBrush");
 
         Content = outerBorder;
     }
