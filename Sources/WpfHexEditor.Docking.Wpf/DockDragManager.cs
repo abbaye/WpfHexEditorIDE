@@ -191,6 +191,35 @@ public class DockDragManager
     }
 
     /// <summary>
+    /// Starts a drag operation for an entire group (VS2026-style title-bar drag).
+    /// All items in the group are instantly floated together as one FloatingWindow.
+    /// </summary>
+    public void BeginGroupDrag(DockGroupNode group, DockItem activeItem)
+    {
+        if (_isDragging) return;
+        if (_dockControl.Engine is null || _dockControl.Layout is null) return;
+
+        // Capture cursor position in DIPs before the layout changes
+        var screenPos = _dockControl.PointToScreen(Mouse.GetPosition(_dockControl));
+        var mouseDip  = ScreenToDip(_dockControl, screenPos);
+
+        // Float the entire group → fires GroupFloated → FloatingWindowManager.CreateFloatingWindowForGroup
+        _dockControl.Engine.FloatGroup(group);
+        _dockControl.RebuildVisualTree();
+
+        // Retrieve the floating window via the active item reference (unchanged after FloatGroup)
+        var window = _dockControl.FloatingManager?.FindWindowForItem(activeItem);
+        if (window is null) return;
+
+        // Position so the cursor lands approximately in the title bar (DIPs)
+        window.Left = mouseDip.X - 50;
+        window.Top  = mouseDip.Y - 10;
+
+        // Hand off to floating drag: window follows cursor, overlays appear on hover
+        BeginFloatingDrag(activeItem, window);
+    }
+
+    /// <summary>
     /// Starts a drag operation for a floating window. The window follows the cursor
     /// and overlays appear when over the dock area.
     /// </summary>

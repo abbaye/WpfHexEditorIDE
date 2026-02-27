@@ -31,6 +31,7 @@ public class DockEngine
     public event Action<DockItem>? ItemUndocked;
     public event Action<DockItem>? ItemClosed;
     public event Action<DockItem>? ItemFloated;
+    public event Action<DockGroupNode>? GroupFloated;
     public event Action? LayoutChanged;
 
     /// <summary>
@@ -317,6 +318,42 @@ public class DockEngine
             Layout.RootNode = split;
             split.Parent = null;
         }
+    }
+
+    /// <summary>
+    /// Floats an entire group as a single floating window.
+    /// All items are removed from the group and a new floating DockGroupNode is created.
+    /// </summary>
+    public void FloatGroup(DockGroupNode group)
+    {
+        ArgumentNullException.ThrowIfNull(group);
+
+        var items = group.Items.ToList();
+        if (items.Count == 0) return;
+
+        var originalActive = group.ActiveItem;
+
+        foreach (var item in items)
+        {
+            group.RemoveItem(item);
+            Layout.AutoHideItems.Remove(item);
+            item.State = DockItemState.Float;
+            if (!Layout.FloatingItems.Contains(item))
+                Layout.FloatingItems.Add(item);
+        }
+
+        AutoNormalize();
+        if (!IsInTransaction) LayoutChanged?.Invoke();
+
+        // Build the floating group (outside the layout tree)
+        var floatingGroup = new DockGroupNode();
+        foreach (var item in items)
+            floatingGroup.AddItem(item);
+
+        if (originalActive is not null && items.Contains(originalActive))
+            floatingGroup.ActiveItem = originalActive;
+
+        GroupFloated?.Invoke(floatingGroup);
     }
 
     private void AutoNormalize()

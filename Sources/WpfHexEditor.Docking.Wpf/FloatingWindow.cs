@@ -338,6 +338,80 @@ public class FloatingWindowManager
     }
 
     /// <summary>
+    /// Creates a floating window for an existing group (e.g. from a group-drag).
+    /// Unlike <see cref="CreateFloatingWindow"/>, uses the provided group directly.
+    /// </summary>
+    public FloatingWindow CreateFloatingWindowForGroup(DockGroupNode group, Point? position = null)
+    {
+        var item = group.ActiveItem ?? group.Items.FirstOrDefault();
+        if (item is null) return null!;
+
+        var window = new FloatingWindow();
+        window.Bind(group, item, _dockControl.ContentFactory);
+
+        if (position.HasValue)
+        {
+            window.Left = position.Value.X;
+            window.Top  = position.Value.Y;
+        }
+        else
+        {
+            var owner = Window.GetWindow(_dockControl);
+            if (owner is not null)
+            {
+                window.Left = owner.Left + (owner.Width  - window.Width)  / 2;
+                window.Top  = owner.Top  + (owner.Height - window.Height) / 2;
+            }
+        }
+
+        window.Closed += (_, _) =>
+        {
+            _windows.Remove(window);
+            Window.GetWindow(_dockControl)?.Activate();
+        };
+
+        window.TabCloseRequested += i =>
+        {
+            _dockControl.Engine?.Close(i);
+            if (window.Node?.IsEmpty == true) window.Close();
+        };
+
+        window.ReDockRequested += i =>
+        {
+            if (_dockControl.Engine is null) return;
+            var dir = i.LastDockSide switch
+            {
+                Core.DockSide.Left   => DockDirection.Left,
+                Core.DockSide.Right  => DockDirection.Right,
+                Core.DockSide.Top    => DockDirection.Top,
+                Core.DockSide.Bottom => DockDirection.Bottom,
+                _                    => DockDirection.Center
+            };
+            _dockControl.Engine.Dock(i, _dockControl.Layout!.MainDocumentHost, dir);
+            _dockControl.RebuildVisualTree();
+            if (window.Node?.IsEmpty == true) window.Close();
+        };
+
+        window.WindowDragStarted += i =>
+        {
+            _dockControl.DragManager?.BeginFloatingDrag(i, window);
+        };
+
+        window.TabAutoHideRequested += i =>
+        {
+            _dockControl.Engine?.AutoHide(i);
+            _dockControl.RebuildVisualTree();
+            if (window.Node?.IsEmpty == true) window.Close();
+        };
+
+        _windows.Add(window);
+        window.Owner = Window.GetWindow(_dockControl);
+        window.Show();
+
+        return window;
+    }
+
+    /// <summary>
     /// Finds a floating window containing the given item.
     /// </summary>
     public FloatingWindow? FindWindowForItem(DockItem item)
