@@ -1,0 +1,106 @@
+<Window x:Class="WpfHexEditor.WindowPanels.Panels.FieldEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Edit Field Value"
+        Width="550" Height="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        MinHeight="450"
+        MinWidth="500"
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Field name -->
+        <TextBlock Grid.Row="0"
+                   Text="{Binding FieldName}"
+                   FontSize="16"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,8"/>
+
+        <!-- Field info -->
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Type:" FontWeight="SemiBold" Margin="0,0,8,4"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FieldType}" Margin="0,0,0,4"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset:" FontWeight="SemiBold" Margin="0,0,8,4"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding FieldOffset}" Margin="0,0,0,4"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Length:" FontWeight="SemiBold" Margin="0,0,8,4"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding FieldLength}" Margin="0,0,0,4"/>
+        </Grid>
+
+        <!-- Current value -->
+        <TextBlock Grid.Row="2" Text="Current Value:" FontWeight="SemiBold" Margin="0,0,0,4"/>
+        <TextBlock Grid.Row="3"
+                   Text="{Binding CurrentValue}"
+                   FontFamily="Consolas"
+                   Background="#F0F0F0"
+                   Padding="8,4"
+                   Margin="0,0,0,12"/>
+
+        <!-- New value input -->
+        <StackPanel Grid.Row="4" Margin="0,0,0,12">
+            <TextBlock Text="New Value:"
+                       FontWeight="SemiBold"
+                       Background="#F5F5F5"
+                       Padding="8,4"
+                       Margin="0,0,0,4"/>
+
+            <TextBox x:Name="ValueTextBox"
+                     Text="{Binding EditedValue, UpdateSourceTrigger=PropertyChanged}"
+                     FontFamily="Consolas"
+                     FontSize="13"
+                     Padding="8"
+                     Height="100"
+                     MinHeight="100"
+                     BorderThickness="1"
+                     BorderBrush="#AAAAAA"
+                     Background="White"
+                     VerticalScrollBarVisibility="Auto"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     Style="{x:Null}"/>
+
+            <TextBlock Text="{Binding FormatHint}"
+                       FontSize="10"
+                       Foreground="#666666"
+                       Background="#FFFEF0"
+                       Padding="8,4"
+                       Margin="0,4,0,0"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK"
+                    Width="80"
+                    Height="28"
+                    Margin="0,0,8,0"
+                    IsDefault="True"
+                    Click="OkButton_Click"/>
+            <Button Content="Cancel"
+                    Width="80"
+                    Height="28"
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

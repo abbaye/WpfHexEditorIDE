@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\WPFHexaEditor\WpfHexEditorCore.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.JsonEditor\WpfHexEditor.JsonEditor.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.WindowPanels\WpfHexEditor.WindowPanels.csproj" />
   </ItemGroup>
 
   <ItemGroup>

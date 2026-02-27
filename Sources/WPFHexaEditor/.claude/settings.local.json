@@ -160,7 +160,9 @@
       "WebFetch(domain:www.codeproject.com)",
       "Bash(dotnet sln:*)",
       "Bash(do sed -i 's/WpfHexEditor\\\\.Docking\\\\.Demo/WpfHexEditor.App/g' \"$f\")",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(/tmp/migrate_formatscript.ps1:*)",
+      "Bash(powershell.exe -File \"C:/tmp/migrate_window_panels.ps1\")"
     ]
   }
 }

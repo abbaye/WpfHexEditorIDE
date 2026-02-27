@@ -6,7 +6,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using WpfHexaEditor.Controls;
+using WpfHexEditor.ColorPicker.Controls;
 
 namespace WpfHexaEditor.Core.Settings.Controls
 {

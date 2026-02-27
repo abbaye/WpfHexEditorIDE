@@ -9,8 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using WpfHexaEditor.Interfaces;
 using WpfHexaEditor.Models.StructureOverlay;
-using WpfHexaEditor.Views.Panels;
 
 namespace WpfHexaEditor
 {
@@ -22,7 +22,7 @@ namespace WpfHexaEditor
     {
         #region Fields
 
-        private StructureOverlayPanel _structureOverlayPanel;
+        private IStructureOverlayPanel _structureOverlayPanel;
         private List<(long offset, int length, Color color)> _activeOverlays;
 
         #endregion
@@ -71,7 +71,7 @@ namespace WpfHexaEditor
         private void InitializeStructureOverlay()
         {
             _activeOverlays = new List<(long, int, Color)>();
-            _structureOverlayPanel = this.FindName("StructureOverlayPanel") as StructureOverlayPanel;
+            _structureOverlayPanel = this.FindName("StructureOverlayPanel") as IStructureOverlayPanel;
 
             if (_structureOverlayPanel != null)
             {
@@ -173,7 +173,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Get reference to the Structure Overlay panel
         /// </summary>
-        public StructureOverlayPanel GetStructureOverlayPanel()
+        public IStructureOverlayPanel GetStructureOverlayPanel()
         {
             return _structureOverlayPanel;
         }

@@ -8,7 +8,7 @@
 using System;
 using System.Linq;
 using System.Windows;
-using WpfHexaEditor.Views.Panels;
+using WpfHexaEditor.Interfaces;
 
 namespace WpfHexaEditor
 {
@@ -20,7 +20,7 @@ namespace WpfHexaEditor
     {
         #region Fields
 
-        private DataInspectorPanel _dataInspectorPanel;
+        private IDataInspectorPanel _dataInspectorPanel;
         private bool _dataInspectorEnabled = false;
 
         #endregion
@@ -103,7 +103,7 @@ namespace WpfHexaEditor
         /// </summary>
         private void InitializeDataInspector()
         {
-            _dataInspectorPanel = this.FindName("DataInspectorPanel") as DataInspectorPanel;
+            _dataInspectorPanel = this.FindName("DataInspectorPanel") as IDataInspectorPanel;
 
             // Hook into selection changed event
             SelectionChanged += HexEditor_SelectionChanged_DataInspector;
@@ -163,7 +163,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Get reference to the Data Inspector panel
         /// </summary>
-        public DataInspectorPanel GetDataInspectorPanel()
+        public IDataInspectorPanel GetDataInspectorPanel()
         {
             return _dataInspectorPanel;
         }

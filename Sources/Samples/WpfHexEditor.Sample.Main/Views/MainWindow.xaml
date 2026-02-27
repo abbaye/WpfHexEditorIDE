@@ -15,7 +15,7 @@
         xmlns:components="clr-namespace:WpfHexEditor.Sample.Main.Views.Components"
         xmlns:hexEditor="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor"
         xmlns:hexControls="clr-namespace:WpfHexaEditor.Controls;assembly=WPFHexaEditor"
-        xmlns:hexPanels="clr-namespace:WpfHexaEditor.Views.Panels;assembly=WPFHexaEditor"
+        xmlns:hexPanels="clr-namespace:WpfHexEditor.WindowPanels.Panels;assembly=WpfHexEditor.WindowPanels"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Height="900" Width="1600"

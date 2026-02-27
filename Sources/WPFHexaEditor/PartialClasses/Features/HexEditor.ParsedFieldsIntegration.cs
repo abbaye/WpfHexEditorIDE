@@ -13,7 +13,6 @@ using WpfHexaEditor.Core.FormatDetection;
 using WpfHexaEditor.Formatters;
 using WpfHexaEditor.Interfaces;
 using WpfHexaEditor.ViewModels;
-using WpfHexaEditor.Views.Panels;
 
 namespace WpfHexaEditor
 {
@@ -28,13 +27,13 @@ namespace WpfHexaEditor
         public static readonly DependencyProperty ParsedFieldsPanelProperty =
             DependencyProperty.Register(
                 nameof(ParsedFieldsPanel),
-                typeof(ParsedFieldsPanel),
+                typeof(IParsedFieldsPanel),
                 typeof(HexEditor),
                 new PropertyMetadata(null, OnParsedFieldsPanelChanged));
 
-        public ParsedFieldsPanel ParsedFieldsPanel
+        public IParsedFieldsPanel ParsedFieldsPanel
         {
-            get => (ParsedFieldsPanel)GetValue(ParsedFieldsPanelProperty);
+            get => (IParsedFieldsPanel)GetValue(ParsedFieldsPanelProperty);
             set => SetValue(ParsedFieldsPanelProperty, value);
         }
 
@@ -43,7 +42,7 @@ namespace WpfHexaEditor
             if (d is not HexEditor editor) return;
 
             // Déconnecter l'ancien panel
-            if (e.OldValue is ParsedFieldsPanel oldPanel)
+            if (e.OldValue is IParsedFieldsPanel oldPanel)
             {
                 oldPanel.FieldSelected -= editor.ParsedFieldsPanel_FieldSelected;
                 oldPanel.RefreshRequested -= editor.ParsedFieldsPanel_RefreshRequested;
@@ -53,7 +52,7 @@ namespace WpfHexaEditor
             }
 
             // Connecter le nouveau panel
-            if (e.NewValue is ParsedFieldsPanel newPanel)
+            if (e.NewValue is IParsedFieldsPanel newPanel)
             {
                 newPanel.FieldSelected += editor.ParsedFieldsPanel_FieldSelected;
                 newPanel.RefreshRequested += editor.ParsedFieldsPanel_RefreshRequested;
@@ -991,7 +990,7 @@ namespace WpfHexaEditor
         /// Connecte un ParsedFieldsPanel externe à cet éditeur.
         /// Les événements sont câblés automatiquement via la DP.
         /// </summary>
-        public void ConnectParsedFieldsPanel(ParsedFieldsPanel panel)
+        public void ConnectParsedFieldsPanel(IParsedFieldsPanel panel)
             => ParsedFieldsPanel = panel;
 
         /// <summary>
