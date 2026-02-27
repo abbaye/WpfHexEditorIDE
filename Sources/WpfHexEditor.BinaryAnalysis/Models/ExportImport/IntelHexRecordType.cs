@@ -3,7 +3,7 @@
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
-namespace WpfHexaEditor.Models.ExportImport
+namespace WpfHexEditor.BinaryAnalysis.Models.ExportImport
 {
     /// <summary>
     /// Intel HEX record types

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WpfHexaEditor.Models.Patterns
+namespace WpfHexEditor.BinaryAnalysis.Models.Patterns
 {
     /// <summary>
     /// Result of pattern analysis on binary data

@@ -3,7 +3,7 @@
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
-namespace WpfHexaEditor.Models.Patterns
+namespace WpfHexEditor.BinaryAnalysis.Models.Patterns
 {
     /// <summary>
     /// Types of patterns that can be detected in binary data

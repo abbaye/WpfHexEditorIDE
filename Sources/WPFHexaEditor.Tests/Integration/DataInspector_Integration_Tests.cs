@@ -8,7 +8,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using WpfHexaEditor.Services;
+using WpfHexEditor.BinaryAnalysis.Services;
 
 namespace WpfHexaEditor.Tests.Integration
 {

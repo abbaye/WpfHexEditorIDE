@@ -9,8 +9,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using WpfHexaEditor.Models.DataInspector;
-using WpfHexaEditor.Services;
+using WpfHexEditor.BinaryAnalysis.Models.DataInspector;
+using WpfHexEditor.BinaryAnalysis.Services;
 
 namespace WpfHexaEditor.ViewModels
 {

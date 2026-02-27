@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WpfHexaEditor.Models.Patterns
+namespace WpfHexEditor.BinaryAnalysis.Models.Patterns
 {
     /// <summary>
     /// Represents a detected pattern in binary data

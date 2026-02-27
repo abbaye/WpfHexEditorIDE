@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using WpfHexaEditor.Models.ExportImport;
+using WpfHexEditor.BinaryAnalysis.Models.ExportImport;
 
-namespace WpfHexaEditor.Services
+namespace WpfHexEditor.BinaryAnalysis.Services
 {
     /// <summary>
     /// Service for exporting and importing Intel HEX format files

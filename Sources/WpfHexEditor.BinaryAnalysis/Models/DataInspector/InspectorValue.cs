@@ -8,7 +8,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WpfHexaEditor.Models.DataInspector
+namespace WpfHexEditor.BinaryAnalysis.Models.DataInspector
 {
     /// <summary>
     /// Represents a single interpreted value in the Data Inspector

@@ -6,9 +6,9 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using WpfHexaEditor.Models.Visualization;
+using WpfHexEditor.BinaryAnalysis.Models.Visualization;
 
-namespace WpfHexaEditor.Services
+namespace WpfHexEditor.BinaryAnalysis.Services
 {
     /// <summary>
     /// Service for calculating comprehensive data statistics

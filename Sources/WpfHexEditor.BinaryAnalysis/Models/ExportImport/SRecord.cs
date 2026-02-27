@@ -6,7 +6,7 @@
 using System;
 using System.Text;
 
-namespace WpfHexaEditor.Models.ExportImport
+namespace WpfHexEditor.BinaryAnalysis.Models.ExportImport
 {
     /// <summary>
     /// Represents a Motorola S-Record

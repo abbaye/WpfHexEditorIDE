@@ -10,9 +10,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
-using WpfHexaEditor.Models.BinaryTemplates;
+using WpfHexEditor.BinaryAnalysis.Models.BinaryTemplates;
 
-namespace WpfHexaEditor.Services
+namespace WpfHexEditor.BinaryAnalysis.Services
 {
     /// <summary>
     /// Service for compiling binary templates (C-like syntax) to format definitions (JSON)

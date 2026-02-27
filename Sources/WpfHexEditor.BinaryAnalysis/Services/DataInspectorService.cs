@@ -10,9 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using WpfHexaEditor.Models.DataInspector;
+using WpfHexEditor.BinaryAnalysis.Models.DataInspector;
 
-namespace WpfHexaEditor.Services
+namespace WpfHexEditor.BinaryAnalysis.Services
 {
     /// <summary>
     /// Service for interpreting byte arrays in multiple formats

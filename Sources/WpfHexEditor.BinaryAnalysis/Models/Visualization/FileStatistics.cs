@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WpfHexaEditor.Models.Visualization
+namespace WpfHexEditor.BinaryAnalysis.Models.Visualization
 {
     /// <summary>
     /// Comprehensive file statistics for visualization

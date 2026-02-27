@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace WpfHexaEditor.Models.ExportImport
+namespace WpfHexEditor.BinaryAnalysis.Models.ExportImport
 {
     /// <summary>
     /// Represents an Intel HEX record

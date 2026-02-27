@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WpfHexaEditor.Models.Visualization
+namespace WpfHexEditor.BinaryAnalysis.Models.Visualization
 {
     /// <summary>
     /// Represents a single data point for charts

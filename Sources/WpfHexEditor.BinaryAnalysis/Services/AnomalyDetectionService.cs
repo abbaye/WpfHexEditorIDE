@@ -6,9 +6,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WpfHexaEditor.Models.Patterns;
+using WpfHexEditor.BinaryAnalysis.Models.Patterns;
 
-namespace WpfHexaEditor.Services
+namespace WpfHexEditor.BinaryAnalysis.Services
 {
     /// <summary>
     /// Service for detecting anomalies and corruption in binary data

@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WpfHexaEditor.Models.BinaryTemplates
+namespace WpfHexEditor.BinaryAnalysis.Models.BinaryTemplates
 {
     /// <summary>
     /// Represents a binary template structure (similar to 010 Editor templates)

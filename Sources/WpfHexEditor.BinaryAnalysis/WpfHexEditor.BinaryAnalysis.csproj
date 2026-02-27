@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48;net8.0</TargetFrameworks>
+    <!-- net8.0 (sans -windows) : aucune dépendance WPF → portable cross-platform -->
+    <!-- net48 : requis pour que Core (net48;net8.0-windows) puisse référencer ce projet -->
+    <UseWPF>false</UseWPF>
+    <RootNamespace>WpfHexEditor.BinaryAnalysis</RootNamespace>
+    <AssemblyName>WpfHexEditor.BinaryAnalysis</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+</Project>
