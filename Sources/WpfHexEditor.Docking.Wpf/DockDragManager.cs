@@ -305,7 +305,35 @@ public class DockDragManager
 
         if (_lastDirection.HasValue && _targetGroup != null)
         {
-            engine.Dock(_draggedItem, _targetGroup, _lastDirection.Value);
+            // Multi-item floating group: dock ALL items, not just the active one
+            var floatingItems = _sourceFloatingWindow.Node?.Items.ToList();
+
+            if (floatingItems is { Count: > 1 })
+            {
+                DockGroupNode? landingGroup = null;
+
+                foreach (var item in floatingItems)
+                {
+                    if (landingGroup is null)
+                    {
+                        // First item creates the split (or joins Center)
+                        engine.Dock(item, _targetGroup, _lastDirection.Value);
+                        landingGroup = _lastDirection.Value == DockDirection.Center
+                            ? _targetGroup
+                            : item.Owner;
+                    }
+                    else
+                    {
+                        // Remaining items join the same new group
+                        engine.Dock(item, landingGroup, DockDirection.Center);
+                    }
+                }
+            }
+            else
+            {
+                engine.Dock(_draggedItem, _targetGroup, _lastDirection.Value);
+            }
+
             _dockControl.RebuildVisualTree();
             _sourceFloatingWindow.Close();
         }
