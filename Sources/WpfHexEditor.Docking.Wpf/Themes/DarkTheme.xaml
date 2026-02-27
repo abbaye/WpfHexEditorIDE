@@ -267,6 +267,38 @@
 
     <!-- ═══ VS2026-style tab control and tab item ═══ -->
 
+    <!-- DocumentTabHost: tab strip at TOP (VS2022 document area style) -->
+    <Style x:Key="DocumentTabHostStyle" TargetType="{x:Type TabControl}">
+        <Setter Property="Background" Value="{DynamicResource DockBackgroundBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabControl}">
+                    <Grid KeyboardNavigation.TabNavigation="Local" SnapsToDevicePixels="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0"
+                                Background="{DynamicResource DockMenuBackgroundBrush}"
+                                BorderBrush="{DynamicResource DockBorderBrush}"
+                                BorderThickness="0,0,0,1">
+                            <TabPanel Panel.IsItemsHost="True"
+                                      Background="Transparent"
+                                      Margin="4,2,4,0" />
+                        </Border>
+                        <ContentPresenter Grid.Row="1"
+                                          x:Name="PART_SelectedContentHost"
+                                          ContentSource="SelectedContent"
+                                          KeyboardNavigation.TabNavigation="Local"
+                                          KeyboardNavigation.DirectionalNavigation="Contained" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- DockTabControl: content area top, tab strip at bottom, no WPF content border -->
     <Style x:Key="DockTabControlStyle" TargetType="{x:Type TabControl}">
         <Setter Property="Background" Value="{DynamicResource DockBackgroundBrush}" />

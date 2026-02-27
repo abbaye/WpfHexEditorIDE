@@ -19,9 +19,8 @@ public class DocumentTabHost : DockTabControl
 {
     public DocumentTabHost()
     {
-        // Visual distinction for document host
-        BorderBrush = new SolidColorBrush(Color.FromRgb(0, 122, 204)); // VS blue
-        BorderThickness = new Thickness(0, 2, 0, 0);
+        // Tabs at top (VS2022 document area style)
+        SetResourceReference(StyleProperty, "DocumentTabHostStyle");
     }
 
     /// <summary>
