@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -99,13 +105,22 @@ public class AutoHidePopup : Popup
     }
 
     /// <summary>
-    /// Shows the popup with content for the given item.
+    /// Shows the popup with content for the given item, placed according to the dock side.
     /// </summary>
-    public void ShowForItem(DockItem item, UIElement placementTarget, Func<DockItem, object>? contentFactory = null)
+    public void ShowForItem(DockItem item, UIElement placementTarget, Func<DockItem, object>? contentFactory = null, DockSide side = DockSide.Bottom)
     {
         CurrentItem = item;
         PlacementTarget = placementTarget;
-        Placement = PlacementMode.Right;
+
+        // Place the popup on the correct side relative to the bar button
+        Placement = side switch
+        {
+            DockSide.Left => PlacementMode.Right,
+            DockSide.Right => PlacementMode.Left,
+            DockSide.Top => PlacementMode.Bottom,
+            DockSide.Bottom => PlacementMode.Top,
+            _ => PlacementMode.Right
+        };
 
         _contentHost.Content = contentFactory?.Invoke(item) ?? new TextBlock
         {

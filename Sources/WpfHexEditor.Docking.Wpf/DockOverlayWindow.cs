@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -104,13 +110,16 @@ public class DockOverlayWindow : Window
 
     private void AddIndicator(DockDirection direction, double x, double y, double size)
     {
+        var isHighlighted = _highlightedDirection == direction;
         var rect = new Rectangle
         {
             Width = size,
             Height = size,
-            Fill = new SolidColorBrush(Color.FromArgb(180, 0, 122, 204)),
-            Stroke = Brushes.White,
-            StrokeThickness = 2,
+            Fill = isHighlighted
+                ? new SolidColorBrush(Color.FromArgb(240, 0, 150, 255))
+                : new SolidColorBrush(Color.FromArgb(140, 0, 122, 204)),
+            Stroke = isHighlighted ? Brushes.Yellow : Brushes.White,
+            StrokeThickness = isHighlighted ? 3 : 2,
             RadiusX = 4,
             RadiusY = 4
         };

@@ -1,5 +1,11 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Controls;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 
@@ -14,77 +20,105 @@ public class DockDragManager
     private readonly DockControl _dockControl;
     private DockOverlayWindow? _overlay;
     private DockItem? _draggedItem;
-    private bool _isDragging;
+    private DockDirection? _lastDirection;
+    private DockTabControl? _currentTarget;
 
     public DockDragManager(DockControl dockControl)
     {
         _dockControl = dockControl;
     }
 
+    public bool IsDragging => _draggedItem is not null;
+
     /// <summary>
     /// Starts a drag operation for the given item.
     /// </summary>
     public void BeginDrag(DockItem item)
     {
-        if (_isDragging) return;
+        if (IsDragging) return;
 
         _draggedItem = item;
-        _isDragging = true;
+        _lastDirection = null;
+        _currentTarget = null;
 
-        // Start WPF drag-drop
         var data = new DataObject("DockItem", item);
         DragDrop.DoDragDrop(_dockControl, data, DragDropEffects.Move);
 
+        // DoDragDrop is synchronous - clean up after it returns
         EndDrag();
     }
 
     /// <summary>
-    /// Shows the overlay for the given target element during drag.
+    /// Called when drag enters a tab control (DragEnter handler).
     /// </summary>
-    public void ShowOverlay(UIElement target)
+    public void OnDragEnter(DockTabControl target, DragEventArgs e)
     {
+        if (!e.Data.GetDataPresent("DockItem")) return;
+
+        _currentTarget = target;
+        e.Effects = DragDropEffects.Move;
+        e.Handled = true;
+
         _overlay ??= new DockOverlayWindow();
         _overlay.ShowOverTarget(target);
     }
 
     /// <summary>
-    /// Updates the overlay highlight based on the current mouse position.
+    /// Called during drag over a tab control (DragOver handler).
     /// </summary>
-    public DockDirection? UpdateOverlay(Point screenPoint)
+    public void OnDragOver(DockTabControl target, DragEventArgs e)
     {
-        if (_overlay is null) return null;
+        if (!e.Data.GetDataPresent("DockItem")) return;
 
-        var direction = _overlay.HitTest(screenPoint);
-        _overlay.HighlightedDirection = direction;
-        return direction;
+        e.Effects = DragDropEffects.Move;
+        e.Handled = true;
+
+        if (_overlay is null) return;
+
+        var screenPoint = target.PointToScreen(e.GetPosition(target));
+        _lastDirection = _overlay.HitTest(screenPoint);
+        _overlay.HighlightedDirection = _lastDirection;
     }
 
     /// <summary>
-    /// Hides the overlay.
+    /// Called when drag leaves a tab control (DragLeave handler).
     /// </summary>
-    public void HideOverlay()
+    public void OnDragLeave(DockTabControl target, DragEventArgs e)
     {
+        _lastDirection = null;
+        _currentTarget = null;
         _overlay?.Hide();
     }
 
     /// <summary>
-    /// Ends the drag operation.
+    /// Called on drop (Drop handler).
     /// </summary>
-    public void EndDrag()
+    public void OnDrop(DockTabControl target, DragEventArgs e)
     {
-        _isDragging = false;
-        _draggedItem = null;
-        HideOverlay();
+        if (_draggedItem is null || _dockControl.Engine is null) return;
+        if (!e.Data.GetDataPresent("DockItem")) return;
+
+        e.Handled = true;
+
+        // Use the last computed direction, default to Center
+        var direction = _lastDirection ?? DockDirection.Center;
+        var targetGroup = target.Node;
+
+        if (targetGroup is null) return;
+
+        // Remove from current location and dock at new location
+        _dockControl.Engine.Dock(_draggedItem, targetGroup, direction);
+        _dockControl.RebuildVisualTree();
     }
 
     /// <summary>
-    /// Completes the drop by docking the dragged item at the given target and direction.
+    /// Ends the drag operation and cleans up.
     /// </summary>
-    public void CompleteDrop(DockGroupNode target, DockDirection direction)
+    public void EndDrag()
     {
-        if (_draggedItem is null || _dockControl.Engine is null) return;
-
-        _dockControl.Engine.Dock(_draggedItem, target, direction);
-        _dockControl.RebuildVisualTree();
+        _draggedItem = null;
+        _lastDirection = null;
+        _currentTarget = null;
+        _overlay?.Hide();
     }
 }

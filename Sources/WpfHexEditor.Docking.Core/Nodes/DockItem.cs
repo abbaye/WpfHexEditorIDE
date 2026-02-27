@@ -1,3 +1,11 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
+using WpfHexEditor.Docking.Core;
+
 namespace WpfHexEditor.Docking.Core.Nodes;
 
 /// <summary>
@@ -19,6 +27,12 @@ public class DockItem
     public bool CanFloat { get; set; } = true;
 
     public DockItemState State { get; set; } = DockItemState.Docked;
+
+    /// <summary>
+    /// Remembers which side this item was docked on before auto-hide.
+    /// Used to place it in the correct auto-hide bar.
+    /// </summary>
+    public DockSide LastDockSide { get; set; } = DockSide.Bottom;
 
     /// <summary>
     /// The group this item belongs to (null if floating or hidden).

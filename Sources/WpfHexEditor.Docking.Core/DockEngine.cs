@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
 using WpfHexEditor.Docking.Core.Nodes;
 
 namespace WpfHexEditor.Docking.Core;
@@ -81,6 +87,20 @@ public class DockEngine
         }
 
         item.State = DockItemState.Docked;
+
+        // Track the dock side for auto-hide bar placement
+        if (direction != DockDirection.Center)
+        {
+            item.LastDockSide = direction switch
+            {
+                DockDirection.Left => DockSide.Left,
+                DockDirection.Right => DockSide.Right,
+                DockDirection.Top => DockSide.Top,
+                DockDirection.Bottom => DockSide.Bottom,
+                _ => item.LastDockSide
+            };
+        }
+
         AutoNormalize();
         ItemDocked?.Invoke(item);
         if (!IsInTransaction) LayoutChanged?.Invoke();
@@ -169,6 +189,21 @@ public class DockEngine
 
         AutoNormalize();
         if (!IsInTransaction) LayoutChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Restores an item from auto-hide state, docking it to the given target.
+    /// If no target is specified, docks to the MainDocumentHost.
+    /// </summary>
+    public void RestoreFromAutoHide(DockItem item, DockGroupNode? target = null, DockDirection direction = DockDirection.Center)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+
+        if (!Layout.AutoHideItems.Remove(item))
+            return;
+
+        target ??= Layout.MainDocumentHost;
+        Dock(item, target, direction);
     }
 
     /// <summary>
@@ -272,6 +307,9 @@ public class DockEngine
         if (parent is not null)
         {
             parent.ReplaceChild(target, split);
+            // ReplaceChild sets target.Parent = null, but target is now inside the
+            // new split node. Restore the correct parent reference.
+            target.Parent = split;
         }
         else
         {

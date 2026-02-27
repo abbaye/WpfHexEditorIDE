@@ -1,5 +1,12 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 
@@ -10,6 +17,8 @@ namespace WpfHexEditor.Docking.Wpf;
 /// </summary>
 public class DockSplitPanel : Grid
 {
+    private readonly List<int> _contentDefinitionIndices = [];
+
     public DockSplitNode? Node { get; private set; }
 
     public void Bind(DockSplitNode node, Func<DockNode, UIElement> nodeFactory)
@@ -18,6 +27,7 @@ public class DockSplitPanel : Grid
         Children.Clear();
         ColumnDefinitions.Clear();
         RowDefinitions.Clear();
+        _contentDefinitionIndices.Clear();
 
         if (node.Children.Count == 0) return;
 
@@ -25,58 +35,7 @@ public class DockSplitPanel : Grid
 
         for (var i = 0; i < node.Children.Count; i++)
         {
-            var ratio = i < node.Ratios.Count ? node.Ratios[i] : 1.0 / node.Children.Count;
-            var gridLength = new GridLength(ratio, GridUnitType.Star);
-
-            if (isHorizontal)
-                ColumnDefinitions.Add(new ColumnDefinition { Width = gridLength });
-            else
-                RowDefinitions.Add(new RowDefinition { Height = gridLength });
-
-            var childElement = nodeFactory(node.Children[i]);
-
-            if (isHorizontal)
-                SetColumn(childElement, i * 2); // leave room for splitters
-            else
-                SetRow(childElement, i * 2);
-
-            // Re-do definitions with splitter columns/rows
-            // Actually, let's rebuild properly with splitter slots
-        }
-
-        // Rebuild properly with splitter slots
-        Children.Clear();
-        ColumnDefinitions.Clear();
-        RowDefinitions.Clear();
-
-        for (var i = 0; i < node.Children.Count; i++)
-        {
-            var ratio = i < node.Ratios.Count ? node.Ratios[i] : 1.0 / node.Children.Count;
-            var gridLength = new GridLength(ratio, GridUnitType.Star);
-
-            if (isHorizontal)
-                ColumnDefinitions.Add(new ColumnDefinition { Width = gridLength });
-            else
-                RowDefinitions.Add(new RowDefinition { Height = gridLength });
-
-            var childElement = nodeFactory(node.Children[i]);
-
-            if (isHorizontal)
-                SetColumn(childElement, ColumnDefinitions.Count - 1 + i); // offset by splitters
-            else
-                SetRow(childElement, RowDefinitions.Count - 1 + i);
-
-            // We need to add splitter columns/rows between content
-        }
-
-        // Third approach: clean rebuild with interleaved splitters
-        Children.Clear();
-        ColumnDefinitions.Clear();
-        RowDefinitions.Clear();
-
-        for (var i = 0; i < node.Children.Count; i++)
-        {
-            // Add splitter before (except for first)
+            // Add splitter before each child (except the first)
             if (i > 0)
             {
                 if (isHorizontal)
@@ -86,8 +45,8 @@ public class DockSplitPanel : Grid
 
                 var splitter = new GridSplitter
                 {
-                    HorizontalAlignment = isHorizontal ? HorizontalAlignment.Stretch : HorizontalAlignment.Stretch,
-                    VerticalAlignment = isHorizontal ? VerticalAlignment.Stretch : VerticalAlignment.Stretch,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
                     ResizeBehavior = GridResizeBehavior.PreviousAndNext,
                     Background = System.Windows.Media.Brushes.Gray
                 };
@@ -103,6 +62,7 @@ public class DockSplitPanel : Grid
                     SetRow(splitter, RowDefinitions.Count - 1);
                 }
 
+                splitter.DragCompleted += OnSplitterDragCompleted;
                 Children.Add(splitter);
             }
 
@@ -113,6 +73,8 @@ public class DockSplitPanel : Grid
             else
                 RowDefinitions.Add(new RowDefinition { Height = new GridLength(ratio, GridUnitType.Star) });
 
+            _contentDefinitionIndices.Add(isHorizontal ? ColumnDefinitions.Count - 1 : RowDefinitions.Count - 1);
+
             var childElement = nodeFactory(node.Children[i]);
 
             if (isHorizontal)
@@ -122,5 +84,32 @@ public class DockSplitPanel : Grid
 
             Children.Add(childElement);
         }
+    }
+
+    /// <summary>
+    /// Syncs the Grid's actual column/row sizes back to the DockSplitNode ratios after a splitter drag.
+    /// </summary>
+    private void OnSplitterDragCompleted(object sender, DragCompletedEventArgs e)
+    {
+        if (Node is null || _contentDefinitionIndices.Count != Node.Children.Count) return;
+
+        var isHorizontal = Node.Orientation == SplitOrientation.Horizontal;
+        var newRatios = new double[_contentDefinitionIndices.Count];
+        var totalStar = 0.0;
+
+        for (var i = 0; i < _contentDefinitionIndices.Count; i++)
+        {
+            var defIndex = _contentDefinitionIndices[i];
+            var star = isHorizontal
+                ? ColumnDefinitions[defIndex].Width.Value
+                : RowDefinitions[defIndex].Height.Value;
+            newRatios[i] = star;
+            totalStar += star;
+        }
+
+        if (totalStar <= 0) return;
+
+        // Normalize and write back to the model
+        Node.SetRatios(newRatios.Select(r => r / totalStar).ToArray());
     }
 }

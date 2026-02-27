@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -165,6 +171,28 @@ public partial class MainWindow : Window
         catch (InvalidOperationException ex)
         {
             StatusText.Text = $"Cannot close: {ex.Message}";
+        }
+    }
+
+    private void OnOpenFile(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = "All Files (*.*)|*.*"
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            _documentCounter++;
+            var item = new DockItem
+            {
+                Title = System.IO.Path.GetFileName(dialog.FileName),
+                ContentId = $"doc-hex-{_documentCounter}"
+            };
+            _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+            DockHost.RebuildVisualTree();
+            UpdateStatusBar();
+            StatusText.Text = $"Opened: {dialog.FileName}";
         }
     }
 

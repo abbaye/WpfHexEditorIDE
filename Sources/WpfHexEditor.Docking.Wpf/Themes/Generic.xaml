@@ -26,4 +26,40 @@
     <SolidColorBrush x:Key="DockSplitterBrush" Color="{StaticResource DockSplitterColor}" />
     <SolidColorBrush x:Key="DockDocumentHostBorderBrush" Color="{StaticResource DockDocumentHostBorderColor}" />
 
+    <!-- Global UI Colors (Light) -->
+    <Color x:Key="DockMenuBackgroundColor">#EEEEF2</Color>
+    <Color x:Key="DockMenuForegroundColor">#1E1E1E</Color>
+    <Color x:Key="DockMenuHighlightColor">#C9DEF5</Color>
+    <Color x:Key="DockMenuBorderColor">#CCCEDB</Color>
+    <Color x:Key="DockToolBarBackgroundColor">#EEEEF2</Color>
+    <Color x:Key="DockWindowBackgroundColor">#F0F0F0</Color>
+
+    <SolidColorBrush x:Key="DockMenuBackgroundBrush" Color="{StaticResource DockMenuBackgroundColor}" />
+    <SolidColorBrush x:Key="DockMenuForegroundBrush" Color="{StaticResource DockMenuForegroundColor}" />
+    <SolidColorBrush x:Key="DockMenuHighlightBrush" Color="{StaticResource DockMenuHighlightColor}" />
+    <SolidColorBrush x:Key="DockMenuBorderBrush" Color="{StaticResource DockMenuBorderColor}" />
+    <SolidColorBrush x:Key="DockToolBarBackgroundBrush" Color="{StaticResource DockToolBarBackgroundColor}" />
+    <SolidColorBrush x:Key="DockWindowBackgroundBrush" Color="{StaticResource DockWindowBackgroundColor}" />
+
+    <!-- Menu style (Light) -->
+    <Style x:Key="DockDarkMenuStyle" TargetType="Menu">
+        <Setter Property="Background" Value="{StaticResource DockMenuBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+    </Style>
+
+    <Style x:Key="DockDarkMenuItemStyle" TargetType="MenuItem">
+        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style x:Key="DockDarkToolBarStyle" TargetType="ToolBar">
+        <Setter Property="Background" Value="{StaticResource DockToolBarBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+    </Style>
+
+    <Style x:Key="DockDarkToolBarButtonStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Padding" Value="6,2" />
+    </Style>
+
 </ResourceDictionary>

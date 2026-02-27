@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,15 +19,10 @@ public class DockTabControl : TabControl
 {
     public DockGroupNode? Node { get; private set; }
 
-    /// <summary>
-    /// Raised when a tab drag starts. Provides the DockItem being dragged.
-    /// </summary>
     public event Action<DockItem>? TabDragStarted;
-
-    /// <summary>
-    /// Raised when a tab close is requested.
-    /// </summary>
     public event Action<DockItem>? TabCloseRequested;
+    public event Action<DockItem>? TabFloatRequested;
+    public event Action<DockItem>? TabAutoHideRequested;
 
     public void Bind(DockGroupNode node, Func<DockItem, object>? contentFactory = null)
     {
@@ -47,6 +48,10 @@ public class DockTabControl : TabControl
         var header = new DockTabHeader(item);
         header.CloseClicked += () => TabCloseRequested?.Invoke(item);
         header.DragStarted += () => TabDragStarted?.Invoke(item);
+        header.FloatRequested += () => TabFloatRequested?.Invoke(item);
+        header.AutoHideRequested += () => TabAutoHideRequested?.Invoke(item);
+        header.CloseAllRequested += () => CloseAllItems();
+        header.CloseAllButThisRequested += () => CloseAllButItem(item);
 
         var tabItem = new TabItem
         {
@@ -63,10 +68,26 @@ public class DockTabControl : TabControl
 
         return tabItem;
     }
+
+    private void CloseAllItems()
+    {
+        if (Node is null) return;
+        foreach (var item in Node.Items.ToList())
+            if (item.CanClose)
+                TabCloseRequested?.Invoke(item);
+    }
+
+    private void CloseAllButItem(DockItem keep)
+    {
+        if (Node is null) return;
+        foreach (var item in Node.Items.ToList())
+            if (item != keep && item.CanClose)
+                TabCloseRequested?.Invoke(item);
+    }
 }
 
 /// <summary>
-/// Tab header with title, close button, and drag support.
+/// Tab header with title, close button, context menu, and drag support.
 /// </summary>
 public class DockTabHeader : StackPanel
 {
@@ -76,6 +97,10 @@ public class DockTabHeader : StackPanel
 
     public event Action? CloseClicked;
     public event Action? DragStarted;
+    public event Action? FloatRequested;
+    public event Action? AutoHideRequested;
+    public event Action? CloseAllRequested;
+    public event Action? CloseAllButThisRequested;
 
     public DockTabHeader(DockItem item)
     {
@@ -86,30 +111,85 @@ public class DockTabHeader : StackPanel
         {
             Text = item.Title,
             VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(0, 0, 6, 0)
+            Margin = new Thickness(0, 0, 4, 0)
         };
         Children.Add(titleBlock);
+
+        // Pin button (auto-hide toggle) - VS-style pushpin
+        var pinButton = new Button
+        {
+            Content = "\uD83D\uDCCC",
+            FontSize = 9,
+            Padding = new Thickness(2, 0, 2, 0),
+            Margin = new Thickness(0, 0, 1, 0),
+            BorderThickness = new Thickness(0),
+            Background = Brushes.Transparent,
+            Cursor = Cursors.Hand,
+            VerticalAlignment = VerticalAlignment.Center,
+            ToolTip = "Auto-Hide"
+        };
+        pinButton.Click += (_, _) => AutoHideRequested?.Invoke();
+        Children.Add(pinButton);
 
         if (item.CanClose)
         {
             var closeButton = new Button
             {
-                Content = "\u00D7", // multiplication sign (x)
+                Content = "\u00D7",
                 FontSize = 10,
                 Padding = new Thickness(2, 0, 2, 0),
                 Margin = new Thickness(0),
                 BorderThickness = new Thickness(0),
                 Background = Brushes.Transparent,
                 Cursor = Cursors.Hand,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                ToolTip = "Close"
             };
             closeButton.Click += (_, _) => CloseClicked?.Invoke();
             Children.Add(closeButton);
         }
 
+        // Context menu
+        ContextMenu = BuildContextMenu(item);
+
         MouseLeftButtonDown += OnMouseLeftButtonDown;
         MouseMove += OnMouseMove;
         MouseLeftButtonUp += OnMouseLeftButtonUp;
+    }
+
+    private ContextMenu BuildContextMenu(DockItem item)
+    {
+        var menu = new ContextMenu();
+
+        if (item.CanFloat)
+        {
+            var floatItem = new MenuItem { Header = "Float" };
+            floatItem.Click += (_, _) => FloatRequested?.Invoke();
+            menu.Items.Add(floatItem);
+        }
+
+        var autoHideItem = new MenuItem { Header = "Auto-Hide" };
+        autoHideItem.Click += (_, _) => AutoHideRequested?.Invoke();
+        menu.Items.Add(autoHideItem);
+
+        menu.Items.Add(new Separator());
+
+        if (item.CanClose)
+        {
+            var closeItem = new MenuItem { Header = "Close" };
+            closeItem.Click += (_, _) => CloseClicked?.Invoke();
+            menu.Items.Add(closeItem);
+        }
+
+        var closeAllItem = new MenuItem { Header = "Close All" };
+        closeAllItem.Click += (_, _) => CloseAllRequested?.Invoke();
+        menu.Items.Add(closeAllItem);
+
+        var closeAllButItem = new MenuItem { Header = "Close All But This" };
+        closeAllButItem.Click += (_, _) => CloseAllButThisRequested?.Invoke();
+        menu.Items.Add(closeAllButItem);
+
+        return menu;
     }
 
     private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

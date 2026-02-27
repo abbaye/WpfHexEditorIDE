@@ -7,12 +7,12 @@
 namespace WpfHexEditor.Docking.Core;
 
 /// <summary>
-/// State of a dock item.
+/// Which edge of the dock area an item is associated with (for auto-hide placement).
 /// </summary>
-public enum DockItemState
+public enum DockSide
 {
-    Docked,
-    Float,
-    AutoHide,
-    Hidden
+    Left,
+    Right,
+    Top,
+    Bottom
 }

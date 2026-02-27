@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
 namespace WpfHexEditor.Docking.Core.Nodes;
 
 /// <summary>
@@ -84,6 +90,18 @@ public class DockSplitNode : DockNode
 
         for (var i = 0; i < _ratios.Count; i++)
             _ratios[i] /= sum;
+    }
+
+    /// <summary>
+    /// Replaces all ratios with the given values. Must match the child count.
+    /// </summary>
+    public void SetRatios(double[] ratios)
+    {
+        if (ratios.Length != _ratios.Count)
+            throw new ArgumentException("Ratios count must match children count.", nameof(ratios));
+
+        for (var i = 0; i < _ratios.Count; i++)
+            _ratios[i] = ratios[i];
     }
 
     /// <summary>

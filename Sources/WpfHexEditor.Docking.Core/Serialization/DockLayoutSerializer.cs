@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using WpfHexEditor.Docking.Core.Nodes;
@@ -184,10 +190,11 @@ internal class DockNodeDtoConverter : JsonConverter<DockNodeDto>
 
         var json = root.GetRawText();
 
-        // Use a copy of options without this converter to avoid infinite recursion
+        // Inner options must include this converter for recursive Children in DockSplitNodeDto
         var innerOptions = new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { this }
         };
 
         return type switch
@@ -201,11 +208,12 @@ internal class DockNodeDtoConverter : JsonConverter<DockNodeDto>
 
     public override void Write(Utf8JsonWriter writer, DockNodeDto value, JsonSerializerOptions options)
     {
-        // Use a copy of options without this converter to avoid infinite recursion
+        // Inner options must include this converter for recursive Children in DockSplitNodeDto
         var innerOptions = new JsonSerializerOptions
         {
             WriteIndented = options.WriteIndented,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { this }
         };
 
         switch (value)
