@@ -24,7 +24,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
 
         private bool _isSettingsPanelVisible = true;  // Open by default to show HexEditor options
         private bool _isSearchPanelVisible = true;
-        private bool _isParsedFieldsPanelVisible = false;  // Hidden by default
+        private bool _isParsedFieldsPanelVisible = true;   // Visible by default (standalone panel)
         private bool _isFileLoaded = false;
         private bool _isOperationActive = false;
         private string _currentFilePath;
@@ -940,6 +940,15 @@ namespace WpfHexEditor.Sample.Main.ViewModels
         private void LoadUIState()
         {
             var settings = Properties.Settings.Default;
+
+            // Migration v2→v3 : the ParsedFieldsPanel was previously embedded inside
+            // HexEditor (always visible). Now standalone, default must be true.
+            if (settings.SettingsVersion < 3)
+            {
+                settings.IsParsedFieldsPanelVisible = true;
+                settings.SettingsVersion = 3;
+            }
+
             _isSettingsPanelVisible = settings.IsSettingsPanelVisible;
             _isSearchPanelVisible = settings.IsSearchPanelVisible;
             _isParsedFieldsPanelVisible = settings.IsParsedFieldsPanelVisible;

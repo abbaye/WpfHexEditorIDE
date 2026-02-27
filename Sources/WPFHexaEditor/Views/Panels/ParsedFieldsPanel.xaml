@@ -235,8 +235,12 @@
             <RowDefinition Height="Auto"/> <!-- Status bar -->
         </Grid.RowDefinitions>
 
-        <!-- Header with gradient -->
-        <Border Grid.Row="0" Padding="12,8">
+        <!-- Header with gradient — draggable pour tear-off flottant -->
+        <Border Grid.Row="0"
+                x:Name="PanelTitleBar"
+                Cursor="SizeAll"
+                MouseLeftButtonDown="PanelTitleBar_MouseLeftButtonDown"
+                Padding="12,8">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                     <GradientStop Color="#1E88E5" Offset="0"/>

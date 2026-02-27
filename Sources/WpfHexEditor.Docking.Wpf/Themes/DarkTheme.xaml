@@ -1,0 +1,80 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Dark Theme for WpfHexEditor.Docking (VS2022 Dark inspired) -->
+
+    <!-- Colors -->
+    <Color x:Key="DockBackgroundColor">#252526</Color>
+    <Color x:Key="DockBorderColor">#3F3F46</Color>
+    <Color x:Key="DockTabActiveColor">#007ACC</Color>
+    <Color x:Key="DockTabInactiveColor">#2D2D30</Color>
+    <Color x:Key="DockTabHoverColor">#3E3E40</Color>
+    <Color x:Key="DockTabTextColor">#D4D4D4</Color>
+    <Color x:Key="DockTabActiveTextColor">#FFFFFF</Color>
+    <Color x:Key="DockSplitterColor">#3F3F46</Color>
+    <Color x:Key="DockOverlayColor">#40007ACC</Color>
+    <Color x:Key="DockDocumentHostBorderColor">#007ACC</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="DockBackgroundBrush" Color="{StaticResource DockBackgroundColor}" />
+    <SolidColorBrush x:Key="DockBorderBrush" Color="{StaticResource DockBorderColor}" />
+    <SolidColorBrush x:Key="DockTabActiveBrush" Color="{StaticResource DockTabActiveColor}" />
+    <SolidColorBrush x:Key="DockTabInactiveBrush" Color="{StaticResource DockTabInactiveColor}" />
+    <SolidColorBrush x:Key="DockTabHoverBrush" Color="{StaticResource DockTabHoverColor}" />
+    <SolidColorBrush x:Key="DockTabTextBrush" Color="{StaticResource DockTabTextColor}" />
+    <SolidColorBrush x:Key="DockTabActiveTextBrush" Color="{StaticResource DockTabActiveTextColor}" />
+    <SolidColorBrush x:Key="DockSplitterBrush" Color="{StaticResource DockSplitterColor}" />
+    <SolidColorBrush x:Key="DockDocumentHostBorderBrush" Color="{StaticResource DockDocumentHostBorderColor}" />
+
+    <!-- Global UI Colors -->
+    <Color x:Key="DockMenuBackgroundColor">#2D2D30</Color>
+    <Color x:Key="DockMenuForegroundColor">#F1F1F1</Color>
+    <Color x:Key="DockMenuHighlightColor">#3E3E40</Color>
+    <Color x:Key="DockMenuBorderColor">#333337</Color>
+    <Color x:Key="DockToolBarBackgroundColor">#2D2D30</Color>
+    <Color x:Key="DockWindowBackgroundColor">#252526</Color>
+
+    <SolidColorBrush x:Key="DockMenuBackgroundBrush" Color="{StaticResource DockMenuBackgroundColor}" />
+    <SolidColorBrush x:Key="DockMenuForegroundBrush" Color="{StaticResource DockMenuForegroundColor}" />
+    <SolidColorBrush x:Key="DockMenuHighlightBrush" Color="{StaticResource DockMenuHighlightColor}" />
+    <SolidColorBrush x:Key="DockMenuBorderBrush" Color="{StaticResource DockMenuBorderColor}" />
+    <SolidColorBrush x:Key="DockToolBarBackgroundBrush" Color="{StaticResource DockToolBarBackgroundColor}" />
+    <SolidColorBrush x:Key="DockWindowBackgroundBrush" Color="{StaticResource DockWindowBackgroundColor}" />
+
+    <!-- Menu style: white text on dark background -->
+    <Style x:Key="DockDarkMenuStyle" TargetType="Menu">
+        <Setter Property="Background" Value="{StaticResource DockMenuBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+    </Style>
+
+    <!-- Top-level MenuItem: white text, highlight on hover -->
+    <Style x:Key="DockDarkMenuItemStyle" TargetType="MenuItem">
+        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Style.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter Property="Background" Value="{StaticResource DockMenuHighlightBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ToolBar style: dark background, white text buttons -->
+    <Style x:Key="DockDarkToolBarStyle" TargetType="ToolBar">
+        <Setter Property="Background" Value="{StaticResource DockToolBarBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+    </Style>
+
+    <Style x:Key="DockDarkToolBarButtonStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource DockMenuBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="6,2" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource DockMenuHighlightBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

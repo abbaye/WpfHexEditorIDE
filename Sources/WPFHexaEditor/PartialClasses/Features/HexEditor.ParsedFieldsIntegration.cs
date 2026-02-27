@@ -22,26 +22,48 @@ namespace WpfHexaEditor
         #region Dependency Properties
 
         /// <summary>
-        /// Visibility of the parsed fields panel
+        /// External ParsedFieldsPanel connected to this HexEditor.
+        /// Set via ConnectParsedFieldsPanel() or direct binding.
         /// </summary>
-        public static readonly DependencyProperty ParsedFieldsPanelVisibilityProperty =
+        public static readonly DependencyProperty ParsedFieldsPanelProperty =
             DependencyProperty.Register(
-                nameof(ParsedFieldsPanelVisibility),
-                typeof(Visibility),
+                nameof(ParsedFieldsPanel),
+                typeof(ParsedFieldsPanel),
                 typeof(HexEditor),
-                new PropertyMetadata(Visibility.Visible, OnParsedFieldsPanelVisibilityChanged));
+                new PropertyMetadata(null, OnParsedFieldsPanelChanged));
 
-        public Visibility ParsedFieldsPanelVisibility
+        public ParsedFieldsPanel ParsedFieldsPanel
         {
-            get => (Visibility)GetValue(ParsedFieldsPanelVisibilityProperty);
-            set => SetValue(ParsedFieldsPanelVisibilityProperty, value);
+            get => (ParsedFieldsPanel)GetValue(ParsedFieldsPanelProperty);
+            set => SetValue(ParsedFieldsPanelProperty, value);
         }
 
-        private static void OnParsedFieldsPanelVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnParsedFieldsPanelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is HexEditor editor && e.NewValue is Visibility visibility)
+            if (d is not HexEditor editor) return;
+
+            // Déconnecter l'ancien panel
+            if (e.OldValue is ParsedFieldsPanel oldPanel)
             {
-                editor.UpdateParsedFieldsPanelState(visibility);
+                oldPanel.FieldSelected -= editor.ParsedFieldsPanel_FieldSelected;
+                oldPanel.RefreshRequested -= editor.ParsedFieldsPanel_RefreshRequested;
+                oldPanel.FormatterChanged -= editor.ParsedFieldsPanel_FormatterChanged;
+                oldPanel.FieldValueEdited -= editor.ParsedFieldsPanel_FieldValueEdited;
+                oldPanel.FormatCandidateSelected -= editor.ParsedFieldsPanel_FormatCandidateSelected;
+            }
+
+            // Connecter le nouveau panel
+            if (e.NewValue is ParsedFieldsPanel newPanel)
+            {
+                newPanel.FieldSelected += editor.ParsedFieldsPanel_FieldSelected;
+                newPanel.RefreshRequested += editor.ParsedFieldsPanel_RefreshRequested;
+                newPanel.FormatterChanged += editor.ParsedFieldsPanel_FormatterChanged;
+                newPanel.FieldValueEdited += editor.ParsedFieldsPanel_FieldValueEdited;
+                newPanel.FormatCandidateSelected += editor.ParsedFieldsPanel_FormatCandidateSelected;
+
+                // Déclencher le parsing si un fichier est déjà ouvert
+                if (editor.Stream != null && editor._detectedFormat != null)
+                    editor.ParseFieldsAsync();
             }
         }
 
@@ -111,31 +133,9 @@ namespace WpfHexaEditor
             };
             _autoRefreshTimer.Tick += AutoRefreshTimer_Tick;
 
-            // Wire up events
-            if (ParsedFieldsPanel != null)
-            {
-                ParsedFieldsPanel.FieldSelected += ParsedFieldsPanel_FieldSelected;
-                ParsedFieldsPanel.RefreshRequested += ParsedFieldsPanel_RefreshRequested;
-                ParsedFieldsPanel.FormatterChanged += ParsedFieldsPanel_FormatterChanged;
-                ParsedFieldsPanel.FieldValueEdited += ParsedFieldsPanel_FieldValueEdited;
-                ParsedFieldsPanel.FormatCandidateSelected += ParsedFieldsPanel_FormatCandidateSelected;
-            }
-
+            // Events are wired via OnParsedFieldsPanelChanged when ParsedFieldsPanel DP is set.
             // Subscribe to byte modification events for auto-refresh
             ByteModified += HexEditor_ByteModified;
-        }
-
-        private void UpdateParsedFieldsPanelState(Visibility visibility)
-        {
-            // Additional logic when panel visibility changes
-            if (visibility == Visibility.Visible && ParsedFieldsPanel != null)
-            {
-                // Refresh parsed fields if file is open
-                if (Stream != null && _detectedFormat != null)
-                {
-                    ParseFieldsAsync();
-                }
-            }
         }
 
         #endregion
@@ -988,14 +988,17 @@ namespace WpfHexaEditor
         #region Public Methods
 
         /// <summary>
-        /// Toggle the visibility of the parsed fields panel
+        /// Connecte un ParsedFieldsPanel externe à cet éditeur.
+        /// Les événements sont câblés automatiquement via la DP.
         /// </summary>
-        public void ToggleParsedFieldsPanel()
-        {
-            ParsedFieldsPanelVisibility = ParsedFieldsPanelVisibility == Visibility.Visible
-                ? Visibility.Collapsed
-                : Visibility.Visible;
-        }
+        public void ConnectParsedFieldsPanel(ParsedFieldsPanel panel)
+            => ParsedFieldsPanel = panel;
+
+        /// <summary>
+        /// Déconnecte le ParsedFieldsPanel actuel.
+        /// </summary>
+        public void DisconnectParsedFieldsPanel()
+            => ParsedFieldsPanel = null;
 
         /// <summary>
         /// Refresh parsed fields (public API)

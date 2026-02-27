@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>WpfHexEditor.Docking.Core</RootNamespace>
+    <AssemblyName>WpfHexEditor.Docking.Core</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="WpfHexEditor.Docking.Tests" />
+    <InternalsVisibleTo Include="WpfHexEditor.Docking.Wpf" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,234 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5
+//////////////////////////////////////////////
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using WpfHexEditor.Docking.Core.Nodes;
+
+namespace WpfHexEditor.Docking.Core.Serialization;
+
+/// <summary>
+/// Serializes and deserializes <see cref="DockLayoutRoot"/> to/from JSON.
+/// </summary>
+public static class DockLayoutSerializer
+{
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Converters = { new DockNodeDtoConverter() }
+    };
+
+    /// <summary>
+    /// Serializes a layout to a JSON string.
+    /// </summary>
+    public static string Serialize(DockLayoutRoot layout)
+    {
+        var dto = ToDto(layout);
+        return JsonSerializer.Serialize(dto, JsonOptions);
+    }
+
+    /// <summary>
+    /// Deserializes a layout from a JSON string.
+    /// </summary>
+    public static DockLayoutRoot Deserialize(string json)
+    {
+        var dto = JsonSerializer.Deserialize<DockLayoutRootDto>(json, JsonOptions)
+                  ?? throw new InvalidOperationException("Failed to deserialize dock layout.");
+        return FromDto(dto);
+    }
+
+    private static DockLayoutRootDto ToDto(DockLayoutRoot layout)
+    {
+        return new DockLayoutRootDto
+        {
+            RootNode = NodeToDto(layout.RootNode),
+            FloatingItems = layout.FloatingItems.Select(ItemToDto).ToList(),
+            AutoHideItems = layout.AutoHideItems.Select(ItemToDto).ToList()
+        };
+    }
+
+    private static DockNodeDto NodeToDto(DockNode node)
+    {
+        return node switch
+        {
+            DocumentHostNode docHost => new DocumentHostNodeDto
+            {
+                Type = "DocumentHost",
+                Id = docHost.Id,
+                LockMode = docHost.LockMode,
+                IsMain = docHost.IsMain,
+                Items = docHost.Items.Select(ItemToDto).ToList(),
+                ActiveItemContentId = docHost.ActiveItem?.ContentId
+            },
+            DockGroupNode group => new DockGroupNodeDto
+            {
+                Type = "Group",
+                Id = group.Id,
+                LockMode = group.LockMode,
+                Items = group.Items.Select(ItemToDto).ToList(),
+                ActiveItemContentId = group.ActiveItem?.ContentId
+            },
+            DockSplitNode split => new DockSplitNodeDto
+            {
+                Type = "Split",
+                Id = split.Id,
+                LockMode = split.LockMode,
+                Orientation = split.Orientation,
+                Children = split.Children.Select(NodeToDto).ToList(),
+                Ratios = split.Ratios.ToList()
+            },
+            _ => throw new NotSupportedException($"Unknown node type: {node.GetType()}")
+        };
+    }
+
+    private static DockItemDto ItemToDto(DockItem item)
+    {
+        return new DockItemDto
+        {
+            Title = item.Title,
+            ContentId = item.ContentId,
+            CanClose = item.CanClose,
+            CanFloat = item.CanFloat,
+            State = item.State
+        };
+    }
+
+    private static DockLayoutRoot FromDto(DockLayoutRootDto dto)
+    {
+        var layout = new DockLayoutRoot();
+
+        // Rebuild the tree from DTO
+        var rootNode = NodeFromDto(dto.RootNode, layout.MainDocumentHost);
+        layout.RootNode = rootNode;
+
+        foreach (var itemDto in dto.FloatingItems)
+        {
+            var item = ItemFromDto(itemDto);
+            item.State = DockItemState.Float;
+            layout.FloatingItems.Add(item);
+        }
+
+        foreach (var itemDto in dto.AutoHideItems)
+        {
+            var item = ItemFromDto(itemDto);
+            item.State = DockItemState.AutoHide;
+            layout.AutoHideItems.Add(item);
+        }
+
+        return layout;
+    }
+
+    private static DockNode NodeFromDto(DockNodeDto dto, DocumentHostNode mainHost)
+    {
+        switch (dto)
+        {
+            case DocumentHostNodeDto docHostDto:
+                // Reuse the main host if this is the main document host
+                var host = docHostDto.IsMain ? mainHost : new DocumentHostNode { IsMain = false };
+                host.LockMode = docHostDto.LockMode;
+                foreach (var itemDto in docHostDto.Items)
+                    host.AddItem(ItemFromDto(itemDto));
+                if (docHostDto.ActiveItemContentId is not null)
+                    host.ActiveItem = host.Items.FirstOrDefault(i => i.ContentId == docHostDto.ActiveItemContentId);
+                return host;
+
+            case DockGroupNodeDto groupDto:
+                var group = new DockGroupNode { LockMode = groupDto.LockMode };
+                foreach (var itemDto in groupDto.Items)
+                    group.AddItem(ItemFromDto(itemDto));
+                if (groupDto.ActiveItemContentId is not null)
+                    group.ActiveItem = group.Items.FirstOrDefault(i => i.ContentId == groupDto.ActiveItemContentId);
+                return group;
+
+            case DockSplitNodeDto splitDto:
+                var split = new DockSplitNode
+                {
+                    Orientation = splitDto.Orientation,
+                    LockMode = splitDto.LockMode
+                };
+                for (var i = 0; i < splitDto.Children.Count; i++)
+                {
+                    var childNode = NodeFromDto(splitDto.Children[i], mainHost);
+                    var ratio = i < splitDto.Ratios.Count ? splitDto.Ratios[i] : 0.5;
+                    split.AddChild(childNode, ratio);
+                }
+                return split;
+
+            default:
+                throw new NotSupportedException($"Unknown DTO type: {dto.GetType()}");
+        }
+    }
+
+    private static DockItem ItemFromDto(DockItemDto dto)
+    {
+        return new DockItem
+        {
+            Title = dto.Title,
+            ContentId = dto.ContentId,
+            CanClose = dto.CanClose,
+            CanFloat = dto.CanFloat,
+            State = dto.State
+        };
+    }
+}
+
+/// <summary>
+/// Custom JSON converter for polymorphic DockNodeDto.
+/// </summary>
+internal class DockNodeDtoConverter : JsonConverter<DockNodeDto>
+{
+    public override DockNodeDto? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var doc = JsonDocument.ParseValue(ref reader);
+        var root = doc.RootElement;
+
+        var type = root.GetProperty("type").GetString();
+
+        var json = root.GetRawText();
+
+        // Inner options must include this converter for recursive Children in DockSplitNodeDto
+        var innerOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { this }
+        };
+
+        return type switch
+        {
+            "Split" => JsonSerializer.Deserialize<DockSplitNodeDto>(json, innerOptions),
+            "DocumentHost" => JsonSerializer.Deserialize<DocumentHostNodeDto>(json, innerOptions),
+            "Group" => JsonSerializer.Deserialize<DockGroupNodeDto>(json, innerOptions),
+            _ => throw new NotSupportedException($"Unknown node type: {type}")
+        };
+    }
+
+    public override void Write(Utf8JsonWriter writer, DockNodeDto value, JsonSerializerOptions options)
+    {
+        // Inner options must include this converter for recursive Children in DockSplitNodeDto
+        var innerOptions = new JsonSerializerOptions
+        {
+            WriteIndented = options.WriteIndented,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { this }
+        };
+
+        switch (value)
+        {
+            case DockSplitNodeDto splitDto:
+                JsonSerializer.Serialize(writer, splitDto, innerOptions);
+                break;
+            case DocumentHostNodeDto docHostDto:
+                JsonSerializer.Serialize(writer, docHostDto, innerOptions);
+                break;
+            case DockGroupNodeDto groupDto:
+                JsonSerializer.Serialize(writer, groupDto, innerOptions);
+                break;
+            default:
+                throw new NotSupportedException($"Unknown DTO type: {value.GetType()}");
+        }
+    }
+}

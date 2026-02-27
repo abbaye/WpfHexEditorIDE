@@ -1,0 +1,70 @@
+<Window x:Class="WpfHexEditor.Sample.Docking.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dock="clr-namespace:WpfHexEditor.Docking.Wpf;assembly=WpfHexEditor.Docking.Wpf"
+        Title="WpfHexEditor - Docking Test"
+        Width="1200" Height="800"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource DockWindowBackgroundBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Menu Bar -->
+        <Menu Grid.Row="0" Style="{DynamicResource DockDarkMenuStyle}">
+            <MenuItem Header="_File" Style="{DynamicResource DockDarkMenuItemStyle}">
+                <MenuItem Header="_New Document" Click="OnNewDocument" />
+                <MenuItem Header="New _Hex Editor Document" Click="OnNewHexDocument" />
+                <MenuItem Header="_Open File..." Click="OnOpenFile" />
+                <Separator />
+                <MenuItem Header="E_xit" Click="OnExit" />
+            </MenuItem>
+            <MenuItem Header="_View" Style="{DynamicResource DockDarkMenuItemStyle}">
+                <MenuItem Header="_Properties" Click="OnShowProperties" />
+                <MenuItem Header="_Solution Explorer" Click="OnShowSolutionExplorer" />
+                <MenuItem Header="_Output" Click="OnShowOutput" />
+            </MenuItem>
+            <MenuItem Header="_Layout" Style="{DynamicResource DockDarkMenuItemStyle}">
+                <MenuItem Header="_Save Layout" Click="OnSaveLayout" />
+                <MenuItem Header="_Load Layout" Click="OnLoadLayout" />
+                <MenuItem Header="_Reset Layout" Click="OnResetLayout" />
+                <Separator />
+                <MenuItem Header="Toggle _Locked Layout" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem" />
+            </MenuItem>
+            <MenuItem Header="_Theme" Style="{DynamicResource DockDarkMenuItemStyle}">
+                <MenuItem Header="_Dark" Click="OnDarkTheme" />
+                <MenuItem Header="_Light" Click="OnLightTheme" />
+            </MenuItem>
+        </Menu>
+
+        <!-- Toolbar -->
+        <ToolBar Grid.Row="1" Style="{DynamicResource DockDarkToolBarStyle}">
+            <Button Content="+ Document" Click="OnNewDocument" ToolTip="Add a new document" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Button Content="+ Hex Editor" Click="OnNewHexDocument" ToolTip="Add a new hex editor document" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Separator />
+            <Button Content="Properties" Click="OnShowProperties" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Button Content="Output" Click="OnShowOutput" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Button Content="Solution Explorer" Click="OnShowSolutionExplorer" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Separator />
+            <Button Content="Save Layout" Click="OnSaveLayout" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Button Content="Load Layout" Click="OnLoadLayout" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+        </ToolBar>
+
+        <!-- Main Dock Area -->
+        <dock:DockControl Grid.Row="2" x:Name="DockHost" Margin="2" />
+
+        <!-- Status Bar -->
+        <StatusBar Grid.Row="3" Background="#FF007ACC">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Ready" Foreground="White" />
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="PanelCountText" Text="Panels: 0" Foreground="White" />
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

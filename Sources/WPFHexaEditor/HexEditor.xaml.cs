@@ -163,6 +163,12 @@ namespace WpfHexaEditor
                 HexViewport.DataStringVisual = DataStringVisual;
                 HexViewport.OffSetStringVisual = OffSetStringVisual;
 
+                // CRITICAL: Sync tooltip DP defaults to HexViewport on initialization
+                // Without this, DP default values never propagate because the callback
+                // only fires when values CHANGE, not for the initial default value
+                HexViewport.ByteToolTipDisplayMode = ByteToolTipDisplayMode;
+                HexViewport.ByteToolTipDetailLevel = ByteToolTipDetailLevel;
+
                 // Initialize ActualOffsetWidth based on current format
                 ActualOffsetWidth = new GridLength(HexViewport.ActualOffsetWidth);
 
