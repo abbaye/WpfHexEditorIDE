@@ -7,8 +7,6 @@
              xmlns:models="clr-namespace:WpfHexaEditor.Models"
              xmlns:converters="clr-namespace:WpfHexaEditor.Converters"
              xmlns:controls="clr-namespace:WpfHexaEditor.Controls"
-             xmlns:barChart="clr-namespace:WpfHexEditor.BarChart.Controls;assembly=WpfHexEditor.BarChart"
-
              xmlns:prop="clr-namespace:WpfHexaEditor.Properties"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -279,7 +277,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Column Headers -->
             <RowDefinition Height="*"/>    <!-- Content -->
-            <RowDefinition Height="Auto"/> <!-- Bar Chart Panel (Phase 7.4) -->
             <RowDefinition Height="Auto"/> <!-- Status bar -->
         </Grid.RowDefinitions>
 
@@ -353,17 +350,8 @@
                                       Visibility="Collapsed"/>
         </Grid>
 
-        <!-- Bar Chart Panel (Phase 7.4 - V1 compatible feature) -->
-        <Border x:Name="BarChartBorder" Grid.Row="2"
-                BorderBrush="#D0D0D0" BorderThickness="0,1,0,0"
-                Visibility="{Binding BarChartPanelVisibility, RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
-            <barChart:BarChartPanel x:Name="BarChartPanel"
-                                     Height="150"
-                                     Margin="5"/>
-        </Border>
-
         <!-- Status bar -->
-        <StatusBar x:Name="StatusBar" Grid.Row="3" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
+        <StatusBar x:Name="StatusBar" Grid.Row="2" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
             <StatusBar.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                     <MenuItem Header="{DynamicResource StatusMessageString}" IsCheckable="True" IsChecked="{Binding ShowStatusMessage, Mode=TwoWay}"/>

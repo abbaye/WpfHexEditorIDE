@@ -63,6 +63,9 @@ namespace WpfHexEditor.Sample.Main.Views
             // Connecter le ParsedFieldsPanel externe au HexEditor (via DP)
             HexEditorControl.ConnectParsedFieldsPanel(ParsedFieldsPanelControl);
 
+            // Connecter le BarChartPanel externe au HexEditor (via DP IByteDistributionPanel)
+            HexEditorControl.ByteDistributionPanel = ByteDistChartPanel;
+
             // Tear-off flottant style VS2022
             ParsedFieldsPanelControl.TitleBarDragStarted += ParsedFieldsPanel_TitleBarDragStarted;
 

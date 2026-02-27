@@ -2,16 +2,17 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using WpfHexaEditor.Interfaces;
 using static WpfHexEditor.BarChart.Properties.Resources;
 
 namespace WpfHexEditor.BarChart.Controls
 {
     /// <summary>
     /// Bar chart panel displaying byte frequency distribution (0x00-0xFF).
-    /// V1 compatible feature - visualizes which byte values appear most frequently in the file.
-    /// Phase 7.4 - Complete implementation.
+    /// Implements <see cref="IByteDistributionPanel"/> to connect to HexEditor via
+    /// the <c>ByteDistributionPanel</c> dependency property.
     /// </summary>
-    public class BarChartPanel : FrameworkElement
+    public class BarChartPanel : FrameworkElement, IByteDistributionPanel
     {
         #region Fields
 

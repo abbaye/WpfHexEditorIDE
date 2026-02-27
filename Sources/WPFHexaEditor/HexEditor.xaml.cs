@@ -16,7 +16,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexaEditor.Controls;
 using WpfHexaEditor.Core;
-using WpfHexEditor.BarChart.Controls;
 using WpfHexaEditor.Core.Bytes;
 using WpfHexaEditor.Core.CharacterTable;
 using WpfHexaEditor.Events;
@@ -42,7 +41,6 @@ namespace WpfHexaEditor
         private System.Windows.Controls.Primitives.StatusBar _statusBar;
         private StackPanel _hexHeaderStackPanel;
         private StackPanel _asciiHeaderStackPanel;
-        private BarChartPanel _barChartPanel;
         private Controls.ScrollMarkerPanel _scrollMarkers;
 
         // Bookmarks
@@ -118,7 +116,6 @@ namespace WpfHexaEditor
             _statusBar = this.FindName("StatusBar") as System.Windows.Controls.Primitives.StatusBar;
             _hexHeaderStackPanel = this.FindName("HexHeaderStackPanel") as StackPanel;
             _asciiHeaderStackPanel = this.FindName("AsciiHeaderStackPanel") as StackPanel;
-            _barChartPanel = this.FindName("BarChartPanel") as BarChartPanel;
             _scrollMarkers = this.FindName("ScrollMarkers") as Controls.ScrollMarkerPanel;
 
             // Subscribe to scroll marker click event for navigation
@@ -1028,19 +1025,6 @@ namespace WpfHexaEditor
         {
             get => (System.Windows.Media.Color)GetValue(TblDefaultColorProperty);
             set => SetValue(TblDefaultColorProperty, value);
-        }
-
-        // Bar Chart Panel color  - DependencyProperty
-
-        /// <summary>
-        /// Bar chart color - DependencyProperty
-        /// </summary>
-        [Category("Colors.Charts")]
-        [DisplayName("Bar Color")]
-        public System.Windows.Media.Color BarChartColor
-        {
-            get => (System.Windows.Media.Color)GetValue(BarChartColorProperty);
-            set => SetValue(BarChartColorProperty, value);
         }
 
         /// <summary>
@@ -2613,21 +2597,6 @@ namespace WpfHexaEditor
         }
 
         /// <summary>
-        /// BarChartColor DependencyProperty for XAML binding
-        /// </summary>
-        public static readonly DependencyProperty BarChartColorProperty =
-            DependencyProperty.Register(nameof(BarChartColor), typeof(System.Windows.Media.Color), typeof(HexEditor),
-                new PropertyMetadata(Colors.Blue, OnBarChartColorChanged));
-
-        private static void OnBarChartColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor editor && e.NewValue is Color color && editor._barChartPanel != null)
-            {
-                editor._barChartPanel.BarColor = color;
-            }
-        }
-
-        /// <summary>
         /// SelectionActiveBrush DependencyProperty for XAML binding
         /// Brush used for selection in the active panel (Hex or ASCII)
         /// </summary>
@@ -2775,175 +2744,6 @@ namespace WpfHexaEditor
                 }
             }
         }
-
-        /// <summary>
-        /// BarChartPanelVisibility DependencyProperty for XAML binding
-        /// </summary>
-        public static readonly DependencyProperty BarChartPanelVisibilityProperty =
-            DependencyProperty.Register(nameof(BarChartPanelVisibility), typeof(Visibility), typeof(HexEditor),
-                new PropertyMetadata(Visibility.Collapsed, OnBarChartPanelVisibilityChanged));
-
-        private static void OnBarChartPanelVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor editor && e.NewValue is Visibility visibility)
-            {
-                if (editor.BarChartBorder != null)
-                    editor.BarChartBorder.Visibility = visibility;
-
-                // Update bar chart data when becoming visible
-                if (visibility == Visibility.Visible)
-                    editor.UpdateBarChart();
-            }
-        }
-
-        #region Bar Chart Properties
-
-        /// <summary>
-        /// Bar chart panel height in pixels
-        /// </summary>
-        [Category("BarChart")]
-        [DisplayName("Panel Height")]
-        [Description("Height of the bar chart panel in pixels")]
-        public int BarChartPanelHeight
-        {
-            get => (int)GetValue(BarChartPanelHeightProperty);
-            set => SetValue(BarChartPanelHeightProperty, value);
-        }
-
-        public static readonly DependencyProperty BarChartPanelHeightProperty =
-            DependencyProperty.Register(nameof(BarChartPanelHeight), typeof(int), typeof(HexEditor),
-                new PropertyMetadata(200, OnBarChartPanelHeightChanged));
-
-        private static void OnBarChartPanelHeightChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor editor && e.NewValue is int height)
-            {
-                if (editor._barChartPanel != null)
-                    editor._barChartPanel.Height = height;
-            }
-        }
-
-        /// <summary>
-        /// Bar chart background color
-        /// </summary>
-        [Category("Colors.Charts")]
-        [DisplayName("Background Color")]
-        public Color BarChartBackgroundColor
-        {
-            get => (Color)GetValue(BarChartBackgroundColorProperty);
-            set => SetValue(BarChartBackgroundColorProperty, value);
-        }
-
-        public static readonly DependencyProperty BarChartBackgroundColorProperty =
-            DependencyProperty.Register(nameof(BarChartBackgroundColor), typeof(Color), typeof(HexEditor),
-                new PropertyMetadata(Colors.White, OnBarChartBackgroundColorChanged));
-
-        private static void OnBarChartBackgroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor editor && e.NewValue is Color color && editor._barChartPanel != null)
-            {
-                editor._barChartPanel.BackgroundColor = color;
-                editor._barChartPanel.InvalidateVisual();
-            }
-        }
-
-        /// <summary>
-        /// Bar chart text color for labels and statistics
-        /// </summary>
-        [Category("Colors.Charts")]
-        [DisplayName("Text Color")]
-        public Color BarChartTextColor
-        {
-            get => (Color)GetValue(BarChartTextColorProperty);
-            set => SetValue(BarChartTextColorProperty, value);
-        }
-
-        public static readonly DependencyProperty BarChartTextColorProperty =
-            DependencyProperty.Register(nameof(BarChartTextColor), typeof(Color), typeof(HexEditor),
-                new PropertyMetadata(Color.FromRgb(0x42, 0x42, 0x42), OnBarChartTextColorChanged));
-
-        private static void OnBarChartTextColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor editor && e.NewValue is Color color && editor._barChartPanel != null)
-            {
-                editor._barChartPanel.TextColor = color;
-                editor._barChartPanel.InvalidateVisual();
-            }
-        }
-
-        /// <summary>
-        /// Show bar chart axis labels (00-FF)
-        /// </summary>
-        [Category("BarChart")]
-        [DisplayName("Show Axis Labels")]
-        public bool BarChartShowAxisLabels
-        {
-            get => (bool)GetValue(BarChartShowAxisLabelsProperty);
-            set => SetValue(BarChartShowAxisLabelsProperty, value);
-        }
-
-        public static readonly DependencyProperty BarChartShowAxisLabelsProperty =
-            DependencyProperty.Register(nameof(BarChartShowAxisLabels), typeof(bool), typeof(HexEditor),
-                new PropertyMetadata(true, OnBarChartShowAxisLabelsChanged));
-
-        private static void OnBarChartShowAxisLabelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor editor && e.NewValue is bool show && editor._barChartPanel != null)
-            {
-                editor._barChartPanel.ShowAxisLabels = show;
-                editor._barChartPanel.InvalidateVisual();
-            }
-        }
-
-        /// <summary>
-        /// Show bar chart grid lines
-        /// </summary>
-        [Category("BarChart")]
-        [DisplayName("Show Grid Lines")]
-        public bool BarChartShowGridLines
-        {
-            get => (bool)GetValue(BarChartShowGridLinesProperty);
-            set => SetValue(BarChartShowGridLinesProperty, value);
-        }
-
-        public static readonly DependencyProperty BarChartShowGridLinesProperty =
-            DependencyProperty.Register(nameof(BarChartShowGridLines), typeof(bool), typeof(HexEditor),
-                new PropertyMetadata(false, OnBarChartShowGridLinesChanged));
-
-        private static void OnBarChartShowGridLinesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor editor && e.NewValue is bool show && editor._barChartPanel != null)
-            {
-                editor._barChartPanel.ShowGridLines = show;
-                editor._barChartPanel.InvalidateVisual();
-            }
-        }
-
-        /// <summary>
-        /// Show bar chart statistics overlay
-        /// </summary>
-        [Category("BarChart")]
-        [DisplayName("Show Statistics")]
-        public bool BarChartShowStatistics
-        {
-            get => (bool)GetValue(BarChartShowStatisticsProperty);
-            set => SetValue(BarChartShowStatisticsProperty, value);
-        }
-
-        public static readonly DependencyProperty BarChartShowStatisticsProperty =
-            DependencyProperty.Register(nameof(BarChartShowStatistics), typeof(bool), typeof(HexEditor),
-                new PropertyMetadata(true, OnBarChartShowStatisticsChanged));
-
-        private static void OnBarChartShowStatisticsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is HexEditor editor && e.NewValue is bool show && editor._barChartPanel != null)
-            {
-                editor._barChartPanel.ShowStatistics = show;
-                editor._barChartPanel.InvalidateVisual();
-            }
-        }
-
-        #endregion
 
         /// <summary>
         /// DefaultCopyToClipboardMode DependencyProperty for XAML binding
@@ -3424,17 +3224,6 @@ namespace WpfHexaEditor
         {
             get => Visibility.Visible;
             set { /* V2 does not support hiding hex panel */ }
-        }
-
-        /// <summary>
-        /// Bar chart panel visibility
-        /// </summary>
-        [Category("BarChart")]
-        [DisplayName("Panel Visibility")]
-        public Visibility BarChartPanelVisibility
-        {
-            get => (Visibility)GetValue(BarChartPanelVisibilityProperty);
-            set => SetValue(BarChartPanelVisibilityProperty, value);
         }
 
         #endregion

@@ -132,11 +132,10 @@ namespace WpfHexaEditor
                 //System.Diagnostics.Debug.WriteLine("[FileOperations] Format detection is disabled (EnableAutoFormatDetection = false)");
             }
 
-            // Update bar chart panel in background
-            // Bar chart calculation can be slow for large files
+            // Notify external byte distribution panel (e.g. BarChartPanel) in background
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                UpdateBarChart();
+                NotifyByteDistributionPanel();
             }), System.Windows.Threading.DispatcherPriority.Background);
 
             // Update scroll markers in background
@@ -291,8 +290,8 @@ namespace WpfHexaEditor
             IsModified = false;
             IsFileOrStreamLoaded = false;  // FIX: Update read-only DP for settings panel
 
-            // 7. Clear bar chart
-            _barChartPanel?.Clear();
+            // 7. Clear byte distribution panel
+            ClearByteDistributionPanel();
 
                 // 8. Reset status bar to initial state
                 ResetStatusBar();
@@ -307,48 +306,6 @@ namespace WpfHexaEditor
             }
         }
 
-
-        /// <summary>
-        /// Update bar chart panel with current file data
-        /// </summary>
-        private void UpdateBarChart()
-        {
-            if (_barChartPanel == null || _viewModel == null)
-                return;
-
-            // Only update if bar chart is visible
-            if (BarChartPanelVisibility != Visibility.Visible)
-                return;
-
-            try
-            {
-                // Configure all bar chart properties
-                _barChartPanel.BarColor = BarChartColor;
-                _barChartPanel.BackgroundColor = BarChartBackgroundColor;
-                _barChartPanel.TextColor = BarChartTextColor;
-                _barChartPanel.Height = BarChartPanelHeight;
-                _barChartPanel.ShowAxisLabels = BarChartShowAxisLabels;
-                _barChartPanel.ShowGridLines = BarChartShowGridLines;
-                _barChartPanel.ShowStatistics = BarChartShowStatistics;
-
-                // Read first 1MB from provider and update chart
-                var maxBytes = Math.Min(_viewModel.Provider.Length, 1024 * 1024);
-                var bytes = _viewModel.Provider.GetBytes(0, (int)maxBytes);
-                _barChartPanel.UpdateData(bytes);
-            }
-            catch (Exception ex)
-            {
-                StatusText.Text = $"Bar chart update failed: {ex.Message}";
-            }
-        }
-
-        /// <summary>
-        /// Refresh the bar chart panel with current file data. .
-        /// </summary>
-        public void RefreshBarChart()
-        {
-            UpdateBarChart();
-        }
 
         /// <summary>
         /// Update auto-highlight byte value when selection changes
