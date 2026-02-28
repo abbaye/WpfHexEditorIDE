@@ -3,22 +3,22 @@
 
     <!-- Light menu styles -->
     <Style x:Key="DockDarkMenuStyle" TargetType="Menu">
-        <Setter Property="Background" Value="{StaticResource DockMenuBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Background" Value="{DynamicResource DockMenuBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
     </Style>
 
     <Style x:Key="DockDarkMenuItemStyle" TargetType="MenuItem">
-        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <Style x:Key="DockDarkToolBarStyle" TargetType="ToolBar">
-        <Setter Property="Background" Value="{StaticResource DockToolBarBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Background" Value="{DynamicResource DockToolBarBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
     </Style>
 
     <Style x:Key="DockDarkToolBarButtonStyle" TargetType="Button">
-        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
         <Setter Property="Padding" Value="6,2" />
     </Style>
 

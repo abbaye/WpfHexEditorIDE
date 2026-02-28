@@ -4,28 +4,28 @@
     <!-- Content control overrides: ensure readable text in dark-themed panels -->
     <Style TargetType="{x:Type TreeView}" BasedOn="{StaticResource {x:Type TreeView}}">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource DockBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
     </Style>
 
     <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
-        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
     </Style>
 
     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
-        <Setter Property="CaretBrush" Value="{StaticResource DockMenuForegroundBrush}" />
-        <Setter Property="SelectionBrush" Value="{StaticResource DockTabActiveBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource DockBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource DockTabActiveBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
     </Style>
 
     <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource {x:Type CheckBox}}">
-        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
     </Style>
 
     <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
-        <Setter Property="Foreground" Value="{StaticResource DockMenuForegroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
     </Style>
 
 </ResourceDictionary>

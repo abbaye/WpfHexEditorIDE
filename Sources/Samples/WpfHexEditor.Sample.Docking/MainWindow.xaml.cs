@@ -210,10 +210,7 @@ public partial class MainWindow : Window
 
     private static UIElement CreateHexEditorContent()
     {
-        var hexEditor = new HexEditor
-        {
-            Background = System.Windows.Media.Brushes.Transparent
-        };
+        var hexEditor = new HexEditor();
 
         var random = new Random();
         var data = new byte[1024];
@@ -410,6 +407,7 @@ public partial class MainWindow : Window
         Application.Current.Resources.MergedDictionaries.Clear();
         Application.Current.Resources.MergedDictionaries.Add(
             new ResourceDictionary { Source = new Uri("pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/DarkTheme.xaml") });
+        SyncAllHexEditorThemes();
         StatusText.Text = "Theme: Dark";
     }
 
@@ -418,7 +416,30 @@ public partial class MainWindow : Window
         Application.Current.Resources.MergedDictionaries.Clear();
         Application.Current.Resources.MergedDictionaries.Add(
             new ResourceDictionary { Source = new Uri("pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/Generic.xaml") });
+        SyncAllHexEditorThemes();
         StatusText.Text = "Theme: Light";
+    }
+
+    /// <summary>
+    /// Re-applies theme colors to all HexEditor instances in the docking layout.
+    /// </summary>
+    private void SyncAllHexEditorThemes()
+    {
+        foreach (var editor in FindVisualChildren<HexEditor>(this))
+            editor.ApplyThemeFromResources();
+    }
+
+    private static IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject
+    {
+        var count = System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent);
+        for (int i = 0; i < count; i++)
+        {
+            var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
+            if (child is T t)
+                yield return t;
+            foreach (var descendant in FindVisualChildren<T>(child))
+                yield return descendant;
+        }
     }
 
     private void OnExit(object sender, RoutedEventArgs e)

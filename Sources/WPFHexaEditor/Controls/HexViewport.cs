@@ -83,6 +83,7 @@ namespace WpfHexaEditor.Controls
         private double OffsetWidth => CalculateOffsetWidth();
 
         // Colors
+        private Brush _backgroundBrush = Brushes.White;
         private Brush _offsetBrush = new SolidColorBrush(Color.FromRgb(0x75, 0x75, 0x75));
         private Brush _normalByteBrush = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00)); // Black (V1 default)
         private Brush _alternateByteBrush = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0xFF)); // Blue (V1 default)
@@ -1164,6 +1165,33 @@ namespace WpfHexaEditor.Controls
         }
 
         /// <summary>
+        /// Background color for the viewport content area
+        /// </summary>
+        public Color BackgroundColor
+        {
+            get => (_backgroundBrush as SolidColorBrush)?.Color ?? Colors.White;
+            set { _backgroundBrush = new SolidColorBrush(value); _backgroundBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// Color for the separator line between hex and ASCII panels
+        /// </summary>
+        public Color SeparatorColor
+        {
+            get => (_separatorBrush as SolidColorBrush)?.Color ?? Color.FromRgb(0xE0, 0xE0, 0xE0);
+            set { _separatorBrush = new SolidColorBrush(value); _separatorBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
+        /// Foreground color for ASCII characters
+        /// </summary>
+        public Color AsciiForegroundColor
+        {
+            get => (_asciiBrush as SolidColorBrush)?.Color ?? Color.FromRgb(0x42, 0x42, 0x42);
+            set { _asciiBrush = new SolidColorBrush(value); _asciiBrush.Freeze(); InvalidateVisual(); }
+        }
+
+        /// <summary>
         /// TBL Stream for character type detection - Phase 7.5 V1 Compatibility
         /// </summary>
         public Core.CharacterTable.TblStream TblStream
@@ -1296,8 +1324,8 @@ namespace WpfHexaEditor.Controls
             _cursorHexRect = null;
             _cursorAsciiRect = null;
 
-            // Draw white background
-            dc.DrawRectangle(Brushes.White, null, new Rect(0, 0, ActualWidth, ActualHeight));
+            // Draw background
+            dc.DrawRectangle(_backgroundBrush, null, new Rect(0, 0, ActualWidth, ActualHeight));
 
             // PASS 1: Populate Rects first (fast pre-pass without drawing)
             PopulateByteRects();

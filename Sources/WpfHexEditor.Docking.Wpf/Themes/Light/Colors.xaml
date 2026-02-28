@@ -20,6 +20,19 @@
     <Color x:Key="DockToolBarBackgroundColor">#EEEEF2</Color>
     <Color x:Key="DockWindowBackgroundColor">#F0F0F0</Color>
 
+    <!-- HexEditor Colors -->
+    <Color x:Key="HexEditor_BackgroundColor">#FFFFFF</Color>
+    <Color x:Key="HexEditor_HeaderBackgroundColor">#F5F5F5</Color>
+    <Color x:Key="HexEditor_HeaderForegroundColor">#424242</Color>
+    <Color x:Key="HexEditor_ColumnSeparatorColor">#D0D0D0</Color>
+    <Color x:Key="HexEditor_ForegroundFirstColor">#000000</Color>
+    <Color x:Key="HexEditor_ForegroundSecondColor">#0000FF</Color>
+    <Color x:Key="HexEditor_ForegroundOffSetHeaderColor">#757575</Color>
+    <Color x:Key="HexEditor_SelectionFirstColor">#660078D4</Color>
+    <Color x:Key="HexEditor_SelectionSecondColor">#660078D4</Color>
+    <Color x:Key="HexEditor_ForegroundContrast">#000000</Color>
+    <Color x:Key="HexEditor_ForegroundHighLightOffSetHeaderColor">#00008B</Color>
+
     <!-- Brushes -->
     <SolidColorBrush x:Key="DockBackgroundBrush" Color="{StaticResource DockBackgroundColor}" />
     <SolidColorBrush x:Key="DockBorderBrush" Color="{StaticResource DockBorderColor}" />

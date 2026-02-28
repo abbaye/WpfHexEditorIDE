@@ -116,82 +116,13 @@ namespace WpfHexEditor.Sample.Main.Services
 
         /// <summary>
         /// Synchronizes HexEditor control colors with the current theme.
-        /// Must be called after theme changes to update HexEditor DependencyProperties.
+        /// Delegates to HexEditor.ApplyThemeFromResources() which reads HexEditor_* keys
+        /// from Application.Current.Resources.
         /// </summary>
         /// <param name="hexEditor">The HexEditor control to synchronize</param>
         public static void SyncHexEditorColors(WpfHexaEditor.HexEditor hexEditor)
         {
-            if (hexEditor == null)
-                return;
-
-            try
-            {
-                var app = Application.Current;
-
-                // Helper function to safely get color from resources
-                Color GetColorResource(string key, Color fallback)
-                {
-                    try
-                    {
-                        return (Color)(app.FindResource(key) ?? fallback);
-                    }
-                    catch
-                    {
-                        return fallback;
-                    }
-                }
-
-                // Synchronize all HexEditor color properties with theme colors
-                hexEditor.SelectionFirstColor = GetColorResource("HexEditor_SelectionFirstColor",
-                    Color.FromArgb(102, 0, 120, 212));
-
-                hexEditor.SelectionSecondColor = GetColorResource("HexEditor_SelectionSecondColor",
-                    Color.FromArgb(102, 0, 120, 212));
-
-                hexEditor.ByteModifiedColor = GetColorResource("HexEditor_ByteModifiedColor",
-                    Color.FromRgb(255, 165, 0));
-
-                hexEditor.ByteAddedColor = GetColorResource("HexEditor_ByteAddedColor",
-                    Color.FromRgb(76, 175, 80));
-
-                hexEditor.HighLightColor = GetColorResource("HexEditor_HighLightColor",
-                    Colors.Gold);
-
-                hexEditor.MouseOverColor = GetColorResource("HexEditor_MouseOverColor",
-                    Color.FromRgb(227, 242, 253));
-
-                hexEditor.ForegroundSecondColor = GetColorResource("HexEditor_ForegroundSecondColor",
-                    Colors.Blue);
-
-                hexEditor.ForegroundOffSetHeaderColor = GetColorResource("HexEditor_ForegroundOffSetHeaderColor",
-                    Color.FromRgb(117, 117, 117));
-
-                hexEditor.ForegroundHighLightOffSetHeaderColor = GetColorResource("HexEditor_ForegroundHighLightOffSetHeaderColor",
-                    Colors.DarkBlue);
-
-                hexEditor.ForegroundContrast = GetColorResource("HexEditor_ForegroundContrast",
-                    Colors.White);
-
-                // AutoHighLiteSelectionByteBrush is actually a Brush property, but we need to check its type
-                // For now, just skip it or use the color directly if it's a Color property
-                // hexEditor.AutoHighLiteSelectionByteBrush = GetColorResource("HexEditor_AutoHighLiteSelectionByteBrush", Colors.LightBlue);
-
-                hexEditor.TblDteColor = GetColorResource("HexEditor_TblDteColor",
-                    Colors.Red);
-
-                hexEditor.TblMteColor = GetColorResource("HexEditor_TblMteColor",
-                    Colors.Green);
-
-                hexEditor.TblEndBlockColor = GetColorResource("HexEditor_TblEndBlockColor",
-                    Colors.Yellow);
-
-                hexEditor.TblEndLineColor = GetColorResource("HexEditor_TblEndLineColor",
-                    Colors.Orange);
-            }
-            catch (Exception ex)
-            {
-                // Silently ignore color sync errors
-            }
+            hexEditor?.ApplyThemeFromResources();
         }
     }
 

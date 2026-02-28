@@ -126,7 +126,12 @@ namespace WpfHexaEditor
             //}
 
             // Initialize column headers with byte position numbers
-            this.Loaded += (s, e) => RefreshColumnHeader();
+            // Apply theme colors from application resources (if HexEditor_* keys are defined)
+            this.Loaded += (s, e) =>
+            {
+                RefreshColumnHeader();
+                ApplyThemeFromResources();
+            };
 
             // Subscribe to right-click event for context menu
             if (HexViewport != null)
@@ -2012,6 +2017,104 @@ namespace WpfHexaEditor
                 // This color is used for high contrast foreground
                 // Currently not directly used in HexViewport rendering, but keep for future use
                 editor.HexViewport.InvalidateVisual();
+            }
+        }
+
+        /// <summary>
+        /// Background color for the hex editor content area.
+        /// </summary>
+        [Category("Colors.Background")]
+        public Color BackgroundColor
+        {
+            get => (Color)GetValue(BackgroundColorProperty);
+            set => SetValue(BackgroundColorProperty, value);
+        }
+
+        public static readonly DependencyProperty BackgroundColorProperty =
+            DependencyProperty.Register(nameof(BackgroundColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Colors.White, OnBackgroundColorChanged));
+
+        private static void OnBackgroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var color = (Color)e.NewValue;
+                editor.Background = new SolidColorBrush(color);
+
+                if (editor.HexViewport != null)
+                    editor.HexViewport.BackgroundColor = color;
+            }
+        }
+
+        /// <summary>
+        /// Background color for the column header area.
+        /// </summary>
+        [Category("Colors.Background")]
+        public Color HeaderBackgroundColor
+        {
+            get => (Color)GetValue(HeaderBackgroundColorProperty);
+            set => SetValue(HeaderBackgroundColorProperty, value);
+        }
+
+        public static readonly DependencyProperty HeaderBackgroundColorProperty =
+            DependencyProperty.Register(nameof(HeaderBackgroundColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(0xF5, 0xF5, 0xF5), OnHeaderBackgroundColorChanged));
+
+        private static void OnHeaderBackgroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var color = (Color)e.NewValue;
+                editor.Resources["HeaderBrush"] = new SolidColorBrush(color);
+            }
+        }
+
+        /// <summary>
+        /// Foreground color for the column header text.
+        /// </summary>
+        [Category("Colors.Background")]
+        public Color HeaderForegroundColor
+        {
+            get => (Color)GetValue(HeaderForegroundColorProperty);
+            set => SetValue(HeaderForegroundColorProperty, value);
+        }
+
+        public static readonly DependencyProperty HeaderForegroundColorProperty =
+            DependencyProperty.Register(nameof(HeaderForegroundColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(0x42, 0x42, 0x42), OnHeaderForegroundColorChanged));
+
+        private static void OnHeaderForegroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var color = (Color)e.NewValue;
+                editor.Resources["HeaderTextBrush"] = new SolidColorBrush(color);
+            }
+        }
+
+        /// <summary>
+        /// Color for column separator lines and header border.
+        /// </summary>
+        [Category("Colors.Background")]
+        public Color ColumnSeparatorColor
+        {
+            get => (Color)GetValue(ColumnSeparatorColorProperty);
+            set => SetValue(ColumnSeparatorColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ColumnSeparatorColorProperty =
+            DependencyProperty.Register(nameof(ColumnSeparatorColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(0xD0, 0xD0, 0xD0), OnColumnSeparatorColorChanged));
+
+        private static void OnColumnSeparatorColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var color = (Color)e.NewValue;
+                editor.Resources["ColumnSeparatorBrush"] = new SolidColorBrush(color);
+
+                if (editor.HexViewport != null)
+                    editor.HexViewport.SeparatorColor = color;
             }
         }
 

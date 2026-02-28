@@ -60,6 +60,11 @@
     <Color x:Key="HexEditor_TblMteColor">#008000</Color>                   <!-- Green -->
     <Color x:Key="HexEditor_TblEndBlockColor">#FFFF00</Color>              <!-- Yellow -->
     <Color x:Key="HexEditor_TblEndLineColor">#FFA500</Color>               <!-- Orange -->
+    <Color x:Key="HexEditor_BackgroundColor">#FFFFFF</Color>              <!-- White -->
+    <Color x:Key="HexEditor_HeaderBackgroundColor">#F5F5F5</Color>       <!-- Light Gray -->
+    <Color x:Key="HexEditor_HeaderForegroundColor">#424242</Color>       <!-- Dark Gray -->
+    <Color x:Key="HexEditor_ColumnSeparatorColor">#D0D0D0</Color>       <!-- Medium Gray -->
+    <Color x:Key="HexEditor_ForegroundFirstColor">#000000</Color>       <!-- Black -->
 
     <!-- ==================== BRUSHES ==================== -->
 
