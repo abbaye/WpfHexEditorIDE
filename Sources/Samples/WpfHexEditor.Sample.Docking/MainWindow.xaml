@@ -65,6 +65,13 @@
                     <MenuItem Header="_Theme" Style="{DynamicResource DockDarkMenuItemStyle}">
                         <MenuItem Header="_Dark" Click="OnDarkTheme" />
                         <MenuItem Header="_Light" Click="OnLightTheme" />
+                        <MenuItem Header="VS2022 Dar_k" Click="OnVS2022DarkTheme" />
+                        <MenuItem Header="Dark _Glass" Click="OnDarkGlassTheme" />
+                        <MenuItem Header="_Visual Studio" Click="OnVisualStudioTheme" />
+                        <MenuItem Header="_Cyberpunk" Click="OnCyberpunkTheme" />
+                        <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+                        <MenuItem Header="_Minimal" Click="OnMinimalTheme" />
+                        <MenuItem Header="_Office" Click="OnOfficeTheme" />
                     </MenuItem>
                 </Menu>
 

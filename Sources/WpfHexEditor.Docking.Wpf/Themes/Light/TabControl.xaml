@@ -84,12 +84,12 @@
         </Setter>
     </Style>
 
-    <!-- DockTabItem: flat fused design — active tab matches content bg (VS2022-style) -->
+    <!-- DockTabItem: Fluent fused design — rounded top corners, thin accent (VS2026-style) -->
     <Style x:Key="DockTabItemStyle" TargetType="{x:Type TabItem}">
         <Setter Property="Foreground" Value="{DynamicResource DockTabTextBrush}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Padding" Value="10,6,10,6" />
+        <Setter Property="Padding" Value="10,7,10,7" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
@@ -98,15 +98,17 @@
                     <Grid SnapsToDevicePixels="True">
                         <Border x:Name="TabBorder"
                                 Background="Transparent"
+                                CornerRadius="4,4,0,0"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter ContentSource="Header"
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Center" />
                         </Border>
-                        <!-- Accent indicator: 3px line at top of tab (toward content) -->
+                        <!-- Accent indicator: 2px line at top of tab (Fluent-style) -->
                         <Border x:Name="ActiveIndicator"
-                                Height="3"
+                                Height="2"
                                 VerticalAlignment="Top"
+                                CornerRadius="4,4,0,0"
                                 Background="Transparent" />
                     </Grid>
                     <ControlTemplate.Triggers>

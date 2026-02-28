@@ -47,7 +47,7 @@
 
     <!-- HexEditor Control Colors for Visual Studio Theme -->
     <Color x:Key="HexEditor_SelectionFirstColor">#66007ACC</Color>         <!-- VS Blue with 40% opacity -->
-    <Color x:Key="HexEditor_SelectionSecondColor">#66007ACC</Color>        <!-- VS Blue with 40% opacity -->
+    <Color x:Key="HexEditor_SelectionSecondColor">#33007ACC</Color>        <!-- VS Blue with 20% opacity (inactive panel) -->
     <Color x:Key="HexEditor_ByteModifiedColor">#FFCC00</Color>             <!-- Yellow -->
     <Color x:Key="HexEditor_HighLightColor">#FFCC00</Color>                <!-- Yellow -->
     <!-- MouseOverColor removed - controlled by HexEditor DP default -->

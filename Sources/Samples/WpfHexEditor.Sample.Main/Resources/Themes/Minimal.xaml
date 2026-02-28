@@ -47,7 +47,7 @@
 
     <!-- HexEditor Control Colors for Minimal Theme (Monochrome) -->
     <Color x:Key="HexEditor_SelectionFirstColor">#66000000</Color>         <!-- Black with 40% opacity -->
-    <Color x:Key="HexEditor_SelectionSecondColor">#66000000</Color>        <!-- Black with 40% opacity -->
+    <Color x:Key="HexEditor_SelectionSecondColor">#33000000</Color>        <!-- Black with 20% opacity (inactive panel) -->
     <Color x:Key="HexEditor_ByteModifiedColor">#666666</Color>             <!-- Medium Gray -->
     <Color x:Key="HexEditor_HighLightColor">#999999</Color>                <!-- Light Gray -->
     <!-- MouseOverColor removed - controlled by HexEditor DP default -->

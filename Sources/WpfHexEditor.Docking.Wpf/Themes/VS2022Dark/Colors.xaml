@@ -32,7 +32,7 @@
     <Color x:Key="HexEditor_ForegroundSecondColor">#4EC9B0</Color>
     <Color x:Key="HexEditor_ForegroundOffSetHeaderColor">#858585</Color>
     <Color x:Key="HexEditor_SelectionFirstColor">#66264F78</Color>
-    <Color x:Key="HexEditor_SelectionSecondColor">#66264F78</Color>
+    <Color x:Key="HexEditor_SelectionSecondColor">#33264F78</Color>
     <Color x:Key="HexEditor_ForegroundContrast">#FFFFFF</Color>
     <Color x:Key="HexEditor_ForegroundHighLightOffSetHeaderColor">#4EC9B0</Color>
     <Color x:Key="HexEditor_AsciiForegroundColor">#CE9178</Color>

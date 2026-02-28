@@ -93,7 +93,7 @@ namespace WpfHexaEditor.Controls
         // Layout constants
         // Note: OffsetWidth is now dynamic - use OffsetWidth property instead of constant
         private const double HexByteWidth = 24;
-        private const double HexByteSpacing = 2;
+        private const double HexByteSpacing = 0;
         private const double SeparatorWidth = 20;
         private const double AsciiCharWidth = 10;
         private const double LeftMargin = 8;
@@ -2092,14 +2092,17 @@ namespace WpfHexaEditor.Controls
                     // Selection highlight (on top of other highlights)
                     if (IsPositionSelected(bytePos))
                     {
-                        var selectionBrush = (_activePanel == ActivePanelType.Hex && SelectionActiveBrush != null)
-                            ? SelectionActiveBrush
+                        var hexBrush = (_activePanel == ActivePanelType.Hex)
+                            ? (SelectionActiveBrush ?? _selectedBrush)
+                            : (SelectionInactiveBrush ?? _selectedBrush);
+                        var asciiBrush = (_activePanel == ActivePanelType.Ascii)
+                            ? (SelectionActiveBrush ?? _selectedBrush)
                             : (SelectionInactiveBrush ?? _selectedBrush);
 
                         if (byteData.HexRect.HasValue)
-                            dc.DrawRoundedRectangle(selectionBrush, null, byteData.HexRect.Value, 2, 2);
+                            dc.DrawRectangle(hexBrush, null, byteData.HexRect.Value);
                         if (ShowAscii && byteData.AsciiRect.HasValue)
-                            dc.DrawRectangle(selectionBrush, null, byteData.AsciiRect.Value);
+                            dc.DrawRectangle(asciiBrush, null, byteData.AsciiRect.Value);
                     }
                 }
             }
