@@ -38,6 +38,9 @@ namespace WpfHexaEditor
         private HexEditorViewModel _viewModel;
         private bool _isMouseDown = false;
         private VirtualPosition _mouseDownPosition = VirtualPosition.Invalid;
+        private bool _isOffsetLineDrag = false;
+        private VirtualPosition _offsetDragAnchorStart = VirtualPosition.Invalid;
+        private VirtualPosition _offsetDragAnchorEnd = VirtualPosition.Invalid;
         private Border _headerBorder;
         private System.Windows.Controls.Primitives.StatusBar _statusBar;
         private StackPanel _hexHeaderStackPanel;
@@ -153,6 +156,8 @@ namespace WpfHexaEditor
                 HexViewport.Tbl3ByteColor = Tbl3ByteColor;
                 HexViewport.Tbl4PlusByteColor = Tbl4PlusByteColor;
                 HexViewport.ByteDragSelection += HexViewport_ByteDragSelection;
+                HexViewport.OffsetLineClicked += HexViewport_OffsetLineSelection;
+                HexViewport.OffsetLineDragSelection += HexViewport_OffsetLineSelection;
                 HexViewport.KeyboardNavigation += HexViewport_KeyboardNavigation;
                 HexViewport.RefreshTimeUpdated += HexViewport_RefreshTimeUpdated;
 
@@ -359,6 +364,29 @@ namespace WpfHexaEditor
                 new VirtualPosition(e.EndPosition));
 
             // Update UI
+            UpdateSelectionInfo();
+        }
+
+        /// <summary>
+        /// Handle click/drag on offset column to select entire line(s).
+        /// Also activates auto-scroll support so dragging beyond viewport edges scrolls.
+        /// </summary>
+        private void HexViewport_OffsetLineSelection(object sender, Controls.OffsetLineSelectionEventArgs e)
+        {
+            if (_viewModel == null)
+                return;
+
+            var start = new VirtualPosition(e.StartPosition);
+            var end = new VirtualPosition(e.EndPosition);
+
+            // Activate HexEditor-level mouse-down state so Content_MouseMove triggers auto-scroll
+            _isMouseDown = true;
+            _isOffsetLineDrag = true;
+            _offsetDragAnchorStart = start;
+            _offsetDragAnchorEnd = end;
+            _mouseDownPosition = start;
+
+            _viewModel.SetSelectionRange(start, end);
             UpdateSelectionInfo();
         }
 

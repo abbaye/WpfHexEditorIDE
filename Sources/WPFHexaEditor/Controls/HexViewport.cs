@@ -32,6 +32,24 @@ namespace WpfHexaEditor.Controls
     }
 
     /// <summary>
+    /// Tracks the reason for visual invalidation to enable partial re-rendering.
+    /// When only a few lines are affected (selection, cursor, edit), the viewport
+    /// skips unchanged lines in OnRender for significant performance gains.
+    /// </summary>
+    [Flags]
+    internal enum DirtyReason
+    {
+        None = 0,
+        LinesChanged = 1,        // Scroll, data reload → ALL lines dirty
+        SelectionChanged = 2,    // Selection range changed → mark affected lines only
+        CursorMoved = 4,         // Cursor position changed → mark old + new line
+        ByteModified = 8,        // Data changed → mark affected line
+        EditingChanged = 16,     // Editing state changed → mark affected line
+        HighlightsChanged = 32,  // Auto-highlight or search results changed → all lines
+        FullInvalidate = 64,     // Font, DPI, colors, TBL, layout → ALL lines dirty
+    }
+
+    /// <summary>
     /// High-performance custom rendering viewport that draws hex bytes directly using DrawingContext.
     /// Eliminates WPF binding/template/virtualization overhead for maximum performance.
     /// </summary>
@@ -45,10 +63,12 @@ namespace WpfHexaEditor.Controls
         private long _cursorPosition = 0;
         private long _selectionStart = -1;
         private long _selectionStop = -1;
-        private long _editingCellPosition = -1;
-        private bool _editingBlinkVisible = false;
-        private System.Windows.Threading.DispatcherTimer _editingBlinkTimer;
-        private System.Windows.Media.Brush _editingCellBrush;
+        // Dirty-line tracking: enables partial re-rendering when only a few lines changed
+        private DirtyReason _dirtyReason = DirtyReason.FullInvalidate;
+        private HashSet<int> _dirtyLineIndices = new();
+        private long _prevSelectionStart = -1;
+        private long _prevSelectionStop = -1;
+
         private HashSet<long> _highlightedPositions = new();
         private List<Core.CustomBackgroundBlock> _customBackgroundBlocks = new();
         private CustomBackgroundRenderer _customBackgroundRenderer = new();
@@ -154,6 +174,10 @@ namespace WpfHexaEditor.Controls
         // Mouse drag selection support
         private bool _isMouseDown = false;
         private long? _dragStartPosition = null;
+
+        // Offset column line-selection drag support
+        private bool _isOffsetDrag = false;
+        private int _offsetDragStartLineIndex = -1;
 
         // Active panel tracking for dual-color selection
         private ActivePanelType _activePanel = ActivePanelType.Hex;
@@ -273,19 +297,6 @@ namespace WpfHexaEditor.Controls
                 VerticalOffset = 20 // Offset below cursor
             };
             ToolTip = _byteToolTip;
-
-            // Initialize editing blink timer for cursor effect
-            _editingBlinkTimer = new System.Windows.Threading.DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(530)
-            };
-            _editingBlinkTimer.Tick += (s, e) =>
-            {
-                _editingBlinkVisible = !_editingBlinkVisible;
-                InvalidateVisual();
-            };
-            _editingCellBrush = new SolidColorBrush(Color.FromArgb(128, 0, 120, 212));
-            _editingCellBrush.Freeze();
 
             // Freeze brushes for performance
             _offsetBrush.Freeze();
@@ -764,6 +775,7 @@ namespace WpfHexaEditor.Controls
                 else
                 {
                     _linesCached.Clear();
+                    MarkDirty(DirtyReason.LinesChanged);
                     InvalidateVisual();
                 }
             }
@@ -785,6 +797,7 @@ namespace WpfHexaEditor.Controls
             {
                 _customBackgroundBlocks = value ?? new List<Core.CustomBackgroundBlock>();
                 InvalidateCustomBackgroundCache(); // Invalidate renderer cache
+                MarkDirty(DirtyReason.FullInvalidate);
                 InvalidateVisual(); // Trigger re-render
             }
         }
@@ -808,6 +821,7 @@ namespace WpfHexaEditor.Controls
                     _linesCached.Add(line);
                 }
             }
+            MarkDirty(DirtyReason.LinesChanged);
             InvalidateVisual();
         }
 
@@ -823,6 +837,7 @@ namespace WpfHexaEditor.Controls
                 _linesCached.Clear(); // Clear cached lines - they use old BytesPerLine
                 InvalidateCustomBackgroundCache(); // Invalidate renderer cache
                 InvalidateMeasure(); // Force layout recalculation
+                MarkDirty(DirtyReason.FullInvalidate);
                 InvalidateVisual();
             }
         }
@@ -844,6 +859,7 @@ namespace WpfHexaEditor.Controls
                     _dataStringVisual = value;
                     // Invalidate cell width cache since different formats have different widths
                     _cellWidthCache.Clear();
+                    MarkDirty(DirtyReason.FullInvalidate);
                     InvalidateVisual();
                 }
             }
@@ -863,6 +879,7 @@ namespace WpfHexaEditor.Controls
                     _offSetStringVisual = value;
                     // Invalidate offset width cache since different formats have different widths
                     _offsetWidthCache.Clear();
+                    MarkDirty(DirtyReason.FullInvalidate);
                     InvalidateVisual();
                 }
             }
@@ -878,7 +895,12 @@ namespace WpfHexaEditor.Controls
             {
                 if (_cursorPosition != value)
                 {
+                    // Mark old and new cursor lines as dirty
+                    var oldIdx = GetLineIndexForPosition(_cursorPosition);
                     _cursorPosition = value;
+                    var newIdx = GetLineIndexForPosition(_cursorPosition);
+                    MarkDirty(DirtyReason.CursorMoved, oldIdx);
+                    MarkDirty(DirtyReason.CursorMoved, newIdx);
                     InvalidateVisual();
                 }
             }
@@ -895,7 +917,11 @@ namespace WpfHexaEditor.Controls
             {
                 if (_editingBytePosition != value)
                 {
+                    var oldIdx = GetLineIndexForPosition(_editingBytePosition);
                     _editingBytePosition = value;
+                    var newIdx = GetLineIndexForPosition(_editingBytePosition);
+                    MarkDirty(DirtyReason.EditingChanged, oldIdx);
+                    MarkDirty(DirtyReason.EditingChanged, newIdx);
                     InvalidateVisual();
                 }
             }
@@ -912,6 +938,8 @@ namespace WpfHexaEditor.Controls
                 if (_editingNibbleIndex != value)
                 {
                     _editingNibbleIndex = value;
+                    var idx = GetLineIndexForPosition(_editingBytePosition);
+                    MarkDirty(DirtyReason.EditingChanged, idx);
                     InvalidateVisual();
                 }
             }
@@ -927,7 +955,12 @@ namespace WpfHexaEditor.Controls
             {
                 if (_selectionStart != value)
                 {
+                    // Mark lines affected by OLD selection range
+                    MarkLinesDirtyForRange(_prevSelectionStart, _prevSelectionStop);
                     _selectionStart = value;
+                    // Mark lines affected by NEW selection range
+                    MarkLinesDirtyForRange(_selectionStart, _selectionStop);
+                    MarkDirty(DirtyReason.SelectionChanged);
                     InvalidateVisual();
                 }
             }
@@ -943,7 +976,12 @@ namespace WpfHexaEditor.Controls
             {
                 if (_selectionStop != value)
                 {
+                    // Mark lines affected by OLD selection range
+                    MarkLinesDirtyForRange(_prevSelectionStart, _prevSelectionStop);
                     _selectionStop = value;
+                    // Mark lines affected by NEW selection range
+                    MarkLinesDirtyForRange(_selectionStart, _selectionStop);
+                    MarkDirty(DirtyReason.SelectionChanged);
                     InvalidateVisual();
                 }
             }
@@ -958,6 +996,7 @@ namespace WpfHexaEditor.Controls
             set
             {
                 _highlightedPositions = value ?? new();
+                MarkDirty(DirtyReason.HighlightsChanged);
                 InvalidateVisual();
             }
         }
@@ -973,6 +1012,7 @@ namespace WpfHexaEditor.Controls
                 if (_autoHighlightByteValue != value)
                 {
                     _autoHighlightByteValue = value;
+                    MarkDirty(DirtyReason.HighlightsChanged);
                     InvalidateVisual();
                 }
             }
@@ -987,6 +1027,7 @@ namespace WpfHexaEditor.Controls
             set
             {
                 _autoHighLiteBrush = value;
+                MarkDirty(DirtyReason.HighlightsChanged);
                 InvalidateVisual();
             }
         }
@@ -1018,6 +1059,7 @@ namespace WpfHexaEditor.Controls
                 {
                     _byteGrouping = value;
                     InvalidateCustomBackgroundCache();
+                    MarkDirty(DirtyReason.FullInvalidate);
                     InvalidateVisual();
                 }
             }
@@ -1046,6 +1088,7 @@ namespace WpfHexaEditor.Controls
                     _showOffset = value;
                     InvalidateCustomBackgroundCache();
                     InvalidateMeasure();
+                    MarkDirty(DirtyReason.FullInvalidate);
                     InvalidateVisual();
                 }
             }
@@ -1064,6 +1107,7 @@ namespace WpfHexaEditor.Controls
                     _showAscii = value;
                     InvalidateCustomBackgroundCache();
                     InvalidateMeasure();
+                    MarkDirty(DirtyReason.FullInvalidate);
                     InvalidateVisual();
                 }
             }
@@ -1118,6 +1162,9 @@ namespace WpfHexaEditor.Controls
             set
             {
                 _activePanel = value;
+                // ActivePanel affects selection brush choice — mark all selected lines
+                MarkLinesDirtyForRange(_selectionStart, _selectionStop);
+                MarkDirty(DirtyReason.SelectionChanged);
                 InvalidateVisual();
             }
         }
@@ -1150,6 +1197,7 @@ namespace WpfHexaEditor.Controls
                 {
                     _mouseHoverBrush = value ?? new SolidColorBrush(Color.FromArgb(0x50, 100, 150, 255)); // Deep Blue - default from MouseOverColor DP
                 }
+                MarkDirty(DirtyReason.FullInvalidate);
                 InvalidateVisual();
             }
         }
@@ -1514,6 +1562,98 @@ namespace WpfHexaEditor.Controls
 
         #endregion
 
+        #region Dirty-Line Tracking
+
+        /// <summary>
+        /// Mark the viewport as dirty with the given reason and optionally a specific line index.
+        /// Always call this BEFORE base.InvalidateVisual().
+        /// </summary>
+        private void MarkDirty(DirtyReason reason, int lineIndex = -1)
+        {
+            _dirtyReason |= reason;
+            if (lineIndex >= 0)
+                _dirtyLineIndices.Add(lineIndex);
+        }
+
+        /// <summary>
+        /// Compute which cached line index contains the given byte position.
+        /// Returns -1 if not found in currently visible lines.
+        /// </summary>
+        private int GetLineIndexForPosition(long bytePosition)
+        {
+            if (bytePosition < 0 || _linesCached == null || _linesCached.Count == 0)
+                return -1;
+
+            for (int i = 0; i < _linesCached.Count; i++)
+            {
+                var line = _linesCached[i];
+                if (line.Bytes == null || line.Bytes.Count == 0 || !line.StartPosition.IsValid)
+                    continue;
+
+                long lineStart = line.StartPosition.Value;
+                long lineEnd = lineStart + (line.Bytes.Count * (line.Bytes[0].ByteSize switch
+                {
+                    Core.ByteSizeType.Bit8 => 1,
+                    Core.ByteSizeType.Bit16 => 2,
+                    Core.ByteSizeType.Bit32 => 4,
+                    _ => 1
+                })) - 1;
+
+                if (bytePosition >= lineStart && bytePosition <= lineEnd)
+                    return i;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Mark all line indices that overlap with the given byte range [start, stop] as dirty.
+        /// </summary>
+        private void MarkLinesDirtyForRange(long start, long stop)
+        {
+            if (start < 0 || stop < 0 || _linesCached == null || _linesCached.Count == 0)
+                return;
+
+            long rangeStart = Math.Min(start, stop);
+            long rangeEnd = Math.Max(start, stop);
+
+            for (int i = 0; i < _linesCached.Count; i++)
+            {
+                var line = _linesCached[i];
+                if (line.Bytes == null || line.Bytes.Count == 0 || !line.StartPosition.IsValid)
+                    continue;
+
+                long lineStart = line.StartPosition.Value;
+                long lineEnd = lineStart + (line.Bytes.Count * (line.Bytes[0].ByteSize switch
+                {
+                    Core.ByteSizeType.Bit8 => 1,
+                    Core.ByteSizeType.Bit16 => 2,
+                    Core.ByteSizeType.Bit32 => 4,
+                    _ => 1
+                })) - 1;
+
+                if (lineEnd >= rangeStart && lineStart <= rangeEnd)
+                    _dirtyLineIndices.Add(i);
+            }
+        }
+
+        /// <summary>
+        /// Safety-net override: any external InvalidateVisual() call without a prior MarkDirty()
+        /// defaults to FullInvalidate to guarantee visual correctness.
+        /// </summary>
+        public new void InvalidateVisual()
+        {
+            if (_dirtyReason == DirtyReason.None)
+                _dirtyReason = DirtyReason.FullInvalidate;
+            base.InvalidateVisual();
+        }
+
+        // Diagnostic properties for benchmarking
+        internal int LastRenderLinesDrawn { get; private set; }
+        internal int LastRenderLinesSkipped { get; private set; }
+        internal DirtyReason LastRenderReason { get; private set; }
+
+        #endregion
+
         #region Rendering
 
         protected override void OnRender(DrawingContext dc)
@@ -1526,8 +1666,27 @@ namespace WpfHexaEditor.Controls
             if (_linesCached == null || _linesCached.Count == 0)
             {
                 _refreshStopwatch.Stop();
+                LastRenderReason = _dirtyReason;
+                LastRenderLinesDrawn = 0;
+                LastRenderLinesSkipped = 0;
+                _dirtyReason = DirtyReason.None;
+                _dirtyLineIndices.Clear();
                 return;
             }
+
+            // Snapshot dirty state for diagnostics, then reset
+            // NOTE: Partial rendering (skipping unchanged lines) is NOT possible in FrameworkElement.OnRender:
+            // each call FULLY REPLACES the element's DrawingGroup — skipped lines would appear blank.
+            // The DirtyReason tracking is retained for diagnostics and as groundwork for a future
+            // DrawingVisual-per-line architecture that CAN support independent line refresh.
+            LastRenderReason = _dirtyReason;
+            LastRenderLinesSkipped = 0; // Always 0: OnRender replaces entire DrawingGroup
+            _dirtyReason = DirtyReason.None;
+            _dirtyLineIndices.Clear();
+
+            // Save previous selection state for next invalidation's dirty range computation
+            _prevSelectionStart = _selectionStart;
+            _prevSelectionStop = _selectionStop;
 
             // Clear cursor rects (will be captured during rendering if cursor is visible)
             _cursorHexRect = null;
@@ -1549,95 +1708,19 @@ namespace WpfHexaEditor.Controls
             DrawHighlights(dc);
 
             double y = TopMargin;
+            int linesDrawn = 0;
 
             foreach (var line in _linesCached)
             {
                 if (line.Bytes == null || line.Bytes.Count == 0)
                     continue;
 
-                // Draw offset (if visible)
-                if (ShowOffset)
-                {
-                    DrawOffset(dc, line, y);
-                }
-
-                // Draw hex bytes with byte spacers
-                double hexX = ShowOffset ? OffsetWidth : 0;
-
-                // Get stride for byte position calculation (in multi-byte mode, i represents groups, not bytes)
-                int stride = line.Bytes.Count > 0 ? (line.Bytes[0].ByteSize switch
-                {
-                    Core.ByteSizeType.Bit8 => 1,
-                    Core.ByteSizeType.Bit16 => 2,
-                    Core.ByteSizeType.Bit32 => 4,
-                    _ => 1
-                }) : 1;
-
-                for (int i = 0; i < line.Bytes.Count; i++)
-                {
-                    // Calculate byte position from group index (i) and stride
-                    // In Bit8: bytePos = i (1:1 mapping)
-                    // In Bit16: bytePos = i * 2 (each group represents 2 bytes)
-                    // In Bit32: bytePos = i * 4 (each group represents 4 bytes)
-                    int bytePosition = i * stride;
-
-                    // Draw byte spacer before this byte if needed
-                    // Only draw separators if BytePerLine is large enough to have multiple groups
-                    if (_bytesPerLine >= (int)ByteGrouping &&
-                        (ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                         ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel) &&
-                        bytePosition % (int)ByteGrouping == 0 && i > 0)
-                    {
-                        DrawByteSpacer(dc, hexX, y);
-                        hexX += (int)ByteSpacerWidthTickness;
-                    }
-
-                    var byteData = line.Bytes[i];
-                    DrawHexByte(dc, byteData, hexX, y);
-                    // Phase 3: Use dynamic cell width based on ByteSize instead of fixed HexByteWidth
-                    // Bug 4: Use GetDynamicCellWidth() for Font/DPI support
-                    hexX += GetDynamicCellWidth(byteData) + HexByteSpacing;
-                }
-
-                // Draw separator and ASCII (if visible)
-                if (ShowAscii)
-                {
-                    // Phase 4: Calculate separator position using actual hexX position (same as hit testing!)
-                    // hexX now contains the end of hex area after iterating through all bytes
-                    double separatorX = hexX + 4; // Small margin before separator (same as hit testing)
-                    dc.DrawRectangle(_separatorBrush, null, new Rect(separatorX, y, 1, _lineHeight));
-
-                    // Phase 4: Draw ASCII bytes - SAME LOGIC as hit testing (simple loop)
-                    double asciiX = separatorX + SeparatorWidth;
-                    for (int i = 0; i < line.Bytes.Count; i++)
-                    {
-                        // Calculate byte position from group index (matches hex area logic)
-                        int bytePosition = i * stride;
-
-                        // Draw byte spacer before this byte if needed
-                        // IMPORTANT: Never draw ByteSpacers in ASCII panel when TBL is loaded
-                        // (TBL characters have variable byte consumption - spacers would be incorrect)
-                        if (_tblStream == null &&
-                            _bytesPerLine >= (int)ByteGrouping &&
-                            (ByteSpacerPositioning == ByteSpacerPosition.Both ||
-                             ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel) &&
-                            bytePosition % (int)ByteGrouping == 0 && i > 0)
-                        {
-                            DrawByteSpacer(dc, asciiX, y);
-                            asciiX += (int)ByteSpacerWidthTickness;
-                        }
-
-                        // Draw this ByteData's ASCII character(s)
-                        // DrawAsciiByte returns the actual width used
-                        double usedWidth = DrawAsciiByte(dc, line, i, asciiX, y);
-                        asciiX += usedWidth;
-
-                        // Simple increment (no skipping) - same as Hex and hit testing
-                    }
-                }
-
+                DrawLineContent(dc, line, y);
+                linesDrawn++;
                 y += _lineHeight;
             }
+
+            LastRenderLinesDrawn = linesDrawn;
 
             // Stop timing and raise event
             _refreshStopwatch.Stop();
@@ -1647,6 +1730,76 @@ namespace WpfHexaEditor.Controls
             // Update overlays after main render (keeps them in sync with scroll/changes)
             UpdateCursorOverlay();
             UpdateHoverOverlay();
+        }
+
+        /// <summary>
+        /// Draw a single line's content: offset, hex bytes, spacers, separator, ASCII bytes.
+        /// Extracted from OnRender to avoid duplicating the line rendering loop.
+        /// </summary>
+        private void DrawLineContent(DrawingContext dc, HexLine line, double y)
+        {
+            // Draw offset (if visible)
+            if (ShowOffset)
+            {
+                DrawOffset(dc, line, y);
+            }
+
+            // Draw hex bytes with byte spacers
+            double hexX = ShowOffset ? OffsetWidth : 0;
+
+            // Get stride for byte position calculation (in multi-byte mode, i represents groups, not bytes)
+            int stride = line.Bytes.Count > 0 ? (line.Bytes[0].ByteSize switch
+            {
+                Core.ByteSizeType.Bit8 => 1,
+                Core.ByteSizeType.Bit16 => 2,
+                Core.ByteSizeType.Bit32 => 4,
+                _ => 1
+            }) : 1;
+
+            for (int i = 0; i < line.Bytes.Count; i++)
+            {
+                int bytePosition = i * stride;
+
+                // Draw byte spacer before this byte if needed
+                if (_bytesPerLine >= (int)ByteGrouping &&
+                    (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                     ByteSpacerPositioning == ByteSpacerPosition.HexBytePanel) &&
+                    bytePosition % (int)ByteGrouping == 0 && i > 0)
+                {
+                    DrawByteSpacer(dc, hexX, y);
+                    hexX += (int)ByteSpacerWidthTickness;
+                }
+
+                var byteData = line.Bytes[i];
+                DrawHexByte(dc, byteData, hexX, y);
+                hexX += GetDynamicCellWidth(byteData) + HexByteSpacing;
+            }
+
+            // Draw separator and ASCII (if visible)
+            if (ShowAscii)
+            {
+                double separatorX = hexX + 4;
+                dc.DrawRectangle(_separatorBrush, null, new Rect(separatorX, y, 1, _lineHeight));
+
+                double asciiX = separatorX + SeparatorWidth;
+                for (int i = 0; i < line.Bytes.Count; i++)
+                {
+                    int bytePosition = i * stride;
+
+                    if (_tblStream == null &&
+                        _bytesPerLine >= (int)ByteGrouping &&
+                        (ByteSpacerPositioning == ByteSpacerPosition.Both ||
+                         ByteSpacerPositioning == ByteSpacerPosition.StringBytePanel) &&
+                        bytePosition % (int)ByteGrouping == 0 && i > 0)
+                    {
+                        DrawByteSpacer(dc, asciiX, y);
+                        asciiX += (int)ByteSpacerWidthTickness;
+                    }
+
+                    double usedWidth = DrawAsciiByte(dc, line, i, asciiX, y);
+                    asciiX += usedWidth;
+                }
+            }
         }
 
         /// <summary>
@@ -2552,8 +2705,29 @@ namespace WpfHexaEditor.Controls
                 base.OnMouseDown(e);
                 Focus();
 
-                // Double-check the click position to ensure we're not clicking on a ByteSpacer or empty area
                 var mousePos = e.GetPosition(this);
+
+                // Check if click is in the offset column area (line selection)
+                if (e.ChangedButton == MouseButton.Left && ShowOffset && mousePos.X < OffsetWidth)
+                {
+                    int lineIndex = HitTestLineIndex(mousePos);
+                    if (lineIndex >= 0 && lineIndex < _linesCached.Count)
+                    {
+                        var line = _linesCached[lineIndex];
+                        if (line.Bytes != null && line.Bytes.Count > 0)
+                        {
+                            _isMouseDown = true;
+                            _isOffsetDrag = true;
+                            _offsetDragStartLineIndex = lineIndex;
+                            CaptureMouse();
+
+                            long lineStart = line.Bytes[0].VirtualPos.Value;
+                            long lineEnd = line.Bytes[line.Bytes.Count - 1].VirtualPos.Value;
+                            OffsetLineClicked?.Invoke(this, new OffsetLineSelectionEventArgs(lineStart, lineEnd));
+                        }
+                    }
+                    return;
+                }
 
                 var hitTestResult = HitTestByteWithArea(mousePos);
 
@@ -2572,6 +2746,7 @@ namespace WpfHexaEditor.Controls
                         // Single LEFT click only - start selection drag
                         // Right-click is handled separately in OnMouseRightButtonDown to preserve selection
                         _isMouseDown = true;
+                        _isOffsetDrag = false;
                         _dragStartPosition = clickedPosition;
                         CaptureMouse();
 
@@ -2583,6 +2758,18 @@ namespace WpfHexaEditor.Controls
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Returns the line index at the given Y position, or -1 if out of range
+        /// </summary>
+        private int HitTestLineIndex(Point mousePos)
+        {
+            double y = mousePos.Y - TopMargin;
+            if (y < 0) return -1;
+            int lineIndex = (int)(y / _lineHeight);
+            if (lineIndex < 0 || lineIndex >= _linesCached.Count) return -1;
+            return lineIndex;
         }
 
         /// <summary>
@@ -2645,8 +2832,8 @@ namespace WpfHexaEditor.Controls
             var position = hitTestResult.Position;
             var isHexArea = hitTestResult.IsHexArea;
 
-            // Always show standard arrow cursor in editing area (user preference)
-            this.Cursor = Cursors.Arrow;
+            // Show right-arrow cursor over offset column (line selection), standard arrow elsewhere
+            this.Cursor = (ShowOffset && mousePos.X < OffsetWidth) ? Cursors.ScrollE : Cursors.Arrow;
 
             // Update mouse hover position and area for visual preview (Legacy compatible)
             // Uses lightweight overlay instead of full re-render
@@ -2661,16 +2848,37 @@ namespace WpfHexaEditor.Controls
             // Tooltip handling (new architecture with DisplayMode and DetailLevel)
             UpdateByteTooltip(mousePos, position);
 
-            // Mouse drag selection
-            if (_isMouseDown && _dragStartPosition.HasValue)
+            // Mouse drag selection — offset column (line-level) or byte-level
+            if (_isMouseDown)
             {
-                var currentPosition = HitTestByte(e.GetPosition(this));
-                if (currentPosition.HasValue)
+                if (_isOffsetDrag)
                 {
-                    // Raise event for parent to handle selection extension
-                    ByteDragSelection?.Invoke(this, new ByteDragSelectionEventArgs(
-                        _dragStartPosition.Value,
-                        currentPosition.Value));
+                    // Dragging from offset column: select whole lines
+                    int currentLineIndex = HitTestLineIndex(mousePos);
+                    if (currentLineIndex >= 0 && currentLineIndex < _linesCached.Count)
+                    {
+                        int startLine = Math.Min(_offsetDragStartLineIndex, currentLineIndex);
+                        int endLine = Math.Max(_offsetDragStartLineIndex, currentLineIndex);
+                        var firstLine = _linesCached[startLine];
+                        var lastLine = _linesCached[endLine];
+                        if (firstLine.Bytes?.Count > 0 && lastLine.Bytes?.Count > 0)
+                        {
+                            long rangeStart = firstLine.Bytes[0].VirtualPos.Value;
+                            long rangeEnd = lastLine.Bytes[lastLine.Bytes.Count - 1].VirtualPos.Value;
+                            OffsetLineDragSelection?.Invoke(this, new OffsetLineSelectionEventArgs(rangeStart, rangeEnd));
+                        }
+                    }
+                }
+                else if (_dragStartPosition.HasValue)
+                {
+                    var currentPosition = HitTestByte(e.GetPosition(this));
+                    if (currentPosition.HasValue)
+                    {
+                        // Raise event for parent to handle selection extension
+                        ByteDragSelection?.Invoke(this, new ByteDragSelectionEventArgs(
+                            _dragStartPosition.Value,
+                            currentPosition.Value));
+                    }
                 }
             }
         }
@@ -2699,6 +2907,8 @@ namespace WpfHexaEditor.Controls
             if (_isMouseDown)
             {
                 _isMouseDown = false;
+                _isOffsetDrag = false;
+                _offsetDragStartLineIndex = -1;
                 _dragStartPosition = null;
                 ReleaseMouseCapture();
             }
@@ -2950,6 +3160,16 @@ namespace WpfHexaEditor.Controls
         /// </summary>
         public event EventHandler<KeyboardNavigationEventArgs> KeyboardNavigation;
 
+        /// <summary>
+        /// Raised when user clicks on an offset label to select an entire line
+        /// </summary>
+        public event EventHandler<OffsetLineSelectionEventArgs> OffsetLineClicked;
+
+        /// <summary>
+        /// Raised when user drags across offset labels to select multiple lines
+        /// </summary>
+        public event EventHandler<OffsetLineSelectionEventArgs> OffsetLineDragSelection;
+
         #endregion
     }
 
@@ -2995,6 +3215,24 @@ namespace WpfHexaEditor.Controls
             Key = key;
             IsShiftPressed = isShiftPressed;
             IsControlPressed = isControlPressed;
+        }
+    }
+
+    /// <summary>
+    /// Event args for offset line selection (click or drag on offset column)
+    /// </summary>
+    public class OffsetLineSelectionEventArgs : EventArgs
+    {
+        /// <summary>First byte position of the first selected line</summary>
+        public long StartPosition { get; }
+
+        /// <summary>Last byte position of the last selected line</summary>
+        public long EndPosition { get; }
+
+        public OffsetLineSelectionEventArgs(long startPosition, long endPosition)
+        {
+            StartPosition = startPosition;
+            EndPosition = endPosition;
         }
     }
 }

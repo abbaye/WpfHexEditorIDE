@@ -79,13 +79,18 @@ namespace WpfHexaEditor
             Point mousePos = e.GetPosition(HexViewport);
             _lastMousePosition = mousePos;
 
-            // Phase 4: Use HexViewport's HitTestByteWithArea (same as mouseover - guaranteed consistent!)
-            var hitResult = HexViewport.HitTestByteWithArea(mousePos);
-            if (hitResult.Position.HasValue)
+            // Offset line drag: selection is handled by HexViewport events,
+            // but we still need to track mouse position for auto-scroll
+            if (!_isOffsetLineDrag)
             {
-                var position = new VirtualPosition(hitResult.Position.Value);
-                // Update selection range during drag
-                _viewModel.SetSelectionRange(_mouseDownPosition, position);
+                // Phase 4: Use HexViewport's HitTestByteWithArea (same as mouseover - guaranteed consistent!)
+                var hitResult = HexViewport.HitTestByteWithArea(mousePos);
+                if (hitResult.Position.HasValue)
+                {
+                    var position = new VirtualPosition(hitResult.Position.Value);
+                    // Update selection range during drag
+                    _viewModel.SetSelectionRange(_mouseDownPosition, position);
+                }
             }
 
             // Check if mouse is near the top or bottom edge for auto-scroll
@@ -115,6 +120,7 @@ namespace WpfHexaEditor
             if (e.ChangedButton == MouseButton.Left && _isMouseDown)
             {
                 _isMouseDown = false;
+                _isOffsetLineDrag = false;
                 HexViewport.ReleaseMouseCapture();
                 StopAutoScroll();
                 e.Handled = true;

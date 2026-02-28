@@ -82,17 +82,51 @@ namespace WpfHexaEditor
                 {
                     _viewModel.ScrollPosition = newScrollPos;
 
-                    // Phase 4: Use HexViewport's HitTestByteWithArea (same as mouseover - guaranteed consistent!)
-                    var hitResult = HexViewport.HitTestByteWithArea(_lastMousePosition);
-                    if (hitResult.Position.HasValue)
+                    if (_isOffsetLineDrag)
                     {
-                        var position = new VirtualPosition(hitResult.Position.Value);
-
-                        // Only update selection if position actually changed (avoid redundant updates)
-                        if (position != _lastAutoScrollPosition)
+                        // Offset line drag: extend selection by whole lines
+                        // Determine the edge line that just scrolled into view
+                        long edgeLineStart;
+                        if (_autoScrollDirection < 0)
                         {
-                            _viewModel.SetSelectionRange(_mouseDownPosition, position);
-                            _lastAutoScrollPosition = position;
+                            // Scrolling up: select from the first visible line
+                            edgeLineStart = newScrollPos * _viewModel.BytePerLine;
+                        }
+                        else
+                        {
+                            // Scrolling down: select to the last visible line
+                            long lastVisibleLine = newScrollPos + _viewModel.VisibleLines - 1;
+                            edgeLineStart = lastVisibleLine * _viewModel.BytePerLine;
+                        }
+
+                        long edgeLineEnd = Math.Min(edgeLineStart + _viewModel.BytePerLine - 1,
+                            _viewModel.VirtualLength - 1);
+
+                        // Merge with the anchor range to keep the original clicked lines selected
+                        long selStart = Math.Min(_offsetDragAnchorStart.Value, edgeLineStart);
+                        long selEnd = Math.Max(_offsetDragAnchorEnd.Value, edgeLineEnd);
+
+                        var newStart = new VirtualPosition(selStart);
+                        if (newStart != _lastAutoScrollPosition)
+                        {
+                            _viewModel.SetSelectionRange(newStart, new VirtualPosition(selEnd));
+                            _lastAutoScrollPosition = newStart;
+                        }
+                    }
+                    else
+                    {
+                        // Normal byte drag: use hit-test position
+                        var hitResult = HexViewport.HitTestByteWithArea(_lastMousePosition);
+                        if (hitResult.Position.HasValue)
+                        {
+                            var position = new VirtualPosition(hitResult.Position.Value);
+
+                            // Only update selection if position actually changed (avoid redundant updates)
+                            if (position != _lastAutoScrollPosition)
+                            {
+                                _viewModel.SetSelectionRange(_mouseDownPosition, position);
+                                _lastAutoScrollPosition = position;
+                            }
                         }
                     }
                 }
