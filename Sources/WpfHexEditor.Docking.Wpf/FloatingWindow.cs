@@ -25,6 +25,7 @@ public class FloatingWindow : Window
 {
     private readonly DockTabControl _tabControl;
     private readonly TextBlock _titleBlock;
+    private readonly ContentPresenter _titleIcon;
 
     public DockGroupNode? Node { get; private set; }
 
@@ -153,6 +154,15 @@ public class FloatingWindow : Window
             menu.IsOpen = true;
         };
 
+        // Icon before title (updated in Bind)
+        _titleIcon = new ContentPresenter
+        {
+            Width = 16, Height = 16,
+            Margin = new Thickness(8, 0, 0, 0),
+            VerticalAlignment = VerticalAlignment.Center,
+            Visibility = Visibility.Collapsed
+        };
+
         // Title bar layout
         var titleContent = new DockPanel();
         DockPanel.SetDock(closeButton, Dock.Right);
@@ -161,6 +171,7 @@ public class FloatingWindow : Window
         titleContent.Children.Add(closeButton);
         titleContent.Children.Add(pinButton);
         titleContent.Children.Add(chevronButton);
+        titleContent.Children.Add(_titleIcon);
         titleContent.Children.Add(_titleBlock);
 
         var titleBar = new Border { Child = titleContent };
@@ -236,7 +247,22 @@ public class FloatingWindow : Window
         {
             Title = node.ActiveItem.Title;
             _titleBlock.Text = node.ActiveItem.Title;
+            UpdateIcon(node.ActiveItem);
         }
+    }
+
+    private void UpdateIcon(DockItem? item)
+    {
+        if (item?.Icon is null)
+        {
+            _titleIcon.Visibility = Visibility.Collapsed;
+            _titleIcon.Content = null;
+            return;
+        }
+        _titleIcon.Content = item.Icon is ImageSource img
+            ? new Image { Source = img, Width = 16, Height = 16, Stretch = Stretch.Uniform }
+            : item.Icon;
+        _titleIcon.Visibility = Visibility.Visible;
     }
 }
 

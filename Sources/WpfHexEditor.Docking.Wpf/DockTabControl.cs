@@ -160,6 +160,22 @@ public class DockTabHeader : StackPanel
         _item = item;
         Orientation = Orientation.Horizontal;
 
+        // Icon (if provided)
+        if (item.Icon is not null)
+        {
+            var iconHost = new ContentPresenter
+            {
+                Content = item.Icon is ImageSource img
+                    ? new Image { Source = img, Width = 16, Height = 16, Stretch = Stretch.Uniform }
+                    : item.Icon,
+                Width = 16,
+                Height = 16,
+                Margin = new Thickness(0, 0, 4, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            Children.Add(iconHost);
+        }
+
         var titleBlock = new TextBlock
         {
             Text = item.Title,
@@ -249,6 +265,15 @@ public class DockTabHeader : StackPanel
 
     private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        // Double-click: float the item (VS-style)
+        if (e.ClickCount == 2)
+        {
+            if (_item.CanFloat)
+                FloatRequested?.Invoke();
+            e.Handled = true;
+            return;
+        }
+
         _dragStartPoint = e.GetPosition(this);
         _isDragging = false;
         CaptureMouse();

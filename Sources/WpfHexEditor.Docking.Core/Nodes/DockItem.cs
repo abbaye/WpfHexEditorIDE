@@ -67,6 +67,13 @@ public class DockItem
     public Dictionary<string, string> Metadata { get; set; } = [];
 
     /// <summary>
+    /// Optional icon displayed in tab headers and navigator. Typically an ImageSource,
+    /// but can be any WPF content. Not serialized — set by the content factory at runtime.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public object? Icon { get; set; }
+
+    /// <summary>
     /// Application-defined data associated with this item. Not serialized.
     /// </summary>
     public object? Tag { get; set; }

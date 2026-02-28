@@ -605,21 +605,34 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// </summary>
     private Border CreateGroupTitleBar(DockGroupNode group, DockTabControl tabControl)
     {
+        // Icon before title (updates with active item)
+        var titleIcon = new ContentPresenter
+        {
+            Width = 16, Height = 16,
+            Margin = new Thickness(4, 0, 0, 0),
+            VerticalAlignment = VerticalAlignment.Center,
+            Visibility = Visibility.Collapsed
+        };
+        UpdateTitleIcon(titleIcon, group.ActiveItem);
+
         var titleBlock = new TextBlock
         {
             Text              = group.ActiveItem?.Title ?? "",
             FontWeight        = FontWeights.SemiBold,
             FontSize          = 11,
             VerticalAlignment = VerticalAlignment.Center,
-            Margin            = new Thickness(8, 2, 8, 2)
+            Margin            = new Thickness(4, 2, 8, 2)
         };
         titleBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockTabTextBrush");
 
-        // Update title when the active tab changes
+        // Update title and icon when the active tab changes
         tabControl.SelectionChanged += (_, _) =>
         {
             if (tabControl.SelectedItem is TabItem tab && tab.Tag is DockItem di)
+            {
                 titleBlock.Text = di.Title;
+                UpdateTitleIcon(titleIcon, di);
+            }
         };
 
         // --- VS-style title bar buttons ---
@@ -713,6 +726,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         titleContent.Children.Add(closeButton);
         titleContent.Children.Add(pinButton);
         titleContent.Children.Add(chevronButton);
+        titleContent.Children.Add(titleIcon);
         titleContent.Children.Add(titleBlock);
 
         var titleBar = new Border
@@ -728,7 +742,18 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
         titleBar.MouseLeftButtonDown += (_, e) =>
         {
-            if (e.ClickCount >= 2) return;
+            if (e.ClickCount >= 2)
+            {
+                // Double-click title bar: float the entire group (VS-style)
+                var activeItem = group.ActiveItem;
+                if (activeItem is not null && activeItem.CanFloat)
+                {
+                    CaptureDockedSizeForFloat(group);
+                    _engine?.FloatGroup(group);
+                    RebuildVisualTree();
+                }
+                return;
+            }
             titleDragStart   = e.GetPosition(titleBar);
             titleDragPending = true;
             titleBar.CaptureMouse();
@@ -755,6 +780,23 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         };
 
         return titleBar;
+    }
+
+    /// <summary>
+    /// Updates a title bar icon ContentPresenter to reflect the given item's Icon.
+    /// </summary>
+    private static void UpdateTitleIcon(ContentPresenter iconHost, DockItem? item)
+    {
+        if (item?.Icon is null)
+        {
+            iconHost.Visibility = Visibility.Collapsed;
+            iconHost.Content = null;
+            return;
+        }
+        iconHost.Content = item.Icon is ImageSource img
+            ? new Image { Source = img, Width = 16, Height = 16, Stretch = Stretch.Uniform }
+            : item.Icon;
+        iconHost.Visibility = Visibility.Visible;
     }
 
     /// <summary>
