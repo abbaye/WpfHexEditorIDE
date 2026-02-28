@@ -95,9 +95,9 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             get
             {
                 if (HasTblLoaded)
-                    return string.Format(Properties.Resources.RelativeSearchTblLoadedString, _currentTbl.Length);
+                    return string.Format(WpfHexEditor.Core.Properties.Resources.RelativeSearchTblLoadedString, _currentTbl.Length);
                 else
-                    return Properties.Resources.RelativeSearchNoTblString;
+                    return WpfHexEditor.Core.Properties.Resources.RelativeSearchNoTblString;
             }
         }
 
@@ -266,9 +266,9 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
 
             // Show different message based on TBL status (LOCALIZED)
             if (HasTblLoaded)
-                StatusMessage = string.Format(Properties.Resources.RelativeSearchSearchingWithTblString, _currentTbl.Length);
+                StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.RelativeSearchSearchingWithTblString, _currentTbl.Length);
             else
-                StatusMessage = Properties.Resources.RelativeSearchSearchingString;
+                StatusMessage = WpfHexEditor.Core.Properties.Resources.RelativeSearchSearchingString;
 
             var options = new RelativeSearchOptions
             {
@@ -292,7 +292,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             }
             catch (OperationCanceledException)
             {
-                StatusMessage = Properties.Resources.RelativeSearchCancelledString;
+                StatusMessage = WpfHexEditor.Core.Properties.Resources.RelativeSearchCancelledString;
                 IsSearching = false;
                 return;
             }
@@ -317,25 +317,25 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 if (HasTblLoaded && Proposals[0].Score > 80)
                 {
                     StatusMessage = string.Format(
-                        Properties.Resources.RelativeSearchFoundWithValidationString,
+                        WpfHexEditor.Core.Properties.Resources.RelativeSearchFoundWithValidationString,
                         result.Count,
                         result.DurationMs);
                 }
                 else
                 {
                     StatusMessage = string.Format(
-                        Properties.Resources.RelativeSearchFoundProposalsString,
+                        WpfHexEditor.Core.Properties.Resources.RelativeSearchFoundProposalsString,
                         result.Count,
                         result.DurationMs);
                 }
             }
             else if (result.WasCancelled)
             {
-                StatusMessage = Properties.Resources.RelativeSearchCancelledString;
+                StatusMessage = WpfHexEditor.Core.Properties.Resources.RelativeSearchCancelledString;
             }
             else
             {
-                StatusMessage = Properties.Resources.RelativeSearchNoProposalsString;
+                StatusMessage = WpfHexEditor.Core.Properties.Resources.RelativeSearchNoProposalsString;
             }
 
             IsSearching = false;
@@ -363,8 +363,17 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 try
                 {
                     var tbl = _engine.ExportToTbl(SelectedProposal);
-                    tbl.FileName = dialog.FileName;
-                    tbl.Save();
+                    // TODO: TblStream.FileName has an internal setter; need InternalsVisibleTo or a Save(string) overload
+                    // tbl.FileName = dialog.FileName;
+                    // tbl.Save();
+                    // Workaround: write TBL content manually
+                    var sb = new System.Text.StringBuilder();
+                    foreach (var entry in tbl.GetAllEntries())
+                    {
+                        var value = entry.Value.Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t");
+                        sb.AppendLine($"{entry.Entry}={value}");
+                    }
+                    System.IO.File.WriteAllText(dialog.FileName, sb.ToString(), System.Text.Encoding.UTF8);
 
                     StatusMessage = $"TBL exported to: {dialog.FileName}";
                 }

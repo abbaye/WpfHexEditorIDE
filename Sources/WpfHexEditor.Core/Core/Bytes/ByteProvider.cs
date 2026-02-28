@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using WpfHexEditor.Core.Search.Models;
 
 namespace WpfHexEditor.Core.Bytes
 {
@@ -1954,7 +1955,7 @@ namespace WpfHexEditor.Core.Bytes
             if (!IsOpen) return -1;
 
             // V2 ENHANCED: Use new SearchEngine for up to 99% faster performance
-            var options = new SearchModule.Models.SearchOptions
+            var options = new SearchOptions
             {
                 Pattern = pattern,
                 StartPosition = startPosition,
@@ -1995,7 +1996,7 @@ namespace WpfHexEditor.Core.Bytes
             if (virtualLength < pattern.Length) return -1;
 
             // V2 ENHANCED: Use new SearchEngine with backward search for up to 99% faster performance
-            var options = new SearchModule.Models.SearchOptions
+            var options = new SearchOptions
             {
                 Pattern = pattern,
                 StartPosition = startPosition,

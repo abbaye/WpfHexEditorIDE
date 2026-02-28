@@ -10,6 +10,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using WpfHexEditor.ColorPicker.Controls;
+using WpfHexEditor.Core.Settings;
+using PropertyMetadata = WpfHexEditor.Core.Settings.PropertyMetadata;
 
 namespace WpfHexEditor.HexEditor.Settings.Controls
 {
@@ -23,7 +25,7 @@ namespace WpfHexEditor.HexEditor.Settings.Controls
         public FrameworkElement CreateControl()
         {
             // Create ColorPicker instance (same as ColorPropertyControl)
-            return new ColorPicker
+            return new WpfHexEditor.ColorPicker.Controls.ColorPicker
             {
                 Margin = new Thickness(0, 0, 0, 8),
                 ShowAlphaChannel = true // Brush properties may use alpha

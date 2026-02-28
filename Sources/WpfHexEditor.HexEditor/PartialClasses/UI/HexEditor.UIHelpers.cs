@@ -730,7 +730,7 @@ namespace WpfHexEditor.HexEditor
             }
             else
             {
-                StatusText.Text = Properties.Resources.StatusNoMoreBookmarksAfter;
+                StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusNoMoreBookmarksAfter;
             }
         }
 
@@ -765,7 +765,7 @@ namespace WpfHexEditor.HexEditor
             }
             else
             {
-                StatusText.Text = Properties.Resources.StatusNoMoreBookmarksBefore;
+                StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusNoMoreBookmarksBefore;
             }
         }
 

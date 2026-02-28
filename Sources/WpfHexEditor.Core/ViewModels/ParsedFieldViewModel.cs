@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.FormatDetection;
 
-namespace WpfHexEditor.HexEditor.ViewModels
+namespace WpfHexEditor.Core.ViewModels
 {
     /// <summary>
     /// ViewModel representing a single parsed field from a format definition

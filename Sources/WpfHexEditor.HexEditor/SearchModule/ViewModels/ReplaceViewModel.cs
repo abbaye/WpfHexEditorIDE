@@ -160,7 +160,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                         PerformReplace(match.Position, match.Length, replaceBytes);
                         ReplaceCount++;
 
-                        StatusMessage = string.Format(Properties.Resources.StatusReplacedAtFormat, match.Position, ReplaceCount);
+                        StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusReplacedAtFormat, match.Position, ReplaceCount);
 
                         // Remove this match from results since it's been replaced
                         SearchResults.RemoveAt(CurrentMatchIndex);
@@ -175,7 +175,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             }
             catch (Exception ex)
             {
-                StatusMessage = string.Format(Properties.Resources.StatusReplaceError, ex.Message);
+                StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusReplaceError, ex.Message);
             }
         }
 
@@ -193,14 +193,14 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
 
                 if (SearchResults.Count == 0)
                 {
-                    StatusMessage = Properties.Resources.StatusNoMatchesToReplace;
+                    StatusMessage = WpfHexEditor.Core.Properties.Resources.StatusNoMatchesToReplace;
                     return;
                 }
 
                 var replaceBytes = GetReplacementBytes();
                 if (replaceBytes == null || replaceBytes.Length == 0)
                 {
-                    StatusMessage = Properties.Resources.StatusInvalidReplacementPattern;
+                    StatusMessage = WpfHexEditor.Core.Properties.Resources.StatusInvalidReplacementPattern;
                     return;
                 }
 
@@ -237,11 +237,11 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 SearchResults.Clear();
                 CurrentMatchIndex = -1;
 
-                StatusMessage = string.Format(Properties.Resources.StatusReplacedOccurrencesFormat, replacedCount, ReplaceCount);
+                StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusReplacedOccurrencesFormat, replacedCount, ReplaceCount);
             }
             catch (Exception ex)
             {
-                StatusMessage = string.Format(Properties.Resources.StatusReplaceAllError, ex.Message);
+                StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusReplaceAllError, ex.Message);
             }
         }
 

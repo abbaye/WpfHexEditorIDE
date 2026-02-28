@@ -182,8 +182,8 @@ namespace WpfHexEditor.HexEditor
                 return;
             }
 
-            var dialog = new SearchModule.Views.AdvancedSearchDialog();
-            var vm = new SearchModule.ViewModels.AdvancedSearchViewModel();
+            var dialog = new Search.Views.AdvancedSearchDialog();
+            var vm = new Search.ViewModels.AdvancedSearchViewModel();
 
             // ⚠️ BINDING CRITIQUE: Lier le ViewModel à CE HexEditor
             vm.BindToHexEditor(this);

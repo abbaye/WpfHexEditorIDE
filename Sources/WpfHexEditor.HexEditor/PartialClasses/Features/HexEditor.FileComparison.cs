@@ -11,6 +11,7 @@ using System.Windows.Media;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Core.Services;
 using WpfHexEditor.HexEditor.ViewModels;
 
 namespace WpfHexEditor.HexEditor
@@ -23,7 +24,7 @@ namespace WpfHexEditor.HexEditor
     {
         #region File Comparison - Fields
 
-        private readonly Services.ComparisonService _comparisonService = new();
+        private readonly ComparisonService _comparisonService = new();
         private List<ByteDifference> _comparisonResults = null;
 
         #endregion
@@ -186,8 +187,8 @@ namespace WpfHexEditor.HexEditor
 
             for (long i = 0; i < maxLength; i++)
             {
-                byte byte1 = i < vm1.VirtualLength ? vm1.GetByteAt(new Models.VirtualPosition(i)) : (byte)0;
-                byte byte2 = i < vm2.VirtualLength ? vm2.GetByteAt(new Models.VirtualPosition(i)) : (byte)0;
+                byte byte1 = i < vm1.VirtualLength ? vm1.GetByteAt(new VirtualPosition(i)) : (byte)0;
+                byte byte2 = i < vm2.VirtualLength ? vm2.GetByteAt(new VirtualPosition(i)) : (byte)0;
 
                 if (byte1 != byte2)
                 {

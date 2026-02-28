@@ -425,7 +425,7 @@ namespace WpfHexEditor.Core.Settings
             }
 
             // ColorPicker (Color properties)
-            if (control is ColorPicker colorPicker)
+            if (control is WpfHexEditor.ColorPicker.Controls.ColorPicker colorPicker)
             {
                 // CRITICAL FIX: ColorPicker sets its own DataContext internally, breaking inheritance.
                 // RelativeSource with fixed level doesn't work due to variable nesting (subcategories).
@@ -436,7 +436,7 @@ namespace WpfHexEditor.Core.Settings
 
                 colorPicker.Loaded += (s, e) =>
                 {
-                    if (s is ColorPicker cp)
+                    if (s is WpfHexEditor.ColorPicker.Controls.ColorPicker cp)
                     {
                         // Walk up visual tree to find first element with DataContext
                         DependencyObject parent = System.Windows.Media.VisualTreeHelper.GetParent(cp);
@@ -452,7 +452,7 @@ namespace WpfHexEditor.Core.Settings
                                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                                     Converter = converter
                                 };
-                                cp.SetBinding(ColorPicker.SelectedColorProperty, directBinding);
+                                cp.SetBinding(WpfHexEditor.ColorPicker.Controls.ColorPicker.SelectedColorProperty, directBinding);
                                 return;
                             }
                             parent = System.Windows.Media.VisualTreeHelper.GetParent(parent);

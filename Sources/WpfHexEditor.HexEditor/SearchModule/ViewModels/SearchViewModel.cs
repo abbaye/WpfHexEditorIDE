@@ -325,7 +325,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             if (!CanSearch) return;
 
             IsSearching = true;
-            StatusMessage = Properties.Resources.StatusSearching;
+            StatusMessage = WpfHexEditor.Core.Properties.Resources.StatusSearching;
             SearchResults.Clear();
             CurrentMatchIndex = -1;
 
@@ -348,27 +348,27 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                     }
 
                     CurrentMatchIndex = 0;
-                    StatusMessage = string.Format(Properties.Resources.StatusFoundMatchesWithSpeedFormat, result.Count, result.DurationMs, result.SpeedMBps);
+                    StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusFoundMatchesWithSpeedFormat, result.Count, result.DurationMs, result.SpeedMBps);
 
                     // Navigate to first match
                     OnMatchFound?.Invoke(this, SearchResults[0]);
                 }
                 else if (result.WasCancelled)
                 {
-                    StatusMessage = Properties.Resources.StatusSearchCancelled;
+                    StatusMessage = WpfHexEditor.Core.Properties.Resources.StatusSearchCancelled;
                 }
                 else if (!string.IsNullOrEmpty(result.ErrorMessage))
                 {
-                    StatusMessage = string.Format(Properties.Resources.StatusError, result.ErrorMessage);
+                    StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusError, result.ErrorMessage);
                 }
                 else
                 {
-                    StatusMessage = Properties.Resources.SearchNoMatchesString;
+                    StatusMessage = WpfHexEditor.Core.Properties.Resources.SearchNoMatchesString;
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage = string.Format(Properties.Resources.StatusError, ex.Message);
+                StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusError, ex.Message);
             }
             finally
             {
@@ -386,7 +386,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             if (!CanSearch) return;
 
             IsSearching = true;
-            StatusMessage = Properties.Resources.StatusSearching;
+            StatusMessage = WpfHexEditor.Core.Properties.Resources.StatusSearching;
 
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -413,7 +413,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                             CurrentMatchIndex = index;
                     }
 
-                    StatusMessage = string.Format(Properties.Resources.StatusMatchFoundAtFormat, match.Position);
+                    StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusMatchFoundAtFormat, match.Position);
                     OnMatchFound?.Invoke(this, match);
                 }
                 else if (WrapAround && startPosition.HasValue && startPosition.Value > 0)
@@ -424,12 +424,12 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 }
                 else
                 {
-                    StatusMessage = Properties.Resources.StatusNoMoreMatches;
+                    StatusMessage = WpfHexEditor.Core.Properties.Resources.StatusNoMoreMatches;
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage = string.Format(Properties.Resources.StatusError, ex.Message);
+                StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusError, ex.Message);
             }
             finally
             {
@@ -447,7 +447,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             if (!CanSearch) return;
 
             IsSearching = true;
-            StatusMessage = Properties.Resources.StatusSearching;
+            StatusMessage = WpfHexEditor.Core.Properties.Resources.StatusSearching;
 
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -475,7 +475,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                             CurrentMatchIndex = index;
                     }
 
-                    StatusMessage = string.Format(Properties.Resources.StatusMatchFoundAtFormat, match.Position);
+                    StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusMatchFoundAtFormat, match.Position);
                     OnMatchFound?.Invoke(this, match);
                 }
                 else if (WrapAround)
@@ -491,22 +491,22 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                     if (wrapResult.Success && wrapResult.Matches.Count > 0)
                     {
                         var match = wrapResult.Matches[0];
-                        StatusMessage = string.Format(Properties.Resources.StatusMatchFoundAtFormat, match.Position);
+                        StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusMatchFoundAtFormat, match.Position);
                         OnMatchFound?.Invoke(this, match);
                     }
                     else
                     {
-                        StatusMessage = Properties.Resources.SearchNoMatchesString;
+                        StatusMessage = WpfHexEditor.Core.Properties.Resources.SearchNoMatchesString;
                     }
                 }
                 else
                 {
-                    StatusMessage = Properties.Resources.StatusNoMoreMatches;
+                    StatusMessage = WpfHexEditor.Core.Properties.Resources.StatusNoMoreMatches;
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage = string.Format(Properties.Resources.StatusError, ex.Message);
+                StatusMessage = string.Format(WpfHexEditor.Core.Properties.Resources.StatusError, ex.Message);
             }
             finally
             {
@@ -522,7 +522,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
         public void CancelSearch()
         {
             _cancellationTokenSource?.Cancel();
-            StatusMessage = Properties.Resources.StatusSearchCancelled;
+            StatusMessage = WpfHexEditor.Core.Properties.Resources.StatusSearchCancelled;
         }
 
         /// <summary>
@@ -532,7 +532,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
         {
             SearchResults.Clear();
             CurrentMatchIndex = -1;
-            StatusMessage = Properties.Resources.ReadyString;
+            StatusMessage = WpfHexEditor.Core.Properties.Resources.ReadyString;
             _lastSearchResult = null;
         }
 

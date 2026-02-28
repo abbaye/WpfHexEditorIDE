@@ -25,8 +25,8 @@ namespace WpfHexEditor.WindowPanels.Dialogs
     /// </summary>
     public partial class FileDiffDialog : Window
     {
-        private HexEditor _editor1;
-        private HexEditor _editor2;
+        private WpfHexEditor.HexEditor.HexEditor _editor1;
+        private WpfHexEditor.HexEditor.HexEditor _editor2;
         private List<FileDifference> _differences;
         private int _currentDiffIndex = -1;
         private bool _syncScrolling = true;
@@ -49,7 +49,7 @@ namespace WpfHexEditor.WindowPanels.Dialogs
         private void CreateHexEditors()
         {
             // Create editor 1
-            _editor1 = new HexEditor
+            _editor1 = new WpfHexEditor.HexEditor.HexEditor
             {
                 ReadOnlyMode = true,
                 BytePerLine = 16
@@ -57,7 +57,7 @@ namespace WpfHexEditor.WindowPanels.Dialogs
             File1EditorContainer.Children.Add(_editor1);
 
             // Create editor 2
-            _editor2 = new HexEditor
+            _editor2 = new WpfHexEditor.HexEditor.HexEditor
             {
                 ReadOnlyMode = true,
                 BytePerLine = 16

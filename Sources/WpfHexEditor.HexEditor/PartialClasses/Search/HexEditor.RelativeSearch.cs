@@ -49,7 +49,7 @@ namespace WpfHexEditor.HexEditor
             // Validate inputs
             if (_viewModel?.Provider == null || _viewModel?.Provider.IsOpen != true)
                 return RelativeSearchResult.CreateError(
-                    Properties.Resources.RelativeSearchNoFileOpenString);
+                    WpfHexEditor.Core.Properties.Resources.RelativeSearchNoFileOpenString);
 
             if (string.IsNullOrWhiteSpace(searchText))
                 return RelativeSearchResult.CreateError("Search text cannot be empty");
@@ -108,8 +108,17 @@ namespace WpfHexEditor.HexEditor
             // Create engine and export
             var engine = new RelativeSearchEngine(_viewModel?.Provider, _tblStream);
             var tbl = engine.ExportToTbl(proposal);
-            tbl.FileName = filePath;
-            tbl.Save();
+            // TODO: TblStream.FileName has an internal setter; need InternalsVisibleTo or a Save(string) overload
+            // tbl.FileName = filePath;
+            // tbl.Save();
+            // Workaround: write TBL content manually
+            var sb = new System.Text.StringBuilder();
+            foreach (var entry in tbl.GetAllEntries())
+            {
+                var value = entry.Value.Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t");
+                sb.AppendLine($"{entry.Entry}={value}");
+            }
+            System.IO.File.WriteAllText(filePath, sb.ToString(), System.Text.Encoding.UTF8);
         }
 
         /// <summary>
@@ -130,7 +139,7 @@ namespace WpfHexEditor.HexEditor
             // Validate state
             if (_viewModel?.Provider == null || _viewModel?.Provider.IsOpen != true)
             {
-                StatusText.Text = Properties.Resources.RelativeSearchNoFileOpenString;
+                StatusText.Text = WpfHexEditor.Core.Properties.Resources.RelativeSearchNoFileOpenString;
                 return;
             }
 

@@ -21,6 +21,7 @@ using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Models;
 using WpfHexEditor.HexEditor.ViewModels;
+using WpfHexEditor.Core.Services;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.HexEditor
@@ -49,10 +50,10 @@ namespace WpfHexEditor.HexEditor
 
         // Bookmarks
         private readonly List<long> _bookmarks = new List<long>();
-        private readonly Services.BookmarkService _bookmarkService = new(); // V2 bookmark service
+        private readonly BookmarkService _bookmarkService = new(); // V2 bookmark service
 
         // Long-running operations
-        private readonly Services.LongRunningOperationService _longRunningService = new();
+        private readonly LongRunningOperationService _longRunningService = new();
 
         // File opening re-entrancy guard (prevents infinite recursion in OnFileNamePropertyChanged)
         private bool _isOpeningFile = false;
@@ -2475,12 +2476,12 @@ namespace WpfHexEditor.HexEditor
         /// EditMode DependencyProperty for XAML binding 
         /// </summary>
         public static readonly DependencyProperty EditModeProperty =
-            DependencyProperty.Register(nameof(EditMode), typeof(Models.EditMode), typeof(HexEditor),
-                new PropertyMetadata(Models.EditMode.Overwrite, OnEditModePropertyChanged));
+            DependencyProperty.Register(nameof(EditMode), typeof(EditMode), typeof(HexEditor),
+                new PropertyMetadata(EditMode.Overwrite, OnEditModePropertyChanged));
 
         private static void OnEditModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is HexEditor editor && e.NewValue is Models.EditMode mode)
+            if (d is HexEditor editor && e.NewValue is EditMode mode)
             {
                 // CRITICAL FIX: Prevent infinite loop - only update ViewModel if value actually changed
                 if (editor._viewModel != null && editor._viewModel.EditMode == mode)
@@ -2496,7 +2497,7 @@ namespace WpfHexEditor.HexEditor
                 editor.HexViewport.InvalidateVisual(); // Refresh to show/hide caret
 
                 // Update status bar
-                editor.EditModeText.Text = mode == Models.EditMode.Insert ? "Mode: Insert" : "Mode: Overwrite";
+                editor.EditModeText.Text = mode == EditMode.Insert ? "Mode: Insert" : "Mode: Overwrite";
             }
         }
 
@@ -3099,21 +3100,21 @@ namespace WpfHexEditor.HexEditor
         /// ProgressRefreshRate DependencyProperty for configuring progress bar update frequency
         /// </summary>
         public static readonly DependencyProperty ProgressRefreshRateProperty =
-            DependencyProperty.Register(nameof(ProgressRefreshRate), typeof(Models.ProgressRefreshRate), typeof(HexEditor),
-                new PropertyMetadata(Models.ProgressRefreshRate.Fast, OnProgressRefreshRateChanged));
+            DependencyProperty.Register(nameof(ProgressRefreshRate), typeof(ProgressRefreshRate), typeof(HexEditor),
+                new PropertyMetadata(ProgressRefreshRate.Fast, OnProgressRefreshRateChanged));
 
         /// <summary>
         /// Progress bar refresh rate for long-running operations (Open, Save, Find, Replace)
         /// </summary>
-        public Models.ProgressRefreshRate ProgressRefreshRate
+        public ProgressRefreshRate ProgressRefreshRate
         {
-            get => (Models.ProgressRefreshRate)GetValue(ProgressRefreshRateProperty);
+            get => (ProgressRefreshRate)GetValue(ProgressRefreshRateProperty);
             set => SetValue(ProgressRefreshRateProperty, value);
         }
 
         private static void OnProgressRefreshRateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is HexEditor editor && e.NewValue is Models.ProgressRefreshRate rate)
+            if (d is HexEditor editor && e.NewValue is ProgressRefreshRate rate)
             {
                 // Update the long-running operation service with new refresh interval
                 editor._longRunningService.MinProgressIntervalMs = (int)rate;
@@ -3489,7 +3490,7 @@ namespace WpfHexEditor.HexEditor
         /// <summary>
         /// Handle operation started event
         /// </summary>
-        private void LongRunningService_OperationStarted(object sender, Events.OperationProgressEventArgs e)
+        private void LongRunningService_OperationStarted(object sender, OperationProgressEventArgs e)
         {
             // Check if dispatcher is valid (control might be disposed)
             if (Dispatcher == null || !Dispatcher.CheckAccess() && Dispatcher.HasShutdownStarted)
@@ -3528,7 +3529,7 @@ namespace WpfHexEditor.HexEditor
         /// <summary>
         /// Handle operation progress event
         /// </summary>
-        private void LongRunningService_OperationProgress(object sender, Events.OperationProgressEventArgs e)
+        private void LongRunningService_OperationProgress(object sender, OperationProgressEventArgs e)
         {
             // Check if dispatcher is valid (control might be disposed)
             if (Dispatcher == null || !Dispatcher.CheckAccess() && Dispatcher.HasShutdownStarted)
@@ -3557,7 +3558,7 @@ namespace WpfHexEditor.HexEditor
         /// <summary>
         /// Handle operation completed event
         /// </summary>
-        private void LongRunningService_OperationCompleted(object sender, Events.OperationCompletedEventArgs e)
+        private void LongRunningService_OperationCompleted(object sender, OperationCompletedEventArgs e)
         {
             // Check if dispatcher is valid (control might be disposed)
             if (Dispatcher == null || !Dispatcher.CheckAccess() && Dispatcher.HasShutdownStarted)

@@ -154,7 +154,7 @@ namespace WpfHexEditor.HexEditor.Dialog
         /// <summary>
         /// Clears the text in a HexBox control by accessing its internal TextBox
         /// </summary>
-        private void ClearHexBoxText(HexBox hexBox)
+        private void ClearHexBoxText(WpfHexEditor.HexBox.HexBox hexBox)
         {
             if (hexBox == null) return;
 

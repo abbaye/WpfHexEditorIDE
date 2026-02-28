@@ -48,7 +48,7 @@ namespace WpfHexEditor.HexEditor
                 HexEditorViewModel viewModel = null;
 
                 bool success = await _longRunningService.ExecuteOperationAsync(
-                    Properties.Resources.ProgressTitleOpeningFile,
+                    WpfHexEditor.Core.Properties.Resources.ProgressTitleOpeningFile,
                     true, // Can cancel
                     async (progress, cancellationToken) =>
                     {
@@ -57,7 +57,7 @@ namespace WpfHexEditor.HexEditor
                             progress.Report(new OperationProgress
                             {
                                 Percentage = 10,
-                                Message = Properties.Resources.ProgressMessageOpeningFileStream
+                                Message = WpfHexEditor.Core.Properties.Resources.ProgressMessageOpeningFileStream
                             });
 
                             // Check for cancellation - return false instead of throwing
@@ -70,7 +70,7 @@ namespace WpfHexEditor.HexEditor
                             progress.Report(new OperationProgress
                             {
                                 Percentage = 50,
-                                Message = Properties.Resources.ProgressMessageLoadingFileData
+                                Message = WpfHexEditor.Core.Properties.Resources.ProgressMessageLoadingFileData
                             });
 
                             // Check for cancellation - return false instead of throwing
@@ -80,7 +80,7 @@ namespace WpfHexEditor.HexEditor
                             progress.Report(new OperationProgress
                             {
                                 Percentage = 100,
-                                Message = Properties.Resources.ProgressMessageFileOpenedSuccessfully
+                                Message = WpfHexEditor.Core.Properties.Resources.ProgressMessageFileOpenedSuccessfully
                             });
 
                             return true;
@@ -115,7 +115,7 @@ namespace WpfHexEditor.HexEditor
                 throw new InvalidOperationException("No file loaded");
 
             bool success = await _longRunningService.ExecuteOperationAsync(
-                Properties.Resources.ProgressTitleSavingFile,
+                WpfHexEditor.Core.Properties.Resources.ProgressTitleSavingFile,
                 false, // Cannot cancel (data integrity)
                 async (progress, cancellationToken) =>
                 {
@@ -124,7 +124,7 @@ namespace WpfHexEditor.HexEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 10,
-                            Message = Properties.Resources.ProgressMessagePreparingToSave
+                            Message = WpfHexEditor.Core.Properties.Resources.ProgressMessagePreparingToSave
                         });
 
                         // Save via ViewModel
@@ -133,7 +133,7 @@ namespace WpfHexEditor.HexEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 100,
-                            Message = Properties.Resources.ProgressMessageFileSavedSuccessfully
+                            Message = WpfHexEditor.Core.Properties.Resources.ProgressMessageFileSavedSuccessfully
                         });
 
                         return true;
@@ -170,7 +170,7 @@ namespace WpfHexEditor.HexEditor
             List<long> results = new List<long>();
 
             bool success = await _longRunningService.ExecuteOperationAsync(
-                Properties.Resources.ProgressTitleSearching,
+                WpfHexEditor.Core.Properties.Resources.ProgressTitleSearching,
                 true, // Can cancel
                 async (progress, cancellationToken) =>
                 {
@@ -179,7 +179,7 @@ namespace WpfHexEditor.HexEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 0,
-                            Message = Properties.Resources.ProgressMessageStartingSearch
+                            Message = WpfHexEditor.Core.Properties.Resources.ProgressMessageStartingSearch
                         });
 
                         if (cancellationToken.IsCancellationRequested)
@@ -255,7 +255,7 @@ namespace WpfHexEditor.HexEditor
                                 progress.Report(new OperationProgress
                                 {
                                     Percentage = Math.Min(progressPercent, 100),
-                                    Message = string.Format(Properties.Resources.ProgressMessageSearchingFoundFormat, results.Count)
+                                    Message = string.Format(WpfHexEditor.Core.Properties.Resources.ProgressMessageSearchingFoundFormat, results.Count)
                                 });
                                 lastProgressPercent = progressPercent;
                             }
@@ -264,7 +264,7 @@ namespace WpfHexEditor.HexEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 100,
-                            Message = string.Format(Properties.Resources.ProgressMessageFoundMatchesFormat, results.Count)
+                            Message = string.Format(WpfHexEditor.Core.Properties.Resources.ProgressMessageFoundMatchesFormat, results.Count)
                         });
 
                         return true;
@@ -305,7 +305,7 @@ namespace WpfHexEditor.HexEditor
             int replacementCount = 0;
 
             await _longRunningService.ExecuteOperationAsync(
-                Properties.Resources.ProgressTitleReplacing,
+                WpfHexEditor.Core.Properties.Resources.ProgressTitleReplacing,
                 false, // Cannot cancel (data integrity)
                 async (progress, cancellationToken) =>
                 {
@@ -314,7 +314,7 @@ namespace WpfHexEditor.HexEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 10,
-                            Message = Properties.Resources.ProgressMessageFindingMatches
+                            Message = WpfHexEditor.Core.Properties.Resources.ProgressMessageFindingMatches
                         });
 
                         // Phase 1: Find all occurrences
@@ -323,7 +323,7 @@ namespace WpfHexEditor.HexEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 50,
-                            Message = string.Format(Properties.Resources.ProgressMessageReplacingFormat, matches.Count)
+                            Message = string.Format(WpfHexEditor.Core.Properties.Resources.ProgressMessageReplacingFormat, matches.Count)
                         });
 
                         if (matches.Count == 0)
@@ -353,7 +353,7 @@ namespace WpfHexEditor.HexEditor
                         progress.Report(new OperationProgress
                         {
                             Percentage = 100,
-                            Message = string.Format(Properties.Resources.ProgressMessageReplacedFormat, replacementCount)
+                            Message = string.Format(WpfHexEditor.Core.Properties.Resources.ProgressMessageReplacedFormat, replacementCount)
                         });
 
                         return true;

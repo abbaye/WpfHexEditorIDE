@@ -765,7 +765,7 @@ namespace WpfHexEditor.HexEditor.ViewModels
             if (bytesToPaste == null || bytesToPaste.Length == 0) return false;
 
             // Handle paste based on EditMode
-            if (EditMode == Models.EditMode.Insert)
+            if (EditMode == EditMode.Insert)
             {
                 // INSERT MODE: Create ByteAdded entries (green borders)
                 // Use optimized batch insert (MUCH faster than individual InsertByte() calls)

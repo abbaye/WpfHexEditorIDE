@@ -9,10 +9,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using WpfHexEditor.Core;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Formatters;
 using WpfHexEditor.Core.Interfaces;
-using WpfHexEditor.HexEditor.ViewModels;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -304,7 +305,7 @@ namespace WpfHexEditor.HexEditor
         /// Handle byte modification event for auto-refresh
         /// Uses throttling to avoid excessive refreshes
         /// </summary>
-        private void HexEditor_ByteModified(object sender, Events.ByteModifiedEventArgs e)
+        private void HexEditor_ByteModified(object sender, ByteModifiedEventArgs e)
         {
             if (!AutoRefreshParsedFields || _detectedFormat == null)
                 return;

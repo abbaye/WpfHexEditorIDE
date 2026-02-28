@@ -6,6 +6,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using WpfHexEditor.Core.Settings;
+using PropertyMetadata = WpfHexEditor.Core.Settings.PropertyMetadata;
 using WpfHexEditor.HexEditor.Converters;
 
 namespace WpfHexEditor.HexEditor.Settings.Controls

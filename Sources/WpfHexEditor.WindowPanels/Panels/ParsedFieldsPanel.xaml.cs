@@ -15,7 +15,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Interfaces;
-using WpfHexEditor.HexEditor.ViewModels;
+using WpfHexEditor.Core.ViewModels;
 
 namespace WpfHexEditor.WindowPanels.Panels
 {

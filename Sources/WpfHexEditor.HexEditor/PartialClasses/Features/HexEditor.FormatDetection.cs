@@ -322,7 +322,8 @@ namespace WpfHexEditor.HexEditor
 
             try
             {
-                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                // FormatDefinitions are embedded in the Core assembly, not HexEditor
+                var assembly = typeof(WpfHexEditor.Core.FormatDetection.FormatDefinition).Assembly;
 
                 var resourceNames = assembly.GetManifestResourceNames()
                     .Where(r => r.Contains("FormatDefinitions") && r.EndsWith(".json"))

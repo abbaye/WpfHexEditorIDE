@@ -1098,7 +1098,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
         {
             // Close dialog - handled by View
             System.Windows.Application.Current.Windows
-                .OfType<SearchModule.Views.AdvancedSearchDialog>()
+                .OfType<Search.Views.AdvancedSearchDialog>()
                 .FirstOrDefault(w => w.DataContext == this)?.Close();
         }
 
