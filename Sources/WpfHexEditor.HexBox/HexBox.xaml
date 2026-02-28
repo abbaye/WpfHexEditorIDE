@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     Apache 2.0  - 2016-2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.5
@@ -6,13 +6,13 @@
 -->
 
 <UserControl
-    x:Class="WpfHexaEditor.HexBox"
+    x:Class="WpfHexEditor.HexBox.HexBox"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:p="clr-namespace:WpfHexaEditor.Properties"
-    xmlns:converters="clr-namespace:WpfHexaEditor.Core.Converters"
+    xmlns:converters="clr-namespace:WpfHexEditor.HexBox.Converters"
+    xmlns:p="clr-namespace:WpfHexEditor.HexBox.Properties"
     Width="100"
     Height="24"
     mc:Ignorable="d">
@@ -83,10 +83,10 @@
                 <ContextMenu>
                     <MenuItem
                         Command="{Binding CopyHexCommand}"
-                        Header="{DynamicResource CopyAsHexadecimalString}" />
+                        Header="{x:Static p:Resources.CopyAsHexadecimalString}" />
                     <MenuItem
                         Command="{Binding CopyDecimalCommand}"
-                        Header="{DynamicResource CopyAsDecimalString}" />
+                        Header="{x:Static p:Resources.CopyAsDecimalString}" />
                 </ContextMenu>
             </TextBox.ContextMenu>
         </TextBox>

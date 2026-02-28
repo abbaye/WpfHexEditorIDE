@@ -60,6 +60,16 @@
     <Color x:Key="HexEditor_TblMteColor">#4EC9B0</Color>                   <!-- Teal Green -->
     <Color x:Key="HexEditor_TblEndBlockColor">#FFCC00</Color>              <!-- Yellow -->
     <Color x:Key="HexEditor_TblEndLineColor">#FFCC00</Color>               <!-- Yellow -->
+    <Color x:Key="HexEditor_BackgroundColor">#1E1E1E</Color>              <!-- VS Dark -->
+    <Color x:Key="HexEditor_HeaderBackgroundColor">#252526</Color>       <!-- VS Surface -->
+    <Color x:Key="HexEditor_HeaderForegroundColor">#CCCCCC</Color>       <!-- Light Gray -->
+    <Color x:Key="HexEditor_ColumnSeparatorColor">#3F3F46</Color>       <!-- VS Border -->
+    <Color x:Key="HexEditor_ForegroundFirstColor">#DCDCDC</Color>       <!-- Light -->
+    <Color x:Key="HexEditor_AsciiForegroundColor">#CCCCCC</Color>      <!-- Light Gray -->
+    <Color x:Key="HexEditor_StatusBarBackgroundColor">#007ACC</Color>  <!-- VS Blue -->
+    <Color x:Key="HexEditor_StatusBarForegroundColor">#FFFFFF</Color>  <!-- White -->
+    <Color x:Key="HexEditor_ScrollBarBackgroundColor">#1E1E1E</Color>  <!-- Dark -->
+    <Color x:Key="HexEditor_ScrollBarThumbColor">#686868</Color>       <!-- Gray -->
 
     <!-- ==================== BRUSHES ==================== -->
 

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using WpfHexaEditor.Commands;
 using WpfHexaEditor.Properties;
 using WpfHexaEditor.ViewModels;
+using WpfHexEditor.HexBox;
 
 namespace WpfHexaEditor.Dialog
 {

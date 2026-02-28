@@ -56,6 +56,9 @@ public class DockItemDto
     public DockSide LastDockSide { get; set; } = DockSide.Bottom;
     public double? FloatLeft { get; set; }
     public double? FloatTop { get; set; }
+    public double? FloatWidth { get; set; }
+    public double? FloatHeight { get; set; }
+    public Dictionary<string, string>? Metadata { get; set; }
 }
 
 /// <summary>

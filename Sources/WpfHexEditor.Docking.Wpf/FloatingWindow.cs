@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shell;
+using System.Windows.Threading;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 
@@ -83,16 +84,12 @@ public class FloatingWindow : Window
         {
             var btn = new Button
             {
-                Content = content,
+                Content  = content,
                 FontSize = 12,
-                Padding = new Thickness(4, 2, 4, 2),
-                Background = Brushes.Transparent,
-                BorderThickness = new Thickness(0),
-                Cursor = Cursors.Hand,
-                VerticalAlignment = VerticalAlignment.Center,
-                ToolTip = tooltip
+                ToolTip  = tooltip
             };
-            btn.SetResourceReference(Control.ForegroundProperty, "DockTabTextBrush");
+            if (TryFindResource("DockTitleButtonStyle") is Style titleStyle)
+                btn.Style = titleStyle;
             return btn;
         }
 
@@ -262,54 +259,11 @@ public class FloatingWindowManager
         var group = new DockGroupNode();
         group.AddItem(item);
 
-        var window = new FloatingWindow();
-        window.Bind(group, item, _dockControl.ContentFactory);
+        var window = ConfigureAndShow(group, item, position, trackPosition: true);
 
-        if (item.FloatLeft.HasValue && item.FloatTop.HasValue)
-        {
-            window.Left = item.FloatLeft.Value;
-            window.Top  = item.FloatTop.Value;
-        }
-        else if (position.HasValue)
-        {
-            window.Left = position.Value.X;
-            window.Top  = position.Value.Y;
-        }
-        else
-        {
-            // Center relative to the main window
-            var owner = Window.GetWindow(_dockControl);
-            if (owner is not null)
-            {
-                window.Left = owner.Left + (owner.Width - window.Width) / 2;
-                window.Top  = owner.Top  + (owner.Height - window.Height) / 2;
-            }
-        }
-
-        // Keep the saved position in sync so it is persisted on next save
-        window.LocationChanged += (_, _) =>
-        {
-            item.FloatLeft = window.Left;
-            item.FloatTop  = window.Top;
-        };
-
-        window.Closed += (_, _) =>
-        {
-            _windows.Remove(window);
-            // Re-activate the main window so it doesn't fall behind other apps
-            Window.GetWindow(_dockControl)?.Activate();
-        };
-
-        window.TabCloseRequested += i =>
-        {
-            _dockControl.Engine?.Close(i);
-            if (window.Node?.IsEmpty == true)
-                window.Close();
-        };
-
+        // Single-item specific: tab drag re-docks to center and closes the window
         window.TabDragStarted += i =>
         {
-            // Re-dock: dock back to MainDocumentHost and close the floating window
             if (_dockControl.Engine is not null)
             {
                 _dockControl.Engine.Dock(i, _dockControl.Layout!.MainDocumentHost, DockDirection.Center);
@@ -317,42 +271,6 @@ public class FloatingWindowManager
                 window.Close();
             }
         };
-
-        window.ReDockRequested += i =>
-        {
-            if (_dockControl.Engine is not null)
-            {
-                // Re-dock to the item's previous side, not always Center
-                var direction = i.LastDockSide switch
-                {
-                    Core.DockSide.Left => DockDirection.Left,
-                    Core.DockSide.Right => DockDirection.Right,
-                    Core.DockSide.Top => DockDirection.Top,
-                    Core.DockSide.Bottom => DockDirection.Bottom,
-                    _ => DockDirection.Center
-                };
-                _dockControl.Engine.Dock(i, _dockControl.Layout!.MainDocumentHost, direction);
-                _dockControl.RebuildVisualTree();
-                window.Close();
-            }
-        };
-
-        window.WindowDragStarted += i =>
-        {
-            _dockControl.DragManager?.BeginFloatingDrag(i, window);
-        };
-
-        window.TabAutoHideRequested += i =>
-        {
-            _dockControl.Engine?.AutoHide(i);
-            _dockControl.RebuildVisualTree();
-            if (window.Node?.IsEmpty == true)
-                window.Close();
-        };
-
-        _windows.Add(window);
-        window.Owner = Window.GetWindow(_dockControl);
-        window.Show();
 
         return window;
     }
@@ -366,10 +284,32 @@ public class FloatingWindowManager
         var item = group.ActiveItem ?? group.Items.FirstOrDefault();
         if (item is null) return null!;
 
-        var window = new FloatingWindow();
-        window.Bind(group, item, _dockControl.ContentFactory);
+        return ConfigureAndShow(group, item, position, trackPosition: false);
+    }
 
-        if (position.HasValue)
+    /// <summary>
+    /// Shared setup for both <see cref="CreateFloatingWindow"/> and <see cref="CreateFloatingWindowForGroup"/>.
+    /// Creates, positions, wires events, and shows the floating window.
+    /// </summary>
+    private FloatingWindow ConfigureAndShow(DockGroupNode group, DockItem activeItem, Point? position, bool trackPosition)
+    {
+        var window = new FloatingWindow();
+        window.Bind(group, activeItem, _dockControl.CachedContentFactory);
+
+        // Apply saved size if available
+        if (trackPosition)
+        {
+            if (activeItem.FloatWidth.HasValue)  window.Width  = activeItem.FloatWidth.Value;
+            if (activeItem.FloatHeight.HasValue) window.Height = activeItem.FloatHeight.Value;
+        }
+
+        // Position: saved location > explicit position > centered relative to owner
+        if (trackPosition && activeItem.FloatLeft.HasValue && activeItem.FloatTop.HasValue)
+        {
+            window.Left = activeItem.FloatLeft.Value;
+            window.Top  = activeItem.FloatTop.Value;
+        }
+        else if (position.HasValue)
         {
             window.Left = position.Value.X;
             window.Top  = position.Value.Y;
@@ -384,8 +324,36 @@ public class FloatingWindowManager
             }
         }
 
+        ClampToVirtualScreen(window);
+
+        // Throttle position persistence (only for individually floated items)
+        DispatcherTimer? positionTimer = null;
+        if (trackPosition)
+        {
+            positionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(200) };
+            positionTimer.Tick += (_, _) =>
+            {
+                positionTimer.Stop();
+                activeItem.FloatLeft   = window.Left;
+                activeItem.FloatTop    = window.Top;
+                activeItem.FloatWidth  = window.Width;
+                activeItem.FloatHeight = window.Height;
+            };
+            window.LocationChanged += (_, _) =>
+            {
+                positionTimer.Stop();
+                positionTimer.Start();
+            };
+            window.SizeChanged += (_, _) =>
+            {
+                positionTimer.Stop();
+                positionTimer.Start();
+            };
+        }
+
         window.Closed += (_, _) =>
         {
+            positionTimer?.Stop();
             _windows.Remove(window);
             Window.GetWindow(_dockControl)?.Activate();
         };
@@ -429,6 +397,25 @@ public class FloatingWindowManager
         window.Show();
 
         return window;
+    }
+
+    /// <summary>
+    /// Ensures at least <paramref name="minVisible"/> DIPs of the window remain inside the
+    /// virtual screen bounds (all monitors combined). Prevents windows from being lost
+    /// off-screen (e.g. after a monitor is disconnected).
+    /// </summary>
+    private static void ClampToVirtualScreen(Window window, double minVisible = 100)
+    {
+        var left = window.Left;
+        var top  = window.Top;
+
+        var maxLeft = SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth  - minVisible;
+        var maxTop  = SystemParameters.VirtualScreenTop  + SystemParameters.VirtualScreenHeight - minVisible;
+        var minLeft = SystemParameters.VirtualScreenLeft - window.Width + minVisible;
+        var minTop  = SystemParameters.VirtualScreenTop;
+
+        window.Left = Math.Max(minLeft, Math.Min(left, maxLeft));
+        window.Top  = Math.Max(minTop,  Math.Min(top,  maxTop));
     }
 
     /// <summary>
@@ -478,26 +465,25 @@ public class DragPreviewWindow : Window
         IsHitTestVisible = false;
         ResizeMode = ResizeMode.NoResize;
         SizeToContent = SizeToContent.WidthAndHeight;
-        Background = System.Windows.Media.Brushes.Transparent;
+        Background = Brushes.Transparent;
 
         _titleBlock = new TextBlock
         {
             Text = title,
-            Foreground = System.Windows.Media.Brushes.White,
             FontSize = 12,
             Padding = new Thickness(10, 5, 10, 5)
         };
+        _titleBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
 
         var border = new Border
         {
-            Background = new System.Windows.Media.SolidColorBrush(
-                System.Windows.Media.Color.FromArgb(192, 37, 37, 38)),
-            BorderBrush = new System.Windows.Media.SolidColorBrush(
-                System.Windows.Media.Color.FromRgb(0, 122, 204)),
             BorderThickness = new Thickness(2),
             CornerRadius = new CornerRadius(3),
             Child = _titleBlock
         };
+        border.SetResourceReference(Border.BackgroundProperty, "DockMenuBackgroundBrush");
+        border.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
+        border.Opacity = 0.85;
 
         Content = border;
     }
@@ -506,5 +492,28 @@ public class DragPreviewWindow : Window
     {
         Left = screenPoint.X + 12;
         Top = screenPoint.Y + 12;
+    }
+
+    /// <summary>
+    /// Positions and sizes the preview to cover the given snap target zone (in DIPs).
+    /// </summary>
+    public void ShowSnapPreview(Rect zone)
+    {
+        SizeToContent = SizeToContent.Manual;
+        Left   = zone.X;
+        Top    = zone.Y;
+        Width  = zone.Width;
+        Height = zone.Height;
+        _titleBlock.Visibility = Visibility.Collapsed;
+        if (!IsVisible) Show();
+    }
+
+    /// <summary>
+    /// Returns to cursor-following mode (compact label visible).
+    /// </summary>
+    public void HideSnapPreview()
+    {
+        SizeToContent = SizeToContent.WidthAndHeight;
+        _titleBlock.Visibility = Visibility.Visible;
     }
 }

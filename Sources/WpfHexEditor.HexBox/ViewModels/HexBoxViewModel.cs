@@ -8,11 +8,11 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using WpfHexaEditor.Commands;
-using WpfHexaEditor.Core.Bytes;
-using WpfHexaEditor.Models;
+using WpfHexEditor.HexBox.Commands;
+using WpfHexEditor.HexBox.Core;
+using WpfHexEditor.HexBox.Models;
 
-namespace WpfHexaEditor.ViewModels
+namespace WpfHexEditor.HexBox.ViewModels
 {
     /// <summary>
     /// ViewModel for HexBox control (V2 MVVM architecture).
@@ -64,7 +64,7 @@ namespace WpfHexaEditor.ViewModels
         {
             get
             {
-                var hex = ByteConverters.LongToHex(_longValue);
+                var hex = HexConversion.LongToHex(_longValue);
                 var trimmed = hex.TrimStart('0');
                 return string.IsNullOrEmpty(trimmed) ? "0" : trimmed;
             }
@@ -77,7 +77,7 @@ namespace WpfHexaEditor.ViewModels
                 }
                 else
                 {
-                    var (success, val) = ByteConverters.HexLiteralToLong(value);
+                    var (success, val) = HexConversion.HexLiteralToLong(value);
                     if (success)
                     {
                         LongValue = val;
@@ -95,7 +95,7 @@ namespace WpfHexaEditor.ViewModels
         {
             get
             {
-                var hex = ByteConverters.LongToHex(_longValue);
+                var hex = HexConversion.LongToHex(_longValue);
                 var trimmed = hex.TrimStart('0');
                 return string.IsNullOrEmpty(trimmed) ? "0" : trimmed.ToUpperInvariant();
             }
@@ -183,7 +183,7 @@ namespace WpfHexaEditor.ViewModels
         /// <summary>
         /// Raised when LongValue changes (for V1 compatibility)
         /// </summary>
-        public event EventHandler ValueChanged;
+        public event EventHandler? ValueChanged;
 
         #endregion
 
@@ -213,10 +213,7 @@ namespace WpfHexaEditor.ViewModels
             }
         }
 
-        private bool CanIncrement()
-        {
-            return !_isReadOnly && _longValue < _maximumValue;
-        }
+        private bool CanIncrement() => !_isReadOnly && _longValue < _maximumValue;
 
         private void Decrement()
         {
@@ -226,10 +223,7 @@ namespace WpfHexaEditor.ViewModels
             }
         }
 
-        private bool CanDecrement()
-        {
-            return !_isReadOnly && _longValue > 0;
-        }
+        private bool CanDecrement() => !_isReadOnly && _longValue > 0;
 
         private void CopyHex()
         {
@@ -240,7 +234,6 @@ namespace WpfHexaEditor.ViewModels
             catch
             {
                 // Clipboard access can fail in certain contexts
-                // Silently ignore (could log or show message in production)
             }
         }
 
@@ -253,7 +246,6 @@ namespace WpfHexaEditor.ViewModels
             catch
             {
                 // Clipboard access can fail in certain contexts
-                // Silently ignore (could log or show message in production)
             }
         }
 
@@ -275,9 +267,9 @@ namespace WpfHexaEditor.ViewModels
 
         #region INotifyPropertyChanged
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -55,15 +55,17 @@ public partial class MainWindow : Window
             {
                 var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(LayoutFilePath));
                 ApplyLayout(layout);
+                OutputLogger.Info($"Layout restored from: {LayoutFilePath}");
                 StatusText.Text = "Layout restored from previous session.";
                 return;
             }
-            catch
+            catch (Exception ex)
             {
-                // Fichier corrompu ou incompatible — fall through vers le layout par défaut
+                OutputLogger.Error($"Failed to restore layout: {ex.Message}");
             }
         }
 
+        OutputLogger.Info("No saved layout found, using defaults.");
         SetupDefaultLayout();
     }
 
@@ -73,10 +75,11 @@ public partial class MainWindow : Window
         {
             Directory.CreateDirectory(Path.GetDirectoryName(LayoutFilePath)!);
             File.WriteAllText(LayoutFilePath, DockLayoutSerializer.Serialize(_layout));
+            OutputLogger.Info($"Layout auto-saved to: {LayoutFilePath}");
         }
-        catch
+        catch (Exception ex)
         {
-            // Non-critique — la persistance du layout ne doit pas bloquer la fermeture
+            OutputLogger.Error($"Failed to auto-save layout: {ex.Message}");
         }
     }
 
@@ -157,7 +160,8 @@ public partial class MainWindow : Window
             "panel-solution-explorer" => CreateSolutionExplorerContent(),
             "panel-properties" => CreatePropertiesContent(),
             "panel-output" => CreateOutputContent(),
-            _ when item.ContentId.StartsWith("doc-hex-") => CreateHexEditorContent(),
+            _ when item.ContentId.StartsWith("doc-hex-") => CreateHexEditorContent(
+                item.Metadata.TryGetValue("FilePath", out var fp) ? fp : null),
             _ => CreateDocumentContent(item)
         };
     }
@@ -195,35 +199,55 @@ public partial class MainWindow : Window
             IsReadOnly = true,
             TextWrapping = TextWrapping.Wrap,
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-            Text = $"=== Output Panel ==={Environment.NewLine}" +
-                   $"[{DateTime.Now:HH:mm:ss}] Docking system initialized.{Environment.NewLine}" +
-                   $"[{DateTime.Now:HH:mm:ss}] Default layout loaded.{Environment.NewLine}" +
-                   $"[{DateTime.Now:HH:mm:ss}] Ready.{Environment.NewLine}",
             Background = System.Windows.Media.Brushes.Transparent,
             Foreground = System.Windows.Media.Brushes.LightGray,
             FontFamily = new System.Windows.Media.FontFamily("Cascadia Mono, Consolas, monospace"),
             FontSize = 12,
             BorderThickness = new Thickness(0)
         };
+
+        OutputLogger.Register(textBox);
+        OutputLogger.Section("Output");
+        OutputLogger.Info("Docking system initialized.");
+
         return textBox;
     }
 
-    private static UIElement CreateHexEditorContent()
+    private static UIElement CreateHexEditorContent(string? filePath)
     {
-        var hexEditor = new HexEditor
+        // No FilePath metadata → "New Hex Document" with random sample data
+        if (filePath is null)
         {
-            Background = System.Windows.Media.Brushes.Transparent
+            var hexEditor = new HexEditor();
+            var data = new byte[1024];
+            new Random().NextBytes(data);
+            var tempFile = Path.Combine(Path.GetTempPath(), $"hexedit-sample-{Guid.NewGuid():N}.bin");
+            File.WriteAllBytes(tempFile, data);
+            hexEditor.OpenFile(tempFile);
+            OutputLogger.Debug($"New hex document created (temp: {tempFile})");
+            return hexEditor;
+        }
+
+        // FilePath exists → "Open File" or layout restore
+        if (File.Exists(filePath))
+        {
+            var hexEditor = new HexEditor();
+            hexEditor.OpenFile(filePath);
+            OutputLogger.Info($"Opened: {filePath}");
+            return hexEditor;
+        }
+
+        // File no longer exists → log error, show placeholder
+        OutputLogger.Error($"File not found: {filePath}");
+        return new TextBlock
+        {
+            Text = $"File not found:\n{filePath}",
+            Foreground = System.Windows.Media.Brushes.Gray,
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            TextAlignment = TextAlignment.Center,
+            FontSize = 14
         };
-
-        var random = new Random();
-        var data = new byte[1024];
-        random.NextBytes(data);
-
-        var tempFile = Path.Combine(Path.GetTempPath(), $"hexedit-sample-{Guid.NewGuid():N}.bin");
-        File.WriteAllBytes(tempFile, data);
-        hexEditor.OpenFile(tempFile);
-
-        return hexEditor;
     }
 
     private static UIElement CreateDocumentContent(DockItem item)
@@ -255,9 +279,11 @@ public partial class MainWindow : Window
             _engine.Close(item);
             DockHost.RebuildVisualTree();
             UpdateStatusBar();
+            OutputLogger.Info($"Closed tab: {item.Title} ({item.ContentId})");
         }
         catch (InvalidOperationException ex)
         {
+            OutputLogger.Warn($"Cannot close '{item.Title}': {ex.Message}");
             StatusText.Text = $"Cannot close: {ex.Message}";
         }
     }
@@ -275,11 +301,13 @@ public partial class MainWindow : Window
             var item = new DockItem
             {
                 Title = System.IO.Path.GetFileName(dialog.FileName),
-                ContentId = $"doc-hex-{_documentCounter}"
+                ContentId = $"doc-hex-{_documentCounter}",
+                Metadata = { ["FilePath"] = dialog.FileName }
             };
             _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
             DockHost.RebuildVisualTree();
             UpdateStatusBar();
+            OutputLogger.Info($"Open file: {dialog.FileName}");
             StatusText.Text = $"Opened: {dialog.FileName}";
         }
     }
@@ -358,6 +386,7 @@ public partial class MainWindow : Window
         if (dialog.ShowDialog() == true)
         {
             File.WriteAllText(dialog.FileName, DockLayoutSerializer.Serialize(_layout));
+            OutputLogger.Info($"Layout saved to: {dialog.FileName}");
             StatusText.Text = $"Layout saved: {dialog.FileName}";
         }
     }
@@ -376,10 +405,12 @@ public partial class MainWindow : Window
             {
                 var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(dialog.FileName));
                 ApplyLayout(layout);
+                OutputLogger.Info($"Layout loaded from: {dialog.FileName}");
                 StatusText.Text = $"Layout loaded: {dialog.FileName}";
             }
             catch (Exception ex)
             {
+                OutputLogger.Error($"Failed to load layout: {ex.Message}");
                 MessageBox.Show($"Failed to load layout:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -388,6 +419,7 @@ public partial class MainWindow : Window
     private void OnResetLayout(object sender, RoutedEventArgs e)
     {
         SetupDefaultLayout();
+        OutputLogger.Info("Layout reset to default.");
         StatusText.Text = "Layout reset to default";
     }
 
@@ -401,6 +433,7 @@ public partial class MainWindow : Window
         foreach (var group in _layout.GetAllGroups())
             group.LockMode = _isLocked ? DockLockMode.Full : DockLockMode.None;
 
+        OutputLogger.Info(_isLocked ? "Layout locked." : "Layout unlocked.");
         StatusText.Text = _isLocked ? "Layout LOCKED" : "Layout UNLOCKED";
         UpdateStatusBar();
     }
@@ -410,6 +443,8 @@ public partial class MainWindow : Window
         Application.Current.Resources.MergedDictionaries.Clear();
         Application.Current.Resources.MergedDictionaries.Add(
             new ResourceDictionary { Source = new Uri("pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/DarkTheme.xaml") });
+        SyncAllHexEditorThemes();
+        OutputLogger.Info("Theme changed to Dark.");
         StatusText.Text = "Theme: Dark";
     }
 
@@ -418,7 +453,31 @@ public partial class MainWindow : Window
         Application.Current.Resources.MergedDictionaries.Clear();
         Application.Current.Resources.MergedDictionaries.Add(
             new ResourceDictionary { Source = new Uri("pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/Generic.xaml") });
+        SyncAllHexEditorThemes();
+        OutputLogger.Info("Theme changed to Light.");
         StatusText.Text = "Theme: Light";
+    }
+
+    /// <summary>
+    /// Re-applies theme colors to all HexEditor instances in the docking layout.
+    /// </summary>
+    private void SyncAllHexEditorThemes()
+    {
+        foreach (var editor in FindVisualChildren<HexEditor>(this))
+            editor.ApplyThemeFromResources();
+    }
+
+    private static IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject
+    {
+        var count = System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent);
+        for (int i = 0; i < count; i++)
+        {
+            var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
+            if (child is T t)
+                yield return t;
+            foreach (var descendant in FindVisualChildren<T>(child))
+                yield return descendant;
+        }
     }
 
     private void OnExit(object sender, RoutedEventArgs e)

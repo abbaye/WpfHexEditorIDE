@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfHexaEditor.Commands;
 using WpfHexaEditor.ViewModels;
+using WpfHexEditor.HexBox;
 
 namespace WpfHexaEditor.Dialog
 {

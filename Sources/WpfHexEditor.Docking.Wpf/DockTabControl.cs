@@ -5,10 +5,13 @@
 //////////////////////////////////////////////
 
 using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core.Nodes;
+using WpfHexEditor.Docking.Wpf.Automation;
 
 namespace WpfHexEditor.Docking.Wpf;
 
@@ -27,19 +30,26 @@ public class DockTabControl : TabControl
         SetResourceReference(StyleProperty, "DockTabControlStyle");
     }
 
+    protected override AutomationPeer OnCreateAutomationPeer() =>
+        new DockTabControlAutomationPeer(this);
+
     public event Action<DockItem>? TabDragStarted;
     public event Action<DockItem>? TabCloseRequested;
     public event Action<DockItem>? TabFloatRequested;
     public event Action<DockItem>? TabAutoHideRequested;
 
+    private Func<DockItem, object>? _contentFactory;
+
     public void Bind(DockGroupNode node, Func<DockItem, object>? contentFactory = null)
     {
         Node = node;
+        _contentFactory = contentFactory;
         Items.Clear();
 
         foreach (var item in node.Items)
         {
-            var tabItem = CreateTabItem(item, contentFactory);
+            var isActive = item == node.ActiveItem;
+            var tabItem = CreateTabItem(item, contentFactory, isActive);
             Items.Add(tabItem);
         }
 
@@ -51,7 +61,23 @@ public class DockTabControl : TabControl
         }
     }
 
-    private TabItem CreateTabItem(DockItem item, Func<DockItem, object>? contentFactory)
+    /// <summary>
+    /// Materializes lazy content when a tab is first selected.
+    /// </summary>
+    protected override void OnSelectionChanged(SelectionChangedEventArgs e)
+    {
+        base.OnSelectionChanged(e);
+
+        if (_contentFactory is null) return;
+
+        foreach (var added in e.AddedItems)
+        {
+            if (added is TabItem { Tag: DockItem item } tab && tab.Content is LazyContentPlaceholder)
+                tab.Content = _contentFactory.Invoke(item);
+        }
+    }
+
+    private TabItem CreateTabItem(DockItem item, Func<DockItem, object>? contentFactory, bool isActive)
     {
         var header = new DockTabHeader(item);
         header.CloseClicked += () => TabCloseRequested?.Invoke(item);
@@ -64,18 +90,36 @@ public class DockTabControl : TabControl
         var tabItem = new TabItem
         {
             Header = header,
-            Content = contentFactory?.Invoke(item) ?? new TextBlock
-            {
-                Text = $"Content: {item.Title}",
-                Margin = new Thickness(8),
-                VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center
-            },
-            Tag = item
+            Tag = item,
+            Content = isActive || contentFactory is null
+                ? (contentFactory?.Invoke(item) ?? DefaultContent(item))
+                : new LazyContentPlaceholder(item)
         };
         tabItem.SetResourceReference(StyleProperty, "DockTabItemStyle");
 
         return tabItem;
+    }
+
+    private static object DefaultContent(DockItem item) => new TextBlock
+    {
+        Text = $"Content: {item.Title}",
+        Margin = new Thickness(8),
+        VerticalAlignment = VerticalAlignment.Center,
+        HorizontalAlignment = HorizontalAlignment.Center
+    };
+
+    /// <summary>
+    /// Lightweight placeholder shown for non-active tabs until they are first selected.
+    /// </summary>
+    private sealed class LazyContentPlaceholder : TextBlock
+    {
+        public LazyContentPlaceholder(DockItem item)
+        {
+            Text = $"Content: {item.Title}";
+            Margin = new Thickness(8);
+            VerticalAlignment = VerticalAlignment.Center;
+            HorizontalAlignment = HorizontalAlignment.Center;
+        }
     }
 
     private void CloseAllItems()
@@ -137,6 +181,7 @@ public class DockTabHeader : StackPanel
             VerticalAlignment = VerticalAlignment.Center,
             ToolTip = "Auto-Hide"
         };
+        AutomationProperties.SetName(pinButton, $"Auto-Hide {item.Title}");
         pinButton.Click += (_, _) => AutoHideRequested?.Invoke();
         Children.Add(pinButton);
 
@@ -154,6 +199,7 @@ public class DockTabHeader : StackPanel
                 VerticalAlignment = VerticalAlignment.Center,
                 ToolTip = "Close"
             };
+            AutomationProperties.SetName(closeButton, $"Close {item.Title}");
             closeButton.Click += (_, _) => CloseClicked?.Invoke();
             Children.Add(closeButton);
         }

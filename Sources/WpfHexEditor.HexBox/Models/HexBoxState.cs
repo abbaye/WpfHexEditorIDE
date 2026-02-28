@@ -4,7 +4,7 @@
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
-namespace WpfHexaEditor.Models
+namespace WpfHexEditor.HexBox.Models
 {
     /// <summary>
     /// Represents the state of a HexBox control (immutable value object).

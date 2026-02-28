@@ -6,9 +6,12 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
+using WpfHexEditor.Docking.Wpf.Commands;
 
 namespace WpfHexEditor.Docking.Wpf;
 
@@ -17,11 +20,14 @@ namespace WpfHexEditor.Docking.Wpf;
 /// Renders the <see cref="DockLayoutRoot"/> tree as WPF visual elements,
 /// and integrates drag &amp; drop, floating windows, and auto-hide bars.
 /// </summary>
-public class DockControl : ContentControl
+public class DockControl : ContentControl, IDockHost, IDisposable
 {
     private DockEngine? _engine;
     private DockDragManager? _dragManager;
     private FloatingWindowManager? _floatingManager;
+    private DockKeyboardNavigation? _keyboardNav;
+    private readonly List<DockTabEventWirer> _tabWirers = [];
+    private readonly Dictionary<string, object> _contentCache = new();
 
     private readonly Grid _rootGrid;
     private readonly DockPanel _rootPanel;
@@ -59,6 +65,97 @@ public class DockControl : ContentControl
     public Func<DockItem, object>? ContentFactory { get; set; }
 
     /// <summary>
+    /// Optional async content factory. When set and <see cref="ContentFactory"/> is null,
+    /// tabs show an indeterminate progress bar until the async factory completes.
+    /// </summary>
+    public Func<DockItem, Task<object>>? AsyncContentFactory { get; set; }
+
+    /// <summary>
+    /// Returns a wrapped content factory that caches results by <see cref="DockItem.ContentId"/>.
+    /// Supports both sync and async factories.
+    /// </summary>
+    internal Func<DockItem, object>? CachedContentFactory =>
+        ContentFactory is not null || AsyncContentFactory is not null
+            ? GetOrCreateContent
+            : null;
+
+    private object GetOrCreateContent(DockItem item)
+    {
+        if (_contentCache.TryGetValue(item.ContentId, out var cached))
+            return cached;
+
+        if (ContentFactory is not null)
+        {
+            var content = ContentFactory(item);
+            _contentCache[item.ContentId] = content;
+            return content;
+        }
+
+        if (AsyncContentFactory is not null)
+        {
+            var placeholder = new System.Windows.Controls.ProgressBar
+            {
+                IsIndeterminate = true,
+                Height = 4,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0)
+            };
+            _contentCache[item.ContentId] = placeholder;
+
+            var factory = AsyncContentFactory;
+            _ = LoadAsyncContent(item, factory, placeholder);
+            return placeholder;
+        }
+
+        return new System.Windows.Controls.TextBlock { Text = $"Content: {item.Title}" };
+    }
+
+    private async Task LoadAsyncContent(DockItem item, Func<DockItem, Task<object>> factory,
+        System.Windows.Controls.ProgressBar placeholder)
+    {
+        var content = await factory(item);
+        await Dispatcher.InvokeAsync(() =>
+        {
+            _contentCache[item.ContentId] = content;
+
+            // Find and replace the placeholder in all tab controls
+            ReplaceContent(placeholder, content);
+        });
+    }
+
+    private void ReplaceContent(object oldContent, object newContent)
+    {
+        if (_centerHost.Content == oldContent)
+        {
+            _centerHost.Content = newContent;
+            return;
+        }
+
+        // Walk visual tree to find ContentControls/TabItems holding the placeholder
+        ReplaceInVisualTree(_rootGrid, oldContent, newContent);
+    }
+
+    private static void ReplaceInVisualTree(DependencyObject parent, object oldContent, object newContent)
+    {
+        var count = VisualTreeHelper.GetChildrenCount(parent);
+        for (var i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is System.Windows.Controls.ContentControl cc && cc.Content == oldContent)
+            {
+                cc.Content = newContent;
+                return;
+            }
+            if (child is System.Windows.Controls.TabItem ti && ti.Content == oldContent)
+            {
+                ti.Content = newContent;
+                return;
+            }
+            ReplaceInVisualTree(child, oldContent, newContent);
+        }
+    }
+
+    /// <summary>
     /// The center content host, used by DockDragManager for overlay positioning.
     /// </summary>
     internal ContentControl CenterHost => _centerHost;
@@ -72,6 +169,16 @@ public class DockControl : ContentControl
     /// The floating window manager, used by DockDragManager to retrieve a newly created window after Float().
     /// </summary>
     internal FloatingWindowManager? FloatingManager => _floatingManager;
+
+    /// <summary>
+    /// Configurable drag threshold in DIPs. Defaults to system minimum.
+    /// </summary>
+    public double DragThreshold { get; set; } = SystemParameters.MinimumHorizontalDragDistance;
+
+    /// <summary>
+    /// Optional callback invoked before closing an item. Return false to veto the close.
+    /// </summary>
+    public Func<DockItem, bool>? BeforeCloseCallback { get; set; }
 
     /// <summary>
     /// Raised when a tab close is requested.
@@ -116,29 +223,120 @@ public class DockControl : ContentControl
         _rootGrid.Children.Add(_autoHideFlyout);
 
         Content = _rootGrid;
+
+        // Break strong reference cycle: unsubscribe engine events when control leaves the visual tree
+        Unloaded += (_, _) => DetachEngine();
+        Loaded += (_, _) => AttachEngine();
+
+        // Register routed commands (MVVM-friendly)
+        RegisterDockCommands();
+    }
+
+    private void RegisterDockCommands()
+    {
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.Close,
+            (_, e) => { if (GetCommandItem(e) is { } item) { RaiseTabCloseRequested(item); _engine?.Close(item); RebuildVisualTree(); } },
+            (_, e) => { var item = GetCommandItem(e); e.CanExecute = item is { CanClose: true }; }));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.Float,
+            (_, e) => { if (GetCommandItem(e) is { } item) { _engine?.Float(item); RebuildVisualTree(); } },
+            (_, e) => { var item = GetCommandItem(e); e.CanExecute = item is { CanFloat: true }; }));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.AutoHide,
+            (_, e) => { if (GetCommandItem(e) is { } item) { _engine?.AutoHide(item); RebuildVisualTree(); } },
+            (_, e) => e.CanExecute = GetCommandItem(e) is not null));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.Dock,
+            (_, e) =>
+            {
+                if (GetCommandItem(e) is not { } item || _engine is null || Layout is null) return;
+                var dir = item.LastDockSide switch
+                {
+                    Core.DockSide.Left   => DockDirection.Left,
+                    Core.DockSide.Right  => DockDirection.Right,
+                    Core.DockSide.Top    => DockDirection.Top,
+                    Core.DockSide.Bottom => DockDirection.Bottom,
+                    _                    => DockDirection.Center
+                };
+                _engine.Dock(item, Layout.MainDocumentHost, dir);
+                RebuildVisualTree();
+            },
+            (_, e) => e.CanExecute = GetCommandItem(e) is not null));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.CloseAll,
+            (_, _) => { CloseAllClosableItems(); RebuildVisualTree(); },
+            (_, e) => e.CanExecute = _engine is not null));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.AutoHideAll,
+            (_, _) => { _engine?.AutoHideAll(); RebuildVisualTree(); },
+            (_, e) => e.CanExecute = _engine is not null));
+
+        CommandBindings.Add(new CommandBinding(
+            DockCommands.RestoreAll,
+            (_, _) => { _engine?.RestoreAllFromAutoHide(); RebuildVisualTree(); },
+            (_, e) => e.CanExecute = _engine is not null && Layout?.AutoHideItems.Any() == true));
+    }
+
+    private void CloseAllClosableItems()
+    {
+        if (_engine is null || Layout is null) return;
+        var items = CollectItems(Layout.RootNode);
+        foreach (var item in items)
+            if (item.CanClose) _engine.Close(item);
+    }
+
+    private static List<DockItem> CollectItems(DockNode node) => node switch
+    {
+        DockSplitNode s => s.Children.SelectMany(CollectItems).ToList(),
+        DockGroupNode g => g.Items.ToList(),
+        _ => []
+    };
+
+    /// <summary>
+    /// Resolves the <see cref="DockItem"/> for a command — from explicit parameter or from keyboard focus.
+    /// </summary>
+    private static DockItem? GetCommandItem(ExecutedRoutedEventArgs e) =>
+        e.Parameter as DockItem ?? GetFocusedDockItem();
+
+    private static DockItem? GetCommandItem(CanExecuteRoutedEventArgs e) =>
+        e.Parameter as DockItem ?? GetFocusedDockItem();
+
+    private static DockItem? GetFocusedDockItem()
+    {
+        var focused = Keyboard.FocusedElement as DependencyObject;
+        while (focused is not null)
+        {
+            if (focused is TabItem { Tag: DockItem item })
+                return item;
+            if (focused is DockTabControl tc && tc.SelectedItem is TabItem { Tag: DockItem active })
+                return active;
+            focused = VisualTreeHelper.GetParent(focused);
+        }
+        return null;
     }
 
     private static void OnLayoutChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is DockControl control)
         {
-            // Unsubscribe from old engine
-            if (control._engine is not null)
-                control._engine.LayoutChanged -= control.OnLayoutTreeChanged;
+            // Fully detach from old engine (all 5 events)
+            control.DetachEngine();
+            control._contentCache.Clear();
 
             if (e.NewValue is DockLayoutRoot newLayout)
             {
                 control._engine = new DockEngine(newLayout);
-                control._engine.LayoutChanged += control.OnLayoutTreeChanged;
-
-                // Wire engine events for float and dock
-                control._engine.ItemFloated  += control.OnItemFloated;
-                control._engine.ItemDocked   += control.OnItemDocked;
-                control._engine.ItemClosed   += control.OnItemClosed;
-                control._engine.GroupFloated += control.OnGroupFloated;
+                control.AttachEngine();
 
                 control._dragManager = new DockDragManager(control);
                 control._floatingManager = new FloatingWindowManager(control);
+                control._keyboardNav = new DockKeyboardNavigation(control);
 
                 control.RebuildVisualTree();
             }
@@ -153,6 +351,55 @@ public class DockControl : ContentControl
         }
     }
 
+    /// <summary>
+    /// Subscribes to all engine event handlers. Safe to call multiple times (idempotent).
+    /// </summary>
+    private void AttachEngine()
+    {
+        if (_engine is null) return;
+        // Detach first to avoid double-subscription
+        DetachEngine();
+        _engine.LayoutChanged += OnLayoutTreeChanged;
+        _engine.ItemFloated   += OnItemFloated;
+        _engine.ItemDocked    += OnItemDocked;
+        _engine.ItemClosed    += OnItemClosed;
+        _engine.GroupFloated  += OnGroupFloated;
+    }
+
+    /// <summary>
+    /// Unsubscribes all engine event handlers to prevent leaks.
+    /// </summary>
+    private void DetachEngine()
+    {
+        if (_engine is null) return;
+        _engine.LayoutChanged -= OnLayoutTreeChanged;
+        _engine.ItemFloated   -= OnItemFloated;
+        _engine.ItemDocked    -= OnItemDocked;
+        _engine.ItemClosed    -= OnItemClosed;
+        _engine.GroupFloated  -= OnGroupFloated;
+    }
+
+    /// <summary>
+    /// Disposes all tab event wirers from the previous visual tree.
+    /// </summary>
+    private void DisposeWirers()
+    {
+        foreach (var w in _tabWirers) w.Dispose();
+        _tabWirers.Clear();
+    }
+
+    public void Dispose()
+    {
+        DetachEngine();
+        DisposeWirers();
+        _keyboardNav?.Detach();
+        _floatingManager?.CloseAll();
+        _autoHideFlyout.RestoreRequested -= OnAutoHideRestoreRequested;
+        _autoHideFlyout.CloseRequested   -= OnAutoHideCloseRequested;
+        _autoHideFlyout.FloatRequested   -= OnAutoHideFloatRequested;
+        GC.SuppressFinalize(this);
+    }
+
     private void OnLayoutTreeChanged()
     {
         Dispatcher.Invoke(RebuildVisualTree);
@@ -163,6 +410,9 @@ public class DockControl : ContentControl
     /// </summary>
     public void RebuildVisualTree()
     {
+        // Dispose previous tab wirers to prevent event leaks
+        DisposeWirers();
+
         if (Layout is null)
         {
             _centerHost.Content = null;
@@ -219,7 +469,7 @@ public class DockControl : ContentControl
         }
         else
         {
-            host.Bind(docHost, ContentFactory);
+            host.Bind(docHost, CachedContentFactory);
         }
 
         WireTabControlEvents(host);
@@ -228,14 +478,36 @@ public class DockControl : ContentControl
 
     private UIElement CreateTabControl(DockGroupNode group)
     {
+        var tabControl = CreateTabControlForGroup(group);
+        var titleBar   = CreateGroupTitleBar(group, tabControl);
+
+        var layout = new DockPanel { LastChildFill = true };
+        DockPanel.SetDock(titleBar, Dock.Top);
+        layout.Children.Add(titleBar);
+        layout.Children.Add(tabControl);
+
+        return CreateFocusBorder(layout);
+    }
+
+    /// <summary>
+    /// Creates and binds a <see cref="DockTabControl"/> for a side panel group
+    /// with bottom tab strip placement (VS-style).
+    /// </summary>
+    private DockTabControl CreateTabControlForGroup(DockGroupNode group)
+    {
         var tabControl = new DockTabControl();
-
-        // All side panels: tab strip at bottom, title bar at top (VS-style)
         tabControl.TabStripPlacement = Dock.Bottom;
-        tabControl.Bind(group, ContentFactory);
+        tabControl.Bind(group, CachedContentFactory);
         WireTabControlEvents(tabControl);
+        return tabControl;
+    }
 
-        // Dynamic title block shows the active tab name
+    /// <summary>
+    /// Creates a draggable title bar for a side panel group with VS-style action buttons
+    /// (chevron ▼, pin 📌, close ✕). Supports drag-to-float via <see cref="DockDragManager.BeginGroupDrag"/>.
+    /// </summary>
+    private Border CreateGroupTitleBar(DockGroupNode group, DockTabControl tabControl)
+    {
         var titleBlock = new TextBlock
         {
             Text              = group.ActiveItem?.Title ?? "",
@@ -253,7 +525,100 @@ public class DockControl : ContentControl
                 titleBlock.Text = di.Title;
         };
 
-        var titleBar = new Border { Child = titleBlock, Cursor = Cursors.SizeAll };
+        // --- VS-style title bar buttons ---
+
+        Button MakeTitleButton(string content, string tooltip, double fontSize = 12)
+        {
+            var btn = new Button
+            {
+                Content  = content,
+                FontSize = fontSize,
+                ToolTip  = tooltip
+            };
+            if (TryFindResource("DockTitleButtonStyle") is Style titleStyle)
+                btn.Style = titleStyle;
+            return btn;
+        }
+
+        // Close button (✕)
+        var closeButton = MakeTitleButton("\u2715", "Close");
+        closeButton.Click += (_, _) =>
+        {
+            var item = group.ActiveItem;
+            if (item is null || !item.CanClose) return;
+            RaiseTabCloseRequested(item);
+            _engine?.Close(item);
+            RebuildVisualTree();
+        };
+
+        // Pin button (📌) — sends to auto-hide
+        var pinButton = MakeTitleButton("\uD83D\uDCCC", "Auto Hide");
+        pinButton.Click += (_, _) =>
+        {
+            var item = group.ActiveItem;
+            if (item is null) return;
+            _engine?.AutoHide(item);
+            RebuildVisualTree();
+        };
+
+        // Chevron dropdown (▼)
+        var chevronButton = MakeTitleButton("\u25BC", "Options", fontSize: 9);
+        chevronButton.Click += (sender, _) =>
+        {
+            var item = group.ActiveItem;
+            if (item is null || sender is not Button btn) return;
+
+            var menuBg     = TryFindResource("DockMenuBackgroundBrush") as Brush;
+            var menuFg     = TryFindResource("DockMenuForegroundBrush") as Brush;
+            var menuBorder = TryFindResource("DockMenuBorderBrush") as Brush;
+
+            var menu = new ContextMenu
+            {
+                Background  = menuBg ?? Brushes.DarkGray,
+                BorderBrush = menuBorder ?? Brushes.Gray,
+                Foreground  = menuFg ?? Brushes.White
+            };
+
+            var floatMenuItem = new MenuItem { Header = "Float", Foreground = menuFg };
+            floatMenuItem.Click += (_, _) => { _engine?.Float(item); RebuildVisualTree(); };
+            menu.Items.Add(floatMenuItem);
+
+            var autoHideMenuItem = new MenuItem { Header = "Auto Hide", Foreground = menuFg };
+            autoHideMenuItem.Click += (_, _) => { _engine?.AutoHide(item); RebuildVisualTree(); };
+            menu.Items.Add(autoHideMenuItem);
+
+            menu.Items.Add(new Separator());
+
+            var closeMenuItem = new MenuItem
+            {
+                Header = "Close",
+                Foreground = menuFg,
+                IsEnabled = item.CanClose
+            };
+            closeMenuItem.Click += (_, _) =>
+            {
+                RaiseTabCloseRequested(item);
+                _engine?.Close(item);
+                RebuildVisualTree();
+            };
+            menu.Items.Add(closeMenuItem);
+
+            menu.PlacementTarget = btn;
+            menu.Placement = PlacementMode.Bottom;
+            menu.IsOpen = true;
+        };
+
+        // Title bar layout: buttons right-aligned, title fills remaining space
+        var titleContent = new DockPanel();
+        DockPanel.SetDock(closeButton, Dock.Right);
+        DockPanel.SetDock(pinButton, Dock.Right);
+        DockPanel.SetDock(chevronButton, Dock.Right);
+        titleContent.Children.Add(closeButton);
+        titleContent.Children.Add(pinButton);
+        titleContent.Children.Add(chevronButton);
+        titleContent.Children.Add(titleBlock);
+
+        var titleBar = new Border { Child = titleContent, Cursor = Cursors.SizeAll };
         titleBar.SetResourceReference(Border.BackgroundProperty, "DockMenuBackgroundBrush");
 
         // Drag threshold state (local to this title bar instance)
@@ -272,8 +637,8 @@ public class DockControl : ContentControl
         {
             if (!titleDragPending || e.LeftButton != MouseButtonState.Pressed) return;
             var diff = e.GetPosition(titleBar) - titleDragStart;
-            if (Math.Abs(diff.X) <= SystemParameters.MinimumHorizontalDragDistance &&
-                Math.Abs(diff.Y) <= SystemParameters.MinimumVerticalDragDistance) return;
+            if (Math.Abs(diff.X) <= DragThreshold &&
+                Math.Abs(diff.Y) <= DragThreshold) return;
 
             titleDragPending = false;
             titleBar.ReleaseMouseCapture();
@@ -288,12 +653,7 @@ public class DockControl : ContentControl
             titleBar.ReleaseMouseCapture();
         };
 
-        var layout = new DockPanel { LastChildFill = true };
-        DockPanel.SetDock(titleBar, Dock.Top);
-        layout.Children.Add(titleBar);
-        layout.Children.Add(tabControl);
-
-        return CreateFocusBorder(layout);
+        return titleBar;
     }
 
     /// <summary>
@@ -329,44 +689,29 @@ public class DockControl : ContentControl
     }
 
     /// <summary>
-    /// Wires all events on a tab control.
+    /// Wires all events on a tab control via a disposable wirer (prevents leaks on rebuild).
     /// </summary>
     private void WireTabControlEvents(DockTabControl tabControl)
     {
-        tabControl.TabCloseRequested += OnTabCloseRequested;
-
-        tabControl.TabDragStarted += item =>
-        {
-            _dragManager?.BeginDrag(item);
-        };
-
-        tabControl.TabFloatRequested += item =>
-        {
-            if (_engine is null) return;
-            _engine.Float(item);
-            RebuildVisualTree();
-        };
-
-        tabControl.TabAutoHideRequested += item =>
-        {
-            if (_engine is null) return;
-            _engine.AutoHide(item);
-            RebuildVisualTree();
-        };
+        _tabWirers.Add(new DockTabEventWirer(tabControl, this));
     }
 
-    private void OnTabCloseRequested(DockItem item)
+    /// <summary>
+    /// Raises the <see cref="TabCloseRequested"/> event. Called by <see cref="DockTabEventWirer"/>.
+    /// </summary>
+    internal void RaiseTabCloseRequested(DockItem item)
     {
+        if (BeforeCloseCallback is not null && !BeforeCloseCallback(item))
+            return;
         TabCloseRequested?.Invoke(item);
     }
 
     private void OnItemFloated(DockItem item)
     {
         // Create a floating window for the item, positioned near the cursor (DIPs)
-        var mousePos  = System.Windows.Input.Mouse.GetPosition(this);
+        var mousePos  = Mouse.GetPosition(this);
         var screenPos = PointToScreen(mousePos);
-        var source    = PresentationSource.FromVisual(this);
-        var dipPos    = source?.CompositionTarget?.TransformFromDevice.Transform(screenPos) ?? screenPos;
+        var dipPos    = DpiHelper.ScreenToDip(this, screenPos);
         _floatingManager?.CreateFloatingWindow(item, new Point(dipPos.X - 50, dipPos.Y - 20));
     }
 
@@ -384,10 +729,9 @@ public class DockControl : ContentControl
 
     private void OnGroupFloated(DockGroupNode floatingGroup)
     {
-        var mousePos  = System.Windows.Input.Mouse.GetPosition(this);
+        var mousePos  = Mouse.GetPosition(this);
         var screenPos = PointToScreen(mousePos);
-        var source    = PresentationSource.FromVisual(this);
-        var dipPos    = source?.CompositionTarget?.TransformFromDevice.Transform(screenPos) ?? screenPos;
+        var dipPos    = DpiHelper.ScreenToDip(this, screenPos);
         _floatingManager?.CreateFloatingWindowForGroup(floatingGroup,
             new Point(dipPos.X - 50, dipPos.Y - 20));
     }
@@ -414,7 +758,7 @@ public class DockControl : ContentControl
             return;
         }
 
-        _autoHideFlyout.ShowForItem(item, ContentFactory, item.LastDockSide);
+        _autoHideFlyout.ShowForItem(item, CachedContentFactory, item.LastDockSide);
     }
 
     private void OnAutoHideRestoreRequested(DockItem item)

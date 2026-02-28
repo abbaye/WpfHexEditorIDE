@@ -36,6 +36,7 @@ public class DockDragManager
 
     // Floating window drag state
     private FloatingWindow? _sourceFloatingWindow;
+    private DragPreviewWindow? _snapPreview;
     private Point _dragOffset;
     private Point _originalWindowPos;
 
@@ -45,17 +46,6 @@ public class DockDragManager
     }
 
     public bool IsDragging => _isDragging;
-
-    /// <summary>
-    /// Converts a physical screen pixel point to WPF DIPs using the given visual's DPI.
-    /// </summary>
-    private static Point ScreenToDip(Visual visual, Point screenPoint)
-    {
-        var source = PresentationSource.FromVisual(visual);
-        if (source?.CompositionTarget != null)
-            return source.CompositionTarget.TransformFromDevice.Transform(screenPoint);
-        return screenPoint;
-    }
 
     /// <summary>
     /// Walks up the visual tree from the element at the given point to find the containing DockTabControl.
@@ -172,7 +162,7 @@ public class DockDragManager
 
         // Capture cursor position in DIPs before the layout changes
         var screenPos = _dockControl.PointToScreen(Mouse.GetPosition(_dockControl));
-        var mouseDip  = ScreenToDip(_dockControl, screenPos);
+        var mouseDip  = DpiHelper.ScreenToDip(_dockControl, screenPos);
 
         // Detach item from dock layout → fires OnItemFloated → FloatingWindowManager creates the window
         _dockControl.Engine.Float(item);
@@ -201,7 +191,7 @@ public class DockDragManager
 
         // Capture cursor position in DIPs before the layout changes
         var screenPos = _dockControl.PointToScreen(Mouse.GetPosition(_dockControl));
-        var mouseDip  = ScreenToDip(_dockControl, screenPos);
+        var mouseDip  = DpiHelper.ScreenToDip(_dockControl, screenPos);
 
         // Float the entire group → fires GroupFloated → FloatingWindowManager.CreateFloatingWindowForGroup
         _dockControl.Engine.FloatGroup(group);
@@ -236,19 +226,29 @@ public class DockDragManager
         _targetElement = null;
         _sourceFloatingWindow = sourceWindow;
 
-        // Record offset from cursor to window corner in DIPs for smooth drag
-        var cursorDip = ScreenToDip(sourceWindow, sourceWindow.PointToScreen(Mouse.GetPosition(sourceWindow)));
+        // Record offset from cursor to window corner using per-monitor DIPs for smooth cross-monitor drag
+        var cursorScreen = sourceWindow.PointToScreen(Mouse.GetPosition(sourceWindow));
+        var cursorDip = DpiHelper.ScreenToDipForPoint(cursorScreen);
         _dragOffset = new Point(cursorDip.X - sourceWindow.Left, cursorDip.Y - sourceWindow.Top);
         _originalWindowPos = new Point(sourceWindow.Left, sourceWindow.Top);
 
         _panelOverlay ??= new DockOverlayWindow();
         _edgeOverlay ??= new DockEdgeOverlayWindow();
 
-        // Capture mouse on the floating window
+        // Wire event handlers first, then capture mouse.
+        // try-finally ensures capture is released if an exception occurs.
         sourceWindow.PreviewMouseMove += OnFloatingMouseMove;
         sourceWindow.PreviewMouseLeftButtonUp += OnFloatingMouseUp;
         sourceWindow.KeyDown += OnFloatingKeyDown;
-        Mouse.Capture(sourceWindow, CaptureMode.SubTree);
+        try
+        {
+            Mouse.Capture(sourceWindow, CaptureMode.SubTree);
+        }
+        catch
+        {
+            EndFloatingDrag();
+            throw;
+        }
     }
 
     #region Floating window drag handlers
@@ -257,9 +257,9 @@ public class DockDragManager
     {
         if (!_isDragging || _sourceFloatingWindow is null) return;
 
-        // Get cursor in both physical pixels and DIPs
+        // Get cursor in both physical pixels and per-monitor DIPs
         var screenPos = _sourceFloatingWindow.PointToScreen(e.GetPosition(_sourceFloatingWindow));
-        var dipPos = ScreenToDip(_sourceFloatingWindow, screenPos);
+        var dipPos = DpiHelper.ScreenToDipForPoint(screenPos);
 
         // Move the floating window following cursor (DIPs)
         _sourceFloatingWindow.Left = dipPos.X - _dragOffset.X;
@@ -284,10 +284,14 @@ public class DockDragManager
             var localInCenterHost = _dockControl.CenterHost.PointFromScreen(screenPos);
             var targetTab = FindTargetTabControl(localInCenterHost);
             UpdateOverlays(targetTab, screenPos);
+
+            // Show snap preview when hovering over a dock indicator
+            UpdateSnapPreview(screenPos);
         }
         else
         {
             HideAllOverlays();
+            HideSnapPreview();
         }
     }
 
@@ -354,6 +358,58 @@ public class DockDragManager
 
     #endregion
 
+    /// <summary>
+    /// Shows a semi-transparent snap preview over the target zone where the item would dock.
+    /// </summary>
+    private void UpdateSnapPreview(Point screenPos)
+    {
+        if (!_lastDirection.HasValue || _targetElement is null)
+        {
+            HideSnapPreview();
+            return;
+        }
+
+        // Determine the target element for snap zone calculation
+        var target = _lastDirection.HasValue && _targetGroup == _dockControl.Layout?.MainDocumentHost
+            ? (UIElement)_dockControl.CenterHost
+            : _targetElement;
+
+        var tl = target.PointToScreen(new Point(0, 0));
+        var br = target.PointToScreen(new Point(target.RenderSize.Width, target.RenderSize.Height));
+        var dipTl = DpiHelper.ScreenToDipForPoint(tl);
+        var dipBr = DpiHelper.ScreenToDipForPoint(br);
+        var tw = dipBr.X - dipTl.X;
+        var th = dipBr.Y - dipTl.Y;
+
+        var zone = _lastDirection.Value switch
+        {
+            DockDirection.Left   => new Rect(dipTl.X, dipTl.Y, tw * 0.25, th),
+            DockDirection.Right  => new Rect(dipTl.X + tw * 0.75, dipTl.Y, tw * 0.25, th),
+            DockDirection.Top    => new Rect(dipTl.X, dipTl.Y, tw, th * 0.25),
+            DockDirection.Bottom => new Rect(dipTl.X, dipTl.Y + th * 0.75, tw, th * 0.25),
+            DockDirection.Center => new Rect(dipTl.X, dipTl.Y, tw, th),
+            _                    => Rect.Empty
+        };
+
+        if (zone == Rect.Empty || zone.Width < 1 || zone.Height < 1)
+        {
+            HideSnapPreview();
+            return;
+        }
+
+        _snapPreview ??= new DragPreviewWindow(_draggedItem?.Title ?? "");
+        _snapPreview.ShowSnapPreview(zone);
+    }
+
+    private void HideSnapPreview()
+    {
+        if (_snapPreview is { IsVisible: true })
+        {
+            _snapPreview.HideSnapPreview();
+            _snapPreview.Hide();
+        }
+    }
+
     private void EndFloatingDrag()
     {
         var window = _sourceFloatingWindow;
@@ -377,5 +433,8 @@ public class DockDragManager
 
         _panelOverlay?.Hide();
         _edgeOverlay?.Hide();
+        HideSnapPreview();
+        _snapPreview?.Close();
+        _snapPreview = null;
     }
 }

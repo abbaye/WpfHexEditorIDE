@@ -63,6 +63,16 @@
     <Color x:Key="HexEditor_TblMteColor">#00FF9F</Color>                   <!-- Neon Green -->
     <Color x:Key="HexEditor_TblEndBlockColor">#FFBE0B</Color>              <!-- Neon Yellow -->
     <Color x:Key="HexEditor_TblEndLineColor">#00F0FF</Color>               <!-- Neon Cyan -->
+    <Color x:Key="HexEditor_BackgroundColor">#0A0E27</Color>              <!-- Deep Dark Blue -->
+    <Color x:Key="HexEditor_HeaderBackgroundColor">#141B3D</Color>       <!-- Dark Blue Surface -->
+    <Color x:Key="HexEditor_HeaderForegroundColor">#A0AED9</Color>       <!-- Muted Blue -->
+    <Color x:Key="HexEditor_ColumnSeparatorColor">#2E3A5F</Color>       <!-- Dark Blue Border -->
+    <Color x:Key="HexEditor_ForegroundFirstColor">#E0E7FF</Color>       <!-- Light Blue White -->
+    <Color x:Key="HexEditor_AsciiForegroundColor">#A0AED9</Color>      <!-- Muted Blue -->
+    <Color x:Key="HexEditor_StatusBarBackgroundColor">#141B3D</Color>  <!-- Deep Navy -->
+    <Color x:Key="HexEditor_StatusBarForegroundColor">#A0AED9</Color>  <!-- Muted Blue -->
+    <Color x:Key="HexEditor_ScrollBarBackgroundColor">#0D1230</Color>  <!-- Darkest Navy -->
+    <Color x:Key="HexEditor_ScrollBarThumbColor">#3E4A70</Color>       <!-- Navy -->
 
     <!-- ==================== BRUSHES ==================== -->
 

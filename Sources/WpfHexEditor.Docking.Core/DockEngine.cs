@@ -363,6 +363,57 @@ public class DockEngine
         if (!IsInTransaction) LayoutChanged?.Invoke();
     }
 
+    /// <summary>
+    /// Moves all matching docked items to auto-hide in a single transaction.
+    /// </summary>
+    public void AutoHideAll(Predicate<DockItem>? filter = null)
+    {
+        var items = CollectAllDockedItems()
+            .Where(i => filter is null || filter(i))
+            .ToList();
+        if (items.Count == 0) return;
+
+        BeginTransaction();
+        foreach (var item in items) AutoHide(item);
+        CommitTransaction();
+    }
+
+    /// <summary>
+    /// Restores all auto-hidden items back to their last dock side in a single transaction.
+    /// </summary>
+    public void RestoreAllFromAutoHide()
+    {
+        var items = Layout.AutoHideItems.ToList();
+        if (items.Count == 0) return;
+
+        BeginTransaction();
+        foreach (var item in items)
+        {
+            var direction = item.LastDockSide switch
+            {
+                DockSide.Left   => DockDirection.Left,
+                DockSide.Right  => DockDirection.Right,
+                DockSide.Top    => DockDirection.Top,
+                DockSide.Bottom => DockDirection.Bottom,
+                _               => DockDirection.Bottom
+            };
+            RestoreFromAutoHide(item, Layout.MainDocumentHost, direction);
+        }
+        CommitTransaction();
+    }
+
+    private IEnumerable<DockItem> CollectAllDockedItems()
+    {
+        return CollectFromNode(Layout.RootNode);
+
+        static IEnumerable<DockItem> CollectFromNode(DockNode node) => node switch
+        {
+            DockGroupNode group => group.Items.Where(i => i.State == DockItemState.Docked),
+            DockSplitNode split => split.Children.SelectMany(CollectFromNode),
+            _ => []
+        };
+    }
+
     private void AutoNormalize()
     {
         if (!IsInTransaction)

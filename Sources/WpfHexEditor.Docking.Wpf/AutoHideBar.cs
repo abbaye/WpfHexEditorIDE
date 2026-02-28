@@ -5,11 +5,14 @@
 //////////////////////////////////////////////
 
 using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
+using WpfHexEditor.Docking.Wpf.Automation;
 
 namespace WpfHexEditor.Docking.Wpf;
 
@@ -31,8 +34,11 @@ public class AutoHideBar : StackPanel
         Orientation = position is Dock.Top or Dock.Bottom
             ? Orientation.Horizontal
             : Orientation.Vertical;
-        Background = new SolidColorBrush(Color.FromRgb(45, 45, 48));
+        SetResourceReference(BackgroundProperty, "DockMenuBackgroundBrush");
     }
+
+    protected override AutomationPeer OnCreateAutomationPeer() =>
+        new AutoHideBarAutomationPeer(this);
 
     /// <summary>
     /// Updates the bar with the given auto-hide items.
@@ -55,12 +61,13 @@ public class AutoHideBar : StackPanel
                 Padding = new Thickness(6, 4, 6, 4),
                 Margin = new Thickness(1),
                 Background = Brushes.Transparent,
-                Foreground = Brushes.LightGray,
                 BorderThickness = new Thickness(0),
                 Cursor = Cursors.Hand,
                 Tag = item
             };
 
+            button.SetResourceReference(Control.ForegroundProperty, "DockTabTextBrush");
+            AutomationProperties.SetName(button, $"Show {item.Title}");
             button.Click += (_, _) => ItemClicked?.Invoke(item);
             Children.Add(button);
         }
@@ -114,33 +121,29 @@ public class AutoHideFlyout : Grid
         _clickCatcher.MouseLeftButtonDown += (_, _) => Close();
         Children.Add(_clickCatcher);
 
-        // ── Brushes (hardcoded dark; flyout is always dark-themed for visibility) ──────
-        var menuBg     = new SolidColorBrush(Color.FromRgb(45,  45,  48));
-        var menuFg     = new SolidColorBrush(Color.FromRgb(241, 241, 241));
-        var menuBorder = new SolidColorBrush(Color.FromRgb(51,  51,  55));
-
         // ── Title bar ────────────────────────────────────────────────────────────────
         _titleBlock = new TextBlock
         {
-            Foreground        = Brushes.White,
             FontWeight        = FontWeights.SemiBold,
             FontSize          = 12,
             Margin            = new Thickness(8, 6, 8, 6),
             VerticalAlignment = VerticalAlignment.Center
         };
+        _titleBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
 
-        Button MakeTitleButton(string content, string tooltip) => new()
+        Button MakeTitleButton(string content, string tooltip)
         {
-            Content         = content,
-            FontSize        = 12,
-            Padding         = new Thickness(4, 2, 4, 2),
-            Background      = Brushes.Transparent,
-            Foreground      = Brushes.LightGray,
-            BorderThickness = new Thickness(0),
-            Cursor          = Cursors.Hand,
-            VerticalAlignment = VerticalAlignment.Center,
-            ToolTip         = tooltip
-        };
+            var btn = new Button
+            {
+                Content  = content,
+                FontSize = 12,
+                ToolTip  = tooltip
+            };
+            var titleStyle = Application.Current?.TryFindResource("DockTitleButtonStyle") as Style;
+            if (titleStyle is not null)
+                btn.Style = titleStyle;
+            return btn;
+        }
 
         var closeButton = MakeTitleButton("\u2715", "Close");
         closeButton.Click += (_, _) => { if (CurrentItem is not null) CloseRequested?.Invoke(CurrentItem); };
@@ -154,6 +157,10 @@ public class AutoHideFlyout : Grid
         {
             if (CurrentItem is null || sender is not Button btn) return;
             var item = CurrentItem;
+
+            var menuBg     = TryFindResource("DockMenuBackgroundBrush") as Brush ?? Brushes.DarkGray;
+            var menuFg     = TryFindResource("DockMenuForegroundBrush") as Brush ?? Brushes.White;
+            var menuBorder = TryFindResource("DockMenuBorderBrush") as Brush ?? Brushes.Gray;
 
             var menu = new ContextMenu
             {
@@ -169,7 +176,7 @@ public class AutoHideFlyout : Grid
             var autoHideItem = new MenuItem
             {
                 Header     = "Auto Hide",
-                Foreground = new SolidColorBrush(Color.FromRgb(128, 128, 128)),
+                Foreground = Brushes.Gray,
                 IsEnabled  = false
             };
             menu.Items.Add(autoHideItem);
@@ -200,10 +207,10 @@ public class AutoHideFlyout : Grid
 
         var titleBar = new Border
         {
-            Background = menuBg,
-            Child      = titleContent,
-            Cursor     = Cursors.SizeAll
+            Child  = titleContent,
+            Cursor = Cursors.SizeAll
         };
+        titleBar.SetResourceReference(Border.BackgroundProperty, "DockMenuBackgroundBrush");
 
         // Drag-to-float: drag the title bar beyond the system threshold to float the panel
         var titleDragStart   = new Point();
@@ -246,11 +253,11 @@ public class AutoHideFlyout : Grid
 
         _panel = new Border
         {
-            Background      = new SolidColorBrush(Color.FromRgb(37, 37, 38)),
-            BorderBrush     = new SolidColorBrush(Color.FromRgb(63, 63, 70)),
             BorderThickness = new Thickness(1),
             Child           = innerStack
         };
+        _panel.SetResourceReference(Border.BackgroundProperty, "DockBackgroundBrush");
+        _panel.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
 
         // ── Resize handle ─────────────────────────────────────────────────────────
         // Transparent strip placed on the inner edge; position/cursor configured in ShowForItem.

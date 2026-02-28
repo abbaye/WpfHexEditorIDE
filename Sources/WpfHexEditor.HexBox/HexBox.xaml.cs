@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////
+//////////////////////////////////////////////
 // Apache 2.0  - 2017-2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.5
@@ -11,10 +11,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using WpfHexaEditor.Core;
-using WpfHexaEditor.ViewModels;
+using WpfHexEditor.HexBox.Core;
+using WpfHexEditor.HexBox.ViewModels;
 
-namespace WpfHexaEditor
+namespace WpfHexEditor.HexBox
 {
     /// <summary>
     /// HexBox control - V2 MVVM Architecture.
@@ -128,7 +128,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Raised when value changes (V1 compatibility)
         /// </summary>
-        public event EventHandler ValueChanged;
+        public event EventHandler? ValueChanged;
 
         #endregion
 
@@ -154,7 +154,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Handle ViewModel.ValueChanged event
         /// </summary>
-        private void OnViewModelValueChanged(object sender, EventArgs e)
+        private void OnViewModelValueChanged(object? sender, EventArgs e)
         {
             // Sync ViewModel → DependencyProperty (for V1 compatibility)
             if (!_isSyncingFromDP && LongValue != ViewModel.LongValue)
@@ -177,7 +177,7 @@ namespace WpfHexaEditor
         /// <summary>
         /// Handle ViewModel property changes
         /// </summary>
-        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             // Sync ViewModel → DependencyProperties
             if (_isSyncingFromDP) return;
@@ -212,12 +212,12 @@ namespace WpfHexaEditor
         private void HexTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             // Allow all navigation/editing keys
-            if (KeyValidator.IsHexKey(e.Key) ||
-                KeyValidator.IsBackspaceKey(e.Key) ||
-                KeyValidator.IsDeleteKey(e.Key) ||
-                KeyValidator.IsArrowKey(e.Key) ||
-                KeyValidator.IsTabKey(e.Key) ||
-                KeyValidator.IsEnterKey(e.Key))
+            if (HexKeyValidator.IsHexKey(e.Key) ||
+                HexKeyValidator.IsBackspaceKey(e.Key) ||
+                HexKeyValidator.IsDeleteKey(e.Key) ||
+                HexKeyValidator.IsArrowKey(e.Key) ||
+                HexKeyValidator.IsTabKey(e.Key) ||
+                HexKeyValidator.IsEnterKey(e.Key))
             {
                 e.Handled = false;
                 return;
