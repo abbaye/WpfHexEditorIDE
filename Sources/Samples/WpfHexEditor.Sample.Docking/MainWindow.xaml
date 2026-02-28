@@ -5,8 +5,18 @@
         Title="WpfHexEditor - Docking Test"
         Width="1200" Height="800"
         WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize"
         Background="{DynamicResource DockWindowBackgroundBrush}">
-    <Grid>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="4"
+                      GlassFrameThickness="0"
+                      UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -14,32 +24,57 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Menu Bar -->
-        <Menu Grid.Row="0" Style="{DynamicResource DockDarkMenuStyle}">
-            <MenuItem Header="_File" Style="{DynamicResource DockDarkMenuItemStyle}">
-                <MenuItem Header="_New Document" Click="OnNewDocument" />
-                <MenuItem Header="New _Hex Editor Document" Click="OnNewHexDocument" />
-                <MenuItem Header="_Open File..." Click="OnOpenFile" />
-                <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
-                <MenuItem Header="E_xit" Click="OnExit" />
-            </MenuItem>
-            <MenuItem Header="_View" Style="{DynamicResource DockDarkMenuItemStyle}">
-                <MenuItem Header="_Properties" Click="OnShowProperties" />
-                <MenuItem Header="_Solution Explorer" Click="OnShowSolutionExplorer" />
-                <MenuItem Header="_Output" Click="OnShowOutput" />
-            </MenuItem>
-            <MenuItem Header="_Layout" Style="{DynamicResource DockDarkMenuItemStyle}">
-                <MenuItem Header="_Save Layout" Click="OnSaveLayout" />
-                <MenuItem Header="_Load Layout" Click="OnLoadLayout" />
-                <MenuItem Header="_Reset Layout" Click="OnResetLayout" />
-                <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
-                <MenuItem Header="Toggle _Locked Layout" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem" />
-            </MenuItem>
-            <MenuItem Header="_Theme" Style="{DynamicResource DockDarkMenuItemStyle}">
-                <MenuItem Header="_Dark" Click="OnDarkTheme" />
-                <MenuItem Header="_Light" Click="OnLightTheme" />
-            </MenuItem>
-        </Menu>
+        <!-- Title Bar (VS Code style: menu inline + title center + window buttons right) -->
+        <Border Grid.Row="0" Background="{DynamicResource DockMenuBackgroundBrush}">
+            <DockPanel Height="32">
+                <!-- Window buttons (right) -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Content="&#xE949;" Style="{DynamicResource TitleBarButtonStyle}"
+                            Click="OnMinimize" ToolTip="Minimize" />
+                    <Button x:Name="MaxRestoreButton" Content="&#xE739;"
+                            Style="{DynamicResource TitleBarButtonStyle}"
+                            Click="OnMaximizeRestore" ToolTip="Maximize" />
+                    <Button Content="&#xE106;" Style="{DynamicResource TitleBarCloseButtonStyle}"
+                            Click="OnCloseWindow" ToolTip="Close" />
+                </StackPanel>
+
+                <!-- Menu (left, inline in title bar) -->
+                <Menu DockPanel.Dock="Left" Style="{DynamicResource DockDarkMenuStyle}"
+                      VerticalAlignment="Center"
+                      WindowChrome.IsHitTestVisibleInChrome="True">
+                    <MenuItem Header="_File" Style="{DynamicResource DockDarkMenuItemStyle}">
+                        <MenuItem Header="_New Document" Click="OnNewDocument" />
+                        <MenuItem Header="New _Hex Editor Document" Click="OnNewHexDocument" />
+                        <MenuItem Header="_Open File..." Click="OnOpenFile" />
+                        <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+                        <MenuItem Header="E_xit" Click="OnExit" />
+                    </MenuItem>
+                    <MenuItem Header="_View" Style="{DynamicResource DockDarkMenuItemStyle}">
+                        <MenuItem Header="_Properties" Click="OnShowProperties" />
+                        <MenuItem Header="_Solution Explorer" Click="OnShowSolutionExplorer" />
+                        <MenuItem Header="_Output" Click="OnShowOutput" />
+                    </MenuItem>
+                    <MenuItem Header="_Layout" Style="{DynamicResource DockDarkMenuItemStyle}">
+                        <MenuItem Header="_Save Layout" Click="OnSaveLayout" />
+                        <MenuItem Header="_Load Layout" Click="OnLoadLayout" />
+                        <MenuItem Header="_Reset Layout" Click="OnResetLayout" />
+                        <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+                        <MenuItem Header="Toggle _Locked Layout" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem" />
+                    </MenuItem>
+                    <MenuItem Header="_Theme" Style="{DynamicResource DockDarkMenuItemStyle}">
+                        <MenuItem Header="_Dark" Click="OnDarkTheme" />
+                        <MenuItem Header="_Light" Click="OnLightTheme" />
+                    </MenuItem>
+                </Menu>
+
+                <!-- Title (center, fills remaining space) -->
+                <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           FontSize="12" IsHitTestVisible="False" />
+            </DockPanel>
+        </Border>
 
         <!-- Toolbar -->
         <ToolBar Grid.Row="1" Style="{DynamicResource DockDarkToolBarStyle}">
