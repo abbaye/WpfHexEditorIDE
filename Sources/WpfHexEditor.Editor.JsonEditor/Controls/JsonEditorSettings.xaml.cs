@@ -10,7 +10,7 @@ using System.Linq;
 using System.Windows.Controls;
 using WpfHexEditor.HexEditor.Controls;
 
-namespace WpfHexEditor.JsonEditor.Controls
+namespace WpfHexEditor.Editor.JsonEditor.Controls
 {
     /// <summary>
     /// Complete JsonEditor Settings Panel - Auto-generated via Reflection.

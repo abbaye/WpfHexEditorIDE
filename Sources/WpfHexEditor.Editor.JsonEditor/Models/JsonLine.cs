@@ -8,9 +8,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using WpfHexEditor.JsonEditor.Helpers;
+using WpfHexEditor.Editor.JsonEditor.Helpers;
 
-namespace WpfHexEditor.JsonEditor.Models
+namespace WpfHexEditor.Editor.JsonEditor.Models
 {
     /// <summary>
     /// Represents a single line of text in the JSON document.

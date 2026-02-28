@@ -11,9 +11,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using WpfHexEditor.JsonEditor.Models;
+using WpfHexEditor.Editor.JsonEditor.Models;
 
-namespace WpfHexEditor.JsonEditor.Services
+namespace WpfHexEditor.Editor.JsonEditor.Services
 {
     /// <summary>
     /// Validates format definition JSON with 4 layers of validation:

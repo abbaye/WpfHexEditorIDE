@@ -16,9 +16,9 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using WpfHexEditor.JsonEditor.Models;
+using WpfHexEditor.Editor.JsonEditor.Models;
 
-namespace WpfHexEditor.JsonEditor.Controls
+namespace WpfHexEditor.Editor.JsonEditor.Controls
 {
     /// <summary>
     /// Main container control for Format Script Editor.

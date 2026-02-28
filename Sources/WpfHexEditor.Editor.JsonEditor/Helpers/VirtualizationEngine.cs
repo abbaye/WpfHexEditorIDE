@@ -5,7 +5,7 @@
 
 using System;
 
-namespace WpfHexEditor.JsonEditor.Helpers
+namespace WpfHexEditor.Editor.JsonEditor.Helpers
 {
     /// <summary>
     /// Engine for calculating visible lines in viewport for virtual scrolling.

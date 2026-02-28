@@ -8,9 +8,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WpfHexEditor.JsonEditor.Models;
+using WpfHexEditor.Editor.JsonEditor.Models;
 
-namespace WpfHexEditor.JsonEditor.Helpers
+namespace WpfHexEditor.Editor.JsonEditor.Helpers
 {
     /// <summary>
     /// Provides context-aware IntelliSense suggestions for format definition JSON.

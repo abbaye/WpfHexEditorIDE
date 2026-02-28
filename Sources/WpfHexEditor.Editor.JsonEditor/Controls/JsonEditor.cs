@@ -16,13 +16,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using WpfHexEditor.JsonEditor.Models;
-using WpfHexEditor.JsonEditor.Helpers;
-using WpfHexEditor.JsonEditor.Services;
+using WpfHexEditor.Editor.JsonEditor.Models;
+using WpfHexEditor.Editor.JsonEditor.Helpers;
+using WpfHexEditor.Editor.JsonEditor.Services;
 using WpfHexEditor.Core.Settings;
 using WpfHexEditor.Editor.Core;
 
-namespace WpfHexEditor.JsonEditor.Controls
+namespace WpfHexEditor.Editor.JsonEditor.Controls
 {
     /// <summary>
     /// High-performance JSON text editor using custom rendering (FrameworkElement).

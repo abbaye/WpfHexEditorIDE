@@ -5,7 +5,7 @@
 // Contributors: Derek Tremblay (derektremblay666@gmail.com)
 //////////////////////////////////////////////
 
-namespace WpfHexEditor.JsonEditor.Models
+namespace WpfHexEditor.Editor.JsonEditor.Models
 {
     /// <summary>
     /// Represents a validation error with location and severity.

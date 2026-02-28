@@ -14,10 +14,10 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using WpfHexEditor.JsonEditor.Helpers;
-using WpfHexEditor.JsonEditor.Models;
+using WpfHexEditor.Editor.JsonEditor.Helpers;
+using WpfHexEditor.Editor.JsonEditor.Models;
 
-namespace WpfHexEditor.JsonEditor.Controls
+namespace WpfHexEditor.Editor.JsonEditor.Controls
 {
     /// <summary>
     /// IntelliSense popup control with suggestion list and documentation preview.

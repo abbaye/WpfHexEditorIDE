@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WpfHexEditor.JsonEditor.Models
+namespace WpfHexEditor.Editor.JsonEditor.Models
 {
     /// <summary>
     /// Undo/Redo stack for text editing operations.

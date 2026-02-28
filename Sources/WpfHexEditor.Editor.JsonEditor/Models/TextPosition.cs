@@ -7,7 +7,7 @@
 
 using System;
 
-namespace WpfHexEditor.JsonEditor.Models
+namespace WpfHexEditor.Editor.JsonEditor.Models
 {
     /// <summary>
     /// Represents a position in the text document (line, column).

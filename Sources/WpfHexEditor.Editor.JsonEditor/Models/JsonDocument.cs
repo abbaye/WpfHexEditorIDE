@@ -13,7 +13,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace WpfHexEditor.JsonEditor.Models
+namespace WpfHexEditor.Editor.JsonEditor.Models
 {
     /// <summary>
     /// Represents a JSON text document with line-based storage.

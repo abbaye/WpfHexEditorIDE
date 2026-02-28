@@ -9,9 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
-using WpfHexEditor.JsonEditor.Models;
+using WpfHexEditor.Editor.JsonEditor.Models;
 
-namespace WpfHexEditor.JsonEditor.Helpers
+namespace WpfHexEditor.Editor.JsonEditor.Helpers
 {
     /// <summary>
     /// JSON syntax highlighter with token-based coloring.

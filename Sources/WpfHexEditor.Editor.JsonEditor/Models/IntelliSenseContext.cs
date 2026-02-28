@@ -5,7 +5,7 @@
 // Contributors: Derek Tremblay (derektremblay666@gmail.com)
 //////////////////////////////////////////////
 
-namespace WpfHexEditor.JsonEditor.Models
+namespace WpfHexEditor.Editor.JsonEditor.Models
 {
     /// <summary>
     /// Context information for IntelliSense suggestion generation.
