@@ -34,6 +34,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         Closing += OnWindowClosing;
         Loaded += OnLoaded;
+        StateChanged += OnStateChanged;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -468,6 +469,30 @@ public partial class MainWindow : Window
     private void OnExit(object sender, RoutedEventArgs e)
     {
         Close();
+    }
+
+    // ─── Title bar ───────────────────────────────────────────────────
+
+    private void OnMinimize(object sender, RoutedEventArgs e) =>
+        WindowState = WindowState.Minimized;
+
+    private void OnMaximizeRestore(object sender, RoutedEventArgs e) =>
+        WindowState = WindowState == WindowState.Maximized
+            ? WindowState.Normal
+            : WindowState.Maximized;
+
+    private void OnCloseWindow(object sender, RoutedEventArgs e) => Close();
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        // Toggle maximize ↔ restore icon (Segoe MDL2 Assets)
+        MaxRestoreButton.Content = WindowState == WindowState.Maximized ? "\uE923" : "\uE739";
+
+        // When maximized with WindowStyle.None, Windows overshoots by the resize border.
+        // Compensate with padding so content doesn't bleed off-screen.
+        RootGrid.Margin = WindowState == WindowState.Maximized
+            ? new Thickness(7)
+            : new Thickness(0);
     }
 
     // ─── Status bar ────────────────────────────────────────────────────
