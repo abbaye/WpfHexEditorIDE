@@ -5,11 +5,14 @@
 //////////////////////////////////////////////
 
 using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
+using WpfHexEditor.Docking.Wpf.Automation;
 
 namespace WpfHexEditor.Docking.Wpf;
 
@@ -33,6 +36,9 @@ public class AutoHideBar : StackPanel
             : Orientation.Vertical;
         SetResourceReference(BackgroundProperty, "DockMenuBackgroundBrush");
     }
+
+    protected override AutomationPeer OnCreateAutomationPeer() =>
+        new AutoHideBarAutomationPeer(this);
 
     /// <summary>
     /// Updates the bar with the given auto-hide items.
@@ -61,6 +67,7 @@ public class AutoHideBar : StackPanel
             };
 
             button.SetResourceReference(Control.ForegroundProperty, "DockTabTextBrush");
+            AutomationProperties.SetName(button, $"Show {item.Title}");
             button.Click += (_, _) => ItemClicked?.Invoke(item);
             Children.Add(button);
         }

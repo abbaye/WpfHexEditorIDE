@@ -5,10 +5,13 @@
 //////////////////////////////////////////////
 
 using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core.Nodes;
+using WpfHexEditor.Docking.Wpf.Automation;
 
 namespace WpfHexEditor.Docking.Wpf;
 
@@ -26,6 +29,9 @@ public class DockTabControl : TabControl
         SetResourceReference(BorderBrushProperty, "DockBorderBrush");
         SetResourceReference(StyleProperty, "DockTabControlStyle");
     }
+
+    protected override AutomationPeer OnCreateAutomationPeer() =>
+        new DockTabControlAutomationPeer(this);
 
     public event Action<DockItem>? TabDragStarted;
     public event Action<DockItem>? TabCloseRequested;
@@ -175,6 +181,7 @@ public class DockTabHeader : StackPanel
             VerticalAlignment = VerticalAlignment.Center,
             ToolTip = "Auto-Hide"
         };
+        AutomationProperties.SetName(pinButton, $"Auto-Hide {item.Title}");
         pinButton.Click += (_, _) => AutoHideRequested?.Invoke();
         Children.Add(pinButton);
 
@@ -192,6 +199,7 @@ public class DockTabHeader : StackPanel
                 VerticalAlignment = VerticalAlignment.Center,
                 ToolTip = "Close"
             };
+            AutomationProperties.SetName(closeButton, $"Close {item.Title}");
             closeButton.Click += (_, _) => CloseClicked?.Invoke();
             Children.Add(closeButton);
         }

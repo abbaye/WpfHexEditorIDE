@@ -22,6 +22,7 @@ public class DockControl : ContentControl, IDisposable
     private DockEngine? _engine;
     private DockDragManager? _dragManager;
     private FloatingWindowManager? _floatingManager;
+    private DockKeyboardNavigation? _keyboardNav;
     private readonly List<DockTabEventWirer> _tabWirers = [];
     private readonly Dictionary<string, object> _contentCache = new();
 
@@ -93,6 +94,16 @@ public class DockControl : ContentControl, IDisposable
     internal FloatingWindowManager? FloatingManager => _floatingManager;
 
     /// <summary>
+    /// Configurable drag threshold in DIPs. Defaults to system minimum.
+    /// </summary>
+    public double DragThreshold { get; set; } = SystemParameters.MinimumHorizontalDragDistance;
+
+    /// <summary>
+    /// Optional callback invoked before closing an item. Return false to veto the close.
+    /// </summary>
+    public Func<DockItem, bool>? BeforeCloseCallback { get; set; }
+
+    /// <summary>
     /// Raised when a tab close is requested.
     /// </summary>
     public event Action<DockItem>? TabCloseRequested;
@@ -156,6 +167,7 @@ public class DockControl : ContentControl, IDisposable
 
                 control._dragManager = new DockDragManager(control);
                 control._floatingManager = new FloatingWindowManager(control);
+                control._keyboardNav = new DockKeyboardNavigation(control);
 
                 control.RebuildVisualTree();
             }
@@ -211,6 +223,7 @@ public class DockControl : ContentControl, IDisposable
     {
         DetachEngine();
         DisposeWirers();
+        _keyboardNav?.Detach();
         _floatingManager?.CloseAll();
         _autoHideFlyout.RestoreRequested -= OnAutoHideRestoreRequested;
         _autoHideFlyout.CloseRequested   -= OnAutoHideCloseRequested;
@@ -362,8 +375,8 @@ public class DockControl : ContentControl, IDisposable
         {
             if (!titleDragPending || e.LeftButton != MouseButtonState.Pressed) return;
             var diff = e.GetPosition(titleBar) - titleDragStart;
-            if (Math.Abs(diff.X) <= SystemParameters.MinimumHorizontalDragDistance &&
-                Math.Abs(diff.Y) <= SystemParameters.MinimumVerticalDragDistance) return;
+            if (Math.Abs(diff.X) <= DragThreshold &&
+                Math.Abs(diff.Y) <= DragThreshold) return;
 
             titleDragPending = false;
             titleBar.ReleaseMouseCapture();
@@ -426,6 +439,8 @@ public class DockControl : ContentControl, IDisposable
     /// </summary>
     internal void RaiseTabCloseRequested(DockItem item)
     {
+        if (BeforeCloseCallback is not null && !BeforeCloseCallback(item))
+            return;
         TabCloseRequested?.Invoke(item);
     }
 

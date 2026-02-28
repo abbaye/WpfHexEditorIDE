@@ -483,4 +483,27 @@ public class DragPreviewWindow : Window
         Left = screenPoint.X + 12;
         Top = screenPoint.Y + 12;
     }
+
+    /// <summary>
+    /// Positions and sizes the preview to cover the given snap target zone (in DIPs).
+    /// </summary>
+    public void ShowSnapPreview(Rect zone)
+    {
+        SizeToContent = SizeToContent.Manual;
+        Left   = zone.X;
+        Top    = zone.Y;
+        Width  = zone.Width;
+        Height = zone.Height;
+        _titleBlock.Visibility = Visibility.Collapsed;
+        if (!IsVisible) Show();
+    }
+
+    /// <summary>
+    /// Returns to cursor-following mode (compact label visible).
+    /// </summary>
+    public void HideSnapPreview()
+    {
+        SizeToContent = SizeToContent.WidthAndHeight;
+        _titleBlock.Visibility = Visibility.Visible;
+    }
 }

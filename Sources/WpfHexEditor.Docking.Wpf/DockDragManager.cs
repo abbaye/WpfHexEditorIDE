@@ -36,6 +36,7 @@ public class DockDragManager
 
     // Floating window drag state
     private FloatingWindow? _sourceFloatingWindow;
+    private DragPreviewWindow? _snapPreview;
     private Point _dragOffset;
     private Point _originalWindowPos;
 
@@ -282,10 +283,14 @@ public class DockDragManager
             var localInCenterHost = _dockControl.CenterHost.PointFromScreen(screenPos);
             var targetTab = FindTargetTabControl(localInCenterHost);
             UpdateOverlays(targetTab, screenPos);
+
+            // Show snap preview when hovering over a dock indicator
+            UpdateSnapPreview(screenPos);
         }
         else
         {
             HideAllOverlays();
+            HideSnapPreview();
         }
     }
 
@@ -352,6 +357,58 @@ public class DockDragManager
 
     #endregion
 
+    /// <summary>
+    /// Shows a semi-transparent snap preview over the target zone where the item would dock.
+    /// </summary>
+    private void UpdateSnapPreview(Point screenPos)
+    {
+        if (!_lastDirection.HasValue || _targetElement is null)
+        {
+            HideSnapPreview();
+            return;
+        }
+
+        // Determine the target element for snap zone calculation
+        var target = _lastDirection.HasValue && _targetGroup == _dockControl.Layout?.MainDocumentHost
+            ? (UIElement)_dockControl.CenterHost
+            : _targetElement;
+
+        var tl = target.PointToScreen(new Point(0, 0));
+        var br = target.PointToScreen(new Point(target.RenderSize.Width, target.RenderSize.Height));
+        var dipTl = DpiHelper.ScreenToDipForPoint(tl);
+        var dipBr = DpiHelper.ScreenToDipForPoint(br);
+        var tw = dipBr.X - dipTl.X;
+        var th = dipBr.Y - dipTl.Y;
+
+        var zone = _lastDirection.Value switch
+        {
+            DockDirection.Left   => new Rect(dipTl.X, dipTl.Y, tw * 0.25, th),
+            DockDirection.Right  => new Rect(dipTl.X + tw * 0.75, dipTl.Y, tw * 0.25, th),
+            DockDirection.Top    => new Rect(dipTl.X, dipTl.Y, tw, th * 0.25),
+            DockDirection.Bottom => new Rect(dipTl.X, dipTl.Y + th * 0.75, tw, th * 0.25),
+            DockDirection.Center => new Rect(dipTl.X, dipTl.Y, tw, th),
+            _                    => Rect.Empty
+        };
+
+        if (zone == Rect.Empty || zone.Width < 1 || zone.Height < 1)
+        {
+            HideSnapPreview();
+            return;
+        }
+
+        _snapPreview ??= new DragPreviewWindow(_draggedItem?.Title ?? "");
+        _snapPreview.ShowSnapPreview(zone);
+    }
+
+    private void HideSnapPreview()
+    {
+        if (_snapPreview is { IsVisible: true })
+        {
+            _snapPreview.HideSnapPreview();
+            _snapPreview.Hide();
+        }
+    }
+
     private void EndFloatingDrag()
     {
         var window = _sourceFloatingWindow;
@@ -375,5 +432,8 @@ public class DockDragManager
 
         _panelOverlay?.Hide();
         _edgeOverlay?.Hide();
+        HideSnapPreview();
+        _snapPreview?.Close();
+        _snapPreview = null;
     }
 }
