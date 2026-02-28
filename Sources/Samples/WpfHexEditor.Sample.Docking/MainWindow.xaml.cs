@@ -477,25 +477,24 @@ public partial class MainWindow : Window
         UpdateStatusBar();
     }
 
-    private void OnDarkTheme(object sender, RoutedEventArgs e)
+    private void ApplyTheme(string themeFile, string themeName)
     {
         Application.Current.Resources.MergedDictionaries.Clear();
         Application.Current.Resources.MergedDictionaries.Add(
-            new ResourceDictionary { Source = new Uri("pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/DarkTheme.xaml") });
+            new ResourceDictionary { Source = new Uri($"pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/{themeFile}") });
         SyncAllHexEditorThemes();
-        OutputLogger.Info("Theme changed to Dark.");
-        StatusText.Text = "Theme: Dark";
+        OutputLogger.Info($"Theme changed to {themeName}.");
+        StatusText.Text = $"Theme: {themeName}";
     }
 
-    private void OnLightTheme(object sender, RoutedEventArgs e)
-    {
-        Application.Current.Resources.MergedDictionaries.Clear();
-        Application.Current.Resources.MergedDictionaries.Add(
-            new ResourceDictionary { Source = new Uri("pack://application:,,,/WpfHexEditor.Docking.Wpf;component/Themes/Generic.xaml") });
-        SyncAllHexEditorThemes();
-        OutputLogger.Info("Theme changed to Light.");
-        StatusText.Text = "Theme: Light";
-    }
+    private void OnDarkTheme(object sender, RoutedEventArgs e) => ApplyTheme("DarkTheme.xaml", "Dark");
+    private void OnLightTheme(object sender, RoutedEventArgs e) => ApplyTheme("Generic.xaml", "Light");
+    private void OnVS2022DarkTheme(object sender, RoutedEventArgs e) => ApplyTheme("VS2022DarkTheme.xaml", "VS2022 Dark");
+    private void OnDarkGlassTheme(object sender, RoutedEventArgs e) => ApplyTheme("DarkGlassTheme.xaml", "Dark Glass");
+    private void OnVisualStudioTheme(object sender, RoutedEventArgs e) => ApplyTheme("VisualStudioTheme.xaml", "Visual Studio");
+    private void OnCyberpunkTheme(object sender, RoutedEventArgs e) => ApplyTheme("CyberpunkTheme.xaml", "Cyberpunk");
+    private void OnMinimalTheme(object sender, RoutedEventArgs e) => ApplyTheme("MinimalTheme.xaml", "Minimal");
+    private void OnOfficeTheme(object sender, RoutedEventArgs e) => ApplyTheme("OfficeTheme.xaml", "Office");
 
     /// <summary>
     /// Re-applies theme colors to all HexEditor instances in the docking layout.

@@ -1,42 +1,52 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Dark Theme Colors -->
-    <Color x:Key="DockBackgroundColor">#252526</Color>
-    <Color x:Key="DockBorderColor">#3F3F46</Color>
-    <Color x:Key="DockTabActiveColor">#007ACC</Color>
-    <Color x:Key="DockTabInactiveColor">#2D2D30</Color>
-    <Color x:Key="DockTabHoverColor">#3E3E40</Color>
-    <Color x:Key="DockTabTextColor">#D4D4D4</Color>
-    <Color x:Key="DockTabActiveTextColor">#FFFFFF</Color>
-    <Color x:Key="DockSplitterColor">#3F3F46</Color>
-    <Color x:Key="DockOverlayColor">#40007ACC</Color>
-    <Color x:Key="DockDocumentHostBorderColor">#007ACC</Color>
+    <!-- Cyberpunk Theme — Neon Pink/Purple/Cyan accents -->
 
-    <Color x:Key="DockMenuBackgroundColor">#2D2D30</Color>
-    <Color x:Key="DockMenuForegroundColor">#F1F1F1</Color>
-    <Color x:Key="DockMenuHighlightColor">#3E3E40</Color>
-    <Color x:Key="DockMenuBorderColor">#333337</Color>
-    <Color x:Key="DockToolBarBackgroundColor">#2D2D30</Color>
-    <Color x:Key="DockWindowBackgroundColor">#252526</Color>
+    <!-- Core UI -->
+    <Color x:Key="DockBackgroundColor">#0A0E27</Color>
+    <Color x:Key="DockBorderColor">#8B00FF</Color>
+    <Color x:Key="DockTabActiveColor">#FF006E</Color>
+    <Color x:Key="DockTabInactiveColor">#141B3D</Color>
+    <Color x:Key="DockTabHoverColor">#2A3759</Color>
+    <Color x:Key="DockTabTextColor">#A0AED9</Color>
+    <Color x:Key="DockTabActiveTextColor">#FFFFFF</Color>
+    <Color x:Key="DockSplitterColor">#2E3A5F</Color>
+    <Color x:Key="DockOverlayColor">#40FF006E</Color>
+    <Color x:Key="DockDocumentHostBorderColor">#FF006E</Color>
+
+    <!-- Menu / toolbar -->
+    <Color x:Key="DockMenuBackgroundColor">#141B3D</Color>
+    <Color x:Key="DockMenuForegroundColor">#E0E7FF</Color>
+    <Color x:Key="DockMenuHighlightColor">#2A3759</Color>
+    <Color x:Key="DockMenuBorderColor">#8B00FF</Color>
+    <Color x:Key="DockToolBarBackgroundColor">#141B3D</Color>
+    <Color x:Key="DockWindowBackgroundColor">#0A0E27</Color>
 
     <!-- HexEditor Colors -->
-    <Color x:Key="HexEditor_BackgroundColor">#1E1E1E</Color>
-    <Color x:Key="HexEditor_HeaderBackgroundColor">#252526</Color>
-    <Color x:Key="HexEditor_HeaderForegroundColor">#D4D4D4</Color>
-    <Color x:Key="HexEditor_ColumnSeparatorColor">#3F3F46</Color>
-    <Color x:Key="HexEditor_ForegroundFirstColor">#DCDCDC</Color>
-    <Color x:Key="HexEditor_ForegroundSecondColor">#569CD6</Color>
-    <Color x:Key="HexEditor_ForegroundOffSetHeaderColor">#858585</Color>
-    <Color x:Key="HexEditor_SelectionFirstColor">#66007ACC</Color>
-    <Color x:Key="HexEditor_SelectionSecondColor">#33007ACC</Color>
+    <Color x:Key="HexEditor_BackgroundColor">#0A0E27</Color>
+    <Color x:Key="HexEditor_HeaderBackgroundColor">#141B3D</Color>
+    <Color x:Key="HexEditor_HeaderForegroundColor">#A0AED9</Color>
+    <Color x:Key="HexEditor_ColumnSeparatorColor">#2E3A5F</Color>
+    <Color x:Key="HexEditor_ForegroundFirstColor">#E0E7FF</Color>
+    <Color x:Key="HexEditor_ForegroundSecondColor">#00F0FF</Color>
+    <Color x:Key="HexEditor_ForegroundOffSetHeaderColor">#A0AED9</Color>
+    <Color x:Key="HexEditor_SelectionFirstColor">#66FF006E</Color>
+    <Color x:Key="HexEditor_SelectionSecondColor">#668B00FF</Color>
     <Color x:Key="HexEditor_ForegroundContrast">#FFFFFF</Color>
-    <Color x:Key="HexEditor_ForegroundHighLightOffSetHeaderColor">#569CD6</Color>
-    <Color x:Key="HexEditor_AsciiForegroundColor">#CCCCCC</Color>
-    <Color x:Key="HexEditor_StatusBarBackgroundColor">#252526</Color>
-    <Color x:Key="HexEditor_StatusBarForegroundColor">#CCCCCC</Color>
-    <Color x:Key="HexEditor_ScrollBarBackgroundColor">#1E1E1E</Color>
-    <Color x:Key="HexEditor_ScrollBarThumbColor">#686868</Color>
+    <Color x:Key="HexEditor_ForegroundHighLightOffSetHeaderColor">#00F0FF</Color>
+    <Color x:Key="HexEditor_AsciiForegroundColor">#A0AED9</Color>
+    <Color x:Key="HexEditor_StatusBarBackgroundColor">#141B3D</Color>
+    <Color x:Key="HexEditor_StatusBarForegroundColor">#A0AED9</Color>
+    <Color x:Key="HexEditor_ScrollBarBackgroundColor">#0D1230</Color>
+    <Color x:Key="HexEditor_ScrollBarThumbColor">#3E4A70</Color>
+    <Color x:Key="HexEditor_ByteModifiedColor">#FFBE0B</Color>
+    <Color x:Key="HexEditor_HighLightColor">#FFBE0B</Color>
+    <Color x:Key="HexEditor_AutoHighLiteSelectionByteBrush">#8B00FF</Color>
+    <Color x:Key="HexEditor_TblDteColor">#FF006E</Color>
+    <Color x:Key="HexEditor_TblMteColor">#00FF9F</Color>
+    <Color x:Key="HexEditor_TblEndBlockColor">#FFBE0B</Color>
+    <Color x:Key="HexEditor_TblEndLineColor">#00F0FF</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="DockBackgroundBrush" Color="{StaticResource DockBackgroundColor}" />
@@ -55,7 +65,7 @@
     <SolidColorBrush x:Key="DockToolBarBackgroundBrush" Color="{StaticResource DockToolBarBackgroundColor}" />
     <SolidColorBrush x:Key="DockWindowBackgroundBrush" Color="{StaticResource DockWindowBackgroundColor}" />
 
-    <!-- VS-style title bar button: transparent bg, subtle hover, no chrome -->
+    <!-- VS-style title bar button -->
     <Style x:Key="DockTitleButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource DockTabTextBrush}"/>
@@ -86,7 +96,7 @@
         </Setter>
     </Style>
 
-    <!-- Window title bar button (minimize, maximize/restore) — VS Code style -->
+    <!-- Window title bar button -->
     <Style x:Key="TitleBarButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
@@ -118,7 +128,7 @@
         </Setter>
     </Style>
 
-    <!-- Window title bar close button — red hover like VS Code -->
+    <!-- Window title bar close button — red hover -->
     <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
         <Setter Property="Template">
             <Setter.Value>

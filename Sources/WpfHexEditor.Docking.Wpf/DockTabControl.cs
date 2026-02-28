@@ -4,10 +4,12 @@
 // Contributors: Claude Sonnet 4.5
 //////////////////////////////////////////////
 
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core.Nodes;
@@ -149,6 +151,7 @@ public class DockTabControl : TabControl
 public class DockTabHeader : StackPanel
 {
     private readonly DockItem _item;
+    private Button? _closeButton;
     private Point _dragStartPoint;
     private bool _isDragging;
 
@@ -190,26 +193,31 @@ public class DockTabHeader : StackPanel
         };
         Children.Add(titleBlock);
 
-        // Pin button (auto-hide toggle) - VS-style pushpin
-        var pinButton = new Button
+        // Pin button (auto-hide toggle) — only for tool panels, not documents
+        if (item.Owner is not DocumentHostNode)
         {
-            Content = "\uD83D\uDCCC",
-            FontSize = 9,
-            Padding = new Thickness(2, 0, 2, 0),
-            Margin = new Thickness(0, 0, 1, 0),
-            BorderThickness = new Thickness(0),
-            Background = Brushes.Transparent,
-            Cursor = Cursors.Hand,
-            VerticalAlignment = VerticalAlignment.Center,
-            ToolTip = "Auto-Hide"
-        };
-        AutomationProperties.SetName(pinButton, $"Auto-Hide {item.Title}");
-        pinButton.Click += (_, _) => AutoHideRequested?.Invoke();
-        Children.Add(pinButton);
+            var pinButton = new Button
+            {
+                Content = "\uD83D\uDCCC",
+                FontSize = 9,
+                Padding = new Thickness(2, 0, 2, 0),
+                Margin = new Thickness(0, 0, 1, 0),
+                BorderThickness = new Thickness(0),
+                Background = Brushes.Transparent,
+                Foreground = Brushes.Transparent, // inherit from tab style via binding below
+                Cursor = Cursors.Hand,
+                VerticalAlignment = VerticalAlignment.Center,
+                ToolTip = "Auto-Hide"
+            };
+            pinButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
+            AutomationProperties.SetName(pinButton, $"Auto-Hide {item.Title}");
+            pinButton.Click += (_, _) => AutoHideRequested?.Invoke();
+            Children.Add(pinButton);
+        }
 
         if (item.CanClose)
         {
-            var closeButton = new Button
+            _closeButton = new Button
             {
                 Content = "\u00D7",
                 FontSize = 10,
@@ -219,11 +227,13 @@ public class DockTabHeader : StackPanel
                 Background = Brushes.Transparent,
                 Cursor = Cursors.Hand,
                 VerticalAlignment = VerticalAlignment.Center,
-                ToolTip = "Close"
+                ToolTip = "Close",
+                Opacity = 0 // VS2026: hidden by default, shown on hover or when active
             };
-            AutomationProperties.SetName(closeButton, $"Close {item.Title}");
-            closeButton.Click += (_, _) => CloseClicked?.Invoke();
-            Children.Add(closeButton);
+            _closeButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
+            AutomationProperties.SetName(_closeButton, $"Close {item.Title}");
+            _closeButton.Click += (_, _) => CloseClicked?.Invoke();
+            Children.Add(_closeButton);
         }
 
         // Context menu
@@ -232,6 +242,56 @@ public class DockTabHeader : StackPanel
         MouseLeftButtonDown += OnMouseLeftButtonDown;
         MouseMove += OnMouseMove;
         MouseLeftButtonUp += OnMouseLeftButtonUp;
+
+        // VS2026 Fluent: close button visible on hover or when tab is selected
+        MouseEnter += (_, _) => { if (_closeButton is not null) _closeButton.Opacity = 1; };
+        MouseLeave += (_, _) => UpdateCloseButtonVisibility();
+        Loaded += (_, _) => WireParentTabItem();
+    }
+
+    private void WireParentTabItem()
+    {
+        if (_closeButton is null) return;
+
+        // Walk up to find the owning TabItem
+        DependencyObject? current = this;
+        while (current is not null)
+        {
+            if (current is TabItem tabItem)
+            {
+                // Set initial state
+                _closeButton.Opacity = tabItem.IsSelected ? 1 : 0;
+
+                // Track selection changes via DependencyPropertyDescriptor
+                var dpd = DependencyPropertyDescriptor.FromProperty(
+                    Selector.IsSelectedProperty, typeof(TabItem));
+                dpd?.AddValueChanged(tabItem, (_, _) => UpdateCloseButtonVisibility());
+                return;
+            }
+            current = VisualTreeHelper.GetParent(current);
+        }
+    }
+
+    private void UpdateCloseButtonVisibility()
+    {
+        if (_closeButton is null) return;
+
+        // Keep visible if mouse is over header
+        if (IsMouseOver) return;
+
+        // Keep visible if parent tab is selected
+        DependencyObject? current = this;
+        while (current is not null)
+        {
+            if (current is TabItem tabItem)
+            {
+                _closeButton.Opacity = tabItem.IsSelected ? 1 : 0;
+                return;
+            }
+            current = VisualTreeHelper.GetParent(current);
+        }
+
+        _closeButton.Opacity = 0;
     }
 
     private ContextMenu BuildContextMenu(DockItem item)

@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Office Theme — Microsoft Office 2021/365 light, reuses Light templates -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Office/Colors.xaml" />
+        <ResourceDictionary Source="Light/Menu.xaml" />
+        <ResourceDictionary Source="Light/TabControl.xaml" />
+        <ResourceDictionary Source="Light/ContentControls.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

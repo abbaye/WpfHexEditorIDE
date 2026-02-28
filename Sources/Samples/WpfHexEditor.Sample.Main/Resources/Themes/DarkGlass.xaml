@@ -46,7 +46,7 @@
 
     <!-- HexEditor Control Colors for Dark Glass Theme -->
     <Color x:Key="HexEditor_SelectionFirstColor">#6600D9FF</Color>         <!-- Cyan with 40% opacity -->
-    <Color x:Key="HexEditor_SelectionSecondColor">#6600D9FF</Color>        <!-- Cyan with 40% opacity -->
+    <Color x:Key="HexEditor_SelectionSecondColor">#3300D9FF</Color>        <!-- Cyan with 20% opacity (inactive panel) -->
     <Color x:Key="HexEditor_ByteModifiedColor">#FFD600</Color>             <!-- Yellow -->
     <Color x:Key="HexEditor_HighLightColor">#FFD700</Color>                <!-- Gold -->
     <!-- MouseOverColor removed - controlled by HexEditor DP default -->
