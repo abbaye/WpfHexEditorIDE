@@ -245,7 +245,7 @@ namespace WpfHexEditor.Sample.Main.Views
             }
         }
 
-        private void HexEditor_OperationStateChanged(object sender, WpfHexaEditor.Events.OperationStateChangedEventArgs e)
+        private void HexEditor_OperationStateChanged(object sender, WpfHexEditor.Core.Events.OperationStateChangedEventArgs e)
         {
             // Notify ViewModel to update command states
             _viewModel?.OnOperationStateChanged(e.IsActive);

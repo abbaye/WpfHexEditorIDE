@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WpfHexaEditor;
+using WpfHexEditor.HexEditor;
 
 namespace WPFHexaEditor.Tests.Integration
 {

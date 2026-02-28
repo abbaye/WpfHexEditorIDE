@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using WpfHexaEditor.Core;
+using WpfHexEditor.Core;
 using WpfHexEditor.Sample.Main.Services;
 
 namespace WpfHexEditor.Sample.Main.Views.Dialogs

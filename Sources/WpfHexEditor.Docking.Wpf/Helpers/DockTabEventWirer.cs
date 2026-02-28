@@ -22,6 +22,7 @@ internal sealed class DockTabEventWirer : IDisposable
     private readonly Action<DockItem> _autoHideHandler;
     private readonly Action<DockItem> _hideHandler;
     private readonly Action<DockItem> _dockAsDocumentHandler;
+    private readonly Action<DockItem> _pinToggleHandler;
 
     public DockTabEventWirer(DockTabControl tabControl, DockControl host)
     {
@@ -59,12 +60,38 @@ internal sealed class DockTabEventWirer : IDisposable
             host.RebuildVisualTree();
         };
 
+        _pinToggleHandler = item =>
+        {
+            if (item.Owner is not { } group) return;
+            item.IsPinned = !item.IsPinned;
+
+            // Reorder: pinned tabs first, preserving relative order within each group
+            var current = group.Items.ToList();
+            var ordered = current.Where(i => i.IsPinned)
+                .Concat(current.Where(i => !i.IsPinned))
+                .ToList();
+
+            if (!current.SequenceEqual(ordered))
+            {
+                var active = group.ActiveItem;
+                foreach (var i in current)
+                    group.RemoveItem(i);
+                foreach (var i in ordered)
+                    group.AddItem(i);
+                if (active is not null)
+                    group.ActiveItem = active;
+            }
+
+            host.RebuildVisualTree();
+        };
+
         _tabControl.TabCloseRequested            += _closeHandler;
         _tabControl.TabDragStarted               += _dragHandler;
         _tabControl.TabFloatRequested            += _floatHandler;
         _tabControl.TabAutoHideRequested         += _autoHideHandler;
         _tabControl.TabHideRequested             += _hideHandler;
         _tabControl.TabDockAsDocumentRequested   += _dockAsDocumentHandler;
+        _tabControl.TabPinToggleRequested        += _pinToggleHandler;
     }
 
     public void Dispose()
@@ -75,5 +102,6 @@ internal sealed class DockTabEventWirer : IDisposable
         _tabControl.TabAutoHideRequested         -= _autoHideHandler;
         _tabControl.TabHideRequested             -= _hideHandler;
         _tabControl.TabDockAsDocumentRequested   -= _dockAsDocumentHandler;
+        _tabControl.TabPinToggleRequested        -= _pinToggleHandler;
     }
 }

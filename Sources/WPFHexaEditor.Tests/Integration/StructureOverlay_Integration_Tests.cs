@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using WpfHexaEditor.Services;
+using WpfHexEditor.Core.Services;
 
 namespace WpfHexaEditor.Tests.Integration
 {

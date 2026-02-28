@@ -6,7 +6,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using WpfHexaEditor.ViewModels;
+using WpfHexEditor.HexEditor.ViewModels;
 
 namespace WpfHexEditor.WindowPanels.Panels
 {

@@ -1,4 +1,4 @@
-using WpfHexaEditor.Core.CharacterTable;
+using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.TblEditor.ViewModels;
 
 namespace WpfHexEditor.TblEditor.Services;

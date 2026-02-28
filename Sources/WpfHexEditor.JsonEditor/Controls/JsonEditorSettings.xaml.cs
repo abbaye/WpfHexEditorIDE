@@ -8,7 +8,7 @@
 
 using System.Linq;
 using System.Windows.Controls;
-using WpfHexaEditor.Controls;
+using WpfHexEditor.HexEditor.Controls;
 
 namespace WpfHexEditor.JsonEditor.Controls
 {

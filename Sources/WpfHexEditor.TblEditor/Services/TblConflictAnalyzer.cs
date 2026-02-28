@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using WpfHexaEditor.Core.CharacterTable;
+using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.TblEditor.Models;
 using WpfHexEditor.TblEditor.ViewModels;
 

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using WpfHexaEditor.Core.CharacterTable;
+using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.TblEditor.Services;
 
 namespace WpfHexEditor.TblEditor.ViewModels;

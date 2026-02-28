@@ -11,7 +11,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
-using WpfHexaEditor;
+using WpfHexEditor.HexEditor;
 
 namespace WpfHexEditor.Sample.Main.ViewModels
 {
@@ -541,7 +541,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
                 if (_hexEditor == null || !_hexEditor.HasSelection) return;
 
                 // Use the modern MVVM GiveByteWindow dialog
-                var dialog = new WpfHexaEditor.Dialog.GiveByteWindow
+                var dialog = new WpfHexEditor.HexEditor.Dialog.GiveByteWindow
                 {
                     Owner = System.Windows.Application.Current.MainWindow
                 };
@@ -569,7 +569,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
                 if (_hexEditor == null) return;
 
                 // Use the modern MVVM ReplaceByteWindow dialog
-                var dialog = new WpfHexaEditor.Dialog.ReplaceByteWindow
+                var dialog = new WpfHexEditor.HexEditor.Dialog.ReplaceByteWindow
                 {
                     Owner = System.Windows.Application.Current.MainWindow
                 };

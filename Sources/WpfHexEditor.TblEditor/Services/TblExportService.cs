@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using WpfHexaEditor.Core.CharacterTable;
+using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.TblEditor.Models;
 
 namespace WpfHexEditor.TblEditor.Services;

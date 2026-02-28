@@ -1,4 +1,4 @@
-using WpfHexaEditor.Core.CharacterTable;
+using WpfHexEditor.Core.CharacterTable;
 
 namespace WpfHexEditor.TblEditor.Models;
 

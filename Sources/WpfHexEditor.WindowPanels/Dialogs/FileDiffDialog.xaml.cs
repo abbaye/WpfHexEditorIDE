@@ -12,11 +12,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
-using WpfHexaEditor;
-using WpfHexaEditor.Core;
-using WpfHexaEditor.Core.Bytes;
-using WpfHexaEditor.Models.Comparison;
-using WpfHexaEditor.Services;
+using WpfHexEditor.HexEditor;
+using WpfHexEditor.Core;
+using WpfHexEditor.Core.Bytes;
+using WpfHexEditor.Core.Models.Comparison;
+using WpfHexEditor.Core.Services;
 
 namespace WpfHexEditor.WindowPanels.Dialogs
 {

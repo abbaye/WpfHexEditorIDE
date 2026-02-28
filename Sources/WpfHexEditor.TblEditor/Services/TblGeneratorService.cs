@@ -1,8 +1,8 @@
-using WpfHexaEditor.Core;
-using WpfHexaEditor.Core.Bytes;
-using WpfHexaEditor.Core.CharacterTable;
-using WpfHexaEditor.SearchModule.Models;
-using WpfHexaEditor.SearchModule.Services;
+using WpfHexEditor.Core;
+using WpfHexEditor.Core.Bytes;
+using WpfHexEditor.Core.CharacterTable;
+using WpfHexEditor.Core.Search.Models;
+using WpfHexEditor.Core.Search.Services;
 using WpfHexEditor.TblEditor.Models;
 using WpfHexEditor.TblEditor.ViewModels;
 

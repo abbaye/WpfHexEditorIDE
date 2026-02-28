@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using WpfHexaEditor.Core.Bytes;
+using WpfHexEditor.Core.Bytes;
 
 Console.WriteLine("ByteProvider micro-benchmark starting...");
 

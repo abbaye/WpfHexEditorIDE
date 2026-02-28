@@ -2,7 +2,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WpfHexaEditor.Core.CharacterTable;
+using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.TblEditor.Services;
 using WpfHexEditor.TblEditor.ViewModels;

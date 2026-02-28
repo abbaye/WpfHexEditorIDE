@@ -10,10 +10,10 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
-using WpfHexaEditor.Interfaces;
-using WpfHexaEditor.Models.StructureOverlay;
-using WpfHexaEditor.Services;
-using WpfHexaEditor.ViewModels;
+using WpfHexEditor.Core.Interfaces;
+using WpfHexEditor.Core.Models.StructureOverlay;
+using WpfHexEditor.Core.Services;
+using WpfHexEditor.HexEditor.ViewModels;
 
 namespace WpfHexEditor.WindowPanels.Panels
 {

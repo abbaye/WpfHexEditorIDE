@@ -15,8 +15,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using WpfHexaEditor.Core.Bytes;
-using WpfHexaEditor.SearchModule.Models;
+using WpfHexEditor.Core.Bytes;
+using WpfHexEditor.Core.Search.Models;
 
 namespace WpfHexEditor.Sample.Main.ViewModels
 {

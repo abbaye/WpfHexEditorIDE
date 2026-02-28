@@ -10,9 +10,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using WpfHexaEditor;
-using WpfHexaEditor.Core;
-using WpfHexaEditor.Events;
+using WpfHexEditor.HexEditor;
+using WpfHexEditor.Core;
+using WpfHexEditor.Core.Events;
 
 namespace WpfHexEditor.Sample.Main.Views.Components
 {

@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
-using WpfHexaEditor.Core;
-using WpfHexaEditor.Services;
+using WpfHexEditor.Core;
+using WpfHexEditor.Core.Services;
 
 namespace WpfHexaEditor.Tests
 {

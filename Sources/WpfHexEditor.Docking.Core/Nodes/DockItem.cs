@@ -26,6 +26,11 @@ public class DockItem
 
     public bool CanFloat { get; set; } = true;
 
+    /// <summary>
+    /// Whether this document tab is pinned (moved to the left, protected from Close All).
+    /// </summary>
+    public bool IsPinned { get; set; }
+
     public DockItemState State { get; set; } = DockItemState.Docked;
 
     /// <summary>

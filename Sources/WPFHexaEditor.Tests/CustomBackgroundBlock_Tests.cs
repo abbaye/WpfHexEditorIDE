@@ -5,7 +5,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Windows.Media;
-using WpfHexaEditor.Core;
+using WpfHexEditor.Core;
 
 namespace WpfHexaEditor.Tests
 {

@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Windows.Threading;
-using WpfHexaEditor;
+using WpfHexEditor.HexEditor;
 
 namespace WpfHexaEditor.Tests
 {

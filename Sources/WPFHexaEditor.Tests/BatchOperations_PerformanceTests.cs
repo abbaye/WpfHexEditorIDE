@@ -1,8 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;
-using WpfHexaEditor.Core;
-using WpfHexaEditor.Core.Bytes;
+using WpfHexEditor.Core;
+using WpfHexEditor.Core.Bytes;
 
 namespace WpfHexaEditor.Tests
 {

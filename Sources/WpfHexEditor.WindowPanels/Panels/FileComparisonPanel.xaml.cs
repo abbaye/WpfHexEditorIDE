@@ -14,9 +14,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using WpfHexaEditor.Core.FormatDetection;
-using WpfHexaEditor.Services;
-using WpfHexaEditor.Events;
+using WpfHexEditor.Core.FormatDetection;
+using WpfHexEditor.Core.Services;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.WindowPanels.Dialogs;
 
 namespace WpfHexEditor.WindowPanels.Panels

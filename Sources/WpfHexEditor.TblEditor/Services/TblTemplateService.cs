@@ -1,6 +1,6 @@
 using System.IO;
 using System.Text;
-using WpfHexaEditor.Core.CharacterTable;
+using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.TblEditor.Models;
 
 namespace WpfHexEditor.TblEditor.Services;

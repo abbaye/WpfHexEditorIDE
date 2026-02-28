@@ -6,8 +6,8 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using WpfHexaEditor.Models.Bookmarks;
-using WpfHexaEditor.Services;
+using WpfHexEditor.Core.Models.Bookmarks;
+using WpfHexEditor.Core.Services;
 
 namespace WpfHexEditor.WindowPanels.Panels
 {
