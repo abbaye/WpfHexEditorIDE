@@ -26,6 +26,18 @@ public static class DockLayoutXmlSerializer
             new XElement("FloatingItems", layout.FloatingItems.Select(ItemToXml)),
             new XElement("AutoHideItems", layout.AutoHideItems.Select(ItemToXml)));
 
+        // Window state
+        if (layout.WindowState is not null)
+        {
+            var ws = new XElement("WindowState",
+                new XAttribute("State", layout.WindowState.Value));
+            if (layout.WindowLeft is not null) ws.Add(new XAttribute("Left", layout.WindowLeft.Value.ToString(CultureInfo.InvariantCulture)));
+            if (layout.WindowTop is not null) ws.Add(new XAttribute("Top", layout.WindowTop.Value.ToString(CultureInfo.InvariantCulture)));
+            if (layout.WindowWidth is not null) ws.Add(new XAttribute("Width", layout.WindowWidth.Value.ToString(CultureInfo.InvariantCulture)));
+            if (layout.WindowHeight is not null) ws.Add(new XAttribute("Height", layout.WindowHeight.Value.ToString(CultureInfo.InvariantCulture)));
+            root.Add(ws);
+        }
+
         return root.ToString(SaveOptions.None);
     }
 
@@ -58,6 +70,17 @@ public static class DockLayoutXmlSerializer
             layout.AutoHideItems.Add(item);
         }
 
+        // Window state
+        var wsEl = root.Element("WindowState");
+        if (wsEl is not null)
+        {
+            layout.WindowState = (int?)wsEl.Attribute("State");
+            layout.WindowLeft = ParseNullableDouble(wsEl, "Left");
+            layout.WindowTop = ParseNullableDouble(wsEl, "Top");
+            layout.WindowWidth = ParseNullableDouble(wsEl, "Width");
+            layout.WindowHeight = ParseNullableDouble(wsEl, "Height");
+        }
+
         return layout;
     }
 
@@ -81,6 +104,9 @@ public static class DockLayoutXmlSerializer
             new XAttribute("Orientation", split.Orientation),
             new XAttribute("LockMode", split.LockMode),
             new XAttribute("Ratios", string.Join(",", split.Ratios.Select(r => r.ToString(CultureInfo.InvariantCulture)))),
+            split.PixelSizes.Any(s => s.HasValue)
+                ? new XAttribute("PixelSizes", string.Join(",", split.PixelSizes.Select(s => s.HasValue ? s.Value.ToString(CultureInfo.InvariantCulture) : "*")))
+                : null,
             split.Children.Select(NodeToXml)),
 
         _ => throw new NotSupportedException($"Unknown node type: {node.GetType()}")
@@ -167,6 +193,20 @@ public static class DockLayoutXmlSerializer
             var ratio = i < ratios.Count ? ratios[i] : 0.5;
             split.AddChild(child, ratio);
         }
+
+        // Restore pixel sizes
+        var pixelSizesStr = (string?)el.Attribute("PixelSizes");
+        if (pixelSizesStr is not null)
+        {
+            var parts = pixelSizesStr.Split(',');
+            if (parts.Length == split.Children.Count)
+            {
+                var pixelSizes = parts.Select(s =>
+                    s == "*" ? (double?)null : double.Parse(s, CultureInfo.InvariantCulture)).ToArray();
+                split.SetPixelSizes(pixelSizes);
+            }
+        }
+
         return split;
     }
 

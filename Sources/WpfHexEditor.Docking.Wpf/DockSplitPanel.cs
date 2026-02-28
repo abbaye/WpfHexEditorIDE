@@ -89,18 +89,37 @@ public class DockSplitPanel : Grid
                 Children.Add(splitter);
             }
 
-            // Add content column/row with minimum size constraint
-            var ratio = i < node.Ratios.Count ? node.Ratios[i] : 1.0 / node.Children.Count;
+            // Determine sizing: if PixelSizes are available and we know the document child,
+            // use them directly (Pixel for side panels, Star for document). This avoids the
+            // Star→Pixel conversion that loses absolute panel sizes across window maximize/restore.
+            var hasPixelSizes = _documentChildIndex >= 0
+                                && node.PixelSizes.Count == node.Children.Count
+                                && node.PixelSizes.Any(s => s.HasValue);
+
+            GridLength sizing;
+            if (hasPixelSizes)
+            {
+                var px = node.PixelSizes[i];
+                sizing = px.HasValue
+                    ? new GridLength(px.Value, GridUnitType.Pixel)
+                    : new GridLength(1, GridUnitType.Star);
+            }
+            else
+            {
+                var ratio = i < node.Ratios.Count ? node.Ratios[i] : 1.0 / node.Children.Count;
+                sizing = new GridLength(ratio, GridUnitType.Star);
+            }
+
             if (isHorizontal)
                 ColumnDefinitions.Add(new ColumnDefinition
                 {
-                    Width    = new GridLength(ratio, GridUnitType.Star),
+                    Width    = sizing,
                     MinWidth = MinPaneSize
                 });
             else
                 RowDefinitions.Add(new RowDefinition
                 {
-                    Height    = new GridLength(ratio, GridUnitType.Star),
+                    Height    = sizing,
                     MinHeight = MinPaneSize
                 });
 
@@ -118,7 +137,8 @@ public class DockSplitPanel : Grid
 
         // After the first layout pass, convert non-document panels to Pixel sizing
         // so they keep their absolute size on window resize (VS-style behavior).
-        if (_documentChildIndex >= 0)
+        // Skip if PixelSizes already provided the correct sizing above.
+        if (_documentChildIndex >= 0 && !(node.PixelSizes.Count == node.Children.Count && node.PixelSizes.Any(s => s.HasValue)))
             Dispatcher.BeginInvoke(DispatcherPriority.Loaded, ConvertToFixedSizing);
     }
 
@@ -162,12 +182,21 @@ public class DockSplitPanel : Grid
     /// Syncs the Grid's actual column/row sizes back to the DockSplitNode ratios after a splitter drag.
     /// Uses ActualWidth/ActualHeight to handle both Pixel and Star columns correctly.
     /// </summary>
-    private void OnSplitterDragCompleted(object sender, DragCompletedEventArgs e)
+    private void OnSplitterDragCompleted(object sender, DragCompletedEventArgs e) => SyncRatiosFromVisual();
+
+    /// <summary>
+    /// Reads the current ActualWidth/ActualHeight of each content column/row and writes
+    /// the proportional ratios back to <see cref="Node"/>. Also stores absolute pixel sizes
+    /// for non-document panels so that exact panel dimensions survive window maximize/restore.
+    /// Called after splitter drag and before layout serialization.
+    /// </summary>
+    public void SyncRatiosFromVisual()
     {
         if (Node is null || _contentDefinitionIndices.Count != Node.Children.Count) return;
 
         var isHorizontal = Node.Orientation == SplitOrientation.Horizontal;
         var newRatios = new double[_contentDefinitionIndices.Count];
+        var pixelSizes = new double?[_contentDefinitionIndices.Count];
         var totalSize = 0.0;
 
         for (var i = 0; i < _contentDefinitionIndices.Count; i++)
@@ -178,6 +207,9 @@ public class DockSplitPanel : Grid
                 : RowDefinitions[defIndex].ActualHeight;
             newRatios[i] = size;
             totalSize += size;
+
+            // Record absolute pixel size for non-document panels; null for the document host (Star)
+            pixelSizes[i] = i == _documentChildIndex ? null : size;
         }
 
         if (totalSize <= 0) return;
@@ -190,6 +222,9 @@ public class DockSplitPanel : Grid
         // Re-normalize after clamping
         var clampedSum = newRatios.Sum();
         Node.SetRatios(newRatios.Select(r => r / clampedSum).ToArray());
+
+        // Store absolute pixel sizes so restore doesn't depend on window size
+        Node.SetPixelSizes(pixelSizes);
     }
 
     /// <summary>

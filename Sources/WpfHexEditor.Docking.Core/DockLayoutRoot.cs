@@ -42,6 +42,21 @@ public class DockLayoutRoot
     /// </summary>
     public List<DockItem> AutoHideItems { get; } = [];
 
+    // ─── Window state (set by the host before serialization) ────────
+
+    /// <summary>
+    /// Main window state: 0 = Normal, 1 = Minimized, 2 = Maximized.
+    /// </summary>
+    public int? WindowState { get; set; }
+
+    /// <summary>
+    /// Main window restore bounds (normal-state position/size even when maximized).
+    /// </summary>
+    public double? WindowLeft { get; set; }
+    public double? WindowTop { get; set; }
+    public double? WindowWidth { get; set; }
+    public double? WindowHeight { get; set; }
+
     /// <summary>
     /// Finds a node by its Id in the tree.
     /// </summary>

@@ -203,6 +203,12 @@ public class FloatingWindow : Window
         // Propagate theme foreground dynamically to all text content inside the floating window
         outerBorder.SetResourceReference(TextElement.ForegroundProperty, "DockMenuForegroundBrush");
 
+        // Active/inactive border accent (consistent on Windows 10 + 11)
+        Activated += (_, _) =>
+            outerBorder.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
+        Deactivated += (_, _) =>
+            outerBorder.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
+
         Content = outerBorder;
     }
 
@@ -296,12 +302,10 @@ public class FloatingWindowManager
         var window = new FloatingWindow();
         window.Bind(group, activeItem, _dockControl.CachedContentFactory);
 
-        // Apply saved size if available
-        if (trackPosition)
-        {
-            if (activeItem.FloatWidth.HasValue)  window.Width  = activeItem.FloatWidth.Value;
-            if (activeItem.FloatHeight.HasValue) window.Height = activeItem.FloatHeight.Value;
-        }
+        // Apply saved size if available (always, not just for trackPosition —
+        // group drags also need the captured docked panel size)
+        if (activeItem.FloatWidth.HasValue)  window.Width  = activeItem.FloatWidth.Value;
+        if (activeItem.FloatHeight.HasValue) window.Height = activeItem.FloatHeight.Value;
 
         // Position: saved location > explicit position > centered relative to owner
         if (trackPosition && activeItem.FloatLeft.HasValue && activeItem.FloatTop.HasValue)

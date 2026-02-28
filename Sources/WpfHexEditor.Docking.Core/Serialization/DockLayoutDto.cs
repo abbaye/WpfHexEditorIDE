@@ -24,6 +24,13 @@ public class DockSplitNodeDto : DockNodeDto
     public SplitOrientation Orientation { get; set; }
     public List<DockNodeDto> Children { get; set; } = [];
     public List<double> Ratios { get; set; } = [];
+
+    /// <summary>
+    /// Absolute pixel sizes for non-document panels. Null entries = Star (document host).
+    /// When present, these override the proportional Ratios for layout restore, ensuring
+    /// side panels keep their exact pixel width/height regardless of window size.
+    /// </summary>
+    public List<double?>? PixelSizes { get; set; }
 }
 
 /// <summary>
@@ -70,4 +77,18 @@ public class DockLayoutRootDto
     public required DockNodeDto RootNode { get; set; }
     public List<DockItemDto> FloatingItems { get; set; } = [];
     public List<DockItemDto> AutoHideItems { get; set; } = [];
+
+    /// <summary>
+    /// Main window state: 0 = Normal, 1 = Minimized, 2 = Maximized.
+    /// </summary>
+    public int? WindowState { get; set; }
+
+    /// <summary>
+    /// Main window restore bounds (position and size when in Normal state).
+    /// These represent the normal-state bounds even when the window is maximized.
+    /// </summary>
+    public double? WindowLeft { get; set; }
+    public double? WindowTop { get; set; }
+    public double? WindowWidth { get; set; }
+    public double? WindowHeight { get; set; }
 }

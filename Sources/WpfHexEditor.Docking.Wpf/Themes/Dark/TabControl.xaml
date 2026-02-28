@@ -15,9 +15,7 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Border Grid.Row="0"
-                                Background="{DynamicResource DockMenuBackgroundBrush}"
-                                BorderBrush="{DynamicResource DockBorderBrush}"
-                                BorderThickness="0,0,0,1">
+                                Background="{DynamicResource DockMenuBackgroundBrush}">
                             <TabPanel Panel.IsItemsHost="True"
                                       Background="Transparent"
                                       Margin="4,2,4,0" />
@@ -52,12 +50,10 @@
                                           KeyboardNavigation.TabNavigation="Local"
                                           KeyboardNavigation.DirectionalNavigation="Contained" />
                         <Border Grid.Row="1"
-                                Background="{DynamicResource DockMenuBackgroundBrush}"
-                                BorderBrush="{DynamicResource DockBorderBrush}"
-                                BorderThickness="0,1,0,0">
+                                Background="{DynamicResource DockMenuBackgroundBrush}">
                             <TabPanel Panel.IsItemsHost="True"
                                       Background="Transparent"
-                                      Margin="4,2,4,2" />
+                                      Margin="2,0,2,0" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -65,33 +61,42 @@
         </Setter>
     </Style>
 
-    <!-- DockTabItem: rounded top corners, themed active/hover states -->
+    <!-- DockTabItem: flat fused design — active tab matches content bg (VS2022-style) -->
     <Style x:Key="DockTabItemStyle" TargetType="{x:Type TabItem}">
         <Setter Property="Foreground" Value="{DynamicResource DockTabTextBrush}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Padding" Value="8,4,8,4" />
-        <Setter Property="Margin" Value="0,1,1,0" />
+        <Setter Property="Padding" Value="10,6,10,6" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
-                    <Border x:Name="TabBorder"
-                            Background="Transparent"
-                            CornerRadius="3,3,0,0"
-                            Padding="{TemplateBinding Padding}"
-                            SnapsToDevicePixels="True">
-                        <ContentPresenter ContentSource="Header"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Center" />
-                    </Border>
+                    <Grid SnapsToDevicePixels="True">
+                        <Border x:Name="TabBorder"
+                                Background="Transparent"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center" />
+                        </Border>
+                        <!-- Accent indicator: 3px line at top of tab (toward content) -->
+                        <Border x:Name="ActiveIndicator"
+                                Height="3"
+                                VerticalAlignment="Top"
+                                Background="Transparent" />
+                    </Grid>
                     <ControlTemplate.Triggers>
+                        <!-- Selected: bg matches content area, accent line visible -->
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="TabBorder" Property="Background"
+                                    Value="{DynamicResource DockBackgroundBrush}" />
+                            <Setter TargetName="ActiveIndicator" Property="Background"
                                     Value="{DynamicResource DockTabActiveBrush}" />
                             <Setter Property="Foreground"
                                     Value="{DynamicResource DockTabActiveTextBrush}" />
                         </Trigger>
+                        <!-- Hover on unselected -->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsSelected" Value="False" />

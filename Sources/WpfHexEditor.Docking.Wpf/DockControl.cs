@@ -37,6 +37,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     private readonly AutoHideBar _autoHideBottom;
     private readonly AutoHideFlyout _autoHideFlyout;
     private readonly ContentControl _centerHost;
+    private Border? _activePanel;
 
     public static readonly DependencyProperty LayoutProperty =
         DependencyProperty.Register(
@@ -241,7 +242,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
         CommandBindings.Add(new CommandBinding(
             DockCommands.Float,
-            (_, e) => { if (GetCommandItem(e) is { } item) { _engine?.Float(item); RebuildVisualTree(); } },
+            (_, e) => { if (GetCommandItem(e) is { } item) { CaptureDockedSizeForFloat(item); _engine?.Float(item); RebuildVisualTree(); } },
             (_, e) => { var item = GetCommandItem(e); e.CanExecute = item is { CanFloat: true }; }));
 
         CommandBindings.Add(new CommandBinding(
@@ -405,6 +406,101 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         Dispatcher.Invoke(RebuildVisualTree);
     }
 
+    // ─── Layout size sync ───────────────────────────────────────────
+
+    /// <summary>
+    /// Synchronizes the in-memory <see cref="DockSplitNode.Ratios"/> with the actual
+    /// rendered column/row sizes of every <see cref="DockSplitPanel"/> in the visual tree.
+    /// Call this before serializing the layout to persist user-resized panels.
+    /// </summary>
+    public void SyncLayoutSizes()
+    {
+        SyncSplitPanels(_centerHost);
+
+        static void SyncSplitPanels(DependencyObject parent)
+        {
+            var count = VisualTreeHelper.GetChildrenCount(parent);
+            for (var i = 0; i < count; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is DockSplitPanel panel)
+                    panel.SyncRatiosFromVisual();
+                SyncSplitPanels(child);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns the rendered size of the visual element hosting the given group node.
+    /// Walks up from the <see cref="DockTabControl"/> to find the direct child of
+    /// a <see cref="DockSplitPanel"/> (the outermost wrapper), which reflects the cell size.
+    /// Returns null if the group has no visual representation.
+    /// </summary>
+    internal Size? GetRenderedSizeForGroup(DockGroupNode group)
+    {
+        var tabControl = FindDescendant<DockTabControl>(_centerHost, tc => tc.Node == group);
+        if (tabControl is null) return null;
+
+        // Walk up to find the direct child of a DockSplitPanel
+        FrameworkElement element = tabControl;
+        DependencyObject parent = VisualTreeHelper.GetParent(tabControl);
+        while (parent is not null and not DockSplitPanel)
+        {
+            if (parent is FrameworkElement fe)
+                element = fe;
+            parent = VisualTreeHelper.GetParent(parent);
+        }
+
+        return parent is DockSplitPanel ? element.RenderSize : tabControl.RenderSize;
+    }
+
+    /// <summary>
+    /// Captures the current rendered size of a docked item's panel and stores it as
+    /// <see cref="DockItem.FloatWidth"/>/<see cref="DockItem.FloatHeight"/>.
+    /// Must be called BEFORE <see cref="DockEngine.Float"/> (which destroys the owner reference).
+    /// </summary>
+    internal void CaptureDockedSizeForFloat(DockItem item)
+    {
+        if (item.Owner is not { } group) return;
+        var size = GetRenderedSizeForGroup(group);
+        if (size is { Width: > 0, Height: > 0 })
+        {
+            item.FloatWidth = size.Value.Width;
+            item.FloatHeight = size.Value.Height;
+        }
+    }
+
+    /// <summary>
+    /// Captures the current rendered size of a group and stores it on its active item.
+    /// Must be called BEFORE <see cref="DockEngine.FloatGroup"/>.
+    /// </summary>
+    internal void CaptureDockedSizeForFloat(DockGroupNode group)
+    {
+        var activeItem = group.ActiveItem ?? group.Items.FirstOrDefault();
+        if (activeItem is null) return;
+        var size = GetRenderedSizeForGroup(group);
+        if (size is { Width: > 0, Height: > 0 })
+        {
+            activeItem.FloatWidth = size.Value.Width;
+            activeItem.FloatHeight = size.Value.Height;
+        }
+    }
+
+    private static T? FindDescendant<T>(DependencyObject parent, Func<T, bool> predicate) where T : DependencyObject
+    {
+        var count = VisualTreeHelper.GetChildrenCount(parent);
+        for (var i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T t && predicate(t))
+                return t;
+            var found = FindDescendant(child, predicate);
+            if (found is not null)
+                return found;
+        }
+        return null;
+    }
+
     /// <summary>
     /// Rebuilds the entire visual tree from the current Layout.
     /// </summary>
@@ -412,6 +508,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     {
         // Dispose previous tab wirers to prevent event leaks
         DisposeWirers();
+        _activePanel = null;
 
         if (Layout is null)
         {
@@ -459,7 +556,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         return panel;
     }
 
-    private DocumentTabHost CreateDocumentHost(DocumentHostNode docHost)
+    private UIElement CreateDocumentHost(DocumentHostNode docHost)
     {
         var host = new DocumentTabHost();
 
@@ -473,7 +570,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         }
 
         WireTabControlEvents(host);
-        return host;
+        return CreatePanelBorder(host);
     }
 
     private UIElement CreateTabControl(DockGroupNode group)
@@ -486,7 +583,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         layout.Children.Add(titleBar);
         layout.Children.Add(tabControl);
 
-        return CreateFocusBorder(layout);
+        return CreatePanelBorder(layout);
     }
 
     /// <summary>
@@ -580,7 +677,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             };
 
             var floatMenuItem = new MenuItem { Header = "Float", Foreground = menuFg };
-            floatMenuItem.Click += (_, _) => { _engine?.Float(item); RebuildVisualTree(); };
+            floatMenuItem.Click += (_, _) => { CaptureDockedSizeForFloat(item); _engine?.Float(item); RebuildVisualTree(); };
             menu.Items.Add(floatMenuItem);
 
             var autoHideMenuItem = new MenuItem { Header = "Auto Hide", Foreground = menuFg };
@@ -618,7 +715,11 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         titleContent.Children.Add(chevronButton);
         titleContent.Children.Add(titleBlock);
 
-        var titleBar = new Border { Child = titleContent, Cursor = Cursors.SizeAll };
+        var titleBar = new Border
+        {
+            Child  = titleContent,
+            Cursor = Cursors.SizeAll
+        };
         titleBar.SetResourceReference(Border.BackgroundProperty, "DockMenuBackgroundBrush");
 
         // Drag threshold state (local to this title bar instance)
@@ -657,32 +758,42 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     }
 
     /// <summary>
-    /// Wraps any UIElement in a Border that shows a 2 px accent-colored top line
-    /// when any child element has keyboard focus (VS2022-style active panel indicator).
+    /// Activates a panel border (accent color) and deactivates the previously active one.
+    /// The panel stays active until another panel is clicked — no deactivation on LostFocus.
     /// </summary>
-    private static Border CreateFocusBorder(UIElement content)
+    private void SetActivePanel(Border panelBorder)
+    {
+        if (_activePanel == panelBorder) return;
+
+        _activePanel?.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
+        _activePanel = panelBorder;
+        _activePanel.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
+    }
+
+    /// <summary>
+    /// Wraps any UIElement in a 2 px border on all four sides. The border turns accent-colored
+    /// when the user clicks or focuses inside the panel (VS2022-style active panel indicator).
+    /// </summary>
+    private Border CreatePanelBorder(UIElement content)
     {
         var border = new Border
         {
-            Child           = content,
-            BorderThickness = new Thickness(0, 2, 0, 0)
+            Child               = content,
+            BorderThickness     = new Thickness(2),
+            SnapsToDevicePixels = true
         };
         border.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
 
-        // Turn accent when focus enters; restore when focus leaves the entire group
+        // Activate on ANY mouse click inside the panel (tunneling catches handled events)
         border.AddHandler(
-            UIElement.GotKeyboardFocusEvent,
-            new KeyboardFocusChangedEventHandler((_, _) =>
-                border.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush")),
+            UIElement.PreviewMouseDownEvent,
+            new MouseButtonEventHandler((_, _) => SetActivePanel(border)),
             handledEventsToo: true);
 
+        // Also activate on keyboard focus (e.g. Tab navigation)
         border.AddHandler(
-            UIElement.LostKeyboardFocusEvent,
-            new KeyboardFocusChangedEventHandler((_, _) =>
-            {
-                if (!border.IsKeyboardFocusWithin)
-                    border.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
-            }),
+            UIElement.GotKeyboardFocusEvent,
+            new KeyboardFocusChangedEventHandler((_, _) => SetActivePanel(border)),
             handledEventsToo: true);
 
         return border;

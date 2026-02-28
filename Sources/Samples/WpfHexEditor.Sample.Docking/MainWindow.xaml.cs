@@ -56,6 +56,7 @@ public partial class MainWindow : Window
             try
             {
                 var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(LayoutFilePath));
+                RestoreWindowState(layout);
                 ApplyLayout(layout);
                 OutputLogger.Info($"Layout restored from: {LayoutFilePath}");
                 StatusText.Text = "Layout restored from previous session.";
@@ -71,10 +72,50 @@ public partial class MainWindow : Window
         SetupDefaultLayout();
     }
 
+    /// <summary>
+    /// Restores the main window position, size, and state from the saved layout.
+    /// Must be called BEFORE <see cref="ApplyLayout"/> so that panel pixel sizes
+    /// resolve against the correct window dimensions.
+    /// </summary>
+    private void RestoreWindowState(DockLayoutRoot layout)
+    {
+        if (layout.WindowWidth is > 0 && layout.WindowHeight is > 0)
+        {
+            Left = layout.WindowLeft ?? Left;
+            Top = layout.WindowTop ?? Top;
+            Width = layout.WindowWidth.Value;
+            Height = layout.WindowHeight.Value;
+        }
+
+        if (layout.WindowState is 2) // Maximized
+            WindowState = WindowState.Maximized;
+    }
+
     private void AutoSaveLayout()
     {
         try
         {
+            DockHost.SyncLayoutSizes();
+
+            // Persist window state and restore bounds so the window reopens
+            // in the same position/size/state (including maximized).
+            _layout.WindowState = (int)WindowState;
+            var rb = RestoreBounds; // WPF provides normal-state bounds even when maximized
+            if (rb != Rect.Empty)
+            {
+                _layout.WindowLeft = rb.Left;
+                _layout.WindowTop = rb.Top;
+                _layout.WindowWidth = rb.Width;
+                _layout.WindowHeight = rb.Height;
+            }
+            else
+            {
+                _layout.WindowLeft = Left;
+                _layout.WindowTop = Top;
+                _layout.WindowWidth = Width;
+                _layout.WindowHeight = Height;
+            }
+
             Directory.CreateDirectory(Path.GetDirectoryName(LayoutFilePath)!);
             File.WriteAllText(LayoutFilePath, DockLayoutSerializer.Serialize(_layout));
             OutputLogger.Info($"Layout auto-saved to: {LayoutFilePath}");
@@ -107,13 +148,13 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// Câble un layout au DockControl. Utilisé par SetupDefaultLayout, LoadSavedLayoutOrDefault
-    /// et OnLoadLayout. Gère la souscription unique à TabCloseRequested et synchronise
-    /// le compteur de documents.
+    /// Wires a layout to the DockControl. Used by SetupDefaultLayout, LoadSavedLayoutOrDefault
+    /// and OnLoadLayout. Manages the single subscription to TabCloseRequested and synchronizes
+    /// the document counter.
     /// </summary>
     private void ApplyLayout(DockLayoutRoot layout, DockEngine? engine = null)
     {
-        // Évite les doublons si ApplyLayout est appelé plusieurs fois (Reset, Load…)
+        // Avoid duplicates if ApplyLayout is called multiple times (Reset, Load…)
         DockHost.TabCloseRequested -= OnTabCloseRequested;
 
         _layout = layout;
@@ -130,8 +171,8 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// Synchronise <see cref="_documentCounter"/> avec les ContentId existants après
-    /// un restore, pour éviter des collisions de ContentId lors de la création de nouveaux docs.
+    /// Synchronizes <see cref="_documentCounter"/> with existing ContentIds after
+    /// a restore, to avoid ContentId collisions when creating new documents.
     /// </summary>
     private void SyncDocumentCounter()
     {
@@ -371,6 +412,18 @@ public partial class MainWindow : Window
 
         if (dialog.ShowDialog() == true)
         {
+            DockHost.SyncLayoutSizes();
+
+            _layout.WindowState = (int)WindowState;
+            var rb = RestoreBounds;
+            if (rb != Rect.Empty)
+            {
+                _layout.WindowLeft = rb.Left;
+                _layout.WindowTop = rb.Top;
+                _layout.WindowWidth = rb.Width;
+                _layout.WindowHeight = rb.Height;
+            }
+
             File.WriteAllText(dialog.FileName, DockLayoutSerializer.Serialize(_layout));
             OutputLogger.Info($"Layout saved to: {dialog.FileName}");
             StatusText.Text = $"Layout saved: {dialog.FileName}";

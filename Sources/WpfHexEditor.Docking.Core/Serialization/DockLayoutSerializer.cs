@@ -48,7 +48,12 @@ public static class DockLayoutSerializer
             Version = CurrentVersion,
             RootNode = NodeToDto(layout.RootNode),
             FloatingItems = layout.FloatingItems.Select(ItemToDto).ToList(),
-            AutoHideItems = layout.AutoHideItems.Select(ItemToDto).ToList()
+            AutoHideItems = layout.AutoHideItems.Select(ItemToDto).ToList(),
+            WindowState = layout.WindowState,
+            WindowLeft = layout.WindowLeft,
+            WindowTop = layout.WindowTop,
+            WindowWidth = layout.WindowWidth,
+            WindowHeight = layout.WindowHeight
         };
     }
 
@@ -80,7 +85,8 @@ public static class DockLayoutSerializer
                 LockMode = split.LockMode,
                 Orientation = split.Orientation,
                 Children = split.Children.Select(NodeToDto).ToList(),
-                Ratios = split.Ratios.ToList()
+                Ratios = split.Ratios.ToList(),
+                PixelSizes = split.PixelSizes.Any(s => s.HasValue) ? split.PixelSizes.ToList() : null
             },
             _ => throw new NotSupportedException($"Unknown node type: {node.GetType()}")
         };
@@ -139,6 +145,13 @@ public static class DockLayoutSerializer
             layout.AutoHideItems.Add(item);
         }
 
+        // Restore window state
+        layout.WindowState = dto.WindowState;
+        layout.WindowLeft = dto.WindowLeft;
+        layout.WindowTop = dto.WindowTop;
+        layout.WindowWidth = dto.WindowWidth;
+        layout.WindowHeight = dto.WindowHeight;
+
         return layout;
     }
 
@@ -176,6 +189,9 @@ public static class DockLayoutSerializer
                     var ratio = i < splitDto.Ratios.Count ? splitDto.Ratios[i] : 0.5;
                     split.AddChild(childNode, ratio);
                 }
+                // Restore pixel sizes for non-document panels
+                if (splitDto.PixelSizes is { Count: > 0 } && splitDto.PixelSizes.Count == split.Children.Count)
+                    split.SetPixelSizes(splitDto.PixelSizes.ToArray());
                 return split;
 
             default:

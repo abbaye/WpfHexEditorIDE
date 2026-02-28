@@ -14,12 +14,32 @@ public class DockSplitNode : DockNode
 {
     private readonly List<DockNode> _children = [];
     private readonly List<double> _ratios = [];
+    private readonly List<double?> _pixelSizes = [];
 
     public SplitOrientation Orientation { get; set; }
 
     public IReadOnlyList<DockNode> Children => _children;
 
     public IReadOnlyList<double> Ratios => _ratios;
+
+    /// <summary>
+    /// Absolute pixel sizes for each child. Non-null values indicate fixed (Pixel) sizing;
+    /// null values indicate flexible (Star) sizing (typically the document host).
+    /// Used by <see cref="DockSplitPanel"/> to restore exact panel dimensions regardless of window size.
+    /// </summary>
+    public IReadOnlyList<double?> PixelSizes => _pixelSizes;
+
+    /// <summary>
+    /// Replaces all pixel sizes. Must match the child count.
+    /// </summary>
+    public void SetPixelSizes(double?[] sizes)
+    {
+        if (sizes.Length != _children.Count)
+            throw new ArgumentException("PixelSizes count must match children count.", nameof(sizes));
+
+        _pixelSizes.Clear();
+        _pixelSizes.AddRange(sizes);
+    }
 
     /// <summary>
     /// Adds a child with the given ratio. Existing ratios are not automatically re-normalized.
@@ -31,6 +51,7 @@ public class DockSplitNode : DockNode
         child.Parent = this;
         _children.Add(child);
         _ratios.Add(ratio);
+        _pixelSizes.Add(null);
     }
 
     /// <summary>
@@ -43,6 +64,7 @@ public class DockSplitNode : DockNode
         child.Parent = this;
         _children.Insert(index, child);
         _ratios.Insert(index, ratio);
+        _pixelSizes.Insert(index, null);
     }
 
     /// <summary>
@@ -55,6 +77,7 @@ public class DockSplitNode : DockNode
 
         _children.RemoveAt(index);
         _ratios.RemoveAt(index);
+        if (_pixelSizes.Count > index) _pixelSizes.RemoveAt(index);
         child.Parent = null;
     }
 

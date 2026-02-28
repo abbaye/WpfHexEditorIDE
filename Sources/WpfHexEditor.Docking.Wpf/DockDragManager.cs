@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core;
@@ -49,6 +50,9 @@ public class DockDragManager
 
     /// <summary>
     /// Walks up the visual tree from the element at the given point to find the containing DockTabControl.
+    /// Also checks sibling children of parent Panels: side panels use a DockPanel that holds
+    /// a title bar Border alongside the DockTabControl, so when the cursor is over the title bar,
+    /// the walk-up finds the parent DockPanel and locates the sibling DockTabControl.
     /// Returns null if no DockTabControl is found (e.g., over a splitter or empty area).
     /// </summary>
     private DockTabControl? FindTargetTabControl(Point localPosInCenterHost)
@@ -58,6 +62,18 @@ public class DockDragManager
         {
             if (hit is DockTabControl tabControl)
                 return tabControl;
+
+            // Side panels: DockPanel { Border(title bar), DockTabControl }.
+            // When cursor is over the title bar, check sibling children for DockTabControl.
+            if (hit is Panel panel)
+            {
+                foreach (UIElement child in panel.Children)
+                {
+                    if (child is DockTabControl tc)
+                        return tc;
+                }
+            }
+
             hit = VisualTreeHelper.GetParent(hit);
         }
         return null;
@@ -164,6 +180,9 @@ public class DockDragManager
         var screenPos = _dockControl.PointToScreen(Mouse.GetPosition(_dockControl));
         var mouseDip  = DpiHelper.ScreenToDip(_dockControl, screenPos);
 
+        // Capture the panel's rendered size BEFORE detaching (visual tree is still alive)
+        _dockControl.CaptureDockedSizeForFloat(item);
+
         // Detach item from dock layout → fires OnItemFloated → FloatingWindowManager creates the window
         _dockControl.Engine.Float(item);
         _dockControl.RebuildVisualTree();
@@ -192,6 +211,9 @@ public class DockDragManager
         // Capture cursor position in DIPs before the layout changes
         var screenPos = _dockControl.PointToScreen(Mouse.GetPosition(_dockControl));
         var mouseDip  = DpiHelper.ScreenToDip(_dockControl, screenPos);
+
+        // Capture the group's rendered size BEFORE detaching (visual tree is still alive)
+        _dockControl.CaptureDockedSizeForFloat(group);
 
         // Float the entire group → fires GroupFloated → FloatingWindowManager.CreateFloatingWindowForGroup
         _dockControl.Engine.FloatGroup(group);
