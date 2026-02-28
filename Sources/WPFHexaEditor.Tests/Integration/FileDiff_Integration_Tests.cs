@@ -8,9 +8,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Linq;
-using WpfHexaEditor.Core.Bytes;
-using WpfHexaEditor.Models.Comparison;
-using WpfHexaEditor.Services;
+using WpfHexEditor.Core.Bytes;
+using WpfHexEditor.Core.Models.Comparison;
+using WpfHexEditor.Core.Services;
 
 namespace WpfHexaEditor.Tests.Integration
 {

@@ -1,0 +1,110 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48;net8.0-windows</TargetFrameworks>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.Core</RootNamespace>
+    <AssemblyName>WpfHexEditor.Core</AssemblyName>
+    <Title>WpfHexEditor.Core - Low-level hex editing services and data layer</Title>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Derek Tremblay;ehsan69h;Janus Tida;Claude Sonnet 4.5</Authors>
+    <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
+    <Description>
+      Core library for WpfHexEditorControl. Contains low-level byte management,
+      format detection, search engines, services, and data models.
+      Use WpfHexEditor.HexEditor for the UserControl.
+    </Description>
+    <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
+    <Product>WpfHexEditor.Core</Product>
+    <Copyright>Apache 2.0 - 2016-2026</Copyright>
+    <AssemblyVersion>2.8.0.0</AssemblyVersion>
+    <FileVersion>2.8.0</FileVersion>
+    <Version>2.8.0</Version>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PackageTags>hexeditor;hex;binary;core;services;byte-provider;format-detection;search;undo-redo</PackageTags>
+    <LangVersion>preview</LangVersion>
+    <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorControl</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>license.txt</PackageLicenseFile>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release' and '$(TargetFramework)'=='net8.0-windows'">
+    <TieredCompilation>true</TieredCompilation>
+    <TieredPGO>true</TieredPGO>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <DebugType>embedded</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release' and '$(TargetFramework)'=='net48'">
+    <Optimize>true</Optimize>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="license.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="PACKAGE_README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <!-- Embed all FormatDefinitions JSON files as resources (400 formats built-in) -->
+  <ItemGroup>
+    <EmbeddedResource Include="FormatDefinitions\**\*.json" />
+  </ItemGroup>
+
+  <!-- Span<T> and System.Text.Json support for .NET Framework 4.8 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.BinaryAnalysis\WpfHexEditor.BinaryAnalysis.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+  </ItemGroup>
+
+</Project>

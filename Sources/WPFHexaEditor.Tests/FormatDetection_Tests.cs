@@ -5,8 +5,8 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using WpfHexaEditor.Core.FormatDetection;
-using WpfHexaEditor.Services;
+using WpfHexEditor.Core.FormatDetection;
+using WpfHexEditor.Core.Services;
 
 namespace WpfHexaEditor.Tests
 {

@@ -6,7 +6,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
-using WpfHexaEditor.Core;
+using WpfHexEditor.Core;
 
 namespace WPFHexaEditor.Tests
 {

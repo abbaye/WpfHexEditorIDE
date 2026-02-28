@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using WpfHexaEditor.Interfaces;
+using WpfHexEditor.Core.Interfaces;
 using static WpfHexEditor.BarChart.Properties.Resources;
 
 namespace WpfHexEditor.BarChart.Controls

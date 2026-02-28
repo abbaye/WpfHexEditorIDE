@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using WpfHexaEditor.Core;
-using WpfHexaEditor.Core.Bytes;
+using WpfHexEditor.Core;
+using WpfHexEditor.Core.Bytes;
 
 namespace WpfHexaEditor.Tests
 {

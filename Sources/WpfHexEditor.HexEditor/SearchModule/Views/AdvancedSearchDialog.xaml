@@ -1,0 +1,508 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.5
+-->
+
+<Window x:Class="WpfHexEditor.HexEditor.Search.Views.AdvancedSearchDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfHexEditor.HexEditor.Search.Views"
+        xmlns:vm="clr-namespace:WpfHexEditor.HexEditor.Search.ViewModels"
+        xmlns:models="clr-namespace:WpfHexEditor.Core.Search.Models;assembly=WpfHexEditor.Core"
+        mc:Ignorable="d"
+        Title="Advanced Search" Height="680" Width="900"
+        MinHeight="520" MinWidth="720"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip"
+        ShowInTaskbar="False"
+        Background="{DynamicResource BackgroundBrush}">
+
+    <Window.Resources>
+        <!-- Value Converters -->
+        <local:SearchModeToVisibilityConverter x:Key="SearchModeToVisibilityConverter"/>
+        <local:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <local:IndexConverter x:Key="IndexConverter"/>
+
+        <!-- Button Styles -->
+        <Style x:Key="DialogButtonStyle" TargetType="Button">
+            <Setter Property="MinWidth" Value="90"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="0.2"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="0.4"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource DialogButtonStyle}">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <!-- Mode Pill Style (RadioButton styled as toggle pill) -->
+        <Style x:Key="ModePillStyle" TargetType="RadioButton">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="MinWidth" Value="80"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="16"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="0.2"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TextBox Style -->
+        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="4,0"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="0.8"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBox Style -->
+        <Style x:Key="ModernComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <!-- ListView Style for Results -->
+        <Style x:Key="ResultsListViewStyle" TargetType="ListView">
+            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+            <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+            <Setter Property="VirtualizingPanel.CacheLength" Value="20,20"/>
+            <Setter Property="VirtualizingPanel.CacheLengthUnit" Value="Item"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+            <Setter Property="AlternationCount" Value="2"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <!-- Zone A: Search Input -->
+            <RowDefinition Height="Auto"/>
+            <!-- Zone B: Action Bar -->
+            <RowDefinition Height="60"/>
+            <!-- Zone C: Results List -->
+            <RowDefinition Height="*"/>
+            <!-- Zone D: Status Bar -->
+            <RowDefinition Height="24"/>
+        </Grid.RowDefinitions>
+
+        <!-- ========================================
+             ZONE A: SEARCH INPUT (Auto height - expands with Advanced Options)
+             ======================================== -->
+        <Border Grid.Row="0" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0,0,0,1" Padding="15">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Mode Selector Pills -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+                    <RadioButton Content="TEXT" Style="{StaticResource ModePillStyle}"
+                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Text}"/>
+                    <RadioButton Content="HEX" Style="{StaticResource ModePillStyle}"
+                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Hex}"/>
+                    <RadioButton Content="WILDCARD" Style="{StaticResource ModePillStyle}"
+                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Wildcard}"/>
+                    <RadioButton Content="TBL TEXT" Style="{StaticResource ModePillStyle}"
+                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=TblText}"
+                                 Visibility="{Binding IsTblLoaded, Converter={StaticResource BoolToVisibilityConverter}}"
+                                 ToolTip="{Binding TblInfo}"/>
+                    <RadioButton Content="RELATIVE" Style="{StaticResource ModePillStyle}"
+                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Relative}"
+                                 ToolTip="Encoding Discovery"/>
+                </StackPanel>
+
+                <!-- Find Input -->
+                <Grid Grid.Row="1" Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Find:" VerticalAlignment="Center" Margin="0,0,10,0" Width="60"/>
+                    <!-- Temporarily using TextBox instead of ComboBox to debug binding issues -->
+                    <TextBox Grid.Column="1"
+                             Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ModernTextBoxStyle}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding FindAllCommand}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+
+                    <!-- TODO: Restore ComboBox with SearchHistory once binding is fixed
+                    <ComboBox Grid.Column="1"
+                              IsEditable="True"
+                              Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding SearchHistory}"
+                              DisplayMemberPath="DisplayText"
+                              Style="{StaticResource ModernComboBoxStyle}">
+                        <ComboBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding FindAllCommand}"/>
+                        </ComboBox.InputBindings>
+                    </ComboBox>
+                    -->
+                </Grid>
+
+                <!-- Replace Input (Hidden in RELATIVE mode) -->
+                <Grid Grid.Row="2" Margin="0,0,0,10"
+                      Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Replace:" VerticalAlignment="Center" Margin="0,0,10,0" Width="60"/>
+                    <TextBox Grid.Column="1"
+                             Text="{Binding ReplaceInput, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ModernTextBoxStyle}"/>
+                </Grid>
+
+                <!-- Options Row -->
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,10">
+                    <CheckBox Content="Case" IsChecked="{Binding CaseSensitive}" Margin="0,0,15,0"
+                              Visibility="{Binding SelectedMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Text}"/>
+                    <CheckBox Content="Wrap" IsChecked="{Binding WrapAround}" Margin="0,0,15,0"/>
+
+                    <TextBlock Text="Encoding:" VerticalAlignment="Center" Margin="0,0,5,0"
+                               Visibility="{Binding SelectedMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Text}"/>
+                    <ComboBox ItemsSource="{Binding AvailableEncodings}"
+                              SelectedItem="{Binding SelectedEncoding}"
+                              DisplayMemberPath="Name"
+                              Width="150" Margin="0,0,15,0"
+                              Style="{StaticResource ModernComboBoxStyle}"
+                              Visibility="{Binding SelectedMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Text}"/>
+
+                    <TextBlock Text="Max:" VerticalAlignment="Center" Margin="15,0,5,0"/>
+                    <TextBox Text="{Binding MaxResults}" Width="80" Style="{StaticResource ModernTextBoxStyle}"/>
+                </StackPanel>
+
+                <!-- Advanced Options Expander -->
+                <Expander Grid.Row="4" IsExpanded="False" Margin="0,5,0,0">
+                    <Expander.Header>
+                        <TextBlock Text="⚙️ Advanced Options" FontWeight="Medium" Cursor="Hand"/>
+                    </Expander.Header>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Standard Mode Options -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal"
+                                    Visibility="{Binding IsRelativeMode, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                            <TextBlock Text="Dir:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <RadioButton Content="►Forward" IsChecked="{Binding SearchBackward, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=False}" Margin="0,0,10,0"/>
+                            <RadioButton Content="◄Backward" IsChecked="{Binding SearchBackward}" Margin="0,0,20,0"/>
+
+                            <TextBlock Text="Scope:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <RadioButton Content="File" IsChecked="{Binding SearchInSelectionOnly, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=False}" Margin="0,0,10,0"/>
+                            <RadioButton Content="Selection" IsChecked="{Binding SearchInSelectionOnly}" Margin="0,0,20,0"/>
+
+                            <CheckBox Content="Use Wildcard" IsChecked="{Binding UseWildcard}" Margin="0,0,10,0"
+                                      Visibility="{Binding SelectedMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Hex}"/>
+                            <TextBlock Text="Wildcard:" VerticalAlignment="Center" Margin="0,0,5,0"
+                                       Visibility="{Binding UseWildcard, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <TextBox Text="{Binding WildcardByte, StringFormat=X2}" Width="50" Style="{StaticResource ModernTextBoxStyle}"
+                                     Visibility="{Binding UseWildcard, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </StackPanel>
+
+                        <!-- Relative Mode Options -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal"
+                                    Visibility="{Binding IsRelativeMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock Text="Min Matches:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBox Text="{Binding RelativeMinMatches}" Width="60" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,15,0"/>
+
+                            <TextBlock Text="Max Proposals:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBox Text="{Binding RelativeMaxProposals}" Width="60" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,15,0"/>
+
+                            <TextBlock Text="Sample Length:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBox Text="{Binding RelativeSampleLength}" Width="60" Style="{StaticResource ModernTextBoxStyle}"/>
+                        </StackPanel>
+                    </Grid>
+                </Expander>
+            </Grid>
+        </Border>
+
+        <!-- ========================================
+             ZONE B: ACTION BAR (~60px fixe)
+             ======================================== -->
+        <Border Grid.Row="1" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0,0,0,1" Padding="15,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Navigation & Action Buttons -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Button Content="◄◄ Prev" Command="{Binding FindPreviousCommand}" Style="{StaticResource DialogButtonStyle}"/>
+                    <Button Content="Next ►►" Command="{Binding FindNextCommand}" Style="{StaticResource DialogButtonStyle}"/>
+                    <Button Content="Find All" Command="{Binding FindAllCommand}" Style="{StaticResource PrimaryButtonStyle}" Margin="15,0,5,0"/>
+                    <Button Content="Replace" Command="{Binding ReplaceSelectedCommand}" Style="{StaticResource DialogButtonStyle}"
+                            Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    <Button Content="Replace All" Command="{Binding ReplaceAllCommand}" Style="{StaticResource DialogButtonStyle}"
+                            Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                </StackPanel>
+
+                <!-- Performance Metrics -->
+                <TextBlock Grid.Column="1" Text="{Binding PerformanceLabel}"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                           FontWeight="Medium" FontSize="12"/>
+
+                <!-- Stop Button -->
+                <Button Grid.Column="2" Content="⏹ STOP" Command="{Binding CancelCommand}"
+                        Style="{StaticResource DialogButtonStyle}"
+                        Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </Grid>
+        </Border>
+
+        <!-- ========================================
+             ZONE C: RESULTS LIST (fills remaining)
+             ======================================== -->
+        <Border Grid.Row="2" Padding="15">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Results Header -->
+                <Grid Grid.Row="0" Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" FontWeight="SemiBold" FontSize="14">
+                        <Run Text="Results ("/>
+                        <Run Text="{Binding TotalResultCount, Mode=OneWay}"/>
+                        <Run Text=")"/>
+                    </TextBlock>
+
+                    <Button Grid.Column="1" Content="Export ▼" Command="{Binding ExportResultsCommand}"
+                            Style="{StaticResource DialogButtonStyle}" MinWidth="70"/>
+                </Grid>
+
+                <!-- Progress Bar (shown during search) -->
+                <ProgressBar Grid.Row="1"
+                             Height="4"
+                             VerticalAlignment="Top"
+                             IsIndeterminate="{Binding IsIndeterminate}"
+                             Value="{Binding SearchProgress, Mode=OneWay}"
+                             Maximum="100"
+                             Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                <!-- Standard Results ListView -->
+                <ListView Grid.Row="1"
+                          ItemsSource="{Binding StandardResults}"
+                          SelectedItem="{Binding SelectedResult}"
+                          Style="{StaticResource ResultsListViewStyle}"
+                          Visibility="{Binding IsRelativeMode, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="#" Width="50" DisplayMemberBinding="{Binding Index}"/>
+                            <GridViewColumn Header="Offset (Hex)" Width="120" DisplayMemberBinding="{Binding PositionHex}"/>
+                            <GridViewColumn Header="Offset (Dec)" Width="120" DisplayMemberBinding="{Binding PositionDec}"/>
+                            <GridViewColumn Header="Context Preview" Width="400" DisplayMemberBinding="{Binding HexContext}"/>
+                            <GridViewColumn Header="Length" Width="80" DisplayMemberBinding="{Binding Length}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <!-- Relative Results ListView -->
+                <ListView Grid.Row="1"
+                          ItemsSource="{Binding RelativeResults}"
+                          SelectedItem="{Binding SelectedResult}"
+                          Style="{StaticResource ResultsListViewStyle}"
+                          Visibility="{Binding IsRelativeMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="#" Width="40">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=(ItemsControl.AlternationIndex), Converter={StaticResource IndexConverter}}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Offset" Width="80" DisplayMemberBinding="{Binding Offset, StringFormat='+{0}'}"/>
+                            <GridViewColumn Header="Score" Width="70" DisplayMemberBinding="{Binding Score, StringFormat=F1}"/>
+                            <GridViewColumn Header="Matches" Width="80" DisplayMemberBinding="{Binding MatchCount}"/>
+                            <GridViewColumn Header="Sample Preview" Width="350" DisplayMemberBinding="{Binding SampleText}"/>
+                            <GridViewColumn Header="Printable %" Width="90" DisplayMemberBinding="{Binding PrintableCharPercentage, StringFormat=F1}"/>
+                            <GridViewColumn Header="Actions" Width="140">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="Export TBL" Command="{Binding DataContext.ExportProposalToTblCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                    CommandParameter="{Binding}" Style="{StaticResource DialogButtonStyle}" MinWidth="60" Height="24" Margin="0,0,5,0"/>
+                                            <Button Content="Apply" Command="{Binding DataContext.ApplyEncodingCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                    CommandParameter="{Binding}" Style="{StaticResource PrimaryButtonStyle}" MinWidth="50" Height="24"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
+        </Border>
+
+        <!-- ========================================
+             ZONE D: STATUS BAR (~24px)
+             ======================================== -->
+        <Border Grid.Row="3" Background="{DynamicResource AccentBrush}" Padding="10,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Ready" VerticalAlignment="Center" Margin="0,0,20,0"/>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding FileName, Mode=OneWay}" Margin="0,0,10,0"/>
+                    <TextBlock Text="│" Margin="0,0,10,0"/>
+                    <TextBlock Margin="0,0,10,0">
+                        <Run Text="Size:"/>
+                        <Run Text="{Binding FileLength, StringFormat=N0, Mode=OneWay}"/>
+                        <Run Text="bytes"/>
+                    </TextBlock>
+                    <TextBlock Text="│" Margin="0,0,10,0"/>
+
+                    <!-- TBL Status: Show "Load TBL" button if no TBL loaded -->
+                    <Button Content="📂 Load TBL..." Command="{Binding LoadTblCommand}"
+                            Style="{StaticResource DialogButtonStyle}" Height="20" Padding="8,0" Margin="0,0,10,0"
+                            Visibility="{Binding IsTblLoaded, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                            ToolTip="Load a TBL (Character Table) file for ROM editing"/>
+
+                    <!-- TBL Status: Show TBL info and Close button if TBL loaded -->
+                    <TextBlock Margin="0,0,5,0"
+                               Visibility="{Binding IsTblLoaded, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Run Text="TBL:"/>
+                        <Run Text="{Binding TblInfo, Mode=OneWay}"/>
+                    </TextBlock>
+                    <Button Content="❌ Close" Command="{Binding CloseTblCommand}"
+                            Style="{StaticResource DialogButtonStyle}" Height="20" Padding="6,0" Margin="0,0,10,0"
+                            Visibility="{Binding IsTblLoaded, Converter={StaticResource BoolToVisibilityConverter}}"
+                            ToolTip="Close the current TBL file"/>
+                </StackPanel>
+
+                <Button Grid.Column="2" Content="✕" Command="{Binding CloseCommand}"
+                        Style="{StaticResource DialogButtonStyle}" MinWidth="30" Height="20"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

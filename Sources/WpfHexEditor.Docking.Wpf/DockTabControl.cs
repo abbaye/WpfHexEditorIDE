@@ -41,6 +41,7 @@ public class DockTabControl : TabControl
     public event Action<DockItem>? TabAutoHideRequested;
     public event Action<DockItem>? TabHideRequested;
     public event Action<DockItem>? TabDockAsDocumentRequested;
+    public event Action<DockItem>? TabPinToggleRequested;
 
     private Func<DockItem, object>? _contentFactory;
 
@@ -92,6 +93,8 @@ public class DockTabControl : TabControl
         header.DockAsDocumentRequested += () => TabDockAsDocumentRequested?.Invoke(item);
         header.CloseAllRequested += () => CloseAllItems();
         header.CloseAllButThisRequested += () => CloseAllButItem(item);
+        header.PinToggleRequested += () => TabPinToggleRequested?.Invoke(item);
+        header.CloseAllButPinnedRequested += () => CloseAllButPinnedItems();
 
         var tabItem = new TabItem
         {
@@ -132,7 +135,7 @@ public class DockTabControl : TabControl
     {
         if (Node is null) return;
         foreach (var item in Node.Items.ToList())
-            if (item.CanClose)
+            if (item.CanClose && !item.IsPinned)
                 TabCloseRequested?.Invoke(item);
     }
 
@@ -141,6 +144,14 @@ public class DockTabControl : TabControl
         if (Node is null) return;
         foreach (var item in Node.Items.ToList())
             if (item != keep && item.CanClose)
+                TabCloseRequested?.Invoke(item);
+    }
+
+    private void CloseAllButPinnedItems()
+    {
+        if (Node is null) return;
+        foreach (var item in Node.Items.ToList())
+            if (!item.IsPinned && item.CanClose)
                 TabCloseRequested?.Invoke(item);
     }
 }
@@ -152,6 +163,7 @@ public class DockTabHeader : StackPanel
 {
     private readonly DockItem _item;
     private Button? _closeButton;
+    private Button? _pinButton;
     private Point _dragStartPoint;
     private bool _isDragging;
 
@@ -163,6 +175,8 @@ public class DockTabHeader : StackPanel
     public event Action? DockAsDocumentRequested;
     public event Action? CloseAllRequested;
     public event Action? CloseAllButThisRequested;
+    public event Action? PinToggleRequested;
+    public event Action? CloseAllButPinnedRequested;
 
     public DockTabHeader(DockItem item)
     {
@@ -215,6 +229,30 @@ public class DockTabHeader : StackPanel
             Children.Add(pinButton);
         }
 
+        // Pin button (pin/unpin toggle) — only for document tabs
+        if (item.Owner is DocumentHostNode)
+        {
+            _pinButton = new Button
+            {
+                Content = "\uD83D\uDCCC",
+                FontSize = 9,
+                Padding = new Thickness(2, 0, 2, 0),
+                Margin = new Thickness(0, 0, 1, 0),
+                BorderThickness = new Thickness(0),
+                Background = Brushes.Transparent,
+                Cursor = Cursors.Hand,
+                VerticalAlignment = VerticalAlignment.Center,
+                ToolTip = item.IsPinned ? "Unpin Tab" : "Pin Tab",
+                RenderTransformOrigin = new Point(0.5, 0.5),
+                RenderTransform = new RotateTransform(item.IsPinned ? 0 : 90),
+                Opacity = item.IsPinned ? 1 : 0
+            };
+            _pinButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
+            AutomationProperties.SetName(_pinButton, $"Pin {item.Title}");
+            _pinButton.Click += (_, _) => PinToggleRequested?.Invoke();
+            Children.Add(_pinButton);
+        }
+
         if (item.CanClose)
         {
             _closeButton = new Button
@@ -243,15 +281,19 @@ public class DockTabHeader : StackPanel
         MouseMove += OnMouseMove;
         MouseLeftButtonUp += OnMouseLeftButtonUp;
 
-        // VS2026 Fluent: close button visible on hover or when tab is selected
-        MouseEnter += (_, _) => { if (_closeButton is not null) _closeButton.Opacity = 1; };
-        MouseLeave += (_, _) => UpdateCloseButtonVisibility();
+        // VS2026 Fluent: close/pin buttons visible on hover or when tab is selected
+        MouseEnter += (_, _) =>
+        {
+            if (_closeButton is not null) _closeButton.Opacity = 1;
+            if (_pinButton is not null && !_item.IsPinned) _pinButton.Opacity = 1;
+        };
+        MouseLeave += (_, _) => UpdateButtonVisibility();
         Loaded += (_, _) => WireParentTabItem();
     }
 
     private void WireParentTabItem()
     {
-        if (_closeButton is null) return;
+        if (_closeButton is null && _pinButton is null) return;
 
         // Walk up to find the owning TabItem
         DependencyObject? current = this;
@@ -260,22 +302,24 @@ public class DockTabHeader : StackPanel
             if (current is TabItem tabItem)
             {
                 // Set initial state
-                _closeButton.Opacity = tabItem.IsSelected ? 1 : 0;
+                var show = tabItem.IsSelected ? 1.0 : 0.0;
+                if (_closeButton is not null)
+                    _closeButton.Opacity = show;
+                if (_pinButton is not null && !_item.IsPinned)
+                    _pinButton.Opacity = show;
 
                 // Track selection changes via DependencyPropertyDescriptor
                 var dpd = DependencyPropertyDescriptor.FromProperty(
                     Selector.IsSelectedProperty, typeof(TabItem));
-                dpd?.AddValueChanged(tabItem, (_, _) => UpdateCloseButtonVisibility());
+                dpd?.AddValueChanged(tabItem, (_, _) => UpdateButtonVisibility());
                 return;
             }
             current = VisualTreeHelper.GetParent(current);
         }
     }
 
-    private void UpdateCloseButtonVisibility()
+    private void UpdateButtonVisibility()
     {
-        if (_closeButton is null) return;
-
         // Keep visible if mouse is over header
         if (IsMouseOver) return;
 
@@ -285,18 +329,30 @@ public class DockTabHeader : StackPanel
         {
             if (current is TabItem tabItem)
             {
-                _closeButton.Opacity = tabItem.IsSelected ? 1 : 0;
+                var show = tabItem.IsSelected ? 1.0 : 0.0;
+                if (_closeButton is not null) _closeButton.Opacity = show;
+                if (_pinButton is not null && !_item.IsPinned) _pinButton.Opacity = show;
                 return;
             }
             current = VisualTreeHelper.GetParent(current);
         }
 
-        _closeButton.Opacity = 0;
+        if (_closeButton is not null) _closeButton.Opacity = 0;
+        if (_pinButton is not null && !_item.IsPinned) _pinButton.Opacity = 0;
     }
 
     private ContextMenu BuildContextMenu(DockItem item)
     {
         var menu = new ContextMenu();
+
+        // Pin/Unpin — only for document tabs
+        if (item.Owner is DocumentHostNode)
+        {
+            var pinMenuItem = new MenuItem { Header = item.IsPinned ? "Unpin Tab" : "Pin Tab" };
+            pinMenuItem.Click += (_, _) => PinToggleRequested?.Invoke();
+            menu.Items.Add(pinMenuItem);
+            menu.Items.Add(new Separator());
+        }
 
         if (item.CanFloat)
         {
@@ -336,6 +392,13 @@ public class DockTabHeader : StackPanel
         var closeAllButItem = new MenuItem { Header = "Close All But This" };
         closeAllButItem.Click += (_, _) => CloseAllButThisRequested?.Invoke();
         menu.Items.Add(closeAllButItem);
+
+        if (item.Owner is DocumentHostNode)
+        {
+            var closeAllButPinnedItem = new MenuItem { Header = "Close All But Pinned" };
+            closeAllButPinnedItem.Click += (_, _) => CloseAllButPinnedRequested?.Invoke();
+            menu.Items.Add(closeAllButPinnedItem);
+        }
 
         return menu;
     }

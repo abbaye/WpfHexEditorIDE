@@ -1,0 +1,112 @@
+<Window x:Class="WpfHexEditor.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dock="clr-namespace:WpfHexEditor.Docking.Wpf;assembly=WpfHexEditor.Docking.Wpf"
+        Title="WpfHexEditor - Docking Test"
+        Width="1200" Height="800"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize"
+        Background="{DynamicResource DockWindowBackgroundBrush}">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="4"
+                      GlassFrameThickness="0"
+                      UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="RootGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Title Bar (VS Code style: menu inline + title center + window buttons right) -->
+        <Border Grid.Row="0" Background="{DynamicResource DockMenuBackgroundBrush}">
+            <DockPanel Height="32">
+                <!-- Window buttons (right) -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Content="&#xE949;" Style="{DynamicResource TitleBarButtonStyle}"
+                            Click="OnMinimize" ToolTip="Minimize" />
+                    <Button x:Name="MaxRestoreButton" Content="&#xE739;"
+                            Style="{DynamicResource TitleBarButtonStyle}"
+                            Click="OnMaximizeRestore" ToolTip="Maximize" />
+                    <Button Content="&#xE106;" Style="{DynamicResource TitleBarCloseButtonStyle}"
+                            Click="OnCloseWindow" ToolTip="Close" />
+                </StackPanel>
+
+                <!-- Menu (left, inline in title bar) -->
+                <Menu DockPanel.Dock="Left" Style="{DynamicResource DockDarkMenuStyle}"
+                      VerticalAlignment="Center"
+                      WindowChrome.IsHitTestVisibleInChrome="True">
+                    <MenuItem Header="_File" Style="{DynamicResource DockDarkMenuItemStyle}">
+                        <MenuItem Header="_New Document" Click="OnNewDocument" />
+                        <MenuItem Header="New _Hex Editor Document" Click="OnNewHexDocument" />
+                        <MenuItem Header="_Open File..." Click="OnOpenFile" />
+                        <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+                        <MenuItem Header="E_xit" Click="OnExit" />
+                    </MenuItem>
+                    <MenuItem Header="_View" Style="{DynamicResource DockDarkMenuItemStyle}">
+                        <MenuItem Header="_Properties" Click="OnShowProperties" />
+                        <MenuItem Header="_Solution Explorer" Click="OnShowSolutionExplorer" />
+                        <MenuItem Header="_Output" Click="OnShowOutput" />
+                    </MenuItem>
+                    <MenuItem Header="_Layout" Style="{DynamicResource DockDarkMenuItemStyle}">
+                        <MenuItem Header="_Save Layout" Click="OnSaveLayout" />
+                        <MenuItem Header="_Load Layout" Click="OnLoadLayout" />
+                        <MenuItem Header="_Reset Layout" Click="OnResetLayout" />
+                        <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+                        <MenuItem Header="Toggle _Locked Layout" Click="OnToggleLock" IsCheckable="True" x:Name="LockMenuItem" />
+                    </MenuItem>
+                    <MenuItem Header="_Theme" Style="{DynamicResource DockDarkMenuItemStyle}">
+                        <MenuItem Header="_Dark" Click="OnDarkTheme" />
+                        <MenuItem Header="_Light" Click="OnLightTheme" />
+                        <MenuItem Header="VS2022 Dar_k" Click="OnVS2022DarkTheme" />
+                        <MenuItem Header="Dark _Glass" Click="OnDarkGlassTheme" />
+                        <MenuItem Header="_Visual Studio" Click="OnVisualStudioTheme" />
+                        <MenuItem Header="_Cyberpunk" Click="OnCyberpunkTheme" />
+                        <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+                        <MenuItem Header="_Minimal" Click="OnMinimalTheme" />
+                        <MenuItem Header="_Office" Click="OnOfficeTheme" />
+                    </MenuItem>
+                </Menu>
+
+                <!-- Title (center, fills remaining space) -->
+                <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           FontSize="12" IsHitTestVisible="False" />
+            </DockPanel>
+        </Border>
+
+        <!-- Toolbar -->
+        <ToolBar Grid.Row="1" Style="{DynamicResource DockDarkToolBarStyle}">
+            <Button Content="+ Document" Click="OnNewDocument" ToolTip="Add a new document" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Button Content="+ Hex Editor" Click="OnNewHexDocument" ToolTip="Add a new hex editor document" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Separator />
+            <Button Content="Properties" Click="OnShowProperties" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Button Content="Output" Click="OnShowOutput" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Button Content="Solution Explorer" Click="OnShowSolutionExplorer" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Separator />
+            <Button Content="Save Layout" Click="OnSaveLayout" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Button Content="Load Layout" Click="OnLoadLayout" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+        </ToolBar>
+
+        <!-- Main Dock Area -->
+        <dock:DockControl Grid.Row="2" x:Name="DockHost" Margin="2" />
+
+        <!-- Status Bar -->
+        <StatusBar Grid.Row="3" Background="#FF007ACC">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Ready" Foreground="White" />
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock x:Name="PanelCountText" Text="Panels: 0" Foreground="White" />
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

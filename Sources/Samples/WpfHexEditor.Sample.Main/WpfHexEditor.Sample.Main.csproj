@@ -10,9 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\WPFHexaEditor\WpfHexEditorCore.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
     <ProjectReference Include="..\..\WpfHexEditor.BarChart\WpfHexEditor.BarChart.csproj" />
-    <ProjectReference Include="..\..\WpfHexEditor.JsonEditor\WpfHexEditor.JsonEditor.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Editor.JsonEditor\WpfHexEditor.Editor.JsonEditor.csproj" />
     <ProjectReference Include="..\..\WpfHexEditor.WindowPanels\WpfHexEditor.WindowPanels.csproj" />
   </ItemGroup>
 

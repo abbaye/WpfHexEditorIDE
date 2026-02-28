@@ -11,7 +11,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
-using WpfHexaEditor;
+using HexEditorControl = WpfHexEditor.HexEditor.HexEditor;
 
 namespace WpfHexEditor.Sample.Main.ViewModels
 {
@@ -30,7 +30,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
         private string _currentFilePath;
         private string _statusMessage = "Ready";
         private string _searchQuery = "";
-        private HexEditor _hexEditor;
+        private HexEditorControl _hexEditor;
 
         #endregion
 
@@ -268,7 +268,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
 
         #region Methods
 
-        public void SetHexEditor(HexEditor hexEditor)
+        public void SetHexEditor(HexEditorControl hexEditor)
         {
             _hexEditor = hexEditor;
             if (_hexEditor != null)
@@ -541,7 +541,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
                 if (_hexEditor == null || !_hexEditor.HasSelection) return;
 
                 // Use the modern MVVM GiveByteWindow dialog
-                var dialog = new WpfHexaEditor.Dialog.GiveByteWindow
+                var dialog = new WpfHexEditor.HexEditor.Dialog.GiveByteWindow
                 {
                     Owner = System.Windows.Application.Current.MainWindow
                 };
@@ -569,7 +569,7 @@ namespace WpfHexEditor.Sample.Main.ViewModels
                 if (_hexEditor == null) return;
 
                 // Use the modern MVVM ReplaceByteWindow dialog
-                var dialog = new WpfHexaEditor.Dialog.ReplaceByteWindow
+                var dialog = new WpfHexEditor.HexEditor.Dialog.ReplaceByteWindow
                 {
                     Owner = System.Windows.Application.Current.MainWindow
                 };

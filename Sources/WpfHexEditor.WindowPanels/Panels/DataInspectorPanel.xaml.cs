@@ -6,8 +6,8 @@
 //////////////////////////////////////////////
 
 using System.Windows.Controls;
-using WpfHexaEditor.Interfaces;
-using WpfHexaEditor.ViewModels;
+using WpfHexEditor.Core.Interfaces;
+using WpfHexEditor.HexEditor.ViewModels;
 
 namespace WpfHexEditor.WindowPanels.Panels
 {

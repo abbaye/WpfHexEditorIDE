@@ -4,7 +4,7 @@
 //////////////////////////////////////////////
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WpfHexaEditor.Formatters;
+using WpfHexEditor.Core.Formatters;
 
 namespace WPFHexaEditor.Tests
 {

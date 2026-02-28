@@ -7,8 +7,8 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using WpfHexaEditor.Core.FormatDetection;
-using WpfHexaEditor.ViewModels;
+using WpfHexEditor.Core.FormatDetection;
+using WpfHexEditor.HexEditor.ViewModels;
 
 namespace WpfHexEditor.WindowPanels.Panels
 {

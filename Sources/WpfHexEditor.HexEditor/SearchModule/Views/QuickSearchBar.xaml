@@ -1,0 +1,146 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.5
+-->
+
+<UserControl x:Class="WpfHexEditor.HexEditor.Search.Views.QuickSearchBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WpfHexEditor.HexEditor.Search.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="40" d:DesignWidth="400"
+             Background="{DynamicResource BackgroundBrush}">
+
+    <UserControl.Resources>
+        <!-- Value Converters -->
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+        <!-- Local derived brushes for theme adaptation -->
+        <SolidColorBrush x:Key="LocalTextBoxBackgroundBrush" Color="{DynamicResource BackgroundColor}" Opacity="0.8"/>
+        <SolidColorBrush x:Key="LocalButtonHoverBrush" Color="{DynamicResource BackgroundColor}" Opacity="0.6"/>
+        <SolidColorBrush x:Key="LocalButtonPressedBrush" Color="{DynamicResource BackgroundColor}" Opacity="0.4"/>
+
+        <!-- VSCode-style minimalist design -->
+        <Style x:Key="QuickSearchTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource LocalTextBoxBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="QuickSearchButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource LocalButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource LocalButtonPressedBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <!-- Main container with VSCode-style dark theme -->
+    <Border Background="#252526"
+            BorderBrush="#007ACC"
+            BorderThickness="1"
+            CornerRadius="3"
+            Effect="{StaticResource DropShadowEffect}">
+        <Border.Resources>
+            <DropShadowEffect x:Key="DropShadowEffect"
+                              ShadowDepth="2"
+                              BlurRadius="8"
+                              Opacity="0.3"/>
+        </Border.Resources>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Search input -->
+            <TextBox Grid.Column="0"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource QuickSearchTextBoxStyle}"
+                     MinWidth="200">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding FindNextCommand}"/>
+                    <KeyBinding Key="Enter" Modifiers="Shift" Command="{Binding FindPreviousCommand}"/>
+                    <KeyBinding Key="Escape" Command="{Binding CloseCommand}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+
+            <!-- Match counter -->
+            <TextBlock Grid.Column="1"
+                       Text="{Binding CurrentMatchText}"
+                       Foreground="#CCCCCC"
+                       VerticalAlignment="Center"
+                       Margin="10,0"
+                       FontSize="11"
+                       MinWidth="60"
+                       TextAlignment="Center"/>
+
+            <!-- Previous button -->
+            <Button Grid.Column="2"
+                    Content="▲"
+                    Command="{Binding FindPreviousCommand}"
+                    Style="{StaticResource QuickSearchButtonStyle}"
+                    ToolTip="Previous match (Shift+Enter)"/>
+
+            <!-- Next button -->
+            <Button Grid.Column="3"
+                    Content="▼"
+                    Command="{Binding FindNextCommand}"
+                    Style="{StaticResource QuickSearchButtonStyle}"
+                    ToolTip="Next match (Enter)"/>
+
+            <!-- Close button -->
+            <Button Grid.Column="4"
+                    Content="✖"
+                    Command="{Binding CloseCommand}"
+                    Style="{StaticResource QuickSearchButtonStyle}"
+                    ToolTip="Close (Esc)"
+                    Margin="5,0,5,0"/>
+
+            <!-- Progress indicator -->
+            <Border Grid.Column="0" Grid.ColumnSpan="5"
+                    Height="2"
+                    VerticalAlignment="Bottom"
+                    Background="#007ACC"
+                    Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Border.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="4" Color="#007ACC"/>
+                </Border.Effect>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

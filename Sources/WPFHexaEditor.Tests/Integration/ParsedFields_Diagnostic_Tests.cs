@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WpfHexaEditor;
+using WpfHexEditor.HexEditor;
 
 namespace WPFHexaEditor.Tests.Integration
 {
@@ -17,8 +17,8 @@ namespace WPFHexaEditor.Tests.Integration
         [TestMethod]
         public void DiagnosticTest_ListAllEmbeddedResources()
         {
-            // Get the HexEditor assembly
-            var assembly = typeof(HexEditor).Assembly;
+            // Get the Core assembly (FormatDefinitions are embedded there)
+            var assembly = typeof(WpfHexEditor.Core.FormatDetection.FormatDefinition).Assembly;
 
             // Get all embedded resource names
             var resourceNames = assembly.GetManifestResourceNames();

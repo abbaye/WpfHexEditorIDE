@@ -2,8 +2,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using System.Linq;
-using WpfHexaEditor;
-using WpfHexaEditor.Core;
+using WpfHexEditor.HexEditor;
+using WpfHexEditor.Core;
 
 namespace WpfHexaEditor.Tests
 {
@@ -22,9 +22,9 @@ namespace WpfHexaEditor.Tests
         /// <summary>
         /// Creates a ByteProvider instance with test data
         /// </summary>
-        private Core.Bytes.ByteProvider CreateProviderWithData(byte[] data)
+        private WpfHexEditor.Core.Bytes.ByteProvider CreateProviderWithData(byte[] data)
         {
-            var provider = new Core.Bytes.ByteProvider();
+            var provider = new WpfHexEditor.Core.Bytes.ByteProvider();
             provider.OpenMemory(data);
             return provider;
         }

@@ -1,0 +1,245 @@
+﻿<Window
+    x:Class="WpfHexEditor.HexEditor.Dialog.ReplaceByteWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:control="clr-namespace:WpfHexEditor.HexBox;assembly=WpfHexEditor.HexBox"
+    xmlns:converters="clr-namespace:WpfHexEditor.HexEditor.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:p="clr-namespace:WpfHexEditor.Core.Properties;assembly=WpfHexEditor.Core"
+    Title="{DynamicResource EnterHexValueMsgString}"
+    Width="500"
+    Height="420"
+    x:ClassModifier="public"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="SingleBorderWindow"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <converters:BoolToValidationColorConverter x:Key="BoolToValidationColorConverter"/>
+        <converters:BoolToValidationIconConverter x:Key="BoolToValidationIconConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Find GroupBox -->
+            <RowDefinition Height="Auto"/> <!-- Replace GroupBox -->
+            <RowDefinition Height="Auto"/> <!-- Options -->
+            <RowDefinition Height="Auto"/> <!-- Preview/Status -->
+            <RowDefinition Height="*"/>    <!-- Spacer -->
+            <RowDefinition Height="Auto"/> <!-- Buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- Find GroupBox -->
+        <GroupBox Header="{DynamicResource FindByteString}" Grid.Row="0" Margin="0,0,0,10">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <control:HexBox
+                    x:Name="HexTextBox"
+                    Grid.Column="0"
+                    Height="26"
+                    MaximumValue="255"
+                    TabIndex="0"/>
+
+                <!-- Validation Indicator -->
+                <Border
+                    Grid.Column="1"
+                    Width="26"
+                    Height="26"
+                    Margin="8,0,0,0"
+                    Background="{Binding FindByteValid, Converter={StaticResource BoolToValidationColorConverter}}"
+                    CornerRadius="13"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Text="{Binding FindByteValid, Converter={StaticResource BoolToValidationIconConverter}}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="White"/>
+                </Border>
+            </Grid>
+        </GroupBox>
+
+        <!-- Replace GroupBox -->
+        <GroupBox Header="{DynamicResource ReplaceByByteString}" Grid.Row="1" Margin="0,0,0,10">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <control:HexBox
+                    x:Name="ReplaceHexTextBox"
+                    Grid.Column="0"
+                    Height="26"
+                    MaximumValue="255"
+                    TabIndex="1"/>
+
+                <!-- Validation Indicator -->
+                <Border
+                    Grid.Column="1"
+                    Width="26"
+                    Height="26"
+                    Margin="8,0,0,0"
+                    Background="{Binding ReplaceByteValid, Converter={StaticResource BoolToValidationColorConverter}}"
+                    CornerRadius="13"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Text="{Binding ReplaceByteValid, Converter={StaticResource BoolToValidationIconConverter}}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="White"/>
+                </Border>
+            </Grid>
+        </GroupBox>
+
+        <!-- Options Section -->
+        <StackPanel Grid.Row="2" Margin="5,0,5,10">
+            <CheckBox
+                Content="{DynamicResource ReplaceInSelectionOnlyString}"
+                IsChecked="{Binding ReplaceInSelectionOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Margin="0,4"
+                TabIndex="2"/>
+            <CheckBox
+                Content="{DynamicResource ShowConfirmationString}"
+                IsChecked="{Binding ShowConfirmation}"
+                Margin="0,4"
+                TabIndex="3"/>
+        </StackPanel>
+
+        <!-- Preview/Status Section -->
+        <Border
+            Grid.Row="3"
+            Margin="0,0,0,10"
+            Padding="12"
+            Background="#F5F5F5"
+            BorderBrush="#CCCCCC"
+            BorderThickness="1"
+            CornerRadius="4">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Preview -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                    <TextBlock
+                        Text="{DynamicResource PreviewString}"
+                        FontWeight="SemiBold"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center"/>
+                    <TextBlock
+                        Text="{Binding PreviewText}"
+                        FontFamily="Consolas"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Status Message -->
+                <TextBlock
+                    Grid.Row="1"
+                    Text="{Binding StatusMessage}"
+                    TextWrapping="Wrap"
+                    Foreground="#666666"/>
+            </Grid>
+        </Border>
+
+        <!-- Buttons -->
+        <StackPanel
+            Grid.Row="5"
+            Orientation="Horizontal"
+            HorizontalAlignment="Right"
+            Margin="0,0,0,0">
+            <Button
+                x:Name="OkButton"
+                Content="{DynamicResource OkString}"
+                Width="90"
+                Height="30"
+                Margin="0,0,8,0"
+                Click="OKButton_Click"
+                IsDefault="True"
+                TabIndex="4">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="#2196F3"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="IsEnabled" Value="{Binding IsValid}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="4"
+                                        Padding="12,6">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1976D2"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#CCCCCC"/>
+                                <Setter Property="Foreground" Value="#666666"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button
+                Content="{DynamicResource CancelString}"
+                Width="90"
+                Height="30"
+                IsCancel="True"
+                TabIndex="5">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="#F5F5F5"/>
+                        <Setter Property="Foreground" Value="#333333"/>
+                        <Setter Property="BorderBrush" Value="#CCCCCC"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="4"
+                                        Padding="12,6">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#EEEEEE"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

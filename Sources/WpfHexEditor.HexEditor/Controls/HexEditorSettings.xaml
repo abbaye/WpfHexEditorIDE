@@ -1,0 +1,32 @@
+<!--
+    Apache 2.0  2026
+    HexEditor V2 - Complete Settings Panel
+    All HexEditor properties exposed for configuration
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.5
+-->
+
+<UserControl x:Class="WpfHexEditor.HexEditor.Controls.HexEditorSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:WpfHexEditor.HexEditor.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="400">
+
+    <UserControl.Resources>
+        <converters:EnumToComboBoxConverter x:Key="EnumToComboBoxConverter"/>
+        <converters:BytesPerLineToIndexConverter x:Key="BytesPerLineToIndexConverter"/>
+        <converters:ZoomToPercentConverter x:Key="ZoomToPercentConverter"/>
+    </UserControl.Resources>
+
+    <!--
+        Dynamic Settings Panel - Auto-generated via reflection
+        Content is created by DynamicSettingsGenerator in code-behind
+    -->
+    <ScrollViewer x:Name="SettingsScrollViewer"
+                  VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled"/>
+
+</UserControl>

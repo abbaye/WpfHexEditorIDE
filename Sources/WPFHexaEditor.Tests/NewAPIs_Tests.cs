@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using WpfHexaEditor.Core.Bytes;
+using WpfHexEditor.Core.Bytes;
 
 namespace WpfHexaEditor.Tests
 {

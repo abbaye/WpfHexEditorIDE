@@ -11,7 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using WpfHexaEditor.Core.FormatDetection;
+using WpfHexEditor.Core.FormatDetection;
 
 namespace WpfHexEditor.WindowPanels.Dialogs
 {

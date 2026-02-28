@@ -10,9 +10,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using WpfHexaEditor;
-using WpfHexaEditor.Core;
-using WpfHexaEditor.Events;
+using HexEditorControl = WpfHexEditor.HexEditor.HexEditor;
+using WpfHexEditor.Core;
+using WpfHexEditor.Core.Events;
 
 namespace WpfHexEditor.Sample.Main.Views.Components
 {
@@ -22,7 +22,7 @@ namespace WpfHexEditor.Sample.Main.Views.Components
     /// </summary>
     public partial class CustomBackgroundDemo : UserControl
     {
-        private HexEditor _hexEditor;
+        private HexEditorControl _hexEditor;
         private readonly Random _random = new Random();
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace WpfHexEditor.Sample.Main.Views.Components
         /// Set the HexEditor instance to work with
         /// Call this from MainWindow after initialization
         /// </summary>
-        public void SetHexEditor(HexEditor hexEditor)
+        public void SetHexEditor(HexEditorControl hexEditor)
         {
             // Unsubscribe from old editor if any
             if (_hexEditor != null)

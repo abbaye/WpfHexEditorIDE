@@ -1,0 +1,195 @@
+<UserControl x:Class="WpfHexEditor.Editor.TblEditor.Controls.TblEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:WpfHexEditor.Editor.TblEditor.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="700"
+             KeyDown="UserControl_KeyDown">
+
+    <UserControl.Resources>
+        <!-- Bool → Visibility -->
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <!-- Conflict row highlight -->
+        <Style x:Key="ConflictRowStyle" TargetType="DataGridRow">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding HasConflict}" Value="True">
+                    <Setter Property="Background" Value="#20FF6B00"/>
+                    <Setter Property="ToolTip"    Value="Prefix conflict detected"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsValid}" Value="False">
+                    <Setter Property="Background" Value="#20FF0000"/>
+                    <Setter Property="ToolTip"    Value="{Binding ValidationError}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ── Main DataGrid ─────────────────────────────────────────────── -->
+        <DataGrid x:Name="EntriesGrid"
+                  Grid.Row="0"
+                  ItemsSource="{Binding FilteredEntries}"
+                  SelectedItem="{Binding SelectedEntry, Mode=TwoWay}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserSortColumns="True"
+                  CanUserResizeColumns="True"
+                  SelectionMode="Extended"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal"
+                  BorderThickness="0"
+                  RowStyle="{StaticResource ConflictRowStyle}"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling"
+                  EnableRowVirtualization="True"
+                  CellEditEnding="EntriesGrid_CellEditEnding"
+                  SelectionChanged="EntriesGrid_SelectionChanged">
+
+            <DataGrid.Columns>
+                <!-- Hex Entry -->
+                <DataGridTextColumn Header="Hex Entry"
+                                    Binding="{Binding Entry, UpdateSourceTrigger=LostFocus}"
+                                    Width="100"
+                                    IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                    <DataGridTextColumn.EditingElementStyle>
+                        <Style TargetType="TextBox">
+                            <Setter Property="CharacterCasing" Value="Upper"/>
+                        </Style>
+                    </DataGridTextColumn.EditingElementStyle>
+                </DataGridTextColumn>
+
+                <!-- Character Value -->
+                <DataGridTextColumn Header="Character"
+                                    Binding="{Binding Value, UpdateSourceTrigger=LostFocus}"
+                                    Width="120"
+                                    IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                <!-- DTE Type -->
+                <DataGridTextColumn Header="Type"
+                                    Binding="{Binding Type}"
+                                    Width="110"
+                                    IsReadOnly="True"/>
+
+                <!-- Byte length -->
+                <DataGridTextColumn Header="Bytes"
+                                    Binding="{Binding ByteLength}"
+                                    Width="50"
+                                    IsReadOnly="True"/>
+
+                <!-- Comment -->
+                <DataGridTextColumn Header="Comment"
+                                    Binding="{Binding Comment, UpdateSourceTrigger=LostFocus}"
+                                    Width="*"
+                                    IsReadOnly="{Binding DataContext.IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                <!-- Conflict icon -->
+                <DataGridTemplateColumn Header="⚠" Width="24" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="⚠"
+                                       Foreground="Orange"
+                                       HorizontalAlignment="Center"
+                                       Visibility="{Binding HasConflict, Converter={StaticResource BoolToVis}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- ── Ctrl+F Search overlay (floats above the grid) ─────────────── -->
+        <Border x:Name="SearchPanel"
+                Grid.Row="0"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
+                Margin="0,4,4,0"
+                Padding="6,4"
+                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                BorderThickness="1"
+                CornerRadius="3"
+                Visibility="Collapsed"
+                Panel.ZIndex="10">
+            <StackPanel Orientation="Horizontal" Height="26">
+                <TextBox x:Name="SearchBox"
+                         Width="180"
+                         VerticalContentAlignment="Center"
+                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         KeyDown="SearchBox_KeyDown"/>
+                <ComboBox x:Name="TypeFilterCombo"
+                          Margin="4,0,0,0"
+                          Width="120"
+                          SelectionChanged="TypeFilterCombo_SelectionChanged"/>
+                <CheckBox Content="Conflicts only"
+                          Margin="6,0"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding ShowConflictsOnly, Mode=TwoWay}"/>
+                <Button Content="✕"
+                        Width="22"
+                        Margin="4,0,0,0"
+                        Click="CloseSearch_Click"
+                        ToolTip="Close search (Escape)"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ── Status Bar ─────────────────────────────────────────────────── -->
+        <StatusBar Grid.Row="1" FontSize="11">
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="{Binding Statistics.TotalCount, Mode=OneWay}"/>
+                    <Run Text=" entries"/>
+                </TextBlock>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="ASCII:"/>
+                    <Run Text="{Binding Statistics.AsciiCount, Mode=OneWay}"/>
+                </TextBlock>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="DTE:"/>
+                    <Run Text="{Binding Statistics.DteCount, Mode=OneWay}"/>
+                </TextBlock>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="MTE:"/>
+                    <Run Text="{Binding Statistics.MteCount, Mode=OneWay}"/>
+                </TextBlock>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="Cov.:"/>
+                    <Run Text="{Binding Statistics.CoveragePercent, Mode=OneWay, StringFormat={}{0:F1}%}"/>
+                </TextBlock>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock Foreground="Orange">
+                    <Run Text="⚠"/>
+                    <Run Text="{Binding Statistics.ConflictCount, Mode=OneWay}"/>
+                </TextBlock>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <!-- IsDirty dot -->
+                <Ellipse Width="8" Height="8"
+                         Fill="DodgerBlue"
+                         ToolTip="Unsaved changes"
+                         Visibility="{Binding IsDirty, Converter={StaticResource BoolToVis}}"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</UserControl>

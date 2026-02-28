@@ -120,7 +120,7 @@ namespace WpfHexEditor.Sample.Main.Services
         /// from Application.Current.Resources.
         /// </summary>
         /// <param name="hexEditor">The HexEditor control to synchronize</param>
-        public static void SyncHexEditorColors(WpfHexaEditor.HexEditor hexEditor)
+        public static void SyncHexEditorColors(WpfHexEditor.HexEditor.HexEditor hexEditor)
         {
             hexEditor?.ApplyThemeFromResources();
         }

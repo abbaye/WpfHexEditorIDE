@@ -1,0 +1,241 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.5
+-->
+
+<Window x:Class="WpfHexEditor.HexEditor.Search.Views.RelativeSearchDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfHexEditor.HexEditor.Search.Views"
+        xmlns:p="clr-namespace:WpfHexEditor.Core.Properties;assembly=WpfHexEditor.Core"
+        mc:Ignorable="d"
+        Title="{DynamicResource RelativeSearchString}"
+        Height="700" Width="900"
+        MinHeight="500" MinWidth="700"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        ShowInTaskbar="False"
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+
+    <Window.Resources>
+        <!-- V2 Button Styles (consistent with FindReplaceDialog) -->
+        <Style x:Key="DialogButtonStyle" TargetType="Button">
+            <Setter Property="MinWidth" Value="90"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Background" Value="#E1E1E1"/>
+            <Setter Property="BorderBrush" Value="#ACACAC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#BEE6FD"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#80CFFC"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource DialogButtonStyle}">
+            <Setter Property="Background" Value="#0078D7"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <!-- BoolToVisibilityConverter -->
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Search Input Section -->
+        <GroupBox Grid.Row="0" Header="{DynamicResource RelativeSearchKnownTextString}" Padding="10" Margin="0,0,0,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Search Text Input -->
+                <TextBox Grid.Row="0"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         Height="26"
+                         VerticalContentAlignment="Center"
+                         ToolTip="{DynamicResource RelativeSearchKnownTextTooltipString}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding SearchCommand}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+
+                <!-- Options Row -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0">
+                    <Button Content="{DynamicResource RelativeSearchSearchButtonString}"
+                            Command="{Binding SearchCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            MinWidth="100"/>
+                    <Button Content="{DynamicResource CancelString}"
+                            Command="{Binding CancelSearchCommand}"
+                            Style="{StaticResource DialogButtonStyle}"
+                            MinWidth="100"/>
+
+                    <Separator Width="20" Background="Transparent"/>
+
+                    <CheckBox Content="{DynamicResource RelativeSearchUseParallelString}"
+                              IsChecked="{Binding UseParallelSearch}"
+                              VerticalAlignment="Center"
+                              Margin="10,0,20,0"/>
+
+                    <TextBlock Text="{DynamicResource RelativeSearchMinMatchesString}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,5,0"/>
+                    <TextBox Text="{Binding MinMatches}"
+                             Width="40"
+                             Height="26"
+                             VerticalContentAlignment="Center"/>
+
+                    <TextBlock Text="{DynamicResource RelativeSearchMaxProposalsString}"
+                               VerticalAlignment="Center"
+                               Margin="15,0,5,0"/>
+                    <TextBox Text="{Binding MaxProposals}"
+                             Width="40"
+                             Height="26"
+                             VerticalContentAlignment="Center"/>
+                </StackPanel>
+
+                <!-- TBL Status Indicator -->
+                <TextBlock Grid.Row="2"
+                           Text="{Binding TblStatusMessage}"
+                           Margin="0,10,0,0"
+                           Foreground="#0078D7"
+                           FontWeight="SemiBold"
+                           Visibility="{Binding HasTblLoaded, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Proposals DataGrid -->
+        <GroupBox Grid.Row="1" Header="{DynamicResource RelativeSearchProposalsHeaderString}" Padding="10" Margin="0,0,0,10">
+            <DataGrid ItemsSource="{Binding Proposals}"
+                      SelectedItem="{Binding SelectedProposal}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      GridLinesVisibility="All"
+                      HeadersVisibility="All"
+                      CanUserSortColumns="True"
+                      CanUserReorderColumns="False"
+                      AlternatingRowBackground="#F5F5F5">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{DynamicResource RelativeSearchOffsetColumnString}"
+                                        Binding="{Binding Offset, StringFormat='+{0:D3}'}"
+                                        Width="80"/>
+                    <DataGridTextColumn Header="{DynamicResource RelativeSearchScoreColumnString}"
+                                        Binding="{Binding Score, StringFormat=F1}"
+                                        Width="70"
+                                        SortDirection="Descending"/>
+                    <DataGridTextColumn Header="{DynamicResource RelativeSearchMatchesColumnString}"
+                                        Binding="{Binding MatchCount}"
+                                        Width="80"/>
+                    <DataGridTextColumn Header="{DynamicResource RelativeSearchSampleColumnString}"
+                                        Binding="{Binding SampleText}"
+                                        Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <!-- Preview Section -->
+        <GroupBox Grid.Row="2" Header="{DynamicResource RelativeSearchPreviewHeaderString}" Padding="10" Margin="0,0,0,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBox Grid.Row="0"
+                         Text="{Binding PreviewText, Mode=OneWay}"
+                         IsReadOnly="True"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Auto"
+                         FontFamily="Consolas"
+                         FontSize="11"
+                         Background="White"
+                         BorderThickness="1"
+                         BorderBrush="#ACACAC"/>
+
+                <TextBlock Grid.Row="1"
+                           Margin="0,5,0,0"
+                           FontSize="10"
+                           Foreground="Gray"
+                           Text="{Binding SelectedProposal.MatchPositions.Count, StringFormat='{}{0} matches found'}"
+                           Visibility="{Binding SelectedProposal, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Progress Bar -->
+        <ProgressBar Grid.Row="3"
+                     Height="4"
+                     IsIndeterminate="True"
+                     Margin="0,0,0,10"
+                     Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+        <!-- Status Bar and Action Buttons -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Status Message -->
+            <TextBlock Grid.Column="0"
+                       Text="{Binding StatusMessage}"
+                       VerticalAlignment="Center"
+                       Margin="5,0,10,0"
+                       TextTrimming="CharacterEllipsis"/>
+
+            <!-- Action Buttons -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="{DynamicResource RelativeSearchExportTblString}"
+                        Command="{Binding ExportToTblCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        MinWidth="110"
+                        ToolTip="{DynamicResource RelativeSearchExportTooltipString}"/>
+                <Button Content="{DynamicResource RelativeSearchNavigateString}"
+                        Command="{Binding NavigateToMatchCommand}"
+                        Style="{StaticResource DialogButtonStyle}"
+                        MinWidth="110"/>
+                <Button Content="{DynamicResource CloseString}"
+                        IsCancel="True"
+                        Style="{StaticResource DialogButtonStyle}"
+                        Click="CloseButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

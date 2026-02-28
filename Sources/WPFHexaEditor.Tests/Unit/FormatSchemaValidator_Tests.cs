@@ -7,8 +7,8 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using WpfHexEditor.JsonEditor.Models;
-using WpfHexEditor.JsonEditor.Services;
+using WpfHexEditor.Editor.JsonEditor.Models;
+using WpfHexEditor.Editor.JsonEditor.Services;
 
 namespace WpfHexaEditor.Tests.Unit
 {
