@@ -135,16 +135,13 @@ public class AutoHideFlyout : Grid
         {
             var btn = new Button
             {
-                Content         = content,
-                FontSize        = 12,
-                Padding         = new Thickness(4, 2, 4, 2),
-                Background      = Brushes.Transparent,
-                BorderThickness = new Thickness(0),
-                Cursor          = Cursors.Hand,
-                VerticalAlignment = VerticalAlignment.Center,
-                ToolTip         = tooltip
+                Content  = content,
+                FontSize = 12,
+                ToolTip  = tooltip
             };
-            btn.SetResourceReference(Control.ForegroundProperty, "DockTabTextBrush");
+            var titleStyle = Application.Current?.TryFindResource("DockTitleButtonStyle") as Style;
+            if (titleStyle is not null)
+                btn.Style = titleStyle;
             return btn;
         }
 

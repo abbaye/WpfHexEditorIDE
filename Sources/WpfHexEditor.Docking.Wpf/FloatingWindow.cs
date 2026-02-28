@@ -84,16 +84,12 @@ public class FloatingWindow : Window
         {
             var btn = new Button
             {
-                Content = content,
+                Content  = content,
                 FontSize = 12,
-                Padding = new Thickness(4, 2, 4, 2),
-                Background = Brushes.Transparent,
-                BorderThickness = new Thickness(0),
-                Cursor = Cursors.Hand,
-                VerticalAlignment = VerticalAlignment.Center,
-                ToolTip = tooltip
+                ToolTip  = tooltip
             };
-            btn.SetResourceReference(Control.ForegroundProperty, "DockTabTextBrush");
+            if (TryFindResource("DockTitleButtonStyle") is Style titleStyle)
+                btn.Style = titleStyle;
             return btn;
         }
 

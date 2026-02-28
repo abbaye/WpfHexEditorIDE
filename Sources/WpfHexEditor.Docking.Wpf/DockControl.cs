@@ -6,6 +6,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core;
@@ -502,8 +503,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     }
 
     /// <summary>
-    /// Creates a draggable title bar for a side panel group.
-    /// Shows the active tab name and supports drag-to-float via <see cref="DockDragManager.BeginGroupDrag"/>.
+    /// Creates a draggable title bar for a side panel group with VS-style action buttons
+    /// (chevron ▼, pin 📌, close ✕). Supports drag-to-float via <see cref="DockDragManager.BeginGroupDrag"/>.
     /// </summary>
     private Border CreateGroupTitleBar(DockGroupNode group, DockTabControl tabControl)
     {
@@ -524,7 +525,100 @@ public class DockControl : ContentControl, IDockHost, IDisposable
                 titleBlock.Text = di.Title;
         };
 
-        var titleBar = new Border { Child = titleBlock, Cursor = Cursors.SizeAll };
+        // --- VS-style title bar buttons ---
+
+        Button MakeTitleButton(string content, string tooltip, double fontSize = 12)
+        {
+            var btn = new Button
+            {
+                Content  = content,
+                FontSize = fontSize,
+                ToolTip  = tooltip
+            };
+            if (TryFindResource("DockTitleButtonStyle") is Style titleStyle)
+                btn.Style = titleStyle;
+            return btn;
+        }
+
+        // Close button (✕)
+        var closeButton = MakeTitleButton("\u2715", "Close");
+        closeButton.Click += (_, _) =>
+        {
+            var item = group.ActiveItem;
+            if (item is null || !item.CanClose) return;
+            RaiseTabCloseRequested(item);
+            _engine?.Close(item);
+            RebuildVisualTree();
+        };
+
+        // Pin button (📌) — sends to auto-hide
+        var pinButton = MakeTitleButton("\uD83D\uDCCC", "Auto Hide");
+        pinButton.Click += (_, _) =>
+        {
+            var item = group.ActiveItem;
+            if (item is null) return;
+            _engine?.AutoHide(item);
+            RebuildVisualTree();
+        };
+
+        // Chevron dropdown (▼)
+        var chevronButton = MakeTitleButton("\u25BC", "Options", fontSize: 9);
+        chevronButton.Click += (sender, _) =>
+        {
+            var item = group.ActiveItem;
+            if (item is null || sender is not Button btn) return;
+
+            var menuBg     = TryFindResource("DockMenuBackgroundBrush") as Brush;
+            var menuFg     = TryFindResource("DockMenuForegroundBrush") as Brush;
+            var menuBorder = TryFindResource("DockMenuBorderBrush") as Brush;
+
+            var menu = new ContextMenu
+            {
+                Background  = menuBg ?? Brushes.DarkGray,
+                BorderBrush = menuBorder ?? Brushes.Gray,
+                Foreground  = menuFg ?? Brushes.White
+            };
+
+            var floatMenuItem = new MenuItem { Header = "Float", Foreground = menuFg };
+            floatMenuItem.Click += (_, _) => { _engine?.Float(item); RebuildVisualTree(); };
+            menu.Items.Add(floatMenuItem);
+
+            var autoHideMenuItem = new MenuItem { Header = "Auto Hide", Foreground = menuFg };
+            autoHideMenuItem.Click += (_, _) => { _engine?.AutoHide(item); RebuildVisualTree(); };
+            menu.Items.Add(autoHideMenuItem);
+
+            menu.Items.Add(new Separator());
+
+            var closeMenuItem = new MenuItem
+            {
+                Header = "Close",
+                Foreground = menuFg,
+                IsEnabled = item.CanClose
+            };
+            closeMenuItem.Click += (_, _) =>
+            {
+                RaiseTabCloseRequested(item);
+                _engine?.Close(item);
+                RebuildVisualTree();
+            };
+            menu.Items.Add(closeMenuItem);
+
+            menu.PlacementTarget = btn;
+            menu.Placement = PlacementMode.Bottom;
+            menu.IsOpen = true;
+        };
+
+        // Title bar layout: buttons right-aligned, title fills remaining space
+        var titleContent = new DockPanel();
+        DockPanel.SetDock(closeButton, Dock.Right);
+        DockPanel.SetDock(pinButton, Dock.Right);
+        DockPanel.SetDock(chevronButton, Dock.Right);
+        titleContent.Children.Add(closeButton);
+        titleContent.Children.Add(pinButton);
+        titleContent.Children.Add(chevronButton);
+        titleContent.Children.Add(titleBlock);
+
+        var titleBar = new Border { Child = titleContent, Cursor = Cursors.SizeAll };
         titleBar.SetResourceReference(Border.BackgroundProperty, "DockMenuBackgroundBrush");
 
         // Drag threshold state (local to this title bar instance)

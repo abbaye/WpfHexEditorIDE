@@ -41,30 +41,69 @@
         <SolidColorBrush x:Key="ScrollBarBrush" Color="#F0F0F0"/>
         <SolidColorBrush x:Key="ScrollBarThumbBrush" Color="#CDCDCD"/>
 
-        <!-- Themed scrollbar style (required for dark mode — WPF thumb ignores simple brush overrides) -->
-        <Style x:Key="ThemedScrollBarStyle" TargetType="ScrollBar">
-            <Setter Property="Width" Value="14"/>
+        <!-- Transparent RepeatButton template for scrollbar track areas (click-to-page) -->
+        <ControlTemplate x:Key="ScrollBarTrackButton" TargetType="RepeatButton">
+            <Border Background="Transparent"/>
+        </ControlTemplate>
+
+        <!-- Themed scrollbar thumb -->
+        <ControlTemplate x:Key="ScrollBarThumbTemplate" TargetType="Thumb">
+            <Border Background="{DynamicResource ScrollBarThumbBrush}" CornerRadius="7" Margin="2"/>
+        </ControlTemplate>
+
+        <!-- Implicit style for ALL scrollbars (vertical + horizontal, dark mode + track click support) -->
+        <Style TargetType="ScrollBar">
             <Setter Property="Background" Value="{DynamicResource ScrollBarBrush}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ScrollBar">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="7">
-                            <Track x:Name="PART_Track" IsDirectionReversed="True">
-                                <Track.Thumb>
-                                    <Thumb>
-                                        <Thumb.Template>
-                                            <ControlTemplate>
-                                                <Border Background="{DynamicResource ScrollBarThumbBrush}"
-                                                        CornerRadius="7" Margin="2"/>
-                                            </ControlTemplate>
-                                        </Thumb.Template>
-                                    </Thumb>
-                                </Track.Thumb>
-                            </Track>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Width" Value="14"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="7">
+                                    <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton Command="ScrollBar.PageUpCommand"
+                                                          Template="{StaticResource ScrollBarTrackButton}"/>
+                                        </Track.DecreaseRepeatButton>
+                                        <Track.Thumb>
+                                            <Thumb Template="{StaticResource ScrollBarThumbTemplate}"/>
+                                        </Track.Thumb>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton Command="ScrollBar.PageDownCommand"
+                                                          Template="{StaticResource ScrollBarTrackButton}"/>
+                                        </Track.IncreaseRepeatButton>
+                                    </Track>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Height" Value="14"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="7">
+                                    <Track x:Name="PART_Track" IsDirectionReversed="False">
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton Command="ScrollBar.PageLeftCommand"
+                                                          Template="{StaticResource ScrollBarTrackButton}"/>
+                                        </Track.DecreaseRepeatButton>
+                                        <Track.Thumb>
+                                            <Thumb Template="{StaticResource ScrollBarThumbTemplate}"/>
+                                        </Track.Thumb>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton Command="ScrollBar.PageRightCommand"
+                                                          Template="{StaticResource ScrollBarTrackButton}"/>
+                                        </Track.IncreaseRepeatButton>
+                                    </Track>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <!-- Styles for better appearance -->
@@ -358,7 +397,6 @@
             <ScrollBar Grid.Column="1"
                        x:Name="VerticalScroll"
                        Orientation="Vertical"
-                       Style="{StaticResource ThemedScrollBarStyle}"
                        Scroll="VerticalScroll_Scroll"
                        Minimum="0"
                        Maximum="1000"
