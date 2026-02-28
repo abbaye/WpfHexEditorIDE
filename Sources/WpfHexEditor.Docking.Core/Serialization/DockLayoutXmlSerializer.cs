@@ -86,17 +86,30 @@ public static class DockLayoutXmlSerializer
         _ => throw new NotSupportedException($"Unknown node type: {node.GetType()}")
     };
 
-    private static XElement ItemToXml(DockItem item) => new("Item",
-        new XAttribute("Title", item.Title),
-        new XAttribute("ContentId", item.ContentId),
-        new XAttribute("CanClose", item.CanClose),
-        new XAttribute("CanFloat", item.CanFloat),
-        new XAttribute("State", item.State),
-        new XAttribute("LastDockSide", item.LastDockSide),
-        AttrIfNotNull("FloatLeft", item.FloatLeft?.ToString(CultureInfo.InvariantCulture)),
-        AttrIfNotNull("FloatTop", item.FloatTop?.ToString(CultureInfo.InvariantCulture)),
-        AttrIfNotNull("FloatWidth", item.FloatWidth?.ToString(CultureInfo.InvariantCulture)),
-        AttrIfNotNull("FloatHeight", item.FloatHeight?.ToString(CultureInfo.InvariantCulture)));
+    private static XElement ItemToXml(DockItem item)
+    {
+        var el = new XElement("Item",
+            new XAttribute("Title", item.Title),
+            new XAttribute("ContentId", item.ContentId),
+            new XAttribute("CanClose", item.CanClose),
+            new XAttribute("CanFloat", item.CanFloat),
+            new XAttribute("State", item.State),
+            new XAttribute("LastDockSide", item.LastDockSide),
+            AttrIfNotNull("FloatLeft", item.FloatLeft?.ToString(CultureInfo.InvariantCulture)),
+            AttrIfNotNull("FloatTop", item.FloatTop?.ToString(CultureInfo.InvariantCulture)),
+            AttrIfNotNull("FloatWidth", item.FloatWidth?.ToString(CultureInfo.InvariantCulture)),
+            AttrIfNotNull("FloatHeight", item.FloatHeight?.ToString(CultureInfo.InvariantCulture)));
+
+        if (item.Metadata.Count > 0)
+        {
+            var metaEl = new XElement("Metadata");
+            foreach (var (key, value) in item.Metadata)
+                metaEl.Add(new XElement("Entry", new XAttribute("Key", key), new XAttribute("Value", value)));
+            el.Add(metaEl);
+        }
+
+        return el;
+    }
 
     private static XAttribute? AttrIfNotNull(string name, string? value) =>
         value is not null ? new XAttribute(name, value) : null;
@@ -157,19 +170,36 @@ public static class DockLayoutXmlSerializer
         return split;
     }
 
-    private static DockItem ItemFromXml(XElement el) => new()
+    private static DockItem ItemFromXml(XElement el)
     {
-        Title = (string)el.Attribute("Title")!,
-        ContentId = (string)el.Attribute("ContentId")!,
-        CanClose = (bool?)el.Attribute("CanClose") ?? true,
-        CanFloat = (bool?)el.Attribute("CanFloat") ?? true,
-        State = ParseEnum<DockItemState>(el, "State"),
-        LastDockSide = ParseEnum<DockSide>(el, "LastDockSide"),
-        FloatLeft = ParseNullableDouble(el, "FloatLeft"),
-        FloatTop = ParseNullableDouble(el, "FloatTop"),
-        FloatWidth = ParseNullableDouble(el, "FloatWidth"),
-        FloatHeight = ParseNullableDouble(el, "FloatHeight")
-    };
+        var item = new DockItem
+        {
+            Title = (string)el.Attribute("Title")!,
+            ContentId = (string)el.Attribute("ContentId")!,
+            CanClose = (bool?)el.Attribute("CanClose") ?? true,
+            CanFloat = (bool?)el.Attribute("CanFloat") ?? true,
+            State = ParseEnum<DockItemState>(el, "State"),
+            LastDockSide = ParseEnum<DockSide>(el, "LastDockSide"),
+            FloatLeft = ParseNullableDouble(el, "FloatLeft"),
+            FloatTop = ParseNullableDouble(el, "FloatTop"),
+            FloatWidth = ParseNullableDouble(el, "FloatWidth"),
+            FloatHeight = ParseNullableDouble(el, "FloatHeight")
+        };
+
+        var metaEl = el.Element("Metadata");
+        if (metaEl is not null)
+        {
+            foreach (var entry in metaEl.Elements("Entry"))
+            {
+                var key = (string?)entry.Attribute("Key");
+                var value = (string?)entry.Attribute("Value");
+                if (key is not null && value is not null)
+                    item.Metadata[key] = value;
+            }
+        }
+
+        return item;
+    }
 
     private static T ParseEnum<T>(XElement el, string attr) where T : struct, Enum =>
         Enum.TryParse<T>((string?)el.Attribute(attr), out var v) ? v : default;

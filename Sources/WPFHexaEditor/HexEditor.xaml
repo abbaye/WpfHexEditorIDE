@@ -35,6 +35,38 @@
         <SolidColorBrush x:Key="AlternateByteForegroundBrush" Color="#0000FF"/>
         <SolidColorBrush x:Key="ColumnSeparatorBrush" Color="#D0D0D0"/>
 
+        <!-- StatusBar and ScrollBar brushes -->
+        <SolidColorBrush x:Key="StatusBarBrush" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="StatusBarTextBrush" Color="#333333"/>
+        <SolidColorBrush x:Key="ScrollBarBrush" Color="#F0F0F0"/>
+        <SolidColorBrush x:Key="ScrollBarThumbBrush" Color="#CDCDCD"/>
+
+        <!-- Themed scrollbar style (required for dark mode — WPF thumb ignores simple brush overrides) -->
+        <Style x:Key="ThemedScrollBarStyle" TargetType="ScrollBar">
+            <Setter Property="Width" Value="14"/>
+            <Setter Property="Background" Value="{DynamicResource ScrollBarBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="7">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate>
+                                                <Border Background="{DynamicResource ScrollBarThumbBrush}"
+                                                        CornerRadius="7" Margin="2"/>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Styles for better appearance -->
         <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -326,6 +358,7 @@
             <ScrollBar Grid.Column="1"
                        x:Name="VerticalScroll"
                        Orientation="Vertical"
+                       Style="{StaticResource ThemedScrollBarStyle}"
                        Scroll="VerticalScroll_Scroll"
                        Minimum="0"
                        Maximum="1000"
@@ -350,7 +383,10 @@
         </Grid>
 
         <!-- Status bar -->
-        <StatusBar x:Name="StatusBar" Grid.Row="2" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
+        <StatusBar x:Name="StatusBar" Grid.Row="2"
+                   Background="{DynamicResource StatusBarBrush}"
+                   Foreground="{DynamicResource StatusBarTextBrush}"
+                   DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:HexEditor}}">
             <StatusBar.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                     <MenuItem Header="{DynamicResource StatusMessageString}" IsCheckable="True" IsChecked="{Binding ShowStatusMessage, Mode=TwoWay}"/>

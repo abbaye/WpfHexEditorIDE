@@ -32,6 +32,11 @@
     <Color x:Key="HexEditor_SelectionSecondColor">#66007ACC</Color>
     <Color x:Key="HexEditor_ForegroundContrast">#FFFFFF</Color>
     <Color x:Key="HexEditor_ForegroundHighLightOffSetHeaderColor">#569CD6</Color>
+    <Color x:Key="HexEditor_AsciiForegroundColor">#CCCCCC</Color>
+    <Color x:Key="HexEditor_StatusBarBackgroundColor">#252526</Color>
+    <Color x:Key="HexEditor_StatusBarForegroundColor">#CCCCCC</Color>
+    <Color x:Key="HexEditor_ScrollBarBackgroundColor">#1E1E1E</Color>
+    <Color x:Key="HexEditor_ScrollBarThumbColor">#686868</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="DockBackgroundBrush" Color="{StaticResource DockBackgroundColor}" />

@@ -64,6 +64,11 @@
     <Color x:Key="HexEditor_HeaderForegroundColor">#B0B0B0</Color>       <!-- Light Gray -->
     <Color x:Key="HexEditor_ColumnSeparatorColor">#3F3F3F</Color>       <!-- Dark Border -->
     <Color x:Key="HexEditor_ForegroundFirstColor">#E0E0E0</Color>       <!-- Light -->
+    <Color x:Key="HexEditor_AsciiForegroundColor">#B0B0B0</Color>      <!-- Light Gray -->
+    <Color x:Key="HexEditor_StatusBarBackgroundColor">#252525</Color>  <!-- Dark Surface -->
+    <Color x:Key="HexEditor_StatusBarForegroundColor">#B0B0B0</Color>  <!-- Light Gray -->
+    <Color x:Key="HexEditor_ScrollBarBackgroundColor">#1E1E1E</Color>  <!-- Dark -->
+    <Color x:Key="HexEditor_ScrollBarThumbColor">#555555</Color>       <!-- Medium -->
 
     <!-- ==================== BRUSHES ==================== -->
 

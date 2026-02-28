@@ -25,7 +25,9 @@ namespace WpfHexaEditor
         ///   HexEditor_ByteModifiedColor, HexEditor_ByteAddedColor,
         ///   HexEditor_HighLightColor, HexEditor_MouseOverColor,
         ///   HexEditor_TblDteColor, HexEditor_TblMteColor,
-        ///   HexEditor_TblEndBlockColor, HexEditor_TblEndLineColor
+        ///   HexEditor_TblEndBlockColor, HexEditor_TblEndLineColor,
+        ///   HexEditor_StatusBarBackgroundColor, HexEditor_StatusBarForegroundColor,
+        ///   HexEditor_ScrollBarBackgroundColor, HexEditor_ScrollBarThumbColor
         /// </summary>
         public void ApplyThemeFromResources()
         {
@@ -38,9 +40,18 @@ namespace WpfHexaEditor
             HeaderForegroundColor = GetThemeColor(app, "HexEditor_HeaderForegroundColor", HeaderForegroundColor);
             ColumnSeparatorColor = GetThemeColor(app, "HexEditor_ColumnSeparatorColor", ColumnSeparatorColor);
 
+            // StatusBar colors
+            StatusBarBackgroundColor = GetThemeColor(app, "HexEditor_StatusBarBackgroundColor", StatusBarBackgroundColor);
+            StatusBarForegroundColor = GetThemeColor(app, "HexEditor_StatusBarForegroundColor", StatusBarForegroundColor);
+
+            // ScrollBar colors
+            ScrollBarBackgroundColor = GetThemeColor(app, "HexEditor_ScrollBarBackgroundColor", ScrollBarBackgroundColor);
+            ScrollBarThumbColor = GetThemeColor(app, "HexEditor_ScrollBarThumbColor", ScrollBarThumbColor);
+
             // Foreground colors
             ForegroundFirstColor = GetThemeColor(app, "HexEditor_ForegroundFirstColor", ForegroundFirstColor);
             ForegroundSecondColor = GetThemeColor(app, "HexEditor_ForegroundSecondColor", ForegroundSecondColor);
+            AsciiForegroundColor = GetThemeColor(app, "HexEditor_AsciiForegroundColor", AsciiForegroundColor);
             ForegroundOffSetHeaderColor = GetThemeColor(app, "HexEditor_ForegroundOffSetHeaderColor", ForegroundOffSetHeaderColor);
             ForegroundHighLightOffSetHeaderColor = GetThemeColor(app, "HexEditor_ForegroundHighLightOffSetHeaderColor", ForegroundHighLightOffSetHeaderColor);
             ForegroundContrast = GetThemeColor(app, "HexEditor_ForegroundContrast", ForegroundContrast);

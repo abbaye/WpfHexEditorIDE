@@ -68,6 +68,11 @@
     <Color x:Key="HexEditor_HeaderForegroundColor">#A0AED9</Color>       <!-- Muted Blue -->
     <Color x:Key="HexEditor_ColumnSeparatorColor">#2E3A5F</Color>       <!-- Dark Blue Border -->
     <Color x:Key="HexEditor_ForegroundFirstColor">#E0E7FF</Color>       <!-- Light Blue White -->
+    <Color x:Key="HexEditor_AsciiForegroundColor">#A0AED9</Color>      <!-- Muted Blue -->
+    <Color x:Key="HexEditor_StatusBarBackgroundColor">#141B3D</Color>  <!-- Deep Navy -->
+    <Color x:Key="HexEditor_StatusBarForegroundColor">#A0AED9</Color>  <!-- Muted Blue -->
+    <Color x:Key="HexEditor_ScrollBarBackgroundColor">#0D1230</Color>  <!-- Darkest Navy -->
+    <Color x:Key="HexEditor_ScrollBarThumbColor">#3E4A70</Color>       <!-- Navy -->
 
     <!-- ==================== BRUSHES ==================== -->
 

@@ -99,7 +99,8 @@ public static class DockLayoutSerializer
             FloatLeft = item.FloatLeft,
             FloatTop = item.FloatTop,
             FloatWidth = item.FloatWidth,
-            FloatHeight = item.FloatHeight
+            FloatHeight = item.FloatHeight,
+            Metadata = item.Metadata.Count > 0 ? new(item.Metadata) : null
         };
     }
 
@@ -195,7 +196,8 @@ public static class DockLayoutSerializer
             FloatLeft = dto.FloatLeft,
             FloatTop = dto.FloatTop,
             FloatWidth = dto.FloatWidth,
-            FloatHeight = dto.FloatHeight
+            FloatHeight = dto.FloatHeight,
+            Metadata = dto.Metadata is not null ? new(dto.Metadata) : []
         };
     }
 }

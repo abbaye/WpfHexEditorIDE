@@ -61,6 +61,12 @@ public class DockItem
     public double? FloatHeight { get; set; }
 
     /// <summary>
+    /// Application-defined key/value pairs that are serialized with the layout.
+    /// Use this to persist custom data such as file paths across sessions.
+    /// </summary>
+    public Dictionary<string, string> Metadata { get; set; } = [];
+
+    /// <summary>
     /// Application-defined data associated with this item. Not serialized.
     /// </summary>
     public object? Tag { get; set; }

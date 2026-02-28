@@ -157,7 +157,8 @@ public partial class MainWindow : Window
             "panel-solution-explorer" => CreateSolutionExplorerContent(),
             "panel-properties" => CreatePropertiesContent(),
             "panel-output" => CreateOutputContent(),
-            _ when item.ContentId.StartsWith("doc-hex-") => CreateHexEditorContent(),
+            _ when item.ContentId.StartsWith("doc-hex-") => CreateHexEditorContent(
+                item.Metadata.TryGetValue("FilePath", out var fp) ? fp : null),
             _ => CreateDocumentContent(item)
         };
     }
@@ -208,19 +209,38 @@ public partial class MainWindow : Window
         return textBox;
     }
 
-    private static UIElement CreateHexEditorContent()
+    private static UIElement CreateHexEditorContent(string? filePath)
     {
-        var hexEditor = new HexEditor();
+        // No FilePath metadata → "New Hex Document" with random sample data
+        if (filePath is null)
+        {
+            var hexEditor = new HexEditor();
+            var data = new byte[1024];
+            new Random().NextBytes(data);
+            var tempFile = Path.Combine(Path.GetTempPath(), $"hexedit-sample-{Guid.NewGuid():N}.bin");
+            File.WriteAllBytes(tempFile, data);
+            hexEditor.OpenFile(tempFile);
+            return hexEditor;
+        }
 
-        var random = new Random();
-        var data = new byte[1024];
-        random.NextBytes(data);
+        // FilePath exists → "Open File" or layout restore
+        if (File.Exists(filePath))
+        {
+            var hexEditor = new HexEditor();
+            hexEditor.OpenFile(filePath);
+            return hexEditor;
+        }
 
-        var tempFile = Path.Combine(Path.GetTempPath(), $"hexedit-sample-{Guid.NewGuid():N}.bin");
-        File.WriteAllBytes(tempFile, data);
-        hexEditor.OpenFile(tempFile);
-
-        return hexEditor;
+        // File no longer exists → show error placeholder
+        return new TextBlock
+        {
+            Text = $"File not found:\n{filePath}",
+            Foreground = System.Windows.Media.Brushes.Gray,
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            TextAlignment = TextAlignment.Center,
+            FontSize = 14
+        };
     }
 
     private static UIElement CreateDocumentContent(DockItem item)
@@ -272,7 +292,8 @@ public partial class MainWindow : Window
             var item = new DockItem
             {
                 Title = System.IO.Path.GetFileName(dialog.FileName),
-                ContentId = $"doc-hex-{_documentCounter}"
+                ContentId = $"doc-hex-{_documentCounter}",
+                Metadata = { ["FilePath"] = dialog.FileName }
             };
             _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
             DockHost.RebuildVisualTree();

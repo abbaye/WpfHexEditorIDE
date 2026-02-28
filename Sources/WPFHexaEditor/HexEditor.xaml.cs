@@ -2118,6 +2118,122 @@ namespace WpfHexaEditor
             }
         }
 
+        /// <summary>
+        /// Background color for the status bar.
+        /// </summary>
+        [Category("Colors.Background")]
+        public Color StatusBarBackgroundColor
+        {
+            get => (Color)GetValue(StatusBarBackgroundColorProperty);
+            set => SetValue(StatusBarBackgroundColorProperty, value);
+        }
+
+        public static readonly DependencyProperty StatusBarBackgroundColorProperty =
+            DependencyProperty.Register(nameof(StatusBarBackgroundColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(0xF5, 0xF5, 0xF5), OnStatusBarBackgroundColorChanged));
+
+        private static void OnStatusBarBackgroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var color = (Color)e.NewValue;
+                editor.Resources["StatusBarBrush"] = new SolidColorBrush(color);
+            }
+        }
+
+        /// <summary>
+        /// Foreground color for the status bar text.
+        /// </summary>
+        [Category("Colors.Background")]
+        public Color StatusBarForegroundColor
+        {
+            get => (Color)GetValue(StatusBarForegroundColorProperty);
+            set => SetValue(StatusBarForegroundColorProperty, value);
+        }
+
+        public static readonly DependencyProperty StatusBarForegroundColorProperty =
+            DependencyProperty.Register(nameof(StatusBarForegroundColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(0x33, 0x33, 0x33), OnStatusBarForegroundColorChanged));
+
+        private static void OnStatusBarForegroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var color = (Color)e.NewValue;
+                editor.Resources["StatusBarTextBrush"] = new SolidColorBrush(color);
+            }
+        }
+
+        /// <summary>
+        /// Background color for the scrollbar track.
+        /// </summary>
+        [Category("Colors.Background")]
+        public Color ScrollBarBackgroundColor
+        {
+            get => (Color)GetValue(ScrollBarBackgroundColorProperty);
+            set => SetValue(ScrollBarBackgroundColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ScrollBarBackgroundColorProperty =
+            DependencyProperty.Register(nameof(ScrollBarBackgroundColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(0xF0, 0xF0, 0xF0), OnScrollBarBackgroundColorChanged));
+
+        private static void OnScrollBarBackgroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var color = (Color)e.NewValue;
+                editor.Resources["ScrollBarBrush"] = new SolidColorBrush(color);
+            }
+        }
+
+        /// <summary>
+        /// Color for the scrollbar thumb (draggable handle).
+        /// </summary>
+        [Category("Colors.Background")]
+        public Color ScrollBarThumbColor
+        {
+            get => (Color)GetValue(ScrollBarThumbColorProperty);
+            set => SetValue(ScrollBarThumbColorProperty, value);
+        }
+
+        public static readonly DependencyProperty ScrollBarThumbColorProperty =
+            DependencyProperty.Register(nameof(ScrollBarThumbColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(0xCD, 0xCD, 0xCD), OnScrollBarThumbColorChanged));
+
+        private static void OnScrollBarThumbColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var color = (Color)e.NewValue;
+                editor.Resources["ScrollBarThumbBrush"] = new SolidColorBrush(color);
+            }
+        }
+
+        /// <summary>
+        /// Foreground color for the ASCII panel text.
+        /// </summary>
+        [Category("Colors.Foreground")]
+        public Color AsciiForegroundColor
+        {
+            get => (Color)GetValue(AsciiForegroundColorProperty);
+            set => SetValue(AsciiForegroundColorProperty, value);
+        }
+
+        public static readonly DependencyProperty AsciiForegroundColorProperty =
+            DependencyProperty.Register(nameof(AsciiForegroundColor), typeof(Color), typeof(HexEditor),
+                new PropertyMetadata(Color.FromRgb(0x42, 0x42, 0x42), OnAsciiForegroundColorChanged));
+
+        private static void OnAsciiForegroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HexEditor editor)
+            {
+                var color = (Color)e.NewValue;
+                if (editor.HexViewport != null)
+                    editor.HexViewport.AsciiForegroundColor = color;
+            }
+        }
+
         #endregion
 
 
