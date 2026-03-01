@@ -192,6 +192,8 @@
          DockComboBoxStyle
          Theme-aware ComboBox for IDE dialogs and panels.
          Uses Dock* brush keys present in all 8 theme Colors.xaml files.
+         The implicit alias at the end of this file makes this the
+         default style for all ComboBoxes in scope.
     ───────────────────────────────────────────────────────────────────── -->
     <Style x:Key="DockComboBoxStyle" TargetType="ComboBox">
         <Setter Property="Background"          Value="{DynamicResource DockBackgroundBrush}"/>
@@ -344,6 +346,100 @@
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Implicit control styles
+         ─────────────────────────────────────────────────────────────────
+         PanelCommon.xaml is merged LAST in all theme files, so StaticResource
+         refs to Menu.xaml keys (DockDark*) and to DockComboBoxStyle (above)
+         are always valid at merge time.
+         These implicit styles override the minimal stubs in ContentControls.xaml
+         and ensure every standard WPF control is themed automatically.
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ComboBox: implicit alias — applies DockComboBoxStyle to every ComboBox in scope -->
+    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource DockComboBoxStyle}"/>
+
+    <!-- ContextMenu: implicit — all ContextMenus get the themed dark popup -->
+    <Style TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource DockDarkContextMenuStyle}"/>
+
+    <!-- MenuItem: implicit — items inside Menu and ContextMenu use the themed template -->
+    <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource DockDarkMenuItemStyle}"/>
+
+    <!-- Separator: implicit — thin 1px rule used in context menus -->
+    <Style TargetType="{x:Type Separator}" BasedOn="{StaticResource DockDarkMenuSeparatorStyle}"/>
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         CheckBox — full VS2022-style custom template
+         Overrides the Foreground-only stub in ContentControls.xaml.
+         Uses AccentBrush for the checked fill, DockBorderBrush for the box.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style TargetType="{x:Type CheckBox}">
+        <Setter Property="OverridesDefaultStyle"    Value="True"/>
+        <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="Background"               Value="{DynamicResource DockBackgroundBrush}"/>
+        <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}"/>
+        <Setter Property="BorderThickness"          Value="1"/>
+        <Setter Property="FocusVisualStyle"         Value="{x:Null}"/>
+        <Setter Property="Cursor"                   Value="Hand"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="SnapsToDevicePixels"      Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <BulletDecorator Background="Transparent" SnapsToDevicePixels="True">
+                        <BulletDecorator.Bullet>
+                            <!-- 14×14 rounded box -->
+                            <Border x:Name="CheckBorder"
+                                    Width="14" Height="14"
+                                    CornerRadius="2"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    SnapsToDevicePixels="True">
+                                <!-- Checkmark path (hidden until IsChecked=True) -->
+                                <Path x:Name="CheckMark"
+                                      Data="M1.5,5.5 L5,9 L11.5,2"
+                                      Stroke="White"
+                                      StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Stretch="Uniform"
+                                      Margin="2"
+                                      Visibility="Collapsed"/>
+                            </Border>
+                        </BulletDecorator.Bullet>
+                        <ContentPresenter Margin="6,0,0,0"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          RecognizesAccessKey="True"/>
+                    </BulletDecorator>
+                    <ControlTemplate.Triggers>
+                        <!-- Checked: accent fill + white checkmark -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="CheckBorder" Property="Background"  Value="{DynamicResource AccentBrush}"/>
+                            <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                            <Setter TargetName="CheckMark"   Property="Visibility"  Value="Visible"/>
+                        </Trigger>
+                        <!-- Indeterminate: accent fill, no checkmark (null = indeterminate) -->
+                        <Trigger Property="IsChecked" Value="{x:Null}">
+                            <Setter TargetName="CheckBorder" Property="Background"  Value="{DynamicResource AccentBrush}"/>
+                            <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                        </Trigger>
+                        <!-- Hover: accent border highlight -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                        </Trigger>
+                        <!-- Disabled -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
