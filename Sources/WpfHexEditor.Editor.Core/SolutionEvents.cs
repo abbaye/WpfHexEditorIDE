@@ -96,6 +96,17 @@ public sealed class FolderFromDiskRequestedEventArgs : EventArgs
     public string?  ParentFolderId { get; init; }
 }
 
+// ── Project rename (panel → host) ────────────────────────────────────────────
+
+/// <summary>
+/// Raised by <see cref="ISolutionExplorerPanel"/> when the user commits an inline rename on a project node.
+/// </summary>
+public sealed class ProjectRenameRequestedEventArgs : EventArgs
+{
+    public IProject Project { get; init; } = null!;
+    public string   NewName { get; init; } = string.Empty;
+}
+
 // ── Item renamed ──────────────────────────────────────────────────────────────
 
 /// <summary>

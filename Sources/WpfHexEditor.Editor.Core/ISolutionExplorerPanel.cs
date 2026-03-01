@@ -57,6 +57,11 @@ public interface ISolutionExplorerPanel
     event EventHandler<ProjectItemEventArgs>? ItemSelected;
 
     /// <summary>
+    /// Fired when the user commits an inline rename on a project node.
+    /// </summary>
+    event EventHandler<ProjectRenameRequestedEventArgs>? ProjectRenameRequested;
+
+    /// <summary>
     /// Fired when the user requests to rename an item via the context menu.
     /// </summary>
     event EventHandler<ProjectItemEventArgs>? ItemRenameRequested;
@@ -70,6 +75,11 @@ public interface ISolutionExplorerPanel
     /// Fired when the user drags a file node to a new folder or the project root.
     /// </summary>
     event EventHandler<ItemMoveRequestedEventArgs>? ItemMoveRequested;
+
+    /// <summary>
+    /// Fired when the user requests to close the solution from the Solution node context menu.
+    /// </summary>
+    event EventHandler? CloseSolutionRequested;
 
     /// <summary>
     /// Fired when the user chooses "Add New Item…" from the context menu on a project or folder node.

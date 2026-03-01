@@ -112,6 +112,25 @@ public sealed class ProjectNodeVm : SolutionExplorerNodeVm
     }
 
     public IProject Source => _project;
+
+    // ── Inline rename ───────────────────────────────────────────────────────
+
+    private bool   _isEditing;
+    private string _editingName = string.Empty;
+
+    public override bool IsEditing => _isEditing;
+
+    private void SetIsEditing(bool value) { _isEditing = value; OnPropertyChanged(nameof(IsEditing)); }
+
+    public string EditingName
+    {
+        get => _editingName;
+        set { _editingName = value; OnPropertyChanged(); }
+    }
+
+    public void   BeginEdit()  { EditingName = _project.Name; SetIsEditing(true); }
+    public string CommitEdit() { var name = _editingName.Trim(); SetIsEditing(false); return name; }
+    public void   CancelEdit() => SetIsEditing(false);
 }
 
 // ── Virtual folder node ───────────────────────────────────────────────────────

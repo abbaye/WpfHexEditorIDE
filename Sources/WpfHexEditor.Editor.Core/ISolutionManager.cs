@@ -38,6 +38,11 @@ public interface ISolutionManager
     Task<IProject> AddExistingProjectAsync(ISolution solution, string projectFilePath, CancellationToken ct = default);
     Task SaveProjectAsync(IProject project, CancellationToken ct = default);
     Task RemoveProjectAsync(ISolution solution, IProject project, CancellationToken ct = default);
+    /// <summary>
+    /// Renames the project: updates the model, renames the .whproj file on disk,
+    /// and re-saves the solution to persist the new file path.
+    /// </summary>
+    Task RenameProjectAsync(IProject project, string newName, CancellationToken ct = default);
 
     // ── Item management ──────────────────────────────────────────────────
     Task<IProjectItem> AddItemAsync(IProject project, string absolutePath, string? virtualFolderId = null, CancellationToken ct = default);

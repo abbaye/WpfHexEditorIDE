@@ -207,10 +207,32 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:ProjectNodeVm}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE943;" Foreground="#4EC9B0"/>
-                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}" FontWeight="SemiBold"/>
-            </StackPanel>
+            <Grid>
+                <!-- Normal display (IsEditing = false) -->
+                <StackPanel x:Name="ProjectDisplayPanel" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource NodeIcon}" Text="{Binding Icon}" Foreground="#4EC9B0"/>
+                    <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+                </StackPanel>
+                <!-- Inline rename TextBox (IsEditing = true) -->
+                <TextBox x:Name="ProjectInlineEditBox"
+                         Visibility="Collapsed"
+                         Text="{Binding EditingName, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalAlignment="Center"
+                         MinWidth="100"
+                         Background="{DynamicResource SE_SearchBoxBrush}"
+                         Foreground="{DynamicResource SE_ForegroundBrush}"
+                         BorderBrush="{DynamicResource SE_SelectionBorderBrush}"
+                         BorderThickness="1"
+                         Padding="2,1"
+                         KeyDown="OnProjectInlineEditKeyDown"
+                         LostKeyboardFocus="OnProjectInlineEditLostFocus"/>
+            </Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                    <Setter TargetName="ProjectDisplayPanel"  Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="ProjectInlineEditBox" Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:FolderNodeVm}">
@@ -403,6 +425,8 @@
 
             <TreeView.ContextMenu>
                 <ContextMenu>
+                    <MenuItem x:Name="CloseSolutionMenuItem"      Header="Close Solution"               Click="OnCloseSolution"/>
+                    <Separator x:Name="SolutionSeparator"/>
                     <MenuItem x:Name="AddNewItemMenuItem"         Header="Add New Item..."              Click="OnAddNewItem"/>
                     <MenuItem x:Name="AddExistingItemMenuItem"    Header="Add Existing Item..."          Click="OnAddExistingItem"/>
                     <MenuItem x:Name="ImportFormatMenuItem"       Header="Import Built-in Format..."     Click="OnImportFormatDefinition"/>
