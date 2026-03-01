@@ -33,10 +33,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#E0E0E0"/>
+                                <Setter Property="Background" Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#D0D0D0"/>
+                                <Setter Property="Background" Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.5"/>
@@ -48,10 +48,15 @@
         </Style>
     </UserControl.Resources>
 
-    <DockPanel Background="White">
+    <DockPanel Background="{DynamicResource TE_Background}">
 
         <!-- Toolbar -->
-        <Border DockPanel.Dock="Top" BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Background="#F5F5F5" Padding="4">
+        <Border DockPanel.Dock="Top"
+                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                Padding="4"
+                TextElement.Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="NewFileButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="New Format Definition">
                     <StackPanel Orientation="Horizontal">
@@ -74,7 +79,7 @@
                     </StackPanel>
                 </Button>
 
-                <Separator Width="1" Margin="8,4" Background="#CCCCCC"/>
+                <Separator Width="1" Margin="8,4" Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
 
                 <Button x:Name="UndoButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Undo (Ctrl+Z)">
                     <StackPanel Orientation="Horizontal">
@@ -90,7 +95,7 @@
                     </StackPanel>
                 </Button>
 
-                <Separator Width="1" Margin="8,4" Background="#CCCCCC"/>
+                <Separator Width="1" Margin="8,4" Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
 
                 <Button x:Name="FormatButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Format JSON (Ctrl+Shift+F)">
                     <StackPanel Orientation="Horizontal">
@@ -109,7 +114,12 @@
         </Border>
 
         <!-- Status Bar -->
-        <Border DockPanel.Dock="Bottom" BorderBrush="#CCCCCC" BorderThickness="0,1,0,0" Background="#F5F5F5" Padding="8,4">
+        <Border DockPanel.Dock="Bottom"
+                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                Padding="8,4"
+                TextElement.Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -148,13 +158,25 @@
             </Grid.ColumnDefinitions>
 
             <!-- File Tree (Left Panel) -->
-            <Border Grid.Column="0" BorderBrush="#CCCCCC" BorderThickness="0,0,1,0" Background="White">
+            <Border Grid.Column="0"
+                    BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                    BorderThickness="0,0,1,0"
+                    Background="{DynamicResource TE_Background}">
                 <DockPanel>
-                    <Border DockPanel.Dock="Top" Background="#F0F0F0" BorderBrush="#CCCCCC" BorderThickness="0,0,0,1">
-                        <TextBlock Text="Embedded Formats" FontWeight="Bold" Padding="8"/>
+                    <Border DockPanel.Dock="Top"
+                            Background="{DynamicResource SE_GroupHeaderBrush}"
+                            BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                            BorderThickness="0,0,0,1">
+                        <TextBlock Text="Embedded Formats"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                   Padding="8"/>
                     </Border>
 
-                    <TreeView x:Name="FormatTreeView" BorderThickness="0" Background="White">
+                    <TreeView x:Name="FormatTreeView"
+                              BorderThickness="0"
+                              Background="{DynamicResource TE_Background}"
+                              Foreground="{DynamicResource TE_Foreground}">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                 <StackPanel Orientation="Horizontal">
@@ -168,7 +190,8 @@
             </Border>
 
             <!-- GridSplitter -->
-            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="#E0E0E0"/>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockSplitterBrush}"/>
 
             <!-- Editor Area (Right Panel) -->
             <TabControl x:Name="MainTabControl" Grid.Column="2" BorderThickness="0"
@@ -180,18 +203,42 @@
                         <jsonEditor:JsonEditor x:Name="JsonEditorControl"
                                               ShowLineNumbers="True"
                                               EnableIntelliSense="True"
-                                              EnableValidation="True"/>
+                                              EnableValidation="True"
+                                              EditorBackground="{DynamicResource TE_Background}"
+                                              EditorForeground="{DynamicResource TE_Foreground}"
+                                              LineNumberBackground="{DynamicResource TE_LineNumberBackground}"
+                                              LineNumberForeground="{DynamicResource TE_LineNumberForeground}"
+                                              CurrentLineBackground="{DynamicResource TE_CurrentLineBrush}"
+                                              SelectionBackground="{DynamicResource TE_SelectionBackground}"
+                                              SyntaxKeyColor="{DynamicResource TE_Keyword}"
+                                              SyntaxKeywordColor="{DynamicResource TE_Keyword}"
+                                              SyntaxBooleanColor="{DynamicResource TE_Keyword}"
+                                              SyntaxStringValueColor="{DynamicResource TE_String}"
+                                              SyntaxNumberColor="{DynamicResource TE_Number}"
+                                              SyntaxCommentColor="{DynamicResource TE_Comment}"
+                                              SyntaxValueTypeColor="{DynamicResource TE_Type}"
+                                              SyntaxCalcExpressionColor="{DynamicResource TE_Directive}"
+                                              SyntaxVariableReferenceColor="{DynamicResource TE_Register}"
+                                              SyntaxEscapeSequenceColor="{DynamicResource TE_Label}"
+                                              SyntaxUrlColor="{DynamicResource TE_Register}"
+                                              SyntaxBraceColor="{DynamicResource TE_Foreground}"
+                                              SyntaxBracketColor="{DynamicResource TE_Foreground}"
+                                              SyntaxCommaColor="{DynamicResource TE_Foreground}"
+                                              SyntaxColonColor="{DynamicResource TE_Foreground}"
+                                              SyntaxNullColor="{DynamicResource TE_Operator}"
+                                              SyntaxDeprecatedColor="{DynamicResource TE_Operator}"/>
                     </Grid>
                 </TabItem>
 
                 <!-- Preview Tab -->
                 <TabItem Header="Preview">
-                    <ScrollViewer>
+                    <ScrollViewer Background="{DynamicResource TE_Background}">
                         <TextBlock x:Name="PreviewTextBlock"
                                   Padding="10"
                                   FontFamily="Consolas"
                                   FontSize="12"
                                   TextWrapping="Wrap"
+                                  Foreground="{DynamicResource TE_Foreground}"
                                   Text="Load a format definition to see preview..."/>
                     </ScrollViewer>
                 </TabItem>
@@ -199,17 +246,24 @@
                 <!-- Validation Tab -->
                 <TabItem Header="Validation">
                     <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Padding="8" Background="#F0F0F0"
+                        <TextBlock DockPanel.Dock="Top" Padding="8"
+                                  Background="{DynamicResource SE_GroupHeaderBrush}"
+                                  Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                   Text="Validation Results" FontWeight="Bold"/>
 
-                        <ListBox x:Name="ValidationListBox" BorderThickness="0">
+                        <ListBox x:Name="ValidationListBox"
+                                 BorderThickness="0"
+                                 Background="{DynamicResource TE_Background}"
+                                 Foreground="{DynamicResource TE_Foreground}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="4">
                                         <TextBlock Text="{Binding Icon}" FontSize="16" Margin="0,0,8,0"/>
                                         <StackPanel>
                                             <TextBlock Text="{Binding Message}" FontWeight="Bold"/>
-                                            <TextBlock Text="{Binding Location}" Foreground="Gray" FontSize="11"/>
+                                            <TextBlock Text="{Binding Location}"
+                                                       Foreground="{DynamicResource PFP_SubTextBrush}"
+                                                       FontSize="11"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </DataTemplate>
@@ -221,7 +275,8 @@
                 <!-- Test Tab -->
                 <TabItem Header="Test">
                     <DockPanel>
-                        <Border DockPanel.Dock="Top" Padding="8" Background="#F0F0F0">
+                        <Border DockPanel.Dock="Top" Padding="8"
+                                Background="{DynamicResource SE_GroupHeaderBrush}">
                             <StackPanel Orientation="Horizontal">
                                 <Button Content="Select Test File..." Padding="8,4" Margin="0,0,8,0"/>
                                 <Button Content="Run Test" Padding="8,4"/>
@@ -229,6 +284,7 @@
                         </Border>
 
                         <TextBlock Padding="10" TextWrapping="Wrap"
+                                  Foreground="{DynamicResource TE_Foreground}"
                                   Text="Test your format definition against sample files here.&#x0a;&#x0a;Select a file and click 'Run Test' to see parsing results."/>
                     </DockPanel>
                 </TabItem>

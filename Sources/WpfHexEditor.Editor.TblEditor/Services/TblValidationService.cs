@@ -48,10 +48,11 @@ public class TblValidationService
     public async Task<Dictionary<TblEntryViewModel, TblValidationResult>> ValidateAllAsync(
         IEnumerable<TblEntryViewModel> entries, CancellationToken cancellationToken)
     {
+        var snapshot = entries.ToList(); // Snapshot on calling thread to avoid cross-thread collection modification
         var results = new Dictionary<TblEntryViewModel, TblValidationResult>();
         await Task.Run(() =>
         {
-            foreach (var entry in entries)
+            foreach (var entry in snapshot)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var result = ValidateEntry(entry.Entry, entry.Value);

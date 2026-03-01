@@ -30,7 +30,8 @@
                           Width="140"
                           SelectedIndex="0"
                           VerticalAlignment="Center"
-                          FontSize="12">
+                          FontSize="12"
+                          Style="{DynamicResource DockComboBoxStyle}">
                     <ComboBoxItem Content="Debug" />
                     <ComboBoxItem Content="Build" />
                     <ComboBoxItem Content="General" />

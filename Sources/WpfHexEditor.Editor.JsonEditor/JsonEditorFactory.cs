@@ -11,7 +11,7 @@ using WpfHexEditor.Editor.JsonEditor.Controls;
 namespace WpfHexEditor.Editor.JsonEditor;
 
 /// <summary>
-/// <see cref="IEditorFactory"/> for the JSON / WHJSON editor.
+/// <see cref="IEditorFactory"/> for the JSON / whfmt editor.
 /// Register at application startup:
 /// <code>EditorRegistry.Instance.Register(new JsonEditorFactory());</code>
 /// </summary>
@@ -24,7 +24,7 @@ public sealed class JsonEditorFactory : IEditorFactory
     public bool CanOpen(string filePath)
     {
         var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
-        return ext is ".json" or ".whjson";
+        return ext is ".json" or ".whfmt";
     }
 
     public IDocumentEditor Create() => new Controls.JsonEditor();
@@ -34,6 +34,6 @@ file sealed class JsonEditorDescriptor : IEditorDescriptor
 {
     public string Id          => "json-editor";
     public string DisplayName => "JSON Editor";
-    public string Description => "JSON / WhjSON format definition editor";
-    public IReadOnlyList<string> SupportedExtensions => [".json", ".whjson"];
+    public string Description => "JSON / whfmt format definition editor";
+    public IReadOnlyList<string> SupportedExtensions => [".json", ".whfmt"];
 }

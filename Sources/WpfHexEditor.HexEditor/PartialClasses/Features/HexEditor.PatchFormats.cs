@@ -110,8 +110,8 @@ namespace WpfHexEditor.HexEditor
         /// <param name="format">Patch format to generate.</param>
         /// <param name="outputPath">Destination file path for the patch.</param>
         /// <param name="writeMetadata">
-        /// When <see langword="true"/>, a companion <c>.whjson</c> metadata file is written
-        /// next to the patch (same base name, <c>.whjson</c> extension).
+        /// When <see langword="true"/>, a companion <c>.whfmt</c> metadata file is written
+        /// next to the patch (same base name, <c>.whfmt</c> extension).
         /// </param>
         /// <returns>
         /// <see langword="true"/> on success; <see langword="false"/> when there is nothing
@@ -156,7 +156,7 @@ namespace WpfHexEditor.HexEditor
 
             if (writeMetadata)
             {
-                var meta = WhjsonPatchMetadata.Generate(
+                var meta = WhfmtPatchMetadata.Generate(
                     format,
                     original,
                     modified,
@@ -164,7 +164,7 @@ namespace WpfHexEditor.HexEditor
                     targetName: Path.GetFileNameWithoutExtension(outputPath) + "_patched" +
                                 (!string.IsNullOrEmpty(FileName) ? Path.GetExtension(FileName) : ".bin"));
 
-                meta.Save(WhjsonPatchMetadata.MetadataPathFor(outputPath));
+                meta.Save(WhfmtPatchMetadata.MetadataPathFor(outputPath));
             }
 
             return true;

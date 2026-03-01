@@ -1142,6 +1142,44 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             _smoothScrollTimer = new System.Windows.Threading.DispatcherTimer();
             _smoothScrollTimer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
             _smoothScrollTimer.Tick += SmoothScrollTimer_Tick;
+
+            // Apply theme resource bindings when connected to the visual tree
+            Loaded += (_, _) => ApplyThemeResourceBindings();
+        }
+
+        /// <summary>
+        /// Binds all color DPs to the active theme's TE_* resource keys.
+        /// Called on Loaded so the element is connected to the application resource tree.
+        /// Safe to call multiple times — subsequent calls just re-register the same keys.
+        /// </summary>
+        private void ApplyThemeResourceBindings()
+        {
+            // Viewport
+            SetResourceReference(EditorBackgroundProperty,      "TE_Background");
+            SetResourceReference(EditorForegroundProperty,      "TE_Foreground");
+            SetResourceReference(LineNumberBackgroundProperty,  "TE_LineNumberBackground");
+            SetResourceReference(LineNumberForegroundProperty,  "TE_LineNumberForeground");
+            SetResourceReference(CurrentLineBackgroundProperty, "TE_CurrentLineBrush");
+            SetResourceReference(SelectionBackgroundProperty,   "TE_SelectionBackground");
+
+            // Syntax highlighting
+            SetResourceReference(SyntaxKeyColorProperty,              "TE_Keyword");
+            SetResourceReference(SyntaxKeywordColorProperty,          "TE_Keyword");
+            SetResourceReference(SyntaxBooleanColorProperty,          "TE_Keyword");
+            SetResourceReference(SyntaxStringValueColorProperty,      "TE_String");
+            SetResourceReference(SyntaxNumberColorProperty,           "TE_Number");
+            SetResourceReference(SyntaxCommentColorProperty,          "TE_Comment");
+            SetResourceReference(SyntaxValueTypeColorProperty,        "TE_Type");
+            SetResourceReference(SyntaxCalcExpressionColorProperty,   "TE_Directive");
+            SetResourceReference(SyntaxVariableReferenceColorProperty,"TE_Register");
+            SetResourceReference(SyntaxEscapeSequenceColorProperty,   "TE_Label");
+            SetResourceReference(SyntaxUrlColorProperty,              "TE_Register");
+            SetResourceReference(SyntaxBraceColorProperty,            "TE_Foreground");
+            SetResourceReference(SyntaxBracketColorProperty,          "TE_Foreground");
+            SetResourceReference(SyntaxCommaColorProperty,            "TE_Foreground");
+            SetResourceReference(SyntaxColonColorProperty,            "TE_Foreground");
+            SetResourceReference(SyntaxNullColorProperty,             "TE_Operator");
+            SetResourceReference(SyntaxDeprecatedColorProperty,       "TE_Operator");
         }
 
         private void UpdateTypefacesFromDPs()

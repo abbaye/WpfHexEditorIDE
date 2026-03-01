@@ -13,7 +13,7 @@ namespace WpfHexEditor.Editor.StructureEditor.Controls;
 
 /// <summary>
 /// Stub structure editor — planned for a future sprint.
-/// Reads .whjson structure definitions.
+/// Reads .whfmt structure definitions.
 /// Implements <see cref="IDocumentEditor"/> and <see cref="IOpenableDocument"/>.
 /// </summary>
 public sealed partial class StructureEditorControl : UserControl, IDocumentEditor, IOpenableDocument

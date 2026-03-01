@@ -323,10 +323,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Loads <paramref name="whjsonPath"/> into every HexEditor tab that belongs to
+    /// Loads <paramref name="whfmtPath"/> into every HexEditor tab that belongs to
     /// <paramref name="project"/> and triggers a re-detection of the current file.
     /// </summary>
-    private void InjectFormatDefinitionToOpenEditors(IProject project, string whjsonPath)
+    private void InjectFormatDefinitionToOpenEditors(IProject project, string whfmtPath)
     {
         foreach (var (contentId, uiElement) in _contentCache)
         {
@@ -338,7 +338,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (!dockItem.Metadata.TryGetValue("ProjectId", out var projId) || projId != project.Id)
                 continue;
 
-            hex.LoadFormatDefinition(whjsonPath);
+            hex.LoadFormatDefinition(whfmtPath);
 
             // Re-run auto-detection if the editor already has a file open
             if (hex.FileName is { Length: > 0 })
@@ -362,7 +362,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 ApplyLayout(layout);
                 EnsureParsedFieldsPanel();
                 EnsureErrorPanel();
-                OutputLogger.Info($"Layout restored from: {LayoutFilePath}");
+                OutputLogger.Debug($"Layout restored from: {LayoutFilePath}");
                 return;
             }
             catch (Exception ex)
@@ -371,7 +371,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             }
         }
 
-        OutputLogger.Info("No saved layout found, using defaults.");
+        OutputLogger.Debug("No saved layout found, using defaults.");
         SetupDefaultLayout();
     }
 
@@ -414,7 +414,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             Directory.CreateDirectory(Path.GetDirectoryName(LayoutFilePath)!);
             File.WriteAllText(LayoutFilePath, DockLayoutSerializer.Serialize(_layout));
-            OutputLogger.Info($"Layout auto-saved to: {LayoutFilePath}");
+            OutputLogger.Debug($"Layout auto-saved to: {LayoutFilePath}");
             SaveSession();
         }
         catch (Exception ex)
@@ -519,7 +519,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         engine.Dock(parsedFields, layout.MainDocumentHost, DockDirection.Right);
 
         ApplyLayout(layout, engine);
-        OutputLogger.Info("Default layout applied.");
+        OutputLogger.Debug("Default layout applied.");
     }
 
     private void ApplyLayout(DockLayoutRoot layout, DockEngine? engine = null)
@@ -555,7 +555,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             };
             _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Right);
             DockHost.RebuildVisualTree();
-            OutputLogger.Info("ParsedFields panel added to restored layout.");
+            OutputLogger.Debug("ParsedFields panel added to restored layout.");
         }
     }
 
@@ -573,7 +573,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Bottom);
 
         DockHost.RebuildVisualTree();
-        OutputLogger.Info("Error panel added to restored layout.");
+        OutputLogger.Debug("Error panel added to restored layout.");
     }
 
     private void SyncDocumentCounter()
@@ -972,7 +972,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         DockHost.RebuildVisualTree();
         UpdateStatusBar();
         _solutionManager.PushRecentFile(item.AbsolutePath);
-        OutputLogger.Info($"Opened project item: {item.Name}");
+        OutputLogger.Debug($"Opened project item: {item.Name}");
     }
 
     private void OnDefaultTblChangeRequested(object? sender, DefaultTblChangeEventArgs e)
@@ -1050,7 +1050,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             Directory.CreateDirectory(destDir);
             var safeName = string.Concat(entry.Name.Split(Path.GetInvalidFileNameChars()))
                                  .Replace(' ', '_');
-            var destPath = Path.Combine(destDir, safeName + ".whjson");
+            var destPath = Path.Combine(destDir, safeName + ".whfmt");
             var json     = catalog.GetJson(entry.ResourceKey);
             File.WriteAllText(destPath, json, System.Text.Encoding.UTF8);
 
@@ -1439,8 +1439,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ? Path.GetFileName(fn)
             : ActiveDocumentEditor?.Title?.TrimEnd('*', ' ') ?? "Unknown";
 
-        OutputLogger.Info($"File: {filename}");
-        OutputLogger.Info(formatPart);
+        OutputLogger.Debug($"File: {filename}");
+        OutputLogger.Debug(formatPart);
     }
 
     // ─── Long-running operation handlers (per active document) ──────────
@@ -1594,7 +1594,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _engine.Close(item);
             DockHost.RebuildVisualTree();
             UpdateStatusBar();
-            OutputLogger.Info($"Closed tab: {item.Title} ({item.ContentId})");
+            OutputLogger.Debug($"Closed tab: {item.Title} ({item.ContentId})");
         }
         catch (InvalidOperationException ex)
         {
@@ -2344,7 +2344,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _parsedFieldsPanel ??= new ParsedFieldsPanel();
             ApplyLayout(layout);
             EnsureParsedFieldsPanel();
-            OutputLogger.Info($"Layout loaded from: {dlg.FileName}");
+            OutputLogger.Debug($"Layout loaded from: {dlg.FileName}");
         }
         catch (Exception ex)
         {
@@ -2358,7 +2358,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _contentCache.Clear();
         SetupDefaultLayout();
-        OutputLogger.Info("Layout reset to default.");
+        OutputLogger.Debug("Layout reset to default.");
     }
 
     // ─── Menu: other ───────────────────────────────────────────────────

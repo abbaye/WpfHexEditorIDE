@@ -1,11 +1,11 @@
 # WpfHexEditor.Editor.StructureEditor
 
 Binary structure editor implementing `IDocumentEditor` + `IOpenableDocument`.
-Loads a `.whjson` format definition and displays an editable field tree synchronized with the active HexEditor.
+Loads a `.whfmt` format definition and displays an editable field tree synchronized with the active HexEditor.
 
 ## Supported file types
 
-`.whjson`
+`.whfmt`
 
 ## Status
 
@@ -17,7 +17,7 @@ Loads a `.whjson` format definition and displays an editable field tree synchron
 EditorRegistry.Instance.Register(new StructureEditorFactory());
 
 var editor = new StructureEditorControl();
-await editor.OpenAsync("path/to/format.whjson");
+await editor.OpenAsync("path/to/format.whfmt");
 myGrid.Children.Add(editor);
 ```
 

@@ -66,42 +66,43 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             // Create main container
             var mainPanel = new DockPanel
             {
-                Background = Brushes.White,
                 MinWidth = 300,
                 MaxWidth = 500,
                 MinHeight = 100,
                 MaxHeight = 400
             };
+            mainPanel.SetResourceReference(DockPanel.BackgroundProperty, "TE_Background");
 
             // Create documentation preview (top section)
             _documentationPreview = new TextBlock
             {
                 Padding = new Thickness(8),
                 TextWrapping = TextWrapping.Wrap,
-                Background = new SolidColorBrush(Color.FromRgb(245, 245, 245)),
-                Foreground = new SolidColorBrush(Color.FromRgb(64, 64, 64)),
                 FontSize = 11,
                 MaxHeight = 100
             };
+            _documentationPreview.SetResourceReference(TextBlock.BackgroundProperty, "Panel_ToolbarBrush");
+            _documentationPreview.SetResourceReference(TextBlock.ForegroundProperty, "TE_Foreground");
             _documentationPreview.SetValue(DockPanel.DockProperty, Dock.Top);
 
             // Create separator
             var separator = new Border
             {
-                Height = 1,
-                Background = new SolidColorBrush(Color.FromRgb(200, 200, 200))
+                Height = 1
             };
+            separator.SetResourceReference(Border.BackgroundProperty, "Panel_ToolbarBorderBrush");
             separator.SetValue(DockPanel.DockProperty, Dock.Top);
 
             // Create suggestion list
             _suggestionList = new ListBox
             {
-                Background = Brushes.White,
                 BorderThickness = new Thickness(0),
                 FontFamily = new FontFamily("Consolas"),
                 FontSize = 12,
                 Padding = new Thickness(0)
             };
+            _suggestionList.SetResourceReference(ListBox.BackgroundProperty, "TE_Background");
+            _suggestionList.SetResourceReference(ListBox.ForegroundProperty, "TE_Foreground");
 
             // Custom item template for suggestions
             var itemTemplate = new DataTemplate();
@@ -124,10 +125,11 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             textFactory.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
             stackPanelFactory.AppendChild(textFactory);
 
-            // Type hint
+            // Type hint — foreground resolved from theme at runtime (PFP_SubTextBrush)
             var typeFactory = new FrameworkElementFactory(typeof(TextBlock));
             typeFactory.SetBinding(TextBlock.TextProperty, new System.Windows.Data.Binding("TypeHint"));
-            typeFactory.SetValue(TextBlock.ForegroundProperty, Brushes.Gray);
+            typeFactory.SetValue(TextBlock.ForegroundProperty,
+                Application.Current.TryFindResource("PFP_SubTextBrush") as Brush ?? Brushes.Gray);
             typeFactory.SetValue(TextBlock.MarginProperty, new Thickness(8, 0, 0, 0));
             typeFactory.SetValue(TextBlock.FontSizeProperty, 10.0);
             typeFactory.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
@@ -150,10 +152,8 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             // Create border around popup
             _popupBorder = new Border
             {
-                BorderBrush = new SolidColorBrush(Color.FromRgb(172, 172, 172)),
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(3),
-                Background = Brushes.White,
                 Child = mainPanel,
                 Effect = new System.Windows.Media.Effects.DropShadowEffect
                 {
@@ -163,6 +163,8 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
                     ShadowDepth = 2
                 }
             };
+            _popupBorder.SetResourceReference(Border.BackgroundProperty, "TE_Background");
+            _popupBorder.SetResourceReference(Border.BorderBrushProperty, "Panel_ToolbarBorderBrush");
 
             Child = _popupBorder;
         }

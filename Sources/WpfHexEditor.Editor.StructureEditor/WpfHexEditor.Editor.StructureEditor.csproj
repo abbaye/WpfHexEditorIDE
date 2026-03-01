@@ -14,7 +14,7 @@
     <PackageId>WpfHexEditor.Editor.StructureEditor</PackageId>
     <Version>1.0.0</Version>
     <Authors>WpfHexEditor Contributors</Authors>
-    <Description>Structure editor stub for WpfHexEditor — implements IDocumentEditor. Reads .whjson structure definitions. Planned for a future sprint.</Description>
+    <Description>Structure editor stub for WpfHexEditor — implements IDocumentEditor. Reads .whfmt structure definitions. Planned for a future sprint.</Description>
     <PackageTags>wpf;hex;editor;structure;binary</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>

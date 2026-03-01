@@ -12,7 +12,7 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800">
 
-    <Grid Background="White">
+    <Grid Background="{DynamicResource TE_Background}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <!-- Toolbar -->
@@ -21,7 +21,12 @@
         </Grid.RowDefinitions>
 
         <!-- Toolbar -->
-        <Border Grid.Row="0" Background="#F5F5F5" BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="8">
+        <Border Grid.Row="0"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="8"
+                TextElement.Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="ResetButton" Content="🔄 Reset to Defaults" Padding="8,4" Margin="0,0,5,0"
                         ToolTip="Reset all settings to default values"
@@ -47,29 +52,44 @@
             <ScrollViewer x:Name="SettingsScrollViewer" Grid.Column="0"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
-                          Background="White">
+                          Background="{DynamicResource TE_Background}">
                 <!-- Content will be generated dynamically via DynamicSettingsGenerator -->
             </ScrollViewer>
 
             <!-- GridSplitter -->
-            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="#E0E0E0"/>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockSplitterBrush}"/>
 
             <!-- Preview Pane (Right) -->
-            <Border Grid.Column="2" BorderBrush="#CCCCCC" BorderThickness="1,0,0,0" Background="#F9F9F9">
+            <Border Grid.Column="2"
+                    BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                    BorderThickness="1,0,0,0"
+                    Background="{DynamicResource TE_Background}">
                 <DockPanel>
                     <!-- Preview Header -->
-                    <Border DockPanel.Dock="Top" Background="#F0F0F0" BorderBrush="#CCCCCC" BorderThickness="0,0,0,1" Padding="8">
-                        <TextBlock Text="📝 Live Preview" FontWeight="Bold" FontSize="13"/>
+                    <Border DockPanel.Dock="Top"
+                            Background="{DynamicResource SE_GroupHeaderBrush}"
+                            BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            Padding="8">
+                        <TextBlock Text="📝 Live Preview"
+                                   FontWeight="Bold"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Border>
 
                     <!-- Preview Content -->
                     <Grid>
-                        <Border x:Name="PreviewBorder" Margin="10" BorderBrush="#CCCCCC" BorderThickness="1">
+                        <Border x:Name="PreviewBorder"
+                                Margin="10"
+                                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                                BorderThickness="1">
                             <!-- JsonEditor preview will be added here programmatically -->
                             <TextBlock x:Name="PreviewPlaceholder"
                                        Text="Preview will appear here when a JsonEditor is connected"
                                        VerticalAlignment="Center" HorizontalAlignment="Center"
-                                       Foreground="Gray" FontStyle="Italic"/>
+                                       Foreground="{DynamicResource PFP_SubTextBrush}"
+                                       FontStyle="Italic"/>
                         </Border>
                     </Grid>
                 </DockPanel>

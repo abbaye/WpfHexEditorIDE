@@ -176,16 +176,16 @@ namespace WpfHexEditor.Tests
         }
 
         // ------------------------------------------------------------------
-        // WhjsonPatchMetadata
+        // WhfmtPatchMetadata
         // ------------------------------------------------------------------
 
         [TestMethod]
-        public void WhjsonMetadata_GenerateAndValidate_Succeeds()
+        public void WhfmtMetadata_GenerateAndValidate_Succeeds()
         {
             var original = Range(0, 32);
             var modified  = Range(1, 32);
 
-            var meta = WhjsonPatchMetadata.Generate(PatchFormat.BPS, original, modified, "source.rom", "target.rom");
+            var meta = WhfmtPatchMetadata.Generate(PatchFormat.BPS, original, modified, "source.rom", "target.rom");
 
             Assert.AreEqual("BPS", meta.Format);
             Assert.AreEqual(32, meta.SourceFile.Size);
@@ -195,17 +195,17 @@ namespace WpfHexEditor.Tests
         }
 
         [TestMethod]
-        public void WhjsonMetadata_SerializeDeserialize_RoundTrip()
+        public void WhfmtMetadata_SerializeDeserialize_RoundTrip()
         {
             var original = Range(0, 32);
             var modified  = Range(1, 32);
-            var meta = WhjsonPatchMetadata.Generate(PatchFormat.BPS, original, modified, "a.rom", "b.rom", "Author", "Desc");
+            var meta = WhfmtPatchMetadata.Generate(PatchFormat.BPS, original, modified, "a.rom", "b.rom", "Author", "Desc");
 
-            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".whjson");
+            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".whfmt");
             try
             {
                 meta.Save(tempPath);
-                var loaded = WhjsonPatchMetadata.Load(tempPath);
+                var loaded = WhfmtPatchMetadata.Load(tempPath);
 
                 Assert.IsNotNull(loaded);
                 Assert.AreEqual("BPS",    loaded.Format);
@@ -220,10 +220,10 @@ namespace WpfHexEditor.Tests
         }
 
         [TestMethod]
-        public void WhjsonMetadata_MetadataPathFor_CorrectExtension()
+        public void WhfmtMetadata_MetadataPathFor_CorrectExtension()
         {
-            var path = WhjsonPatchMetadata.MetadataPathFor(@"C:\patches\myrom.bps");
-            Assert.AreEqual(@"C:\patches\myrom.whjson", path);
+            var path = WhfmtPatchMetadata.MetadataPathFor(@"C:\patches\myrom.bps");
+            Assert.AreEqual(@"C:\patches\myrom.whfmt", path);
         }
     }
 }

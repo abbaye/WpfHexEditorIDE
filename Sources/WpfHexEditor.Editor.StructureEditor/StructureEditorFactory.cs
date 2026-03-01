@@ -12,7 +12,7 @@ namespace WpfHexEditor.Editor.StructureEditor;
 
 /// <summary>
 /// Factory that registers the <see cref="StructureEditorControl"/> with the
-/// <see cref="IEditorRegistry"/> so the host application can open .whjson
+/// <see cref="IEditorRegistry"/> so the host application can open .whfmt
 /// structure definition files automatically by extension.
 /// </summary>
 public sealed class StructureEditorFactory : IEditorFactory
@@ -37,10 +37,10 @@ file sealed class StructureEditorDescriptor : IEditorDescriptor
 {
     public string Id          => "structure-editor";
     public string DisplayName => "Structure Editor";
-    public string Description => "Structure definition editor stub. Reads .whjson structure definitions. Planned for a future sprint.";
+    public string Description => "Structure definition editor stub. Reads .whfmt structure definitions. Planned for a future sprint.";
 
     public IReadOnlyList<string> SupportedExtensions =>
     [
-        ".whjson",
+        ".whfmt",
     ];
 }
