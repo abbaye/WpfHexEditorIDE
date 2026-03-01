@@ -8,7 +8,7 @@ namespace WpfHexEditor.Editor.TblEditor;
 /// Optional <see cref="IEditorFactory"/> for the TBL editor.
 /// Register this at application startup when plug-in auto-discovery is desired:
 /// <code>EditorRegistry.Instance.Register(new TblEditorFactory());</code>
-/// When plug-in support is not needed, simply instantiate <see cref="TblEditorControl"/> directly.
+/// When plug-in support is not needed, simply instantiate <see cref="TblEditor"/> directly.
 /// </summary>
 public sealed class TblEditorFactory : IEditorFactory
 {
@@ -22,7 +22,7 @@ public sealed class TblEditorFactory : IEditorFactory
         return ext is ".tbl" or ".tblx";
     }
 
-    public IDocumentEditor Create() => new TblEditorControl();
+    public IDocumentEditor Create() => new Controls.TblEditor();
 }
 
 file sealed class TblEditorDescriptor : IEditorDescriptor

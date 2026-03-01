@@ -162,7 +162,7 @@ namespace WpfHexEditor.HexEditor
         /// <summary>
         /// Fired when the user requests to open the TBL editor.
         /// The host application (Sample.Main, docking host, etc.) handles this event
-        /// by creating a TblEditorControl and passing <see cref="TBL"/> as its Source.
+        /// by creating a TblEditor and passing <see cref="TBL"/> as its Source.
         /// </summary>
         public event EventHandler? TblEditorRequested;
 

@@ -10,7 +10,7 @@ using WpfHexEditor.Editor.TblEditor.Services;
 namespace WpfHexEditor.Editor.TblEditor.ViewModels;
 
 /// <summary>
-/// Internal ViewModel for TblEditorControl.
+/// Internal ViewModel for TblEditor.
 /// Manages the entry collection, filtering, undo/redo and async validation.
 /// </summary>
 internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable

@@ -14,14 +14,14 @@ namespace WpfHexEditor.Editor.TblEditor.Controls;
 /// No embedded toolbar — all editing commands are exposed via <see cref="IDocumentEditor"/>
 /// and TBL-specific properties/methods for the host to wire to its own menus.
 /// </summary>
-public partial class TblEditorControl : UserControl, IDocumentEditor, IPropertyProviderSource
+public partial class TblEditor : UserControl, IDocumentEditor, IPropertyProviderSource
 {
     private readonly TblEditorViewModel _vm;
     private string? _currentFilePath;
 
     // ── Constructor ────────────────────────────────────────────────────────
 
-    public TblEditorControl()
+    public TblEditor()
     {
         InitializeComponent();
         _vm = new TblEditorViewModel();
@@ -44,7 +44,7 @@ public partial class TblEditorControl : UserControl, IDocumentEditor, IPropertyP
     // ═══════════════════════════════════════════════════════════════════════
 
     public static readonly DependencyProperty SourceProperty =
-        DependencyProperty.Register(nameof(Source), typeof(TblStream), typeof(TblEditorControl),
+        DependencyProperty.Register(nameof(Source), typeof(TblStream), typeof(TblEditor),
             new PropertyMetadata(null, OnSourceChanged));
 
     /// <summary>TBL stream bound to this editor. Setting it triggers an async reload.</summary>
@@ -56,13 +56,13 @@ public partial class TblEditorControl : UserControl, IDocumentEditor, IPropertyP
 
     private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is TblEditorControl ctrl && e.NewValue is TblStream tbl)
+        if (d is TblEditor ctrl && e.NewValue is TblStream tbl)
             _ = ctrl.LoadAsync(tbl);
     }
 
     public static readonly DependencyProperty IsReadOnlyProperty =
-        DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(TblEditorControl),
-            new PropertyMetadata(false, (d, e) => ((TblEditorControl)d)._vm.IsReadOnly = (bool)e.NewValue));
+        DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(TblEditor),
+            new PropertyMetadata(false, (d, e) => ((TblEditor)d)._vm.IsReadOnly = (bool)e.NewValue));
 
     // ═══════════════════════════════════════════════════════════════════════
     // IDocumentEditor
@@ -168,7 +168,7 @@ public partial class TblEditorControl : UserControl, IDocumentEditor, IPropertyP
     public event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
     public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
 
-    // Explicit interface implementation — TblEditorControl already has SelectionChanged<Dte?>
+    // Explicit interface implementation — TblEditor already has SelectionChanged<Dte?>
     private EventHandler? _docEditorSelectionChanged;
     event EventHandler? IDocumentEditor.SelectionChanged
     {
@@ -346,7 +346,7 @@ public partial class TblEditorControl : UserControl, IDocumentEditor, IPropertyP
     }
 }
 
-// ── File-scoped RelayCommand for TblEditorControl IDocumentEditor commands ────
+// ── File-scoped RelayCommand for TblEditor IDocumentEditor commands ────
 
 file sealed class TblRelayCommand : ICommand
 {

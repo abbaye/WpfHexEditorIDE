@@ -10,7 +10,7 @@ namespace WpfHexEditor.Editor.Core;
 /// for plug-in integration with the docking system.
 ///
 /// <para>Optional usage: an editor can be instantiated directly
-/// without going through this interface (<c>new TblEditorControl()</c>). The factory is
+/// without going through this interface (<c>new TblEditor()</c>). The factory is
 /// only needed if the editor must be discoverable via the registry (automatic opening
 /// by extension, "Open with…" menu, etc.).</para>
 ///

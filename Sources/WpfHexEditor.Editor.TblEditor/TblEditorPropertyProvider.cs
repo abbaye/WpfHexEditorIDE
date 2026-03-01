@@ -14,9 +14,9 @@ namespace WpfHexEditor.Editor.TblEditor;
 /// </summary>
 internal sealed class TblEditorPropertyProvider : IPropertyProvider
 {
-    private readonly TblEditorControl _editor;
+    private readonly Controls.TblEditor _editor;
 
-    public TblEditorPropertyProvider(TblEditorControl editor)
+    public TblEditorPropertyProvider(Controls.TblEditor editor)
     {
         _editor = editor;
         _editor.SelectionChanged += (_, _) =>
