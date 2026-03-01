@@ -199,4 +199,18 @@
     <SolidColorBrush x:Key="PFP_CoverageTrackBrush" Color="#2A3759"/>
     <SolidColorBrush x:Key="PFP_CoverageProgressBrush" Color="#FF006E"/>
 
+
+    <!-- Solution Explorer (SE) Theme Resources -->
+    <SolidColorBrush x:Key="SE_BackgroundBrush"            Color="#0A0E27"/>
+    <SolidColorBrush x:Key="SE_ForegroundBrush"            Color="#E0E7FF"/>
+    <SolidColorBrush x:Key="SE_SelectedBrush"              Color="#2A1A4A"/>
+    <SolidColorBrush x:Key="SE_HoverBrush"                 Color="#1A2050"/>
+    <SolidColorBrush x:Key="SE_SelectionBorderBrush"       Color="#FF006E"/>
+    <SolidColorBrush x:Key="SE_ModifiedIndicatorBrush"     Color="#00FF9F"/>
+    <SolidColorBrush x:Key="SE_SearchBoxBrush"             Color="#141B3D"/>
+    <SolidColorBrush x:Key="SE_SearchBoxForegroundBrush"   Color="#E0E7FF"/>
+    <SolidColorBrush x:Key="SE_TitleBarBrush"              Color="#141B3D"/>
+    <SolidColorBrush x:Key="SE_ToolbarBrush"               Color="#141B3D"/>
+    <SolidColorBrush x:Key="SE_GroupHeaderBrush"           Color="#141B3D"/>
+    <SolidColorBrush x:Key="SE_SeparatorBrush"             Color="#8B00FF"/>
 </ResourceDictionary>

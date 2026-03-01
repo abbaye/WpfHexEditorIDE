@@ -163,10 +163,8 @@
                             Padding="0,2"
                             SnapsToDevicePixels="True"
                             Grid.IsSharedSizeScope="True">
-                        <ScrollViewer CanContentScroll="True">
-                            <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"
-                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                        </ScrollViewer>
+                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"
+                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
