@@ -155,6 +155,10 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
             OnPropertyChanged(nameof(IsModified));
             OnPropertyChanged(nameof(DisplayName));
         }
+        else if (e.PropertyName is nameof(IProjectItem.Name))
+        {
+            OnPropertyChanged(nameof(DisplayName));
+        }
     }
 
     public override string DisplayName => _item.IsModified ? $"{_item.Name} *" : _item.Name;

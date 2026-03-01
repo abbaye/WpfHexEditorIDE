@@ -16,8 +16,10 @@ internal sealed class ProjectItem : IProjectItem, INotifyPropertyChanged
     private bool             _isModified;
     private EditorConfigDto? _editorConfig;
 
+    private string _name = "";
+
     public string          Id           { get; set; } = Guid.NewGuid().ToString();
-    public string          Name         { get; set; } = "";
+    public string          Name         { get => _name; set { _name = value; OnPropertyChanged(); } }
     public string          RelativePath { get; set; } = "";
     public string          AbsolutePath { get; set; } = "";
     public ProjectItemType ItemType     { get; set; } = ProjectItemType.Binary;

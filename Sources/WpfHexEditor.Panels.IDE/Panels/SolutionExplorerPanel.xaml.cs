@@ -478,6 +478,9 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
                 Project = fv.Project,
                 NewName = newName,
             });
+            // VirtualFolder has no INPC — rebuild the tree now that the host has
+            // updated vf.Name (RenameFolderAsync runs synchronously before its first await).
+            _vm.Rebuild();
         }
 
         SolutionTree.Focus();
