@@ -6,7 +6,7 @@
 using System;
 using System.Windows;
 
-namespace WpfHexEditor.WindowPanels.Panels
+namespace WpfHexEditor.Panels.BinaryAnalysis
 {
     /// <summary>
     /// Dialog for jumping to a specific offset
