@@ -212,7 +212,7 @@ namespace WpfHexEditor.HexEditor
                 var available = (int)Math.Min(count, fs.Length - offset);
                 result = new byte[available];
                 fs.Seek(offset, System.IO.SeekOrigin.Begin);
-                fs.ReadExactly(result, 0, available);
+                _ = fs.Read(result, 0, available);
                 return true;
             }
             catch { return false; }

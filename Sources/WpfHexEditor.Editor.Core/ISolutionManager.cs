@@ -38,6 +38,7 @@ public interface ISolutionManager
     Task<IProjectItem> AddItemAsync(IProject project, string absolutePath, string? virtualFolderId = null, CancellationToken ct = default);
     Task<IProjectItem> CreateItemAsync(IProject project, string name, ProjectItemType type, string? virtualFolderId = null, byte[]? initialContent = null, CancellationToken ct = default);
     Task RemoveItemAsync(IProject project, IProjectItem item, bool deleteFromDisk = false, CancellationToken ct = default);
+    Task RenameItemAsync(IProject project, IProjectItem item, string newName, CancellationToken ct = default);
 
     // ── TBL helpers ──────────────────────────────────────────────────────
     /// <summary>Designates <paramref name="tblItem"/> as the default TBL for <paramref name="project"/>.

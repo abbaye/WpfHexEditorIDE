@@ -30,7 +30,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
     /// Phase 2: Syntax highlighting with JsonSyntaxHighlighter
     /// Future phases will add: IntelliSense, validation
     /// </summary>
-    public class JsonEditor : FrameworkElement, IDocumentEditor
+    public class JsonEditor : FrameworkElement, IDocumentEditor, IPropertyProviderSource
     {
         #region Fields - Document Model
 
@@ -3508,6 +3508,11 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         }
 
         #endregion
+
+        // ── IPropertyProviderSource ───────────────────────────────────────────
+        private WpfHexEditor.Editor.JsonEditor.JsonEditorPropertyProvider? _propertyProvider;
+        public IPropertyProvider? GetPropertyProvider()
+            => _propertyProvider ??= new WpfHexEditor.Editor.JsonEditor.JsonEditorPropertyProvider(this);
     }
 
     // ── File-scoped RelayCommand ──────────────────────────────────────────────

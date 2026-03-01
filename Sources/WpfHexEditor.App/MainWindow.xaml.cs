@@ -22,6 +22,7 @@ using WpfHexEditor.Docking.Wpf;
 using WpfHexEditor.App.Controls;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.WindowPanels.Panels;
+using WpfHexEditor.ProjectSystem;
 using WpfHexEditor.ProjectSystem.Dialogs;
 using WpfHexEditor.ProjectSystem.Services;
 using WpfHexEditor.ProjectSystem.Templates;
@@ -366,7 +367,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private SolutionExplorerPanel CreateSolutionExplorerPanel()
     {
         var panel = new SolutionExplorerPanel();
-        panel.ItemActivated           += OnSolutionExplorerItemActivated;
+        panel.ItemActivated            += OnSolutionExplorerItemActivated;
+        panel.ItemSelected             += OnSolutionExplorerItemSelected;
+        panel.ItemRenameRequested      += OnSolutionExplorerItemRenameRequested;
+        panel.ItemDeleteRequested      += OnSolutionExplorerItemDeleteRequested;
         panel.DefaultTblChangeRequested += OnDefaultTblChangeRequested;
         // Sync current solution if already loaded
         panel.SetSolution(_solutionManager.CurrentSolution);
@@ -399,8 +403,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             _connectedHexEditor = hexEditor;
             hexEditor.ConnectParsedFieldsPanel(_parsedFieldsPanel);
-            ActiveDocumentEditor = hexEditor as IDocumentEditor;
-            ActiveHexEditor      = hexEditor;
+            ActiveDocumentEditor       = hexEditor as IDocumentEditor;
+            ActiveHexEditor            = hexEditor;
+            ActiveStatusBarContributor = hexEditor as IStatusBarContributor;
         }
 
         // ── Phase 12: in-memory new document ──────────────────────────
@@ -502,6 +507,75 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         OutputLogger.Info(e.TblItem is not null
             ? $"Default TBL set to '{e.TblItem.Name}' in project '{e.Project.Name}'"
             : $"Default TBL cleared in project '{e.Project.Name}'");
+    }
+
+    private void OnSolutionExplorerItemSelected(object? sender, ProjectItemEventArgs e)
+    {
+        _propertiesPanel?.SetProvider(new ProjectItemPropertyProvider(e.Item));
+    }
+
+    private void OnSolutionExplorerItemRenameRequested(object? sender, ProjectItemEventArgs e)
+    {
+        if (e.Project is null) return;
+
+        // Simple programmatic rename dialog
+        var win = new Window
+        {
+            Title                  = "Rename",
+            Owner                  = this,
+            Width                  = 380,
+            Height                 = 120,
+            WindowStartupLocation  = WindowStartupLocation.CenterOwner,
+            ResizeMode             = ResizeMode.NoResize,
+            ShowInTaskbar          = false,
+        };
+
+        var tb = new System.Windows.Controls.TextBox
+        {
+            Text              = e.Item.Name,
+            Margin            = new Thickness(10, 12, 10, 0),
+            VerticalAlignment = VerticalAlignment.Top,
+        };
+        tb.SelectAll();
+
+        var okBtn = new System.Windows.Controls.Button
+        {
+            Content            = "OK",
+            IsDefault          = true,
+            Width              = 75,
+            Margin             = new Thickness(0, 0, 10, 10),
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment  = VerticalAlignment.Bottom,
+        };
+        okBtn.Click += (_, _) => win.DialogResult = true;
+
+        var grid = new System.Windows.Controls.Grid();
+        grid.Children.Add(tb);
+        grid.Children.Add(okBtn);
+        win.Content = grid;
+
+        if (win.ShowDialog() != true) return;
+        var newName = tb.Text.Trim();
+        if (newName.Length == 0 || newName == e.Item.Name) return;
+
+        _ = _solutionManager.RenameItemAsync(e.Project, e.Item, newName);
+        OutputLogger.Info($"Renamed '{e.Item.Name}' → '{newName}'");
+    }
+
+    private void OnSolutionExplorerItemDeleteRequested(object? sender, ProjectItemEventArgs e)
+    {
+        if (e.Project is null) return;
+
+        var result = MessageBox.Show(
+            $"Remove '{e.Item.Name}' from the project?\n(The file on disk will not be deleted.)",
+            "Remove from project",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (result != MessageBoxResult.Yes) return;
+
+        _ = _solutionManager.RemoveItemAsync(e.Project, e.Item, deleteFromDisk: false);
+        OutputLogger.Info($"Removed '{e.Item.Name}' from project '{e.Project.Name}'");
     }
 
     // ─── Active document tracking ───────────────────────────────────────
@@ -917,16 +991,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (_solutionManager.CurrentSolution?.Projects.FirstOrDefault() is not { } project) return;
 
-        var dlg = new OpenFileDialog
-        {
-            Title  = "Add New Item — choose location",
-            Filter = "All Files (*.*)|*.*",
-            CheckFileExists = false
-        };
-        if (dlg.ShowDialog() != true) return;
+        var dlg = new AddNewItemDialog(project) { Owner = this };
+        if (dlg.ShowDialog() != true || dlg.SelectedTemplate is null) return;
 
-        _ = _solutionManager.CreateItemAsync(project, Path.GetFileName(dlg.FileName),
-            ProjectItemType.Binary, initialContent: []);
+        _ = _solutionManager.CreateItemAsync(
+            project,
+            dlg.FileName,
+            ProjectItemTypeHelper.FromExtension(Path.GetExtension(dlg.FileName)),
+            virtualFolderId: dlg.TargetFolderId,
+            initialContent:  dlg.SelectedTemplate.CreateContent());
     }
 
     private void OnProjectAddExistingItem(object sender, RoutedEventArgs e)

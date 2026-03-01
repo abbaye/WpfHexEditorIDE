@@ -207,7 +207,9 @@
 
     <!-- V1 Compatible Context Menu -->
     <UserControl.ContextMenu>
-        <ContextMenu x:Name="ByteContextMenu" Visibility="Collapsed">
+        <ContextMenu x:Name="ByteContextMenu" Visibility="Collapsed"
+                     Style="{DynamicResource DockDarkContextMenuStyle}"
+                     ItemContainerStyle="{DynamicResource DockDarkMenuItemStyle}">
             <!-- Undo -->
             <MenuItem x:Name="UndoMenuItem" Header="{DynamicResource UndoString}" Click="UndoMenuItem_Click">
                 <MenuItem.Icon>

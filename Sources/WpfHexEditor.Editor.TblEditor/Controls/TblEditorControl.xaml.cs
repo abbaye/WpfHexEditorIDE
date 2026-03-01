@@ -14,7 +14,7 @@ namespace WpfHexEditor.Editor.TblEditor.Controls;
 /// No embedded toolbar — all editing commands are exposed via <see cref="IDocumentEditor"/>
 /// and TBL-specific properties/methods for the host to wire to its own menus.
 /// </summary>
-public partial class TblEditorControl : UserControl, IDocumentEditor
+public partial class TblEditorControl : UserControl, IDocumentEditor, IPropertyProviderSource
 {
     private readonly TblEditorViewModel _vm;
     private string? _currentFilePath;
@@ -253,6 +253,11 @@ public partial class TblEditorControl : UserControl, IDocumentEditor
         add    => _vm.StatisticsChanged += value;
         remove => _vm.StatisticsChanged -= value;
     }
+
+    // ── IPropertyProviderSource ───────────────────────────────────────────
+    private TblEditorPropertyProvider? _propertyProvider;
+    public IPropertyProvider? GetPropertyProvider()
+        => _propertyProvider ??= new TblEditorPropertyProvider(this);
 
     // ═══════════════════════════════════════════════════════════════════════
     // XAML event handlers

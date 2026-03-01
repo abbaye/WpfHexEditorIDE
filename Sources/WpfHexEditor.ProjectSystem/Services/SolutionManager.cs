@@ -194,6 +194,14 @@ public sealed class SolutionManager : ISolutionManager
         return Task.CompletedTask;
     }
 
+    public Task RenameItemAsync(IProject project, IProjectItem item, string newName, CancellationToken ct = default)
+    {
+        if (project is not Project proj || item is not ProjectItem pi) return Task.CompletedTask;
+        pi.Name = newName;
+        proj.IsModified = true;
+        return SaveProjectAsync(project, ct);
+    }
+
     // ── TBL helpers ──────────────────────────────────────────────────────
 
     public void SetDefaultTbl(IProject project, IProjectItem? tblItem)
