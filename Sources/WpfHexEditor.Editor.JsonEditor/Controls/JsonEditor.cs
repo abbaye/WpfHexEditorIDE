@@ -3789,6 +3789,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         public event EventHandler? CanRedoChanged;
         public event EventHandler<string>? TitleChanged;
         public event EventHandler<string>? StatusMessage;
+        public event EventHandler<string>? OutputMessage;
         public event EventHandler? SelectionChanged;
 
         // ── Long-running operations (no-op: JsonEditor has no async operations) ──
