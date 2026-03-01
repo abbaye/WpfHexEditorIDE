@@ -161,6 +161,13 @@ public partial class TblEditorControl : UserControl, IDocumentEditor, IPropertyP
     public event EventHandler<string>? TitleChanged;
     public event EventHandler<string>? StatusMessage;
 
+    // ── Long-running operations (no-op: TblEditor has no async operations) ──
+    public bool IsBusy => false;
+    public void CancelOperation() { }
+    public event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
+    public event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
+    public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
+
     // Explicit interface implementation — TblEditorControl already has SelectionChanged<Dte?>
     private EventHandler? _docEditorSelectionChanged;
     event EventHandler? IDocumentEditor.SelectionChanged

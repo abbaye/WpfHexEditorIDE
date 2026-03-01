@@ -3497,6 +3497,13 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         public event EventHandler<string>? StatusMessage;
         public event EventHandler? SelectionChanged;
 
+        // ── Long-running operations (no-op: JsonEditor has no async operations) ──
+        public bool IsBusy => false;
+        public void CancelOperation() { }
+        public event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
+        public event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
+        public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
+
         // ── Helpers ───────────────────────────────────────────────────────
 
         private string BuildTitle()
