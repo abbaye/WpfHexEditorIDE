@@ -59,10 +59,14 @@ public partial class OutputPanel : UserControl
             OutputTextBox.ScrollToEnd();
     }
 
-    /// <summary>Clears all output.</summary>
+    /// <summary>
+    /// Clears all output.
+    /// </summary>
     internal void ClearOutput() => OutputTextBox.Document.Blocks.Clear();
 
-    /// <summary>Returns the full plain text of the document (for Copy All).</summary>
+    /// <summary>
+    /// Returns the full plain text of the document (for Copy All).
+    /// </summary>
     internal string GetAllText() =>
         new TextRange(OutputTextBox.Document.ContentStart,
                       OutputTextBox.Document.ContentEnd).Text;

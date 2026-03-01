@@ -27,6 +27,16 @@ using WpfHexEditor.Editor.TblEditor.Models;
 using WpfHexEditor.Editor.TblEditor.Services;
 using WpfHexEditor.Editor.JsonEditor;
 using WpfHexEditor.Editor.TextEditor;
+using WpfHexEditor.Editor.ImageViewer;
+using WpfHexEditor.Editor.EntropyViewer;
+using WpfHexEditor.Editor.EntropyViewer.Controls;
+using WpfHexEditor.Editor.DiffViewer;
+using WpfHexEditor.Editor.DiffViewer.Controls;
+using WpfHexEditor.Editor.DisassemblyViewer;
+using WpfHexEditor.Editor.StructureEditor;
+using WpfHexEditor.Editor.TileEditor;
+using WpfHexEditor.Editor.AudioViewer;
+using WpfHexEditor.Editor.ScriptEditor;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
 using WpfHexEditor.Panels.BinaryAnalysis;
@@ -179,10 +189,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    /// <summary>False while the active document is busy — gates File and Edit menus.</summary>
+    /// <summary>
+    /// False while the active document is busy — gates File and Edit menus.
+    /// </summary>
     public bool IsMenuEnabled => !_isDocumentBusy;
 
-    /// <summary>True only when a solution is loaded AND the active document is not busy.</summary>
+    /// <summary>
+    /// True only when a solution is loaded AND the active document is not busy.
+    /// </summary>
     public bool IsProjectMenuEnabled => _hasSolution && !_isDocumentBusy;
 
     // ─── Constructor ───────────────────────────────────────────────────
@@ -206,6 +220,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _editorRegistry.Register(new TblEditorFactory());
         _editorRegistry.Register(new JsonEditorFactory());
         _editorRegistry.Register(new TextEditorFactory());
+        _editorRegistry.Register(new ImageViewerFactory());
+        _editorRegistry.Register(new EntropyViewerFactory());
+        _editorRegistry.Register(new DiffViewerFactory());
+        _editorRegistry.Register(new DisassemblyViewerFactory());
+        _editorRegistry.Register(new StructureEditorFactory());
+        _editorRegistry.Register(new TileEditorFactory());
+        _editorRegistry.Register(new AudioViewerFactory());
+        _editorRegistry.Register(new ScriptEditorFactory());
+
+        // Register VS-style project templates
+        ProjectTemplateRegistry.RegisterDefaults();
 
         LoadSavedLayoutOrDefault();
         PopulateRecentMenus();
@@ -1073,7 +1098,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    /// <summary>Opens a file in the appropriate editor without associating it with a project item.</summary>
+    /// <summary>
+    /// Opens a file in the appropriate editor without associating it with a project item.
+    /// </summary>
     private void OpenFileDirectly(string filePath)
     {
         _documentCounter++;
@@ -1592,7 +1619,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var dlg = new NewProjectDialog(null) { Owner = this };
             if (dlg.ShowDialog() != true) return;
 
-            _ = CreateSolutionAndProjectAsync(dlg.ProjectDirectory, dlg.ProjectName);
+            _ = CreateSolutionAndProjectAsync(dlg.ProjectDirectory, dlg.ProjectName, dlg.SelectedTemplate);
             return;
         }
 
@@ -1600,18 +1627,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var dlg2 = new NewProjectDialog(suggestedDir) { Owner = this };
         if (dlg2.ShowDialog() != true) return;
 
-        _ = CreateProjectAsync(_solutionManager.CurrentSolution, dlg2.ProjectDirectory, dlg2.ProjectName);
+        _ = CreateProjectAsync(_solutionManager.CurrentSolution, dlg2.ProjectDirectory, dlg2.ProjectName, dlg2.SelectedTemplate);
     }
 
-    private async Task CreateSolutionAndProjectAsync(string directory, string name)
+    private async Task CreateSolutionAndProjectAsync(string directory, string name, IProjectTemplate? template = null)
     {
         try
         {
             await _solutionManager.CreateSolutionAsync(directory, name);
             OutputLogger.Info($"Solution created: {name}");
 
-            await _solutionManager.CreateProjectAsync(_solutionManager.CurrentSolution!, directory, name);
+            var project = await _solutionManager.CreateProjectAsync(_solutionManager.CurrentSolution!, directory, name);
             OutputLogger.Info($"Project created: {name}");
+
+            await ApplyProjectTemplateAsync(project, template);
         }
         catch (Exception ex)
         {
@@ -1621,18 +1650,59 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private async Task CreateProjectAsync(ISolution solution, string directory, string name)
+    private async Task CreateProjectAsync(ISolution solution, string directory, string name, IProjectTemplate? template = null)
     {
         try
         {
-            await _solutionManager.CreateProjectAsync(solution, directory, name);
+            var project = await _solutionManager.CreateProjectAsync(solution, directory, name);
             OutputLogger.Info($"Project created: {name}");
+
+            await ApplyProjectTemplateAsync(project, template);
         }
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to create project: {ex.Message}");
             MessageBox.Show($"Failed to create project:\n{ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private async Task ApplyProjectTemplateAsync(IProject project, IProjectTemplate? template)
+    {
+        if (template is null) return;
+
+        try
+        {
+            var projDir  = Path.GetDirectoryName(project.ProjectFilePath) ?? "";
+            var scaffold = await template.ScaffoldAsync(projDir, project.Name);
+
+            // Apply project type
+            if (scaffold.ProjectType is not null)
+                project.ProjectType = scaffold.ProjectType;
+
+            // Create virtual folders
+            foreach (var folderName in scaffold.VirtualFolders)
+                await _solutionManager.CreateFolderAsync(project, folderName, createPhysical: true);
+
+            // Create and register files
+            foreach (var file in scaffold.Files)
+            {
+                var absPath = Path.GetFullPath(
+                    Path.Combine(projDir, file.RelativePath.Replace('/', Path.DirectorySeparatorChar)));
+                Directory.CreateDirectory(Path.GetDirectoryName(absPath)!);
+                await File.WriteAllBytesAsync(absPath, file.Content);
+                await _solutionManager.AddItemAsync(project, absPath);
+
+                if (file.OpenOnCreate)
+                    OpenFileDirectly(absPath);
+            }
+
+            await _solutionManager.SaveProjectAsync(project);
+            OutputLogger.Info($"Template '{template.DisplayName}' applied to project '{project.Name}'.");
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Info($"Template scaffolding failed: {ex.Message}");
         }
     }
 
@@ -2006,6 +2076,49 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnShowCustomParserTemplate(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Custom Parser Template", CustomParserPanelContentId, DockDirection.Right);
+
+    private void OnCompareFiles(object sender, RoutedEventArgs e)
+    {
+        var dlgLeft = new OpenFileDialog { Title = "Select LEFT file for comparison", Multiselect = false };
+        if (dlgLeft.ShowDialog() != true) return;
+
+        var dlgRight = new OpenFileDialog { Title = "Select RIGHT file for comparison", Multiselect = false };
+        if (dlgRight.ShowDialog() != true) return;
+
+        _documentCounter++;
+        var contentId = $"doc-diff-{_documentCounter}";
+        var viewer    = new DiffViewerControl();
+        var title     = $"{Path.GetFileName(dlgLeft.FileName)} ↔ {Path.GetFileName(dlgRight.FileName)}";
+
+        _contentCache[contentId] = viewer;
+        var item = new DockItem { Title = title, ContentId = contentId };
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+        _ = viewer.CompareAsync(dlgLeft.FileName, dlgRight.FileName);
+    }
+
+    private void OnEntropyAnalysis(object sender, RoutedEventArgs e)
+    {
+        // Prefer the active hex editor's file; fall back to a file-open dialog
+        var filePath = ActiveHexEditor?.FileName;
+        if (string.IsNullOrEmpty(filePath))
+        {
+            var dlg = new OpenFileDialog { Title = "Select file for entropy analysis" };
+            if (dlg.ShowDialog() != true) return;
+            filePath = dlg.FileName;
+        }
+
+        _documentCounter++;
+        var contentId = $"doc-entropy-{_documentCounter}";
+        var viewer    = new EntropyViewerControl();
+        var title     = $"Entropy: {Path.GetFileName(filePath)}";
+
+        _contentCache[contentId] = viewer;
+        var item = new DockItem { Title = title, ContentId = contentId };
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+        _ = viewer.OpenAsync(filePath);
+    }
 
     private void OnTemplateApplyRequested(object? sender,
         WpfHexEditor.Panels.BinaryAnalysis.TemplateApplyEventArgs e)

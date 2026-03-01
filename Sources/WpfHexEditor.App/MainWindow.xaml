@@ -1,3 +1,9 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
 <Window x:Class="WpfHexEditor.App.MainWindow"
         x:Name="ThisWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -323,6 +329,22 @@
                         <MenuItem Header="_Custom Parser Template" Click="OnShowCustomParserTemplate">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE9A1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Header="_Compare Files…" Click="OnCompareFiles" InputGestureText="Ctrl+Alt+D">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE93D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Entropy Analysis…" Click="OnEntropyAnalysis"
+                                  ToolTip="Analyse entropy and byte distribution of the active file">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>

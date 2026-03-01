@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -22,7 +23,9 @@ public sealed partial class SaveChangesDialog : Window
 
     // ── Input ─────────────────────────────────────────────────────────────
 
-    /// <summary>List of (ContentId, display title) for each dirty document.</summary>
+    /// <summary>
+    /// List of (ContentId, display title) for each dirty document.
+    /// </summary>
     public IReadOnlyList<(string ContentId, string Title)> DirtyItems
     {
         init

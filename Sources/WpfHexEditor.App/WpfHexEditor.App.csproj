@@ -29,6 +29,14 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.TblEditor\WpfHexEditor.Editor.TblEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.JsonEditor\WpfHexEditor.Editor.JsonEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.ImageViewer\WpfHexEditor.Editor.ImageViewer.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.EntropyViewer\WpfHexEditor.Editor.EntropyViewer.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.DiffViewer\WpfHexEditor.Editor.DiffViewer.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.DisassemblyViewer\WpfHexEditor.Editor.DisassemblyViewer.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.StructureEditor\WpfHexEditor.Editor.StructureEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.TileEditor\WpfHexEditor.Editor.TileEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.AudioViewer\WpfHexEditor.Editor.AudioViewer.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.ScriptEditor\WpfHexEditor.Editor.ScriptEditor.csproj" />
   </ItemGroup>
 
 </Project>
