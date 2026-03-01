@@ -1,9 +1,11 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using WpfHexEditor.Core.Models;
 using WpfHexEditor.Core.RomHacking;
 using WpfHexEditor.Editor.Core;
@@ -112,6 +114,30 @@ namespace WpfHexEditor.HexEditor
             {
                 // Silently ignore — the editor stays on the clean file
             }
+        }
+
+        // ── IEditorPersistable — Bookmarks ────────────────────────────────────
+        // Explicit interface implementation to avoid collision with the existing
+        // public long[] GetBookmarks() method in HexEditor.Bookmarks.cs.
+
+        /// <inheritdoc />
+        IReadOnlyList<BookmarkDto>? IEditorPersistable.GetBookmarks()
+        {
+            if (_bookmarks.Count == 0)
+                return null;
+
+            var result = new List<BookmarkDto>(_bookmarks.Count);
+            foreach (var offset in _bookmarks)
+                result.Add(new BookmarkDto { Offset = offset, Length = 1, Label = "" });
+            return result;
+        }
+
+        /// <inheritdoc />
+        void IEditorPersistable.ApplyBookmarks(IReadOnlyList<BookmarkDto> bookmarks)
+        {
+            if (bookmarks == null) return;
+            foreach (var dto in bookmarks)
+                SetBookmark(dto.Offset);
         }
     }
 }

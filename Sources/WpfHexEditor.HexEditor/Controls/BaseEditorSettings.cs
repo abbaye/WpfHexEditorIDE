@@ -2,7 +2,7 @@
 // Apache 2.0  - 2026
 // Base Editor Settings - Unified Architecture Helper for All Settings Panels
 // Author : Claude Sonnet 4.5
-// Contributors: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 // Pattern: Composition-based helper (WPF-compatible with partial classes)
 //////////////////////////////////////////////
 

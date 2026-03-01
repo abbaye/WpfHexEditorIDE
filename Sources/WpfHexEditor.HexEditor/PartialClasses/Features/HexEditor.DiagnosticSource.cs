@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -40,14 +41,18 @@ public partial class HexEditor : IDiagnosticSource
 
     // ── Internal API (used by parsers/validators in future sprints) ──────────
 
-    /// <summary>Adds a diagnostic entry and notifies subscribers.</summary>
+    /// <summary>
+    /// Adds a diagnostic entry and notifies subscribers.
+    /// </summary>
     internal void ReportDiagnostic(DiagnosticEntry entry)
     {
         _panelDiagnostics.Add(entry);
         DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    /// <summary>Removes all diagnostics and notifies subscribers.</summary>
+    /// <summary>
+    /// Removes all diagnostics and notifies subscribers.
+    /// </summary>
     internal void ClearDiagnostics()
     {
         if (_panelDiagnostics.Count == 0) return;

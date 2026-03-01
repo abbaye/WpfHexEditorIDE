@@ -2,7 +2,7 @@
 // Apache 2.0  - 2026
 // HexEditor - Data Inspector Integration (Partial Class)
 // Author : Claude Sonnet 4.5
-// Contributors: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;

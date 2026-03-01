@@ -99,17 +99,23 @@ namespace WpfHexEditor.HexEditor.Search.Views
             _hexEditor = null;
         }
 
-        /// <summary>Gets the underlying SearchViewModel.</summary>
+        /// <summary>
+        /// Gets the underlying SearchViewModel.
+        /// </summary>
         public SearchViewModel ViewModel => DataContext as SearchViewModel;
 
         #endregion
 
         #region Events
 
-        /// <summary>Raised when the user requests to close the bar (✖ or Esc).</summary>
+        /// <summary>
+        /// Raised when the user requests to close the bar (✖ or Esc).
+        /// </summary>
         public event EventHandler OnCloseRequested;
 
-        /// <summary>Raised when the user clicks "⋯" to open the Advanced Search dialog.</summary>
+        /// <summary>
+        /// Raised when the user clicks "⋯" to open the Advanced Search dialog.
+        /// </summary>
         public event EventHandler OnAdvancedSearchRequested;
 
         #endregion
