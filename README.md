@@ -4,7 +4,7 @@
 
   <h3>⚡ The Fastest Wpf Hex Editor Control for .NET ⚡</h3>
 
-  [![NuGet](https://img.shields.io/nuget/v/WPFHexaEditor?color=blue&label=NuGet&logo=nuget)](https://www.nuget.org/packages/WPFHexaEditor/)
+  [![NuGet](https://img.shields.io/nuget/v/WPFHexaEditor?color=blue&label=NuGet%20(V1)&logo=nuget)](https://www.nuget.org/packages/WPFHexaEditor/)
   [![.NET Multi-Target](https://img.shields.io/badge/.NET-net48%20%7C%20net8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorControl)
   [![C#](https://img.shields.io/badge/C%23-12.0-239120?logo=csharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
@@ -47,23 +47,35 @@
 
 ## ⚡ Quick Start
 
-**1. Install via NuGet (V1 only):**
+**Install V1 via NuGet (stable):**
 ```bash
 dotnet add package WPFHexaEditor
 ```
 
-**2. Add to your XAML:**
+**Or reference V2 projects directly (latest):**
 ```xml
+<ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+<ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
+```
+
+**Add to your XAML:**
+```xml
+<!-- V1 (NuGet) -->
 <Window xmlns:hex="clr-namespace:WpfHexaEditor;assembly=WPFHexaEditor">
+  <hex:HexEditor FileName="data.bin" />
+</Window>
+
+<!-- V2 (project reference) -->
+<Window xmlns:hex="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor">
   <hex:HexEditor FileName="data.bin" />
 </Window>
 ```
 
-**3. Done! 🎉**
+**Done!**
 
-> **💡 JetBrains Rider Users:** No visual toolbox? No problem! See the **[Rider Guide](docs/IDE/RIDER_GUIDE.md)** for IntelliSense tips, Live Templates, and sample projects.
+> **JetBrains Rider Users:** No visual toolbox? See the **[Rider Guide](docs/IDE/RIDER_GUIDE.md)** for IntelliSense tips and sample projects.
 
-👉 **[Complete Tutorial](GETTING_STARTED.md)** | **[7+ Sample Apps](Sources/Samples/)** | **[API Docs](Sources/WPFHexaEditor/README.md)**
+**[Complete Tutorial](GETTING_STARTED.md)** | **[Sample Apps](Sources/Samples/)** | **[Architecture](docs/architecture/Overview.md)**
 
 ---
 
@@ -108,7 +120,7 @@ dotnet add package WPFHexaEditor
 - **File Diff Mode** ⭐ Side-by-side
 - **Binary Templates** ⭐ Compiler
 - **BarChart** visualization
-- **AvalonDock** support
+- **Custom Docking** system (VS-style)
 
 </td>
 <td width="33%">
@@ -265,13 +277,6 @@ dotnet add package WPFHexaEditor
   <img src="Images/Sample12-FIXEDTBL-BYTESHIFT.png?raw=true" alt="ByteShift"/>
 </td>
 <td width="50%" align="center">
-  <b>🖥️ AvalonDock Integration ⭐</b><br/>
-  <sub>Dockable panels for complex workflows</sub><br/><br/>
-  <img src="Images/Sample11-AvalonDock.png?raw=true" alt="AvalonDock"/>
-</td>
-</tr>
-<tr>
-<td width="50%" align="center" colspan="2">
   <b>🎨 Custom Background Blocks</b><br/>
   <sub>Visual diff and data highlighting</sub><br/><br/>
   <img src="Images/Sample15-CustomBackgroundBlock.png?raw=true" alt="CustomBackgroundBlock"/>
@@ -303,22 +308,30 @@ dotnet add package WPFHexaEditor
 | **[Data Flow](docs/architecture/data-flow/)** | 🔄 File operations, Edit operations, Search, Save sequences |
 | **[API Reference](docs/api-reference/)** | 📖 Complete API documentation with examples |
 
-### Code Organization
+### Code Organization (V2)
 
-| Folder | Description |
-|--------|-------------|
-| **[PartialClasses/](Sources/WPFHexaEditor/PartialClasses/)** | 📂 HexEditor organized by functionality (Core, Features, Search, UI) |
-| **[Services/](Sources/WPFHexaEditor/Services/)** | 🔧 15 specialized services (Search, Clipboard, Bookmarks, etc.) |
-| **[Core/Bytes/](Sources/WPFHexaEditor/Core/Bytes/)** | 💾 ByteProvider system and data management |
+| Project | Description |
+|---------|-------------|
+| **[WpfHexEditor.Core](Sources/WpfHexEditor.Core/)** | Core services, ByteProvider, data layer (net48 + net8.0-windows) |
+| **[WpfHexEditor.HexEditor](Sources/WpfHexEditor.HexEditor/)** | HexEditor WPF control, partial classes by feature (Core, Features, Search, UI) |
+| **[WpfHexEditor.WindowPanels](Sources/WpfHexEditor.WindowPanels/)** | ParsedFieldsPanel, FileDiffDialog, DataInspector |
+| **[WpfHexEditor.Docking.Core](Sources/WpfHexEditor.Docking.Core/)** | Docking engine (platform-agnostic) |
+| **[WpfHexEditor.Docking.Wpf](Sources/WpfHexEditor.Docking.Wpf/)** | WPF docking visuals (VS-style floating/docking) |
+| **[WpfHexEditor.Editor.Core](Sources/WpfHexEditor.Editor.Core/)** | IDocumentEditor contract, editor registry (plugin) |
+| **[WpfHexEditor.Editor.JsonEditor](Sources/WpfHexEditor.Editor.JsonEditor/)** | JSON editor with IntelliSense and syntax highlighting |
+| **[WpfHexEditor.Editor.TblEditor](Sources/WpfHexEditor.Editor.TblEditor/)** | TBL character-table editor (standalone) |
+| **[WpfHexEditor.BarChart](Sources/WpfHexEditor.BarChart/)** | Byte frequency visualization |
+| **[WpfHexEditor.BinaryAnalysis](Sources/WpfHexEditor.BinaryAnalysis/)** | 400+ format auto-detection and binary templates |
+| **[WpfHexEditor.ColorPicker](Sources/WpfHexEditor.ColorPicker/)** | Color picker control |
+| **[WpfHexEditor.HexBox](Sources/WpfHexEditor.HexBox/)** | Standalone HexBox input control (MVVM) |
 
 ### Sample Applications
 
 | Sample | Description |
 |--------|-------------|
-| **[Main Sample](Sources/Samples/WpfHexEditor.Sample.Main/)** | ⭐ Comprehensive WPF demo with all features |
-| **[Rider Simple Example](Sources/Samples/Rider/SimpleExample/)** | Minimal example for JetBrains Rider/VS Code users |
-
-> **Note:** Legacy V1 samples were removed in v2.6.0 (Feb 2026). All functionality is now available in the Main Sample.
+| **[WpfHexEditor.App](Sources/Samples/WpfHexEditor.App/)** | Main application — VS-style docking, multi-document (in construction) |
+| **[WpfHexEditor.Sample.Main](Sources/Samples/WpfHexEditor.Sample.Main/)** | Lab / sandbox — feature testing and prototyping |
+| **[Rider SimpleExample](Sources/Samples/Rider/SimpleExample/)** | Minimal example for JetBrains Rider / VS Code users |
 
 **[→ Browse samples with documentation](Sources/Samples/)**
 
@@ -343,7 +356,7 @@ dotnet add package WPFHexaEditor
 - 🔄 **Parallel Multi-Core** - Automatic for files > 100MB
 - 📍 **Scrollbar Markers** - Visual indicators for search/bookmarks/changes and selection!
 - 📊 **BarChart View** - Byte frequency visualization
-- 🪟 **AvalonDock Support** - Professional IDE integration
+- 🪟 **Custom Docking** - VS-style floating/docking system (no third-party dependency)
 - 🌍 **19 Languages** - English, Spanish, French, German, Italian, Japanese, Korean, Dutch, Polish, Portuguese, Russian, Swedish, Turkish, Chinese, Arabic, Hindi
 
 ### Developer Features
@@ -447,7 +460,7 @@ See [LICENSE](LICENSE) file for details.
   </p>
   <p>
     <sub>Created by Derek Tremblay (abbaye)<br/>
-    V2 Contributor: Claude Sonnet 4.5<br/>
+    V2 Contributors: Claude Sonnet 4.5, Claude Opus 4.6<br/>
     V1 (Legacy) Contributors: ehsan69h, Janus Tida</sub>
   </p>
   <p>
