@@ -210,3 +210,38 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
     public IProjectItem Source => _item;
     public IProject?   Project { get; init; }
 }
+
+// ── Physical folder node (Show All Files mode) ───────────────────────────────
+
+/// <summary>Represents a physical directory when "Show All Files" is enabled.</summary>
+public sealed class PhysicalFolderNodeVm : SolutionExplorerNodeVm
+{
+    public PhysicalFolderNodeVm(string physicalPath)
+    {
+        PhysicalPath = physicalPath;
+    }
+
+    public string    PhysicalPath { get; }
+    public IProject? Project      { get; init; }
+    public override string DisplayName => System.IO.Path.GetFileName(PhysicalPath);
+    public override string Icon        => "\uE8D5";
+}
+
+// ── Physical file node (Show All Files mode) ─────────────────────────────────
+
+/// <summary>Represents a physical file when "Show All Files" is enabled.
+/// <see cref="IsInProject"/> is <see langword="true"/> when the file is already a project item.</summary>
+public sealed class PhysicalFileNodeVm : SolutionExplorerNodeVm
+{
+    public PhysicalFileNodeVm(string physicalPath)
+    {
+        PhysicalPath = physicalPath;
+    }
+
+    public string        PhysicalPath { get; }
+    public IProject?     Project      { get; init; }
+    public IProjectItem? LinkedItem   { get; init; }
+    public bool          IsInProject  => LinkedItem is not null;
+    public override string DisplayName => System.IO.Path.GetFileName(PhysicalPath);
+    public override string Icon        => "\uE8A5";
+}

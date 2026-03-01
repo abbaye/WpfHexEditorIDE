@@ -107,10 +107,13 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         bool canAdd = isProject || isFolder;
 
         // Add New / Existing — project or folder only; Import Format — project only
-        AddNewItemMenuItem     .Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
-        AddExistingItemMenuItem.Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
-        ImportFormatMenuItem   .Visibility = isProject  ? Visibility.Visible : Visibility.Collapsed;
-        AddSeparator           .Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
+        AddNewItemMenuItem        .Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
+        AddExistingItemMenuItem   .Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
+        ImportFormatMenuItem      .Visibility = isProject  ? Visibility.Visible : Visibility.Collapsed;
+        NewFolderMenuItem         .Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
+        NewPhysicalFolderMenuItem .Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
+        AddFolderFromDiskMenuItem .Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
+        AddSeparator              .Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
 
         // TBL — Set and Clear are mutually exclusive; Convert only for plain .tbl (not .tblx)
         SetDefaultTblMenuItem  .Visibility = (isTbl && !isDefault) ? Visibility.Visible : Visibility.Collapsed;
@@ -168,6 +171,44 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             TargetFolderId = folderId,
         });
     }
+
+    private void OnNewFolder(object sender, RoutedEventArgs e)
+    {
+        var (project, folderId) = GetContextProjectAndFolder();
+        if (project is null) return;
+        FolderCreateRequested?.Invoke(this, new FolderCreateRequestedEventArgs
+        {
+            Project        = project,
+            ParentFolderId = folderId,
+            CreatePhysical = false,
+        });
+    }
+
+    private void OnNewPhysicalFolder(object sender, RoutedEventArgs e)
+    {
+        var (project, folderId) = GetContextProjectAndFolder();
+        if (project is null) return;
+        FolderCreateRequested?.Invoke(this, new FolderCreateRequestedEventArgs
+        {
+            Project        = project,
+            ParentFolderId = folderId,
+            CreatePhysical = true,
+        });
+    }
+
+    private void OnAddFolderFromDisk(object sender, RoutedEventArgs e)
+    {
+        var (project, folderId) = GetContextProjectAndFolder();
+        if (project is null) return;
+        FolderFromDiskRequested?.Invoke(this, new FolderFromDiskRequestedEventArgs
+        {
+            Project        = project,
+            ParentFolderId = folderId,
+        });
+    }
+
+    private void OnShowAllFiles(object sender, RoutedEventArgs e)
+        => _vm.ShowAllFiles = ShowAllFilesButton.IsChecked == true;
 
     private void OnImportFormatDefinition(object sender, RoutedEventArgs e)
     {
@@ -260,6 +301,41 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     /// <inheritdoc/>
     public event EventHandler<FolderDeleteEventArgs>? FolderDeleteRequested;
+
+    /// <inheritdoc/>
+    public event EventHandler<FolderCreateRequestedEventArgs>? FolderCreateRequested;
+
+    /// <inheritdoc/>
+    public event EventHandler<FolderFromDiskRequestedEventArgs>? FolderFromDiskRequested;
+
+    /// <inheritdoc/>
+    public void BeginFolderRename(IVirtualFolder folder)
+    {
+        if (FindFolderNodeVm(_vm.Roots, folder) is FolderNodeVm fv)
+            StartInlineFolderEdit(fv);
+    }
+
+    /// <inheritdoc/>
+    public bool ShowAllFiles
+    {
+        get => _vm.ShowAllFiles;
+        set
+        {
+            _vm.ShowAllFiles              = value;
+            ShowAllFilesButton.IsChecked  = value;
+        }
+    }
+
+    private static FolderNodeVm? FindFolderNodeVm(IEnumerable<SolutionExplorerNodeVm> nodes, IVirtualFolder folder)
+    {
+        foreach (var node in nodes)
+        {
+            if (node is FolderNodeVm fv && fv.Folder.Id == folder.Id) return fv;
+            var found = FindFolderNodeVm(node.Children, folder);
+            if (found is not null) return found;
+        }
+        return null;
+    }
 
     // ── F2 Inline rename ──────────────────────────────────────────────────────
 

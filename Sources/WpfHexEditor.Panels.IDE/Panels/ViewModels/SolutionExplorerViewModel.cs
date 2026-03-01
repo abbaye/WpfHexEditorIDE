@@ -5,6 +5,7 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.Core;
 
@@ -18,6 +19,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 {
     private ISolution? _solution;
     private string     _searchText = "";
+    private bool       _showAllFiles;
 
     // ── Tree ─────────────────────────────────────────────────────────────────
 
@@ -34,6 +36,20 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             _searchText = value;
             OnPropertyChanged();
             ApplySearch();
+        }
+    }
+
+    // ── Show All Files ───────────────────────────────────────────────────────
+
+    public bool ShowAllFiles
+    {
+        get => _showAllFiles;
+        set
+        {
+            if (_showAllFiles == value) return;
+            _showAllFiles = value;
+            OnPropertyChanged();
+            Rebuild();
         }
     }
 
@@ -56,7 +72,9 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
         foreach (var project in _solution.Projects)
         {
-            var projNode = BuildProjectNode(project);
+            var projNode = _showAllFiles
+                ? BuildProjectNodePhysical(project)
+                : BuildProjectNode(project);
             solutionNode.Children.Add(projNode);
         }
     }
@@ -129,6 +147,43 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         {
             foreach (var id in f.ItemIds) set.Add(id);
             CollectFolderItemIds(f.Children, set);
+        }
+    }
+
+    // ── Physical tree (Show All Files) ────────────────────────────────────────
+
+    private static ProjectNodeVm BuildProjectNodePhysical(IProject project)
+    {
+        var node       = new ProjectNodeVm(project);
+        var projectDir = Path.GetDirectoryName(project.ProjectFilePath);
+        if (projectDir is null || !Directory.Exists(projectDir)) return node;
+
+        var itemsByPath = project.Items
+            .ToDictionary(i => i.AbsolutePath, StringComparer.OrdinalIgnoreCase);
+
+        BuildPhysicalSubDir(node.Children, projectDir, project, itemsByPath, project.ProjectFilePath);
+        return node;
+    }
+
+    private static void BuildPhysicalSubDir(
+        ObservableCollection<SolutionExplorerNodeVm> children,
+        string dir, IProject project,
+        Dictionary<string, IProjectItem> itemsByPath,
+        string projectFilePath)
+    {
+        foreach (var subDir in Directory.GetDirectories(dir))
+        {
+            var folderVm = new PhysicalFolderNodeVm(subDir) { Project = project, IsExpanded = false };
+            BuildPhysicalSubDir(folderVm.Children, subDir, project, itemsByPath, projectFilePath);
+            children.Add(folderVm);
+        }
+
+        foreach (var file in Directory.GetFiles(dir))
+        {
+            if (string.Equals(file, projectFilePath, StringComparison.OrdinalIgnoreCase))
+                continue;
+            itemsByPath.TryGetValue(file, out var linkedItem);
+            children.Add(new PhysicalFileNodeVm(file) { Project = project, LinkedItem = linkedItem });
         }
     }
 
