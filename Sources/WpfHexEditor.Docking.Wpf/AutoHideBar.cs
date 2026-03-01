@@ -102,13 +102,19 @@ public class AutoHideFlyout : Grid
     public DockItem? CurrentItem { get; private set; }
     public bool IsOpen => _panelContainer.Visibility == Visibility.Visible;
 
-    /// <summary>Raised when the user clicks the pin button or double-clicks the title bar to re-dock.</summary>
+    /// <summary>
+    /// Raised when the user clicks the pin button or double-clicks the title bar to re-dock.
+    /// </summary>
     public event Action<DockItem>? RestoreRequested;
 
-    /// <summary>Raised when the user clicks close.</summary>
+    /// <summary>
+    /// Raised when the user clicks close.
+    /// </summary>
     public event Action<DockItem>? CloseRequested;
 
-    /// <summary>Raised when the user chooses "Float" in the menu or drags the title bar.</summary>
+    /// <summary>
+    /// Raised when the user chooses "Float" in the menu or drags the title bar.
+    /// </summary>
     public event Action<DockItem>? FloatRequested;
 
     public AutoHideFlyout()

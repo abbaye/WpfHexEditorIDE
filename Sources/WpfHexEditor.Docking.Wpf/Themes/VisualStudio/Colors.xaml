@@ -1,3 +1,9 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -231,11 +237,13 @@
     <SolidColorBrush x:Key="ERR_ToolbarBrush"         Color="#252526"/>
     <SolidColorBrush x:Key="ERR_GridLinesBrush"        Color="#3F3F46"/>
     <SolidColorBrush x:Key="ERR_SelectedRowBrush"      Color="#1A3A5C"/>
-    <SolidColorBrush x:Key="ERR_HoverRowBrush"         Color="#3E3E40"/>
+    <SolidColorBrush x:Key="ERR_HoverRowBrush"         Color="#4A4A4C"/>
     <SolidColorBrush x:Key="ERR_FilterActiveBrush"     Color="#3E3E42"/>
     <SolidColorBrush x:Key="ERR_FilterInactiveBrush"   Color="Transparent"/>
     <SolidColorBrush x:Key="ERR_SearchBoxBrush"        Color="#252526"/>
     <SolidColorBrush x:Key="ERR_HeaderBrush"           Color="#252526"/>
+    <SolidColorBrush x:Key="ERR_HeaderHoverBrush"      Color="#3E3E42"/>
+    <SolidColorBrush x:Key="ERR_HeaderPressedBrush"    Color="#1A1A1C"/>
 
     <!-- Common Panel Resources (PanelCommon.xaml keys — shared across all IDE panels) -->
     <SolidColorBrush x:Key="Panel_ToolbarBrush"             Color="#252526"/>
@@ -245,6 +253,22 @@
     <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#CCCCCC"/>
     <!-- PFP toolbar — aliases Panel_ToolbarBrush for ParsedFieldsPanel -->
     <SolidColorBrush x:Key="PFP_ToolbarBrush"               Color="#252526"/>
+
+    <!-- TE_* — Text Editor (syntax highlighting, viewport) -->
+    <SolidColorBrush x:Key="TE_Background"             Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="TE_Foreground"             Color="#DCDCDC"/>
+    <SolidColorBrush x:Key="TE_LineNumberBackground"   Color="#232323"/>
+    <SolidColorBrush x:Key="TE_LineNumberForeground"   Color="#2B91AF"/>
+    <SolidColorBrush x:Key="TE_CurrentLineBrush"       Color="#282828"/>
+    <SolidColorBrush x:Key="TE_Keyword"                Color="#569CD6"/>
+    <SolidColorBrush x:Key="TE_Comment"                Color="#57A64A"/>
+    <SolidColorBrush x:Key="TE_String"                 Color="#D69D85"/>
+    <SolidColorBrush x:Key="TE_Number"                 Color="#B5CEA8"/>
+    <SolidColorBrush x:Key="TE_Register"               Color="#9CDCFE"/>
+    <SolidColorBrush x:Key="TE_Label"                  Color="#DCDCAA"/>
+    <SolidColorBrush x:Key="TE_Operator"               Color="#D4D4D4"/>
+    <SolidColorBrush x:Key="TE_Type"                   Color="#4EC9B0"/>
+    <SolidColorBrush x:Key="TE_Directive"              Color="#C586C0"/>
 
     <!-- Generic Dialog Resources (AdvancedSearch, ProjectDialogs, etc.) -->
     <Color x:Key="AccentColor">#007ACC</Color>
