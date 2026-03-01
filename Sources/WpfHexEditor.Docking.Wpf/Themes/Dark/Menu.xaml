@@ -54,7 +54,7 @@
                                   VerticalAlignment="Center" HorizontalAlignment="Center"
                                   Margin="0,0,6,0" Visibility="Collapsed" />
                             <Popup x:Name="PART_Popup" Grid.Column="0" Grid.ColumnSpan="4"
-                                   AllowsTransparency="True" Focusable="False"
+                                   AllowsTransparency="False" Focusable="False"
                                    IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                    PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
                                    Placement="Bottom"
@@ -62,11 +62,7 @@
                                 <Border Background="{DynamicResource DockMenuBackgroundBrush}"
                                         BorderBrush="{DynamicResource DockMenuBorderBrush}"
                                         BorderThickness="1" Padding="0,2"
-                                        SnapsToDevicePixels="True" Grid.IsSharedSizeScope="True"
-                                        Margin="0,0,4,4">
-                                    <Border.Effect>
-                                        <DropShadowEffect Color="Black" BlurRadius="6" ShadowDepth="2" Opacity="0.35" />
-                                    </Border.Effect>
+                                        SnapsToDevicePixels="True" Grid.IsSharedSizeScope="True">
                                     <ScrollViewer CanContentScroll="True"
                                                   HorizontalScrollBarVisibility="Disabled"
                                                   VerticalScrollBarVisibility="Auto">
@@ -94,7 +90,6 @@
                             <Setter TargetName="menuHeaderContainer" Property="Grid.ColumnSpan" Value="3" />
                             <Setter TargetName="menuHeaderContainer" Property="Margin" Value="8,4" />
                             <Setter TargetName="PART_Popup" Property="Placement" Value="Bottom" />
-                            <Setter TargetName="PART_Popup" Property="VerticalOffset" Value="-1" />
                         </Trigger>
                         <Trigger Property="Role" Value="TopLevelItem">
                             <Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />

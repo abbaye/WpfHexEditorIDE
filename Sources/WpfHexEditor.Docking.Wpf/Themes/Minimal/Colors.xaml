@@ -153,4 +153,48 @@
         </Setter>
     </Style>
 
+    <!-- ParsedFieldsPanel (PFP) Theme Resources -->
+    <Color x:Key="PFP_TitleBarStartColor">#333333</Color>
+    <Color x:Key="PFP_TitleBarEndColor">#1A1A1A</Color>
+    <Color x:Key="PFP_ItemSelectedStartColor">#E8E8E8</Color>
+    <Color x:Key="PFP_ItemSelectedEndColor">#D0D0D0</Color>
+    <Color x:Key="PFP_ItemSelectedHoverStartColor">#D0D0D0</Color>
+    <Color x:Key="PFP_ItemSelectedHoverEndColor">#BBBBBB</Color>
+    <LinearGradientBrush x:Key="PFP_TitleBarBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource PFP_TitleBarStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource PFP_TitleBarEndColor}" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="PFP_ItemSelectedBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource PFP_ItemSelectedStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource PFP_ItemSelectedEndColor}" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="PFP_ItemSelectedHoverBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource PFP_ItemSelectedHoverStartColor}" Offset="0"/>
+        <GradientStop Color="{StaticResource PFP_ItemSelectedHoverEndColor}" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="PFP_PanelBackgroundBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="PFP_SectionBackgroundBrush" Color="#F5F5F5"/>
+    <SolidColorBrush x:Key="PFP_BorderBrush" Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="PFP_ItemSeparatorBrush" Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="PFP_TextBrush" Color="#1F1F1F"/>
+    <SolidColorBrush x:Key="PFP_SubTextBrush" Color="#666666"/>
+    <SolidColorBrush x:Key="PFP_PlaceholderBrush" Color="#999999"/>
+    <SolidColorBrush x:Key="PFP_ValueBrush" Color="#444444"/>
+    <SolidColorBrush x:Key="PFP_AccentBrush" Color="#333333"/>
+    <SolidColorBrush x:Key="PFP_ItemHoverBrush" Color="#F5F5F5"/>
+    <SolidColorBrush x:Key="PFP_ItemSelectedForegroundBrush" Color="#000000"/>
+    <SolidColorBrush x:Key="PFP_ItemSelectedBorderBrush" Color="#999999"/>
+    <SolidColorBrush x:Key="PFP_ComputedSectionBackgroundBrush" Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="PFP_ComputedSectionBorderBrush" Color="#D0D0D0"/>
+    <SolidColorBrush x:Key="PFP_ComputedTitleBrush" Color="#333333"/>
+    <SolidColorBrush x:Key="PFP_ComputedIconBrush" Color="#444444"/>
+    <SolidColorBrush x:Key="PFP_ComputedValueBrush" Color="#1F1F1F"/>
+    <SolidColorBrush x:Key="PFP_InsightSectionBackgroundBrush" Color="#F8F8F0"/>
+    <SolidColorBrush x:Key="PFP_InsightSectionBorderBrush" Color="#E8E8D0"/>
+    <SolidColorBrush x:Key="PFP_InsightTitleBrush" Color="#666600"/>
+    <SolidColorBrush x:Key="PFP_InputBorderBrush" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="PFP_GroupBadgeBackgroundBrush" Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="PFP_CoverageTrackBrush" Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="PFP_CoverageProgressBrush" Color="#000000"/>
+
 </ResourceDictionary>

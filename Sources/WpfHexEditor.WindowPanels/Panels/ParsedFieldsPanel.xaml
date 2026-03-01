@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WpfHexEditor.WindowPanels.Panels"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="300"
-             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+             Background="{DynamicResource PFP_PanelBackgroundBrush}">
 
     <UserControl.Resources>
         <!-- Converter -->
@@ -18,38 +18,24 @@
             <Setter Property="Padding" Value="10,6"/>
             <Setter Property="Margin" Value="0,1"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            <Setter Property="BorderBrush" Value="#EEEEEE"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource PFP_ItemSeparatorBrush}"/>
             <EventSetter Event="MouseDoubleClick" Handler="FieldItem_MouseDoubleClick"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                <GradientStop Color="#E1F5FE" Offset="0"/>
-                                <GradientStop Color="#B3E5FC" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Foreground" Value="#01579B"/>
-                    <Setter Property="BorderBrush" Value="#81D4FA"/>
+                    <Setter Property="Background" Value="{DynamicResource PFP_ItemSelectedBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource PFP_ItemSelectedForegroundBrush}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource PFP_ItemSelectedBorderBrush}"/>
                 </Trigger>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FAFAFA"/>
-                    <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                    <Setter Property="Background" Value="{DynamicResource PFP_ItemHoverBrush}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource PFP_BorderBrush}"/>
                 </Trigger>
                 <MultiTrigger>
                     <MultiTrigger.Conditions>
                         <Condition Property="IsSelected" Value="True"/>
                         <Condition Property="IsMouseOver" Value="True"/>
                     </MultiTrigger.Conditions>
-                    <Setter Property="Background">
-                        <Setter.Value>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                <GradientStop Color="#B3E5FC" Offset="0"/>
-                                <GradientStop Color="#81D4FA" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Setter.Value>
-                    </Setter>
+                    <Setter Property="Background" Value="{DynamicResource PFP_ItemSelectedHoverBrush}"/>
                 </MultiTrigger>
             </Style.Triggers>
         </Style>
@@ -157,13 +143,13 @@
                         <TextBlock Grid.Column="0"
                                    Text="Value: "
                                    FontSize="11"
-                                   Foreground="#666666"/>
+                                   Foreground="{DynamicResource PFP_SubTextBrush}"/>
 
                         <TextBlock Grid.Column="1"
                                    Text="{Binding ActiveFormattedValue}"
                                    FontSize="11"
                                    FontFamily="Consolas"
-                                   Foreground="#2196F3"
+                                   Foreground="{DynamicResource PFP_ValueBrush}"
                                    TextWrapping="Wrap"
                                    ToolTip="{Binding DetailedTooltip}"/>
 
@@ -192,7 +178,7 @@
                     <TextBlock Grid.Row="2" Grid.Column="4"
                                Margin="0,2,0,0"
                                FontSize="10"
-                               Foreground="#999999">
+                               Foreground="{DynamicResource PFP_PlaceholderBrush}">
                         <Run Text="{Binding RangeDisplay, Mode=OneWay}"/>
                         <Run Text=" • "/>
                         <Run Text="{Binding ValueType, Mode=OneWay}"/>
@@ -242,10 +228,7 @@
                 MouseLeftButtonDown="PanelTitleBar_MouseLeftButtonDown"
                 Padding="12,8">
             <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="#1E88E5" Offset="0"/>
-                    <GradientStop Color="#1976D2" Offset="1"/>
-                </LinearGradientBrush>
+                <DynamicResource ResourceKey="PFP_TitleBarBrush"/>
             </Border.Background>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -312,10 +295,10 @@
 
         <!-- Search box -->
         <Border Grid.Row="1"
-                Background="White"
+                Background="{DynamicResource PFP_PanelBackgroundBrush}"
                 Padding="12,8"
                 BorderThickness="0,0,0,1"
-                BorderBrush="#E0E0E0">
+                BorderBrush="{DynamicResource PFP_BorderBrush}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -341,7 +324,7 @@
                          Padding="4"
                          VerticalAlignment="Center"
                          BorderThickness="1"
-                         BorderBrush="#CCCCCC">
+                         BorderBrush="{DynamicResource PFP_InputBorderBrush}">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Triggers>
@@ -351,7 +334,7 @@
                                             <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
                                                 <VisualBrush.Visual>
                                                     <TextBlock Text="Search fields..."
-                                                             Foreground="#999999"
+                                                             Foreground="#888888"
                                                              FontSize="12"
                                                              Margin="4,0,0,0"/>
                                                 </VisualBrush.Visual>
@@ -404,7 +387,7 @@
                                FontSize="10"
                                Margin="0,0,4,0"
                                VerticalAlignment="Center"
-                               Foreground="#666666"/>
+                               Foreground="{DynamicResource PFP_SubTextBrush}"/>
                     <ComboBox x:Name="SearchFieldCombo"
                               FontSize="10"
                               Width="110"
@@ -420,7 +403,7 @@
                                FontSize="10"
                                Margin="0,0,4,0"
                                VerticalAlignment="Center"
-                               Foreground="#666666"/>
+                               Foreground="{DynamicResource PFP_SubTextBrush}"/>
                     <ComboBox x:Name="TypeFilterCombo"
                               FontSize="10"
                               Width="100"
@@ -437,10 +420,10 @@
 
         <!-- Quick Actions Toolbar -->
         <Border Grid.Row="2"
-                Background="#FAFAFA"
+                Background="{DynamicResource PFP_SectionBackgroundBrush}"
                 Padding="8,6"
                 BorderThickness="0,0,0,1"
-                BorderBrush="#E0E0E0">
+                BorderBrush="{DynamicResource PFP_BorderBrush}">
             <!-- Phase C: Compact Menu System (2 menus instead of 5 buttons) -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <!-- Actions Menu -->
@@ -466,7 +449,7 @@
                     </Button.ContextMenu>
                 </Button>
 
-                <Separator Margin="8,0" Width="1" Background="#E0E0E0" Height="20"/>
+                <Separator Margin="8,0" Width="1" Background="{DynamicResource PFP_BorderBrush}" Height="20"/>
 
                 <!-- Export Menu -->
                 <Button x:Name="ExportMenuButton"
@@ -492,10 +475,10 @@
 
         <!-- Format info -->
         <Border Grid.Row="3"
-                Background="#F5F5F5"
+                Background="{DynamicResource PFP_SectionBackgroundBrush}"
                 Padding="12,8"
                 BorderThickness="0,0,0,1"
-                BorderBrush="#E0E0E0"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 Visibility="{Binding FormatInfo.IsDetected, Converter={StaticResource BoolToVisibilityConverter}}">
             <StackPanel>
                 <Grid Margin="0,0,0,4">
@@ -514,13 +497,13 @@
                                   SelectedItem="{Binding FormatInfo.SelectedCandidate, Mode=TwoWay}"
                                   DisplayMemberPath="DisplayName"
                                   Visibility="{Binding FormatInfo.HasMultipleCandidates, Converter={StaticResource BoolToVisibilityConverter}}"
-                                  FontSize="11" FontWeight="SemiBold" Foreground="#2196F3"
+                                  FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PFP_AccentBrush}"
                                   MinWidth="180" MaxWidth="280"
                                   VerticalAlignment="Center"
                                   SelectionChanged="FormatCandidateCombo_SelectionChanged"/>
                         <!-- Static text when single format -->
                         <TextBlock Text="{Binding FormatInfo.Name, Mode=OneWay}"
-                                   Foreground="#2196F3" FontWeight="SemiBold" FontSize="12"
+                                   Foreground="{DynamicResource PFP_AccentBrush}" FontWeight="SemiBold" FontSize="12"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding FormatInfo.HasMultipleCandidates, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                     </StackPanel>
@@ -537,21 +520,21 @@
                                    Text="{Binding FormatInfo.Category}"/>
                     </Border>
                 </Grid>
-                <TextBlock FontSize="11" Foreground="#666666" TextWrapping="Wrap"
+                <TextBlock FontSize="11" Foreground="{DynamicResource PFP_SubTextBrush}" TextWrapping="Wrap"
                            Text="{Binding FormatInfo.Description}"/>
 
                 <!-- Enriched Format Metadata Section -->
                 <Expander x:Name="EnrichedFormatExpander"
                           IsExpanded="False"
                           Margin="0,12,0,0"
-                          BorderBrush="#CCCCCC"
+                          BorderBrush="{DynamicResource PFP_BorderBrush}"
                           BorderThickness="1"
-                          Background="White">
+                          Background="{DynamicResource PFP_PanelBackgroundBrush}">
                     <Expander.Header>
                         <TextBlock Text="Enriched Format Metadata"
                                    FontSize="11"
                                    FontWeight="SemiBold"
-                                   Foreground="#1976D2"/>
+                                   Foreground="{DynamicResource PFP_AccentBrush}"/>
                     </Expander.Header>
                     <Border Padding="8">
                         <local:EnrichedFormatInfoPanel x:Name="EnrichedFormatPanel"
@@ -565,16 +548,16 @@
         <!-- Computed Values Spotlight (C1) -->
         <Border x:Name="ComputedValuesSection"
                 Grid.Row="4"
-                Background="#E3F2FD"
+                Background="{DynamicResource PFP_ComputedSectionBackgroundBrush}"
                 Padding="10,6"
                 BorderThickness="0,0,0,1"
-                BorderBrush="#BBDEFB"
+                BorderBrush="{DynamicResource PFP_ComputedSectionBorderBrush}"
                 Visibility="Collapsed">
             <StackPanel>
                 <TextBlock Text="Computed Values"
                            FontSize="11"
                            FontWeight="SemiBold"
-                           Foreground="#1565C0"
+                           Foreground="{DynamicResource PFP_ComputedTitleBrush}"
                            Margin="0,0,0,4"/>
                 <ItemsControl x:Name="MetadataItemsControl"
                               ItemsSource="{Binding MetadataFields}">
@@ -589,20 +572,20 @@
                                 <TextBlock Grid.Column="0"
                                            Text="&#x2139;"
                                            FontSize="11"
-                                           Foreground="#1976D2"
+                                           Foreground="{DynamicResource PFP_ComputedIconBrush}"
                                            Margin="0,0,6,0"
                                            VerticalAlignment="Center"/>
                                 <TextBlock Grid.Column="1"
                                            Text="{Binding Name}"
                                            FontSize="11"
-                                           Foreground="#333333"
+                                           Foreground="{DynamicResource PFP_TextBrush}"
                                            VerticalAlignment="Center"/>
                                 <TextBlock Grid.Column="2"
                                            Text="{Binding FormattedValue}"
                                            FontSize="11"
                                            FontWeight="SemiBold"
                                            FontFamily="Consolas"
-                                           Foreground="#0D47A1"
+                                           Foreground="{DynamicResource PFP_ComputedValueBrush}"
                                            VerticalAlignment="Center"/>
                             </Grid>
                         </DataTemplate>
@@ -614,16 +597,16 @@
         <!-- Key Insights Strip (C4) -->
         <Border x:Name="KeyInsightsSection"
                 Grid.Row="5"
-                Background="#FFFDE7"
+                Background="{DynamicResource PFP_InsightSectionBackgroundBrush}"
                 Padding="10,6"
                 BorderThickness="0,0,0,1"
-                BorderBrush="#FFF9C4"
+                BorderBrush="{DynamicResource PFP_InsightSectionBorderBrush}"
                 Visibility="Collapsed">
             <StackPanel>
                 <TextBlock Text="Key Insights"
                            FontSize="10"
                            FontWeight="SemiBold"
-                           Foreground="#F57F17"
+                           Foreground="{DynamicResource PFP_InsightTitleBrush}"
                            Margin="0,0,0,4"/>
                 <ItemsControl x:Name="InsightsItemsControl"
                               ItemsSource="{Binding InsightChips}">
@@ -653,10 +636,10 @@
         <!-- Byte Coverage Bar (C6) -->
         <Border x:Name="CoverageBarSection"
                 Grid.Row="6"
-                Background="White"
+                Background="{DynamicResource PFP_PanelBackgroundBrush}"
                 Padding="10,4"
                 BorderThickness="0,0,0,1"
-                BorderBrush="#E0E0E0"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 Visibility="Collapsed">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -664,18 +647,18 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Height="8">
-                    <Border CornerRadius="4" Background="#EEEEEE"/>
+                    <Border CornerRadius="4" Background="{DynamicResource PFP_CoverageTrackBrush}"/>
                     <ProgressBar x:Name="CoverageProgressBar"
                                  Height="8"
                                  Minimum="0" Maximum="100" Value="0"
-                                 Foreground="#42A5F5"
+                                 Foreground="{DynamicResource PFP_CoverageProgressBrush}"
                                  Background="Transparent"
                                  BorderThickness="0"/>
                 </Grid>
                 <TextBlock x:Name="CoverageText"
                            Grid.Column="1"
                            FontSize="10"
-                           Foreground="#666666"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
                            Margin="8,0,0,0"
                            VerticalAlignment="Center"
                            Text="0% parsed"/>
@@ -712,16 +695,16 @@
                                                     <TextBlock Text="{Binding Name}"
                                                                FontWeight="Bold"
                                                                FontSize="11"
-                                                               Foreground="#1565C0"
+                                                               Foreground="{DynamicResource PFP_AccentBrush}"
                                                                VerticalAlignment="Center"/>
                                                     <Border CornerRadius="8"
-                                                            Background="#E0E0E0"
+                                                            Background="{DynamicResource PFP_GroupBadgeBackgroundBrush}"
                                                             Padding="6,1"
                                                             Margin="6,0,0,0"
                                                             VerticalAlignment="Center">
                                                         <TextBlock Text="{Binding ItemCount}"
                                                                    FontSize="10"
-                                                                   Foreground="#666666"/>
+                                                                   Foreground="{DynamicResource PFP_SubTextBrush}"/>
                                                     </Border>
                                                 </StackPanel>
                                             </Expander.Header>
@@ -843,12 +826,12 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListBox">
-                                        <Border Background="White">
+                                        <Border Background="{DynamicResource PFP_PanelBackgroundBrush}">
                                             <TextBlock Text="No fields parsed yet.&#x0a;Open a file to see its structure."
                                                      HorizontalAlignment="Center"
                                                      VerticalAlignment="Center"
                                                      TextAlignment="Center"
-                                                     Foreground="#999999"
+                                                     Foreground="{DynamicResource PFP_PlaceholderBrush}"
                                                      FontSize="12"
                                                      Margin="20"/>
                                         </Border>
@@ -863,10 +846,10 @@
 
         <!-- Status bar -->
         <Border Grid.Row="8"
-                Background="#F5F5F5"
+                Background="{DynamicResource PFP_SectionBackgroundBrush}"
                 Padding="12,6"
                 BorderThickness="0,1,0,0"
-                BorderBrush="#E0E0E0">
+                BorderBrush="{DynamicResource PFP_BorderBrush}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -876,7 +859,7 @@
 
                 <TextBlock Grid.Column="0"
                            FontSize="11"
-                           Foreground="#666666">
+                           Foreground="{DynamicResource PFP_SubTextBrush}">
                     <Run Text="{Binding FilteredFields.Count, Mode=OneWay}"/>
                     <Run Text="/"/>
                     <Run Text="{Binding ParsedFields.Count, Mode=OneWay}"/>
