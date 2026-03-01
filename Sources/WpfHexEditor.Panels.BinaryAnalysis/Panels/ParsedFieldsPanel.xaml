@@ -212,87 +212,117 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="30"/>   <!-- VS-style toolbar -->
             <RowDefinition Height="Auto"/> <!-- Search box -->
-            <RowDefinition Height="Auto"/> <!-- Quick Actions -->
             <RowDefinition Height="Auto"/> <!-- Format info -->
-            <RowDefinition Height="Auto"/> <!-- Computed Values spotlight -->
-            <RowDefinition Height="Auto"/> <!-- Key Insights strip -->
-            <RowDefinition Height="Auto"/> <!-- Coverage bar -->
+            <RowDefinition Height="Auto"/> <!-- Computed Values spotlight (C1) -->
+            <RowDefinition Height="Auto"/> <!-- Key Insights strip (C4) -->
+            <RowDefinition Height="Auto"/> <!-- Coverage bar (C6) -->
             <RowDefinition Height="*"/>    <!-- Fields list -->
             <RowDefinition Height="Auto"/> <!-- Status bar -->
         </Grid.RowDefinitions>
 
-        <!-- Header with gradient — draggable pour tear-off flottant -->
-        <Border Grid.Row="0"
-                x:Name="PanelTitleBar"
-                Cursor="SizeAll"
-                MouseLeftButtonDown="PanelTitleBar_MouseLeftButtonDown"
-                Padding="12,8">
-            <Border.Background>
-                <DynamicResource ResourceKey="PFP_TitleBarBrush"/>
-            </Border.Background>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <!-- VS-style Toolbar (Row 0) — Segoe MDL2 icons, matches ErrorPanel/SolutionExplorer -->
+        <Border Grid.Row="0" Style="{DynamicResource PanelToolbarStyle}">
+            <DockPanel LastChildFill="False" Margin="2,0">
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="📋" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                    <TextBlock Text="Parsed Fields"
-                               FontSize="14"
-                               FontWeight="SemiBold"
-                               Foreground="White"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
+                <!-- LEFT: Refresh | separator | Actions ▾ | separator | Export ▾ -->
+                <Button x:Name="RefreshButton"
+                        DockPanel.Dock="Left"
+                        Content="&#xE72C;"
+                        ToolTip="Refresh field values (F5)"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Click="RefreshButton_Click"/>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <!-- Validation Summary Badges (C2) -->
-                    <Border x:Name="ValidBadge"
-                            CornerRadius="8"
-                            Padding="6,2"
-                            Margin="0,0,4,0"
-                            Background="#4CAF50"
-                            VerticalAlignment="Center"
-                            Visibility="Collapsed"
-                            ToolTip="Valid fields">
-                        <TextBlock FontSize="10" Foreground="White" FontWeight="SemiBold">
-                            <Run Text="&#x2713; "/>
-                            <Run x:Name="ValidCountRun" Text="0"/>
-                        </TextBlock>
-                    </Border>
-                    <Border x:Name="InvalidBadge"
-                            CornerRadius="8"
-                            Padding="6,2"
-                            Margin="0,0,4,0"
-                            Background="#F44336"
-                            VerticalAlignment="Center"
-                            Visibility="Collapsed"
-                            ToolTip="Fields with validation errors"
-                            MouseLeftButtonDown="InvalidBadge_Click">
-                        <TextBlock FontSize="10" Foreground="White" FontWeight="SemiBold">
-                            <Run Text="&#x26A0; "/>
-                            <Run x:Name="InvalidCountRun" Text="0"/>
-                        </TextBlock>
-                    </Border>
-                    <ToggleButton x:Name="ShowBookmarksButton"
-                                  Content="⭐"
-                                  Width="32" Height="32"
-                                  Margin="4,0,0,0"
-                                  ToolTip="Show bookmarked fields only"
-                                  Checked="ShowBookmarksButton_Checked"
-                                  Unchecked="ShowBookmarksButton_Unchecked"
-                                  Style="{DynamicResource {x:Static ToolBar.ToggleButtonStyleKey}}"/>
-                    <Button x:Name="RefreshButton"
-                            Content="🔄"
-                            Width="32" Height="32"
-                            Margin="4,0,0,0"
-                            ToolTip="Refresh field values (F5)"
-                            Click="RefreshButton_Click"
-                            Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
-                </StackPanel>
-            </Grid>
+                <Rectangle DockPanel.Dock="Left" Style="{DynamicResource PanelToolbarSeparatorStyle}"/>
+
+                <Button x:Name="ActionsMenuButton"
+                        DockPanel.Dock="Left"
+                        Content="Actions &#x25BE;"
+                        ToolTip="Field actions (edit, copy, navigate, bookmark...)"
+                        Style="{DynamicResource PanelDropdownButtonStyle}"
+                        Click="ActionsMenuButton_Click">
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="ActionsContextMenu">
+                            <MenuItem Header="_Edit" InputGestureText="Enter" Click="EditValue_Click" IsEnabled="{Binding HasSelection}"/>
+                            <MenuItem Header="_Copy value" InputGestureText="Ctrl+C" Click="CopyValue_Click" IsEnabled="{Binding HasSelection}"/>
+                            <MenuItem Header="Copy _Details" Click="CopyDetails_Click" IsEnabled="{Binding HasSelection}"/>
+                            <MenuItem Header="Copy _Offset" Click="CopyOffset_Click" IsEnabled="{Binding HasSelection}"/>
+                            <Separator/>
+                            <MenuItem Header="_Navigate to field" Click="QuickNavigate_Click" IsEnabled="{Binding HasSelection}"/>
+                            <MenuItem Header="_Jump to Offset..." Click="JumpToOffset_Click"/>
+                            <Separator/>
+                            <MenuItem Header="_Bookmark" InputGestureText="Space" Click="ToggleBookmark_Click" IsEnabled="{Binding HasSelection}"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+
+                <Rectangle DockPanel.Dock="Left" Style="{DynamicResource PanelToolbarSeparatorStyle}"/>
+
+                <Button x:Name="ExportMenuButton"
+                        DockPanel.Dock="Left"
+                        Content="Export &#x25BE;"
+                        ToolTip="Export parsed fields to file or clipboard"
+                        Style="{DynamicResource PanelDropdownButtonStyle}"
+                        Click="ExportMenuButton_Click">
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="ExportContextMenu">
+                            <MenuItem Header="As _Text" Click="ExportAsText_Click"/>
+                            <MenuItem Header="As _JSON" Click="ExportAsJson_Click"/>
+                            <MenuItem Header="As _CSV" Click="ExportAsCsv_Click"/>
+                            <MenuItem Header="As _XML" Click="ExportAsXml_Click"/>
+                            <MenuItem Header="As _HTML" Click="ExportAsHtml_Click"/>
+                            <MenuItem Header="As _Markdown" Click="ExportAsMarkdown_Click"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+
+                <!-- RIGHT: Badges (valid ✓ / invalid ⚠) | separator | Bookmark toggle -->
+                <ToggleButton x:Name="ShowBookmarksButton"
+                              DockPanel.Dock="Right"
+                              Content="&#xE734;"
+                              ToolTip="Show bookmarked fields only"
+                              Style="{DynamicResource PanelIconToggleStyle}"
+                              Checked="ShowBookmarksButton_Checked"
+                              Unchecked="ShowBookmarksButton_Unchecked"/>
+
+                <Rectangle DockPanel.Dock="Right" Style="{DynamicResource PanelToolbarSeparatorStyle}"/>
+
+                <!-- Invalid fields badge — click to jump to first error -->
+                <Border x:Name="InvalidBadge"
+                        DockPanel.Dock="Right"
+                        CornerRadius="8"
+                        Padding="5,1"
+                        Margin="2,5"
+                        Background="#F44336"
+                        VerticalAlignment="Center"
+                        Visibility="Collapsed"
+                        ToolTip="Fields with validation errors — click to navigate"
+                        Cursor="Hand"
+                        MouseLeftButtonDown="InvalidBadge_Click">
+                    <TextBlock FontSize="10" Foreground="White" FontWeight="SemiBold">
+                        <Run Text="&#x26A0; "/>
+                        <Run x:Name="InvalidCountRun" Text="0"/>
+                    </TextBlock>
+                </Border>
+
+                <!-- Valid fields badge -->
+                <Border x:Name="ValidBadge"
+                        DockPanel.Dock="Right"
+                        CornerRadius="8"
+                        Padding="5,1"
+                        Margin="2,5"
+                        Background="#4CAF50"
+                        VerticalAlignment="Center"
+                        Visibility="Collapsed"
+                        ToolTip="Valid fields">
+                    <TextBlock FontSize="10" Foreground="White" FontWeight="SemiBold">
+                        <Run Text="&#x2713; "/>
+                        <Run x:Name="ValidCountRun" Text="0"/>
+                    </TextBlock>
+                </Border>
+
+            </DockPanel>
         </Border>
 
         <!-- Search box -->
@@ -420,65 +450,8 @@
             </Grid>
         </Border>
 
-        <!-- Quick Actions Toolbar -->
-        <Border Grid.Row="2"
-                Background="{DynamicResource PFP_SectionBackgroundBrush}"
-                Padding="8,6"
-                BorderThickness="0,0,0,1"
-                BorderBrush="{DynamicResource PFP_BorderBrush}">
-            <!-- Phase C: Compact Menu System (2 menus instead of 5 buttons) -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <!-- Actions Menu -->
-                <Button x:Name="ActionsMenuButton"
-                        Content="📝 Actions ▼"
-                        Width="100" Height="28"
-                        Margin="4,0"
-                        FontSize="11"
-                        Foreground="{DynamicResource PFP_TextBrush}"
-                        Click="ActionsMenuButton_Click"
-                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
-                    <Button.ContextMenu>
-                        <ContextMenu x:Name="ActionsContextMenu" Placement="Bottom">
-                            <MenuItem Header="✏️ _Edit" InputGestureText="Enter" Click="EditValue_Click" IsEnabled="{Binding HasSelection}"/>
-                            <MenuItem Header="📋 _Copy" InputGestureText="Ctrl+C" Click="CopyValue_Click" IsEnabled="{Binding HasSelection}"/>
-                            <MenuItem Header="📄 Copy _Details" Click="CopyDetails_Click" IsEnabled="{Binding HasSelection}"/>
-                            <MenuItem Header="📌 Copy _Offset" Click="CopyOffset_Click" IsEnabled="{Binding HasSelection}"/>
-                            <Separator/>
-                            <MenuItem Header="🎯 _Navigate" Click="QuickNavigate_Click" IsEnabled="{Binding HasSelection}"/>
-                            <MenuItem Header="🔍 _Jump to Offset..." Click="JumpToOffset_Click"/>
-                            <Separator/>
-                            <MenuItem Header="⭐ _Bookmark" InputGestureText="Space" Click="ToggleBookmark_Click" IsEnabled="{Binding HasSelection}"/>
-                        </ContextMenu>
-                    </Button.ContextMenu>
-                </Button>
-
-                <Separator Margin="8,0" Width="1" Background="{DynamicResource PFP_BorderBrush}" Height="20"/>
-
-                <!-- Export Menu -->
-                <Button x:Name="ExportMenuButton"
-                        Content="💾 Export ▼"
-                        Width="100" Height="28"
-                        Margin="4,0"
-                        FontSize="11"
-                        Foreground="{DynamicResource PFP_TextBrush}"
-                        Click="ExportMenuButton_Click"
-                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
-                    <Button.ContextMenu>
-                        <ContextMenu x:Name="ExportContextMenu" Placement="Bottom">
-                            <MenuItem Header="📄 Text" Click="ExportAsText_Click"/>
-                            <MenuItem Header="{}{} JSON" Click="ExportAsJson_Click"/>
-                            <MenuItem Header="📊 CSV" Click="ExportAsCsv_Click"/>
-                            <MenuItem Header="📋 XML" Click="ExportAsXml_Click"/>
-                            <MenuItem Header="🌐 HTML" Click="ExportAsHtml_Click"/>
-                            <MenuItem Header="📝 Markdown" Click="ExportAsMarkdown_Click"/>
-                        </ContextMenu>
-                    </Button.ContextMenu>
-                </Button>
-            </StackPanel>
-        </Border>
-
         <!-- Format info -->
-        <Border Grid.Row="3"
+        <Border Grid.Row="2"
                 Background="{DynamicResource PFP_SectionBackgroundBrush}"
                 Padding="12,8"
                 BorderThickness="0,0,0,1"
@@ -552,7 +525,7 @@
 
         <!-- Computed Values Spotlight (C1) -->
         <Border x:Name="ComputedValuesSection"
-                Grid.Row="4"
+                Grid.Row="3"
                 Background="{DynamicResource PFP_ComputedSectionBackgroundBrush}"
                 Padding="10,6"
                 BorderThickness="0,0,0,1"
@@ -601,7 +574,7 @@
 
         <!-- Key Insights Strip (C4) -->
         <Border x:Name="KeyInsightsSection"
-                Grid.Row="5"
+                Grid.Row="4"
                 Background="{DynamicResource PFP_InsightSectionBackgroundBrush}"
                 Padding="10,6"
                 BorderThickness="0,0,0,1"
@@ -641,7 +614,7 @@
 
         <!-- Byte Coverage Bar (C6) -->
         <Border x:Name="CoverageBarSection"
-                Grid.Row="6"
+                Grid.Row="5"
                 Background="{DynamicResource PFP_PanelBackgroundBrush}"
                 Padding="10,4"
                 BorderThickness="0,0,0,1"
@@ -673,7 +646,7 @@
 
         <!-- Fields list -->
         <ListBox x:Name="FieldsListBox"
-                 Grid.Row="7"
+                 Grid.Row="6"
                  ItemsSource="{Binding FilteredFields}"
                  ItemTemplate="{StaticResource FieldTemplate}"
                  ItemContainerStyle="{StaticResource FieldItemStyle}"
@@ -853,7 +826,7 @@
         </ListBox>
 
         <!-- Status bar -->
-        <Border Grid.Row="8"
+        <Border Grid.Row="7"
                 Background="{DynamicResource PFP_SectionBackgroundBrush}"
                 Padding="12,6"
                 BorderThickness="0,1,0,0"

@@ -187,17 +187,6 @@ namespace WpfHexEditor.Panels.BinaryAnalysis
         public event EventHandler RefreshRequested;
 
         /// <summary>
-        /// Fired when the user presses the left mouse button on the title bar.
-        /// The host window can handle this to implement tear-off float behavior.
-        /// </summary>
-        public event System.Windows.Input.MouseButtonEventHandler TitleBarDragStarted;
-
-        private void PanelTitleBar_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            TitleBarDragStarted?.Invoke(this, e);
-        }
-
-        /// <summary>
         /// Set the format definition for enriched metadata display
         /// </summary>
         public void SetEnrichedFormat(FormatDefinition format)
