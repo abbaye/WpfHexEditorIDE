@@ -109,8 +109,10 @@ namespace WpfHexEditor.Core.Services
 
             try
             {
-                // Load all .json files recursively
-                var jsonFiles = Directory.GetFiles(directory, "*.json", SearchOption.AllDirectories);
+                // Load all .whjson files recursively (legacy .json also accepted)
+                var jsonFiles = Directory.GetFiles(directory, "*.whjson", SearchOption.AllDirectories)
+                    .Concat(Directory.GetFiles(directory, "*.json", SearchOption.AllDirectories))
+                    .ToArray();
 
                 foreach (var file in jsonFiles)
                 {

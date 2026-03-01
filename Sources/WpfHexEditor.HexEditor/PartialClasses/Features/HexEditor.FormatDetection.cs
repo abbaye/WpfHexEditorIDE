@@ -326,7 +326,7 @@ namespace WpfHexEditor.HexEditor
                 var assembly = typeof(WpfHexEditor.Core.FormatDetection.FormatDefinition).Assembly;
 
                 var resourceNames = assembly.GetManifestResourceNames()
-                    .Where(r => r.Contains("FormatDefinitions") && r.EndsWith(".json"))
+                    .Where(r => r.Contains("FormatDefinitions") && r.EndsWith(".whjson"))
                     .ToList();
 
                 System.Diagnostics.Debug.WriteLine($"[FormatDetection] Found {resourceNames.Count} embedded JSON resources");
@@ -348,7 +348,7 @@ namespace WpfHexEditor.HexEditor
                         if (format != null)
                         {
                             // Extract category from embedded resource name
-                            // Example: "WpfHexEditor.Core.FormatDefinitions.Archives.ZIP.json" -> "Archives"
+                            // Example: "WpfHexEditor.Core.FormatDefinitions.Archives.ZIP.whjson" -> "Archives"
                             if (string.IsNullOrWhiteSpace(format.Category))
                             {
                                 format.Category = ExtractCategoryFromResourceName(resourceName);
@@ -389,7 +389,7 @@ namespace WpfHexEditor.HexEditor
 
         /// <summary>
         /// Extract category from embedded resource name
-        /// Example: "WpfHexEditor.Core.FormatDefinitions.Archives.ZIP.json" -> "Archives"
+        /// Example: "WpfHexEditor.Core.FormatDefinitions.Archives.ZIP.whjson" -> "Archives"
         /// </summary>
         private string ExtractCategoryFromResourceName(string resourceName)
         {
