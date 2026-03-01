@@ -21,7 +21,6 @@
     <ProjectReference Include="..\WpfHexEditor.Docking.Wpf\WpfHexEditor.Docking.Wpf.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.WindowPanels\WpfHexEditor.WindowPanels.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Panels.IDE\WpfHexEditor.Panels.IDE.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Panels.BinaryAnalysis\WpfHexEditor.Panels.BinaryAnalysis.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Panels.FileOps\WpfHexEditor.Panels.FileOps.csproj" />
@@ -29,6 +28,7 @@
     <ProjectReference Include="..\WpfHexEditor.ProjectSystem\WpfHexEditor.ProjectSystem.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.TblEditor\WpfHexEditor.Editor.TblEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.JsonEditor\WpfHexEditor.Editor.JsonEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
   </ItemGroup>
 
 </Project>

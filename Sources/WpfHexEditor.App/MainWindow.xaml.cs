@@ -26,14 +26,16 @@ using WpfHexEditor.Editor.TblEditor;
 using WpfHexEditor.Editor.TblEditor.Models;
 using WpfHexEditor.Editor.TblEditor.Services;
 using WpfHexEditor.Editor.JsonEditor;
+using WpfHexEditor.Editor.TextEditor;
 using WpfHexEditor.Panels.IDE;
+using WpfHexEditor.Panels.IDE.Panels;
 using WpfHexEditor.Panels.BinaryAnalysis;
-using WpfHexEditor.WindowPanels.Panels;
 using WpfHexEditor.Core.Services;
 using WpfHexEditor.ProjectSystem;
 using WpfHexEditor.ProjectSystem.Dialogs;
 using WpfHexEditor.ProjectSystem.Services;
 using WpfHexEditor.ProjectSystem.Templates;
+using System.Windows.Shell;
 
 namespace WpfHexEditor.App;
 
@@ -57,6 +59,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private static readonly string LayoutFilePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "WpfHexEditor", "Sample.Docking", "layout.json");
+
+    private static readonly string SessionFilePath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "WpfHexEditor", "session.json");
 
     private const string ParsedFieldsPanelContentId   = "panel-parsed-fields";
     private const string SolutionExplorerContentId    = "panel-solution-explorer";
@@ -191,16 +197,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         // Wire SolutionManager events before restoring layout
-        _solutionManager.SolutionChanged += OnSolutionChanged;
-        _solutionManager.ProjectChanged  += OnProjectChanged;
-        _solutionManager.ItemAdded       += OnProjectItemAdded;
+        _solutionManager.SolutionChanged      += OnSolutionChanged;
+        _solutionManager.ProjectChanged       += OnProjectChanged;
+        _solutionManager.ItemAdded            += OnProjectItemAdded;
+        _solutionManager.FormatUpgradeRequired += OnFormatUpgradeRequired;
 
         // Register editor factories (doc-proj-* dispatcher)
         _editorRegistry.Register(new TblEditorFactory());
         _editorRegistry.Register(new JsonEditorFactory());
+        _editorRegistry.Register(new TextEditorFactory());
 
         LoadSavedLayoutOrDefault();
         PopulateRecentMenus();
+        TryRestoreSession();
+        HandleStartupFile();
     }
 
     private void OnWindowClosing(object? sender, CancelEventArgs e)
@@ -225,6 +235,45 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         SolutionText.Text = _solutionManager.CurrentSolution is { } s
             ? $"Solution: {s.Name}"
             : "";
+    }
+
+    private void OnFormatUpgradeRequired(object? sender, FormatUpgradeRequiredEventArgs e)
+    {
+        // Dispatch to UI thread — event may arrive from an async context.
+        Dispatcher.InvokeAsync(async () =>
+        {
+            var fileList = string.Join("\n  • ", e.AffectedFiles.Select(System.IO.Path.GetFileName));
+            var msg =
+                $"The following files use an older format (v{e.FromVersion}) " +
+                $"that will be upgraded to v{e.ToVersion}:\n\n  • {fileList}\n\n" +
+                $"A backup (.v{e.FromVersion}.bak) will be created for each file.\n\n" +
+                "Upgrade now?";
+
+            var result = MessageBox.Show(this, msg, "Format Upgrade Required",
+                MessageBoxButton.YesNo, MessageBoxImage.Information,
+                MessageBoxResult.Yes);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    await _solutionManager.UpgradeFormatAsync(e.Solution);
+                    OutputLogger.Info($"Solution '{e.Solution.Name}' upgraded from v{e.FromVersion} to v{e.ToVersion}.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, $"Upgrade failed: {ex.Message}", "Format Upgrade",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                _solutionManager.SetReadOnlyFormat(e.Solution, readOnly: true);
+                OutputLogger.Info($"Solution '{e.Solution.Name}' opened in read-only mode (format v{e.FromVersion}).");
+                // Reflect read-only in the title bar
+                Title = $"WpfHexEditor — {e.Solution.Name} [read-only format v{e.FromVersion}]";
+            }
+        });
     }
 
     private void OnProjectChanged(object? sender, ProjectChangedEventArgs e)
@@ -281,6 +330,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _parsedFieldsPanel ??= new ParsedFieldsPanel();
                 ApplyLayout(layout);
                 EnsureParsedFieldsPanel();
+                EnsureErrorPanel();
                 OutputLogger.Info($"Layout restored from: {LayoutFilePath}");
                 return;
             }
@@ -334,11 +384,77 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             Directory.CreateDirectory(Path.GetDirectoryName(LayoutFilePath)!);
             File.WriteAllText(LayoutFilePath, DockLayoutSerializer.Serialize(_layout));
             OutputLogger.Info($"Layout auto-saved to: {LayoutFilePath}");
+            SaveSession();
         }
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to auto-save layout: {ex.Message}");
         }
+    }
+
+    private void SaveSession()
+    {
+        try
+        {
+            var solutionPath = _solutionManager.CurrentSolution?.FilePath;
+            var json = System.Text.Json.JsonSerializer.Serialize(
+                new { lastSolutionPath = solutionPath },
+                new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            Directory.CreateDirectory(Path.GetDirectoryName(SessionFilePath)!);
+            File.WriteAllText(SessionFilePath, json);
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Failed to save session: {ex.Message}");
+        }
+    }
+
+    private void TryRestoreSession()
+    {
+        // Command-line arg takes priority over session restore
+        if (!string.IsNullOrEmpty(App.StartupFilePath)) return;
+        try
+        {
+            if (!File.Exists(SessionFilePath)) return;
+            using var doc = System.Text.Json.JsonDocument.Parse(File.ReadAllText(SessionFilePath));
+            if (!doc.RootElement.TryGetProperty("lastSolutionPath", out var prop)) return;
+            if (prop.ValueKind != System.Text.Json.JsonValueKind.String) return;
+            var path = prop.GetString();
+            if (string.IsNullOrEmpty(path) || !File.Exists(path)) return;
+            _ = OpenSolutionAsync(path);
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Failed to restore session: {ex.Message}");
+        }
+    }
+
+    private void HandleStartupFile()
+    {
+        var path = App.StartupFilePath;
+        if (string.IsNullOrEmpty(path)) return;
+
+        var ext = Path.GetExtension(path).ToLowerInvariant();
+        if (ext is ".whsln" or ".whproj")
+        {
+            if (File.Exists(path)) _ = OpenSolutionAsync(path);
+            else OutputLogger.Error($"Startup solution not found: {path}");
+            return;
+        }
+        if (!File.Exists(path)) { OutputLogger.Error($"Startup file not found: {path}"); return; }
+
+        _documentCounter++;
+        var item = new DockItem
+        {
+            Title     = Path.GetFileName(path),
+            ContentId = $"doc-hex-{_documentCounter}",
+            Metadata  = { ["FilePath"] = path }
+        };
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+        UpdateStatusBar();
+        _solutionManager.PushRecentFile(path);
+        PopulateRecentMenus();
     }
 
     // ─── Layout helpers ────────────────────────────────────────────────
@@ -360,7 +476,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         engine.Dock(output, layout.MainDocumentHost, DockDirection.Bottom);
 
         // Error panel: tab alongside Output in the bottom group
-        var errorsItem = new DockItem { Title = "Liste d'erreurs", ContentId = ErrorPanelContentId };
+        var errorsItem = new DockItem { Title = "Error List", ContentId = ErrorPanelContentId };
         engine.Dock(errorsItem, output.Owner!, DockDirection.Center);
 
         var parsedFields = new DockItem
@@ -410,6 +526,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             DockHost.RebuildVisualTree();
             OutputLogger.Info("ParsedFields panel added to restored layout.");
         }
+    }
+
+    private void EnsureErrorPanel()
+    {
+        if (_layout.FindItemByContentId(ErrorPanelContentId) != null) return;
+
+        var item = new DockItem { Title = "Error List", ContentId = ErrorPanelContentId };
+
+        // Prefer to dock alongside the Output panel if it exists
+        var outputItem = _layout.FindItemByContentId("panel-output");
+        if (outputItem?.Owner is { } outputGroup)
+            _engine.Dock(item, outputGroup, DockDirection.Center);
+        else
+            _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Bottom);
+
+        DockHost.RebuildVisualTree();
+        OutputLogger.Info("Error panel added to restored layout.");
     }
 
     private void SyncDocumentCounter()
@@ -485,6 +618,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.FolderRenameRequested            += OnSEFolderRenameRequested;
         panel.FolderDeleteRequested            += OnSEFolderDeleteRequested;
         panel.FolderFromDiskRequested          += OnSEFolderFromDiskRequested;
+        _solutionManager.ItemRenamed           += OnProjectItemRenamed;
         // Sync current solution if already loaded
         panel.SetSolution(_solutionManager.CurrentSolution);
         return panel;
@@ -674,15 +808,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 if (editor is IOpenableDocument openable)
                     _ = openable.OpenAsync(filePath);
 
-                // Restore EditorConfig if available
-                if (configJson != null && editor is IEditorPersistable p)
+                // Restore EditorConfig + bookmarks if available
+                if (editor is IEditorPersistable p)
                 {
-                    try
+                    if (configJson != null)
                     {
-                        var cfg = System.Text.Json.JsonSerializer.Deserialize<EditorConfigDto>(configJson);
-                        if (cfg != null) p.ApplyEditorConfig(cfg);
+                        try
+                        {
+                            var cfg = System.Text.Json.JsonSerializer.Deserialize<EditorConfigDto>(configJson);
+                            if (cfg != null) p.ApplyEditorConfig(cfg);
+                        }
+                        catch { /* ignore malformed config */ }
                     }
-                    catch { /* ignore malformed config */ }
+
+                    if (itemId is not null && projectId is not null)
+                    {
+                        var owningProj = _solutionManager.CurrentSolution?.Projects.FirstOrDefault(pr => pr.Id == projectId);
+                        var bkms       = owningProj?.FindItem(itemId)?.Bookmarks;
+                        if (bkms is { Count: > 0 }) p.ApplyBookmarks(bkms);
+                    }
                 }
 
                 ActiveDocumentEditor       = editor;
@@ -713,7 +857,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 catch { /* ignore malformed config */ }
             }
 
-            // Restore unsaved in-memory modifications (IPS patch stored in .whproj)
+            // Restore unsaved in-memory modifications (IPS patch stored in .whproj) + bookmarks
             if (itemId is not null && project is not null)
             {
                 var projItem = project.FindItem(itemId);
@@ -722,6 +866,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     var mods = _solutionManager.GetItemModifications(project, projItem);
                     if (mods is { Length: > 0 })
                         hexPers.ApplyUnsavedModifications(mods);
+
+                    var bkms = projItem.Bookmarks;
+                    if (bkms is { Count: > 0 }) hexPers.ApplyBookmarks(bkms);
                 }
             }
         }
@@ -1003,7 +1150,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (newName.Length == 0 || newName == e.Item.Name) return;
 
         _ = _solutionManager.RenameItemAsync(e.Project, e.Item, newName);
-        OutputLogger.Info($"Renamed '{e.Item.Name}' → '{newName}'");
+        // Log is emitted by OnProjectItemRenamed via the ItemRenamed event
     }
 
     private void OnSolutionExplorerItemDeleteRequested(object? sender, ProjectItemEventArgs e)
@@ -1050,6 +1197,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _ = _solutionManager.RenameFolderAsync(e.Project, e.Folder, e.NewName);
         OutputLogger.Info($"Folder renamed to '{e.NewName}'");
+    }
+
+    private void OnProjectItemRenamed(object? sender, ProjectItemRenamedEventArgs e)
+    {
+        var contentId = $"doc-proj-{e.Item.Id}";
+        var dockItem  = _layout.FindItemByContentId(contentId);
+        if (dockItem is null) return;
+
+        dockItem.Title = e.Item.Name;
+        dockItem.Metadata["FilePath"] = e.Item.AbsolutePath;
+        OutputLogger.Info($"Renamed '{e.OldName}' → '{e.Item.Name}'");
     }
 
     private void OnSEFolderDeleteRequested(object? sender, FolderDeleteEventArgs e)
@@ -1392,6 +1550,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // EditorConfig (cursor position, bytes/line, encoding …)
         item.EditorConfig = persistable.GetEditorConfig();
 
+        // Bookmarks
+        item.Bookmarks = persistable.GetBookmarks();
+
         // Unsaved in-memory modifications (IPS patch) — captured only when not saved to disk
         var mods = persistable.GetUnsavedModifications();
         _ = _solutionManager.PersistItemModificationsAsync(project!, item, mods);
@@ -1428,7 +1589,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             // VS-like behaviour: no solution open → show the project dialog and auto-create
             // a solution with the same name in the same directory.
-            var dlg = new NewProjectDialog("") { Owner = this };
+            var dlg = new NewProjectDialog(null) { Owner = this };
             if (dlg.ShowDialog() != true) return;
 
             _ = CreateSolutionAndProjectAsync(dlg.ProjectDirectory, dlg.ProjectName);
@@ -1765,6 +1926,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 DockHost.RebuildVisualTree();
                 UpdateStatusBar();
             });
+
+        RebuildJumpList();
     }
 
     private static void PopulateMruMenu(
@@ -1795,6 +1958,44 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             };
             mi.Click += (_, _) => onSelected(path);
             parent.Items.Add(mi);
+        }
+    }
+
+    private void RebuildJumpList()
+    {
+        try
+        {
+            var appPath = Environment.ProcessPath ?? string.Empty;
+            if (string.IsNullOrEmpty(appPath)) return;
+
+            var jl = new JumpList();
+            JumpList.SetJumpList(Application.Current, jl);
+
+            foreach (var path in _solutionManager.RecentSolutions)
+                jl.JumpItems.Add(new JumpTask
+                {
+                    Title           = Path.GetFileNameWithoutExtension(path),
+                    Description     = path,
+                    CustomCategory  = "Recent Projects",
+                    ApplicationPath = appPath,
+                    Arguments       = $"--open \"{path}\""
+                });
+
+            foreach (var path in _solutionManager.RecentFiles)
+                jl.JumpItems.Add(new JumpTask
+                {
+                    Title           = Path.GetFileName(path),
+                    Description     = path,
+                    CustomCategory  = "Recent Files",
+                    ApplicationPath = appPath,
+                    Arguments       = $"--open \"{path}\""
+                });
+
+            jl.Apply();
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Failed to rebuild JumpList: {ex.Message}");
         }
     }
 
@@ -1903,7 +2104,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         => ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
 
     private void OnShowErrorPanel(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("Liste d'erreurs", ErrorPanelContentId, DockDirection.Bottom);
+        => ShowOrCreatePanel("Error List", ErrorPanelContentId, DockDirection.Bottom);
 
     private void OnShowParsedFields(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Parsed Fields", ParsedFieldsPanelContentId, DockDirection.Right);

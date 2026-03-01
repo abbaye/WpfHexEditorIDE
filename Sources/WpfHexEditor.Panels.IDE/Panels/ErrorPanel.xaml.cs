@@ -14,7 +14,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using WpfHexEditor.Editor.Core;
 
-namespace WpfHexEditor.WindowPanels.Panels;
+namespace WpfHexEditor.Panels.IDE.Panels;
 
 /// <summary>
 /// VS2026-style error panel that aggregates <see cref="DiagnosticEntry"/> instances

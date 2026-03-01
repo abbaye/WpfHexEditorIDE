@@ -1,10 +1,10 @@
-<UserControl x:Class="WpfHexEditor.WindowPanels.Panels.ErrorPanel"
+<UserControl x:Class="WpfHexEditor.Panels.IDE.Panels.ErrorPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="{DynamicResource ERR_BackgroundBrush}"
              Foreground="{DynamicResource ERR_ForegroundBrush}">
 
-    <UserControl.Resources>
+   <UserControl.Resources>
 
         <!-- ── ToggleButton style for severity filter ───────────────────────── -->
         <Style x:Key="ERR_FilterButton" TargetType="ToggleButton">
@@ -80,7 +80,7 @@
             </Setter>
         </Style>
 
-        <!-- ── GridViewColumnHeader style ──────────────────────────────────── -->
+        <!-- ── GridViewColumnHeader style (custom template — suppresses WPF default blue) ── -->
         <Style TargetType="GridViewColumnHeader">
             <Setter Property="Background"   Value="{DynamicResource ERR_HeaderBrush}"/>
             <Setter Property="Foreground"   Value="{DynamicResource ERR_ForegroundBrush}"/>
@@ -88,6 +88,40 @@
             <Setter Property="BorderThickness" Value="0,0,1,1"/>
             <Setter Property="Padding"      Value="6,3"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor"       Value="Arrow"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewColumnHeader">
+                        <Border x:Name="HeaderBd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter x:Name="HeaderContent"
+                                              Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"
+                                              SnapsToDevicePixels="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HeaderBd" Property="Background"
+                                        Value="{DynamicResource ERR_HeaderHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="HeaderBd" Property="Background"
+                                        Value="{DynamicResource ERR_HeaderPressedBrush}"/>
+                            </Trigger>
+                            <Trigger Property="Role" Value="Floating">
+                                <Setter TargetName="HeaderBd" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                            <Trigger Property="Role" Value="Padding">
+                                <Setter TargetName="HeaderContent" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <!-- ── Severity icons (vector DrawingImage) ────────────────────────── -->
