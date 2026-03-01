@@ -213,4 +213,15 @@
     <SolidColorBrush x:Key="SE_ToolbarBrush"               Color="#FAFAFA"/>
     <SolidColorBrush x:Key="SE_GroupHeaderBrush"           Color="#EFEFEF"/>
     <SolidColorBrush x:Key="SE_SeparatorBrush"             Color="#D1D1D1"/>
+
+    <!-- Properties Panel (PP) Theme Resources -->
+    <SolidColorBrush x:Key="PP_BackgroundBrush"              Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="PP_ForegroundBrush"              Color="#323130"/>
+    <SolidColorBrush x:Key="PP_CategoryHeaderBackgroundBrush" Color="#F3F3F3"/>
+    <SolidColorBrush x:Key="PP_CategoryHeaderForegroundBrush" Color="#323130"/>
+    <SolidColorBrush x:Key="PP_SelectedEntryBrush"           Color="#CCE4F7"/>
+    <SolidColorBrush x:Key="PP_DescriptionBackgroundBrush"   Color="#F3F3F3"/>
+    <SolidColorBrush x:Key="PP_DescriptionForegroundBrush"   Color="#605E5C"/>
+    <SolidColorBrush x:Key="PP_EditableForegroundBrush"      Color="#0078D4"/>
+    <SolidColorBrush x:Key="PP_BorderBrush"                  Color="#E1DFDD"/>
 </ResourceDictionary>

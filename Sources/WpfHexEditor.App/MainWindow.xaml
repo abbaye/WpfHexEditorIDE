@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dock="clr-namespace:WpfHexEditor.Docking.Wpf;assembly=WpfHexEditor.Docking.Wpf"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core;assembly=WpfHexEditor.Editor.Core"
-        Title="WpfHexEditor - Docking Test"
+        Title="WpfHexEditor"
         Width="1200" Height="800"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
@@ -45,29 +45,93 @@
                 <Menu DockPanel.Dock="Left" Style="{DynamicResource DockDarkMenuStyle}"
                       VerticalAlignment="Center"
                       WindowChrome.IsHitTestVisibleInChrome="True">
+
+                    <!-- ═══════════ File ═══════════ -->
                     <MenuItem Header="_File" Style="{DynamicResource DockDarkMenuItemStyle}">
-                        <MenuItem Header="_New Document" Click="OnNewDocument">
+
+                        <!-- New ► -->
+                        <MenuItem Header="_New" Style="{DynamicResource DockDarkMenuItemStyle}">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
+                            <MenuItem Header="_Solution..." Click="OnNewSolution" InputGestureText="Ctrl+Shift+N">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="_Project..." Click="OnNewProject">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+                            <MenuItem Header="_File..." Click="OnNewFile" InputGestureText="Ctrl+N">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </MenuItem>
-                        <MenuItem Header="New _Hex Editor Document" Click="OnNewHexDocument">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="_Open File..." Click="OnOpenFile">
+
+                        <!-- Open ► -->
+                        <MenuItem Header="_Open" Style="{DynamicResource DockDarkMenuItemStyle}">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
+                            <MenuItem Header="_Solution/Project..." Click="OnOpenSolutionOrProject" InputGestureText="Ctrl+Shift+O">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="_File..." Click="OnOpenFile" InputGestureText="Ctrl+O">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </MenuItem>
+
                         <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+
+                        <!-- Close active document -->
+                        <MenuItem Header="_Close" Click="OnCloseActiveDocument" InputGestureText="Ctrl+W">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Close _All Documents" Click="OnCloseAllDocuments">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Close _Solution" Click="OnCloseSolution"
+                                  IsEnabled="{Binding HasSolution, ElementName=ThisWindow}">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+
+                        <!-- Save -->
                         <MenuItem Header="_Save"
                                   Command="{Binding ActiveDocumentEditor.SaveCommand, ElementName=ThisWindow}"
                                   InputGestureText="Ctrl+S">
@@ -77,8 +141,40 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="Save _All" Click="OnSaveAll" InputGestureText="Ctrl+Shift+S">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
                         <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
-                        <MenuItem Header="E_xit" Click="OnExit">
+
+                        <!-- Recent Solutions ► -->
+                        <MenuItem x:Name="RecentSolutionsMenuItem" Header="Recent _Solutions"
+                                  Style="{DynamicResource DockDarkMenuItemStyle}">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                            <!-- Items populated dynamically -->
+                        </MenuItem>
+
+                        <!-- Recent Files ► -->
+                        <MenuItem x:Name="RecentFilesMenuItem" Header="Recent _Files"
+                                  Style="{DynamicResource DockDarkMenuItemStyle}">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                            <!-- Items populated dynamically -->
+                        </MenuItem>
+
+                        <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+                        <MenuItem Header="E_xit" Click="OnExit" InputGestureText="Alt+F4">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -86,6 +182,8 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
+
+                    <!-- ═══════════ Edit ═══════════ -->
                     <MenuItem Header="_Edit" Style="{DynamicResource DockDarkMenuItemStyle}">
                         <MenuItem Header="_Undo"
                                   Command="{Binding ActiveDocumentEditor.UndoCommand, ElementName=ThisWindow}"
@@ -152,7 +250,16 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
+
+                    <!-- ═══════════ View ═══════════ -->
                     <MenuItem Header="_View" Style="{DynamicResource DockDarkMenuItemStyle}">
+                        <MenuItem Header="_Solution Explorer" Click="OnShowSolutionExplorer" InputGestureText="Ctrl+Alt+L">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="_Parsed Fields" Click="OnShowParsedFields">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -160,16 +267,9 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Properties" Click="OnShowProperties">
+                        <MenuItem Header="_Properties" Click="OnShowProperties" InputGestureText="F4">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="_Solution Explorer" Click="OnShowSolutionExplorer">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
@@ -182,6 +282,43 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
+
+                    <!-- ═══════════ Project ═══════════ (enabled when solution loaded) -->
+                    <MenuItem Header="_Project" Style="{DynamicResource DockDarkMenuItemStyle}"
+                              IsEnabled="{Binding HasSolution, ElementName=ThisWindow}">
+                        <MenuItem Header="Add _New Item..." Click="OnProjectAddNewItem" InputGestureText="Ctrl+Shift+A">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Add E_xisting Item..." Click="OnProjectAddExistingItem" InputGestureText="Shift+Alt+A">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+                        <MenuItem Header="Add New _Project..." Click="OnNewProject">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}" />
+                        <MenuItem Header="P_roperties..." Click="OnProjectProperties">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+
+                    <!-- ═══════════ Layout ═══════════ -->
                     <MenuItem Header="_Layout" Style="{DynamicResource DockDarkMenuItemStyle}">
                         <MenuItem Header="_Save Layout" Click="OnSaveLayout">
                             <MenuItem.Icon>
@@ -213,6 +350,8 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
+
+                    <!-- ═══════════ Theme ═══════════ -->
                     <MenuItem Header="_Theme" Style="{DynamicResource DockDarkMenuItemStyle}">
                         <MenuItem Header="_Dark" Click="OnDarkTheme">
                             <MenuItem.Icon>
@@ -284,13 +423,14 @@
 
         <!-- Toolbar -->
         <ToolBar Grid.Row="1" Style="{DynamicResource DockDarkToolBarStyle}">
-            <Button Content="+ Document" Click="OnNewDocument" ToolTip="Add a new document" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
-            <Button Content="+ Hex Editor" Click="OnNewHexDocument" ToolTip="Add a new hex editor document" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Button Content="+ Hex Editor" Click="OnNewFile" ToolTip="New hex file" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
+            <Button Content="&#xE8E5; Open" Click="OnOpenFile" ToolTip="Open file" Style="{DynamicResource DockDarkToolBarButtonStyle}"
+                    FontFamily="Segoe MDL2 Assets, Segoe UI" />
             <Separator />
+            <Button Content="Solution Explorer" Click="OnShowSolutionExplorer" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
             <Button Content="Parsed Fields" Click="OnShowParsedFields" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
             <Button Content="Properties" Click="OnShowProperties" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
             <Button Content="Output" Click="OnShowOutput" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
-            <Button Content="Solution Explorer" Click="OnShowSolutionExplorer" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
             <Separator />
             <Button Content="Save Layout" Click="OnSaveLayout" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
             <Button Content="Load Layout" Click="OnLoadLayout" Style="{DynamicResource DockDarkToolBarButtonStyle}" />
@@ -350,13 +490,28 @@
                 </ItemsControl>
             </StatusBarItem>
 
-            <!-- Right: refresh time + panel count -->
+            <!-- Right: solution name + refresh time + panel count -->
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="SolutionText" Text="" Foreground="{DynamicResource DockTabActiveTextBrush}" Margin="0,0,12,0"/>
                     <TextBlock x:Name="RefreshText" Text="" Foreground="{DynamicResource DockTabActiveTextBrush}" Margin="0,0,12,0"/>
                     <TextBlock x:Name="PanelCountText" Text="Panels: 0" Foreground="{DynamicResource DockTabActiveTextBrush}" />
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
     </Grid>
+
+    <!-- Keyboard shortcuts -->
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+N"       Command="{x:Static ApplicationCommands.New}"   CommandTarget="{Binding ElementName=ThisWindow}" />
+        <KeyBinding Gesture="Ctrl+O"       Command="{x:Static ApplicationCommands.Open}"  CommandTarget="{Binding ElementName=ThisWindow}" />
+        <KeyBinding Gesture="Ctrl+S"       Command="{Binding ActiveDocumentEditor.SaveCommand, ElementName=ThisWindow}" />
+        <KeyBinding Gesture="Ctrl+W"       Command="{x:Static ApplicationCommands.Close}" CommandTarget="{Binding ElementName=ThisWindow}" />
+        <KeyBinding Gesture="Ctrl+Shift+N" Command="{x:Static ApplicationCommands.New}"   CommandTarget="{Binding ElementName=ThisWindow}" />
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static ApplicationCommands.New}"   Executed="OnNewFile" />
+        <CommandBinding Command="{x:Static ApplicationCommands.Open}"  Executed="OnOpenFile" />
+        <CommandBinding Command="{x:Static ApplicationCommands.Close}" Executed="OnCloseActiveDocument" />
+    </Window.CommandBindings>
 </Window>
