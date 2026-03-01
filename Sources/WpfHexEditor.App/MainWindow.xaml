@@ -47,7 +47,8 @@
                       WindowChrome.IsHitTestVisibleInChrome="True">
 
                     <!-- ═══════════ File ═══════════ -->
-                    <MenuItem Header="_File" Style="{DynamicResource DockDarkMenuItemStyle}">
+                    <MenuItem Header="_File" Style="{DynamicResource DockDarkMenuItemStyle}"
+                              IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}">
 
                         <!-- New ► -->
                         <MenuItem Header="_New" Style="{DynamicResource DockDarkMenuItemStyle}">
@@ -184,7 +185,8 @@
                     </MenuItem>
 
                     <!-- ═══════════ Edit ═══════════ -->
-                    <MenuItem Header="_Edit" Style="{DynamicResource DockDarkMenuItemStyle}">
+                    <MenuItem Header="_Edit" Style="{DynamicResource DockDarkMenuItemStyle}"
+                              IsEnabled="{Binding IsMenuEnabled, ElementName=ThisWindow}">
                         <MenuItem Header="_Undo"
                                   Command="{Binding ActiveDocumentEditor.UndoCommand, ElementName=ThisWindow}"
                                   InputGestureText="Ctrl+Z">
@@ -283,9 +285,9 @@
                         </MenuItem>
                     </MenuItem>
 
-                    <!-- ═══════════ Project ═══════════ (enabled when solution loaded) -->
+                    <!-- ═══════════ Project ═══════════ (enabled when solution loaded AND no operation active) -->
                     <MenuItem Header="_Project" Style="{DynamicResource DockDarkMenuItemStyle}"
-                              IsEnabled="{Binding HasSolution, ElementName=ThisWindow}">
+                              IsEnabled="{Binding IsProjectMenuEnabled, ElementName=ThisWindow}">
                         <MenuItem Header="Add _New Item..." Click="OnProjectAddNewItem" InputGestureText="Ctrl+Shift+A">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -488,6 +490,35 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+            </StatusBarItem>
+
+            <!-- Centre : progression des opérations longues (visible uniquement pendant une opération) -->
+            <StatusBarItem x:Name="ProgressStatusItem" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="ProgressTitleText"
+                               Foreground="{DynamicResource DockTabActiveTextBrush}"
+                               FontWeight="SemiBold" Margin="8,0,8,0"
+                               VerticalAlignment="Center"/>
+                    <ProgressBar x:Name="AppProgressBar"
+                                 Width="160" Height="10" Minimum="0" Maximum="100"
+                                 VerticalAlignment="Center"/>
+                    <TextBlock x:Name="ProgressPercentText"
+                               Foreground="{DynamicResource DockTabActiveTextBrush}"
+                               Margin="6,0,8,0" MinWidth="32"
+                               VerticalAlignment="Center"/>
+                    <TextBlock x:Name="ProgressMessageText"
+                               Foreground="{DynamicResource DockTabActiveTextBrush}"
+                               Margin="0,0,8,0"
+                               VerticalAlignment="Center"/>
+                    <Button x:Name="ProgressCancelButton"
+                            Content="✕"
+                            ToolTip="Annuler l'opération"
+                            Click="OnProgressCancel"
+                            Visibility="Collapsed"
+                            Padding="6,1"
+                            Style="{DynamicResource DockDarkButtonStyle}"
+                            VerticalAlignment="Center"/>
+                </StackPanel>
             </StatusBarItem>
 
             <!-- Right: solution name + refresh time + panel count -->

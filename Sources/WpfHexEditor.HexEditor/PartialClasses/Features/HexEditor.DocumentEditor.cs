@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.HexEditor
@@ -72,37 +73,37 @@ namespace WpfHexEditor.HexEditor
 
         /// <inheritdoc />
         ICommand IDocumentEditor.UndoCommand =>
-            _docEditorUndoCommand ?? (_docEditorUndoCommand = new HexEditorRelayCommand(_ => Undo(), _ => CanUndo));
+            _docEditorUndoCommand ?? (_docEditorUndoCommand = new HexEditorRelayCommand(_ => Undo(), _ => CanUndo && !IsOperationActive));
 
         /// <inheritdoc />
         ICommand IDocumentEditor.RedoCommand =>
-            _docEditorRedoCommand ?? (_docEditorRedoCommand = new HexEditorRelayCommand(_ => Redo(), _ => CanRedo));
+            _docEditorRedoCommand ?? (_docEditorRedoCommand = new HexEditorRelayCommand(_ => Redo(), _ => CanRedo && !IsOperationActive));
 
         /// <inheritdoc />
         ICommand IDocumentEditor.SaveCommand =>
             _docEditorSaveCommand ?? (_docEditorSaveCommand = new HexEditorRelayCommand(
                 _ => SaveOrSaveAs(),
-                _ => (IsModified || _isNewUnsavedFile) && _viewModel != null));
+                _ => (IsModified || _isNewUnsavedFile) && _viewModel != null && !IsOperationActive));
 
         /// <inheritdoc />
         ICommand IDocumentEditor.CopyCommand =>
-            _docEditorCopyCommand ?? (_docEditorCopyCommand = new HexEditorRelayCommand(_ => ((IDocumentEditor)this).Copy(), _ => HasSelection));
+            _docEditorCopyCommand ?? (_docEditorCopyCommand = new HexEditorRelayCommand(_ => ((IDocumentEditor)this).Copy(), _ => HasSelection && !IsOperationActive));
 
         /// <inheritdoc />
         ICommand IDocumentEditor.CutCommand =>
-            _docEditorCutCommand ?? (_docEditorCutCommand = new HexEditorRelayCommand(_ => ((IDocumentEditor)this).Cut(), _ => HasSelection && !ReadOnlyMode));
+            _docEditorCutCommand ?? (_docEditorCutCommand = new HexEditorRelayCommand(_ => ((IDocumentEditor)this).Cut(), _ => HasSelection && !ReadOnlyMode && !IsOperationActive));
 
         /// <inheritdoc />
         ICommand IDocumentEditor.PasteCommand =>
-            _docEditorPasteCommand ?? (_docEditorPasteCommand = new HexEditorRelayCommand(_ => ((IDocumentEditor)this).Paste(), _ => !ReadOnlyMode && _viewModel != null));
+            _docEditorPasteCommand ?? (_docEditorPasteCommand = new HexEditorRelayCommand(_ => ((IDocumentEditor)this).Paste(), _ => !ReadOnlyMode && _viewModel != null && !IsOperationActive));
 
         /// <inheritdoc />
         ICommand IDocumentEditor.DeleteCommand =>
-            _docEditorDeleteCommand ?? (_docEditorDeleteCommand = new HexEditorRelayCommand(_ => ((IDocumentEditor)this).Delete(), _ => HasSelection && !ReadOnlyMode));
+            _docEditorDeleteCommand ?? (_docEditorDeleteCommand = new HexEditorRelayCommand(_ => ((IDocumentEditor)this).Delete(), _ => HasSelection && !ReadOnlyMode && !IsOperationActive));
 
         /// <inheritdoc />
         ICommand IDocumentEditor.SelectAllCommand =>
-            _docEditorSelectAllCommand ?? (_docEditorSelectAllCommand = new HexEditorRelayCommand(_ => SelectAll(), _ => _viewModel != null));
+            _docEditorSelectAllCommand ?? (_docEditorSelectAllCommand = new HexEditorRelayCommand(_ => SelectAll(), _ => _viewModel != null && !IsOperationActive));
 
         // ═══════════════════════════════════════════════════════════════════
         // IDocumentEditor — Methods
@@ -205,6 +206,10 @@ namespace WpfHexEditor.HexEditor
         private EventHandler<string> _docEditorStatusMessage;
         private EventHandler _docEditorSelectionChanged;
 
+        private EventHandler<DocumentOperationEventArgs>?          _docEditorOperationStarted;
+        private EventHandler<DocumentOperationEventArgs>?          _docEditorOperationProgress;
+        private EventHandler<DocumentOperationCompletedEventArgs>? _docEditorOperationCompleted;
+
         event EventHandler IDocumentEditor.ModifiedChanged
         {
             add => _docEditorModifiedChanged += value;
@@ -240,6 +245,65 @@ namespace WpfHexEditor.HexEditor
             add => _docEditorSelectionChanged += value;
             remove => _docEditorSelectionChanged -= value;
         }
+
+        // ── IDocumentEditor — Long-running operation ──────────────────────
+
+        /// <inheritdoc />
+        bool IDocumentEditor.IsBusy => IsOperationActive;
+
+        /// <inheritdoc />
+        void IDocumentEditor.CancelOperation() => _longRunningService.CancelCurrentOperation();
+
+        event EventHandler<DocumentOperationEventArgs> IDocumentEditor.OperationStarted
+        {
+            add    => _docEditorOperationStarted += value;
+            remove => _docEditorOperationStarted -= value;
+        }
+
+        event EventHandler<DocumentOperationEventArgs> IDocumentEditor.OperationProgress
+        {
+            add    => _docEditorOperationProgress += value;
+            remove => _docEditorOperationProgress -= value;
+        }
+
+        event EventHandler<DocumentOperationCompletedEventArgs> IDocumentEditor.OperationCompleted
+        {
+            add    => _docEditorOperationCompleted += value;
+            remove => _docEditorOperationCompleted -= value;
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // IDocumentEditor — Long-running operation relay helpers
+        // Called from LongRunningService_Operation* handlers in HexEditor.xaml.cs
+        // ═══════════════════════════════════════════════════════════════════
+
+        internal void RaiseDocEditorOperationStarted(OperationProgressEventArgs e)
+            => _docEditorOperationStarted?.Invoke(this, new DocumentOperationEventArgs
+            {
+                Title           = e.OperationTitle  ?? "",
+                Message         = e.StatusMessage   ?? "",
+                Percentage      = e.ProgressPercentage,
+                IsIndeterminate = e.IsIndeterminate,
+                CanCancel       = e.CanCancel
+            });
+
+        internal void RaiseDocEditorOperationProgress(OperationProgressEventArgs e)
+            => _docEditorOperationProgress?.Invoke(this, new DocumentOperationEventArgs
+            {
+                Title           = e.OperationTitle ?? "",
+                Message         = e.StatusMessage  ?? "",
+                Percentage      = e.ProgressPercentage,
+                IsIndeterminate = e.IsIndeterminate,
+                CanCancel       = e.CanCancel
+            });
+
+        internal void RaiseDocEditorOperationCompleted(OperationCompletedEventArgs e)
+            => _docEditorOperationCompleted?.Invoke(this, new DocumentOperationCompletedEventArgs
+            {
+                Success      = e.Success,
+                WasCancelled = e.WasCancelled,
+                ErrorMessage = e.ErrorMessage ?? ""
+            });
 
         // ═══════════════════════════════════════════════════════════════════
         // IDocumentEditor — Event wiring (called from existing event handlers)

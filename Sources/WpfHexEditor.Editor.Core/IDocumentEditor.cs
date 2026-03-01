@@ -56,4 +56,23 @@ public interface IDocumentEditor
     event EventHandler<string>? TitleChanged;     // "file.tbl *" — host updates the tab
     event EventHandler<string>? StatusMessage;    // toast / host statusbar
     event EventHandler?         SelectionChanged; // host re-queries CanExecute on commands
+
+    // ── Long-running operations ───────────────────────────────────────────
+    /// <summary>True while a long-running operation is in progress on this document.</summary>
+    bool IsBusy { get; }
+
+    /// <summary>
+    /// Requests cancellation of the current operation.
+    /// No-op if no operation is running or if the operation is not cancellable.
+    /// </summary>
+    void CancelOperation();
+
+    /// <summary>Raised when a long-running operation starts on this document.</summary>
+    event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
+
+    /// <summary>Raised periodically with progress updates during a long-running operation.</summary>
+    event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
+
+    /// <summary>Raised when the long-running operation completes (success, error or cancellation).</summary>
+    event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
 }

@@ -79,17 +79,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             if (_activeDocumentEditor != null)
             {
-                _activeDocumentEditor.TitleChanged    -= OnEditorTitleChanged;
-                _activeDocumentEditor.ModifiedChanged -= OnEditorModifiedChanged;
-                _activeDocumentEditor.StatusMessage   -= OnEditorStatusMessage;
+                _activeDocumentEditor.TitleChanged       -= OnEditorTitleChanged;
+                _activeDocumentEditor.ModifiedChanged    -= OnEditorModifiedChanged;
+                _activeDocumentEditor.StatusMessage      -= OnEditorStatusMessage;
+                _activeDocumentEditor.OperationStarted   -= OnDocumentOperationStarted;
+                _activeDocumentEditor.OperationProgress  -= OnDocumentOperationProgress;
+                _activeDocumentEditor.OperationCompleted -= OnDocumentOperationCompleted;
             }
             _activeDocumentEditor = value;
             if (_activeDocumentEditor != null)
             {
-                _activeDocumentEditor.TitleChanged    += OnEditorTitleChanged;
-                _activeDocumentEditor.ModifiedChanged += OnEditorModifiedChanged;
-                _activeDocumentEditor.StatusMessage   += OnEditorStatusMessage;
+                _activeDocumentEditor.TitleChanged       += OnEditorTitleChanged;
+                _activeDocumentEditor.ModifiedChanged    += OnEditorModifiedChanged;
+                _activeDocumentEditor.StatusMessage      += OnEditorStatusMessage;
+                _activeDocumentEditor.OperationStarted   += OnDocumentOperationStarted;
+                _activeDocumentEditor.OperationProgress  += OnDocumentOperationProgress;
+                _activeDocumentEditor.OperationCompleted += OnDocumentOperationCompleted;
             }
+            // Sync progress bar immediately to reflect the new active document's state
+            SyncProgressBarToActiveEditor(value);
             OnPropertyChanged();
         }
     }
@@ -112,8 +120,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public bool HasSolution
     {
         get => _hasSolution;
-        private set { _hasSolution = value; OnPropertyChanged(); }
+        private set { _hasSolution = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsProjectMenuEnabled)); }
     }
+
+    // ── Long-running operation state (per active document) ───────────────
+    private bool _isDocumentBusy;
+    /// <summary>
+    /// True while the currently active document is performing a long-running operation.
+    /// Switches instantly when the active tab changes.
+    /// </summary>
+    public bool IsDocumentBusy
+    {
+        get => _isDocumentBusy;
+        private set
+        {
+            _isDocumentBusy = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsMenuEnabled));
+            OnPropertyChanged(nameof(IsProjectMenuEnabled));
+        }
+    }
+
+    /// <summary>False while the active document is busy — gates File and Edit menus.</summary>
+    public bool IsMenuEnabled => !_isDocumentBusy;
+
+    /// <summary>True only when a solution is loaded AND the active document is not busy.</summary>
+    public bool IsProjectMenuEnabled => _hasSolution && !_isDocumentBusy;
 
     // ─── Constructor ───────────────────────────────────────────────────
     public MainWindow()
@@ -397,7 +429,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         bool    isNewFile   = false)
     {
         var hexEditor = new HexEditorControl();
-        hexEditor.ShowStatusBar = false;
+        hexEditor.ShowStatusBar       = false;
+        hexEditor.ShowProgressOverlay = false;  // App handles progress in its own status bar
 
         if (_parsedFieldsPanel != null && _connectedHexEditor == null)
         {
@@ -665,6 +698,77 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         OutputLogger.Info($"File: {filename}");
         OutputLogger.Info(formatPart);
     }
+
+    // ─── Long-running operation handlers (per active document) ──────────
+
+    /// <summary>
+    /// Syncs the progress bar zone to the given editor's busy state.
+    /// Called on every active-document change so switching tabs feels instant.
+    /// </summary>
+    private void SyncProgressBarToActiveEditor(IDocumentEditor? editor)
+    {
+        if (editor?.IsBusy == true)
+        {
+            // New active doc is already mid-operation — show bar in indeterminate mode
+            // until the next OperationProgress event provides exact values
+            IsDocumentBusy = true;
+            ProgressStatusItem.Visibility  = Visibility.Visible;
+            AppProgressBar.IsIndeterminate = true;
+            ProgressTitleText.Text         = "";
+            ProgressMessageText.Text       = "";
+            ProgressPercentText.Text       = "";
+            ProgressCancelButton.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            IsDocumentBusy = false;
+            ProgressStatusItem.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void OnDocumentOperationStarted(object? sender, DocumentOperationEventArgs e)
+    {
+        Dispatcher.BeginInvoke(() =>
+        {
+            IsDocumentBusy = true;
+            ProgressStatusItem.Visibility   = Visibility.Visible;
+            ProgressTitleText.Text          = e.Title;
+            AppProgressBar.IsIndeterminate  = e.IsIndeterminate;
+            AppProgressBar.Value            = e.Percentage;
+            ProgressPercentText.Text        = e.IsIndeterminate ? "" : $"{e.Percentage}%";
+            ProgressMessageText.Text        = e.Message;
+            ProgressCancelButton.Visibility = e.CanCancel ? Visibility.Visible : Visibility.Collapsed;
+        });
+    }
+
+    private void OnDocumentOperationProgress(object? sender, DocumentOperationEventArgs e)
+    {
+        Dispatcher.BeginInvoke(() =>
+        {
+            AppProgressBar.IsIndeterminate = e.IsIndeterminate;
+            AppProgressBar.Value           = e.Percentage;
+            ProgressPercentText.Text       = e.IsIndeterminate ? "" : $"{e.Percentage}%";
+            ProgressMessageText.Text       = e.Message;
+        });
+    }
+
+    private void OnDocumentOperationCompleted(object? sender, DocumentOperationCompletedEventArgs e)
+    {
+        Dispatcher.BeginInvoke(() =>
+        {
+            IsDocumentBusy = false;
+            ProgressStatusItem.Visibility = Visibility.Collapsed;
+
+            // Brief status feedback in the existing RefreshText slot
+            if (e.WasCancelled)
+                RefreshText.Text = "Opération annulée";
+            else if (!e.Success && !string.IsNullOrEmpty(e.ErrorMessage))
+                RefreshText.Text = $"Erreur : {e.ErrorMessage}";
+        });
+    }
+
+    private void OnProgressCancel(object sender, RoutedEventArgs e)
+        => ActiveDocumentEditor?.CancelOperation();
 
     private void StatusBarItem_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {

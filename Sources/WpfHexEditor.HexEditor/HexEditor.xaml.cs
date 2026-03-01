@@ -2551,6 +2551,22 @@ namespace WpfHexEditor.HexEditor
         }
 
         /// <summary>
+        /// When <see langword="true"/> (default), the built-in <see cref="ProgressOverlay"/> is shown during
+        /// long-running operations. Set to <see langword="false"/> when the host application (e.g. WpfHexEditor.App)
+        /// wants to handle progress display itself via the <see cref="WpfHexEditor.Editor.Core.IDocumentEditor"/>
+        /// OperationStarted/Progress/Completed events.
+        /// </summary>
+        public static readonly DependencyProperty ShowProgressOverlayProperty =
+            DependencyProperty.Register(nameof(ShowProgressOverlay), typeof(bool), typeof(HexEditor),
+                new PropertyMetadata(true));
+
+        public bool ShowProgressOverlay
+        {
+            get => (bool)GetValue(ShowProgressOverlayProperty);
+            set => SetValue(ShowProgressOverlayProperty, value);
+        }
+
+        /// <summary>
         /// AllowContextMenu DependencyProperty for XAML binding
         /// </summary>
         public static readonly DependencyProperty AllowContextMenuProperty =
@@ -3492,6 +3508,9 @@ namespace WpfHexEditor.HexEditor
         /// </summary>
         private void LongRunningService_OperationStarted(object sender, OperationProgressEventArgs e)
         {
+            // Relay to IDocumentEditor subscribers (host app progress bar, etc.)
+            RaiseDocEditorOperationStarted(e);
+
             // Check if dispatcher is valid (control might be disposed)
             if (Dispatcher == null || !Dispatcher.CheckAccess() && Dispatcher.HasShutdownStarted)
                 return;
@@ -3508,13 +3527,16 @@ namespace WpfHexEditor.HexEditor
                     // Set operation active flag (disables commands and menu items)
                     IsOperationActive = true;
 
-                    // Show progress overlay
-                    ProgressOverlay.Visibility = Visibility.Visible;
-                    ProgressOverlay.ViewModel.OperationTitle = e.OperationTitle;
-                    ProgressOverlay.ViewModel.StatusMessage = e.StatusMessage;
-                    ProgressOverlay.ViewModel.ProgressPercentage = e.ProgressPercentage;
-                    ProgressOverlay.ViewModel.IsIndeterminate = e.IsIndeterminate;
-                    ProgressOverlay.ViewModel.CanCancel = e.CanCancel;
+                    // Show built-in progress overlay only when not bypassed by the host
+                    if (ShowProgressOverlay)
+                    {
+                        ProgressOverlay.Visibility = Visibility.Visible;
+                        ProgressOverlay.ViewModel.OperationTitle = e.OperationTitle;
+                        ProgressOverlay.ViewModel.StatusMessage = e.StatusMessage;
+                        ProgressOverlay.ViewModel.ProgressPercentage = e.ProgressPercentage;
+                        ProgressOverlay.ViewModel.IsIndeterminate = e.IsIndeterminate;
+                        ProgressOverlay.ViewModel.CanCancel = e.CanCancel;
+                    }
 
                     // Change cursor to Wait
                     Mouse.OverrideCursor = Cursors.Wait;
@@ -3531,6 +3553,9 @@ namespace WpfHexEditor.HexEditor
         /// </summary>
         private void LongRunningService_OperationProgress(object sender, OperationProgressEventArgs e)
         {
+            // Relay to IDocumentEditor subscribers
+            RaiseDocEditorOperationProgress(e);
+
             // Check if dispatcher is valid (control might be disposed)
             if (Dispatcher == null || !Dispatcher.CheckAccess() && Dispatcher.HasShutdownStarted)
                 return;
@@ -3544,9 +3569,12 @@ namespace WpfHexEditor.HexEditor
 
                 try
                 {
-                    // Update progress
-                    ProgressOverlay.ViewModel.ProgressPercentage = e.ProgressPercentage;
-                    ProgressOverlay.ViewModel.StatusMessage = e.StatusMessage;
+                    // Update built-in overlay only when not bypassed by the host
+                    if (ShowProgressOverlay)
+                    {
+                        ProgressOverlay.ViewModel.ProgressPercentage = e.ProgressPercentage;
+                        ProgressOverlay.ViewModel.StatusMessage = e.StatusMessage;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -3560,6 +3588,9 @@ namespace WpfHexEditor.HexEditor
         /// </summary>
         private void LongRunningService_OperationCompleted(object sender, OperationCompletedEventArgs e)
         {
+            // Relay to IDocumentEditor subscribers
+            RaiseDocEditorOperationCompleted(e);
+
             // Check if dispatcher is valid (control might be disposed)
             if (Dispatcher == null || !Dispatcher.CheckAccess() && Dispatcher.HasShutdownStarted)
                 return;
@@ -3576,8 +3607,8 @@ namespace WpfHexEditor.HexEditor
                     // Clear operation active flag (re-enables commands and menu items)
                     IsOperationActive = false;
 
-                    // Hide progress overlay
-                    if (ProgressOverlay != null)
+                    // Hide built-in progress overlay only when not bypassed by the host
+                    if (ShowProgressOverlay && ProgressOverlay != null)
                         ProgressOverlay.Visibility = Visibility.Collapsed;
 
                     // Restore cursor
