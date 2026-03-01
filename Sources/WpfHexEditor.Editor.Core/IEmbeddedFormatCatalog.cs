@@ -33,7 +33,15 @@ public sealed record EmbeddedFormatEntry(
     /// <summary>
     /// 0-100 completeness score from the format's QualityMetrics.
     /// </summary>
-    int QualityScore);
+    int QualityScore,
+    /// <summary>
+    /// Format specification version, e.g. "2.0". Empty string if not specified.
+    /// </summary>
+    string Version,
+    /// <summary>
+    /// Author or authoring organization. Empty string if not specified.
+    /// </summary>
+    string Author);
 
 /// <summary>
 /// Read-only catalog of the embedded format definitions shipped with the assembly.

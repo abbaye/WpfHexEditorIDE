@@ -113,6 +113,8 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         var name        = GetString(root, "formatName") ?? ExtractNameFromKey(resourceKey);
         var description = GetString(root, "description") ?? "";
         var category    = GetString(root, "category")    ?? ExtractCategoryFromKey(resourceKey);
+        var version     = GetString(root, "version")     ?? "";
+        var author      = GetString(root, "author")      ?? "";
         int quality     = 0;
 
         if (root.TryGetProperty("QualityMetrics", out var qm) &&
@@ -124,7 +126,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
             foreach (var e in ext.EnumerateArray())
                 if (e.GetString() is { } s) extensions.Add(s);
 
-        return new EmbeddedFormatEntry(resourceKey, name, category, description, extensions, quality);
+        return new EmbeddedFormatEntry(resourceKey, name, category, description, extensions, quality, version, author);
     }
 
     private static string? GetString(JsonElement root, string property)

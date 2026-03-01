@@ -6,6 +6,8 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.ProjectSystem.Dialogs;
@@ -34,6 +36,11 @@ public partial class ImportEmbeddedFormatDialog : Window
     private readonly IEmbeddedFormatCatalog _catalog;
     private IReadOnlyList<EmbeddedFormatEntry> _allEntries = [];
     private List<FormatRow> _filteredRows = [];
+
+    /// <summary>Lazy full-JSON cache keyed by ResourceKey. Populated on first search.</summary>
+    private readonly Dictionary<string, string> _jsonCache = [];
+
+    private static readonly StringComparison OIC = StringComparison.OrdinalIgnoreCase;
 
     // ── Constructor ────────────────────────────────────────────────────────
     /// <param name="catalog">Catalog of embedded format definitions.</param>
@@ -85,20 +92,32 @@ public partial class ImportEmbeddedFormatDialog : Window
 
     private void ApplyFilter()
     {
-        var selectedCat  = (CategoryCombo.SelectedItem as ComboBoxItem)?.Tag as string;
-        var searchText   = SearchBox.Text?.Trim() ?? "";
+        var selectedCat = (CategoryCombo.SelectedItem as ComboBoxItem)?.Tag as string;
+        var searchText  = SearchBox.Text?.Trim() ?? "";
 
         _filteredRows = _allEntries
             .Where(e =>
-                (selectedCat is null || string.Equals(e.Category, selectedCat, StringComparison.OrdinalIgnoreCase)) &&
+                (selectedCat is null || string.Equals(e.Category, selectedCat, OIC)) &&
                 (searchText.Length == 0 ||
-                 e.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-                 e.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase)))
+                 e.Name.Contains(searchText, OIC) ||
+                 e.Description.Contains(searchText, OIC) ||
+                 GetJsonText(e).Contains(searchText, OIC)))
             .Select(e => new FormatRow(e))
             .ToList();
 
-        FormatList.ItemsSource = _filteredRows;
+        var view = new ListCollectionView(_filteredRows);
+        view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(FormatRow.Category)));
+        FormatList.ItemsSource = view;
+
         Refresh();
+    }
+
+    /// <summary>Returns full JSON text for the entry, loading lazily and caching.</summary>
+    private string GetJsonText(EmbeddedFormatEntry entry)
+    {
+        if (!_jsonCache.TryGetValue(entry.ResourceKey, out var json))
+            _jsonCache[entry.ResourceKey] = json = _catalog.GetJson(entry.ResourceKey);
+        return json;
     }
 
     // ── Event handlers ─────────────────────────────────────────────────────
@@ -108,18 +127,41 @@ public partial class ImportEmbeddedFormatDialog : Window
 
     private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        // Update description panel from last selected item
         var lastRow = FormatList.SelectedItems.Cast<FormatRow>().LastOrDefault();
         if (lastRow is not null)
         {
+            // Header
             DescNameText.Text     = lastRow.Name;
             DescCategoryText.Text = lastRow.Category;
             DescText.Text         = lastRow.Entry.Description;
+
+            // Version / Author
+            DescVersionText.Text      = lastRow.Entry.Version;
+            DescVersionRow.Visibility = string.IsNullOrEmpty(lastRow.Entry.Version)
+                                        ? Visibility.Collapsed : Visibility.Visible;
+            DescAuthorText.Text       = lastRow.Entry.Author;
+            DescAuthorRow.Visibility  = string.IsNullOrEmpty(lastRow.Entry.Author)
+                                        ? Visibility.Collapsed : Visibility.Visible;
+
+            // Extension badges
+            DescExtWrap.Children.Clear();
+            foreach (var ext in lastRow.Entry.Extensions)
+                DescExtWrap.Children.Add(MakeExtBadge(ext));
+
+            // Quality bar
+            DescQualityBar.Value  = lastRow.QualityScore;
+            DescQualityText.Text  = $"{lastRow.QualityScore}%";
         }
         else
         {
             DescNameText.Text = DescCategoryText.Text = DescText.Text = "";
+            DescVersionRow.Visibility = DescAuthorRow.Visibility = Visibility.Collapsed;
+            DescVersionText.Text = DescAuthorText.Text = "";
+            DescExtWrap.Children.Clear();
+            DescQualityBar.Value = 0;
+            DescQualityText.Text = "";
         }
+
         Refresh();
     }
 
@@ -129,8 +171,8 @@ public partial class ImportEmbeddedFormatDialog : Window
             .Cast<FormatRow>()
             .Select(r => r.Entry)
             .ToList();
-        TargetFolderId  = (FolderCombo.SelectedItem as ComboBoxItem)?.Tag as string;
-        DialogResult    = true;
+        TargetFolderId = (FolderCombo.SelectedItem as ComboBoxItem)?.Tag as string;
+        DialogResult   = true;
     }
 
     // ── Private helpers ────────────────────────────────────────────────────
@@ -141,7 +183,25 @@ public partial class ImportEmbeddedFormatDialog : Window
         SelectionCountText.Text = count == 0
             ? "No format selected"
             : $"{count} format{(count == 1 ? "" : "s")} selected";
-        ImportButton.IsEnabled  = count > 0;
+        ImportButton.IsEnabled = count > 0;
+    }
+
+    private static Border MakeExtBadge(string ext)
+    {
+        return new Border
+        {
+            Margin          = new Thickness(0, 0, 4, 4),
+            Padding         = new Thickness(5, 2, 5, 2),
+            CornerRadius    = new CornerRadius(3),
+            Background      = (Brush)Application.Current.TryFindResource("ERR_FilterActiveBrush")
+                              ?? new SolidColorBrush(Color.FromRgb(0x3E, 0x3E, 0x42)),
+            Child           = new TextBlock
+            {
+                Text       = ext,
+                FontFamily = new FontFamily("Consolas, Courier New"),
+                FontSize   = 11
+            }
+        };
     }
 
     // ── View-model row ─────────────────────────────────────────────────────
@@ -152,6 +212,7 @@ public partial class ImportEmbeddedFormatDialog : Window
         public string              Name             => entry.Name;
         public string              Category         => entry.Category;
         public string              ExtensionsDisplay => string.Join(", ", entry.Extensions);
+        public string              QualityDisplay   => $"{entry.QualityScore}%";
         public int                 QualityScore     => entry.QualityScore;
     }
 }
