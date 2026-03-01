@@ -247,7 +247,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (uiElement is not HexEditorControl hex) continue;
 
             // Check that this tab belongs to the same project
-            var dockItem = _engine.AllItems.FirstOrDefault(di => di.ContentId == contentId);
+            var dockItem = _engine.Layout.FindItemByContentId(contentId);
             if (dockItem is null) continue;
             if (!dockItem.Metadata.TryGetValue("ProjectId", out var projId) || projId != project.Id)
                 continue;

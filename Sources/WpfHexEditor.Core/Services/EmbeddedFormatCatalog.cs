@@ -141,9 +141,9 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         const string prefix = "WpfHexEditor.Core.FormatDefinitions.";
         if (key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
         {
-            var rest   = key[prefix.Length..];      // "Archives.ZIP.whjson"
+            var rest   = key.Substring(prefix.Length);  // "Archives.ZIP.whjson"
             var dotIdx = rest.IndexOf('.');
-            if (dotIdx > 0) return rest[..dotIdx];
+            if (dotIdx > 0) return rest.Substring(0, dotIdx);
         }
         return "Other";
     }
@@ -152,6 +152,6 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
     {
         // Last segment before ".whjson"
         var parts = key.Split('.');
-        return parts.Length >= 2 ? parts[^2] : key;
+        return parts.Length >= 2 ? parts[parts.Length - 2] : key;
     }
 }
