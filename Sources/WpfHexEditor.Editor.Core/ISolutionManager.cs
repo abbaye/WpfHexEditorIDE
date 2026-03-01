@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -16,10 +17,14 @@ public interface ISolutionManager
     // ── State ────────────────────────────────────────────────────────────
     ISolution? CurrentSolution { get; }
 
-    /// <summary>Paths of the 10 most-recently used solutions (MRU list).</summary>
+    /// <summary>
+    /// Paths of the 10 most-recently used solutions (MRU list).
+    /// </summary>
     IReadOnlyList<string> RecentSolutions { get; }
 
-    /// <summary>Paths of the 10 most-recently used standalone files.</summary>
+    /// <summary>
+    /// Paths of the 10 most-recently used standalone files.
+    /// </summary>
     IReadOnlyList<string> RecentFiles { get; }
 
     // ── Solution lifecycle ───────────────────────────────────────────────
@@ -98,9 +103,35 @@ public interface ISolutionManager
     // ── MRU helpers ──────────────────────────────────────────────────────
     void PushRecentFile(string absolutePath);
 
+    // ── Format upgrade ───────────────────────────────────────────────────
+
+    /// <summary>
+    /// Upgrades all files belonging to <paramref name="solution"/> from their on-disk
+    /// format to the current application format version.
+    /// Creates a versioned backup of each file before writing (e.g. <c>.whsln.v1.bak</c>).
+    /// After a successful upgrade the solution is no longer read-only.
+    /// </summary>
+    Task UpgradeFormatAsync(ISolution solution, CancellationToken ct = default);
+
+    /// <summary>
+    /// Switches the solution into read-only mode.
+    /// All saves will be blocked; the user can still view and interact with the data.
+    /// Call <see cref="UpgradeFormatAsync"/> to leave read-only mode.
+    /// </summary>
+    void SetReadOnlyFormat(ISolution solution, bool readOnly);
+
     // ── Events ───────────────────────────────────────────────────────────
     event EventHandler<SolutionChangedEventArgs>?      SolutionChanged;
     event EventHandler<ProjectChangedEventArgs>?       ProjectChanged;
     event EventHandler<ProjectItemEventArgs>?          ItemAdded;
     event EventHandler<ProjectItemEventArgs>?          ItemRemoved;
+    /// <summary>
+    /// Raised after a project item has been renamed (disk + model updated).
+    /// </summary>
+    event EventHandler<ProjectItemRenamedEventArgs>?   ItemRenamed;
+    /// <summary>
+    /// Raised when a solution is opened whose on-disk format is older than the current
+    /// application format. The host should present upgrade UI to the user.
+    /// </summary>
+    event EventHandler<FormatUpgradeRequiredEventArgs>? FormatUpgradeRequired;
 }

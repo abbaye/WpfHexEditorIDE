@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -13,16 +14,24 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public interface IErrorPanel
 {
-    /// <summary>Registers a diagnostic source and subscribes to its changes.</summary>
+    /// <summary>
+    /// Registers a diagnostic source and subscribes to its changes.
+    /// </summary>
     void AddSource(IDiagnosticSource source);
 
-    /// <summary>Unregisters a diagnostic source and unsubscribes from its changes.</summary>
+    /// <summary>
+    /// Unregisters a diagnostic source and unsubscribes from its changes.
+    /// </summary>
     void RemoveSource(IDiagnosticSource source);
 
-    /// <summary>Removes all sources and clears the displayed entries.</summary>
+    /// <summary>
+    /// Removes all sources and clears the displayed entries.
+    /// </summary>
     void ClearAll();
 
-    /// <summary>Controls which scope of diagnostics is displayed.</summary>
+    /// <summary>
+    /// Controls which scope of diagnostics is displayed.
+    /// </summary>
     ErrorPanelScope Scope { get; set; }
 
     /// <summary>

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -23,7 +24,9 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public interface IEditorRegistry
 {
-    /// <summary>Registers an available editor.</summary>
+    /// <summary>
+    /// Registers an available editor.
+    /// </summary>
     void Register(IEditorFactory factory);
 
     /// <summary>
@@ -32,6 +35,8 @@ public interface IEditorRegistry
     /// </summary>
     IEditorFactory? FindFactory(string filePath);
 
-    /// <summary>Returns all registered factories.</summary>
+    /// <summary>
+    /// Returns all registered factories.
+    /// </summary>
     IReadOnlyList<IEditorFactory> GetAll();
 }

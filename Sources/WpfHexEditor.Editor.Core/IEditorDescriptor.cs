@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -12,15 +13,23 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public interface IEditorDescriptor
 {
-    /// <summary>Unique identifier: "tbl-editor", "json-editor", etc.</summary>
+    /// <summary>
+    /// Unique identifier: "tbl-editor", "json-editor", etc.
+    /// </summary>
     string Id { get; }
 
-    /// <summary>Display name shown in the host UI: "TBL Character Table Editor".</summary>
+    /// <summary>
+    /// Display name shown in the host UI: "TBL Character Table Editor".
+    /// </summary>
     string DisplayName { get; }
 
-    /// <summary>Short description shown in tooltip or selection panel.</summary>
+    /// <summary>
+    /// Short description shown in tooltip or selection panel.
+    /// </summary>
     string Description { get; }
 
-    /// <summary>Supported extensions (e.g.: ".tbl", ".tblx"). Case-sensitive: lowercase.</summary>
+    /// <summary>
+    /// Supported extensions (e.g.: ".tbl", ".tblx"). Case-sensitive: lowercase.
+    /// </summary>
     IReadOnlyList<string> SupportedExtensions { get; }
 }

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -23,7 +24,9 @@ public interface IDocumentEditor
     bool CanRedo    { get; }
     bool IsReadOnly { get; set; }   // DP-backed in WPF implementations
 
-    /// <summary>Title displayed in the host tab ("file.bin", "file.bin *" if dirty).</summary>
+    /// <summary>
+    /// Title displayed in the host tab ("file.bin", "file.bin *" if dirty).
+    /// </summary>
     string Title { get; }
 
     // ── Bindable commands (host: MenuItem.Command, toolbar…) ─────────────
@@ -58,7 +61,9 @@ public interface IDocumentEditor
     event EventHandler?         SelectionChanged; // host re-queries CanExecute on commands
 
     // ── Long-running operations ───────────────────────────────────────────
-    /// <summary>True while a long-running operation is in progress on this document.</summary>
+    /// <summary>
+    /// True while a long-running operation is in progress on this document.
+    /// </summary>
     bool IsBusy { get; }
 
     /// <summary>
@@ -67,12 +72,18 @@ public interface IDocumentEditor
     /// </summary>
     void CancelOperation();
 
-    /// <summary>Raised when a long-running operation starts on this document.</summary>
+    /// <summary>
+    /// Raised when a long-running operation starts on this document.
+    /// </summary>
     event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
 
-    /// <summary>Raised periodically with progress updates during a long-running operation.</summary>
+    /// <summary>
+    /// Raised periodically with progress updates during a long-running operation.
+    /// </summary>
     event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
 
-    /// <summary>Raised when the long-running operation completes (success, error or cancellation).</summary>
+    /// <summary>
+    /// Raised when the long-running operation completes (success, error or cancellation).
+    /// </summary>
     event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
 }

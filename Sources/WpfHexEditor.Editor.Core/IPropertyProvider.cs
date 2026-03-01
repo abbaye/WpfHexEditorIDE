@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -31,6 +32,8 @@ public interface IPropertyProvider
     /// </summary>
     IReadOnlyList<PropertyGroup> GetProperties();
 
-    /// <summary>Raised when the underlying selection or state changes and the panel should refresh.</summary>
+    /// <summary>
+    /// Raised when the underlying selection or state changes and the panel should refresh.
+    /// </summary>
     event EventHandler? PropertiesChanged;
 }

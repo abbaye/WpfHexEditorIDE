@@ -1,11 +1,14 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 namespace WpfHexEditor.Editor.Core;
 
-/// <summary>Severity level of a diagnostic entry.</summary>
+/// <summary>
+/// Severity level of a diagnostic entry.
+/// </summary>
 public enum DiagnosticSeverity
 {
     Error,
@@ -13,7 +16,9 @@ public enum DiagnosticSeverity
     Message
 }
 
-/// <summary>Scope filter used by the error panel.</summary>
+/// <summary>
+/// Scope filter used by the error panel.
+/// </summary>
 public enum ErrorPanelScope
 {
     Solution,

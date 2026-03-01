@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -16,12 +17,18 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public interface IDiagnosticSource
 {
-    /// <summary>Human-readable label identifying this source (e.g. "HexEditor", "Solution").</summary>
+    /// <summary>
+    /// Human-readable label identifying this source (e.g. "HexEditor", "Solution").
+    /// </summary>
     string SourceLabel { get; }
 
-    /// <summary>Returns the current set of diagnostics produced by this source.</summary>
+    /// <summary>
+    /// Returns the current set of diagnostics produced by this source.
+    /// </summary>
     IReadOnlyList<DiagnosticEntry> GetDiagnostics();
 
-    /// <summary>Raised whenever the diagnostic list has changed.</summary>
+    /// <summary>
+    /// Raised whenever the diagnostic list has changed.
+    /// </summary>
     event EventHandler? DiagnosticsChanged;
 }

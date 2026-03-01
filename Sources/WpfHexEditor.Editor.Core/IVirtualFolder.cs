@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -15,10 +16,14 @@ public interface IVirtualFolder
     string Id   { get; }
     string Name { get; }
 
-    /// <summary>Ids of <see cref="IProjectItem"/> instances directly under this folder.</summary>
+    /// <summary>
+    /// Ids of <see cref="IProjectItem"/> instances directly under this folder.
+    /// </summary>
     IReadOnlyList<string> ItemIds { get; }
 
-    /// <summary>Nested sub-folders.</summary>
+    /// <summary>
+    /// Nested sub-folders.
+    /// </summary>
     IReadOnlyList<IVirtualFolder> Children { get; }
 
     /// <summary>

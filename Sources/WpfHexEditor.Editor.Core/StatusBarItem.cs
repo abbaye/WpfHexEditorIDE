@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -19,7 +20,9 @@ public sealed class StatusBarChoice : INotifyPropertyChanged
 
     public string  DisplayName { get; set; } = "";
 
-    /// <summary>True when this choice matches the editor's current value (shows a checkmark).</summary>
+    /// <summary>
+    /// True when this choice matches the editor's current value (shows a checkmark).
+    /// </summary>
     public bool IsActive
     {
         get => _isActive;

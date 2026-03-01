@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -21,10 +22,14 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public interface IEditorPersistable
 {
-    /// <summary>Returns the current editor configuration as a serialisable DTO.</summary>
+    /// <summary>
+    /// Returns the current editor configuration as a serialisable DTO.
+    /// </summary>
     EditorConfigDto GetEditorConfig();
 
-    /// <summary>Restores a previously saved editor configuration.</summary>
+    /// <summary>
+    /// Restores a previously saved editor configuration.
+    /// </summary>
     void ApplyEditorConfig(EditorConfigDto config);
 
     /// <summary>
@@ -33,6 +38,22 @@ public interface IEditorPersistable
     /// </summary>
     byte[]? GetUnsavedModifications();
 
-    /// <summary>Re-applies modifications previously returned by <see cref="GetUnsavedModifications"/>.</summary>
+    /// <summary>
+    /// Re-applies modifications previously returned by <see cref="GetUnsavedModifications"/>.
+    /// </summary>
     void ApplyUnsavedModifications(byte[] data);
+
+    // ── Bookmarks ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Returns the current bookmarks as serialisable DTOs, or <see langword="null"/>
+    /// if the editor has no bookmark concept.
+    /// </summary>
+    IReadOnlyList<BookmarkDto>? GetBookmarks();
+
+    /// <summary>
+    /// Restores bookmarks previously returned by <see cref="GetBookmarks"/>.
+    /// Called when a project item is re-opened.
+    /// </summary>
+    void ApplyBookmarks(IReadOnlyList<BookmarkDto> bookmarks);
 }

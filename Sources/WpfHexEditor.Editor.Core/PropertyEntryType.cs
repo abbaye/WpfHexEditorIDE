@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -11,24 +12,38 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public enum PropertyEntryType
 {
-    /// <summary>Read-only or editable single-line text.</summary>
+    /// <summary>
+    /// Read-only or editable single-line text.
+    /// </summary>
     Text,
 
-    /// <summary>Integer value; the panel uses a validated TextBox.</summary>
+    /// <summary>
+    /// Integer value; the panel uses a validated TextBox.
+    /// </summary>
     Integer,
 
-    /// <summary>Hexadecimal value (e.g. 0x000000FF); displayed with 0x prefix.</summary>
+    /// <summary>
+    /// Hexadecimal value (e.g. 0x000000FF); displayed with 0x prefix.
+    /// </summary>
     Hex,
 
-    /// <summary>Boolean value; the panel uses a CheckBox.</summary>
+    /// <summary>
+    /// Boolean value; the panel uses a CheckBox.
+    /// </summary>
     Boolean,
 
-    /// <summary>One of a fixed set of values; the panel uses a ComboBox fed by <see cref="PropertyEntry.AllowedValues"/>.</summary>
+    /// <summary>
+    /// One of a fixed set of values; the panel uses a ComboBox fed by <see cref="PropertyEntry.AllowedValues"/>.
+    /// </summary>
     Enum,
 
-    /// <summary>ARGB colour; the panel uses the WpfHexEditor.ColorPicker control.</summary>
+    /// <summary>
+    /// ARGB colour; the panel uses the WpfHexEditor.ColorPicker control.
+    /// </summary>
     Color,
 
-    /// <summary>Filesystem path; the panel shows a TextBox + browse button.</summary>
+    /// <summary>
+    /// Filesystem path; the panel shows a TextBox + browse button.
+    /// </summary>
     FilePath,
 }

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -25,6 +26,9 @@ public static class ProjectItemTypeHelper
             "tbl" or "tblx"                 => ProjectItemType.Tbl,
             "ips" or "bps" or "ups" or "xdelta" => ProjectItemType.Patch,
             "txt" or "md" or "log"          => ProjectItemType.Text,
+            "png" or "bmp" or "jpg" or "jpeg" or "gif"
+                or "ico" or "tiff" or "tif" or "webp"
+                or "dds" or "tga"           => ProjectItemType.Image,
             _                               => ProjectItemType.Binary,
         };
     }

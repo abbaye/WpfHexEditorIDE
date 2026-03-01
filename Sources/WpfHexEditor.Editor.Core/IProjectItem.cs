@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -12,15 +13,21 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public interface IProjectItem
 {
-    /// <summary>Stable GUID-based identifier, unique within the project.</summary>
+    /// <summary>
+    /// Stable GUID-based identifier, unique within the project.
+    /// </summary>
     string Id { get; }
 
     string Name { get; }
 
-    /// <summary>Path relative to the .whproj file directory.</summary>
+    /// <summary>
+    /// Path relative to the .whproj file directory.
+    /// </summary>
     string RelativePath { get; }
 
-    /// <summary>Fully-resolved absolute path on the current machine.</summary>
+    /// <summary>
+    /// Fully-resolved absolute path on the current machine.
+    /// </summary>
     string AbsolutePath { get; }
 
     ProjectItemType ItemType { get; }
@@ -34,4 +41,17 @@ public interface IProjectItem
     /// document tab is closed; applied when the file is re-opened.
     /// </summary>
     EditorConfigDto? EditorConfig { get; set; }
+
+    /// <summary>
+    /// Typed links to other project items (e.g. TBL tables, patch files, format definitions).
+    /// Replaces the legacy single-target <c>targetItemId</c> field.
+    /// </summary>
+    IReadOnlyList<IItemLink> LinkedItems { get; }
+
+    /// <summary>
+    /// Saved bookmarks for this item. <see langword="null"/> or empty when no bookmarks exist.
+    /// Written by the host when the document tab is closed; restored on re-open via
+    /// <see cref="IEditorPersistable.ApplyBookmarks"/>.
+    /// </summary>
+    IReadOnlyList<BookmarkDto>? Bookmarks { get; set; }
 }

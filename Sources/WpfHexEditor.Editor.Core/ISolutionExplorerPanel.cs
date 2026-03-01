@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -10,10 +11,14 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public sealed class AddItemRequestedEventArgs : EventArgs
 {
-    /// <summary>Project that should receive the new item.</summary>
+    /// <summary>
+    /// Project that should receive the new item.
+    /// </summary>
     public IProject Project { get; set; } = null!;
 
-    /// <summary>Virtual folder id to place the item in, or <see langword="null"/> for the project root.</summary>
+    /// <summary>
+    /// Virtual folder id to place the item in, or <see langword="null"/> for the project root.
+    /// </summary>
     public string? TargetFolderId { get; set; }
 }
 
@@ -31,34 +36,54 @@ public sealed class AddItemRequestedEventArgs : EventArgs
 /// </summary>
 public interface ISolutionExplorerPanel
 {
-    /// <summary>Replaces the tree with the given solution, or clears it when <see langword="null"/>.</summary>
+    /// <summary>
+    /// Replaces the tree with the given solution, or clears it when <see langword="null"/>.
+    /// </summary>
     void SetSolution(ISolution? solution);
 
-    /// <summary>Highlights the tree node that corresponds to <paramref name="absolutePath"/>.</summary>
+    /// <summary>
+    /// Highlights the tree node that corresponds to <paramref name="absolutePath"/>.
+    /// </summary>
     void SyncWithFile(string absolutePath);
 
-    /// <summary>Fired when the user double-clicks an item (or presses Enter). The host opens the file.</summary>
+    /// <summary>
+    /// Fired when the user double-clicks an item (or presses Enter). The host opens the file.
+    /// </summary>
     event EventHandler<ProjectItemActivatedEventArgs>? ItemActivated;
 
-    /// <summary>Fired when the user single-clicks an item. The host updates the Properties panel.</summary>
+    /// <summary>
+    /// Fired when the user single-clicks an item. The host updates the Properties panel.
+    /// </summary>
     event EventHandler<ProjectItemEventArgs>? ItemSelected;
 
-    /// <summary>Fired when the user requests to rename an item via the context menu.</summary>
+    /// <summary>
+    /// Fired when the user requests to rename an item via the context menu.
+    /// </summary>
     event EventHandler<ProjectItemEventArgs>? ItemRenameRequested;
 
-    /// <summary>Fired when the user requests to delete an item via the context menu.</summary>
+    /// <summary>
+    /// Fired when the user requests to delete an item via the context menu.
+    /// </summary>
     event EventHandler<ProjectItemEventArgs>? ItemDeleteRequested;
 
-    /// <summary>Fired when the user drags a file node to a new folder or the project root.</summary>
+    /// <summary>
+    /// Fired when the user drags a file node to a new folder or the project root.
+    /// </summary>
     event EventHandler<ItemMoveRequestedEventArgs>? ItemMoveRequested;
 
-    /// <summary>Fired when the user chooses "Add New Item…" from the context menu on a project or folder node.</summary>
+    /// <summary>
+    /// Fired when the user chooses "Add New Item…" from the context menu on a project or folder node.
+    /// </summary>
     event EventHandler<AddItemRequestedEventArgs>? AddNewItemRequested;
 
-    /// <summary>Fired when the user chooses "Add Existing Item…" from the context menu on a project or folder node.</summary>
+    /// <summary>
+    /// Fired when the user chooses "Add Existing Item…" from the context menu on a project or folder node.
+    /// </summary>
     event EventHandler<AddItemRequestedEventArgs>? AddExistingItemRequested;
 
-    /// <summary>Fired when the user chooses "Import Built-in Format…" from the context menu on a project node.</summary>
+    /// <summary>
+    /// Fired when the user chooses "Import Built-in Format…" from the context menu on a project node.
+    /// </summary>
     event EventHandler<AddItemRequestedEventArgs>? ImportFormatDefinitionRequested;
 
     /// <summary>
@@ -67,16 +92,24 @@ public interface ISolutionExplorerPanel
     /// </summary>
     event EventHandler<ProjectItemEventArgs>? ConvertTblRequested;
 
-    /// <summary>Fired when the user requests to rename a virtual folder.</summary>
+    /// <summary>
+    /// Fired when the user requests to rename a virtual folder.
+    /// </summary>
     event EventHandler<FolderRenameEventArgs>? FolderRenameRequested;
 
-    /// <summary>Fired when the user requests to delete a virtual folder.</summary>
+    /// <summary>
+    /// Fired when the user requests to delete a virtual folder.
+    /// </summary>
     event EventHandler<FolderDeleteEventArgs>? FolderDeleteRequested;
 
-    /// <summary>Fired when the user requests creation of a new virtual (or physical) folder.</summary>
+    /// <summary>
+    /// Fired when the user requests creation of a new virtual (or physical) folder.
+    /// </summary>
     event EventHandler<FolderCreateRequestedEventArgs>?  FolderCreateRequested;
 
-    /// <summary>Fired when the user chooses "Add Existing Folder…" to import a directory from disk.</summary>
+    /// <summary>
+    /// Fired when the user chooses "Add Existing Folder…" to import a directory from disk.
+    /// </summary>
     event EventHandler<FolderFromDiskRequestedEventArgs>? FolderFromDiskRequested;
 
     /// <summary>

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -12,7 +13,9 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public sealed class PropertyEntry
 {
-    /// <summary>Label shown in the left column.</summary>
+    /// <summary>
+    /// Label shown in the left column.
+    /// </summary>
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
@@ -21,7 +24,9 @@ public sealed class PropertyEntry
     /// </summary>
     public string? Description { get; set; }
 
-    /// <summary>Current value. The panel formats it according to <see cref="Type"/>.</summary>
+    /// <summary>
+    /// Current value. The panel formats it according to <see cref="Type"/>.
+    /// </summary>
     public object? Value { get; set; }
 
     /// <summary>
