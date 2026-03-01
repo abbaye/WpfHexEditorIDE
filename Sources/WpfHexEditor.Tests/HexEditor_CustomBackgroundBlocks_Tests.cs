@@ -7,16 +7,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
 using System.Windows.Media;
 using System.Windows.Threading;
-using WpfHexEditor.HexEditor;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Events;
+using HexEditorControl = WpfHexEditor.HexEditor.HexEditor;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     [TestClass]
     public class HexEditor_CustomBackgroundBlocks_Tests
     {
-        private HexEditor _hexEditor;
+        private HexEditorControl _hexEditor;
         private Dispatcher _dispatcher;
 
         [TestInitialize]
@@ -25,7 +25,7 @@ namespace WpfHexaEditor.Tests
             // Create HexEditor on STA thread (WPF requirement)
             var thread = new Thread(() =>
             {
-                _hexEditor = new HexEditor();
+                _hexEditor = new HexEditorControl();
                 _dispatcher = Dispatcher.CurrentDispatcher;
                 Dispatcher.Run();
             });

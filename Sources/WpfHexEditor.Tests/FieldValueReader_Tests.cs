@@ -8,7 +8,7 @@ using System;
 using System.Text;
 using WpfHexEditor.Core;
 
-namespace WPFHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     [TestClass]
     public class FieldValueReader_Tests

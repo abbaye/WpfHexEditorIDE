@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Windows.Media;
 using WpfHexEditor.Core;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     [TestClass]
     public class CustomBackgroundBlock_Tests

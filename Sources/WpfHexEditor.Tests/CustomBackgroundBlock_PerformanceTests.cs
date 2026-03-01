@@ -12,7 +12,7 @@ using System.Windows.Media;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Services;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     /// <summary>
     /// Performance tests for CustomBackgroundBlock system

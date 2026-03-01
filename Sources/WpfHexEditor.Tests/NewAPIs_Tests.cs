@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using WpfHexEditor.Core.Bytes;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     /// <summary>
     /// Unit tests for newly added APIs: ModifyBytes and CountOccurrences

@@ -10,7 +10,7 @@ using System;
 using System.Linq;
 using WpfHexEditor.BinaryAnalysis.Services;
 
-namespace WpfHexaEditor.Tests.Integration
+namespace WpfHexEditor.Tests.Integration
 {
     [TestClass]
     public class DataInspector_Integration_Tests

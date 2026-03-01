@@ -8,7 +8,7 @@ using System.Linq;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Services;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     [TestClass]
     public class FormatDetection_Tests
@@ -488,7 +488,7 @@ namespace WpfHexaEditor.Tests
             var service = new FormatDetectionService();
             var formatDefPath = System.IO.Path.Combine(
                 System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
-                "..", "..", "..", "..", "WPFHexaEditor", "FormatDefinitions");
+                "..", "..", "..", "..", "WpfHexEditor.Core", "FormatDefinitions");
 
             // Normalize path
             formatDefPath = System.IO.Path.GetFullPath(formatDefPath);
@@ -514,7 +514,7 @@ namespace WpfHexaEditor.Tests
             var service = new FormatDetectionService();
             var formatDefPath = System.IO.Path.Combine(
                 System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
-                "..", "..", "..", "..", "WPFHexaEditor", "FormatDefinitions");
+                "..", "..", "..", "..", "WpfHexEditor.Core", "FormatDefinitions");
 
             formatDefPath = System.IO.Path.GetFullPath(formatDefPath);
 
@@ -569,7 +569,7 @@ namespace WpfHexaEditor.Tests
             var service = new FormatDetectionService();
             var formatDefPath = System.IO.Path.Combine(
                 System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
-                "..", "..", "..", "..", "WPFHexaEditor", "FormatDefinitions");
+                "..", "..", "..", "..", "WpfHexEditor.Core", "FormatDefinitions");
 
             formatDefPath = System.IO.Path.GetFullPath(formatDefPath);
 

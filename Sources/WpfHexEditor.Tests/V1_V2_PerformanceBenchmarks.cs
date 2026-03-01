@@ -6,7 +6,7 @@ using System.Linq;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Bytes;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     /// <summary>
     /// Performance benchmarks comparing V1 and V2 APIs

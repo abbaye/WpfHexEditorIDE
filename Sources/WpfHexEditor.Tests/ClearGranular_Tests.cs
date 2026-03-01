@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using WpfHexEditor.Core.Bytes;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     /// <summary>
     /// Unit tests for granular clear operations: ClearModifications, ClearInsertions, ClearDeletions

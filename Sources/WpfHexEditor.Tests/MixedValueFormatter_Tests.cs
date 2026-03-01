@@ -6,7 +6,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WpfHexEditor.Core.Formatters;
 
-namespace WPFHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     [TestClass]
     public class MixedValueFormatter_Tests

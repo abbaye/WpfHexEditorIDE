@@ -3,7 +3,7 @@ using System;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Bytes;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     /// <summary>
     /// Unit tests for Diagnostics APIs

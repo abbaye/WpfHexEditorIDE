@@ -5,7 +5,7 @@ using System.Linq;
 using WpfHexEditor.HexEditor;
 using WpfHexEditor.Core;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     /// <summary>
     /// Phase 1: Unit tests for Legacy API data retrieval methods

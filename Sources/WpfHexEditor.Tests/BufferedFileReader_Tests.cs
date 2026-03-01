@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using WpfHexEditor.Core;
 
-namespace WPFHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     [TestClass]
     public class BufferedFileReader_Tests

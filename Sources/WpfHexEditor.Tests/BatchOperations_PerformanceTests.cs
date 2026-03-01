@@ -4,7 +4,7 @@ using System.Diagnostics;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Bytes;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     /// <summary>
     /// Performance tests for batch operations

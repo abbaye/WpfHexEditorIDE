@@ -12,7 +12,7 @@ using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.Models.Comparison;
 using WpfHexEditor.Core.Services;
 
-namespace WpfHexaEditor.Tests.Integration
+namespace WpfHexEditor.Tests.Integration
 {
     [TestClass]
     public class FileDiff_Integration_Tests

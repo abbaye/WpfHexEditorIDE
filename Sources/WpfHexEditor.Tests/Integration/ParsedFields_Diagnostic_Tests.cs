@@ -7,9 +7,9 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WpfHexEditor.HexEditor;
+using HexEditorControl = WpfHexEditor.HexEditor.HexEditor;
 
-namespace WPFHexaEditor.Tests.Integration
+namespace WpfHexEditor.Tests.Integration
 {
     [TestClass]
     public class ParsedFields_Diagnostic_Tests
@@ -74,7 +74,7 @@ namespace WPFHexaEditor.Tests.Integration
         [TestMethod]
         public void DiagnosticTest_HexEditorLoadEmbeddedFormats()
         {
-            var hexEditor = new HexEditor();
+            var hexEditor = new HexEditorControl();
 
             Console.WriteLine("=== Testing HexEditor.LoadEmbeddedFormatDefinitions() ===");
 
@@ -111,7 +111,7 @@ namespace WPFHexaEditor.Tests.Integration
         [TestMethod]
         public void DiagnosticTest_FormatDetectionWithZipFile()
         {
-            var hexEditor = new HexEditor();
+            var hexEditor = new HexEditorControl();
 
             // Load formats
             var loadCount = hexEditor.LoadEmbeddedFormatDefinitions();

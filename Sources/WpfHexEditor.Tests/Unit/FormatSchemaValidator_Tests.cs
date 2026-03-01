@@ -10,7 +10,7 @@ using System.Linq;
 using WpfHexEditor.Editor.JsonEditor.Models;
 using WpfHexEditor.Editor.JsonEditor.Services;
 
-namespace WpfHexaEditor.Tests.Unit
+namespace WpfHexEditor.Tests.Unit
 {
     [TestClass]
     public class FormatSchemaValidator_Tests

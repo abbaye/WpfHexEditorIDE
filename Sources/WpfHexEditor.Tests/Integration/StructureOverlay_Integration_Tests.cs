@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using WpfHexEditor.Core.Services;
 
-namespace WpfHexaEditor.Tests.Integration
+namespace WpfHexEditor.Tests.Integration
 {
     [TestClass]
     public class StructureOverlay_Integration_Tests

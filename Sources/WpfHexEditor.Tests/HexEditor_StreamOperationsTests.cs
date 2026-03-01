@@ -3,9 +3,9 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Windows.Threading;
-using WpfHexEditor.HexEditor;
+using HexEditorControl = WpfHexEditor.HexEditor.HexEditor;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     /// <summary>
     /// Integration tests for HexEditor.OpenStream() and HexEditor.OpenMemory()
@@ -16,7 +16,7 @@ namespace WpfHexaEditor.Tests
     [TestClass]
     public class HexEditor_StreamOperationsTests
     {
-        private HexEditor _hexEditor;
+        private HexEditorControl _hexEditor;
         private Dispatcher _dispatcher;
 
         #region Test Setup/Cleanup
@@ -27,7 +27,7 @@ namespace WpfHexaEditor.Tests
             // Create HexEditor on STA thread with dispatcher
             var thread = new Thread(() =>
             {
-                _hexEditor = new HexEditor();
+                _hexEditor = new HexEditorControl();
                 _dispatcher = Dispatcher.CurrentDispatcher;
                 Dispatcher.Run();
             });

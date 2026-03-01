@@ -10,7 +10,7 @@ using WpfHexEditor.Core;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Services;
 
-namespace WpfHexaEditor.Tests
+namespace WpfHexEditor.Tests
 {
     [TestClass]
     public class CustomBackgroundService_Tests
