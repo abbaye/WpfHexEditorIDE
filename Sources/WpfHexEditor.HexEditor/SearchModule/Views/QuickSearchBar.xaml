@@ -23,6 +23,12 @@
         <SolidColorBrush x:Key="LocalButtonHoverBrush" Color="{DynamicResource BackgroundColor}" Opacity="0.6"/>
         <SolidColorBrush x:Key="LocalButtonPressedBrush" Color="{DynamicResource BackgroundColor}" Opacity="0.4"/>
 
+        <!-- Shadow effect for the search bar container -->
+        <DropShadowEffect x:Key="DropShadowEffect"
+                          ShadowDepth="2"
+                          BlurRadius="8"
+                          Opacity="0.3"/>
+
         <!-- VSCode-style minimalist design -->
         <Style x:Key="QuickSearchTextBoxStyle" TargetType="TextBox">
             <Setter Property="Background" Value="{DynamicResource LocalTextBoxBackgroundBrush}"/>
@@ -71,12 +77,6 @@
             BorderThickness="1"
             CornerRadius="3"
             Effect="{StaticResource DropShadowEffect}">
-        <Border.Resources>
-            <DropShadowEffect x:Key="DropShadowEffect"
-                              ShadowDepth="2"
-                              BlurRadius="8"
-                              Opacity="0.3"/>
-        </Border.Resources>
 
         <Grid>
             <Grid.ColumnDefinitions>
