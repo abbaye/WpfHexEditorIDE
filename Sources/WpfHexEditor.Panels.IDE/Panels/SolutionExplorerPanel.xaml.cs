@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -55,6 +56,11 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnItemDoubleClick(object sender, MouseButtonEventArgs e)
     {
+        // Cancel any pending slow-click rename — double-click means "activate"
+        _slowClickTimer?.Stop();
+        _slowClickTimer     = null;
+        _slowClickCandidate = null;
+
         if (SolutionTree.SelectedItem is FileNodeVm fn && fn.Project is not null)
             ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = fn.Source, Project = fn.Project });
     }
@@ -281,7 +287,9 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     // ── Additional public events ───────────────────────────────────────────────
 
-    /// <summary>Raised when the user requests a change to the project default TBL.</summary>
+    /// <summary>
+    /// Raised when the user requests a change to the project default TBL.
+    /// </summary>
     public event EventHandler<DefaultTblChangeEventArgs>? DefaultTblChangeRequested;
 
     /// <inheritdoc/>
@@ -481,8 +489,17 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private Point       _dragStartPoint;
     private FileNodeVm? _draggedNode;
 
+    // Slow-click rename (click on already-selected item → rename after delay)
+    private SolutionExplorerNodeVm?                      _slowClickCandidate;
+    private System.Windows.Threading.DispatcherTimer?    _slowClickTimer;
+
     private void OnTreeMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        // Cancel any pending slow-click rename (fresh click = reset)
+        _slowClickTimer?.Stop();
+        _slowClickTimer     = null;
+        _slowClickCandidate = null;
+
         _dragStartPoint = e.GetPosition(null);
         _draggedNode    = null;
 
@@ -491,7 +508,34 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             var tvi = FindAncestor<TreeViewItem>(src);
             if (tvi?.DataContext is FileNodeVm fn)
                 _draggedNode = fn;
+
+            // Record slow-click candidate only when the node is already selected
+            if      (tvi?.DataContext is FileNodeVm   fn2 && fn2.IsSelected) _slowClickCandidate = fn2;
+            else if (tvi?.DataContext is FolderNodeVm fv2 && fv2.IsSelected) _slowClickCandidate = fv2;
         }
+    }
+
+    private void OnTreeMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        var candidate = _slowClickCandidate;
+        _slowClickCandidate = null;
+        if (candidate is null || candidate.IsEditing) return;
+
+        // Confirm the release is on the same node
+        var tvi = FindAncestor<TreeViewItem>(e.OriginalSource as DependencyObject);
+        if (tvi?.DataContext != candidate) return;
+
+        // Start the rename timer — fires after 600 ms if no other click/drag occurs
+        _slowClickTimer = new System.Windows.Threading.DispatcherTimer
+            { Interval = TimeSpan.FromMilliseconds(600) };
+        _slowClickTimer.Tick += (_, _) =>
+        {
+            _slowClickTimer?.Stop();
+            _slowClickTimer = null;
+            if      (candidate is FileNodeVm   fn && fn.IsSelected && !fn.IsEditing) StartInlineEdit(fn);
+            else if (candidate is FolderNodeVm fv && fv.IsSelected && !fv.IsEditing) StartInlineFolderEdit(fv);
+        };
+        _slowClickTimer.Start();
     }
 
     private void OnTreeMouseMove(object sender, MouseEventArgs e)
@@ -502,6 +546,11 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         var diff = _dragStartPoint - pos;
         if (Math.Abs(diff.X) < SystemParameters.MinimumHorizontalDragDistance &&
             Math.Abs(diff.Y) < SystemParameters.MinimumVerticalDragDistance) return;
+
+        // Drag threshold exceeded — cancel any pending slow-click rename
+        _slowClickTimer?.Stop();
+        _slowClickTimer     = null;
+        _slowClickCandidate = null;
 
         // Don't start drag if we're currently editing inline
         if (_draggedNode.IsEditing) return;
@@ -637,7 +686,9 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     }
 }
 
-/// <summary>Event args for "Set/Clear default TBL" requests from the Solution Explorer.</summary>
+/// <summary>
+/// Event args for "Set/Clear default TBL" requests from the Solution Explorer.
+/// </summary>
 public sealed class DefaultTblChangeEventArgs : EventArgs
 {
     public IProject     Project { get; init; } = null!;

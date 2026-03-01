@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -79,7 +80,9 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
-    /// <summary>Refreshes the default-TBL bold state for items in the given project.</summary>
+    /// <summary>
+    /// Refreshes the default-TBL bold state for items in the given project.
+    /// </summary>
     public void RefreshDefaultTbl(IProject project)
     {
         if (Roots.Count == 0) return;

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -267,16 +268,22 @@ public partial class ErrorPanel : UserControl, IErrorPanel
 
     // ── Nested ViewModel ─────────────────────────────────────────────────────
 
-    /// <summary>Wraps a <see cref="DiagnosticEntry"/> with its originating source for tracking.</summary>
+    /// <summary>
+    /// Wraps a <see cref="DiagnosticEntry"/> with its originating source for tracking.
+    /// </summary>
     private sealed class DiagnosticEntryVm
     {
         public DiagnosticEntry     Entry  { get; }
         public IDiagnosticSource   Source { get; }
 
-        /// <summary>Formatted offset string for binding (e.g. "0x00001A3F").</summary>
+        /// <summary>
+        /// Formatted offset string for binding (e.g. "0x00001A3F").
+        /// </summary>
         public string OffsetDisplay  => Entry.Offset.HasValue  ? $"0x{Entry.Offset.Value:X8}" : string.Empty;
 
-        /// <summary>Formatted line:col string for binding (e.g. "12:5").</summary>
+        /// <summary>
+        /// Formatted line:col string for binding (e.g. "12:5").
+        /// </summary>
         public string LineColDisplay => (Entry.Line.HasValue && Entry.Column.HasValue)
                                       ? $"{Entry.Line}:{Entry.Column}"
                                       : Entry.Line.HasValue ? $"{Entry.Line}" : string.Empty;

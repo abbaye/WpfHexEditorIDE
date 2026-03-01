@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -12,14 +13,18 @@ namespace WpfHexEditor.Panels.IDE.ViewModels;
 
 // ── Base ─────────────────────────────────────────────────────────────────────
 
-/// <summary>Base class for all nodes displayed in the Solution Explorer tree.</summary>
+/// <summary>
+/// Base class for all nodes displayed in the Solution Explorer tree.
+/// </summary>
 public abstract class SolutionExplorerNodeVm : INotifyPropertyChanged
 {
     private bool _isExpanded = true;
     private bool _isSelected;
 
     public abstract string DisplayName { get; }
-    /// <summary>Segoe MDL2 / Fluent icon glyph shown before the name.</summary>
+    /// <summary>
+    /// Segoe MDL2 / Fluent icon glyph shown before the name.
+    /// </summary>
     public abstract string Icon { get; }
 
     public bool IsExpanded
@@ -33,6 +38,11 @@ public abstract class SolutionExplorerNodeVm : INotifyPropertyChanged
         get => _isSelected;
         set { _isSelected = value; OnPropertyChanged(); }
     }
+
+    /// <summary>
+    /// True while an inline rename TextBox is active on this node.
+    /// </summary>
+    public virtual bool IsEditing => false;
 
     public ObservableCollection<SolutionExplorerNodeVm> Children { get; } = [];
 
@@ -98,7 +108,9 @@ public sealed class FolderNodeVm : SolutionExplorerNodeVm
     public override string Icon => "\uE8B7"; // Fluent: Folder
 
     public IVirtualFolder Folder   { get; }
-    /// <summary>The project that owns this virtual folder.</summary>
+    /// <summary>
+    /// The project that owns this virtual folder.
+    /// </summary>
     public IProject?      Project  { get; init; }
 
     // ── Inline rename ───────────────────────────────────────────────────────
@@ -106,11 +118,9 @@ public sealed class FolderNodeVm : SolutionExplorerNodeVm
     private bool   _isEditing;
     private string _editingName = string.Empty;
 
-    public bool IsEditing
-    {
-        get => _isEditing;
-        private set { _isEditing = value; OnPropertyChanged(); }
-    }
+    public override bool IsEditing => _isEditing;
+
+    private void SetIsEditing(bool value) { _isEditing = value; OnPropertyChanged(nameof(IsEditing)); }
 
     public string EditingName
     {
@@ -118,9 +128,9 @@ public sealed class FolderNodeVm : SolutionExplorerNodeVm
         set { _editingName = value; OnPropertyChanged(); }
     }
 
-    public void   BeginEdit()  { EditingName = Folder.Name; IsEditing = true; }
-    public string CommitEdit() { var name = _editingName.Trim(); IsEditing = false; return name; }
-    public void   CancelEdit() => IsEditing = false;
+    public void   BeginEdit()  { EditingName = Folder.Name; SetIsEditing(true); }
+    public string CommitEdit() { var name = _editingName.Trim(); SetIsEditing(false); return name; }
+    public void   CancelEdit() => SetIsEditing(false);
 }
 
 // ── File node ─────────────────────────────────────────────────────────────────
@@ -159,7 +169,9 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
         _                                => "\uE8A5", // Binary → Page
     };
 
-    /// <summary>True if this TBL file is designated as the project-default TBL; displayed in bold.</summary>
+    /// <summary>
+    /// True if this TBL file is designated as the project-default TBL; displayed in bold.
+    /// </summary>
     public bool IsDefaultTbl
     {
         get => _isDefaultTbl;
@@ -173,37 +185,45 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
     private bool   _isEditing;
     private string _editingName = string.Empty;
 
-    /// <summary>True while the inline-rename TextBox is active.</summary>
-    public bool IsEditing
-    {
-        get => _isEditing;
-        private set { _isEditing = value; OnPropertyChanged(); }
-    }
+    /// <summary>
+    /// True while the inline-rename TextBox is active.
+    /// </summary>
+    public override bool IsEditing => _isEditing;
 
-    /// <summary>Bound to the inline-rename TextBox text.</summary>
+    private void SetIsEditing(bool value) { _isEditing = value; OnPropertyChanged(nameof(IsEditing)); }
+
+    /// <summary>
+    /// Bound to the inline-rename TextBox text.
+    /// </summary>
     public string EditingName
     {
         get => _editingName;
         set { _editingName = value; OnPropertyChanged(); }
     }
 
-    /// <summary>Enters inline-rename mode, pre-filling the box with the current name.</summary>
+    /// <summary>
+    /// Enters inline-rename mode, pre-filling the box with the current name.
+    /// </summary>
     public void BeginEdit()
     {
         EditingName = _item.Name;
-        IsEditing   = true;
+        SetIsEditing(true);
     }
 
-    /// <summary>Leaves rename mode and returns the trimmed new name.</summary>
+    /// <summary>
+    /// Leaves rename mode and returns the trimmed new name.
+    /// </summary>
     public string CommitEdit()
     {
         var name  = _editingName.Trim();
-        IsEditing = false;
+        SetIsEditing(false);
         return name;
     }
 
-    /// <summary>Cancels rename mode without applying any change.</summary>
-    public void CancelEdit() => IsEditing = false;
+    /// <summary>
+    /// Cancels rename mode without applying any change.
+    /// </summary>
+    public void CancelEdit() => SetIsEditing(false);
 
     // ────────────────────────────────────────────────────────────────────────
 
@@ -213,7 +233,9 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
 
 // ── Physical folder node (Show All Files mode) ───────────────────────────────
 
-/// <summary>Represents a physical directory when "Show All Files" is enabled.</summary>
+/// <summary>
+/// Represents a physical directory when "Show All Files" is enabled.
+/// </summary>
 public sealed class PhysicalFolderNodeVm : SolutionExplorerNodeVm
 {
     public PhysicalFolderNodeVm(string physicalPath)
