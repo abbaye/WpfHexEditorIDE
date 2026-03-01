@@ -8,7 +8,7 @@ namespace WpfHexEditor.Core.RomHacking
 {
     /// <summary>
     /// IPS (International Patching System) patcher implementation.
-    /// Supports reading and applying IPS patches to ROM files.
+    /// Supports reading, applying and creating IPS patches for ROM files.
     /// </summary>
     public class IPSPatcher
     {
@@ -32,7 +32,7 @@ namespace WpfHexEditor.Core.RomHacking
                 throw new FileNotFoundException($"IPS patch file not found: {ipsFilePath}");
 
             using var fs = new FileStream(ipsFilePath, FileMode.Open, FileAccess.Read);
-            return ReadIPSFromStream(fs);
+            return ReadIPSFromStream(fs, out _);
         }
 
         /// <summary>
@@ -44,11 +44,21 @@ namespace WpfHexEditor.Core.RomHacking
                 throw new ArgumentException("IPS data is empty", nameof(ipsData));
 
             using var ms = new MemoryStream(ipsData, writable: false);
-            return ReadIPSFromStream(ms);
+            return ReadIPSFromStream(ms, out _);
         }
 
-        private static List<IPSRecord> ReadIPSFromStream(Stream stream)
+        /// <summary>
+        /// Reads IPS records and the optional truncation size from a stream.
+        /// </summary>
+        /// <param name="stream">Stream positioned at the start of the IPS data.</param>
+        /// <param name="truncateTo">
+        /// Target file length encoded after the EOF marker, or -1 if absent.
+        /// When &gt; 0, callers should resize the output buffer to this length after
+        /// applying all records (IPS truncation extension).
+        /// </param>
+        private static List<IPSRecord> ReadIPSFromStream(Stream stream, out int truncateTo)
         {
+            truncateTo = -1;
             var records = new List<IPSRecord>();
             using var br = new BinaryReader(stream, System.Text.Encoding.ASCII, leaveOpen: true);
 
@@ -69,12 +79,9 @@ namespace WpfHexEditor.Core.RomHacking
                 var marker = System.Text.Encoding.ASCII.GetString(offsetBytes);
                 if (marker == IPS_FOOTER)
                 {
-                    // EOF found - check for optional truncation size
-                    if (stream.Position < stream.Length)
-                    {
-                        ReadUInt24BigEndian(br.ReadBytes(3));
-                        // Note: Truncation is handled separately in ApplyPatch
-                    }
+                    // EOF found — check for optional truncation size (IPS extension)
+                    if (stream.Position + 3 <= stream.Length)
+                        truncateTo = ReadUInt24BigEndian(br.ReadBytes(3));
                     break;
                 }
 
@@ -116,32 +123,27 @@ namespace WpfHexEditor.Core.RomHacking
         /// <summary>
         /// Applies an IPS patch to a source file and saves the result
         /// </summary>
-        /// <param name="sourceFilePath">Path to the original ROM file</param>
-        /// <param name="ipsFilePath">Path to the IPS patch file</param>
-        /// <param name="outputFilePath">Path where the patched file will be saved</param>
-        /// <returns>Result of the patching operation</returns>
         public static IPSPatchResult ApplyPatch(string sourceFilePath, string ipsFilePath, string outputFilePath)
         {
             var stopwatch = Stopwatch.StartNew();
 
             try
             {
-                // Validate inputs
                 if (!File.Exists(sourceFilePath))
                     return IPSPatchResult.CreateFailure($"Source file not found: {sourceFilePath}");
 
                 if (!File.Exists(ipsFilePath))
                     return IPSPatchResult.CreateFailure($"IPS patch file not found: {ipsFilePath}");
 
-                // Read the entire source file into memory
                 byte[] romData = File.ReadAllBytes(sourceFilePath);
                 long originalSize = romData.Length;
 
-                // Read IPS records
                 List<IPSRecord> records;
+                int truncateTo;
                 try
                 {
-                    records = ReadIPSFile(ipsFilePath);
+                    using var fs = new FileStream(ipsFilePath, FileMode.Open, FileAccess.Read);
+                    records = ReadIPSFromStream(fs, out truncateTo);
                 }
                 catch (Exception ex)
                 {
@@ -151,7 +153,6 @@ namespace WpfHexEditor.Core.RomHacking
                 if (records.Count == 0)
                     return IPSPatchResult.CreateFailure("IPS file contains no patch records");
 
-                // Apply each record
                 int appliedCount = 0;
                 foreach (var record in records)
                 {
@@ -166,7 +167,8 @@ namespace WpfHexEditor.Core.RomHacking
                     }
                 }
 
-                // Write patched file
+                ApplyTruncation(ref romData, truncateTo);
+
                 try
                 {
                     File.WriteAllBytes(outputFilePath, romData);
@@ -179,14 +181,8 @@ namespace WpfHexEditor.Core.RomHacking
                 stopwatch.Stop();
 
                 var result = IPSPatchResult.CreateSuccess(
-                    appliedCount,
-                    records.Count,
-                    originalSize,
-                    romData.Length,
-                    stopwatch.Elapsed
-                );
+                    appliedCount, records.Count, originalSize, romData.Length, stopwatch.Elapsed);
                 result.AppliedRecords = records;
-
                 return result;
             }
             catch (Exception ex)
@@ -199,9 +195,6 @@ namespace WpfHexEditor.Core.RomHacking
         /// <summary>
         /// Applies an IPS patch to a byte array (in-place modification)
         /// </summary>
-        /// <param name="sourceData">Source ROM data</param>
-        /// <param name="ipsFilePath">Path to the IPS patch file</param>
-        /// <returns>Result of the patching operation</returns>
         public static IPSPatchResult ApplyPatchToData(ref byte[] sourceData, string ipsFilePath)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -216,11 +209,12 @@ namespace WpfHexEditor.Core.RomHacking
 
                 long originalSize = sourceData.Length;
 
-                // Read IPS records
                 List<IPSRecord> records;
+                int truncateTo;
                 try
                 {
-                    records = ReadIPSFile(ipsFilePath);
+                    using var fs = new FileStream(ipsFilePath, FileMode.Open, FileAccess.Read);
+                    records = ReadIPSFromStream(fs, out truncateTo);
                 }
                 catch (Exception ex)
                 {
@@ -230,7 +224,6 @@ namespace WpfHexEditor.Core.RomHacking
                 if (records.Count == 0)
                     return IPSPatchResult.CreateFailure("IPS file contains no patch records");
 
-                // Apply each record
                 int appliedCount = 0;
                 foreach (var record in records)
                 {
@@ -245,17 +238,13 @@ namespace WpfHexEditor.Core.RomHacking
                     }
                 }
 
+                ApplyTruncation(ref sourceData, truncateTo);
+
                 stopwatch.Stop();
 
                 var result = IPSPatchResult.CreateSuccess(
-                    appliedCount,
-                    records.Count,
-                    originalSize,
-                    sourceData.Length,
-                    stopwatch.Elapsed
-                );
+                    appliedCount, records.Count, originalSize, sourceData.Length, stopwatch.Elapsed);
                 result.AppliedRecords = records;
-
                 return result;
             }
             catch (Exception ex)
@@ -282,7 +271,12 @@ namespace WpfHexEditor.Core.RomHacking
                 long originalSize = sourceData.Length;
 
                 List<IPSRecord> records;
-                try { records = ReadIPSFromBytes(ipsData); }
+                int truncateTo;
+                try
+                {
+                    using var ms = new MemoryStream(ipsData, writable: false);
+                    records = ReadIPSFromStream(ms, out truncateTo);
+                }
                 catch (Exception ex)
                 { return IPSPatchResult.CreateFailure($"Failed to parse IPS data: {ex.Message}"); }
 
@@ -296,6 +290,8 @@ namespace WpfHexEditor.Core.RomHacking
                     catch (Exception ex)
                     { return IPSPatchResult.CreateFailure($"Failed to apply record at 0x{record.Offset:X6}: {ex.Message}"); }
                 }
+
+                ApplyTruncation(ref sourceData, truncateTo);
 
                 stopwatch.Stop();
                 var res = IPSPatchResult.CreateSuccess(appliedCount, records.Count, originalSize, sourceData.Length, stopwatch.Elapsed);
@@ -314,29 +310,32 @@ namespace WpfHexEditor.Core.RomHacking
         /// </summary>
         private static void ApplyRecord(ref byte[] romData, IPSRecord record)
         {
-            // Expand ROM if needed
             int requiredSize = record.IsRLE
                 ? record.Offset + record.RLECount
                 : record.Offset + record.Size;
 
             if (requiredSize > romData.Length)
-            {
                 Array.Resize(ref romData, requiredSize);
-            }
 
             if (record.IsRLE)
             {
-                // RLE: repeat the same byte
                 for (int i = 0; i < record.RLECount; i++)
-                {
                     romData[record.Offset + i] = record.Data[0];
-                }
             }
             else
             {
-                // Normal: copy data bytes
                 Array.Copy(record.Data, 0, romData, record.Offset, record.Size);
             }
+        }
+
+        /// <summary>
+        /// Truncates <paramref name="data"/> to <paramref name="truncateTo"/> bytes when the
+        /// IPS truncation extension is present (truncateTo &gt; 0 and shorter than current length).
+        /// </summary>
+        private static void ApplyTruncation(ref byte[] data, int truncateTo)
+        {
+            if (truncateTo > 0 && truncateTo < data.Length)
+                Array.Resize(ref data, truncateTo);
         }
 
         /// <summary>
@@ -353,9 +352,11 @@ namespace WpfHexEditor.Core.RomHacking
         /// <summary>
         /// Creates an IPS patch by comparing an original byte array with a modified one.
         /// Returns the raw IPS patch bytes (PATCH header + records + EOF footer).
+        /// Insertions and modifications are encoded as overwrite records.
+        /// Deletions are encoded via the IPS truncation extension (3 bytes after EOF).
         /// </summary>
         /// <param name="original">Unmodified ROM data</param>
-        /// <param name="modified">Modified ROM data</param>
+        /// <param name="modified">Modified ROM data (may be shorter or longer than original)</param>
         /// <returns>IPS patch byte array ready to be written to disk</returns>
         public static byte[] CreatePatch(byte[] original, byte[] modified)
         {
@@ -365,7 +366,6 @@ namespace WpfHexEditor.Core.RomHacking
             using var ms  = new MemoryStream();
             using var bw  = new BinaryWriter(ms, System.Text.Encoding.ASCII, leaveOpen: true);
 
-            // Write IPS header "PATCH"
             bw.Write(System.Text.Encoding.ASCII.GetBytes(IPS_HEADER));
 
             int modLen  = modified.Length;
@@ -392,7 +392,7 @@ namespace WpfHexEditor.Core.RomHacking
                     }
                     else
                     {
-                        // Peek ahead: if the equal run is very short (< 6 bytes),
+                        // Peek ahead: if the equal run is short (< 6 bytes),
                         // absorb it into the current record to keep record count low.
                         int equalRun = 0;
                         int j = i;
@@ -408,13 +408,10 @@ namespace WpfHexEditor.Core.RomHacking
                     }
                 }
 
-                // The "EOF" literal (0x45, 0x4F, 0x46) cannot be used as a 3-byte offset
-                // in some IPS parsers — keep offsets safe (IPS only addresses 24-bit space anyway).
                 var data = diff.ToArray();
 
-                // Try RLE encoding: if all bytes are the same it's cheaper as an RLE record
-                bool allSame    = data.Length > 2 && data.All(b => b == data[0]);
-                bool useRle     = allSame && data.Length >= 3;
+                // RLE encoding when all bytes are the same
+                bool useRle = data.Length >= 3 && data.All(b => b == data[0]);
 
                 // Write 3-byte offset (big-endian)
                 bw.Write((byte)((offset >> 16) & 0xFF));
@@ -439,8 +436,17 @@ namespace WpfHexEditor.Core.RomHacking
                 }
             }
 
-            // Write IPS footer "EOF"
             bw.Write(System.Text.Encoding.ASCII.GetBytes(IPS_FOOTER));
+
+            // IPS truncation extension: encode the target file size after EOF when the
+            // modified file is shorter than the original (handles deletions).
+            // Compliant patchers truncate the output to this size after applying records.
+            if (modLen < origLen)
+            {
+                bw.Write((byte)((modLen >> 16) & 0xFF));
+                bw.Write((byte)((modLen >>  8) & 0xFF));
+                bw.Write((byte)( modLen        & 0xFF));
+            }
 
             bw.Flush();
             return ms.ToArray();
@@ -449,8 +455,6 @@ namespace WpfHexEditor.Core.RomHacking
         /// <summary>
         /// Validates if a file is a valid IPS patch
         /// </summary>
-        /// <param name="filePath">Path to the file to validate</param>
-        /// <returns>True if the file is a valid IPS patch</returns>
         public static bool IsValidIPSFile(string filePath)
         {
             try
@@ -458,15 +462,14 @@ namespace WpfHexEditor.Core.RomHacking
                 if (!File.Exists(filePath))
                     return false;
 
-                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                using (var br = new BinaryReader(fs))
-                {
-                    if (fs.Length < HEADER_SIZE + FOOTER_SIZE)
-                        return false;
+                using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                using var br = new BinaryReader(fs);
 
-                    var header = new string(br.ReadChars(HEADER_SIZE));
-                    return header == IPS_HEADER;
-                }
+                if (fs.Length < HEADER_SIZE + FOOTER_SIZE)
+                    return false;
+
+                var header = new string(br.ReadChars(HEADER_SIZE));
+                return header == IPS_HEADER;
             }
             catch
             {

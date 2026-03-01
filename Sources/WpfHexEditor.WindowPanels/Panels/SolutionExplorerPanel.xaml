@@ -323,16 +323,16 @@
 
             <TreeView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Add New Item..."      Click="OnAddNewItem"/>
-                    <MenuItem Header="Add Existing Item..." Click="OnAddExistingItem"/>
-                    <Separator/>
+                    <MenuItem x:Name="AddNewItemMenuItem"      Header="Add New Item..."      Click="OnAddNewItem"/>
+                    <MenuItem x:Name="AddExistingItemMenuItem" Header="Add Existing Item..." Click="OnAddExistingItem"/>
+                    <Separator x:Name="AddSeparator"/>
                     <MenuItem x:Name="SetDefaultTblMenuItem"   Header="Set as Default TBL"   Click="OnSetDefaultTbl"/>
                     <MenuItem x:Name="ClearDefaultTblMenuItem" Header="Clear Default TBL"    Click="OnClearDefaultTbl"/>
-                    <Separator/>
-                    <MenuItem Header="Rename"              Click="OnRename"/>
-                    <MenuItem Header="Remove from Project" Click="OnRemove"/>
-                    <Separator/>
-                    <MenuItem Header="Properties"          Click="OnProperties"/>
+                    <Separator x:Name="TblSeparator"/>
+                    <MenuItem x:Name="RenameMenuItem"          Header="Rename"              Click="OnRename"/>
+                    <MenuItem x:Name="RemoveMenuItem"          Header="Remove from Project" Click="OnRemove"/>
+                    <Separator x:Name="PropertiesSeparator"/>
+                    <MenuItem x:Name="PropertiesMenuItem"      Header="Properties"          Click="OnProperties"/>
                 </ContextMenu>
             </TreeView.ContextMenu>
         </TreeView>

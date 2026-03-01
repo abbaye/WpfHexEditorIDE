@@ -102,7 +102,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
     private static FolderNodeVm BuildFolderNode(IVirtualFolder folder, IProject project)
     {
-        var node = new FolderNodeVm(folder) { IsExpanded = false };
+        var node = new FolderNodeVm(folder) { IsExpanded = false, Project = project };
 
         foreach (var childFolder in folder.Children)
             node.Children.Add(BuildFolderNode(childFolder, project));

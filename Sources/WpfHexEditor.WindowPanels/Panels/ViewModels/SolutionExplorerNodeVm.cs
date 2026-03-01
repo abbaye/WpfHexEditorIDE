@@ -97,7 +97,9 @@ public sealed class FolderNodeVm : SolutionExplorerNodeVm
     public override string DisplayName => Folder.Name;
     public override string Icon => "\uE8B7"; // Fluent: Folder
 
-    public IVirtualFolder Folder { get; }
+    public IVirtualFolder Folder   { get; }
+    /// <summary>The project that owns this virtual folder.</summary>
+    public IProject?      Project  { get; init; }
 }
 
 // ── File node ─────────────────────────────────────────────────────────────────

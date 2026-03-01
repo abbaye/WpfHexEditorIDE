@@ -460,38 +460,186 @@
             </DockPanel>
         </Border>
 
-        <!-- Toolbar — VS2026 pod pattern
-             ┌──────────┐   ┌───────────────────────────────────────┐   ┌────────────────────┐
-             │  🗋  📁  │   │  🔍 Explorer  │ ≡  │ ⚙  │ ▪ Output  │   │  💾 Save  │ ⬇ Load │
-             └──────────┘   └───────────────────────────────────────┘   └────────────────────┘
-             Pod Fichier              Pod Panneaux                            Pod Layout
-             Chaque pod = 1 Border (DockToolBarPodStyle) avec raised effect.
-             Les boutons à l'intérieur = DockDarkToolBarButtonStyle (flat + hover). -->
+        <!-- Toolbar — VS2026 pod pattern (5 pods)
+             ┌────────────────────────┐ ┌───────────────────────────┐ ┌────────────────┐ ┌──────────────────────────────────┐ ┌──────────────┐
+             │  New▾  Open▾  │ 💾 💾All │ │  ↩ Undo  ↪ Redo  │ ✂ ⧉ 📋 │ │  🔍 Find  │ ↓ ↑ │ │  🔍 Explorer  │ ≡  │ ⚙  │ ▪ Output │ │  Layout▾     │
+             └────────────────────────┘ └───────────────────────────┘ └────────────────┘ └──────────────────────────────────┘ └──────────────┘
+                     Pod File                    Pod Edit                   Pod Find                     Pod View                  Pod Layout    -->
         <ToolBar Grid.Row="1" Style="{DynamicResource DockDarkToolBarStyle}">
 
-            <!-- ── Pod 1 : Fichier ─────────────────────────────────────────── -->
+            <!-- ── Pod 1 : File ───────────────────────────────────────────── -->
             <Border Style="{DynamicResource DockToolBarPodStyle}">
                 <StackPanel Orientation="Horizontal">
-                    <Button Click="OnNewFile" ToolTip="New file (Ctrl+N)"
-                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+
+                    <!-- New ▾ : New File / New Project / New Solution -->
+                    <Button Click="OnToolBarDropDownClick" ToolTip="New…"
+                            Style="{DynamicResource DockToolBarPodDropDownButtonStyle}">
+                        <Button.ContextMenu>
+                            <ContextMenu Style="{DynamicResource DockDarkContextMenuStyle}">
+                                <MenuItem Header="New _File…"     Click="OnNewFile"
+                                          InputGestureText="Ctrl+N"
+                                          Style="{DynamicResource DockDarkMenuItemStyle}">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="New _Project…"  Click="OnNewProject"
+                                          Style="{DynamicResource DockDarkMenuItemStyle}">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE8F9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="New _Solution…" Click="OnNewSolution"
+                                          InputGestureText="Ctrl+Shift+N"
+                                          Style="{DynamicResource DockDarkMenuItemStyle}">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE8A1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Button.ContextMenu>
                         <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
+
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
-                    <Button Click="OnOpenFile" ToolTip="Open file (Ctrl+O)"
-                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+
+                    <!-- Open ▾ : Open File / Open Solution or Project -->
+                    <Button Click="OnToolBarDropDownClick" ToolTip="Open…"
+                            Style="{DynamicResource DockToolBarPodDropDownButtonStyle}">
+                        <Button.ContextMenu>
+                            <ContextMenu Style="{DynamicResource DockDarkContextMenuStyle}">
+                                <MenuItem Header="Open _File…"              Click="OnOpenFile"
+                                          InputGestureText="Ctrl+O"
+                                          Style="{DynamicResource DockDarkMenuItemStyle}">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Open Solution/_Project…"  Click="OnOpenSolutionOrProject"
+                                          InputGestureText="Ctrl+Shift+O"
+                                          Style="{DynamicResource DockDarkMenuItemStyle}">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE8F9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Button.ContextMenu>
                         <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
+
+                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+
+                    <!-- Save — Command binding (auto-enable/disable) -->
+                    <Button Command="{Binding ActiveDocumentEditor.SaveCommand, ElementName=ThisWindow}"
+                            ToolTip="Save (Ctrl+S)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+
+                    <!-- Save All -->
+                    <Button Click="OnSaveAll" ToolTip="Save All (Ctrl+Shift+S)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+
                 </StackPanel>
             </Border>
 
             <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}"/>
 
-            <!-- ── Pod 2 : Panneaux ────────────────────────────────────────── -->
+            <!-- ── Pod 2 : Edit ───────────────────────────────────────────── -->
             <Border Style="{DynamicResource DockToolBarPodStyle}">
                 <StackPanel Orientation="Horizontal">
-                    <!-- Explorer : icon + texte (panneau principal, mérite un label) -->
+
+                    <!-- Undo / Redo — Command bindings -->
+                    <Button Command="{Binding ActiveDocumentEditor.UndoCommand, ElementName=ThisWindow}"
+                            ToolTip="Undo (Ctrl+Z)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE7A7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                    <Button Command="{Binding ActiveDocumentEditor.RedoCommand, ElementName=ThisWindow}"
+                            ToolTip="Redo (Ctrl+Y)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE7A6;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+
+                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+
+                    <!-- Cut / Copy / Paste — Command bindings -->
+                    <Button Command="{Binding ActiveDocumentEditor.CutCommand, ElementName=ThisWindow}"
+                            ToolTip="Cut (Ctrl+X)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE8C6;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                    <Button Command="{Binding ActiveDocumentEditor.CopyCommand, ElementName=ThisWindow}"
+                            ToolTip="Copy (Ctrl+C)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                    <Button Command="{Binding ActiveDocumentEditor.PasteCommand, ElementName=ThisWindow}"
+                            ToolTip="Paste (Ctrl+V)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE77F;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+
+                </StackPanel>
+            </Border>
+
+            <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}"/>
+
+            <!-- ── Pod 3 : Find ───────────────────────────────────────────── -->
+            <Border Style="{DynamicResource DockToolBarPodStyle}">
+                <StackPanel Orientation="Horizontal">
+
+                    <!-- Find — icon + label -->
+                    <Button Click="OnShowAdvancedSearch" ToolTip="Find / Replace… (Ctrl+F)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Find" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+
+                    <!-- Find Next (F3) -->
+                    <Button Click="OnFindNext" ToolTip="Find Next (F3)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                    <!-- Find Previous (Shift+F3) -->
+                    <Button Click="OnFindPrevious" ToolTip="Find Previous (Shift+F3)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+
+                </StackPanel>
+            </Border>
+
+            <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}"/>
+
+            <!-- ── Pod 4 : View (panneaux) ────────────────────────────────── -->
+            <Border Style="{DynamicResource DockToolBarPodStyle}">
+                <StackPanel Orientation="Horizontal">
+
+                    <!-- Solution Explorer : icon + label -->
                     <Button Click="OnShowSolutionExplorer" ToolTip="Solution Explorer (Ctrl+Alt+L)"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -500,51 +648,83 @@
                             <TextBlock Text="Explorer" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
+
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
-                    <!-- Autres panneaux : icon-only avec tooltip -->
+
+                    <!-- Parsed Fields -->
                     <Button Click="OnShowParsedFields" ToolTip="Parsed Fields"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xEBD2;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
+
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+
+                    <!-- Properties -->
                     <Button Click="OnShowProperties" ToolTip="Properties (F4)"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
+
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+
+                    <!-- Output -->
                     <Button Click="OnShowOutput" ToolTip="Output"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE9A8;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
+
                 </StackPanel>
             </Border>
 
             <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}"/>
 
-            <!-- ── Pod 3 : Layout ─────────────────────────────────────────── -->
+            <!-- ── Pod 5 : Layout ▾ ───────────────────────────────────────── -->
             <Border Style="{DynamicResource DockToolBarPodStyle}">
-                <StackPanel Orientation="Horizontal">
-                    <Button Click="OnSaveLayout" ToolTip="Save layout"
-                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                       VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <TextBlock Text="Save Layout" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
-                    <Button Click="OnLoadLayout" ToolTip="Load layout"
-                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                       VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <TextBlock Text="Load Layout" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
+                <Button Click="OnToolBarDropDownClick" ToolTip="Layout options…"
+                        Style="{DynamicResource DockToolBarPodDropDownButtonStyle}">
+                    <Button.ContextMenu>
+                        <ContextMenu Style="{DynamicResource DockDarkContextMenuStyle}">
+                            <MenuItem Header="_Save Layout…"   Click="OnSaveLayout"
+                                      Style="{DynamicResource DockDarkMenuItemStyle}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="_Load Layout…"   Click="OnLoadLayout"
+                                      Style="{DynamicResource DockDarkMenuItemStyle}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="_Reset Layout"   Click="OnResetLayout"
+                                      Style="{DynamicResource DockDarkMenuItemStyle}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}"/>
+                            <MenuItem Header="Toggle _Locked Layout" Click="OnToggleLock"
+                                      IsCheckable="True" x:Name="LockMenuItemToolbar"
+                                      Style="{DynamicResource DockDarkMenuItemStyle}">
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="&#xECA5;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock Text="Layout" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
             </Border>
 
         </ToolBar>

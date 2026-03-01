@@ -108,6 +108,39 @@ namespace WpfHexEditor.HexEditor
         }
 
         /// <summary>
+        /// Creates an IPS patch from the current unsaved modifications and writes it to
+        /// <paramref name="outputIpsPath"/>. No dialog is shown.
+        /// </summary>
+        /// <param name="outputIpsPath">Destination path for the .ips file.</param>
+        /// <returns>
+        /// <see langword="true"/> on success; <see langword="false"/> when there is nothing
+        /// to patch (no file loaded, no unsaved changes) or when an I/O error occurs.
+        /// </returns>
+        public bool CreateIPSPatchFromUnsavedChanges(string outputIpsPath)
+        {
+            if (!IsFileOrStreamLoaded || !IsModified)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(outputIpsPath))
+                throw new ArgumentException("Output path must not be empty.", nameof(outputIpsPath));
+
+            // Read the on-disk file as the authoritative original — equivalent to
+            // "save the modified file then compare with the original on disk".
+            // Stream-only buffers (no FileName) fall back to GetAllBytes(copyChange:false),
+            // but NOTE: in V2 that parameter is currently ignored (returns modified bytes),
+            // so stream-only edits won't produce a meaningful patch.
+            byte[] original = !string.IsNullOrEmpty(FileName) && File.Exists(FileName)
+                ? File.ReadAllBytes(FileName)
+                : GetAllBytes(copyChange: false);
+
+            var modified   = GetAllBytes(copyChange: true);
+            var patchBytes = IPSPatcher.CreatePatch(original, modified);
+
+            File.WriteAllBytes(outputIpsPath, patchBytes);
+            return true;
+        }
+
+        /// <summary>
         /// Exports IPS patch from comparing current file with another file
         /// </summary>
         public void CreateIPSPatch()
