@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     Apache 2.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
@@ -214,18 +214,17 @@
 
     <!-- V1 Compatible Context Menu -->
     <UserControl.ContextMenu>
-        <ContextMenu x:Name="ByteContextMenu" Visibility="Collapsed"
-                     Style="{DynamicResource DockDarkContextMenuStyle}">
+        <ContextMenu x:Name="ByteContextMenu" Visibility="Collapsed">
             <!-- Undo -->
-            <MenuItem x:Name="UndoMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource UndoString}" Click="UndoMenuItem_Click">
+            <MenuItem x:Name="UndoMenuItem" Header="{DynamicResource UndoString}" Click="UndoMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="↶" FontSize="16" Foreground="#0078D4"/>
                 </MenuItem.Icon>
             </MenuItem>
-            <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}"/>
+            <Separator/>
 
             <!-- Bookmarks -->
-            <MenuItem x:Name="BookmarksMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource BookmarksString}">
+            <MenuItem x:Name="BookmarksMenuItem" Header="{DynamicResource BookmarksString}">
                 <MenuItem x:Name="SetBookmarkMenuItem" Header="{DynamicResource SetBookMarkString}" Click="SetBookmarkMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="📌" FontSize="14"/>
@@ -237,17 +236,17 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}"/>
+            <Separator/>
 
             <!-- Copy (default mode) -->
-            <MenuItem x:Name="CopyMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource CopyString}" Click="CopyMenuItem_Click">
+            <MenuItem x:Name="CopyMenuItem" Header="{DynamicResource CopyString}" Click="CopyMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="📋" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Copy submenu -->
-            <MenuItem x:Name="CopyAsMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource CopySelectionAsString}">
+            <MenuItem x:Name="CopyAsMenuItem" Header="{DynamicResource CopySelectionAsString}">
                 <MenuItem x:Name="CopyHexaMenuItem" Header="{DynamicResource CopyAsHexadecimalString}" Click="CopyHexaMenuItem_Click">
                     <MenuItem.Icon>
                         <TextBlock Text="📋" FontSize="14"/>
@@ -280,70 +279,70 @@
                 </MenuItem>
             </MenuItem>
 
-            <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}"/>
+            <Separator/>
 
             <!-- Find All (Async with Progress) -->
-            <MenuItem x:Name="FindAllMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource FindAllString}" Click="FindAllMenuItemAsync_Click" ToolTip="Search for all occurrences with progress overlay">
+            <MenuItem x:Name="FindAllMenuItem" Header="{DynamicResource FindAllString}" Click="FindAllMenuItemAsync_Click" ToolTip="Search for all occurrences with progress overlay">
                 <MenuItem.Icon>
                     <TextBlock Text="🔍" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}"/>
+            <Separator/>
 
             <!-- Paste -->
-            <MenuItem x:Name="PasteMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource PasteString}" Click="PasteMenuItem_Click">
+            <MenuItem x:Name="PasteMenuItem" Header="{DynamicResource PasteString}" Click="PasteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="📄" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Paste without inserting (Overwrite mode) -->
-            <MenuItem x:Name="PasteOverwriteMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource PasteNotInsertString}" Click="PasteOverwriteMenuItem_Click">
+            <MenuItem x:Name="PasteOverwriteMenuItem" Header="{DynamicResource PasteNotInsertString}" Click="PasteOverwriteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="📝" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Delete -->
-            <MenuItem x:Name="DeleteMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource DeleteString}" Click="DeleteMenuItem_Click">
+            <MenuItem x:Name="DeleteMenuItem" Header="{DynamicResource DeleteString}" Click="DeleteMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="🗑️" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Fill -->
-            <MenuItem x:Name="FillByteMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource FillWithByteString}" Click="FillByteMenuItem_Click" ToolTip="{DynamicResource FillWithByteTooltipString}">
+            <MenuItem x:Name="FillByteMenuItem" Header="{DynamicResource FillWithByteString}" Click="FillByteMenuItem_Click" ToolTip="{DynamicResource FillWithByteTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="🎨" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Replace -->
-            <MenuItem x:Name="ReplaceByteMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource ReplaceByteMenuString}" Click="ReplaceByteMenuItem_Click" ToolTip="{DynamicResource ReplaceByteTooltipString}">
+            <MenuItem x:Name="ReplaceByteMenuItem" Header="{DynamicResource ReplaceByteMenuString}" Click="ReplaceByteMenuItem_Click" ToolTip="{DynamicResource ReplaceByteTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="🔄" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Reverse Selection -->
-            <MenuItem x:Name="ReverseSelectionMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource ReverseSelectionString}" Click="ReverseSelectionMenuItem_Click" ToolTip="{DynamicResource ReverseSelectionTooltipString}">
+            <MenuItem x:Name="ReverseSelectionMenuItem" Header="{DynamicResource ReverseSelectionString}" Click="ReverseSelectionMenuItem_Click" ToolTip="{DynamicResource ReverseSelectionTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="⇄" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <!-- Invert Selection -->
-            <MenuItem x:Name="InvertSelectionMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource InvertSelectionString}" Click="InvertSelectionMenuItem_Click" ToolTip="{DynamicResource InvertSelectionTooltipString}">
+            <MenuItem x:Name="InvertSelectionMenuItem" Header="{DynamicResource InvertSelectionString}" Click="InvertSelectionMenuItem_Click" ToolTip="{DynamicResource InvertSelectionTooltipString}">
                 <MenuItem.Icon>
                     <TextBlock Text="⊕" FontSize="14"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <Separator Style="{DynamicResource DockDarkMenuSeparatorStyle}"/>
+            <Separator/>
 
             <!-- Select All -->
-            <MenuItem x:Name="SelectAllMenuItem" Style="{DynamicResource DockDarkMenuItemStyle}" Header="{DynamicResource SelectAllString}" Click="SelectAllMenuItem_Click">
+            <MenuItem x:Name="SelectAllMenuItem" Header="{DynamicResource SelectAllString}" Click="SelectAllMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="▦" FontSize="14"/>
                 </MenuItem.Icon>

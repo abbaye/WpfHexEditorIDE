@@ -251,6 +251,9 @@ namespace WpfHexEditor.HexEditor
             remove => _docEditorStatusMessage -= value;
         }
 
+        // HexEditor does not produce verbose output messages — no-op stub required by IDocumentEditor
+        event EventHandler<string>? IDocumentEditor.OutputMessage { add { } remove { } }
+
         event EventHandler IDocumentEditor.SelectionChanged
         {
             add => _docEditorSelectionChanged += value;
