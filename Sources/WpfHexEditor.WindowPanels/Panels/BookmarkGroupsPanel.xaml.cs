@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Core.Models.Bookmarks;
 using WpfHexEditor.Core.Services;
+using WpfHexEditor.WindowPanels.Dialogs;
 
 namespace WpfHexEditor.WindowPanels.Panels
 {
@@ -158,11 +159,10 @@ namespace WpfHexEditor.WindowPanels.Panels
 
         private void AddGroupButton_Click(object sender, RoutedEventArgs e)
         {
-            // Create dialog for new group (simplified for now)
-            var dialog = new GroupEditDialog();
+            var dialog = new GroupEditDialog { Owner = Window.GetWindow(this) };
             if (dialog.ShowDialog() == true)
             {
-                var newGroup = new BookmarkGroup(dialog.GroupName, dialog.GroupColor)
+                var newGroup = new BookmarkGroup(dialog.GroupName, System.Windows.Media.Colors.Blue)
                 {
                     Description = dialog.GroupDescription,
                     SortOrder = _groups.Count
@@ -182,19 +182,16 @@ namespace WpfHexEditor.WindowPanels.Panels
             if (selectedGroup == null)
                 return;
 
-            // Create dialog for editing (simplified for now)
-            var dialog = new GroupEditDialog
+            var dialog = new GroupEditDialog(selectedGroup.Name, selectedGroup.Description)
             {
-                GroupName = selectedGroup.Name,
-                GroupDescription = selectedGroup.Description,
-                GroupColor = selectedGroup.Color
+                Owner = Window.GetWindow(this)
             };
 
             if (dialog.ShowDialog() == true)
             {
                 selectedGroup.Name = dialog.GroupName;
                 selectedGroup.Description = dialog.GroupDescription;
-                selectedGroup.Color = dialog.GroupColor;
+                // Color is preserved; a dedicated color picker can be added in a future iteration.
 
                 // Update in service
                 _bookmarkService?.UpdateGroupColor(selectedGroup.Name, selectedGroup.Color);
@@ -245,101 +242,4 @@ namespace WpfHexEditor.WindowPanels.Panels
         #endregion
     }
 
-    #region Group Edit Dialog (Temporary Simple Implementation)
-
-    /// <summary>
-    /// Simple dialog for editing bookmark group properties
-    /// TODO: Create proper XAML-based dialog in Views/Dialogs/
-    /// </summary>
-    internal class GroupEditDialog : Window
-    {
-        private TextBox _nameTextBox;
-        private TextBox _descriptionTextBox;
-        private ComboBox _colorComboBox;
-
-        public string GroupName { get; set; }
-        public string GroupDescription { get; set; }
-        public System.Windows.Media.Color GroupColor { get; set; } = System.Windows.Media.Colors.Blue;
-
-        public GroupEditDialog()
-        {
-            Title = "Edit Bookmark Group";
-            Width = 400;
-            Height = 250;
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            ResizeMode = ResizeMode.NoResize;
-
-            var grid = new Grid { Margin = new Thickness(10) };
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            // Name
-            var nameLabel = new TextBlock { Text = "Name:", Margin = new Thickness(0, 0, 0, 5) };
-            Grid.SetRow(nameLabel, 0);
-            grid.Children.Add(nameLabel);
-
-            _nameTextBox = new TextBox { Margin = new Thickness(0, 0, 0, 10), Text = GroupName };
-            Grid.SetRow(_nameTextBox, 1);
-            grid.Children.Add(_nameTextBox);
-
-            // Description
-            var descLabel = new TextBlock { Text = "Description:", Margin = new Thickness(0, 0, 0, 5) };
-            Grid.SetRow(descLabel, 2);
-            grid.Children.Add(descLabel);
-
-            _descriptionTextBox = new TextBox { Margin = new Thickness(0, 0, 0, 10), Text = GroupDescription };
-            Grid.SetRow(_descriptionTextBox, 3);
-            grid.Children.Add(_descriptionTextBox);
-
-            // Buttons
-            var buttonPanel = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Margin = new Thickness(0, 10, 0, 0)
-            };
-            Grid.SetRow(buttonPanel, 4);
-
-            var okButton = new Button
-            {
-                Content = "OK",
-                Width = 75,
-                Margin = new Thickness(0, 0, 10, 0),
-                IsDefault = true
-            };
-            okButton.Click += (s, e) =>
-            {
-                GroupName = _nameTextBox.Text.Trim();
-                GroupDescription = _descriptionTextBox.Text.Trim();
-
-                if (string.IsNullOrWhiteSpace(GroupName))
-                {
-                    MessageBox.Show("Group name cannot be empty.", "Validation Error",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                DialogResult = true;
-                Close();
-            };
-
-            var cancelButton = new Button
-            {
-                Content = "Cancel",
-                Width = 75,
-                IsCancel = true
-            };
-
-            buttonPanel.Children.Add(okButton);
-            buttonPanel.Children.Add(cancelButton);
-            grid.Children.Add(buttonPanel);
-
-            Content = grid;
-        }
-    }
-
-    #endregion
 }

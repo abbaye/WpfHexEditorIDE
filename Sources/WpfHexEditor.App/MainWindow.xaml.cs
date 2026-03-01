@@ -23,8 +23,11 @@ using WpfHexEditor.Docking.Wpf;
 using WpfHexEditor.App.Controls;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.TblEditor;
+using WpfHexEditor.Editor.TblEditor.Models;
+using WpfHexEditor.Editor.TblEditor.Services;
 using WpfHexEditor.Editor.JsonEditor;
 using WpfHexEditor.WindowPanels.Panels;
+using WpfHexEditor.Core.Services;
 using WpfHexEditor.ProjectSystem;
 using WpfHexEditor.ProjectSystem.Dialogs;
 using WpfHexEditor.ProjectSystem.Services;
@@ -226,6 +229,35 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnProjectItemAdded(object? sender, ProjectItemEventArgs e)
     {
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+
+        // When a FormatDefinition is added, inject it into all open HexEditors
+        // that belong to the same project so ParsedFields auto-detects the new format.
+        if (e.Item.ItemType == ProjectItemType.FormatDefinition)
+            InjectFormatDefinitionToOpenEditors(e.Project, e.Item.AbsolutePath);
+    }
+
+    /// <summary>
+    /// Loads <paramref name="whjsonPath"/> into every HexEditor tab that belongs to
+    /// <paramref name="project"/> and triggers a re-detection of the current file.
+    /// </summary>
+    private void InjectFormatDefinitionToOpenEditors(IProject project, string whjsonPath)
+    {
+        foreach (var (contentId, uiElement) in _contentCache)
+        {
+            if (uiElement is not HexEditorControl hex) continue;
+
+            // Check that this tab belongs to the same project
+            var dockItem = _engine.AllItems.FirstOrDefault(di => di.ContentId == contentId);
+            if (dockItem is null) continue;
+            if (!dockItem.Metadata.TryGetValue("ProjectId", out var projId) || projId != project.Id)
+                continue;
+
+            hex.LoadFormatDefinition(whjsonPath);
+
+            // Re-run auto-detection if the editor already has a file open
+            if (hex.FileName is { Length: > 0 })
+                hex.AutoDetectAndApplyFormat(hex.FileName);
+        }
     }
 
     // ─── Layout persistence ────────────────────────────────────────────
@@ -434,8 +466,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.ItemDeleteRequested       += OnSolutionExplorerItemDeleteRequested;
         panel.ItemMoveRequested         += OnSolutionExplorerItemMoveRequested;
         panel.DefaultTblChangeRequested += OnDefaultTblChangeRequested;
-        panel.AddNewItemRequested       += OnSEAddNewItem;
-        panel.AddExistingItemRequested  += OnSEAddExistingItem;
+        panel.AddNewItemRequested              += OnSEAddNewItem;
+        panel.AddExistingItemRequested         += OnSEAddExistingItem;
+        panel.ImportFormatDefinitionRequested  += OnSEImportFormatDefinition;
+        panel.ConvertTblRequested              += OnSEConvertTbl;
         // Sync current solution if already loaded
         panel.SetSolution(_solutionManager.CurrentSolution);
         return panel;
@@ -466,9 +500,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     private UIElement CreateHexEditorContent(
-        string? filePath,
-        string? displayName = null,
-        bool    isNewFile   = false)
+        string?   filePath,
+        string?   displayName = null,
+        bool      isNewFile   = false,
+        IProject? project     = null)
     {
         var hexEditor = new HexEditorControl();
         hexEditor.ShowStatusBar       = false;
@@ -506,6 +541,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (File.Exists(filePath))
         {
+            // Inject project-local FormatDefinitions BEFORE opening the file so that
+            // auto-detection can use project overrides instead of embedded ones.
+            if (project is not null)
+            {
+                foreach (var fmtItem in project.Items
+                    .Where(i => i.ItemType == ProjectItemType.FormatDefinition
+                             && File.Exists(i.AbsolutePath)))
+                    hexEditor.LoadFormatDefinition(fmtItem.AbsolutePath);
+            }
+
             hexEditor.OpenFile(filePath);
             OutputLogger.Info($"Opened: {filePath}");
             return hexEditor;
@@ -559,8 +604,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             }
         }
 
-        // Fallback: HexEditor for any file
-        return CreateHexEditorContent(filePath);
+        // Fallback: HexEditor for any file.
+        // Resolve the owning project so we can inject project-local FormatDefinitions
+        // BEFORE opening the file (format auto-detection reads them at open time).
+        var project = projectId is not null
+            ? _solutionManager.CurrentSolution?.Projects.FirstOrDefault(p => p.Id == projectId)
+            : null;
+
+        return CreateHexEditorContent(filePath, project: project);
     }
 
     private static UIElement CreateDocumentContent(DockItem item) =>
@@ -653,14 +704,127 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var dlg = new OpenFileDialog
         {
             Title  = "Add Existing Item",
-            Filter = "All Files (*.*)|*.*|Binary Files (*.bin;*.rom)|*.bin;*.rom" +
-                     "|TBL Files (*.tbl;*.tblx)|*.tbl;*.tblx" +
-                     "|IPS/BPS Patches (*.ips;*.bps)|*.ips;*.bps" +
+            Filter = "All Files (*.*)|*.*" +
+                     "|Binary Files (*.bin;*.rom)|*.bin;*.rom" +
+                     "|TBL Files (*.tbl;*.tblx;*.csv)|*.tbl;*.tblx;*.csv" +
+                     "|IPS/BPS/xDelta Patches (*.ips;*.bps;*.xdelta)|*.ips;*.bps;*.xdelta" +
                      "|JSON Files (*.json;*.whjson)|*.json;*.whjson"
         };
         if (dlg.ShowDialog() != true) return;
 
         _ = _solutionManager.AddItemAsync(e.Project, dlg.FileName, e.TargetFolderId);
+    }
+
+    private void OnSEImportFormatDefinition(object? sender, AddItemRequestedEventArgs e)
+    {
+        var catalog = EmbeddedFormatCatalog.Instance;
+        var dlg     = new ImportEmbeddedFormatDialog(catalog, e.Project) { Owner = this };
+        if (dlg.ShowDialog() != true || dlg.SelectedEntries.Count == 0) return;
+
+        var projDir = Path.GetDirectoryName(e.Project.ProjectFilePath)!;
+        foreach (var entry in dlg.SelectedEntries)
+        {
+            var destDir  = Path.Combine(projDir, entry.Category);
+            Directory.CreateDirectory(destDir);
+            var safeName = string.Concat(entry.Name.Split(Path.GetInvalidFileNameChars()))
+                                 .Replace(' ', '_');
+            var destPath = Path.Combine(destDir, safeName + ".whjson");
+            var json     = catalog.GetJson(entry.ResourceKey);
+            File.WriteAllText(destPath, json, System.Text.Encoding.UTF8);
+
+            _ = _solutionManager.AddItemAsync(
+                e.Project, destPath,
+                virtualFolderId: dlg.TargetFolderId ?? e.TargetFolderId);
+        }
+
+        OutputLogger.Info(
+            $"Imported {dlg.SelectedEntries.Count} format definition(s) into project '{e.Project.Name}'.");
+    }
+
+    private async void OnSEConvertTbl(object? sender, ProjectItemEventArgs e)
+    {
+        var dlg = new ConvertTblDialog(e.Item.AbsolutePath) { Owner = this };
+        if (dlg.ShowDialog() != true) return;
+
+        // 1. Load source .tbl (supports Thingy and Atlas formats automatically)
+        var importSvc = new TblImportService();
+        var importResult = importSvc.ImportFromFile(dlg.SourcePath);
+        if (!importResult.Success)
+        {
+            MessageBox.Show(
+                $"Failed to load TBL file:\n{string.Join('\n', importResult.Errors)}",
+                "Convert TBL", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        // 2. Build TblxMetadata from dialog properties
+        var metadata = new TblxMetadata
+        {
+            Name         = Path.GetFileNameWithoutExtension(dlg.SourcePath),
+            CreatedDate  = DateTime.UtcNow,
+            ModifiedDate = DateTime.UtcNow,
+        };
+        if (!string.IsNullOrWhiteSpace(dlg.GameTitle) ||
+            !string.IsNullOrWhiteSpace(dlg.Platform)  ||
+            !string.IsNullOrWhiteSpace(dlg.Region)    ||
+            dlg.ReleaseYear.HasValue)
+        {
+            metadata.Game = new GameInfo
+            {
+                Title       = dlg.GameTitle,
+                Platform    = dlg.Platform,
+                Region      = dlg.Region,
+                ReleaseYear = dlg.ReleaseYear,
+            };
+        }
+        if (!string.IsNullOrWhiteSpace(dlg.Author))
+            metadata.Author = dlg.Author;
+
+        // 3. Export to .tblx
+        try
+        {
+            var exportSvc = new TblExportService();
+            exportSvc.ExportToFile(importResult.Entries, dlg.TargetPath, tblxMetadata: metadata);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Failed to write TBLX file:\n{ex.Message}",
+                "Convert TBL", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        // 4. Optionally add to project
+        IProjectItem? newItem = null;
+        if (dlg.AddToProject && e.Project is not null)
+            newItem = await _solutionManager.AddItemAsync(e.Project, dlg.TargetPath);
+
+        OutputLogger.Info($"Converted '{Path.GetFileName(dlg.SourcePath)}' → '{Path.GetFileName(dlg.TargetPath)}'" +
+                          $" ({importResult.ImportedCount} entries, format: {importResult.DetectedFormat})");
+
+        // 5. Optionally open the converted file
+        if (dlg.OpenAfterConversion)
+        {
+            if (newItem is not null && e.Project is not null)
+                OpenProjectItem(newItem, e.Project);
+            else
+                OpenFileDirectly(dlg.TargetPath);
+        }
+    }
+
+    /// <summary>Opens a file in the appropriate editor without associating it with a project item.</summary>
+    private void OpenFileDirectly(string filePath)
+    {
+        _documentCounter++;
+        var item = new DockItem
+        {
+            Title     = Path.GetFileName(filePath),
+            ContentId = $"doc-file-{_documentCounter}",
+            Metadata  = { ["FilePath"] = filePath }
+        };
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+        UpdateStatusBar();
+        _solutionManager.PushRecentFile(filePath);
     }
 
     private void OnSolutionExplorerItemSelected(object? sender, ProjectItemEventArgs e)

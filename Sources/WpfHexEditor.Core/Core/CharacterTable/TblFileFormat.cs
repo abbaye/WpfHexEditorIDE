@@ -29,6 +29,13 @@ namespace WpfHexEditor.Core.CharacterTable
         /// <summary>
         /// JSON format
         /// </summary>
-        Json
+        Json,
+
+        /// <summary>
+        /// Atlas assembler table format (ROM hacking — SNES/GBA).
+        /// Same structure as Thingy TBL but hex keys may be prefixed with '$'.
+        /// Example: $1A=A  or  $FFFE=\n
+        /// </summary>
+        Atlas
     }
 }

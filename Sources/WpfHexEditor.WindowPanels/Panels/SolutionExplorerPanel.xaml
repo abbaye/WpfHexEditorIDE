@@ -179,10 +179,32 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:FolderNodeVm}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE8D5;" Foreground="#E8B25A"/>
-                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
-            </StackPanel>
+            <Grid>
+                <!-- Normal display (IsEditing = false) -->
+                <StackPanel x:Name="FolderDisplayPanel" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE8D5;" Foreground="#E8B25A"/>
+                    <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
+                </StackPanel>
+                <!-- Inline rename TextBox (IsEditing = true) -->
+                <TextBox x:Name="FolderInlineEditBox"
+                         Visibility="Collapsed"
+                         Text="{Binding EditingName, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalAlignment="Center"
+                         MinWidth="100"
+                         Background="{DynamicResource SE_SearchBoxBrush}"
+                         Foreground="{DynamicResource SE_ForegroundBrush}"
+                         BorderBrush="{DynamicResource SE_SelectionBorderBrush}"
+                         BorderThickness="1"
+                         Padding="2,1"
+                         KeyDown="OnFolderInlineEditKeyDown"
+                         LostKeyboardFocus="OnFolderInlineEditLostFocus"/>
+            </Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                    <Setter TargetName="FolderDisplayPanel"  Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="FolderInlineEditBox" Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:FileNodeVm}">
@@ -308,6 +330,7 @@
                   SelectedItemChanged="OnSelectedItemChanged"
                   MouseDoubleClick="OnItemDoubleClick"
                   PreviewKeyDown="OnTreePreviewKeyDown"
+                  ContextMenuOpening="OnContextMenuOpening"
                   AllowDrop="True"
                   PreviewMouseLeftButtonDown="OnTreeMouseLeftButtonDown"
                   MouseMove="OnTreeMouseMove"
@@ -323,11 +346,13 @@
 
             <TreeView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem x:Name="AddNewItemMenuItem"      Header="Add New Item..."      Click="OnAddNewItem"/>
-                    <MenuItem x:Name="AddExistingItemMenuItem" Header="Add Existing Item..." Click="OnAddExistingItem"/>
+                    <MenuItem x:Name="AddNewItemMenuItem"      Header="Add New Item..."              Click="OnAddNewItem"/>
+                    <MenuItem x:Name="AddExistingItemMenuItem" Header="Add Existing Item..."          Click="OnAddExistingItem"/>
+                    <MenuItem x:Name="ImportFormatMenuItem"    Header="Import Built-in Format..."     Click="OnImportFormatDefinition"/>
                     <Separator x:Name="AddSeparator"/>
                     <MenuItem x:Name="SetDefaultTblMenuItem"   Header="Set as Default TBL"   Click="OnSetDefaultTbl"/>
                     <MenuItem x:Name="ClearDefaultTblMenuItem" Header="Clear Default TBL"    Click="OnClearDefaultTbl"/>
+                    <MenuItem x:Name="ConvertToTblxMenuItem"   Header="Convert to TBLX..."   Click="OnConvertToTblx"/>
                     <Separator x:Name="TblSeparator"/>
                     <MenuItem x:Name="RenameMenuItem"          Header="Rename"              Click="OnRename"/>
                     <MenuItem x:Name="RemoveMenuItem"          Header="Remove from Project" Click="OnRemove"/>

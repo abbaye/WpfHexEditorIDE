@@ -207,11 +207,14 @@ public class TblImportService
 
     private TblImportResult ImportFromTbl(string filePath)
     {
-        var result = new TblImportResult { DetectedFormat = TblFileFormat.Tbl };
+        // Detect variant (Thingy vs Atlas) before loading; TblStream.Load() handles Atlas
+        // normalization internally, so we just need to capture the detected format.
+        var detectedFormat = TblStream.DetectFileFormat(filePath); // may return Atlas or Tbl
+        var result = new TblImportResult { DetectedFormat = detectedFormat };
         try
         {
+            // TblStream constructor calls FileName setter → Load() → Atlas-aware parsing
             var tbl = new TblStream(filePath);
-            tbl.Load();
             result.Entries = tbl.GetAllEntries().ToList();
             result.ImportedCount = result.Entries.Count;
             result.Success = true;

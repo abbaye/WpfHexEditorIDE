@@ -51,3 +51,18 @@ public sealed class ItemMoveRequestedEventArgs : EventArgs
     /// <summary>Id of the target virtual folder, or <see langword="null"/> for the project root.</summary>
     public string?      TargetFolderId { get; set; }
 }
+
+// ── Folder ───────────────────────────────────────────────────────────────────
+
+public sealed class FolderRenameEventArgs : EventArgs
+{
+    public IVirtualFolder Folder  { get; init; } = null!;
+    public IProject       Project { get; init; } = null!;
+    public string         NewName { get; init; } = string.Empty;
+}
+
+public sealed class FolderDeleteEventArgs : EventArgs
+{
+    public IVirtualFolder Folder  { get; init; } = null!;
+    public IProject       Project { get; init; } = null!;
+}

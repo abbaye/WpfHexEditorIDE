@@ -100,6 +100,27 @@ public sealed class FolderNodeVm : SolutionExplorerNodeVm
     public IVirtualFolder Folder   { get; }
     /// <summary>The project that owns this virtual folder.</summary>
     public IProject?      Project  { get; init; }
+
+    // ── Inline rename ───────────────────────────────────────────────────────
+
+    private bool   _isEditing;
+    private string _editingName = string.Empty;
+
+    public bool IsEditing
+    {
+        get => _isEditing;
+        private set { _isEditing = value; OnPropertyChanged(); }
+    }
+
+    public string EditingName
+    {
+        get => _editingName;
+        set { _editingName = value; OnPropertyChanged(); }
+    }
+
+    public void   BeginEdit()  { EditingName = Folder.Name; IsEditing = true; }
+    public string CommitEdit() { var name = _editingName.Trim(); IsEditing = false; return name; }
+    public void   CancelEdit() => IsEditing = false;
 }
 
 // ── File node ─────────────────────────────────────────────────────────────────

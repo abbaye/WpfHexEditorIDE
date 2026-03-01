@@ -57,4 +57,19 @@ public interface ISolutionExplorerPanel
 
     /// <summary>Fired when the user chooses "Add Existing Item…" from the context menu on a project or folder node.</summary>
     event EventHandler<AddItemRequestedEventArgs>? AddExistingItemRequested;
+
+    /// <summary>Fired when the user chooses "Import Built-in Format…" from the context menu on a project node.</summary>
+    event EventHandler<AddItemRequestedEventArgs>? ImportFormatDefinitionRequested;
+
+    /// <summary>
+    /// Fired when the user chooses "Convert to TBLX…" from the context menu on a .tbl file node.
+    /// The host is responsible for showing the conversion dialog and producing the .tblx output.
+    /// </summary>
+    event EventHandler<ProjectItemEventArgs>? ConvertTblRequested;
+
+    /// <summary>Fired when the user requests to rename a virtual folder.</summary>
+    event EventHandler<FolderRenameEventArgs>? FolderRenameRequested;
+
+    /// <summary>Fired when the user requests to delete a virtual folder.</summary>
+    event EventHandler<FolderDeleteEventArgs>? FolderDeleteRequested;
 }

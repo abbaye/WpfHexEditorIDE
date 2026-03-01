@@ -3,6 +3,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -48,8 +49,6 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
-        UpdateContextMenu(e.NewValue as SolutionExplorerNodeVm);
-
         if (e.NewValue is FileNodeVm fn && fn.Project is not null)
             ItemSelected?.Invoke(this, new ProjectItemEventArgs { Item = fn.Source, Project = fn.Project });
     }
@@ -87,33 +86,65 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     // ── Context menu ──────────────────────────────────────────────────────────
 
-    private void UpdateContextMenu(SolutionExplorerNodeVm? node)
+    /// <summary>
+    /// Adapts all context-menu item visibility to <paramref name="node"/>.
+    /// Returns <see langword="true"/> if at least one item is visible (the menu should open).
+    /// </summary>
+    private bool UpdateContextMenu(SolutionExplorerNodeVm? node)
     {
         _contextMenuTarget = node;
 
+        var  file      = node as FileNodeVm;
         bool isProject = node is ProjectNodeVm;
         bool isFolder  = node is FolderNodeVm;
-        bool isFile    = node is FileNodeVm;
-        bool isTbl     = node is FileNodeVm fn && fn.Source.ItemType == ProjectItemType.Tbl;
+        bool isFile    = file is not null;
+        bool isTbl     = file?.Source.ItemType == ProjectItemType.Tbl;
+        bool isDefault = file?.IsDefaultTbl == true;
+        // "Convert to TBLX" only for plain .tbl files; .tblx is already the advanced format
+        bool isThingyTbl = isTbl && string.Equals(
+            Path.GetExtension(file?.Source.Name ?? string.Empty), ".tbl", StringComparison.OrdinalIgnoreCase);
 
-        // "Add" items: project or folder only
-        var canAdd = isProject || isFolder;
-        AddNewItemMenuItem.Visibility      = canAdd ? Visibility.Visible  : Visibility.Collapsed;
-        AddExistingItemMenuItem.Visibility = canAdd ? Visibility.Visible  : Visibility.Collapsed;
-        AddSeparator.Visibility            = canAdd ? Visibility.Visible  : Visibility.Collapsed;
+        bool canAdd = isProject || isFolder;
 
-        // TBL items: TBL file only
-        SetDefaultTblMenuItem.Visibility   = isTbl  ? Visibility.Visible  : Visibility.Collapsed;
-        ClearDefaultTblMenuItem.Visibility = isTbl  ? Visibility.Visible  : Visibility.Collapsed;
-        TblSeparator.Visibility            = isTbl  ? Visibility.Visible  : Visibility.Collapsed;
+        // Add New / Existing — project or folder only; Import Format — project only
+        AddNewItemMenuItem     .Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
+        AddExistingItemMenuItem.Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
+        ImportFormatMenuItem   .Visibility = isProject  ? Visibility.Visible : Visibility.Collapsed;
+        AddSeparator           .Visibility = canAdd     ? Visibility.Visible : Visibility.Collapsed;
 
-        // Rename / Remove: file or folder only
-        RenameMenuItem.Visibility  = (isFile || isFolder) ? Visibility.Visible : Visibility.Collapsed;
-        RemoveMenuItem.Visibility  = (isFile || isFolder) ? Visibility.Visible : Visibility.Collapsed;
+        // TBL — Set and Clear are mutually exclusive; Convert only for plain .tbl (not .tblx)
+        SetDefaultTblMenuItem  .Visibility = (isTbl && !isDefault) ? Visibility.Visible : Visibility.Collapsed;
+        ClearDefaultTblMenuItem.Visibility = (isTbl &&  isDefault) ? Visibility.Visible : Visibility.Collapsed;
+        ConvertToTblxMenuItem  .Visibility = isThingyTbl           ? Visibility.Visible : Visibility.Collapsed;
+        TblSeparator           .Visibility = isTbl                 ? Visibility.Visible : Visibility.Collapsed;
 
-        // Properties: file or project
-        PropertiesMenuItem.Visibility  = (isFile || isProject) ? Visibility.Visible : Visibility.Collapsed;
-        PropertiesSeparator.Visibility = (isFile || isProject) ? Visibility.Visible : Visibility.Collapsed;
+        // Rename / Remove — file or folder
+        RenameMenuItem.Visibility = (isFile || isFolder) ? Visibility.Visible : Visibility.Collapsed;
+        RemoveMenuItem.Visibility = (isFile || isFolder) ? Visibility.Visible : Visibility.Collapsed;
+
+        // Properties — file or project
+        bool hasProp = isFile || isProject;
+        PropertiesSeparator.Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
+        PropertiesMenuItem .Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
+
+        return canAdd || isTbl || isFile || isFolder || isProject;
+    }
+
+    private void OnContextMenuOpening(object sender, ContextMenuEventArgs e)
+    {
+        // Determine the node under the cursor via hit-testing
+        var pt   = Mouse.GetPosition(SolutionTree);
+        var hit  = SolutionTree.InputHitTest(pt) as DependencyObject;
+        var tvi  = FindAncestor<TreeViewItem>(hit);
+        var node = tvi?.DataContext as SolutionExplorerNodeVm;
+
+        // VS-style: right-click selects the node
+        if (node is not null && !node.IsSelected)
+            node.IsSelected = true;
+
+        // Cancel the popup if no item would be visible (empty area, solution node)
+        if (!UpdateContextMenu(node))
+            e.Handled = true;
     }
 
     private void OnAddNewItem(object sender, RoutedEventArgs e)
@@ -136,6 +167,22 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             Project        = project,
             TargetFolderId = folderId,
         });
+    }
+
+    private void OnImportFormatDefinition(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is not ProjectNodeVm pv) return;
+        ImportFormatDefinitionRequested?.Invoke(this, new AddItemRequestedEventArgs
+        {
+            Project        = pv.Source,
+            TargetFolderId = null,
+        });
+    }
+
+    private void OnConvertToTblx(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is not FileNodeVm fn || fn.Project is null) return;
+        ConvertTblRequested?.Invoke(this, new ProjectItemEventArgs { Item = fn.Source, Project = fn.Project });
     }
 
     /// <summary>
@@ -174,15 +221,16 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnRename(object sender, RoutedEventArgs e)
     {
-        // Context menu rename → use inline editing
-        if (_contextMenuTarget is FileNodeVm fn)
-            StartInlineEdit(fn);
+        if (_contextMenuTarget is FileNodeVm fn)        StartInlineEdit(fn);
+        else if (_contextMenuTarget is FolderNodeVm fv) StartInlineFolderEdit(fv);
     }
 
     private void OnRemove(object sender, RoutedEventArgs e)
     {
         if (_contextMenuTarget is FileNodeVm fn && fn.Project is not null)
             ItemDeleteRequested?.Invoke(this, new ProjectItemEventArgs { Item = fn.Source, Project = fn.Project });
+        else if (_contextMenuTarget is FolderNodeVm fv && fv.Project is not null)
+            FolderDeleteRequested?.Invoke(this, new FolderDeleteEventArgs { Folder = fv.Folder, Project = fv.Project });
     }
 
     private void OnProperties(object sender, RoutedEventArgs e)
@@ -201,14 +249,26 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     /// <inheritdoc/>
     public event EventHandler<AddItemRequestedEventArgs>? AddExistingItemRequested;
 
+    /// <inheritdoc/>
+    public event EventHandler<AddItemRequestedEventArgs>? ImportFormatDefinitionRequested;
+
+    /// <inheritdoc/>
+    public event EventHandler<ProjectItemEventArgs>? ConvertTblRequested;
+
+    /// <inheritdoc/>
+    public event EventHandler<FolderRenameEventArgs>? FolderRenameRequested;
+
+    /// <inheritdoc/>
+    public event EventHandler<FolderDeleteEventArgs>? FolderDeleteRequested;
+
     // ── F2 Inline rename ──────────────────────────────────────────────────────
 
     private void OnTreePreviewKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.F2 && SolutionTree.SelectedItem is FileNodeVm fn)
+        if (e.Key == Key.F2)
         {
-            StartInlineEdit(fn);
-            e.Handled = true;
+            if      (SolutionTree.SelectedItem is FileNodeVm fn)   { StartInlineEdit(fn);       e.Handled = true; }
+            else if (SolutionTree.SelectedItem is FolderNodeVm fv) { StartInlineFolderEdit(fv); e.Handled = true; }
         }
     }
 
@@ -268,6 +328,70 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             {
                 Item    = fn.Source,
                 Project = fn.Project,
+                NewName = newName,
+            });
+        }
+
+        SolutionTree.Focus();
+    }
+
+    // ── F2 Inline rename — folder ─────────────────────────────────────────────
+
+    private void StartInlineFolderEdit(FolderNodeVm fv)
+    {
+        fv.BeginEdit();
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render, () =>
+        {
+            if (FindTreeViewItem(SolutionTree, fv) is TreeViewItem tvi)
+            {
+                if (FindChild<TextBox>(tvi, "FolderInlineEditBox") is TextBox tb)
+                {
+                    tb.Focus();
+                    tb.SelectAll();
+                }
+            }
+        });
+    }
+
+    private void OnFolderInlineEditKeyDown(object sender, KeyEventArgs e)
+    {
+        if (sender is not TextBox tb) return;
+        var fv = tb.DataContext as FolderNodeVm;
+
+        if (e.Key == Key.Return)
+        {
+            CommitInlineFolderEdit(fv);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Escape)
+        {
+            fv?.CancelEdit();
+            SolutionTree.Focus();
+            e.Handled = true;
+        }
+    }
+
+    private void OnFolderInlineEditLostFocus(object sender, RoutedEventArgs e)
+    {
+        if (sender is TextBox tb)
+            CommitInlineFolderEdit(tb.DataContext as FolderNodeVm);
+    }
+
+    private void CommitInlineFolderEdit(FolderNodeVm? fv)
+    {
+        if (fv is null || !fv.IsEditing) return;
+
+        var oldName = fv.Folder.Name;
+        var newName = fv.CommitEdit();
+
+        if (!string.IsNullOrWhiteSpace(newName)
+            && !string.Equals(newName, oldName, StringComparison.OrdinalIgnoreCase)
+            && fv.Project is not null)
+        {
+            FolderRenameRequested?.Invoke(this, new FolderRenameEventArgs
+            {
+                Folder  = fv.Folder,
+                Project = fv.Project,
                 NewName = newName,
             });
         }

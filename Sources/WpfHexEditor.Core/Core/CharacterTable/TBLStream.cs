@@ -501,7 +501,13 @@ namespace WpfHexEditor.Core.CharacterTable
             }
 
             if (tblFile.BaseStream.CanRead)
-                Load(tblFile.ReadToEnd());
+            {
+                var content = tblFile.ReadToEnd();
+                // Detect Atlas format from content and normalize before parsing
+                Load(DetectFormatFromContent(content) == TblFileFormat.Atlas
+                    ? NormalizeAtlasContent(content)
+                    : content);
+            }
 
             tblFile.Close();
         }
@@ -888,7 +894,8 @@ namespace WpfHexEditor.Core.CharacterTable
         #region Multi-Format Support
 
         /// <summary>
-        /// Detect file format from extension
+        /// Detect file format from extension. For .tbl files, performs content-based detection
+        /// to distinguish Thingy TBL from Atlas assembler TBL (prefix '$' on hex keys).
         /// </summary>
         public static TblFileFormat DetectFileFormat(string filePath)
         {
@@ -896,13 +903,66 @@ namespace WpfHexEditor.Core.CharacterTable
 
             return extension switch
             {
-                ".tbl" => TblFileFormat.Tbl,
                 ".tblx" => TblFileFormat.Tblx,
-                ".csv" => TblFileFormat.Csv,
+                ".csv"  => TblFileFormat.Csv,
                 ".json" => TblFileFormat.Json,
-                _ => TblFileFormat.Tbl // Default to standard TBL
+                ".tbl"  => TryDetectAtlasFromFile(filePath),
+                _       => TblFileFormat.Tbl
             };
         }
+
+        /// <summary>
+        /// Reads up to 30 lines of a .tbl file to determine if it uses Atlas format
+        /// (entries prefixed with '$', e.g. $1A=A).
+        /// </summary>
+        private static TblFileFormat TryDetectAtlasFromFile(string filePath)
+        {
+            try
+            {
+                using var reader = new StreamReader(filePath, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
+                int linesChecked = 0;
+                while (!reader.EndOfStream && linesChecked < 30)
+                {
+                    var line = reader.ReadLine()?.TrimStart() ?? string.Empty;
+                    linesChecked++;
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                    if (Regex.IsMatch(line, @"^\$[0-9A-Fa-f]+="))
+                        return TblFileFormat.Atlas;
+                }
+            }
+            catch { /* fall through */ }
+            return TblFileFormat.Tbl;
+        }
+
+        /// <summary>
+        /// Detect TBL format variant from raw string content (without reading a file).
+        /// Checks the first 30 non-trivial lines for the Atlas '$HEX=' pattern.
+        /// </summary>
+        public static TblFileFormat DetectFormatFromContent(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content)) return TblFileFormat.Tbl;
+
+            int checked_ = 0;
+            foreach (var raw in content.Split('\n'))
+            {
+                if (checked_ >= 30) break;
+                var line = raw.TrimStart();
+                if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#")) continue;
+                checked_++;
+                if (Regex.IsMatch(line, @"^\$[0-9A-Fa-f]+="))
+                    return TblFileFormat.Atlas;
+            }
+            return TblFileFormat.Tbl;
+        }
+
+        /// <summary>
+        /// Strip the leading '$' from Atlas-format hex keys to normalize content to
+        /// standard Thingy TBL syntax before parsing.
+        /// e.g. "$1A=A" becomes "1A=A", "$FFFE=\n" becomes "FFFE=\n"
+        /// </summary>
+        private static string NormalizeAtlasContent(string content) =>
+            Regex.Replace(content, @"(?m)^\s*\$(?=[0-9A-Fa-f]+=)", string.Empty,
+                RegexOptions.Multiline);
 
         #endregion
 
