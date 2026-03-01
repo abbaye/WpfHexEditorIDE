@@ -105,7 +105,12 @@ internal static class ProjectSerializer
 
     private static VirtualFolder MapFolder(VirtualFolderDto dto)
     {
-        var folder = new VirtualFolder { Id = dto.Id, Name = dto.Name };
+        var folder = new VirtualFolder
+        {
+            Id                   = dto.Id,
+            Name                 = dto.Name,
+            PhysicalRelativePath = dto.PhysicalRelativePath,
+        };
         foreach (var id in dto.ItemIds)
             folder.ItemIdsMutable.Add(id);
         foreach (var child in dto.Children)
@@ -115,7 +120,12 @@ internal static class ProjectSerializer
 
     private static VirtualFolderDto MapFolderToDto(VirtualFolder folder)
     {
-        var dto = new VirtualFolderDto { Id = folder.Id, Name = folder.Name };
+        var dto = new VirtualFolderDto
+        {
+            Id                   = folder.Id,
+            Name                 = folder.Name,
+            PhysicalRelativePath = folder.PhysicalRelativePath,
+        };
         dto.ItemIds.AddRange(folder.ItemIdsMutable);
         foreach (var child in folder.ChildrenMutable)
             dto.Children.Add(MapFolderToDto(child));

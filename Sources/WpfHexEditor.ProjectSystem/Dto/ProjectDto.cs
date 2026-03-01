@@ -89,4 +89,8 @@ internal sealed class VirtualFolderDto
 
     [JsonPropertyName("children")]
     public List<VirtualFolderDto> Children { get; set; } = [];
+
+    /// <summary>Relative path (from .whproj dir) of the physical directory, or null if purely virtual.</summary>
+    [JsonPropertyName("physicalPath")]
+    public string? PhysicalRelativePath { get; set; }
 }

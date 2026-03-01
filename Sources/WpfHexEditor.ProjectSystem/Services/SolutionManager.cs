@@ -3,6 +3,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Collections.ObjectModel;
 using System.IO;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.ProjectSystem.Models;
@@ -224,6 +225,103 @@ public sealed class SolutionManager : ISolutionManager
         return SaveProjectAsync(project, ct);
     }
 
+    // ── Folder CRUD ───────────────────────────────────────────────────────
+
+    public async Task<IVirtualFolder> CreateFolderAsync(IProject project, string name,
+        string? parentFolderId = null, bool createPhysical = false, CancellationToken ct = default)
+    {
+        if (project is not Project proj) return new VirtualFolder();
+
+        string? physRelPath = null;
+        if (createPhysical)
+        {
+            var parentRelPath = parentFolderId is not null
+                ? FindPhysicalRelPath(proj.RootFoldersMutable, parentFolderId)
+                : null;
+            physRelPath = parentRelPath is not null ? $"{parentRelPath}/{name}" : name;
+            var absPath = Path.Combine(Path.GetDirectoryName(proj.ProjectFilePath)!, physRelPath);
+            Directory.CreateDirectory(absPath);
+        }
+
+        var folder = new VirtualFolder { Name = name, PhysicalRelativePath = physRelPath };
+        if (parentFolderId is null)
+            proj.RootFoldersMutable.Add(folder);
+        else
+            AddFolderToParent(proj.RootFoldersMutable, parentFolderId, folder);
+
+        proj.IsModified = true;
+        await SaveProjectAsync(project, ct);
+        return folder;
+    }
+
+    public async Task RenameFolderAsync(IProject project, IVirtualFolder folder,
+        string newName, CancellationToken ct = default)
+    {
+        if (project is not Project proj) return;
+        if (FindFolder(proj.RootFoldersMutable, folder.Id) is not VirtualFolder vf) return;
+
+        if (vf.PhysicalRelativePath is not null)
+        {
+            var projDir    = Path.GetDirectoryName(proj.ProjectFilePath)!;
+            var oldAbsPath = Path.Combine(projDir, vf.PhysicalRelativePath.Replace('/', Path.DirectorySeparatorChar));
+            var lastSlash  = vf.PhysicalRelativePath.LastIndexOf('/');
+            var newPhysRel = lastSlash >= 0
+                ? $"{vf.PhysicalRelativePath[..lastSlash]}/{newName}"
+                : newName;
+            var newAbsPath = Path.Combine(projDir, newPhysRel.Replace('/', Path.DirectorySeparatorChar));
+            if (Directory.Exists(oldAbsPath))
+                Directory.Move(oldAbsPath, newAbsPath);
+            vf.PhysicalRelativePath = newPhysRel;
+        }
+
+        vf.Name = newName;
+        proj.IsModified = true;
+        await SaveProjectAsync(project, ct);
+    }
+
+    public async Task DeleteFolderAsync(IProject project, IVirtualFolder folder,
+        CancellationToken ct = default)
+    {
+        if (project is not Project proj) return;
+        if (FindFolder(proj.RootFoldersMutable, folder.Id) is not VirtualFolder vf) return;
+
+        // Detach all items from the folder tree (they remain in project root — unclassified)
+        foreach (var itemId in CollectItemIds(vf).ToList())
+        {
+            foreach (var root in proj.RootFoldersMutable)
+                RemoveFromFolder(root, itemId);
+        }
+
+        RemoveFolderFromTree(proj.RootFoldersMutable, folder.Id);
+        proj.IsModified = true;
+        await SaveProjectAsync(project, ct);
+    }
+
+    public async Task<IVirtualFolder> AddFolderFromDiskAsync(IProject project, string physicalPath,
+        string? parentVirtualFolderId = null, CancellationToken ct = default)
+    {
+        if (project is not Project proj) return new VirtualFolder();
+
+        var folder = AddFolderFromDiskInternal(proj, physicalPath, parentVirtualFolderId);
+        proj.IsModified = true;
+        await SaveProjectAsync(project, ct);
+        return folder;
+    }
+
+    // ── Modification tracking ─────────────────────────────────────────────
+
+    public async Task PersistItemModificationsAsync(IProject project, IProjectItem item,
+        byte[]? modifications, CancellationToken ct = default)
+    {
+        if (item is not ProjectItem pi) return;
+        pi.UnsavedModifications = modifications;
+        pi.IsModified           = modifications is { Length: > 0 };
+        await SaveProjectAsync(project, ct);
+    }
+
+    public byte[]? GetItemModifications(IProject project, IProjectItem item)
+        => item is ProjectItem pi ? pi.UnsavedModifications : null;
+
     // ── TBL helpers ──────────────────────────────────────────────────────
 
     public void SetDefaultTbl(IProject project, IProjectItem? tblItem)
@@ -276,6 +374,85 @@ public sealed class SolutionManager : ISolutionManager
         folder.ItemIdsMutable.Remove(itemId);
         foreach (var child in folder.ChildrenMutable)
             RemoveFromFolder(child, itemId);
+    }
+
+    private static bool AddFolderToParent(ObservableCollection<VirtualFolder> list, string parentId, VirtualFolder newFolder)
+    {
+        foreach (var folder in list)
+        {
+            if (folder.Id == parentId)
+            {
+                folder.ChildrenMutable.Add(newFolder);
+                return true;
+            }
+            if (AddFolderToParent(folder.ChildrenMutable, parentId, newFolder))
+                return true;
+        }
+        return false;
+    }
+
+    private static VirtualFolder? FindFolder(IEnumerable<VirtualFolder> roots, string folderId)
+    {
+        foreach (var folder in roots)
+        {
+            if (folder.Id == folderId) return folder;
+            var found = FindFolder(folder.ChildrenMutable, folderId);
+            if (found is not null) return found;
+        }
+        return null;
+    }
+
+    private static string? FindPhysicalRelPath(IEnumerable<VirtualFolder> roots, string folderId)
+        => FindFolder(roots, folderId)?.PhysicalRelativePath;
+
+    private static bool RemoveFolderFromTree(ObservableCollection<VirtualFolder> list, string folderId)
+    {
+        for (var i = 0; i < list.Count; i++)
+        {
+            if (list[i].Id == folderId) { list.RemoveAt(i); return true; }
+            if (RemoveFolderFromTree(list[i].ChildrenMutable, folderId)) return true;
+        }
+        return false;
+    }
+
+    private static IEnumerable<string> CollectItemIds(VirtualFolder folder)
+    {
+        foreach (var id in folder.ItemIdsMutable) yield return id;
+        foreach (var child in folder.ChildrenMutable)
+            foreach (var id in CollectItemIds(child))
+                yield return id;
+    }
+
+    private static VirtualFolder AddFolderFromDiskInternal(Project proj, string physicalPath, string? parentVirtualFolderId)
+    {
+        var projectDir  = Path.GetDirectoryName(proj.ProjectFilePath)!;
+        var folderName  = Path.GetFileName(physicalPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+        var physRelPath = Path.GetRelativePath(projectDir, physicalPath).Replace(Path.DirectorySeparatorChar, '/');
+
+        var folder = new VirtualFolder { Name = folderName, PhysicalRelativePath = physRelPath };
+        if (parentVirtualFolderId is null)
+            proj.RootFoldersMutable.Add(folder);
+        else
+            AddFolderToParent(proj.RootFoldersMutable, parentVirtualFolderId, folder);
+
+        foreach (var file in Directory.GetFiles(physicalPath))
+        {
+            var relPath  = Path.GetRelativePath(projectDir, file).Replace(Path.DirectorySeparatorChar, '/');
+            var item     = new ProjectItem
+            {
+                Name         = Path.GetFileName(file),
+                RelativePath = relPath,
+                AbsolutePath = file,
+                ItemType     = ResolveItemType(Path.GetExtension(file)),
+            };
+            proj.ItemsMutable.Add(item);
+            folder.ItemIdsMutable.Add(item.Id);
+        }
+
+        foreach (var subDir in Directory.GetDirectories(physicalPath))
+            AddFolderFromDiskInternal(proj, subDir, folder.Id);
+
+        return folder;
     }
 
     private static ProjectItemType ResolveItemType(string ext) => ext.ToLowerInvariant() switch

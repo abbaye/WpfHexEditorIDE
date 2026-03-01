@@ -7,8 +7,8 @@ namespace WpfHexEditor.Editor.Core;
 
 /// <summary>
 /// A virtual (logical) folder inside a project. Virtual folders exist only
-/// in the project file; they do not correspond to physical directories on disk.
-/// They are used to organise project items in the Solution Explorer tree.
+/// in the project file; they do not necessarily correspond to physical directories
+/// on disk. They are used to organise project items in the Solution Explorer tree.
 /// </summary>
 public interface IVirtualFolder
 {
@@ -20,4 +20,10 @@ public interface IVirtualFolder
 
     /// <summary>Nested sub-folders.</summary>
     IReadOnlyList<IVirtualFolder> Children { get; }
+
+    /// <summary>
+    /// Path relative to the .whproj directory of the physical directory backing this folder,
+    /// or <see langword="null"/> when the folder is purely logical (no physical counterpart).
+    /// </summary>
+    string? PhysicalRelativePath { get; }
 }
