@@ -19,8 +19,19 @@ namespace WpfHexEditor.HexEditor
     /// Bridges the existing HexEditor API to the unified editor contract
     /// used by the docking host and other multi-editor scenarios.
     /// </summary>
-    public partial class HexEditor
+    public partial class HexEditor : IOpenableDocument
     {
+        // ═══════════════════════════════════════════════════════════════════
+        // IOpenableDocument
+        // ═══════════════════════════════════════════════════════════════════
+
+        Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            Dispatcher.Invoke(() => OpenFile(filePath));
+            return Task.CompletedTask;
+        }
+
         // ═══════════════════════════════════════════════════════════════════
         // IDocumentEditor — New-file state (Phase 12)
         // ═══════════════════════════════════════════════════════════════════

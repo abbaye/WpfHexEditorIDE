@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interop;
 using Microsoft.Win32;
 using HexEditorControl = WpfHexEditor.HexEditor.HexEditor;
@@ -21,6 +22,8 @@ using WpfHexEditor.Docking.Core.Serialization;
 using WpfHexEditor.Docking.Wpf;
 using WpfHexEditor.App.Controls;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.TblEditor;
+using WpfHexEditor.Editor.JsonEditor;
 using WpfHexEditor.WindowPanels.Panels;
 using WpfHexEditor.ProjectSystem;
 using WpfHexEditor.ProjectSystem.Dialogs;
@@ -68,6 +71,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // SolutionManager
     private readonly ISolutionManager _solutionManager = SolutionManager.Instance;
+
+    // Editor registry for doc-proj-* dispatcher
+    private readonly IEditorRegistry _editorRegistry = new EditorRegistry();
 
     // ─── Bindable properties ────────────────────────────────────────────
 
@@ -162,6 +168,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _solutionManager.SolutionChanged += OnSolutionChanged;
         _solutionManager.ProjectChanged  += OnProjectChanged;
         _solutionManager.ItemAdded       += OnProjectItemAdded;
+
+        // Register editor factories (doc-proj-* dispatcher)
+        _editorRegistry.Register(new TblEditorFactory());
+        _editorRegistry.Register(new JsonEditorFactory());
 
         LoadSavedLayoutOrDefault();
         PopulateRecentMenus();
@@ -385,6 +395,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 item.Metadata.TryGetValue("FilePath",    out var fp)   ? fp   : null,
                 item.Metadata.TryGetValue("DisplayName", out var dn)   ? dn   : null,
                 item.Metadata.TryGetValue("IsNewFile",   out var isNew) && isNew == "true"),
+            _ when item.ContentId.StartsWith("doc-proj-") => CreateProjectItemContent(item),
             _ => CreateDocumentContent(item)
         };
 
@@ -482,6 +493,46 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         };
     }
 
+    private UIElement CreateProjectItemContent(DockItem item)
+    {
+        item.Metadata.TryGetValue("FilePath",   out var filePath);
+        item.Metadata.TryGetValue("ItemId",     out var itemId);
+        item.Metadata.TryGetValue("ProjectId",  out var projectId);
+        item.Metadata.TryGetValue("EditorConfigJson", out var configJson);
+
+        if (filePath is null) return CreateDocumentContent(item);
+
+        // Try registry-based editor (TBL, JSON, …)
+        var factory = _editorRegistry.FindFactory(filePath);
+        if (factory != null)
+        {
+            var editor = factory.Create();
+            if (editor is System.Windows.FrameworkElement fe)
+            {
+                if (editor is IOpenableDocument openable)
+                    _ = openable.OpenAsync(filePath);
+
+                // Restore EditorConfig if available
+                if (configJson != null && editor is IEditorPersistable p)
+                {
+                    try
+                    {
+                        var cfg = System.Text.Json.JsonSerializer.Deserialize<EditorConfigDto>(configJson);
+                        if (cfg != null) p.ApplyEditorConfig(cfg);
+                    }
+                    catch { /* ignore malformed config */ }
+                }
+
+                ActiveDocumentEditor       = editor;
+                ActiveStatusBarContributor = editor as IStatusBarContributor;
+                return fe;
+            }
+        }
+
+        // Fallback: HexEditor for any file
+        return CreateHexEditorContent(filePath);
+    }
+
     private static UIElement CreateDocumentContent(DockItem item) =>
         new TextBox
         {
@@ -510,12 +561,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var existingContentId = $"doc-proj-{item.Id}";
         if (_layout.FindItemByContentId(existingContentId) is { } existing)
         {
-            existing.Owner?.ActiveItem?.Equals(existing);
+            if (existing.Owner is { } owner)
+                owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
             return;
         }
 
-        // Create a new HexEditor tab for binary items; generic for others
+        // Create a new editor tab via registry (TBL, JSON) or HexEditor fallback
         _documentCounter++;
+
+        // Embed the EditorConfig in metadata so CreateProjectItemContent can restore it
+        var editorConfigJson = item.EditorConfig is not null
+            ? System.Text.Json.JsonSerializer.Serialize(item.EditorConfig)
+            : null;
+
         var dockItem = new DockItem
         {
             Title     = item.Name,
@@ -524,9 +583,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 ["FilePath"]  = item.AbsolutePath,
                 ["ProjectId"] = project.Id,
-                ["ItemId"]    = item.Id
+                ["ItemId"]    = item.Id,
+                ["ItemType"]  = item.ItemType.ToString()
             }
         };
+        if (editorConfigJson != null)
+            dockItem.Metadata["EditorConfigJson"] = editorConfigJson;
 
         _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
         DockHost.RebuildVisualTree();
@@ -655,9 +717,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _parsedFieldsPanel?.Clear();
         }
 
-        ActiveDocumentEditor = hex as IDocumentEditor;
-        ActiveHexEditor      = hex;
-        ActiveStatusBarContributor = hex as IStatusBarContributor;
+        ActiveDocumentEditor       = content as IDocumentEditor;
+        ActiveHexEditor            = hex;
+        ActiveStatusBarContributor = content as IStatusBarContributor;
 
         if (ActiveDocumentEditor == null)
             RefreshText.Text = "";
@@ -686,7 +748,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void OnEditorModifiedChanged(object? sender, EventArgs e) { }
+    private void OnEditorModifiedChanged(object? sender, EventArgs e)
+        => CommandManager.InvalidateRequerySuggested();
 
     private void OnEditorStatusMessage(object? sender, string message)
     {
@@ -783,9 +846,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             // Brief status feedback in the existing RefreshText slot
             if (e.WasCancelled)
-                RefreshText.Text = "Opération annulée";
+                RefreshText.Text = "Operation cancelled";
             else if (!e.Success && !string.IsNullOrEmpty(e.ErrorMessage))
-                RefreshText.Text = $"Erreur : {e.ErrorMessage}";
+                RefreshText.Text = $"Error: {e.ErrorMessage}";
         });
     }
 
@@ -827,6 +890,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     RefreshText.Text     = "";
                 }
             }
+
+            // Save EditorConfig for project-item tabs (M6)
+            if (item.ContentId.StartsWith("doc-proj-") &&
+                item.Metadata.TryGetValue("ItemId",    out var itemId) &&
+                item.Metadata.TryGetValue("ProjectId", out var projectId) &&
+                ctrl is IEditorPersistable persistable)
+            {
+                SaveEditorConfigForItem(itemId, projectId, persistable);
+            }
+
             _contentCache.Remove(item.ContentId);
         }
 
@@ -843,6 +916,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             OutputLogger.Warn($"Cannot close '{item.Title}': {ex.Message}");
         }
+    }
+
+    private void SaveEditorConfigForItem(string itemId, string projectId, IEditorPersistable persistable)
+    {
+        if (_solutionManager.CurrentSolution is null) return;
+        var project = _solutionManager.CurrentSolution.Projects.FirstOrDefault(p => p.Id == projectId);
+        var item    = project?.FindItem(itemId);
+        if (item is null) return;
+        item.EditorConfig = persistable.GetEditorConfig();
+        _ = _solutionManager.SaveProjectAsync(project!, default);
     }
 
     // ─── Menu: File — New ──────────────────────────────────────────────
@@ -1229,7 +1312,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void ShowOrCreatePanel(string title, string contentId, DockDirection direction)
     {
         var existing = _layout.FindItemByContentId(contentId);
-        if (existing is not null) return;
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner)
+                owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
 
         var item = new DockItem { Title = title, ContentId = contentId };
         _engine.Dock(item, _layout.MainDocumentHost, direction);
@@ -1373,6 +1462,31 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         MaxRestoreButton.Content = WindowState == WindowState.Maximized ? "\uE923" : "\uE739";
         RootGrid.Margin = new Thickness(0);
+    }
+
+    // ─── Logo click — native system menu ─────────────────────────────
+
+    [DllImport("user32.dll")] private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+    [DllImport("user32.dll")] private static extern int    TrackPopupMenuEx(IntPtr hmenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+    [DllImport("user32.dll")] private static extern bool   PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+    private void OnLogoMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton != MouseButton.Left) return;
+
+        const uint TPM_RETURNCMD = 0x0100;
+        const uint WM_SYSCOMMAND = 0x0112;
+
+        var hwnd = new WindowInteropHelper(this).Handle;
+        var menu = GetSystemMenu(hwnd, false);
+        var img  = (UIElement)sender;
+        var pt   = img.PointToScreen(new Point(0, img.RenderSize.Height));
+
+        int cmd = TrackPopupMenuEx(menu, TPM_RETURNCMD, (int)pt.X, (int)pt.Y, hwnd, IntPtr.Zero);
+        if (cmd != 0)
+            PostMessage(hwnd, WM_SYSCOMMAND, new IntPtr(cmd), IntPtr.Zero);
+
+        e.Handled = true;
     }
 
     // ─── WM_GETMINMAXINFO — maximize respects taskbar ────────────────

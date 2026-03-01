@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,7 +15,7 @@ namespace WpfHexEditor.Editor.TblEditor.Controls;
 /// No embedded toolbar — all editing commands are exposed via <see cref="IDocumentEditor"/>
 /// and TBL-specific properties/methods for the host to wire to its own menus.
 /// </summary>
-public partial class TblEditor : UserControl, IDocumentEditor, IPropertyProviderSource
+public partial class TblEditor : UserControl, IDocumentEditor, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor
 {
     private readonly TblEditorViewModel _vm;
     private string? _currentFilePath;
@@ -30,7 +31,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IPropertyProvider
         _vm.DirtyChanged      += (_, _) => { ModifiedChanged?.Invoke(this, EventArgs.Empty); NotifyTitle(); };
         _vm.CanUndoChanged    += (_, _) => CanUndoChanged?.Invoke(this, EventArgs.Empty);
         _vm.CanRedoChanged    += (_, _) => CanRedoChanged?.Invoke(this, EventArgs.Empty);
-        _vm.StatisticsChanged += (_, s) => StatusMessage?.Invoke(this, s.ToString());
+        _vm.StatisticsChanged += (_, s) => { StatusMessage?.Invoke(this, s.ToString()); RefreshStatusBarItems(); };
 
         // Populate type-filter combo
         TypeFilterCombo.Items.Add(new ComboBoxItem { Content = "(All)", Tag = null });
@@ -188,6 +189,9 @@ public partial class TblEditor : UserControl, IDocumentEditor, IPropertyProvider
     public void Load(TblStream tbl)   => _ = LoadAsync(tbl);
     public void Load(string filePath) => _ = LoadFromFileAsync(filePath);
 
+    Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
+        => LoadFromFileAsync(filePath, ct);
+
     public async Task LoadAsync(TblStream tbl, CancellationToken ct = default)
     {
         await _vm.LoadAsync(tbl, ct);
@@ -265,6 +269,42 @@ public partial class TblEditor : UserControl, IDocumentEditor, IPropertyProvider
     private TblEditorPropertyProvider? _propertyProvider;
     public IPropertyProvider? GetPropertyProvider()
         => _propertyProvider ??= new TblEditorPropertyProvider(this);
+
+    // ═══════════════════════════════════════════════════════════════════
+    // IStatusBarContributor
+    // ═══════════════════════════════════════════════════════════════════
+
+    private ObservableCollection<StatusBarItem>? _statusBarItems;
+    private StatusBarItem _sbTblFile    = null!;
+    private StatusBarItem _sbTblEntries = null!;
+
+    public ObservableCollection<StatusBarItem> StatusBarItems
+        => _statusBarItems ??= BuildStatusBarItems();
+
+    private ObservableCollection<StatusBarItem> BuildStatusBarItems()
+    {
+        _sbTblFile = new StatusBarItem
+        {
+            Label   = "File",
+            Tooltip = "Current TBL file"
+        };
+        _sbTblEntries = new StatusBarItem
+        {
+            Label   = "Entries",
+            Tooltip = "Number of TBL entries"
+        };
+        RefreshStatusBarItems();
+        return new ObservableCollection<StatusBarItem> { _sbTblFile, _sbTblEntries };
+    }
+
+    internal void RefreshStatusBarItems()
+    {
+        if (_statusBarItems == null) return;
+        _sbTblFile.Value    = Source?.FileName is { Length: > 0 } fn
+            ? Path.GetFileName(fn)
+            : "(unsaved)";
+        _sbTblEntries.Value = EntryCount.ToString();
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // XAML event handlers

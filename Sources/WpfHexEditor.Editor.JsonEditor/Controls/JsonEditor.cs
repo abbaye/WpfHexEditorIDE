@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -30,7 +31,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
     /// Phase 2: Syntax highlighting with JsonSyntaxHighlighter
     /// Future phases will add: IntelliSense, validation
     /// </summary>
-    public class JsonEditor : FrameworkElement, IDocumentEditor, IPropertyProviderSource
+    public class JsonEditor : FrameworkElement, IDocumentEditor, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor
     {
         #region Fields - Document Model
 
@@ -3466,6 +3467,25 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             StatusMessage?.Invoke(this, $"Saved: {Path.GetFileName(filePath)}");
         }
 
+        // ── Open file ─────────────────────────────────────────────────────
+
+        public void LoadFromFile(string filePath)
+        {
+            var text = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
+            LoadText(text);
+            _currentFilePath = filePath;
+            TitleChanged?.Invoke(this, BuildTitle());
+            StatusMessage?.Invoke(this, $"Opened: {Path.GetFileName(filePath)}");
+            RefreshJsonStatusBarItems();
+        }
+
+        System.Threading.Tasks.Task IOpenableDocument.OpenAsync(string filePath, System.Threading.CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            LoadFromFile(filePath);
+            return System.Threading.Tasks.Task.CompletedTask;
+        }
+
         // ── Public methods (IDocumentEditor) ─────────────────────────────
 
         void IDocumentEditor.Copy() => CopyToClipboard();
@@ -3520,6 +3540,31 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         private WpfHexEditor.Editor.JsonEditor.JsonEditorPropertyProvider? _propertyProvider;
         public IPropertyProvider? GetPropertyProvider()
             => _propertyProvider ??= new WpfHexEditor.Editor.JsonEditor.JsonEditorPropertyProvider(this);
+
+        // ═══════════════════════════════════════════════════════════════════
+        // IStatusBarContributor
+        // ═══════════════════════════════════════════════════════════════════
+
+        private ObservableCollection<StatusBarItem>? _jsonStatusBarItems;
+        private StatusBarItem _sbJsonFile = null!;
+
+        public ObservableCollection<StatusBarItem> StatusBarItems
+            => _jsonStatusBarItems ??= BuildJsonStatusBarItems();
+
+        private ObservableCollection<StatusBarItem> BuildJsonStatusBarItems()
+        {
+            _sbJsonFile = new StatusBarItem { Label = "File", Tooltip = "Current JSON file" };
+            RefreshJsonStatusBarItems();
+            return new ObservableCollection<StatusBarItem> { _sbJsonFile };
+        }
+
+        internal void RefreshJsonStatusBarItems()
+        {
+            if (_jsonStatusBarItems == null) return;
+            _sbJsonFile.Value = !string.IsNullOrEmpty(_currentFilePath)
+                ? Path.GetFileName(_currentFilePath)
+                : "(unsaved)";
+        }
     }
 
     // ── File-scoped RelayCommand ──────────────────────────────────────────────
