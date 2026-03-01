@@ -26,7 +26,8 @@ using WpfHexEditor.Editor.TblEditor;
 using WpfHexEditor.Editor.TblEditor.Models;
 using WpfHexEditor.Editor.TblEditor.Services;
 using WpfHexEditor.Editor.JsonEditor;
-using WpfHexEditor.WindowPanels.Panels;
+using WpfHexEditor.Panels.IDE;
+using WpfHexEditor.Panels.BinaryAnalysis;
 using WpfHexEditor.Core.Services;
 using WpfHexEditor.ProjectSystem;
 using WpfHexEditor.ProjectSystem.Dialogs;
@@ -85,9 +86,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private PropertiesPanel? _propertiesPanel;
 
     // Custom Parser Template panel (persistent singleton)
-    private WpfHexEditor.WindowPanels.Panels.CustomParserTemplatePanel? _customParserPanel;
+    private WpfHexEditor.Panels.BinaryAnalysis.CustomParserTemplatePanel? _customParserPanel;
 
     private const string CustomParserPanelContentId = "panel-custom-parser";
+
+    // Error Panel (persistent singleton)
+    private ErrorPanel? _errorPanel;
+    private const string ErrorPanelContentId = "panel-errors";
 
     // SolutionManager
     private readonly ISolutionManager _solutionManager = SolutionManager.Instance;
@@ -353,6 +358,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var output = new DockItem { Title = "Output", ContentId = "panel-output" };
         engine.Dock(output, layout.MainDocumentHost, DockDirection.Bottom);
 
+        // Error panel: tab alongside Output in the bottom group
+        var errorsItem = new DockItem { Title = "Liste d'erreurs", ContentId = ErrorPanelContentId };
+        engine.Dock(errorsItem, output.Owner!, DockDirection.Center);
+
         var parsedFields = new DockItem
         {
             Title      = "Parsed Fields",
@@ -441,6 +450,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ParsedFieldsPanelContentId => CreateParsedFieldsContent(),
             "panel-properties"         => CreatePropertiesContent(),
             CustomParserPanelContentId => CreateCustomParserContent(),
+            ErrorPanelContentId        => CreateErrorPanelContent(),
             _ when item.ContentId.StartsWith("doc-hex-") => CreateHexEditorContent(
                 item.Metadata.TryGetValue("FilePath",    out var fp)   ? fp   : null,
                 item.Metadata.TryGetValue("DisplayName", out var dn)   ? dn   : null,
@@ -485,7 +495,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (_customParserPanel is null)
         {
-            _customParserPanel = new WpfHexEditor.WindowPanels.Panels.CustomParserTemplatePanel();
+            _customParserPanel = new WpfHexEditor.Panels.BinaryAnalysis.CustomParserTemplatePanel();
             _customParserPanel.TemplateApplyRequested += OnTemplateApplyRequested;
         }
         return _customParserPanel;
@@ -497,6 +507,53 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _parsedFieldsPanel ??= new ParsedFieldsPanel();
         return _parsedFieldsPanel;
+    }
+
+    private UIElement CreateErrorPanelContent()
+    {
+        if (_errorPanel is null)
+        {
+            _errorPanel = new ErrorPanel();
+            _errorPanel.EntryNavigationRequested += OnErrorEntryNavigation;
+
+            // Register solution manager as a permanent diagnostic source if it implements IDiagnosticSource
+            if (_solutionManager is IDiagnosticSource sm)
+                _errorPanel.AddSource(sm);
+        }
+        return _errorPanel;
+    }
+
+    private void OnErrorEntryNavigation(object? sender, DiagnosticEntry e)
+    {
+        if (e.FilePath is null) return;
+
+        // Open or activate the document
+        var contentId = _contentCache
+            .FirstOrDefault(kv =>
+            {
+                if (kv.Value is HexEditorControl hex)
+                    return string.Equals(hex.FileName, e.FilePath, System.StringComparison.OrdinalIgnoreCase);
+                return false;
+            }).Key;
+
+        if (contentId != null)
+        {
+            var item = _layout.FindItemByContentId(contentId);
+            if (item != null) _engine.Activate(item);
+        }
+        else
+        {
+            OpenFileDirectly(e.FilePath);
+        }
+
+        // Scroll to offset after a brief layout pass
+        if (e.Offset.HasValue && _connectedHexEditor != null)
+        {
+            var offset = e.Offset.Value;
+            _connectedHexEditor.Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.Loaded,
+                () => _connectedHexEditor.SetPosition(offset));
+        }
     }
 
     private UIElement CreateHexEditorContent(
@@ -636,7 +693,35 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ? _solutionManager.CurrentSolution?.Projects.FirstOrDefault(p => p.Id == projectId)
             : null;
 
-        return CreateHexEditorContent(filePath, project: project);
+        var hexContent = CreateHexEditorContent(filePath, project: project);
+
+        if (hexContent is HexEditorControl hexEditorCtrl && hexEditorCtrl is IEditorPersistable hexPers)
+        {
+            // Restore editor state (cursor, bytes/line, encoding …)
+            if (configJson != null)
+            {
+                try
+                {
+                    var cfg = System.Text.Json.JsonSerializer.Deserialize<EditorConfigDto>(configJson);
+                    if (cfg != null) hexPers.ApplyEditorConfig(cfg);
+                }
+                catch { /* ignore malformed config */ }
+            }
+
+            // Restore unsaved in-memory modifications (IPS patch stored in .whproj)
+            if (itemId is not null && project is not null)
+            {
+                var projItem = project.FindItem(itemId);
+                if (projItem is not null)
+                {
+                    var mods = _solutionManager.GetItemModifications(project, projItem);
+                    if (mods is { Length: > 0 })
+                        hexPers.ApplyUnsavedModifications(mods);
+                }
+            }
+        }
+
+        return hexContent;
     }
 
     private static UIElement CreateDocumentContent(DockItem item) =>
@@ -956,12 +1041,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (hex != _connectedHexEditor)
         {
+            // Disconnect previous hex editor from panels
+            if (_connectedHexEditor is IDiagnosticSource prevDiag)
+                _errorPanel?.RemoveSource(prevDiag);
             _connectedHexEditor?.DisconnectParsedFieldsPanel();
+
             _connectedHexEditor = hex;
+
+            // Connect new hex editor to panels
             if (_connectedHexEditor != null)
+            {
                 _connectedHexEditor.ConnectParsedFieldsPanel(_parsedFieldsPanel);
+                if (_connectedHexEditor is IDiagnosticSource newDiag)
+                    _errorPanel?.AddSource(newDiag);
+            }
             else
+            {
                 _parsedFieldsPanel?.Clear();
+            }
         }
 
         ActiveDocumentEditor       = content as IDocumentEditor;
@@ -1153,23 +1250,27 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // ─── Tab / panel management ────────────────────────────────────────
 
-    private void OnTabCloseRequested(DockItem item)
+    private void OnTabCloseRequested(DockItem item) => CloseTab(item, promptIfDirty: true);
+
+    /// <summary>Core close logic. Set <paramref name="promptIfDirty"/> to false when
+    /// the dirty-check has already been handled by a batch dialog.</summary>
+    private void CloseTab(DockItem item, bool promptIfDirty)
     {
         if (_isLocked) return;
 
         // Dirty-close prompt — only for document tabs backed by IDocumentEditor
-        if (_contentCache.TryGetValue(item.ContentId, out var dirtyCtrl) &&
+        if (promptIfDirty &&
+            _contentCache.TryGetValue(item.ContentId, out var dirtyCtrl) &&
             dirtyCtrl is IDocumentEditor dirtyEditor && dirtyEditor.IsDirty)
         {
             var cleanTitle = item.Title.TrimEnd('*', ' ');
-            var answer = System.Windows.MessageBox.Show(
-                $"Save changes to '{cleanTitle}'?",
-                "Unsaved Changes",
-                System.Windows.MessageBoxButton.YesNoCancel,
-                System.Windows.MessageBoxImage.Question);
-
-            if (answer == System.Windows.MessageBoxResult.Cancel) return;
-            if (answer == System.Windows.MessageBoxResult.Yes &&
+            var dlg = new Dialogs.SaveChangesDialog
+            {
+                DirtyItems = [(item.ContentId, cleanTitle)],
+                Owner      = this
+            };
+            if (dlg.ShowDialog() != true || dlg.Choice == Dialogs.SaveChangesChoice.Cancel) return;
+            if (dlg.Choice == Dialogs.SaveChangesChoice.Save &&
                 dirtyEditor.SaveCommand?.CanExecute(null) == true)
             {
                 dirtyEditor.SaveCommand.Execute(null);
@@ -1195,13 +1296,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 hex.Close();   // Release the underlying FileStream immediately
             }
 
-            // Save EditorConfig for project-item tabs (M6)
+            // Save EditorConfig + unsaved modifications for project-item tabs
             if (item.ContentId.StartsWith("doc-proj-") &&
                 item.Metadata.TryGetValue("ItemId",    out var itemId) &&
                 item.Metadata.TryGetValue("ProjectId", out var projectId) &&
                 ctrl is IEditorPersistable persistable)
             {
-                SaveEditorConfigForItem(itemId, projectId, persistable);
+                SaveProjectItemState(itemId, projectId, persistable);
             }
 
             _propertyProviderCache.Remove(ctrl);  // M5: evict cached provider
@@ -1223,14 +1324,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void SaveEditorConfigForItem(string itemId, string projectId, IEditorPersistable persistable)
+    private void SaveProjectItemState(string itemId, string projectId, IEditorPersistable persistable)
     {
         if (_solutionManager.CurrentSolution is null) return;
         var project = _solutionManager.CurrentSolution.Projects.FirstOrDefault(p => p.Id == projectId);
         var item    = project?.FindItem(itemId);
         if (item is null) return;
+
+        // EditorConfig (cursor position, bytes/line, encoding …)
         item.EditorConfig = persistable.GetEditorConfig();
-        _ = _solutionManager.SaveProjectAsync(project!, default);
+
+        // Unsaved in-memory modifications (IPS patch) — captured only when not saved to disk
+        var mods = persistable.GetUnsavedModifications();
+        _ = _solutionManager.PersistItemModificationsAsync(project!, item, mods);
     }
 
     // ─── Menu: File — New ──────────────────────────────────────────────
@@ -1388,7 +1494,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             .Where(i => !i.ContentId.StartsWith("panel-"))
             .ToList();
 
-        // Collect dirty documents
+        // Collect dirty documents and prompt once with VS-style grouped dialog
         var dirty = docs
             .Where(i => _contentCache.TryGetValue(i.ContentId, out var c)
                         && c is IDocumentEditor { IsDirty: true })
@@ -1396,28 +1502,30 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (dirty.Count > 0)
         {
-            var names   = string.Join("\n  • ", dirty.Select(i => i.Title));
-            var result  = MessageBox.Show(
-                $"Save changes to the following files?\n\n  • {names}",
-                "Save Changes",
-                MessageBoxButton.YesNoCancel,
-                MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Cancel) return;
-
-            if (result == MessageBoxResult.Yes)
+            var dlg = new Dialogs.SaveChangesDialog
             {
+                DirtyItems = dirty.Select(i => (i.ContentId, i.Title.TrimEnd('*', ' '))).ToList(),
+                Owner      = this
+            };
+            if (dlg.ShowDialog() != true || dlg.Choice == Dialogs.SaveChangesChoice.Cancel) return;
+
+            if (dlg.Choice == Dialogs.SaveChangesChoice.Save)
+            {
+                // Save only the files the user kept checked
+                var toSave = new HashSet<string>(dlg.SelectedContentIds);
                 foreach (var d in dirty)
                 {
-                    if (_contentCache.TryGetValue(d.ContentId, out var c)
-                        && c is IDocumentEditor editor)
+                    if (toSave.Contains(d.ContentId) &&
+                        _contentCache.TryGetValue(d.ContentId, out var c) &&
+                        c is IDocumentEditor editor)
                         editor.SaveCommand?.Execute(null);
                 }
             }
         }
 
+        // Close all documents — dirty check already resolved above
         foreach (var doc in docs)
-            OnTabCloseRequested(doc);
+            CloseTab(doc, promptIfDirty: false);
     }
 
     // ─── Menu: File — Open ─────────────────────────────────────────────
@@ -1641,7 +1749,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         => ShowOrCreatePanel("Custom Parser Template", CustomParserPanelContentId, DockDirection.Right);
 
     private void OnTemplateApplyRequested(object? sender,
-        WpfHexEditor.WindowPanels.Panels.TemplateApplyEventArgs e)
+        WpfHexEditor.Panels.BinaryAnalysis.TemplateApplyEventArgs e)
     {
         if (ActiveHexEditor is not { IsFileOrStreamLoaded: true } hex)
         {
@@ -1735,6 +1843,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnShowOutput(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+
+    private void OnShowErrorPanel(object sender, RoutedEventArgs e)
+        => ShowOrCreatePanel("Liste d'erreurs", ErrorPanelContentId, DockDirection.Bottom);
 
     private void OnShowParsedFields(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Parsed Fields", ParsedFieldsPanelContentId, DockDirection.Right);
