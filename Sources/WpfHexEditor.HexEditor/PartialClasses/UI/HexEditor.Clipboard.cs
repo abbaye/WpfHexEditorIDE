@@ -60,9 +60,11 @@ namespace WpfHexEditor.HexEditor
                         CopyAsFormattedView();
                         break;
                     case CopyPasteMode.Auto:
-                        // Auto mode: default to hex for now
-                        // TODO: Could detect which panel (hex/ascii) was last clicked
-                        Copy();
+                        // Auto mode: copy as ASCII when the ASCII panel was last clicked, hex otherwise
+                        if (_isAsciiEditMode)
+                            CopyAsAscii();
+                        else
+                            Copy();
                         break;
                     default:
                         Copy(); // Default to hex

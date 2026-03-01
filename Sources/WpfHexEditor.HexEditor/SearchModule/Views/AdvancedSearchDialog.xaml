@@ -231,27 +231,21 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Column="0" Text="Find:" VerticalAlignment="Center" Margin="0,0,10,0" Width="60"/>
-                    <!-- Temporarily using TextBox instead of ComboBox to debug binding issues -->
-                    <TextBox Grid.Column="1"
-                             Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{StaticResource ModernTextBoxStyle}">
-                        <TextBox.InputBindings>
-                            <KeyBinding Key="Enter" Command="{Binding FindAllCommand}"/>
-                        </TextBox.InputBindings>
-                    </TextBox>
-
-                    <!-- TODO: Restore ComboBox with SearchHistory once binding is fixed
                     <ComboBox Grid.Column="1"
                               IsEditable="True"
-                              Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
+                              Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                               ItemsSource="{Binding SearchHistory}"
-                              DisplayMemberPath="DisplayText"
+                              TextSearch.TextPath="Pattern"
                               Style="{StaticResource ModernComboBoxStyle}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisplayText}" FontFamily="Consolas" FontSize="11"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
                         <ComboBox.InputBindings>
                             <KeyBinding Key="Enter" Command="{Binding FindAllCommand}"/>
                         </ComboBox.InputBindings>
                     </ComboBox>
-                    -->
                 </Grid>
 
                 <!-- Replace Input (Hidden in RELATIVE mode) -->
