@@ -120,7 +120,7 @@ public partial class AddExistingItemDialog : Window
                        + "|Binary / ROM Files (*.bin;*.rom;*.smc;*.nes;*.gba;*.iso)|*.bin;*.rom;*.smc;*.nes;*.gba;*.iso"
                        + "|TBL Files (*.tbl;*.tblx)|*.tbl;*.tblx"
                        + "|IPS / BPS Patches (*.ips;*.bps;*.ups;*.xdelta)|*.ips;*.bps;*.ups;*.xdelta"
-                       + "|JSON / Format Definitions (*.json;*.whjson)|*.json;*.whjson"
+                       + "|JSON / Format Definitions (*.json;*.whfmt)|*.json;*.whfmt"
                        + "|Images (*.png;*.bmp;*.jpg;*.gif;*.ico;*.tga;*.dds)|*.png;*.bmp;*.jpg;*.gif;*.ico;*.tga;*.dds"
                        + "|Audio (*.wav;*.mp3;*.ogg;*.flac)|*.wav;*.mp3;*.ogg;*.flac"
                        + "|Tile Graphics (*.chr;*.til;*.gfx)|*.chr;*.til;*.gfx"

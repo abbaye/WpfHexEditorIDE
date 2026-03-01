@@ -9,15 +9,15 @@ using System.Text;
 namespace WpfHexEditor.ProjectSystem.Templates;
 
 /// <summary>
-/// Template for a minimal WpfHexEditor format-definition file (.whjson).
+/// Template for a minimal WpfHexEditor format-definition file (.whfmt).
 /// The generated boilerplate is a valid (but empty) format definition that
 /// the user can edit in the JSON editor.
 /// </summary>
-public sealed class WhjsonFileTemplate : IFileTemplate
+public sealed class WhfmtFileTemplate : IFileTemplate
 {
     public string Name             => "Format Definition";
-    public string Description      => "Creates a new WpfHexEditor format-definition file (.whjson).";
-    public string DefaultExtension => ".whjson";
+    public string Description      => "Creates a new WpfHexEditor format-definition file (.whfmt).";
+    public string DefaultExtension => ".whfmt";
 
     public byte[] CreateContent()
     {

@@ -66,26 +66,74 @@
                      Background="{DynamicResource DockBackgroundBrush}"
                      SelectionChanged="OnCategoryChanged" />
 
-            <!-- Template list -->
-            <ListBox x:Name="TemplateList" Grid.Column="2"
-                     BorderBrush="{DynamicResource DockBorderBrush}"
-                     Background="{DynamicResource DockBackgroundBrush}"
-                     SelectionChanged="OnTemplateSelected">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Margin="4,3">
+            <!-- Right pane: search + template list + description -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="4" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
+
+                <!-- Search box -->
+                <TextBox x:Name="SearchBox" Grid.Row="0"
+                         Text=""
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         Background="{DynamicResource DockBackgroundBrush}"
+                         BorderBrush="{DynamicResource DockBorderBrush}"
+                         Padding="4,3"
+                         TextChanged="OnSearchChanged">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Style.Triggers>
+                                <Trigger Property="Text" Value="">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                                <VisualBrush.Visual>
+                                                    <TextBlock Text="Search templates…"
+                                                               Foreground="{DynamicResource DockTabTextBrush}"
+                                                               FontStyle="Italic"
+                                                               Margin="6,0,0,0" />
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <!-- Template list -->
+                <ListBox x:Name="TemplateList" Grid.Row="2"
+                         BorderBrush="{DynamicResource DockBorderBrush}"
+                         Background="{DynamicResource DockBackgroundBrush}"
+                         SelectionChanged="OnTemplateSelected">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
                             <TextBlock Text="{Binding DisplayName}"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                       FontWeight="SemiBold" />
-                            <TextBlock Text="{Binding Description}"
-                                       Foreground="{DynamicResource DockTabTextBrush}"
-                                       TextWrapping="Wrap"
-                                       FontSize="11"
-                                       Margin="0,2,0,0" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                                       FontWeight="SemiBold"
+                                       Margin="4,3" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Description panel -->
+                <Border Grid.Row="4"
+                        BorderBrush="{DynamicResource DockBorderBrush}"
+                        BorderThickness="1"
+                        Background="{DynamicResource DockBackgroundBrush}"
+                        Padding="6,4">
+                    <TextBlock x:Name="DescriptionText"
+                               Foreground="{DynamicResource DockTabTextBrush}"
+                               TextWrapping="Wrap"
+                               FontSize="11"
+                               VerticalAlignment="Top" />
+                </Border>
+            </Grid>
         </Grid>
 
         <!-- Name -->

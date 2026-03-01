@@ -213,7 +213,7 @@ internal sealed class FormatDefinitionTemplate : BaseProjectTemplate
 {
     public override string Id          => "format-definition";
     public override string DisplayName => "Format Definition";
-    public override string Description => "Author a new .whjson format definition alongside sample binaries.";
+    public override string Description => "Author a new .whfmt format definition alongside sample binaries.";
     public override string Category    => "Development";
 
     protected override ProjectScaffold BuildScaffold(string dir, string name) => new()
@@ -222,7 +222,7 @@ internal sealed class FormatDefinitionTemplate : BaseProjectTemplate
         VirtualFolders = ["samples"],
         Files          =
         [
-            Text($"{name}.whjson",
+            Text($"{name}.whfmt",
                 "{\n  \"formatName\": \"" + name + "\",\n  \"version\": 1,\n  \"fields\": []\n}\n",
                 open: true, type: ProjectItemType.FormatDefinition),
         ],

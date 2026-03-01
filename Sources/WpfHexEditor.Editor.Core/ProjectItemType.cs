@@ -19,7 +19,7 @@ public enum ProjectItemType
     Binary,
 
     /// <summary>
-    /// WpfHexEditor format-definition file (.whjson).
+    /// WpfHexEditor format-definition file (.whfmt).
     /// </summary>
     FormatDefinition,
 

@@ -21,7 +21,7 @@ public static class ProjectItemTypeHelper
 
         return extension.ToLowerInvariant().TrimStart('.') switch
         {
-            "whjson"                        => ProjectItemType.FormatDefinition,
+            "whfmt"                         => ProjectItemType.FormatDefinition,
             "json"                          => ProjectItemType.Json,
             "tbl" or "tblx"                 => ProjectItemType.Tbl,
             "ips" or "bps" or "ups" or "xdelta" => ProjectItemType.Patch,

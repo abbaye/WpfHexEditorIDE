@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.ProjectSystem.Templates;
@@ -63,27 +64,43 @@ public partial class NewProjectDialog : Window
     // ── Event handlers ───────────────────────────────────────────────────
 
     private void OnCategoryChanged(object sender, SelectionChangedEventArgs e)
-    {
-        var cat = CategoryList.SelectedItem as string;
-        if (cat is null) return;
+        => RefreshTemplateList();
 
-        TemplateList.Items.Clear();
-        var templates = cat == "All"
+    private void OnSearchChanged(object sender, TextChangedEventArgs e)
+        => RefreshTemplateList();
+
+    private void RefreshTemplateList()
+    {
+        var cat    = CategoryList.SelectedItem as string;
+        var search = SearchBox?.Text?.Trim() ?? "";
+
+        var templates = (cat is null || cat == "All")
             ? ProjectTemplateRegistry.Templates
             : ProjectTemplateRegistry.GetByCategory(cat);
 
+        if (search.Length > 0)
+            templates = templates
+                .Where(t => t.DisplayName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                         || t.Description.Contains(search, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+        TemplateList.Items.Clear();
         foreach (var t in templates)
             TemplateList.Items.Add(t);
 
         if (TemplateList.Items.Count > 0)
             TemplateList.SelectedIndex = 0;
         else
-            SelectedTemplate = null;
+        {
+            SelectedTemplate   = null;
+            DescriptionText.Text = "";
+        }
     }
 
     private void OnTemplateSelected(object sender, SelectionChangedEventArgs e)
     {
-        SelectedTemplate = TemplateList.SelectedItem as IProjectTemplate;
+        SelectedTemplate     = TemplateList.SelectedItem as IProjectTemplate;
+        DescriptionText.Text = SelectedTemplate?.Description ?? "";
         Refresh();
     }
 

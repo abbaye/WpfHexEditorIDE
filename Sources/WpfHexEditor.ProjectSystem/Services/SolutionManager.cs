@@ -256,6 +256,27 @@ public sealed class SolutionManager : ISolutionManager
         return Task.CompletedTask;
     }
 
+    public async Task RenameProjectAsync(IProject project, string newName, CancellationToken ct = default)
+    {
+        if (project is not Project proj || _current is not Solution sol) return;
+
+        var oldPath = proj.ProjectFilePath;
+        var dir     = Path.GetDirectoryName(oldPath) ?? "";
+        var ext     = Path.GetExtension(oldPath);
+        var newPath = Path.Combine(dir, newName + ext);
+
+        if (File.Exists(oldPath) &&
+            !string.Equals(oldPath, newPath, StringComparison.OrdinalIgnoreCase))
+            File.Move(oldPath, newPath);
+
+        proj.Name            = newName;
+        proj.ProjectFilePath = newPath;
+        sol.IsModified       = true;
+
+        RaiseProjectChanged(proj, ProjectChangeKind.Modified);
+        await SaveSolutionAsync(sol, ct);
+    }
+
     public Task RenameItemAsync(IProject project, IProjectItem item, string newName, CancellationToken ct = default)
     {
         if (project is not Project proj || item is not ProjectItem pi) return Task.CompletedTask;
@@ -535,7 +556,7 @@ public sealed class SolutionManager : ISolutionManager
 
     internal static ProjectItemType ResolveItemType(string ext) => ext.ToLowerInvariant() switch
     {
-        ".whjson"                                            => ProjectItemType.FormatDefinition,
+        ".whfmt"                                             => ProjectItemType.FormatDefinition,
         ".tbl" or ".tblx"                                    => ProjectItemType.Tbl,
         ".ips" or ".bps"                                     => ProjectItemType.Patch,
         ".json"                                              => ProjectItemType.Json,
@@ -556,7 +577,7 @@ public sealed class SolutionManager : ISolutionManager
 
     private static string DefaultExtension(ProjectItemType type) => type switch
     {
-        ProjectItemType.FormatDefinition => ".whjson",
+        ProjectItemType.FormatDefinition => ".whfmt",
         ProjectItemType.Tbl              => ".tbl",
         ProjectItemType.Patch            => ".ips",
         ProjectItemType.Json             => ".json",
