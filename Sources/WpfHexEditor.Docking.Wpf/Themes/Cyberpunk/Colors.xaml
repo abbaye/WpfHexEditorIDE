@@ -260,6 +260,7 @@
     <SolidColorBrush x:Key="TE_LineNumberBackground"   Color="#0F1124"/>
     <SolidColorBrush x:Key="TE_LineNumberForeground"   Color="#556699"/>
     <SolidColorBrush x:Key="TE_CurrentLineBrush"       Color="#141830"/>
+    <SolidColorBrush x:Key="TE_SelectionBackground"    Color="#3D0052"/>
     <SolidColorBrush x:Key="TE_Keyword"                Color="#FF2D78"/>
     <SolidColorBrush x:Key="TE_Comment"                Color="#4A9375"/>
     <SolidColorBrush x:Key="TE_String"                 Color="#FFD700"/>
