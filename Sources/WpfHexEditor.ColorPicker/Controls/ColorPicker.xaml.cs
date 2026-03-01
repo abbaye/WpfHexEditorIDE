@@ -4,13 +4,6 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
-/*
-    Apache 2.0 2026
-    Advanced Color Picker Control - Code Behind
-    Author: Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
-*/
-
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;

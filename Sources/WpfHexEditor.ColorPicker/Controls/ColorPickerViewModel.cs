@@ -4,13 +4,6 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
-/*
-    Apache 2.0 2026
-    ColorPickerViewModel - ViewModel for advanced ColorPicker component
-    Author: Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
-*/
-
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

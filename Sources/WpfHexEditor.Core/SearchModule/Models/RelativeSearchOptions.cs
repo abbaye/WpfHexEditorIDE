@@ -4,12 +4,6 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
-/*
-    Apache 2.0  2026
-    Author : Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
-*/
-
 using System;
 
 namespace WpfHexEditor.Core.Search.Models
