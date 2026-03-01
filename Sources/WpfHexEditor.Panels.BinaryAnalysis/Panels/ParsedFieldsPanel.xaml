@@ -238,10 +238,17 @@
 
                 <Button x:Name="ActionsMenuButton"
                         DockPanel.Dock="Left"
-                        Content="Actions &#x25BE;"
                         ToolTip="Field actions (edit, copy, navigate, bookmark...)"
                         Style="{DynamicResource PanelDropdownButtonStyle}"
                         Click="ActionsMenuButton_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                       VerticalAlignment="Center" Margin="0,0,5,0"
+                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                            <TextBlock Text="Actions &#x25BE;" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="ActionsContextMenu">
                             <MenuItem Header="_Edit" InputGestureText="Enter" Click="EditValue_Click" IsEnabled="{Binding HasSelection}"/>
@@ -261,10 +268,17 @@
 
                 <Button x:Name="ExportMenuButton"
                         DockPanel.Dock="Left"
-                        Content="Export &#x25BE;"
                         ToolTip="Export parsed fields to file or clipboard"
                         Style="{DynamicResource PanelDropdownButtonStyle}"
                         Click="ExportMenuButton_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                       VerticalAlignment="Center" Margin="0,0,5,0"
+                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                            <TextBlock Text="Export &#x25BE;" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="ExportContextMenu">
                             <MenuItem Header="As _Text" Click="ExportAsText_Click"/>
