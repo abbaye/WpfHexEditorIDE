@@ -68,6 +68,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Per-document format tracking: ContentId → last logged format name
     private readonly Dictionary<string, string> _loggedFormats = new();
 
+    // M5: PropertyProvider cache — avoids recreating the provider on every tab switch
+    private readonly Dictionary<UIElement, IPropertyProvider?> _propertyProviderCache = new();
+
     // ParsedFieldsPanel (persistent singleton)
     private ParsedFieldsPanel? _parsedFieldsPanel;
     private HexEditorControl?  _connectedHexEditor;
@@ -755,9 +758,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (hex?.FileName is { Length: > 0 } fn)
             _solutionExplorerPanel?.SyncWithFile(fn);
 
-        // Sync Properties panel provider
-        var providerSource = content as IPropertyProviderSource;
-        _propertiesPanel?.SetProvider(providerSource?.GetPropertyProvider());
+        // Sync Properties panel provider (M5: cached per editor instance)
+        if (content is IPropertyProviderSource providerSource)
+        {
+            if (!_propertyProviderCache.TryGetValue(content, out var cachedProvider))
+            {
+                cachedProvider = providerSource.GetPropertyProvider();
+                _propertyProviderCache[content] = cachedProvider;
+            }
+            _propertiesPanel?.SetProvider(cachedProvider);
+        }
+        else
+        {
+            _propertiesPanel?.SetProvider(null);
+        }
     }
 
     // ─── IDocumentEditor event handlers ────────────────────────────────
@@ -951,6 +965,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 SaveEditorConfigForItem(itemId, projectId, persistable);
             }
 
+            _propertyProviderCache.Remove(ctrl);  // M5: evict cached provider
             _contentCache.Remove(item.ContentId);
         }
 
@@ -1453,6 +1468,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var existing = _layout.FindItemByContentId(contentId);
         if (existing is not null)
         {
+            // M7: if the item is floating, activate its window and select the tab
+            var floatingWindow = Application.Current.Windows
+                .OfType<FloatingWindow>()
+                .FirstOrDefault(w =>
+                    w.Item?.ContentId == contentId ||
+                    (w.Node?.Items.Any(i => i.ContentId == contentId) == true));
+
+            if (floatingWindow is not null)
+            {
+                if (floatingWindow.Node is { } node)
+                {
+                    var tab = node.Items.FirstOrDefault(i => i.ContentId == contentId);
+                    if (tab is not null) node.ActiveItem = tab;
+                }
+                floatingWindow.Activate();
+                return;
+            }
+
+            // Docked: make active in its tab group
             if (existing.Owner is { } owner)
                 owner.ActiveItem = existing;
             DockHost.RebuildVisualTree();

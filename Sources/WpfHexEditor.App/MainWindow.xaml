@@ -612,7 +612,7 @@
                                VerticalAlignment="Center"/>
                     <Button x:Name="ProgressCancelButton"
                             Content="✕"
-                            ToolTip="Annuler l'opération"
+                            ToolTip="Cancel operation"
                             Click="OnProgressCancel"
                             Visibility="Collapsed"
                             Padding="6,1"
