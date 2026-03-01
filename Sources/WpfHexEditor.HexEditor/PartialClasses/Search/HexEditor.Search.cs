@@ -205,8 +205,8 @@ namespace WpfHexEditor.HexEditor
             {
                 if (matches == null) return;
 
-                // Clear existing highlights
-                ClearCustomBackgroundBlock();
+                // Clear existing search highlights only (preserve format detection blocks)
+                ClearCustomBackgroundBlockByTag("AdvancedSearchResult");
 
                 // Create highlight brush
                 var highlightBrush = new System.Windows.Media.SolidColorBrush(
@@ -227,7 +227,7 @@ namespace WpfHexEditor.HexEditor
             // Wire clear highlights event
             vm.HighlightClearRequested += (s, e) =>
             {
-                ClearCustomBackgroundBlock();
+                ClearCustomBackgroundBlockByTag("AdvancedSearchResult");
             };
 
             // Wire TBL load event: when user applies discovered encoding from Relative Search or loads TBL file
@@ -261,8 +261,8 @@ namespace WpfHexEditor.HexEditor
             // Cleanup when dialog closes
             dialog.Closed += (s, e) =>
             {
-                // Clear all highlights
-                ClearCustomBackgroundBlock();
+                // Clear only search highlights, preserve format detection blocks
+                ClearCustomBackgroundBlockByTag("AdvancedSearchResult");
                 // Dispose ViewModel (unsubscribe events, clear references)
                 vm.Dispose();
             };

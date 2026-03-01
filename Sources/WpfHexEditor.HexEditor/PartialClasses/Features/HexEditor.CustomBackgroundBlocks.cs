@@ -133,6 +133,18 @@ namespace WpfHexEditor.HexEditor
         }
 
         /// <summary>
+        /// Clear only the custom background blocks that match a specific tag (Description).
+        /// Use this when a feature must clean up only its own blocks without disturbing
+        /// blocks added by other features (e.g. format detection, file comparison).
+        /// </summary>
+        /// <param name="tag">The Description value used when the blocks were created</param>
+        public void ClearCustomBackgroundBlockByTag(string tag)
+        {
+            _customBackgroundService.RemoveBlocksByTag(tag);
+            // Event handling triggers viewport update automatically
+        }
+
+        /// <summary>
         /// Get custom background block at position
         /// </summary>
         /// <param name="position">Position to check</param>

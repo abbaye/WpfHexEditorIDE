@@ -326,6 +326,32 @@ namespace WpfHexEditor.Core.Services
             return count;
         }
 
+        /// <summary>
+        /// Remove all blocks whose Description matches the given tag.
+        /// Use this to clear only blocks belonging to a specific feature (e.g. "AdvancedSearchResult")
+        /// without affecting blocks added by other features (e.g. format detection).
+        /// </summary>
+        /// <param name="tag">Description/tag value to match</param>
+        /// <returns>Number of blocks removed</returns>
+        public int RemoveBlocksByTag(string tag)
+        {
+            if (tag == null)
+                return 0;
+
+            var removed = _backgroundBlocks.Where(b => b.Description == tag).ToList();
+            if (removed.Count == 0)
+                return 0;
+
+            _backgroundBlocks.RemoveAll(b => b.Description == tag);
+
+            OnBlockRemoved(new CustomBackgroundBlockEventArgs(
+                BlockChangeType.RemovedMultiple,
+                removed.AsReadOnly(),
+                _backgroundBlocks.Count));
+
+            return removed.Count;
+        }
+
         #endregion
 
         #region Query Operations
