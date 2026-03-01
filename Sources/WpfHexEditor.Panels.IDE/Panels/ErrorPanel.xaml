@@ -220,9 +220,9 @@
                           Foreground="{DynamicResource ERR_ForegroundBrush}"
                           BorderBrush="{DynamicResource ERR_GridLinesBrush}"
                           SelectionChanged="OnScopeChanged">
-                    <ComboBoxItem Content="Solution complète" Tag="Solution"/>
-                    <ComboBoxItem Content="Projet courant"    Tag="CurrentProject"/>
-                    <ComboBoxItem Content="Document courant"  Tag="CurrentDocument"/>
+                    <ComboBoxItem Content="Entire Solution"  Tag="Solution"/>
+                    <ComboBoxItem Content="Current Project"  Tag="CurrentProject"/>
+                    <ComboBoxItem Content="Current Document" Tag="CurrentDocument"/>
                 </ComboBox>
 
                 <!-- Separator -->
@@ -239,7 +239,7 @@
                               Margin="0,0,2,0"
                               Checked="OnFilterChanged"
                               Unchecked="OnFilterChanged"
-                              ToolTip="Afficher/masquer les erreurs">
+                              ToolTip="Show/hide errors">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource ErrorIcon}"
                                Width="14" Height="14"
@@ -260,7 +260,7 @@
                               Margin="0,0,2,0"
                               Checked="OnFilterChanged"
                               Unchecked="OnFilterChanged"
-                              ToolTip="Afficher/masquer les avertissements">
+                              ToolTip="Show/hide warnings">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource WarningIcon}"
                                Width="14" Height="14"
@@ -281,7 +281,7 @@
                               Margin="0,0,2,0"
                               Checked="OnFilterChanged"
                               Unchecked="OnFilterChanged"
-                              ToolTip="Afficher/masquer les messages">
+                              ToolTip="Show/hide messages">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource MessageIcon}"
                                Width="14" Height="14"
@@ -315,7 +315,7 @@
                             <Style.Resources>
                                 <VisualBrush x:Key="Watermark" TileMode="None" Opacity="0.4" Stretch="None" AlignmentX="Left">
                                     <VisualBrush.Visual>
-                                        <TextBlock Text="Rechercher..."
+                                        <TextBlock Text="Search..."
                                                    Foreground="{DynamicResource ERR_ForegroundBrush}"
                                                    FontSize="11"
                                                    Padding="4,2"/>
@@ -412,7 +412,7 @@
                     <!-- Project -->
                     <GridViewColumn Width="120">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="ProjectName" Content="Projet"/>
+                            <GridViewColumnHeader Tag="ProjectName" Content="Project"/>
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -429,7 +429,7 @@
                     <!-- File -->
                     <GridViewColumn Width="130">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="FileName" Content="Fichier"/>
+                            <GridViewColumnHeader Tag="FileName" Content="File"/>
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -462,7 +462,7 @@
                     <!-- Line:Col -->
                     <GridViewColumn Width="80">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Line" Content="Ligne:Col"/>
+                            <GridViewColumnHeader Tag="Line" Content="Line:Col"/>
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>

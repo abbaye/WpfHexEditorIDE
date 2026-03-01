@@ -497,12 +497,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var seItem = new DockItem { Title = "Solution Explorer", ContentId = SolutionExplorerContentId };
         engine.Dock(seItem, layout.MainDocumentHost, DockDirection.Left);
 
-        var output = new DockItem { Title = "Output", ContentId = "panel-output" };
-        engine.Dock(output, layout.MainDocumentHost, DockDirection.Bottom);
-
-        // Error panel: tab alongside Output in the bottom group
+        // Error panel docked first so Output (added last) becomes the active tab
         var errorsItem = new DockItem { Title = "Error List", ContentId = ErrorPanelContentId };
-        engine.Dock(errorsItem, output.Owner!, DockDirection.Center);
+        engine.Dock(errorsItem, layout.MainDocumentHost, DockDirection.Bottom);
+
+        var output = new DockItem { Title = "Output", ContentId = "panel-output" };
+        engine.Dock(output, errorsItem.Owner!, DockDirection.Center);
 
         var parsedFields = new DockItem
         {

@@ -170,9 +170,9 @@ public partial class ErrorPanel : UserControl, IErrorPanel
         int warnings = _allEntries.Count(v => v.Entry.Severity == DiagnosticSeverity.Warning);
         int messages = _allEntries.Count(v => v.Entry.Severity == DiagnosticSeverity.Message);
 
-        ErrorCountText.Text   = errors   == 1 ? "1 Erreur"           : $"{errors} Erreurs";
-        WarningCountText.Text = warnings == 1 ? "1 Avertissement"     : $"{warnings} Avertissements";
-        MessageCountText.Text = messages == 1 ? "1 Message"           : $"{messages} Messages";
+        ErrorCountText.Text   = errors   == 1 ? "1 Error"   : $"{errors} Errors";
+        WarningCountText.Text = warnings == 1 ? "1 Warning" : $"{warnings} Warnings";
+        MessageCountText.Text = messages == 1 ? "1 Message" : $"{messages} Messages";
     }
 
     // ────────────────────────────────────────────────────────────────────────

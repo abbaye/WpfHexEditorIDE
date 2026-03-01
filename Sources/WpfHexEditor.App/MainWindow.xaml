@@ -319,7 +319,7 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Liste d'_erreurs" Click="OnShowErrorPanel">
+                        <MenuItem Header="_Error List" Click="OnShowErrorPanel">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
