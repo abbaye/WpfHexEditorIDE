@@ -262,51 +262,59 @@
         </Setter>
     </Style>
 
-    <!-- VS2026-style toolbar button: raised (border + shadow) → highlight on hover → enfoncé pressed
-         Border : #50808080 = gris neutre semi-transparent (visible sur tous les thèmes sans nouvelle resource)
-         Background : #18FFFFFF = légère élévation vs fond toolbar
-         Shadow : depth=2, blur=4, opacity=0.50 (plus prononcé qu'avant) -->
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VS2026 "Pod" toolbar pattern  (identique à Dark/Menu.xaml — couleurs via DynamicResource)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Pod container : raised block groupant des boutons liés -->
+    <Style x:Key="DockToolBarPodStyle" TargetType="Border">
+        <Setter Property="Background"        Value="#18FFFFFF"/>
+        <Setter Property="BorderBrush"       Value="#50808080"/>
+        <Setter Property="BorderThickness"   Value="1"/>
+        <Setter Property="CornerRadius"      Value="4"/>
+        <Setter Property="Padding"           Value="1,0"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin"            Value="1,2"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect ShadowDepth="2" BlurRadius="4"
+                                  Opacity="0.50" Direction="270" Color="Black"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Bouton à l'intérieur d'un pod : AUCUNE border individuelle -->
     <Style x:Key="DockDarkToolBarButtonStyle" TargetType="Button">
-        <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}" />
-        <Setter Property="Background"        Value="#18FFFFFF" />
-        <Setter Property="BorderThickness"   Value="0" />
-        <Setter Property="Padding"           Value="6,3" />
-        <Setter Property="Cursor"            Value="Hand" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="FontSize"          Value="12" />
+        <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="Background"        Value="Transparent"/>
+        <Setter Property="BorderThickness"   Value="0"/>
+        <Setter Property="Padding"           Value="5,3"/>
+        <Setter Property="Cursor"            Value="Hand"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontSize"          Value="12"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="Bd"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="#50808080"
+                            BorderBrush="Transparent"
                             BorderThickness="1"
                             CornerRadius="3"
                             Padding="{TemplateBinding Padding}"
                             SnapsToDevicePixels="True">
-                        <Border.Effect>
-                            <DropShadowEffect ShadowDepth="2" BlurRadius="4"
-                                              Opacity="0.50" Direction="270" Color="Black"/>
-                        </Border.Effect>
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <!-- Hover : border plus marquée + background highlight -->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Bd" Property="Background"
                                     Value="{DynamicResource DockMenuHighlightBrush}"/>
-                            <Setter TargetName="Bd" Property="BorderBrush"
-                                    Value="{DynamicResource DockMenuHighlightBorderBrush}"/>
                         </Trigger>
-                        <!-- Pressed : border accent + bg plus sombre + ombre supprimée (enfoncé) -->
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="Bd" Property="Background"
                                     Value="{DynamicResource DockTabHoverBrush}"/>
                             <Setter TargetName="Bd" Property="BorderBrush"
                                     Value="{DynamicResource DockTabActiveBrush}"/>
-                            <Setter TargetName="Bd" Property="Effect" Value="{x:Null}"/>
                         </Trigger>
-                        <!-- Disabled -->
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.4"/>
                         </Trigger>
@@ -316,7 +324,19 @@
         </Setter>
     </Style>
 
-    <!-- VS2026-style toolbar separator: thin vertical line -->
+    <!-- Séparateur FIN entre boutons à l'intérieur d'un même pod -->
+    <Style x:Key="DockToolBarPodDividerStyle" TargetType="Separator">
+        <Setter Property="Background" Value="#30808080"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Separator">
+                    <Border Width="1" Margin="0,4" Background="{TemplateBinding Background}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Séparateur EXTERNE entre pods (espace + trait fin) -->
     <Style x:Key="DockDarkToolBarSeparatorStyle" TargetType="Separator">
         <Setter Property="Background" Value="{DynamicResource DockMenuBorderBrush}" />
         <Setter Property="Template">

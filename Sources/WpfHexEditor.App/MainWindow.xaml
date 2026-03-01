@@ -460,82 +460,93 @@
             </DockPanel>
         </Border>
 
-        <!-- Toolbar — VS2026 style: icon (Segoe MDL2 Assets) + short label -->
+        <!-- Toolbar — VS2026 pod pattern
+             ┌──────────┐   ┌───────────────────────────────────────┐   ┌────────────────────┐
+             │  🗋  📁  │   │  🔍 Explorer  │ ≡  │ ⚙  │ ▪ Output  │   │  💾 Save  │ ⬇ Load │
+             └──────────┘   └───────────────────────────────────────┘   └────────────────────┘
+             Pod Fichier              Pod Panneaux                            Pod Layout
+             Chaque pod = 1 Border (DockToolBarPodStyle) avec raised effect.
+             Les boutons à l'intérieur = DockDarkToolBarButtonStyle (flat + hover). -->
         <ToolBar Grid.Row="1" Style="{DynamicResource DockDarkToolBarStyle}">
 
-            <!-- File operations -->
-            <Button Click="OnNewFile" ToolTip="New file (Ctrl+N)"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                               VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="New" VerticalAlignment="Center"/>
+            <!-- ── Pod 1 : Fichier ─────────────────────────────────────────── -->
+            <Border Style="{DynamicResource DockToolBarPodStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <Button Click="OnNewFile" ToolTip="New file (Ctrl+N)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+                    <Button Click="OnOpenFile" ToolTip="Open file (Ctrl+O)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
                 </StackPanel>
-            </Button>
-            <Button Click="OnOpenFile" ToolTip="Open file (Ctrl+O)"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                               VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="Open" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
+            </Border>
 
             <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}"/>
 
-            <!-- Panel toggles -->
-            <Button Click="OnShowSolutionExplorer" ToolTip="Solution Explorer (Ctrl+Alt+L)"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                               VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="Explorer" VerticalAlignment="Center"/>
+            <!-- ── Pod 2 : Panneaux ────────────────────────────────────────── -->
+            <Border Style="{DynamicResource DockToolBarPodStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <!-- Explorer : icon + texte (panneau principal, mérite un label) -->
+                    <Button Click="OnShowSolutionExplorer" ToolTip="Solution Explorer (Ctrl+Alt+L)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Explorer" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+                    <!-- Autres panneaux : icon-only avec tooltip -->
+                    <Button Click="OnShowParsedFields" ToolTip="Parsed Fields"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xEBD2;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+                    <Button Click="OnShowProperties" ToolTip="Properties (F4)"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
+                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+                    <Button Click="OnShowOutput" ToolTip="Output"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <TextBlock Text="&#xE9A8;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                   VerticalAlignment="Center"/>
+                    </Button>
                 </StackPanel>
-            </Button>
-            <Button Click="OnShowParsedFields" ToolTip="Parsed Fields"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="&#xEBD2;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                               VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="Fields" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Click="OnShowProperties" ToolTip="Properties (F4)"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                               VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="Properties" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Click="OnShowOutput" ToolTip="Output"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE9A8;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                               VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="Output" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
+            </Border>
 
             <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}"/>
 
-            <!-- Layout -->
-            <Button Click="OnSaveLayout" ToolTip="Save layout"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                               VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="Save Layout" VerticalAlignment="Center"/>
+            <!-- ── Pod 3 : Layout ─────────────────────────────────────────── -->
+            <Border Style="{DynamicResource DockToolBarPodStyle}">
+                <StackPanel Orientation="Horizontal">
+                    <Button Click="OnSaveLayout" ToolTip="Save layout"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Save Layout" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+                    <Button Click="OnLoadLayout" ToolTip="Load layout"
+                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Load Layout" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
-            </Button>
-            <Button Click="OnLoadLayout" ToolTip="Load layout"
-                    Style="{DynamicResource DockDarkToolBarButtonStyle}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                               VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBlock Text="Load Layout" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
+            </Border>
+
         </ToolBar>
 
         <!-- Main Dock Area -->
