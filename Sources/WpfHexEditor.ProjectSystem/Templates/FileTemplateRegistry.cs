@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -22,10 +23,14 @@ public static class FileTemplateRegistry
         new TextFileTemplate(),
     ];
 
-    /// <summary>All currently registered templates (in display order).</summary>
+    /// <summary>
+    /// All currently registered templates (in display order).
+    /// </summary>
     public static IReadOnlyList<IFileTemplate> Templates => _templates;
 
-    /// <summary>Adds a custom template to the registry.</summary>
+    /// <summary>
+    /// Adds a custom template to the registry.
+    /// </summary>
     public static void Register(IFileTemplate template)
     {
         if (template is null) throw new ArgumentNullException(nameof(template));

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -9,6 +10,7 @@ using System.Text.Json.Serialization;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.ProjectSystem.Dto;
 using WpfHexEditor.ProjectSystem.Models;
+using WpfHexEditor.ProjectSystem.Serialization.Migration;
 
 namespace WpfHexEditor.ProjectSystem.Serialization;
 
@@ -30,12 +32,23 @@ internal static class ProjectSerializer
         var dto = await JsonSerializer.DeserializeAsync<ProjectDto>(stream, _options, ct)
                   ?? throw new InvalidDataException($"Cannot deserialise project: {filePath}");
 
+        // Reject files from future versions the app cannot understand.
+        if (MigrationPipeline.IsNewerThanSupported(dto.Version))
+            throw new InvalidDataException(
+                $"Project '{filePath}' uses format version {dto.Version}, " +
+                $"but this application supports up to version {MigrationPipeline.CurrentVersion}. " +
+                "Please update the application.");
+
+        // Migrate older versions in memory (does NOT write back to disk yet).
+        MigrationPipeline.UpgradeProject(dto);
+
         var projectDir = Path.GetDirectoryName(filePath)!;
         var project = new Project
         {
             Name             = dto.Name,
             ProjectFilePath  = filePath,
             DefaultTblItemId = dto.DefaultTblItemId,
+            ProjectType      = dto.ProjectType,
         };
 
         foreach (var itemDto in dto.Items)
@@ -51,15 +64,23 @@ internal static class ProjectSerializer
                 AbsolutePath = absPath,
                 ItemType     = itemDto.Type,
                 EditorConfig = itemDto.EditorConfig,
+                Bookmarks    = itemDto.Bookmarks?.Count > 0 ? itemDto.Bookmarks.AsReadOnly() : null,
             };
 
             if (itemDto.UnsavedModifications is not null)
                 item.UnsavedModifications = Convert.FromBase64String(itemDto.UnsavedModifications);
 
+            // Restore linked items (v2+).
+            if (itemDto.LinkedItems is { Count: > 0 })
+            {
+                foreach (var linkDto in itemDto.LinkedItems)
+                    item.LinkedItemsMutable.Add(new ItemLink { ItemId = linkDto.ItemId, Role = linkDto.Role });
+            }
+
             project.ItemsMutable.Add(item);
         }
 
-        // Rebuild virtual folder tree
+        // Rebuild virtual folder tree.
         foreach (var folderDto in dto.VirtualFolders)
             project.RootFoldersMutable.Add(MapFolder(folderDto));
 
@@ -72,7 +93,7 @@ internal static class ProjectSerializer
     {
         var projectDir = Path.GetDirectoryName(project.ProjectFilePath)!;
 
-        var dto = new ProjectDto { Name = project.Name, DefaultTblItemId = project.DefaultTblItemId };
+        var dto = new ProjectDto { Name = project.Name, DefaultTblItemId = project.DefaultTblItemId, ProjectType = project.ProjectType };
 
         foreach (var item in project.ItemsMutable)
         {
@@ -88,6 +109,13 @@ internal static class ProjectSerializer
                 EditorConfig = item.EditorConfig,
                 UnsavedModifications = item.UnsavedModifications is not null
                     ? Convert.ToBase64String(item.UnsavedModifications)
+                    : null,
+                // TargetItemId is intentionally null on write (v2 uses linkedItems).
+                Bookmarks = item.Bookmarks?.Count > 0
+                    ? item.Bookmarks.ToList()
+                    : null,
+                LinkedItems = item.LinkedItemsMutable.Count > 0
+                    ? item.LinkedItemsMutable.Select(l => new ItemLinkDto { ItemId = l.ItemId, Role = l.Role }).ToList()
                     : null,
             };
             dto.Items.Add(itemDto);

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -24,7 +25,9 @@ public partial class ImportEmbeddedFormatDialog : Window
 {
     // ── Output properties ──────────────────────────────────────────────────
     public IReadOnlyList<EmbeddedFormatEntry> SelectedEntries { get; private set; } = [];
-    /// <summary>Id of the virtual folder to place the items in, or <c>null</c> for the project root.</summary>
+    /// <summary>
+    /// Id of the virtual folder to place the items in, or <c>null</c> for the project root.
+    /// </summary>
     public string? TargetFolderId { get; private set; }
 
     // ── Private state ──────────────────────────────────────────────────────

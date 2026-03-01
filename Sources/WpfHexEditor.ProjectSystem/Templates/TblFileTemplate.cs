@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -7,7 +8,9 @@ using System.Text;
 
 namespace WpfHexEditor.ProjectSystem.Templates;
 
-/// <summary>Template for a minimal TBL (text-binary lookup) file.</summary>
+/// <summary>
+/// Template for a minimal TBL (text-binary lookup) file.
+/// </summary>
 public sealed class TblFileTemplate : IFileTemplate
 {
     public string Name             => "TBL File";

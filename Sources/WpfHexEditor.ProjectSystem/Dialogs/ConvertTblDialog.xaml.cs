@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -32,26 +33,40 @@ public partial class ConvertTblDialog : Window
 
     // ── Output properties consumed by the host ────────────────────────────────
 
-    /// <summary>Full path of the source .tbl file.</summary>
+    /// <summary>
+    /// Full path of the source .tbl file.
+    /// </summary>
     public string SourcePath => _sourcePath;
 
-    /// <summary>Full path where the .tblx file will be written.</summary>
+    /// <summary>
+    /// Full path where the .tblx file will be written.
+    /// </summary>
     public string TargetPath => Path.Combine(_targetFolder,
         Path.GetFileNameWithoutExtension(_sourcePath) + ".tblx");
 
-    /// <summary>Game title (may be empty).</summary>
+    /// <summary>
+    /// Game title (may be empty).
+    /// </summary>
     public string GameTitle => GameTitleBox.Text.Trim();
 
-    /// <summary>Platform string (may be empty).</summary>
+    /// <summary>
+    /// Platform string (may be empty).
+    /// </summary>
     public string Platform  => GetComboText(PlatformCombo);
 
-    /// <summary>Region string (may be empty).</summary>
+    /// <summary>
+    /// Region string (may be empty).
+    /// </summary>
     public string Region    => GetComboText(RegionCombo);
 
-    /// <summary>Author (may be empty).</summary>
+    /// <summary>
+    /// Author (may be empty).
+    /// </summary>
     public string Author    => AuthorBox.Text.Trim();
 
-    /// <summary>Release year, or <see langword="null"/> if not entered / invalid.</summary>
+    /// <summary>
+    /// Release year, or <see langword="null"/> if not entered / invalid.
+    /// </summary>
     public int? ReleaseYear
     {
         get
@@ -61,10 +76,14 @@ public partial class ConvertTblDialog : Window
         }
     }
 
-    /// <summary>Whether the converted .tblx should be added to the project.</summary>
+    /// <summary>
+    /// Whether the converted .tblx should be added to the project.
+    /// </summary>
     public bool AddToProject       => AddToProjectCheck.IsChecked == true;
 
-    /// <summary>Whether the converted .tblx should be opened in the TBL Editor.</summary>
+    /// <summary>
+    /// Whether the converted .tblx should be opened in the TBL Editor.
+    /// </summary>
     public bool OpenAfterConversion => OpenAfterCheck.IsChecked == true;
 
     // ── Helpers ───────────────────────────────────────────────────────────────

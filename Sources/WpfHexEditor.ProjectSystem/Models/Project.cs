@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -36,6 +37,8 @@ internal sealed class Project : IProject, INotifyPropertyChanged
         get => _defaultTblItemId;
         set { _defaultTblItemId = value; OnPropertyChanged(); }
     }
+
+    public string? ProjectType { get; set; }
 
     internal ObservableCollection<ProjectItem>   ItemsMutable       => _items;
     internal ObservableCollection<VirtualFolder> RootFoldersMutable => _rootFolders;

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -8,6 +9,7 @@ using System.IO;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.ProjectSystem.Models;
 using WpfHexEditor.ProjectSystem.Serialization;
+using WpfHexEditor.ProjectSystem.Serialization.Migration;
 
 namespace WpfHexEditor.ProjectSystem.Services;
 
@@ -43,7 +45,12 @@ public sealed class SolutionManager : ISolutionManager
 
         Directory.CreateDirectory(solutionDir);
 
-        var solution = new Solution { Name = name, FilePath = solutionFile };
+        var solution = new Solution
+        {
+            Name                = name,
+            FilePath            = solutionFile,
+            SourceFormatVersion = MigrationPipeline.CurrentVersion,
+        };
         await SolutionSerializer.WriteAsync(solution, ct);
 
         _current = solution;
@@ -59,18 +66,39 @@ public sealed class SolutionManager : ISolutionManager
         if (_current != null)
             await CloseSolutionAsync(ct);
 
-        var solution = await SolutionSerializer.ReadAsync(filePath, ct);
+        var (solution, migratedDockLayout) = await SolutionSerializer.ReadAsync(filePath, ct);
         _current = solution;
         _mru.PushSolution(filePath);
         _mru.Save();
 
         RaiseSolutionChanged(SolutionChangeKind.Opened);
+
+        // Notify host if the format is older than current version.
+        if (solution.FormatUpgradeRequired)
+        {
+            var affectedFiles = new List<string> { filePath };
+            affectedFiles.AddRange(solution.Projects.Select(p => p.ProjectFilePath));
+
+            FormatUpgradeRequired?.Invoke(this, new FormatUpgradeRequiredEventArgs
+            {
+                Solution      = solution,
+                FromVersion   = solution.SourceFormatVersion,
+                ToVersion     = MigrationPipeline.CurrentVersion,
+                AffectedFiles = affectedFiles,
+            });
+        }
+
         return solution;
     }
 
     public async Task SaveSolutionAsync(ISolution solution, CancellationToken ct = default)
     {
         if (solution is not Solution sol) return;
+        if (sol.IsReadOnlyFormat)
+            throw new InvalidOperationException(
+                $"Solution '{sol.Name}' is open in read-only format mode (v{sol.SourceFormatVersion}). " +
+                "Call UpgradeFormatAsync first.");
+
         await SolutionSerializer.WriteAsync(sol, ct);
         foreach (var proj in sol.ProjectsMutable)
             await ProjectSerializer.WriteAsync(proj, ct);
@@ -84,6 +112,39 @@ public sealed class SolutionManager : ISolutionManager
         _current = null;
         RaiseSolutionChanged(SolutionChangeKind.Closed);
         await Task.CompletedTask;
+    }
+
+    // ── Format upgrade ───────────────────────────────────────────────────
+
+    public async Task UpgradeFormatAsync(ISolution solution, CancellationToken ct = default)
+    {
+        if (solution is not Solution sol) return;
+        if (!sol.FormatUpgradeRequired) return;
+
+        int fromVersion = sol.SourceFormatVersion;
+
+        // Create versioned backups of every file BEFORE writing.
+        MigrationPipeline.CreateBackup(sol.FilePath, fromVersion);
+        foreach (var proj in sol.ProjectsMutable)
+            MigrationPipeline.CreateBackup(proj.ProjectFilePath, fromVersion);
+
+        // Write all files with the current version.
+        await SolutionSerializer.WriteAsync(sol, ct);
+        foreach (var proj in sol.ProjectsMutable)
+            await ProjectSerializer.WriteAsync(proj, ct);
+
+        // Mark the solution as upgraded.
+        sol.SourceFormatVersion = MigrationPipeline.CurrentVersion;
+        sol.IsReadOnlyFormat    = false;
+        sol.IsModified          = false;
+
+        RaiseSolutionChanged(SolutionChangeKind.Modified);
+    }
+
+    public void SetReadOnlyFormat(ISolution solution, bool readOnly)
+    {
+        if (solution is Solution sol)
+            sol.IsReadOnlyFormat = readOnly;
     }
 
     // ── Project management ───────────────────────────────────────────────
@@ -198,8 +259,25 @@ public sealed class SolutionManager : ISolutionManager
     public Task RenameItemAsync(IProject project, IProjectItem item, string newName, CancellationToken ct = default)
     {
         if (project is not Project proj || item is not ProjectItem pi) return Task.CompletedTask;
-        pi.Name = newName;
+
+        var oldName    = pi.Name;
+        var oldAbsPath = pi.AbsolutePath;
+
+        // Rename the physical file on disk
+        var dir        = Path.GetDirectoryName(oldAbsPath)!;
+        var newAbsPath = Path.Combine(dir, newName);
+        if (File.Exists(oldAbsPath) &&
+            !string.Equals(oldAbsPath, newAbsPath, StringComparison.OrdinalIgnoreCase))
+            File.Move(oldAbsPath, newAbsPath);
+
+        // Update model paths
+        var relDir      = Path.GetDirectoryName(pi.RelativePath)?.Replace('\\', '/') ?? "";
+        pi.RelativePath = relDir.Length > 0 ? $"{relDir}/{newName}" : newName;
+        pi.AbsolutePath = newAbsPath;
+        pi.Name         = newName;
         proj.IsModified = true;
+
+        RaiseItemRenamed(pi, proj, oldName, oldAbsPath);
         return SaveProjectAsync(project, ct);
     }
 
@@ -455,14 +533,21 @@ public sealed class SolutionManager : ISolutionManager
         return folder;
     }
 
-    private static ProjectItemType ResolveItemType(string ext) => ext.ToLowerInvariant() switch
+    internal static ProjectItemType ResolveItemType(string ext) => ext.ToLowerInvariant() switch
     {
-        ".whjson"                   => ProjectItemType.FormatDefinition,
-        ".tbl" or ".tblx"           => ProjectItemType.Tbl,
-        ".ips" or ".bps"            => ProjectItemType.Patch,
-        ".json"                     => ProjectItemType.Json,
-        ".txt" or ".md" or ".csv"   => ProjectItemType.Text,
-        _                           => ProjectItemType.Binary,
+        ".whjson"                                            => ProjectItemType.FormatDefinition,
+        ".tbl" or ".tblx"                                    => ProjectItemType.Tbl,
+        ".ips" or ".bps"                                     => ProjectItemType.Patch,
+        ".json"                                              => ProjectItemType.Json,
+        ".txt" or ".md" or ".csv"                            => ProjectItemType.Text,
+        ".lua" or ".py" or ".rb" or ".js" or ".ts"
+            or ".sh" or ".bat" or ".ps1" or ".asm"
+            or ".s" or ".c" or ".cpp" or ".h"
+            or ".whlang"                                     => ProjectItemType.Script,
+        ".png" or ".bmp" or ".jpg" or ".jpeg" or ".gif"
+            or ".ico" or ".tiff" or ".tif" or ".webp"
+            or ".dds" or ".tga"                              => ProjectItemType.Image,
+        _                                                    => ProjectItemType.Binary,
     };
 
     private static string DefaultExtension(ProjectItemType type) => type switch
@@ -472,15 +557,18 @@ public sealed class SolutionManager : ISolutionManager
         ProjectItemType.Patch            => ".ips",
         ProjectItemType.Json             => ".json",
         ProjectItemType.Text             => ".txt",
+        ProjectItemType.Script           => ".lua",
         _                                => ".bin",
     };
 
     // ── Events ────────────────────────────────────────────────────────────
 
-    public event EventHandler<SolutionChangedEventArgs>? SolutionChanged;
-    public event EventHandler<ProjectChangedEventArgs>?  ProjectChanged;
-    public event EventHandler<ProjectItemEventArgs>?     ItemAdded;
-    public event EventHandler<ProjectItemEventArgs>?     ItemRemoved;
+    public event EventHandler<SolutionChangedEventArgs>?      SolutionChanged;
+    public event EventHandler<ProjectChangedEventArgs>?       ProjectChanged;
+    public event EventHandler<ProjectItemEventArgs>?          ItemAdded;
+    public event EventHandler<ProjectItemEventArgs>?          ItemRemoved;
+    public event EventHandler<ProjectItemRenamedEventArgs>?   ItemRenamed;
+    public event EventHandler<FormatUpgradeRequiredEventArgs>? FormatUpgradeRequired;
 
     private void RaiseSolutionChanged(SolutionChangeKind kind)
         => SolutionChanged?.Invoke(this, new SolutionChangedEventArgs { Solution = _current, Kind = kind });
@@ -493,4 +581,8 @@ public sealed class SolutionManager : ISolutionManager
 
     private void RaiseItemRemoved(ProjectItem item, Project proj)
         => ItemRemoved?.Invoke(this, new ProjectItemEventArgs { Item = item, Project = proj });
+
+    private void RaiseItemRenamed(ProjectItem item, Project proj, string oldName, string oldAbsPath)
+        => ItemRenamed?.Invoke(this, new ProjectItemRenamedEventArgs
+           { Project = proj, Item = item, OldName = oldName, OldAbsolutePath = oldAbsPath });
 }

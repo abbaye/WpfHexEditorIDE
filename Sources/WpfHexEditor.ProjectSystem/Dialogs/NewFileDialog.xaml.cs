@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -29,7 +30,9 @@ public partial class NewFileDialog : Window
     // ── Output properties ──────────────────────────────────────────────
     public string         FileName         { get; private set; } = "";
     public string         FileDirectory    { get; private set; } = "";
-    /// <summary>Non-empty only when <see cref="SaveLater"/> is <c>false</c>.</summary>
+    /// <summary>
+    /// Non-empty only when <see cref="SaveLater"/> is <c>false</c>.
+    /// </summary>
     public string         FullPath         => SaveLater ? "" : Path.Combine(FileDirectory, FileName);
     public IFileTemplate? SelectedTemplate { get; private set; }
     public IProject?      TargetProject    { get; private set; }
