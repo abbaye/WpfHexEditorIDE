@@ -7,6 +7,7 @@
         <ResourceDictionary Source="Dark/Menu.xaml" />
         <ResourceDictionary Source="Dark/TabControl.xaml" />
         <ResourceDictionary Source="Dark/ContentControls.xaml" />
+        <ResourceDictionary Source="PanelCommon.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

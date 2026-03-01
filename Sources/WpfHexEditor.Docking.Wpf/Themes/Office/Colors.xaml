@@ -237,6 +237,15 @@
     <SolidColorBrush x:Key="ERR_SearchBoxBrush"        Color="#FFFFFF"/>
     <SolidColorBrush x:Key="ERR_HeaderBrush"           Color="#F3F3F3"/>
 
+    <!-- Common Panel Resources (PanelCommon.xaml keys — shared across all IDE panels) -->
+    <SolidColorBrush x:Key="Panel_ToolbarBrush"             Color="#FAFAFA"/>
+    <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#D1D1D1"/>
+    <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#DEECF9"/>
+    <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#BDD7EE"/>
+    <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#323130"/>
+    <!-- PFP toolbar — aliases Panel_ToolbarBrush for ParsedFieldsPanel -->
+    <SolidColorBrush x:Key="PFP_ToolbarBrush"               Color="#FAFAFA"/>
+
     <!-- Generic Dialog Resources (AdvancedSearch, ProjectDialogs, etc.) -->
     <Color x:Key="AccentColor">#0078D4</Color>
     <SolidColorBrush x:Key="BackgroundBrush"  Color="{StaticResource DockWindowBackgroundColor}"/>
