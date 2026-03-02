@@ -55,6 +55,9 @@ using WpfHexEditor.ProjectSystem.Templates;
 using System.Windows.Shell;
 using System.Windows.Threading;
 using WpfHexEditor.Options;
+using WpfHexEditor.Editor.Core.Views;
+using JsonEditorControl = WpfHexEditor.Editor.JsonEditor.Controls.JsonEditor;
+using TblEditorControl  = WpfHexEditor.Editor.TblEditor.Controls.TblEditor;
 
 namespace WpfHexEditor.App;
 
@@ -65,7 +68,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    // ─── Static RoutedCommands (Find Next / Previous — F3/Shift+F3) ────
+    // ─── Static RoutedCommands (Find / Find Next / Previous — F3/Shift+F3) ────
     public static readonly RoutedCommand FindNextCommand = new RoutedCommand(
         "FindNext", typeof(MainWindow),
         new InputGestureCollection { new KeyGesture(Key.F3) });
@@ -77,6 +80,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public static readonly RoutedCommand FindPreviousCommand = new RoutedCommand(
         "FindPrevious", typeof(MainWindow),
         new InputGestureCollection { new KeyGesture(Key.F3, ModifierKeys.Shift) });
+
+    /// <summary>Ctrl+Shift+F — opens the full 5-mode Advanced Search dialog (HexEditor only).</summary>
+    public static readonly RoutedCommand AdvancedSearchCommand = new RoutedCommand(
+        "AdvancedSearch", typeof(MainWindow),
+        new InputGestureCollection { new KeyGesture(Key.F, ModifierKeys.Control | ModifierKeys.Shift) });
 
     // ─── Constants ─────────────────────────────────────────────────────
     private static readonly string LayoutFilePath = Path.Combine(
@@ -96,11 +104,18 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private int  _documentCounter;
     private bool _isLocked;
 
-    // Content cache: ContentId → created UIElement
+    // Content cache: ContentId → actual editor UIElement (unwrapped; used for editor logic)
     private readonly Dictionary<string, UIElement> _contentCache = new();
+
+    // Display cache: ContentId → visual UIElement shown in the docking layout
+    // When an InfoBar is present this is a Grid wrapper; otherwise == _contentCache entry.
+    private readonly Dictionary<string, UIElement> _displayContent = new();
 
     // Per-document format tracking: ContentId → last logged format name
     private readonly Dictionary<string, string> _loggedFormats = new();
+
+    // QuickSearchBar instances for JsonEditor documents (JsonEditor has no embedded Canvas)
+    private readonly Dictionary<JsonEditorControl, QuickSearchBar> _jsonEditorBars = new();
 
     // M5: PropertyProvider cache — avoids recreating the provider on every tab switch
     private readonly Dictionary<UIElement, IPropertyProvider?> _propertyProviderCache = new();
@@ -124,6 +139,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private ErrorPanel? _errorPanel;
     private const string ErrorPanelContentId = "panel-errors";
     private const string OptionsContentId    = "panel-options";
+    private string _lastAppliedTheme = string.Empty;
 
     // TBL dropdown — tracks which project TBL item is applied per hex editor
     private readonly Dictionary<HexEditorControl, IProjectItem?> _editorProjectTbl = new();
@@ -744,11 +760,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private object CreateContentForItem(DockItem item)
     {
-        if (_contentCache.TryGetValue(item.ContentId, out var cached))
-            return cached;
-        var content = BuildContentForItem(item);
-        _contentCache[item.ContentId] = content;
-        return content;
+        if (_displayContent.TryGetValue(item.ContentId, out var cachedDisplay))
+            return cachedDisplay;
+        var display = BuildContentForItem(item);
+        StoreContent(item.ContentId, display);
+        return display;
+    }
+
+    /// <summary>
+    /// Stores <paramref name="displayElement"/> in both content caches:
+    /// <c>_displayContent</c> (the visual element shown by the docking system — may be an InfoBar wrapper),
+    /// and <c>_contentCache</c> (the actual editor — unwrapped when an InfoBar is present).
+    /// </summary>
+    private void StoreContent(string contentId, UIElement displayElement)
+    {
+        _displayContent[contentId] = displayElement;
+        _contentCache[contentId]   = UnwrapEditor(displayElement);
     }
 
     private UIElement BuildContentForItem(DockItem item) =>
@@ -801,12 +828,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.CloseSolutionRequested           += OnSECloseSolutionRequested;
         panel.SaveAllRequested                 += OnSESaveAll;
         panel.OpenWithRequested                += OnSEOpenWith;
+        panel.OpenWithSpecificRequested        += OnSEOpenWithSpecific;
         panel.PhysicalFileIncludeRequested     += OnSEPhysicalFileInclude;
         panel.ImportExternalFileRequested      += OnSEImportExternalFile;
         panel.PropertiesRequested              += OnSEPropertiesRequested;
         panel.WriteToDiskRequested             += OnSEWriteToDisk;
         panel.DiscardChangesetRequested        += OnSEDiscardChangeset;
         _solutionManager.ItemRenamed           += OnProjectItemRenamed;
+        // Provide the editor registry so the panel can build the "Open With ›" submenu
+        panel.SetEditorRegistry(_editorRegistry.GetAll());
         // Sync current solution if already loaded
         panel.SetSolution(_solutionManager.CurrentSolution);
         return panel;
@@ -848,7 +878,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var ctrl = new OptionsEditorControl();
         ctrl.SettingsChanged   += OnOptionsSettingsChanged;
         ctrl.EditJsonRequested += OnOptionsEditJson;
-        _contentCache[OptionsContentId] = ctrl;
+        StoreContent(OptionsContentId, ctrl);
         return ctrl;
     }
 
@@ -904,12 +934,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Navigate after layout completes
         Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, () =>
         {
+            // Re-lookup in case the file was just opened (content was null before OpenFileDirectly)
+            var resolvedContent = content ?? _contentCache.Values.FirstOrDefault(v =>
+            {
+                if (v is HexEditorControl hex)
+                    return string.Equals(hex.FileName, e.FilePath, System.StringComparison.OrdinalIgnoreCase);
+                if (v is WpfHexEditor.Editor.TblEditor.Controls.TblEditor tbl)
+                    return string.Equals(tbl.Title.TrimEnd('*', ' '),
+                        Path.GetFileName(e.FilePath), System.StringComparison.OrdinalIgnoreCase);
+                return false;
+            });
+
             // HexEditor — byte offset
             if (e.Offset.HasValue && _connectedHexEditor != null)
                 _connectedHexEditor.SetPosition(e.Offset.Value);
 
             // TblEditor — jump to hex entry (key stored in Tag by repair service)
-            if (e.Tag is string hexKey && content is WpfHexEditor.Editor.TblEditor.Controls.TblEditor tblEd)
+            if (e.Tag is string hexKey && resolvedContent is WpfHexEditor.Editor.TblEditor.Controls.TblEditor tblEd)
                 tblEd.GoToEntry(hexKey);
         });
     }
@@ -941,7 +982,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             editor.OutputMessage += OnEditorOutputMessage;
             _ = editor.OpenAsync(e.FilePath);
 
-            _contentCache[newContentId] = editor;
+            StoreContent(newContentId, editor);
             var newDockItem = new DockItem
             {
                 ContentId = newContentId,
@@ -1076,11 +1117,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (filePath is null) return CreateDocumentContent(item);
 
-        // "Open With > Hex Editor" bypass: skip the registry entirely
+        // Priority 1: "Open With > Hex Editor" bypass — skip the registry entirely
         bool forceHex = item.Metadata.TryGetValue("ForceHexEditor", out var fh) && fh == "true";
 
-        // Try registry-based editor (TBL, JSON, …)
-        var factory = forceHex ? null : _editorRegistry.FindFactory(filePath);
+        // Priority 2: explicit factory requested (e.g. via InfoBar or "Open With ›" submenu)
+        IEditorFactory? factory;
+        if (forceHex)
+        {
+            factory = null;
+        }
+        else if (item.Metadata.TryGetValue("ForceEditorId", out var eid) && eid is not null)
+        {
+            factory = _editorRegistry.GetAll().FirstOrDefault(f => f.Descriptor.Id == eid);
+        }
+        else
+        {
+            factory = _editorRegistry.FindFactory(filePath);
+        }
+
         if (factory != null)
         {
             var editor = factory.Create();
@@ -1119,7 +1173,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
                 ActiveDocumentEditor       = editor;
                 ActiveStatusBarContributor = editor as IStatusBarContributor;
-                return fe;
+
+                // Wrap with InfoBar (shows "View in: Hex Editor, …" action bar above the viewer)
+                return WrapWithInfoBar(fe, factory, filePath, item.ContentId);
             }
         }
 
@@ -1173,7 +1229,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         item.Metadata.TryGetValue("FilePath", out var filePath);
         if (filePath is null) return CreateDocumentContent(item);
 
-        var factory = _editorRegistry.FindFactory(filePath);
+        // Support "Open With" for standalone files too (ForceHexEditor / ForceEditorId)
+        bool forceHex = item.Metadata.TryGetValue("ForceHexEditor", out var fh) && fh == "true";
+        IEditorFactory? factory;
+        if (forceHex)
+        {
+            factory = null;
+        }
+        else if (item.Metadata.TryGetValue("ForceEditorId", out var eid) && eid is not null)
+        {
+            factory = _editorRegistry.GetAll().FirstOrDefault(f => f.Descriptor.Id == eid);
+        }
+        else
+        {
+            factory = _editorRegistry.FindFactory(filePath);
+        }
+
         if (factory?.Create() is IDocumentEditor editor && editor is FrameworkElement fe)
         {
             if (editor is IOpenableDocument openable)
@@ -1186,12 +1257,84 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             ActiveDocumentEditor       = editor;
             ActiveStatusBarContributor = editor as IStatusBarContributor;
-            return fe;
+
+            var display = WrapWithInfoBar(fe, factory, filePath, item.ContentId);
+
+            // JsonEditor is a FrameworkElement with no embedded Canvas. Add a Canvas overlay
+            // to the InfoBar Grid (Row 1) so the QuickSearchBar can be shown inline.
+            if (editor is JsonEditorControl json && display is Grid infoBarGrid)
+            {
+                // No Background + default IsHitTestVisible=True → empty areas let clicks
+                // through to the editor; the QuickSearchBar captures clicks in its own area.
+                var canvas = new Canvas();
+                Panel.SetZIndex(canvas, 5);
+                Grid.SetRow(canvas, 1);
+                var bar = new QuickSearchBar
+                {
+                    Width      = 520,
+                    Visibility = Visibility.Collapsed,
+                };
+                bar.OnCloseRequested += (_, __) =>
+                {
+                    bar.Visibility = Visibility.Collapsed;
+                    bar.Detach();
+                };
+                canvas.Children.Add(bar);
+                infoBarGrid.Children.Add(canvas);
+                _jsonEditorBars[json] = bar;
+            }
+
+            return display;
         }
 
         // Fallback: HexEditor for any binary/unknown file
         return CreateHexEditorContent(filePath);
     }
+
+    /// <summary>
+    /// Wraps a registry-dispatched editor <paramref name="editorElement"/> in a <see cref="Grid"/>
+    /// that also contains a <see cref="DocumentInfoBar"/> offering quick "View in …" actions.
+    /// The InfoBar is NOT shown when the editor was explicitly forced (e.g. via "Open With > Hex Editor").
+    /// </summary>
+    private UIElement WrapWithInfoBar(
+        FrameworkElement editorElement,
+        IEditorFactory   usedFactory,
+        string           filePath,
+        string           sourceContentId)
+    {
+        // Build the list of alternative editors for the InfoBar buttons
+        var alternatives = _editorRegistry.GetAll()
+            .Where(f => f != usedFactory && f.CanOpen(filePath))
+            .ToList();
+
+        var bar = new DocumentInfoBar();
+        bar.Configure(
+            filePath:          filePath,
+            sourceContentId:   sourceContentId,
+            currentEditorName: usedFactory.Descriptor.DisplayName,
+            currentEditorId:   usedFactory.Descriptor.Id,
+            alternatives:      alternatives);
+        bar.OpenWithRequested += OnInfoBarOpenWith;
+
+        var grid = new Grid();
+        // Tag stores the actual editor so the docking system can retrieve it from the Grid wrapper.
+        // _contentCache always holds the unwrapped editor via UnwrapEditor().
+        grid.Tag = editorElement;
+        grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        Grid.SetRow(bar,           0);
+        Grid.SetRow(editorElement, 1);
+        grid.Children.Add(bar);
+        grid.Children.Add(editorElement);
+        return grid;
+    }
+
+    /// <summary>
+    /// Unwraps the actual editor element from a <see cref="WrapWithInfoBar"/> Grid wrapper,
+    /// or returns <paramref name="content"/> directly when it is not a wrapper.
+    /// </summary>
+    private static UIElement UnwrapEditor(UIElement content)
+        => content is Grid { Tag: UIElement inner } ? inner : content;
 
     private static UIElement CreateDocumentContent(DockItem item) =>
         new TextBox
@@ -1912,6 +2055,101 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         DockHost.RebuildVisualTree();
     }
 
+    private void OnSEOpenWithSpecific(object? sender, OpenWithSpecificEditorEventArgs e)
+        => OpenProjectItemWithEditor(e.Item, e.Project, e.FactoryId);
+
+    /// <summary>
+    /// Opens <paramref name="item"/> in the editor identified by <paramref name="factoryId"/>
+    /// (or the Hex Editor fallback when <paramref name="factoryId"/> is <see langword="null"/>).
+    /// A distinct <c>ContentId</c> is used so the new tab can coexist with an already-open tab
+    /// for the same file.
+    /// </summary>
+    private void OpenProjectItemWithEditor(IProjectItem item, IProject project, string? factoryId)
+    {
+        var suffix    = factoryId is null ? "hex" : factoryId;
+        var contentId = $"doc-proj-{suffix}-{item.Id}";
+
+        if (_layout.FindItemByContentId(contentId) is { } existing)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        var meta = new System.Collections.Generic.Dictionary<string, string>
+        {
+            ["FilePath"]  = item.AbsolutePath,
+            ["ProjectId"] = project.Id,
+            ["ItemId"]    = item.Id,
+        };
+
+        if (factoryId is null)
+            meta["ForceHexEditor"] = "true";
+        else
+            meta["ForceEditorId"] = factoryId;
+
+        var dockItem = new DockItem { Title = item.Name, ContentId = contentId };
+        foreach (var (k, v) in meta) dockItem.Metadata[k] = v;
+
+        _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Called by <see cref="DocumentInfoBar"/> when the user clicks an action button.
+    /// Opens the source file in the requested editor (new parallel tab).
+    /// </summary>
+    private void OnInfoBarOpenWith(object? sender, OpenWithEditorRequestedEventArgs e)
+    {
+        // The bar embeds the sourceContentId of the DockItem that hosts the viewer.
+        // Derive item / project from that tab's metadata so we can open a companion tab.
+        if (_layout.FindItemByContentId(e.SourceContentId) is not { } sourceDockItem) return;
+
+        sourceDockItem.Metadata.TryGetValue("ProjectId", out var projectId);
+        sourceDockItem.Metadata.TryGetValue("ItemId",    out var itemId);
+
+        if (projectId is not null && itemId is not null)
+        {
+            var proj = _solutionManager.CurrentSolution?.Projects.FirstOrDefault(p => p.Id == projectId);
+            var item = proj?.FindItem(itemId);
+            if (proj is not null && item is not null)
+            {
+                OpenProjectItemWithEditor(item, proj, e.FactoryId);
+                return;
+            }
+        }
+
+        // Fallback: standalone file (doc-file-*) — open without project context
+        OpenStandaloneFileWithEditor(e.FilePath, e.FactoryId);
+    }
+
+    /// <summary>
+    /// Opens a standalone (non-project) file in the specified editor.
+    /// </summary>
+    private void OpenStandaloneFileWithEditor(string filePath, string? factoryId)
+    {
+        _documentCounter++;
+        var suffix    = factoryId is null ? "hex" : factoryId;
+        var contentId = $"doc-file-{suffix}-{_documentCounter}";
+
+        var dockItem = new DockItem
+        {
+            Title     = System.IO.Path.GetFileName(filePath),
+            ContentId = contentId,
+            Metadata  =
+            {
+                ["FilePath"] = filePath,
+            },
+        };
+        if (factoryId is null)
+            dockItem.Metadata["ForceHexEditor"] = "true";
+        else
+            dockItem.Metadata["ForceEditorId"] = factoryId;
+
+        _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
     private async void OnSEPhysicalFileInclude(object? sender, PhysicalFileIncludeRequestedEventArgs e)
     {
         await _solutionManager.AddItemAsync(e.Project, e.PhysicalPath, e.TargetFolderId);
@@ -2037,6 +2275,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (item.ContentId.StartsWith("panel-"))
             return;
 
+        // Unwrap the InfoBar Grid wrapper if present — the actual editor is in Tag
+        content = UnwrapEditor(content);
+
         var hex = content as HexEditorControl;
 
         // Only switch the connected hex editor when a hex editor tab becomes active.
@@ -2093,8 +2334,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnEditorTitleChanged(object? sender, string newTitle)
     {
+        var senderEl = sender as UIElement;
+        // Search both direct matches and InfoBar-wrapped editors (Tag holds the actual editor)
         var contentId = _contentCache
-            .FirstOrDefault(kv => ReferenceEquals(kv.Value, sender as UIElement)).Key;
+            .FirstOrDefault(kv =>
+                ReferenceEquals(kv.Value, senderEl) ||
+                (kv.Value is Grid { Tag: UIElement inner } && ReferenceEquals(inner, senderEl))).Key;
         if (contentId != null)
         {
             var dockItem = _layout.FindItemByContentId(contentId);
@@ -2107,28 +2352,56 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // ─── Find / Replace handlers ────────────────────────────────────────
 
+    /// <summary>Ctrl+F — always opens the inline QuickSearchBar for the active editor.</summary>
     private void OnShowAdvancedSearch(object sender, RoutedEventArgs e)
+    {
+        if (ActiveDocumentEditor is ISearchTarget t)
+            ShowSearchBarForTarget(t);
+    }
+
+    /// <summary>Ctrl+Shift+F — opens the 5-mode Advanced Search dialog (HexEditor only).</summary>
+    private void OnShowAdvancedSearchDialog(object sender, RoutedEventArgs e)
     {
         if (ActiveHexEditor is { } hex)
             hex.ShowAdvancedSearchDialog(this);
-        else if (ActiveDocumentEditor is WpfHexEditor.Editor.JsonEditor.Controls.JsonEditor jsonEd)
-            jsonEd.ShowFindBar();
     }
 
     private void OnFindNext(object sender, RoutedEventArgs e)
     {
-        if (ActiveHexEditor is { } hex)
-            hex.ShowQuickSearchBar();   // F3: show/focus inline bar
-        else if (ActiveDocumentEditor is WpfHexEditor.Editor.JsonEditor.Controls.JsonEditor jsonEd)
-            jsonEd.FindNext();
+        if (ActiveDocumentEditor is ISearchTarget t)
+            ShowSearchBarForTarget(t);
     }
 
     private void OnFindPrevious(object sender, RoutedEventArgs e)
     {
-        if (ActiveHexEditor is { } hex)
-            hex.ShowQuickSearchBar();   // Shift+F3: show/focus inline bar
-        else if (ActiveDocumentEditor is WpfHexEditor.Editor.JsonEditor.Controls.JsonEditor jsonEd)
-            jsonEd.FindPrevious();
+        if (ActiveDocumentEditor is ISearchTarget t)
+            ShowSearchBarForTarget(t);
+    }
+
+    /// <summary>
+    /// Shows (or refocuses) the inline QuickSearchBar for the given <see cref="ISearchTarget"/>.
+    /// HexEditor and TblEditor have their own embedded Canvas; JsonEditor uses the one injected
+    /// by the App during content creation.
+    /// </summary>
+    private void ShowSearchBarForTarget(ISearchTarget target)
+    {
+        if (target is HexEditorControl hex)
+        { hex.ShowQuickSearchBar(); return; }
+
+        if (target is TblEditorControl tbl)
+        { tbl.ShowSearch(); return; }
+
+        if (target is JsonEditorControl json && _jsonEditorBars.TryGetValue(json, out var bar))
+        {
+            if (bar.Visibility == Visibility.Visible)
+            { bar.FocusSearchInput(); return; }
+
+            bar.BindToTarget(json);
+            bar.Visibility = Visibility.Visible;
+            if (bar.Parent is Canvas c)
+                bar.EnsureDefaultPosition(c);
+            bar.FocusSearchInput();
+        }
     }
 
     private void OnEditorStatusMessage(object? sender, string message)
@@ -2956,7 +3229,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             editor.OutputMessage += OnEditorOutputMessage;
             _ = editor.OpenAsync(filePath);
-            _contentCache[contentId] = editor;
+            StoreContent(contentId, editor);
             var dockItem = new DockItem { Title = "settings.json", ContentId = contentId };
             _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
             DockHost.RebuildVisualTree();
@@ -2966,8 +3239,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void ApplyThemeFromSettings()
     {
         var stem = AppSettingsService.Instance.Current.ActiveThemeName;
-        if (!string.IsNullOrWhiteSpace(stem))
-            ApplyTheme($"{stem}.xaml", stem);
+        if (string.IsNullOrWhiteSpace(stem) || stem == _lastAppliedTheme) return;
+        _lastAppliedTheme = stem;
+        ApplyTheme($"{stem}.xaml", stem);
     }
 
     private void ApplyHexEditorDefaults(HexEditorControl hex)
@@ -3135,7 +3409,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var viewer    = new WpfHexEditor.Editor.DiffViewer.Controls.DiffViewer();
         var title     = $"{Path.GetFileName(dlgLeft.FileName)} ↔ {Path.GetFileName(dlgRight.FileName)}";
 
-        _contentCache[contentId] = viewer;
+        StoreContent(contentId, viewer);
         var item = new DockItem { Title = title, ContentId = contentId };
         _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
         DockHost.RebuildVisualTree();
@@ -3158,7 +3432,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var viewer    = new WpfHexEditor.Editor.EntropyViewer.Controls.EntropyViewer();
         var title     = $"Entropy: {Path.GetFileName(filePath)}";
 
-        _contentCache[contentId] = viewer;
+        StoreContent(contentId, viewer);
         var item = new DockItem { Title = title, ContentId = contentId };
         _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
         DockHost.RebuildVisualTree();

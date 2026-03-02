@@ -96,7 +96,8 @@ public sealed class TblRepairService
                         $"Invalid hex entry \"{entry}\" — must contain only hex digits with even length (2–16 chars).",
                         FileName:    fileName,
                         FilePath:    null,   // caller fills FilePath
-                        Line:        lineNumber));
+                        Line:        lineNumber,
+                        Tag:         entry));
                     repairsApplied++;
                     // Drop this line from repaired output
                     continue;
@@ -111,7 +112,8 @@ public sealed class TblRepairService
                         $"Entry \"{entry}\" has an empty value.",
                         FileName: fileName,
                         FilePath: null,
-                        Line:     lineNumber));
+                        Line:     lineNumber,
+                        Tag:      entry));
                     // Keep the line (not fatal, not removed)
                     repairedLines.Add(line);
                     continue;
@@ -126,7 +128,8 @@ public sealed class TblRepairService
                         $"Duplicate entry \"{entry}\" — this occurrence will be removed on save.",
                         FileName: fileName,
                         FilePath: null,
-                        Line:     lineNumber));
+                        Line:     lineNumber,
+                        Tag:      entry));
                     repairsApplied++;
                     // Drop duplicate from repaired output
                     continue;

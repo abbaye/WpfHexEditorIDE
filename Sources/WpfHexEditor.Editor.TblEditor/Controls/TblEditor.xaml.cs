@@ -23,12 +23,17 @@ namespace WpfHexEditor.Editor.TblEditor.Controls;
 /// No embedded toolbar — all editing commands are exposed via <see cref="IDocumentEditor"/>
 /// and TBL-specific properties/methods for the host to wire to its own menus.
 /// </summary>
-public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor
+public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor, IEditorToolbarContributor, ISearchTarget
 {
     private readonly TblEditorViewModel _vm;
     private string? _currentFilePath;
     private double _baseFontSize = 12.0;
     private bool _suppressSourceLoad;
+
+    // ── ISearchTarget — custom filter controls (created once, reused) ──────
+    private ComboBox _typeFilterCombo = null!;
+    private CheckBox _conflictsOnlyCheckBox = null!;
+    private StackPanel? _customFiltersPanel;
 
     // ── IDiagnosticSource ─────────────────────────────────────────────────
     private List<DiagnosticEntry> _diagnostics = [];
@@ -55,13 +60,45 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         // Auto-refresh ErrorPanel on any collection mutation (add/delete/undo/redo/toolbar commands)
         _vm.Entries.CollectionChanged += (_, _) => { if (!_vm.IsLoading) _ = ForceValidationAsync(); };
 
-        // Populate type-filter combo
-        TypeFilterCombo.Items.Add(new ComboBoxItem { Content = "(All)", Tag = null });
+        // Build custom filter controls (injected into the QuickSearchBar via GetCustomFiltersContent)
+        _typeFilterCombo = new ComboBox { Margin = new Thickness(0), Width = 120, VerticalContentAlignment = VerticalAlignment.Center };
+        _typeFilterCombo.Items.Add(new ComboBoxItem { Content = "(All)", Tag = null });
         foreach (DteType t in Enum.GetValues<DteType>())
-            TypeFilterCombo.Items.Add(new ComboBoxItem { Content = t.ToString(), Tag = t });
-        TypeFilterCombo.SelectedIndex = 0;
+            _typeFilterCombo.Items.Add(new ComboBoxItem { Content = t.ToString(), Tag = t });
+        _typeFilterCombo.SelectedIndex = 0;
+        _typeFilterCombo.SelectionChanged += (_, _) =>
+        {
+            if (_typeFilterCombo.SelectedItem is ComboBoxItem item)
+                _vm.TypeFilter = item.Tag is DteType t ? t : null;
+        };
+
+        _conflictsOnlyCheckBox = new CheckBox
+        {
+            Content            = "Conflicts only",
+            Margin             = new Thickness(6, 0, 0, 0),
+            VerticalAlignment  = VerticalAlignment.Center,
+        };
+        _conflictsOnlyCheckBox.SetBinding(CheckBox.IsCheckedProperty,
+            new System.Windows.Data.Binding(nameof(TblEditorViewModel.ShowConflictsOnly))
+            {
+                Source = _vm,
+                Mode   = System.Windows.Data.BindingMode.TwoWay
+            });
+
+        // Quick-search bar wiring
+        QuickSearchBarOverlay.OnCloseRequested          += (_, _) => HideSearch();
+        QuickSearchBarOverlay.OnAdvancedSearchRequested += (_, _) => HideSearch(); // no advanced dialog for TBL
+
+        // Update match counter whenever the filter is applied (debounce, TypeFilter, ShowConflictsOnly).
+        // Subscribed here (not in Loaded) so it works even before the first file is opened.
+        _vm.FilteredViewChanged += (_, _) => SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+
+        // Update match counter on selection change (tracks CurrentMatchIndex)
+        EntriesGrid.SelectionChanged += (_, _) => SearchResultsChanged?.Invoke(this, EventArgs.Empty);
 
         Loaded += (_, _) => _baseFontSize = EntriesGrid.FontSize;
+
+        BuildToolbarItems();
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -107,7 +144,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
 
     // Base pixel widths for fixed-size columns (index matches DataGrid.Columns order).
     // NaN = star/auto column — not touched.
-    private static readonly double[] _baseColWidths = [24, 100, 120, 75, 50, double.NaN];
+    private static readonly double[] _baseColWidths = [32, 100, 120, 75, 50, double.NaN];
 
     private static void OnZoomChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -305,12 +342,110 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
 
     // ── Search / Filter ───────────────────────────────────────────────────
 
-    public void ShowSearch()               { SearchPanel.Visibility = Visibility.Visible; SearchBox.Focus(); }
-    public void HideSearch()               { SearchPanel.Visibility = Visibility.Collapsed; _vm.ClearFilter(); }
+    public void ShowSearch()
+    {
+        if (QuickSearchBarOverlay.Visibility == Visibility.Visible)
+        {
+            QuickSearchBarOverlay.FocusSearchInput();
+            return;
+        }
+
+        QuickSearchBarOverlay.BindToTarget(this);
+        QuickSearchBarOverlay.Visibility = Visibility.Visible;
+        QuickSearchBarOverlay.EnsureDefaultPosition(SearchBarCanvas);
+    }
+
+    public void HideSearch()
+    {
+        QuickSearchBarOverlay.Visibility = Visibility.Collapsed;
+        QuickSearchBarOverlay.Detach();
+        _vm.ClearFilter();
+    }
+
     public void SetSearch(string text)     { ShowSearch(); _vm.SearchText = text; }
     public void SetTypeFilter(DteType? t)  => _vm.TypeFilter = t;
     public void SetConflictsFilter(bool b) => _vm.ShowConflictsOnly = b;
     public void ClearFilter()              => _vm.ClearFilter();
+
+    // ── ISearchTarget ─────────────────────────────────────────────────────
+
+    SearchBarCapabilities ISearchTarget.Capabilities =>
+        SearchBarCapabilities.CaseSensitive | SearchBarCapabilities.CustomFilters;
+
+    int ISearchTarget.MatchCount
+    {
+        get
+        {
+            if (_vm.FilteredEntries == null) return 0;
+            int count = 0;
+            foreach (var _ in _vm.FilteredEntries) count++;
+            return count;
+        }
+    }
+
+    int ISearchTarget.CurrentMatchIndex
+    {
+        get
+        {
+            var selected = EntriesGrid.SelectedItem;
+            if (selected == null || _vm.FilteredEntries == null) return -1;
+            int idx = 0;
+            foreach (var item in _vm.FilteredEntries)
+            {
+                if (item == selected) return idx;
+                idx++;
+            }
+            return -1;
+        }
+    }
+
+    void ISearchTarget.Find(string query, SearchTargetOptions options)
+    {
+        _vm.SearchText = query; // debounce triggers ApplyFilter → CollectionChanged → SearchResultsChanged
+    }
+
+    void ISearchTarget.FindNext()
+    {
+        if (_vm.FilteredEntries == null) return;
+        var items = _vm.FilteredEntries.Cast<object>().ToList();
+        if (items.Count == 0) return;
+        int currentIdx = items.IndexOf(EntriesGrid.SelectedItem);
+        int next = (currentIdx + 1) % items.Count;
+        EntriesGrid.SelectedItem = items[next];
+        EntriesGrid.ScrollIntoView(items[next]);
+    }
+
+    void ISearchTarget.FindPrevious()
+    {
+        if (_vm.FilteredEntries == null) return;
+        var items = _vm.FilteredEntries.Cast<object>().ToList();
+        if (items.Count == 0) return;
+        int currentIdx = items.IndexOf(EntriesGrid.SelectedItem);
+        int prev = currentIdx <= 0 ? items.Count - 1 : currentIdx - 1;
+        EntriesGrid.SelectedItem = items[prev];
+        EntriesGrid.ScrollIntoView(items[prev]);
+    }
+
+    void ISearchTarget.ClearSearch()
+    {
+        _vm.ClearFilter();
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    void ISearchTarget.Replace(string replacement)  { /* TblEditor has no replace */ }
+    void ISearchTarget.ReplaceAll(string replacement) { /* TblEditor has no replace */ }
+
+    UIElement? ISearchTarget.GetCustomFiltersContent()
+    {
+        if (_customFiltersPanel != null) return _customFiltersPanel;
+
+        _customFiltersPanel = new StackPanel { Orientation = Orientation.Horizontal };
+        _customFiltersPanel.Children.Add(_typeFilterCombo);
+        _customFiltersPanel.Children.Add(_conflictsOnlyCheckBox);
+        return _customFiltersPanel;
+    }
+
+    public event EventHandler? SearchResultsChanged;
 
     // ── Validation ────────────────────────────────────────────────────────
 
@@ -341,21 +476,21 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
                 .Select(e => new DiagnosticEntry(
                     DiagnosticSeverity.Error, "TBL001",
                     e.ValidationError ?? "Invalid entry",
-                    FileName: fileName, FilePath: _currentFilePath)),
+                    FileName: fileName, FilePath: _currentFilePath, Tag: e.Entry)),
             // TBL002 — clé hex en doublon (toutes les copies signalées)
             .._vm.Entries
                 .Where(e => duplicateKeys.Contains(e.Entry.ToUpperInvariant()))
                 .Select(e => new DiagnosticEntry(
                     DiagnosticSeverity.Error, "TBL002",
                     $"Duplicate hex key \"{e.Entry}\"",
-                    FileName: fileName, FilePath: _currentFilePath)),
+                    FileName: fileName, FilePath: _currentFilePath, Tag: e.Entry)),
             // TBL003 — conflit de préfixe uniquement (HasConflict ET pas doublon)
             .._vm.Entries
                 .Where(e => e.HasConflict && !duplicateKeys.Contains(e.Entry.ToUpperInvariant()))
                 .Select(e => new DiagnosticEntry(
                     DiagnosticSeverity.Warning, "TBL003",
                     $"Prefix conflict on entry \"{e.Entry}\"",
-                    FileName: fileName, FilePath: _currentFilePath))
+                    FileName: fileName, FilePath: _currentFilePath, Tag: e.Entry))
         ];
         DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
 
@@ -423,6 +558,13 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
     public IPropertyProvider? GetPropertyProvider()
         => _propertyProvider ??= new TblEditorPropertyProvider(this);
 
+    // ── IEditorToolbarContributor ─────────────────────────────────────────
+    private readonly ObservableCollection<EditorToolbarItem> _toolbarItems = [];
+    private EditorToolbarItem _tbDeleteItem    = null!;
+    private EditorToolbarItem _tbDuplicateItem = null!;
+
+    public ObservableCollection<EditorToolbarItem> ToolbarItems => _toolbarItems;
+
     // ═══════════════════════════════════════════════════════════════════
     // IStatusBarContributor
     // ═══════════════════════════════════════════════════════════════════
@@ -473,7 +615,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
     {
         if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control)
         { ShowSearch(); e.Handled = true; }
-        else if (e.Key == Key.Escape && SearchPanel.Visibility == Visibility.Visible)
+        else if (e.Key == Key.Escape && QuickSearchBarOverlay.Visibility == Visibility.Visible)
         { HideSearch(); e.Handled = true; }
         else if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
         { Undo(); e.Handled = true; }
@@ -494,19 +636,6 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         e.Handled = true;
     }
 
-    private void SearchBox_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Escape)      { HideSearch(); e.Handled = true; }
-        else if (e.Key == Key.Return) { EntriesGrid.Focus(); e.Handled = true; }
-    }
-
-    private void CloseSearch_Click(object sender, RoutedEventArgs e) => HideSearch();
-
-    private void TypeFilterCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (TypeFilterCombo.SelectedItem is ComboBoxItem item)
-            _vm.TypeFilter = item.Tag is DteType t ? t : null;
-    }
 
     private void EntriesGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
@@ -568,6 +697,107 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
 
         // Notify IDocumentEditor subscribers
         _docEditorSelectionChanged?.Invoke(this, EventArgs.Empty);
+
+        // Sync toolbar button states
+        var hasSelection = EntriesGrid.SelectedItems.Count > 0;
+        var singleSel    = EntriesGrid.SelectedItems.Count == 1;
+        if (_tbDeleteItem    != null) _tbDeleteItem.IsEnabled    = hasSelection;
+        if (_tbDuplicateItem != null) _tbDuplicateItem.IsEnabled = singleSel;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // IEditorToolbarContributor — toolbar builder
+    // ═══════════════════════════════════════════════════════════════════════
+
+    private void BuildToolbarItems()
+    {
+        // ── Group 1 : Entry editing ───────────────────────────────────────
+        _toolbarItems.Add(new EditorToolbarItem
+        {
+            Icon    = "\uE710",
+            Tooltip = "Add Entry (Ctrl+Insert)",
+            Command = new TblRelayCommand(_ => AddEntry()),
+        });
+
+        _tbDuplicateItem = new EditorToolbarItem
+        {
+            Icon      = "\uE8C8",
+            Tooltip   = "Duplicate Entry",
+            Command   = new TblRelayCommand(_ => DuplicateSelectedEntry()),
+            IsEnabled = false,
+        };
+        _toolbarItems.Add(_tbDuplicateItem);
+
+        _tbDeleteItem = new EditorToolbarItem
+        {
+            Icon      = "\uE74D",
+            Tooltip   = "Delete Selected (Del)",
+            Command   = new TblRelayCommand(_ => DeleteSelectedEntries()),
+            IsEnabled = false,
+        };
+        _toolbarItems.Add(_tbDeleteItem);
+
+        _toolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
+
+        // ── Group 2 : Search & Filter ─────────────────────────────────────
+        _toolbarItems.Add(new EditorToolbarItem
+        {
+            Icon    = "\uE721",
+            Tooltip = "Find (Ctrl+F)",
+            Command = new TblRelayCommand(_ => ShowSearch()),
+        });
+
+        _toolbarItems.Add(new EditorToolbarItem
+        {
+            Icon    = "\uE946",
+            Tooltip = "Go to Next Conflict",
+            Command = new TblRelayCommand(_ => GoToNextConflict()),
+        });
+
+        _toolbarItems.Add(new EditorToolbarItem
+        {
+            Icon    = "\uE8D9",
+            Tooltip = "Clear Filter",
+            Command = new TblRelayCommand(_ => ClearFilter()),
+        });
+
+        _toolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
+
+        // ── Group 3 : More ▾ (dropdown) ───────────────────────────────────
+        _toolbarItems.Add(new EditorToolbarItem
+        {
+            Icon    = "\uE712",
+            Tooltip = "More options",
+            DropdownItems =
+            [
+                new EditorToolbarItem
+                {
+                    Icon    = "\uE9D9",
+                    Label   = "Force Validation",
+                    Tooltip = "Re-run full validation on all entries",
+                    Command = new TblRelayCommand(_ => _ = ForceValidationAsync()),
+                },
+                new EditorToolbarItem { IsSeparator = true },
+                new EditorToolbarItem
+                {
+                    Icon    = "\uE8A3",
+                    Label   = "Zoom In",
+                    Command = new TblRelayCommand(_ => ZoomIn()),
+                },
+                new EditorToolbarItem
+                {
+                    Icon    = "\uE71F",
+                    Label   = "Zoom Out",
+                    Command = new TblRelayCommand(_ => ZoomOut()),
+                },
+                new EditorToolbarItem
+                {
+                    Icon    = "\uE72A",
+                    Label   = "Reset Zoom",
+                    Command = new TblRelayCommand(_ => ResetZoom()),
+                },
+            ],
+        });
     }
 
     // ═══════════════════════════════════════════════════════════════════════

@@ -19,6 +19,7 @@ public sealed partial class OptionsEditorControl : UserControl
     private readonly Dictionary<OptionsPageDescriptor, UserControl> _pageCache = new();
     private readonly List<IOptionsPage> _shownPages = new();
     private OptionsPageDescriptor? _currentDesc;
+    private bool _initialized;
 
     // ── Events (consumed by MainWindow) ───────────────────────────────────
 
@@ -38,6 +39,8 @@ public sealed partial class OptionsEditorControl : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        if (_initialized) return;
+        _initialized = true;
         BuildTree();
         PopulateFilterCombo();
         SelectFirstPage();

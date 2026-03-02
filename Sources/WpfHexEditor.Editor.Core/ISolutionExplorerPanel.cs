@@ -114,6 +114,20 @@ public interface ISolutionExplorerPanel
     event EventHandler<OpenWithRequestedEventArgs>? OpenWithRequested;
 
     /// <summary>
+    /// Fired when the user selects a specific editor from the "Open With ›" submenu.
+    /// <see cref="OpenWithSpecificEditorEventArgs.FactoryId"/> is <see langword="null"/>
+    /// to open with the Hex Editor fallback.
+    /// </summary>
+    event EventHandler<OpenWithSpecificEditorEventArgs>? OpenWithSpecificRequested;
+
+    /// <summary>
+    /// Provides the registry of available editor factories so the panel can build
+    /// the "Open With ›" submenu dynamically.
+    /// Call this once after registering factories, before the panel is shown.
+    /// </summary>
+    void SetEditorRegistry(IReadOnlyList<IEditorFactory> factories);
+
+    /// <summary>
     /// Fired when the user chooses "Include in Project" on a physical file node
     /// (visible only in Show All Files mode when the file is not yet part of the project).
     /// </summary>

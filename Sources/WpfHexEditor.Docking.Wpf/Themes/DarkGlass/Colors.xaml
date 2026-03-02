@@ -36,8 +36,8 @@
     <Color x:Key="HexEditor_HeaderBackgroundColor">#252525</Color>
     <Color x:Key="HexEditor_HeaderForegroundColor">#B0B0B0</Color>
     <Color x:Key="HexEditor_ColumnSeparatorColor">#3F3F3F</Color>
-    <Color x:Key="HexEditor_ForegroundFirstColor">#E0E0E0</Color>
-    <Color x:Key="HexEditor_ForegroundSecondColor">#40C4FF</Color>
+    <Color x:Key="HexEditor_ForegroundFirstColor">#F0F0F0</Color>
+    <Color x:Key="HexEditor_ForegroundSecondColor">#55CCFF</Color>
     <Color x:Key="HexEditor_ForegroundOffSetHeaderColor">#B0B0B0</Color>
     <Color x:Key="HexEditor_SelectionFirstColor">#6600D9FF</Color>
     <Color x:Key="HexEditor_SelectionSecondColor">#3300D9FF</Color>
@@ -284,4 +284,13 @@
     <SolidColorBrush x:Key="BackgroundBrush"  Color="{StaticResource DockWindowBackgroundColor}"/>
     <SolidColorBrush x:Key="ForegroundBrush"  Color="{StaticResource DockMenuForegroundColor}"/>
     <SolidColorBrush x:Key="AccentBrush"      Color="{StaticResource AccentColor}"/>
+
+    <!-- DocumentInfoBar (InfoBar_*) -->
+    <SolidColorBrush x:Key="InfoBar_BackgroundBrush"             Color="#252525"/>
+    <SolidColorBrush x:Key="InfoBar_ForegroundBrush"             Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="InfoBar_BorderBrush"                 Color="#3F3F3F"/>
+    <SolidColorBrush x:Key="InfoBar_ButtonBackgroundBrush"       Color="#333333"/>
+    <SolidColorBrush x:Key="InfoBar_ButtonHoverBackgroundBrush"  Color="#3A3A3A"/>
+    <SolidColorBrush x:Key="InfoBar_ButtonForegroundBrush"       Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="InfoBar_DismissButtonBrush"          Color="#888888"/>
 </ResourceDictionary>

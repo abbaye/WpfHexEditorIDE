@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -248,6 +249,16 @@ public class FloatingWindow : Window
             Title = node.ActiveItem.Title;
             _titleBlock.Text = node.ActiveItem.Title;
             UpdateIcon(node.ActiveItem);
+
+            // Keep title bar in sync when dockItem.Title changes (e.g. "file *" dirty flag)
+            node.ActiveItem.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(DockItem.Title))
+                {
+                    Title = node.ActiveItem.Title;
+                    _titleBlock.Text = node.ActiveItem.Title;
+                }
+            };
         }
     }
 

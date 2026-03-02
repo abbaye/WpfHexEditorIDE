@@ -23,6 +23,7 @@ internal sealed class DockTabEventWirer : IDisposable
     private readonly Action<DockItem> _hideHandler;
     private readonly Action<DockItem> _dockAsDocumentHandler;
     private readonly Action<DockItem> _pinToggleHandler;
+    private readonly Action<DockItem, int> _reorderHandler;
 
     public DockTabEventWirer(DockTabControl tabControl, DockControl host)
     {
@@ -85,6 +86,16 @@ internal sealed class DockTabEventWirer : IDisposable
             host.RebuildVisualTree();
         };
 
+        _reorderHandler = (item, targetIndex) =>
+        {
+            if (item.Owner is not { } group) return;
+            var active = group.ActiveItem;
+            group.RemoveItem(item);
+            group.InsertItem(Math.Clamp(targetIndex, 0, group.Items.Count), item);
+            if (active is not null) group.ActiveItem = active;
+            host.RebuildVisualTree();
+        };
+
         _tabControl.TabCloseRequested            += _closeHandler;
         _tabControl.TabDragStarted               += _dragHandler;
         _tabControl.TabFloatRequested            += _floatHandler;
@@ -92,6 +103,7 @@ internal sealed class DockTabEventWirer : IDisposable
         _tabControl.TabHideRequested             += _hideHandler;
         _tabControl.TabDockAsDocumentRequested   += _dockAsDocumentHandler;
         _tabControl.TabPinToggleRequested        += _pinToggleHandler;
+        _tabControl.TabReorderRequested          += _reorderHandler;
     }
 
     public void Dispose()
@@ -103,5 +115,6 @@ internal sealed class DockTabEventWirer : IDisposable
         _tabControl.TabHideRequested             -= _hideHandler;
         _tabControl.TabDockAsDocumentRequested   -= _dockAsDocumentHandler;
         _tabControl.TabPinToggleRequested        -= _pinToggleHandler;
+        _tabControl.TabReorderRequested          -= _reorderHandler;
     }
 }

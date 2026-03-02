@@ -13,7 +13,7 @@
              xmlns:models="clr-namespace:WpfHexEditor.Core.Models;assembly=WpfHexEditor.Core"
              xmlns:converters="clr-namespace:WpfHexEditor.HexEditor.Converters"
              xmlns:controls="clr-namespace:WpfHexEditor.HexEditor.Controls"
-             xmlns:searchViews="clr-namespace:WpfHexEditor.HexEditor.Search.Views"
+             xmlns:coreViews="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
              xmlns:prop="clr-namespace:WpfHexEditor.Core.Properties;assembly=WpfHexEditor.Core"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -426,16 +426,17 @@
                                       Panel.ZIndex="10"
                                       Visibility="Collapsed"/>
 
-            <!-- Quick Search/Replace Bar (Ctrl+F inline overlay, VS-style) -->
-            <searchViews:QuickSearchBar x:Name="QuickSearchBarOverlay"
-                                        Grid.Column="0"
-                                        Grid.ColumnSpan="2"
-                                        Panel.ZIndex="5"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        Margin="0,4,24,0"
-                                        Width="420"
-                                        Visibility="Collapsed"/>
+            <!-- Canvas overlay — allows the QuickSearchBar to be dragged anywhere.
+                 No Background (null) so empty areas let clicks through; the bar
+                 itself captures clicks via its explicit Background. -->
+            <Canvas x:Name="SearchBarCanvas"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Panel.ZIndex="5">
+                <coreViews:QuickSearchBar x:Name="QuickSearchBarOverlay"
+                                          Width="520"
+                                          Visibility="Collapsed"/>
+            </Canvas>
         </Grid>
 
         <!-- Status bar -->

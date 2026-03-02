@@ -23,6 +23,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 {
     private readonly SolutionExplorerViewModel _vm = new();
     private SolutionExplorerNodeVm? _contextMenuTarget;
+    private IReadOnlyList<IEditorFactory> _editorFactories = [];
 
     public SolutionExplorerPanel()
     {
@@ -48,11 +49,16 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         SelectNodeByPath(absolutePath, _vm.Roots);
     }
 
-    public event EventHandler<ProjectItemActivatedEventArgs>? ItemActivated;
-    public event EventHandler<ProjectItemEventArgs>?          ItemSelected;
-    public event EventHandler<ProjectItemEventArgs>?          ItemRenameRequested;
-    public event EventHandler<ProjectItemEventArgs>?          ItemDeleteRequested;
-    public event EventHandler<ItemMoveRequestedEventArgs>?    ItemMoveRequested;
+    /// <inheritdoc/>
+    public void SetEditorRegistry(IReadOnlyList<IEditorFactory> factories)
+        => _editorFactories = factories;
+
+    public event EventHandler<ProjectItemActivatedEventArgs>?      ItemActivated;
+    public event EventHandler<ProjectItemEventArgs>?               ItemSelected;
+    public event EventHandler<ProjectItemEventArgs>?               ItemRenameRequested;
+    public event EventHandler<ProjectItemEventArgs>?               ItemDeleteRequested;
+    public event EventHandler<ItemMoveRequestedEventArgs>?         ItemMoveRequested;
+    public event EventHandler<OpenWithSpecificEditorEventArgs>?    OpenWithSpecificRequested;
 
     // ── Tree events ───────────────────────────────────────────────────────────
 
@@ -138,6 +144,10 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         OpenMenuItem    .Visibility = canOpen ? Visibility.Visible : Visibility.Collapsed;
         OpenWithMenuItem.Visibility = canOpen ? Visibility.Visible : Visibility.Collapsed;
         OpenSeparator   .Visibility = canOpen ? Visibility.Visible : Visibility.Collapsed;
+
+        // Dynamically rebuild the "Open With ›" submenu based on the current file extension
+        if (canOpen)
+            RebuildOpenWithSubmenu(file?.Source.AbsolutePath ?? (physFile?.IsInProject == true ? physFile.LinkedItem?.AbsolutePath : null));
 
         // Add / folder operations (project & folder only)
         AddNewItemMenuItem       .Visibility = canAdd    ? Visibility.Visible : Visibility.Collapsed;
@@ -283,15 +293,49 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         }
     }
 
-    private void OnOpenWith(object sender, RoutedEventArgs e)
+    /// <summary>
+    /// Rebuilds the "Open With ›" submenu items for <paramref name="filePath"/>.
+    /// The "Hex Editor" item is always present; additional items are added for each
+    /// registered factory whose <see cref="IEditorFactory.CanOpen"/> returns true.
+    /// </summary>
+    private void RebuildOpenWithSubmenu(string? filePath)
     {
+        // Remove all items except the permanent "Hex Editor" one (index 0)
+        while (OpenWithMenuItem.Items.Count > 1)
+            OpenWithMenuItem.Items.RemoveAt(OpenWithMenuItem.Items.Count - 1);
+
+        if (filePath is null) return;
+
+        foreach (var factory in _editorFactories)
+        {
+            if (!factory.CanOpen(filePath)) continue;
+            OpenWithMenuItem.Items.Add(MakeOpenWithSubItem(factory.Descriptor.DisplayName, factory.Descriptor.Id));
+        }
+    }
+
+    private MenuItem MakeOpenWithSubItem(string header, string factoryId)
+    {
+        var item = new MenuItem { Header = header, Tag = factoryId };
+        item.Click += OnOpenWithSubItem;
+        return item;
+    }
+
+    private void OnOpenWithSubItem(object sender, RoutedEventArgs e)
+    {
+        if (sender is not MenuItem mi) return;
+
+        // Tag == "__hex__" or null → Hex Editor fallback; otherwise it's a factory id
+        var factoryId = mi.Tag is "__hex__" ? null : mi.Tag as string;
+
         switch (_contextMenuTarget)
         {
             case FileNodeVm fn when fn.Project is not null:
-                OpenWithRequested?.Invoke(this, new OpenWithRequestedEventArgs { Item = fn.Source, Project = fn.Project });
+                OpenWithSpecificRequested?.Invoke(this, new OpenWithSpecificEditorEventArgs
+                    { Item = fn.Source, Project = fn.Project, FactoryId = factoryId });
                 break;
             case PhysicalFileNodeVm pf when pf.IsInProject && pf.LinkedItem is not null && pf.Project is not null:
-                OpenWithRequested?.Invoke(this, new OpenWithRequestedEventArgs { Item = pf.LinkedItem, Project = pf.Project });
+                OpenWithSpecificRequested?.Invoke(this, new OpenWithSpecificEditorEventArgs
+                    { Item = pf.LinkedItem, Project = pf.Project, FactoryId = factoryId });
                 break;
         }
     }

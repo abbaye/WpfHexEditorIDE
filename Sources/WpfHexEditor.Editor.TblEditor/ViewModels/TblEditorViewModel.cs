@@ -145,6 +145,8 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
     public event EventHandler? CanUndoChanged;
     public event EventHandler? CanRedoChanged;
     public event EventHandler<TblStatistics>? StatisticsChanged;
+    /// <summary>Raised after every <see cref="ApplyFilter"/> call (debounce, TypeFilter, ShowConflictsOnly).</summary>
+    public event EventHandler? FilteredViewChanged;
 
     // ── Load ───────────────────────────────────────────────────────────────
 
@@ -296,6 +298,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
     private void ApplyFilter()
     {
         _filteredEntries?.Refresh();
+        FilteredViewChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private bool EntryMatchesFilter(object obj)
@@ -307,7 +310,8 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
         {
             var s = _searchText;
             if (!vm.Entry.Contains(s, StringComparison.OrdinalIgnoreCase) &&
-                vm.Value?.Contains(s, StringComparison.OrdinalIgnoreCase) != true)
+                vm.Value?.Contains(s, StringComparison.OrdinalIgnoreCase) != true &&
+                !vm.TypeLabel.Contains(s, StringComparison.OrdinalIgnoreCase))
                 return false;
         }
         return true;

@@ -77,6 +77,23 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
     /// </summary>
     public int ByteLength => Entry.Length / 2;
 
+    /// <summary>
+    /// Short UI label matching the badge displayed in the Type column
+    /// (e.g. "ASC", "DTE", "MTE", "JPN", "EOL", "EOB", "INV").
+    /// Used by the text search filter so searching "MTE" shows only MTE entries.
+    /// </summary>
+    public string TypeLabel => Type switch
+    {
+        DteType.Ascii                 => "ASC",
+        DteType.DualTitleEncoding     => "DTE",
+        DteType.MultipleTitleEncoding => "MTE",
+        DteType.Japonais              => "JPN",
+        DteType.EndLine               => "EOL",
+        DteType.EndBlock              => "EOB",
+        DteType.Invalid               => "INV",
+        _                             => Type.ToString(),
+    };
+
     // ── State ──────────────────────────────────────────────────────────────
 
     /// <summary>

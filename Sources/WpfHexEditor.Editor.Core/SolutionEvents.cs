@@ -150,6 +150,37 @@ public sealed class OpenWithRequestedEventArgs : EventArgs
 }
 
 /// <summary>
+/// Fired when the user chooses a specific editor from the "Open With ›" submenu in the Solution
+/// Explorer context menu, or clicks an action button on the in-editor <c>DocumentInfoBar</c>.
+/// </summary>
+public sealed class OpenWithSpecificEditorEventArgs : EventArgs
+{
+    public IProjectItem Item      { get; init; } = null!;
+    public IProject     Project   { get; init; } = null!;
+    /// <summary>
+    /// The <see cref="IEditorDescriptor.Id"/> of the requested editor,
+    /// or <see langword="null"/> to open with the fallback Hex Editor.
+    /// </summary>
+    public string?      FactoryId { get; init; }
+}
+
+/// <summary>
+/// Fired by <c>DocumentInfoBar</c> when the user clicks an "Open in …" action button.
+/// </summary>
+public sealed class OpenWithEditorRequestedEventArgs : EventArgs
+{
+    /// <summary>
+    /// The <see cref="IEditorDescriptor.Id"/> of the requested editor,
+    /// or <see langword="null"/> to open with the fallback Hex Editor.
+    /// </summary>
+    public string?      FactoryId { get; init; }
+    /// <summary>Absolute file path of the document displayed in the bar's host viewer.</summary>
+    public string       FilePath  { get; init; } = string.Empty;
+    /// <summary>The ContentId of the source <c>DockItem</c> tab.</summary>
+    public string       SourceContentId { get; init; } = string.Empty;
+}
+
+/// <summary>
 /// Fired when the user chooses "Include in Project" on a physical file that is
 /// not yet a project item (Show All Files mode).
 /// </summary>
