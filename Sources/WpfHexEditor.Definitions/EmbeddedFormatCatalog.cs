@@ -12,15 +12,15 @@ using System.Reflection;
 using System.Text.Json;
 using WpfHexEditor.Editor.Core;
 
-namespace WpfHexEditor.Core.Services;
+namespace WpfHexEditor.Definitions;
 
 /// <summary>
 /// Singleton catalog of the embedded <c>.whfmt</c> format definitions
-/// shipped inside <c>WpfHexEditor.Core.dll</c>.
+/// shipped inside <c>WpfHexEditor.Definitions.dll</c>.
 /// <para>
 /// On first call to <see cref="GetAll"/> the catalog performs a lazy scan of
 /// all manifest resources matching the pattern
-/// <c>WpfHexEditor.Core.FormatDefinitions.*.whfmt</c> and extracts
+/// <c>WpfHexEditor.Definitions.FormatDefinitions.*.whfmt</c> and extracts
 /// lightweight header information without loading the full block definitions.
 /// </para>
 /// </summary>
@@ -43,7 +43,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
     private IReadOnlyList<EmbeddedFormatEntry>? _entries;
     private IReadOnlyList<string>?              _categories;
 
-    private static readonly Assembly CoreAssembly =
+    private static readonly Assembly DefinitionsAssembly =
         typeof(EmbeddedFormatCatalog).Assembly;
 
     // ── IEmbeddedFormatCatalog ────────────────────────────────────────────────
@@ -54,7 +54,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         if (_entries is not null) return _entries;
 
         var list = new List<EmbeddedFormatEntry>();
-        foreach (var key in CoreAssembly.GetManifestResourceNames())
+        foreach (var key in DefinitionsAssembly.GetManifestResourceNames())
         {
             if (!key.Contains("FormatDefinitions") || !key.EndsWith(".whfmt"))
                 continue;
@@ -94,7 +94,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
     /// <inheritdoc/>
     public string GetJson(string resourceKey)
     {
-        using var stream = CoreAssembly.GetManifestResourceStream(resourceKey)
+        using var stream = DefinitionsAssembly.GetManifestResourceStream(resourceKey)
             ?? throw new InvalidOperationException($"Resource not found: {resourceKey}");
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
@@ -104,7 +104,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 
     private static EmbeddedFormatEntry? LoadHeader(string resourceKey)
     {
-        using var stream = CoreAssembly.GetManifestResourceStream(resourceKey);
+        using var stream = DefinitionsAssembly.GetManifestResourceStream(resourceKey);
         if (stream is null) return null;
 
         using var doc = JsonDocument.Parse(stream);
@@ -138,12 +138,11 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 
     /// <summary>
     /// Extracts the category from a resource key like
-    /// <c>WpfHexEditor.Core.FormatDefinitions.Archives.ZIP.whfmt</c> → <c>Archives</c>.
+    /// <c>WpfHexEditor.Definitions.FormatDefinitions.Archives.ZIP.whfmt</c> → <c>Archives</c>.
     /// </summary>
     private static string ExtractCategoryFromKey(string key)
     {
-        // Strip prefix and suffix, split on '.'
-        const string prefix = "WpfHexEditor.Core.FormatDefinitions.";
+        const string prefix = "WpfHexEditor.Definitions.FormatDefinitions.";
         if (key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
         {
             var rest   = key.Substring(prefix.Length);  // "Archives.ZIP.whfmt"
