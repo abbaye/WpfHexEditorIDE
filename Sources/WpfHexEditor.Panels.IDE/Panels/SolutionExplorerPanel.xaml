@@ -261,7 +261,7 @@
             <Grid>
                 <!-- Normal display (IsEditing = false) -->
                 <StackPanel x:Name="FolderDisplayPanel" Orientation="Horizontal"
-                            ToolTip="Virtual folder">
+                            ToolTip="Solution folder (logical)">
                     <TextBlock x:Name="FolderIcon" Style="{StaticResource NodeIcon}"
                                Text="&#xE8D5;" Foreground="#6CA8C4"/>
                     <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
@@ -285,9 +285,9 @@
                     <Setter TargetName="FolderDisplayPanel"  Property="Visibility" Value="Collapsed"/>
                     <Setter TargetName="FolderInlineEditBox" Property="Visibility" Value="Visible"/>
                 </DataTrigger>
-                <!-- Physical folder: gold icon + distinct tooltip -->
+                <!-- Physical folder: yellow icon + distinct tooltip -->
                 <DataTrigger Binding="{Binding IsPhysicallyBacked}" Value="True">
-                    <Setter TargetName="FolderIcon"          Property="Foreground" Value="#E8B25A"/>
+                    <Setter TargetName="FolderIcon"          Property="Foreground" Value="#F5C518"/>
                     <Setter TargetName="FolderDisplayPanel"  Property="ToolTip"    Value="Physical folder"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
@@ -353,7 +353,7 @@
 
         <DataTemplate DataType="{x:Type vm:PhysicalFolderNodeVm}">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE8D5;" Foreground="#E8B25A" Opacity="0.75"/>
+                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE8D5;" Foreground="#F5C518" Opacity="0.75"/>
                 <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}" Opacity="0.85"/>
             </StackPanel>
         </DataTemplate>
@@ -514,7 +514,7 @@
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8F4;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="NewPhysicalFolderMenuItem" Header="New Physical Folder" Click="OnNewPhysicalFolder">
+                    <MenuItem x:Name="NewPhysicalFolderMenuItem" Header="New Solution Folder" Click="OnNewPhysicalFolder">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8D5;"/>
                         </MenuItem.Icon>

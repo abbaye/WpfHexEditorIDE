@@ -250,7 +250,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         {
             Project        = project,
             ParentFolderId = folderId,
-            CreatePhysical = false,
+            CreatePhysical = true,
         });
     }
 
@@ -262,7 +262,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         {
             Project        = project,
             ParentFolderId = folderId,
-            CreatePhysical = true,
+            CreatePhysical = false,
         });
     }
 
