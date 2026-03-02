@@ -86,6 +86,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         "AdvancedSearch", typeof(MainWindow),
         new InputGestureCollection { new KeyGesture(Key.F, ModifierKeys.Control | ModifierKeys.Shift) });
 
+    /// <summary>Ctrl+G — opens the Go To Offset dialog.</summary>
+    public static readonly RoutedCommand GoToOffsetCommand = new RoutedCommand(
+        "GoToOffset", typeof(MainWindow),
+        new InputGestureCollection { new KeyGesture(Key.G, ModifierKeys.Control) });
+
     // ─── Constants ─────────────────────────────────────────────────────
     private static readonly string LayoutFilePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -3861,6 +3866,34 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnShowArchivePanel(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Archive Structure", ArchivePanelContentId, DockDirection.Right);
+
+    private void OnGoToOffset(object sender, RoutedEventArgs e)
+    {
+        if (ActiveHexEditor is not { } hex) return;
+
+        var dlg = new WpfHexEditor.App.Dialogs.GoToOffsetDialog { Owner = this };
+        if (dlg.ShowDialog() != true) return;
+
+        if (dlg.Offset >= 0 && dlg.Offset < hex.Length)
+            hex.SetPosition(dlg.Offset);
+        else
+            OutputLogger.Debug($"Go To Offset: offset 0x{dlg.Offset:X} is out of range (file size = {hex.Length}).");
+    }
+
+    private void OnFileDrop(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetData(DataFormats.FileDrop) is string[] files)
+            foreach (var file in files)
+                OpenFileDirectly(file);
+    }
+
+    private void OnFileDragOver(object sender, DragEventArgs e)
+    {
+        e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop)
+            ? DragDropEffects.Copy
+            : DragDropEffects.None;
+        e.Handled = true;
+    }
 
     private void OnShowParsedFields(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Parsed Fields", ParsedFieldsPanelContentId, DockDirection.Right);
