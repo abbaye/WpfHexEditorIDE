@@ -145,6 +145,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private const string FileStatsPanelContentId           = "panel-file-statistics";
     private const string PatternAnalysisPanelContentId    = "panel-pattern-analysis";
     private const string FormatInfoPanelContentId         = "panel-format-info";
+    private const string FileComparisonPanelContentId    = "panel-file-comparison";
+    private const string ArchivePanelContentId           = "panel-archive";
     private string _lastAppliedTheme = string.Empty;
 
     // TBL dropdown — tracks which project TBL item is applied per hex editor
@@ -166,6 +168,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private WpfHexEditor.Panels.BinaryAnalysis.FileStatisticsPanel?    _fileStatisticsPanel;
     private WpfHexEditor.Panels.BinaryAnalysis.PatternAnalysisPanel?   _patternAnalysisPanel;
     private WpfHexEditor.Panels.BinaryAnalysis.EnrichedFormatInfoPanel? _formatInfoPanel;
+
+    // FileOps panels (persistent singletons)
+    private WpfHexEditor.Panels.FileOps.ArchiveStructurePanel? _archivePanel;
 
     // SolutionManager
     private readonly ISolutionManager _solutionManager = SolutionManager.Instance;
@@ -844,6 +849,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             FileStatsPanelContentId        => CreateFileStatsContent(),
             PatternAnalysisPanelContentId  => CreatePatternAnalysisContent(),
             FormatInfoPanelContentId       => CreateFormatInfoContent(),
+            FileComparisonPanelContentId   => CreateFileComparisonContent(),
+            ArchivePanelContentId          => CreateArchivePanelContent(),
             OptionsContentId               => CreateOptionsContent(),
             _ when item.ContentId.StartsWith("doc-file-") => CreateSmartFileEditorContent(item),
             _ when item.ContentId.StartsWith("doc-hex-")  => CreateHexEditorContent(
@@ -963,6 +970,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _formatInfoPanel ??= new WpfHexEditor.Panels.BinaryAnalysis.EnrichedFormatInfoPanel();
         return _formatInfoPanel;
+    }
+
+    private UIElement CreateFileComparisonContent()
+    {
+        // FileComparisonPanel manages its own file selection internally
+        var panel = new WpfHexEditor.Panels.FileOps.FileComparisonPanel();
+        return panel;
+    }
+
+    private UIElement CreateArchivePanelContent()
+    {
+        _archivePanel ??= new WpfHexEditor.Panels.FileOps.ArchiveStructurePanel();
+        return _archivePanel;
     }
 
     private UIElement CreateParsedFieldsContent()
@@ -3714,6 +3734,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _structureOverlayPanel?.UpdateFileBytes(bytes);
             _patternAnalysisPanel?.Analyze(bytes);
 
+            // Auto-load archive structure for ZIP files
+            if (_archivePanel is not null && !string.IsNullOrEmpty(hex.FileName))
+            {
+                var ext = System.IO.Path.GetExtension(hex.FileName).ToLowerInvariant();
+                if (ext == ".zip")
+                {
+                    try
+                    {
+                        var root = await System.Threading.Tasks.Task.Run(() => BuildZipArchiveTree(hex.FileName));
+                        if (!ReferenceEquals(hex, _connectedHexEditor)) return;
+                        _archivePanel.LoadArchive(root);
+                    }
+                    catch { /* not a valid zip */ }
+                }
+            }
+
             var fileSize = hex.Length;
             var entropy  = 0.0;
             if (bytes.Length > 0)
@@ -3749,6 +3785,62 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
+    private static WpfHexEditor.Panels.FileOps.ArchiveNode BuildZipArchiveTree(string zipPath)
+    {
+        var root = new WpfHexEditor.Panels.FileOps.ArchiveNode
+        {
+            Name     = System.IO.Path.GetFileName(zipPath),
+            IsFolder = true,
+            Children = new System.Collections.ObjectModel.ObservableCollection<WpfHexEditor.Panels.FileOps.ArchiveNode>()
+        };
+
+        using var zip = System.IO.Compression.ZipFile.OpenRead(zipPath);
+        var folderMap = new System.Collections.Generic.Dictionary<string, WpfHexEditor.Panels.FileOps.ArchiveNode>
+        {
+            [""] = root
+        };
+
+        // Ensure folder nodes exist for the given path
+        WpfHexEditor.Panels.FileOps.ArchiveNode EnsureFolder(string folderPath)
+        {
+            if (folderMap.TryGetValue(folderPath, out var existing)) return existing;
+            var parent = EnsureFolder(System.IO.Path.GetDirectoryName(folderPath)?.Replace('\\', '/') ?? "");
+            var node = new WpfHexEditor.Panels.FileOps.ArchiveNode
+            {
+                Name     = System.IO.Path.GetFileName(folderPath.TrimEnd('/')),
+                IsFolder = true,
+                Children = new System.Collections.ObjectModel.ObservableCollection<WpfHexEditor.Panels.FileOps.ArchiveNode>()
+            };
+            parent.Children.Add(node);
+            folderMap[folderPath] = node;
+            return node;
+        }
+
+        foreach (var entry in zip.Entries)
+        {
+            var fullName = entry.FullName.Replace('\\', '/');
+            if (fullName.EndsWith("/"))
+            {
+                EnsureFolder(fullName.TrimEnd('/'));
+                continue;
+            }
+            var dirPart  = System.IO.Path.GetDirectoryName(fullName)?.Replace('\\', '/') ?? "";
+            var parentNode = EnsureFolder(dirPart);
+            parentNode.Children.Add(new WpfHexEditor.Panels.FileOps.ArchiveNode
+            {
+                Name              = entry.Name,
+                IsFolder          = false,
+                Size              = entry.Length,
+                CompressedSize    = entry.CompressedLength,
+                Crc               = $"{entry.Crc32:X8}",
+                CompressionMethod = "Deflate",
+                Children          = new System.Collections.ObjectModel.ObservableCollection<WpfHexEditor.Panels.FileOps.ArchiveNode>()
+            });
+        }
+
+        return root;
+    }
+
     private void OnShowDataInspectorPanel(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Data Inspector", DataInspectorPanelContentId, DockDirection.Right);
 
@@ -3763,6 +3855,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnShowFormatInfoPanel(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Format Info", FormatInfoPanelContentId, DockDirection.Right);
+
+    private void OnShowFileComparisonPanel(object sender, RoutedEventArgs e)
+        => ShowOrCreatePanel("File Comparison", FileComparisonPanelContentId, DockDirection.Bottom);
+
+    private void OnShowArchivePanel(object sender, RoutedEventArgs e)
+        => ShowOrCreatePanel("Archive Structure", ArchivePanelContentId, DockDirection.Right);
 
     private void OnShowParsedFields(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Parsed Fields", ParsedFieldsPanelContentId, DockDirection.Right);
