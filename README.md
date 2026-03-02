@@ -104,18 +104,27 @@ WpfHexEditor uses a **plugin architecture** (`IDocumentEditor`) — every editor
 
 ---
 
-## 🧩 Controls & Libraries
+## 🧩 Standalone Controls & Libraries
 
-All components are **independently reusable** — embed any control in your own WPF application without pulling in the full IDE.
+All controls are **independently reusable** — no IDE required. Drop any of them into your own WPF application with a simple project reference.
 
-| Control / Library | Frameworks | Description |
-|-------------------|-----------|-------------|
-| **[WpfHexEditor.HexEditor](Sources/WpfHexEditor.HexEditor/)** | net48 · net8.0-windows | Main hex editor WPF UserControl (MVVM + 16 services) |
-| **[WpfHexEditor.HexBox](Sources/WpfHexEditor.HexBox/)** | net48 · net8.0-windows | Standalone hex input control — zero external dependencies |
-| **[WpfHexEditor.ColorPicker](Sources/WpfHexEditor.ColorPicker/)** | net48 · net8.0-windows | Lightweight color picker UserControl |
-| **[WpfHexEditor.BarChart](Sources/WpfHexEditor.BarChart/)** | net48 · net8.0-windows | Byte frequency distribution visualization |
-| **[WpfHexEditor.Docking.Wpf](Sources/WpfHexEditor.Docking.Wpf/)** | net8.0-windows | VS-style docking engine — no third-party dependency |
-| **[WpfHexEditor.Core](Sources/WpfHexEditor.Core/)** | net48 · net8.0-windows | ByteProvider, services, data layer — the engine |
+### UI Controls
+
+| Control | Frameworks | Progress | Description |
+|---------|-----------|----------|-------------|
+| **[HexEditor](Sources/WpfHexEditor.HexEditor/)** | net48 · net8.0-windows | ~80% | Full-featured hex editor UserControl — MVVM, 16 services, insert/overwrite, search, bookmarks, TBL, 400+ format detection |
+| **[HexBox](Sources/WpfHexEditor.HexBox/)** | net48 · net8.0-windows | ~80% | Lightweight hex input field — zero external dependencies, MVVM-ready |
+| **[ColorPicker](Sources/WpfHexEditor.ColorPicker/)** | net48 · net8.0-windows | ~95% | Compact color picker UserControl with RGB/HSV/hex input |
+| **[BarChart](Sources/WpfHexEditor.BarChart/)** | net48 · net8.0-windows | ~75% | Byte frequency distribution chart (0x00–0xFF visualization) |
+
+### Libraries & Infrastructure
+
+| Library | Frameworks | Progress | Description |
+|---------|-----------|----------|-------------|
+| **[Docking.Wpf](Sources/WpfHexEditor.Docking.Wpf/)** | net8.0-windows | ~65% | VS-style docking engine — float, dock, auto-hide, colored tabs, 8 themes — no third-party dependency |
+| **[Core](Sources/WpfHexEditor.Core/)** | net48 · net8.0-windows | — | ByteProvider, 16 services, data layer — the engine powering HexEditor |
+| **[Editor.Core](Sources/WpfHexEditor.Editor.Core/)** | net48 · net8.0-windows | — | `IDocumentEditor` plugin contract, editor registry, shared interfaces |
+| **[BinaryAnalysis](Sources/WpfHexEditor.BinaryAnalysis/)** | net8.0-windows | — | 400+ format detection engine, binary templates, DataInspector service |
 
 ---
 
