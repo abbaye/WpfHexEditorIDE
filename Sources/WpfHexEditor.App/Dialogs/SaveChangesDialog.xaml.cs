@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 
@@ -20,6 +21,7 @@ public enum SaveChangesChoice { Save, DontSave, Cancel }
 public sealed partial class SaveChangesDialog : Window
 {
     private readonly List<FileEntry> _entries = [];
+    private bool _updatingAll;
 
     // ── Input ─────────────────────────────────────────────────────────────
 
@@ -50,13 +52,55 @@ public sealed partial class SaveChangesDialog : Window
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        HeaderText.Text    = _entries.Count == 1
+        HeaderText.Text = _entries.Count == 1
             ? $"Voulez-vous enregistrer les modifications apportées à \"{_entries[0].Title}\" ?"
             : "Voulez-vous enregistrer les modifications apportées aux fichiers suivants ?";
+
+        foreach (var entry in _entries)
+            entry.PropertyChanged += OnEntryPropertyChanged;
+
         FileList.ItemsSource = _entries;
+
+        if (_entries.Count > 1)
+        {
+            SelectAllCheck.Visibility = Visibility.Visible;
+            UpdateMasterCheckState();
+        }
     }
 
-    // ── Handlers ──────────────────────────────────────────────────────────
+    // ── Master checkbox ────────────────────────────────────────────────────
+
+    private void OnSelectAllChecked(object sender, RoutedEventArgs e)
+    {
+        if (_updatingAll) return;
+        _updatingAll = true;
+        foreach (var entry in _entries) entry.IsChecked = true;
+        _updatingAll = false;
+    }
+
+    private void OnSelectAllUnchecked(object sender, RoutedEventArgs e)
+    {
+        if (_updatingAll) return;
+        _updatingAll = true;
+        foreach (var entry in _entries) entry.IsChecked = false;
+        _updatingAll = false;
+    }
+
+    private void OnEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (_updatingAll || e.PropertyName != nameof(FileEntry.IsChecked)) return;
+        UpdateMasterCheckState();
+    }
+
+    private void UpdateMasterCheckState()
+    {
+        int count = _entries.Count(x => x.IsChecked);
+        SelectAllCheck.IsChecked = count == _entries.Count ? true
+                                 : count == 0             ? false
+                                 : null;
+    }
+
+    // ── Button handlers ────────────────────────────────────────────────────
 
     private void OnSaveClicked(object sender, RoutedEventArgs e)
     {
@@ -79,10 +123,24 @@ public sealed partial class SaveChangesDialog : Window
 
     // ── Entry model ───────────────────────────────────────────────────────
 
-    private sealed class FileEntry(string contentId, string title)
+    private sealed class FileEntry(string contentId, string title) : INotifyPropertyChanged
     {
+        private bool _isChecked = true;
+
         public string ContentId { get; } = contentId;
         public string Title     { get; } = title;
-        public bool   IsChecked { get; set; } = true;
+
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set
+            {
+                if (_isChecked == value) return;
+                _isChecked = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsChecked)));
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

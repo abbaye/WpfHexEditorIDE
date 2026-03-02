@@ -30,7 +30,11 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
         private static readonly string[] BlockRequiredProperties = { "type" };
         private static readonly string[] FieldRequiredProperties = { "type", "name" };
 
-        private static readonly string[] ValidBlockTypes = { "signature", "field", "conditional", "loop", "action" };
+        private static readonly string[] ValidBlockTypes =
+        {
+            "signature", "field", "conditional", "loop", "action",
+            "computeFromVariables", "metadata", "data", "header"
+        };
         private static readonly string[] ValidFieldTypes =
         {
             "uint8", "uint16", "uint32", "uint64",

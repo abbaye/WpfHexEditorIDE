@@ -25,6 +25,7 @@ public class DockGroupNode : DockNode
         ArgumentNullException.ThrowIfNull(item);
 
         item.Owner = this;
+        if (this is DocumentHostNode) item.IsDocument = true;
         _items.Add(item);
         ActiveItem ??= item;
     }
@@ -37,6 +38,7 @@ public class DockGroupNode : DockNode
         ArgumentNullException.ThrowIfNull(item);
 
         item.Owner = this;
+        if (this is DocumentHostNode) item.IsDocument = true;
         _items.Insert(index, item);
         ActiveItem ??= item;
     }

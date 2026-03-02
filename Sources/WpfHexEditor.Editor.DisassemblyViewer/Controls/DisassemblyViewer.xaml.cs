@@ -5,23 +5,24 @@
 //////////////////////////////////////////////
 
 using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using WpfHexEditor.Decompiler.Core;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Editor.DisassemblyViewer.Controls;
 
 /// <summary>
-/// Stub disassembly viewer — planned for a future sprint (requires Iced/Capstone.NET).
+/// Disassembly viewer — shows decompiled output from a registered <see cref="IDecompiler"/>.
 /// Implements <see cref="IDocumentEditor"/> and <see cref="IOpenableDocument"/>.
 /// </summary>
 public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IOpenableDocument
 {
     private string _filePath = string.Empty;
+    private IDecompiler? _decompiler;
+    private CancellationTokenSource? _cts;
 
-    /// <summary>
-    /// Creates a new <see cref="DisassemblyViewer"/>.
-    /// </summary>
     public DisassemblyViewer()
     {
         InitializeComponent();
@@ -29,141 +30,175 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
         UndoCommand      = new RelayCommand(() => { }, () => false);
         RedoCommand      = new RelayCommand(() => { }, () => false);
         SaveCommand      = new RelayCommand(() => { }, () => false);
-        CopyCommand      = new RelayCommand(() => { }, () => false);
+        CopyCommand      = new RelayCommand(CopyAll, () => !string.IsNullOrEmpty(OutputBox.Text));
         CutCommand       = new RelayCommand(() => { }, () => false);
         PasteCommand     = new RelayCommand(() => { }, () => false);
         DeleteCommand    = new RelayCommand(() => { }, () => false);
-        SelectAllCommand = new RelayCommand(() => { }, () => false);
+        SelectAllCommand = new RelayCommand(() => OutputBox.SelectAll(), () => !string.IsNullOrEmpty(OutputBox.Text));
     }
 
     // ── IDocumentEditor — State ──────────────────────────────────────────
 
-    /// <inheritdoc/>
     public bool IsDirty    => false;
-
-    /// <inheritdoc/>
     public bool CanUndo    => false;
-
-    /// <inheritdoc/>
     public bool CanRedo    => false;
-
-    /// <inheritdoc/>
     public bool IsReadOnly { get => true; set { } }
-
-    /// <inheritdoc/>
     public string Title { get; private set; } = "";
-
-    /// <inheritdoc/>
     public bool IsBusy { get; private set; }
 
     // ── IDocumentEditor — Commands ───────────────────────────────────────
 
-    /// <inheritdoc/>
     public ICommand UndoCommand      { get; }
-
-    /// <inheritdoc/>
     public ICommand RedoCommand      { get; }
-
-    /// <inheritdoc/>
     public ICommand SaveCommand      { get; }
-
-    /// <inheritdoc/>
     public ICommand CopyCommand      { get; }
-
-    /// <inheritdoc/>
     public ICommand CutCommand       { get; }
-
-    /// <inheritdoc/>
     public ICommand PasteCommand     { get; }
-
-    /// <inheritdoc/>
     public ICommand DeleteCommand    { get; }
-
-    /// <inheritdoc/>
     public ICommand SelectAllCommand { get; }
 
     // ── IDocumentEditor — Events ─────────────────────────────────────────
 
 #pragma warning disable CS0067
-    /// <inheritdoc/>
     public event EventHandler?         ModifiedChanged;
-
-    /// <inheritdoc/>
     public event EventHandler?         CanUndoChanged;
-
-    /// <inheritdoc/>
     public event EventHandler?         CanRedoChanged;
-
-    /// <inheritdoc/>
     public event EventHandler<string>? TitleChanged;
-
-    /// <inheritdoc/>
     public event EventHandler<string>? StatusMessage;
-    /// <inheritdoc/>
     public event EventHandler<string>? OutputMessage;
-
-    /// <inheritdoc/>
     public event EventHandler?         SelectionChanged;
-
-    /// <inheritdoc/>
     public event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
-
-    /// <inheritdoc/>
     public event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
-
-    /// <inheritdoc/>
     public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
 #pragma warning restore CS0067
 
-    // ── IDocumentEditor — Methods (no-ops for read-only viewer) ─────────
+    // ── IDocumentEditor — Methods ────────────────────────────────────────
 
-    /// <inheritdoc/>
     public void Undo() { }
-
-    /// <inheritdoc/>
     public void Redo() { }
-
-    /// <inheritdoc/>
     public void Save() { }
-
-    /// <inheritdoc/>
     public Task SaveAsync(CancellationToken ct = default) => Task.CompletedTask;
-
-    /// <inheritdoc/>
     public Task SaveAsAsync(string filePath, CancellationToken ct = default) => Task.CompletedTask;
+    public void Copy()      => CopyAll();
+    public void Cut()       { }
+    public void Paste()     { }
+    public void Delete()    { }
+    public void SelectAll() => OutputBox.SelectAll();
+    public void CancelOperation() => _cts?.Cancel();
 
-    /// <inheritdoc/>
-    public void Copy() { }
-
-    /// <inheritdoc/>
-    public void Cut() { }
-
-    /// <inheritdoc/>
-    public void Paste() { }
-
-    /// <inheritdoc/>
-    public void Delete() { }
-
-    /// <inheritdoc/>
-    public void SelectAll() { }
-
-    /// <inheritdoc/>
-    public void Close() { }
-
-    /// <inheritdoc/>
-    public void CancelOperation() { }
+    public void Close()
+    {
+        _cts?.Cancel();
+        _filePath   = string.Empty;
+        _decompiler = null;
+        ShowState(ViewerState.Empty);
+    }
 
     // ── IOpenableDocument ────────────────────────────────────────────────
 
-    /// <inheritdoc/>
     public async Task OpenAsync(string filePath, CancellationToken ct = default)
     {
+        // Cancel any previous decompilation
+        _cts?.Cancel();
+        _cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+
         _filePath = filePath;
-        Title = Path.GetFileName(filePath);
+        Title     = Path.GetFileName(filePath);
         TitleChanged?.Invoke(this, Title);
-        OperationCompleted?.Invoke(this, new DocumentOperationCompletedEventArgs { Success = true });
-        await Task.CompletedTask;
+
+        _decompiler = DecompilerRegistry.All.FirstOrDefault(d => d.CanDecompile(filePath));
+
+        if (_decompiler is null)
+        {
+            ShowState(ViewerState.NoDecompiler);
+            StatusMessage?.Invoke(this, $"No decompiler registered for '{Path.GetExtension(filePath)}'");
+            return;
+        }
+
+        await RunDecompileAsync(_cts.Token);
     }
+
+    // ── Private ──────────────────────────────────────────────────────────
+
+    private async Task RunDecompileAsync(CancellationToken ct)
+    {
+        if (_decompiler is null || string.IsNullOrEmpty(_filePath)) return;
+
+        ShowState(ViewerState.Busy);
+        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = "Decompiling…", IsIndeterminate = true });
+        StatusMessage?.Invoke(this, $"Decompiling with {_decompiler.DisplayName}…");
+
+        try
+        {
+            var output = await _decompiler.DecompileAsync(_filePath, ct);
+            ct.ThrowIfCancellationRequested();
+
+            OutputBox.Text = output;
+            ArchLabel.Text = _decompiler.Architecture;
+            ShowState(ViewerState.Output);
+            StatusMessage?.Invoke(this, $"{_decompiler.DisplayName}  ·  {CountLines(output)} lines");
+            OperationCompleted?.Invoke(this, new DocumentOperationCompletedEventArgs { Success = true });
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancelled — leave current state as-is
+        }
+        catch (Exception ex)
+        {
+            OutputBox.Text = $"Decompilation failed:\n{ex.Message}";
+            ShowState(ViewerState.Output);
+            StatusMessage?.Invoke(this, $"Error: {ex.Message}");
+            OperationCompleted?.Invoke(this, new DocumentOperationCompletedEventArgs { Success = false, ErrorMessage = ex.Message });
+        }
+    }
+
+    private void ShowState(ViewerState state)
+    {
+        IsBusy = state == ViewerState.Busy;
+        RefreshButton.IsEnabled = !IsBusy && !string.IsNullOrEmpty(_filePath);
+
+        OutputBox.Visibility          = state == ViewerState.Output      ? Visibility.Visible : Visibility.Collapsed;
+        BusyOverlay.Visibility        = state == ViewerState.Busy        ? Visibility.Visible : Visibility.Collapsed;
+        NoDecompilerOverlay.Visibility = state == ViewerState.NoDecompiler ? Visibility.Visible : Visibility.Collapsed;
+
+        if (state == ViewerState.NoDecompiler)
+        {
+            var ext = string.IsNullOrEmpty(_filePath) ? "" : Path.GetExtension(_filePath);
+            NoDecompilerText.Text = string.IsNullOrEmpty(ext)
+                ? "No decompiler registered."
+                : $"No decompiler registered for '{ext}'.";
+            ArchLabel.Text = "";
+        }
+        else if (state is ViewerState.Empty or ViewerState.Busy)
+        {
+            ArchLabel.Text = state == ViewerState.Busy && _decompiler is not null
+                ? _decompiler.Architecture
+                : "";
+        }
+    }
+
+    private void CopyAll()
+    {
+        if (!string.IsNullOrEmpty(OutputBox.Text))
+            Clipboard.SetText(OutputBox.Text);
+    }
+
+    private static int CountLines(string text)
+        => text.Length == 0 ? 0 : text.Count(c => c == '\n') + 1;
+
+    // ── Event handlers ───────────────────────────────────────────────────
+
+    private async void OnRefreshClick(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(_filePath) || _decompiler is null) return;
+        _cts?.Cancel();
+        _cts = new CancellationTokenSource();
+        await RunDecompileAsync(_cts.Token);
+    }
+
+    private void OnCopyAllClick(object sender, RoutedEventArgs e) => CopyAll();
+
+    private enum ViewerState { Empty, Busy, Output, NoDecompiler }
 }
 
 // ── Minimal RelayCommand (no external dep) ───────────────────────────────────

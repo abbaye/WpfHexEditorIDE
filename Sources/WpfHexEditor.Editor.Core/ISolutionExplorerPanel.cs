@@ -57,6 +57,11 @@ public interface ISolutionExplorerPanel
     event EventHandler<ProjectItemEventArgs>? ItemSelected;
 
     /// <summary>
+    /// Fired when the user commits an inline rename on the solution node.
+    /// </summary>
+    event EventHandler<SolutionRenameRequestedEventArgs>? SolutionRenameRequested;
+
+    /// <summary>
     /// Fired when the user commits an inline rename on a project node.
     /// </summary>
     event EventHandler<ProjectRenameRequestedEventArgs>? ProjectRenameRequested;
@@ -101,6 +106,23 @@ public interface ISolutionExplorerPanel
     /// The host is responsible for showing the conversion dialog and producing the .tblx output.
     /// </summary>
     event EventHandler<ProjectItemEventArgs>? ConvertTblRequested;
+
+    /// <summary>
+    /// Fired when the user chooses "Open With…" from the context menu on a file node.
+    /// The host shows an editor-picker dialog and opens the file in the chosen editor.
+    /// </summary>
+    event EventHandler<OpenWithRequestedEventArgs>? OpenWithRequested;
+
+    /// <summary>
+    /// Fired when the user chooses "Include in Project" on a physical file node
+    /// (visible only in Show All Files mode when the file is not yet part of the project).
+    /// </summary>
+    event EventHandler<PhysicalFileIncludeRequestedEventArgs>? PhysicalFileIncludeRequested;
+
+    /// <summary>
+    /// Fired when the user chooses "Save All" from the solution node context menu.
+    /// </summary>
+    event EventHandler? SaveAllRequested;
 
     /// <summary>
     /// Fired when the user requests to rename a virtual folder.

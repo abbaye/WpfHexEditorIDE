@@ -48,7 +48,6 @@
     "formattedSize": ""
   },
   "functions": {
-    "computeFromVariables(checksum + checksumComplement, checksumTotal)": "Validate checksum pair (should equal 0xFFFF)",
     "validateFieldRange(romLayout, 32, 37)": "Validate ROM layout mode (0x20-0x25)",
     "validateFieldRange(regionCode, 0, 13)": "Validate region code (0x00-0x0D)"
   },
@@ -111,7 +110,18 @@
       "opacity": 0.3,
       "valueType": "uint8",
       "storeAs": "romSize",
-      "description": "ROM size as 2^N KB: 0x07=128KB, 0x08=256KB, 0x09=512KB, 0x0A=1MB, 0x0B=2MB, 0x0C=4MB"
+      "mappedValueStoreAs": "formattedSize",
+      "description": "ROM size as 2^N KB: 0x07=128KB, 0x08=256KB, 0x09=512KB, 0x0A=1MB, 0x0B=2MB, 0x0C=4MB",
+      "valueMap": {
+        "6": "64 KB",
+        "7": "128 KB",
+        "8": "256 KB",
+        "9": "512 KB",
+        "10": "1 MB",
+        "11": "2 MB",
+        "12": "4 MB",
+        "13": "8 MB"
+      }
     },
     {
       "type": "field",
@@ -189,6 +199,11 @@
       "valueType": "bytes",
       "storeAs": "nativeModeVectors",
       "description": "65816 native vectors: COP($FFE4), BRK($FFE6), ABORT($FFE8), NMI($FFEA), RESET($FFEC), IRQ($FFEE)"
+    },
+    {
+      "type": "computeFromVariables",
+      "expression": "checksum + checksumComplement",
+      "storeAs": "checksumTotal"
     },
     {
       "type": "metadata",

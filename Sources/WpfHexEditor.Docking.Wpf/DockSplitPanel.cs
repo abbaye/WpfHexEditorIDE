@@ -69,10 +69,10 @@ public class DockSplitPanel : Grid
                 var splitter = new GridSplitter
                 {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Stretch,
-                    ResizeBehavior = GridResizeBehavior.PreviousAndNext,
-                    Background = System.Windows.Media.Brushes.Gray
+                    VerticalAlignment   = VerticalAlignment.Stretch,
+                    ResizeBehavior      = GridResizeBehavior.PreviousAndNext
                 };
+                splitter.SetResourceReference(BackgroundProperty, "DockWindowBackgroundBrush");
 
                 if (isHorizontal)
                 {

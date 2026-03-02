@@ -264,6 +264,31 @@ public class DockEngine
     }
 
     /// <summary>
+    /// Splits a DocumentHostNode by placing a new DocumentHostNode beside it.
+    /// Used when a document item is dragged to the edge of a document host area.
+    /// The item lands in the new host; Center direction is not valid here (use <see cref="Dock"/> instead).
+    /// </summary>
+    public void SplitDocumentHost(DockItem item, DocumentHostNode targetHost, DockDirection direction)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        ArgumentNullException.ThrowIfNull(targetHost);
+
+        item.Owner?.RemoveItem(item);
+        Layout.FloatingItems.Remove(item);
+        Layout.AutoHideItems.Remove(item);
+
+        var newHost = new DocumentHostNode { IsMain = false };
+        newHost.AddItem(item);
+        item.State = DockItemState.Docked;
+
+        WrapWithSplit(targetHost, newHost, direction);
+
+        AutoNormalize();
+        ItemDocked?.Invoke(item);
+        if (!IsInTransaction) LayoutChanged?.Invoke();
+    }
+
+    /// <summary>
     /// Moves an item from one group to another.
     /// </summary>
     public void MoveItem(DockItem item, DockGroupNode targetGroup)

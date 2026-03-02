@@ -21,7 +21,7 @@
          Apply to the outermost Border of the panel toolbar.
     ───────────────────────────────────────────────────────────────────── -->
     <Style x:Key="PanelToolbarStyle" TargetType="Border">
-        <Setter Property="Height"          Value="30"/>
+        <Setter Property="Height"          Value="26"/>
         <Setter Property="Padding"         Value="4,0"/>
         <Setter Property="Background"      Value="{DynamicResource Panel_ToolbarBrush}"/>
         <Setter Property="BorderBrush"     Value="{DynamicResource Panel_ToolbarBorderBrush}"/>

@@ -39,6 +39,12 @@ public interface ISolutionManager
     Task SaveProjectAsync(IProject project, CancellationToken ct = default);
     Task RemoveProjectAsync(ISolution solution, IProject project, CancellationToken ct = default);
     /// <summary>
+    /// Renames the solution: updates the model, renames the .whsln file on disk,
+    /// and re-saves the solution file.
+    /// </summary>
+    Task RenameSolutionAsync(ISolution solution, string newName, CancellationToken ct = default);
+
+    /// <summary>
     /// Renames the project: updates the model, renames the .whproj file on disk,
     /// and re-saves the solution to persist the new file path.
     /// </summary>

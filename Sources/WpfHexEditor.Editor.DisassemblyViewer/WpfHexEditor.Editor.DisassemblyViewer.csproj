@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Decompiler.Core\WpfHexEditor.Decompiler.Core.csproj" />
   </ItemGroup>
 
 </Project>

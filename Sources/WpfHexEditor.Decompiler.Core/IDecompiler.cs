@@ -28,7 +28,7 @@ public interface IDecompiler
     /// </summary>
     bool CanDecompile(string filePath);
 
-    /// <summary>
+    /// <summary> 
     /// Decompiles the file at <paramref name="filePath"/> and returns the
     /// decompiled text (assembly listing, pseudo-C, etc.).
     /// </summary>

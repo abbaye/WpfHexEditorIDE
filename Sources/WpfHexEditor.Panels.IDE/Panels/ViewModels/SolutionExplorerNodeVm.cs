@@ -56,18 +56,35 @@ public abstract class SolutionExplorerNodeVm : INotifyPropertyChanged
 public sealed class SolutionNodeVm : SolutionExplorerNodeVm
 {
     private readonly ISolution _solution;
+    private bool   _isEditing;
+    private string _editingName = string.Empty;
 
     public SolutionNodeVm(ISolution solution)
     {
         _solution = solution;
-        Label = $"Solution '{solution.Name}' ({solution.Projects.Count} project{(solution.Projects.Count == 1 ? "" : "s")})";
     }
 
-    public string Label { get; }
+    public string Label => $"Solution '{_solution.Name}' ({_solution.Projects.Count} project{(_solution.Projects.Count == 1 ? "" : "s")})";
     public override string DisplayName => Label;
     public override string Icon => "\uE8B7"; // Fluent: FolderOpen
 
     public ISolution Source => _solution;
+
+    // ── Inline rename ───────────────────────────────────────────────────────
+
+    public override bool IsEditing => _isEditing;
+
+    private void SetIsEditing(bool value) { _isEditing = value; OnPropertyChanged(nameof(IsEditing)); }
+
+    public string EditingName
+    {
+        get => _editingName;
+        set { _editingName = value; OnPropertyChanged(); }
+    }
+
+    public void   BeginEdit()  { EditingName = _solution.Name; SetIsEditing(true); }
+    public string CommitEdit() { var name = _editingName.Trim(); SetIsEditing(false); return name; }
+    public void   CancelEdit() => SetIsEditing(false);
 }
 
 // ── Project node ──────────────────────────────────────────────────────────────

@@ -28,7 +28,7 @@
     <Color x:Key="DockMenuBorderColor">#D1D1D1</Color>
     <Color x:Key="DockMenuHighlightBorderColor">#0078D4</Color>
     <Color x:Key="DockToolBarBackgroundColor">#FAFAFA</Color>
-    <Color x:Key="DockWindowBackgroundColor">#F3F3F3</Color>
+    <Color x:Key="DockWindowBackgroundColor">#CCCCCC</Color>
 
     <!-- HexEditor Colors -->
     <Color x:Key="HexEditor_BackgroundColor">#FFFFFF</Color>
@@ -204,6 +204,11 @@
     <SolidColorBrush x:Key="PFP_GroupBadgeBackgroundBrush" Color="#EDEBE9"/>
     <SolidColorBrush x:Key="PFP_CoverageTrackBrush" Color="#EDEBE9"/>
     <SolidColorBrush x:Key="PFP_CoverageProgressBrush" Color="#0078D4"/>
+    <SolidColorBrush x:Key="PFP_ValidationErrorBackgroundBrush" Color="#FFEBEE"/>
+    <SolidColorBrush x:Key="PFP_ValidationErrorBorderBrush"     Color="#D32F2F"/>
+    <SolidColorBrush x:Key="PFP_CategoryBadgeBackgroundBrush"   Color="#FFF3E0"/>
+    <SolidColorBrush x:Key="PFP_CategoryBadgeBorderBrush"       Color="#D67C00"/>
+    <SolidColorBrush x:Key="PFP_CategoryBadgeForegroundBrush"   Color="#8B4500"/>
 
 
     <!-- Solution Explorer (SE) Theme Resources -->
@@ -257,6 +262,7 @@
     <!-- TE_* — Text Editor (syntax highlighting, viewport) -->
     <SolidColorBrush x:Key="TE_Background"             Color="#FFFFFF"/>
     <SolidColorBrush x:Key="TE_Foreground"             Color="#323130"/>
+    <Color           x:Key="TE_CaretColor"                    >#323130</Color>
     <SolidColorBrush x:Key="TE_LineNumberBackground"   Color="#F5F5F5"/>
     <SolidColorBrush x:Key="TE_LineNumberForeground"   Color="#A0A0A0"/>
     <SolidColorBrush x:Key="TE_CurrentLineBrush"       Color="#F8F8F8"/>

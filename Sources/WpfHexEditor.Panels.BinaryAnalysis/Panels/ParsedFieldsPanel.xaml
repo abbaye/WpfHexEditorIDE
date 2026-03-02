@@ -55,8 +55,8 @@
                     <Style TargetType="Border">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsValid}" Value="False">
-                                <Setter Property="Background" Value="#FFEBEE"/>
-                                <Setter Property="BorderBrush" Value="#F44336"/>
+                                <Setter Property="Background" Value="{DynamicResource PFP_ValidationErrorBackgroundBrush}"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource PFP_ValidationErrorBorderBrush}"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -167,16 +167,19 @@
                             <Button Content="H" Tag="hex" Click="DisplayModeButton_Click"
                                     Width="18" Height="16" FontSize="9" FontFamily="Consolas"
                                     FontWeight="SemiBold" Padding="0" Margin="1,0"
+                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                     ToolTip="Hexadecimal"
                                     Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
                             <Button Content="D" Tag="dec" Click="DisplayModeButton_Click"
                                     Width="18" Height="16" FontSize="9" FontFamily="Consolas"
                                     FontWeight="SemiBold" Padding="0" Margin="1,0"
+                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                     ToolTip="Decimal"
                                     Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
                             <Button Content="B" Tag="bin" Click="DisplayModeButton_Click"
                                     Width="18" Height="16" FontSize="9" FontFamily="Consolas"
                                     FontWeight="SemiBold" Padding="0" Margin="1,0"
+                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                     ToolTip="Binary"
                                     Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
                         </StackPanel>
@@ -506,15 +509,15 @@
                                    Visibility="{Binding FormatInfo.HasMultipleCandidates, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                     </StackPanel>
                     <Border Grid.Column="2"
-                            Background="#FFE5B4"
-                            BorderBrush="#FFA500"
+                            Background="{DynamicResource PFP_CategoryBadgeBackgroundBrush}"
+                            BorderBrush="{DynamicResource PFP_CategoryBadgeBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="3"
                             Padding="6,2"
                             Margin="8,0,0,0">
                         <TextBlock FontSize="10"
                                    FontWeight="SemiBold"
-                                   Foreground="#D2691E"
+                                   Foreground="{DynamicResource PFP_CategoryBadgeForegroundBrush}"
                                    Text="{Binding FormatInfo.Category}"/>
                     </Border>
                 </Grid>

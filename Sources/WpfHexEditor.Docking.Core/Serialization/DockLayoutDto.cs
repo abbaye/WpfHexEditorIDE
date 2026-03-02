@@ -64,6 +64,7 @@ public class DockItemDto
     public bool CanClose { get; set; } = true;
     public bool CanFloat { get; set; } = true;
     public bool IsPinned { get; set; }
+    public bool IsDocument { get; set; }
     public DockItemState State { get; set; }
     public DockSide LastDockSide { get; set; } = DockSide.Bottom;
     public double? FloatLeft { get; set; }

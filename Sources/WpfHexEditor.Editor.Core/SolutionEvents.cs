@@ -107,6 +107,17 @@ public sealed class ProjectRenameRequestedEventArgs : EventArgs
     public string   NewName { get; init; } = string.Empty;
 }
 
+// ── Solution rename (panel → host) ────────────────────────────────────────────
+
+/// <summary>
+/// Raised by <see cref="ISolutionExplorerPanel"/> when the user commits an inline rename on the solution node.
+/// </summary>
+public sealed class SolutionRenameRequestedEventArgs : EventArgs
+{
+    public ISolution Solution { get; init; } = null!;
+    public string    NewName  { get; init; } = string.Empty;
+}
+
 // ── Item renamed ──────────────────────────────────────────────────────────────
 
 /// <summary>
@@ -124,6 +135,31 @@ public sealed class ProjectItemRenamedEventArgs : EventArgs
     /// Absolute file path the item had before the rename.
     /// </summary>
     public string       OldAbsolutePath { get; init; } = string.Empty;
+}
+
+// ── Solution Explorer — shell actions ────────────────────────────────────────
+
+/// <summary>
+/// Fired when the user chooses "Open With…" from the Solution Explorer context menu.
+/// The host shows an editor-picker dialog and opens the file in the chosen editor.
+/// </summary>
+public sealed class OpenWithRequestedEventArgs : EventArgs
+{
+    public IProjectItem Item    { get; init; } = null!;
+    public IProject     Project { get; init; } = null!;
+}
+
+/// <summary>
+/// Fired when the user chooses "Include in Project" on a physical file that is
+/// not yet a project item (Show All Files mode).
+/// </summary>
+public sealed class PhysicalFileIncludeRequestedEventArgs : EventArgs
+{
+    /// <summary>Absolute path of the physical file to include.</summary>
+    public string   PhysicalPath   { get; init; } = string.Empty;
+    public IProject Project        { get; init; } = null!;
+    /// <summary>Id of the virtual folder to place the item in, or <see langword="null"/> for the project root.</summary>
+    public string?  TargetFolderId { get; init; }
 }
 
 // ── Format upgrade ────────────────────────────────────────────────────────────

@@ -200,10 +200,32 @@
         <!-- DataTemplates -->
 
         <DataTemplate DataType="{x:Type vm:SolutionNodeVm}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE8B7;" Foreground="#E8B25A"/>
-                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding Label}" FontWeight="SemiBold"/>
-            </StackPanel>
+            <Grid>
+                <!-- Normal display (IsEditing = false) -->
+                <StackPanel x:Name="SolutionDisplayPanel" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE8B7;" Foreground="#E8B25A"/>
+                    <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding Label}" FontWeight="SemiBold"/>
+                </StackPanel>
+                <!-- Inline rename TextBox (IsEditing = true) -->
+                <TextBox x:Name="SolutionInlineEditBox"
+                         Visibility="Collapsed"
+                         Text="{Binding EditingName, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalAlignment="Center"
+                         MinWidth="100"
+                         Background="{DynamicResource SE_SearchBoxBrush}"
+                         Foreground="{DynamicResource SE_ForegroundBrush}"
+                         BorderBrush="{DynamicResource SE_SelectionBorderBrush}"
+                         BorderThickness="1"
+                         Padding="2,1"
+                         KeyDown="OnSolutionInlineEditKeyDown"
+                         LostKeyboardFocus="OnSolutionInlineEditLostFocus"/>
+            </Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                    <Setter TargetName="SolutionDisplayPanel"  Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="SolutionInlineEditBox" Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:ProjectNodeVm}">
@@ -424,23 +446,137 @@
 
             <TreeView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem x:Name="CloseSolutionMenuItem"      Header="Close Solution"               Click="OnCloseSolution"/>
-                    <Separator x:Name="SolutionSeparator"/>
-                    <MenuItem x:Name="AddNewItemMenuItem"         Header="Add New Item..."              Click="OnAddNewItem"/>
-                    <MenuItem x:Name="AddExistingItemMenuItem"    Header="Add Existing Item..."          Click="OnAddExistingItem"/>
-                    <MenuItem x:Name="ImportFormatMenuItem"       Header="Import Built-in Format..."     Click="OnImportFormatDefinition"/>
-                    <MenuItem x:Name="NewFolderMenuItem"          Header="New Folder"                    Click="OnNewFolder"/>
-                    <MenuItem x:Name="NewPhysicalFolderMenuItem"  Header="New Physical Folder"           Click="OnNewPhysicalFolder"/>
-                    <MenuItem x:Name="AddFolderFromDiskMenuItem"  Header="Add Existing Folder..."        Click="OnAddFolderFromDisk"/>
+                    <ContextMenu.Resources>
+                        <Style x:Key="MenuIcon" TargetType="TextBlock">
+                            <Setter Property="FontFamily"        Value="Segoe MDL2 Assets"/>
+                            <Setter Property="FontSize"          Value="13"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </ContextMenu.Resources>
+
+                    <!-- Open / Open With (file, physFile-inProject) -->
+                    <MenuItem x:Name="OpenMenuItem" Header="Open" Click="OnOpen">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8A7;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="OpenWithMenuItem" Header="Open With..." Click="OnOpenWith">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C8;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator x:Name="OpenSeparator"/>
+
+                    <!-- Add operations (project / folder) -->
+                    <MenuItem x:Name="AddNewItemMenuItem" Header="Add New Item..." Click="OnAddNewItem">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8A5;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="AddExistingItemMenuItem" Header="Add Existing Item..." Click="OnAddExistingItem">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8E5;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="ImportFormatMenuItem" Header="Import Built-in Format..." Click="OnImportFormatDefinition">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE896;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="NewFolderMenuItem" Header="New Folder" Click="OnNewFolder">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8F4;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="NewPhysicalFolderMenuItem" Header="New Physical Folder" Click="OnNewPhysicalFolder">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8D5;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="AddFolderFromDiskMenuItem" Header="Add Existing Folder..." Click="OnAddFolderFromDisk">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8DA;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <Separator x:Name="AddSeparator"/>
-                    <MenuItem x:Name="SetDefaultTblMenuItem"   Header="Set as Default TBL"   Click="OnSetDefaultTbl"/>
-                    <MenuItem x:Name="ClearDefaultTblMenuItem" Header="Clear Default TBL"    Click="OnClearDefaultTbl"/>
-                    <MenuItem x:Name="ConvertToTblxMenuItem"   Header="Convert to TBLX..."   Click="OnConvertToTblx"/>
+
+                    <!-- Include in Project (Show All Files — physical file not yet tracked) -->
+                    <MenuItem x:Name="IncludeInProjectMenuItem" Header="Include in Project" Click="OnIncludeInProject">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE710;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator x:Name="IncludeSeparator"/>
+
+                    <!-- TBL operations -->
+                    <MenuItem x:Name="SetDefaultTblMenuItem" Header="Set as Default TBL" Click="OnSetDefaultTbl">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE735;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="ClearDefaultTblMenuItem" Header="Clear Default TBL" Click="OnClearDefaultTbl">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE734;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="ConvertToTblxMenuItem" Header="Convert to TBLX..." Click="OnConvertToTblx">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8AB;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <Separator x:Name="TblSeparator"/>
-                    <MenuItem x:Name="RenameMenuItem"          Header="Rename"              Click="OnRename"/>
-                    <MenuItem x:Name="RemoveMenuItem"          Header="Remove from Project" Click="OnRemove"/>
+
+                    <!-- Navigation (all node types) -->
+                    <MenuItem x:Name="OpenInExplorerMenuItem" Header="Open in File Explorer" Click="OnOpenInExplorer">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xEC50;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="CopyPathMenuItem" Header="Copy Path" Click="OnCopyPath">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C8;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator x:Name="NavigationSeparator"/>
+
+                    <!-- Rename / Remove / Exclude -->
+                    <MenuItem x:Name="RenameMenuItem" Header="Rename" Click="OnRename">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8AC;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="RemoveMenuItem" Header="Remove from Project" Click="OnRemove">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE74D;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="ExcludeFromProjectMenuItem" Header="Exclude from Project" Click="OnExcludeFromProject">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8F8;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <!-- Properties -->
                     <Separator x:Name="PropertiesSeparator"/>
-                    <MenuItem x:Name="PropertiesMenuItem"      Header="Properties"          Click="OnProperties"/>
+                    <MenuItem x:Name="PropertiesMenuItem" Header="Properties" Click="OnProperties">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE946;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <!-- Solution bottom: Save All + Close Solution -->
+                    <Separator x:Name="SolutionBottomSeparator"/>
+                    <MenuItem x:Name="SaveAllMenuItem" Header="Save All" Click="OnSaveAll">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE792;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator x:Name="CloseSolutionSeparator"/>
+                    <MenuItem x:Name="CloseSolutionMenuItem" Header="Close Solution" Click="OnCloseSolution">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8BB;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </TreeView.ContextMenu>
         </TreeView>

@@ -9,9 +9,85 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="{DynamicResource TE_Background}">
     <Grid>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Foreground="{DynamicResource TE_LineNumberForeground}"
-                   FontSize="14"
-                   Text="Disassembly Viewer — Planned for a future sprint (requires Iced/Capstone.NET)"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <Border Grid.Row="0" Style="{DynamicResource PanelToolbarStyle}">
+            <DockPanel LastChildFill="True">
+                <Button x:Name="CopyAllButton"
+                        DockPanel.Dock="Right"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Content="&#xE8C8;"
+                        ToolTip="Copy all"
+                        Click="OnCopyAllClick"/>
+                <Button x:Name="RefreshButton"
+                        DockPanel.Dock="Right"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Content="&#xE72C;"
+                        ToolTip="Decompile again"
+                        Click="OnRefreshClick"/>
+                <TextBlock x:Name="ArchLabel"
+                           VerticalAlignment="Center"
+                           Margin="8,0,0,0"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                           FontSize="12"/>
+            </DockPanel>
+        </Border>
+
+        <!-- Output -->
+        <ScrollViewer Grid.Row="1"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+            <TextBox x:Name="OutputBox"
+                     IsReadOnly="True"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     FontFamily="Consolas"
+                     FontSize="12"
+                     Foreground="{DynamicResource TE_LineNumberForeground}"
+                     TextWrapping="NoWrap"
+                     AcceptsReturn="True"
+                     Padding="8"
+                     IsTabStop="False"
+                     Visibility="Collapsed"/>
+        </ScrollViewer>
+
+        <!-- No decompiler overlay -->
+        <StackPanel x:Name="NoDecompilerOverlay"
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Opacity="0.45"
+                    Visibility="Collapsed">
+            <TextBlock Text="&#xE9D9;"
+                       FontFamily="Segoe MDL2 Assets"
+                       FontSize="32"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource TE_LineNumberForeground}"/>
+            <TextBlock x:Name="NoDecompilerText"
+                       Foreground="{DynamicResource TE_LineNumberForeground}"
+                       FontSize="12"
+                       HorizontalAlignment="Center"
+                       Margin="0,8,0,0"/>
+        </StackPanel>
+
+        <!-- Busy overlay -->
+        <Grid x:Name="BusyOverlay"
+              Grid.Row="1"
+              Visibility="Collapsed">
+            <ProgressBar IsIndeterminate="True"
+                         Height="2"
+                         VerticalAlignment="Top"
+                         Foreground="{DynamicResource TE_LineNumberForeground}"/>
+            <TextBlock Text="Decompiling…"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource TE_LineNumberForeground}"
+                       FontSize="12"
+                       Opacity="0.6"/>
+        </Grid>
     </Grid>
 </UserControl>

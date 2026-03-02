@@ -13,34 +13,33 @@
              d:DesignHeight="400" d:DesignWidth="350">
 
     <UserControl.Resources>
-        <SolidColorBrush x:Key="HeaderBrush" Color="#4A90E2"/>
+        <!-- Semantic colors — unchanged for all themes (green quality, red priority badge) -->
         <SolidColorBrush x:Key="AccentBrush" Color="#7ED321"/>
         <SolidColorBrush x:Key="PriorityBadgeBrush" Color="#FF6B6B"/>
-        <SolidColorBrush x:Key="SectionBackgroundBrush" Color="#F8F9FA"/>
 
         <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="{StaticResource HeaderBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PFP_AccentBrush}"/>
             <Setter Property="Margin" Value="0,12,0,6"/>
         </Style>
 
         <Style x:Key="InfoLabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="10"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PFP_SubTextBrush}"/>
             <Setter Property="Margin" Value="0,0,8,0"/>
         </Style>
 
         <Style x:Key="InfoValueStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="10"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
         </Style>
 
         <Style x:Key="CardStyle" TargetType="Border">
-            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+            <Setter Property="Background" Value="{DynamicResource PFP_SectionBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource PFP_BorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="Padding" Value="12"/>
@@ -48,7 +47,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Background="{StaticResource SectionBackgroundBrush}">
+    <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Margin="12" x:Name="MainPanel">
 
@@ -67,6 +66,7 @@
                                        Text="Format Name"
                                        FontSize="14"
                                        FontWeight="Bold"
+                                       Foreground="{DynamicResource PFP_TextBrush}"
                                        TextWrapping="Wrap"/>
 
                             <!-- Priority Badge -->
@@ -100,13 +100,14 @@
                                    FontSize="10"
                                    FontStyle="Italic"
                                    Margin="0,4,0,0"
-                                   Foreground="{StaticResource HeaderBrush}"/>
+                                   Foreground="{DynamicResource PFP_AccentBrush}"/>
 
                         <TextBlock x:Name="DescriptionTextBlock"
                                    Text="Description"
                                    FontSize="10"
                                    TextWrapping="Wrap"
-                                   Margin="0,8,0,0"/>
+                                   Margin="0,8,0,0"
+                                   Foreground="{DynamicResource PFP_TextBrush}"/>
 
                         <!-- Quality Score with Tooltip -->
                         <Grid Margin="0,12,0,0">
@@ -121,7 +122,7 @@
                                         <TextBlock TextWrapping="Wrap" Margin="4,0,0,2">• Enriched metadata (software, use cases)</TextBlock>
                                         <TextBlock TextWrapping="Wrap" Margin="4,0,0,2">• Technical specifications and references</TextBlock>
                                         <TextBlock TextWrapping="Wrap" Margin="4,0,0,6">• Validation rules</TextBlock>
-                                        <TextBlock TextWrapping="Wrap" FontStyle="Italic" Foreground="Gray">
+                                        <TextBlock TextWrapping="Wrap" FontStyle="Italic" Foreground="{DynamicResource PFP_SubTextBrush}">
                                             Higher scores mean more detailed and reliable format analysis.
                                         </TextBlock>
                                     </StackPanel>
@@ -140,7 +141,7 @@
 
                             <Border Grid.Column="1"
                                     Height="8"
-                                    Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+                                    Background="{DynamicResource PFP_CoverageTrackBrush}"
                                     CornerRadius="4"
                                     Margin="0,0,8,0">
                                 <Border x:Name="QualityScoreBar"
@@ -247,7 +248,7 @@
                             <TextBlock Text="Specifications:"
                                        FontSize="10"
                                        FontWeight="SemiBold"
-                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Foreground="{DynamicResource PFP_SubTextBrush}"
                                        Margin="0,0,0,4"/>
                             <TextBlock x:Name="SpecificationsTextBlock"
                                        Text="N/A"
@@ -260,7 +261,7 @@
                             <TextBlock Text="Documentation:"
                                        FontSize="10"
                                        FontWeight="SemiBold"
-                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Foreground="{DynamicResource PFP_SubTextBrush}"
                                        Margin="0,0,0,4"/>
                             <StackPanel x:Name="WebLinksStackPanel" Margin="8,0,0,0">
                                 <!-- Web links will be added dynamically -->
@@ -272,7 +273,7 @@
                                    Text="No references available for this format"
                                    FontSize="10"
                                    FontStyle="Italic"
-                                   Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                   Foreground="{DynamicResource PFP_SubTextBrush}"
                                    Visibility="Collapsed"/>
                     </StackPanel>
                 </Border>
@@ -311,7 +312,7 @@
                                        Text="Version:"
                                        FontSize="10"
                                        FontWeight="SemiBold"
-                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Foreground="{DynamicResource PFP_SubTextBrush}"
                                        Margin="0,0,8,0"/>
                             <TextBlock Grid.Column="1"
                                        x:Name="VersionTextBlock"
@@ -328,7 +329,7 @@
                                        Text="Author:"
                                        FontSize="10"
                                        FontWeight="SemiBold"
-                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Foreground="{DynamicResource PFP_SubTextBrush}"
                                        Margin="0,0,8,0"/>
                             <TextBlock Grid.Column="1"
                                        x:Name="AuthorTextBlock"
@@ -353,7 +354,7 @@
                                        Text="Signature:"
                                        FontSize="10"
                                        FontWeight="SemiBold"
-                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Foreground="{DynamicResource PFP_SubTextBrush}"
                                        Margin="0,0,8,0"/>
                             <TextBlock Grid.Column="1"
                                        x:Name="SignatureHexTextBlock"
@@ -372,7 +373,7 @@
                                        Text="Offset:"
                                        FontSize="10"
                                        FontWeight="SemiBold"
-                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Foreground="{DynamicResource PFP_SubTextBrush}"
                                        Margin="0,0,8,0"/>
                             <TextBlock Grid.Column="1"
                                        x:Name="OffsetDisplayTextBlock"
@@ -391,7 +392,7 @@
                                        Text="Required:"
                                        FontSize="10"
                                        FontWeight="SemiBold"
-                                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                       Foreground="{DynamicResource PFP_SubTextBrush}"
                                        Margin="0,0,8,0"/>
                             <TextBlock Grid.Column="1"
                                        x:Name="RequiredDisplayTextBlock"
@@ -410,10 +411,12 @@
                         <TextBlock Text="No format detected"
                                    FontSize="13"
                                    FontWeight="SemiBold"
+                                   Foreground="{DynamicResource PFP_TextBrush}"
                                    HorizontalAlignment="Center"
                                    Margin="0,8,0,4"/>
                         <TextBlock Text="Open a file to view format information"
                                    FontSize="11"
+                                   Foreground="{DynamicResource PFP_SubTextBrush}"
                                    HorizontalAlignment="Center"
                                    TextAlignment="Center"/>
                     </StackPanel>

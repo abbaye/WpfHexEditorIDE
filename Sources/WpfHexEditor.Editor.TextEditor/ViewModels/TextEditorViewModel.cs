@@ -73,7 +73,7 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         get
         {
             var name = string.IsNullOrEmpty(_filePath) ? "untitled" : Path.GetFileName(_filePath);
-            return IsDirty ? $"{name}*" : name;
+            return IsDirty ? $"{name} *" : name;
         }
     }
 

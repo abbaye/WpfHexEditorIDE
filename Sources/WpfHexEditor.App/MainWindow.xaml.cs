@@ -262,16 +262,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         // Collect all dirty items: solution/project files + open document editors
-        var allDirty = CollectDirtySolutionItems();
-
-        var dirtyDocs = _layout.GetAllGroups()
-            .SelectMany(g => g.Items)
-            .Where(i => !i.ContentId.StartsWith("panel-") &&
-                        _contentCache.TryGetValue(i.ContentId, out var c) &&
-                        c is IDocumentEditor { IsDirty: true })
-            .ToList();
-
-        allDirty.AddRange(dirtyDocs.Select(i => (i.ContentId, i.Title.TrimEnd('*', ' '))));
+        var allDirty = CollectAllDirtyItems(out var dirtyDocs);
 
         if (allDirty.Count == 0)
         {
@@ -287,25 +278,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         List<(string ContentId, string Title)> allDirty,
         List<DockItem> dirtyDocs)
     {
-        var dlg = new Dialogs.SaveChangesDialog
-        {
-            DirtyItems = allDirty,
-            Owner      = this
-        };
-        if (dlg.ShowDialog() != true || dlg.Choice == Dialogs.SaveChangesChoice.Cancel) return;
-
-        if (dlg.Choice == Dialogs.SaveChangesChoice.Save)
-        {
-            var toSave = new HashSet<string>(dlg.SelectedContentIds);
-            await SaveSelectedSolutionItemsAsync(dlg.SelectedContentIds);
-            foreach (var doc in dirtyDocs)
-            {
-                if (toSave.Contains(doc.ContentId) &&
-                    _contentCache.TryGetValue(doc.ContentId, out var c) &&
-                    c is IDocumentEditor editor)
-                    editor.SaveCommand?.Execute(null);
-            }
-        }
+        if (!await PromptAndSaveDirtyAsync(allDirty, dirtyDocs)) return;
 
         _isClosingForced = true;
         AutoSaveLayout();
@@ -553,17 +526,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         if (!File.Exists(path)) { OutputLogger.Error($"Startup file not found: {path}"); return; }
 
-        _documentCounter++;
-        var item = new DockItem
-        {
-            Title     = Path.GetFileName(path),
-            ContentId = $"doc-hex-{_documentCounter}",
-            Metadata  = { ["FilePath"] = path }
-        };
-        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
-        DockHost.RebuildVisualTree();
-        UpdateStatusBar();
-        _solutionManager.PushRecentFile(path);
+        OpenFileDirectly(path);
         PopulateRecentMenus();
     }
 
@@ -668,8 +631,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var id = item.ContentId;
             if (id.StartsWith("doc-hex-") && int.TryParse(id["doc-hex-".Length..], out var n1))
                 max = Math.Max(max, n1);
-            else if (id.StartsWith("doc-") && int.TryParse(id["doc-".Length..], out var n2))
+            else if (id.StartsWith("doc-file-") && int.TryParse(id["doc-file-".Length..], out var n2))
                 max = Math.Max(max, n2);
+            else if (id.StartsWith("doc-diff-") && int.TryParse(id["doc-diff-".Length..], out var n3))
+                max = Math.Max(max, n3);
+            else if (id.StartsWith("doc-entropy-") && int.TryParse(id["doc-entropy-".Length..], out var n4))
+                max = Math.Max(max, n4);
         }
 
         _documentCounter = max;
@@ -695,7 +662,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             "panel-properties"         => CreatePropertiesContent(),
             CustomParserPanelContentId => CreateCustomParserContent(),
             ErrorPanelContentId        => CreateErrorPanelContent(),
-            _ when item.ContentId.StartsWith("doc-hex-") => CreateHexEditorContent(
+            _ when item.ContentId.StartsWith("doc-file-") => CreateSmartFileEditorContent(item),
+            _ when item.ContentId.StartsWith("doc-hex-")  => CreateHexEditorContent(
                 item.Metadata.TryGetValue("FilePath",    out var fp)   ? fp   : null,
                 item.Metadata.TryGetValue("DisplayName", out var dn)   ? dn   : null,
                 item.Metadata.TryGetValue("IsNewFile",   out var isNew) && isNew == "true"),
@@ -728,8 +696,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.FolderRenameRequested            += OnSEFolderRenameRequested;
         panel.FolderDeleteRequested            += OnSEFolderDeleteRequested;
         panel.FolderFromDiskRequested          += OnSEFolderFromDiskRequested;
+        panel.SolutionRenameRequested          += OnSESolutionRenameRequested;
         panel.ProjectRenameRequested           += OnSEProjectRenameRequested;
         panel.CloseSolutionRequested           += OnSECloseSolutionRequested;
+        panel.SaveAllRequested                 += OnSESaveAll;
+        panel.OpenWithRequested                += OnSEOpenWith;
+        panel.PhysicalFileIncludeRequested     += OnSEPhysicalFileInclude;
         _solutionManager.ItemRenamed           += OnProjectItemRenamed;
         // Sync current solution if already loaded
         panel.SetSolution(_solutionManager.CurrentSolution);
@@ -981,8 +953,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (filePath is null) return CreateDocumentContent(item);
 
+        // "Open With > Hex Editor" bypass: skip the registry entirely
+        bool forceHex = item.Metadata.TryGetValue("ForceHexEditor", out var fh) && fh == "true";
+
         // Try registry-based editor (TBL, JSON, …)
-        var factory = _editorRegistry.FindFactory(filePath);
+        var factory = forceHex ? null : _editorRegistry.FindFactory(filePath);
         if (factory != null)
         {
             var editor = factory.Create();
@@ -1064,6 +1039,35 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         return hexContent;
+    }
+
+    /// <summary>
+    /// Opens a file using the editor registry (extension-first), falling back to HexEditor.
+    /// Used for <c>doc-file-*</c> items (File→Open, MRU, startup, drag-and-drop).
+    /// </summary>
+    private UIElement CreateSmartFileEditorContent(DockItem item)
+    {
+        item.Metadata.TryGetValue("FilePath", out var filePath);
+        if (filePath is null) return CreateDocumentContent(item);
+
+        var factory = _editorRegistry.FindFactory(filePath);
+        if (factory?.Create() is IDocumentEditor editor && editor is FrameworkElement fe)
+        {
+            if (editor is IOpenableDocument openable)
+                _ = openable.OpenAsync(filePath);
+
+            editor.OutputMessage += OnEditorOutputMessage;
+
+            if (editor is IDiagnosticSource diagSrc && _errorPanel is not null)
+                _errorPanel.AddSource(diagSrc);
+
+            ActiveDocumentEditor       = editor;
+            ActiveStatusBarContributor = editor as IStatusBarContributor;
+            return fe;
+        }
+
+        // Fallback: HexEditor for any binary/unknown file
+        return CreateHexEditorContent(filePath);
     }
 
     private static UIElement CreateDocumentContent(DockItem item) =>
@@ -1460,11 +1464,56 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         OutputLogger.Info($"Imported folder '{Path.GetFileName(physicalPath)}' into '{project.Name}'");
     }
 
+    private void OnSESolutionRenameRequested(object? sender, SolutionRenameRequestedEventArgs e)
+        => _ = _solutionManager.RenameSolutionAsync(e.Solution, e.NewName);
+
     private void OnSEProjectRenameRequested(object? sender, ProjectRenameRequestedEventArgs e)
         => _ = _solutionManager.RenameProjectAsync(e.Project, e.NewName);
 
     private void OnSECloseSolutionRequested(object? sender, EventArgs e)
         => _ = CloseSolutionAsync();
+
+    private void OnSESaveAll(object? sender, EventArgs e)
+    {
+        if (_solutionManager.CurrentSolution is { } sol)
+            _ = _solutionManager.SaveSolutionAsync(sol);
+        ActiveDocumentEditor?.SaveCommand?.Execute(null);
+    }
+
+    private void OnSEOpenWith(object? sender, OpenWithRequestedEventArgs e)
+    {
+        // Open the item forcing the HexEditor, regardless of the editor registry.
+        // Uses a distinct contentId so it can coexist with the registry-based tab.
+        var hexContentId = $"doc-proj-hex-{e.Item.Id}";
+        if (_layout.FindItemByContentId(hexContentId) is { } existing)
+        {
+            if (existing.Owner is { } owner)
+                owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        var dockItem = new DockItem
+        {
+            Title     = e.Item.Name,
+            ContentId = hexContentId,
+            Metadata  =
+            {
+                ["FilePath"]       = e.Item.AbsolutePath,
+                ["ProjectId"]      = e.Project.Id,
+                ["ItemId"]         = e.Item.Id,
+                ["ForceHexEditor"] = "true",
+            },
+        };
+        _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    private async void OnSEPhysicalFileInclude(object? sender, PhysicalFileIncludeRequestedEventArgs e)
+    {
+        await _solutionManager.AddItemAsync(e.Project, e.PhysicalPath, e.TargetFolderId);
+        _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+    }
 
     // ─── Active document tracking ───────────────────────────────────────
 
@@ -2040,23 +2089,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async Task OpenSolutionAsync(string filePath)
     {
-        // Prompt to save modified solution/project files before replacing the current solution.
+        // Prompt to save modified solution/project files + dirty editors before replacing the current solution.
         if (_solutionManager.CurrentSolution != null)
         {
-            var solDirty = CollectDirtySolutionItems();
-            if (solDirty.Count > 0)
-            {
-                var dlg = new Dialogs.SaveChangesDialog
-                {
-                    DirtyItems = solDirty,
-                    Owner      = this
-                };
-                if (dlg.ShowDialog() != true || dlg.Choice == Dialogs.SaveChangesChoice.Cancel)
-                    return;
-
-                if (dlg.Choice == Dialogs.SaveChangesChoice.Save)
-                    await SaveSelectedSolutionItemsAsync(dlg.SelectedContentIds);
-            }
+            var allDirty = CollectAllDirtyItems(out var dirtyDocs);
+            if (!await PromptAndSaveDirtyAsync(allDirty, dirtyDocs)) return;
         }
 
         try
@@ -2083,17 +2120,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (dlg.ShowDialog() != true) return;
 
-        _documentCounter++;
-        var item = new DockItem
-        {
-            Title     = Path.GetFileName(dlg.FileName),
-            ContentId = $"doc-hex-{_documentCounter}",
-            Metadata  = { ["FilePath"] = dlg.FileName }
-        };
-        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
-        DockHost.RebuildVisualTree();
-        UpdateStatusBar();
-        _solutionManager.PushRecentFile(dlg.FileName);
+        OpenFileDirectly(dlg.FileName);
         PopulateRecentMenus();
         OutputLogger.Info($"Open file: {dlg.FileName}");
     }
@@ -2134,20 +2161,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (promptUser)
         {
-            var solDirty = CollectDirtySolutionItems();
-            if (solDirty.Count > 0)
-            {
-                var dlg = new Dialogs.SaveChangesDialog
-                {
-                    DirtyItems = solDirty,
-                    Owner      = this
-                };
-                if (dlg.ShowDialog() != true || dlg.Choice == Dialogs.SaveChangesChoice.Cancel)
-                    return false;
-
-                if (dlg.Choice == Dialogs.SaveChangesChoice.Save)
-                    await SaveSelectedSolutionItemsAsync(dlg.SelectedContentIds);
-            }
+            var allDirty = CollectAllDirtyItems(out var dirtyDocs);
+            if (!await PromptAndSaveDirtyAsync(allDirty, dirtyDocs)) return false;
         }
 
         try
@@ -2184,6 +2199,51 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             result.Add((ProjectDirtyId(proj.Id), $"{proj.Name}.whproj"));
 
         return result;
+    }
+
+    /// <summary>
+    /// Returns combined dirty items: solution/project files + open dirty document editors.
+    /// Also outputs the list of dirty DockItems needed to save editors afterwards.
+    /// </summary>
+    private List<(string ContentId, string Title)> CollectAllDirtyItems(out List<DockItem> dirtyDocs)
+    {
+        var allDirty = CollectDirtySolutionItems();
+        dirtyDocs = _layout.GetAllGroups()
+            .SelectMany(g => g.Items)
+            .Where(i => !i.ContentId.StartsWith("panel-") &&
+                        _contentCache.TryGetValue(i.ContentId, out var c) &&
+                        c is IDocumentEditor { IsDirty: true })
+            .ToList();
+        allDirty.AddRange(dirtyDocs.Select(i => (i.ContentId, i.Title.TrimEnd('*', ' '))));
+        return allDirty;
+    }
+
+    /// <summary>
+    /// Shows the SaveChangesDialog for all dirty items (solution/project + open editors).
+    /// Returns <c>false</c> if the user cancelled; <c>true</c> if Save or Don't Save was chosen.
+    /// </summary>
+    private async Task<bool> PromptAndSaveDirtyAsync(
+        List<(string ContentId, string Title)> allDirty,
+        List<DockItem> dirtyDocs)
+    {
+        if (allDirty.Count == 0) return true;
+
+        var dlg = new Dialogs.SaveChangesDialog { DirtyItems = allDirty, Owner = this };
+        if (dlg.ShowDialog() != true || dlg.Choice == Dialogs.SaveChangesChoice.Cancel) return false;
+
+        if (dlg.Choice == Dialogs.SaveChangesChoice.Save)
+        {
+            var toSave = new HashSet<string>(dlg.SelectedContentIds);
+            await SaveSelectedSolutionItemsAsync(dlg.SelectedContentIds);
+            foreach (var doc in dirtyDocs)
+            {
+                if (toSave.Contains(doc.ContentId) &&
+                    _contentCache.TryGetValue(doc.ContentId, out var c) &&
+                    c is IDocumentEditor editor)
+                    editor.SaveCommand?.Execute(null);
+            }
+        }
+        return true;
     }
 
     /// <summary>
@@ -2274,16 +2334,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _solutionManager.RecentFiles,
             path =>
             {
-                _documentCounter++;
-                var item = new DockItem
-                {
-                    Title     = Path.GetFileName(path),
-                    ContentId = $"doc-hex-{_documentCounter}",
-                    Metadata  = { ["FilePath"] = path }
-                };
-                _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
-                DockHost.RebuildVisualTree();
-                UpdateStatusBar();
+                OpenFileDirectly(path);
+                PopulateRecentMenus(); // refresh MRU order (most-recently-used to top)
             });
 
         RebuildJumpList();

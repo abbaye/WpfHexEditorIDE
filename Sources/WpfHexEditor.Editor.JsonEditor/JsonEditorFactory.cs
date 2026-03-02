@@ -24,7 +24,7 @@ public sealed class JsonEditorFactory : IEditorFactory
     public bool CanOpen(string filePath)
     {
         var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
-        return ext is ".json" or ".whfmt";
+        return ext is ".json" or ".whfmt" or ".whjson";
     }
 
     public IDocumentEditor Create() => new Controls.JsonEditor();
@@ -35,5 +35,5 @@ file sealed class JsonEditorDescriptor : IEditorDescriptor
     public string Id          => "json-editor";
     public string DisplayName => "JSON Editor";
     public string Description => "JSON / whfmt format definition editor";
-    public IReadOnlyList<string> SupportedExtensions => [".json", ".whfmt"];
+    public IReadOnlyList<string> SupportedExtensions => [".json", ".whfmt", ".whjson"];
 }

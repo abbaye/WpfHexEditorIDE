@@ -31,7 +31,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
     /// Phase 2: Syntax highlighting with JsonSyntaxHighlighter
     /// Future phases will add: IntelliSense, validation
     /// </summary>
-    public class JsonEditor : FrameworkElement, IDocumentEditor, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor
+    public class JsonEditor : FrameworkElement, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor
     {
         #region Fields - Document Model
 
@@ -198,7 +198,10 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
                 if (value)
                     TriggerValidation();
                 else
+                {
                     _validationErrors.Clear();
+                    DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -1161,6 +1164,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             SetResourceReference(LineNumberForegroundProperty,  "TE_LineNumberForeground");
             SetResourceReference(CurrentLineBackgroundProperty, "TE_CurrentLineBrush");
             SetResourceReference(SelectionBackgroundProperty,   "TE_SelectionBackground");
+            SetResourceReference(CaretColorProperty,            "TE_CaretColor");
 
             // Syntax highlighting
             SetResourceReference(SyntaxKeyColorProperty,              "TE_Keyword");
@@ -3589,11 +3593,13 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
                 var jsonText = _document.SaveToString();
                 _validationErrors = _validator.Validate(jsonText);
                 InvalidateVisual();
+                DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception)
             {
                 // Silently ignore validation errors
                 _validationErrors.Clear();
+                DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -3777,9 +3783,11 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             _cursorColumn = 0;
             _selection.Clear();
             _undoRedoStack.Clear();
+            _validationErrors.Clear();
             InvalidateVisual();
             ModifiedChanged?.Invoke(this, EventArgs.Empty);
             TitleChanged?.Invoke(this, BuildTitle());
+            DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         // ── Events ────────────────────────────────────────────────────────
@@ -3839,6 +3847,39 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             _sbJsonFile.Value = !string.IsNullOrEmpty(_currentFilePath)
                 ? Path.GetFileName(_currentFilePath)
                 : "(unsaved)";
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // IDiagnosticSource
+        // ═══════════════════════════════════════════════════════════════════
+
+        public event EventHandler? DiagnosticsChanged;
+
+        string IDiagnosticSource.SourceLabel
+            => !string.IsNullOrEmpty(_currentFilePath) ? Path.GetFileName(_currentFilePath)! : "JSON Editor";
+
+        IReadOnlyList<DiagnosticEntry> IDiagnosticSource.GetDiagnostics()
+        {
+            if (_validationErrors == null || _validationErrors.Count == 0)
+                return [];
+
+            var fileName = !string.IsNullOrEmpty(_currentFilePath) ? Path.GetFileName(_currentFilePath) : null;
+            var filePath = _currentFilePath;
+
+            return _validationErrors.Select(ve => new DiagnosticEntry(
+                Severity:    ve.Severity switch
+                {
+                    ValidationSeverity.Warning => DiagnosticSeverity.Warning,
+                    ValidationSeverity.Info    => DiagnosticSeverity.Message,
+                    _                          => DiagnosticSeverity.Error,
+                },
+                Code:        !string.IsNullOrEmpty(ve.ErrorCode) ? ve.ErrorCode : ve.Layer.ToString(),
+                Description: ve.Message ?? string.Empty,
+                FileName:    fileName,
+                FilePath:    filePath,
+                Line:        ve.Line + 1,
+                Column:      ve.Column + 1
+            )).ToList();
         }
     }
 

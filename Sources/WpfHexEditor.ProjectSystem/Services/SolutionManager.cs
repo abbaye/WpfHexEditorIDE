@@ -200,7 +200,7 @@ public sealed class SolutionManager : ISolutionManager
 
     // ── Item management ──────────────────────────────────────────────────
 
-    public Task<IProjectItem> AddItemAsync(IProject project, string absolutePath, string? virtualFolderId = null, CancellationToken ct = default)
+    public async Task<IProjectItem> AddItemAsync(IProject project, string absolutePath, string? virtualFolderId = null, CancellationToken ct = default)
     {
         if (project is not Project proj)
             throw new ArgumentException("Invalid project type.");
@@ -219,7 +219,8 @@ public sealed class SolutionManager : ISolutionManager
 
         AddToProject(proj, item, virtualFolderId);
         RaiseItemAdded(item, proj);
-        return Task.FromResult<IProjectItem>(item);
+        await SaveProjectAsync(project, ct);
+        return item;
     }
 
     public async Task<IProjectItem> CreateItemAsync(IProject project, string name, ProjectItemType type, string? virtualFolderId = null, byte[]? initialContent = null, CancellationToken ct = default)
@@ -238,9 +239,9 @@ public sealed class SolutionManager : ISolutionManager
         return await AddItemAsync(project, absPath, virtualFolderId, ct);
     }
 
-    public Task RemoveItemAsync(IProject project, IProjectItem item, bool deleteFromDisk = false, CancellationToken ct = default)
+    public async Task RemoveItemAsync(IProject project, IProjectItem item, bool deleteFromDisk = false, CancellationToken ct = default)
     {
-        if (project is not Project proj || item is not ProjectItem pi) return Task.CompletedTask;
+        if (project is not Project proj || item is not ProjectItem pi) return;
 
         proj.ItemsMutable.Remove(pi);
 
@@ -253,7 +254,28 @@ public sealed class SolutionManager : ISolutionManager
 
         proj.IsModified = true;
         RaiseItemRemoved(pi, proj);
-        return Task.CompletedTask;
+        await SaveProjectAsync(project, ct);
+    }
+
+    public async Task RenameSolutionAsync(ISolution solution, string newName, CancellationToken ct = default)
+    {
+        if (solution is not Solution sol) return;
+
+        var oldPath = sol.FilePath;
+        var dir     = Path.GetDirectoryName(oldPath) ?? "";
+        var ext     = Path.GetExtension(oldPath);
+        var newPath = Path.Combine(dir, newName + ext);
+
+        if (File.Exists(oldPath) &&
+            !string.Equals(oldPath, newPath, StringComparison.OrdinalIgnoreCase))
+            File.Move(oldPath, newPath);
+
+        sol.Name     = newName;
+        sol.FilePath = newPath;
+        sol.IsModified = true;
+
+        RaiseSolutionChanged(SolutionChangeKind.Modified);
+        await SaveSolutionAsync(sol, ct);
     }
 
     public async Task RenameProjectAsync(IProject project, string newName, CancellationToken ct = default)
@@ -429,6 +451,7 @@ public sealed class SolutionManager : ISolutionManager
         proj.DefaultTblItemId = tblItem?.Id;
         proj.IsModified = true;
         RaiseProjectChanged(proj, ProjectChangeKind.Modified);
+        _ = SaveProjectAsync(project);
     }
 
     // ── MRU helpers ──────────────────────────────────────────────────────

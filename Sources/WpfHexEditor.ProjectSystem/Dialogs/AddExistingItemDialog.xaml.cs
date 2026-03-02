@@ -146,6 +146,7 @@ public partial class AddExistingItemDialog : Window
 
     private void OnCopyModeChanged(object sender, RoutedEventArgs e)
     {
+        if (SubfolderPanel is null) return;
         var copying = CopyToProjectRadio.IsChecked == true;
         SubfolderPanel.IsEnabled = copying;
         UpdateAutoVirtualFolderAvailability();
