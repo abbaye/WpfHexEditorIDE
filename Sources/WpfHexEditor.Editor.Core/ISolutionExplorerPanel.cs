@@ -120,6 +120,13 @@ public interface ISolutionExplorerPanel
     event EventHandler<PhysicalFileIncludeRequestedEventArgs>? PhysicalFileIncludeRequested;
 
     /// <summary>
+    /// Fired when the user chooses "Import into Project…" on a file node whose physical
+    /// path is located outside the project directory.
+    /// The host copies the file into the project directory and updates the item reference.
+    /// </summary>
+    event EventHandler<ImportExternalFileRequestedEventArgs>? ImportExternalFileRequested;
+
+    /// <summary>
     /// Fired when the user chooses "Save All" from the solution node context menu.
     /// </summary>
     event EventHandler? SaveAllRequested;

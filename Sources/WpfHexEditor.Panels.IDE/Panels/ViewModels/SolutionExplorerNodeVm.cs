@@ -245,6 +245,21 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
 
     public bool IsModified => _item.IsModified;
 
+    /// <summary>
+    /// True when the item's physical file lives outside the project directory.
+    /// Such files show a small external-link badge and offer an "Import into Project" context menu action.
+    /// </summary>
+    public bool IsExternal
+    {
+        get
+        {
+            if (Project?.ProjectFilePath is not { } projFile) return false;
+            var projDir = System.IO.Path.GetDirectoryName(projFile);
+            if (string.IsNullOrEmpty(projDir) || string.IsNullOrEmpty(_item.AbsolutePath)) return false;
+            return !_item.AbsolutePath.StartsWith(projDir, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     // ── Inline rename ───────────────────────────────────────────────────────
 
     private bool   _isEditing;

@@ -126,6 +126,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         bool isThingyTbl = isTbl && string.Equals(
             Path.GetExtension(file?.Source.Name ?? string.Empty), ".tbl", StringComparison.OrdinalIgnoreCase);
 
+        bool isExternal   = file?.IsExternal == true;
         bool canOpen      = isFile || isPhysIn;
         bool canAdd       = isProject || isFolder;
         bool hasExplorer  = isSolution || isProject || isFolder || isFile || isPhysFolder || isPhysFile;
@@ -167,6 +168,10 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         RemoveMenuItem            .Visibility = (isFile || isFolder)                             ? Visibility.Visible : Visibility.Collapsed;
         ExcludeFromProjectMenuItem.Visibility = isPhysIn                                         ? Visibility.Visible : Visibility.Collapsed;
 
+        // Import external file (file node whose path is outside the project directory)
+        ImportExternalSeparator    .Visibility = isExternal ? Visibility.Visible : Visibility.Collapsed;
+        ImportExternalFileMenuItem .Visibility = isExternal ? Visibility.Visible : Visibility.Collapsed;
+
         // Changeset (.whchg) actions
         ChangesetSeparator           .Visibility = isChangeset ? Visibility.Visible : Visibility.Collapsed;
         WriteChangesetToDiskMenuItem .Visibility = isChangeset ? Visibility.Visible : Visibility.Collapsed;
@@ -183,7 +188,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         CloseSolutionMenuItem  .Visibility = isSolution ? Visibility.Visible : Visibility.Collapsed;
 
         return canOpen || canAdd || isPhysNotIn || isTbl || hasExplorer
-            || isSolution || isProject || isFolder || isFile || isPhysIn || isChangeset;
+            || isSolution || isProject || isFolder || isFile || isPhysIn || isChangeset || isExternal;
     }
 
     private void OnContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -332,6 +337,16 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         if (_contextMenuTarget is not PhysicalFileNodeVm pf || !pf.IsInProject
             || pf.LinkedItem is null || pf.Project is null) return;
         ItemDeleteRequested?.Invoke(this, new ProjectItemEventArgs { Item = pf.LinkedItem, Project = pf.Project });
+    }
+
+    private void OnImportExternalFile(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is not FileNodeVm fn || !fn.IsExternal || fn.Project is null) return;
+        ImportExternalFileRequested?.Invoke(this, new ImportExternalFileRequestedEventArgs
+        {
+            Item    = fn.Source,
+            Project = fn.Project,
+        });
     }
 
     private void OnSaveAll(object sender, RoutedEventArgs e)
@@ -501,6 +516,9 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     /// <inheritdoc/>
     public event EventHandler<PhysicalFileIncludeRequestedEventArgs>? PhysicalFileIncludeRequested;
+
+    /// <inheritdoc/>
+    public event EventHandler<ImportExternalFileRequestedEventArgs>? ImportExternalFileRequested;
 
     /// <inheritdoc/>
     public event EventHandler? SaveAllRequested;

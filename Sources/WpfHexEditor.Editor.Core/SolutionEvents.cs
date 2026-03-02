@@ -162,6 +162,18 @@ public sealed class PhysicalFileIncludeRequestedEventArgs : EventArgs
     public string?  TargetFolderId { get; init; }
 }
 
+/// <summary>
+/// Fired when the user chooses "Import into Project" on a file node that lives
+/// outside the project directory.  The host copies the file into the project
+/// directory and updates the item reference via <see cref="ISolutionManager"/>.
+/// </summary>
+public sealed class ImportExternalFileRequestedEventArgs : EventArgs
+{
+    /// <summary>The project item that references an external file.</summary>
+    public IProjectItem Item    { get; init; } = null!;
+    public IProject     Project { get; init; } = null!;
+}
+
 // ── Format upgrade ────────────────────────────────────────────────────────────
 
 /// <summary>

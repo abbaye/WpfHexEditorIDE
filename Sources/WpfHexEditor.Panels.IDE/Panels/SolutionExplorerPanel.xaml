@@ -310,6 +310,13 @@
                                VerticalAlignment="Center"
                                ToolTip="Unsaved modifications"
                                Visibility="{Binding IsModified, Converter={StaticResource BoolToVis}}"/>
+                    <!-- External-file badge -->
+                    <TextBlock x:Name="ExternalBadge"
+                               Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="9"
+                               Foreground="#E8A419"
+                               VerticalAlignment="Center" Margin="3,0,0,0"
+                               ToolTip="File is located outside the project directory"
+                               Visibility="Collapsed"/>
                 </StackPanel>
 
                 <!-- Inline rename TextBox (IsEditing = true) -->
@@ -330,6 +337,9 @@
                 <DataTrigger Binding="{Binding IsEditing}" Value="True">
                     <Setter TargetName="DisplayPanel"   Property="Visibility" Value="Collapsed"/>
                     <Setter TargetName="InlineEditBox"  Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsExternal}" Value="True">
+                    <Setter TargetName="ExternalBadge" Property="Visibility" Value="Visible"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -553,6 +563,13 @@
                     <MenuItem x:Name="ExcludeFromProjectMenuItem" Header="Exclude from Project" Click="OnExcludeFromProject">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8F8;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <!-- Import external file into project directory -->
+                    <Separator x:Name="ImportExternalSeparator"/>
+                    <MenuItem x:Name="ImportExternalFileMenuItem" Header="Import into Project..." Click="OnImportExternalFile">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8B5;"/>
                         </MenuItem.Icon>
                     </MenuItem>
 
