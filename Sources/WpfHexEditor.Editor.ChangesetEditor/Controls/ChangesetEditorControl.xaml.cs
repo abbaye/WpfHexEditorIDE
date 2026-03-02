@@ -2,7 +2,9 @@
 // Contributors: Claude Sonnet 4.6
 
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,7 +20,8 @@ namespace WpfHexEditor.Editor.ChangesetEditor.Controls;
 /// All contextual actions (Apply to Disk, Discard) are exposed via
 /// <see cref="IEditorToolbarContributor.ToolbarItems"/> — no embedded toolbar.
 /// </summary>
-public sealed partial class ChangesetEditorControl : UserControl, IDocumentEditor, IEditorToolbarContributor
+public sealed partial class ChangesetEditorControl : UserControl, IDocumentEditor, IEditorToolbarContributor,
+    INotifyPropertyChanged
 {
     // ── IDocumentEditor ──────────────────────────────────────────────────────
 
