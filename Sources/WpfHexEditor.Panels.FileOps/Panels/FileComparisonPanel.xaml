@@ -12,64 +12,48 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800">
 
-    <UserControl.Resources>
-        <Style x:Key="DiffAddedStyle" TargetType="Border">
-            <Setter Property="Background" Value="#E8F5E9"/>
-            <Setter Property="BorderBrush" Value="#4CAF50"/>
-            <Setter Property="BorderThickness" Value="2,0,0,0"/>
-        </Style>
-
-        <Style x:Key="DiffRemovedStyle" TargetType="Border">
-            <Setter Property="Background" Value="#FFEBEE"/>
-            <Setter Property="BorderBrush" Value="#F44336"/>
-            <Setter Property="BorderThickness" Value="2,0,0,0"/>
-        </Style>
-
-        <Style x:Key="DiffModifiedStyle" TargetType="Border">
-            <Setter Property="Background" Value="#FFF3E0"/>
-            <Setter Property="BorderBrush" Value="#FF9800"/>
-            <Setter Property="BorderThickness" Value="2,0,0,0"/>
-        </Style>
-    </UserControl.Resources>
-
-    <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+    <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
+        <!-- ── Toolbar ── -->
         <Border Grid.Row="0"
-                Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,0,0,1"
-                Padding="12">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                Padding="8,5">
+            <DockPanel>
+                <!-- Load buttons (docked right) -->
+                <Button DockPanel.Dock="Right"
+                        Content="Load File 2…"
+                        Padding="12,3" Height="22" Margin="0,0,4,0"
+                        Background="{DynamicResource Panel_ToolbarBrush}"
+                        BorderBrush="{DynamicResource PFP_BorderBrush}"
+                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                        Click="LoadFile2_Click"/>
+                <Button DockPanel.Dock="Right"
+                        Content="Load File 1…"
+                        Padding="12,3" Height="22" Margin="0,0,8,0"
+                        Background="{DynamicResource Panel_ToolbarBrush}"
+                        BorderBrush="{DynamicResource PFP_BorderBrush}"
+                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                        Click="LoadFile1_Click"/>
+                <Rectangle DockPanel.Dock="Right" Width="1" Margin="0,4,8,4"
+                           Fill="{DynamicResource PFP_BorderBrush}"/>
 
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="⚖️ File Comparison"
-                               FontSize="14"
-                               FontWeight="Bold"
-                               Margin="0,0,0,4"/>
-                    <TextBlock x:Name="ComparisonInfoText"
-                               Text="Select files to compare"
-                               FontSize="10"
-                               Foreground="Gray"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="Load File 1..." Width="100" Height="28" Margin="0,0,8,0" Click="LoadFile1_Click"/>
-                    <Button Content="Load File 2..." Width="100" Height="28" Click="LoadFile2_Click"/>
-                </StackPanel>
-            </Grid>
+                <!-- Info text (fills remaining space) -->
+                <TextBlock x:Name="ComparisonInfoText"
+                           Text="Select files to compare"
+                           VerticalAlignment="Center"
+                           Margin="4,0,0,0" FontSize="11"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"/>
+            </DockPanel>
         </Border>
 
-        <!-- Comparison View -->
+        <!-- ── Comparison view ── -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -79,7 +63,7 @@
 
             <!-- File 1 -->
             <Border Grid.Column="0"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                    BorderBrush="{DynamicResource PFP_BorderBrush}"
                     BorderThickness="0,0,1,0">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -87,13 +71,15 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
+                    <!-- Column header -->
                     <Border Grid.Row="0"
-                            Background="#E3F2FD"
-                            Padding="8,6">
-                        <TextBlock x:Name="File1NameText"
-                                   Text="File 1"
-                                   FontWeight="SemiBold"
-                                   FontSize="11"/>
+                            Background="{DynamicResource Panel_ToolbarBrush}"
+                            BorderBrush="{DynamicResource PFP_BorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            Padding="8,5">
+                        <TextBlock x:Name="File1NameText" Text="File 1"
+                                   FontWeight="SemiBold" FontSize="11"
+                                   Foreground="{DynamicResource PFP_TextBrush}"/>
                     </Border>
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
@@ -103,23 +89,28 @@
                                     <Border Padding="8,4" Margin="0,1">
                                         <Border.Style>
                                             <Style TargetType="Border">
+                                                <Setter Property="Background" Value="Transparent"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding DiffStatus}" Value="Removed">
-                                                        <Setter Property="Background" Value="#FFEBEE"/>
-                                                        <Setter Property="BorderBrush" Value="#F44336"/>
-                                                        <Setter Property="BorderThickness" Value="2,0,0,0"/>
+                                                        <Setter Property="Background"       Value="{DynamicResource DiffRemoved_BackgroundBrush}"/>
+                                                        <Setter Property="BorderBrush"      Value="{DynamicResource DiffRemoved_BorderBrush}"/>
+                                                        <Setter Property="BorderThickness"  Value="2,0,0,0"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding DiffStatus}" Value="Modified">
-                                                        <Setter Property="Background" Value="#FFF3E0"/>
-                                                        <Setter Property="BorderBrush" Value="#FF9800"/>
-                                                        <Setter Property="BorderThickness" Value="2,0,0,0"/>
+                                                        <Setter Property="Background"       Value="{DynamicResource DiffModified_BackgroundBrush}"/>
+                                                        <Setter Property="BorderBrush"      Value="{DynamicResource DiffModified_BorderBrush}"/>
+                                                        <Setter Property="BorderThickness"  Value="2,0,0,0"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Border.Style>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="10"/>
-                                            <TextBlock Text="{Binding Value}" FontFamily="Consolas" FontSize="9" Foreground="Gray"/>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontWeight="SemiBold" FontSize="10"
+                                                       Foreground="{DynamicResource PFP_TextBrush}"/>
+                                            <TextBlock Text="{Binding Value}"
+                                                       FontFamily="Consolas" FontSize="9"
+                                                       Foreground="{DynamicResource PFP_SubTextBrush}"/>
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
@@ -129,23 +120,38 @@
                 </Grid>
             </Border>
 
-            <!-- Diff Legend -->
-            <Border Grid.Column="1" Width="40" Background="#F5F5F5" Padding="4">
-                <StackPanel VerticalAlignment="Center">
-                    <Border Background="#E8F5E9" Width="30" Height="30" Margin="0,4" CornerRadius="4" ToolTip="Added"/>
-                    <TextBlock Text="+" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#4CAF50"/>
+            <!-- Diff legend (center strip) -->
+            <Border Grid.Column="1" Width="36"
+                    Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                    BorderBrush="{DynamicResource PFP_BorderBrush}"
+                    BorderThickness="1,0">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Border Background="{DynamicResource DiffAdded_BackgroundBrush}"
+                            BorderBrush="{DynamicResource DiffAdded_BorderBrush}"
+                            BorderThickness="1"
+                            Width="26" Height="26" Margin="0,4" CornerRadius="4" ToolTip="Added"/>
+                    <TextBlock Text="+" FontWeight="Bold" HorizontalAlignment="Center"
+                               Foreground="{DynamicResource DiffAdded_BorderBrush}"/>
 
-                    <Border Background="#FFF3E0" Width="30" Height="30" Margin="0,8,0,4" CornerRadius="4" ToolTip="Modified"/>
-                    <TextBlock Text="≠" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#FF9800"/>
+                    <Border Background="{DynamicResource DiffModified_BackgroundBrush}"
+                            BorderBrush="{DynamicResource DiffModified_BorderBrush}"
+                            BorderThickness="1"
+                            Width="26" Height="26" Margin="0,8,0,4" CornerRadius="4" ToolTip="Modified"/>
+                    <TextBlock Text="≠" FontWeight="Bold" HorizontalAlignment="Center"
+                               Foreground="{DynamicResource DiffModified_BorderBrush}"/>
 
-                    <Border Background="#FFEBEE" Width="30" Height="30" Margin="0,8,0,4" CornerRadius="4" ToolTip="Removed"/>
-                    <TextBlock Text="-" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#F44336"/>
+                    <Border Background="{DynamicResource DiffRemoved_BackgroundBrush}"
+                            BorderBrush="{DynamicResource DiffRemoved_BorderBrush}"
+                            BorderThickness="1"
+                            Width="26" Height="26" Margin="0,8,0,4" CornerRadius="4" ToolTip="Removed"/>
+                    <TextBlock Text="-" FontWeight="Bold" HorizontalAlignment="Center"
+                               Foreground="{DynamicResource DiffRemoved_BorderBrush}"/>
                 </StackPanel>
             </Border>
 
             <!-- File 2 -->
             <Border Grid.Column="2"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                    BorderBrush="{DynamicResource PFP_BorderBrush}"
                     BorderThickness="1,0,0,0">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -153,13 +159,15 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
+                    <!-- Column header -->
                     <Border Grid.Row="0"
-                            Background="#E8F5E9"
-                            Padding="8,6">
-                        <TextBlock x:Name="File2NameText"
-                                   Text="File 2"
-                                   FontWeight="SemiBold"
-                                   FontSize="11"/>
+                            Background="{DynamicResource Panel_ToolbarBrush}"
+                            BorderBrush="{DynamicResource PFP_BorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            Padding="8,5">
+                        <TextBlock x:Name="File2NameText" Text="File 2"
+                                   FontWeight="SemiBold" FontSize="11"
+                                   Foreground="{DynamicResource PFP_TextBrush}"/>
                     </Border>
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
@@ -169,23 +177,28 @@
                                     <Border Padding="8,4" Margin="0,1">
                                         <Border.Style>
                                             <Style TargetType="Border">
+                                                <Setter Property="Background" Value="Transparent"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding DiffStatus}" Value="Added">
-                                                        <Setter Property="Background" Value="#E8F5E9"/>
-                                                        <Setter Property="BorderBrush" Value="#4CAF50"/>
-                                                        <Setter Property="BorderThickness" Value="2,0,0,0"/>
+                                                        <Setter Property="Background"       Value="{DynamicResource DiffAdded_BackgroundBrush}"/>
+                                                        <Setter Property="BorderBrush"      Value="{DynamicResource DiffAdded_BorderBrush}"/>
+                                                        <Setter Property="BorderThickness"  Value="2,0,0,0"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding DiffStatus}" Value="Modified">
-                                                        <Setter Property="Background" Value="#FFF3E0"/>
-                                                        <Setter Property="BorderBrush" Value="#FF9800"/>
-                                                        <Setter Property="BorderThickness" Value="2,0,0,0"/>
+                                                        <Setter Property="Background"       Value="{DynamicResource DiffModified_BackgroundBrush}"/>
+                                                        <Setter Property="BorderBrush"      Value="{DynamicResource DiffModified_BorderBrush}"/>
+                                                        <Setter Property="BorderThickness"  Value="2,0,0,0"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Border.Style>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="10"/>
-                                            <TextBlock Text="{Binding Value}" FontFamily="Consolas" FontSize="9" Foreground="Gray"/>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontWeight="SemiBold" FontSize="10"
+                                                       Foreground="{DynamicResource PFP_TextBrush}"/>
+                                            <TextBlock Text="{Binding Value}"
+                                                       FontFamily="Consolas" FontSize="9"
+                                                       Foreground="{DynamicResource PFP_SubTextBrush}"/>
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
@@ -196,17 +209,21 @@
             </Border>
         </Grid>
 
-        <!-- Status Bar -->
+        <!-- ── Status bar ── -->
         <Border Grid.Row="2"
-                Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,1,0,0"
-                Padding="12,6">
+                Padding="10,5">
             <StackPanel Orientation="Horizontal">
-                <TextBlock x:Name="MatchingFieldsText" Text="Matching: 0" FontSize="10" Margin="0,0,16,0" Foreground="Green"/>
-                <TextBlock x:Name="AddedFieldsText" Text="Added: 0" FontSize="10" Margin="0,0,16,0" Foreground="Green"/>
-                <TextBlock x:Name="ModifiedFieldsText" Text="Modified: 0" FontSize="10" Margin="0,0,16,0" Foreground="Orange"/>
-                <TextBlock x:Name="RemovedFieldsText" Text="Removed: 0" FontSize="10" Foreground="Red"/>
+                <TextBlock x:Name="MatchingFieldsText" Text="Matching: 0"  FontSize="10" Margin="0,0,16,0"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"/>
+                <TextBlock x:Name="AddedFieldsText"    Text="Added: 0"     FontSize="10" Margin="0,0,16,0"
+                           Foreground="{DynamicResource DiffAdded_BorderBrush}"/>
+                <TextBlock x:Name="ModifiedFieldsText" Text="Modified: 0"  FontSize="10" Margin="0,0,16,0"
+                           Foreground="{DynamicResource DiffModified_BorderBrush}"/>
+                <TextBlock x:Name="RemovedFieldsText"  Text="Removed: 0"   FontSize="10"
+                           Foreground="{DynamicResource DiffRemoved_BorderBrush}"/>
             </StackPanel>
         </Border>
 

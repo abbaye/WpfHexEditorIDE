@@ -293,4 +293,11 @@
     <SolidColorBrush x:Key="InfoBar_ButtonHoverBackgroundBrush"  Color="#4E4E52"/>
     <SolidColorBrush x:Key="InfoBar_ButtonForegroundBrush"       Color="#CCCCCC"/>
     <SolidColorBrush x:Key="InfoBar_DismissButtonBrush"          Color="#9B9B9B"/>
+    <!-- Semantic diff colors (FileComparisonPanel) -->
+    <SolidColorBrush x:Key="DiffAdded_BackgroundBrush"   Color="#1B2F1B"/>
+    <SolidColorBrush x:Key="DiffAdded_BorderBrush"        Color="#4CAF50"/>
+    <SolidColorBrush x:Key="DiffModified_BackgroundBrush" Color="#2F2000"/>
+    <SolidColorBrush x:Key="DiffModified_BorderBrush"     Color="#FF9800"/>
+    <SolidColorBrush x:Key="DiffRemoved_BackgroundBrush"  Color="#2F1515"/>
+    <SolidColorBrush x:Key="DiffRemoved_BorderBrush"      Color="#F44336"/>
 </ResourceDictionary>

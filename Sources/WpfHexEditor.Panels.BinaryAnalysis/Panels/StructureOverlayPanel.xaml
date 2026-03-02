@@ -13,14 +13,12 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="350">
     <UserControl.Resources>
-        <!-- Style for structure items -->
         <Style x:Key="StructureItemStyle" TargetType="TreeViewItem">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontFamily"  Value="Segoe UI"/>
+            <Setter Property="FontSize"    Value="12"/>
         </Style>
 
-        <!-- HierarchicalDataTemplate for Structure -->
         <HierarchicalDataTemplate x:Key="StructureTemplate" ItemsSource="{Binding Fields}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -29,20 +27,14 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Visibility Toggle -->
-                <CheckBox Grid.Column="0"
-                          IsChecked="{Binding IsVisible, Mode=TwoWay}"
-                          Margin="0,0,5,0"
-                          VerticalAlignment="Center"
+                <CheckBox Grid.Column="0" IsChecked="{Binding IsVisible, Mode=TwoWay}"
+                          Margin="0,0,5,0" VerticalAlignment="Center"
                           ToolTip="Toggle visibility"/>
 
-                <!-- Structure Info -->
                 <StackPanel Grid.Column="1" Orientation="Vertical">
-                    <TextBlock Text="{Binding Name}"
-                               FontWeight="Bold"
-                               Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
-                    <TextBlock FontSize="10"
-                               Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}">
+                    <TextBlock Text="{Binding Name}" FontWeight="Bold"
+                               Foreground="{DynamicResource PFP_TextBrush}"/>
+                    <TextBlock FontSize="10" Foreground="{DynamicResource PFP_SubTextBrush}">
                         <Run Text="Format:"/>
                         <Run Text="{Binding FormatType, Mode=OneWay}"/>
                         <Run Text=" | Offset:"/>
@@ -52,95 +44,66 @@
                     </TextBlock>
                 </StackPanel>
 
-                <!-- Field Count Badge -->
                 <Border Grid.Column="2"
-                        Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
-                        CornerRadius="8"
-                        Padding="6,2"
-                        Margin="5,0,0,0">
+                        Background="{DynamicResource Panel_ToolbarButtonActiveBrush}"
+                        CornerRadius="8" Padding="6,2" Margin="5,0,0,0">
                     <TextBlock Text="{Binding Fields.Count, Mode=OneWay}"
-                               FontSize="10"
-                               FontWeight="Bold"
-                               Foreground="White"/>
+                               FontSize="10" FontWeight="Bold"
+                               Foreground="{DynamicResource PFP_TextBrush}"/>
                 </Border>
             </Grid>
         </HierarchicalDataTemplate>
 
-        <!-- DataTemplate for Field -->
         <DataTemplate x:Key="FieldTemplate">
-            <Border Padding="5,3"
-                    BorderThickness="0,0,0,1"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
+            <Border Padding="5,3" BorderThickness="0,0,0,1"
+                    BorderBrush="{DynamicResource PFP_BorderBrush}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Color Indicator -->
-                    <Rectangle Grid.Column="0"
-                               Width="4"
-                               Margin="0,0,8,0"
-                               RadiusX="2"
-                               RadiusY="2">
+                    <Rectangle Grid.Column="0" Width="4" Margin="0,0,8,0" RadiusX="2" RadiusY="2">
                         <Rectangle.Fill>
                             <SolidColorBrush Color="{Binding Color}"/>
                         </Rectangle.Fill>
                     </Rectangle>
 
-                    <!-- Field Details -->
                     <StackPanel Grid.Column="1">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-
-                            <!-- Field Name -->
-                            <TextBlock Grid.Column="0"
-                                       Text="{Binding Name}"
-                                       FontWeight="SemiBold"
-                                       FontSize="11"
-                                       Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
-
-                            <!-- Type Badge -->
+                            <TextBlock Grid.Column="0" Text="{Binding Name}"
+                                       FontWeight="SemiBold" FontSize="11"
+                                       Foreground="{DynamicResource PFP_TextBrush}"/>
                             <Border Grid.Column="1"
-                                    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                                    BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
-                                    BorderThickness="1"
-                                    CornerRadius="3"
-                                    Padding="4,1">
+                                    Background="{DynamicResource Panel_ToolbarBrush}"
+                                    BorderBrush="{DynamicResource PFP_BorderBrush}"
+                                    BorderThickness="1" CornerRadius="3" Padding="4,1">
                                 <TextBlock Text="{Binding Type}"
-                                           FontSize="9"
-                                           FontFamily="Consolas"
-                                           Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+                                           FontSize="9" FontFamily="Consolas"
+                                           Foreground="{DynamicResource PFP_TextBrush}"/>
                             </Border>
                         </Grid>
 
-                        <!-- Value -->
                         <TextBlock Text="{Binding Value}"
-                                   FontFamily="Consolas"
-                                   FontSize="11"
-                                   Margin="0,2,0,2"
-                                   TextWrapping="Wrap"
-                                   Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+                                   FontFamily="Consolas" FontSize="11"
+                                   Margin="0,2,0,2" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource PFP_ValueBrush}"/>
 
-                        <!-- Offset and Length -->
-                        <TextBlock FontSize="9"
-                                   Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}">
+                        <TextBlock FontSize="9" Foreground="{DynamicResource PFP_SubTextBrush}">
                             <Run Text="Offset:"/>
                             <Run Text="{Binding Offset, Mode=OneWay, StringFormat='{}{0:X}'}"/>
                             <Run Text=" | Length:"/>
                             <Run Text="{Binding Length, Mode=OneWay}"/>
                         </TextBlock>
 
-                        <!-- Description (if present) -->
                         <TextBlock Text="{Binding Description}"
-                                   FontSize="9"
-                                   FontStyle="Italic"
-                                   Margin="0,2,0,0"
-                                   TextWrapping="Wrap"
-                                   Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                   FontSize="9" FontStyle="Italic"
+                                   Margin="0,2,0,0" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource PFP_SubTextBrush}"
                                    Visibility="{Binding Description, Converter={StaticResource StringNullOrEmptyToVisibilityConverter}}"/>
                     </StackPanel>
                 </Grid>
@@ -148,7 +111,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -156,10 +119,10 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
+        <!-- Header toolbar -->
         <Border Grid.Row="0"
-                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="10,8">
             <Grid>
@@ -168,54 +131,40 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0"
-                           Text="📐"
-                           FontSize="16"
-                           VerticalAlignment="Center"
-                           Margin="0,0,8,0"/>
-
-                <TextBlock Grid.Column="1"
-                           Text="Structure Overlay"
-                           FontSize="14"
-                           FontWeight="Bold"
-                           VerticalAlignment="Center"
-                           Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
-
-                <!-- Add Structure Button -->
-                <Button Grid.Column="2"
-                        x:Name="AddStructureButton"
-                        Content="+"
-                        Width="24"
-                        Height="24"
-                        FontSize="16"
-                        FontWeight="Bold"
+                <TextBlock Grid.Column="0" Text="📐" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBlock Grid.Column="1" Text="Structure Overlay"
+                           FontSize="14" FontWeight="Bold" VerticalAlignment="Center"
+                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                <Button Grid.Column="2" x:Name="AddStructureButton"
+                        Content="+" Width="24" Height="24"
+                        FontSize="16" FontWeight="Bold"
                         ToolTip="Add structure overlay"
-                        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                        BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                        Background="{DynamicResource Panel_ToolbarBrush}"
+                        BorderBrush="{DynamicResource PFP_BorderBrush}"
+                        Foreground="{DynamicResource PFP_TextBrush}"
                         Click="AddStructureButton_Click"/>
             </Grid>
         </Border>
 
-        <!-- Toolbar -->
+        <!-- Action toolbar -->
         <Border Grid.Row="1"
-                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="10,6">
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="LoadFormatButton"
-                        Content="Load Format"
-                        Padding="8,3"
-                        Margin="0,0,5,0"
-                        FontSize="11"
+                <Button x:Name="LoadFormatButton" Content="Load Format"
+                        Padding="8,3" Margin="0,0,5,0" FontSize="11"
+                        Background="{DynamicResource Panel_ToolbarBrush}"
+                        BorderBrush="{DynamicResource PFP_BorderBrush}"
+                        Foreground="{DynamicResource PFP_TextBrush}"
                         Click="LoadFormatButton_Click"
                         ToolTip="Load structure from format definition"/>
-
-                <Button x:Name="ClearAllButton"
-                        Content="Clear All"
-                        Padding="8,3"
-                        FontSize="11"
+                <Button x:Name="ClearAllButton" Content="Clear All"
+                        Padding="8,3" FontSize="11"
+                        Background="{DynamicResource Panel_ToolbarBrush}"
+                        BorderBrush="{DynamicResource PFP_BorderBrush}"
+                        Foreground="{DynamicResource PFP_TextBrush}"
                         Click="ClearAllButton_Click"
                         ToolTip="Remove all structure overlays"/>
             </StackPanel>
@@ -227,24 +176,23 @@
                   ItemsSource="{Binding Structures}"
                   ItemTemplate="{StaticResource StructureTemplate}"
                   ItemContainerStyle="{StaticResource StructureItemStyle}"
-                  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                  Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                  Foreground="{DynamicResource PFP_TextBrush}"
                   BorderThickness="0"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <!-- Custom ItemTemplate for Fields -->
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:OverlayField}"
                                           ItemTemplate="{StaticResource FieldTemplate}"/>
             </TreeView.Resources>
         </TreeView>
 
-        <!-- Status Bar -->
+        <!-- Status bar -->
         <Border Grid.Row="3"
-                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,1,0,0"
                 Padding="10,4">
-            <TextBlock FontSize="10"
-                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}">
+            <TextBlock FontSize="10" Foreground="{DynamicResource PFP_SubTextBrush}">
                 <Run Text="Structures: "/>
                 <Run Text="{Binding Structures.Count, Mode=OneWay}" FontWeight="Bold"/>
             </TextBlock>

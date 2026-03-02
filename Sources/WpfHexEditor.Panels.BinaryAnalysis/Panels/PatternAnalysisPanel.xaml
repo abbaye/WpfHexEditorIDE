@@ -13,63 +13,63 @@
              d:DesignHeight="600" d:DesignWidth="350">
 
     <UserControl.Resources>
-        <!-- Color Brushes -->
-        <SolidColorBrush x:Key="LowEntropyBrush" Color="#7ED321"/>
+        <!-- Semantic brushes (constant for all themes) -->
+        <SolidColorBrush x:Key="LowEntropyBrush"    Color="#7ED321"/>
         <SolidColorBrush x:Key="MediumEntropyBrush" Color="#F5A623"/>
-        <SolidColorBrush x:Key="HighEntropyBrush" Color="#FF6B6B"/>
-        <SolidColorBrush x:Key="AccentBrush" Color="#4A90E2"/>
+        <SolidColorBrush x:Key="HighEntropyBrush"   Color="#FF6B6B"/>
 
         <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
-            <Setter Property="Margin" Value="0,16,0,8"/>
+            <Setter Property="FontSize"     Value="12"/>
+            <Setter Property="FontWeight"   Value="SemiBold"/>
+            <Setter Property="Foreground"   Value="{DynamicResource PFP_AccentBrush}"/>
+            <Setter Property="Margin"       Value="0,16,0,8"/>
         </Style>
 
         <Style x:Key="MetricLabelStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="FontSize"   Value="10"/>
+            <Setter Property="Foreground" Value="{DynamicResource PFP_SubTextBrush}"/>
+            <Setter Property="Margin"     Value="0,0,8,0"/>
         </Style>
 
         <Style x:Key="MetricValueStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize"   Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
         </Style>
 
         <Style x:Key="CardStyle" TargetType="Border">
-            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="4"/>
-            <Setter Property="Padding" Value="12"/>
-            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Background"       Value="{DynamicResource PFP_SectionBackgroundBrush}"/>
+            <Setter Property="BorderBrush"      Value="{DynamicResource PFP_BorderBrush}"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="CornerRadius"     Value="4"/>
+            <Setter Property="Padding"          Value="12"/>
+            <Setter Property="Margin"           Value="0,0,0,8"/>
         </Style>
     </UserControl.Resources>
 
-    <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+    <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Margin="12">
 
                 <!-- Header -->
-                <TextBlock Text="🔬 Pattern Analysis"
-                           FontSize="14"
-                           FontWeight="Bold"
+                <TextBlock Text="Pattern Analysis"
+                           FontSize="14" FontWeight="Bold"
+                           Foreground="{DynamicResource PFP_TextBrush}"
                            Margin="0,0,0,12"/>
 
-                <!-- Analysis Status -->
+                <!-- Analysis Status Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="StatusCard">
                     <StackPanel>
                         <TextBlock x:Name="StatusTextBlock"
                                    Text="Click 'Analyze' to start"
-                                   FontSize="11"
-                                   FontStyle="Italic"
-                                   Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-
+                                   FontSize="11" FontStyle="Italic"
+                                   Foreground="{DynamicResource PFP_SubTextBrush}"/>
                         <Button x:Name="AnalyzeButton"
                                 Content="Analyze Selection"
-                                Height="32"
-                                Margin="0,8,0,0"
+                                Height="32" Margin="0,8,0,0"
+                                Background="{DynamicResource Panel_ToolbarBrush}"
+                                BorderBrush="{DynamicResource PFP_BorderBrush}"
+                                Foreground="{DynamicResource PFP_TextBrush}"
                                 Click="AnalyzeButton_Click"/>
                     </StackPanel>
                 </Border>
@@ -77,36 +77,34 @@
                 <!-- Entropy Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="EntropyCard" Visibility="Collapsed">
                     <StackPanel>
-                        <TextBlock Text="📊 Entropy Analysis" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
+                        <TextBlock Text="Entropy Analysis" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
 
-                        <!-- Entropy Value -->
                         <Grid Margin="0,0,0,8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-
                             <TextBlock Grid.Column="0" Text="Entropy:" Style="{StaticResource MetricLabelStyle}" VerticalAlignment="Center"/>
                             <StackPanel Grid.Column="1" Orientation="Horizontal">
                                 <TextBlock x:Name="EntropyValueText" Text="0.00" Style="{StaticResource MetricValueStyle}"/>
-                                <TextBlock Text="/ 8.0 bits" FontSize="10" Foreground="Gray" Margin="4,0,0,0" VerticalAlignment="Bottom" Padding="0,0,0,2"/>
+                                <TextBlock Text="/ 8.0 bits" FontSize="10"
+                                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                                           Margin="4,0,0,0" VerticalAlignment="Bottom" Padding="0,0,0,2"/>
                             </StackPanel>
                         </Grid>
 
-                        <!-- Entropy Bar -->
-                        <Border Height="8" Background="#E0E0E0" CornerRadius="4" Margin="0,0,0,8">
+                        <!-- Entropy progress track -->
+                        <Border Height="8" Background="{DynamicResource PFP_BorderBrush}" CornerRadius="4" Margin="0,0,0,8">
                             <Border x:Name="EntropyBar"
                                     HorizontalAlignment="Left"
                                     CornerRadius="4"
                                     Background="{StaticResource MediumEntropyBrush}"/>
                         </Border>
 
-                        <!-- Entropy Interpretation -->
                         <TextBlock x:Name="EntropyInterpretation"
                                    Text="Medium randomness"
-                                   FontSize="10"
-                                   FontStyle="Italic"
-                                   Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                   FontSize="10" FontStyle="Italic"
+                                   Foreground="{DynamicResource PFP_SubTextBrush}"
                                    TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
@@ -114,19 +112,15 @@
                 <!-- Byte Distribution Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="DistributionCard" Visibility="Collapsed">
                     <StackPanel>
-                        <TextBlock Text="📈 Byte Distribution" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
+                        <TextBlock Text="Byte Distribution" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
 
-                        <!-- Histogram Container -->
                         <Border Height="150"
-                                Background="White"
-                                BorderBrush="#CCCCCC"
-                                BorderThickness="1"
-                                Padding="4"
-                                Margin="0,0,0,8">
+                                Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                                BorderBrush="{DynamicResource PFP_BorderBrush}"
+                                BorderThickness="1" Padding="4" Margin="0,0,0,8">
                             <Canvas x:Name="HistogramCanvas"/>
                         </Border>
 
-                        <!-- Distribution Stats -->
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -136,50 +130,43 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Most frequent:" Style="{StaticResource MetricLabelStyle}"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" x:Name="MostFrequentByteText" Text="0x00" FontFamily="Consolas"/>
-
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Unique bytes:" Style="{StaticResource MetricLabelStyle}" Margin="0,4,0,0"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" x:Name="UniqueBytesText" Text="0 / 256" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" x:Name="MostFrequentByteText"
+                                       Text="0x00" FontFamily="Consolas"
+                                       Foreground="{DynamicResource PFP_TextBrush}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Unique bytes:" Style="{StaticResource MetricLabelStyle}" Margin="0,4,8,0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" x:Name="UniqueBytesText"
+                                       Text="0 / 256" Margin="0,4,0,0"
+                                       Foreground="{DynamicResource PFP_TextBrush}"/>
                         </Grid>
                     </StackPanel>
                 </Border>
 
-                <!-- Pattern Detection Card -->
+                <!-- Detected Patterns Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="PatternsCard" Visibility="Collapsed">
                     <StackPanel>
-                        <TextBlock Text="🔍 Detected Patterns" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
+                        <TextBlock Text="Detected Patterns" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
 
                         <ItemsControl x:Name="PatternsListBox">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#F8F9FA"
-                                            BorderBrush="#E0E0E0"
-                                            BorderThickness="1"
-                                            CornerRadius="3"
-                                            Padding="8"
-                                            Margin="0,0,0,4">
+                                    <Border Background="{DynamicResource PFP_ItemHoverBrush}"
+                                            BorderBrush="{DynamicResource PFP_BorderBrush}"
+                                            BorderThickness="1" CornerRadius="3"
+                                            Padding="8" Margin="0,0,0,4">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-
-                                            <TextBlock Grid.Column="0"
-                                                       Text="{Binding Icon}"
-                                                       FontSize="14"
-                                                       Margin="0,0,8,0"/>
-
+                                            <TextBlock Grid.Column="0" Text="{Binding Icon}" FontSize="14" Margin="0,0,8,0"/>
                                             <StackPanel Grid.Column="1">
                                                 <TextBlock Text="{Binding Pattern}"
-                                                           FontFamily="Consolas"
-                                                           FontSize="10"
-                                                           FontWeight="SemiBold"/>
+                                                           FontFamily="Consolas" FontSize="10" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource PFP_TextBrush}"/>
                                                 <TextBlock Text="{Binding Description}"
-                                                           FontSize="9"
-                                                           Foreground="Gray"
-                                                           TextWrapping="Wrap"/>
+                                                           FontSize="9" TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource PFP_SubTextBrush}"/>
                                             </StackPanel>
                                         </Grid>
                                     </Border>
@@ -189,14 +176,13 @@
 
                         <TextBlock x:Name="NoPatternsText"
                                    Text="No significant patterns detected"
-                                   FontSize="10"
-                                   FontStyle="Italic"
-                                   Foreground="Gray"
+                                   FontSize="10" FontStyle="Italic"
+                                   Foreground="{DynamicResource PFP_SubTextBrush}"
                                    Visibility="Collapsed"/>
                     </StackPanel>
                 </Border>
 
-                <!-- Anomalies Card -->
+                <!-- Anomalies Card (yellow warning — semantic, kept constant) -->
                 <Border Style="{StaticResource CardStyle}" x:Name="AnomaliesCard" Visibility="Collapsed">
                     <StackPanel>
                         <TextBlock Text="⚠️ Anomalies" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
@@ -204,21 +190,16 @@
                         <ItemsControl x:Name="AnomaliesListBox">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#FFF3CD"
-                                            BorderBrush="#FFC107"
-                                            BorderThickness="1"
-                                            CornerRadius="3"
-                                            Padding="8"
-                                            Margin="0,0,0,4">
+                                    <Border Background="#FFF3CD" BorderBrush="#FFC107"
+                                            BorderThickness="1" CornerRadius="3"
+                                            Padding="8" Margin="0,0,0,4">
                                         <StackPanel>
                                             <TextBlock Text="{Binding Title}"
-                                                       FontWeight="SemiBold"
-                                                       FontSize="10"/>
+                                                       FontWeight="SemiBold" FontSize="10"
+                                                       Foreground="#5D4037"/>
                                             <TextBlock Text="{Binding Description}"
-                                                       FontSize="9"
-                                                       Foreground="#856404"
-                                                       TextWrapping="Wrap"
-                                                       Margin="0,2,0,0"/>
+                                                       FontSize="9" Foreground="#856404"
+                                                       TextWrapping="Wrap" Margin="0,2,0,0"/>
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
@@ -228,7 +209,7 @@
                         <TextBlock x:Name="NoAnomaliesText"
                                    Text="✅ No anomalies detected"
                                    FontSize="10"
-                                   Foreground="Green"
+                                   Foreground="{DynamicResource PFP_AccentBrush}"
                                    Visibility="Collapsed"/>
                     </StackPanel>
                 </Border>

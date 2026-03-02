@@ -15,17 +15,35 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Toolbar -->
         <ToolBar Grid.Row="0" Background="{DynamicResource TE_LineNumberBackground}">
-            <Button x:Name="BtnPrevDiff" Content="◀ Prev" ToolTip="Previous difference (Shift+F8)"
+            <Button x:Name="BtnPrevDiff" Content="&#x25C4; Prev" ToolTip="Previous difference (Shift+F8)"
                     Click="BtnPrevDiff_Click" Padding="8,3" IsEnabled="False"/>
-            <Button x:Name="BtnNextDiff" Content="Next ▶" ToolTip="Next difference (F8)"
+            <Button x:Name="BtnNextDiff" Content="Next &#x25BA;" ToolTip="Next difference (F8)"
                     Click="BtnNextDiff_Click" Padding="8,3" IsEnabled="False"/>
             <Separator/>
-            <TextBlock x:Name="DiffCountText" Text="—" VerticalAlignment="Center" Padding="4,0"
+            <TextBlock x:Name="DiffCountText" Text="&#x2014;" VerticalAlignment="Center" Padding="4,0"
                        Foreground="{DynamicResource TE_LineNumberForeground}"/>
+            <Separator/>
+            <Border x:Name="ChipModified" CornerRadius="3" Background="#CC4444" Padding="6,2" Margin="2,0"
+                    Visibility="Collapsed">
+                <TextBlock x:Name="ModifiedText" Text="Modified: 0" Foreground="White" FontSize="11"/>
+            </Border>
+            <Border x:Name="ChipAdded" CornerRadius="3" Background="#44AA44" Padding="6,2" Margin="2,0"
+                    Visibility="Collapsed">
+                <TextBlock x:Name="AddedText" Text="Added: 0" Foreground="White" FontSize="11"/>
+            </Border>
+            <Border x:Name="ChipDeleted" CornerRadius="3" Background="#CC8800" Padding="6,2" Margin="2,0"
+                    Visibility="Collapsed">
+                <TextBlock x:Name="DeletedText" Text="Deleted: 0" Foreground="White" FontSize="11"/>
+            </Border>
+            <Separator/>
+            <ToggleButton x:Name="BtnDiffList" Content="Diff List" Padding="8,3"
+                          ToolTip="Show/hide the diff regions list"
+                          Checked="OnDiffListToggled" Unchecked="OnDiffListToggled"/>
         </ToolBar>
 
         <!-- Side-by-side panel -->
@@ -43,7 +61,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock x:Name="LeftHeader" Grid.Row="0"
-                           Text="— (left)"
+                           Text="&#x2014; (left)"
                            Background="{DynamicResource TE_LineNumberBackground}"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
                            Padding="6,3" FontSize="11" TextTrimming="CharacterEllipsis"/>
@@ -67,7 +85,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock x:Name="RightHeader" Grid.Row="0"
-                           Text="— (right)"
+                           Text="&#x2014; (right)"
                            Background="{DynamicResource TE_LineNumberBackground}"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
                            Padding="6,3" FontSize="11" TextTrimming="CharacterEllipsis"/>
@@ -80,13 +98,43 @@
             </Grid>
         </Grid>
 
+        <!-- Diff list panel (collapsible via BtnDiffList toggle) -->
+        <Grid x:Name="DiffListPanel" Grid.Row="2" Visibility="Collapsed" MaxHeight="200">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <GridSplitter Grid.Row="0" Height="4" HorizontalAlignment="Stretch"
+                          Background="{DynamicResource TE_LineNumberBackground}" ResizeBehavior="PreviousAndNext"/>
+            <DataGrid x:Name="DiffListGrid" Grid.Row="1"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      HeadersVisibility="Column"
+                      GridLinesVisibility="Horizontal"
+                      Background="{DynamicResource TE_Background}"
+                      Foreground="{DynamicResource TE_LineNumberForeground}"
+                      RowBackground="{DynamicResource TE_Background}"
+                      AlternatingRowBackground="{DynamicResource TE_LineNumberBackground}"
+                      BorderThickness="0"
+                      SelectionChanged="OnDiffListSelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Type"        Binding="{Binding TypeLabel}"    Width="90"/>
+                    <DataGridTextColumn Header="Offset"      Binding="{Binding OffsetHex}"    Width="110"/>
+                    <DataGridTextColumn Header="Length"      Binding="{Binding LengthStr}"    Width="80"/>
+                    <DataGridTextColumn Header="Left bytes"  Binding="{Binding LeftPreview}"  Width="*"/>
+                    <DataGridTextColumn Header="Right bytes" Binding="{Binding RightPreview}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
         <!-- Status bar -->
-        <StatusBar Grid.Row="2"
+        <StatusBar Grid.Row="3"
                    Background="{DynamicResource TE_LineNumberBackground}"
                    Foreground="{DynamicResource TE_LineNumberForeground}"
                    Height="22">
             <StatusBarItem>
-                <TextBlock x:Name="StatusText" Text="Open two files via Tools > Compare Files…" Padding="4,0"/>
+                <TextBlock x:Name="StatusText" Text="Open two files via View > Compare Files&#x2026;" Padding="4,0"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

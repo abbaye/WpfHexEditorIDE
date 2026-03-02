@@ -10,13 +10,17 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.Bytes;
+using WpfHexEditor.Core.Services;
+using WpfHexEditor.Core.Models.Comparison;
 
 namespace WpfHexEditor.Editor.DiffViewer.Controls;
 
 /// <summary>
 /// Side-by-side binary comparison viewer.
-/// Open via <see cref="CompareAsync(string,string,System.Threading.CancellationToken)"/> rather than
-/// <see cref="IOpenableDocument.OpenAsync"/> (which loads only the left-side file).
+/// Uses <see cref="FileDiffService"/> for structured diff regions with
+/// Modified / AddedInSecond / DeletedInSecond semantics.
+/// Open via <see cref="CompareAsync(string,string,System.Threading.CancellationToken)"/>.
 /// Implements <see cref="IDocumentEditor"/> and <see cref="IOpenableDocument"/>.
 /// </summary>
 public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenableDocument
@@ -36,17 +40,23 @@ public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenable
     private string  _leftPath  = string.Empty;
     private string  _rightPath = string.Empty;
 
-    // Diff results: indices in _left/_right that differ
-    private List<long> _diffOffsets = [];
-    private int        _currentDiff = -1;
+    // Structured diff regions from FileDiffService
+    private List<FileDifference> _diffRegions = [];
+    private int _currentDiff = -1;
+
+    // Flat offset list derived from regions (first offset of each region for navigation)
+    private List<long> _regionOffsets = [];
+
+    // Canvas brush lookups
+    private static readonly Brush BrushModified = new SolidColorBrush(Color.FromArgb(80, 204, 68, 68));
+    private static readonly Brush BrushAdded    = new SolidColorBrush(Color.FromArgb(80, 68, 170, 68));
+    private static readonly Brush BrushDeleted  = new SolidColorBrush(Color.FromArgb(80, 204, 136, 0));
 
     // -----------------------------------------------------------------------
     // Constructor
     // -----------------------------------------------------------------------
 
-    /// <summary>
-    /// Creates a new <see cref="DiffViewer"/>.
-    /// </summary>
+    /// <summary>Creates a new <see cref="DiffViewer"/>.</summary>
     public DiffViewer()
     {
         InitializeComponent();
@@ -66,7 +76,7 @@ public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenable
     // -----------------------------------------------------------------------
 
     /// <summary>
-    /// Loads two files for comparison.
+    /// Loads two files and computes their byte-level differences.
     /// This is the primary entry point for this viewer.
     /// </summary>
     public async Task CompareAsync(string leftPath, string rightPath, CancellationToken ct = default)
@@ -95,12 +105,10 @@ public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenable
     }
 
     // -----------------------------------------------------------------------
-    // IOpenableDocument — loads left-side file only
+    // IOpenableDocument
     // -----------------------------------------------------------------------
 
-    /// <summary>
-    /// Loads the left-side file. Call <see cref="CompareAsync"/> for full comparison.
-    /// </summary>
+    /// <summary>Loads the left-side file only (compares with itself for initial view).</summary>
     public async Task OpenAsync(string filePath, CancellationToken ct = default)
         => await CompareAsync(filePath, filePath, ct);
 
@@ -122,7 +130,7 @@ public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenable
     public bool IsBusy { get; private set; }
 
     // -----------------------------------------------------------------------
-    // IDocumentEditor — Commands
+    // IDocumentEditor — Commands (all disabled — read-only viewer)
     // -----------------------------------------------------------------------
 
     /// <inheritdoc/>
@@ -194,12 +202,12 @@ public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenable
     /// <inheritdoc/>
     public void SelectAll() { }
     /// <inheritdoc/>
-    public void Close()     { _left = null; _right = null; }
+    public void Close()     { _left = null; _right = null; _diffRegions = []; }
     /// <inheritdoc/>
     public void CancelOperation() { }
 
     // -----------------------------------------------------------------------
-    // Diff computation
+    // Diff computation — uses FileDiffService for structured regions
     // -----------------------------------------------------------------------
 
     private async Task ComputeDiffAsync(CancellationToken ct)
@@ -209,40 +217,68 @@ public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenable
         var left  = _left;
         var right = _right;
 
-        var diffs = await Task.Run(() =>
+        // Use FileDiffService which returns grouped regions (Modified/Added/Deleted)
+        var regions = await Task.Run(() =>
         {
-            var result = new List<long>();
-            long maxLen = Math.Max(left.Length, right.Length);
-            for (long i = 0; i < maxLen; i++)
-            {
-                byte l = i < left.Length  ? left[i]  : (byte)0;
-                byte r = i < right.Length ? right[i] : (byte)0;
-                if (l != r) result.Add(i);
-            }
-            return result;
+            using var p1 = new ByteProvider();
+            using var p2 = new ByteProvider();
+            p1.OpenMemory(left,  readOnly: true);
+            p2.OpenMemory(right, readOnly: true);
+            return new FileDiffService().CompareFiles(p1, p2);
         }, ct);
 
-        _diffOffsets = diffs;
-        _currentDiff = diffs.Count > 0 ? 0 : -1;
+        _diffRegions  = regions;
+        _regionOffsets = regions.Select(r => r.Offset).ToList();
+        _currentDiff  = regions.Count > 0 ? 0 : -1;
 
         Dispatcher.Invoke(() =>
         {
             LeftHeader.Text  = Path.GetFileName(_leftPath);
             RightHeader.Text = Path.GetFileName(_rightPath);
 
-            long same    = Math.Min(left.Length, right.Length) - diffs.Count;
-            long maxLen  = Math.Max(left.Length, right.Length);
-            double pct   = maxLen > 0 ? (double)same / maxLen * 100 : 100;
+            // Statistics
+            var svc  = new FileDiffService();
+            var stats = svc.GetStatistics(regions);
 
-            DiffCountText.Text = $"{diffs.Count:N0} differences  |  {pct:F1}% similar";
-            StatusText.Text    = $"Left: {left.Length:N0} B  |  Right: {right.Length:N0} B  |  Differences: {diffs.Count:N0}";
+            long totalDiffBytes = stats.TotalModifiedBytes + stats.TotalAddedBytes + stats.TotalDeletedBytes;
+            long maxLen = Math.Max(left.Length, right.Length);
+            double simPct = maxLen > 0 ? (1.0 - (double)totalDiffBytes / maxLen) * 100.0 : 100;
+            simPct = Math.Max(0, simPct);
 
-            BtnPrevDiff.IsEnabled = diffs.Count > 0;
-            BtnNextDiff.IsEnabled = diffs.Count > 0;
+            DiffCountText.Text = $"{regions.Count:N0} diff regions  |  {simPct:F1}% similar";
+            StatusText.Text    = $"Left: {left.Length:N0} B  |  Right: {right.Length:N0} B  |  Regions: {regions.Count:N0}";
+
+            // Statistics chips
+            ShowChip(ChipModified, ModifiedText, "Modified",  stats.ModifiedCount);
+            ShowChip(ChipAdded,    AddedText,    "Added",     stats.AddedCount);
+            ShowChip(ChipDeleted,  DeletedText,  "Deleted",   stats.DeletedCount);
+
+            // Diff list DataGrid
+            DiffListGrid.ItemsSource = regions.Select((r, i) => new DiffRowVm(r, i, left, right)).ToList();
+
+            BtnPrevDiff.IsEnabled = regions.Count > 0;
+            BtnNextDiff.IsEnabled = regions.Count > 0;
 
             RenderHex();
         });
     }
+
+    private static void ShowChip(Border chip, TextBlock label, string prefix, int count)
+    {
+        if (count > 0)
+        {
+            label.Text = $"{prefix}: {count}";
+            chip.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            chip.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Canvas rendering
+    // -----------------------------------------------------------------------
 
     private void RenderHex()
     {
@@ -251,42 +287,57 @@ public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenable
         LeftCanvas.Children.Clear();
         RightCanvas.Children.Clear();
 
-        var fontFamily  = new FontFamily("Consolas, Courier New");
-        const double fontSize = 12;
-        double lineHeight = fontSize + 4;
-        double charW      = 7.2; // approx for Consolas 12px
+        var fontFamily = new FontFamily("Consolas, Courier New");
+        const double fontSize   = 12;
+        double lineHeight       = fontSize + 4;
 
-        long maxLen = Math.Max(_left.Length, _right.Length);
-        long rows   = (maxLen + BytesPerRow - 1) / BytesPerRow;
-
-        // Limit rendered rows for performance
+        long maxLen     = Math.Max(_left.Length, _right.Length);
+        long rows       = (maxLen + BytesPerRow - 1) / BytesPerRow;
         long renderRows = Math.Min(rows, 2000);
 
-        var diffSet = new HashSet<long>(_diffOffsets);
+        // Build a map: row → brush (for regions that span that row)
+        var rowBrush = new Dictionary<long, Brush>();
+        foreach (var region in _diffRegions)
+        {
+            var brush = region.Type switch
+            {
+                DifferenceType.Modified        => BrushModified,
+                DifferenceType.AddedInSecond   => BrushAdded,
+                DifferenceType.DeletedInSecond => BrushDeleted,
+                _                              => BrushModified
+            };
+            long firstRow = region.Offset / BytesPerRow;
+            int regionLen = region.BytesFile1?.Length > 0 ? region.BytesFile1.Length : (region.BytesFile2?.Length ?? 1);
+            long lastRow  = (region.Offset + regionLen - 1) / BytesPerRow;
+            for (long r = firstRow; r <= lastRow && r < renderRows; r++)
+                rowBrush[r] = brush; // last-writer wins if regions overlap (shouldn't happen)
+        }
 
         for (long row = 0; row < renderRows; row++)
         {
-            double y     = row * lineHeight;
-            long   off   = row * BytesPerRow;
-            var    leftSb  = new System.Text.StringBuilder();
-            var    rightSb = new System.Text.StringBuilder();
+            double y   = row * lineHeight;
+            long   off = row * BytesPerRow;
+
+            var leftSb  = new System.Text.StringBuilder();
+            var rightSb = new System.Text.StringBuilder();
 
             leftSb.Append($"{off:X8}  ");
             rightSb.Append($"{off:X8}  ");
 
+            rowBrush.TryGetValue(row, out var rowHighlight);
+
             for (int col = 0; col < BytesPerRow; col++)
             {
-                long idx  = off + col;
-                byte lb   = idx < _left.Length  ? _left[idx]  : (byte)0;
-                byte rb   = idx < _right.Length ? _right[idx] : (byte)0;
-                bool diff = idx < maxLen && diffSet.Contains(idx);
+                long idx = off + col;
+                byte lb  = idx < _left.Length  ? _left[idx]  : (byte)0;
+                byte rb  = idx < _right.Length ? _right[idx] : (byte)0;
 
-                leftSb.Append(diff ? $"[{lb:X2}]" : $" {lb:X2} ");
-                rightSb.Append(diff ? $"[{rb:X2}]" : $" {rb:X2} ");
+                leftSb.Append($" {lb:X2}");
+                rightSb.Append($" {rb:X2}");
             }
 
-            AddTextRow(LeftCanvas,  y, leftSb.ToString(),  fontFamily, fontSize);
-            AddTextRow(RightCanvas, y, rightSb.ToString(), fontFamily, fontSize);
+            AddTextRow(LeftCanvas,  y, leftSb.ToString(),  fontFamily, fontSize, lineHeight, rowHighlight);
+            AddTextRow(RightCanvas, y, rightSb.ToString(), fontFamily, fontSize, lineHeight, rowHighlight);
         }
 
         double canvasH = renderRows * lineHeight;
@@ -294,20 +345,36 @@ public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenable
         RightCanvas.Height = canvasH;
     }
 
-    private static void AddTextRow(Canvas canvas, double y, string text,
-        FontFamily fontFamily, double fontSize)
+    private static void AddTextRow(
+        System.Windows.Controls.Canvas canvas,
+        double y, string text,
+        FontFamily fontFamily, double fontSize, double lineHeight,
+        Brush? highlight)
     {
+        if (highlight is not null)
+        {
+            var bg = new System.Windows.Shapes.Rectangle
+            {
+                Width  = 10000,
+                Height = lineHeight,
+                Fill   = highlight
+            };
+            System.Windows.Controls.Canvas.SetLeft(bg, 0);
+            System.Windows.Controls.Canvas.SetTop(bg, y);
+            canvas.Children.Add(bg);
+        }
+
         var tb = new TextBlock
         {
-            Text              = text,
-            FontFamily        = fontFamily,
-            FontSize          = fontSize,
-            Foreground        = SystemColors.ControlTextBrush,
-            Background        = Brushes.Transparent,
-            TextTrimming      = TextTrimming.None,
+            Text         = text,
+            FontFamily   = fontFamily,
+            FontSize     = fontSize,
+            Foreground   = SystemColors.ControlTextBrush,
+            Background   = Brushes.Transparent,
+            TextTrimming = TextTrimming.None,
         };
-        Canvas.SetLeft(tb, 4);
-        Canvas.SetTop(tb,  y);
+        System.Windows.Controls.Canvas.SetLeft(tb, 4);
+        System.Windows.Controls.Canvas.SetTop(tb, y);
         canvas.Children.Add(tb);
     }
 
@@ -317,27 +384,94 @@ public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenable
 
     private void BtnPrevDiff_Click(object sender, RoutedEventArgs e)
     {
-        if (_diffOffsets.Count == 0) return;
-        _currentDiff = (_currentDiff - 1 + _diffOffsets.Count) % _diffOffsets.Count;
+        if (_regionOffsets.Count == 0) return;
+        _currentDiff = (_currentDiff - 1 + _regionOffsets.Count) % _regionOffsets.Count;
         ScrollToDiff(_currentDiff);
+        SyncDiffListSelection(_currentDiff);
     }
 
     private void BtnNextDiff_Click(object sender, RoutedEventArgs e)
     {
-        if (_diffOffsets.Count == 0) return;
-        _currentDiff = (_currentDiff + 1) % _diffOffsets.Count;
+        if (_regionOffsets.Count == 0) return;
+        _currentDiff = (_currentDiff + 1) % _regionOffsets.Count;
         ScrollToDiff(_currentDiff);
+        SyncDiffListSelection(_currentDiff);
     }
 
     private void ScrollToDiff(int idx)
     {
-        if (idx < 0 || idx >= _diffOffsets.Count) return;
-        long row = _diffOffsets[idx] / BytesPerRow;
-        StatusText.Text = $"Difference {idx + 1}/{_diffOffsets.Count}  at offset 0x{_diffOffsets[idx]:X}";
-        // Simple scroll approximation
+        if (idx < 0 || idx >= _regionOffsets.Count) return;
+        long offset = _regionOffsets[idx];
+        long row    = offset / BytesPerRow;
+        var  region = _diffRegions[idx];
+
+        StatusText.Text = $"Region {idx + 1}/{_regionOffsets.Count}  |  "
+                        + $"Type: {region.Type}  |  Offset: 0x{offset:X}  |  "
+                        + $"Length: {(region.BytesFile1?.Length > 0 ? region.BytesFile1.Length : region.BytesFile2?.Length ?? 0)} B";
+
         double y = row * 16.0;
         LeftScroll.ScrollToVerticalOffset(Math.Max(0, y - 60));
         RightScroll.ScrollToVerticalOffset(Math.Max(0, y - 60));
+    }
+
+    private void SyncDiffListSelection(int idx)
+    {
+        if (DiffListGrid.Items.Count > idx && idx >= 0)
+        {
+            DiffListGrid.SelectedIndex = idx;
+            DiffListGrid.ScrollIntoView(DiffListGrid.SelectedItem);
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Diff list panel toggle / DataGrid selection
+    // -----------------------------------------------------------------------
+
+    private void OnDiffListToggled(object sender, RoutedEventArgs e)
+    {
+        DiffListPanel.Visibility = BtnDiffList.IsChecked == true
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+    }
+
+    private void OnDiffListSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (DiffListGrid.SelectedIndex < 0) return;
+        _currentDiff = DiffListGrid.SelectedIndex;
+        ScrollToDiff(_currentDiff);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// DataGrid row view-model
+// ---------------------------------------------------------------------------
+
+internal sealed class DiffRowVm
+{
+    public DiffRowVm(FileDifference r, int index, byte[] left, byte[] right)
+    {
+        TypeLabel    = r.Type.ToString();
+        OffsetHex    = $"0x{r.Offset:X8}";
+        int len      = r.BytesFile1?.Length > 0 ? r.BytesFile1.Length : (r.BytesFile2?.Length ?? 0);
+        LengthStr    = $"{len} B";
+        LeftPreview  = PreviewBytes(r.BytesFile1);
+        RightPreview = PreviewBytes(r.BytesFile2);
+    }
+
+    public string TypeLabel    { get; }
+    public string OffsetHex    { get; }
+    public string LengthStr    { get; }
+    public string LeftPreview  { get; }
+    public string RightPreview { get; }
+
+    private static string PreviewBytes(byte[]? bytes)
+    {
+        if (bytes is null || bytes.Length == 0) return "—";
+        var sb = new System.Text.StringBuilder();
+        int max = Math.Min(bytes.Length, 8);
+        for (int i = 0; i < max; i++) sb.Append($"{bytes[i]:X2} ");
+        if (bytes.Length > max) sb.Append("…");
+        return sb.ToString().TrimEnd();
     }
 }
 

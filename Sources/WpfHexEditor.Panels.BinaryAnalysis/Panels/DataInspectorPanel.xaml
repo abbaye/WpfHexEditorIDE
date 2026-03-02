@@ -12,28 +12,26 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="350">
     <UserControl.Resources>
-        <!-- Category Color Brushes -->
-        <SolidColorBrush x:Key="CategoryIntegerBrush" Color="#4A90E2"/>
-        <SolidColorBrush x:Key="CategoryFloatBrush" Color="#7ED321"/>
+        <!-- Category Color Brushes (semantic — unchanged across themes) -->
+        <SolidColorBrush x:Key="CategoryIntegerBrush"  Color="#4A90E2"/>
+        <SolidColorBrush x:Key="CategoryFloatBrush"    Color="#7ED321"/>
         <SolidColorBrush x:Key="CategoryDateTimeBrush" Color="#F5A623"/>
-        <SolidColorBrush x:Key="CategoryNetworkBrush" Color="#BD10E0"/>
-        <SolidColorBrush x:Key="CategoryGuidBrush" Color="#50E3C2"/>
-        <SolidColorBrush x:Key="CategoryColorBrush" Color="#FF6B6B"/>
-        <SolidColorBrush x:Key="CategoryBasicBrush" Color="#95A5A6"/>
-        <SolidColorBrush x:Key="CategoryBitsBrush" Color="#34495E"/>
+        <SolidColorBrush x:Key="CategoryNetworkBrush"  Color="#BD10E0"/>
+        <SolidColorBrush x:Key="CategoryGuidBrush"     Color="#50E3C2"/>
+        <SolidColorBrush x:Key="CategoryColorBrush"    Color="#FF6B6B"/>
+        <SolidColorBrush x:Key="CategoryBasicBrush"    Color="#95A5A6"/>
+        <SolidColorBrush x:Key="CategoryBitsBrush"     Color="#34495E"/>
 
-        <!-- Style for category indicators -->
         <Style x:Key="CategoryIndicatorStyle" TargetType="Border">
-            <Setter Property="Width" Value="4"/>
+            <Setter Property="Width"        Value="4"/>
             <Setter Property="CornerRadius" Value="2"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Margin"       Value="0,0,8,0"/>
         </Style>
 
-        <!-- Data Template for Inspector Values -->
         <DataTemplate x:Key="InspectorValueTemplate">
             <Border Padding="8,6" Margin="0,0,0,1"
-                    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                    Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                    BorderBrush="{DynamicResource PFP_BorderBrush}"
                     BorderThickness="0,0,0,1">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -41,7 +39,6 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Category Color Indicator -->
                     <Border Grid.Column="0">
                         <Border.Style>
                             <Style TargetType="Border" BasedOn="{StaticResource CategoryIndicatorStyle}">
@@ -75,34 +72,24 @@
                         </Border.Style>
                     </Border>
 
-                    <!-- Value Content -->
                     <StackPanel Grid.Column="1">
-                        <!-- Format Name -->
                         <TextBlock Text="{Binding Format}"
-                                   FontWeight="SemiBold"
-                                   FontSize="11"
-                                   Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
-
-                        <!-- Interpreted Value -->
+                                   FontWeight="SemiBold" FontSize="11"
+                                   Foreground="{DynamicResource PFP_TextBrush}"/>
                         <TextBlock Text="{Binding Value}"
-                                   FontFamily="Consolas"
-                                   FontSize="12"
-                                   Margin="0,2,0,2"
-                                   TextWrapping="Wrap"
-                                   Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
-
-                        <!-- Hex Value (smaller, grayed out) -->
+                                   FontFamily="Consolas" FontSize="12"
+                                   Margin="0,2,0,2" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource PFP_ValueBrush}"/>
                         <TextBlock Text="{Binding HexValue, StringFormat='Raw: {0}'}"
-                                   FontFamily="Consolas"
-                                   FontSize="9"
-                                   Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                   FontFamily="Consolas" FontSize="9"
+                                   Foreground="{DynamicResource PFP_SubTextBrush}"/>
                     </StackPanel>
                 </Grid>
             </Border>
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -110,10 +97,10 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
+        <!-- Header toolbar -->
         <Border Grid.Row="0"
-                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="10,8">
             <Grid>
@@ -121,26 +108,17 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0"
-                           Text="🔍"
-                           FontSize="16"
-                           VerticalAlignment="Center"
-                           Margin="0,0,8,0"/>
-
-                <TextBlock Grid.Column="1"
-                           Text="Data Inspector"
-                           FontSize="14"
-                           FontWeight="Bold"
-                           VerticalAlignment="Center"
-                           Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+                <TextBlock Grid.Column="0" Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBlock Grid.Column="1" Text="Data Inspector"
+                           FontSize="14" FontWeight="Bold" VerticalAlignment="Center"
+                           Foreground="{DynamicResource PFP_TextBrush}"/>
             </Grid>
         </Border>
 
-        <!-- Filters Toolbar -->
+        <!-- Filters toolbar -->
         <Border Grid.Row="1"
-                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="10,6">
             <Grid>
@@ -149,17 +127,10 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
-                <!-- Category Filter -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,10,0">
-                    <TextBlock Text="Category:"
-                               VerticalAlignment="Center"
-                               Margin="0,0,5,0"
-                               FontSize="11"
-                               Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
-                    <ComboBox x:Name="CategoryFilterComboBox"
-                              Width="120"
-                              FontSize="11"
+                    <TextBlock Text="Category:" VerticalAlignment="Center" Margin="0,0,5,0"
+                               FontSize="11" Foreground="{DynamicResource PFP_TextBrush}"/>
+                    <ComboBox x:Name="CategoryFilterComboBox" Width="120" FontSize="11"
                               SelectedValue="{Binding SelectedCategory, Mode=TwoWay}">
                         <ComboBoxItem Content="All" IsSelected="True"/>
                         <ComboBoxItem Content="Integer"/>
@@ -172,22 +143,17 @@
                         <ComboBoxItem Content="Bits"/>
                     </ComboBox>
                 </StackPanel>
-
-                <!-- Show All Formats CheckBox -->
-                <CheckBox Grid.Column="2"
-                          Content="Show all formats"
-                          VerticalAlignment="Center"
+                <CheckBox Grid.Column="2" Content="Show all formats" VerticalAlignment="Center"
                           IsChecked="{Binding ShowAllFormats, Mode=TwoWay}"
-                          FontSize="11"
-                          Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+                          FontSize="11" Foreground="{DynamicResource PFP_TextBrush}"/>
             </Grid>
         </Border>
 
-        <!-- Values List -->
+        <!-- Values list -->
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
-                      Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+                      Background="{DynamicResource PFP_PanelBackgroundBrush}">
             <ItemsControl x:Name="ValuesItemsControl"
                           ItemsSource="{Binding Values}"
                           ItemTemplate="{StaticResource InspectorValueTemplate}">
@@ -203,14 +169,13 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <!-- Status Bar -->
+        <!-- Status bar -->
         <Border Grid.Row="3"
-                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,1,0,0"
                 Padding="10,4">
-            <TextBlock FontSize="10"
-                       Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}">
+            <TextBlock FontSize="10" Foreground="{DynamicResource PFP_SubTextBrush}">
                 <Run Text="Interpretations: "/>
                 <Run Text="{Binding Values.Count, Mode=OneWay}" FontWeight="Bold"/>
             </TextBlock>

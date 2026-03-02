@@ -16,39 +16,37 @@
         <HierarchicalDataTemplate x:Key="TreeTemplate" ItemsSource="{Binding Children}">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Icon}" FontSize="14" Margin="0,0,6,0"/>
-                <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
+                           Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBlock Text="{Binding SizeInfo}"
                            FontSize="10"
-                           Foreground="Gray"
-                           Margin="8,0,0,0"
-                           VerticalAlignment="Center"/>
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           Margin="8,0,0,0" VerticalAlignment="Center"/>
                 <TextBlock Text="{Binding StatusIcon}"
-                           FontSize="12"
-                           Margin="8,0,0,0"
-                           VerticalAlignment="Center"/>
+                           FontSize="12" Margin="8,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
         </HierarchicalDataTemplate>
 
         <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-            <Setter Property="Padding" Value="2"/>
-            <Setter Property="Margin" Value="0,1"/>
+            <Setter Property="Padding"    Value="2"/>
+            <Setter Property="Margin"     Value="0,1"/>
         </Style>
     </UserControl.Resources>
 
-    <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+    <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
+        <!-- Toolbar -->
         <Border Grid.Row="0"
-                Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,0,0,1"
-                Padding="12">
+                Padding="10,8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -56,16 +54,16 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
-                           Text="📦 Archive Structure"
-                           FontSize="14"
-                           FontWeight="Bold"
-                           Margin="0,0,0,4"/>
+                           Text="Archive Structure"
+                           FontSize="14" FontWeight="Bold"
+                           Foreground="{DynamicResource PFP_TextBrush}"
+                           Margin="0,0,0,2"/>
 
                 <TextBlock Grid.Row="1"
                            x:Name="ArchiveInfoText"
                            Text="No archive loaded"
                            FontSize="10"
-                           Foreground="Gray"/>
+                           Foreground="{DynamicResource PFP_SubTextBrush}"/>
             </Grid>
         </Border>
 
@@ -74,6 +72,8 @@
                   x:Name="StructureTreeView"
                   ItemTemplate="{StaticResource TreeTemplate}"
                   ItemContainerStyle="{StaticResource TreeViewItemStyle}"
+                  Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                  Foreground="{DynamicResource PFP_TextBrush}"
                   BorderThickness="0"
                   Padding="8"
                   SelectedItemChanged="StructureTreeView_SelectedItemChanged">
@@ -104,29 +104,28 @@
             </TreeView.ContextMenu>
         </TreeView>
 
-        <!-- Status Bar -->
+        <!-- Status bar -->
         <Border Grid.Row="2"
-                Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource PFP_BorderBrush}"
                 BorderThickness="0,1,0,0"
-                Padding="12,6">
+                Padding="10,5">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
                 <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <TextBlock x:Name="FileCountText" Text="0 files" FontSize="10" Margin="0,0,12,0"/>
-                    <TextBlock x:Name="FolderCountText" Text="0 folders" FontSize="10" Margin="0,0,12,0"/>
-                    <TextBlock x:Name="TotalSizeText" Text="0 bytes" FontSize="10"/>
+                    <TextBlock x:Name="FileCountText"   Text="0 files"   FontSize="10" Margin="0,0,12,0"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"/>
+                    <TextBlock x:Name="FolderCountText" Text="0 folders" FontSize="10" Margin="0,0,12,0"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"/>
+                    <TextBlock x:Name="TotalSizeText"   Text="0 bytes"   FontSize="10"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"/>
                 </StackPanel>
-
-                <TextBlock Grid.Column="1"
-                           x:Name="CompressionRatioText"
-                           Text="Ratio: N/A"
-                           FontSize="10"
-                           Foreground="Gray"/>
+                <TextBlock Grid.Column="1" x:Name="CompressionRatioText"
+                           Text="Ratio: N/A" FontSize="10"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"/>
             </Grid>
         </Border>
 
