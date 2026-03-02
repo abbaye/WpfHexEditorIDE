@@ -105,6 +105,9 @@ public class DockDragManager
         {
             _targetGroup = targetNode;
 
+            // Documents get equal 50/50 split; tool panels use the default 25/75
+            _panelOverlay.SplitRatio = isDocumentDrag ? 0.5 : 0.25;
+
             // Only reposition when the target element changes
             if (_targetElement != targetTab)
             {
@@ -420,6 +423,14 @@ public class DockDragManager
             return;
         }
 
+        // The panel compass already draws its own _previewZone rectangle inside the overlay.
+        // Showing a separate snap-preview window on top would create a duplicate rectangle.
+        if (_panelOverlay is { IsVisible: true } && _panelOverlay.HighlightedDirection.HasValue)
+        {
+            HideSnapPreview();
+            return;
+        }
+
         // Determine the target element for snap zone calculation.
         // Edge indicators target MainDocumentHost → use CenterHost as the visual reference.
         // Panel compass indicators target a specific group → use the hovered DockTabControl.
@@ -440,12 +451,14 @@ public class DockDragManager
         var tw = dipBr.X - dipTl.X;
         var th = dipBr.Y - dipTl.Y;
 
+        // Documents use 50/50 split ratio; tool panels use the default 25/75
+        var r = _draggedItem?.IsDocument == true ? 0.5 : 0.25;
         var zone = _lastDirection.Value switch
         {
-            DockDirection.Left   => new Rect(dipTl.X, dipTl.Y, tw * 0.25, th),
-            DockDirection.Right  => new Rect(dipTl.X + tw * 0.75, dipTl.Y, tw * 0.25, th),
-            DockDirection.Top    => new Rect(dipTl.X, dipTl.Y, tw, th * 0.25),
-            DockDirection.Bottom => new Rect(dipTl.X, dipTl.Y + th * 0.75, tw, th * 0.25),
+            DockDirection.Left   => new Rect(dipTl.X, dipTl.Y, tw * r, th),
+            DockDirection.Right  => new Rect(dipTl.X + tw * (1 - r), dipTl.Y, tw * r, th),
+            DockDirection.Top    => new Rect(dipTl.X, dipTl.Y, tw, th * r),
+            DockDirection.Bottom => new Rect(dipTl.X, dipTl.Y + th * (1 - r), tw, th * r),
             DockDirection.Center => new Rect(dipTl.X, dipTl.Y, tw, th),
             _                    => Rect.Empty
         };

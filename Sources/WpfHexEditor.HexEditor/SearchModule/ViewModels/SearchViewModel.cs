@@ -110,6 +110,27 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 {
                     _selectedSearchMode = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsHexMode));
+                    UpdateCommandStates();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Shortcut toggle: true = Hex mode, false = Text mode.
+        /// Used by the 0x button in the QuickSearchBar.
+        /// </summary>
+        public bool IsHexMode
+        {
+            get => _selectedSearchMode == SearchMode.Hex;
+            set
+            {
+                var newMode = value ? SearchMode.Hex : SearchMode.Text;
+                if (_selectedSearchMode != newMode)
+                {
+                    _selectedSearchMode = newMode;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SelectedSearchMode));
                     UpdateCommandStates();
                 }
             }

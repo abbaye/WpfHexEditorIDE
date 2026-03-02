@@ -116,6 +116,32 @@ namespace WpfHexEditor.HexEditor
             }
         }
 
+        // ── IEditorPersistable — WHChg changeset ─────────────────────────────
+
+        /// <inheritdoc />
+        public ChangesetSnapshot GetChangesetSnapshot()
+        {
+            if (_viewModel == null || !IsFileOrStreamLoaded)
+                return ChangesetSnapshot.Empty;
+            return _viewModel.Provider.GetChangesetSnapshot();
+        }
+
+        /// <inheritdoc />
+        public void ApplyChangeset(ChangesetDto changeset)
+        {
+            if (changeset == null || !IsFileOrStreamLoaded) return;
+            try
+            {
+                var baseData = GetAllBytes(copyChange: false);
+                var result   = ChangesetApplier.Apply(baseData, changeset);
+                OpenMemory(result);
+            }
+            catch
+            {
+                // Silently ignore — editor stays on the clean file
+            }
+        }
+
         // ── IEditorPersistable — Bookmarks ────────────────────────────────────
         // Explicit interface implementation to avoid collision with the existing
         // public long[] GetBookmarks() method in HexEditor.Bookmarks.cs.

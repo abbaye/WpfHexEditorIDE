@@ -72,9 +72,12 @@ namespace WpfHexEditor.HexEditor
 
         private void QuickSearchBar_AdvancedSearchRequested(object sender, System.EventArgs e)
         {
+            // Transfer the current search text so the dialog opens pre-filled
+            var currentSearch = QuickSearchBarOverlay.ViewModel?.SearchText;
+
             // Hide the inline bar first so the two UIs don't overlap
             HideQuickSearchBar();
-            ShowAdvancedSearchDialog(Window.GetWindow(this));
+            ShowAdvancedSearchDialog(Window.GetWindow(this), currentSearch);
         }
 
         #endregion

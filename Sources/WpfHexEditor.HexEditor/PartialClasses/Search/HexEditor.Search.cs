@@ -168,7 +168,8 @@ namespace WpfHexEditor.HexEditor
         /// Supports 5 modes: TEXT, HEX, WILDCARD, TBL TEXT (if TBL loaded), RELATIVE (encoding discovery).
         /// </summary>
         /// <param name="owner">Owner window for centering the dialog (optional)</param>
-        public void ShowAdvancedSearchDialog(System.Windows.Window owner = null)
+        /// <param name="initialSearch">Pre-fill the search input (e.g. transferred from the QuickSearchBar)</param>
+        public void ShowAdvancedSearchDialog(System.Windows.Window owner = null, string initialSearch = null)
         {
             // Verify file/stream is loaded by checking ByteProvider
             var provider = GetByteProvider();
@@ -185,8 +186,12 @@ namespace WpfHexEditor.HexEditor
             var dialog = new Search.Views.AdvancedSearchDialog();
             var vm = new Search.ViewModels.AdvancedSearchViewModel();
 
-            // ⚠️ BINDING CRITIQUE: Lier le ViewModel à CE HexEditor
+            // Bind ViewModel to this HexEditor instance
             vm.BindToHexEditor(this);
+
+            // Pre-fill search text if provided (e.g. transferred from QuickSearchBar)
+            if (!string.IsNullOrEmpty(initialSearch))
+                vm.SearchInput = initialSearch;
 
             // Wire navigation event: double-click result → scroll and select in HexEditor
             vm.ResultNavigationRequested += (s, result) =>

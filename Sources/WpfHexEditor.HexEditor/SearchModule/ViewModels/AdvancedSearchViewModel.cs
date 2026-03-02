@@ -208,7 +208,9 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                     _selectedMode = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsRelativeMode));
+                    OnPropertyChanged(nameof(IsTextMode));
                     OnPropertyChanged(nameof(ShowReplaceControls));
+                    OnPropertyChanged(nameof(SelectedModeIndex));
                     UpdateCommandStates();
                 }
             }
@@ -220,9 +222,37 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
         public bool IsRelativeMode => _selectedMode == SearchMode.Relative;
 
         /// <summary>
+        /// Gets whether currently in TEXT mode (for showing encoding/case options).
+        /// </summary>
+        public bool IsTextMode => _selectedMode == SearchMode.Text;
+
+        /// <summary>
         /// Gets whether to show replace controls (hidden in RELATIVE mode).
         /// </summary>
         public bool ShowReplaceControls => _selectedMode != SearchMode.Relative;
+
+        /// <summary>
+        /// Gets or sets the selected mode as a 0-based index for ComboBox binding.
+        /// Maps: 0=Text, 1=Hex, 2=Wildcard, 3=TblText, 4=Relative.
+        /// </summary>
+        public int SelectedModeIndex
+        {
+            get => (int)_selectedMode;
+            set
+            {
+                var mode = (SearchMode)value;
+                if (_selectedMode != mode)
+                {
+                    _selectedMode = mode;
+                    OnPropertyChanged(nameof(SelectedMode));
+                    OnPropertyChanged(nameof(SelectedModeIndex));
+                    OnPropertyChanged(nameof(IsRelativeMode));
+                    OnPropertyChanged(nameof(IsTextMode));
+                    OnPropertyChanged(nameof(ShowReplaceControls));
+                    UpdateCommandStates();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the selected encoding.

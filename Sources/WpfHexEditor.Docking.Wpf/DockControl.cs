@@ -657,6 +657,17 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _centerHost.Content = CreateVisualForNode(Layout.RootNode);
         UpdateAutoHideBars();
         RestoreFloatingWindows();
+
+        // Fire ActiveItemChanged for the main document host's active item on first load so that
+        // the host app can initialize ActiveDocumentEditor correctly after layout deserialization.
+        // Only done when no prior user activation has occurred (ActivationHistory is empty),
+        // which prevents this from firing on every rebuild triggered by dock/undock operations.
+        if (ActivationHistory.Count == 0)
+        {
+            var mainActiveItem = Layout.MainDocumentHost.ActiveItem;
+            if (mainActiveItem is not null)
+                Dispatcher.BeginInvoke(() => TrackActivation(mainActiveItem));
+        }
     }
 
     /// <summary>

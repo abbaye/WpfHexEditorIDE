@@ -281,7 +281,8 @@ public class DockEngine
         newHost.AddItem(item);
         item.State = DockItemState.Docked;
 
-        WrapWithSplit(targetHost, newHost, direction);
+        // Documents get equal 50/50 split — both sides are equally important content
+        WrapWithSplit(targetHost, newHost, direction, 0.5);
 
         AutoNormalize();
         ItemDocked?.Invoke(item);
@@ -365,25 +366,27 @@ public class DockEngine
     /// <summary>
     /// Wraps a target node with a split, placing a new node beside it.
     /// </summary>
-    private void WrapWithSplit(DockNode target, DockNode newNode, DockDirection direction)
+    /// <param name="newNodeRatio">Ratio assigned to the new node (0..1). Default 0.25 for tool panels; use 0.5 for document splits.</param>
+    private void WrapWithSplit(DockNode target, DockNode newNode, DockDirection direction, double newNodeRatio = 0.25)
     {
         var orientation = direction is DockDirection.Left or DockDirection.Right
             ? SplitOrientation.Horizontal
             : SplitOrientation.Vertical;
 
         var split = new DockSplitNode { Orientation = orientation };
+        var existingRatio = 1.0 - newNodeRatio;
 
         var parent = target.Parent as DockSplitNode;
 
         if (direction is DockDirection.Left or DockDirection.Top)
         {
-            split.AddChild(newNode, 0.25);
-            split.AddChild(target, 0.75);
+            split.AddChild(newNode, newNodeRatio);
+            split.AddChild(target, existingRatio);
         }
         else
         {
-            split.AddChild(target, 0.75);
-            split.AddChild(newNode, 0.25);
+            split.AddChild(target, existingRatio);
+            split.AddChild(newNode, newNodeRatio);
         }
 
         if (parent is not null)
