@@ -40,8 +40,13 @@ public sealed partial class ImageViewer : UserControl,
     // Persistence
     private double _restoredZoom;   // 0 = "fit to window"
 
-    // Status bar
-    private readonly StatusBarItem _zoomItem = new() { Label = "Zoom", Value = "100%" };
+    // Status bar items
+    private readonly StatusBarItem _zoomItem       = new() { Label = "Zoom",   Value = "100%" };
+    private readonly StatusBarItem _dimensionsItem = new() { Label = "Size",   Value = "—" };
+    private readonly StatusBarItem _colorModeItem  = new() { Label = "Format", Value = "—" };
+    private readonly StatusBarItem _fileSizeItem   = new() { Label = "File",   Value = "—" };
+    private readonly StatusBarItem _dpiItem        = new() { Label = "DPI",    Value = "—" };
+    private readonly StatusBarItem _pixelItem      = new() { Label = "Pixel",  Value = "—" };
 
     // -----------------------------------------------------------------------
     // Constructor
@@ -80,6 +85,11 @@ public sealed partial class ImageViewer : UserControl,
             });
         }
         StatusBarItems.Add(_zoomItem);
+        StatusBarItems.Add(_dimensionsItem);
+        StatusBarItems.Add(_colorModeItem);
+        StatusBarItems.Add(_fileSizeItem);
+        StatusBarItems.Add(_dpiItem);
+        StatusBarItems.Add(_pixelItem);
     }
 
     // -----------------------------------------------------------------------
@@ -413,11 +423,11 @@ public sealed partial class ImageViewer : UserControl,
             if (px >= 0 && py >= 0 && px < _bitmap.PixelWidth && py < _bitmap.PixelHeight)
             {
                 var color = GetPixelColor(_bitmap, px, py);
-                PixelText.Text = $"({px}, {py})  R:{color.R} G:{color.G} B:{color.B} A:{color.A}  #{color.R:X2}{color.G:X2}{color.B:X2}";
+                _pixelItem.Value = $"({px}, {py})  R:{color.R} G:{color.G} B:{color.B} A:{color.A}  #{color.R:X2}{color.G:X2}{color.B:X2}";
             }
             else
             {
-                PixelText.Text = string.Empty;
+                _pixelItem.Value = "—";
             }
         }
     }
@@ -458,12 +468,19 @@ public sealed partial class ImageViewer : UserControl,
 
     private void UpdateStatusBar()
     {
-        if (_bitmap is null) { DimensionsText.Text = "—"; ColorModeText.Text = "—"; FileSizeText.Text = "—"; DpiText.Text = "—"; return; }
+        if (_bitmap is null)
+        {
+            _dimensionsItem.Value = "—";
+            _colorModeItem.Value  = "—";
+            _fileSizeItem.Value   = "—";
+            _dpiItem.Value        = "—";
+            return;
+        }
 
-        DimensionsText.Text = $"{_bitmap.PixelWidth} × {_bitmap.PixelHeight} px";
-        ColorModeText.Text  = FormatPixelFormat(_bitmap.Format);
-        FileSizeText.Text   = File.Exists(_filePath) ? FormatSize(new FileInfo(_filePath).Length) : "—";
-        DpiText.Text        = $"{_bitmap.DpiX:F0} × {_bitmap.DpiY:F0} DPI";
+        _dimensionsItem.Value = $"{_bitmap.PixelWidth} × {_bitmap.PixelHeight} px";
+        _colorModeItem.Value  = FormatPixelFormat(_bitmap.Format);
+        _fileSizeItem.Value   = File.Exists(_filePath) ? FormatSize(new FileInfo(_filePath).Length) : "—";
+        _dpiItem.Value        = $"{_bitmap.DpiX:F0} × {_bitmap.DpiY:F0} DPI";
     }
 
     private static string FormatPixelFormat(PixelFormat fmt)

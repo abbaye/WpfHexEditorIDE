@@ -14,7 +14,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Toolbar -->
@@ -71,30 +70,5 @@
             </Grid>
         </ScrollViewer>
 
-        <!-- Status bar -->
-        <StatusBar Grid.Row="2"
-                   Background="{DynamicResource TE_LineNumberBackground}"
-                   Foreground="{DynamicResource TE_LineNumberForeground}"
-                   Height="22">
-            <StatusBarItem>
-                <TextBlock x:Name="DimensionsText" Text="—" Padding="4,0"/>
-            </StatusBarItem>
-            <Separator/>
-            <StatusBarItem>
-                <TextBlock x:Name="ColorModeText" Text="—" Padding="4,0"/>
-            </StatusBarItem>
-            <Separator/>
-            <StatusBarItem>
-                <TextBlock x:Name="FileSizeText" Text="—" Padding="4,0"/>
-            </StatusBarItem>
-            <Separator/>
-            <StatusBarItem>
-                <TextBlock x:Name="DpiText" Text="—" Padding="4,0"/>
-            </StatusBarItem>
-            <Separator/>
-            <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock x:Name="PixelText" Text="" Padding="4,0"/>
-            </StatusBarItem>
-        </StatusBar>
     </Grid>
 </UserControl>
