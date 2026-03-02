@@ -38,6 +38,7 @@ using WpfHexEditor.Editor.StructureEditor;
 using WpfHexEditor.Editor.TileEditor;
 using WpfHexEditor.Editor.AudioViewer;
 using WpfHexEditor.Editor.ScriptEditor;
+using WpfHexEditor.Editor.ChangesetEditor;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
 using WpfHexEditor.Panels.BinaryAnalysis;
@@ -255,6 +256,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _editorRegistry.Register(new TileEditorFactory());
         _editorRegistry.Register(new AudioViewerFactory());
         _editorRegistry.Register(new ScriptEditorFactory());
+        _editorRegistry.Register(new ChangesetEditorFactory());
 
         // Register VS-style project templates
         ProjectTemplateRegistry.RegisterDefaults();
