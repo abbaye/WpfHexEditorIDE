@@ -12,6 +12,7 @@ using System.Windows;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Services;
+using WpfHexEditor.Definitions;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -312,65 +313,41 @@ namespace WpfHexEditor.HexEditor
         }
 
         /// <summary>
-        /// Load embedded format definitions from assembly resources
-        /// Called automatically during initialization to load built-in formats
+        /// Load embedded format definitions from <see cref="EmbeddedFormatCatalog"/>.
+        /// Called automatically during initialization to load built-in formats.
         /// </summary>
-        /// <returns>Number of formats loaded from embedded resources</returns>
+        /// <returns>Number of formats loaded from embedded resources.</returns>
         public int LoadEmbeddedFormatDefinitions()
         {
             int count = 0;
 
             try
             {
-                // FormatDefinitions are embedded in the Core assembly, not HexEditor
-                var assembly = typeof(WpfHexEditor.Core.FormatDetection.FormatDefinition).Assembly;
-
-                var resourceNames = assembly.GetManifestResourceNames()
-                    .Where(r => r.Contains("FormatDefinitions") && r.EndsWith(".whfmt"))
-                    .ToList();
-
-                System.Diagnostics.Debug.WriteLine($"[FormatDetection] Found {resourceNames.Count} embedded JSON resources");
-
-                foreach (var resourceName in resourceNames)
+                foreach (var entry in EmbeddedFormatCatalog.Instance.GetAll())
                 {
                     try
                     {
-                        using var stream = assembly.GetManifestResourceStream(resourceName);
-                        if (stream == null)
-                        {
-                            continue;
-                        }
-
-                        using var reader = new System.IO.StreamReader(stream);
-                        var json = reader.ReadToEnd();
-
+                        var json   = EmbeddedFormatCatalog.Instance.GetJson(entry.ResourceKey);
                         var format = _formatDetectionService.ImportFromJson(json);
+
                         if (format != null)
                         {
-                            // Extract category from embedded resource name
-                            // Example: "WpfHexEditor.Core.FormatDefinitions.Archives.ZIP.whfmt" -> "Archives"
                             if (string.IsNullOrWhiteSpace(format.Category))
-                            {
-                                format.Category = ExtractCategoryFromResourceName(resourceName);
-                            }
+                                format.Category = entry.Category;
 
                             if (_formatDetectionService.AddFormatDefinition(format))
-                            {
                                 count++;
-                            }
                             else
-                            {
-                                System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (invalid): {resourceName} - {format.FormatName}");
-                            }
+                                System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (invalid): {entry.ResourceKey} - {format.FormatName}");
                         }
                         else
                         {
-                            System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (null format): {resourceName}");
+                            System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (null format): {entry.ResourceKey}");
                         }
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"[FormatDetection] Error loading {resourceName}: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"[FormatDetection] Error loading {entry.ResourceKey}: {ex.Message}");
                     }
                 }
 
@@ -385,34 +362,6 @@ namespace WpfHexEditor.HexEditor
             }
 
             return count;
-        }
-
-        /// <summary>
-        /// Extract category from embedded resource name
-        /// Example: "WpfHexEditor.Core.FormatDefinitions.Archives.ZIP.whfmt" -> "Archives"
-        /// </summary>
-        private string ExtractCategoryFromResourceName(string resourceName)
-        {
-            if (string.IsNullOrWhiteSpace(resourceName))
-                return "Other";
-
-            try
-            {
-                // Embedded resource format: "WpfHexEditor.Core.FormatDefinitions.Archives.ZIP.whfmt"
-                var parts = resourceName.Split('.');
-                var formatDefsIndex = System.Array.IndexOf(parts, "FormatDefinitions");
-
-                if (formatDefsIndex >= 0 && formatDefsIndex < parts.Length - 2)
-                {
-                    return parts[formatDefsIndex + 1]; // Category is next part after "FormatDefinitions"
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error extracting category from resource name {resourceName}: {ex.Message}");
-            }
-
-            return "Other"; // Default category
         }
 
         #endregion

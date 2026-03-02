@@ -10,12 +10,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using WpfHexEditor.Definitions;
 using WpfHexEditor.Editor.JsonEditor.Models;
 
 namespace WpfHexEditor.Editor.JsonEditor.Controls
@@ -106,11 +106,6 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         {
             try
             {
-                var assembly = Assembly.GetExecutingAssembly();
-                var resourceNames = assembly.GetManifestResourceNames()
-                    .Where(n => n.Contains("FormatDefinitions") && n.EndsWith(".json"))
-                    .ToList();
-
                 _rootNode = new FormatTreeNode
                 {
                     Name = "Embedded Formats",
@@ -119,43 +114,30 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
                     Children = new ObservableCollection<FormatTreeNode>()
                 };
 
-                // Group by category (extract from resource path)
                 var categories = new Dictionary<string, FormatTreeNode>();
 
-                foreach (var resourceName in resourceNames)
+                foreach (var entry in EmbeddedFormatCatalog.Instance.GetAll())
                 {
-                    // Extract category and file name from resource path
-                    // Expected format: WpfHexaEditor.FormatDefinitions.{Category}.{FileName}.json
-                    var parts = resourceName.Split('.');
-                    if (parts.Length < 4) continue;
-
-                    var categoryName = parts[parts.Length - 3]; // Category
-                    var fileName = parts[parts.Length - 2]; // File name
-
-                    // Get or create category node
-                    if (!categories.ContainsKey(categoryName))
+                    if (!categories.TryGetValue(entry.Category, out var categoryNode))
                     {
-                        var categoryNode = new FormatTreeNode
+                        categoryNode = new FormatTreeNode
                         {
-                            Name = categoryName,
+                            Name = entry.Category,
                             Icon = "📁",
                             IsCategory = true,
                             Children = new ObservableCollection<FormatTreeNode>()
                         };
-                        categories[categoryName] = categoryNode;
+                        categories[entry.Category] = categoryNode;
                         _rootNode.Children.Add(categoryNode);
                     }
 
-                    // Create file node
-                    var fileNode = new FormatTreeNode
+                    categoryNode.Children.Add(new FormatTreeNode
                     {
-                        Name = fileName,
+                        Name = entry.Name,
                         Icon = "📄",
                         IsCategory = false,
-                        ResourceName = resourceName
-                    };
-
-                    categories[categoryName].Children.Add(fileNode);
+                        ResourceName = entry.ResourceKey
+                    });
                 }
 
                 // Set tree view root
@@ -334,28 +316,14 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         {
             try
             {
-                var assembly = Assembly.GetExecutingAssembly();
-                using (var stream = assembly.GetManifestResourceStream(resourceName))
-                {
-                    if (stream == null)
-                    {
-                        MessageBox.Show($"Resource not found: {resourceName}",
-                            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
-                    using (var reader = new StreamReader(stream))
-                    {
-                        var content = reader.ReadToEnd();
-                        JsonEditorControl.LoadText(content);
-                        _currentFilePath = null; // Embedded format
-                        _isModified = false;
-                        var parts = resourceName.Split('.');
-                        FileNameText.Text = $"[Embedded] {(parts.Length >= 2 ? parts[parts.Length - 2] : resourceName)}";
-                        UpdateStatusBar();
-                        UpdateValidationTab();
-                    }
-                }
+                var content = EmbeddedFormatCatalog.Instance.GetJson(resourceName);
+                JsonEditorControl.LoadText(content);
+                _currentFilePath = null; // Embedded format
+                _isModified = false;
+                var parts = resourceName.Split('.');
+                FileNameText.Text = $"[Embedded] {(parts.Length >= 2 ? parts[parts.Length - 2] : resourceName)}";
+                UpdateStatusBar();
+                UpdateValidationTab();
             }
             catch (Exception ex)
             {

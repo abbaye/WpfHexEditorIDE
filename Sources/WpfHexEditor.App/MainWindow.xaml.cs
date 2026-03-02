@@ -41,7 +41,7 @@ using WpfHexEditor.Editor.ScriptEditor;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
 using WpfHexEditor.Panels.BinaryAnalysis;
-using WpfHexEditor.Core.Services;
+using WpfHexEditor.Definitions;
 using WpfHexEditor.ProjectSystem;
 using WpfHexEditor.ProjectSystem.Dialogs;
 using WpfHexEditor.ProjectSystem.Services;

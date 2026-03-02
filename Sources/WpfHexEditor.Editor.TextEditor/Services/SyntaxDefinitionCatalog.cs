@@ -5,7 +5,7 @@
 //////////////////////////////////////////////
 
 using System.IO;
-using System.Reflection;
+using WpfHexEditor.Definitions;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 
 namespace WpfHexEditor.Editor.TextEditor.Services;
@@ -41,7 +41,6 @@ public sealed class SyntaxDefinitionCatalog
 
     private SyntaxDefinitionCatalog() { }
 
-    private static readonly Assembly _assembly = typeof(SyntaxDefinitionCatalog).Assembly;
     private IReadOnlyList<SyntaxDefinition>? _all;
     private readonly object _lock = new();
 
@@ -107,16 +106,13 @@ public sealed class SyntaxDefinitionCatalog
         // Use a dictionary keyed by name so that user-defined definitions override embedded ones.
         var byName = new Dictionary<string, SyntaxDefinition>(StringComparer.OrdinalIgnoreCase);
 
-        // 1. Embedded resources
-        foreach (var key in _assembly.GetManifestResourceNames())
+        // 1. Embedded resources via EmbeddedSyntaxCatalog (WpfHexEditor.Definitions)
+        foreach (var entry in EmbeddedSyntaxCatalog.Instance.GetAll())
         {
-            if (!key.Contains("SyntaxDefinitions") || !key.EndsWith(".whlang", StringComparison.OrdinalIgnoreCase))
-                continue;
-
-            using var stream = _assembly.GetManifestResourceStream(key);
+            using var stream = EmbeddedSyntaxCatalog.Instance.GetStream(entry.ResourceKey);
             if (stream is null) continue;
 
-            var def = JsonSyntaxDefinitionParser.Parse(stream, key);
+            var def = JsonSyntaxDefinitionParser.Parse(stream, entry.ResourceKey);
             if (def is not null && !string.IsNullOrEmpty(def.Name))
                 byName[def.Name] = def;
         }

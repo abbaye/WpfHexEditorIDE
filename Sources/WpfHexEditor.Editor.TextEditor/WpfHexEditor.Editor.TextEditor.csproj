@@ -26,11 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
-  </ItemGroup>
-
-  <!-- Embedded .whlang syntax definition resources -->
-  <ItemGroup>
-    <EmbeddedResource Include="SyntaxDefinitions\**\*.whlang" />
+    <ProjectReference Include="..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

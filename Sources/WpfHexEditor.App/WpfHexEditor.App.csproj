@@ -37,6 +37,7 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.TileEditor\WpfHexEditor.Editor.TileEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.AudioViewer\WpfHexEditor.Editor.AudioViewer.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.ScriptEditor\WpfHexEditor.Editor.ScriptEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />
   </ItemGroup>
 
 </Project>

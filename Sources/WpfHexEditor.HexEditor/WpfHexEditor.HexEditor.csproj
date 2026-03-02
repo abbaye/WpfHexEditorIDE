@@ -36,6 +36,7 @@
     <ProjectReference Include="..\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj" />
     <ProjectReference Include="..\WpfHexEditor.HexBox\WpfHexEditor.HexBox.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />
   </ItemGroup>
 
 </Project>
