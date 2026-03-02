@@ -47,6 +47,8 @@ using WpfHexEditor.ProjectSystem.Dialogs;
 using WpfHexEditor.ProjectSystem.Services;
 using WpfHexEditor.ProjectSystem.Templates;
 using System.Windows.Shell;
+using System.Windows.Threading;
+using WpfHexEditor.App.Settings;
 
 namespace WpfHexEditor.App;
 
@@ -61,6 +63,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public static readonly RoutedCommand FindNextCommand = new RoutedCommand(
         "FindNext", typeof(MainWindow),
         new InputGestureCollection { new KeyGesture(Key.F3) });
+
+    public static readonly RoutedCommand WriteToDiskCommand = new RoutedCommand(
+        "WriteToDisk", typeof(MainWindow),
+        new InputGestureCollection { new KeyGesture(Key.W, ModifierKeys.Control | ModifierKeys.Shift) });
 
     public static readonly RoutedCommand FindPreviousCommand = new RoutedCommand(
         "FindPrevious", typeof(MainWindow),
@@ -125,6 +131,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Editor registry for doc-proj-* dispatcher
     private readonly IEditorRegistry _editorRegistry = new EditorRegistry();
 
+    // Auto-serialize timer (Tracked mode)
+    private DispatcherTimer? _autoSerializeTimer;
+
     // ─── Bindable properties ────────────────────────────────────────────
 
     private IDocumentEditor? _activeDocumentEditor;
@@ -172,6 +181,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         get => _activeStatusBarContributor;
         private set { _activeStatusBarContributor = value; OnPropertyChanged(); }
+    }
+
+    private IEditorToolbarContributor? _activeToolbarContributor;
+    public IEditorToolbarContributor? ActiveToolbarContributor
+    {
+        get => _activeToolbarContributor;
+        private set { _activeToolbarContributor = value; OnPropertyChanged(); }
     }
 
     private bool _hasSolution;
@@ -246,10 +262,48 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Pre-create OutputPanel so OutputLogger.Register is called before any Info/Error calls
         _outputPanel = new OutputPanel();
 
+        // Load user settings (save mode, auto-serialize)
+        AppSettingsService.Instance.Load();
+        InitAutoSerializeTimer();
+
         LoadSavedLayoutOrDefault();
         PopulateRecentMenus();
         TryRestoreSession();
         HandleStartupFile();
+    }
+
+    private void InitAutoSerializeTimer()
+    {
+        var s = AppSettingsService.Instance.Current;
+        if (!s.AutoSerializeEnabled) return;
+
+        _autoSerializeTimer = new DispatcherTimer(DispatcherPriority.Background)
+        {
+            Interval = TimeSpan.FromSeconds(Math.Max(5, s.AutoSerializeIntervalSeconds))
+        };
+        _autoSerializeTimer.Tick += OnAutoSerializeTick;
+        _autoSerializeTimer.Start();
+    }
+
+    private void OnAutoSerializeTick(object? sender, EventArgs e)
+    {
+        var settings = AppSettingsService.Instance.Current;
+        if (settings.DefaultFileSaveMode != FileSaveMode.Tracked) return;
+        if (_solutionManager.CurrentSolution is null) return;
+
+        foreach (var project in _solutionManager.CurrentSolution.Projects)
+        foreach (var item    in project.Items)
+        {
+            var contentId = $"doc-proj-{item.Id}";
+            if (!_contentCache.TryGetValue(contentId, out var ctrl)) continue;
+            if (ctrl is not IEditorPersistable persistable) continue;
+            if (ctrl is not IDocumentEditor editor || !editor.IsDirty) continue;
+
+            var snapshot = persistable.GetChangesetSnapshot();
+            if (!snapshot.HasEdits) continue;
+
+            _ = ChangesetService.Instance.WriteChangesetAsync(item, snapshot);
+        }
     }
 
     private void OnWindowClosing(object? sender, CancelEventArgs e)
@@ -291,12 +345,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         HasSolution = _solutionManager.CurrentSolution != null;
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+        RefreshAllChangesetNodes();
         PopulateRecentMenus();
 
         // Start or stop the background file monitor
         if (_solutionManager.CurrentSolution is { } sol)
         {
-            _fileMonitorService ??= new FileMonitorService(_editorRegistry, _fileMonitorSource);
+            if (_fileMonitorService == null)
+            {
+                _fileMonitorService = new FileMonitorService(_editorRegistry, _fileMonitorSource);
+                _fileMonitorService.ChangesetFileChanged += OnChangesetFileChanged;
+            }
             var dirs = sol.Projects
                 .Select(p => Path.GetDirectoryName(p.ProjectFilePath))
                 .Where(d => d is not null)
@@ -702,6 +761,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.SaveAllRequested                 += OnSESaveAll;
         panel.OpenWithRequested                += OnSEOpenWith;
         panel.PhysicalFileIncludeRequested     += OnSEPhysicalFileInclude;
+        panel.PropertiesRequested              += OnSEPropertiesRequested;
+        panel.WriteToDiskRequested             += OnSEWriteToDisk;
+        panel.DiscardChangesetRequested        += OnSEDiscardChangeset;
         _solutionManager.ItemRenamed           += OnProjectItemRenamed;
         // Sync current solution if already loaded
         panel.SetSolution(_solutionManager.CurrentSolution);
@@ -1515,6 +1577,99 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
     }
 
+    private void OnSEPropertiesRequested(object? sender, NodePropertiesEventArgs e)
+    {
+        if (e.Item is null && e.Project is not null)
+        {
+            // Project node → Project Properties dialog
+            var dlg = new ProjectPropertiesDialog(e.Project) { Owner = this };
+            dlg.ShowDialog();
+        }
+        else if (e.Item is not null)
+        {
+            // File node → show/focus the Properties panel
+            ShowOrCreatePanel("Properties", "panel-properties", DockDirection.Right);
+        }
+    }
+
+    // ─── Solution Explorer — changeset actions ──────────────────────────
+
+    private async void OnSEWriteToDisk(object? sender, ProjectItemEventArgs e)
+    {
+        if (e.Item is null || e.Project is null) return;
+        if (!ChangesetService.Instance.HasChangeset(e.Item)) return;
+
+        try
+        {
+            await _solutionManager.WriteItemToDiskAsync(e.Project, e.Item);
+
+            // Reload the editor if open
+            var contentId = $"doc-proj-{e.Item.Id}";
+            if (_contentCache.TryGetValue(contentId, out var ctrl) && ctrl is HexEditorControl hex)
+                hex.OpenFile(e.Item.AbsolutePath);
+
+            OutputLogger.Info($"Write to Disk: '{e.Item.Name}' written and changeset removed.");
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Write to Disk failed for '{e.Item.Name}': {ex.Message}");
+        }
+    }
+
+    private async void OnSEDiscardChangeset(object? sender, ProjectItemEventArgs e)
+    {
+        if (e.Item is null || e.Project is null) return;
+        try
+        {
+            await _solutionManager.DiscardChangesetAsync(e.Project, e.Item);
+            OutputLogger.Info($"Discarded changeset for '{e.Item.Name}'.");
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Discard changeset failed for '{e.Item.Name}': {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// After a solution tree rebuild, refreshes the changeset child node under every item
+    /// that currently has a .whchg companion file on disk.
+    /// </summary>
+    private void RefreshAllChangesetNodes()
+    {
+        if (_solutionExplorerPanel is null) return;
+        foreach (var project in _solutionManager.CurrentSolution?.Projects ?? [])
+        foreach (var item    in project.Items)
+        {
+            if (ChangesetService.Instance.HasChangeset(item))
+                _solutionExplorerPanel.RefreshChangesetNode(item);
+        }
+    }
+
+    private void OnChangesetFileChanged(string changesetPath, bool exists)
+    {
+        // Raised on a background thread — marshal to UI thread
+        Dispatcher.BeginInvoke(() =>
+        {
+            if (_solutionExplorerPanel is null) return;
+
+            // Find the project item whose .whchg companion matches
+            var sourcePath = changesetPath.EndsWith(".whchg", StringComparison.OrdinalIgnoreCase)
+                ? changesetPath[..^6]   // strip ".whchg"
+                : null;
+            if (sourcePath is null) return;
+
+            foreach (var project in _solutionManager.CurrentSolution?.Projects ?? [])
+            foreach (var item    in project.Items)
+            {
+                if (string.Equals(item.AbsolutePath, sourcePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    _solutionExplorerPanel.RefreshChangesetNode(item);
+                    return;
+                }
+            }
+        });
+    }
+
     // ─── Active document tracking ───────────────────────────────────────
 
     private void OnActiveDocumentChanged(DockItem item)
@@ -1527,31 +1682,26 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var hex = content as HexEditorControl;
 
-        if (hex != _connectedHexEditor)
+        // Only switch the connected hex editor when a hex editor tab becomes active.
+        // When a non-hex editor (JSON, TBL…) becomes active in a split pane, keep the
+        // last hex editor connected so the Parsed Fields panel stays populated.
+        if (hex != null && hex != _connectedHexEditor)
         {
-            // Disconnect previous hex editor from panels
+            // Switching to a different hex editor — reconnect panels.
             if (_connectedHexEditor is IDiagnosticSource prevDiag)
                 _errorPanel?.RemoveSource(prevDiag);
             _connectedHexEditor?.DisconnectParsedFieldsPanel();
 
             _connectedHexEditor = hex;
-
-            // Connect new hex editor to panels
-            if (_connectedHexEditor != null)
-            {
-                _connectedHexEditor.ConnectParsedFieldsPanel(_parsedFieldsPanel);
-                if (_connectedHexEditor is IDiagnosticSource newDiag)
-                    _errorPanel?.AddSource(newDiag);
-            }
-            else
-            {
-                _parsedFieldsPanel?.Clear();
-            }
+            _connectedHexEditor.ConnectParsedFieldsPanel(_parsedFieldsPanel);
+            if (_connectedHexEditor is IDiagnosticSource newDiag)
+                _errorPanel?.AddSource(newDiag);
         }
 
         ActiveDocumentEditor       = content as IDocumentEditor;
         ActiveHexEditor            = hex;
         ActiveStatusBarContributor = content as IStatusBarContributor;
+        ActiveToolbarContributor   = content as IEditorToolbarContributor;
 
         if (ActiveDocumentEditor == null)
             RefreshText.Text = "";
@@ -1749,22 +1899,49 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (_isLocked) return;
 
-        // Dirty-close prompt — only for document tabs backed by IDocumentEditor
+        // Dirty-close: in Tracked mode auto-serialize silently; in Direct mode show dialog
         if (promptIfDirty &&
             _contentCache.TryGetValue(item.ContentId, out var dirtyCtrl) &&
             dirtyCtrl is IDocumentEditor dirtyEditor && dirtyEditor.IsDirty)
         {
-            var cleanTitle = item.Title.TrimEnd('*', ' ');
-            var dlg = new Dialogs.SaveChangesDialog
+            var settings = AppSettingsService.Instance.Current;
+            var isTrackedProjectItem =
+                settings.DefaultFileSaveMode == FileSaveMode.Tracked &&
+                item.ContentId.StartsWith("doc-proj-") &&
+                item.Metadata.TryGetValue("ItemId",    out var closeItemId) &&
+                item.Metadata.TryGetValue("ProjectId", out var closeProjectId);
+
+            if (isTrackedProjectItem)
             {
-                DirtyItems = [(item.ContentId, cleanTitle)],
-                Owner      = this
-            };
-            if (dlg.ShowDialog() != true || dlg.Choice == Dialogs.SaveChangesChoice.Cancel) return;
-            if (dlg.Choice == Dialogs.SaveChangesChoice.Save &&
-                dirtyEditor.SaveCommand?.CanExecute(null) == true)
+                // Auto-serialize to .whchg — no dialog
+                if (dirtyCtrl is IEditorPersistable closePersistable)
+                {
+                    var snapshot = closePersistable.GetChangesetSnapshot();
+                    if (snapshot.HasEdits)
+                    {
+                        var proj = _solutionManager.CurrentSolution?.Projects
+                            .FirstOrDefault(p => p.Id == item.Metadata["ProjectId"]);
+                        var it = proj?.FindItem(item.Metadata["ItemId"]);
+                        if (it != null)
+                            _ = ChangesetService.Instance.WriteChangesetAsync(it, snapshot);
+                    }
+                }
+            }
+            else
             {
-                dirtyEditor.SaveCommand.Execute(null);
+                // Direct mode — standard save dialog
+                var cleanTitle = item.Title.TrimEnd('*', ' ');
+                var dlg = new Dialogs.SaveChangesDialog
+                {
+                    DirtyItems = [(item.ContentId, cleanTitle)],
+                    Owner      = this
+                };
+                if (dlg.ShowDialog() != true || dlg.Choice == Dialogs.SaveChangesChoice.Cancel) return;
+                if (dlg.Choice == Dialogs.SaveChangesChoice.Save &&
+                    dirtyEditor.SaveCommand?.CanExecute(null) == true)
+                {
+                    dirtyEditor.SaveCommand.Execute(null);
+                }
             }
         }
 
@@ -2280,6 +2457,110 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Also save the active document editor
         ActiveDocumentEditor?.SaveCommand?.Execute(null);
         OutputLogger.Info("Save All executed.");
+    }
+
+    /// <summary>
+    /// Ctrl+S handler.  In Tracked mode, serialises edits to the .whchg companion file
+    /// without touching the physical binary.  In Direct mode delegates to SaveCommand.
+    /// </summary>
+    private void OnSave(object sender, RoutedEventArgs e)
+    {
+        var settings = AppSettingsService.Instance.Current;
+
+        // Try to resolve the active project item for Tracked mode
+        if (settings.DefaultFileSaveMode == FileSaveMode.Tracked &&
+            TryGetActiveProjectItem(out var saveProject, out var saveItem, out var saveContentId) &&
+            _contentCache.TryGetValue(saveContentId, out var saveCtrl) &&
+            saveCtrl is IEditorPersistable savePersistable)
+        {
+            var snapshot = savePersistable.GetChangesetSnapshot();
+            if (!snapshot.HasEdits)
+                return;   // nothing to write
+
+            _ = ChangesetService.Instance.WriteChangesetAsync(saveItem!, snapshot);
+            return;
+        }
+
+        // Direct mode (or non-project tab) — normal save
+        ActiveDocumentEditor?.SaveCommand?.Execute(null);
+    }
+
+    /// <summary>
+    /// Ctrl+Shift+W — applies the pending .whchg changeset to the physical file,
+    /// then reloads the editor from the patched bytes.
+    /// </summary>
+    private async void OnWriteToDisk(object sender, RoutedEventArgs e)
+    {
+        if (!TryGetActiveProjectItem(out var wtdProject, out var wtdItem, out var wtdContentId))
+            return;
+
+        if (!ChangesetService.Instance.HasChangeset(wtdItem!))
+        {
+            OutputLogger.Info($"Write to Disk: no .whchg found for '{wtdItem!.Name}'.");
+            return;
+        }
+
+        try
+        {
+            await _solutionManager.WriteItemToDiskAsync(wtdProject!, wtdItem);
+
+            // Reload the editor from the updated file
+            if (_contentCache.TryGetValue(wtdContentId, out var ctrl) &&
+                ctrl is HexEditorControl hex)
+            {
+                hex.OpenFile(wtdItem.AbsolutePath);
+            }
+            OutputLogger.Info($"Write to Disk: '{wtdItem.Name}' written and changeset removed.");
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Error($"Write to Disk failed for '{wtdItem!.Name}': {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Resolves the active document's project + item from content cache + metadata.
+    /// Returns false when the active editor is not a project item (doc-proj-*).
+    /// </summary>
+    private bool TryGetActiveProjectItem(
+        out IProject?     project,
+        out IProjectItem? item,
+        out string        contentId)
+    {
+        project   = null;
+        item      = null;
+        contentId = string.Empty;
+
+        if (ActiveDocumentEditor is null) return false;
+
+        // Reverse-lookup the content ID for the active editor
+        var found = _contentCache.FirstOrDefault(
+            kv => ReferenceEquals(kv.Value, ActiveDocumentEditor as System.Windows.UIElement));
+        if (found.Key is null) return false;
+        contentId = found.Key;
+
+        if (!contentId.StartsWith("doc-proj-")) return false;
+
+        var dockItem = _engine.Layout.FindItemByContentId(contentId);
+        if (dockItem is null) return false;
+        if (!dockItem.Metadata.TryGetValue("ItemId",    out var itemId))    return false;
+        if (!dockItem.Metadata.TryGetValue("ProjectId", out var projectId)) return false;
+
+        project = _solutionManager.CurrentSolution?.Projects.FirstOrDefault(p => p.Id == projectId);
+        item    = project?.FindItem(itemId);
+        return item != null;
+    }
+
+    private void OnSettings(object sender, RoutedEventArgs e)
+    {
+        var dlg = new Dialogs.AppSettingsDialog { Owner = this };
+        if (dlg.ShowDialog() == true)
+        {
+            // Restart or reconfigure auto-serialize timer based on new settings
+            _autoSerializeTimer?.Stop();
+            _autoSerializeTimer = null;
+            InitAutoSerializeTimer();
+        }
     }
 
     // ─── Menu: Project ─────────────────────────────────────────────────

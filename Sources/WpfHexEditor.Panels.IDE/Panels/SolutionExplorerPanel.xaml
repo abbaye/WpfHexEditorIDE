@@ -556,6 +556,19 @@
                         </MenuItem.Icon>
                     </MenuItem>
 
+                    <!-- Changeset (.whchg) actions -->
+                    <Separator x:Name="ChangesetSeparator"/>
+                    <MenuItem x:Name="WriteChangesetToDiskMenuItem" Header="Apply to Disk" Click="OnWriteChangesetToDisk">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE9F5;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="DiscardChangesetMenuItem" Header="Discard Changes" Click="OnDiscardChangeset">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE711;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+
                     <!-- Properties -->
                     <Separator x:Name="PropertiesSeparator"/>
                     <MenuItem x:Name="PropertiesMenuItem" Header="Properties" Click="OnProperties">

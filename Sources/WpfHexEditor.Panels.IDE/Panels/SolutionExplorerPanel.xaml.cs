@@ -118,6 +118,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         bool isPhysFile   = physFile is not null;
         bool isPhysIn     = isPhysFile &&  physFile!.IsInProject;
         bool isPhysNotIn  = isPhysFile && !physFile!.IsInProject;
+        bool isChangeset  = node is ChangesetNodeVm;
 
         bool isTbl = file?.Source.ItemType == ProjectItemType.Tbl;
         bool isDefault = file?.IsDefaultTbl == true;
@@ -166,6 +167,11 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         RemoveMenuItem            .Visibility = (isFile || isFolder)                             ? Visibility.Visible : Visibility.Collapsed;
         ExcludeFromProjectMenuItem.Visibility = isPhysIn                                         ? Visibility.Visible : Visibility.Collapsed;
 
+        // Changeset (.whchg) actions
+        ChangesetSeparator           .Visibility = isChangeset ? Visibility.Visible : Visibility.Collapsed;
+        WriteChangesetToDiskMenuItem .Visibility = isChangeset ? Visibility.Visible : Visibility.Collapsed;
+        DiscardChangesetMenuItem     .Visibility = isChangeset ? Visibility.Visible : Visibility.Collapsed;
+
         // Properties
         PropertiesSeparator.Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
         PropertiesMenuItem .Visibility = hasProp ? Visibility.Visible : Visibility.Collapsed;
@@ -177,7 +183,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         CloseSolutionMenuItem  .Visibility = isSolution ? Visibility.Visible : Visibility.Collapsed;
 
         return canOpen || canAdd || isPhysNotIn || isTbl || hasExplorer
-            || isSolution || isProject || isFolder || isFile || isPhysIn;
+            || isSolution || isProject || isFolder || isFile || isPhysIn || isChangeset;
     }
 
     private void OnContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -285,9 +291,23 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnOpenInExplorer(object sender, RoutedEventArgs e)
     {
-        var path = GetExplorerPath(_contextMenuTarget);
-        if (path is null || !Directory.Exists(path)) return;
-        Process.Start("explorer.exe", path);
+        switch (_contextMenuTarget)
+        {
+            case FileNodeVm fn:
+                var fp = fn.Source.AbsolutePath;
+                if (!string.IsNullOrEmpty(fp) && File.Exists(fp))
+                    Process.Start("explorer.exe", $"/select,\"{fp}\"");
+                break;
+            case PhysicalFileNodeVm pf:
+                if (!string.IsNullOrEmpty(pf.PhysicalPath) && File.Exists(pf.PhysicalPath))
+                    Process.Start("explorer.exe", $"/select,\"{pf.PhysicalPath}\"");
+                break;
+            default:
+                var dir = GetExplorerPath(_contextMenuTarget);
+                if (dir is not null && Directory.Exists(dir))
+                    Process.Start("explorer.exe", dir);
+                break;
+        }
     }
 
     private void OnCopyPath(object sender, RoutedEventArgs e)
@@ -383,9 +403,20 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             FolderDeleteRequested?.Invoke(this, new FolderDeleteEventArgs { Folder = fv.Folder, Project = fv.Project });
     }
 
+    /// <inheritdoc/>
+    public event EventHandler<NodePropertiesEventArgs>? PropertiesRequested;
+
     private void OnProperties(object sender, RoutedEventArgs e)
     {
-        // Raised to host
+        switch (_contextMenuTarget)
+        {
+            case ProjectNodeVm pv:
+                PropertiesRequested?.Invoke(this, new NodePropertiesEventArgs { Project = pv.Source });
+                break;
+            case FileNodeVm fn when fn.Project is not null:
+                PropertiesRequested?.Invoke(this, new NodePropertiesEventArgs { Project = fn.Project, Item = fn.Source });
+                break;
+        }
     }
 
     // ── Path helpers ──────────────────────────────────────────────────────────
@@ -980,6 +1011,45 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             if (SelectNodeByPath(path, node.Children)) return true;
         }
         return false;
+    }
+
+    // ── Changeset context menu actions ────────────────────────────────────────
+
+    /// <inheritdoc/>
+    public event EventHandler<ProjectItemEventArgs>? WriteToDiskRequested;
+
+    /// <inheritdoc/>
+    public event EventHandler<ProjectItemEventArgs>? DiscardChangesetRequested;
+
+    private void OnWriteChangesetToDisk(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ChangesetNodeVm cn)
+            WriteToDiskRequested?.Invoke(this, new ProjectItemEventArgs { Item = cn.OwnerItem, Project = cn.Project });
+    }
+
+    private void OnDiscardChangeset(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is ChangesetNodeVm cn)
+            DiscardChangesetRequested?.Invoke(this, new ProjectItemEventArgs { Item = cn.OwnerItem, Project = cn.Project });
+    }
+
+    /// <inheritdoc/>
+    public void RefreshChangesetNode(IProjectItem item)
+    {
+        // Must be called on the UI thread — Dispatcher.Invoke from the host if needed
+        var fileNode = FindFileNodeVm(_vm.Roots, item);
+        fileNode?.RefreshChangesetChild();
+    }
+
+    private static FileNodeVm? FindFileNodeVm(IEnumerable<SolutionExplorerNodeVm> nodes, IProjectItem item)
+    {
+        foreach (var node in nodes)
+        {
+            if (node is FileNodeVm fn && fn.Source.Id == item.Id) return fn;
+            var found = FindFileNodeVm(node.Children, item);
+            if (found is not null) return found;
+        }
+        return null;
     }
 }
 

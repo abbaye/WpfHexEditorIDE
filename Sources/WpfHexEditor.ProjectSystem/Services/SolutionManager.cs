@@ -443,6 +443,16 @@ public sealed class SolutionManager : ISolutionManager
     public byte[]? GetItemModifications(IProject project, IProjectItem item)
         => item is ProjectItem pi ? pi.UnsavedModifications : null;
 
+    // ── WHChg changeset operations ────────────────────────────────────────
+
+    public Task WriteItemToDiskAsync(IProject project, IProjectItem item,
+        CancellationToken ct = default)
+        => ChangesetService.Instance.ApplyChangesetToDiskAsync(item, ct);
+
+    public Task DiscardChangesetAsync(IProject project, IProjectItem item,
+        CancellationToken ct = default)
+        => ChangesetService.Instance.DeleteChangesetAsync(item, ct);
+
     // ── TBL helpers ──────────────────────────────────────────────────────
 
     public void SetDefaultTbl(IProject project, IProjectItem? tblItem)

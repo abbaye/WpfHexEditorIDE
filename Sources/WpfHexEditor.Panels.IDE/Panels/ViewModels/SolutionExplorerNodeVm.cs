@@ -6,6 +6,7 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.Core;
 
@@ -289,6 +290,30 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
     /// </summary>
     public void CancelEdit() => SetIsEditing(false);
 
+    // ── Changeset child node ────────────────────────────────────────────────
+
+    /// <summary>
+    /// Adds or removes the <see cref="ChangesetNodeVm"/> child depending on whether
+    /// the companion <c>.whchg</c> file currently exists on disk.
+    /// Must be called on the UI thread.
+    /// </summary>
+    public void RefreshChangesetChild()
+    {
+        var changesetPath = _item.AbsolutePath + ".whchg";
+        var existing      = Children.OfType<ChangesetNodeVm>().FirstOrDefault();
+
+        if (System.IO.File.Exists(changesetPath))
+        {
+            if (existing is null)
+                Children.Add(new ChangesetNodeVm(changesetPath, _item, Project));
+        }
+        else
+        {
+            if (existing is not null)
+                Children.Remove(existing);
+        }
+    }
+
     // ────────────────────────────────────────────────────────────────────────
 
     public IProjectItem Source => _item;
@@ -330,4 +355,29 @@ public sealed class PhysicalFileNodeVm : SolutionExplorerNodeVm
     public bool          IsInProject  => LinkedItem is not null;
     public override string DisplayName => System.IO.Path.GetFileName(PhysicalPath);
     public override string Icon        => "\uE8A5";
+}
+
+// ── Changeset node (.whchg companion file) ────────────────────────────────────
+
+/// <summary>
+/// Represents the <c>.whchg</c> companion file for a <see cref="FileNodeVm"/>.
+/// Shown as a child of the owning <see cref="FileNodeVm"/> when the companion
+/// file exists on disk (like <c>.xaml.cs</c> nesting in Visual Studio).
+/// </summary>
+public sealed class ChangesetNodeVm : SolutionExplorerNodeVm
+{
+    public ChangesetNodeVm(string changesetPath, IProjectItem ownerItem, IProject? project)
+    {
+        ChangesetPath = changesetPath;
+        OwnerItem     = ownerItem;
+        Project       = project;
+    }
+
+    public string        ChangesetPath { get; }
+    public IProjectItem  OwnerItem     { get; }
+    public IProject?     Project       { get; }
+
+    public override string DisplayName => System.IO.Path.GetFileName(ChangesetPath);
+    /// <summary>Segoe MDL2 "Repair" glyph — matches the Patch project type icon.</summary>
+    public override string Icon        => "\uE8AD";
 }

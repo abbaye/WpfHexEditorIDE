@@ -35,6 +35,16 @@ public sealed class FileMonitorService : IDisposable
     private static readonly HashSet<string> WatchedExtensions =
         new(StringComparer.OrdinalIgnoreCase) { ".tbl", ".tblx" };
 
+    // .whchg companion files — no validation, just existence notification
+    private const string ChangesetExtension = ".whchg";
+
+    /// <summary>
+    /// Raised (on a background thread, debounced 800 ms) when a <c>.whchg</c>
+    /// companion file is created, modified, or deleted.
+    /// <c>exists</c> is false when the file was deleted.
+    /// </summary>
+    public event Action<string, bool>? ChangesetFileChanged;
+
     private readonly IEditorRegistry                    _registry;
     private readonly FileMonitorDiagnosticSource        _source;
     private readonly List<FileSystemWatcher>            _watchers    = [];
@@ -105,22 +115,32 @@ public sealed class FileMonitorService : IDisposable
 
     private void OnFileEvent(object sender, FileSystemEventArgs e)
     {
+        if (IsChangeset(e.FullPath))
+        {
+            ScheduleChangesetNotify(e.FullPath, exists: true);
+            return;
+        }
         if (!IsWatched(e.FullPath)) return;
         ScheduleValidation(e.FullPath);
     }
 
     private void OnFileDeleted(object sender, FileSystemEventArgs e)
     {
+        if (IsChangeset(e.FullPath))
+        {
+            ScheduleChangesetNotify(e.FullPath, exists: false);
+            return;
+        }
         if (!IsWatched(e.FullPath)) return;
         _source.RemoveFile(e.FullPath);
     }
 
     private void OnFileRenamed(object sender, RenamedEventArgs e)
     {
-        if (IsWatched(e.OldFullPath))
-            _source.RemoveFile(e.OldFullPath);
-        if (IsWatched(e.FullPath))
-            ScheduleValidation(e.FullPath);
+        if (IsChangeset(e.OldFullPath)) ScheduleChangesetNotify(e.OldFullPath, exists: false);
+        if (IsChangeset(e.FullPath))    ScheduleChangesetNotify(e.FullPath,    exists: true);
+        if (IsWatched(e.OldFullPath))   _source.RemoveFile(e.OldFullPath);
+        if (IsWatched(e.FullPath))      ScheduleValidation(e.FullPath);
     }
 
     private static void OnWatcherError(object sender, ErrorEventArgs e)
@@ -183,6 +203,35 @@ public sealed class FileMonitorService : IDisposable
 
     private static bool IsWatched(string path)
         => WatchedExtensions.Contains(Path.GetExtension(path));
+
+    private static bool IsChangeset(string path)
+        => path.EndsWith(ChangesetExtension, StringComparison.OrdinalIgnoreCase);
+
+    private void ScheduleChangesetNotify(string filePath, bool exists)
+    {
+        // Reuse the same debounce mechanism as validation
+        var key = filePath + (exists ? ":exists" : ":deleted");
+        lock (_debounceLock)
+        {
+            if (_debounce.TryGetValue(key, out var existing))
+            {
+                existing.Stop();
+                existing.Start();
+                return;
+            }
+            var timer = new Timer(DebounceMs) { AutoReset = false };
+            timer.Elapsed += (_, _) =>
+            {
+                lock (_debounceLock)
+                {
+                    if (_debounce.TryGetValue(key, out var t)) { t.Dispose(); _debounce.Remove(key); }
+                }
+                ChangesetFileChanged?.Invoke(filePath, exists);
+            };
+            _debounce[key] = timer;
+            timer.Start();
+        }
+    }
 
     // ── IDisposable ───────────────────────────────────────────────────────
 

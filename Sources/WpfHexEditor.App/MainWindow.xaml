@@ -11,6 +11,7 @@
         xmlns:dock="clr-namespace:WpfHexEditor.Docking.Wpf;assembly=WpfHexEditor.Docking.Wpf"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core;assembly=WpfHexEditor.Editor.Core"
         xmlns:local="clr-namespace:WpfHexEditor.App"
+        xmlns:appCtrl="clr-namespace:WpfHexEditor.App.Controls"
         Title="WpfHexEditor"
         Icon="pack://application:,,,/WpfHexEditor.App;component/Logo.ico"
         Width="1200" Height="800"
@@ -153,7 +154,7 @@
 
                         <!-- Save -->
                         <MenuItem Header="_Save"
-                                  Command="{Binding ActiveDocumentEditor.SaveCommand, ElementName=ThisWindow}"
+                                  Command="{x:Static ApplicationCommands.Save}"
                                   InputGestureText="Ctrl+S">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -164,6 +165,26 @@
                         <MenuItem Header="Save _All" Click="OnSaveAll" InputGestureText="Ctrl+Shift+S">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Write to Disk"
+                                  Command="{x:Static local:MainWindow.WriteToDiskCommand}"
+                                  InputGestureText="Ctrl+Shift+W">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE9F5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <Separator />
+
+                        <!-- Settings -->
+                        <MenuItem Header="S_ettings..." Click="OnSettings">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
@@ -559,7 +580,7 @@
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Save — Command binding (auto-enable/disable) -->
-                    <Button Command="{Binding ActiveDocumentEditor.SaveCommand, ElementName=ThisWindow}"
+                    <Button Command="{x:Static ApplicationCommands.Save}"
                             ToolTip="Save (Ctrl+S)"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
@@ -653,6 +674,87 @@
                     </Button>
 
                 </StackPanel>
+            </Border>
+
+            <!-- ── Pod contextuel — visible seulement quand un éditeur contribue ─── -->
+            <Border Style="{DynamicResource DockToolBarPodStyle}">
+                <Border.Style>
+                    <Style BasedOn="{StaticResource DockToolBarPodStyle}" TargetType="Border">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ActiveToolbarContributor, ElementName=ThisWindow}"
+                                         Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <ItemsControl ItemsSource="{Binding ActiveToolbarContributor.ToolbarItems, ElementName=ThisWindow}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplateSelector>
+                        <appCtrl:EditorToolbarItemTemplateSelector>
+                            <!-- Separator -->
+                            <appCtrl:EditorToolbarItemTemplateSelector.SeparatorTemplate>
+                                <DataTemplate DataType="{x:Type ec:EditorToolbarItem}">
+                                    <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
+                                </DataTemplate>
+                            </appCtrl:EditorToolbarItemTemplateSelector.SeparatorTemplate>
+                            <!-- Plain button -->
+                            <appCtrl:EditorToolbarItemTemplateSelector.ButtonTemplate>
+                                <DataTemplate DataType="{x:Type ec:EditorToolbarItem}">
+                                    <Button Command="{Binding Command}"
+                                            IsEnabled="{Binding IsEnabled}"
+                                            ToolTip="{Binding Tooltip}"
+                                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Icon}"
+                                                       FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,4,0"/>
+                                            <TextBlock Text="{Binding Label}"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </appCtrl:EditorToolbarItemTemplateSelector.ButtonTemplate>
+                            <!-- Dropdown button (simplified: button with context menu) -->
+                            <appCtrl:EditorToolbarItemTemplateSelector.DropdownTemplate>
+                                <DataTemplate DataType="{x:Type ec:EditorToolbarItem}">
+                                    <Button Command="{Binding Command}"
+                                            IsEnabled="{Binding IsEnabled}"
+                                            ToolTip="{Binding Tooltip}"
+                                            Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                                        <Button.ContextMenu>
+                                            <ContextMenu ItemsSource="{Binding DropdownItems}">
+                                                <ContextMenu.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type ec:EditorToolbarItem}">
+                                                        <MenuItem Header="{Binding Label}"
+                                                                  Command="{Binding Command}"/>
+                                                    </DataTemplate>
+                                                </ContextMenu.ItemTemplate>
+                                            </ContextMenu>
+                                        </Button.ContextMenu>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Icon}"
+                                                       FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,4,0"/>
+                                            <TextBlock Text="{Binding Label}"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets"
+                                                       FontSize="8" VerticalAlignment="Center"
+                                                       Margin="2,0,0,0"/>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </appCtrl:EditorToolbarItemTemplateSelector.DropdownTemplate>
+                        </appCtrl:EditorToolbarItemTemplateSelector>
+                    </ItemsControl.ItemTemplateSelector>
+                </ItemsControl>
             </Border>
 
             <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}"/>
@@ -843,7 +945,8 @@
     <Window.InputBindings>
         <KeyBinding Gesture="Ctrl+N"       Command="{x:Static ApplicationCommands.New}"   CommandTarget="{Binding ElementName=ThisWindow}" />
         <KeyBinding Gesture="Ctrl+O"       Command="{x:Static ApplicationCommands.Open}"  CommandTarget="{Binding ElementName=ThisWindow}" />
-        <KeyBinding Gesture="Ctrl+S"       Command="{Binding ActiveDocumentEditor.SaveCommand, ElementName=ThisWindow}" />
+        <KeyBinding Gesture="Ctrl+S"       Command="{x:Static ApplicationCommands.Save}" CommandTarget="{Binding ElementName=ThisWindow}" />
+        <KeyBinding Gesture="Ctrl+Shift+W" Command="{x:Static local:MainWindow.WriteToDiskCommand}" />
         <KeyBinding Gesture="Ctrl+W"       Command="{x:Static ApplicationCommands.Close}" CommandTarget="{Binding ElementName=ThisWindow}" />
         <KeyBinding Gesture="Ctrl+Shift+N" Command="{x:Static ApplicationCommands.New}"   CommandTarget="{Binding ElementName=ThisWindow}" />
         <KeyBinding Gesture="Ctrl+F"       Command="{x:Static ApplicationCommands.Find}"  CommandTarget="{Binding ElementName=ThisWindow}" />
@@ -853,9 +956,11 @@
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static ApplicationCommands.New}"   Executed="OnNewFile" />
         <CommandBinding Command="{x:Static ApplicationCommands.Open}"  Executed="OnOpenFile" />
+        <CommandBinding Command="{x:Static ApplicationCommands.Save}"  Executed="OnSave" />
         <CommandBinding Command="{x:Static ApplicationCommands.Close}" Executed="OnCloseActiveDocument" />
         <CommandBinding Command="{x:Static ApplicationCommands.Find}"  Executed="OnShowAdvancedSearch" />
         <CommandBinding Command="{x:Static local:MainWindow.FindNextCommand}"     Executed="OnFindNext" />
         <CommandBinding Command="{x:Static local:MainWindow.FindPreviousCommand}" Executed="OnFindPrevious" />
+        <CommandBinding Command="{x:Static local:MainWindow.WriteToDiskCommand}"  Executed="OnWriteToDisk" />
     </Window.CommandBindings>
 </Window>
