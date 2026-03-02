@@ -182,8 +182,8 @@
 
                         <Separator />
 
-                        <!-- Settings -->
-                        <MenuItem Header="S_ettings..." Click="OnSettings">
+                        <!-- Options (VS-style document tab) -->
+                        <MenuItem Header="_Options..." Click="OnSettings">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"

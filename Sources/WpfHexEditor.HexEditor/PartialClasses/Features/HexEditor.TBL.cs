@@ -118,6 +118,11 @@ namespace WpfHexEditor.HexEditor
             set
             {
                 _characterTableType = value;
+
+                // Sync CharacterTableType to HexViewport for encoding-aware rendering
+                if (HexViewport != null)
+                    HexViewport.CharacterTableType = value;
+
                 // If switching to TBL but no TBL loaded, create default ASCII
                 if (value == CharacterTableType.TblFile && _tblStream == null)
                 {

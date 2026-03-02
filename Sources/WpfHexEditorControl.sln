@@ -83,6 +83,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Decompiler.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Definitions", "WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj", "{6EC3D93D-9B7B-43C4-8F2D-10F726E1E8FB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Options", "WpfHexEditor.Options\WpfHexEditor.Options.csproj", "{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -489,6 +491,18 @@ Global
 		{6EC3D93D-9B7B-43C4-8F2D-10F726E1E8FB}.Release|x64.Build.0 = Release|Any CPU
 		{6EC3D93D-9B7B-43C4-8F2D-10F726E1E8FB}.Release|x86.ActiveCfg = Release|Any CPU
 		{6EC3D93D-9B7B-43C4-8F2D-10F726E1E8FB}.Release|x86.Build.0 = Release|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Debug|x64.Build.0 = Debug|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Debug|x86.Build.0 = Debug|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Release|x64.ActiveCfg = Release|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Release|x64.Build.0 = Release|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Release|x86.ActiveCfg = Release|Any CPU
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -526,6 +540,7 @@ Global
 		{E5F6A7B8-C9D0-1235-EF01-234567890134} = {77555033-FC44-4882-8FFD-DA2B27CEDD9E}
 		{F6A7B8C9-D0E1-2346-F012-345678901245} = {250FC96D-F272-4DA2-9454-5817440CB125}
 		{6EC3D93D-9B7B-43C4-8F2D-10F726E1E8FB} = {250FC96D-F272-4DA2-9454-5817440CB125}
+		{F0E1D2C3-B4A5-9876-F0E1-D2C3B4A59876} = {77555033-FC44-4882-8FFD-DA2B27CEDD9E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B382CAE-4846-466E-A3D3-0842043B4012}

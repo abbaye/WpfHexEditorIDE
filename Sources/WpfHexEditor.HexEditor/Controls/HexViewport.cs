@@ -73,6 +73,10 @@ namespace WpfHexEditor.HexEditor.Controls
         private List<Core.CustomBackgroundBlock> _customBackgroundBlocks = new();
         private CustomBackgroundRenderer _customBackgroundRenderer = new();
         private Core.CharacterTable.TblStream _tblStream; // Phase 7.5: TBL for character type detection
+
+        // Encoding support (non-TBL character table types)
+        private CharacterTableType _charTableType = CharacterTableType.Ascii;
+        private System.Text.Encoding? _customEncoding;
         private ByteToolTipDisplayMode _byteToolTipDisplayMode = ByteToolTipDisplayMode.None;
         private ByteToolTipDetailLevel _byteToolTipDetailLevel = ByteToolTipDetailLevel.Standard;
         private System.Windows.Controls.ToolTip _byteToolTip; // Custom tooltip that follows mouse
@@ -1040,7 +1044,7 @@ namespace WpfHexEditor.HexEditor.Controls
         /// <summary>
         /// Byte spacer positioning (V1 compatible)
         /// </summary>
-        public ByteSpacerPosition ByteSpacerPositioning { get; set; } = ByteSpacerPosition.Both;
+        public ByteSpacerPosition ByteSpacerPositioning { get; set; } = ByteSpacerPosition.HexBytePanel;
 
         /// <summary>
         /// Byte spacer width (V1 compatible)
@@ -1450,6 +1454,20 @@ namespace WpfHexEditor.HexEditor.Controls
         {
             get => _tblStream;
             set { _tblStream = value; InvalidateVisual(); }
+        }
+
+        /// <summary>Active character table type (synced from HexEditor).</summary>
+        public CharacterTableType CharacterTableType
+        {
+            get => _charTableType;
+            set { _charTableType = value; MarkDirty(DirtyReason.FullInvalidate); InvalidateVisual(); }
+        }
+
+        /// <summary>Custom encoding when CharacterTableType == CustomEncoding (synced from HexEditor).</summary>
+        public System.Text.Encoding? CustomEncoding
+        {
+            get => _customEncoding;
+            set { _customEncoding = value; MarkDirty(DirtyReason.FullInvalidate); InvalidateVisual(); }
         }
 
         /// <summary>
@@ -2632,8 +2650,123 @@ namespace WpfHexEditor.HexEditor.Controls
                 }
             }
 
-            // Default: Single byte mode (Bit8) - Use standard ASCII conversion
-            return byteData.AsciiChar.ToString();
+            // Default: apply CharacterTableType encoding
+            return GetEncodedChar(byteData.Value, line, byteIndex);
+        }
+
+        /// <summary>
+        /// Converts a single byte to its display character according to the active CharacterTableType.
+        /// For multi-byte encodings (UTF-8, UTF-16) the first byte of a sequence shows the decoded char,
+        /// continuation/trailing bytes show a middle-dot placeholder.
+        /// </summary>
+        private string GetEncodedChar(byte value, HexLine line, int byteIndex)
+        {
+            switch (_charTableType)
+            {
+                case CharacterTableType.Ascii:
+                    return value >= 32 && value <= 126 ? ((char)value).ToString() : ".";
+
+                case CharacterTableType.Latin1:
+                    // ISO-8859-1 maps 1:1 to Unicode 0x00-0xFF
+                    char latin1 = (char)value;
+                    return (latin1 >= 32 && latin1 != 127) ? latin1.ToString() : ".";
+
+                case CharacterTableType.UTF8:
+                    return GetUtf8DisplayChar(value, line, byteIndex);
+
+                case CharacterTableType.UTF16LE:
+                    return GetUtf16DisplayChar(value, line, byteIndex, bigEndian: false);
+
+                case CharacterTableType.UTF16BE:
+                    return GetUtf16DisplayChar(value, line, byteIndex, bigEndian: true);
+
+                case CharacterTableType.UTF32:
+                    // 4-byte groups: show char at column 0,4,8,…; placeholder elsewhere
+                    return (byteIndex % 4 == 0) ? TryDecodeUtf32(line, byteIndex) : "·";
+
+                case CharacterTableType.CustomEncoding when _customEncoding != null:
+                    try
+                    {
+                        var s = _customEncoding.GetString(new[] { value });
+                        return (s.Length > 0 && s[0] >= 32) ? s[0].ToString() : ".";
+                    }
+                    catch { return "."; }
+
+                default:
+                    return value >= 32 && value <= 126 ? ((char)value).ToString() : ".";
+            }
+        }
+
+        private string GetUtf8DisplayChar(byte value, HexLine line, int byteIndex)
+        {
+            // Continuation byte (10xxxxxx) → consumed by the preceding start byte
+            if ((value & 0xC0) == 0x80) return "·";
+
+            // Determine sequence length from leading byte
+            int seqLen = value < 0x80 ? 1
+                       : (value & 0xE0) == 0xC0 ? 2
+                       : (value & 0xF0) == 0xE0 ? 3
+                       : (value & 0xF8) == 0xF0 ? 4
+                       : 1; // invalid lead byte → treat as single byte
+
+            if (seqLen == 1)
+                return value >= 32 && value <= 126 ? ((char)value).ToString() : ".";
+
+            // Collect bytes for the sequence (pad with 0x80 if past line end)
+            var seq = new byte[seqLen];
+            seq[0] = value;
+            for (int i = 1; i < seqLen; i++)
+            {
+                int idx = byteIndex + i;
+                seq[i] = idx < line.Bytes.Count ? line.Bytes[idx].Value : (byte)0x80;
+            }
+
+            try
+            {
+                var decoded = System.Text.Encoding.UTF8.GetString(seq);
+                if (decoded.Length > 0 && decoded[0] != '\uFFFD')
+                    return decoded[0].ToString();
+            }
+            catch { }
+            return ".";
+        }
+
+        private string GetUtf16DisplayChar(byte value, HexLine line, int byteIndex, bool bigEndian)
+        {
+            // Only decode at even byte positions (first byte of the 2-byte pair)
+            if (byteIndex % 2 != 0) return "·";
+
+            int nextIdx = byteIndex + 1;
+            if (nextIdx >= line.Bytes.Count) return ".";
+
+            byte b1 = line.Bytes[nextIdx].Value;
+            try
+            {
+                var bytes = bigEndian ? new[] { value, b1 } : new[] { value, b1 };
+                var enc   = bigEndian ? System.Text.Encoding.BigEndianUnicode
+                                      : System.Text.Encoding.Unicode;
+                var s = enc.GetString(bytes);
+                if (s.Length > 0 && s[0] >= 32) return s[0].ToString();
+            }
+            catch { }
+            return ".";
+        }
+
+        private string TryDecodeUtf32(HexLine line, int byteIndex)
+        {
+            if (byteIndex + 3 >= line.Bytes.Count) return ".";
+            var bytes = new[]
+            {
+                line.Bytes[byteIndex].Value,     line.Bytes[byteIndex + 1].Value,
+                line.Bytes[byteIndex + 2].Value, line.Bytes[byteIndex + 3].Value
+            };
+            try
+            {
+                var s = System.Text.Encoding.UTF32.GetString(bytes);
+                if (s.Length > 0 && s[0] >= 32) return s[0].ToString();
+            }
+            catch { }
+            return ".";
         }
 
         /// <summary>

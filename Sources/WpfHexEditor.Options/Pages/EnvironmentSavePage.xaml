@@ -1,0 +1,62 @@
+<!--
+    Apache 2.0  2026
+    Contributors: Claude Sonnet 4.6
+-->
+<UserControl x:Class="WpfHexEditor.Options.Pages.EnvironmentSavePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="Transparent">
+
+    <StackPanel Margin="0,0,0,16">
+
+        <!-- ── Save Mode ──────────────────────────────────────────────────── -->
+        <TextBlock Text="Save Mode"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,10"/>
+
+        <RadioButton x:Name="RadioDirect"
+                     Content="Direct — Ctrl+S writes immediately to the physical file"
+                     GroupName="SaveMode"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Margin="0,0,0,6"
+                     Checked="OnSaveModeChanged"/>
+
+        <RadioButton x:Name="RadioTracked"
+                     Content="Tracked — Ctrl+S serializes changes to a .whchg file"
+                     GroupName="SaveMode"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Margin="0,0,0,0"
+                     Checked="OnSaveModeChanged"/>
+
+        <Separator Margin="0,16,0,16"
+                   Background="{DynamicResource DockBorderBrush}"/>
+
+        <!-- ── Auto-serialize ─────────────────────────────────────────────── -->
+        <TextBlock Text="Auto-save (Tracked mode only)"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,10"/>
+
+        <CheckBox x:Name="CheckAutoSerialize"
+                  Content="Periodically save pending changes to .whchg files"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,10"
+                  Checked="OnAutoSerializeChanged"
+                  Unchecked="OnAutoSerializeChanged"/>
+
+        <DockPanel Margin="20,0,0,0"
+                   IsEnabled="{Binding IsChecked, ElementName=CheckAutoSerialize}">
+            <TextBlock Text="Interval (seconds):"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Margin="0,0,8,0"/>
+            <TextBox x:Name="TxtInterval"
+                     Width="60"
+                     HorizontalAlignment="Left"
+                     VerticalContentAlignment="Center"
+                     LostFocus="OnIntervalLostFocus"/>
+        </DockPanel>
+
+    </StackPanel>
+</UserControl>

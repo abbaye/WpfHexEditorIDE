@@ -6,7 +6,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace WpfHexEditor.App.Settings;
+namespace WpfHexEditor.Options;
 
 /// <summary>
 /// Singleton that loads/saves <see cref="AppSettings"/> to
@@ -26,12 +26,15 @@ public sealed class AppSettingsService
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "WpfHexEditor", "settings.json");
 
+    /// <summary>Absolute path to the settings JSON file.</summary>
+    public string FilePath => SettingsPath;
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        WriteIndented          = true,
-        PropertyNamingPolicy   = JsonNamingPolicy.CamelCase,
+        WriteIndented               = true,
+        PropertyNamingPolicy        = JsonNamingPolicy.CamelCase,
         PropertyNameCaseInsensitive = true,
-        Converters             = { new JsonStringEnumConverter() },
+        Converters                  = { new JsonStringEnumConverter() },
     };
 
     // ── Load / Save ───────────────────────────────────────────────────────
@@ -41,7 +44,7 @@ public sealed class AppSettingsService
         try
         {
             if (!File.Exists(SettingsPath)) return;
-            var json = File.ReadAllText(SettingsPath);
+            var json     = File.ReadAllText(SettingsPath);
             var settings = JsonSerializer.Deserialize<AppSettings>(json, JsonOptions);
             if (settings != null) Current = settings;
         }

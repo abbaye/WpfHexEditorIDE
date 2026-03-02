@@ -3078,7 +3078,10 @@ namespace WpfHexEditor.HexEditor
         {
             if (d is HexEditor editor && e.NewValue is System.Text.Encoding encoding)
             {
-                // Refresh viewport to update text display with new encoding
+                // Sync to HexViewport for encoding-aware rendering
+                if (editor.HexViewport != null)
+                    editor.HexViewport.CustomEncoding = encoding;
+
                 editor.HexViewport?.InvalidateVisual();
             }
         }

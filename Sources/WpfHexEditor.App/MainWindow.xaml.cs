@@ -54,7 +54,7 @@ using WpfHexEditor.ProjectSystem.Services;
 using WpfHexEditor.ProjectSystem.Templates;
 using System.Windows.Shell;
 using System.Windows.Threading;
-using WpfHexEditor.App.Settings;
+using WpfHexEditor.Options;
 
 namespace WpfHexEditor.App;
 
@@ -123,6 +123,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Error Panel (persistent singleton)
     private ErrorPanel? _errorPanel;
     private const string ErrorPanelContentId = "panel-errors";
+    private const string OptionsContentId    = "panel-options";
 
     // TBL dropdown — tracks which project TBL item is applied per hex editor
     private readonly Dictionary<HexEditorControl, IProjectItem?> _editorProjectTbl = new();
@@ -291,8 +292,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Pre-create OutputPanel so OutputLogger.Register is called before any Info/Error calls
         _outputPanel = new OutputPanel();
 
-        // Load user settings (save mode, auto-serialize)
+        // Load user settings then apply persisted theme before layout loads
         AppSettingsService.Instance.Load();
+        ApplyThemeFromSettings();
         InitAutoSerializeTimer();
 
         RebuildTblItemList();   // must be before LoadSavedLayoutOrDefault so SyncTblDropdown finds items
@@ -758,6 +760,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             "panel-properties"         => CreatePropertiesContent(),
             CustomParserPanelContentId => CreateCustomParserContent(),
             ErrorPanelContentId        => CreateErrorPanelContent(),
+            OptionsContentId           => CreateOptionsContent(),
             _ when item.ContentId.StartsWith("doc-file-") => CreateSmartFileEditorContent(item),
             _ when item.ContentId.StartsWith("doc-hex-")  => CreateHexEditorContent(
                 item.Metadata.TryGetValue("FilePath",    out var fp)   ? fp   : null,
@@ -838,6 +841,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     private UIElement CreateErrorPanelContent() => EnsureErrorPanelInstance();
+
+    private UIElement CreateOptionsContent()
+    {
+        if (_contentCache.TryGetValue(OptionsContentId, out var existing)) return existing;
+        var ctrl = new OptionsEditorControl();
+        ctrl.SettingsChanged   += OnOptionsSettingsChanged;
+        ctrl.EditJsonRequested += OnOptionsEditJson;
+        _contentCache[OptionsContentId] = ctrl;
+        return ctrl;
+    }
 
     /// <summary>
     /// Creates <see cref="_errorPanel"/> the first time it is needed, without docking it.
@@ -965,6 +978,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         IProject? project     = null)
     {
         var hexEditor = new HexEditorControl();
+        ApplyHexEditorDefaults(hexEditor);
         hexEditor.ShowStatusBar       = false;
         hexEditor.ShowProgressOverlay = false;  // App handles progress in its own status bar
 
@@ -2907,14 +2921,69 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnSettings(object sender, RoutedEventArgs e)
     {
-        var dlg = new Dialogs.AppSettingsDialog { Owner = this };
-        if (dlg.ShowDialog() == true)
+        var existing = _layout.FindItemByContentId(OptionsContentId);
+        if (existing is not null)
         {
-            // Restart or reconfigure auto-serialize timer based on new settings
-            _autoSerializeTimer?.Stop();
-            _autoSerializeTimer = null;
-            InitAutoSerializeTimer();
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
         }
+        var item = new DockItem { Title = "Options", ContentId = OptionsContentId };
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    private void OnOptionsSettingsChanged()
+    {
+        ApplyThemeFromSettings();
+        _autoSerializeTimer?.Stop();
+        _autoSerializeTimer = null;
+        InitAutoSerializeTimer();
+    }
+
+    private void OnOptionsEditJson(string filePath)
+    {
+        const string contentId = "doc-text-settings-json";
+        var existing = _layout.FindItemByContentId(contentId);
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+        var factory = new WpfHexEditor.Editor.TextEditor.TextEditorFactory();
+        if (factory.Create() is WpfHexEditor.Editor.TextEditor.Controls.TextEditor editor)
+        {
+            editor.OutputMessage += OnEditorOutputMessage;
+            _ = editor.OpenAsync(filePath);
+            _contentCache[contentId] = editor;
+            var dockItem = new DockItem { Title = "settings.json", ContentId = contentId };
+            _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
+            DockHost.RebuildVisualTree();
+        }
+    }
+
+    private void ApplyThemeFromSettings()
+    {
+        var stem = AppSettingsService.Instance.Current.ActiveThemeName;
+        if (!string.IsNullOrWhiteSpace(stem))
+            ApplyTheme($"{stem}.xaml", stem);
+    }
+
+    private void ApplyHexEditorDefaults(HexEditorControl hex)
+    {
+        var d = AppSettingsService.Instance.Current.HexEditorDefaults;
+        hex.BytePerLine           = d.BytePerLine;
+        hex.ShowOffset            = d.ShowOffset;
+        hex.ShowAscii             = d.ShowAscii;
+        hex.DataStringVisual      = d.DataStringVisual;
+        hex.OffSetStringVisual    = d.OffSetStringVisual;
+        hex.ByteGrouping          = d.ByteGrouping;
+        hex.ByteSpacerPositioning = d.ByteSpacerPositioning;
+        hex.EditMode              = d.DefaultEditMode;
+        hex.AllowZoom             = d.AllowZoom;
+        hex.MouseWheelSpeed       = d.MouseWheelSpeed;
+        hex.AllowFileDrop         = d.AllowFileDrop;
     }
 
     // ─── Menu: Project ─────────────────────────────────────────────────
