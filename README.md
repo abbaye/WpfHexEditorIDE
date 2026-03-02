@@ -68,6 +68,7 @@
 - **Undo/Redo/Copy/Cut/Paste** unified via menu bindings
 - **VS2022-style status bar** (edit mode, bytes/line, caret offset)
 - **Output panel** + **Error/Diagnostics panel**
+- **VS2026-style Options** — document tab, auto-save, live theme preview
 
 </td>
 <td width="50%">
@@ -141,6 +142,7 @@ Panels connect to the active document automatically via the docking system.
 | **Properties Panel** | Context-aware properties for the active document (F4) |
 | **Error Panel** | Diagnostics and validation errors from any `IDiagnosticSource` editor |
 | **File Diff** | Side-by-side binary comparison with diff navigation (F7/F8) |
+| **Options** | VS2026-style settings document tab — theme, display, editing defaults, auto-save |
 
 ---
 
