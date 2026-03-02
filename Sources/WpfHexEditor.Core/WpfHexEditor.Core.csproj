@@ -57,11 +57,6 @@
     </None>
   </ItemGroup>
 
-  <!-- Embed all FormatDefinitions .whfmt files as resources (400+ formats built-in) -->
-  <ItemGroup>
-    <EmbeddedResource Include="FormatDefinitions\**\*.whfmt" />
-  </ItemGroup>
-
   <!-- Span<T> and System.Text.Json support for .NET Framework 4.8 -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <PackageReference Include="System.Memory" Version="4.5.5" />
