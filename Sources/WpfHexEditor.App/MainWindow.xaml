@@ -362,6 +362,41 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="_Data Inspector" Click="OnShowDataInspectorPanel">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE9E6;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Structure Overlay" Click="OnShowStructureOverlayPanel">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE82D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="File _Statistics" Click="OnShowFileStatsPanel">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE9F5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Pattern Analysis" Click="OnShowPatternAnalysisPanel">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE773;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Format _Info" Click="OnShowFormatInfoPanel">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <MenuItem Header="_Custom Parser Template" Click="OnShowCustomParserTemplate">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE9A1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
