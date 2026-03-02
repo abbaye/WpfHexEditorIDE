@@ -63,6 +63,15 @@ public class DockLayoutRoot
     public double? WindowWidth { get; set; }
     public double? WindowHeight { get; set; }
 
+    // ─── Tab bar settings ────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Runtime settings for the document tab bar (placement, multi-row, colorization, etc.).
+    /// This is the shared <see cref="DocumentTabBarSettings"/> instance; persisted in the
+    /// layout JSON and kept in sync with <c>DockControl.TabBarSettings</c>.
+    /// </summary>
+    public DocumentTabBarSettings? TabBarSettings { get; set; }
+
     /// <summary>
     /// Finds a node by its Id in the tree.
     /// </summary>

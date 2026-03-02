@@ -54,7 +54,16 @@ public static class DockLayoutSerializer
             WindowLeft = layout.WindowLeft,
             WindowTop = layout.WindowTop,
             WindowWidth = layout.WindowWidth,
-            WindowHeight = layout.WindowHeight
+            WindowHeight = layout.WindowHeight,
+            TabBarSettings = layout.TabBarSettings is not null
+                ? new DocumentTabBarSettingsDto
+                  {
+                      TabPlacement          = layout.TabBarSettings.TabPlacement,
+                      ColorMode             = layout.TabBarSettings.ColorMode,
+                      MultiRowTabs          = layout.TabBarSettings.MultiRowTabs,
+                      MultiRowWithMouseWheel = layout.TabBarSettings.MultiRowWithMouseWheel
+                  }
+                : null
         };
     }
 
@@ -168,6 +177,18 @@ public static class DockLayoutSerializer
         layout.WindowTop = dto.WindowTop;
         layout.WindowWidth = dto.WindowWidth;
         layout.WindowHeight = dto.WindowHeight;
+
+        // Restore tab bar settings (null in old layouts → will default at runtime)
+        if (dto.TabBarSettings is not null)
+        {
+            layout.TabBarSettings = new DocumentTabBarSettings
+            {
+                TabPlacement           = dto.TabBarSettings.TabPlacement,
+                ColorMode              = dto.TabBarSettings.ColorMode,
+                MultiRowTabs           = dto.TabBarSettings.MultiRowTabs,
+                MultiRowWithMouseWheel = dto.TabBarSettings.MultiRowWithMouseWheel
+            };
+        }
 
         return layout;
     }

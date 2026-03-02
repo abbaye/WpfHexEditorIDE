@@ -426,6 +426,29 @@
         </Setter>
     </Style>
 
+    <!-- Themed ToolTip — matches menu background/foreground (VS2026-style) -->
+    <Style TargetType="{x:Type ToolTip}">
+        <Setter Property="Background"      Value="{DynamicResource DockMenuBackgroundBrush}"/>
+        <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="BorderBrush"     Value="{DynamicResource DockMenuBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding"         Value="6,4"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToolTip}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="3"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Implicit styles — wired here where the named keys are defined -->
     <Style TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource DockDarkContextMenuStyle}"/>
     <Style TargetType="{x:Type MenuItem}"    BasedOn="{StaticResource DockDarkMenuItemStyle}"/>

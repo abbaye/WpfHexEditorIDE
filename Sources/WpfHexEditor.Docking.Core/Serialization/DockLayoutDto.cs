@@ -4,6 +4,8 @@
 // Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using WpfHexEditor.Docking.Core;
+
 namespace WpfHexEditor.Docking.Core.Serialization;
 
 /// <summary>
@@ -75,6 +77,17 @@ public class DockItemDto
 }
 
 /// <summary>
+/// DTO for <see cref="DocumentTabBarSettings"/>.
+/// </summary>
+public class DocumentTabBarSettingsDto
+{
+    public DocumentTabPlacement TabPlacement { get; set; } = DocumentTabPlacement.Top;
+    public DocumentTabColorMode ColorMode { get; set; } = DocumentTabColorMode.None;
+    public bool MultiRowTabs { get; set; }
+    public bool MultiRowWithMouseWheel { get; set; } = true;
+}
+
+/// <summary>
 /// Root DTO for the entire dock layout.
 /// </summary>
 public class DockLayoutRootDto
@@ -84,6 +97,11 @@ public class DockLayoutRootDto
     public List<DockItemDto> FloatingItems { get; set; } = [];
     public List<DockItemDto> AutoHideItems { get; set; } = [];
     public List<DockItemDto> HiddenItems { get; set; } = [];
+
+    /// <summary>
+    /// Document tab bar settings. Null in old layouts → default settings at runtime.
+    /// </summary>
+    public DocumentTabBarSettingsDto? TabBarSettings { get; set; }
 
     /// <summary>
     /// Main window state: 0 = Normal, 1 = Minimized, 2 = Maximized.

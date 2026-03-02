@@ -48,6 +48,23 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             typeof(DockControl),
             new PropertyMetadata(null, OnLayoutChanged));
 
+    public static readonly DependencyProperty TabBarSettingsProperty =
+        DependencyProperty.Register(
+            nameof(TabBarSettings),
+            typeof(DocumentTabBarSettings),
+            typeof(DockControl),
+            new PropertyMetadata(null));
+
+    /// <summary>
+    /// Settings for the document tab bar (placement, multi-row, colorization, etc.).
+    /// Shared with the active <see cref="DocumentTabHost"/> and serialized in the layout.
+    /// </summary>
+    public DocumentTabBarSettings? TabBarSettings
+    {
+        get => (DocumentTabBarSettings?)GetValue(TabBarSettingsProperty);
+        set => SetValue(TabBarSettingsProperty, value);
+    }
+
     /// <summary>
     /// The dock layout root to render.
     /// </summary>
@@ -463,6 +480,11 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
             if (e.NewValue is DockLayoutRoot newLayout)
             {
+                // Sync tab-bar settings: ensure layout and control share the same instance.
+                var settings = newLayout.TabBarSettings ?? new DocumentTabBarSettings();
+                newLayout.TabBarSettings = settings;
+                control.TabBarSettings = settings;
+
                 control._engine = new DockEngine(newLayout);
                 control.AttachEngine();
 
@@ -707,7 +729,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
     private UIElement CreateDocumentHost(DocumentHostNode docHost)
     {
-        var host = new DocumentTabHost();
+        var host = new DocumentTabHost
+        {
+            Settings = TabBarSettings ?? new DocumentTabBarSettings()
+        };
 
         if (docHost.IsEmpty)
         {
