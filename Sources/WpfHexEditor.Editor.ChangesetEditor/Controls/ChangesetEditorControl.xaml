@@ -1,0 +1,93 @@
+<!--
+    Apache 2.0  2026
+    Contributors: Claude Sonnet 4.6
+-->
+
+<UserControl x:Class="WpfHexEditor.Editor.ChangesetEditor.Controls.ChangesetEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Editor.ChangesetEditor.ViewModels"
+             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ── Tab strip — Modified / Inserted / Deleted ─────────────── -->
+        <TabControl Grid.Row="0" x:Name="TabStrip" Padding="0">
+
+            <!-- Modified -->
+            <TabItem Header="{Binding ModifiedHeader, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <DataGrid ItemsSource="{Binding ViewModel.ModifiedEntries, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          SelectionMode="Extended"
+                          GridLinesVisibility="Horizontal"
+                          HeadersVisibility="Column"
+                          VirtualizingPanel.VirtualizationMode="Recycling"
+                          EnableRowVirtualization="True"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Offset" Binding="{Binding Offset}" Width="120"/>
+                        <DataGridTextColumn Header="Values (hex)"  Binding="{Binding Values}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Inserted -->
+            <TabItem Header="{Binding InsertedHeader, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <DataGrid ItemsSource="{Binding ViewModel.InsertedEntries, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          SelectionMode="Extended"
+                          GridLinesVisibility="Horizontal"
+                          HeadersVisibility="Column"
+                          VirtualizingPanel.VirtualizationMode="Recycling"
+                          EnableRowVirtualization="True"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="After Offset" Binding="{Binding Offset}" Width="120"/>
+                        <DataGridTextColumn Header="Bytes (hex)"  Binding="{Binding Bytes}"  Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- Deleted -->
+            <TabItem Header="{Binding DeletedHeader, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <DataGrid ItemsSource="{Binding ViewModel.DeletedRanges, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          SelectionMode="Extended"
+                          GridLinesVisibility="Horizontal"
+                          HeadersVisibility="Column"
+                          VirtualizingPanel.VirtualizationMode="Recycling"
+                          EnableRowVirtualization="True"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Start"  Binding="{Binding Start}" Width="120"/>
+                        <DataGridTextColumn Header="Count"  Binding="{Binding Count}" Width="80"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+        </TabControl>
+
+        <!-- ── Status bar ─────────────────────────────────────────────── -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                Padding="6,2">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="{Binding StatusText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                           FontSize="11"/>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</UserControl>
