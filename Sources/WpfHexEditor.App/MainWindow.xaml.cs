@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -1294,9 +1295,96 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             $"Imported {dlg.SelectedEntries.Count} format definition(s) into project '{e.Project.Name}'.");
     }
 
+    // ── ROM-hint helpers for ConvertTblDialog auto-fill ──────────────────────
+
+    /// <summary>
+    /// Lazy-loaded lookup: file extension (lower-case, with dot) → platform name.
+    /// Built once from the embedded .whfmt catalog; entries with an empty Platform
+    /// field are excluded.
+    /// </summary>
+    private static Dictionary<string, string>? _romExtensionMap;
+
+    private static Dictionary<string, string> RomExtensionMap
+    {
+        get
+        {
+            if (_romExtensionMap is not null) return _romExtensionMap;
+
+            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var entry in WpfHexEditor.Definitions.EmbeddedFormatCatalog.Instance.GetAll())
+            {
+                if (string.IsNullOrWhiteSpace(entry.Platform)) continue;
+
+                foreach (var ext in entry.Extensions)
+                {
+                    var key = ext.StartsWith('.') ? ext : "." + ext;
+                    map.TryAdd(key.ToLowerInvariant(), entry.Platform);
+                }
+            }
+
+            return _romExtensionMap = map;
+        }
+    }
+
+    /// <summary>
+    /// Scans <paramref name="project"/> for binary items whose extension maps to
+    /// a platform in the embedded .whfmt catalog and builds a
+    /// <see cref="GameRomHint"/> for each match.
+    /// Region and title are derived from common ROM filename conventions
+    /// (region codes in parentheses such as (J), (USA), etc.).
+    /// </summary>
+    private static IReadOnlyList<GameRomHint> DetectRomHints(IProject project)
+    {
+        var hints = new List<GameRomHint>();
+        var map   = RomExtensionMap;
+
+        foreach (var item in project.Items.Where(i => i.ItemType == ProjectItemType.Binary))
+        {
+            var ext = Path.GetExtension(item.AbsolutePath).ToLowerInvariant();
+            if (!map.TryGetValue(ext, out var platform)) continue;
+
+            var rawName         = Path.GetFileNameWithoutExtension(item.AbsolutePath);
+            var (title, region) = ParseRomFileName(rawName);
+            hints.Add(new GameRomHint(platform, region, title, item.Name));
+        }
+
+        return hints;
+    }
+
+    /// <summary>
+    /// Extracts a cleaned game title and region from a ROM filename that may
+    /// contain region / revision tags such as <c>(J)</c>, <c>(USA)</c>,
+    /// <c>[!]</c>, <c>[T-Eng]</c> etc.
+    /// </summary>
+    private static (string Title, string Region) ParseRomFileName(string rawName)
+    {
+        var regionMatch = Regex.Match(rawName,
+            @"\((?<r>J|U|E|W|JU|EU|JE|JUE|USA|Japan|Europe|World)\)",
+            RegexOptions.IgnoreCase);
+
+        var region = regionMatch.Success
+            ? regionMatch.Groups["r"].Value.ToUpperInvariant() switch
+            {
+                "J" or "JAPAN"                         => "Japan",
+                "U" or "USA"                           => "USA",
+                "E" or "EUROPE"                        => "Europe",
+                "W" or "WORLD" or "JUE" or "JU" or "EU" or "JE" => "World",
+                var r                                  => r,
+            }
+            : string.Empty;
+
+        // Strip all parenthetical/bracketed tags to get a clean title
+        var title = Regex.Replace(rawName, @"\s*[\(\[][^\)\]]*[\)\]]", string.Empty).Trim();
+
+        return (title, region);
+    }
+
     private async void OnSEConvertTbl(object? sender, ProjectItemEventArgs e)
     {
-        var dlg = new ConvertTblDialog(e.Item.AbsolutePath) { Owner = this };
+        var hints = DetectRomHints(e.Project);
+        var dlg   = new ConvertTblDialog(e.Item.AbsolutePath,
+                                         hints.Count > 0 ? hints : null) { Owner = this };
         if (dlg.ShowDialog() != true) return;
 
         // 1. Load source .tbl (supports Thingy and Atlas formats automatically)

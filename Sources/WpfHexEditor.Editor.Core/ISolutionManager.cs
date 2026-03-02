@@ -61,6 +61,17 @@ public interface ISolutionManager
     /// </summary>
     Task MoveItemToFolderAsync(IProject project, IProjectItem item, string? targetFolderId, CancellationToken ct = default);
 
+    /// <summary>
+    /// Copies an item whose physical file lives outside the project directory into the
+    /// project directory (or into <paramref name="targetSubDirectory"/> relative to it),
+    /// then updates the item's <c>AbsolutePath</c> / <c>RelativePath</c> and saves the project.
+    /// </summary>
+    /// <param name="targetSubDirectory">
+    /// Optional path relative to the project directory for the destination.
+    /// Pass <see langword="null"/> to copy directly into the project root.
+    /// </param>
+    Task ImportExternalItemAsync(IProject project, IProjectItem item, string? targetSubDirectory = null, CancellationToken ct = default);
+
     // ── Folder CRUD ───────────────────────────────────────────────────────
     /// <summary>
     /// Creates a virtual folder in the project, optionally also creating the corresponding

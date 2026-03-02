@@ -346,6 +346,42 @@ public sealed class SolutionManager : ISolutionManager
         return SaveProjectAsync(project, ct);
     }
 
+    public async Task ImportExternalItemAsync(IProject project, IProjectItem item,
+        string? targetSubDirectory = null, CancellationToken ct = default)
+    {
+        if (project is not Project proj || item is not ProjectItem pi) return;
+
+        var projDir = Path.GetDirectoryName(proj.ProjectFilePath);
+        if (string.IsNullOrEmpty(projDir)) return;
+
+        var destDir = targetSubDirectory is not null
+            ? Path.Combine(projDir, targetSubDirectory)
+            : projDir;
+
+        Directory.CreateDirectory(destDir);
+
+        var destPath = Path.Combine(destDir, pi.Name);
+
+        // Avoid overwriting a different file by generating a unique name
+        if (File.Exists(destPath) && !string.Equals(destPath, pi.AbsolutePath, StringComparison.OrdinalIgnoreCase))
+        {
+            var nameNoExt = Path.GetFileNameWithoutExtension(pi.Name);
+            var ext       = Path.GetExtension(pi.Name);
+            var counter   = 1;
+            do { destPath = Path.Combine(destDir, $"{nameNoExt}_{counter++}{ext}"); }
+            while (File.Exists(destPath));
+        }
+
+        if (!string.Equals(destPath, pi.AbsolutePath, StringComparison.OrdinalIgnoreCase))
+            await Task.Run(() => File.Copy(pi.AbsolutePath, destPath, overwrite: false), ct);
+
+        pi.Name         = Path.GetFileName(destPath);
+        pi.AbsolutePath = destPath;
+        pi.RelativePath = Path.GetRelativePath(projDir, destPath).Replace(Path.DirectorySeparatorChar, '/');
+        proj.IsModified = true;
+        await SaveProjectAsync(project, ct);
+    }
+
     // ── Folder CRUD ───────────────────────────────────────────────────────
 
     public async Task<IVirtualFolder> CreateFolderAsync(IProject project, string name,
