@@ -1,8 +1,8 @@
-/*
-    Apache 2.0  2026
-    Author : Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
-*/
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
 
 using System;
 using System.Collections.ObjectModel;
@@ -363,17 +363,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 try
                 {
                     var tbl = _engine.ExportToTbl(SelectedProposal);
-                    // TODO: TblStream.FileName has an internal setter; need InternalsVisibleTo or a Save(string) overload
-                    // tbl.FileName = dialog.FileName;
-                    // tbl.Save();
-                    // Workaround: write TBL content manually
-                    var sb = new System.Text.StringBuilder();
-                    foreach (var entry in tbl.GetAllEntries())
-                    {
-                        var value = entry.Value.Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t");
-                        sb.AppendLine($"{entry.Entry}={value}");
-                    }
-                    System.IO.File.WriteAllText(dialog.FileName, sb.ToString(), System.Text.Encoding.UTF8);
+                    tbl.SaveAs(dialog.FileName);
 
                     StatusMessage = $"TBL exported to: {dialog.FileName}";
                 }

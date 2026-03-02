@@ -1,0 +1,229 @@
+{
+  "formatName": "Nintendo Switch 2 Package",
+  "version": "1.12",
+  "extensions": [
+    ".nsp",
+    ".xci",
+    ".nca"
+  ],
+  "description": "Nintendo Switch 2 next-gen package formats (NSP2/XCI2/NCA2 - enhanced versions)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Nintendo Switch File Formats (Base)",
+      "NSP/XCI/NCA Format Evolution",
+      "Next-Gen Nintendo Format Standards"
+    ],
+    "WebLinks": [
+      "https://www.retroreversing.com/SwitchFileFormats",
+      "https://www.oreateai.com/blog/understanding-the-differences-between-xci-and-nsp-formats-for-nintendo-switch/",
+      "https://switchrom101.com/what-file-formats-are-switch-roms-nsp-vs-xci-explained-simply/",
+      "https://github.com/jakcron/nstool"
+    ]
+  },
+  "detection": {
+    "signature": "504653",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 3,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "formatVersion": 0,
+    "fileCount": 0,
+    "crc32Valid": false,
+    "originalSize": 0,
+    "compressionRatio": 0,
+    "pfsMagic": "",
+    "stringTableSize": 0,
+    "compressionType": "",
+    "encryptionFlags": 0,
+    "titleId": "",
+    "sdkVersion": "",
+    "contentType": "",
+    "fileEntryTable": ""
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "PFS Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "uint32",
+      "description": "PFS0/PFS1 magic for Switch 2 NSP files (0x50 0x46 0x53 0x30/0x31)",
+      "storeAs": "pfsMagic"
+    },
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "formatVersion",
+      "description": "Format version (v2+ for Switch 2 enhanced features)"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 6,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "hidden": true,
+      "description": "Reserved/alignment"
+    },
+    {
+      "type": "field",
+      "name": "File Count",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "fileCount",
+      "description": "Number of files in the package"
+    },
+    {
+      "type": "field",
+      "name": "String Table Size",
+      "offset": 12,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Size of filename string table",
+      "storeAs": "stringTableSize"
+    },
+    {
+      "type": "field",
+      "name": "Compression Type",
+      "offset": 16,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Compression algorithm (0=None, 1=ZSTD, 2=LZ4, 3=Switch 2 enhanced)",
+      "storeAs": "compressionType"
+    },
+    {
+      "type": "field",
+      "name": "Encryption Flags",
+      "offset": 20,
+      "length": 4,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Switch 2 enhanced encryption flags",
+      "storeAs": "encryptionFlags"
+    },
+    {
+      "type": "field",
+      "name": "Title ID",
+      "offset": 24,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Switch 2 title identifier (64-bit)",
+      "storeAs": "titleId"
+    },
+    {
+      "type": "field",
+      "name": "SDK Version",
+      "offset": 32,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Nintendo Switch 2 SDK version used to build package",
+      "storeAs": "sdkVersion"
+    },
+    {
+      "type": "field",
+      "name": "Content Type",
+      "offset": 36,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Content type: 0=Application, 1=Update, 2=DLC, 3=AOC, 4=Switch 2 exclusive",
+      "storeAs": "contentType"
+    },
+    {
+      "type": "field",
+      "name": "File Entry Table",
+      "offset": 40,
+      "length": 64,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "File entry table (offset, size, hash, string offset for each file)",
+      "storeAs": "fileEntryTable"
+    },
+    {
+      "type": "metadata",
+      "name": "CRC Valid",
+      "variable": "crc32Valid",
+      "description": "CRC Valid"
+    },
+    {
+      "type": "metadata",
+      "name": "Original Size",
+      "variable": "originalSize",
+      "description": "Original Size"
+    }
+  ],
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".nsp",
+      ".xci",
+      ".nca"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 13,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": true
+  },
+  "TechnicalDetails": {
+    "Platform": "Nintendo Switch 2"
+  },
+  "functions": {
+    "calculateCRC32": "Validate CRC",
+    "readUInt32LE": "Read size"
+  }
+}

@@ -2,7 +2,7 @@
 // Apache 2.0  - 2026
 // HexEditor Settings Panel - Auto-generated Configuration UI
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 // Pattern: Uses unified BaseEditorSettings<T> helper (composition)
 //////////////////////////////////////////////
 

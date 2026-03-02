@@ -1,0 +1,57 @@
+{
+  "name": "JavaScript / TypeScript",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for JavaScript and TypeScript.",
+  "category": "C-like",
+  "extensions": [ ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx" ],
+  "lineComment": "//",
+  "blockCommentStart": "/*",
+  "blockCommentEnd": "*/",
+  "references": {
+    "specifications": [
+      "ECMA-262 ECMAScript 2024 Language Specification"
+    ],
+    "webLinks": [
+      "https://tc39.es/ecma262/",
+      "https://developer.mozilla.org/docs/Web/JavaScript"
+    ]
+  },
+  "rules": [
+    {
+      "type": "Keyword",
+      "pattern": "\\b(break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|let|new|null|of|return|static|super|switch|this|throw|true|false|try|typeof|undefined|var|void|while|with|yield|async|await|from|as|type|interface|enum|namespace|abstract|declare|implements|module|require|satisfies|keyof|infer|asserts|is|never|unknown|any|readonly|override)\\b",
+      "colorKey": "TE_Keyword"
+    },
+    {
+      "type": "Type",
+      "pattern": "\\b(string|number|boolean|object|symbol|bigint|void|null|undefined|Array|Object|Function|Promise|Map|Set|WeakMap|WeakSet|Error|Date|RegExp|JSON|Math|console|window|document|process|Buffer|URL|URLSearchParams|FormData|Headers|Request|Response|fetch|setTimeout|setInterval|clearTimeout|clearInterval|parseInt|parseFloat|isNaN|isFinite|encodeURI|decodeURI)\\b",
+      "colorKey": "TE_Type"
+    },
+    {
+      "type": "Decorator",
+      "pattern": "@[A-Za-z][A-Za-z0-9_]*",
+      "colorKey": "TE_Directive"
+    },
+    {
+      "type": "Number",
+      "pattern": "\\b(0x[0-9A-Fa-f]+n?|0b[01]+n?|0o[0-7]+n?|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?n?)\\b",
+      "colorKey": "TE_Number"
+    },
+    {
+      "type": "String",
+      "pattern": "(`(?:[^`\\\\]|\\\\.)*`|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Comment",
+      "pattern": "//.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "BlockComment",
+      "pattern": "/\\*[\\s\\S]*?\\*/",
+      "colorKey": "TE_Comment"
+    }
+  ]
+}

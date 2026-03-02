@@ -1,7 +1,7 @@
 ////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -110,6 +110,27 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                 {
                     _selectedSearchMode = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsHexMode));
+                    UpdateCommandStates();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Shortcut toggle: true = Hex mode, false = Text mode.
+        /// Used by the 0x button in the QuickSearchBar.
+        /// </summary>
+        public bool IsHexMode
+        {
+            get => _selectedSearchMode == SearchMode.Hex;
+            set
+            {
+                var newMode = value ? SearchMode.Hex : SearchMode.Text;
+                if (_selectedSearchMode != newMode)
+                {
+                    _selectedSearchMode = newMode;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SelectedSearchMode));
                     UpdateCommandStates();
                 }
             }
@@ -633,7 +654,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             return forward ? currentMatch.Position + currentMatch.Length : currentMatch.Position;
         }
 
-        private void UpdateCommandStates()
+        internal void UpdateCommandStates()
         {
             (FindAllCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (FindNextCommand as RelayCommand)?.RaiseCanExecuteChanged();

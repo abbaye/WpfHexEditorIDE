@@ -1,8 +1,8 @@
-/*
-    Apache 2.0  2026
-    Author : Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
-*/
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
 
 using System;
 using System.Collections.Generic;
@@ -84,6 +84,9 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
         private long _selectionStart = 0;
         private long _selectionEnd = 0;
         private string _fileName = string.Empty;
+
+        // Incremental navigation index (-1 = no selection yet)
+        private int _currentResultIndex = -1;
 
         #endregion
 
@@ -205,7 +208,9 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
                     _selectedMode = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsRelativeMode));
+                    OnPropertyChanged(nameof(IsTextMode));
                     OnPropertyChanged(nameof(ShowReplaceControls));
+                    OnPropertyChanged(nameof(SelectedModeIndex));
                     UpdateCommandStates();
                 }
             }
@@ -217,9 +222,37 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
         public bool IsRelativeMode => _selectedMode == SearchMode.Relative;
 
         /// <summary>
+        /// Gets whether currently in TEXT mode (for showing encoding/case options).
+        /// </summary>
+        public bool IsTextMode => _selectedMode == SearchMode.Text;
+
+        /// <summary>
         /// Gets whether to show replace controls (hidden in RELATIVE mode).
         /// </summary>
         public bool ShowReplaceControls => _selectedMode != SearchMode.Relative;
+
+        /// <summary>
+        /// Gets or sets the selected mode as a 0-based index for ComboBox binding.
+        /// Maps: 0=Text, 1=Hex, 2=Wildcard, 3=TblText, 4=Relative.
+        /// </summary>
+        public int SelectedModeIndex
+        {
+            get => (int)_selectedMode;
+            set
+            {
+                var mode = (SearchMode)value;
+                if (_selectedMode != mode)
+                {
+                    _selectedMode = mode;
+                    OnPropertyChanged(nameof(SelectedMode));
+                    OnPropertyChanged(nameof(SelectedModeIndex));
+                    OnPropertyChanged(nameof(IsRelativeMode));
+                    OnPropertyChanged(nameof(IsTextMode));
+                    OnPropertyChanged(nameof(ShowReplaceControls));
+                    UpdateCommandStates();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the selected encoding.
@@ -906,12 +939,24 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
 
         private void FindNext()
         {
-            // TODO: Implement incremental navigation
+            if (StandardResults.Count == 0) return;
+            _currentResultIndex = (_currentResultIndex + 1) % StandardResults.Count;
+            var result = StandardResults[_currentResultIndex];
+            _selectedResult = result;         // bypass setter to avoid double-fire
+            OnPropertyChanged(nameof(SelectedResult));
+            NavigateToResult(result);
+            UpdateCommandStates();
         }
 
         private void FindPrevious()
         {
-            // TODO: Implement incremental navigation
+            if (StandardResults.Count == 0) return;
+            _currentResultIndex = (_currentResultIndex - 1 + StandardResults.Count) % StandardResults.Count;
+            var result = StandardResults[_currentResultIndex];
+            _selectedResult = result;         // bypass setter to avoid double-fire
+            OnPropertyChanged(nameof(SelectedResult));
+            NavigateToResult(result);
+            UpdateCommandStates();
         }
 
         private void Cancel()
@@ -927,6 +972,7 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             SearchDurationMs = 0;
             SearchSpeedMBps = 0;
             BytesSearched = 0;
+            _currentResultIndex = -1;
 
             OnPropertyChanged(nameof(TotalResultCount));
             OnPropertyChanged(nameof(PerformanceLabel));
@@ -942,15 +988,133 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
             }
         }
 
+        /// <summary>
+        /// Converts the Replace input string to raw bytes using the current mode/encoding.
+        /// Returns null and shows an error message on failure.
+        /// </summary>
+        private byte[] ConvertReplaceInputToBytes()
+        {
+            try
+            {
+                switch (SelectedMode)
+                {
+                    case SearchMode.Text:
+                        return SelectedEncoding.GetBytes(ReplaceInput);
+
+                    case SearchMode.Hex:
+                    case SearchMode.Wildcard:
+                        return ByteConverters.HexToByte(ReplaceInput);
+
+                    case SearchMode.TblText:
+                        // TBL replacement: encode text via TblStream character table
+                        if (!IsTblLoaded || _tblStream == null)
+                        {
+                            System.Windows.MessageBox.Show(
+                                "No TBL loaded. Cannot encode replacement bytes in TBL TEXT mode.",
+                                "TBL Required",
+                                System.Windows.MessageBoxButton.OK,
+                                System.Windows.MessageBoxImage.Warning);
+                            return null;
+                        }
+                        return SelectedEncoding.GetBytes(ReplaceInput);
+
+                    default:
+                        return Array.Empty<byte>();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    $"Invalid replacement value: {ex.Message}",
+                    "Replace Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+                return null;
+            }
+        }
+
         private void ReplaceSelected()
         {
-            // TODO: Implement replace selected
+            if (!(SelectedResult is SearchResultItemViewModel result)) return;
+            if (_byteProvider == null) return;
+
+            var replaceBytes = ConvertReplaceInputToBytes();
+            if (replaceBytes == null) return;
+
+            try
+            {
+                // Remove the found bytes, then insert the replacement at the same position
+                _byteProvider.DeleteBytes(result.Position, result.Length);
+                if (replaceBytes.Length > 0)
+                    _byteProvider.InsertBytes(result.Position, replaceBytes);
+
+                // Remove this result and advance the index
+                StandardResults.Remove(result);
+                _currentResultIndex = Math.Min(_currentResultIndex, StandardResults.Count - 1);
+
+                OnPropertyChanged(nameof(TotalResultCount));
+                OnPropertyChanged(nameof(PerformanceLabel));
+                UpdateCommandStates();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    $"Replace error: {ex.Message}", "Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+            }
         }
 
         private async Task ReplaceAllAsync()
         {
-            // TODO: Implement replace all
-            await Task.CompletedTask;
+            if (StandardResults.Count == 0) return;
+            if (_byteProvider == null) return;
+
+            var replaceBytes = ConvertReplaceInputToBytes();
+            if (replaceBytes == null) return;
+
+            var count = StandardResults.Count;
+            var confirm = System.Windows.MessageBox.Show(
+                $"Replace all {count:N0} occurrence(s)?",
+                "Replace All",
+                System.Windows.MessageBoxButton.YesNo,
+                System.Windows.MessageBoxImage.Question);
+
+            if (confirm != System.Windows.MessageBoxResult.Yes) return;
+
+            IsSearching = true;
+            UpdateCommandStates();
+
+            try
+            {
+                // Yield once so the UI refreshes the busy state
+                await Task.Yield();
+
+                // Process in REVERSE position order — replacing in forward order would shift
+                // all subsequent offsets when the replacement length differs from the match length.
+                var sortedResults = StandardResults.OrderByDescending(r => r.Position).ToList();
+
+                foreach (var r in sortedResults)
+                {
+                    _byteProvider.DeleteBytes(r.Position, r.Length);
+                    if (replaceBytes.Length > 0)
+                        _byteProvider.InsertBytes(r.Position, replaceBytes);
+                }
+
+                ClearResults();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    $"Replace All error: {ex.Message}", "Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsSearching = false;
+                UpdateCommandStates();
+            }
         }
 
         private void ToggleHighlightAll()
@@ -1016,12 +1180,35 @@ namespace WpfHexEditor.HexEditor.Search.ViewModels
         {
             if (proposal == null) return;
 
-            // TODO: Implement TBL file export (TblStream.FileName is internal, needs workaround)
-            System.Windows.MessageBox.Show(
-                $"Export TBL feature coming soon!\n\nFor now, use 'Apply' to load the encoding directly.\nOffset: +{proposal.Offset}",
-                "Feature Coming Soon",
-                System.Windows.MessageBoxButton.OK,
-                System.Windows.MessageBoxImage.Information);
+            var newTbl = _relativeEngine.ExportToTbl(proposal);
+
+            var saveDialog = new SaveFileDialog
+            {
+                Title   = "Export TBL File",
+                Filter  = "TBL Files (*.tbl)|*.tbl|All Files (*.*)|*.*",
+                DefaultExt = "tbl",
+                FileName = $"encoding_offset{proposal.Offset}.tbl"
+            };
+
+            if (saveDialog.ShowDialog() != true) return;
+
+            try
+            {
+                newTbl.SaveAs(saveDialog.FileName);
+                System.Windows.MessageBox.Show(
+                    $"TBL exported successfully!\n{saveDialog.FileName}\nEntries: {newTbl.Length}",
+                    "Export Successful",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    $"Failed to export TBL:\n{ex.Message}",
+                    "Export Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+            }
         }
 
         private void ApplyEncoding(EncodingProposal proposal)

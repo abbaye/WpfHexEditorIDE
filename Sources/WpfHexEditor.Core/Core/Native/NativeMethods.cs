@@ -1,4 +1,10 @@
-﻿using System.Runtime.InteropServices;
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace WpfHexEditor.Core.Native

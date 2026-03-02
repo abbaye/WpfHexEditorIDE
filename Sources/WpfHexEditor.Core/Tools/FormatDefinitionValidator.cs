@@ -1,6 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
-// Contributors: Claude Sonnet 4.5
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -157,7 +158,7 @@ namespace WpfHexEditor.Core.Tools
             }
 
             var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            var jsonFiles = Directory.GetFiles(directory, "*.whjson", searchOption)
+            var jsonFiles = Directory.GetFiles(directory, "*.whfmt", searchOption)
                 .Concat(Directory.GetFiles(directory, "*.json", searchOption))
                 .ToArray();
 

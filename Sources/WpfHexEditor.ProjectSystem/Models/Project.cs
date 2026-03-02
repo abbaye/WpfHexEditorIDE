@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -14,13 +15,15 @@ internal sealed class Project : IProject, INotifyPropertyChanged
 {
     private bool    _isModified;
     private string? _defaultTblItemId;
+    private string  _name            = "";
+    private string  _projectFilePath = "";
 
     private readonly ObservableCollection<ProjectItem>   _items       = [];
     private readonly ObservableCollection<VirtualFolder> _rootFolders = [];
 
     public string Id              { get; set; } = Guid.NewGuid().ToString();
-    public string Name            { get; set; } = "";
-    public string ProjectFilePath { get; set; } = "";
+    public string Name            { get => _name;            set { _name            = value; OnPropertyChanged(); } }
+    public string ProjectFilePath { get => _projectFilePath; set { _projectFilePath = value; OnPropertyChanged(); } }
 
     public IReadOnlyList<IProjectItem>   Items       => _items;
     public IReadOnlyList<IVirtualFolder> RootFolders => _rootFolders;
@@ -36,6 +39,8 @@ internal sealed class Project : IProject, INotifyPropertyChanged
         get => _defaultTblItemId;
         set { _defaultTblItemId = value; OnPropertyChanged(); }
     }
+
+    public string? ProjectType { get; set; }
 
     internal ObservableCollection<ProjectItem>   ItemsMutable       => _items;
     internal ObservableCollection<VirtualFolder> RootFoldersMutable => _rootFolders;

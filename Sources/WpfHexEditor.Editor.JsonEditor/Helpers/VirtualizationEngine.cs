@@ -1,4 +1,10 @@
-﻿// Apache 2.0 - 2026
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
+// Apache 2.0 - 2026
 // Virtual Scrolling Engine for JsonEditor - Phase 11
 // Author: Claude Sonnet 4.5
 // Contributors: Derek Tremblay (derektremblay666@gmail.com)

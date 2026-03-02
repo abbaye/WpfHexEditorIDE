@@ -1,16 +1,16 @@
-﻿//////////////////////////////////////////////
+//////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Custom JsonEditor - Format Schema Validator (Phase 5)
 // Author : Claude Sonnet 4.5
-// Contributors: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using WpfHexEditor.Editor.JsonEditor.Models;
 
 namespace WpfHexEditor.Editor.JsonEditor.Services
@@ -30,7 +30,11 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
         private static readonly string[] BlockRequiredProperties = { "type" };
         private static readonly string[] FieldRequiredProperties = { "type", "name" };
 
-        private static readonly string[] ValidBlockTypes = { "signature", "field", "conditional", "loop", "action" };
+        private static readonly string[] ValidBlockTypes =
+        {
+            "signature", "field", "conditional", "loop", "action",
+            "computeFromVariables", "metadata", "data", "header"
+        };
         private static readonly string[] ValidFieldTypes =
         {
             "uint8", "uint16", "uint32", "uint64",
@@ -61,14 +65,17 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
             }
 
             // Layer 1: JSON Syntax Validation
-            JObject root;
+            JsonObject root;
             try
             {
-                root = JObject.Parse(jsonText);
+                root = JsonNode.Parse(jsonText)?.AsObject()
+                    ?? throw new JsonException("Root element is not a JSON object.");
             }
-            catch (JsonReaderException ex)
+            catch (JsonException ex)
             {
-                errors.Add(new ValidationError(ex.LineNumber - 1, ex.LinePosition - 1,
+                errors.Add(new ValidationError(
+                    (int)(ex.LineNumber ?? 1) - 1,
+                    (int)(ex.BytePositionInLine ?? 1) - 1,
                     $"JSON syntax error: {ex.Message}", ValidationSeverity.Error)
                 {
                     ErrorCode = "JSON_SYNTAX",
@@ -102,7 +109,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
 
         #region Layer 2: Schema Validation
 
-        private void ValidateSchema(JObject root, List<ValidationError> errors, string jsonText)
+        private void ValidateSchema(JsonObject root, List<ValidationError> errors, string jsonText)
         {
             // Check required root properties
             foreach (var propName in RootRequiredProperties)
@@ -138,7 +145,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
             // Validate blocks array
             if (root.ContainsKey("blocks"))
             {
-                var blocks = root["blocks"] as JArray;
+                var blocks = root["blocks"] as JsonArray;
                 if (blocks == null)
                 {
                     var location = FindPropertyLocation(jsonText, "blocks");
@@ -166,11 +173,11 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
             }
         }
 
-        private void ValidateBlocks(JArray blocks, List<ValidationError> errors, string jsonText)
+        private void ValidateBlocks(JsonArray blocks, List<ValidationError> errors, string jsonText)
         {
             for (int i = 0; i < blocks.Count; i++)
             {
-                var block = blocks[i] as JObject;
+                var block = blocks[i] as JsonObject;
                 if (block == null)
                 {
                     errors.Add(new ValidationError(0, 0,
@@ -199,7 +206,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
                 // Validate fields array if present
                 if (block.ContainsKey("fields"))
                 {
-                    var fields = block["fields"] as JArray;
+                    var fields = block["fields"] as JsonArray;
                     if (fields == null)
                     {
                         errors.Add(new ValidationError(0, 0,
@@ -217,11 +224,11 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
             }
         }
 
-        private void ValidateFields(JArray fields, int blockIndex, List<ValidationError> errors, string jsonText)
+        private void ValidateFields(JsonArray fields, int blockIndex, List<ValidationError> errors, string jsonText)
         {
             for (int i = 0; i < fields.Count; i++)
             {
-                var field = fields[i] as JObject;
+                var field = fields[i] as JsonObject;
                 if (field == null)
                 {
                     errors.Add(new ValidationError(0, 0,
@@ -253,14 +260,14 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
 
         #region Layer 3: Format Rules Validation
 
-        private void ValidateFormatRules(JObject root, List<ValidationError> errors, string jsonText)
+        private void ValidateFormatRules(JsonObject root, List<ValidationError> errors, string jsonText)
         {
             // Validate blocks
-            if (root.ContainsKey("blocks") && root["blocks"] is JArray blocks)
+            if (root.ContainsKey("blocks") && root["blocks"] is JsonArray blocks)
             {
                 for (int i = 0; i < blocks.Count; i++)
                 {
-                    var block = blocks[i] as JObject;
+                    var block = blocks[i] as JsonObject;
                     if (block == null) continue;
 
                     ValidateBlockRules(block, i, errors, jsonText);
@@ -268,7 +275,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
             }
         }
 
-        private void ValidateBlockRules(JObject block, int blockIndex, List<ValidationError> errors, string jsonText)
+        private void ValidateBlockRules(JsonObject block, int blockIndex, List<ValidationError> errors, string jsonText)
         {
             // Validate block type
             if (block.ContainsKey("type"))
@@ -287,11 +294,11 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
             }
 
             // Validate fields if present
-            if (block.ContainsKey("fields") && block["fields"] is JArray fields)
+            if (block.ContainsKey("fields") && block["fields"] is JsonArray fields)
             {
                 for (int i = 0; i < fields.Count; i++)
                 {
-                    var field = fields[i] as JObject;
+                    var field = fields[i] as JsonObject;
                     if (field == null) continue;
 
                     ValidateFieldRules(field, blockIndex, i, errors, jsonText);
@@ -329,7 +336,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
             }
         }
 
-        private void ValidateFieldRules(JObject field, int blockIndex, int fieldIndex, List<ValidationError> errors, string jsonText)
+        private void ValidateFieldRules(JsonObject field, int blockIndex, int fieldIndex, List<ValidationError> errors, string jsonText)
         {
             // Validate field type
             if (field.ContainsKey("type"))
@@ -381,7 +388,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
 
         #region Layer 4: Semantic Validation
 
-        private void ValidateSemantics(JObject root, List<ValidationError> errors, string jsonText)
+        private void ValidateSemantics(JsonObject root, List<ValidationError> errors, string jsonText)
         {
             // Collect all variable names (varName properties)
             var declaredVariables = new HashSet<string>();
@@ -394,9 +401,9 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
             ValidateCalcExpressions(root, declaredVariables, errors, jsonText);
         }
 
-        private void CollectVariableNames(JToken token, HashSet<string> variables)
+        private void CollectVariableNames(JsonNode token, HashSet<string> variables)
         {
-            if (token is JObject obj)
+            if (token is JsonObject obj)
             {
                 if (obj.ContainsKey("varName"))
                 {
@@ -407,25 +414,27 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
                     }
                 }
 
-                foreach (var prop in obj.Properties())
+                foreach (var prop in obj)
                 {
-                    CollectVariableNames(prop.Value, variables);
+                    if (prop.Value != null)
+                        CollectVariableNames(prop.Value, variables);
                 }
             }
-            else if (token is JArray array)
+            else if (token is JsonArray array)
             {
                 foreach (var item in array)
                 {
-                    CollectVariableNames(item, variables);
+                    if (item != null)
+                        CollectVariableNames(item, variables);
                 }
             }
         }
 
-        private void ValidateVariableReferences(JToken token, HashSet<string> declaredVariables, List<ValidationError> errors, string jsonText)
+        private void ValidateVariableReferences(JsonNode token, HashSet<string> declaredVariables, List<ValidationError> errors, string jsonText)
         {
-            if (token is JObject obj)
+            if (token is JsonObject obj)
             {
-                foreach (var prop in obj.Properties())
+                foreach (var prop in obj)
                 {
                     var value = prop.Value?.ToString();
                     if (!string.IsNullOrEmpty(value) && value.StartsWith("var:"))
@@ -443,23 +452,25 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
                         }
                     }
 
-                    ValidateVariableReferences(prop.Value, declaredVariables, errors, jsonText);
+                    if (prop.Value != null)
+                        ValidateVariableReferences(prop.Value, declaredVariables, errors, jsonText);
                 }
             }
-            else if (token is JArray array)
+            else if (token is JsonArray array)
             {
                 foreach (var item in array)
                 {
-                    ValidateVariableReferences(item, declaredVariables, errors, jsonText);
+                    if (item != null)
+                        ValidateVariableReferences(item, declaredVariables, errors, jsonText);
                 }
             }
         }
 
-        private void ValidateCalcExpressions(JToken token, HashSet<string> declaredVariables, List<ValidationError> errors, string jsonText)
+        private void ValidateCalcExpressions(JsonNode token, HashSet<string> declaredVariables, List<ValidationError> errors, string jsonText)
         {
-            if (token is JObject obj)
+            if (token is JsonObject obj)
             {
-                foreach (var prop in obj.Properties())
+                foreach (var prop in obj)
                 {
                     var value = prop.Value?.ToString();
                     if (!string.IsNullOrEmpty(value) && value.StartsWith("calc:"))
@@ -468,14 +479,16 @@ namespace WpfHexEditor.Editor.JsonEditor.Services
                         ValidateSingleCalcExpression(expression, declaredVariables, errors);
                     }
 
-                    ValidateCalcExpressions(prop.Value, declaredVariables, errors, jsonText);
+                    if (prop.Value != null)
+                        ValidateCalcExpressions(prop.Value, declaredVariables, errors, jsonText);
                 }
             }
-            else if (token is JArray array)
+            else if (token is JsonArray array)
             {
                 foreach (var item in array)
                 {
-                    ValidateCalcExpressions(item, declaredVariables, errors, jsonText);
+                    if (item != null)
+                        ValidateCalcExpressions(item, declaredVariables, errors, jsonText);
                 }
             }
         }

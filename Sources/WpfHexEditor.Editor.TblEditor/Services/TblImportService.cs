@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using System.IO;
 using System.Text.Json;
 using WpfHexEditor.Core.CharacterTable;
@@ -5,7 +11,9 @@ using WpfHexEditor.Editor.TblEditor.Models;
 
 namespace WpfHexEditor.Editor.TblEditor.Services;
 
-/// <summary>Service for importing TBL entries from various formats</summary>
+/// <summary>
+/// Service for importing TBL entries from various formats
+/// </summary>
 public class TblImportService
 {
     #region CSV Import
@@ -200,18 +208,21 @@ public class TblImportService
             ".csv"  => ImportFromCsv(filePath),
             ".json" => ImportFromJson(filePath),
             ".tbl"  => ImportFromTbl(filePath),
-            ".tblx" => new TblxService().ImportToTblStream(filePath),
+            ".tblx" => new TblxService().ImportFromTblxFile(filePath),
             _       => new TblImportResult { Success = false, Errors = [$"Unsupported file format: {extension}"] }
         };
     }
 
     private TblImportResult ImportFromTbl(string filePath)
     {
-        var result = new TblImportResult { DetectedFormat = TblFileFormat.Tbl };
+        // Detect variant (Thingy vs Atlas) before loading; TblStream.Load() handles Atlas
+        // normalization internally, so we just need to capture the detected format.
+        var detectedFormat = TblStream.DetectFileFormat(filePath); // may return Atlas or Tbl
+        var result = new TblImportResult { DetectedFormat = detectedFormat };
         try
         {
+            // TblStream constructor calls FileName setter → Load() → Atlas-aware parsing
             var tbl = new TblStream(filePath);
-            tbl.Load();
             result.Entries = tbl.GetAllEntries().ToList();
             result.ImportedCount = result.Entries.Count;
             result.Success = true;

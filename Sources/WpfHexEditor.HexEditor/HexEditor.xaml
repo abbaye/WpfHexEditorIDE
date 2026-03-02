@@ -1,3 +1,9 @@
+﻿<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
 <UserControl x:Class="WpfHexEditor.HexEditor.HexEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,6 +13,7 @@
              xmlns:models="clr-namespace:WpfHexEditor.Core.Models;assembly=WpfHexEditor.Core"
              xmlns:converters="clr-namespace:WpfHexEditor.HexEditor.Converters"
              xmlns:controls="clr-namespace:WpfHexEditor.HexEditor.Controls"
+             xmlns:searchViews="clr-namespace:WpfHexEditor.HexEditor.Search.Views"
              xmlns:prop="clr-namespace:WpfHexEditor.Core.Properties;assembly=WpfHexEditor.Core"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -207,9 +214,7 @@
 
     <!-- V1 Compatible Context Menu -->
     <UserControl.ContextMenu>
-        <ContextMenu x:Name="ByteContextMenu" Visibility="Collapsed"
-                     Style="{DynamicResource DockDarkContextMenuStyle}"
-                     ItemContainerStyle="{DynamicResource DockDarkMenuItemStyle}">
+        <ContextMenu x:Name="ByteContextMenu" Visibility="Collapsed">
             <!-- Undo -->
             <MenuItem x:Name="UndoMenuItem" Header="{DynamicResource UndoString}" Click="UndoMenuItem_Click">
                 <MenuItem.Icon>
@@ -420,6 +425,17 @@
                                       Grid.ColumnSpan="2"
                                       Panel.ZIndex="10"
                                       Visibility="Collapsed"/>
+
+            <!-- Quick Search/Replace Bar (Ctrl+F inline overlay, VS-style) -->
+            <searchViews:QuickSearchBar x:Name="QuickSearchBarOverlay"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2"
+                                        Panel.ZIndex="5"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Margin="0,4,24,0"
+                                        Width="420"
+                                        Visibility="Collapsed"/>
         </Grid>
 
         <!-- Status bar -->

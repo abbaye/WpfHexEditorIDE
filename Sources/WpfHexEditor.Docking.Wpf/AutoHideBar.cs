@@ -102,13 +102,19 @@ public class AutoHideFlyout : Grid
     public DockItem? CurrentItem { get; private set; }
     public bool IsOpen => _panelContainer.Visibility == Visibility.Visible;
 
-    /// <summary>Raised when the user clicks the pin button or double-clicks the title bar to re-dock.</summary>
+    /// <summary>
+    /// Raised when the user clicks the pin button or double-clicks the title bar to re-dock.
+    /// </summary>
     public event Action<DockItem>? RestoreRequested;
 
-    /// <summary>Raised when the user clicks close.</summary>
+    /// <summary>
+    /// Raised when the user clicks close.
+    /// </summary>
     public event Action<DockItem>? CloseRequested;
 
-    /// <summary>Raised when the user chooses "Float" in the menu or drags the title bar.</summary>
+    /// <summary>
+    /// Raised when the user chooses "Float" in the menu or drags the title bar.
+    /// </summary>
     public event Action<DockItem>? FloatRequested;
 
     public AutoHideFlyout()
@@ -135,9 +141,10 @@ public class AutoHideFlyout : Grid
         {
             var btn = new Button
             {
-                Content  = content,
-                FontSize = 12,
-                ToolTip  = tooltip
+                Content    = content,
+                FontSize   = 10,
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                ToolTip    = tooltip
             };
             var titleStyle = Application.Current?.TryFindResource("DockTitleButtonStyle") as Style;
             if (titleStyle is not null)
@@ -145,14 +152,13 @@ public class AutoHideFlyout : Grid
             return btn;
         }
 
-        var closeButton = MakeTitleButton("\u2715", "Close");
+        var closeButton = MakeTitleButton("\uE8BB", "Close");
         closeButton.Click += (_, _) => { if (CurrentItem is not null) CloseRequested?.Invoke(CurrentItem); };
 
-        var pinButton = MakeTitleButton("\uD83D\uDCCC", "Dock");
+        var pinButton = MakeTitleButton("\uE141", "Dock");
         pinButton.Click += (_, _) => { if (CurrentItem is not null) RestoreRequested?.Invoke(CurrentItem); };
 
-        var chevronButton = MakeTitleButton("\u25BC", "Options");
-        chevronButton.FontSize = 9;
+        var chevronButton = MakeTitleButton("\uE70D", "Options");
         chevronButton.Click += (sender, _) =>
         {
             if (CurrentItem is null || sender is not Button btn) return;

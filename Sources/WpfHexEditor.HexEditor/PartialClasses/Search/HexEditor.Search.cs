@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System.Collections.Generic;
@@ -168,7 +168,8 @@ namespace WpfHexEditor.HexEditor
         /// Supports 5 modes: TEXT, HEX, WILDCARD, TBL TEXT (if TBL loaded), RELATIVE (encoding discovery).
         /// </summary>
         /// <param name="owner">Owner window for centering the dialog (optional)</param>
-        public void ShowAdvancedSearchDialog(System.Windows.Window owner = null)
+        /// <param name="initialSearch">Pre-fill the search input (e.g. transferred from the QuickSearchBar)</param>
+        public void ShowAdvancedSearchDialog(System.Windows.Window owner = null, string initialSearch = null)
         {
             // Verify file/stream is loaded by checking ByteProvider
             var provider = GetByteProvider();
@@ -185,8 +186,12 @@ namespace WpfHexEditor.HexEditor
             var dialog = new Search.Views.AdvancedSearchDialog();
             var vm = new Search.ViewModels.AdvancedSearchViewModel();
 
-            // ⚠️ BINDING CRITIQUE: Lier le ViewModel à CE HexEditor
+            // Bind ViewModel to this HexEditor instance
             vm.BindToHexEditor(this);
+
+            // Pre-fill search text if provided (e.g. transferred from QuickSearchBar)
+            if (!string.IsNullOrEmpty(initialSearch))
+                vm.SearchInput = initialSearch;
 
             // Wire navigation event: double-click result → scroll and select in HexEditor
             vm.ResultNavigationRequested += (s, result) =>
@@ -205,8 +210,8 @@ namespace WpfHexEditor.HexEditor
             {
                 if (matches == null) return;
 
-                // Clear existing highlights
-                ClearCustomBackgroundBlock();
+                // Clear existing search highlights only (preserve format detection blocks)
+                ClearCustomBackgroundBlockByTag("AdvancedSearchResult");
 
                 // Create highlight brush
                 var highlightBrush = new System.Windows.Media.SolidColorBrush(
@@ -227,7 +232,7 @@ namespace WpfHexEditor.HexEditor
             // Wire clear highlights event
             vm.HighlightClearRequested += (s, e) =>
             {
-                ClearCustomBackgroundBlock();
+                ClearCustomBackgroundBlockByTag("AdvancedSearchResult");
             };
 
             // Wire TBL load event: when user applies discovered encoding from Relative Search or loads TBL file
@@ -261,9 +266,9 @@ namespace WpfHexEditor.HexEditor
             // Cleanup when dialog closes
             dialog.Closed += (s, e) =>
             {
-                // Clear all highlights
-                ClearCustomBackgroundBlock();
-                // Dispose ViewModel (unsubscribe events, clear references)
+                // NOTE: search result highlights ("AdvancedSearchResult" blocks) are intentionally
+                // kept visible after the dialog closes — the user may want to see all match positions.
+                // They are cleared automatically when a new search is run (HighlightResultsRequested).
                 vm.Dispose();
             };
 

@@ -1,0 +1,176 @@
+{
+  "formatName": "PlayStation 3 Disc/Package",
+  "version": "2.5",
+  "extensions": [
+    ".iso",
+    ".pkg"
+  ],
+  "description": "PlayStation 3 Blu-ray disc image or PKG package format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PS3 PKG Package Format",
+      "PlayStation 3 Blu-ray Disc Format",
+      "PS3 Developer Wiki Specifications"
+    ],
+    "WebLinks": [
+      "https://www.psdevwiki.com/ps3/PKG_files",
+      "https://www.psdevwiki.com/ps3/Bluray_disc",
+      "https://wiki.rpcs3.net/index.php?title=Help:Dumping_PlayStation_3_games",
+      "https://ps2bios.gitlab.io/home/is-it-possible-to-convert-ps3iso-to-pkg/"
+    ]
+  },
+  "detection": {
+    "signature": "7F504B47",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "crc32Valid": false,
+    "originalSize": 0,
+    "compressionRatio": 0,
+    "pkgMagic": "",
+    "packageType": 0,
+    "packageFlags": 0,
+    "dataOffset": 0,
+    "dataSize": 0,
+    "contentId": "",
+    "formattedSize": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PKG Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "uint32",
+      "description": "PKG magic: 0x7F 0x50 0x4B 0x47",
+      "storeAs": "pkgMagic"
+    },
+    {
+      "type": "field",
+      "name": "Package Type",
+      "offset": 4,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "description": "Package type: 0x0001=PS3, 0x0002=PSP",
+      "storeAs": "packageType"
+    },
+    {
+      "type": "field",
+      "name": "Package Flags",
+      "offset": 6,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "description": "Package flags and attributes",
+      "storeAs": "packageFlags"
+    },
+    {
+      "type": "field",
+      "name": "Data Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Offset to package data",
+      "storeAs": "dataOffset"
+    },
+    {
+      "type": "field",
+      "name": "Data Size",
+      "offset": 12,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint64",
+      "description": "Package data size (64-bit big-endian)",
+      "storeAs": "dataSize"
+    },
+    {
+      "type": "field",
+      "name": "Content ID",
+      "offset": 48,
+      "length": 36,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Content ID string (title identifier)",
+      "storeAs": "contentId"
+    },
+    {
+      "type": "metadata",
+      "name": "CRC Valid",
+      "variable": "crc32Valid",
+      "description": "CRC Valid"
+    },
+    {
+      "type": "metadata",
+      "name": "Original Size",
+      "variable": "originalSize",
+      "description": "Original Size"
+    },
+    {
+      "type": "metadata",
+      "name": "Formatted Size",
+      "variable": "formattedSize",
+      "description": "Human-readable file size"
+    }
+  ],
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".iso",
+      ".pkg"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 53,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": true
+  },
+  "TechnicalDetails": {
+    "Platform": "PS3"
+  },
+  "functions": {
+    "calculateCRC32": "Validate CRC",
+    "readUInt32LE": "Read size",
+    "formatFileSize(var:dataSize)": "Format dataSize as readable size"
+  }
+}

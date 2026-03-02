@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using WpfHexEditor.Docking.Core.Nodes;
@@ -23,7 +23,9 @@ public class DockEngine
 
     public DockLayoutRoot Layout { get; }
 
-    /// <summary>True when inside a transaction (NormalizeTree deferred).</summary>
+    /// <summary>
+    /// True when inside a transaction (NormalizeTree deferred).
+    /// </summary>
     public bool IsInTransaction => _transactionDepth > 0;
 
     // Events
@@ -262,6 +264,32 @@ public class DockEngine
     }
 
     /// <summary>
+    /// Splits a DocumentHostNode by placing a new DocumentHostNode beside it.
+    /// Used when a document item is dragged to the edge of a document host area.
+    /// The item lands in the new host; Center direction is not valid here (use <see cref="Dock"/> instead).
+    /// </summary>
+    public void SplitDocumentHost(DockItem item, DocumentHostNode targetHost, DockDirection direction)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        ArgumentNullException.ThrowIfNull(targetHost);
+
+        item.Owner?.RemoveItem(item);
+        Layout.FloatingItems.Remove(item);
+        Layout.AutoHideItems.Remove(item);
+
+        var newHost = new DocumentHostNode { IsMain = false };
+        newHost.AddItem(item);
+        item.State = DockItemState.Docked;
+
+        // Documents get equal 50/50 split — both sides are equally important content
+        WrapWithSplit(targetHost, newHost, direction, 0.5);
+
+        AutoNormalize();
+        ItemDocked?.Invoke(item);
+        if (!IsInTransaction) LayoutChanged?.Invoke();
+    }
+
+    /// <summary>
     /// Moves an item from one group to another.
     /// </summary>
     public void MoveItem(DockItem item, DockGroupNode targetGroup)
@@ -338,25 +366,27 @@ public class DockEngine
     /// <summary>
     /// Wraps a target node with a split, placing a new node beside it.
     /// </summary>
-    private void WrapWithSplit(DockNode target, DockNode newNode, DockDirection direction)
+    /// <param name="newNodeRatio">Ratio assigned to the new node (0..1). Default 0.25 for tool panels; use 0.5 for document splits.</param>
+    private void WrapWithSplit(DockNode target, DockNode newNode, DockDirection direction, double newNodeRatio = 0.25)
     {
         var orientation = direction is DockDirection.Left or DockDirection.Right
             ? SplitOrientation.Horizontal
             : SplitOrientation.Vertical;
 
         var split = new DockSplitNode { Orientation = orientation };
+        var existingRatio = 1.0 - newNodeRatio;
 
         var parent = target.Parent as DockSplitNode;
 
         if (direction is DockDirection.Left or DockDirection.Top)
         {
-            split.AddChild(newNode, 0.25);
-            split.AddChild(target, 0.75);
+            split.AddChild(newNode, newNodeRatio);
+            split.AddChild(target, existingRatio);
         }
         else
         {
-            split.AddChild(target, 0.75);
-            split.AddChild(newNode, 0.25);
+            split.AddChild(target, existingRatio);
+            split.AddChild(newNode, newNodeRatio);
         }
 
         if (parent is not null)

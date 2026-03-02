@@ -3,7 +3,7 @@
     HexEditor V2 - Main Window (Classic Menu + Toolbar Style)
     Based on original MainWindow.xaml structure
     Author : Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
+    Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 -->
 
 <Window x:Class="WpfHexEditor.Sample.Main.Views.MainWindow"
@@ -15,7 +15,7 @@
         xmlns:components="clr-namespace:WpfHexEditor.Sample.Main.Views.Components"
         xmlns:hexEditor="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor"
         xmlns:hexControls="clr-namespace:WpfHexEditor.HexEditor.Controls;assembly=WpfHexEditor.HexEditor"
-        xmlns:hexPanels="clr-namespace:WpfHexEditor.WindowPanels.Panels;assembly=WpfHexEditor.WindowPanels"
+        xmlns:hexPanels="clr-namespace:WpfHexEditor.Panels.BinaryAnalysis;assembly=WpfHexEditor.Panels.BinaryAnalysis"
         xmlns:barChart="clr-namespace:WpfHexEditor.BarChart.Controls;assembly=WpfHexEditor.BarChart"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"

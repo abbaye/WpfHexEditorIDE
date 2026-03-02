@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 // Apache 2.0 - 2026
 // Property Discovery and Auto-Generation System
 // Author: Claude Sonnet 4.5

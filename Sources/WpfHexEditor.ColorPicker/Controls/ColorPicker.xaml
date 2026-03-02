@@ -2,7 +2,7 @@
     Apache 2.0  2026
     Advanced Color Picker Control with HSV selector, RGB sliders, hex input, and palette
     Author : Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
+    Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 -->
 
 <UserControl x:Class="WpfHexEditor.ColorPicker.Controls.ColorPicker"

@@ -2,14 +2,15 @@
 // Apache 2.0  - 2026
 // Structure Overlay Service - Converts format definitions to overlays
 // Author : Claude Sonnet 4.5
-// Contributors: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Windows.Media;
-using Newtonsoft.Json.Linq;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Models.StructureOverlay;
@@ -52,7 +53,7 @@ namespace WpfHexEditor.Core.Services
         /// <param name="formatDefinition">JSON format definition</param>
         /// <param name="fileBytes">File bytes to read values from</param>
         /// <returns>Structure overlay or null if failed</returns>
-        public OverlayStructure CreateOverlayFromFormat(JObject formatDefinition, byte[] fileBytes)
+        public OverlayStructure CreateOverlayFromFormat(JsonObject formatDefinition, byte[] fileBytes)
         {
             if (formatDefinition == null || fileBytes == null)
                 return null;
@@ -69,7 +70,7 @@ namespace WpfHexEditor.Core.Services
                 };
 
                 // Parse blocks and fields
-                var blocks = formatDefinition["blocks"] as JArray;
+                var blocks = formatDefinition["blocks"]?.AsArray();
                 if (blocks == null || blocks.Count == 0)
                     return null;
 
@@ -78,7 +79,7 @@ namespace WpfHexEditor.Core.Services
 
                 foreach (var block in blocks)
                 {
-                    var blockObj = block as JObject;
+                    var blockObj = block as JsonObject;
                     if (blockObj == null) continue;
 
                     var blockType = blockObj["type"]?.ToString();
@@ -86,12 +87,12 @@ namespace WpfHexEditor.Core.Services
                     // Only process "field" and "signature" blocks for now
                     if (blockType == "field")
                     {
-                        var fields = blockObj["fields"] as JArray;
+                        var fields = blockObj["fields"]?.AsArray();
                         if (fields != null)
                         {
                             foreach (var field in fields)
                             {
-                                var fieldObj = field as JObject;
+                                var fieldObj = field as JsonObject;
                                 if (fieldObj == null) continue;
 
                                 var overlayField = ParseField(fieldObj, fileBytes, ref currentOffset, ref colorIndex);
@@ -190,7 +191,7 @@ namespace WpfHexEditor.Core.Services
         /// <summary>
         /// Parse a single field from format definition
         /// </summary>
-        private OverlayField ParseField(JObject fieldDef, byte[] fileBytes, ref long currentOffset, ref int colorIndex)
+        private OverlayField ParseField(JsonObject fieldDef, byte[] fileBytes, ref long currentOffset, ref int colorIndex)
         {
             var fieldName = fieldDef["name"]?.ToString();
             var fieldType = fieldDef["type"]?.ToString();
@@ -230,15 +231,15 @@ namespace WpfHexEditor.Core.Services
         /// <summary>
         /// Get field length from definition
         /// </summary>
-        private int GetFieldLength(JObject fieldDef, string fieldType)
+        private int GetFieldLength(JsonObject fieldDef, string fieldType)
         {
             // Check explicit length
             if (fieldDef.ContainsKey("length"))
             {
-                var lengthToken = fieldDef["length"];
-                if (lengthToken.Type == JTokenType.Integer)
+                var lengthNode = fieldDef["length"];
+                if (lengthNode is JsonValue lv && lv.GetValueKind() == JsonValueKind.Number)
                 {
-                    return lengthToken.Value<int>();
+                    return lv.GetValue<int>();
                 }
             }
 

@@ -1,11 +1,17 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
 // Interface IStructureOverlayPanel
 // Decouples HexEditor Core from the concrete WindowPanels implementation
 //////////////////////////////////////////////
 
 using System;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using WpfHexEditor.Core.Models.StructureOverlay;
 
 namespace WpfHexEditor.Core.Interfaces
@@ -21,6 +27,6 @@ namespace WpfHexEditor.Core.Interfaces
         event EventHandler<OverlayStructure> OnStructureSelectedForHighlight;
 
         void UpdateFileBytes(byte[] bytes);
-        void AddOverlayFromFormat(JObject format);
+        void AddOverlayFromFormat(JsonObject format);
     }
 }

@@ -1,9 +1,8 @@
-/*
-    Apache 2.0 2026
-    RecentColorManager - Manages recent color history with file persistence
-    Author: Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
-*/
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
 
 using System;
 using System.Collections.Generic;

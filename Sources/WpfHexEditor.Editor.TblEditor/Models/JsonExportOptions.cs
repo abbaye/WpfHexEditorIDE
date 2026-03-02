@@ -1,6 +1,14 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Options for JSON export</summary>
+/// <summary>
+/// Options for JSON export
+/// </summary>
 public class JsonExportOptions
 {
     public bool IncludeType { get; set; } = true;
@@ -13,7 +21,9 @@ public class JsonExportOptions
     public JsonMetadata? Metadata { get; set; }
 }
 
-/// <summary>Metadata for JSON export</summary>
+/// <summary>
+/// Metadata for JSON export
+/// </summary>
 public class JsonMetadata
 {
     public string Version { get; set; } = "1.0";

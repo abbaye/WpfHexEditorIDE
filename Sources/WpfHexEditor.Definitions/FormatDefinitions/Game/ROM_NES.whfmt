@@ -1,0 +1,218 @@
+{
+  "formatName": "NES ROM",
+  "version": "2.2",
+  "extensions": [
+    ".nes"
+  ],
+  "description": "Nintendo Entertainment System ROM (iNES format)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "iNES ROM Format Specification",
+      "NES 2.0 Format Specification"
+    ],
+    "WebLinks": [
+      "https://wiki.nesdev.com/w/index.php/INES",
+      "https://wiki.nesdev.com/w/index.php/NES_2.0",
+      "https://en.wikipedia.org/wiki/INES"
+    ]
+  },
+  "detection": {
+    "signature": "4E45531A",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 16,
+      "max_signature_offset": 0
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "nesMagic": "",
+    "prgRomSize": 0,
+    "chrRomSize": 0,
+    "flags6": 0,
+    "flags7": 0,
+    "prgRamSize": 0,
+    "tvSystemChrRam": 0,
+    "tvSystemFlags": 0,
+    "prgRomBytes": 0,
+    "chrRomBytes": 0,
+    "totalRomSize": 0,
+    "mapperNumber": 0,
+    "formattedSize": "",
+    "formattedPrgSize": "",
+    "formattedChrSize": ""
+  },
+  "functions": {
+    "computeFromVariables(prgRomSize * 16384, prgRomBytes)": "Calculate PRG ROM size in bytes (units of 16KB)",
+    "computeFromVariables(chrRomSize * 8192, chrRomBytes)": "Calculate CHR ROM size in bytes (units of 8KB)",
+    "computeFromVariables(prgRomBytes + chrRomBytes + 16, totalRomSize)": "Calculate total ROM size (PRG + CHR + 16-byte header)",
+    "formatFileSize(var:totalRomSize)": "Format total ROM size as human-readable",
+    "validateFieldRange(prgRomSize, 1, 255)": "Validate PRG ROM size (must be at least 1 unit)"
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "iNES Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "NES\\x1A magic number - iNES header marker",
+      "storeAs": "nesMagic",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "PRG ROM Banks",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "prgRomSize",
+      "description": "Number of 16KB PRG ROM banks",
+      "validationRules": {
+        "minValue": 1,
+        "maxValue": 255
+      }
+    },
+    {
+      "type": "field",
+      "name": "CHR ROM Banks",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "chrRomSize",
+      "description": "Number of 8KB CHR ROM banks (0 = uses CHR RAM)"
+    },
+    {
+      "type": "field",
+      "name": "Flags 6",
+      "offset": 6,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "flags6",
+      "description": "Bit0=Mirroring(0:Horiz,1:Vert) | Bit1=Battery | Bit2=Trainer(512B at $7000) | Bit3=4-screen VRAM | Bits4-7=Mapper low nybble"
+    },
+    {
+      "type": "field",
+      "name": "Flags 7",
+      "offset": 7,
+      "length": 1,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "flags7",
+      "description": "Bits0-1=VS/Playchoice | Bits2-3=NES2.0 flag(0b10) | Bits4-7=Mapper high nybble"
+    },
+    {
+      "type": "field",
+      "name": "PRG RAM Size",
+      "offset": 8,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "prgRamSize",
+      "description": "PRG RAM size in 8KB units (0 = 8KB for compatibility)"
+    },
+    {
+      "type": "field",
+      "name": "TV System / CHR RAM",
+      "offset": 9,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "tvSystemChrRam",
+      "description": "Bit0=TV system (0:NTSC, 1:PAL) | Bits1-7=Reserved"
+    },
+    {
+      "type": "field",
+      "name": "TV System Flags",
+      "offset": 10,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "tvSystemFlags",
+      "description": "Bits0-1=TV(0:NTSC,2:PAL,1/3:Dual) | Bit4=PRG RAM present | Bit5=Bus conflicts"
+    },
+    {
+      "type": "field",
+      "name": "Padding",
+      "offset": 11,
+      "length": 5,
+      "color": "#E0E0E0",
+      "opacity": 0.2,
+      "valueType": "bytes",
+      "hidden": true,
+      "description": "Must be zero - reserved padding bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "PRG ROM Size",
+      "variable": "prgRomBytes",
+      "description": "Program ROM size in bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "CHR ROM Size",
+      "variable": "chrRomBytes",
+      "description": "Character ROM size in bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Total ROM Size",
+      "variable": "totalRomSize",
+      "description": "Total ROM size (PRG + CHR + header)"
+    },
+    {
+      "type": "metadata",
+      "name": "Formatted Size",
+      "variable": "formattedSize",
+      "description": "Human-readable total ROM size"
+    }
+  ],
+  "software": [
+    "Nestopia",
+    "FCEUX",
+    "RetroArch",
+    "Mesen"
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "TechnicalDetails": {
+    "Platform": "NES",
+    "primary_extension": ".nes",
+    "defined_fields": 12
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 66,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 13,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-03-01"
+  }
+}

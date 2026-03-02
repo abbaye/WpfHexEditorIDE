@@ -3,7 +3,7 @@
     HexEditor V2 - Settings Panel
     Comprehensive settings for theme, language, search, and display options
     Author : Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
+    Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 -->
 
 <UserControl x:Class="WpfHexEditor.Sample.Main.Views.Components.SettingsPanel"

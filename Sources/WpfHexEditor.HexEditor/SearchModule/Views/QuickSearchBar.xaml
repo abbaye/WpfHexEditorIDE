@@ -1,7 +1,7 @@
 <!--
     Apache 2.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
+    Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 -->
 
 <UserControl x:Class="WpfHexEditor.HexEditor.Search.Views.QuickSearchBar"
@@ -11,136 +11,476 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WpfHexEditor.HexEditor.Search.Views"
              mc:Ignorable="d"
-             d:DesignHeight="40" d:DesignWidth="400"
-             Background="{DynamicResource BackgroundBrush}">
+             MinWidth="300"
+             d:DesignHeight="64" d:DesignWidth="480">
 
     <UserControl.Resources>
-        <!-- Value Converters -->
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <local:StringEmptyToVisibilityConverter x:Key="StringEmptyToVisibilityConverter"/>
 
-        <!-- Local derived brushes for theme adaptation -->
-        <SolidColorBrush x:Key="LocalTextBoxBackgroundBrush" Color="{DynamicResource BackgroundColor}" Opacity="0.8"/>
-        <SolidColorBrush x:Key="LocalButtonHoverBrush" Color="{DynamicResource BackgroundColor}" Opacity="0.6"/>
-        <SolidColorBrush x:Key="LocalButtonPressedBrush" Color="{DynamicResource BackgroundColor}" Opacity="0.4"/>
-
-        <!-- VSCode-style minimalist design -->
-        <Style x:Key="QuickSearchTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Background" Value="{DynamicResource LocalTextBoxBackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="8,6"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-
-        <Style x:Key="QuickSearchButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Width" Value="28"/>
-            <Setter Property="Height" Value="28"/>
-            <Setter Property="Cursor" Value="Hand"/>
+        <!--
+            QuickToggleStyle — 22×22 toggle (text label, not MDL2).
+            Inherits Panel_* colors. Used for Ab / .* / 0x toggles.
+        -->
+        <Style x:Key="QuickToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Width"               Value="26"/>
+            <Setter Property="Height"              Value="22"/>
+            <Setter Property="Padding"             Value="3,0"/>
+            <Setter Property="Margin"              Value="1,0"/>
+            <Setter Property="BorderThickness"     Value="0"/>
+            <Setter Property="Background"          Value="Transparent"/>
+            <Setter Property="Foreground"          Value="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+            <Setter Property="FontFamily"          Value="Segoe UI"/>
+            <Setter Property="FontSize"            Value="11"/>
+            <Setter Property="FontWeight"          Value="SemiBold"/>
+            <Setter Property="VerticalAlignment"   Value="Center"/>
+            <Setter Property="Cursor"              Value="Hand"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="FocusVisualStyle"    Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                Padding="{TemplateBinding Padding}">
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource LocalButtonHoverBrush}"/>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
                             </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource LocalButtonPressedBrush}"/>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
                             </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked"   Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                            </MultiTrigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.3"/>
+                                <Setter Property="Opacity" Value="0.4"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- QuickButtonStyle — 22×22 icon button (MDL2 or text) -->
+        <Style x:Key="QuickButtonStyle" TargetType="Button">
+            <Setter Property="Width"               Value="22"/>
+            <Setter Property="Height"              Value="22"/>
+            <Setter Property="Padding"             Value="0"/>
+            <Setter Property="Margin"              Value="1,0"/>
+            <Setter Property="BorderThickness"     Value="0"/>
+            <Setter Property="Background"          Value="Transparent"/>
+            <Setter Property="Foreground"          Value="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+            <Setter Property="FontFamily"          Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"            Value="12"/>
+            <Setter Property="VerticalAlignment"   Value="Center"/>
+            <Setter Property="Cursor"              Value="Hand"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="FocusVisualStyle"    Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- QuickReplaceButtonStyle — auto-width text button for Replace/Replace All -->
+        <Style x:Key="QuickReplaceButtonStyle" TargetType="Button" BasedOn="{StaticResource QuickButtonStyle}">
+            <Setter Property="Width"    Value="Auto"/>
+            <Setter Property="Padding" Value="5,0"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize"   Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
     </UserControl.Resources>
 
-    <!-- Main container with VSCode-style dark theme -->
-    <Border Background="#252526"
-            BorderBrush="#007ACC"
-            BorderThickness="1"
-            CornerRadius="3"
-            Effect="{StaticResource DropShadowEffect}">
-        <Border.Resources>
-            <DropShadowEffect x:Key="DropShadowEffect"
-                              ShadowDepth="2"
-                              BlurRadius="8"
-                              Opacity="0.3"/>
-        </Border.Resources>
+    <Grid>
+        <!-- ── Left resize Thumb — transparent 6-px grab handle, SizeWE cursor ── -->
+        <Thumb x:Name="ResizeThumb"
+               Width="6"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Stretch"
+               Panel.ZIndex="10"
+               Cursor="SizeWE">
+            <Thumb.Template>
+                <ControlTemplate TargetType="Thumb">
+                    <Rectangle Fill="Transparent"/>
+                </ControlTemplate>
+            </Thumb.Template>
+        </Thumb>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <!-- ── Main bar (6 px left margin clears the resize thumb) ── -->
+        <Border Margin="6,0,0,0"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="3">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="2" BlurRadius="6" Opacity="0.35" Direction="270"/>
+            </Border.Effect>
 
-            <!-- Search input -->
-            <TextBox Grid.Column="0"
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     Style="{StaticResource QuickSearchTextBoxStyle}"
-                     MinWidth="200">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding FindNextCommand}"/>
-                    <KeyBinding Key="Enter" Modifiers="Shift" Command="{Binding FindPreviousCommand}"/>
-                    <KeyBinding Key="Escape" Command="{Binding CloseCommand}"/>
-                </TextBox.InputBindings>
-            </TextBox>
+            <!--
+                IsSharedSizeScope keeps Column 0 (expand-toggle / replace-spacer) the
+                same width in both the search row and the replace row grids.
+            -->
+            <Grid IsSharedSizeScope="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <!-- Match counter -->
-            <TextBlock Grid.Column="1"
-                       Text="{Binding CurrentMatchText}"
-                       Foreground="#CCCCCC"
-                       VerticalAlignment="Center"
-                       Margin="10,0"
-                       FontSize="11"
-                       MinWidth="60"
-                       TextAlignment="Center"/>
+                <!-- ═══════════════════════════════════════════════════════════════
+                     Row 0 — Search row
+                     ═══════════════════════════════════════════════════════════════ -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <!-- Expand-replace toggle — SharedSizeGroup aligns with replace spacer -->
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="ToggleCol"/>
+                        <!-- Search icon + textbox -->
+                        <ColumnDefinition Width="*" MinWidth="120"/>
+                        <!-- Separator -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Ab toggle -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- .* toggle -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- 0x toggle -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Separator -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Match counter -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Separator -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Prev -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Next -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Separator -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- More (⋯) -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Close -->
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-            <!-- Previous button -->
-            <Button Grid.Column="2"
-                    Content="▲"
-                    Command="{Binding FindPreviousCommand}"
-                    Style="{StaticResource QuickSearchButtonStyle}"
-                    ToolTip="Previous match (Shift+Enter)"/>
+                    <!-- ── Col 0: Expand / collapse replace row ── -->
+                    <ToggleButton Grid.Column="0"
+                                  x:Name="ExpandReplaceToggle"
+                                  Style="{StaticResource QuickToggleStyle}"
+                                  Width="22" Height="22"
+                                  Margin="3,0,1,0"
+                                  ToolTip="Afficher / masquer le remplacement (Ctrl+H)">
+                        <!-- ChevronDown icon rotated −90° = pointing right when collapsed -->
+                        <TextBlock x:Name="ExpandIcon"
+                                   Text="&#xE70D;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="10"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                            <TextBlock.RenderTransformOrigin>0.5, 0.5</TextBlock.RenderTransformOrigin>
+                            <TextBlock.RenderTransform>
+                                <RotateTransform Angle="-90"/>
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                    </ToggleButton>
 
-            <!-- Next button -->
-            <Button Grid.Column="3"
-                    Content="▼"
-                    Command="{Binding FindNextCommand}"
-                    Style="{StaticResource QuickSearchButtonStyle}"
-                    ToolTip="Next match (Enter)"/>
+                    <!-- ── Col 1: Search icon + TextBox ── -->
+                    <Border Grid.Column="1"
+                            Background="{DynamicResource DockBackgroundBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="2"
+                            Margin="2,4,2,4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-            <!-- Close button -->
-            <Button Grid.Column="4"
-                    Content="✖"
-                    Command="{Binding CloseCommand}"
-                    Style="{StaticResource QuickSearchButtonStyle}"
-                    ToolTip="Close (Esc)"
-                    Margin="5,0,5,0"/>
+                            <!-- MDL2 Search icon &#xE721; -->
+                            <TextBlock Grid.Column="0"
+                                       Text="&#xE721;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="12"
+                                       Margin="6,0,3,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                       IsHitTestVisible="False"
+                                       Opacity="0.7"/>
 
-            <!-- Progress indicator -->
-            <Border Grid.Column="0" Grid.ColumnSpan="5"
-                    Height="2"
-                    VerticalAlignment="Bottom"
-                    Background="#007ACC"
-                    Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}">
-                <Border.Effect>
-                    <DropShadowEffect ShadowDepth="0" BlurRadius="4" Color="#007ACC"/>
-                </Border.Effect>
-            </Border>
-        </Grid>
-    </Border>
+                            <!-- Placeholder (shown when empty and not focused) -->
+                            <TextBlock Grid.Column="1"
+                                       Text="Rechercher..."
+                                       FontFamily="Segoe UI"
+                                       FontSize="12"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,4,0"
+                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                       Opacity="0.45"
+                                       IsHitTestVisible="False"
+                                       Visibility="{Binding SearchText, Converter={StaticResource StringEmptyToVisibilityConverter}}"/>
+
+                            <!-- Actual TextBox -->
+                            <TextBox Grid.Column="1"
+                                     x:Name="SearchInput"
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Background="Transparent"
+                                     Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                     BorderThickness="0"
+                                     Padding="0,0,4,0"
+                                     FontFamily="Consolas"
+                                     FontSize="12"
+                                     VerticalContentAlignment="Center"
+                                     CaretBrush="{DynamicResource Panel_ToolbarForegroundBrush}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter"                   Command="{Binding FindNextCommand}"/>
+                                    <KeyBinding Key="Enter" Modifiers="Shift" Command="{Binding FindPreviousCommand}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                        </Grid>
+                    </Border>
+
+                    <!-- ── Separator ── -->
+                    <Rectangle Grid.Column="2"
+                               Width="1" Margin="2,7" Opacity="0.4"
+                               Fill="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               VerticalAlignment="Stretch"/>
+
+                    <!-- ── Ab — Case Sensitive ── -->
+                    <ToggleButton Grid.Column="3"
+                                  Content="Ab"
+                                  Style="{StaticResource QuickToggleStyle}"
+                                  IsChecked="{Binding CaseSensitive}"
+                                  ToolTip="Respecter la casse (Alt+C)"/>
+
+                    <!-- ── .* — Use Wildcard ── -->
+                    <ToggleButton Grid.Column="4"
+                                  Content=".*"
+                                  Style="{StaticResource QuickToggleStyle}"
+                                  IsChecked="{Binding UseWildcard}"
+                                  ToolTip="Utiliser des jokers ?? (Alt+E)"/>
+
+                    <!-- ── 0x — Hex Mode ── -->
+                    <ToggleButton Grid.Column="5"
+                                  Content="0x"
+                                  Style="{StaticResource QuickToggleStyle}"
+                                  IsChecked="{Binding IsHexMode}"
+                                  ToolTip="Mode hexad&#233;cimal (Alt+H)"/>
+
+                    <!-- ── Separator ── -->
+                    <Rectangle Grid.Column="6"
+                               Width="1" Margin="2,7" Opacity="0.4"
+                               Fill="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               VerticalAlignment="Stretch"/>
+
+                    <!-- ── Match counter ── -->
+                    <TextBlock Grid.Column="7"
+                               Text="{Binding CurrentMatchText}"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               VerticalAlignment="Center"
+                               Margin="6,0"
+                               FontFamily="Segoe UI"
+                               FontSize="11"
+                               MinWidth="50"
+                               TextAlignment="Center"
+                               Opacity="0.85"/>
+
+                    <!-- ── Separator ── -->
+                    <Rectangle Grid.Column="8"
+                               Width="1" Margin="2,7" Opacity="0.4"
+                               Fill="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               VerticalAlignment="Stretch"/>
+
+                    <!-- ── Prev ▲ (MDL2 ChevronUp &#xE70E;) ── -->
+                    <Button Grid.Column="9"
+                            Content="&#xE70E;"
+                            Style="{StaticResource QuickButtonStyle}"
+                            Command="{Binding FindPreviousCommand}"
+                            ToolTip="R&#233;sultat pr&#233;c&#233;dent (Maj+Entr&#233;e)"/>
+
+                    <!-- ── Next ▼ (MDL2 ChevronDown &#xE70D;) ── -->
+                    <Button Grid.Column="10"
+                            Content="&#xE70D;"
+                            Style="{StaticResource QuickButtonStyle}"
+                            Command="{Binding FindNextCommand}"
+                            ToolTip="R&#233;sultat suivant (Entr&#233;e)"/>
+
+                    <!-- ── Separator ── -->
+                    <Rectangle Grid.Column="11"
+                               Width="1" Margin="2,7" Opacity="0.4"
+                               Fill="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               VerticalAlignment="Stretch"/>
+
+                    <!-- ── More ⋯ (MDL2 More &#xE712;) ── -->
+                    <Button Grid.Column="12"
+                            Content="&#xE712;"
+                            x:Name="AdvancedSearchButton"
+                            Style="{StaticResource QuickButtonStyle}"
+                            ToolTip="Recherche avanc&#233;e (Ctrl+Maj+F)"
+                            Margin="1,0"/>
+
+                    <!-- ── Close ✕ (MDL2 ChromeClose &#xE8BB;) ── -->
+                    <Button Grid.Column="13"
+                            Content="&#xE8BB;"
+                            x:Name="CloseButton"
+                            Style="{StaticResource QuickButtonStyle}"
+                            ToolTip="Fermer (Esc)"
+                            Margin="1,0,4,0"/>
+
+                    <!-- ── Progress indicator (bottom edge, visible during search) ── -->
+                    <Border Grid.Column="0" Grid.ColumnSpan="14"
+                            Height="2"
+                            VerticalAlignment="Bottom"
+                            Background="{DynamicResource AccentBrush}"
+                            Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                </Grid>
+
+                <!-- ═══════════════════════════════════════════════════════════════
+                     Row 1 — Replace row (collapsed by default)
+                     ═══════════════════════════════════════════════════════════════ -->
+                <Grid Grid.Row="1"
+                      Height="30"
+                      Visibility="{Binding IsChecked, ElementName=ExpandReplaceToggle,
+                                   Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <!-- Spacer aligned with the expand toggle above via SharedSizeGroup -->
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="ToggleCol"/>
+                        <!-- Replace textbox -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Separator -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Replace Next btn -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Replace All btn -->
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Thin separator line between the two rows -->
+                    <Rectangle Grid.Column="0" Grid.ColumnSpan="5"
+                               Height="1"
+                               VerticalAlignment="Top"
+                               Opacity="0.15"
+                               Fill="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+
+                    <!-- Col 0: empty spacer (SharedSizeGroup keeps it aligned) -->
+
+                    <!-- ── Col 1: Replace icon + TextBox ── -->
+                    <Border Grid.Column="1"
+                            Background="{DynamicResource DockBackgroundBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="2"
+                            Margin="2,4,2,4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- MDL2 Replace icon &#xE8AC; (Rename / Replace) -->
+                            <TextBlock Grid.Column="0"
+                                       Text="&#xE8AC;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="11"
+                                       Margin="6,0,3,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                       IsHitTestVisible="False"
+                                       Opacity="0.7"/>
+
+                            <!-- Placeholder -->
+                            <TextBlock Grid.Column="1"
+                                       Text="Remplacer..."
+                                       FontFamily="Segoe UI"
+                                       FontSize="12"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,4,0"
+                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                       Opacity="0.45"
+                                       IsHitTestVisible="False"
+                                       Visibility="{Binding ReplaceText, Converter={StaticResource StringEmptyToVisibilityConverter}}"/>
+
+                            <!-- Replace TextBox -->
+                            <TextBox Grid.Column="1"
+                                     x:Name="ReplaceInput"
+                                     Text="{Binding ReplaceText, UpdateSourceTrigger=PropertyChanged}"
+                                     Background="Transparent"
+                                     Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                     BorderThickness="0"
+                                     Padding="0,0,4,0"
+                                     FontFamily="Consolas"
+                                     FontSize="12"
+                                     VerticalContentAlignment="Center"
+                                     CaretBrush="{DynamicResource Panel_ToolbarForegroundBrush}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding ReplaceNextCommand}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                        </Grid>
+                    </Border>
+
+                    <!-- Separator -->
+                    <Rectangle Grid.Column="2"
+                               Width="1" Margin="2,7" Opacity="0.4"
+                               Fill="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               VerticalAlignment="Stretch"/>
+
+                    <!-- ── Replace Next ("→1") ── -->
+                    <Button Grid.Column="3"
+                            x:Name="ReplaceNextButton"
+                            Style="{StaticResource QuickReplaceButtonStyle}"
+                            Command="{Binding ReplaceNextCommand}"
+                            ToolTip="Remplacer (Alt+R)"
+                            Margin="1,0">
+                        <TextBlock FontFamily="Segoe UI" FontSize="11" Text="→1"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+
+                    <!-- ── Replace All ("→∀") ── -->
+                    <Button Grid.Column="4"
+                            x:Name="ReplaceAllButton"
+                            Style="{StaticResource QuickReplaceButtonStyle}"
+                            Command="{Binding ReplaceAllCommand}"
+                            ToolTip="Remplacer tout (Alt+A)"
+                            Margin="1,0,4,0">
+                        <TextBlock FontFamily="Segoe UI" FontSize="11" Text="→∀"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

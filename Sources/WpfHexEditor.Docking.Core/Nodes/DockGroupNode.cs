@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 namespace WpfHexEditor.Docking.Core.Nodes;
@@ -25,6 +25,7 @@ public class DockGroupNode : DockNode
         ArgumentNullException.ThrowIfNull(item);
 
         item.Owner = this;
+        if (this is DocumentHostNode) item.IsDocument = true;
         _items.Add(item);
         ActiveItem ??= item;
     }
@@ -37,6 +38,7 @@ public class DockGroupNode : DockNode
         ArgumentNullException.ThrowIfNull(item);
 
         item.Owner = this;
+        if (this is DocumentHostNode) item.IsDocument = true;
         _items.Insert(index, item);
         ActiveItem ??= item;
     }

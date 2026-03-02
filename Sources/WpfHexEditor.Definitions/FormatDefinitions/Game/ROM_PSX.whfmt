@@ -1,0 +1,252 @@
+{
+  "formatName": "PlayStation EXE",
+  "version": "1.12",
+  "extensions": [
+    ".exe",
+    ".psx"
+  ],
+  "description": "PlayStation 1 (PSX/PS1) executable format (PS-X EXE)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PS-X EXE File Format Specification",
+      "PSX-SPX CDROM File Documentation",
+      "PlayStation Executable Format"
+    ],
+    "WebLinks": [
+      "https://psx-spx.consoledev.net/cdromfileformats/",
+      "https://www.retroreversing.com/ps1-exe",
+      "https://www.zanneth.com/2018/11/01/psx-exe-file-format.html",
+      "https://problemkaputt.de/psxspx-cdrom-file-formats.htm"
+    ]
+  },
+  "detection": {
+    "signature": "50532D58204558450000000000000000",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 16,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "loadAddress": 0,
+    "fileSize": 0,
+    "machineType": "",
+    "sectionCount": 0,
+    "timestamp": 0,
+    "entryPoint": 0,
+    "psXExeMagic": "",
+    "initialPc": 0,
+    "initialGp": 0,
+    "memfillStart": 0,
+    "memfillSize": 0,
+    "initialSp": 0,
+    "marker": "",
+    "formattedSize": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PS-X EXE Magic",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "ascii",
+      "description": "PlayStation executable magic: PS-X EXE",
+      "storeAs": "psXExeMagic"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 8,
+      "length": 8,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "hidden": true,
+      "description": "Reserved bytes (must be zero)"
+    },
+    {
+      "type": "field",
+      "name": "Initial PC",
+      "offset": 16,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Entry point address in RAM",
+      "storeAs": "initialPc"
+    },
+    {
+      "type": "field",
+      "name": "Initial GP",
+      "offset": 20,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Global pointer register initial value",
+      "storeAs": "initialGp"
+    },
+    {
+      "type": "field",
+      "name": "Load Address",
+      "offset": 24,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "loadAddress",
+      "description": "Destination RAM address where executable is loaded"
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 28,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "fileSize",
+      "description": "Executable size in bytes (excluding header)"
+    },
+    {
+      "type": "field",
+      "name": "Reserved2",
+      "offset": 32,
+      "length": 8,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "hidden": true,
+      "description": "Reserved"
+    },
+    {
+      "type": "field",
+      "name": "Memfill Start",
+      "offset": 40,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "BSS segment start address",
+      "storeAs": "memfillStart"
+    },
+    {
+      "type": "field",
+      "name": "Memfill Size",
+      "offset": 44,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "BSS segment fill size",
+      "storeAs": "memfillSize"
+    },
+    {
+      "type": "field",
+      "name": "Initial SP",
+      "offset": 48,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Initial stack pointer",
+      "storeAs": "initialSp"
+    },
+    {
+      "type": "field",
+      "name": "Reserved3",
+      "offset": 52,
+      "length": 20,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "hidden": true,
+      "description": "Reserved header space"
+    },
+    {
+      "type": "field",
+      "name": "Marker",
+      "offset": 72,
+      "length": 1972,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "ASCII marker/license text and padding",
+      "storeAs": "marker"
+    },
+    {
+      "type": "metadata",
+      "name": "Machine Type",
+      "variable": "machineType",
+      "description": "Machine Type"
+    },
+    {
+      "type": "metadata",
+      "name": "Section Count",
+      "variable": "sectionCount",
+      "description": "Section Count"
+    },
+    {
+      "type": "metadata",
+      "name": "Entry Point",
+      "variable": "entryPoint",
+      "description": "Entry Point"
+    },
+    {
+      "type": "metadata",
+      "name": "Formatted Size",
+      "variable": "formattedSize",
+      "description": "Human-readable file size"
+    }
+  ],
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".exe",
+      ".psx"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 16,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": true
+  },
+  "TechnicalDetails": {
+    "Platform": "PS1"
+  },
+  "functions": {
+    "readUInt32LE": "Read executable header",
+    "calculateCRC32": "Validate",
+    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  }
+}

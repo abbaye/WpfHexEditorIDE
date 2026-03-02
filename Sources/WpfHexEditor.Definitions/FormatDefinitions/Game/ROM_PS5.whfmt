@@ -1,0 +1,178 @@
+{
+  "formatName": "PlayStation 5 Package",
+  "version": "1.11",
+  "extensions": [
+    ".pkg"
+  ],
+  "description": "PlayStation 5 PKG package format (next-gen encrypted packages)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PlayStation 5 PKG Package Format",
+      "PS5 PKG/PFS Structure Documentation",
+      "PS5PKGReader and pkgdec5 Tools"
+    ],
+    "WebLinks": [
+      "https://www.psdevwiki.com/ps5/PKG_files",
+      "https://github.com/seregonwar/PkgToolBox",
+      "https://www.ps5pkg.com/",
+      "https://github.com/ps5-payload-dev/fetchpkg"
+    ]
+  },
+  "detection": {
+    "signature": "7F434E54",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "crc32Valid": false,
+    "originalSize": 0,
+    "compressionRatio": 0,
+    "cntMagic": "",
+    "packageVersion": "",
+    "packageFlags": 0,
+    "headerSize": 0,
+    "itemCount": 0,
+    "packageSize": 0,
+    "contentId": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CNT Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "uint32",
+      "description": "PS5 PKG magic: 0x7F 0x43 0x4E 0x54 (similar to PS4)",
+      "storeAs": "cntMagic"
+    },
+    {
+      "type": "field",
+      "name": "Package Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Package format version (PS5 specific)",
+      "storeAs": "packageVersion"
+    },
+    {
+      "type": "field",
+      "name": "Package Flags",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "PS5 package flags and encryption mode",
+      "storeAs": "packageFlags"
+    },
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 12,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Total header size",
+      "storeAs": "headerSize"
+    },
+    {
+      "type": "field",
+      "name": "Item Count",
+      "offset": 16,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Number of content items",
+      "storeAs": "itemCount"
+    },
+    {
+      "type": "field",
+      "name": "Package Size",
+      "offset": 24,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint64",
+      "description": "Total package size (64-bit)",
+      "storeAs": "packageSize"
+    },
+    {
+      "type": "field",
+      "name": "Content ID",
+      "offset": 64,
+      "length": 48,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "PS5 content identifier",
+      "storeAs": "contentId"
+    },
+    {
+      "type": "metadata",
+      "name": "CRC Valid",
+      "variable": "crc32Valid",
+      "description": "CRC Valid"
+    },
+    {
+      "type": "metadata",
+      "name": "Original Size",
+      "variable": "originalSize",
+      "description": "Original Size"
+    }
+  ],
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".pkg"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 56,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": true
+  },
+  "TechnicalDetails": {
+    "Platform": "PS5"
+  },
+  "functions": {
+    "calculateCRC32": "Validate CRC",
+    "readUInt32LE": "Read size"
+  }
+}

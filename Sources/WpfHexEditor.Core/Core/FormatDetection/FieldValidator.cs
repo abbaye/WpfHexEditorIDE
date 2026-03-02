@@ -1,9 +1,11 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
-// Contributors: Claude Sonnet 4.5
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace WpfHexEditor.Core.FormatDetection
@@ -15,6 +17,24 @@ namespace WpfHexEditor.Core.FormatDetection
     public class FieldValidator
     {
         private readonly ChecksumValidator _checksumValidator;
+
+        /// <summary>
+        /// Global registry of named custom validators.
+        /// Callers can register validators via <see cref="RegisterCustomValidator"/>.
+        /// A validator returns <see langword="null"/> on success, or an error message on failure.
+        /// </summary>
+        private static readonly Dictionary<string, Func<object, string?>> _customValidators
+            = new(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Registers a named custom validator function that can be referenced from a
+        /// format definition field's <c>customValidator</c> property.
+        /// </summary>
+        public static void RegisterCustomValidator(string name, Func<object, string?> validator)
+        {
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException(nameof(name));
+            _customValidators[name] = validator ?? throw new ArgumentNullException(nameof(validator));
+        }
 
         public FieldValidator()
         {
@@ -62,10 +82,16 @@ namespace WpfHexEditor.Core.FormatDetection
                     return ValidationResult.Failure(patternMsg);
             }
 
-            // Custom validation function
+            // Custom validation function — looked up from the static registry
             if (!string.IsNullOrWhiteSpace(rules.CustomValidator))
             {
-                // TODO: Implement custom validator support
+                if (_customValidators.TryGetValue(rules.CustomValidator, out var customFn))
+                {
+                    var customError = customFn(value);
+                    if (customError != null)
+                        return ValidationResult.Failure(customError);
+                }
+                // Unknown validator name → silently pass (do not block parsing)
             }
 
             return ValidationResult.Success();

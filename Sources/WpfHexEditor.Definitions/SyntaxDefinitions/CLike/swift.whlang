@@ -1,0 +1,56 @@
+{
+  "name": "Swift",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for the Swift programming language.",
+  "category": "C-like",
+  "extensions": [ ".swift" ],
+  "lineComment": "//",
+  "blockCommentStart": "/*",
+  "blockCommentEnd": "*/",
+  "references": {
+    "specifications": [
+      "The Swift Programming Language (Swift 5.10)"
+    ],
+    "webLinks": [
+      "https://docs.swift.org/swift-book/documentation/the-swift-programming-language/"
+    ]
+  },
+  "rules": [
+    {
+      "type": "Keyword",
+      "pattern": "\\b(associatedtype|class|deinit|enum|extension|fileprivate|func|import|init|inout|internal|let|open|operator|precedencegroup|private|protocol|public|rethrows|static|struct|subscript|typealias|var|break|case|catch|continue|default|defer|do|else|fallthrough|for|guard|if|in|repeat|return|throw|switch|where|while|as|Any|catch|false|is|nil|rethrows|super|self|Self|throw|throws|true|try|#available|#colorLiteral|#column|#dsohandle|#error|#fileID|#fileLiteral|#filePath|#file|#function|#imageLiteral|#keyPath|#line|#selector|#sourceLocation|#warning|convenience|dynamic|final|indirect|lazy|mutating|nonmutating|optional|override|required|unowned|weak|willSet|didSet|get|set|async|await|actor|distributed|isolated|nonisolated|some|any|borrowing|consuming|copy|discard)\\b",
+      "colorKey": "TE_Keyword"
+    },
+    {
+      "type": "Type",
+      "pattern": "\\b(Bool|Character|Double|Float|Int|Int8|Int16|Int32|Int64|String|UInt|UInt8|UInt16|UInt32|UInt64|Void|Never|Optional|Array|Dictionary|Set|Result|Error|Codable|Encodable|Decodable|Hashable|Equatable|Comparable|Identifiable|ObservableObject|Published|Binding|State|StateObject|ObservedObject|EnvironmentObject|Environment|View|Text|Image|Button|VStack|HStack|ZStack|List|ForEach|NavigationView|NavigationLink|Sheet|Alert|ActionSheet|Color|Font|CGFloat|CGPoint|CGSize|CGRect|URL|Data|Date|UUID|Notification|NotificationCenter|DispatchQueue|OperationQueue|URLSession|URLRequest|JSONDecoder|JSONEncoder)\\b",
+      "colorKey": "TE_Type"
+    },
+    {
+      "type": "Attribute",
+      "pattern": "@[A-Za-z][A-Za-z0-9_]*",
+      "colorKey": "TE_Directive"
+    },
+    {
+      "type": "Number",
+      "pattern": "\\b(0x[0-9A-Fa-f_]+|0b[01_]+|0o[0-7_]+|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?[fF]?)\\b",
+      "colorKey": "TE_Number"
+    },
+    {
+      "type": "String",
+      "pattern": "(\"\"\"[\\s\\S]*?\"\"\"|\"(?:[^\"\\\\]|\\\\.)*\")",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Comment",
+      "pattern": "//.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "BlockComment",
+      "pattern": "/\\*[\\s\\S]*?\\*/",
+      "colorKey": "TE_Comment"
+    }
+  ]
+}

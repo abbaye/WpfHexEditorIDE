@@ -2,11 +2,13 @@
 // Apache 2.0  - 2026
 // HexEditor - Structure Overlay Integration (Partial Class)
 // Author : Claude Sonnet 4.5
-// Contributors: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Windows;
 using System.Windows.Media;
 using WpfHexEditor.Core.Interfaces;
@@ -188,9 +190,9 @@ namespace WpfHexEditor.HexEditor
 
             UpdateStructureOverlayFileBytes();
 
-            // Convert FormatDefinition to JObject for the panel
-            var jobj = Newtonsoft.Json.Linq.JObject.FromObject(_detectedFormat);
-            _structureOverlayPanel.AddOverlayFromFormat(jobj);
+            // Convert FormatDefinition to JsonObject for the panel
+            var jsonObj = JsonSerializer.SerializeToNode(_detectedFormat)!.AsObject();
+            _structureOverlayPanel.AddOverlayFromFormat(jsonObj);
         }
 
         #endregion

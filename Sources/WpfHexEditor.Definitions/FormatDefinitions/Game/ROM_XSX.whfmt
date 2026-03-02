@@ -1,0 +1,168 @@
+{
+  "formatName": "Xbox Series X/S Package",
+  "version": "2.4",
+  "extensions": [
+    ".xvd",
+    ".msixvc"
+  ],
+  "description": "Xbox Series X/S optimized package format (enhanced XVD)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Xbox Series X/S Enhanced XVD Format",
+      "Xbox Velocity Architecture Documentation",
+      "BCPack and DirectStorage API Specification"
+    ],
+    "WebLinks": [
+      "https://xboxoneresearch.github.io/wiki/operating-system/xbox-virtual-drive/",
+      "https://news.xbox.com/en-us/2020/07/14/a-closer-look-at-xbox-velocity-architecture/",
+      "https://learn.microsoft.com/en-us/gaming/gdk/_content/gc/system/overviews/directstorage/directstorage-overview",
+      "https://en.wikipedia.org/wiki/Xbox_Series_X_and_Series_S"
+    ]
+  },
+  "detection": {
+    "signature": "6D737863",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "crc32Valid": false,
+    "originalSize": 0,
+    "compressionRatio": 0,
+    "xvdSignature": "",
+    "formatVersion": "",
+    "packageFlags": 0,
+    "compressionType": "",
+    "contentSize": 0,
+    "contentId": ""
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "XVD Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "ascii",
+      "description": "Enhanced XVD magic for Series X/S",
+      "storeAs": "xvdSignature"
+    },
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "XVD v2/v3 format version (Series optimized)",
+      "storeAs": "formatVersion"
+    },
+    {
+      "type": "field",
+      "name": "Package Flags",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Series X/S specific flags (SSD optimizations, DirectStorage)",
+      "storeAs": "packageFlags"
+    },
+    {
+      "type": "field",
+      "name": "Compression Type",
+      "offset": 12,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Compression algorithm (BCPack, etc.)",
+      "storeAs": "compressionType"
+    },
+    {
+      "type": "field",
+      "name": "Content Size",
+      "offset": 16,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint64",
+      "description": "Total content size (64-bit)",
+      "storeAs": "contentSize"
+    },
+    {
+      "type": "field",
+      "name": "Content ID",
+      "offset": 32,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Xbox Series content GUID",
+      "storeAs": "contentId"
+    },
+    {
+      "type": "metadata",
+      "name": "CRC Valid",
+      "variable": "crc32Valid",
+      "description": "CRC Valid"
+    },
+    {
+      "type": "metadata",
+      "name": "Original Size",
+      "variable": "originalSize",
+      "description": "Original Size"
+    }
+  ],
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".xvd",
+      ".msixvc"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 48,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 8,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": true
+  },
+  "TechnicalDetails": {
+    "Platform": "Xbox Series X/S"
+  },
+  "functions": {
+    "calculateCRC32": "Validate CRC",
+    "readUInt32LE": "Read size"
+  }
+}

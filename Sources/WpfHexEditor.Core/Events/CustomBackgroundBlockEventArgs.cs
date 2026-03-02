@@ -1,6 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
-// Contributors: Claude Sonnet 4.5
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -14,19 +15,29 @@ namespace WpfHexEditor.Core.Events
     /// </summary>
     public enum BlockChangeType
     {
-        /// <summary>A single block was added</summary>
+        /// <summary>
+        /// A single block was added
+        /// </summary>
         Added,
 
-        /// <summary>Multiple blocks were added</summary>
+        /// <summary>
+        /// Multiple blocks were added
+        /// </summary>
         AddedMultiple,
 
-        /// <summary>A single block was removed</summary>
+        /// <summary>
+        /// A single block was removed
+        /// </summary>
         Removed,
 
-        /// <summary>Multiple blocks were removed</summary>
+        /// <summary>
+        /// Multiple blocks were removed
+        /// </summary>
         RemovedMultiple,
 
-        /// <summary>All blocks were cleared</summary>
+        /// <summary>
+        /// All blocks were cleared
+        /// </summary>
         Cleared
     }
 

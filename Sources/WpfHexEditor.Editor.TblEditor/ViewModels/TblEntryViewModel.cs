@@ -1,10 +1,18 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.CharacterTable;
 
 namespace WpfHexEditor.Editor.TblEditor.ViewModels;
 
-/// <summary>ViewModel wrapping a single <see cref="Dte"/> entry for display and editing.</summary>
+/// <summary>
+/// ViewModel wrapping a single <see cref="Dte"/> entry for display and editing.
+/// </summary>
 public sealed class TblEntryViewModel : INotifyPropertyChanged
 {
     private string _entry;
@@ -26,28 +34,36 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
 
     // ── Core fields ────────────────────────────────────────────────────────
 
-    /// <summary>Hex byte sequence (uppercase, e.g. "41" or "8283").</summary>
+    /// <summary>
+    /// Hex byte sequence (uppercase, e.g. "41" or "8283").
+    /// </summary>
     public string Entry
     {
         get => _entry;
         set { if (_entry != value) { _entry = value; OnPropertyChanged(); OnPropertyChanged(nameof(ByteLength)); } }
     }
 
-    /// <summary>Decoded character(s), e.g. "A" or "の".</summary>
+    /// <summary>
+    /// Decoded character(s), e.g. "A" or "の".
+    /// </summary>
     public string? Value
     {
         get => _value;
         set { if (_value != value) { _value = value; OnPropertyChanged(); } }
     }
 
-    /// <summary>DTE type (auto-detected by <see cref="Dte"/>).</summary>
+    /// <summary>
+    /// DTE type (auto-detected by <see cref="Dte"/>).
+    /// </summary>
     public DteType Type
     {
         get => _type;
         set { if (_type != value) { _type = value; OnPropertyChanged(); } }
     }
 
-    /// <summary>Optional comment (not saved to .tbl, used in TBLX format).</summary>
+    /// <summary>
+    /// Optional comment (not saved to .tbl, used in TBLX format).
+    /// </summary>
     public string? Comment
     {
         get => _comment;
@@ -56,12 +72,16 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
 
     // ── Computed ───────────────────────────────────────────────────────────
 
-    /// <summary>Number of bytes this entry encodes (Entry.Length / 2).</summary>
+    /// <summary>
+    /// Number of bytes this entry encodes (Entry.Length / 2).
+    /// </summary>
     public int ByteLength => Entry.Length / 2;
 
     // ── State ──────────────────────────────────────────────────────────────
 
-    /// <summary>True when this entry has a prefix conflict with another entry.</summary>
+    /// <summary>
+    /// True when this entry has a prefix conflict with another entry.
+    /// </summary>
     public bool HasConflict
     {
         get => _hasConflict;
@@ -82,7 +102,9 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
 
     // ── Conversion ─────────────────────────────────────────────────────────
 
-    /// <summary>Converts back to a <see cref="Dte"/> for persistence.</summary>
+    /// <summary>
+    /// Converts back to a <see cref="Dte"/> for persistence.
+    /// </summary>
     public Dte ToDto()
     {
         var dte = new Dte(Entry, Value ?? string.Empty);

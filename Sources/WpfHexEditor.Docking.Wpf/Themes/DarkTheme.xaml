@@ -1,3 +1,9 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -8,6 +14,7 @@
         <ResourceDictionary Source="Dark/Menu.xaml" />
         <ResourceDictionary Source="Dark/TabControl.xaml" />
         <ResourceDictionary Source="Dark/ContentControls.xaml" />
+        <ResourceDictionary Source="PanelCommon.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

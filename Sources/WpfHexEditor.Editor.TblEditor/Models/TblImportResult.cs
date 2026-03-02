@@ -1,8 +1,16 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using WpfHexEditor.Core.CharacterTable;
 
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Result of a TBL import operation</summary>
+/// <summary>
+/// Result of a TBL import operation
+/// </summary>
 public class TblImportResult
 {
     public bool Success { get; set; }

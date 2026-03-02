@@ -1,0 +1,34 @@
+{
+  "name": "Plain Text",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Minimal highlighting for plain text, log and CSV files.",
+  "category": "Misc",
+  "extensions": [ ".txt", ".log", ".csv", ".tsv", ".text" ],
+  "lineComment": "",
+  "references": {
+    "specifications": [
+      "Unicode Standard 15.1.0"
+    ],
+    "webLinks": [
+      "https://unicode.org/standard/standard.html"
+    ]
+  },
+  "rules": [
+    {
+      "type": "Number",
+      "pattern": "\\b(0x[0-9A-Fa-f]+|[0-9]+(?:\\.[0-9]+)?)\\b",
+      "colorKey": "TE_Number"
+    },
+    {
+      "type": "Url",
+      "pattern": "https?://[^\\s]+",
+      "colorKey": "TE_Label"
+    },
+    {
+      "type": "Email",
+      "pattern": "[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}",
+      "colorKey": "TE_Label"
+    }
+  ]
+}

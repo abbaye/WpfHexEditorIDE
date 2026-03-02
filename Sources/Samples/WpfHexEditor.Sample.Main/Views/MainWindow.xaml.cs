@@ -3,7 +3,7 @@
 // HexEditor V2 - Main Window
 // Modern interface without Ribbon (VS 2026 inspired design)
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -26,7 +26,6 @@ namespace WpfHexEditor.Sample.Main.Views
     {
         private readonly ModernMainWindowViewModel _viewModel;
         private double _parsedFieldsPanelSavedWidth = 350;
-        private Window _parsedFieldsFloatWindow;
 
         public MainWindow()
         {
@@ -65,9 +64,6 @@ namespace WpfHexEditor.Sample.Main.Views
 
             // Connect the external BarChartPanel to HexEditor (via DP IByteDistributionPanel)
             HexEditorControl.ByteDistributionPanel = ByteDistChartPanel;
-
-            // VS2022-style floating tear-off
-            ParsedFieldsPanelControl.TitleBarDragStarted += ParsedFieldsPanel_TitleBarDragStarted;
 
             // Synchronize initial ParsedFieldsPanel column state
             _viewModel.PropertyChanged += ViewModel_ParsedFieldsPanelVisibilityChanged;
@@ -124,62 +120,6 @@ namespace WpfHexEditor.Sample.Main.Views
             }
         }
 
-        private void ParsedFieldsPanel_TitleBarDragStarted(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (_parsedFieldsFloatWindow != null) return; // already floating
-
-            // Mouse position relative to the panel and to the screen
-            var mouseInPanel = e.GetPosition(ParsedFieldsPanelControl);
-            var screenPos    = ParsedFieldsPanelControl.PointToScreen(mouseInPanel);
-
-            // Hide the column in the grid
-            ApplyParsedFieldsPanelVisibility(false);
-
-            // Detach the panel from its parent (grid)
-            var parentGrid = ParsedFieldsPanelControl.Parent as Grid;
-            parentGrid?.Children.Remove(ParsedFieldsPanelControl);
-
-            // Create the float window positioned under the cursor (header aligned)
-            _parsedFieldsFloatWindow = new Window
-            {
-                Title         = "Parsed Fields",
-                Content       = ParsedFieldsPanelControl,
-                Width         = Math.Max(_parsedFieldsPanelSavedWidth, 350),
-                Height        = ActualHeight,
-                WindowStyle   = WindowStyle.SingleBorderWindow,
-                ResizeMode    = ResizeMode.CanResizeWithGrip,
-                ShowInTaskbar = false,
-                Owner         = this,
-                Left          = screenPos.X - mouseInPanel.X,
-                Top           = screenPos.Y - mouseInPanel.Y,
-            };
-
-            _parsedFieldsFloatWindow.Closed += ParsedFieldsFloatWindow_Closed;
-            _parsedFieldsFloatWindow.Show();
-
-            // Immediate DragMove — the mouse button is still pressed
-            _parsedFieldsFloatWindow.DragMove();
-        }
-
-        private void ParsedFieldsFloatWindow_Closed(object sender, EventArgs e)
-        {
-            _parsedFieldsFloatWindow.Closed -= ParsedFieldsFloatWindow_Closed;
-
-            // Detach the panel from the float window
-            _parsedFieldsFloatWindow.Content = null;
-            _parsedFieldsFloatWindow = null;
-
-            // Put the panel back in the grid (column 2)
-            var contentGrid = HexEditorControl.Parent as Grid;
-            if (contentGrid != null)
-            {
-                contentGrid.Children.Add(ParsedFieldsPanelControl);
-                Grid.SetColumn(ParsedFieldsPanelControl, 2);
-            }
-
-            ApplyParsedFieldsPanelVisibility(true);
-        }
-
         private void ViewModel_ParsedFieldsPanelVisibilityChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ModernMainWindowViewModel.IsParsedFieldsPanelVisible))
@@ -188,9 +128,6 @@ namespace WpfHexEditor.Sample.Main.Views
 
         private void ApplyParsedFieldsPanelVisibility(bool visible)
         {
-            // If the panel is floating, do not touch the column
-            if (_parsedFieldsFloatWindow != null) return;
-
             if (visible)
             {
                 ParsedFieldsColumn.Width = new GridLength(_parsedFieldsPanelSavedWidth);

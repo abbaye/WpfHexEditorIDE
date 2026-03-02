@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using System;
 using System.IO;
 using System.Windows;
@@ -108,6 +114,39 @@ namespace WpfHexEditor.HexEditor
         }
 
         /// <summary>
+        /// Creates an IPS patch from the current unsaved modifications and writes it to
+        /// <paramref name="outputIpsPath"/>. No dialog is shown.
+        /// </summary>
+        /// <param name="outputIpsPath">Destination path for the .ips file.</param>
+        /// <returns>
+        /// <see langword="true"/> on success; <see langword="false"/> when there is nothing
+        /// to patch (no file loaded, no unsaved changes) or when an I/O error occurs.
+        /// </returns>
+        public bool CreateIPSPatchFromUnsavedChanges(string outputIpsPath)
+        {
+            if (!IsFileOrStreamLoaded || !IsModified)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(outputIpsPath))
+                throw new ArgumentException("Output path must not be empty.", nameof(outputIpsPath));
+
+            // Read the on-disk file as the authoritative original — equivalent to
+            // "save the modified file then compare with the original on disk".
+            // Stream-only buffers (no FileName) fall back to GetAllBytes(copyChange:false),
+            // but NOTE: in V2 that parameter is currently ignored (returns modified bytes),
+            // so stream-only edits won't produce a meaningful patch.
+            byte[] original = !string.IsNullOrEmpty(FileName) && File.Exists(FileName)
+                ? File.ReadAllBytes(FileName)
+                : GetAllBytes(copyChange: false);
+
+            var modified   = GetAllBytes(copyChange: true);
+            var patchBytes = IPSPatcher.CreatePatch(original, modified);
+
+            File.WriteAllBytes(outputIpsPath, patchBytes);
+            return true;
+        }
+
+        /// <summary>
         /// Exports IPS patch from comparing current file with another file
         /// </summary>
         public void CreateIPSPatch()
@@ -151,18 +190,19 @@ namespace WpfHexEditor.HexEditor
 
             try
             {
-                // TODO: Implement IPS patch creation
-                // This would require:
-                // 1. Compare original file with current (modified) data
-                // 2. Identify differences
-                // 3. Create IPS records for changed regions
-                // 4. Write IPS file with PATCH header, records, and EOF footer
+                var originalData = File.ReadAllBytes(originalFilePath);
+                var modifiedData = GetAllBytes();
+
+                var patchBytes = IPSPatcher.CreatePatch(originalData, modifiedData);
+                File.WriteAllBytes(outputIpsPath, patchBytes);
 
                 MessageBox.Show(
-                    "IPS patch creation is not yet implemented.\n\n" +
-                    "This feature will allow you to create IPS patches by comparing\n" +
-                    "an original ROM with your modified version.",
-                    "Feature Not Implemented",
+                    $"IPS patch created successfully!\n\n" +
+                    $"Saved to: {Path.GetFileName(outputIpsPath)}\n" +
+                    $"Original size: {originalData.Length:N0} bytes\n" +
+                    $"Modified size: {modifiedData.Length:N0} bytes\n" +
+                    $"Patch size:    {patchBytes.Length:N0} bytes",
+                    "Patch Created",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
             }

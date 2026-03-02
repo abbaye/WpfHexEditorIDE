@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -22,8 +23,33 @@ public sealed class EditorConfigDto
     public long    SelectionLength { get; set; }
 
     // ── TBL link ─────────────────────────────────────────────────────────
-    /// <summary>Id of the IProjectItem (TBL) bound to this editor.</summary>
+    /// <summary>
+    /// Id of the IProjectItem (TBL) bound to this editor.
+    /// </summary>
     public string? TblFileId { get; set; }
+
+    // ── TextEditor ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Override for the syntax language id (e.g. <c>"lua"</c>, <c>"markdown"</c>, <c>"asm_6502"</c>).
+    /// <see langword="null"/> = auto-detect by file extension.
+    /// </summary>
+    public string? SyntaxLanguageId { get; set; }
+
+    /// <summary>
+    /// Saved caret line (1-based) in text editors. <c>0</c> = not saved.
+    /// </summary>
+    public int CaretLine { get; set; }
+
+    /// <summary>
+    /// Saved caret column (1-based) in text editors. <c>0</c> = not saved.
+    /// </summary>
+    public int CaretColumn { get; set; }
+
+    /// <summary>
+    /// First visible line number in the text editor viewport (scroll position). <c>0</c> = not saved.
+    /// </summary>
+    public int FirstVisibleLine { get; set; }
 
     // ── Extension slot — arbitrary key/value for future editors ──────────
     public Dictionary<string, string>? Extra { get; set; }

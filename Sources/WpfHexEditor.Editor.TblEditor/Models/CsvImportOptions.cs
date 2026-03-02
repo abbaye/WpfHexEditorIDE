@@ -1,8 +1,16 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using System.Text;
 
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Options for CSV import</summary>
+/// <summary>
+/// Options for CSV import
+/// </summary>
 public class CsvImportOptions
 {
     public string Delimiter { get; set; } = ",";

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -60,9 +60,11 @@ namespace WpfHexEditor.HexEditor
                         CopyAsFormattedView();
                         break;
                     case CopyPasteMode.Auto:
-                        // Auto mode: default to hex for now
-                        // TODO: Could detect which panel (hex/ascii) was last clicked
-                        Copy();
+                        // Auto mode: copy as ASCII when the ASCII panel was last clicked, hex otherwise
+                        if (_isAsciiEditMode)
+                            CopyAsAscii();
+                        else
+                            Copy();
                         break;
                     default:
                         Copy(); // Default to hex

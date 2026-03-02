@@ -1,9 +1,17 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Editor.TblEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.TblEditor.Services;
 
-/// <summary>Fast search and filter service with hash-based indexing</summary>
+/// <summary>
+/// Fast search and filter service with hash-based indexing
+/// </summary>
 public class TblSearchService
 {
     private Dictionary<string, List<TblEntryViewModel>>? _entryIndex;

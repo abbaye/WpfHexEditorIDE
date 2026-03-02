@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -454,6 +454,12 @@ namespace WpfHexEditor.Core.Bytes
         {
             return _insertedBytes.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Count);
         }
+
+        /// <summary>
+        /// Returns all deleted physical positions in sorted order.
+        /// Used by <see cref="WpfHexEditor.Core.Bytes.ByteProvider.GetChangesetSnapshot"/>.
+        /// </summary>
+        public IEnumerable<long> GetAllDeletedPositions() => _deletedPositions;
 
         #endregion
     }

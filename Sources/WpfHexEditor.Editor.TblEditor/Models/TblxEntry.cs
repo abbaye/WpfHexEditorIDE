@@ -1,8 +1,16 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using WpfHexEditor.Core.CharacterTable;
 
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Extended TBL entry with additional metadata for .tblx format</summary>
+/// <summary>
+/// Extended TBL entry with additional metadata for .tblx format
+/// </summary>
 public class TblxEntry
 {
     public string? Entry { get; set; }

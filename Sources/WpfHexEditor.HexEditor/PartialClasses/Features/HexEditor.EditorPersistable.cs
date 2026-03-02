@@ -1,10 +1,13 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Core.RomHacking;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.HexEditor
@@ -70,15 +73,97 @@ namespace WpfHexEditor.HexEditor
 
         /// <inheritdoc />
         /// <remarks>
-        /// Returns <see langword="null"/> when the editor buffer is clean (unmodified).
-        /// Full byte-level modification patch serialisation is deferred to a future sprint.
+        /// Serialises all in-memory byte-level changes as a compact IPS patch.
+        /// Returns <see langword="null"/> when the buffer is clean.
         /// </remarks>
-        public byte[]? GetUnsavedModifications() => IsModified ? [] : null;
+        public byte[]? GetUnsavedModifications()
+        {
+            if (!IsModified || !IsFileOrStreamLoaded)
+                return null;
+
+            try
+            {
+                var original = GetAllBytes(copyChange: false);
+                var modified = GetAllBytes(copyChange: true);
+                return IPSPatcher.CreatePatch(original, modified);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         /// <inheritdoc />
+        /// <remarks>
+        /// Re-applies an IPS patch (previously returned by <see cref="GetUnsavedModifications"/>)
+        /// on top of the currently loaded file bytes.
+        /// </remarks>
         public void ApplyUnsavedModifications(byte[] data)
         {
-            // Placeholder — no-op until GetUnsavedModifications is fully implemented.
+            if (data == null || data.Length == 0 || !IsFileOrStreamLoaded)
+                return;
+
+            try
+            {
+                var baseData = GetAllBytes(copyChange: false);
+                var result   = IPSPatcher.ApplyPatchFromBytes(ref baseData, data);
+                if (result.Success)
+                    OpenMemory(baseData);
+            }
+            catch
+            {
+                // Silently ignore — the editor stays on the clean file
+            }
+        }
+
+        // ── IEditorPersistable — WHChg changeset ─────────────────────────────
+
+        /// <inheritdoc />
+        public ChangesetSnapshot GetChangesetSnapshot()
+        {
+            if (_viewModel == null || !IsFileOrStreamLoaded)
+                return ChangesetSnapshot.Empty;
+            return _viewModel.Provider.GetChangesetSnapshot();
+        }
+
+        /// <inheritdoc />
+        public void ApplyChangeset(ChangesetDto changeset)
+        {
+            if (changeset == null || !IsFileOrStreamLoaded) return;
+            try
+            {
+                var baseData = GetAllBytes(copyChange: false);
+                var result   = ChangesetApplier.Apply(baseData, changeset);
+                OpenMemory(result);
+            }
+            catch
+            {
+                // Silently ignore — editor stays on the clean file
+            }
+        }
+
+        // ── IEditorPersistable — Bookmarks ────────────────────────────────────
+        // Explicit interface implementation to avoid collision with the existing
+        // public long[] GetBookmarks() method in HexEditor.Bookmarks.cs.
+
+        /// <inheritdoc />
+        IReadOnlyList<BookmarkDto>? IEditorPersistable.GetBookmarks()
+        {
+            if (_bookmarks.Count == 0)
+                return null;
+
+            var result = new List<BookmarkDto>(_bookmarks.Count);
+            foreach (var offset in _bookmarks)
+                result.Add(new BookmarkDto { Offset = offset, Length = 1, Label = "" });
+            return result;
+        }
+
+        /// <inheritdoc />
+        void IEditorPersistable.ApplyBookmarks(IReadOnlyList<BookmarkDto> bookmarks)
+        {
+            if (bookmarks == null) return;
+            foreach (var dto in bookmarks)
+                SetBookmark(dto.Offset);
         }
     }
 }

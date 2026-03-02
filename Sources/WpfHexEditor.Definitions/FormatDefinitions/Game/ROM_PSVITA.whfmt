@@ -1,0 +1,156 @@
+{
+  "formatName": "PlayStation Vita Package",
+  "version": "2.4",
+  "extensions": [
+    ".vpk",
+    ".pkg"
+  ],
+  "description": "PlayStation Vita VPK/PKG package format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PlayStation Vita VPK Package Format",
+      "PS Vita PKG Format with NoNpDrm",
+      "Vita SDK and Homebrew Packaging"
+    ],
+    "WebLinks": [
+      "https://www.psdevwiki.com/vita/VPK",
+      "https://www.retroreversing.com/playstation-vita-file-formats",
+      "https://vitasdk.org/",
+      "https://github.com/blastrock/pkgj"
+    ]
+  },
+  "detection": {
+    "signature": "7F504B47",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "crc32Valid": false,
+    "originalSize": 0,
+    "compressionRatio": 0,
+    "pkgMagic": "",
+    "packageType": 0,
+    "pkgInfoOffset": 0,
+    "contentSize": 0,
+    "titleId": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PKG Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "uint32",
+      "description": "PSVita PKG magic: 0x7F 0x50 0x4B 0x47",
+      "storeAs": "pkgMagic"
+    },
+    {
+      "type": "field",
+      "name": "Package Type",
+      "offset": 4,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "description": "Package type: PSVita format",
+      "storeAs": "packageType"
+    },
+    {
+      "type": "field",
+      "name": "PKG Info Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Offset to package information",
+      "storeAs": "pkgInfoOffset"
+    },
+    {
+      "type": "field",
+      "name": "Content Size",
+      "offset": 16,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint64",
+      "description": "Content data size (64-bit)",
+      "storeAs": "contentSize"
+    },
+    {
+      "type": "field",
+      "name": "Title ID",
+      "offset": 48,
+      "length": 12,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "PSVita title identifier",
+      "storeAs": "titleId"
+    },
+    {
+      "type": "metadata",
+      "name": "CRC Valid",
+      "variable": "crc32Valid",
+      "description": "CRC Valid"
+    },
+    {
+      "type": "metadata",
+      "name": "Original Size",
+      "variable": "originalSize",
+      "description": "Original Size"
+    }
+  ],
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".vpk",
+      ".pkg"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 50,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 7,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": true
+  },
+  "TechnicalDetails": {
+    "Platform": "PlayStation Vita"
+  },
+  "functions": {
+    "calculateCRC32": "Validate CRC",
+    "readUInt32LE": "Read size"
+  }
+}

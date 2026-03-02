@@ -1,8 +1,16 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using WpfHexEditor.Core.CharacterTable;
 
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Represents a conflict detected in TBL file</summary>
+/// <summary>
+/// Represents a conflict detected in TBL file
+/// </summary>
 public class TblConflict
 {
     public ConflictType Type { get; set; }

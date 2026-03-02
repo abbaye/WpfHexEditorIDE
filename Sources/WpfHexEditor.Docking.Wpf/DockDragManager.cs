@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System.Windows;
@@ -95,10 +95,18 @@ public class DockDragManager
         var targetNode = targetTab?.Node;
         var isSelfDrag = targetNode != null && targetNode == _originalGroup;
 
+        // Documents can only dock to DocumentTabHost; suppress compass over tool panels
+        bool isDocumentDrag = _draggedItem?.IsDocument == true;
+        bool showCompass = !isSelfDrag && targetTab != null && targetNode != null
+            && (!isDocumentDrag || targetTab is DocumentTabHost);
+
         // --- Panel overlay ---
-        if (!isSelfDrag && targetTab != null && targetNode != null)
+        if (showCompass)
         {
             _targetGroup = targetNode;
+
+            // Documents get equal 50/50 split; tool panels use the default 25/75
+            _panelOverlay.SplitRatio = isDocumentDrag ? 0.5 : 0.25;
 
             // Only reposition when the target element changes
             if (_targetElement != targetTab)
@@ -109,7 +117,7 @@ public class DockDragManager
         }
         else
         {
-            // Self-drag or no target: hide panel overlay
+            // Self-drag, no target, or document dragged over a panel: hide panel overlay
             _targetElement = null;
             _panelOverlay.HighlightedDirection = null;
             if (_panelOverlay.IsVisible) _panelOverlay.Hide();
@@ -301,9 +309,15 @@ public class DockDragManager
 
         if (dockBounds.Contains(screenPos))
         {
-            // Show edge overlay if not visible
-            if (!_edgeOverlay.IsVisible)
+            // Show edge overlay only for panel drags (documents use the panel compass on DocumentTabHost)
+            if (_draggedItem?.IsDocument == true)
+            {
+                if (_edgeOverlay.IsVisible) { _edgeOverlay.HighlightedDirection = null; _edgeOverlay.Hide(); }
+            }
+            else if (!_edgeOverlay.IsVisible)
+            {
                 _edgeOverlay.ShowOverTarget(_dockControl.CenterHost);
+            }
 
             // Convert screen position to CenterHost local coords for hit testing
             var localInCenterHost = _dockControl.CenterHost.PointFromScreen(screenPos);
@@ -334,6 +348,8 @@ public class DockDragManager
 
         if (_lastDirection.HasValue && _targetGroup != null)
         {
+            bool isDocumentDrop = _draggedItem?.IsDocument == true;
+
             // Multi-item floating group: dock ALL items, not just the active one
             var floatingItems = _sourceFloatingWindow.Node?.Items.ToList();
 
@@ -346,10 +362,19 @@ public class DockDragManager
                     if (landingGroup is null)
                     {
                         // First item creates the split (or joins Center)
-                        engine.Dock(item, _targetGroup, _lastDirection.Value);
-                        landingGroup = _lastDirection.Value == DockDirection.Center
-                            ? _targetGroup
-                            : item.Owner;
+                        if (isDocumentDrop && _lastDirection.Value != DockDirection.Center
+                            && _targetGroup is DocumentHostNode docHostMulti)
+                        {
+                            engine.SplitDocumentHost(item, docHostMulti, _lastDirection.Value);
+                            landingGroup = item.Owner;
+                        }
+                        else
+                        {
+                            engine.Dock(item, _targetGroup, _lastDirection.Value);
+                            landingGroup = _lastDirection.Value == DockDirection.Center
+                                ? _targetGroup
+                                : item.Owner;
+                        }
                     }
                     else
                     {
@@ -360,7 +385,11 @@ public class DockDragManager
             }
             else
             {
-                engine.Dock(_draggedItem, _targetGroup, _lastDirection.Value);
+                if (isDocumentDrop && _lastDirection.Value != DockDirection.Center
+                    && _targetGroup is DocumentHostNode docHost)
+                    engine.SplitDocumentHost(_draggedItem, docHost, _lastDirection.Value);
+                else
+                    engine.Dock(_draggedItem, _targetGroup, _lastDirection.Value);
             }
 
             _dockControl.RebuildVisualTree();
@@ -388,16 +417,32 @@ public class DockDragManager
     /// </summary>
     private void UpdateSnapPreview(Point screenPos)
     {
-        if (!_lastDirection.HasValue || _targetElement is null)
+        if (!_lastDirection.HasValue)
         {
             HideSnapPreview();
             return;
         }
 
-        // Determine the target element for snap zone calculation
-        var target = _lastDirection.HasValue && _targetGroup == _dockControl.Layout?.MainDocumentHost
+        // The panel compass already draws its own _previewZone rectangle inside the overlay.
+        // Showing a separate snap-preview window on top would create a duplicate rectangle.
+        if (_panelOverlay is { IsVisible: true } && _panelOverlay.HighlightedDirection.HasValue)
+        {
+            HideSnapPreview();
+            return;
+        }
+
+        // Determine the target element for snap zone calculation.
+        // Edge indicators target MainDocumentHost → use CenterHost as the visual reference.
+        // Panel compass indicators target a specific group → use the hovered DockTabControl.
+        var target = _targetGroup == _dockControl.Layout?.MainDocumentHost
             ? (UIElement)_dockControl.CenterHost
             : _targetElement;
+
+        if (target is null)
+        {
+            HideSnapPreview();
+            return;
+        }
 
         var tl = target.PointToScreen(new Point(0, 0));
         var br = target.PointToScreen(new Point(target.RenderSize.Width, target.RenderSize.Height));
@@ -406,12 +451,14 @@ public class DockDragManager
         var tw = dipBr.X - dipTl.X;
         var th = dipBr.Y - dipTl.Y;
 
+        // Documents use 50/50 split ratio; tool panels use the default 25/75
+        var r = _draggedItem?.IsDocument == true ? 0.5 : 0.25;
         var zone = _lastDirection.Value switch
         {
-            DockDirection.Left   => new Rect(dipTl.X, dipTl.Y, tw * 0.25, th),
-            DockDirection.Right  => new Rect(dipTl.X + tw * 0.75, dipTl.Y, tw * 0.25, th),
-            DockDirection.Top    => new Rect(dipTl.X, dipTl.Y, tw, th * 0.25),
-            DockDirection.Bottom => new Rect(dipTl.X, dipTl.Y + th * 0.75, tw, th * 0.25),
+            DockDirection.Left   => new Rect(dipTl.X, dipTl.Y, tw * r, th),
+            DockDirection.Right  => new Rect(dipTl.X + tw * (1 - r), dipTl.Y, tw * r, th),
+            DockDirection.Top    => new Rect(dipTl.X, dipTl.Y, tw, th * r),
+            DockDirection.Bottom => new Rect(dipTl.X, dipTl.Y + th * (1 - r), tw, th * r),
             DockDirection.Center => new Rect(dipTl.X, dipTl.Y, tw, th),
             _                    => Rect.Empty
         };

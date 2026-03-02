@@ -1,0 +1,51 @@
+{
+  "name": "Lua",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for the Lua scripting language.",
+  "category": "Scripting",
+  "extensions": [ ".lua" ],
+  "lineComment": "--",
+  "blockCommentStart": "--[[",
+  "blockCommentEnd": "]]",
+  "references": {
+    "specifications": [
+      "Lua 5.4 Reference Manual"
+    ],
+    "webLinks": [
+      "https://www.lua.org/manual/5.4/"
+    ]
+  },
+  "rules": [
+    {
+      "type": "Keyword",
+      "pattern": "\\b(and|break|do|else|elseif|end|false|for|function|goto|if|in|local|nil|not|or|repeat|return|then|true|until|while)\\b",
+      "colorKey": "TE_Keyword"
+    },
+    {
+      "type": "Type",
+      "pattern": "\\b(string|table|math|io|os|file|coroutine|package|debug|utf8|pairs|ipairs|next|select|type|tostring|tonumber|print|error|assert|pcall|xpcall|rawget|rawset|rawequal|rawlen|require|load|loadfile|dofile|collectgarbage|getmetatable|setmetatable|unpack|table\\.concat|table\\.insert|table\\.remove|table\\.sort|table\\.unpack|table\\.move|string\\.format|string\\.find|string\\.match|string\\.gmatch|string\\.gsub|string\\.len|string\\.sub|string\\.byte|string\\.char|string\\.upper|string\\.lower|string\\.rep|string\\.reverse|math\\.abs|math\\.ceil|math\\.floor|math\\.max|math\\.min|math\\.random|math\\.sqrt|math\\.huge|math\\.pi|io\\.read|io\\.write|io\\.open|os\\.clock|os\\.date|os\\.time|os\\.exit)\\b",
+      "colorKey": "TE_Type"
+    },
+    {
+      "type": "Number",
+      "pattern": "\\b(0x[0-9A-Fa-f]+|[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)\\b",
+      "colorKey": "TE_Number"
+    },
+    {
+      "type": "String",
+      "pattern": "(\\[=*\\[[\\s\\S]*?\\]=*\\]|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "BlockComment",
+      "pattern": "--\\[=*\\[[\\s\\S]*?\\]=*\\]",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "Comment",
+      "pattern": "--.*$",
+      "colorKey": "TE_Comment"
+    }
+  ]
+}

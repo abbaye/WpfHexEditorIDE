@@ -2,7 +2,7 @@
 // Apache 2.0  - 2026
 // File Comparison - Difference Model
 // Author : Claude Sonnet 4.5
-// Contributors: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System.ComponentModel;
@@ -15,13 +15,21 @@ namespace WpfHexEditor.Core.Models.Comparison
     /// </summary>
     public enum DifferenceType
     {
-        /// <summary>Bytes are identical</summary>
+        /// <summary>
+        /// Bytes are identical
+        /// </summary>
         Identical,
-        /// <summary>Bytes are different</summary>
+        /// <summary>
+        /// Bytes are different
+        /// </summary>
         Modified,
-        /// <summary>Byte exists only in first file</summary>
+        /// <summary>
+        /// Byte exists only in first file
+        /// </summary>
         DeletedInSecond,
-        /// <summary>Byte exists only in second file</summary>
+        /// <summary>
+        /// Byte exists only in second file
+        /// </summary>
         AddedInSecond
     }
 

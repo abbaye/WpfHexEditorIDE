@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using System.IO;
 using System.Text;
 using WpfHexEditor.Core.CharacterTable;
@@ -5,7 +11,9 @@ using WpfHexEditor.Editor.TblEditor.Models;
 
 namespace WpfHexEditor.Editor.TblEditor.Services;
 
-/// <summary>Service for managing TBL templates (built-in and user-defined)</summary>
+/// <summary>
+/// Service for managing TBL templates (built-in and user-defined)
+/// </summary>
 public class TblTemplateService
 {
     private readonly string _userTemplatesPath;

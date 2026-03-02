@@ -57,11 +57,6 @@
     </None>
   </ItemGroup>
 
-  <!-- Embed all FormatDefinitions .whjson files as resources (400+ formats built-in) -->
-  <ItemGroup>
-    <EmbeddedResource Include="FormatDefinitions\**\*.whjson" />
-  </ItemGroup>
-
   <!-- Span<T> and System.Text.Json support for .NET Framework 4.8 -->
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <PackageReference Include="System.Memory" Version="4.5.5" />
@@ -96,10 +91,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
   <ItemGroup>

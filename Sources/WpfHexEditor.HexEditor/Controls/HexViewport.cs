@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 // High-performance custom rendering viewport for HexEditor (V2 architecture)
 //////////////////////////////////////////////
 
@@ -3226,10 +3226,14 @@ namespace WpfHexEditor.HexEditor.Controls
     /// </summary>
     public class OffsetLineSelectionEventArgs : EventArgs
     {
-        /// <summary>First byte position of the first selected line</summary>
+        /// <summary>
+        /// First byte position of the first selected line
+        /// </summary>
         public long StartPosition { get; }
 
-        /// <summary>Last byte position of the last selected line</summary>
+        /// <summary>
+        /// Last byte position of the last selected line
+        /// </summary>
         public long EndPosition { get; }
 
         public OffsetLineSelectionEventArgs(long startPosition, long endPosition)

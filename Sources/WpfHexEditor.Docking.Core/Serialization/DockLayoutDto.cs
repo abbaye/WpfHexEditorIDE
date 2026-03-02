@@ -1,8 +1,10 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
+
+using WpfHexEditor.Docking.Core;
 
 namespace WpfHexEditor.Docking.Core.Serialization;
 
@@ -64,6 +66,7 @@ public class DockItemDto
     public bool CanClose { get; set; } = true;
     public bool CanFloat { get; set; } = true;
     public bool IsPinned { get; set; }
+    public bool IsDocument { get; set; }
     public DockItemState State { get; set; }
     public DockSide LastDockSide { get; set; } = DockSide.Bottom;
     public double? FloatLeft { get; set; }
@@ -71,6 +74,28 @@ public class DockItemDto
     public double? FloatWidth { get; set; }
     public double? FloatHeight { get; set; }
     public Dictionary<string, string>? Metadata { get; set; }
+}
+
+/// <summary>
+/// DTO for a single regex colorization rule.
+/// </summary>
+public class RegexColorRuleDto
+{
+    public required string Pattern { get; set; }
+    /// <summary>Color stored as #AARRGGBB hex string.</summary>
+    public required string ColorHex { get; set; }
+}
+
+/// <summary>
+/// DTO for <see cref="DocumentTabBarSettings"/>.
+/// </summary>
+public class DocumentTabBarSettingsDto
+{
+    public DocumentTabPlacement TabPlacement { get; set; } = DocumentTabPlacement.Top;
+    public DocumentTabColorMode ColorMode { get; set; } = DocumentTabColorMode.None;
+    public bool MultiRowTabs { get; set; }
+    public bool MultiRowWithMouseWheel { get; set; } = true;
+    public List<RegexColorRuleDto> RegexRules { get; set; } = [];
 }
 
 /// <summary>
@@ -83,6 +108,11 @@ public class DockLayoutRootDto
     public List<DockItemDto> FloatingItems { get; set; } = [];
     public List<DockItemDto> AutoHideItems { get; set; } = [];
     public List<DockItemDto> HiddenItems { get; set; } = [];
+
+    /// <summary>
+    /// Document tab bar settings. Null in old layouts → default settings at runtime.
+    /// </summary>
+    public DocumentTabBarSettingsDto? TabBarSettings { get; set; }
 
     /// <summary>
     /// Main window state: 0 = Normal, 1 = Minimized, 2 = Maximized.

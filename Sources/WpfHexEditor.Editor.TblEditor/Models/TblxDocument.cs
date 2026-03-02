@@ -1,8 +1,16 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using WpfHexEditor.Core.CharacterTable;
 
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Complete .tblx document structure</summary>
+/// <summary>
+/// Complete .tblx document structure
+/// </summary>
 public class TblxDocument
 {
     public string Format { get; set; } = "tblx";

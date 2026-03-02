@@ -1,6 +1,14 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Options for JSON import</summary>
+/// <summary>
+/// Options for JSON import
+/// </summary>
 public class JsonImportOptions
 {
     public bool AutoDetectType { get; set; } = true;

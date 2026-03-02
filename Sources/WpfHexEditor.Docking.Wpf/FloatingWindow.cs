@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System.Windows;
@@ -85,32 +85,32 @@ public class FloatingWindow : Window
         {
             var btn = new Button
             {
-                Content  = content,
-                FontSize = 12,
-                ToolTip  = tooltip
+                Content    = content,
+                FontSize   = 10,
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                ToolTip    = tooltip
             };
             if (TryFindResource("DockTitleButtonStyle") is Style titleStyle)
                 btn.Style = titleStyle;
             return btn;
         }
 
-        // Close button
-        var closeButton = MakeTitleButton("\u2715", "Close");
+        // Close button (ChromeClose MDL2)
+        var closeButton = MakeTitleButton("\uE8BB", "Close");
         closeButton.Click += (_, _) =>
         {
             if (Item is not null) TabCloseRequested?.Invoke(Item);
         };
 
-        // Pin button (dock)
-        var pinButton = MakeTitleButton("\uD83D\uDCCC", "Dock");
+        // Pin button (Pin MDL2 — dock)
+        var pinButton = MakeTitleButton("\uE141", "Dock");
         pinButton.Click += (_, _) =>
         {
             if (Item is not null) ReDockRequested?.Invoke(Item);
         };
 
-        // Chevron dropdown button
-        var chevronButton = MakeTitleButton("\u25BC", "Options");
-        chevronButton.FontSize = 9;
+        // Chevron dropdown button (ChevronDown MDL2)
+        var chevronButton = MakeTitleButton("\uE70D", "Options");
         chevronButton.Click += (sender, _) =>
         {
             if (Item is null || sender is not Button btn) return;
@@ -390,8 +390,16 @@ public class FloatingWindowManager
 
         window.TabCloseRequested += i =>
         {
-            _dockControl.Engine?.Close(i);
-            if (window.Node?.IsEmpty == true) window.Close();
+            // Route through RaiseTabCloseRequested so the host (MainWindow) can run its cleanup
+            // (cache eviction, ParsedFields disconnect, dirty-close prompt, etc.).
+            // RaiseTabCloseRequested → TabCloseRequested → host.OnTabCloseRequested
+            // → engine.Close → ItemClosed → OnItemClosed → CloseWindowForItem → window.Close().
+            _dockControl.RaiseTabCloseRequested(i);
+
+            // Multi-item group fallback: if CloseWindowForItem didn't close this window
+            // (because window.Item differs from i), close it now when the node is empty.
+            if (window.IsLoaded && window.Node?.IsEmpty == true)
+                window.Close();
         };
 
         window.ReDockRequested += i =>

@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -119,7 +125,9 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
 
     public TblEntryViewModel? SelectedEntry { get; set; }
 
-    /// <summary>Marks the document dirty from external callers (e.g. inline cell edits).</summary>
+    /// <summary>
+    /// Marks the document dirty from external callers (e.g. inline cell edits).
+    /// </summary>
     internal void MarkDirty() => IsDirty = true;
 
     // ── Undo / Redo state ──────────────────────────────────────────────────
@@ -163,6 +171,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
             await _validationService.ValidateAllAsync(_entries, ct);
             await RunAnalysisAsync();
         }
+        catch (OperationCanceledException) { }
         finally { IsLoading = false; }
     }
 
@@ -171,9 +180,8 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
     public void Save()
     {
         if (_source == null) return;
-        var existing = _source.GetAllEntries().ToList();
-        foreach (var d in existing) _source.Remove(d);
-        foreach (var vm in _entries) { var d = vm.ToDto(); if (d.IsValid) _source.Add(d); }
+        _source.Clear();
+        foreach (var vm in _entries) { var d = vm.ToDto(); if (d.IsValid) _source[d.Entry] = d; }
         IsDirty = false;
     }
 
@@ -206,7 +214,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
     public void AddEntry(Dte? template = null)
     {
         if (IsReadOnly) return;
-        var dte  = template ?? new Dte("00", "?");
+        var dte  = template ?? new Dte(FindFirstFreeSlot(), "?");
         var vm   = new TblEntryViewModel(dte);
         var cmd  = new AddEntryCommand(_entries, vm);
         cmd.Execute();
@@ -247,6 +255,19 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
         ApplyFilter();
     }
 
+    // ── Force reanalysis ───────────────────────────────────────────────────
+
+    /// <summary>
+    /// Re-runs both entry validation and conflict analysis on all in-memory entries,
+    /// then refreshes statistics. Called by <see cref="Controls.TblEditor.ForceValidationAsync"/>.
+    /// </summary>
+    internal async Task ForceReanalysisAsync(CancellationToken ct = default)
+    {
+        await _validationService.ValidateAllAsync(_entries, ct);
+        await RunAnalysisAsync();
+        UpdateStatistics();
+    }
+
     // ── GoTo ───────────────────────────────────────────────────────────────
 
     public TblEntryViewModel? FindEntry(string hexKey)
@@ -256,6 +277,21 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
 
     private void ExecuteAdd()    => AddEntry();
     private void ExecuteDelete() => DeleteSelected();
+
+    /// <summary>
+    /// Returns the first single-byte hex slot ("00"–"FF") not already used by an existing entry.
+    /// Falls back to "00" if all 256 slots are taken.
+    /// </summary>
+    private string FindFirstFreeSlot()
+    {
+        for (int i = 0; i <= 0xFF; i++)
+        {
+            var candidate = i.ToString("X2");
+            if (!_validationService.HasDuplicateEntry(candidate, _entries))
+                return candidate;
+        }
+        return "00";
+    }
 
     private void ApplyFilter()
     {
@@ -310,8 +346,8 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
 
     private async Task RunAnalysisAsync()
     {
-        _analysisCts.Cancel();
-        _analysisCts.Dispose();
+        try { _analysisCts.Cancel(); } catch (ObjectDisposedException) { }
+        try { _analysisCts.Dispose(); } catch (ObjectDisposedException) { }
         _analysisCts = new CancellationTokenSource();
         var ct = _analysisCts.Token;
         IsAnalyzing = true;
@@ -319,13 +355,23 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
         {
             var conflicts = await _conflictAnalyzer.AnalyzeConflictsAsync(_entries, ct);
             if (ct.IsCancellationRequested) return;
-            var conflictKeys = new HashSet<string>(
-                conflicts.SelectMany(c => c.ConflictingEntries).Select(d => d.Entry.ToUpperInvariant()));
+
+            // Only the SHORT prefix entry is ambiguous — do not mark longer entries as conflicting.
+            // For duplicates, both entries are equally problematic.
+            var conflictKeys = new HashSet<string>();
+            foreach (var c in conflicts)
+            {
+                if (c.Type == ConflictType.PrefixConflict && c.ConflictingEntries.Count > 0)
+                    conflictKeys.Add(c.ConflictingEntries[0].Entry.ToUpperInvariant());
+                else
+                    foreach (var e in c.ConflictingEntries)
+                        conflictKeys.Add(e.Entry.ToUpperInvariant());
+            }
             foreach (var vm in _entries)
                 vm.HasConflict = conflictKeys.Contains(vm.Entry.ToUpperInvariant());
         }
         catch (OperationCanceledException) { }
-        finally { if (!ct.IsCancellationRequested) IsAnalyzing = false; }
+        finally { IsAnalyzing = false; }
     }
 
     private void PushUndo(ITblCommand cmd)

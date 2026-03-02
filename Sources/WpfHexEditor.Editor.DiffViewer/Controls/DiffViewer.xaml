@@ -1,0 +1,93 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<UserControl x:Class="WpfHexEditor.Editor.DiffViewer.Controls.DiffViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource TE_Background}"
+             Focusable="True">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <ToolBar Grid.Row="0" Background="{DynamicResource TE_LineNumberBackground}">
+            <Button x:Name="BtnPrevDiff" Content="◀ Prev" ToolTip="Previous difference (Shift+F8)"
+                    Click="BtnPrevDiff_Click" Padding="8,3" IsEnabled="False"/>
+            <Button x:Name="BtnNextDiff" Content="Next ▶" ToolTip="Next difference (F8)"
+                    Click="BtnNextDiff_Click" Padding="8,3" IsEnabled="False"/>
+            <Separator/>
+            <TextBlock x:Name="DiffCountText" Text="—" VerticalAlignment="Center" Padding="4,0"
+                       Foreground="{DynamicResource TE_LineNumberForeground}"/>
+        </ToolBar>
+
+        <!-- Side-by-side panel -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left panel -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="LeftHeader" Grid.Row="0"
+                           Text="— (left)"
+                           Background="{DynamicResource TE_LineNumberBackground}"
+                           Foreground="{DynamicResource TE_LineNumberForeground}"
+                           Padding="6,3" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                <ScrollViewer x:Name="LeftScroll" Grid.Row="1"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              Background="{DynamicResource TE_Background}">
+                    <Canvas x:Name="LeftCanvas" Background="{DynamicResource TE_Background}"/>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" Width="4"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource TE_LineNumberBackground}"/>
+
+            <!-- Right panel -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="RightHeader" Grid.Row="0"
+                           Text="— (right)"
+                           Background="{DynamicResource TE_LineNumberBackground}"
+                           Foreground="{DynamicResource TE_LineNumberForeground}"
+                           Padding="6,3" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                <ScrollViewer x:Name="RightScroll" Grid.Row="1"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              Background="{DynamicResource TE_Background}">
+                    <Canvas x:Name="RightCanvas" Background="{DynamicResource TE_Background}"/>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+        <!-- Status bar -->
+        <StatusBar Grid.Row="2"
+                   Background="{DynamicResource TE_LineNumberBackground}"
+                   Foreground="{DynamicResource TE_LineNumberForeground}"
+                   Height="22">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Open two files via Tools > Compare Files…" Padding="4,0"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</UserControl>

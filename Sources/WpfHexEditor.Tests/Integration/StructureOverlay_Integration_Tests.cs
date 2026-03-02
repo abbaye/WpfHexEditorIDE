@@ -2,13 +2,13 @@
 // Apache 2.0  - 2026
 // Structure Overlay Integration Tests
 // Author : Claude Sonnet 4.5
-// Contributors: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using WpfHexEditor.Core.Services;
 
 namespace WpfHexEditor.Tests.Integration
@@ -67,7 +67,7 @@ namespace WpfHexEditor.Tests.Integration
         public void CreateOverlayFromFormat_SimpleSignature_CreatesSignatureField()
         {
             // Arrange
-            var formatDef = JObject.Parse(@"
+            var formatDef = JsonNode.Parse(@"
             {
                 ""formatName"": ""Test Format"",
                 ""version"": ""1.0"",
@@ -77,7 +77,7 @@ namespace WpfHexEditor.Tests.Integration
                         ""expected"": ""50 4B 03 04""
                     }
                 ]
-            }");
+            }")!.AsObject();
             var fileBytes = new byte[] { 0x50, 0x4B, 0x03, 0x04, 0x00, 0x00 };
 
             // Act
@@ -94,7 +94,7 @@ namespace WpfHexEditor.Tests.Integration
         public void CreateOverlayFromFormat_WithFields_CreatesFieldOverlays()
         {
             // Arrange
-            var formatDef = JObject.Parse(@"
+            var formatDef = JsonNode.Parse(@"
             {
                 ""formatName"": ""Test Format"",
                 ""version"": ""1.0"",
@@ -115,7 +115,7 @@ namespace WpfHexEditor.Tests.Integration
                         ]
                     }
                 ]
-            }");
+            }")!.AsObject();
             var fileBytes = new byte[10];
 
             // Act
@@ -146,7 +146,7 @@ namespace WpfHexEditor.Tests.Integration
         public void CreateOverlayFromFormat_NullBytes_ReturnsNull()
         {
             // Arrange
-            var formatDef = JObject.Parse(@"{""formatName"":""Test"",""version"":""1.0"",""blocks"":[]}");
+            var formatDef = JsonNode.Parse(@"{""formatName"":""Test"",""version"":""1.0"",""blocks"":[]}") !.AsObject();
 
             // Act
             var overlay = _service.CreateOverlayFromFormat(formatDef, null);
@@ -159,12 +159,12 @@ namespace WpfHexEditor.Tests.Integration
         public void CreateOverlayFromFormat_EmptyBlocks_ReturnsNull()
         {
             // Arrange
-            var formatDef = JObject.Parse(@"
+            var formatDef = JsonNode.Parse(@"
             {
                 ""formatName"": ""Test"",
                 ""version"": ""1.0"",
                 ""blocks"": []
-            }");
+            }")!.AsObject();
 
             // Act
             var overlay = _service.CreateOverlayFromFormat(formatDef, new byte[10]);

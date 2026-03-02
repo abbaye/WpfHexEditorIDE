@@ -1,0 +1,19 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Fallback values for TE_* keys used by StructureEditor.
+         Overridden by the host application's theme ResourceDictionary. -->
+
+    <SolidColorBrush x:Key="TE_Background"           Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="TE_Foreground"           Color="#D4D4D4"/>
+    <SolidColorBrush x:Key="TE_LineNumberBackground" Color="#252526"/>
+    <SolidColorBrush x:Key="TE_LineNumberForeground" Color="#6E7681"/>
+    <SolidColorBrush x:Key="TE_SelectionBackground"  Color="#264F78"/>
+
+</ResourceDictionary>

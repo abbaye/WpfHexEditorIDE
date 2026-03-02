@@ -1,0 +1,163 @@
+{
+  "formatName": "Xbox 360 Disc Image",
+  "version": "2.5",
+  "extensions": [
+    ".iso",
+    ".xex"
+  ],
+  "description": "Microsoft Xbox 360 disc image and executable format",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "XEX (Xbox 360 Executable) File Format",
+      "Xbox 360 Executable Container Specification",
+      "Free60 XEX Documentation"
+    ],
+    "WebLinks": [
+      "https://free60.org/System-Software/Formats/XEX/",
+      "https://docs.fileformat.com/executable/xex/",
+      "http://www.noxa.org/blog/2011/08/13/building-an-xbox-360-emulator-part-5-xex-files/",
+      "https://fileinfo.com/extension/xex"
+    ]
+  },
+  "detection": {
+    "signature": "58455832",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "width": 0,
+    "height": 0,
+    "totalPixels": 0,
+    "bitsPerPixel": 0,
+    "xex2Magic": "",
+    "moduleFlags": 0,
+    "peDataOffset": 0,
+    "securityInfoOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "XEX2 Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "uint32",
+      "description": "XEX2 executable magic (0x58 0x45 0x58 0x32)",
+      "storeAs": "xex2Magic"
+    },
+    {
+      "type": "field",
+      "name": "Module Flags",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Module flags (title, exports, debugger, etc.)",
+      "storeAs": "moduleFlags"
+    },
+    {
+      "type": "field",
+      "name": "PE Data Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Offset to PE executable data",
+      "storeAs": "peDataOffset"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 12,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "hidden": true,
+      "description": "Reserved"
+    },
+    {
+      "type": "field",
+      "name": "Security Info Offset",
+      "offset": 16,
+      "length": 4,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Offset to security/certificate data",
+      "storeAs": "securityInfoOffset"
+    },
+    {
+      "type": "metadata",
+      "name": "Width",
+      "variable": "width",
+      "description": "Width"
+    },
+    {
+      "type": "metadata",
+      "name": "Height",
+      "variable": "height",
+      "description": "Height"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Pixels",
+      "variable": "totalPixels",
+      "description": "Total Pixels"
+    }
+  ],
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".iso",
+      ".xex"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 47,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 8,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": true
+  },
+  "TechnicalDetails": {
+    "Platform": "Xbox 360"
+  },
+  "functions": {
+    "readUInt32LE": "Read dimensions",
+    "multiply": "Calculate pixels",
+    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  }
+}

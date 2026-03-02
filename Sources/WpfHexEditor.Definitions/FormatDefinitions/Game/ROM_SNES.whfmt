@@ -1,0 +1,256 @@
+{
+  "formatName": "Super Nintendo ROM",
+  "version": "3.2",
+  "extensions": [
+    ".smc",
+    ".sfc"
+  ],
+  "description": "Super Nintendo Entertainment System ROM (HiROM internal header at $FFB0-$FFFF)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "SNES Internal ROM Header Specification",
+      "SNESdev Wiki ROM Header Documentation",
+      "Super Nintendo Software Specification"
+    ],
+    "WebLinks": [
+      "https://snes.nesdev.org/wiki/ROM_header",
+      "https://sneslab.net/wiki/SNES_ROM_Header",
+      "https://wiki.superfamicom.org/writing-the-header",
+      "https://en.wikibooks.org/wiki/Super_NES_Programming/SNES_memory_map"
+    ]
+  },
+  "detection": {
+    "signature": "33",
+    "offset": 65498,
+    "required": false,
+    "validation": {
+      "min_file_size": 32768,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "gameTitle": "",
+    "romLayout": 0,
+    "romType": 0,
+    "romSize": 0,
+    "ramSize": 0,
+    "regionCode": 0,
+    "developerId": 0,
+    "version": 0,
+    "checksumComplement": 0,
+    "checksum": 0,
+    "nativeModeVectors": "",
+    "emulationModeVectors": "",
+    "checksumTotal": 0,
+    "formattedSize": ""
+  },
+  "functions": {
+    "validateFieldRange(romLayout, 32, 37)": "Validate ROM layout mode (0x20-0x25)",
+    "validateFieldRange(regionCode, 0, 13)": "Validate region code (0x00-0x0D)"
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Game Title",
+      "offset": 65472,
+      "length": 21,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameTitle",
+      "description": "Internal game title (21 ASCII chars, space-padded)"
+    },
+    {
+      "type": "field",
+      "name": "ROM Layout Mode",
+      "offset": 65493,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "romLayout",
+      "description": "0x20=LoROM | 0x21=HiROM | 0x22=LoROM+S-DD1 | 0x23=LoROM+SA-1 | 0x25=ExHiROM | +0x10=FastROM",
+      "validationRules": {
+        "allowedValues": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53
+        ]
+      }
+    },
+    {
+      "type": "field",
+      "name": "Cartridge Type",
+      "offset": 65494,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "romType",
+      "description": "0x00=ROM | 0x01=ROM+RAM | 0x02=ROM+RAM+Battery | 0x03=ROM+DSP | 0x04=ROM+DSP+RAM | 0x05=ROM+DSP+RAM+Batt"
+    },
+    {
+      "type": "field",
+      "name": "ROM Size (log2 KB)",
+      "offset": 65495,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "romSize",
+      "mappedValueStoreAs": "formattedSize",
+      "description": "ROM size as 2^N KB: 0x07=128KB, 0x08=256KB, 0x09=512KB, 0x0A=1MB, 0x0B=2MB, 0x0C=4MB",
+      "valueMap": {
+        "6": "64 KB",
+        "7": "128 KB",
+        "8": "256 KB",
+        "9": "512 KB",
+        "10": "1 MB",
+        "11": "2 MB",
+        "12": "4 MB",
+        "13": "8 MB"
+      }
+    },
+    {
+      "type": "field",
+      "name": "SRAM Size (log2 KB)",
+      "offset": 65496,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "ramSize",
+      "description": "Save RAM: 0x00=none, 0x01=2KB, 0x02=4KB, 0x03=8KB, 0x05=32KB"
+    },
+    {
+      "type": "field",
+      "name": "Region Code",
+      "offset": 65497,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "regionCode",
+      "description": "0x00=Japan | 0x01=USA/Canada | 0x02=Europe/Oceania | 0x03=Sweden | 0x06=France | 0x09=Germany | 0x0D=Korea"
+    },
+    {
+      "type": "field",
+      "name": "Developer ID",
+      "offset": 65498,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "developerId",
+      "description": "0x33=Extended header (post-1994) | 0x01=Nintendo | Other=Legacy licensee code"
+    },
+    {
+      "type": "field",
+      "name": "Mask ROM Version",
+      "offset": 65499,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "version",
+      "description": "ROM revision number (0x00 = first release, 0x01 = Rev.A, etc.)"
+    },
+    {
+      "type": "field",
+      "name": "Checksum Complement",
+      "offset": 65500,
+      "length": 2,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "checksumComplement",
+      "description": "Bitwise NOT of checksum - pair must equal 0xFFFF"
+    },
+    {
+      "type": "field",
+      "name": "Checksum",
+      "offset": 65502,
+      "length": 2,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "checksum",
+      "description": "16-bit unsigned sum of all ROM bytes (mod 0x10000)"
+    },
+    {
+      "type": "field",
+      "name": "Native Mode Vectors",
+      "offset": 65504,
+      "length": 32,
+      "color": "#B8B8FF",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "storeAs": "nativeModeVectors",
+      "description": "65816 native vectors: COP($FFE4), BRK($FFE6), ABORT($FFE8), NMI($FFEA), RESET($FFEC), IRQ($FFEE)"
+    },
+    {
+      "type": "computeFromVariables",
+      "expression": "checksum + checksumComplement",
+      "storeAs": "checksumTotal"
+    },
+    {
+      "type": "metadata",
+      "name": "Checksum Validation",
+      "variable": "checksumTotal",
+      "description": "Checksum + Complement (must equal 65535 / 0xFFFF)"
+    },
+    {
+      "type": "metadata",
+      "name": "Formatted Size",
+      "variable": "formattedSize",
+      "description": "Human-readable ROM size"
+    }
+  ],
+  "software": [
+    "Snes9x",
+    "ZSNES",
+    "bsnes/higan",
+    "RetroArch",
+    "Mesen-S"
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "TechnicalDetails": {
+    "Platform": "SNES",
+    "primary_extension": ".smc",
+    "defined_fields": 13
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 66,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 13,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-03-01"
+  }
+}

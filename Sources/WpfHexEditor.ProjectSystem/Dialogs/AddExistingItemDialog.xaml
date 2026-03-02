@@ -1,0 +1,211 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<Window x:Class="WpfHexEditor.ProjectSystem.Dialogs.AddExistingItemDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add Existing Item"
+        Width="580" Height="430"
+        MinWidth="480" MinHeight="370"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip"
+        ShowInTaskbar="False"
+        Background="{DynamicResource DockWindowBackgroundBrush}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/WpfHexEditor.ProjectSystem;component/Themes/DialogStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <!-- Row 0: File picker -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 1: spacing -->
+            <RowDefinition Height="8" />
+            <!-- Row 2: Detected type -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 3: spacing -->
+            <RowDefinition Height="10" />
+            <!-- Row 4: separator -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 5: copy options -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 6: spacing -->
+            <RowDefinition Height="10" />
+            <!-- Row 7: separator -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 8: project placement -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 9: spacing -->
+            <RowDefinition Height="10" />
+            <!-- Row 10: separator -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 11: preview -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 12: filler -->
+            <RowDefinition Height="*" />
+            <!-- Row 13: buttons -->
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- ── File picker ──────────────────────────────────────────────── -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="_File(s):" />
+            <TextBox x:Name="FilePathBox" Grid.Column="1"
+                     IsReadOnly="True"
+                     Background="{DynamicResource DockBackgroundBrush}" />
+            <Button Grid.Column="2" Content="Browse…" Margin="6,0,0,0"
+                    Padding="10,5" MinWidth="70"
+                    Click="OnBrowse" />
+        </Grid>
+
+        <!-- ── Detected type ────────────────────────────────────────────── -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Detected type:" />
+            <ComboBox x:Name="TypeCombo" Grid.Column="1"
+                      MinWidth="140"
+                      SelectionChanged="OnTypeChanged" />
+        </Grid>
+
+        <!-- ── Section: Copy options ─────────────────────────────────────── -->
+        <Grid Grid.Row="4" Margin="0,0,0,6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Copy options" FontWeight="SemiBold" Margin="0,0,8,0"
+                       VerticalAlignment="Center" />
+            <Rectangle Grid.Column="1" Height="1"
+                       Fill="{DynamicResource Panel_ToolbarBorderBrush}"
+                       VerticalAlignment="Center" />
+        </Grid>
+
+        <StackPanel Grid.Row="5" Margin="0,0,0,0">
+            <RadioButton x:Name="KeepOriginalRadio"
+                         Content="Keep original location  (reference only)"
+                         GroupName="CopyMode"
+                         Checked="OnCopyModeChanged"
+                         Margin="0,0,0,6" />
+            <RadioButton x:Name="CopyToProjectRadio"
+                         Content="Copy into project"
+                         GroupName="CopyMode"
+                         IsChecked="True"
+                         Checked="OnCopyModeChanged"
+                         Margin="0,0,0,4" />
+            <StackPanel x:Name="SubfolderPanel" Margin="20,0,0,0">
+                <RadioButton x:Name="CopyRootRadio"
+                             Content="Project root"
+                             GroupName="DestMode"
+                             Margin="0,0,0,4" />
+                <RadioButton x:Name="CopyTypeSubfolderRadio"
+                             Content="Type subfolder"
+                             GroupName="DestMode"
+                             IsChecked="True"
+                             Checked="OnDestModeChanged"
+                             Unchecked="OnDestModeChanged" />
+            </StackPanel>
+        </StackPanel>
+
+        <!-- ── Section: Project placement ──────────────────────────────── -->
+        <Grid Grid.Row="7" Margin="0,0,0,6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Project placement" FontWeight="SemiBold" Margin="0,0,8,0"
+                       VerticalAlignment="Center" />
+            <Rectangle Grid.Column="1" Height="1"
+                       Fill="{DynamicResource Panel_ToolbarBorderBrush}"
+                       VerticalAlignment="Center" />
+        </Grid>
+
+        <Grid Grid.Row="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="6" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Virtual folder:" />
+            <ComboBox x:Name="VirtualFolderCombo" Grid.Row="0" Grid.Column="1"
+                      SelectionChanged="OnVirtualFolderChanged" />
+
+            <CheckBox x:Name="AutoVirtualFolderCheck"
+                      Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                      Content="Auto-create / use virtual folder for type"
+                      IsChecked="True"
+                      Checked="OnAutoVirtualFolderChanged"
+                      Unchecked="OnAutoVirtualFolderChanged" />
+        </Grid>
+
+        <!-- ── Section: Preview ──────────────────────────────────────────── -->
+        <Grid Grid.Row="10" Margin="0,0,0,6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Preview" FontWeight="SemiBold" Margin="0,0,8,0"
+                       VerticalAlignment="Center" />
+            <Rectangle Grid.Column="1" Height="1"
+                       Fill="{DynamicResource Panel_ToolbarBorderBrush}"
+                       VerticalAlignment="Center" />
+        </Grid>
+
+        <StackPanel x:Name="PreviewPanel" Grid.Row="11" Margin="0,0,0,0"
+                    Visibility="Collapsed">
+            <Grid Margin="0,0,0,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Physical: "
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Opacity="0.7" />
+                <TextBlock x:Name="PhysicalPreviewText" Grid.Column="1"
+                           TextTrimming="CharacterEllipsis"
+                           FontStyle="Italic"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Virtual:    "
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Opacity="0.7" />
+                <TextBlock x:Name="VirtualPreviewText" Grid.Column="1"
+                           TextTrimming="CharacterEllipsis"
+                           FontStyle="Italic"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
+            </Grid>
+        </StackPanel>
+
+        <!-- ── Buttons ────────────────────────────────────────────────────── -->
+        <StackPanel Grid.Row="13" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="AddButton" Content="Add" IsDefault="True"
+                    IsEnabled="False" Click="OnAdd" Margin="0,0,8,0" />
+            <Button Content="Cancel" IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</Window>

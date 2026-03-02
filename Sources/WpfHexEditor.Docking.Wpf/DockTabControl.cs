@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System.ComponentModel;
@@ -212,16 +212,17 @@ public class DockTabHeader : StackPanel
         {
             var pinButton = new Button
             {
-                Content = "\uD83D\uDCCC",
-                FontSize = 9,
-                Padding = new Thickness(2, 0, 2, 0),
-                Margin = new Thickness(0, 0, 1, 0),
+                Content         = "\uE141",
+                FontSize        = 11,
+                FontFamily      = new FontFamily("Segoe MDL2 Assets"),
+                Padding         = new Thickness(2, 0, 2, 0),
+                Margin          = new Thickness(0, 0, 1, 0),
                 BorderThickness = new Thickness(0),
-                Background = Brushes.Transparent,
-                Foreground = Brushes.Transparent, // inherit from tab style via binding below
-                Cursor = Cursors.Hand,
+                Background      = Brushes.Transparent,
+                Foreground      = Brushes.Transparent, // inherit from tab style via binding below
+                Cursor          = Cursors.Hand,
                 VerticalAlignment = VerticalAlignment.Center,
-                ToolTip = "Auto-Hide"
+                ToolTip         = "Auto-Hide"
             };
             pinButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
             AutomationProperties.SetName(pinButton, $"Auto-Hide {item.Title}");
@@ -234,18 +235,19 @@ public class DockTabHeader : StackPanel
         {
             _pinButton = new Button
             {
-                Content = "\uD83D\uDCCC",
-                FontSize = 9,
-                Padding = new Thickness(2, 0, 2, 0),
-                Margin = new Thickness(0, 0, 1, 0),
+                Content         = "\uE141",
+                FontSize        = 11,
+                FontFamily      = new FontFamily("Segoe MDL2 Assets"),
+                Padding         = new Thickness(2, 0, 2, 0),
+                Margin          = new Thickness(0, 0, 1, 0),
                 BorderThickness = new Thickness(0),
-                Background = Brushes.Transparent,
-                Cursor = Cursors.Hand,
+                Background      = Brushes.Transparent,
+                Cursor          = Cursors.Hand,
                 VerticalAlignment = VerticalAlignment.Center,
-                ToolTip = item.IsPinned ? "Unpin Tab" : "Pin Tab",
+                ToolTip         = item.IsPinned ? "Unpin Tab" : "Pin Tab",
                 RenderTransformOrigin = new Point(0.5, 0.5),
                 RenderTransform = new RotateTransform(item.IsPinned ? 0 : 90),
-                Opacity = item.IsPinned ? 1 : 0
+                Opacity         = item.IsPinned ? 1 : 0
             };
             _pinButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
             AutomationProperties.SetName(_pinButton, $"Pin {item.Title}");

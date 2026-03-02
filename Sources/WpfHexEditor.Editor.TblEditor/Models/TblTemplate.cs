@@ -1,8 +1,16 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using WpfHexEditor.Core.CharacterTable;
 
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Template for pre-defined TBL character tables</summary>
+/// <summary>
+/// Template for pre-defined TBL character tables
+/// </summary>
 public class TblTemplate
 {
     public string? Id { get; set; }
@@ -15,7 +23,9 @@ public class TblTemplate
     public bool IsBuiltIn { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-    /// <summary>Load template into a new TblStream</summary>
+    /// <summary>
+    /// Load template into a new TblStream
+    /// </summary>
     public TblStream? Load()
     {
         if (DefaultType.HasValue)

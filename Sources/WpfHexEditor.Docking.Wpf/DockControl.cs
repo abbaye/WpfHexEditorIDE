@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System.Collections;
@@ -47,6 +47,23 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             typeof(DockLayoutRoot),
             typeof(DockControl),
             new PropertyMetadata(null, OnLayoutChanged));
+
+    public static readonly DependencyProperty TabBarSettingsProperty =
+        DependencyProperty.Register(
+            nameof(TabBarSettings),
+            typeof(DocumentTabBarSettings),
+            typeof(DockControl),
+            new PropertyMetadata(null));
+
+    /// <summary>
+    /// Settings for the document tab bar (placement, multi-row, colorization, etc.).
+    /// Shared with the active <see cref="DocumentTabHost"/> and serialized in the layout.
+    /// </summary>
+    public DocumentTabBarSettings? TabBarSettings
+    {
+        get => (DocumentTabBarSettings?)GetValue(TabBarSettingsProperty);
+        set => SetValue(TabBarSettingsProperty, value);
+    }
 
     /// <summary>
     /// The dock layout root to render.
@@ -347,8 +364,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _rootPanel.Children.Add(_centerHost);
 
         // Grid with two layers: content + flyout overlay
+        // DockWindowBackgroundBrush is darker than DockBackgroundBrush so the inter-panel
+        // gaps (from panel Margin) appear as a distinct darker background (VS2026-style).
         _rootGrid = new Grid();
-        _rootGrid.SetResourceReference(Panel.BackgroundProperty, "DockBackgroundBrush");
+        _rootGrid.SetResourceReference(Panel.BackgroundProperty, "DockWindowBackgroundBrush");
         _rootGrid.Children.Add(_rootPanel);
         _rootGrid.Children.Add(_autoHideFlyout);
 
@@ -461,6 +480,11 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
             if (e.NewValue is DockLayoutRoot newLayout)
             {
+                // Sync tab-bar settings: ensure layout and control share the same instance.
+                var settings = newLayout.TabBarSettings ?? new DocumentTabBarSettings();
+                newLayout.TabBarSettings = settings;
+                control.TabBarSettings = settings;
+
                 control._engine = new DockEngine(newLayout);
                 control.AttachEngine();
 
@@ -655,6 +679,17 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _centerHost.Content = CreateVisualForNode(Layout.RootNode);
         UpdateAutoHideBars();
         RestoreFloatingWindows();
+
+        // Fire ActiveItemChanged for the main document host's active item on first load so that
+        // the host app can initialize ActiveDocumentEditor correctly after layout deserialization.
+        // Only done when no prior user activation has occurred (ActivationHistory is empty),
+        // which prevents this from firing on every rebuild triggered by dock/undock operations.
+        if (ActivationHistory.Count == 0)
+        {
+            var mainActiveItem = Layout.MainDocumentHost.ActiveItem;
+            if (mainActiveItem is not null)
+                Dispatcher.BeginInvoke(() => TrackActivation(mainActiveItem));
+        }
     }
 
     /// <summary>
@@ -694,7 +729,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
     private UIElement CreateDocumentHost(DocumentHostNode docHost)
     {
-        var host = new DocumentTabHost();
+        var host = new DocumentTabHost
+        {
+            Settings = TabBarSettings ?? new DocumentTabBarSettings()
+        };
 
         if (docHost.IsEmpty)
         {
@@ -774,21 +812,22 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
         // --- VS-style title bar buttons ---
 
-        Button MakeTitleButton(string content, string tooltip, double fontSize = 12)
+        Button MakeTitleButton(string content, string tooltip)
         {
             var btn = new Button
             {
-                Content  = content,
-                FontSize = fontSize,
-                ToolTip  = tooltip
+                Content    = content,
+                FontSize   = 10,
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                ToolTip    = tooltip
             };
             if (TryFindResource("DockTitleButtonStyle") is Style titleStyle)
                 btn.Style = titleStyle;
             return btn;
         }
 
-        // Close button (✕)
-        var closeButton = MakeTitleButton("\u2715", "Close");
+        // Close button (ChromeClose MDL2)
+        var closeButton = MakeTitleButton("\uE8BB", "Close");
         closeButton.Click += (_, _) =>
         {
             var item = group.ActiveItem;
@@ -798,8 +837,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             RebuildVisualTree();
         };
 
-        // Pin button (📌) — sends to auto-hide
-        var pinButton = MakeTitleButton("\uD83D\uDCCC", "Auto Hide");
+        // Pin button (Pin MDL2) — sends to auto-hide
+        var pinButton = MakeTitleButton("\uE141", "Auto Hide");
         pinButton.Click += (_, _) =>
         {
             var item = group.ActiveItem;
@@ -808,8 +847,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             RebuildVisualTree();
         };
 
-        // Chevron dropdown (▼)
-        var chevronButton = MakeTitleButton("\u25BC", "Options", fontSize: 9);
+        // Chevron dropdown (ChevronDown MDL2)
+        var chevronButton = MakeTitleButton("\uE70D", "Options");
         chevronButton.Click += (sender, _) =>
         {
             var item = group.ActiveItem;
@@ -868,10 +907,13 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
         var titleBar = new Border
         {
-            Child  = titleContent,
-            Cursor = Cursors.SizeAll
+            Child           = titleContent,
+            Cursor          = Cursors.SizeAll,
+            MinHeight       = 26,
+            BorderThickness = new Thickness(0, 0, 0, 1)
         };
         titleBar.SetResourceReference(Border.BackgroundProperty, "DockMenuBackgroundBrush");
+        titleBar.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
 
         // Drag threshold state (local to this title bar instance)
         var titleDragStart   = new Point();
@@ -937,31 +979,41 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     }
 
     /// <summary>
-    /// Activates a panel border (accent color) and deactivates the previously active one.
-    /// The panel stays active until another panel is clicked — no deactivation on LostFocus.
+    /// Activates a panel border (VS2026-style: 2px top accent only) and deactivates the previous one.
+    /// Inactive panels have no visible border. Only the top edge of the active panel turns accent-colored.
     /// </summary>
     private void SetActivePanel(Border panelBorder)
     {
         if (_activePanel == panelBorder) return;
 
-        _activePanel?.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
+        if (_activePanel is not null)
+            _activePanel.BorderThickness = new Thickness(0);
+
         _activePanel = panelBorder;
-        _activePanel.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
+        _activePanel.BorderThickness = new Thickness(0, 2, 0, 0);
     }
 
     /// <summary>
-    /// Wraps any UIElement in a 2 px border on all four sides. The border turns accent-colored
-    /// when the user clicks or focuses inside the panel (VS2022-style active panel indicator).
+    /// Wraps any UIElement in a panel border with rounded corners and a small margin (VS2026-style).
+    /// No visible border initially; a 2px top accent appears when the panel is activated.
+    /// Children are clipped to the rounded shape via a dynamic RectangleGeometry clip.
     /// </summary>
     private Border CreatePanelBorder(UIElement content)
     {
+        const double radius = 6.0;
         var border = new Border
         {
             Child               = content,
-            BorderThickness     = new Thickness(2),
+            BorderThickness     = new Thickness(0),
+            CornerRadius        = new CornerRadius(radius),
+            Margin              = new Thickness(2),
             SnapsToDevicePixels = true
         };
-        border.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
+        border.SetResourceReference(Border.BorderBrushProperty, "DockTabActiveBrush");
+
+        // Clip children to the rounded rectangle so title bar / tab strip corners are clean
+        border.SizeChanged += (_, e) =>
+            border.Clip = new RectangleGeometry(new Rect(e.NewSize), radius, radius);
 
         // Activate on ANY mouse click inside the panel (tunneling catches handled events)
         border.AddHandler(
@@ -1030,6 +1082,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
     private void OnItemClosed(DockItem item)
     {
+        // Evict from internal content cache so a future item with the same ContentId
+        // gets a fresh content instance instead of a stale (potentially Unloaded) one.
+        _contentCache.Remove(item.ContentId);
+
         // Close the floating window if the item was closed
         _floatingManager?.CloseWindowForItem(item);
     }

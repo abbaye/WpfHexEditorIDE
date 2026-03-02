@@ -1,6 +1,14 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Metadata for .tblx extended format</summary>
+/// <summary>
+/// Metadata for .tblx extended format
+/// </summary>
 public class TblxMetadata
 {
     public string Version { get; set; } = "1.0";
@@ -17,7 +25,9 @@ public class TblxMetadata
     public ValidationRules? Validation { get; set; }
 }
 
-/// <summary>Game information for .tblx metadata</summary>
+/// <summary>
+/// Game information for .tblx metadata
+/// </summary>
 public class GameInfo
 {
     public string? Title { get; set; }
@@ -28,7 +38,9 @@ public class GameInfo
     public string? Developer { get; set; }
 }
 
-/// <summary>Validation rules for .tblx entries</summary>
+/// <summary>
+/// Validation rules for .tblx entries
+/// </summary>
 public class ValidationRules
 {
     public int? MinByteLength { get; set; }

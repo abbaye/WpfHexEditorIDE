@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -7,7 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.ProjectSystem.Templates;
 
@@ -30,7 +30,9 @@ public partial class NewFileDialog : Window
     // ── Output properties ──────────────────────────────────────────────
     public string         FileName         { get; private set; } = "";
     public string         FileDirectory    { get; private set; } = "";
-    /// <summary>Non-empty only when <see cref="SaveLater"/> is <c>false</c>.</summary>
+    /// <summary>
+    /// Non-empty only when <see cref="SaveLater"/> is <c>false</c>.
+    /// </summary>
     public string         FullPath         => SaveLater ? "" : Path.Combine(FileDirectory, FileName);
     public IFileTemplate? SelectedTemplate { get; private set; }
     public IProject?      TargetProject    { get; private set; }
@@ -129,13 +131,13 @@ public partial class NewFileDialog : Window
 
     private void OnBrowseLocation(object sender, RoutedEventArgs e)
     {
-        using var dlg = new FolderBrowserDialog
+        var dlg = new Microsoft.Win32.OpenFolderDialog
         {
-            Description  = "Select folder for the new file",
-            SelectedPath = LocationBox.Text
+            Title            = "Select folder for the new file",
+            InitialDirectory = LocationBox.Text,
         };
-        if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            LocationBox.Text = dlg.SelectedPath;
+        if (dlg.ShowDialog() == true)
+            LocationBox.Text = dlg.FolderName;
     }
 
     private void OnOk(object sender, RoutedEventArgs e)

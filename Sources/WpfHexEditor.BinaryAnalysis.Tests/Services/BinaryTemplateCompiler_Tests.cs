@@ -1,10 +1,12 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Text.Json.Nodes;
 using WpfHexEditor.BinaryAnalysis.Services;
 
 namespace WpfHexEditor.BinaryAnalysis.Tests.Services
@@ -46,7 +48,7 @@ struct FileHeader {
             var result = _compiler.CompileTemplate(script);
             var blocks = result["blocks"];
             Assert.IsNotNull(blocks);
-            Assert.IsTrue(blocks.HasValues);
+            Assert.IsTrue(blocks is JsonArray blocksArr && blocksArr.Count > 0);
         }
 
         [TestMethod]

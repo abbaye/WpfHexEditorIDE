@@ -1,0 +1,178 @@
+{
+  "formatName": "PlayStation 4 Package",
+  "version": "2.4",
+  "extensions": [
+    ".pkg"
+  ],
+  "description": "PlayStation 4 PKG package format (encrypted game/update packages)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "PlayStation 4 PKG Package Format Specification",
+      "OrbisOS PKG/PFS Structure",
+      "LibOrbisPkg - PS4 PKG/SFO/PFS Library"
+    ],
+    "WebLinks": [
+      "https://www.psdevwiki.com/ps4/PKG_files",
+      "https://github.com/maxton/LibOrbisPkg",
+      "https://github.com/pearlxcore/PS4-PKG-Tool",
+      "https://www.psxhax.com/threads/ps4-pkg-information-on-playstation-4-packages-and-keys-via-maxton.7280/"
+    ]
+  },
+  "detection": {
+    "signature": "7F434E54",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "crc32Valid": false,
+    "originalSize": 0,
+    "compressionRatio": 0,
+    "cntMagic": "",
+    "packageType": "",
+    "packageFlags": 0,
+    "fileOffset": 0,
+    "fileCount": 0,
+    "packageSize": 0,
+    "contentId": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CNT Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "uint32",
+      "description": "PS4 PKG magic: 0x7F 0x43 0x4E 0x54 (CNT)",
+      "storeAs": "cntMagic"
+    },
+    {
+      "type": "field",
+      "name": "Package Type",
+      "offset": 4,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Package type flags (PS4 specific)",
+      "storeAs": "packageType"
+    },
+    {
+      "type": "field",
+      "name": "Package Flags",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Package flags and encryption info",
+      "storeAs": "packageFlags"
+    },
+    {
+      "type": "field",
+      "name": "File Offset",
+      "offset": 12,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Offset to file table",
+      "storeAs": "fileOffset"
+    },
+    {
+      "type": "field",
+      "name": "File Count",
+      "offset": 16,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Number of files in package",
+      "storeAs": "fileCount"
+    },
+    {
+      "type": "field",
+      "name": "Package Size",
+      "offset": 24,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint64",
+      "description": "Total package size (64-bit big-endian)",
+      "storeAs": "packageSize"
+    },
+    {
+      "type": "field",
+      "name": "Content ID",
+      "offset": 64,
+      "length": 36,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Content identifier (title ID)",
+      "storeAs": "contentId"
+    },
+    {
+      "type": "metadata",
+      "name": "CRC Valid",
+      "variable": "crc32Valid",
+      "description": "CRC Valid"
+    },
+    {
+      "type": "metadata",
+      "name": "Original Size",
+      "variable": "originalSize",
+      "description": "Original Size"
+    }
+  ],
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".pkg"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 56,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": true
+  },
+  "TechnicalDetails": {
+    "Platform": "PS4"
+  },
+  "functions": {
+    "calculateCRC32": "Validate CRC",
+    "readUInt32LE": "Read size"
+  }
+}

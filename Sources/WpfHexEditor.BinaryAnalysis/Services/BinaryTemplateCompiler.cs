@@ -2,14 +2,14 @@
 // Apache 2.0  - 2026
 // Binary Template Compiler - Converts C-like templates to format definitions
 // Author : Claude Sonnet 4.5
-// Contributors: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using WpfHexEditor.BinaryAnalysis.Models.BinaryTemplates;
 
 namespace WpfHexEditor.BinaryAnalysis.Services
@@ -76,23 +76,23 @@ namespace WpfHexEditor.BinaryAnalysis.Services
         /// <summary>
         /// Compile binary template script to format definition JSON
         /// </summary>
-        public JObject CompileTemplate(string templateScript, string formatName = "Generated Format")
+        public JsonObject CompileTemplate(string templateScript, string formatName = "Generated Format")
         {
             if (string.IsNullOrWhiteSpace(templateScript))
                 throw new ArgumentException("Template script cannot be empty");
 
             try
             {
-                var format = new JObject
+                var format = new JsonObject
                 {
-                    ["formatName"] = formatName,
-                    ["version"] = "1.0",
-                    ["category"] = "Custom",
-                    ["description"] = "Generated from binary template",
-                    ["blocks"] = new JArray()
+                    ["formatName"] = JsonValue.Create(formatName),
+                    ["version"] = JsonValue.Create("1.0"),
+                    ["category"] = JsonValue.Create("Custom"),
+                    ["description"] = JsonValue.Create("Generated from binary template"),
+                    ["blocks"] = new JsonArray()
                 };
 
-                var blocks = (JArray)format["blocks"];
+                var blocks = format["blocks"]!.AsArray();
 
                 // Parse structs
                 var structMatches = StructRegex.Matches(templateScript);
@@ -168,7 +168,7 @@ namespace WpfHexEditor.BinaryAnalysis.Services
         /// <summary>
         /// Generate template script from format definition
         /// </summary>
-        public string GenerateTemplateFromFormat(JObject formatDefinition)
+        public string GenerateTemplateFromFormat(JsonObject formatDefinition)
         {
             var template = new StringBuilder();
 
@@ -179,23 +179,25 @@ namespace WpfHexEditor.BinaryAnalysis.Services
             template.AppendLine();
 
             // Parse blocks
-            var blocks = formatDefinition["blocks"] as JArray;
+            var blocks = formatDefinition["blocks"]?.AsArray();
             if (blocks != null)
             {
                 foreach (var block in blocks)
                 {
-                    var blockType = block["type"]?.ToString();
+                    var blockObj = block as JsonObject;
+                    var blockType = blockObj?["type"]?.ToString();
                     if (blockType == "field")
                     {
-                        var fields = block["fields"] as JArray;
+                        var fields = blockObj?["fields"]?.AsArray();
                         if (fields != null)
                         {
                             template.AppendLine("struct FileFormat {");
                             foreach (var field in fields)
                             {
-                                var fieldName = field["name"]?.ToString();
-                                var fieldType = field["type"]?.ToString();
-                                var description = field["description"]?.ToString();
+                                var fieldObj = field as JsonObject;
+                                var fieldName = fieldObj?["name"]?.ToString();
+                                var fieldType = fieldObj?["type"]?.ToString();
+                                var description = fieldObj?["description"]?.ToString();
 
                                 if (!string.IsNullOrEmpty(description))
                                 {
@@ -218,16 +220,16 @@ namespace WpfHexEditor.BinaryAnalysis.Services
 
         #region Private Methods
 
-        private JObject ParseStruct(string structName, string structBody)
+        private JsonObject ParseStruct(string structName, string structBody)
         {
-            var block = new JObject
+            var block = new JsonObject
             {
-                ["type"] = "field",
-                ["name"] = structName,
-                ["fields"] = new JArray()
+                ["type"] = JsonValue.Create("field"),
+                ["name"] = JsonValue.Create(structName),
+                ["fields"] = new JsonArray()
             };
 
-            var fields = (JArray)block["fields"];
+            var fields = block["fields"]!.AsArray();
             var fieldMatches = FieldRegex.Matches(structBody);
 
             foreach (Match match in fieldMatches)
@@ -237,20 +239,20 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                 var name = match.Groups[3].Value;
                 var arraySize = match.Groups[4].Success ? match.Groups[4].Value.Trim('[', ']') : "";
 
-                var field = new JObject
+                var field = new JsonObject
                 {
-                    ["name"] = name,
-                    ["type"] = MapCTypeToJson(type)
+                    ["name"] = JsonValue.Create(name),
+                    ["type"] = JsonValue.Create(MapCTypeToJson(type))
                 };
 
                 if (!string.IsNullOrEmpty(arraySize))
                 {
-                    field["length"] = int.TryParse(arraySize, out int len) ? len : 0;
+                    field["length"] = JsonValue.Create(int.TryParse(arraySize, out int len) ? len : 0);
                 }
 
                 if (!string.IsNullOrEmpty(comment))
                 {
-                    field["description"] = comment;
+                    field["description"] = JsonValue.Create(comment);
                 }
 
                 fields.Add(field);
@@ -259,15 +261,15 @@ namespace WpfHexEditor.BinaryAnalysis.Services
             return fields.Count > 0 ? block : null;
         }
 
-        private JObject ParseFlatFields(string templateScript)
+        private JsonObject ParseFlatFields(string templateScript)
         {
-            var block = new JObject
+            var block = new JsonObject
             {
-                ["type"] = "field",
-                ["fields"] = new JArray()
+                ["type"] = JsonValue.Create("field"),
+                ["fields"] = new JsonArray()
             };
 
-            var fields = (JArray)block["fields"];
+            var fields = block["fields"]!.AsArray();
             var fieldMatches = FieldRegex.Matches(templateScript);
 
             foreach (Match match in fieldMatches)
@@ -276,15 +278,15 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                 var type = match.Groups[2].Value;
                 var name = match.Groups[3].Value;
 
-                var field = new JObject
+                var field = new JsonObject
                 {
-                    ["name"] = name,
-                    ["type"] = MapCTypeToJson(type)
+                    ["name"] = JsonValue.Create(name),
+                    ["type"] = JsonValue.Create(MapCTypeToJson(type))
                 };
 
                 if (!string.IsNullOrEmpty(comment))
                 {
-                    field["description"] = comment;
+                    field["description"] = JsonValue.Create(comment);
                 }
 
                 fields.Add(field);

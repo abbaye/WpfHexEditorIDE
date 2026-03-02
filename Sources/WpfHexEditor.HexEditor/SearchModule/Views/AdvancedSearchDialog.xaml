@@ -1,7 +1,7 @@
 <!--
     Apache 2.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
+    Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 -->
 
 <Window x:Class="WpfHexEditor.HexEditor.Search.Views.AdvancedSearchDialog"
@@ -13,61 +13,60 @@
         xmlns:vm="clr-namespace:WpfHexEditor.HexEditor.Search.ViewModels"
         xmlns:models="clr-namespace:WpfHexEditor.Core.Search.Models;assembly=WpfHexEditor.Core"
         mc:Ignorable="d"
-        Title="Advanced Search" Height="680" Width="900"
-        MinHeight="520" MinWidth="720"
+        Title="Rechercher / Remplacer"
+        Height="460" Width="560"
+        MinHeight="380" MinWidth="480"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResizeWithGrip"
         ShowInTaskbar="False"
-        Background="{DynamicResource BackgroundBrush}">
+        Background="{DynamicResource DockBackgroundBrush}">
 
     <Window.Resources>
-        <!-- Value Converters -->
-        <local:SearchModeToVisibilityConverter x:Key="SearchModeToVisibilityConverter"/>
-        <local:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
-        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <!-- Converters -->
+        <local:BoolToVisibilityConverter      x:Key="BoolToVisibilityConverter"/>
         <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
-        <local:IndexConverter x:Key="IndexConverter"/>
+        <local:IndexConverter                  x:Key="IndexConverter"/>
 
-        <!-- Button Styles -->
+        <!--
+            DialogButtonStyle — VS2022-style compact action button.
+            Uses Dock* brush keys, CornerRadius=2.
+        -->
         <Style x:Key="DialogButtonStyle" TargetType="Button">
-            <Setter Property="MinWidth" Value="90"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="Margin" Value="5,0"/>
-            <Setter Property="Padding" Value="12,0"/>
-            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="MinWidth"        Value="80"/>
+            <Setter Property="Height"          Value="26"/>
+            <Setter Property="Margin"          Value="4,0,0,0"/>
+            <Setter Property="Padding"         Value="10,0"/>
+            <Setter Property="Background"      Value="{DynamicResource DockBackgroundBrush}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="FontSize"        Value="12"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border"
+                        <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4"
-                                Padding="{TemplateBinding Padding}">
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background">
-                                    <Setter.Value>
-                                        <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="0.2"/>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background">
-                                    <Setter.Value>
-                                        <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="0.4"/>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Opacity" Value="0.45"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -75,46 +74,53 @@
             </Setter>
         </Style>
 
+        <!-- PrimaryButtonStyle — accent-fill Find All / Replace All -->
         <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource DialogButtonStyle}">
-            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Background"  Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="Foreground"  Value="White"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="FontWeight"  Value="SemiBold"/>
         </Style>
 
-        <!-- Mode Pill Style (RadioButton styled as toggle pill) -->
-        <Style x:Key="ModePillStyle" TargetType="RadioButton">
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="MinWidth" Value="80"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
-            <Setter Property="Padding" Value="16,0"/>
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontWeight" Value="Medium"/>
+        <!-- SmallToggleStyle — Ab / .* icon toggles in the options row -->
+        <Style x:Key="SmallToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Width"           Value="26"/>
+            <Setter Property="Height"          Value="22"/>
+            <Setter Property="Padding"         Value="3,0"/>
+            <Setter Property="Margin"          Value="2,0,0,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
+            <Setter Property="FontSize"        Value="11"/>
+            <Setter Property="FontWeight"      Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="RadioButton">
-                        <Border x:Name="border"
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="16"
-                                Padding="{TemplateBinding Padding}">
+                                CornerRadius="2"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentBrush}"/>
-                                <Setter Property="Foreground" Value="White"/>
-                            </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background">
-                                    <Setter.Value>
-                                        <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="0.2"/>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -122,32 +128,35 @@
             </Setter>
         </Style>
 
-        <!-- TextBox Style -->
-        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="Padding" Value="8,0"/>
+        <!-- InputTextBoxStyle — Find / Replace text inputs -->
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height"                   Value="26"/>
+            <Setter Property="Padding"                  Value="6,0"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background"               Value="{DynamicResource DockBackgroundBrush}"/>
+            <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}"/>
+            <Setter Property="BorderThickness"          Value="1"/>
+            <Setter Property="FontFamily"               Value="Consolas"/>
+            <Setter Property="FontSize"                 Value="12"/>
+            <Setter Property="CaretBrush"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="SnapsToDevicePixels"      Value="True"/>
+            <Setter Property="FocusVisualStyle"         Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border x:Name="border"
+                        <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4">
+                                CornerRadius="2"
+                                SnapsToDevicePixels="True">
                             <ScrollViewer x:Name="PART_ContentHost" Margin="4,0"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush">
-                                    <Setter.Value>
-                                        <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="0.8"/>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource AccentBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -155,354 +164,518 @@
             </Setter>
         </Style>
 
-        <!-- ComboBox Style -->
-        <Style x:Key="ModernComboBoxStyle" TargetType="ComboBox">
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="Padding" Value="8,0"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-
-        <!-- ListView Style for Results -->
+        <!-- ResultsListViewStyle — virtualized, themed results list -->
         <Style x:Key="ResultsListViewStyle" TargetType="ListView">
-            <Setter Property="Background" Value="{DynamicResource BackgroundBrush}"/>
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background"                       Value="{DynamicResource DockBackgroundBrush}"/>
+            <Setter Property="Foreground"                       Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="BorderBrush"                      Value="{DynamicResource DockBorderBrush}"/>
+            <Setter Property="BorderThickness"                  Value="1"/>
             <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
             <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
-            <Setter Property="VirtualizingPanel.CacheLength" Value="20,20"/>
-            <Setter Property="VirtualizingPanel.CacheLengthUnit" Value="Item"/>
-            <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
-            <Setter Property="AlternationCount" Value="2"/>
+            <Setter Property="ScrollViewer.CanContentScroll"    Value="True"/>
+            <Setter Property="FontFamily"                       Value="Consolas"/>
+            <Setter Property="FontSize"                         Value="11"/>
+            <Setter Property="AlternationCount"                 Value="2"/>
+        </Style>
+
+        <!-- GridViewColumnHeaderStyle — dark-themed column headers -->
+        <Style x:Key="GridViewColumnHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="OverridesDefaultStyle"         Value="True"/>
+            <Setter Property="Background"                    Value="{DynamicResource DockMenuBackgroundBrush}"/>
+            <Setter Property="Foreground"                    Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="BorderBrush"                   Value="{DynamicResource DockBorderBrush}"/>
+            <Setter Property="BorderThickness"               Value="0,0,1,1"/>
+            <Setter Property="Padding"                       Value="6,3"/>
+            <Setter Property="FontSize"                      Value="11"/>
+            <Setter Property="FontWeight"                    Value="SemiBold"/>
+            <Setter Property="HorizontalContentAlignment"    Value="Left"/>
+            <Setter Property="FocusVisualStyle"              Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                        <Grid SnapsToDevicePixels="True">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="Center"
+                                                  RecognizesAccessKey="True"
+                                                  SnapsToDevicePixels="True"/>
+                            </Border>
+                            <Thumb x:Name="PART_HeaderGripper"
+                                   HorizontalAlignment="Right"
+                                   Width="8"
+                                   Cursor="SizeWE">
+                                <Thumb.Template>
+                                    <ControlTemplate TargetType="{x:Type Thumb}">
+                                        <Border Background="Transparent"/>
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="Role" Value="Floating">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ResultItemContainerStyle — subtle row alternation -->
+        <Style x:Key="ResultItemContainerStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background"                 Value="Transparent"/>
+            <Setter Property="Foreground"                 Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="Padding"                    Value="2,1"/>
+            <Setter Property="FocusVisualStyle"           Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <GridViewRowPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockMenuBackgroundBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <!-- Zone A: Search Input -->
+            <!-- Zone A: Search inputs + options (Auto) -->
             <RowDefinition Height="Auto"/>
-            <!-- Zone B: Action Bar -->
-            <RowDefinition Height="60"/>
-            <!-- Zone C: Results List -->
+            <!-- Zone B: Action bar (48px) -->
+            <RowDefinition Height="48"/>
+            <!-- Zone C: Results list (*) -->
             <RowDefinition Height="*"/>
-            <!-- Zone D: Status Bar -->
+            <!-- Zone D: Status bar (24px) -->
             <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
 
-        <!-- ========================================
-             ZONE A: SEARCH INPUT (Auto height - expands with Advanced Options)
-             ======================================== -->
-        <Border Grid.Row="0" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0,0,0,1" Padding="15">
+        <!-- ══════════════════════════════════════════════════════
+             ZONE A — Search inputs
+             ══════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="12,10,12,10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="6"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Mode Selector Pills -->
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
-                    <RadioButton Content="TEXT" Style="{StaticResource ModePillStyle}"
-                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Text}"/>
-                    <RadioButton Content="HEX" Style="{StaticResource ModePillStyle}"
-                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Hex}"/>
-                    <RadioButton Content="WILDCARD" Style="{StaticResource ModePillStyle}"
-                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Wildcard}"/>
-                    <RadioButton Content="TBL TEXT" Style="{StaticResource ModePillStyle}"
-                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=TblText}"
-                                 Visibility="{Binding IsTblLoaded, Converter={StaticResource BoolToVisibilityConverter}}"
-                                 ToolTip="{Binding TblInfo}"/>
-                    <RadioButton Content="RELATIVE" Style="{StaticResource ModePillStyle}"
-                                 IsChecked="{Binding SelectedMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Relative}"
-                                 ToolTip="Encoding Discovery"/>
-                </StackPanel>
+                <!-- Row 0: Mode dropdown + option toggles -->
+                <DockPanel Grid.Row="0" LastChildFill="False">
+                    <!-- Mode ComboBox -->
+                    <ComboBox DockPanel.Dock="Left"
+                              Width="130"
+                              Style="{DynamicResource DockComboBoxStyle}"
+                              SelectedIndex="{Binding SelectedModeIndex}"
+                              ToolTip="Mode de recherche">
+                        <ComboBoxItem Content="TEXT"/>
+                        <ComboBoxItem Content="HEX"/>
+                        <ComboBoxItem Content="WILDCARD"/>
+                        <ComboBoxItem Content="TBL TEXT"
+                                      IsEnabled="{Binding IsTblLoaded}"
+                                      ToolTip="{Binding TblInfo}"/>
+                        <ComboBoxItem Content="RELATIVE"/>
+                    </ComboBox>
 
-                <!-- Find Input -->
-                <Grid Grid.Row="1" Margin="0,0,0,10">
+                    <!-- Separator -->
+                    <Rectangle DockPanel.Dock="Left" Width="1" Margin="8,4" Opacity="0.35"
+                               Fill="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Stretch"/>
+
+                    <!-- Ab — Case sensitive -->
+                    <ToggleButton DockPanel.Dock="Left"
+                                  Content="Ab"
+                                  Style="{StaticResource SmallToggleStyle}"
+                                  IsChecked="{Binding CaseSensitive}"
+                                  ToolTip="Respecter la casse (Alt+C)"
+                                  Visibility="{Binding IsTextMode, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                    <!-- .* — Use wildcard -->
+                    <ToggleButton DockPanel.Dock="Left"
+                                  Content=".*"
+                                  Style="{StaticResource SmallToggleStyle}"
+                                  IsChecked="{Binding UseWildcard}"
+                                  ToolTip="Utiliser des jokers ?? (Alt+E)"/>
+
+                    <!-- Separator -->
+                    <Rectangle DockPanel.Dock="Left" Width="1" Margin="8,4" Opacity="0.35"
+                               Fill="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Stretch"/>
+
+                    <!-- Wrap -->
+                    <CheckBox DockPanel.Dock="Left"
+                              Content="Boucler"
+                              Style="{DynamicResource DockCheckBoxStyle}"
+                              IsChecked="{Binding WrapAround}"
+                              VerticalAlignment="Center"
+                              Margin="4,0,0,0"/>
+                </DockPanel>
+
+                <!-- Row 2: Find row -->
+                <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Column="0" Text="Find:" VerticalAlignment="Center" Margin="0,0,10,0" Width="60"/>
-                    <!-- Temporarily using TextBox instead of ComboBox to debug binding issues -->
-                    <TextBox Grid.Column="1"
-                             Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{StaticResource ModernTextBoxStyle}">
-                        <TextBox.InputBindings>
-                            <KeyBinding Key="Enter" Command="{Binding FindAllCommand}"/>
-                        </TextBox.InputBindings>
-                    </TextBox>
-
-                    <!-- TODO: Restore ComboBox with SearchHistory once binding is fixed
+                    <TextBlock Grid.Column="0"
+                               Text="Rechercher :"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     <ComboBox Grid.Column="1"
+                              x:Name="SearchInputComboBox"
                               IsEditable="True"
-                              Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
+                              Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                               ItemsSource="{Binding SearchHistory}"
-                              DisplayMemberPath="DisplayText"
-                              Style="{StaticResource ModernComboBoxStyle}">
+                              TextSearch.TextPath="Pattern">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DisplayText}"
+                                           FontFamily="Consolas"
+                                           FontSize="11"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
                         <ComboBox.InputBindings>
                             <KeyBinding Key="Enter" Command="{Binding FindAllCommand}"/>
                         </ComboBox.InputBindings>
                     </ComboBox>
-                    -->
                 </Grid>
 
-                <!-- Replace Input (Hidden in RELATIVE mode) -->
-                <Grid Grid.Row="2" Margin="0,0,0,10"
+                <!-- Row 4: Replace row (hidden in RELATIVE mode) -->
+                <Grid Grid.Row="4"
                       Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Column="0" Text="Replace:" VerticalAlignment="Center" Margin="0,0,10,0" Width="60"/>
+                    <TextBlock Grid.Column="0"
+                               Text="Remplacer :"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     <TextBox Grid.Column="1"
                              Text="{Binding ReplaceInput, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{StaticResource ModernTextBoxStyle}"/>
+                             Style="{StaticResource InputTextBoxStyle}"/>
                 </Grid>
 
-                <!-- Options Row -->
-                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,10">
-                    <CheckBox Content="Case" IsChecked="{Binding CaseSensitive}" Margin="0,0,15,0"
-                              Visibility="{Binding SelectedMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Text}"/>
-                    <CheckBox Content="Wrap" IsChecked="{Binding WrapAround}" Margin="0,0,15,0"/>
-
-                    <TextBlock Text="Encoding:" VerticalAlignment="Center" Margin="0,0,5,0"
-                               Visibility="{Binding SelectedMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Text}"/>
+                <!-- Row 6: Encoding + Max (Text mode only) -->
+                <StackPanel Grid.Row="6"
+                            Orientation="Horizontal"
+                            Visibility="{Binding IsTextMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock Text="Encodage :"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Margin="0,0,6,0"/>
                     <ComboBox ItemsSource="{Binding AvailableEncodings}"
                               SelectedItem="{Binding SelectedEncoding}"
+                              Style="{DynamicResource DockComboBoxStyle}"
                               DisplayMemberPath="Name"
-                              Width="150" Margin="0,0,15,0"
-                              Style="{StaticResource ModernComboBoxStyle}"
-                              Visibility="{Binding SelectedMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Text}"/>
-
-                    <TextBlock Text="Max:" VerticalAlignment="Center" Margin="15,0,5,0"/>
-                    <TextBox Text="{Binding MaxResults}" Width="80" Style="{StaticResource ModernTextBoxStyle}"/>
+                              Width="155"/>
+                    <TextBlock Text="Max :"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Margin="14,0,6,0"/>
+                    <TextBox Text="{Binding MaxResults}"
+                             Style="{StaticResource InputTextBoxStyle}"
+                             Width="70"/>
                 </StackPanel>
 
-                <!-- Advanced Options Expander -->
-                <Expander Grid.Row="4" IsExpanded="False" Margin="0,5,0,0">
-                    <Expander.Header>
-                        <TextBlock Text="⚙️ Advanced Options" FontWeight="Medium" Cursor="Hand"/>
-                    </Expander.Header>
-                    <Grid Margin="0,10,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- Standard Mode Options -->
-                        <StackPanel Grid.Row="0" Orientation="Horizontal"
-                                    Visibility="{Binding IsRelativeMode, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                            <TextBlock Text="Dir:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                            <RadioButton Content="►Forward" IsChecked="{Binding SearchBackward, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=False}" Margin="0,0,10,0"/>
-                            <RadioButton Content="◄Backward" IsChecked="{Binding SearchBackward}" Margin="0,0,20,0"/>
-
-                            <TextBlock Text="Scope:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                            <RadioButton Content="File" IsChecked="{Binding SearchInSelectionOnly, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=False}" Margin="0,0,10,0"/>
-                            <RadioButton Content="Selection" IsChecked="{Binding SearchInSelectionOnly}" Margin="0,0,20,0"/>
-
-                            <CheckBox Content="Use Wildcard" IsChecked="{Binding UseWildcard}" Margin="0,0,10,0"
-                                      Visibility="{Binding SelectedMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Hex}"/>
-                            <TextBlock Text="Wildcard:" VerticalAlignment="Center" Margin="0,0,5,0"
-                                       Visibility="{Binding UseWildcard, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                            <TextBox Text="{Binding WildcardByte, StringFormat=X2}" Width="50" Style="{StaticResource ModernTextBoxStyle}"
-                                     Visibility="{Binding UseWildcard, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        </StackPanel>
-
-                        <!-- Relative Mode Options -->
-                        <StackPanel Grid.Row="0" Orientation="Horizontal"
-                                    Visibility="{Binding IsRelativeMode, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <TextBlock Text="Min Matches:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                            <TextBox Text="{Binding RelativeMinMatches}" Width="60" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,15,0"/>
-
-                            <TextBlock Text="Max Proposals:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                            <TextBox Text="{Binding RelativeMaxProposals}" Width="60" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,15,0"/>
-
-                            <TextBlock Text="Sample Length:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                            <TextBox Text="{Binding RelativeSampleLength}" Width="60" Style="{StaticResource ModernTextBoxStyle}"/>
-                        </StackPanel>
-                    </Grid>
-                </Expander>
+                <!-- Row 6: Max only (non-Text modes) -->
+                <StackPanel Grid.Row="6"
+                            Orientation="Horizontal"
+                            Visibility="{Binding IsTextMode, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                    <TextBlock Text="Max :"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Margin="0,0,6,0"/>
+                    <TextBox Text="{Binding MaxResults}"
+                             Style="{StaticResource InputTextBoxStyle}"
+                             Width="70"/>
+                </StackPanel>
             </Grid>
         </Border>
 
-        <!-- ========================================
-             ZONE B: ACTION BAR (~60px fixe)
-             ======================================== -->
-        <Border Grid.Row="1" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="0,0,0,1" Padding="15,10">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Navigation & Action Buttons -->
-                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <Button Content="◄◄ Prev" Command="{Binding FindPreviousCommand}" Style="{StaticResource DialogButtonStyle}"/>
-                    <Button Content="Next ►►" Command="{Binding FindNextCommand}" Style="{StaticResource DialogButtonStyle}"/>
-                    <Button Content="Find All" Command="{Binding FindAllCommand}" Style="{StaticResource PrimaryButtonStyle}" Margin="15,0,5,0"/>
-                    <Button Content="Replace" Command="{Binding ReplaceSelectedCommand}" Style="{StaticResource DialogButtonStyle}"
-                            Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                    <Button Content="Replace All" Command="{Binding ReplaceAllCommand}" Style="{StaticResource DialogButtonStyle}"
-                            Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                </StackPanel>
-
-                <!-- Performance Metrics -->
-                <TextBlock Grid.Column="1" Text="{Binding PerformanceLabel}"
-                           VerticalAlignment="Center" HorizontalAlignment="Center"
-                           FontWeight="Medium" FontSize="12"/>
-
-                <!-- Stop Button -->
-                <Button Grid.Column="2" Content="⏹ STOP" Command="{Binding CancelCommand}"
+        <!-- ══════════════════════════════════════════════════════
+             ZONE B — Action bar
+             ══════════════════════════════════════════════════════ -->
+        <Border Grid.Row="1"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="12,0">
+            <DockPanel LastChildFill="False">
+                <!-- STOP button (visible during search) -->
+                <Button DockPanel.Dock="Right"
+                        Command="{Binding CancelCommand}"
                         Style="{StaticResource DialogButtonStyle}"
-                        Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
-            </Grid>
+                        Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Margin="0,0,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                   VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <TextBlock Text="Stop" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Performance label (center) -->
+                <TextBlock DockPanel.Dock="Right"
+                           Text="{Binding PerformanceLabel}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           FontSize="11"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           Opacity="0.75"
+                           Margin="0,0,10,0"/>
+
+                <!-- Navigation -->
+                <Button DockPanel.Dock="Left"
+                        Command="{Binding FindPreviousCommand}"
+                        Style="{StaticResource DialogButtonStyle}"
+                        Margin="0,0,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock Text="Pr&#233;c." VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button DockPanel.Dock="Left"
+                        Command="{Binding FindNextCommand}"
+                        Style="{StaticResource DialogButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Suiv." VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Separator -->
+                <Rectangle DockPanel.Dock="Left" Width="1" Margin="8,10" Opacity="0.35"
+                           Fill="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Stretch"/>
+
+                <!-- Find All -->
+                <Button DockPanel.Dock="Left"
+                        Content="Tout chercher"
+                        Command="{Binding FindAllCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"/>
+
+                <!-- Replace / Replace All (hidden in RELATIVE mode) -->
+                <Button DockPanel.Dock="Left"
+                        Content="Remplacer"
+                        Command="{Binding ReplaceSelectedCommand}"
+                        Style="{StaticResource DialogButtonStyle}"
+                        Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <Button DockPanel.Dock="Left"
+                        Content="Tout remplacer"
+                        Command="{Binding ReplaceAllCommand}"
+                        Style="{StaticResource DialogButtonStyle}"
+                        Visibility="{Binding ShowReplaceControls, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </DockPanel>
         </Border>
 
-        <!-- ========================================
-             ZONE C: RESULTS LIST (fills remaining)
-             ======================================== -->
-        <Border Grid.Row="2" Padding="15">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <!-- ══════════════════════════════════════════════════════
+             ZONE C — Results list
+             ══════════════════════════════════════════════════════ -->
+        <Grid Grid.Row="2" Margin="12,8,12,4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                <!-- Results Header -->
-                <Grid Grid.Row="0" Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+            <!-- Header row -->
+            <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,6">
+                <TextBlock DockPanel.Dock="Left"
+                           VerticalAlignment="Center"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <Run Text="R&#233;sultats ("/>
+                    <Run Text="{Binding TotalResultCount, Mode=OneWay}"/>
+                    <Run Text=")"/>
+                </TextBlock>
+                <Button DockPanel.Dock="Right"
+                        Content="Exporter &#x25BE;"
+                        Command="{Binding ExportResultsCommand}"
+                        Style="{StaticResource DialogButtonStyle}"
+                        MinWidth="80"/>
+            </DockPanel>
 
-                    <TextBlock Grid.Column="0" FontWeight="SemiBold" FontSize="14">
-                        <Run Text="Results ("/>
-                        <Run Text="{Binding TotalResultCount, Mode=OneWay}"/>
-                        <Run Text=")"/>
-                    </TextBlock>
+            <!-- Progress bar (during search) -->
+            <ProgressBar Grid.Row="1"
+                         Height="2"
+                         VerticalAlignment="Top"
+                         IsIndeterminate="{Binding IsIndeterminate}"
+                         Value="{Binding SearchProgress, Mode=OneWay}"
+                         Maximum="100"
+                         Foreground="{DynamicResource AccentBrush}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
-                    <Button Grid.Column="1" Content="Export ▼" Command="{Binding ExportResultsCommand}"
-                            Style="{StaticResource DialogButtonStyle}" MinWidth="70"/>
-                </Grid>
+            <!-- Standard results (TEXT / HEX / WILDCARD / TBL) -->
+            <ListView Grid.Row="1"
+                      ItemsSource="{Binding StandardResults}"
+                      SelectedItem="{Binding SelectedResult}"
+                      Style="{StaticResource ResultsListViewStyle}"
+                      ItemContainerStyle="{StaticResource ResultItemContainerStyle}"
+                      Visibility="{Binding IsRelativeMode, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn Header="#"              Width="44"  DisplayMemberBinding="{Binding Index}"/>
+                        <GridViewColumn Header="Offset (Hex)"  Width="100" DisplayMemberBinding="{Binding PositionHex}"/>
+                        <GridViewColumn Header="Offset (Dec)"  Width="100" DisplayMemberBinding="{Binding PositionDec}"/>
+                        <GridViewColumn Header="Aper&#231;u"   Width="230" DisplayMemberBinding="{Binding HexContext}"/>
+                        <GridViewColumn Header="Long."         Width="60"  DisplayMemberBinding="{Binding Length}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
 
-                <!-- Progress Bar (shown during search) -->
-                <ProgressBar Grid.Row="1"
-                             Height="4"
-                             VerticalAlignment="Top"
-                             IsIndeterminate="{Binding IsIndeterminate}"
-                             Value="{Binding SearchProgress, Mode=OneWay}"
-                             Maximum="100"
-                             Visibility="{Binding IsSearching, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <!-- Relative results -->
+            <ListView Grid.Row="1"
+                      ItemsSource="{Binding RelativeResults}"
+                      SelectedItem="{Binding SelectedResult}"
+                      Style="{StaticResource ResultsListViewStyle}"
+                      ItemContainerStyle="{StaticResource ResultItemContainerStyle}"
+                      Visibility="{Binding IsRelativeMode, Converter={StaticResource BoolToVisibilityConverter}}">
+                <ListView.View>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}">
+                        <GridViewColumn Header="#" Width="38">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},
+                                               Path=(ItemsControl.AlternationIndex),
+                                               Converter={StaticResource IndexConverter}}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Offset"    Width="66"  DisplayMemberBinding="{Binding Offset, StringFormat='+{0}'}"/>
+                        <GridViewColumn Header="Score"     Width="58"  DisplayMemberBinding="{Binding Score, StringFormat=F1}"/>
+                        <GridViewColumn Header="Occ."      Width="54"  DisplayMemberBinding="{Binding MatchCount}"/>
+                        <GridViewColumn Header="Aper&#231;u" Width="240" DisplayMemberBinding="{Binding SampleText}"/>
+                        <GridViewColumn Header="% Imprim." Width="70"  DisplayMemberBinding="{Binding PrintableCharPercentage, StringFormat=F1}"/>
+                        <GridViewColumn Header="Actions"   Width="130">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Export TBL"
+                                                Command="{Binding DataContext.ExportProposalToTblCommand,
+                                                          RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource DialogButtonStyle}"
+                                                MinWidth="64" Height="20" Margin="0,0,4,0"/>
+                                        <Button Content="Appliquer"
+                                                Command="{Binding DataContext.ApplyEncodingCommand,
+                                                          RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource DialogButtonStyle}"
+                                                MinWidth="60" Height="20"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
 
-                <!-- Standard Results ListView -->
-                <ListView Grid.Row="1"
-                          ItemsSource="{Binding StandardResults}"
-                          SelectedItem="{Binding SelectedResult}"
-                          Style="{StaticResource ResultsListViewStyle}"
-                          Visibility="{Binding IsRelativeMode, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="#" Width="50" DisplayMemberBinding="{Binding Index}"/>
-                            <GridViewColumn Header="Offset (Hex)" Width="120" DisplayMemberBinding="{Binding PositionHex}"/>
-                            <GridViewColumn Header="Offset (Dec)" Width="120" DisplayMemberBinding="{Binding PositionDec}"/>
-                            <GridViewColumn Header="Context Preview" Width="400" DisplayMemberBinding="{Binding HexContext}"/>
-                            <GridViewColumn Header="Length" Width="80" DisplayMemberBinding="{Binding Length}"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+        <!-- ══════════════════════════════════════════════════════
+             ZONE D — Status bar
+             ══════════════════════════════════════════════════════ -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="12,0">
+            <DockPanel LastChildFill="False">
+                <!-- TBL: Load or info -->
+                <Button DockPanel.Dock="Right"
+                        Command="{Binding LoadTblCommand}"
+                        Style="{StaticResource DialogButtonStyle}"
+                        Height="18" Padding="6,0"
+                        Margin="0"
+                        Visibility="{Binding IsTblLoaded, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                        ToolTip="Charger un fichier TBL (table de caract&#232;res ROM)">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xED25;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock Text="Charger TBL..." VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
 
-                <!-- Relative Results ListView -->
-                <ListView Grid.Row="1"
-                          ItemsSource="{Binding RelativeResults}"
-                          SelectedItem="{Binding SelectedResult}"
-                          Style="{StaticResource ResultsListViewStyle}"
-                          Visibility="{Binding IsRelativeMode, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="#" Width="40">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=(ItemsControl.AlternationIndex), Converter={StaticResource IndexConverter}}"/>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn Header="Offset" Width="80" DisplayMemberBinding="{Binding Offset, StringFormat='+{0}'}"/>
-                            <GridViewColumn Header="Score" Width="70" DisplayMemberBinding="{Binding Score, StringFormat=F1}"/>
-                            <GridViewColumn Header="Matches" Width="80" DisplayMemberBinding="{Binding MatchCount}"/>
-                            <GridViewColumn Header="Sample Preview" Width="350" DisplayMemberBinding="{Binding SampleText}"/>
-                            <GridViewColumn Header="Printable %" Width="90" DisplayMemberBinding="{Binding PrintableCharPercentage, StringFormat=F1}"/>
-                            <GridViewColumn Header="Actions" Width="140">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button Content="Export TBL" Command="{Binding DataContext.ExportProposalToTblCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                    CommandParameter="{Binding}" Style="{StaticResource DialogButtonStyle}" MinWidth="60" Height="24" Margin="0,0,5,0"/>
-                                            <Button Content="Apply" Command="{Binding DataContext.ApplyEncodingCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                    CommandParameter="{Binding}" Style="{StaticResource PrimaryButtonStyle}" MinWidth="50" Height="24"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </Grid>
-        </Border>
-
-        <!-- ========================================
-             ZONE D: STATUS BAR (~24px)
-             ======================================== -->
-        <Border Grid.Row="3" Background="{DynamicResource AccentBrush}" Padding="10,0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Text="Ready" VerticalAlignment="Center" Margin="0,0,20,0"/>
-
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding FileName, Mode=OneWay}" Margin="0,0,10,0"/>
-                    <TextBlock Text="│" Margin="0,0,10,0"/>
-                    <TextBlock Margin="0,0,10,0">
-                        <Run Text="Size:"/>
-                        <Run Text="{Binding FileLength, StringFormat=N0, Mode=OneWay}"/>
-                        <Run Text="bytes"/>
-                    </TextBlock>
-                    <TextBlock Text="│" Margin="0,0,10,0"/>
-
-                    <!-- TBL Status: Show "Load TBL" button if no TBL loaded -->
-                    <Button Content="📂 Load TBL..." Command="{Binding LoadTblCommand}"
-                            Style="{StaticResource DialogButtonStyle}" Height="20" Padding="8,0" Margin="0,0,10,0"
-                            Visibility="{Binding IsTblLoaded, Converter={StaticResource InverseBoolToVisibilityConverter}}"
-                            ToolTip="Load a TBL (Character Table) file for ROM editing"/>
-
-                    <!-- TBL Status: Show TBL info and Close button if TBL loaded -->
-                    <TextBlock Margin="0,0,5,0"
-                               Visibility="{Binding IsTblLoaded, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <Run Text="TBL:"/>
+                <StackPanel DockPanel.Dock="Right"
+                            Orientation="Horizontal"
+                            Visibility="{Binding IsTblLoaded, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <TextBlock VerticalAlignment="Center" Margin="0,0,6,0" FontSize="11"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}">
+                        <Run Text="TBL :"/>
                         <Run Text="{Binding TblInfo, Mode=OneWay}"/>
                     </TextBlock>
-                    <Button Content="❌ Close" Command="{Binding CloseTblCommand}"
-                            Style="{StaticResource DialogButtonStyle}" Height="20" Padding="6,0" Margin="0,0,10,0"
-                            Visibility="{Binding IsTblLoaded, Converter={StaticResource BoolToVisibilityConverter}}"
-                            ToolTip="Close the current TBL file"/>
+                    <Button Command="{Binding CloseTblCommand}"
+                            Style="{StaticResource DialogButtonStyle}"
+                            Height="18" Padding="6,0" Margin="0"
+                            ToolTip="Fermer le fichier TBL">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                       VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Fermer" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
 
-                <Button Grid.Column="2" Content="✕" Command="{Binding CloseCommand}"
-                        Style="{StaticResource DialogButtonStyle}" MinWidth="30" Height="20"/>
-            </Grid>
+                <!-- Left: filename + size -->
+                <StackPanel DockPanel.Dock="Left"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="{Binding FileName, Mode=OneWay}"
+                               FontSize="11"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Margin="0,0,8,0"/>
+                    <Rectangle Width="1" Margin="0,3" Opacity="0.4"
+                               Fill="{DynamicResource DockMenuForegroundBrush}"
+                               VerticalAlignment="Stretch"/>
+                    <TextBlock FontSize="11" Margin="8,0,0,0"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}">
+                        <Run Text="Taille :"/>
+                        <Run Text="{Binding FileLength, StringFormat=N0, Mode=OneWay}"/>
+                        <Run Text="octets"/>
+                    </TextBlock>
+                </StackPanel>
+            </DockPanel>
         </Border>
     </Grid>
 </Window>

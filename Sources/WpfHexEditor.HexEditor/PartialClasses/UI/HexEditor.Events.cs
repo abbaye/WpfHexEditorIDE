@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -606,12 +606,36 @@ namespace WpfHexEditor.HexEditor
                     }
                     break;
 
+                // Ctrl+F: Inline Quick Search bar; Ctrl+Shift+F: Advanced Search dialog
+                case Key.F:
+                    if (isCtrlPressed && isShiftPressed)
+                    {
+                        ShowAdvancedSearchDialog(System.Windows.Window.GetWindow(this));
+                        handled = true;
+                    }
+                    else if (isCtrlPressed)
+                    {
+                        ShowQuickSearchBar();
+                        handled = true;
+                    }
+                    else if (!_viewModel.ReadOnlyMode && !_isAsciiEditMode && DataStringVisual == DataVisualType.Hexadecimal)
+                    {
+                        HandleHexInput(0xF, currentPos);
+                        handled = true;
+                    }
+                    else
+                    {
+                        handled = false;
+                    }
+                    break;
+
                 // Text/Hex input editing
                 default:
                     if (!_viewModel.ReadOnlyMode)
                     {
                         // ASCII mode: Handle text input (A-Z, a-z, 0-9, space, punctuation)
-                        if (_isAsciiEditMode && TryGetAsciiChar(e.Key, out char asciiChar))
+                        // Skip if a modifier key (Ctrl/Alt) is held — those are shortcut combinations
+                        if (!isCtrlPressed && _isAsciiEditMode && TryGetAsciiChar(e.Key, out char asciiChar))
                         {
                             HandleAsciiInput(asciiChar, currentPos);
                             handled = true;
@@ -622,7 +646,7 @@ namespace WpfHexEditor.HexEditor
                             switch (DataStringVisual)
                             {
                                 case DataVisualType.Hexadecimal:
-                                    if (TryGetHexValue(e.Key, out byte hexValue))
+                                    if (!isCtrlPressed && TryGetHexValue(e.Key, out byte hexValue))
                                     {
                                         HandleHexInput(hexValue, currentPos);
                                         handled = true;

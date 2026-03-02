@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System.Text.Json;
@@ -54,7 +54,22 @@ public static class DockLayoutSerializer
             WindowLeft = layout.WindowLeft,
             WindowTop = layout.WindowTop,
             WindowWidth = layout.WindowWidth,
-            WindowHeight = layout.WindowHeight
+            WindowHeight = layout.WindowHeight,
+            TabBarSettings = layout.TabBarSettings is not null
+                ? new DocumentTabBarSettingsDto
+                  {
+                      TabPlacement           = layout.TabBarSettings.TabPlacement,
+                      ColorMode              = layout.TabBarSettings.ColorMode,
+                      MultiRowTabs           = layout.TabBarSettings.MultiRowTabs,
+                      MultiRowWithMouseWheel = layout.TabBarSettings.MultiRowWithMouseWheel,
+                      RegexRules             = layout.TabBarSettings.RegexRules
+                                                 .Select(r => new RegexColorRuleDto
+                                                 {
+                                                     Pattern  = r.Pattern,
+                                                     ColorHex = r.ColorHex
+                                                 }).ToList()
+                  }
+                : null
         };
     }
 
@@ -110,6 +125,7 @@ public static class DockLayoutSerializer
             CanClose = item.CanClose,
             CanFloat = item.CanFloat,
             IsPinned = item.IsPinned,
+            IsDocument = item.IsDocument,
             State = item.State,
             LastDockSide = item.LastDockSide,
             FloatLeft = item.FloatLeft,
@@ -167,6 +183,20 @@ public static class DockLayoutSerializer
         layout.WindowTop = dto.WindowTop;
         layout.WindowWidth = dto.WindowWidth;
         layout.WindowHeight = dto.WindowHeight;
+
+        // Restore tab bar settings (null in old layouts → will default at runtime)
+        if (dto.TabBarSettings is not null)
+        {
+            layout.TabBarSettings = new DocumentTabBarSettings
+            {
+                TabPlacement           = dto.TabBarSettings.TabPlacement,
+                ColorMode              = dto.TabBarSettings.ColorMode,
+                MultiRowTabs           = dto.TabBarSettings.MultiRowTabs,
+                MultiRowWithMouseWheel = dto.TabBarSettings.MultiRowWithMouseWheel,
+                RegexRules             = [.. dto.TabBarSettings.RegexRules
+                    .Select(r => new RegexColorRule { Pattern = r.Pattern, ColorHex = r.ColorHex })]
+            };
+        }
 
         return layout;
     }
@@ -236,6 +266,7 @@ public static class DockLayoutSerializer
             CanClose = dto.CanClose,
             CanFloat = dto.CanFloat,
             IsPinned = dto.IsPinned,
+            IsDocument = dto.IsDocument,
             State = dto.State,
             LastDockSide = dto.LastDockSide,
             FloatLeft = dto.FloatLeft,

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -19,86 +19,67 @@ namespace WpfHexEditor.HexEditor
         #region TBL Support
 
         /// <summary>
-        /// Load a TBL (Character Table) file
+        /// Load a TBL (Character Table) file. Supports .tbl (Thingy/Atlas) only.
+        /// For .tblx, populate a TblStream externally and call <see cref="LoadTBL"/>.
         /// </summary>
         /// <param name="path">Path to the TBL file</param>
         public void LoadTBLFile(string path)
         {
-            try
-            {
-                _tblStream = new TblStream(path);
-                _characterTableType = CharacterTableType.TblFile;
-
-                // Sync TblStream to HexViewport for rendering and enable TBL display
-                if (HexViewport != null)
-                {
-                    HexViewport.TblStream = _tblStream;
-                    // Enable ALL TBL types when loading a TBL file (V1 compatibility)
-                    HexViewport.ShowTblAscii = true;
-                    HexViewport.ShowTblDte = true;
-                    HexViewport.ShowTblMte = true;
-                    HexViewport.ShowTblJaponais = true;
-                    HexViewport.ShowTblEndBlock = true;
-                    HexViewport.ShowTblEndLine = true;
-                    // Force refresh to apply TBL changes
-                    HexViewport.Refresh();
-                }
-
-                // Update status bar
-                string fileName = System.IO.Path.GetFileName(path);
-                StatusText.Text = $"TBL loaded: {fileName}";
-
-                // Update TBL status icon with detailed statistics
-                TblStatusIcon.Visibility = System.Windows.Visibility.Visible;
-
-                // Build detailed tooltip with TBL content statistics
-                var tooltipText = new System.Text.StringBuilder();
-                tooltipText.AppendLine($"📋 TBL File: {fileName}");
-                tooltipText.AppendLine($"━━━━━━━━━━━━━━━━━━━━━━━━━");
-                tooltipText.AppendLine($"Total Entries: {_tblStream.Length}");
-                tooltipText.AppendLine();
-
-                // Show breakdown by type (only non-zero counts)
-                if (_tblStream.TotalAscii > 0)
-                    tooltipText.AppendLine($"  • ASCII: {_tblStream.TotalAscii}");
-                if (_tblStream.TotalDte > 0)
-                    tooltipText.AppendLine($"  • DTE (Dual): {_tblStream.TotalDte}");
-                if (_tblStream.TotalMte > 0)
-                    tooltipText.AppendLine($"  • MTE (Multi): {_tblStream.TotalMte}");
-                if (_tblStream.Total3Byte > 0)
-                    tooltipText.AppendLine($"  • 3-Byte: {_tblStream.Total3Byte}");
-                if (_tblStream.Total4Byte > 0)
-                    tooltipText.AppendLine($"  • 4-Byte: {_tblStream.Total4Byte}");
-                if (_tblStream.Total5PlusByte > 0)
-                    tooltipText.AppendLine($"  • 5+ Byte: {_tblStream.Total5PlusByte}");
-                if (_tblStream.TotalJaponais > 0)
-                    tooltipText.AppendLine($"  • Japanese: {_tblStream.TotalJaponais}");
-                if (_tblStream.TotalEndBlock > 0)
-                    tooltipText.AppendLine($"  • End Block: {_tblStream.TotalEndBlock}");
-                if (_tblStream.TotalEndLine > 0)
-                    tooltipText.AppendLine($"  • End Line: {_tblStream.TotalEndLine}");
-
-                tooltipText.AppendLine();
-                tooltipText.AppendLine("⚠️ Edit only in HEX panel when TBL is loaded");
-
-                TblStatusTooltipText.Text = tooltipText.ToString();
-            }
+            try { LoadTBL(new TblStream(path), path); }
             catch (Exception ex)
             {
                 StatusText.Text = $"Failed to load TBL: {ex.Message}";
                 _tblStream = null;
                 _characterTableType = CharacterTableType.Ascii;
-
-                // Clear TblStream in HexViewport and disable TBL display
-                if (HexViewport != null)
-                {
-                    HexViewport.TblStream = null;
-                    HexViewport.ShowTblMte = false;
-                }
-
-                // Hide TBL status icon
+                if (HexViewport != null) { HexViewport.TblStream = null; HexViewport.ShowTblMte = false; }
                 TblStatusIcon.Visibility = System.Windows.Visibility.Collapsed;
             }
+        }
+
+        /// <summary>
+        /// Apply a pre-populated <see cref="TblStream"/> as the active character table.
+        /// Use this when the stream was built externally (e.g. from a .tblx file).
+        /// </summary>
+        /// <param name="tbl">Already-populated TblStream.</param>
+        /// <param name="displayPath">Path shown in the status bar / tooltip (filename only).</param>
+        public void LoadTBL(TblStream tbl, string displayPath)
+        {
+            _tblStream = tbl;
+            _characterTableType = CharacterTableType.TblFile;
+
+            if (HexViewport != null)
+            {
+                HexViewport.TblStream = _tblStream;
+                HexViewport.ShowTblAscii    = true;
+                HexViewport.ShowTblDte      = true;
+                HexViewport.ShowTblMte      = true;
+                HexViewport.ShowTblJaponais = true;
+                HexViewport.ShowTblEndBlock = true;
+                HexViewport.ShowTblEndLine  = true;
+                HexViewport.Refresh();
+            }
+
+            string fileName = System.IO.Path.GetFileName(displayPath);
+            StatusText.Text = $"TBL loaded: {fileName}";
+            TblStatusIcon.Visibility = System.Windows.Visibility.Visible;
+
+            var tt = new System.Text.StringBuilder();
+            tt.AppendLine($"📋 TBL File: {fileName}");
+            tt.AppendLine($"━━━━━━━━━━━━━━━━━━━━━━━━━");
+            tt.AppendLine($"Total Entries: {_tblStream.Length}");
+            tt.AppendLine();
+            if (_tblStream.TotalAscii    > 0) tt.AppendLine($"  • ASCII: {_tblStream.TotalAscii}");
+            if (_tblStream.TotalDte      > 0) tt.AppendLine($"  • DTE (Dual): {_tblStream.TotalDte}");
+            if (_tblStream.TotalMte      > 0) tt.AppendLine($"  • MTE (Multi): {_tblStream.TotalMte}");
+            if (_tblStream.Total3Byte    > 0) tt.AppendLine($"  • 3-Byte: {_tblStream.Total3Byte}");
+            if (_tblStream.Total4Byte    > 0) tt.AppendLine($"  • 4-Byte: {_tblStream.Total4Byte}");
+            if (_tblStream.Total5PlusByte> 0) tt.AppendLine($"  • 5+ Byte: {_tblStream.Total5PlusByte}");
+            if (_tblStream.TotalJaponais > 0) tt.AppendLine($"  • Japanese: {_tblStream.TotalJaponais}");
+            if (_tblStream.TotalEndBlock > 0) tt.AppendLine($"  • End Block: {_tblStream.TotalEndBlock}");
+            if (_tblStream.TotalEndLine  > 0) tt.AppendLine($"  • End Line: {_tblStream.TotalEndLine}");
+            tt.AppendLine();
+            tt.AppendLine("⚠️ Edit only in HEX panel when TBL is loaded");
+            TblStatusTooltipText.Text = tt.ToString();
         }
 
         /// <summary>

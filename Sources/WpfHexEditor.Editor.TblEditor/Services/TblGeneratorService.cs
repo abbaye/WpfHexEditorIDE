@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Bytes;
 using WpfHexEditor.Core.CharacterTable;
@@ -8,7 +14,9 @@ using WpfHexEditor.Editor.TblEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.TblEditor.Services;
 
-/// <summary>Service for generating TBL entries from sample text using RelativeSearchEngine</summary>
+/// <summary>
+/// Service for generating TBL entries from sample text using RelativeSearchEngine
+/// </summary>
 public class TblGeneratorService
 {
     private readonly ByteProvider _byteProvider;

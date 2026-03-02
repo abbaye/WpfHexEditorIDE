@@ -1,0 +1,172 @@
+{
+  "formatName": "Nintendo Wii U Image",
+  "version": "1.14",
+  "extensions": [
+    ".wud",
+    ".wux"
+  ],
+  "description": "Nintendo Wii U disc image format (WUD/WUX compressed)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "WUD (Wii U Disk Image) Format",
+      "WUX (Wii U Compressed) Archive Format",
+      "Wii U File Formats Documentation"
+    ],
+    "WebLinks": [
+      "https://www.retroreversing.com/WiiUFileFormats",
+      "https://docs.fileformat.com/disc-and-media/wud/",
+      "https://docs.fileformat.com/compression/wux/",
+      "https://blog.usro.net/2024/11/understanding-nintendo-wii-u-file-formats-a-guide-to-wii-u-game-files-and-storage/"
+    ]
+  },
+  "detection": {
+    "signature": "57555800",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 4,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "width": 0,
+    "height": 0,
+    "totalPixels": 0,
+    "bitsPerPixel": 0,
+    "wuxMagic": "",
+    "formatVersion": "",
+    "uncompressedSize": 0,
+    "sectorSize": 0,
+    "sectorTable": "",
+    "formattedSize": ""
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "WUX Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "uint32",
+      "description": "WUX0 magic for compressed images (0x57 0x55 0x58 0x00)",
+      "storeAs": "wuxMagic"
+    },
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "WUX format version",
+      "storeAs": "formatVersion"
+    },
+    {
+      "type": "field",
+      "name": "Uncompressed Size",
+      "offset": 8,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint64",
+      "description": "Original uncompressed WUD size (64-bit)",
+      "storeAs": "uncompressedSize"
+    },
+    {
+      "type": "field",
+      "name": "Sector Size",
+      "offset": 16,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "description": "Sector size for compression",
+      "storeAs": "sectorSize"
+    },
+    {
+      "type": "field",
+      "name": "Sector Table",
+      "offset": 20,
+      "length": 32,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Sector offset table (compressed format)",
+      "storeAs": "sectorTable"
+    },
+    {
+      "type": "metadata",
+      "name": "Width",
+      "variable": "width",
+      "description": "Width"
+    },
+    {
+      "type": "metadata",
+      "name": "Height",
+      "variable": "height",
+      "description": "Height"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Pixels",
+      "variable": "totalPixels",
+      "description": "Total Pixels"
+    },
+    {
+      "type": "metadata",
+      "name": "Formatted Size",
+      "variable": "formattedSize",
+      "description": "Human-readable file size"
+    }
+  ],
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".wud",
+      ".wux"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 45,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 9,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": true
+  },
+  "TechnicalDetails": {
+    "Platform": "Nintendo Wii U"
+  },
+  "functions": {
+    "readUInt32LE": "Read dimensions",
+    "multiply": "Calculate pixels",
+    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels",
+    "formatFileSize(var:uncompressedSize)": "Format uncompressedSize as readable size"
+  }
+}

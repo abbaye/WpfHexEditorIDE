@@ -1,10 +1,18 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using System.Text.RegularExpressions;
 using WpfHexEditor.Editor.TblEditor.Models;
 using WpfHexEditor.Editor.TblEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.TblEditor.Services;
 
-/// <summary>Service for validating TBL entries</summary>
+/// <summary>
+/// Service for validating TBL entries
+/// </summary>
 public class TblValidationService
 {
     public TblValidationResult ValidateEntry(string? entry, string? value)
@@ -40,18 +48,19 @@ public class TblValidationService
     public async Task<Dictionary<TblEntryViewModel, TblValidationResult>> ValidateAllAsync(
         IEnumerable<TblEntryViewModel> entries, CancellationToken cancellationToken)
     {
+        var snapshot = entries.ToList(); // Snapshot on calling thread to avoid cross-thread collection modification
         var results = new Dictionary<TblEntryViewModel, TblValidationResult>();
         await Task.Run(() =>
         {
-            foreach (var entry in entries)
+            foreach (var entry in snapshot)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                if (cancellationToken.IsCancellationRequested) return;
                 var result = ValidateEntry(entry.Entry, entry.Value);
                 results[entry] = result;
                 entry.IsValid = result.IsValid;
                 entry.ValidationError = result.ErrorMessage;
             }
-        }, cancellationToken);
+        });
         return results;
     }
 }

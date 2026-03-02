@@ -1,6 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2003-2019
 // Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -13,7 +14,9 @@ namespace WpfHexEditor.Core.CharacterTable
     /// </summary>
     public sealed class Dte
     {
-        /// <summary>DTE name</summary>
+        /// <summary>
+        /// DTE name
+        /// </summary>
         private string _entry;
 
         #region Constructeurs

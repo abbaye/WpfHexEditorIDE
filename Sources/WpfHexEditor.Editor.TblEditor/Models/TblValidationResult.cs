@@ -1,6 +1,14 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Result of TBL entry validation</summary>
+/// <summary>
+/// Result of TBL entry validation
+/// </summary>
 public class TblValidationResult
 {
     public bool IsValid { get; set; }

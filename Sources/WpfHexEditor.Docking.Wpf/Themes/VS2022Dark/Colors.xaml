@@ -1,3 +1,9 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -9,6 +15,7 @@
     <Color x:Key="DockTabActiveColor">#1176D2</Color>
     <Color x:Key="DockTabInactiveColor">#2D2D30</Color>
     <Color x:Key="DockTabHoverColor">#3E3E42</Color>
+    <Color x:Key="DockTabSelectedHoverColor">#252527</Color>
     <Color x:Key="DockTabTextColor">#9B9B9B</Color>
     <Color x:Key="DockTabActiveTextColor">#FFFFFF</Color>
     <Color x:Key="DockSplitterColor">#333337</Color>
@@ -22,7 +29,7 @@
     <Color x:Key="DockMenuBorderColor">#434346</Color>
     <Color x:Key="DockMenuHighlightBorderColor">#9B9B9B</Color>
     <Color x:Key="DockToolBarBackgroundColor">#2D2D30</Color>
-    <Color x:Key="DockWindowBackgroundColor">#1E1E1E</Color>
+    <Color x:Key="DockWindowBackgroundColor">#141414</Color>
 
     <!-- HexEditor Colors (VS2022 palette) -->
     <Color x:Key="HexEditor_BackgroundColor">#1E1E1E</Color>
@@ -48,6 +55,7 @@
     <SolidColorBrush x:Key="DockTabActiveBrush" Color="{StaticResource DockTabActiveColor}" />
     <SolidColorBrush x:Key="DockTabInactiveBrush" Color="{StaticResource DockTabInactiveColor}" />
     <SolidColorBrush x:Key="DockTabHoverBrush" Color="{StaticResource DockTabHoverColor}" />
+    <SolidColorBrush x:Key="DockTabSelectedHoverBrush" Color="{StaticResource DockTabSelectedHoverColor}" />
     <SolidColorBrush x:Key="DockTabTextBrush" Color="{StaticResource DockTabTextColor}" />
     <SolidColorBrush x:Key="DockTabActiveTextBrush" Color="{StaticResource DockTabActiveTextColor}" />
     <SolidColorBrush x:Key="DockSplitterBrush" Color="{StaticResource DockSplitterColor}" />
@@ -191,6 +199,11 @@
     <SolidColorBrush x:Key="PFP_GroupBadgeBackgroundBrush" Color="#3E3E42"/>
     <SolidColorBrush x:Key="PFP_CoverageTrackBrush" Color="#3E3E42"/>
     <SolidColorBrush x:Key="PFP_CoverageProgressBrush" Color="#1176D2"/>
+    <SolidColorBrush x:Key="PFP_ValidationErrorBackgroundBrush" Color="#3A1515"/>
+    <SolidColorBrush x:Key="PFP_ValidationErrorBorderBrush"     Color="#CF6679"/>
+    <SolidColorBrush x:Key="PFP_CategoryBadgeBackgroundBrush"   Color="#2E2200"/>
+    <SolidColorBrush x:Key="PFP_CategoryBadgeBorderBrush"       Color="#CC8800"/>
+    <SolidColorBrush x:Key="PFP_CategoryBadgeForegroundBrush"   Color="#FFB74D"/>
 
 
     <!-- Solution Explorer (SE) Theme Resources -->
@@ -217,4 +230,51 @@
     <SolidColorBrush x:Key="PP_DescriptionForegroundBrush"   Color="#AAAAAA"/>
     <SolidColorBrush x:Key="PP_EditableForegroundBrush"      Color="#9CDCFE"/>
     <SolidColorBrush x:Key="PP_BorderBrush"                  Color="#3F3F46"/>
+
+    <!-- Error Panel (ERR) Theme Resources -->
+    <SolidColorBrush x:Key="ERR_BackgroundBrush"      Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="ERR_ForegroundBrush"      Color="#D4D4D4"/>
+    <SolidColorBrush x:Key="ERR_ToolbarBrush"         Color="#2D2D30"/>
+    <SolidColorBrush x:Key="ERR_GridLinesBrush"        Color="#3F3F46"/>
+    <SolidColorBrush x:Key="ERR_SelectedRowBrush"      Color="#1A3558"/>
+    <SolidColorBrush x:Key="ERR_HoverRowBrush"         Color="#3A3D3F"/>
+    <SolidColorBrush x:Key="ERR_FilterActiveBrush"     Color="#3E3E42"/>
+    <SolidColorBrush x:Key="ERR_FilterInactiveBrush"   Color="Transparent"/>
+    <SolidColorBrush x:Key="ERR_SearchBoxBrush"        Color="#3E3E42"/>
+    <SolidColorBrush x:Key="ERR_HeaderBrush"           Color="#252526"/>
+    <SolidColorBrush x:Key="ERR_HeaderHoverBrush"      Color="#3E3E42"/>
+    <SolidColorBrush x:Key="ERR_HeaderPressedBrush"    Color="#1A1A1C"/>
+
+    <!-- Common Panel Resources (PanelCommon.xaml keys — shared across all IDE panels) -->
+    <SolidColorBrush x:Key="Panel_ToolbarBrush"             Color="#2D2D30"/>
+    <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#333337"/>
+    <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#3E3E42"/>
+    <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#454548"/>
+    <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#D4D4D4"/>
+    <!-- PFP toolbar — aliases Panel_ToolbarBrush for ParsedFieldsPanel -->
+    <SolidColorBrush x:Key="PFP_ToolbarBrush"               Color="#2D2D30"/>
+
+    <!-- TE_* — Text Editor (syntax highlighting, viewport) -->
+    <SolidColorBrush x:Key="TE_Background"             Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="TE_Foreground"             Color="#D4D4D4"/>
+    <Color           x:Key="TE_CaretColor"                    >#D4D4D4</Color>
+    <SolidColorBrush x:Key="TE_LineNumberBackground"   Color="#252526"/>
+    <SolidColorBrush x:Key="TE_LineNumberForeground"   Color="#858585"/>
+    <SolidColorBrush x:Key="TE_CurrentLineBrush"       Color="#2A2A2A"/>
+    <SolidColorBrush x:Key="TE_SelectionBackground"    Color="#264F78"/>
+    <SolidColorBrush x:Key="TE_Keyword"                Color="#569CD6"/>
+    <SolidColorBrush x:Key="TE_Comment"                Color="#6A9955"/>
+    <SolidColorBrush x:Key="TE_String"                 Color="#CE9178"/>
+    <SolidColorBrush x:Key="TE_Number"                 Color="#B5CEA8"/>
+    <SolidColorBrush x:Key="TE_Register"               Color="#9CDCFE"/>
+    <SolidColorBrush x:Key="TE_Label"                  Color="#DCDCAA"/>
+    <SolidColorBrush x:Key="TE_Operator"               Color="#D4D4D4"/>
+    <SolidColorBrush x:Key="TE_Type"                   Color="#4EC9B0"/>
+    <SolidColorBrush x:Key="TE_Directive"              Color="#C586C0"/>
+
+    <!-- Generic Dialog Resources (AdvancedSearch, ProjectDialogs, etc.) -->
+    <Color x:Key="AccentColor">#1176D2</Color>
+    <SolidColorBrush x:Key="BackgroundBrush"  Color="{StaticResource DockWindowBackgroundColor}"/>
+    <SolidColorBrush x:Key="ForegroundBrush"  Color="{StaticResource DockMenuForegroundColor}"/>
+    <SolidColorBrush x:Key="AccentBrush"      Color="{StaticResource AccentColor}"/>
 </ResourceDictionary>

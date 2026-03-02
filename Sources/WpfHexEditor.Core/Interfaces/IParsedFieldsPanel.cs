@@ -1,5 +1,11 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
 // Interface IParsedFieldsPanel + supporting types
 // Decouples HexEditor Core from the concrete WindowPanels implementation
 //////////////////////////////////////////////
@@ -132,7 +138,9 @@ namespace WpfHexEditor.Core.Interfaces
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    /// <summary>Lightweight wrapper for displaying a format candidate in a ComboBox.</summary>
+    /// <summary>
+    /// Lightweight wrapper for displaying a format candidate in a ComboBox.
+    /// </summary>
     public class FormatCandidateItem
     {
         public string DisplayName { get; set; }
@@ -140,14 +148,18 @@ namespace WpfHexEditor.Core.Interfaces
         public override string ToString() => DisplayName;
     }
 
-    /// <summary>Event args when the user selects a different format candidate.</summary>
+    /// <summary>
+    /// Event args when the user selects a different format candidate.
+    /// </summary>
     public class FormatCandidateSelectedEventArgs : EventArgs
     {
         public FormatMatchCandidate Candidate { get; }
         public FormatCandidateSelectedEventArgs(FormatMatchCandidate candidate) => Candidate = candidate;
     }
 
-    /// <summary>Event args when the user edits a field value in the panel.</summary>
+    /// <summary>
+    /// Event args when the user edits a field value in the panel.
+    /// </summary>
     public class FieldEditedEventArgs : EventArgs
     {
         public ParsedFieldViewModel Field { get; }

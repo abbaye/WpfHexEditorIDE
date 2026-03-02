@@ -1,0 +1,212 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<Window x:Class="WpfHexEditor.ProjectSystem.Dialogs.ConvertTblDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Convert TBL to TBLX"
+        Width="520" Height="460"
+        MinWidth="420" MinHeight="420"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip"
+        ShowInTaskbar="False"
+        Background="{DynamicResource DockWindowBackgroundBrush}">
+
+    <Window.Resources>
+        <ResourceDictionary Source="/WpfHexEditor.ProjectSystem;component/Themes/DialogStyles.xaml" />
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Source → Target banner -->
+        <GroupBox Grid.Row="0" Header="Conversion">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Source:"/>
+                <TextBlock x:Name="SourceFileText" Grid.Column="1"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                           ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                <Label Grid.Column="2" Content="→" Margin="8,0"/>
+                <TextBlock x:Name="TargetFileText" Grid.Column="3"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                           ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Game metadata -->
+        <GroupBox Grid.Row="2" Header="Game Metadata (optional)">
+            <StackPanel>
+
+                <!-- Auto-fill hint strip — visible only when ROM(s) are detected in the solution -->
+                <Border x:Name="AutoFillStrip"
+                        Visibility="Collapsed"
+                        Background="{DynamicResource DockTabHoverBrush}"
+                        BorderBrush="{DynamicResource DockBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="2"
+                        Padding="6,4"
+                        Margin="0,0,0,8">
+                    <DockPanel LastChildFill="True">
+                        <Button DockPanel.Dock="Right"
+                                x:Name="AutoFillButton"
+                                Content="Auto-fill"
+                                Click="OnAutoFill"
+                                Padding="10,3"
+                                MinWidth="0"
+                                Margin="8,0,0,0"
+                                ToolTip="Pre-fill Platform, Region and Title from the selected ROM"/>
+                        <!-- ROM selector: single item = read-only label; multiple = editable combo -->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="ROM detected:"
+                                       FontSize="11"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource DockTabTextBrush}"
+                                       Margin="0,0,6,0"/>
+                            <ComboBox x:Name="RomHintCombo"
+                                      FontSize="11"
+                                      Height="22"
+                                      MinWidth="160"
+                                      MaxWidth="260"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="6"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="6"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Row 0: Game Title -->
+                    <Label Grid.Row="0" Grid.Column="0" Content="Game _Title:"/>
+                    <TextBox x:Name="GameTitleBox" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4"/>
+
+                    <!-- Row 2: Platform / Region -->
+                    <Label Grid.Row="2" Grid.Column="0" Content="_Platform:"/>
+                    <ComboBox x:Name="PlatformCombo" Grid.Row="2" Grid.Column="1"
+                              IsEditable="True"
+                              Text="{Binding SelectedItem, RelativeSource={RelativeSource Self}, Mode=OneWay}">
+                        <!-- Nintendo -->
+                        <ComboBoxItem>NES</ComboBoxItem>
+                        <ComboBoxItem>SNES</ComboBoxItem>
+                        <ComboBoxItem>N64</ComboBoxItem>
+                        <ComboBoxItem>GameCube</ComboBoxItem>
+                        <ComboBoxItem>Nintendo Wii</ComboBoxItem>
+                        <ComboBoxItem>Nintendo Wii U</ComboBoxItem>
+                        <ComboBoxItem>Nintendo Switch</ComboBoxItem>
+                        <ComboBoxItem>Nintendo Switch 2</ComboBoxItem>
+                        <ComboBoxItem>Game Boy</ComboBoxItem>
+                        <ComboBoxItem>GBA</ComboBoxItem>
+                        <!-- Sony -->
+                        <ComboBoxItem>PS1</ComboBoxItem>
+                        <ComboBoxItem>PS2</ComboBoxItem>
+                        <ComboBoxItem>PS3</ComboBoxItem>
+                        <ComboBoxItem>PS4</ComboBoxItem>
+                        <ComboBoxItem>PS5</ComboBoxItem>
+                        <ComboBoxItem>PSP</ComboBoxItem>
+                        <ComboBoxItem>PlayStation Vita</ComboBoxItem>
+                        <!-- Sega -->
+                        <ComboBoxItem>Mega Drive / Genesis</ComboBoxItem>
+                        <ComboBoxItem>Sega Saturn</ComboBoxItem>
+                        <ComboBoxItem>Sega Dreamcast</ComboBoxItem>
+                        <ComboBoxItem>Sega Master System</ComboBoxItem>
+                        <!-- Microsoft -->
+                        <ComboBoxItem>Xbox</ComboBoxItem>
+                        <ComboBoxItem>Xbox 360</ComboBoxItem>
+                        <ComboBoxItem>Xbox One</ComboBoxItem>
+                        <ComboBoxItem>Xbox Series X/S</ComboBoxItem>
+                        <!-- Other -->
+                        <ComboBoxItem>PC Engine</ComboBoxItem>
+                        <ComboBoxItem>Atari 2600</ComboBoxItem>
+                        <ComboBoxItem>Atari 7800</ComboBoxItem>
+                        <ComboBoxItem>Other</ComboBoxItem>
+                    </ComboBox>
+                    <Label Grid.Row="2" Grid.Column="3" Content="_Region:"/>
+                    <ComboBox x:Name="RegionCombo" Grid.Row="2" Grid.Column="4" IsEditable="True">
+                        <ComboBoxItem>Japan</ComboBoxItem>
+                        <ComboBoxItem>USA</ComboBoxItem>
+                        <ComboBoxItem>Europe</ComboBoxItem>
+                        <ComboBoxItem>World</ComboBoxItem>
+                    </ComboBox>
+
+                    <!-- Row 4: Author / Year -->
+                    <Label Grid.Row="4" Grid.Column="0" Content="_Author:"/>
+                    <TextBox x:Name="AuthorBox" Grid.Row="4" Grid.Column="1"/>
+                    <Label Grid.Row="4" Grid.Column="3" Content="_Year:"/>
+                    <TextBox x:Name="YearBox" Grid.Row="4" Grid.Column="4"
+                             PreviewTextInput="OnYearPreviewTextInput"/>
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Output options -->
+        <GroupBox Grid.Row="4" Header="Output">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                    <RadioButton x:Name="SameFolderRadio" Content="_Same folder as source"
+                                 GroupName="OutputLocation" IsChecked="True"
+                                 Checked="OnOutputLocationChanged"
+                                 Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                    <RadioButton x:Name="CustomFolderRadio" Content="_Custom folder"
+                                 GroupName="OutputLocation" Margin="16,0,0,0"
+                                 Checked="OnOutputLocationChanged"
+                                 Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                </StackPanel>
+                <Grid x:Name="CustomFolderRow" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="CustomFolderBox" Grid.Column="0"
+                             TextChanged="OnCustomFolderChanged"/>
+                    <Button Grid.Column="2" Content="..." Width="30" Padding="0"
+                            Click="OnBrowseCustomFolder" ToolTip="Browse for output folder"/>
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Post-conversion actions (fills remaining space) -->
+        <StackPanel Grid.Row="5" VerticalAlignment="Top">
+            <CheckBox x:Name="AddToProjectCheck" Content="Add converted file to _project" IsChecked="True" Margin="0,0,0,6"/>
+            <CheckBox x:Name="OpenAfterCheck" Content="_Open in TBL Editor after conversion" IsChecked="True"/>
+        </StackPanel>
+
+        <!-- OK / Cancel buttons -->
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="ConvertButton" Content="_Convert" IsDefault="True"
+                    Click="OnConvert" Margin="0,0,8,0"/>
+            <Button Content="Cancel" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

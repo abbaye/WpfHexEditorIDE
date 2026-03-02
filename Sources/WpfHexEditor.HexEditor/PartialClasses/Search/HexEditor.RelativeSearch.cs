@@ -1,8 +1,8 @@
-/*
-    Apache 2.0  2026
-    Author : Derek Tremblay (derektremblay666@gmail.com)
-    Contributors: Claude Sonnet 4.5
-*/
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
 
 using System;
 using System.Threading;
@@ -108,17 +108,7 @@ namespace WpfHexEditor.HexEditor
             // Create engine and export
             var engine = new RelativeSearchEngine(_viewModel?.Provider, _tblStream);
             var tbl = engine.ExportToTbl(proposal);
-            // TODO: TblStream.FileName has an internal setter; need InternalsVisibleTo or a Save(string) overload
-            // tbl.FileName = filePath;
-            // tbl.Save();
-            // Workaround: write TBL content manually
-            var sb = new System.Text.StringBuilder();
-            foreach (var entry in tbl.GetAllEntries())
-            {
-                var value = entry.Value.Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t");
-                sb.AppendLine($"{entry.Entry}={value}");
-            }
-            System.IO.File.WriteAllText(filePath, sb.ToString(), System.Text.Encoding.UTF8);
+            tbl.SaveAs(filePath);
         }
 
         /// <summary>

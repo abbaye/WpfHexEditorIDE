@@ -1,0 +1,57 @@
+{
+  "name": "Kotlin",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for the Kotlin programming language.",
+  "category": "C-like",
+  "extensions": [ ".kt", ".kts" ],
+  "lineComment": "//",
+  "blockCommentStart": "/*",
+  "blockCommentEnd": "*/",
+  "references": {
+    "specifications": [
+      "Kotlin Language Specification 1.0"
+    ],
+    "webLinks": [
+      "https://kotlinlang.org/spec/",
+      "https://kotlinlang.org/docs/"
+    ]
+  },
+  "rules": [
+    {
+      "type": "Keyword",
+      "pattern": "\\b(as|break|class|continue|do|else|false|for|fun|if|in|interface|is|null|object|package|return|super|this|throw|true|try|typealias|typeof|val|var|when|while|abstract|actual|annotation|by|catch|companion|const|constructor|crossinline|data|enum|expect|external|final|finally|get|import|infix|init|inline|inner|internal|lateinit|noinline|open|operator|out|override|private|protected|public|reified|sealed|set|suspend|tailrec|vararg|field|it|dynamic|where)\\b",
+      "colorKey": "TE_Keyword"
+    },
+    {
+      "type": "Type",
+      "pattern": "\\b(Any|Boolean|Byte|Char|Double|Float|Int|Long|Nothing|Number|Short|String|Unit|Array|BooleanArray|ByteArray|CharArray|DoubleArray|FloatArray|IntArray|LongArray|ShortArray|List|MutableList|Set|MutableSet|Map|MutableMap|Pair|Triple|Sequence|Iterable|Iterator|MutableIterator|Collection|MutableCollection|Comparable|Throwable|Exception|Error|RuntimeException|IllegalArgumentException|IllegalStateException|NullPointerException|IndexOutOfBoundsException|HashMap|LinkedHashMap|HashSet|LinkedHashSet|ArrayList|StringBuilder|Regex|Result|Lazy|Sequence|Channel|Flow|StateFlow|SharedFlow|CoroutineScope|Job|Deferred|Dispatchers|async|launch|withContext|runBlocking|coroutineScope|supervisorScope)\\b",
+      "colorKey": "TE_Type"
+    },
+    {
+      "type": "Annotation",
+      "pattern": "@[A-Za-z][A-Za-z0-9_]*",
+      "colorKey": "TE_Directive"
+    },
+    {
+      "type": "Number",
+      "pattern": "\\b(0x[0-9A-Fa-f_]+[lL]?|0b[01_]+[lL]?|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?[fF]?[lL]?)\\b",
+      "colorKey": "TE_Number"
+    },
+    {
+      "type": "String",
+      "pattern": "(\"\"\"|\"\"\"[\\s\\S]*?\"\"\"|\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Comment",
+      "pattern": "//.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "BlockComment",
+      "pattern": "/\\*[\\s\\S]*?\\*/",
+      "colorKey": "TE_Comment"
+    }
+  ]
+}

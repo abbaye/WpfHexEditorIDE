@@ -1,0 +1,238 @@
+{
+  "formatName": "Sega Dreamcast Disc Image",
+  "version": "1.12",
+  "extensions": [
+    ".gdi",
+    ".cdi",
+    ".iso"
+  ],
+  "description": "Sega Dreamcast GD-ROM disc image format (IP.BIN header)",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "Dreamcast GD-ROM IP.BIN Format",
+      "Dreamcast Programming Documentation",
+      "GDI Disc Image Format"
+    ],
+    "WebLinks": [
+      "https://mc.pp.se/dc/ip.bin.html",
+      "https://dreamcast.wiki/GDI_format",
+      "https://segaxtreme.net/threads/about-ip-bin.6229/",
+      "https://fabiensanglard.net/dreamcast_hacking/"
+    ]
+  },
+  "detection": {
+    "signature": "534547412053454741",
+    "offset": 0,
+    "required": false,
+    "validation": {
+      "min_file_size": 9,
+      "max_signature_offset": 1024
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "productNumber": "",
+    "releaseDate": "",
+    "gameTitle": "",
+    "width": 0,
+    "height": 0,
+    "totalPixels": 0,
+    "bitsPerPixel": 0,
+    "hardwareId": "",
+    "makerId": "",
+    "deviceInfo": "",
+    "areaSymbols": 0,
+    "peripherals": 0,
+    "version": "",
+    "bootFilename": "",
+    "developerId": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Hardware ID",
+      "offset": 0,
+      "length": 16,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "valueType": "ascii",
+      "description": "SEGA SEGAKATANA  - Dreamcast disc magic identifier",
+      "storeAs": "hardwareId"
+    },
+    {
+      "type": "field",
+      "name": "Maker ID",
+      "offset": 16,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Publisher identifier",
+      "storeAs": "makerId"
+    },
+    {
+      "type": "field",
+      "name": "Device Info",
+      "offset": 32,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "GD-ROM disc information and disc count",
+      "storeAs": "deviceInfo"
+    },
+    {
+      "type": "field",
+      "name": "Area Symbols",
+      "offset": 48,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint64",
+      "description": "Region support flags",
+      "storeAs": "areaSymbols"
+    },
+    {
+      "type": "field",
+      "name": "Peripherals",
+      "offset": 56,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint64",
+      "description": "Peripheral support flags",
+      "storeAs": "peripherals"
+    },
+    {
+      "type": "field",
+      "name": "Product Number",
+      "offset": 64,
+      "length": 10,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "productNumber",
+      "description": "Catalog/product number"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 74,
+      "length": 6,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Version string (V1.000)",
+      "storeAs": "version"
+    },
+    {
+      "type": "field",
+      "name": "Release Date",
+      "offset": 80,
+      "length": 8,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "releaseDate",
+      "description": "Release date YYYYMMDD"
+    },
+    {
+      "type": "field",
+      "name": "Boot Filename",
+      "offset": 88,
+      "length": 16,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Boot executable: 1ST_READ.BIN",
+      "storeAs": "bootFilename"
+    },
+    {
+      "type": "field",
+      "name": "Developer ID",
+      "offset": 104,
+      "length": 16,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "description": "Developer/studio identifier",
+      "storeAs": "developerId"
+    },
+    {
+      "type": "field",
+      "name": "Game Title",
+      "offset": 120,
+      "length": 128,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameTitle",
+      "description": "Full game title"
+    },
+    {
+      "type": "metadata",
+      "name": "Width",
+      "variable": "width",
+      "description": "Width"
+    },
+    {
+      "type": "metadata",
+      "name": "Height",
+      "variable": "height",
+      "description": "Height"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Pixels",
+      "variable": "totalPixels",
+      "description": "Total Pixels"
+    }
+  ],
+  "software": [
+    "Emulators",
+    "Game engines"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "extensions": [
+      ".gdi",
+      ".cdi",
+      ".iso"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Emulator",
+    "ROM Manager",
+    "RetroArch",
+    "Hex Editor",
+    "Game Debugger"
+  ],
+  "UseCases": [
+    "Gaming",
+    "ROM hacking",
+    "Emulation",
+    "Preservation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 14,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": true
+  },
+  "TechnicalDetails": {
+    "Platform": "Sega Dreamcast"
+  },
+  "functions": {
+    "readUInt32LE": "Read dimensions",
+    "multiply": "Calculate pixels",
+    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  }
+}

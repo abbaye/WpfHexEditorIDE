@@ -1,5 +1,6 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
@@ -20,7 +21,9 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public interface IEditorFactory
 {
-    /// <summary>Editor metadata (id, name, extensions).</summary>
+    /// <summary>
+    /// Editor metadata (id, name, extensions).
+    /// </summary>
     IEditorDescriptor Descriptor { get; }
 
     /// <summary>

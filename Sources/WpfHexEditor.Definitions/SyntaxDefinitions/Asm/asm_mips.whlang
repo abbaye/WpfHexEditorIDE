@@ -1,0 +1,62 @@
+{
+  "name": "Assembly MIPS",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for MIPS assembly language.",
+  "category": "Assembly",
+  "extensions": [ ".asm", ".s", ".mips" ],
+  "lineComment": "#",
+  "blockCommentStart": "/*",
+  "blockCommentEnd": "*/",
+  "references": {
+    "specifications": [
+      "MIPS32 Architecture Reference Manual",
+      "MIPS64 Architecture Reference Manual"
+    ],
+    "webLinks": [
+      "https://www.mips.com/products/architectures/"
+    ]
+  },
+  "rules": [
+    {
+      "type": "Keyword",
+      "pattern": "\\b(?i)(add|addu|addi|addiu|sub|subu|mul|mult|multu|div|divu|and|andi|or|ori|xor|xori|nor|sll|srl|sra|sllv|srlv|srav|slt|sltu|slti|sltiu|lw|lh|lb|lhu|lbu|sw|sh|sb|lui|la|li|move|beq|bne|blt|bgt|ble|bge|bltz|bgtz|blez|bgez|bltzal|bgezal|j|jal|jr|jalr|mfhi|mflo|mthi|mtlo|madd|maddu|msub|msubu|clo|clz|nop|syscall|break|eret|mfc0|mtc0|mfc1|mtc1|bc1t|bc1f|abs|neg|negu|not|seq|sne|sge|sgeu|sgt|sgtu|sle|sleu|b|bal|beqz|bnez|bgtu|bltu|bgeu|bleu)\\b",
+      "colorKey": "TE_Keyword"
+    },
+    {
+      "type": "Register",
+      "pattern": "\\$(?i)(zero|at|v[01]|a[0-3]|t[0-9]|s[0-8]|k[01]|gp|sp|fp|ra|[0-9]+|f[0-9]+)",
+      "colorKey": "TE_Register"
+    },
+    {
+      "type": "Directive",
+      "pattern": "\\.(?i)(text|data|bss|globl|global|extern|ent|end|aent|set|option|space|word|half|byte|float|double|ascii|asciiz|align|org|include|macro|endm|if|else|endif|rept|endr|equ|file|section|comm|lcomm|type|size)\\b",
+      "colorKey": "TE_Directive"
+    },
+    {
+      "type": "Number",
+      "pattern": "(0x[0-9A-Fa-f]+|\\b[0-9]+\\b)",
+      "colorKey": "TE_Number"
+    },
+    {
+      "type": "String",
+      "pattern": "\"(?:[^\"\\\\]|\\\\.)*\"",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Label",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_.]*:",
+      "colorKey": "TE_Label"
+    },
+    {
+      "type": "Comment",
+      "pattern": "#.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "BlockComment",
+      "pattern": "/\\*[\\s\\S]*?\\*/",
+      "colorKey": "TE_Comment"
+    }
+  ]
+}

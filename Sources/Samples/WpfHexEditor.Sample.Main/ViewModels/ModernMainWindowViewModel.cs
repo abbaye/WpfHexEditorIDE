@@ -2,7 +2,7 @@
 // Apache 2.0  2026
 // HexEditor V2 - Modern Main Window ViewModel
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;

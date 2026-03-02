@@ -1,0 +1,274 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Controls.StructureEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource TE_Background}"
+             Focusable="True">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- Format header -->
+            <RowDefinition Height="Auto"/>   <!-- Toolbar -->
+            <RowDefinition Height="*"/>      <!-- Block DataGrid -->
+            <RowDefinition Height="Auto"/>   <!-- Description panel -->
+            <RowDefinition Height="22"/>     <!-- Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Format header ────────────────────────────────────────────── -->
+        <Expander Grid.Row="0"
+                  x:Name="HeaderExpander"
+                  Header="Format Definition"
+                  IsExpanded="True"
+                  Background="{DynamicResource TE_LineNumberBackground}"
+                  Foreground="{DynamicResource TE_LineNumberForeground}"
+                  BorderThickness="0,0,0,1"
+                  BorderBrush="{DynamicResource TE_LineNumberBackground}"
+                  Padding="4">
+            <Grid Margin="8,4,8,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:" Margin="0,2,6,2"
+                           Foreground="{DynamicResource TE_LineNumberForeground}" FontWeight="SemiBold"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" x:Name="HdrName"
+                           Foreground="{DynamicResource TE_Foreground}" Margin="0,2,12,2"
+                           TextTrimming="CharacterEllipsis"/>
+
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Category:" Margin="0,2,6,2"
+                           Foreground="{DynamicResource TE_LineNumberForeground}" FontWeight="SemiBold"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" x:Name="HdrCategory"
+                           Foreground="{DynamicResource TE_Foreground}" Margin="0,2,0,2"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Extensions:" Margin="0,2,6,2"
+                           Foreground="{DynamicResource TE_LineNumberForeground}" FontWeight="SemiBold"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" x:Name="HdrExtensions"
+                           Foreground="{DynamicResource TE_Foreground}" Margin="0,2,12,2"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="Version:" Margin="0,2,6,2"
+                           Foreground="{DynamicResource TE_LineNumberForeground}" FontWeight="SemiBold"/>
+                <TextBlock Grid.Row="1" Grid.Column="3" x:Name="HdrVersion"
+                           Foreground="{DynamicResource TE_Foreground}" Margin="0,2,0,2"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Description:" Margin="0,2,6,2"
+                           Foreground="{DynamicResource TE_LineNumberForeground}" FontWeight="SemiBold"
+                           VerticalAlignment="Top"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" x:Name="HdrDescription"
+                           Foreground="{DynamicResource TE_Foreground}" Margin="0,2,0,2"
+                           TextWrapping="Wrap" MaxHeight="44" TextTrimming="CharacterEllipsis"/>
+            </Grid>
+        </Expander>
+
+        <!-- ── Toolbar ───────────────────────────────────────────────────── -->
+        <ToolBar Grid.Row="1"
+                 Background="{DynamicResource TE_LineNumberBackground}"
+                 Foreground="{DynamicResource TE_LineNumberForeground}"
+                 ToolBarTray.IsLocked="True">
+            <Button x:Name="AddFieldBtn" Content="＋ Add Block"
+                    ToolTip="Append a new field block" Click="OnAddBlock"
+                    Padding="6,2"/>
+            <Button x:Name="DeleteBtn" Content="✕ Delete"
+                    ToolTip="Remove selected block" Click="OnDeleteBlock"
+                    IsEnabled="False" Padding="6,2"/>
+            <Separator/>
+            <Button Content="↑" ToolTip="Move selected block up"
+                    Click="OnMoveUp" x:Name="MoveUpBtn"
+                    IsEnabled="False" Width="28"/>
+            <Button Content="↓" ToolTip="Move selected block down"
+                    Click="OnMoveDown" x:Name="MoveDownBtn"
+                    IsEnabled="False" Width="28"/>
+            <Separator/>
+            <Button Content="💾 Save" ToolTip="Save format definition (Ctrl+S)"
+                    Click="OnSaveClick" x:Name="SaveBtn"
+                    IsEnabled="False" Padding="6,2"/>
+        </ToolBar>
+
+        <!-- ── Block DataGrid ────────────────────────────────────────────── -->
+        <DataGrid Grid.Row="2"
+                  x:Name="BlocksGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserSortColumns="False"
+                  SelectionUnit="FullRow"
+                  SelectionMode="Single"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal"
+                  RowHeaderWidth="0"
+                  Background="{DynamicResource TE_Background}"
+                  RowBackground="{DynamicResource TE_Background}"
+                  AlternatingRowBackground="{DynamicResource TE_LineNumberBackground}"
+                  Foreground="{DynamicResource TE_Foreground}"
+                  BorderThickness="0"
+                  FontFamily="Consolas, Courier New"
+                  FontSize="12"
+                  SelectionChanged="OnBlockSelectionChanged">
+
+            <DataGrid.Resources>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="{DynamicResource TE_LineNumberBackground}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TE_LineNumberForeground}"/>
+                    <Setter Property="Padding" Value="4,2"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                </Style>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding" Value="4,1"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource TE_SelectionBackground}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TE_Foreground}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+
+                <!-- # read-only row index -->
+                <DataGridTextColumn Header="#" Width="30" IsReadOnly="True"
+                                    Binding="{Binding RowIndex}"/>
+
+                <!-- Type — combo when editing -->
+                <DataGridTemplateColumn Header="Type" Width="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Type}" Padding="4,1"
+                                       Foreground="{DynamicResource TE_LineNumberForeground}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox SelectedItem="{Binding Type, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEditable="True">
+                                <ComboBoxItem>field</ComboBoxItem>
+                                <ComboBoxItem>signature</ComboBoxItem>
+                                <ComboBoxItem>conditional</ComboBoxItem>
+                                <ComboBoxItem>computeFromVariables</ComboBoxItem>
+                                <ComboBoxItem>metadata</ComboBoxItem>
+                                <ComboBoxItem>loop</ComboBoxItem>
+                                <ComboBoxItem>action</ComboBoxItem>
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Name -->
+                <DataGridTextColumn Header="Name" Width="*"
+                                    Binding="{Binding Name, UpdateSourceTrigger=LostFocus}"/>
+
+                <!-- Offset -->
+                <DataGridTextColumn Header="Offset" Width="80"
+                                    Binding="{Binding OffsetText, UpdateSourceTrigger=LostFocus}"/>
+
+                <!-- Length -->
+                <DataGridTextColumn Header="Length" Width="70"
+                                    Binding="{Binding LengthText, UpdateSourceTrigger=LostFocus}"/>
+
+                <!-- ValueType — combo when editing -->
+                <DataGridTemplateColumn Header="ValueType" Width="90">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ValueType}" Padding="4,1"
+                                       Foreground="{DynamicResource TE_LineNumberForeground}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox SelectedItem="{Binding ValueType, UpdateSourceTrigger=PropertyChanged}"
+                                      IsEditable="True">
+                                <ComboBoxItem>uint8</ComboBoxItem>
+                                <ComboBoxItem>uint16</ComboBoxItem>
+                                <ComboBoxItem>uint32</ComboBoxItem>
+                                <ComboBoxItem>uint64</ComboBoxItem>
+                                <ComboBoxItem>int8</ComboBoxItem>
+                                <ComboBoxItem>int16</ComboBoxItem>
+                                <ComboBoxItem>int32</ComboBoxItem>
+                                <ComboBoxItem>int64</ComboBoxItem>
+                                <ComboBoxItem>float</ComboBoxItem>
+                                <ComboBoxItem>double</ComboBoxItem>
+                                <ComboBoxItem>ascii</ComboBoxItem>
+                                <ComboBoxItem>utf8</ComboBoxItem>
+                                <ComboBoxItem>hex</ComboBoxItem>
+                                <ComboBoxItem>bytes</ComboBoxItem>
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- StoreAs -->
+                <DataGridTextColumn Header="StoreAs" Width="90"
+                                    Binding="{Binding StoreAs, UpdateSourceTrigger=LostFocus}"/>
+
+                <!-- Color swatch -->
+                <DataGridTemplateColumn Header="Color" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="4,0">
+                                <Rectangle Width="14" Height="14" VerticalAlignment="Center"
+                                           Fill="{Binding ColorBrush}" Margin="0,0,4,0"
+                                           RadiusX="2" RadiusY="2"/>
+                                <TextBlock Text="{Binding Color}" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource TE_LineNumberForeground}"
+                                           FontSize="10"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Color, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- ── Description editor (for selected block) ──────────────────── -->
+        <Expander Grid.Row="3"
+                  Header="Block Description"
+                  IsExpanded="True"
+                  Background="{DynamicResource TE_LineNumberBackground}"
+                  Foreground="{DynamicResource TE_LineNumberForeground}"
+                  BorderThickness="0,1,0,0"
+                  MaxHeight="90">
+            <TextBox x:Name="DescriptionEditor"
+                     Background="{DynamicResource TE_Background}"
+                     Foreground="{DynamicResource TE_Foreground}"
+                     CaretBrush="{DynamicResource TE_Foreground}"
+                     BorderThickness="0"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     Padding="6,4"
+                     FontFamily="Consolas, Courier New"
+                     FontSize="11"
+                     VerticalScrollBarVisibility="Auto"
+                     TextChanged="OnDescriptionChanged"/>
+        </Expander>
+
+        <!-- ── Status bar ────────────────────────────────────────────────── -->
+        <StatusBar Grid.Row="4"
+                   Background="{DynamicResource TE_LineNumberBackground}"
+                   Foreground="{DynamicResource TE_LineNumberForeground}"
+                   Height="22">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="—" Padding="4,0"/>
+            </StatusBarItem>
+        </StatusBar>
+
+    </Grid>
+</UserControl>

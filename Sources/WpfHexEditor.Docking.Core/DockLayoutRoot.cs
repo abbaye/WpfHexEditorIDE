@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using WpfHexEditor.Docking.Core.Nodes;
@@ -62,6 +62,15 @@ public class DockLayoutRoot
     public double? WindowTop { get; set; }
     public double? WindowWidth { get; set; }
     public double? WindowHeight { get; set; }
+
+    // ─── Tab bar settings ────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Runtime settings for the document tab bar (placement, multi-row, colorization, etc.).
+    /// This is the shared <see cref="DocumentTabBarSettings"/> instance; persisted in the
+    /// layout JSON and kept in sync with <c>DockControl.TabBarSettings</c>.
+    /// </summary>
+    public DocumentTabBarSettings? TabBarSettings { get; set; }
 
     /// <summary>
     /// Finds a node by its Id in the tree.

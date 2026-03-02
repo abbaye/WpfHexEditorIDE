@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using WpfHexEditor.Docking.Core;
@@ -30,6 +30,14 @@ public class DockItem
     /// Whether this document tab is pinned (moved to the left, protected from Close All).
     /// </summary>
     public bool IsPinned { get; set; }
+
+    /// <summary>
+    /// True if this item is a document (file content) rather than a tool panel.
+    /// Set automatically by <see cref="DockGroupNode.AddItem"/> / <see cref="DockGroupNode.InsertItem"/>
+    /// based on whether the container is a <see cref="DocumentHostNode"/>.
+    /// Preserved while floating so the drag manager can route drops correctly.
+    /// </summary>
+    public bool IsDocument { get; set; }
 
     public DockItemState State { get; set; } = DockItemState.Docked;
 

@@ -1,0 +1,67 @@
+{
+  "name": "Assembly ARM/Thumb",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for ARM assembly language (ARMv7/AArch64).",
+  "category": "Assembly",
+  "extensions": [ ".asm", ".s", ".arm" ],
+  "lineComment": "@",
+  "blockCommentStart": "/*",
+  "blockCommentEnd": "*/",
+  "references": {
+    "specifications": [
+      "ARM Architecture Reference Manual (ARM DDI 0100I)",
+      "AArch64 Instruction Set Architecture Reference Guide"
+    ],
+    "webLinks": [
+      "https://developer.arm.com/documentation/"
+    ]
+  },
+  "rules": [
+    {
+      "type": "Keyword",
+      "pattern": "\\b(?i)(MOV|MVN|MRS|MSR|ADD|ADC|SUB|SBC|RSB|RSC|MUL|MLA|UMULL|UMLAL|SMULL|SMLAL|AND|ORR|EOR|BIC|CMP|CMN|TST|TEQ|LDR|STR|LDRB|STRB|LDRH|STRH|LDRD|STRD|LDM|STM|PUSH|POP|B|BL|BX|BLX|BXJ|BKPT|SWI|SVC|NOP|SEV|WFE|WFI|YIELD|CLREX|DMB|DSB|ISB|PLD|PLI|VMOV|VADD|VSUB|VMUL|VDIV|VCMP|VCVT|VLDR|VSTR|VPUSH|VPOP|VLDM|VSTM|CBZ|CBNZ|IT|MOVT|MOVW|SDIV|UDIV|CLZ|RBIT|REV|REV16|REVSH|SXT|UXT|SXTB|UXTB|SXTH|UXTH)\\b",
+      "colorKey": "TE_Keyword"
+    },
+    {
+      "type": "Register",
+      "pattern": "\\b(?i)(R0|R1|R2|R3|R4|R5|R6|R7|R8|R9|R10|R11|R12|R13|R14|R15|SP|LR|PC|CPSR|SPSR|FP|IP|SL|SB|S[0-9]+|D[0-9]+|Q[0-9]+|APSR|FPSCR|FPSID|FPEXC)\\b",
+      "colorKey": "TE_Register"
+    },
+    {
+      "type": "Directive",
+      "pattern": "\\.(?i)(thumb|arm|code|syntax|global|extern|section|text|data|bss|rodata|align|balign|ltorg|pool|word|hword|byte|ascii|asciz|string|space|fill|zero|org|include|if|else|endif|ifdef|ifndef|macro|endm|rept|endr|equ|set|req|unreq|dn|qn|sn|push|pop|cpu|arch|fpu|eabi_attribute|fnstart|fnend|cantunwind|personality|handlerdata|save|vsave|setfp|pad|movsp)\\b",
+      "colorKey": "TE_Directive"
+    },
+    {
+      "type": "Condition",
+      "pattern": "\\b(?i)(EQ|NE|CS|CC|MI|PL|VS|VC|HI|LS|GE|LT|GT|LE|AL|HS|LO)\\b",
+      "colorKey": "TE_Type"
+    },
+    {
+      "type": "Number",
+      "pattern": "(#?0x[0-9A-Fa-f]+|#?[0-9]+)",
+      "colorKey": "TE_Number"
+    },
+    {
+      "type": "String",
+      "pattern": "\"(?:[^\"\\\\]|\\\\.)*\"",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Label",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_.]*:",
+      "colorKey": "TE_Label"
+    },
+    {
+      "type": "Comment",
+      "pattern": "@.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "BlockComment",
+      "pattern": "/\\*[\\s\\S]*?\\*/",
+      "colorKey": "TE_Comment"
+    }
+  ]
+}

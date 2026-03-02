@@ -2,7 +2,7 @@
 // Apache 2.0  - 2026
 // Color converters for WpfHexEditor.ColorPicker
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;

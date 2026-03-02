@@ -1,8 +1,16 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using System.Text;
 
 namespace WpfHexEditor.Editor.TblEditor.Models;
 
-/// <summary>Options for CSV export</summary>
+/// <summary>
+/// Options for CSV export
+/// </summary>
 public class CsvExportOptions
 {
     public bool IncludeType { get; set; } = true;

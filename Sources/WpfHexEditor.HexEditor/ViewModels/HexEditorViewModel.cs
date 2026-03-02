@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -1059,13 +1059,10 @@ namespace WpfHexEditor.HexEditor.ViewModels
         }
 
         /// <summary>
-        /// Clear find/replace cache (call after data modifications)
+        /// Clear find/replace cache (call after data modifications).
+        /// Currently a no-op — the search engine rebuilds on every call by design.
         /// </summary>
-        public void ClearFindCache()
-        {
-            // No cache in this simple implementation
-            // TODO: Implement caching for better performance
-        }
+        public void ClearFindCache() { }
 
         /// <summary>
         /// Gets the underlying ByteProvider for advanced operations.

@@ -1,0 +1,81 @@
+{
+  "formatName": "xdelta / VCDIFF Patch",
+  "version": "1.0",
+  "extensions": [
+    ".xdelta",
+    ".xdiff",
+    ".vcdiff"
+  ],
+  "description": "VCDIFF delta encoding (RFC 3284) used by xdelta3. Encodes differences as ADD, COPY and RUN instructions across one or more windows. Supports source and target COPY with NEAR/SAME address cache. No file size limit, optional secondary compression.",
+  "category": "RomHacking",
+  "author": "WPFHexaEditor Team",
+  "references": {
+    "specifications": [
+      "RFC 3284 — The VCDIFF Generic Differencing and Compression Data Format",
+      "xdelta3 format documentation"
+    ],
+    "WebLinks": [
+      "https://www.rfc-editor.org/rfc/rfc3284",
+      "https://github.com/jmacd/xdelta",
+      "https://www.romhacking.net/utilities/598/"
+    ]
+  },
+  "detection": {
+    "signature": "D6C3C4",
+    "offset": 0,
+    "required": true,
+    "validation": {
+      "min_file_size": 5
+    }
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "VCDIFF Magic",
+      "offset": 0,
+      "length": 3,
+      "color": "#FFE66D",
+      "opacity": 0.5,
+      "description": "0xD6 0xC3 0xC4 VCDIFF magic bytes",
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "Version / Hdr_Indicator",
+      "offset": 3,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "description": "Version byte (0x00) + header indicator flags",
+      "valueType": "uint8"
+    }
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "xdelta3",
+    "HDiffPatch",
+    "WpfHexEditor"
+  ],
+  "UseCases": [
+    "ROM hacking",
+    "Large binary file patching",
+    "Software update deltas"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 75,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-03-01",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Standard": "RFC 3284",
+    "Instructions": [ "ADD", "COPY (source)", "COPY (target)", "RUN" ],
+    "WindowBased": true,
+    "SupportsSecondaryCompression": true
+  }
+}

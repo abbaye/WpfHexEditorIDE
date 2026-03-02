@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5, Claude Opus 4.6
+// Contributors: Claude Sonnet 4.5, Claude Opus 4.6, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System.Windows;
@@ -58,6 +58,12 @@ public class DockOverlayWindow : Window
             }
         }
     }
+
+    /// <summary>
+    /// Ratio (0..1) used for the split preview zone.
+    /// Use 0.25 for tool panels (default), 0.5 for document splits.
+    /// </summary>
+    public double SplitRatio { get; set; } = 0.25;
 
     public DockOverlayWindow()
     {
@@ -190,13 +196,14 @@ public class DockOverlayWindow : Window
         // --- Preview zone ---
         if (_highlightedDirection.HasValue)
         {
+            var r = SplitRatio;
             double x = 0, y = 0, w = Width, h = Height;
             switch (_highlightedDirection.Value)
             {
-                case DockDirection.Left:   w = Width * 0.25; break;
-                case DockDirection.Right:  x = Width * 0.75; w = Width * 0.25; break;
-                case DockDirection.Top:    h = Height * 0.25; break;
-                case DockDirection.Bottom: y = Height * 0.75; h = Height * 0.25; break;
+                case DockDirection.Left:   w = Width * r; break;
+                case DockDirection.Right:  x = Width * (1 - r); w = Width * r; break;
+                case DockDirection.Top:    h = Height * r; break;
+                case DockDirection.Bottom: y = Height * (1 - r); h = Height * r; break;
             }
             _previewZone.Width  = w;
             _previewZone.Height = h;

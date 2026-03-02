@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 using System.Diagnostics;
 using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Editor.TblEditor.Models;
@@ -5,7 +11,9 @@ using WpfHexEditor.Editor.TblEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.TblEditor.Services;
 
-/// <summary>Conflict analyzer using Trie algorithm for prefix detection</summary>
+/// <summary>
+/// Conflict analyzer using Trie algorithm for prefix detection
+/// </summary>
 public class TblConflictAnalyzer
 {
     private class TrieNode
@@ -15,17 +23,22 @@ public class TblConflictAnalyzer
         public bool IsTerminal => Entry != null;
     }
 
-    public async Task<List<TblConflict>> AnalyzeConflictsAsync(IEnumerable<TblEntryViewModel> entries, CancellationToken cancellationToken) =>
-        await Task.Run(() => AnalyzeConflicts(entries, cancellationToken), cancellationToken);
+    public async Task<List<TblConflict>> AnalyzeConflictsAsync(IEnumerable<TblEntryViewModel> entries, CancellationToken cancellationToken)
+    {
+        var snapshot = entries.ToList(); // Snapshot on calling thread to avoid cross-thread collection modification
+        return await Task.Run(() => AnalyzeConflicts(snapshot, cancellationToken));
+    }
 
     public List<TblConflict> AnalyzeConflicts(IEnumerable<TblEntryViewModel> entries, CancellationToken cancellationToken)
     {
         var conflicts = new List<TblConflict>();
         var sw = Stopwatch.StartNew();
-        var entryList = entries.ToList();
+        var entryList = entries is List<TblEntryViewModel> list ? list : entries.ToList();
         var trie = BuildTrie(entryList);
-        conflicts.AddRange(DetectPrefixConflicts(trie, cancellationToken));
-        conflicts.AddRange(DetectDuplicates(entryList, cancellationToken));
+        if (!cancellationToken.IsCancellationRequested)
+            conflicts.AddRange(DetectPrefixConflicts(trie, cancellationToken));
+        if (!cancellationToken.IsCancellationRequested)
+            conflicts.AddRange(DetectDuplicates(entryList, cancellationToken));
         Debug.WriteLine($"Conflict analysis: {sw.ElapsedMilliseconds}ms, {conflicts.Count} conflicts");
         return conflicts;
     }
@@ -76,7 +89,7 @@ public class TblConflictAnalyzer
         var conflicts = new List<TblConflict>();
         void DFS(TrieNode node)
         {
-            ct.ThrowIfCancellationRequested();
+            if (ct.IsCancellationRequested) return;
             if (node.IsTerminal && node.Children.Count > 0)
             {
                 var longer = new List<Dte>();
@@ -108,7 +121,7 @@ public class TblConflictAnalyzer
         var seen = new Dictionary<string, TblEntryViewModel>();
         foreach (var entry in entries)
         {
-            ct.ThrowIfCancellationRequested();
+            if (ct.IsCancellationRequested) return conflicts;
             var key = entry.Entry.ToUpperInvariant();
             if (seen.TryGetValue(key, out var existing))
                 conflicts.Add(new TblConflict { Type = ConflictType.Duplicate, Severity = ConflictSeverity.Error,

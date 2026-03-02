@@ -1,4 +1,10 @@
-﻿//////////////////////////////////////////////
+//////////////////////////////////////////////
+// Apache 2.0  - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
+//////////////////////////////////////////////
 // Fork 2017-2020 : Derek Tremblay (derektremblay666@gmail.com) 
 // Part of Wpf HexEditor control : https://github.com/abbaye/WPFHexEditorControl
 // Reference : https://www.codeproject.com/Tips/431000/Caret-for-WPF-User-Controls

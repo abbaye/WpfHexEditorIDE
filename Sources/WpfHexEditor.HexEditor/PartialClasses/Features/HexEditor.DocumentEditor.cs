@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Opus 4.6
+// Contributors: Claude Opus 4.6, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -19,8 +19,19 @@ namespace WpfHexEditor.HexEditor
     /// Bridges the existing HexEditor API to the unified editor contract
     /// used by the docking host and other multi-editor scenarios.
     /// </summary>
-    public partial class HexEditor
+    public partial class HexEditor : IOpenableDocument
     {
+        // ═══════════════════════════════════════════════════════════════════
+        // IOpenableDocument
+        // ═══════════════════════════════════════════════════════════════════
+
+        Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            Dispatcher.Invoke(() => OpenFile(filePath));
+            return Task.CompletedTask;
+        }
+
         // ═══════════════════════════════════════════════════════════════════
         // IDocumentEditor — New-file state (Phase 12)
         // ═══════════════════════════════════════════════════════════════════
@@ -239,6 +250,9 @@ namespace WpfHexEditor.HexEditor
             add => _docEditorStatusMessage += value;
             remove => _docEditorStatusMessage -= value;
         }
+
+        // HexEditor does not produce verbose output messages — no-op stub required by IDocumentEditor
+        event EventHandler<string>? IDocumentEditor.OutputMessage { add { } remove { } }
 
         event EventHandler IDocumentEditor.SelectionChanged
         {

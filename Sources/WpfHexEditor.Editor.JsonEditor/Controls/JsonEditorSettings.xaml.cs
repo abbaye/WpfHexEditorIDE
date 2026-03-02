@@ -1,8 +1,8 @@
-﻿//////////////////////////////////////////////
+//////////////////////////////////////////////
 // Apache 2.0  - 2026
 // JsonEditor Settings Panel - Auto-generated Configuration UI
 // Author : Claude Sonnet 4.5
-// Contributors: Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 // Pattern: Uses unified BaseEditorSettings<T> helper (composition)
 //////////////////////////////////////////////
 

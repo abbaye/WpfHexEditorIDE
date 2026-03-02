@@ -1,0 +1,444 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        PanelCommon.xaml — Shared styles for IDE panels (ParsedFieldsPanel, ErrorPanel, SolutionExplorer, etc.)
+        All styles use Panel_* DynamicResource keys defined in each theme's Colors.xaml.
+
+        Usage: merge this dictionary in each theme file after Colors.xaml.
+        Panels reference these styles as StaticResource or DynamicResource.
+    -->
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         PanelToolbarStyle
+         Container Border for the panel toolbar row (Row 0, 30px).
+         Apply to the outermost Border of the panel toolbar.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="PanelToolbarStyle" TargetType="Border">
+        <Setter Property="Height"          Value="26"/>
+        <Setter Property="Padding"         Value="4,0"/>
+        <Setter Property="Background"      Value="{DynamicResource Panel_ToolbarBrush}"/>
+        <Setter Property="BorderBrush"     Value="{DynamicResource Panel_ToolbarBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         PanelIconButtonStyle
+         22×22 icon-only button (Segoe MDL2 Assets glyph as Content).
+         Transparent background, subtle hover/pressed highlight.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="PanelIconButtonStyle" TargetType="Button">
+        <Setter Property="Width"               Value="22"/>
+        <Setter Property="Height"              Value="22"/>
+        <Setter Property="Padding"             Value="0"/>
+        <Setter Property="Margin"              Value="1,0"/>
+        <Setter Property="BorderThickness"     Value="0"/>
+        <Setter Property="Background"          Value="Transparent"/>
+        <Setter Property="Foreground"          Value="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+        <Setter Property="FontFamily"          Value="Segoe MDL2 Assets"/>
+        <Setter Property="FontSize"            Value="13"/>
+        <Setter Property="VerticalAlignment"   Value="Center"/>
+        <Setter Property="Cursor"              Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="FocusVisualStyle"    Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="2"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         PanelIconToggleStyle
+         22×22 toggle button (Segoe MDL2 glyph as Content).
+         Active/Checked state uses Panel_ToolbarButtonActiveBrush.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="PanelIconToggleStyle" TargetType="ToggleButton">
+        <Setter Property="Width"               Value="22"/>
+        <Setter Property="Height"              Value="22"/>
+        <Setter Property="Padding"             Value="0"/>
+        <Setter Property="Margin"              Value="1,0"/>
+        <Setter Property="BorderThickness"     Value="0"/>
+        <Setter Property="Background"          Value="Transparent"/>
+        <Setter Property="Foreground"          Value="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+        <Setter Property="FontFamily"          Value="Segoe MDL2 Assets"/>
+        <Setter Property="FontSize"            Value="13"/>
+        <Setter Property="VerticalAlignment"   Value="Center"/>
+        <Setter Property="Cursor"              Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="FocusVisualStyle"    Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="2"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsChecked"   Value="True"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         PanelDropdownButtonStyle
+         Text-label dropdown button (e.g., "Actions ▾", "Export ▾").
+         Auto width, 22px height, normal font (not MDL2).
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="PanelDropdownButtonStyle" TargetType="Button">
+        <Setter Property="Height"              Value="22"/>
+        <Setter Property="Padding"             Value="6,0"/>
+        <Setter Property="Margin"              Value="1,0"/>
+        <Setter Property="BorderThickness"     Value="0"/>
+        <Setter Property="Background"          Value="Transparent"/>
+        <Setter Property="Foreground"          Value="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+        <Setter Property="FontSize"            Value="11"/>
+        <Setter Property="VerticalAlignment"   Value="Center"/>
+        <Setter Property="Cursor"              Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="FocusVisualStyle"    Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="2"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         PanelToolbarSeparatorStyle
+         Thin vertical 1px separator between toolbar button groups.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="PanelToolbarSeparatorStyle" TargetType="Rectangle">
+        <Setter Property="Width"             Value="1"/>
+        <Setter Property="Margin"            Value="4,5"/>
+        <Setter Property="Fill"              Value="{DynamicResource Panel_ToolbarBorderBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="IsHitTestVisible"  Value="False"/>
+    </Style>
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         DockComboBoxStyle
+         Theme-aware ComboBox for IDE dialogs and panels.
+         Uses Dock* brush keys present in all 8 theme Colors.xaml files.
+         The implicit alias at the end of this file makes this the
+         default style for all ComboBoxes in scope.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="DockComboBoxStyle" TargetType="ComboBox">
+        <Setter Property="Background"          Value="{DynamicResource DockBackgroundBrush}"/>
+        <Setter Property="Foreground"          Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="BorderBrush"         Value="{DynamicResource DockBorderBrush}"/>
+        <Setter Property="BorderThickness"     Value="1"/>
+        <Setter Property="Padding"             Value="6,2,0,2"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="FocusVisualStyle"    Value="{x:Null}"/>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Foreground"                 Value="{DynamicResource DockMenuForegroundBrush}"/>
+                    <Setter Property="Background"                 Value="Transparent"/>
+                    <Setter Property="Padding"                    Value="8,5"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    <Setter Property="FocusVisualStyle"           Value="{x:Null}"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ComboBoxItem">
+                                <Border x:Name="Bd"
+                                        Background="{TemplateBinding Background}"
+                                        Padding="{TemplateBinding Padding}"
+                                        SnapsToDevicePixels="True">
+                                    <ContentPresenter VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background"
+                                                Value="{DynamicResource DockTabHoverBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Bd" Property="Background"
+                                                Value="{DynamicResource DockTabActiveBrush}"/>
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected"   Value="True"/>
+                                            <Condition Property="IsMouseOver"  Value="True"/>
+                                        </MultiTrigger.Conditions>
+                                        <Setter TargetName="Bd" Property="Background"
+                                                Value="{DynamicResource DockTabActiveBrush}"/>
+                                    </MultiTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <Border x:Name="OuterBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2"
+                                SnapsToDevicePixels="True"/>
+                        <Grid Margin="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="22"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Selected value -->
+                            <ContentPresenter x:Name="ContentSite"
+                                              Grid.Column="0"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center"
+                                              IsHitTestVisible="False"/>
+
+                            <!-- Editable mode text box -->
+                            <TextBox x:Name="PART_EditableTextBox"
+                                     Grid.Column="0"
+                                     Margin="{TemplateBinding Padding}"
+                                     Foreground="{TemplateBinding Foreground}"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     VerticalAlignment="Center"
+                                     Visibility="Hidden"
+                                     IsReadOnly="{TemplateBinding IsReadOnly}"/>
+
+                            <!-- Dropdown chevron toggle -->
+                            <ToggleButton x:Name="PART_ToggleButton"
+                                          Grid.Column="1"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay,
+                                              RelativeSource={RelativeSource TemplatedParent}}"
+                                          Focusable="False"
+                                          ClickMode="Press"
+                                          Cursor="Hand"
+                                          Background="Transparent"
+                                          BorderThickness="0">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="TBd" Background="Transparent" SnapsToDevicePixels="True">
+                                            <TextBlock Text="&#xE70D;"
+                                                       FontFamily="Segoe MDL2 Assets"
+                                                       FontSize="10"
+                                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="TBd" Property="Background"
+                                                        Value="{DynamicResource DockTabHoverBrush}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                        </Grid>
+
+                        <!-- Dropdown popup -->
+                        <Popup x:Name="PART_Popup"
+                               Placement="Bottom"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               PopupAnimation="Slide">
+                            <Border Background="{DynamicResource DockBackgroundBrush}"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    BorderThickness="1"
+                                    SnapsToDevicePixels="True"
+                                    MinWidth="{Binding ActualWidth,
+                                        RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEditable" Value="True">
+                            <Setter TargetName="ContentSite"             Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="PART_EditableTextBox"    Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="OuterBorder" Property="BorderBrush"
+                                    Value="{DynamicResource DockTabHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsDropDownOpen" Value="True">
+                            <Setter TargetName="OuterBorder" Property="BorderBrush"
+                                    Value="{DynamicResource AccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Implicit control styles
+         ─────────────────────────────────────────────────────────────────
+         Only styles whose named key is defined within PanelCommon.xaml itself
+         can safely use {StaticResource} here. Keys from sibling Menu.xaml files
+         (DockDark*) are added as implicit styles at the END of Dark/Menu.xaml
+         and Light/Menu.xaml, where the keys are guaranteed to be in scope.
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ComboBox: implicit alias — applies DockComboBoxStyle to every ComboBox in scope -->
+    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource DockComboBoxStyle}"/>
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         CheckBox — full VS2022-style custom template
+         Overrides the Foreground-only stub in ContentControls.xaml.
+         Uses AccentBrush for the checked fill, DockBorderBrush for the box.
+         Named key allows explicit reference from dialogs/windows in other assemblies.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="DockCheckBoxStyle" TargetType="{x:Type CheckBox}">
+        <Setter Property="OverridesDefaultStyle"    Value="True"/>
+        <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="Background"               Value="{DynamicResource DockBackgroundBrush}"/>
+        <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}"/>
+        <Setter Property="BorderThickness"          Value="1"/>
+        <Setter Property="FocusVisualStyle"         Value="{x:Null}"/>
+        <Setter Property="Cursor"                   Value="Hand"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="SnapsToDevicePixels"      Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <BulletDecorator Background="Transparent" SnapsToDevicePixels="True">
+                        <BulletDecorator.Bullet>
+                            <!-- 14×14 rounded box -->
+                            <Border x:Name="CheckBorder"
+                                    Width="14" Height="14"
+                                    CornerRadius="2"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    SnapsToDevicePixels="True">
+                                <!-- Checkmark path (hidden until IsChecked=True) -->
+                                <Path x:Name="CheckMark"
+                                      Data="M1.5,5.5 L5,9 L11.5,2"
+                                      Stroke="White"
+                                      StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Stretch="Uniform"
+                                      Margin="2"
+                                      Visibility="Collapsed"/>
+                            </Border>
+                        </BulletDecorator.Bullet>
+                        <ContentPresenter Margin="6,0,0,0"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          RecognizesAccessKey="True"/>
+                    </BulletDecorator>
+                    <ControlTemplate.Triggers>
+                        <!-- Checked: accent fill + white checkmark -->
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="CheckBorder" Property="Background"  Value="{DynamicResource AccentBrush}"/>
+                            <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                            <Setter TargetName="CheckMark"   Property="Visibility"  Value="Visible"/>
+                        </Trigger>
+                        <!-- Indeterminate: accent fill, no checkmark (null = indeterminate) -->
+                        <Trigger Property="IsChecked" Value="{x:Null}">
+                            <Setter TargetName="CheckBorder" Property="Background"  Value="{DynamicResource AccentBrush}"/>
+                            <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                        </Trigger>
+                        <!-- Hover: accent border highlight -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                        </Trigger>
+                        <!-- Disabled -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- CheckBox: implicit alias — applies DockCheckBoxStyle to every CheckBox in scope -->
+    <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource DockCheckBoxStyle}"/>
+
+</ResourceDictionary>

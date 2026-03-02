@@ -1,7 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.5
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System;
@@ -129,6 +129,18 @@ namespace WpfHexEditor.HexEditor
         public void ClearCustomBackgroundBlock()
         {
             _customBackgroundService.ClearAll();
+            // Event handling triggers viewport update automatically
+        }
+
+        /// <summary>
+        /// Clear only the custom background blocks that match a specific tag (Description).
+        /// Use this when a feature must clean up only its own blocks without disturbing
+        /// blocks added by other features (e.g. format detection, file comparison).
+        /// </summary>
+        /// <param name="tag">The Description value used when the blocks were created</param>
+        public void ClearCustomBackgroundBlockByTag(string tag)
+        {
+            _customBackgroundService.RemoveBlocksByTag(tag);
             // Event handling triggers viewport update automatically
         }
 

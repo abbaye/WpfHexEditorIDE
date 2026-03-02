@@ -1,6 +1,7 @@
 //////////////////////////////////////////////
 // Apache 2.0  - 2026
-// Contributors: Claude Sonnet 4.5
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
 using System.Collections.Generic;
@@ -313,7 +314,9 @@ namespace WpfHexEditor.Core.FormatDetection
     /// </summary>
     public class BitfieldDefinition
     {
-        /// <summary>Display name for this bitfield (e.g., "Sample Rate Code")</summary>
+        /// <summary>
+        /// Display name for this bitfield (e.g., "Sample Rate Code")
+        /// </summary>
         public string Name { get; set; }
 
         /// <summary>
@@ -322,10 +325,14 @@ namespace WpfHexEditor.Core.FormatDetection
         /// </summary>
         public string Bits { get; set; }
 
-        /// <summary>Variable name to store the extracted value</summary>
+        /// <summary>
+        /// Variable name to store the extracted value
+        /// </summary>
         public string StoreAs { get; set; }
 
-        /// <summary>Human-readable description of this bitfield</summary>
+        /// <summary>
+        /// Human-readable description of this bitfield
+        /// </summary>
         public string Description { get; set; }
 
         /// <summary>

@@ -1,0 +1,171 @@
+<!--
+    Apache 2.0  2026
+    Shared implicit styles for all ProjectSystem dialogs.
+    Provides theme-aware Button, RadioButton and GroupBox templates (not provided by PanelCommon.xaml).
+    ComboBox and CheckBox are intentionally omitted — PanelCommon.xaml's implicit styles handle them.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ── GroupBox — VS2022-style: header floats above a 1-px border ── -->
+    <!--
+        The default WPF GroupBox template uses hard-coded system colours for
+        the border, completely ignoring the BorderBrush property setter.
+        This custom template makes the border theme-aware and places the
+        header label on a background-coloured strip that visually "cuts
+        through" the top edge of the border, exactly like VS2022 dialogs.
+    -->
+    <Style TargetType="GroupBox">
+        <Setter Property="Foreground"          Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="BorderBrush"         Value="{DynamicResource DockBorderBrush}" />
+        <Setter Property="Background"          Value="Transparent" />
+        <Setter Property="Margin"              Value="0,0,0,8" />
+        <Setter Property="Padding"             Value="8" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GroupBox">
+                    <Grid SnapsToDevicePixels="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <!-- 1-px themed border; top edge starts at vertical mid of the header row -->
+                        <Border Grid.RowSpan="2"
+                                Margin="0,8,0,0"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                Background="{TemplateBinding Background}"
+                                SnapsToDevicePixels="True" />
+
+                        <!-- Header text on a window-background strip that cuts through the border -->
+                        <Border HorizontalAlignment="Left"
+                                Margin="10,0,0,0"
+                                Padding="4,0"
+                                Background="{DynamicResource DockWindowBackgroundBrush}">
+                            <ContentPresenter ContentSource="Header"
+                                              TextBlock.Foreground="{TemplateBinding Foreground}"
+                                              RecognizesAccessKey="True"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+
+                        <!-- Content area -->
+                        <ContentPresenter Grid.Row="1"
+                                          Margin="{TemplateBinding Padding}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Label ──────────────────────────────────────────────────────── -->
+    <Style TargetType="Label">
+        <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Padding"           Value="0,0,8,0" />
+    </Style>
+
+    <!-- ── TextBlock ──────────────────────────────────────────────────── -->
+    <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
+    </Style>
+
+    <!-- ── TextBox ────────────────────────────────────────────────────── -->
+    <Style TargetType="TextBox">
+        <Setter Property="Foreground"             Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="Background"             Value="{DynamicResource DockBackgroundBrush}" />
+        <Setter Property="BorderBrush"            Value="{DynamicResource DockBorderBrush}" />
+        <Setter Property="CaretBrush"             Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="Padding"                Value="4,3" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <!-- ── Button — VS2022-style overlay ─────────────────────────────── -->
+    <Style TargetType="Button">
+        <Setter Property="Padding"     Value="18,5" />
+        <Setter Property="MinWidth"    Value="80" />
+        <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="Background"  Value="{DynamicResource DockBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            SnapsToDevicePixels="True">
+                        <Border x:Name="Overlay" Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Overlay" Property="Background"  Value="#20FFFFFF" />
+                            <Setter TargetName="Root"    Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Overlay" Property="Background" Value="#40FFFFFF" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.45" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── RadioButton — VS2022-style circle indicator ───────────────── -->
+    <Style TargetType="RadioButton">
+        <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FocusVisualStyle"         Value="{x:Null}" />
+        <Setter Property="Cursor"                   Value="Hand" />
+        <Setter Property="SnapsToDevicePixels"      Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <BulletDecorator Background="Transparent" SnapsToDevicePixels="True">
+                        <BulletDecorator.Bullet>
+                            <Grid Width="14" Height="14">
+                                <!-- Outer circle -->
+                                <Ellipse x:Name="OuterCircle"
+                                         Stroke="{DynamicResource DockBorderBrush}"
+                                         StrokeThickness="1"
+                                         Fill="Transparent" />
+                                <!-- Inner dot — visible when selected -->
+                                <Ellipse x:Name="InnerDot"
+                                         Margin="3"
+                                         Fill="{DynamicResource AccentBrush}"
+                                         Visibility="Collapsed" />
+                            </Grid>
+                        </BulletDecorator.Bullet>
+                        <ContentPresenter Margin="6,0,0,0"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          RecognizesAccessKey="True" />
+                    </BulletDecorator>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="OuterCircle" Property="Stroke" Value="{DynamicResource AccentBrush}" />
+                            <Setter TargetName="InnerDot"    Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="OuterCircle" Property="Stroke" Value="{DynamicResource AccentBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

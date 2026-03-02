@@ -1,0 +1,81 @@
+{
+  "name": "Markdown",
+  "version": "1.0",
+  "author": "WpfHexEditor Team",
+  "description": "Syntax highlighting for Markdown markup language (CommonMark).",
+  "category": "Misc",
+  "extensions": [ ".md", ".markdown", ".mkd", ".mdx" ],
+  "lineComment": "",
+  "references": {
+    "specifications": [
+      "CommonMark Specification 0.31.2",
+      "GitHub Flavored Markdown Spec"
+    ],
+    "webLinks": [
+      "https://spec.commonmark.org/",
+      "https://github.github.com/gfm/"
+    ]
+  },
+  "rules": [
+    {
+      "type": "Heading",
+      "pattern": "^#{1,6}\\s+.+$",
+      "colorKey": "TE_Keyword"
+    },
+    {
+      "type": "Bold",
+      "pattern": "(\\*\\*[^*]+\\*\\*|__[^_]+__)",
+      "colorKey": "TE_Type"
+    },
+    {
+      "type": "Italic",
+      "pattern": "(\\*[^*]+\\*|_[^_]+_)",
+      "colorKey": "TE_Directive"
+    },
+    {
+      "type": "InlineCode",
+      "pattern": "`[^`]+`",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "CodeBlock",
+      "pattern": "```[\\s\\S]*?```|~~~[\\s\\S]*?~~~",
+      "colorKey": "TE_String"
+    },
+    {
+      "type": "Link",
+      "pattern": "(!?\\[(?:[^\\]\\\\]|\\\\.)*\\]\\((?:[^)\\\\]|\\\\.)*\\)|!?\\[(?:[^\\]\\\\]|\\\\.)*\\]\\[(?:[^\\]\\\\]|\\\\.)*\\])",
+      "colorKey": "TE_Label"
+    },
+    {
+      "type": "Image",
+      "pattern": "!\\[(?:[^\\]\\\\]|\\\\.)*\\]\\((?:[^)\\\\]|\\\\.)*\\)",
+      "colorKey": "TE_Label"
+    },
+    {
+      "type": "ListItem",
+      "pattern": "^\\s*(?:[*+-]|[0-9]+\\.)\\s",
+      "colorKey": "TE_Operator"
+    },
+    {
+      "type": "BlockQuote",
+      "pattern": "^\\s*>.*$",
+      "colorKey": "TE_Comment"
+    },
+    {
+      "type": "HRule",
+      "pattern": "^\\s*(?:---+|\\*\\*\\*+|___+)\\s*$",
+      "colorKey": "TE_Operator"
+    },
+    {
+      "type": "Table",
+      "pattern": "^\\|.+\\|\\s*$",
+      "colorKey": "TE_Type"
+    },
+    {
+      "type": "FrontMatter",
+      "pattern": "^---[\\s\\S]*?^---",
+      "colorKey": "TE_Directive"
+    }
+  ]
+}
