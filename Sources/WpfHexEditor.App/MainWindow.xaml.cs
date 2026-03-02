@@ -24,6 +24,7 @@ using WpfHexEditor.Docking.Wpf;
 using WpfHexEditor.App.Controls;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Editor.TblEditor;
 using WpfHexEditor.Editor.TblEditor.Models;
 using WpfHexEditor.Editor.TblEditor.Services;

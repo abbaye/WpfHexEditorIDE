@@ -28,6 +28,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
     private readonly TblEditorViewModel _vm;
     private string? _currentFilePath;
     private double _baseFontSize = 12.0;
+    private bool _suppressSourceLoad;
 
     // ── IDiagnosticSource ─────────────────────────────────────────────────
     private List<DiagnosticEntry> _diagnostics = [];
@@ -82,7 +83,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
 
     private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is TblEditor ctrl && e.NewValue is TblStream tbl)
+        if (d is TblEditor ctrl && e.NewValue is TblStream tbl && !ctrl._suppressSourceLoad)
             _ = ctrl.LoadAsync(tbl);
     }
 
@@ -587,7 +588,11 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         var tbl = new TblStream(filePath);
         await Task.Run(() => tbl.Load(), ct);
         _currentFilePath = filePath;
-        Source = tbl;
+
+        // Single explicit load — suppress DP callback to avoid a second concurrent LoadAsync
+        _suppressSourceLoad = true;
+        try { Source = tbl; }
+        finally { _suppressSourceLoad = false; }
         await _vm.LoadAsync(tbl, ct);
 
         // ── 3. Output summary

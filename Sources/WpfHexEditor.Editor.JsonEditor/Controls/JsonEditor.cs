@@ -83,6 +83,17 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
 
         private VirtualizationEngine _virtualizationEngine;
         private double _verticalScrollOffset = 0;
+        private double _horizontalScrollOffset = 0;
+        private double _maxContentWidth = 0;
+
+        #endregion
+
+        #region Fields - ScrollBar Children
+
+        private System.Windows.Controls.Primitives.ScrollBar _vScrollBar;
+        private System.Windows.Controls.Primitives.ScrollBar _hScrollBar;
+        private VisualCollection _scrollBarChildren;
+        private bool _updatingScrollBar = false;
 
         #endregion
 
@@ -131,6 +142,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         private const double LineNumberWidth = 60;
         private const double LineNumberMargin = 5;
         private const double TextAreaLeftOffset = 70; // LineNumberWidth + margin
+        private const double ScrollBarThickness = 12.0;
 
         #endregion
 
@@ -1034,7 +1046,8 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
 
                 // Recalculate character dimensions
                 editor.CalculateCharacterDimensions();
-                editor.InvalidateVisual();
+                // Full layout pass: _maxContentWidth and scrollbar ranges depend on _charWidth / _lineHeight
+                editor.InvalidateMeasure();
             }
         }
 
@@ -1146,6 +1159,31 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             _smoothScrollTimer.Interval = TimeSpan.FromMilliseconds(16); // ~60 FPS
             _smoothScrollTimer.Tick += SmoothScrollTimer_Tick;
 
+            // Initialize ScrollBar visual children (vertical + horizontal)
+            _scrollBarChildren = new VisualCollection(this);
+            _vScrollBar = new System.Windows.Controls.Primitives.ScrollBar
+            {
+                Orientation = Orientation.Vertical,
+                SmallChange  = _lineHeight,
+                LargeChange  = 100,
+                Minimum      = 0,
+                Maximum      = 0,
+                Value        = 0
+            };
+            _hScrollBar = new System.Windows.Controls.Primitives.ScrollBar
+            {
+                Orientation = Orientation.Horizontal,
+                SmallChange  = _charWidth * 3,
+                LargeChange  = 100,
+                Minimum      = 0,
+                Maximum      = 0,
+                Value        = 0
+            };
+            _vScrollBar.ValueChanged += VScrollBar_ValueChanged;
+            _hScrollBar.ValueChanged += HScrollBar_ValueChanged;
+            _scrollBarChildren.Add(_vScrollBar);
+            _scrollBarChildren.Add(_hScrollBar);
+
             // Apply theme resource bindings when connected to the visual tree
             Loaded += (_, _) => ApplyThemeResourceBindings();
         }
@@ -1193,6 +1231,14 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             _lineNumberTypeface = new Typeface(LineNumberFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
             _fontSize = EditorFontSize;
         }
+
+        #region Visual Children (ScrollBars)
+
+        protected override int VisualChildrenCount => _scrollBarChildren?.Count ?? 0;
+
+        protected override Visual GetVisualChild(int index) => _scrollBarChildren[index];
+
+        #endregion
 
         private void UpdateSyntaxHighlighterColors()
         {
@@ -1306,6 +1352,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
                 _virtualizationEngine.CalculateVisibleRange();
             }
 
+            SyncVScrollBar();
             InvalidateVisual();
         }
 
@@ -1814,10 +1861,12 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         {
             if (_virtualizationEngine != null)
             {
-                _virtualizationEngine.ViewportHeight = ActualHeight;
+                bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
+                _virtualizationEngine.ViewportHeight = ActualHeight - (hasHBar ? ScrollBarThickness : 0);
                 _virtualizationEngine.CalculateVisibleRange();
-                InvalidateVisual();
             }
+            // Scrollbar ranges depend on viewport size — trigger layout pass
+            InvalidateArrange();
         }
 
         /// <summary>
@@ -1865,6 +1914,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
                 _targetScrollOffset = newOffset;
                 _virtualizationEngine.ScrollOffset = newOffset;
                 _virtualizationEngine.CalculateVisibleRange();
+                SyncVScrollBar();
                 InvalidateVisual();
             }
         }
@@ -1883,8 +1933,11 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
                 _verticalScrollOffset = newOffset;
                 _virtualizationEngine.ScrollOffset = newOffset;
                 _virtualizationEngine.CalculateVisibleRange();
+                SyncVScrollBar();
                 InvalidateVisual();
             }
+
+            EnsureCursorColumnVisible();
         }
 
         #endregion
@@ -1902,94 +1955,249 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             if (_document == null || _document.Lines.Count == 0)
                 return;
 
-            // Calculate visible line range (Phase 1: simple - show all lines up to viewport height)
+            bool hasVBar = _vScrollBar?.Visibility == Visibility.Visible;
+            bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
+            double contentW = ActualWidth  - (hasVBar ? ScrollBarThickness : 0);
+            double contentH = ActualHeight - (hasHBar ? ScrollBarThickness : 0);
+            double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+
+            // Calculate visible line range
             CalculateVisibleLines();
 
-            // 1. Draw editor background
-            dc.DrawRectangle(EditorBackground, null, new Rect(0, 0, ActualWidth, ActualHeight));
+            // ── Clip to content area (prevent drawing over scrollbars) ──
+            dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
 
-            // 2. Draw line number gutter background
+            // 1. Editor background
+            dc.DrawRectangle(EditorBackground, null, new Rect(0, 0, contentW, contentH));
+
+            // 2. Line number gutter background (fixed — no H offset)
             if (ShowLineNumbers)
-            {
-                dc.DrawRectangle(LineNumberBackground, null, new Rect(0, 0, LineNumberWidth, ActualHeight));
-            }
+                dc.DrawRectangle(LineNumberBackground, null, new Rect(0, 0, LineNumberWidth, contentH));
 
-            // 3. Draw current line highlight (before text)
-            RenderCurrentLineHighlight(dc);
+            // 3. Current line highlight (spans visible text area, no H offset)
+            RenderCurrentLineHighlight(dc, contentW, contentH);
 
-            // 4. Draw find results (background highlights)
+            // ── Text area clip + horizontal translate ───────────────────
+            dc.PushClip(new RectangleGeometry(new Rect(textLeft, 0, Math.Max(0, contentW - textLeft), contentH)));
+            dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
+
+            // 4. Find result highlights
             RenderFindResults(dc);
 
-            // 5. Draw selection (before text)
+            // 5. Selection
             RenderSelection(dc);
 
-            // 6. Draw line numbers
-            if (ShowLineNumbers)
-            {
-                RenderLineNumbers(dc);
-            }
-
-            // 7. Draw text content
+            // 6. Text content
             RenderTextContent(dc);
 
-            // 8. Draw validation errors (Phase 5 - squiggly lines)
+            // 7. Validation errors (Phase 5)
             if (EnableValidation)
-            {
                 RenderValidationErrors(dc);
-            }
 
-            // 9. Draw bracket matching (Phase 6)
+            // 8. Bracket matching (Phase 6)
             RenderBracketMatching(dc);
 
-            // 10. Draw cursor (with blinking animation)
+            // 9. Cursor
             RenderCursor(dc);
 
-            // Phase 11.4: Periodically cleanup token cache to respect MaxCachedLines
-            // Only run every ~60 frames to avoid performance impact
+            dc.Pop(); // H translate transform
+            dc.Pop(); // text area clip
+
+            // 10. Line numbers (no H offset — drawn on top of gutter background)
+            if (ShowLineNumbers)
+                RenderLineNumbers(dc);
+
+            dc.Pop(); // content clip
+
+            // 11. Corner background (intersection of V + H scrollbars)
+            if (hasVBar && hasHBar)
+                dc.DrawRectangle(LineNumberBackground ?? Brushes.Transparent, null,
+                    new Rect(contentW, contentH, ScrollBarThickness, ScrollBarThickness));
+
+            // Phase 11.4: Periodically cleanup token cache
             if (_frameCount++ % 60 == 0)
-            {
                 _document.CleanupTokenCache(MaxCachedLines);
-            }
         }
 
         private int _frameCount = 0; // Frame counter for periodic cache cleanup
 
         /// <summary>
-        /// Measure desired size based on content (all lines)
-        /// Required for proper ScrollViewer support
+        /// Measure: update cached max content width; scrollbars manage their own layout.
         /// </summary>
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (_document == null || _document.Lines.Count == 0)
-                return new Size(400, 300); // Default size
-
-            // Calculate total height needed for all lines
-            double totalHeight = TopMargin + (_document.Lines.Count * _lineHeight) + 10; // +10 bottom padding
-
-            // Calculate width based on longest line (with a reasonable max)
-            double maxLineWidth = 0;
-            foreach (var line in _document.Lines)
+            // Update cached max content width (used by H scrollbar)
+            if (_document != null && _document.Lines.Count > 0)
             {
-                double lineWidth = (ShowLineNumbers ? TextAreaLeftOffset : LeftMargin) +
-                                  (line.Text.Length * _charWidth) + 20; // +20 right padding
-                maxLineWidth = Math.Max(maxLineWidth, lineWidth);
+                double max = 0;
+                foreach (var line in _document.Lines)
+                    max = Math.Max(max, line.Text.Length * _charWidth);
+                _maxContentWidth = max + 20; // +20 right padding
             }
+            else
+                _maxContentWidth = 0;
 
-            // Use available width if it's larger, otherwise use calculated width
-            double desiredWidth = double.IsInfinity(availableSize.Width) ?
-                Math.Max(800, maxLineWidth) : availableSize.Width;
+            // Measure scrollbar children
+            _vScrollBar?.Measure(new Size(ScrollBarThickness, double.IsInfinity(availableSize.Height) ? double.PositiveInfinity : Math.Max(0, availableSize.Height)));
+            _hScrollBar?.Measure(new Size(double.IsInfinity(availableSize.Width) ? double.PositiveInfinity : Math.Max(0, availableSize.Width), ScrollBarThickness));
 
-            return new Size(desiredWidth, totalHeight);
+            // Fill all available space (scrolling is internal)
+            double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            double w = double.IsInfinity(availableSize.Width)
+                ? Math.Max(400, textLeft + _maxContentWidth + ScrollBarThickness)
+                : availableSize.Width;
+            double h = double.IsInfinity(availableSize.Height)
+                ? Math.Max(300, TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight + ScrollBarThickness)
+                : availableSize.Height;
+            return new Size(w, h);
         }
 
         /// <summary>
-        /// Arrange the element at the desired size
-        /// Required for proper ScrollViewer support
+        /// Arrange: position scrollbars and update their ranges.
         /// </summary>
         protected override Size ArrangeOverride(Size finalSize)
         {
+            double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            double totalH  = TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight;
+            double totalTW = textLeft + _maxContentWidth;
+
+            // Determine which scrollbars are needed (check for mutual dependency)
+            bool needsV = totalH  > finalSize.Height;
+            bool needsH = totalTW > finalSize.Width;
+            if (needsV) needsH = totalTW > (finalSize.Width  - ScrollBarThickness);
+            if (needsH) needsV = totalH  > (finalSize.Height - ScrollBarThickness);
+
+            double contentW = needsV ? finalSize.Width  - ScrollBarThickness : finalSize.Width;
+            double contentH = needsH ? finalSize.Height - ScrollBarThickness : finalSize.Height;
+
+            _vScrollBar.Visibility = needsV ? Visibility.Visible : Visibility.Hidden;
+            _hScrollBar.Visibility = needsH ? Visibility.Visible : Visibility.Hidden;
+
+            _vScrollBar.Arrange(needsV ? new Rect(contentW, 0, ScrollBarThickness, contentH) : new Rect(0, 0, 0, 0));
+            _hScrollBar.Arrange(needsH ? new Rect(0, contentH, contentW, ScrollBarThickness) : new Rect(0, 0, 0, 0));
+
+            UpdateScrollBars(contentW, contentH);
             return finalSize;
         }
+
+        #region ScrollBar Management
+
+        /// <summary>
+        /// Sync scrollbar ranges and values with current scroll/content state.
+        /// Called from ArrangeOverride and after document/viewport changes.
+        /// </summary>
+        private void UpdateScrollBars(double contentW, double contentH)
+        {
+            if (_vScrollBar == null || _hScrollBar == null) return;
+
+            _updatingScrollBar = true;
+            try
+            {
+                double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+
+                // ── Vertical ────────────────────────────────────────────
+                double totalH = TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight;
+                double maxV   = Math.Max(0, totalH - contentH);
+
+                // Clamp internal offset (e.g. file got shorter after edit)
+                _verticalScrollOffset = Math.Min(_verticalScrollOffset, maxV);
+                _currentScrollOffset  = _verticalScrollOffset;
+                _targetScrollOffset   = _verticalScrollOffset;
+                if (_virtualizationEngine != null)
+                    _virtualizationEngine.ScrollOffset = _verticalScrollOffset;
+
+                _vScrollBar.Minimum     = 0;
+                _vScrollBar.Maximum     = maxV;
+                _vScrollBar.ViewportSize = contentH;
+                _vScrollBar.SmallChange = _lineHeight;
+                _vScrollBar.LargeChange = contentH;
+                _vScrollBar.Value       = _verticalScrollOffset;
+
+                // ── Horizontal ──────────────────────────────────────────
+                double totalTW = textLeft + _maxContentWidth;
+                double maxH    = Math.Max(0, totalTW - contentW);
+
+                _horizontalScrollOffset = Math.Min(_horizontalScrollOffset, maxH);
+
+                _hScrollBar.Minimum      = 0;
+                _hScrollBar.Maximum      = maxH;
+                _hScrollBar.ViewportSize = Math.Max(0, contentW - textLeft);
+                _hScrollBar.SmallChange  = _charWidth * 3;
+                _hScrollBar.LargeChange  = Math.Max(contentW - textLeft, _charWidth);
+                _hScrollBar.Value        = _horizontalScrollOffset;
+            }
+            finally
+            {
+                _updatingScrollBar = false;
+            }
+        }
+
+        private void SyncVScrollBar()
+        {
+            if (_vScrollBar == null || _updatingScrollBar) return;
+            _updatingScrollBar = true;
+            _vScrollBar.Value  = _verticalScrollOffset;
+            _updatingScrollBar = false;
+        }
+
+        private void SyncHScrollBar()
+        {
+            if (_hScrollBar == null || _updatingScrollBar) return;
+            _updatingScrollBar = true;
+            _hScrollBar.Value  = _horizontalScrollOffset;
+            _updatingScrollBar = false;
+        }
+
+        private void VScrollBar_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (_updatingScrollBar) return;
+            _verticalScrollOffset = e.NewValue;
+            _currentScrollOffset  = e.NewValue;
+            _targetScrollOffset   = e.NewValue;
+            if (_virtualizationEngine != null)
+            {
+                _virtualizationEngine.ScrollOffset = e.NewValue;
+                _virtualizationEngine.CalculateVisibleRange();
+            }
+            InvalidateVisual();
+        }
+
+        private void HScrollBar_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (_updatingScrollBar) return;
+            _horizontalScrollOffset = e.NewValue;
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Ensure the cursor column is visible in the text area (horizontal auto-scroll).
+        /// </summary>
+        private void EnsureCursorColumnVisible()
+        {
+            if (_hScrollBar == null) return;
+            double textLeft  = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
+            double contentW  = ActualWidth - (_vScrollBar?.Visibility == Visibility.Visible ? ScrollBarThickness : 0);
+            double textAreaW = Math.Max(0, contentW - textLeft);
+            if (textAreaW <= 0) return;
+
+            double cursorX = _cursorColumn * _charWidth;        // position in the text area (no offset)
+            double rightEdge = cursorX + _charWidth;
+
+            if (cursorX < _horizontalScrollOffset)
+            {
+                _horizontalScrollOffset = Math.Max(0, cursorX);
+                SyncHScrollBar();
+                InvalidateVisual();
+            }
+            else if (rightEdge > _horizontalScrollOffset + textAreaW)
+            {
+                _horizontalScrollOffset = rightEdge - textAreaW;
+                SyncHScrollBar();
+                InvalidateVisual();
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Calculate which lines are visible in the viewport
@@ -1997,11 +2205,14 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         /// </summary>
         private void CalculateVisibleLines()
         {
+            bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
+            double viewportH = ActualHeight - TopMargin - (hasHBar ? ScrollBarThickness : 0);
+
             // Phase 11: Use VirtualizationEngine if enabled
             if (EnableVirtualScrolling && _virtualizationEngine != null)
             {
                 // Update virtualization state
-                _virtualizationEngine.ViewportHeight = ActualHeight - TopMargin;
+                _virtualizationEngine.ViewportHeight = viewportH;
                 _virtualizationEngine.LineHeight = _lineHeight;
                 _virtualizationEngine.ScrollOffset = _verticalScrollOffset;
 
@@ -2015,7 +2226,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
                 // Phase 1 fallback: Show all lines that fit in viewport (no virtualization)
                 _firstVisibleLine = 0;
                 _lastVisibleLine = Math.Min(_document.Lines.Count - 1,
-                    (int)((ActualHeight - TopMargin) / _lineHeight));
+                    (int)(viewportH / _lineHeight));
             }
         }
 
@@ -2120,7 +2331,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         /// <summary>
         /// Render current line highlight
         /// </summary>
-        private void RenderCurrentLineHighlight(DrawingContext dc)
+        private void RenderCurrentLineHighlight(DrawingContext dc, double contentW, double contentH)
         {
             if (_cursorLine < _firstVisibleLine || _cursorLine > _lastVisibleLine)
                 return;
@@ -2132,11 +2343,11 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
 
             double x = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
-            // Draw background highlight
+            // Draw background highlight (spans visible text area width — no H offset needed)
             if (ShowCurrentLineHighlight)
             {
                 dc.DrawRectangle(CurrentLineBackground, null,
-                    new Rect(x, y, ActualWidth - x, _lineHeight));
+                    new Rect(x, y, contentW - x, _lineHeight));
             }
 
             // Draw border if enabled
@@ -2147,7 +2358,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
                 var borderPen = new Pen(borderBrush, 1);
                 borderPen.Freeze();
                 dc.DrawRectangle(null, borderPen,
-                    new Rect(x, y, ActualWidth - x, _lineHeight));
+                    new Rect(x, y, contentW - x, _lineHeight));
             }
         }
 
@@ -3084,12 +3295,21 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
         {
             base.OnMouseWheel(e);
 
-            if (EnableVirtualScrolling && _virtualizationEngine != null)
+            if (Keyboard.Modifiers == ModifierKeys.Shift)
             {
-                // Scroll by delta (negative delta = scroll down)
+                // Horizontal scroll (Shift + wheel)
+                double pixelDelta = -e.Delta / 120.0 * _charWidth * 3 * HorizontalScrollSensitivity;
+                double maxH = _hScrollBar?.Maximum ?? 0;
+                _horizontalScrollOffset = Math.Max(0, Math.Min(maxH, _horizontalScrollOffset + pixelDelta));
+                SyncHScrollBar();
+                InvalidateVisual();
+                e.Handled = true;
+            }
+            else if (EnableVirtualScrolling && _virtualizationEngine != null)
+            {
+                // Vertical scroll
                 double lineScrollAmount = 3; // Scroll 3 lines per wheel notch
                 double pixelDelta = -e.Delta / 120.0 * lineScrollAmount * _lineHeight;
-
                 ScrollVertical(pixelDelta);
                 e.Handled = true;
             }
@@ -3231,8 +3451,8 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             int line = _firstVisibleLine + (int)((pixel.Y - TopMargin) / _lineHeight);
             line = Math.Max(0, Math.Min(_document.Lines.Count - 1, line));
 
-            // Calculate column
-            int column = (int)((pixel.X - leftEdge) / _charWidth);
+            // Calculate column (account for horizontal scroll offset)
+            int column = (int)((pixel.X - leftEdge + _horizontalScrollOffset) / _charWidth);
             column = Math.Max(0, Math.Min(_document.Lines[line].Length, column));
 
             return new TextPosition(line, column);
@@ -3529,7 +3749,8 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
                 _validationTimer.Start();
             }
 
-            InvalidateVisual();
+            // InvalidateMeasure triggers full layout pass → UpdateScrollBars (ranges may have changed)
+            InvalidateMeasure();
         }
 
         #endregion
@@ -3637,7 +3858,13 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             _cursorLine = 0;
             _cursorColumn = 0;
             _selection.Clear();
-            InvalidateVisual();
+            _verticalScrollOffset   = 0;
+            _currentScrollOffset    = 0;
+            _targetScrollOffset     = 0;
+            _horizontalScrollOffset = 0;
+            if (_virtualizationEngine != null)
+                _virtualizationEngine.ScrollOffset = 0;
+            InvalidateMeasure();
         }
 
         /// <summary>
