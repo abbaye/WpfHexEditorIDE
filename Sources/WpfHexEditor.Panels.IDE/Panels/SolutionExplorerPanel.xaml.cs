@@ -156,6 +156,8 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         SetDefaultTblMenuItem  .Visibility = (isTbl && !isDefault) ? Visibility.Visible : Visibility.Collapsed;
         ClearDefaultTblMenuItem.Visibility = (isTbl &&  isDefault) ? Visibility.Visible : Visibility.Collapsed;
         ConvertToTblxMenuItem  .Visibility = isThingyTbl           ? Visibility.Visible : Visibility.Collapsed;
+        ApplyTblToActiveMenuItem.Visibility = isTbl                ? Visibility.Visible : Visibility.Collapsed;
+        ApplyTblToAllMenuItem  .Visibility = isTbl                 ? Visibility.Visible : Visibility.Collapsed;
         TblSeparator           .Visibility = isTbl                 ? Visibility.Visible : Visibility.Collapsed;
 
         // Navigation: Open in Explorer (all) / Copy Path (all except solution)
@@ -402,6 +404,28 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         _vm.RefreshDefaultTbl(fn.Project);
     }
 
+    private void OnApplyTblToActive(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is not FileNodeVm fn || fn.Project is null) return;
+        ApplyTblRequested?.Invoke(this, new ApplyTblRequestedEventArgs
+        {
+            Project    = fn.Project,
+            TblItem    = fn.Source,
+            ApplyToAll = false,
+        });
+    }
+
+    private void OnApplyTblToAll(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is not FileNodeVm fn || fn.Project is null) return;
+        ApplyTblRequested?.Invoke(this, new ApplyTblRequestedEventArgs
+        {
+            Project    = fn.Project,
+            TblItem    = fn.Source,
+            ApplyToAll = true,
+        });
+    }
+
     private void OnRename(object sender, RoutedEventArgs e)
     {
         if      (_contextMenuTarget is SolutionNodeVm sv) StartInlineSolutionEdit(sv);
@@ -486,6 +510,12 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     /// Raised when the user requests a change to the project default TBL.
     /// </summary>
     public event EventHandler<DefaultTblChangeEventArgs>? DefaultTblChangeRequested;
+
+    /// <summary>
+    /// Raised when the user chooses "Apply to Active Document" or "Apply to All Documents"
+    /// on a TBL file node. The host loads the TBL into the appropriate HexEditor(s).
+    /// </summary>
+    public event EventHandler<ApplyTblRequestedEventArgs>? ApplyTblRequested;
 
     /// <inheritdoc/>
     public event EventHandler<AddItemRequestedEventArgs>? AddNewItemRequested;
@@ -1082,4 +1112,22 @@ public sealed class DefaultTblChangeEventArgs : EventArgs
 {
     public IProject     Project { get; init; } = null!;
     public IProjectItem? TblItem { get; init; } // null = clear
+}
+
+/// <summary>
+/// Event args for "Apply TBL to document(s)" requests from the Solution Explorer context menu.
+/// </summary>
+public sealed class ApplyTblRequestedEventArgs : EventArgs
+{
+    /// <summary>Project that owns the TBL item.</summary>
+    public IProject     Project    { get; init; } = null!;
+
+    /// <summary>The .tbl / .tblx item to apply.</summary>
+    public IProjectItem TblItem    { get; init; } = null!;
+
+    /// <summary>
+    /// <see langword="true"/> = apply to all open HexEditor documents;
+    /// <see langword="false"/> = apply only to the currently active HexEditor.
+    /// </summary>
+    public bool         ApplyToAll { get; init; }
 }

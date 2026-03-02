@@ -12,6 +12,7 @@
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core;assembly=WpfHexEditor.Editor.Core"
         xmlns:local="clr-namespace:WpfHexEditor.App"
         xmlns:appCtrl="clr-namespace:WpfHexEditor.App.Controls"
+        xmlns:appModels="clr-namespace:WpfHexEditor.App.Models"
         Title="WpfHexEditor"
         Icon="pack://application:,,,/WpfHexEditor.App;component/Logo.ico"
         Width="1200" Height="800"
@@ -755,6 +756,92 @@
                         </appCtrl:EditorToolbarItemTemplateSelector>
                     </ItemsControl.ItemTemplateSelector>
                 </ItemsControl>
+            </Border>
+
+            <!-- ── Pod TBL : sélecteur de table (visible uniquement si HexEditor actif) ── -->
+            <Border>
+                <Border.Style>
+                    <Style BasedOn="{StaticResource DockToolBarPodStyle}" TargetType="Border">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ActiveHexEditor, ElementName=ThisWindow}"
+                                         Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel Orientation="Horizontal">
+                    <!-- Table icon -->
+                    <TextBlock Text="&#xE8C1;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                               VerticalAlignment="Center" Margin="4,0,4,0"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               ToolTip="Character Table"/>
+                    <!-- TBL ComboBox -->
+                    <ComboBox Width="180" VerticalAlignment="Center"
+                              ItemsSource="{Binding TblItems, ElementName=ThisWindow}"
+                              SelectedItem="{Binding SelectedTblItem, ElementName=ThisWindow, Mode=TwoWay}"
+                              ToolTip="Active character table"
+                              Background="Transparent"
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              IsTextSearchEnabled="False">
+                        <!-- ItemTemplate = used for the selection box (closed state).
+                             ItemTemplateSelector = used for the popup dropdown items only.
+                             WPF ignores ItemTemplateSelector for the selection box and uses ItemTemplate. -->
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type appModels:TblSelectionItem}">
+                                <TextBlock Text="{Binding DisplayName}"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Style.Triggers>
+                                    <!-- Headers: not focusable/clickable but visually ENABLED
+                                         (IsEnabled stays True) so the bold text renders with full
+                                         color in any theme — no graying. -->
+                                    <DataTrigger Binding="{Binding IsHeader}" Value="True">
+                                        <Setter Property="Focusable"        Value="False"/>
+                                        <Setter Property="IsHitTestVisible" Value="False"/>
+                                        <Setter Property="Padding"          Value="0"/>
+                                    </DataTrigger>
+                                    <!-- Separators: disabled (grayed is fine for a pure visual line) -->
+                                    <DataTrigger Binding="{Binding IsSeparator}" Value="True">
+                                        <Setter Property="IsEnabled"        Value="False"/>
+                                        <Setter Property="IsHitTestVisible" Value="False"/>
+                                        <Setter Property="Padding"          Value="0"/>
+                                        <Setter Property="MinHeight"        Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                        <ComboBox.ItemTemplateSelector>
+                            <appCtrl:TblItemTemplateSelector>
+                                <appCtrl:TblItemTemplateSelector.HeaderTemplate>
+                                    <DataTemplate DataType="{x:Type appModels:TblSelectionItem}">
+                                        <TextBlock Text="{Binding DisplayName}"
+                                                   FontWeight="Bold" FontSize="11"
+                                                   Foreground="{DynamicResource SE_GroupHeaderBrush}"
+                                                   IsHitTestVisible="False"
+                                                   Padding="4,5,0,2"/>
+                                    </DataTemplate>
+                                </appCtrl:TblItemTemplateSelector.HeaderTemplate>
+                                <appCtrl:TblItemTemplateSelector.SeparatorTemplate>
+                                    <DataTemplate DataType="{x:Type appModels:TblSelectionItem}">
+                                        <Separator Margin="4,2" IsHitTestVisible="False"/>
+                                    </DataTemplate>
+                                </appCtrl:TblItemTemplateSelector.SeparatorTemplate>
+                                <appCtrl:TblItemTemplateSelector.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type appModels:TblSelectionItem}">
+                                        <TextBlock Text="{Binding DisplayName}"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                                   Padding="4,2"/>
+                                    </DataTemplate>
+                                </appCtrl:TblItemTemplateSelector.ItemTemplate>
+                            </appCtrl:TblItemTemplateSelector>
+                        </ComboBox.ItemTemplateSelector>
+                    </ComboBox>
+                </StackPanel>
             </Border>
 
             <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}"/>

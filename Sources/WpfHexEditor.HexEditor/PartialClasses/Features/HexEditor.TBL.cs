@@ -128,10 +128,13 @@ namespace WpfHexEditor.HexEditor
                         HexViewport.TblStream = _tblStream;
                 }
                 // If switching away from TBL, close it
+                // (CloseTBL sets _characterTableType = Ascii directly, not via this setter — no recursion)
                 else if (value != CharacterTableType.TblFile && _tblStream != null)
                 {
                     CloseTBL();
                 }
+                // Refresh the viewport so the new encoding/table type is rendered immediately
+                HexViewport?.Refresh();
             }
         }
 

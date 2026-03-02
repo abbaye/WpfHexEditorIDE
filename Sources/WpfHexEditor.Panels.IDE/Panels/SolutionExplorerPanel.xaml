@@ -541,6 +541,16 @@
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8AB;"/>
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem x:Name="ApplyTblToActiveMenuItem" Header="Apply to Active Document" Click="OnApplyTblToActive">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C4;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="ApplyTblToAllMenuItem" Header="Apply to All Documents" Click="OnApplyTblToAll">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xEBE8;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <Separator x:Name="TblSeparator"/>
 
                     <!-- Navigation (all node types) -->

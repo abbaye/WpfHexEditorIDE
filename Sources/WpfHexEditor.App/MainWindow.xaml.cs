@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -22,8 +23,10 @@ using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Docking.Core.Serialization;
 using WpfHexEditor.Docking.Wpf;
 using WpfHexEditor.App.Controls;
+using WpfHexEditor.App.Models;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core;
 using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Editor.TblEditor;
 using WpfHexEditor.Editor.TblEditor.Models;
@@ -121,6 +124,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private ErrorPanel? _errorPanel;
     private const string ErrorPanelContentId = "panel-errors";
 
+    // TBL dropdown — tracks which project TBL item is applied per hex editor
+    private readonly Dictionary<HexEditorControl, IProjectItem?> _editorProjectTbl = new();
+
     // Background file monitor (watches project files for external changes)
     private readonly FileMonitorDiagnosticSource _fileMonitorSource = new();
     private FileMonitorService? _fileMonitorService;
@@ -177,6 +183,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         get => _activeHexEditor;
         private set { _activeHexEditor = value; OnPropertyChanged(); }
+    }
+
+    // ── TBL toolbar dropdown ─────────────────────────────────────────────
+
+    private readonly ObservableCollection<TblSelectionItem> _tblItems = new();
+    public  ObservableCollection<TblSelectionItem> TblItems => _tblItems;
+
+    private TblSelectionItem? _selectedTblItem;
+    public TblSelectionItem? SelectedTblItem
+    {
+        get => _selectedTblItem;
+        set
+        {
+            if (_selectedTblItem == value) return;
+            _selectedTblItem = value;
+            OnPropertyChanged();
+            if (value?.IsSelectable == true)
+                ApplyTblSelectionItem(value);
+        }
     }
 
     private IStatusBarContributor? _activeStatusBarContributor;
@@ -270,6 +295,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         AppSettingsService.Instance.Load();
         InitAutoSerializeTimer();
 
+        RebuildTblItemList();   // must be before LoadSavedLayoutOrDefault so SyncTblDropdown finds items
         LoadSavedLayoutOrDefault();
         PopulateRecentMenus();
         TryRestoreSession();
@@ -349,6 +375,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         HasSolution = _solutionManager.CurrentSolution != null;
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+        RebuildTblItemList();
         RefreshAllChangesetNodes();
         PopulateRecentMenus();
 
@@ -757,6 +784,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.ItemDeleteRequested       += OnSolutionExplorerItemDeleteRequested;
         panel.ItemMoveRequested         += OnSolutionExplorerItemMoveRequested;
         panel.DefaultTblChangeRequested += OnDefaultTblChangeRequested;
+        panel.ApplyTblRequested         += OnSEApplyTbl;
         panel.AddNewItemRequested              += OnSEAddNewItem;
         panel.AddExistingItemRequested         += OnSEAddExistingItem;
         panel.ImportFormatDefinitionRequested  += OnSEImportFormatDefinition;
@@ -1250,6 +1278,169 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             OutputLogger.Warn($"Failed to apply default TBL '{tblItem.Name}': {ex.Message}");
         }
+    }
+
+    // ── TBL management ───────────────────────────────────────────────────
+
+    /// <summary>
+    /// Handles "Apply to Active Document" / "Apply to All Documents" from the Solution Explorer.
+    /// </summary>
+    private void OnSEApplyTbl(object? sender, ApplyTblRequestedEventArgs e)
+    {
+        var tbl = LoadTblFromProjectItem(e.TblItem);
+        if (tbl is null) return;
+
+        if (e.ApplyToAll)
+        {
+            foreach (var c in _contentCache.Values.OfType<HexEditorControl>())
+            {
+                c.LoadTBL(tbl, e.TblItem.AbsolutePath);
+                _editorProjectTbl[c] = e.TblItem;
+            }
+            OutputLogger.Info($"TBL '{e.TblItem.Name}' applied to all open documents.");
+        }
+        else
+        {
+            if (ActiveHexEditor is null) { OutputLogger.Warn("No active HexEditor — cannot apply TBL."); return; }
+            ActiveHexEditor.LoadTBL(tbl, e.TblItem.AbsolutePath);
+            _editorProjectTbl[ActiveHexEditor] = e.TblItem;
+            SyncTblDropdownToActiveEditor();
+            OutputLogger.Info($"TBL '{e.TblItem.Name}' applied to active document.");
+        }
+    }
+
+    /// <summary>
+    /// Loads a <see cref="TblStream"/> from a project item using TblImportService
+    /// (supports .tbl, .tblx, .csv, .atlas formats — same as <see cref="ApplyDefaultTbl"/>).
+    /// </summary>
+    private TblStream? LoadTblFromProjectItem(IProjectItem item)
+    {
+        if (!File.Exists(item.AbsolutePath))
+        {
+            OutputLogger.Warn($"TBL file not found: {item.AbsolutePath}");
+            return null;
+        }
+        try
+        {
+            var result = new TblImportService().ImportFromFile(item.AbsolutePath);
+            if (!result.Success || result.Entries.Count == 0) return null;
+            var tbl = new TblStream();
+            foreach (var dte in result.Entries) tbl.Add(dte);
+            return tbl;
+        }
+        catch (Exception ex)
+        {
+            OutputLogger.Warn($"Failed to load TBL '{item.Name}': {ex.Message}");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Rebuilds the TBL ComboBox list from built-in tables + current solution project items.
+    /// </summary>
+    private void RebuildTblItemList()
+    {
+        _tblItems.Clear();
+
+        // Section 1: Built-in tables
+        _tblItems.Add(TblSelectionItem.MakeHeader("Built-in Tables"));
+        _tblItems.Add(TblSelectionItem.MakeBuiltIn("Default (ASCII)", null));           // null → CloseTBL
+        _tblItems.Add(TblSelectionItem.MakeBuiltIn("ASCII",            DefaultCharacterTableType.Ascii));
+        _tblItems.Add(TblSelectionItem.MakeBuiltIn("EBCDIC + Special", DefaultCharacterTableType.EbcdicWithSpecialChar));
+        _tblItems.Add(TblSelectionItem.MakeBuiltIn("EBCDIC (no spec)", DefaultCharacterTableType.EbcdicNoSpecialChar));
+
+        // Section 2: Encodings
+        _tblItems.Add(TblSelectionItem.MakeSeparator());
+        _tblItems.Add(TblSelectionItem.MakeHeader("Encodings"));
+        _tblItems.Add(TblSelectionItem.MakeEncoding("UTF-8",     CharacterTableType.UTF8));
+        _tblItems.Add(TblSelectionItem.MakeEncoding("UTF-16 LE", CharacterTableType.UTF16LE));
+        _tblItems.Add(TblSelectionItem.MakeEncoding("UTF-16 BE", CharacterTableType.UTF16BE));
+        _tblItems.Add(TblSelectionItem.MakeEncoding("Latin-1",   CharacterTableType.Latin1));
+
+        // Section 3: Project TBL files
+        var projectTbls = _solutionManager.CurrentSolution?.Projects
+            .SelectMany(p => p.Items)
+            .Where(i => i.ItemType == ProjectItemType.Tbl && File.Exists(i.AbsolutePath))
+            .ToList();
+
+        if (projectTbls is { Count: > 0 })
+        {
+            _tblItems.Add(TblSelectionItem.MakeSeparator());
+            _tblItems.Add(TblSelectionItem.MakeHeader("Project Tables"));
+            foreach (var item in projectTbls)
+                _tblItems.Add(TblSelectionItem.MakeProjectFile(item));
+        }
+    }
+
+    /// <summary>
+    /// Applies the selected TBL item to the currently active HexEditor.
+    /// </summary>
+    private void ApplyTblSelectionItem(TblSelectionItem item)
+    {
+        if (ActiveHexEditor is not { } hex) return;
+
+        switch (item.Kind)
+        {
+            case TblSelectionKind.BuiltIn when item.BuiltInType is null:
+                hex.CloseTBL();
+                _editorProjectTbl[hex] = null;
+                break;
+            case TblSelectionKind.BuiltIn when item.BuiltInType is { } bt:
+                hex.LoadTBL(TblStream.CreateDefaultTbl(bt), $"[{item.DisplayName}]");
+                _editorProjectTbl[hex] = null;
+                break;
+            case TblSelectionKind.Encoding when item.EncodingType is { } enc:
+                // CloseTBL() first so _tblStream is null before setting the encoding type.
+                // Without this, the setter would call CloseTBL() itself and reset to Ascii,
+                // then the assignment would be silently overwritten.
+                hex.CloseTBL();
+                hex.TypeOfCharacterTable = enc;
+                _editorProjectTbl[hex] = null;
+                break;
+            case TblSelectionKind.ProjectFile when item.ProjectItem is { } pi:
+                var tbl = LoadTblFromProjectItem(pi);
+                if (tbl is not null)
+                {
+                    hex.LoadTBL(tbl, pi.AbsolutePath);
+                    _editorProjectTbl[hex] = pi;
+                }
+                break;
+        }
+        OutputLogger.Info($"TBL changed to: {item.DisplayName}");
+    }
+
+    /// <summary>
+    /// Syncs the TBL ComboBox selection to match the active HexEditor's current table state.
+    /// Sets the backing field directly to avoid re-triggering ApplyTblSelectionItem.
+    /// </summary>
+    private void SyncTblDropdownToActiveEditor()
+    {
+        if (ActiveHexEditor is not { } hex)
+        {
+            _selectedTblItem = null;
+            OnPropertyChanged(nameof(SelectedTblItem));
+            return;
+        }
+
+        TblSelectionItem? match = null;
+
+        if (hex.TypeOfCharacterTable == CharacterTableType.TblFile)
+        {
+            if (_editorProjectTbl.TryGetValue(hex, out var pi) && pi is not null)
+                match = _tblItems.FirstOrDefault(i => i.Kind == TblSelectionKind.ProjectFile && i.ProjectItem?.Id == pi.Id);
+        }
+        else if (hex.TypeOfCharacterTable == CharacterTableType.Ascii)
+        {
+            match = _tblItems.FirstOrDefault(i => i.Kind == TblSelectionKind.BuiltIn && i.BuiltInType is null);
+        }
+        else
+        {
+            var enc = hex.TypeOfCharacterTable;
+            match = _tblItems.FirstOrDefault(i => i.Kind == TblSelectionKind.Encoding && i.EncodingType == enc);
+        }
+
+        _selectedTblItem = match;
+        OnPropertyChanged(nameof(SelectedTblItem));
     }
 
     private void OnSEAddNewItem(object? sender, AddItemRequestedEventArgs e)
@@ -1854,6 +2045,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         ActiveHexEditor            = hex;
         ActiveStatusBarContributor = content as IStatusBarContributor;
         ActiveToolbarContributor   = content as IEditorToolbarContributor;
+        SyncTblDropdownToActiveEditor();
 
         if (ActiveDocumentEditor == null)
             RefreshText.Text = "";
