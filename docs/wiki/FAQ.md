@@ -62,7 +62,7 @@ host.Child = hexEditor;
 this.Controls.Add(host);
 ```
 
-👉 **[See WinForms sample](https://github.com/abbaye/WpfHexEditorControl/tree/master/Sources/Samples/WpfHexEditor.Sample.Winform)**
+👉 **[See WinForms sample](https://github.com/abbaye/WpfHexEditorIDE/tree/master/Sources/Samples/WpfHexEditor.Sample.Winform)**
 
 ---
 
@@ -191,7 +191,7 @@ hexEditor.AddHighlight(0x1000, 2048, Colors.LightGreen, "Data Section");
    - Zero-copy operations
    - Reduced GC pressure
 
-👉 **[Performance benchmarks](https://github.com/abbaye/WpfHexEditorControl#-key-stats)**
+👉 **[Performance benchmarks](https://github.com/abbaye/WpfHexEditorIDE#-key-stats)**
 
 ---
 
@@ -521,8 +521,8 @@ Language switches instantly - no restart needed!
 - 📖 **[Complete Documentation](Home)** - Full guides
 - 🎓 **[Quick Start Tutorial](Quick-Start)** - Get started fast
 - 💻 **[Sample Applications](Sample-Applications)** - Working examples
-- 🐛 **[GitHub Issues](https://github.com/abbaye/WpfHexEditorControl/issues)** - Bug reports
-- 💬 **[Discussions](https://github.com/abbaye/WpfHexEditorControl/discussions)** - Community Q&A
+- 🐛 **[GitHub Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)** - Bug reports
+- 💬 **[Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)** - Community Q&A
 - 📧 **Email**: derektremblay666@gmail.com
 
 ---
@@ -531,6 +531,6 @@ Language switches instantly - no restart needed!
   <br/>
   <p>
     <b>Didn't find your answer?</b><br/>
-    👉 <a href="https://github.com/abbaye/WpfHexEditorControl/discussions"><b>Ask on GitHub Discussions</b></a>
+    👉 <a href="https://github.com/abbaye/WpfHexEditorIDE/discussions"><b>Ask on GitHub Discussions</b></a>
   </p>
 </div>

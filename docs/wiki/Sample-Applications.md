@@ -8,7 +8,7 @@ Explore real-world applications built with WPF HexEditor to learn by example.
 
 The WPF HexEditor repository includes **7+ complete sample applications** demonstrating various use cases and features. Each sample is production-ready and well-documented.
 
-**Location**: [Sources/Samples/](https://github.com/abbaye/WpfHexEditorControl/tree/master/Sources/Samples)
+**Location**: [Sources/Samples/](https://github.com/abbaye/WpfHexEditorIDE/tree/master/Sources/Samples)
 
 ---
 
@@ -494,8 +494,8 @@ public class HexCalculator
 
 ```bash
 # Clone repository
-git clone https://github.com/abbaye/WpfHexEditorControl.git
-cd WpfHexEditorControl
+git clone https://github.com/abbaye/WpfHexEditorIDE.git
+cd WpfHexEditorIDE
 
 # Build all samples
 dotnet build Sources/Samples/WpfHexEditor.Sample.MVVM
@@ -698,8 +698,8 @@ byte[] cache2 = hexEditor2.GetBytes(0, 10000);
 ## 🔗 Next Steps
 
 ### Explore Samples
-- **[Browse on GitHub](https://github.com/abbaye/WpfHexEditorControl/tree/master/Sources/Samples)**
-- **[Download Latest Release](https://github.com/abbaye/WpfHexEditorControl/releases)**
+- **[Browse on GitHub](https://github.com/abbaye/WpfHexEditorIDE/tree/master/Sources/Samples)**
+- **[Download Latest Release](https://github.com/abbaye/WpfHexEditorIDE/releases)**
 
 ### Learn More
 - **[API Reference](API-Reference)** - Complete API documentation
@@ -721,7 +721,7 @@ byte[] cache2 = hexEditor2.GetBytes(0, 10000);
   </p>
   <br/>
   <p>
-    👉 <a href="https://github.com/abbaye/WpfHexEditorControl/tree/master/Sources/Samples"><b>Browse Samples</b></a> •
+    👉 <a href="https://github.com/abbaye/WpfHexEditorIDE/tree/master/Sources/Samples"><b>Browse Samples</b></a> •
     <a href="Quick-Start"><b>Quick Start</b></a> •
     <a href="API-Reference"><b>API Reference</b></a>
   </p>

@@ -9,8 +9,8 @@ Install-Package WPFHexaEditor
 
 ### Option 2: Build from Source
 ```bash
-git clone https://github.com/abbaye/WpfHexEditorControl.git
-cd WpfHexEditorControl/Sources/WPFHexaEditor
+git clone https://github.com/abbaye/WpfHexEditorIDE.git
+cd WpfHexEditorIDE/Sources/WPFHexaEditor
 dotnet build
 ```
 
@@ -362,5 +362,5 @@ HexEditor.MouseWheelSpeed = MouseWheelSpeed.Fast;
 ## Support
 
 - **Documentation**: This repository's `docs/` folder
-- **GitHub**: https://github.com/abbaye/WpfHexEditorControl
+- **GitHub**: https://github.com/abbaye/WpfHexEditorIDE
 - **Issues**: Report bugs or request features via GitHub Issues

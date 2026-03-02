@@ -344,8 +344,8 @@ Hover over any property/method → Press `Ctrl+Q` → See XML documentation.
 **Open in Rider:**
 ```bash
 # Clone repo
-git clone https://github.com/abbaye/WpfHexEditorControl.git
-cd WpfHexEditorControl
+git clone https://github.com/abbaye/WpfHexEditorIDE.git
+cd WpfHexEditorIDE
 
 # Open sample in Rider
 rider Sources/Samples/WpfHexEditor.Sample.Main/WpfHexEditor.Sample.Main.csproj
@@ -366,9 +366,9 @@ rider Sources/Samples/WpfHexEditor.Sample.Main/WpfHexEditor.Sample.Main.csproj
 ## 🤝 Community
 
 **Need help?**
-- 🐛 **[Report issues](https://github.com/abbaye/WpfHexEditorControl/issues)**
-- 💬 **[Discussions](https://github.com/abbaye/WpfHexEditorControl/discussions)**
-- 📖 **[Wiki](https://github.com/abbaye/WpfHexEditorControl/wiki)**
+- 🐛 **[Report issues](https://github.com/abbaye/WpfHexEditorIDE/issues)**
+- 💬 **[Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)**
+- 📖 **[Wiki](https://github.com/abbaye/WpfHexEditorIDE/wiki)**
 
 **Rider-specific questions?**
 - ✅ Tag your issue with `rider` or `jetbrains`
@@ -392,4 +392,4 @@ rider Sources/Samples/WpfHexEditor.Sample.Main/WpfHexEditor.Sample.Main.csproj
 
 ---
 
-**Made with ❤️ for Rider users** | [Report issues with this guide](https://github.com/abbaye/WpfHexEditorControl/issues/136)
+**Made with ❤️ for Rider users** | [Report issues with this guide](https://github.com/abbaye/WpfHexEditorIDE/issues/136)

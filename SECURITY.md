@@ -123,7 +123,7 @@ If you discover a security vulnerability in WPF HexEditor, please report it resp
 ### How to Report
 
 **🔒 For security vulnerabilities:**
-1. Open a GitHub issue at: https://github.com/abbaye/WpfHexEditorControl/issues
+1. Open a GitHub issue at: https://github.com/abbaye/WpfHexEditorIDE/issues
 2. Use the label: **security**
 3. Include in your report:
    - Description of the vulnerability
@@ -164,9 +164,9 @@ Alternatively, you can contact the maintainer directly at: **derektremblay666@gm
 
 ## Security Contact
 
-- **Report via GitHub Issues:** https://github.com/abbaye/WpfHexEditorControl/issues (Label: security)
+- **Report via GitHub Issues:** https://github.com/abbaye/WpfHexEditorIDE/issues (Label: security)
 - **Alternative Contact:** Derek Tremblay (derektremblay666@gmail.com)
-- **Project Repository:** https://github.com/abbaye/WpfHexEditorControl
+- **Project Repository:** https://github.com/abbaye/WpfHexEditorIDE
 - **Security Advisories:** Check GitHub Security tab
 
 ## Additional Resources

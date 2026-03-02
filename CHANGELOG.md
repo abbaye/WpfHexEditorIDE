@@ -1,471 +1,218 @@
 # Changelog
 
-All notable changes to WPF HexEditor will be documented in this file.
+All notable changes to **WpfHexEditor** are documented here.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-### 🚨 BREAKING CHANGES - Legacy V1 Code Removal
-
-**Complete removal of Legacy V1 components** (2026-02-22)
-
-After 12 months of deprecation period (v2.6.0 - February 2026), all Legacy V1 code has been completely removed from the codebase. The project is now **V2-only** with a clean, modern architecture.
-
-**Removed components (17,093 lines of code):**
-- ❌ `HexEditorLegacy.xaml/.cs` (6,521 LOC) - Legacy V1 control (10-100x slower than V2)
-- ❌ `ByteProviderLegacy.cs` (1,890 LOC) - Legacy V1 byte provider
-- ❌ 6 Legacy sample projects (5,079 LOC):
-  - WPFHexEditor.Sample.CSharp
-  - WpfHexEditor.Sample.BarChart
-  - WpfHexEditor.Sample.BinaryFilesDifference
-  - WpfHexEditor.Sample.Winform
-  - WpfHexEditor.Sample.Performance
-  - WpfHexEditor.Sample.ServiceUsage
-- ❌ V1 UI rendering classes (2,051 LOC):
-  - `BaseByte.cs`, `HexByte.cs`, `StringByte.cs`, `FastTextLine.cs`
-- ❌ V1 search dialogs:
-  - `Dialog/FindWindow.xaml/.cs`
-  - `Dialog/FindReplaceWindow.xaml/.cs`
-- ❌ V1 extension methods (1,552 LOC):
-  - `ByteProviderAsyncExtensions.cs`
-  - `ByteProviderParallelExtensions.cs`
-  - `ByteProviderSpanExtensions.cs`
-  - `ByteProviderV2Test.cs`
-
-**Services layer migrated to V2 API:**
-- ✅ `ByteModificationService` - Migrated V1 API calls to V2 (ReadOnlyMode → IsReadOnly, AddByteAdded parameter order fix)
-- ✅ `ClipboardService` - Reimplemented using V2 GetBytes() API
-- ✅ `FindReplaceService` - Reimplemented search with chunked GetBytes (64KB chunks)
-- ✅ `SelectionService` - Fixed V2 tuple API usage `(byte value, bool success) = GetByte(pos)`
-
-**Preserved for backward compatibility:**
-- ✅ `CompatibilityLayer` (725 LOC) - **KEPT** for API backward compatibility
-  - Provides seamless V1→V2 API migration path
-  - Zero-code migration for existing applications
-  - No performance penalty (simple property mappings)
-
-**Impact:**
-- 🎉 Codebase reduced by **30%** (17,093 lines removed)
-- 🎉 Solution file cleaned (removed 6 Legacy sample references)
-- 🎉 Build time improved (fewer files to compile)
-- 🎉 Maintenance burden significantly reduced
-- 🎉 Clear V2-only architecture going forward
-
-**Migration:**
-All functionality from V1 is available in V2. Simply replace:
-- `HexEditorLegacy` → `HexEditor` (V2)
-- `ByteProviderLegacy` → `V2.ByteProvider.ByteProvider`
-
-See [docs/migration/MIGRATION_PLAN_V2.md](docs/migration/MIGRATION_PLAN_V2.md) for detailed migration guide.
-
-### 🐛 Fixed
-- **ByteSize 16/32 multi-byte mode improvements** (2026-02-21/22)
-  - Fixed click positioning in Bit16/32 modes for both hex and ASCII panels
-  - Fixed keyboard navigation left/right in multi-byte modes
-  - Unified hit testing using single `HitTestByteWithArea` method across all interactions
-  - Eliminated hardcoded 24px width assumption (now uses dynamic cell width based on ByteSize)
-  - Fixed ASCII mouseover alignment in multi-byte modes
-  - Perfect pixel-perfect alignment between rendering and hit testing
-
-- **ASCII panel multi-byte rendering fixes**
-  - Fixed `GetDisplayCharacter` to return all bytes in multi-byte groups (e.g., "MZ" instead of "M")
-  - Fixed `GetCharacterDisplayWidth` to use FormattedText measurement for pixel-perfect alignment
-  - Fixed `DrawAsciiByte` cell width auto-sizing to work in multi-byte mode (not just TBL)
-  - Fixed separator position calculation to use actual hexX from rendering loop
-  - Simplified ASCII rendering loop (removed bytesConsumed skipping logic)
-
-- **ByteOrder and TBL compatibility**
-  - Fixed ASCII display to respect ByteOrder setting (HiLo/LoHi) matching hex panel behavior
-  - Fixed TBL hex key building in multi-byte mode to use Values[] array instead of single Value
-  - ByteSpacers now correctly disabled in ASCII panel when TBL is loaded (variable byte consumption)
-  - Fixed GetDisplayCharacter to handle multi-byte mode before TBL logic
-
-- **Performance improvements**
-  - Removed heavy debug logging that caused slowdowns
-
-### ✨ Added
-- **Category localization for property grid** (2026-02-22)
-  - Added `CategoryKeyboardMouse` resource key to all 19 language files
-  - Translations: EN, FR, DE, ES, IT, JA, KO, NL, PL, PT, RU, SV, TR, ZH, AR, HI
-  - MouseWheelSpeed property moved to "Keyboard & mouse" category
-
-- **Restore modified bytes to original values** (#127)
-  - New method: `RestoreOriginalByte(long position)` to restore a single modified byte
-  - New method: `RestoreOriginalBytes(long[] positions)` to restore multiple bytes (array)
-  - New method: `RestoreOriginalBytes(IEnumerable<long> positions)` to restore multiple bytes (LINQ support)
-  - New method: `RestoreOriginalBytesInRange(long start, long stop)` to restore a continuous range
-  - New method: `RestoreAllModifications()` to clear all modifications at once
-  - Three naming variants available: `RestoreOriginalByte`, `RemoveModification`, `ResetByte` (all are aliases)
-  - Automatic removal of red/orange modification highlight when byte is restored
-  - Full support in V2 (ByteProvider)
-  - Service layer integration (ByteModificationService)
-  - Public API exposed through HexEditor control
-  - Batch mode support for optimal performance when restoring multiple bytes
-  - Undo/Redo integration for V2 (restore operations can be undone)
-  - Comprehensive XML documentation with examples
-
-### 📝 Changed
-- **Multi-byte mode architecture improvements** (2026-02-21/22)
-  - Unified hit testing: All mouse interactions now use single `HitTestByteWithArea` method
-  - Consistency: Click, mouseover, drag, and auto-scroll all use identical hit testing logic
-  - `HitTestByteWithArea` changed from private to internal for cross-class usage
-  - Simplified rendering loops: Removed complex bytesConsumed skipping logic
-  - ASCII rendering and hit testing now use same simple loop structure as Hex panel
-
-- **Property categorization**
-  - MouseWheelSpeed moved from "Visual" to "Keyboard & mouse" category
-  - Enhanced XML documentation for MouseWheelSpeed property and DependencyProperty
-
-### 🔧 Technical Details
-**Files Modified (Multi-byte mode fixes):**
-- `HexViewport.cs`: Core rendering and hit testing engine
-  - `GetDisplayCharacter`: Multi-byte support with ByteOrder handling
-  - `GetCharacterDisplayWidth`: FormattedText-based measurement
-  - `GetCharacterByteCount`: Returns 1 in multi-byte mode (no skipping)
-  - `DrawAsciiByte`: Auto-sizing cell width for all modes
-  - `HitTestByteWithArea`: Changed to internal, used by all interactions
-  - Rendering loops: Simplified from complex skip logic to simple iteration
-
-- `HexEditor.Events.cs`: Event handling refactored
-  - `Content_MouseDown`: Uses HitTestByteWithArea
-  - `Content_MouseMove`: Uses HitTestByteWithArea
-  - `GetVirtualPositionAtMouse`: Updated for dynamic cell width
-
-- `HexEditor.UIHelpers.cs`: Auto-scroll behavior
-  - `AutoScrollTimer_Tick`: Uses HitTestByteWithArea
-
-- `HexEditor.xaml.cs`: Property metadata
-  - MouseWheelSpeed category and documentation
-
-- `Properties/Resources.*.resx` (19 files): Category localization
-  - Added CategoryKeyboardMouse in all languages
-
-**Commits:**
-- `041518a`: fix: ByteSize 16/32 click positioning and ASCII panel alignment
-- `d5ccf83`: fix: Perfect pixel alignment in ASCII panel for multi-byte modes
-- `47d9b28`: fix: ByteOrder and TBL compatibility in ASCII panel
-
-- Updated `ByteModificationService` with restore operations section
-- Enhanced documentation across 30+ files (READMEs, Wiki, API Reference)
-
-## [2.6.0] - 2026-02-14
-
-### 🔄 Phase 2 Migration - V2 Becomes Main Control
-
-**BREAKING CHANGE:** Major namespace reorganization to make V2 the default control.
-
-This release implements **Phase 2** of the [docs/migration/MIGRATION_PLAN_V2.md](docs/migration/MIGRATION_PLAN_V2.md), making V2 the main "HexEditor" control while moving V1 to legacy status.
-
-#### 🔁 Renamed Classes (100% Backward Compatible)
-
-**Before (v2.5.0 and earlier):**
-- `HexEditor` = V1 (legacy, slow, buggy)
-- `HexEditorV2` = V2 (fast, bug-free)
-
-**After (v2.6.0+):**
-- `HexEditor` = **V2 (now the main control!)** ⭐
-- `HexEditorLegacy` = V1 (deprecated)
-
-**Compatibility Aliases** (deprecated, will be removed in v3.0 - April 2027):
-- `HexEditorV1` → `HexEditorLegacy` (with deprecation warnings)
-- `HexEditorV2` → `HexEditor` (with deprecation warnings)
-
-#### 📦 What Changed
-
-**File Renames** (git history preserved):
-- `HexEditor.xaml/.cs` → `HexEditorLegacy.xaml/.cs`
-- `HexEditorV2.xaml/.cs` → `HexEditor.xaml/.cs`
-
-**New Files:**
-- `HexEditorCompatibility.cs` - Backward compatibility aliases
-
-**Updated Files:**
-- All V1-specific files now reference `HexEditorLegacy`
-- All internal references updated to new class names
-- Sample project renamed to `HexEditor.Sample`
-- Documentation updated with new naming conventions
-
-#### ✅ Migration Impact
-
-- ✅ **New projects**: Automatically use `HexEditor` (V2) - 99% faster with all bugs fixed
-- ✅ **Existing projects**: Continue working via compatibility aliases
-- ⚠️ **Deprecation warnings**: Projects using `HexEditorV1` or `HexEditorV2` will see compiler warnings
-- 📅 **Timeline**: Aliases will be **removed in v3.0 (April 2027)** - 12 months to migrate
-
-#### 🔧 How to Migrate (30 seconds)
-
-**No changes required!** Existing code continues to work via compatibility aliases.
-
-**Recommended update** (to remove warnings and future-proof):
-
-```xml
-<!-- Before (v2.5.0) -->
-<control:HexEditorV2 ... />
-
-<!-- After (v2.6.0) - cleaner, no warnings -->
-<control:HexEditor ... />
-```
-
-That's it! The public API is identical.
-
-See [docs/migration/MIGRATION_PLAN_V2.md](docs/migration/MIGRATION_PLAN_V2.md) for complete migration guide and timeline.
-
-#### 📊 Build Status
-- ✅ Compiles successfully with 0 errors
-- ✅ All unit tests passing
-- ✅ Backward compatibility verified
-- ✅ Sample applications updated
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ---
 
-## [2.5.0] - 2026-02-14
+## [Unreleased] — 2026-03 — IDE & Project System
 
-### 🎉 Major Release - V2 Architecture with Critical Bug Fixes
+### ✨ Added — Project System
+- **Solution & Project management** (`.whsln` / `.whproj` formats) with `SolutionManager` singleton
+- **Virtual & physical folders** in Solution Explorer — `PhysicalFolderNodeVm`, `PhysicalFileNodeVm`
+- **Show All Files** mode — scans disk recursively and shows untracked files at 45% opacity
+- **Format versioning pipeline** — `IFormatMigrator` + `MigrationPipeline` (current version: 2)
+- **V1→V2 format migration** — in-memory only, file never modified automatically
+- **Atomic upgrade** — `UpgradeFormatAsync` creates `.v{N}.bak` backups before writing
+- **Read-only format mode** — `ISolution.IsReadOnlyFormat` blocks saves on unupgraded files
+- **File templates** — Binary, TBL, JSON, Text with `FileTemplateRegistry`
+- **`IEditorPersistable`** interface — bookmarks, scroll, caret, encoding restored per file
+- **`IItemLink`** — typed links between project items (e.g. `.bin` ↔ `.tbl`)
 
-**This is a major milestone release** marking the completion of the V2 architecture overhaul with MVVM + Services, dramatic performance improvements, and resolution of all critical bugs.
+### ✨ Added — IDE Panels
+- **Error Panel** (`IErrorPanel`) — VS-style diagnostics panel with severity filtering and navigation
+- **`IDiagnosticSource`** interface — any editor can push diagnostics to the Error Panel
+- **JsonEditor diagnostics** — real-time JSON validation errors forwarded to Error Panel
+- **TblEditor diagnostics** — validation errors forwarded to Error Panel
+- **`ERR_*` theme keys** — Error Panel colors in all 8 themes
 
-**Why 2.5.0?** This release represents a significant leap forward with complete V2 transformation, warranting a major minor version bump to signal the architectural importance while maintaining backward compatibility.
+### ✨ Added — Search
+- **QuickSearchBar** — inline Ctrl+F overlay (VSCode-style), no dialog popup
+- **Ctrl+Shift+F** → opens full AdvancedSearchDialog (5 search modes)
+- **"⋯" button** in QuickSearchBar — closes bar and opens AdvancedSearchDialog
 
-### 🐛 Fixed - Critical Bug Fixes
+### ✨ Added — Themes & UI
+- **`PanelCommon.xaml`** — shared panel toolbar styles (30px VS-style toolbar, Segoe MDL2 icon buttons)
+- **`Panel_*` theme keys** — `ToolbarBrush`, `ToolbarBorderBrush`, `ToolbarButtonHoverBrush`, etc. in all 8 themes
+- **ParsedFieldsPanel** refactored to VS-style toolbar (draggable title bar removed)
+- **`PFP_*` theme keys** — ParsedFieldsPanel colors in all 8 themes
 
-#### Issue #145: Insert Mode Hex Input Bug ✅ RESOLVED
-- **Fixed**: Typing consecutive hex characters in Insert Mode now works correctly
-  - Before: "FFFFFFFF" produced "F0 F0 F0 F0" (incorrect)
-  - After: "FFFFFFFF" produces "FF FF FF FF" (correct)
-- **Root Cause**: `PositionMapper.PhysicalToVirtual()` returned position of first inserted byte instead of physical byte position
-- **Impact**: Insert mode now works perfectly in both hex and ASCII panels
-- **Commits**: 405b164 (root cause), 35b19b5 (cursor sync + LIFO offset)
-- **Files Changed**:
-  - `PositionMapper.cs` lines 278-290 - Fixed PhysicalToVirtual calculation
-  - `ByteReader.cs` lines 76-156 - Corrected LIFO offset calculation
-  - `ByteProvider.cs` lines 264-300 - Fixed ModifyInsertedByte LIFO offset
-  - `HexEditorV2.xaml.cs` - Added cursor position synchronization with drift tolerance
-- **Documentation**: [issues/145_Insert_Mode_Bug.md](issues/145_Insert_Mode_Bug.md), [issues/HexInput_Insert_Mode_Analysis.md](issues/HexInput_Insert_Mode_Analysis.md)
+### ✨ Added — Docking
+- **Tab colorization** — per-tab custom color with `TabSettingsDialog`
+- **Left / right tab strip placement** — configurable per dock group
+- **`TabSettingsDialog`** — color picker + placement selector
 
-#### Save Data Loss Bug ✅ COMPLETELY RESOLVED
-- **Fixed**: Root cause of catastrophic data loss during Save operations (MB → KB file corruption)
-- **Root Cause**: Same PositionMapper bug caused ByteReader to read wrong bytes during Save
-- **Validation**: ✅ ALL comprehensive tests passed (2026-02-14)
-  - ✅ Insertions: file size = original + inserted bytes
-  - ✅ Deletions: file size = original - deleted bytes
-  - ✅ Modifications: file size unchanged
-  - ✅ Mixed edits (insertions + deletions + modifications): all verified correct
-  - ✅ After save, reopen and verify: content matches perfectly
-- **Performance**: Added fast save path for modification-only edits (10-100x faster)
-- **Commits**: 405b164 (root cause), 35b19b5 (LIFO offset fixes)
-- **Documentation**: [issues/Save_DataLoss_Bug.md](issues/Save_DataLoss_Bug.md), [docs/RESOLVED_ISSUES.md](docs/RESOLVED_ISSUES.md)
-
-### 📚 Documentation
-
-#### docs/architecture/HexEditorV2.md - Complete V2 Architecture Documentation
-- **Added**: Comprehensive architecture documentation with Mermaid diagrams
-  - Component overview and dependencies
-  - ByteProvider V2 internal architecture
-  - LIFO insertion semantics with visual examples
-  - Virtual/physical position mapping algorithms
-  - Save operation flow with error scenarios
-  - Performance characteristics and optimization strategies
-- **Fixed**: All Mermaid diagram rendering errors for GitHub compatibility
-  - Replaced 97 `<br/>` tags with " -" separators (commit 6af1bee)
-  - Fixed Component Overview diagram (commit d572de1)
-  - Fixed sequenceDiagram loop syntax (commit 9a31b3f)
-- **Commits**: 3800bd8 (content update), 6af1bee, d572de1, 9a31b3f (diagram fixes)
-- **File**: [docs/architecture/HexEditorV2.md](docs/architecture/HexEditorV2.md)
-
-### 🔧 Internal Improvements
-
-#### PositionMapper Fix (Commit 405b164)
-```csharp
-// BEFORE (WRONG):
-if (physicalPosition == segment.PhysicalPos) {
-    virtualPos = segment.VirtualOffset;  // Returns first inserted byte
-    return virtualPos;
-}
-
-// AFTER (CORRECT):
-if (physicalPosition == segment.PhysicalPos) {
-    virtualPos = segment.VirtualOffset + segment.InsertedCount;  // Returns physical byte
-    return virtualPos;
-}
-```
-**Impact**: This single fix resolved BOTH the Insert Mode display bug AND the Save data loss bug.
-
-#### ByteReader LIFO Offset Fix (Commits 405b164, 35b19b5)
-- Corrected virtual space layout understanding to match PositionMapper semantics
-- Fixed LIFO offset calculation: `targetOffset = totalInsertions - 1 - relativePosition`
-- **Result**: ByteReader now correctly reads inserted bytes with proper LIFO ordering
-
-#### Cursor Position Synchronization (Commit 35b19b5)
-- Added `Dispatcher.Invoke(DispatcherPriority.Send)` for synchronous cursor updates
-- Added drift tolerance (±1 position) in Insert mode to handle async position updates
-- **Result**: Cursor stays locked on editing position during nibble entry
-
-#### Performance Optimizations - Debug Log Removal
-- **Removed**: All `Debug.WriteLine` diagnostic logging from production code paths
-- **Files**: ByteReader.cs, ByteProvider.cs, EditsManager.cs, HexEditorV2.xaml.cs, HexViewport.cs, StateService.cs, HexEditorViewModel.cs
-- **Impact**: Significant performance improvement for insert/modify/save operations
-- **Result**: Faster save operations, reduced I/O overhead, cleaner production code
-
-### 🚀 Performance Improvements
-
-- **10-100x faster save operations** - Removed all debug logging overhead
-- **Fast save path** - Modification-only edits are 10-100x faster than full virtual reads
-
-### 📊 Code Statistics
-
-**V1 vs V2 Comparison:**
-- V1: 6,114 lines (monolithic HexEditor.xaml.cs)
-- V2: 13,271 lines total (MVVM + 10 Services)
-- Growth: 2.17x code expansion for clean architecture
-- Service layer: 2,500+ lines of extracted business logic
-- Unit tests: 80+ tests across service layer
-
----
-
-## [2.2.0] - 2026-01-XX
-
-### 🚀 Added - Performance Optimizations
-
-#### Search Performance
-- **LRU Cache for Search Results** - 10-100x faster repeated searches
-  - O(1) lookup performance with intelligent cache eviction
-  - Thread-safe with configurable capacity (default: 20 cached searches)
-  - Automatic invalidation on data modifications (11 invalidation points)
-- **Parallel Multi-Core Search** - 2-4x faster for large files (> 100MB)
-  - Automatic threshold detection uses all CPU cores for large files
-  - Zero overhead for small files (automatic fallback)
-  - Thread-safe with overlap handling for patterns spanning chunks
-- **SIMD Vectorization** (net5.0+) - 4-8x faster single-byte searches
-  - AVX2/SSE2 hardware acceleration
-  - Processes 32 bytes at once (AVX2) or 16 bytes (SSE2)
-  - Automatic hardware detection and fallback
-
-#### Memory Optimizations
-- **Span<byte> + ArrayPool** - 2-5x faster with 90% less memory allocation
-  - Zero-allocation memory operations
-  - Buffer pooling for efficient resource usage
-- **Profile-Guided Optimization (PGO)** (.NET 8.0+) - 10-30% CPU performance boost
-  - Dynamic runtime optimization with tiered compilation
-  - 30-50% faster startup with ReadyToRun (AOT compilation)
-
-#### UI Rendering Optimizations
-- **Cached Typeface & FormattedText** (BaseByte.cs) - 2-3x faster rendering
-  - Reuses expensive WPF objects
-  - Intelligent cache invalidation on text/font changes
-- **Cached Width Calculations** (HexByte.cs) - 10-100x faster width lookups
-  - Static Dictionary cache with O(1) lookups
-  - Thread-safe with lock protection
-- **Batch Visual Updates** (BaseByte.cs) - 2-5x faster multi-property changes
-  - BeginUpdate/EndUpdate pattern prevents redundant updates
-
-#### Data Structure Optimizations
-- **HighlightService HashSet Migration** - 2-3x faster highlight operations
-  - 50% less memory (single long vs key-value pair)
-  - Single lookup operations (no redundant ContainsKey checks)
-- **Batching Support** - 10-100x faster bulk highlighting
-  - BeginBatch/EndBatch pattern prevents UI updates during operations
-  - Bulk APIs: AddHighLightRanges() (14x faster), AddHighLightPositions() (27x faster)
-
-### 🏗️ Added - Architecture
-
-#### Service-Based Architecture (10 Services)
-- **Core Services (6)**:
-  - ClipboardService - Copy/paste/cut operations
-  - FindReplaceService - Search with LRU cache
-  - UndoRedoService - History management
-  - SelectionService - Selection validation
-  - HighlightService - Visual byte marking (stateful)
-  - ByteModificationService - Insert/delete/modify
-
-- **Additional Services (4)**:
-  - BookmarkService - Bookmark management (stateful)
-  - TblService - Character table handling (stateful)
-  - PositionService - Position calculations
-  - CustomBackgroundService - Background colors (stateful)
-
-**Benefits**:
-- ✅ Separation of concerns
-- ✅ Unit testable components (80+ tests)
-- ✅ Reusable across projects
-- ✅ 0 breaking changes in public API
-
-### 🧪 Added - Testing
-- **80+ Unit Tests** with xUnit (.NET 8.0-windows)
-  - SelectionServiceTests - 35 tests
-  - FindReplaceServiceTests - 35 tests
-  - HighlightServiceTests - 10+ tests
-- **Comprehensive coverage** for service layer
-- **CI/CD integration** ready
-
-### 📚 Added - Documentation
-- **19 comprehensive README files** covering all components
-- **Service documentation** with API references and examples
-- **Performance guide** with benchmarking results
-- **Architecture diagrams** (Mermaid format)
-
-### 🐛 Fixed
-- **Search cache invalidation** - Cache now properly cleared at all 11 modification points
-- **Memory leaks** - Fixed service lifecycle management
-- **UI freezing** - Async/await support for long operations
+### ✨ Added — HexEditor API
+- **`LoadTBL(string)`** public API — load a TBL file programmatically
+- **Auto-apply project TBL** — when a `.bin` is opened and its project has a linked `.tbl`, it is applied automatically
+- **`TblEditorRequested`** event — opens TBL Editor without circular reference (Core→TblEditor)
 
 ### 🔧 Changed
-- **Extracted 2500+ lines** of business logic into services
-- **Refactored HexEditor** from 6115 lines (god class) to maintainable architecture
-- **Improved performance** - Combined optimizations yield 10-100x speedup
+- `SolutionExplorer` moved to `WpfHexEditor.Panels.IDE` (was `WpfHexEditor.WindowPanels`)
+- `ParsedFieldsPanel` — `TitleBarDragStarted` event removed; docking system handles floating
+- App status bar — HexEditor internal status bar hidden (`ShowStatusBar = false`); App owns the status bar
 
-## [2.1.0] - 2025-XX-XX
+---
 
-### Added
-- HexEditorV2 control with custom DrawingContext rendering
-- MVVM architecture with HexEditorViewModel
-- True Insert Mode support with virtual position mapping
+## [2.7.0] — 2026-02 — IDE Application & Editor Plugin System
+
+### ✨ Added — WpfHexEditor.App
+- **Full IDE application** with VS-style docking (`WpfHexEditor.Docking.Wpf`)
+- **`IDocumentEditor`** plugin contract — Undo, Redo, Copy, Cut, Paste, Save, IsDirty, IsReadOnly
+- **`EditorRegistry`** — plugin registration at startup (`EditorRegistry.Instance.Register(...)`)
+- **Content factory with cache** — `Dictionary<string, UIElement>` keyed by `ContentId`
+- **`ActiveDocumentEditor`** INPC property — drives Edit menu bindings
+- **`ActiveHexEditor`** INPC property — drives status bar DataContext
+- **VS2022-style status bar** — left: editor status messages · center: EditMode + BytePerLine · right: panel count
+- **Auto-sync** via `DockHost.ActiveItemChanged` → connects/disconnects ParsedFieldsPanel per active tab
+
+### ✨ Added — Editors
+- **TBL Editor** (`WpfHexEditor.Editor.TblEditor`) — standalone `TblEditorControl`, implements `IDocumentEditor`
+  - Virtualized DataGrid, inline Ctrl+F search overlay, status bar
+  - `TblExportService.ExportToTblFile()` for save/export
+- **JSON Editor** (`WpfHexEditor.Editor.JsonEditor`) — implements `IDocumentEditor` + `IDiagnosticSource`
+  - Real-time validation, `PerformValidation()`, `EnableValidation` toggle
+- **Text Editor** (`WpfHexEditor.Editor.TextEditor`) — implements `IDocumentEditor` + `IEditorPersistable`
+  - Caret/scroll persistence (1-based in DTO, 0-based in VM)
+
+### ✨ Added — Panels
+- **ParsedFieldsPanel** singleton — auto-connects to active HexEditor via `IParsedFieldsPanel` interface
+- **DataInspectorPanel** — 40+ byte type interpretations at caret
+- **SolutionExplorerPanel** — hierarchical VM tree, `ISolutionExplorerPanel`
+- **PropertiesPanel** — context-aware F4 panel via `IPropertyProvider` / `IPropertiesPanel`
+
+### ✨ Added — HexEditor IDocumentEditor
+- `HexEditor` implements `IDocumentEditor` via `HexEditor.DocumentEditor.cs`
+- `RaiseHexStatusChanged()` — fires `StatusMessage` after load, edit mode change, bytes-per-line change
+- `IDiagnosticSource` implementation — exposes `HexEditor.DiagnosticSource.cs`
+- `IEditorPersistable` implementation — bookmarks, scroll, caret, encoding, edit mode
+
+### 🔧 Changed — Docking Engine
+- `CreateTabControl` — all `DockGroupNode` panels always get title bar + `TabStripPlacement = Dock.Bottom`
+- `FloatGroup()` — `GroupFloated` event fires **before** `LayoutChanged` (prevents duplicate windows)
+- `FindWindowForItem` — checks both active item and non-active group items
+- `RestoreFloatingWindows()` — called by `RebuildVisualTree()` for persisted float positions
+- `FloatLeft / FloatTop / LastDockSide` serialized in `DockItemDto`
+
+---
+
+## [2.6.0] — 2026-02-22 — V1 Legacy Removal & Multi-Byte Fixes
+
+### 🚨 Breaking — V1 Legacy Removed
+Complete removal of Legacy V1 code after 12-month deprecation period:
+- `HexEditorLegacy.xaml/.cs` (6,521 LOC)
+- `ByteProviderLegacy.cs` (1,890 LOC)
+- 6 legacy sample projects (5,079 LOC)
+- V1 rendering classes: `BaseByte`, `HexByte`, `StringByte`, `FastTextLine` (2,051 LOC)
+- V1 search dialogs: `FindWindow`, `FindReplaceWindow`
+
+**Total removed: 17,093 lines of code (-30% codebase)**
+
+`CompatibilityLayer` (725 LOC) is **kept** for API backward compatibility — zero migration required.
+
+### 🐛 Fixed — Multi-Byte Mode (ByteSize 16/32)
+- Click positioning in Bit16/32 modes for both hex and ASCII panels
+- Keyboard navigation left/right in multi-byte modes
+- Unified hit testing via single `HitTestByteWithArea` method (click, mouseover, drag, auto-scroll)
+- ASCII mouseover alignment in multi-byte modes
+- `GetDisplayCharacter` — returns all bytes in multi-byte groups (e.g. `"MZ"` instead of `"M"`)
+- `GetCharacterDisplayWidth` — FormattedText measurement for pixel-perfect alignment
+- ByteOrder setting respected in ASCII panel (HiLo/LoHi)
+- TBL hex key building in multi-byte mode uses `Values[]` array
+
+### ✨ Added
+- **`RestoreOriginalByte(long)`** — restore a single modified byte to its original value
+- **`RestoreOriginalBytes(long[])`** / **`RestoreOriginalBytes(IEnumerable<long>)`** — batch restore
+- **`RestoreOriginalBytesInRange(long, long)`** — restore a contiguous range
+- **`RestoreAllModifications()`** — clear all modifications at once
+- Full Undo/Redo integration for restore operations
+- Category localization **`CategoryKeyboardMouse`** added to all 19 language files
+
+---
+
+## [2.5.0] — 2026-02-14 — Critical Bug Fixes & V2 Architecture
+
+### 🐛 Fixed — Critical
+**Issue #145 — Insert Mode Hex Input** ✅
+- Typing consecutive hex chars in Insert Mode now works: `FFFFFFFF` → `FF FF FF FF` (was `F0 F0 F0 F0`)
+- Root cause: `PositionMapper.PhysicalToVirtual()` returned wrong position for inserted bytes
+- Files: `PositionMapper.cs`, `ByteReader.cs`, `ByteProvider.cs`
+
+**Save Data Loss Bug** ✅
+- Catastrophic data loss (MB → KB file corruption) fully resolved
+- Same PositionMapper bug caused `ByteReader` to read wrong bytes during save
+- Fast save path added for modification-only edits (10-100x faster)
+
+### 🚀 Performance
+- **10-100x faster save** — debug logging overhead removed from all production paths
+- **Fast save path** — modification-only edits bypass full virtual read
+
+### 🏗️ Architecture
+- **MVVM + 16 specialized services**
+- Extracted 2,500+ lines of business logic into services
+- 80+ unit tests (xUnit, .NET 8.0-windows)
+
+---
+
+## [2.2.0] — 2026-01 — Search Performance & Service Architecture
+
+### 🚀 Performance
+- **LRU Search Cache** — 10-100x faster repeated searches, O(1) lookup, auto-invalidation at all 11 modification points
+- **Parallel Multi-Core Search** — 2-4x faster for files > 100MB, automatic threshold
+- **SIMD Vectorization** (net5.0+) — AVX2/SSE2, 4-8x faster single-byte search, processes 32 bytes/cycle
+- **Span\<T\> + ArrayPool** — 2-5x faster, 90% less memory allocation
+- **Profile-Guided Optimization** (.NET 8.0+) — 10-30% CPU boost, 30-50% faster startup
+
+### 🏗️ Architecture — Service Layer (10 Services)
+`ClipboardService` · `FindReplaceService` · `UndoRedoService` · `SelectionService` · `HighlightService` · `ByteModificationService` · `BookmarkService` · `TblService` · `PositionService` · `CustomBackgroundService`
+
+### 🧪 Testing
+- 80+ unit tests: `SelectionServiceTests` (35), `FindReplaceServiceTests` (35), `HighlightServiceTests` (10+)
+
+---
+
+## [2.1.0] — 2025 — V2 Rendering Engine
+
+### ✨ Added
+- `HexEditorV2` control with custom `DrawingContext` rendering
+- MVVM architecture with `HexEditorViewModel`
+- True Insert Mode with virtual position mapping
 - Custom background blocks for byte range highlighting
 - BarChart visualization mode
-- AvalonDock integration support
 
-### Changed
-- Rendering performance improved by 99% vs V1
-- Memory usage reduced by 80-90%
+### 🚀 Performance
+- Rendering: **99% faster** vs V1 (DrawingContext vs ItemsControl)
+- Memory: **80-90% reduction**
 
-### Deprecated
-- Some V1 API methods (compatibility maintained via overloads)
+---
 
-## [2.0.0] - 2024-XX-XX
+## [2.0.0] — 2024 — Multi-Targeting & Async
 
-### Added
+### ✨ Added
 - .NET 8.0-windows support
-- Multi-targeting (.NET Framework 4.8 + .NET 8.0)
-- Async file operations
-- Memory-mapped file support (experimental)
+- Multi-targeting: .NET Framework 4.8 + .NET 8.0-windows
+- Async file operations with progress and cancellation
+- C# 12 / 13 language features
 
-### Changed
-- Upgraded to C# 12 preview features
-- Improved TBL Unicode support
+---
 
-## [1.x] - 2023 and earlier
+## [1.x] — 2023 and earlier
 
-Legacy V1 architecture (monolithic design).
+Legacy V1 monolithic architecture. See [GitHub Releases](https://github.com/abbaye/WpfHexEditorIDE/releases) for historical notes.
 
-See GitHub releases for historical changelog.
+V1 NuGet package (`WPFHexaEditor`) remains available for existing users but is no longer maintained. See [Migration Guide](docs/migration/MIGRATION.md).
 
 ---
 
 ## Legend
 
-- 🚀 Performance improvement
-- 🐛 Bug fix
-- ✨ New feature
-- 🔧 Internal change
-- 📚 Documentation
-- ⚠️ Breaking change
-- 🏗️ Architecture change
-- 🧪 Testing improvement
-
----
-
-**Format**: [Major.Minor.Patch]
-- **Major**: Breaking changes
-- **Minor**: New features (backward compatible)
-- **Patch**: Bug fixes (backward compatible)
+| Icon | Meaning |
+|------|---------|
+| 🚀 | Performance improvement |
+| 🐛 | Bug fix |
+| ✨ | New feature |
+| 🔧 | Internal change / refactor |
+| 🏗️ | Architecture change |
+| 🧪 | Testing |
+| 🚨 | Breaking change |

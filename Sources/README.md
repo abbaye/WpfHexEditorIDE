@@ -79,7 +79,7 @@ dotnet test WPFHexaEditor.Tests/WPFHexaEditor.Tests.csproj
 ## 🔗 Quick Links
 
 - **NuGet Package**: [WPFHexaEditor](https://www.nuget.org/packages/WPFHexaEditor/)
-- **GitHub Repository**: [WpfHexEditorControl](https://github.com/abbaye/WpfHexEditorControl)
+- **GitHub Repository**: [WpfHexEditorControl](https://github.com/abbaye/WpfHexEditorIDE)
 - **License**: Apache 2.0
 
 ## 📝 Notes

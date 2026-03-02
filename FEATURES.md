@@ -1,3 +1,75 @@
+# 📊 WpfHexEditor — Full Feature Reference
+
+---
+
+## 🖥️ IDE Application Features
+
+The **WpfHexEditor.App** is a full IDE for binary analysis and editing, built on a VS-style docking system.
+
+### Application Shell
+| Feature | Status | Notes |
+|---------|--------|-------|
+| VS-style docking (float, dock, auto-hide) | ✅ | Custom engine — no third-party dependency |
+| 8 built-in visual themes | ✅ | Dark, Light, VS2022Dark, DarkGlass, Minimal, Office, Cyberpunk, VisualStudio |
+| Colored tabs with `TabSettingsDialog` | ✅ | Per-tab color + left/right placement |
+| VS2022-style status bar | ✅ | Edit mode · bytes/line · caret offset |
+| Output panel | ✅ | Session log and operation messages |
+| Error/Diagnostics panel | ✅ | Severity filter, navigation to offset |
+
+### Project System
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Solution management (`.whsln`) | ✅ | Create, open, save, close |
+| Project management (`.whproj`) | ✅ | Multiple projects per solution |
+| Virtual folders | ✅ | Logical grouping without disk structure |
+| Physical folders | ✅ | Mirrors disk directory tree |
+| Show All Files mode | ✅ | Reveals untracked files in project dirs |
+| Per-file state persistence | ✅ | Bookmarks, caret, scroll, encoding |
+| Typed item links | ✅ | e.g. `.bin` linked to `.tbl` → auto-applied |
+| Format versioning + auto-migration | ✅ | V1→V2 in-memory migration with backup |
+| File templates | ✅ | Binary, TBL, JSON, Text |
+
+### Editors (Plugin Architecture)
+| Editor | Status | Description |
+|--------|--------|-------------|
+| **Hex Editor** | ✅ Complete | Binary editing — insert/overwrite, 400+ formats, search, bookmarks, TBL |
+| **TBL Editor** | ✅ Complete | Character table editor for custom encodings and ROM hacking |
+| **JSON Editor** | ✅ Complete | JSON editing with real-time validation and diagnostics |
+| **Text Editor** | ✅ Complete | Text editing with syntax highlighting |
+| **Image Viewer** | 🔧 Stub | Planned |
+| **Audio Viewer** | 🔧 Stub | Planned |
+| **Diff Viewer** | 🔧 Stub | Planned |
+| **Disassembly Viewer** | 🔧 Stub | Planned |
+| **Entropy Viewer** | 🔧 Stub | Planned |
+
+### IDE Panels
+| Panel | Status | Description |
+|-------|--------|-------------|
+| Parsed Fields Panel | ✅ | 400+ format detection, field list, type overlay, inline editing |
+| Data Inspector | ✅ | 40+ byte type interpretations at caret position |
+| Structure Overlay | ✅ | Visual field highlighting on hex grid |
+| Solution Explorer | ✅ | Project tree with virtual/physical folders |
+| Properties Panel | ✅ | Context-aware F4 panel via `IPropertyProvider` |
+| Error Panel | ✅ | Diagnostics from any `IDiagnosticSource` editor |
+| File Diff | ✅ | Side-by-side binary comparison (F7/F8 navigation) |
+
+---
+
+## 🧩 Reusable Controls & Libraries
+
+| Control | Frameworks | Status |
+|---------|-----------|--------|
+| **HexEditor** UserControl | net48 · net8 | ✅ Complete |
+| **HexBox** (standalone hex input) | net48 · net8 | ✅ Complete |
+| **ColorPicker** | net48 · net8 | ✅ Complete |
+| **BarChart** (byte distribution) | net48 · net8 | ✅ Complete |
+| **Docking.Wpf** (VS-style engine) | net8 | ✅ Complete |
+| **BinaryAnalysis** (400+ format detection) | net8 | ✅ Complete |
+
+---
+
+## 🔤 HexEditor Control — Feature Detail
+
 # 🛒 Complete Feature Comparison: V1 vs V2
 
 > **Status Dashboard:** V2 has **87 tested features** ✅ | **33 interface-compatible features** ⚠️ | **2 in development** 🚧

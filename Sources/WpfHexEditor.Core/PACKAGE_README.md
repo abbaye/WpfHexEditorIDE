@@ -92,12 +92,12 @@ Works in both **WPF** and **WinForms** applications (via ElementHost).
 
 ## 📚 Documentation
 
-- **[GitHub Wiki](https://github.com/abbaye/WpfHexEditorControl/wiki)** - Complete documentation
-- **[Getting Started Guide](https://github.com/abbaye/WpfHexEditorControl/wiki/Getting-Started)** - Installation and examples
-- **[API Reference](https://github.com/abbaye/WpfHexEditorControl/blob/master/Sources/WPFHexaEditor/README.md)** - Complete API documentation
-- **[Architecture Overview](https://github.com/abbaye/WpfHexEditorControl/wiki/Architecture)** - Service layer design
-- **[8 Sample Applications](https://github.com/abbaye/WpfHexEditorControl/tree/master/Sources/Samples)** - Working examples
-- **[FAQ](https://github.com/abbaye/WpfHexEditorControl/wiki/FAQ)** - Common questions
+- **[GitHub Wiki](https://github.com/abbaye/WpfHexEditorIDE/wiki)** - Complete documentation
+- **[Getting Started Guide](https://github.com/abbaye/WpfHexEditorIDE/wiki/Getting-Started)** - Installation and examples
+- **[API Reference](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/WPFHexaEditor/README.md)** - Complete API documentation
+- **[Architecture Overview](https://github.com/abbaye/WpfHexEditorIDE/wiki/Architecture)** - Service layer design
+- **[8 Sample Applications](https://github.com/abbaye/WpfHexEditorIDE/tree/master/Sources/Samples)** - Working examples
+- **[FAQ](https://github.com/abbaye/WpfHexEditorIDE/wiki/FAQ)** - Common questions
 
 ## 🎓 Advanced Examples
 
@@ -185,18 +185,18 @@ HexEdit.AddCustomBackgroundBlock(100, 50, Colors.Yellow);
 ## 🤝 Contributing
 
 Contributions welcome! Check out:
-- **[Contributing Guide](https://github.com/abbaye/WpfHexEditorControl/wiki/Contributing)**
-- **[Issue Tracker](https://github.com/abbaye/WpfHexEditorControl/issues)**
-- **[Discussions](https://github.com/abbaye/WpfHexEditorControl/discussions)**
+- **[Contributing Guide](https://github.com/abbaye/WpfHexEditorIDE/wiki/Contributing)**
+- **[Issue Tracker](https://github.com/abbaye/WpfHexEditorIDE/issues)**
+- **[Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)**
 
 ## 📜 License
 
-**Apache 2.0** - See [LICENSE](https://github.com/abbaye/WpfHexEditorControl/blob/master/LICENSE)
+**Apache 2.0** - See [LICENSE](https://github.com/abbaye/WpfHexEditorIDE/blob/master/LICENSE)
 
 Copyright 2016-2026 Derek Tremblay and contributors
 
 ---
 
-✨ **Ready to start?** Check out the [Getting Started Guide](https://github.com/abbaye/WpfHexEditorControl/wiki/Getting-Started)!
+✨ **Ready to start?** Check out the [Getting Started Guide](https://github.com/abbaye/WpfHexEditorIDE/wiki/Getting-Started)!
 
 Created by Derek Tremblay • Contributors: ehsan69h, Janus Tida, Claude Sonnet 4.5

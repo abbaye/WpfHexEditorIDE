@@ -1,6 +1,6 @@
-# 🏗️ WPF HexEditor - Architecture Overview
+# 🏗️ WpfHexEditor - Architecture Overview
 
-**Complete system architecture for HexEditor with MVVM pattern and comprehensive API**
+**Complete system architecture for the WpfHexEditor IDE — MVVM, services, plugin editors, project system, and docking.**
 
 ---
 
@@ -9,6 +9,7 @@
 - [Introduction](#introduction)
 - [Design Principles](#design-principles)
 - [System Architecture](#system-architecture)
+- [IDE Application Architecture](#-ide-application-architecture)
 - [Layered Architecture](#layered-architecture)
 - [Core Components](#core-components)
 - [Rendering Engine](#rendering-engine)
@@ -21,26 +22,22 @@
 
 ## 📖 Introduction
 
-HexEditor uses a **modern MVVM architecture** designed with clean software engineering principles:
+**WpfHexEditor** is a full binary analysis IDE built on top of the **HexEditor WPF UserControl**. The architecture is split into independent, reusable projects with clear dependency boundaries.
 
+### HexEditor Control
 - ✅ **Comprehensive ByteProvider API** (186+ methods)
-- ✅ **Backward Compatible API** - Zero breaking changes from legacy architecture
-- ⚡ **99% Performance Improvement** with custom rendering (vs legacy ItemsControl)
-- 🏗️ **Clean MVVM Architecture** with separation of concerns
-- 📦 **Modular Service Layer** (16 specialized services)
+- ⚡ **99% faster rendering** via custom DrawingContext (vs legacy ItemsControl)
+- 🏗️ **Clean MVVM Architecture** — 16 specialized services
 - 🔄 **Comprehensive Undo/Redo** with granular control
-- 📊 **Rich Diagnostics** for profiling and monitoring
 
-### 🆕 Advanced Features (Feb 2026)
-
+### IDE Application (2026-03)
+- 🖥️ **VS-style docking** — float, dock, auto-hide, colored tabs, 8 themes
+- 📁 **Project system** — `.whsln` / `.whproj`, virtual & physical folders, item links
+- 🔌 **Plugin editors** — `IDocumentEditor` contract (Hex, TBL, JSON, Text + stubs)
+- 🗂️ **IDE panels** — ParsedFields, DataInspector, SolutionExplorer, Properties, ErrorPanel
 - 🔍 **400+ File Format Auto-Detection** with binary templates and signature matching
-- 🎨 **Parsed Fields Panel** with structure overlay and field type visualization
-- 📊 **Data Inspector** with 15+ data type interpretations (int8/16/32/64, float, double, etc.)
-- ⚖️ **File Diff** for side-by-side binary comparison with highlighting
-- 📈 **BarChart Visualization** for byte distribution analysis
-- ✅ **Automatic Checksum Validation** with visual error highlighting
-- 📝 **Format Script Editor** with custom JsonEditor (61 Dependency Properties)
-- 🎯 **Insert/Overwrite Modes** with visual editing feedback (caret blink, bold nibble)
+- 📊 **Data Inspector** with 40+ data type interpretations
+- ⚖️ **File Diff** for side-by-side binary comparison
 
 ---
 
@@ -90,22 +87,33 @@ The codebase is split into **independent projects** with clear dependency bounda
 
 ```mermaid
 graph LR
-    subgraph "Core & Data"
-        Core["WpfHexEditor.Core<br/>(ByteProvider, Services,<br/>Data Layer)"]
+    subgraph "IDE Application"
+        App["WpfHexEditor.App<br/>(IDE, MainWindow,<br/>DockHost)"]
+        ProjectSystem["WpfHexEditor.ProjectSystem<br/>(Solution/Project,<br/>File templates)"]
     end
 
-    subgraph "UI Controls"
+    subgraph "Core & Data"
+        Core["WpfHexEditor.Core<br/>(ByteProvider, Services,<br/>Data Layer)"]
+        EditorCore["WpfHexEditor.Editor.Core<br/>(IDocumentEditor,<br/>IEditorFactory, Interfaces)"]
+    end
+
+    subgraph "HexEditor Control"
         HexEditor["WpfHexEditor.HexEditor<br/>(HexEditor Control,<br/>ViewModel, HexViewport)"]
-        WindowPanels["WpfHexEditor.WindowPanels<br/>(ParsedFieldsPanel,<br/>FileDiffDialog)"]
     end
 
     subgraph "Editors (Plugin)"
-        EditorCore["WpfHexEditor.Editor.Core<br/>(IDocumentEditor,<br/>IEditorFactory)"]
         JsonEditor["WpfHexEditor.Editor.JsonEditor"]
         TblEditor["WpfHexEditor.Editor.TblEditor"]
+        TextEditor["WpfHexEditor.Editor.TextEditor"]
     end
 
-    subgraph "Standalone"
+    subgraph "Panels"
+        PanelsIDE["WpfHexEditor.Panels.IDE<br/>(SolutionExplorer,<br/>Properties, ErrorPanel)"]
+        PanelsBinary["WpfHexEditor.Panels.BinaryAnalysis<br/>(ParsedFields,<br/>DataInspector, StructureOverlay)"]
+        PanelsFileOps["WpfHexEditor.Panels.FileOps<br/>(FileDiff,<br/>FileComparison)"]
+    end
+
+    subgraph "Standalone Controls"
         BarChart["WpfHexEditor.BarChart"]
         BinaryAnalysis["WpfHexEditor.BinaryAnalysis"]
         ColorPicker["WpfHexEditor.ColorPicker"]
@@ -114,22 +122,43 @@ graph LR
         DockingWpf["WpfHexEditor.Docking.Wpf"]
     end
 
+    App --> HexEditor
+    App --> PanelsIDE
+    App --> PanelsBinary
+    App --> PanelsFileOps
+    App --> ProjectSystem
+    App --> DockingWpf
+    App --> JsonEditor
+    App --> TblEditor
+    App --> TextEditor
+
     HexEditor --> Core
     HexEditor --> EditorCore
-    WindowPanels --> Core
+    HexEditor --> ColorPicker
+    HexEditor --> HexBox
+
+    PanelsIDE --> EditorCore
+    PanelsBinary --> Core
+    PanelsBinary --> HexEditor
+    PanelsFileOps --> Core
+    PanelsFileOps --> HexEditor
+
     JsonEditor --> Core
     JsonEditor --> EditorCore
     TblEditor --> Core
     TblEditor --> EditorCore
+    TextEditor --> Core
+    TextEditor --> EditorCore
+
     BarChart --> Core
     BinaryAnalysis --> Core
     DockingWpf --> DockingCore
-    HexEditor --> ColorPicker
-    HexEditor --> HexBox
+    ProjectSystem --> EditorCore
 
     style Core fill:#ffccbc,stroke:#d84315,stroke-width:3px
     style HexEditor fill:#fff9c4,stroke:#f57c00,stroke-width:3px
     style EditorCore fill:#e0f2f1,stroke:#00796b,stroke-width:2px
+    style App fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
 ```
 
 ### High-Level Component Diagram
@@ -216,6 +245,63 @@ graph TB
 
 ---
 
+## 🖥️ IDE Application Architecture
+
+### WpfHexEditor.App — Main Window
+
+`MainWindow` orchestrates the entire IDE. Key responsibilities:
+
+| Concern | Implementation |
+|---------|---------------|
+| **Docking** | `DockHost` (WpfHexEditor.Docking.Wpf) — all panels and editors docked here |
+| **Active document** | `ActiveDocumentEditor : IDocumentEditor?` INPC — drives Edit menu |
+| **Active hex editor** | `ActiveHexEditor : HexEditorControl?` INPC — drives status bar DataContext |
+| **Content factory** | `Dictionary<string, UIElement> _contentCache` keyed by `ContentId` |
+| **Project system** | `SolutionManager.Instance` singleton |
+| **Panel singletons** | `_parsedFieldsPanel`, `_errorPanel`, `_solutionExplorer`, `_propertiesPanel` |
+
+### Plugin Editor System
+
+Every editor implements `IDocumentEditor` from `WpfHexEditor.Editor.Core`:
+
+```
+IDocumentEditor
+  ├── Title, IsDirty, IsReadOnly
+  ├── UndoCommand, RedoCommand, CopyCommand, CutCommand, PasteCommand
+  ├── SaveAsync(), CloseAsync()
+  ├── StatusMessage event
+  ├── ModifiedChanged, TitleChanged events
+  └── (optional) IDiagnosticSource  — ErrorPanel integration
+               IEditorPersistable   — state save/restore
+               IPropertyProviderSource — Properties panel (F4)
+```
+
+Registration at startup:
+```csharp
+EditorRegistry.Instance.Register(new TblEditorFactory());
+EditorRegistry.Instance.Register(new JsonEditorFactory());
+// etc.
+```
+
+### Project System
+
+```
+SolutionManager (singleton)
+  └── ISolution (.whsln)
+        └── IProject (.whproj)
+              ├── IProjectItem (file)
+              ├── IVirtualFolder  (logical grouping)
+              └── IVirtualFolder → PhysicalRelativePath (mirrors disk dir)
+
+IEditorPersistable (per file):
+  GetBookmarks() / ApplyBookmarks()
+  GetConfig()    / ApplyConfig()     ← scroll, caret, encoding, edit mode
+```
+
+Format versioning: `MigrationPipeline` (current v=2) migrates `.whsln`/`.whproj` in-memory on load. `UpgradeFormatAsync()` writes all files atomically with `.v{N}.bak` backups.
+
+---
+
 ## 🏛️ Layered Architecture
 
 ### Layer Responsibilities
@@ -265,13 +351,17 @@ graph LR
 
 | Layer | Project(s) | Components | Responsibility |
 |-------|-----------|-----------|----------------|
-| **1. UI** | `WpfHexEditor.HexEditor` | HexEditor, HexViewport | User interaction, rendering |
-| **1. UI** | `WpfHexEditor.WindowPanels` | ParsedFieldsPanel, FileDiffDialog | Standalone panels |
-| **2. Presentation** | `WpfHexEditor.HexEditor` | HexEditorViewModel | Business logic, state management |
+| **0. IDE Shell** | `WpfHexEditor.App` | MainWindow, DockHost, SolutionManager | Application host, docking, project system |
+| **1. UI** | `WpfHexEditor.HexEditor` | HexEditor, HexViewport | Hex control — user interaction, rendering |
+| **1. UI** | `WpfHexEditor.Panels.BinaryAnalysis` | ParsedFieldsPanel, DataInspector, StructureOverlay | Binary analysis panels |
+| **1. UI** | `WpfHexEditor.Panels.IDE` | SolutionExplorer, Properties, ErrorPanel | IDE panels |
+| **1. UI** | `WpfHexEditor.Panels.FileOps` | FileDiff, FileComparison | File operation panels |
+| **1. UI** | `WpfHexEditor.Editor.*` | TblEditor, JsonEditor, TextEditor | Plugin editors |
+| **2. Presentation** | `WpfHexEditor.HexEditor` | HexEditorViewModel | MVVM — business logic, state management |
 | **3. Services** | `WpfHexEditor.Core` | 16 specialized services | Search, format detection, clipboard, etc. |
 | **3. Services** | `WpfHexEditor.BinaryAnalysis` | DataInspectorService | Multi-type interpretation |
 | **4. Data Access** | `WpfHexEditor.Core` | ByteProvider | API coordination, caching |
-| **5. Core** | `WpfHexEditor.Core` | ByteReader, EditsManager, etc. | Low-level byte operations |
+| **5. Core** | `WpfHexEditor.Core` | ByteReader, EditsManager, PositionMapper, UndoRedoManager | Low-level byte operations |
 | **6. Storage** | `WpfHexEditor.Core` | FileProvider, FileSystem | File I/O, persistence |
 
 ---
@@ -835,7 +925,7 @@ var interpretations = dataInspectorService.Interpret(byteProvider, position: 100
 
 ### 10. ParsedFieldsPanel (Structure Visualization)
 
-**Location**: [ParsedFieldsPanel.xaml](../../Sources/WpfHexEditor.WindowPanels/Panels/ParsedFieldsPanel.xaml)
+**Location**: [ParsedFieldsPanel.xaml](../../Sources/WpfHexEditor.Panels.BinaryAnalysis/Panels/ParsedFieldsPanel.xaml)
 
 **Purpose**: Displays parsed file structure in a hierarchical tree view.
 
@@ -1152,12 +1242,13 @@ finally
 
 ---
 
-**Last Updated**: 2026-02-28
-**Version**: 2.0+ (V2 multi-project architecture)
-**Status**: ✅ Production Ready
-- ✅ Multi-project split: Core, HexEditor, WindowPanels, Editors, Docking, BinaryAnalysis
+**Last Updated**: 2026-03-02
+**Status**: 🚧 Active Development
+- ✅ Multi-project architecture: Core, HexEditor, Panels.*, Editors.*, Docking, BinaryAnalysis, ProjectSystem, App
 - ✅ 100% ByteProvider API (186 methods)
 - ✅ 400+ file format auto-detection
 - ✅ Custom Docking system (VS-style, no third-party dependency)
-- ✅ Plugin editor system (IDocumentEditor: JsonEditor, TblEditor)
-- ✅ Data Inspector, Parsed Fields, File Diff
+- ✅ Plugin editor system (IDocumentEditor): HexEditor, TblEditor, JsonEditor, TextEditor
+- ✅ IDE project system (.whsln / .whproj), format versioning v2
+- ✅ Data Inspector, Parsed Fields, SolutionExplorer, Properties, ErrorPanel
+- 🔧 Stub editors: ImageViewer, AudioViewer, DiffViewer, DisassemblyViewer, EntropyViewer

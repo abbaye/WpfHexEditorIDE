@@ -75,8 +75,8 @@ For developers who want to build from source:
 
 ```bash
 # Clone repository
-git clone https://github.com/abbaye/WpfHexEditorControl.git
-cd WpfHexEditorControl
+git clone https://github.com/abbaye/WpfHexEditorIDE.git
+cd WpfHexEditorIDE
 
 # Restore dependencies
 dotnet restore
@@ -300,7 +300,7 @@ public partial class MainForm : Form
 }
 ```
 
-👉 **[See complete WinForms sample](https://github.com/abbaye/WpfHexEditorControl/tree/master/Sources/Samples/WpfHexEditor.Sample.Winform)**
+👉 **[See complete WinForms sample](https://github.com/abbaye/WpfHexEditorIDE/tree/master/Sources/Samples/WpfHexEditor.Sample.Winform)**
 
 ---
 
@@ -526,7 +526,7 @@ Still having issues?
 
 - 📖 **[FAQ](FAQ)** - Common questions
 - 🐛 **[Troubleshooting](Troubleshooting)** - Fix common problems
-- 💬 **[GitHub Discussions](https://github.com/abbaye/WpfHexEditorControl/discussions)** - Ask community
+- 💬 **[GitHub Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)** - Ask community
 - 📧 **Email**: derektremblay666@gmail.com
 
 ---

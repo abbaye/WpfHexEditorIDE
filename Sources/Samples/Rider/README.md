@@ -69,4 +69,4 @@ Import [WpfHexEditor.DotSettings](../../../docs/IDE/WpfHexEditor.DotSettings), t
 
 ---
 
-**Questions?** → [Report issue](https://github.com/abbaye/WpfHexEditorControl/issues) with `rider` tag
+**Questions?** → [Report issue](https://github.com/abbaye/WpfHexEditorIDE/issues) with `rider` tag

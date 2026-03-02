@@ -413,9 +413,9 @@ private async void SaveButton_Click(object sender, RoutedEventArgs e)
 ### Build Real Applications
 
 Check out our sample applications for inspiration:
-- **[C# WPF Sample](https://github.com/abbaye/WpfHexEditorControl/tree/master/Sources/Samples/WPFHexEditor.Sample.CSharp)** - Full-featured demo
-- **[Binary Diff](https://github.com/abbaye/WpfHexEditorControl/tree/master/Sources/Samples/WpfHexEditor.Sample.BinaryFilesDifference)** - File comparison
-- **[AvalonDock Integration](https://github.com/abbaye/WpfHexEditorControl/tree/master/Sources/Samples/WpfHexEditor.Sample.AvalonDock)** - Dockable UI
+- **[C# WPF Sample](https://github.com/abbaye/WpfHexEditorIDE/tree/master/Sources/Samples/WPFHexEditor.Sample.CSharp)** - Full-featured demo
+- **[Binary Diff](https://github.com/abbaye/WpfHexEditorIDE/tree/master/Sources/Samples/WpfHexEditor.Sample.BinaryFilesDifference)** - File comparison
+- **[AvalonDock Integration](https://github.com/abbaye/WpfHexEditorIDE/tree/master/Sources/Samples/WpfHexEditor.Sample.AvalonDock)** - Dockable UI
 
 ---
 
@@ -449,7 +449,7 @@ await hexEditor.OpenAsync("largefile.bin", progress);
 
 - 📖 **[FAQ](FAQ)** - Frequently asked questions
 - 🐛 **[Troubleshooting](Troubleshooting)** - Common problems
-- 💬 **[GitHub Discussions](https://github.com/abbaye/WpfHexEditorControl/discussions)** - Community Q&A
+- 💬 **[GitHub Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)** - Community Q&A
 - 📧 **Email**: derektremblay666@gmail.com
 
 ---

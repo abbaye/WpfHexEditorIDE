@@ -1,6 +1,6 @@
 # WpfHexEditor.Editor.TextEditor
 
-Multi-language text editor for [WpfHexEditor](https://github.com/abbaye/WpfHexEditorControl) with **100% in-house syntax highlighting** — no external dependencies.
+Multi-language text editor for [WpfHexEditor](https://github.com/abbaye/WpfHexEditorIDE) with **100% in-house syntax highlighting** — no external dependencies.
 
 ## Features
 

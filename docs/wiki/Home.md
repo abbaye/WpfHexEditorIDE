@@ -210,17 +210,17 @@ await hexEditor.SaveAsync("output.bin", progress);
 
 ## 🔗 External Resources
 
-- **[GitHub Repository](https://github.com/abbaye/WpfHexEditorControl)** - Source code
+- **[GitHub Repository](https://github.com/abbaye/WpfHexEditorIDE)** - Source code
 - **[NuGet Package](https://www.nuget.org/packages/WPFHexaEditor/)** - Package downloads
-- **[Issue Tracker](https://github.com/abbaye/WpfHexEditorControl/issues)** - Bug reports
-- **[Discussions](https://github.com/abbaye/WpfHexEditorControl/discussions)** - Community Q&A
+- **[Issue Tracker](https://github.com/abbaye/WpfHexEditorIDE/issues)** - Bug reports
+- **[Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)** - Community Q&A
 
 ---
 
 ## 📧 Support
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/abbaye/WpfHexEditorControl/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/abbaye/WpfHexEditorControl/discussions)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)
 - 📧 **Email**: derektremblay666@gmail.com
 
 ---

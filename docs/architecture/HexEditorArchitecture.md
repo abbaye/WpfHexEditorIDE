@@ -21,8 +21,8 @@ This document provides comprehensive architecture documentation for the HexEdito
 
 - **[Main README](README.md)** - Project overview and quick start
 - **[Architecture V1](ARCHITECTURE.md)** - Original architecture documentation
-- **[Issue #145](https://github.com/abbaye/WpfHexEditorControl/issues/145)** - Insert Mode F0 pattern bug
-- **[Issue #146](https://github.com/abbaye/WpfHexEditorControl/issues/146)** - Critical Save data loss bug
+- **[Issue #145](https://github.com/abbaye/WpfHexEditorIDE/issues/145)** - Insert Mode F0 pattern bug
+- **[Issue #146](https://github.com/abbaye/WpfHexEditorIDE/issues/146)** - Critical Save data loss bug
 
 ---
 
@@ -1838,9 +1838,9 @@ graph LR
 - **[Performance Guide](PERFORMANCE_GUIDE.md)** - Performance optimizations
 
 ### Issue Tracking
-- **[Issue #145](https://github.com/abbaye/WpfHexEditorControl/issues/145)** - Insert Mode F0 pattern bug
-- **[Issue #146](https://github.com/abbaye/WpfHexEditorControl/issues/146)** - Save data loss bug
-- **[All V2 Issues](https://github.com/abbaye/WpfHexEditorControl/issues?q=label%3AV2)** - V2-specific issues
+- **[Issue #145](https://github.com/abbaye/WpfHexEditorIDE/issues/145)** - Insert Mode F0 pattern bug
+- **[Issue #146](https://github.com/abbaye/WpfHexEditorIDE/issues/146)** - Save data loss bug
+- **[All V2 Issues](https://github.com/abbaye/WpfHexEditorIDE/issues?q=label%3AV2)** - V2-specific issues
 
 ### Bug Documentation
 - [ISSUE_Save_DataLoss.md](../../ISSUE_Save_DataLoss.md) - Critical save bug details

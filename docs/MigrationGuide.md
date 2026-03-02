@@ -310,7 +310,7 @@ However, **new code** should prefer V2 API:
 
 - **Documentation**: [Architecture.md](Architecture.md), [ApiReference.md](ApiReference.md)
 - **Examples**: See `Samples/` directory for V1 samples running on V2
-- **Issues**: [GitHub Issues](https://github.com/abbaye/WpfHexEditorControl/issues)
+- **Issues**: [GitHub Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)
 
 ## Summary
 

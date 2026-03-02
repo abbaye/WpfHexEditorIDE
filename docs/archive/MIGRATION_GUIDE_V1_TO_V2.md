@@ -525,7 +525,7 @@ Après migration vers V2, vous devriez observer :
 - [Phase1_DataRetrievalTests.cs](../Sources/WPFHexaEditor.Tests/Phase1_DataRetrievalTests.cs) - Exemples de tests unitaires
 
 ### Support
-- GitHub Issues : [https://github.com/abbaye/WPFHexEditorControl/issues](https://github.com/abbaye/WPFHexEditorControl/issues)
+- GitHub Issues : [https://github.com/abbaye/WpfHexEditorIDE/issues](https://github.com/abbaye/WpfHexEditorIDE/issues)
 - Email : derektremblay666@gmail.com
 
 ---

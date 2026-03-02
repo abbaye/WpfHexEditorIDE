@@ -777,8 +777,8 @@ Console.WriteLine($"  Redo depth: {hexEditor.RedoDepth}");
 
 - 📖 **[FAQ](FAQ)** - Frequently asked questions
 - 💻 **[Sample Applications](Sample-Applications)** - Working examples
-- 🐛 **[GitHub Issues](https://github.com/abbaye/WpfHexEditorControl/issues)** - Report bugs
-- 💬 **[GitHub Discussions](https://github.com/abbaye/WpfHexEditorControl/discussions)** - Ask questions
+- 🐛 **[GitHub Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)** - Report bugs
+- 💬 **[GitHub Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)** - Ask questions
 - 📧 **Email**: derektremblay666@gmail.com
 
 ### Before Reporting Bug
@@ -801,7 +801,7 @@ Please provide:
   </p>
   <br/>
   <p>
-    👉 <a href="https://github.com/abbaye/WpfHexEditorControl/discussions"><b>Community Support</b></a> •
+    👉 <a href="https://github.com/abbaye/WpfHexEditorIDE/discussions"><b>Community Support</b></a> •
     <a href="FAQ"><b>FAQ</b></a> •
     <a href="Best-Practices"><b>Best Practices</b></a>
   </p>

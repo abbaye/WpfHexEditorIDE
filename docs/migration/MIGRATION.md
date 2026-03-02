@@ -293,7 +293,7 @@ If you rely on any of these features, test them after migration and report issue
 
 1. **Check if it's untested** - See [Known Limitations](#-known-limitations)
 2. **Test with V1 fallback** - Use `HexEditorLegacy` temporarily
-3. **Report on GitHub** - [Create an issue](https://github.com/abbaye/WpfHexEditorControl/issues)
+3. **Report on GitHub** - [Create an issue](https://github.com/abbaye/WpfHexEditorIDE/issues)
 
 ### Issue: "Performance is worse"
 
@@ -339,8 +339,8 @@ But **we recommend reporting the issue** so we can fix V2 instead!
 
 Found an issue? Have a question?
 
-- 🐛 **Report bugs**: [GitHub Issues](https://github.com/abbaye/WpfHexEditorControl/issues)
-- 💡 **Request features**: [GitHub Discussions](https://github.com/abbaye/WpfHexEditorControl/discussions)
+- 🐛 **Report bugs**: [GitHub Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)
+- 💡 **Request features**: [GitHub Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)
 - ⭐ **Star the repo**: Help others discover V2!
 
 ---

@@ -1,6 +1,6 @@
 # WpfHexEditor.Editor.ImageViewer
 
-Read-only image viewer for [WpfHexEditor](https://github.com/abbaye/WpfHexEditorControl) with zoom, pan, and pixel inspection.
+Read-only image viewer for [WpfHexEditor](https://github.com/abbaye/WpfHexEditorIDE) with zoom, pan, and pixel inspection.
 
 ## Features
 

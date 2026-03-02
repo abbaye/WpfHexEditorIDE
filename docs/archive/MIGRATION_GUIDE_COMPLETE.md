@@ -845,8 +845,8 @@ hexEditor.OpenFile("data.bin"); // Gère stream automatiquement
 
 ### Support
 
-- [GitHub Issues](https://github.com/abbaye/WpfHexEditorControl/issues)
-- [Discussions](https://github.com/abbaye/WpfHexEditorControl/discussions)
+- [GitHub Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)
+- [Discussions](https://github.com/abbaye/WpfHexEditorIDE/discussions)
 
 ---
 
