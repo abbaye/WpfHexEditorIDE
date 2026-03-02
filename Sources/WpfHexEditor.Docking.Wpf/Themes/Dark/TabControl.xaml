@@ -138,6 +138,10 @@
         </Setter>
     </Style>
 
+    <!-- Tab bar utility buttons — theme-aware hover, no system chrome -->
+    <Style TargetType="{x:Type controls:TabOverflowButton}" BasedOn="{StaticResource DockTitleButtonStyle}" />
+    <Style TargetType="{x:Type controls:TabConfigButton}"   BasedOn="{StaticResource DockTitleButtonStyle}" />
+
     <!-- DockTabItem: Fluent fused design — rounded top corners, thin accent (VS2026-style) -->
     <Style x:Key="DockTabItemStyle" TargetType="{x:Type TabItem}">
         <Setter Property="Foreground" Value="{DynamicResource DockTabTextBrush}" />

@@ -370,8 +370,9 @@
          CheckBox — full VS2022-style custom template
          Overrides the Foreground-only stub in ContentControls.xaml.
          Uses AccentBrush for the checked fill, DockBorderBrush for the box.
+         Named key allows explicit reference from dialogs/windows in other assemblies.
     ───────────────────────────────────────────────────────────────────── -->
-    <Style TargetType="{x:Type CheckBox}">
+    <Style x:Key="DockCheckBoxStyle" TargetType="{x:Type CheckBox}">
         <Setter Property="OverridesDefaultStyle"    Value="True"/>
         <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
         <Setter Property="Background"               Value="{DynamicResource DockBackgroundBrush}"/>
@@ -436,5 +437,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- CheckBox: implicit alias — applies DockCheckBoxStyle to every CheckBox in scope -->
+    <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource DockCheckBoxStyle}"/>
 
 </ResourceDictionary>
