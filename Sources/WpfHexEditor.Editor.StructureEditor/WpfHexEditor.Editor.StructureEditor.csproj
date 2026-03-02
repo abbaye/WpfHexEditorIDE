@@ -14,7 +14,7 @@
     <PackageId>WpfHexEditor.Editor.StructureEditor</PackageId>
     <Version>1.0.0</Version>
     <Authors>WpfHexEditor Contributors</Authors>
-    <Description>Structure editor stub for WpfHexEditor — implements IDocumentEditor. Reads .whfmt structure definitions. Planned for a future sprint.</Description>
+    <Description>Structure definition editor for WpfHexEditor — implements IDocumentEditor. Opens, edits and saves .whfmt format definitions with a block DataGrid.</Description>
     <PackageTags>wpf;hex;editor;structure;binary</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/abbaye/WpfHexEditorControl</RepositoryUrl>
@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
   </ItemGroup>
 
 </Project>

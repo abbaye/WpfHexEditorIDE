@@ -37,7 +37,7 @@ file sealed class StructureEditorDescriptor : IEditorDescriptor
 {
     public string Id          => "structure-editor";
     public string DisplayName => "Structure Editor";
-    public string Description => "Structure definition editor stub. Reads .whfmt structure definitions. Planned for a future sprint.";
+    public string Description => "Visual editor for .whfmt structure definition files. Edit blocks, types, offsets, lengths and colors in a DataGrid.";
 
     public IReadOnlyList<string> SupportedExtensions =>
     [
