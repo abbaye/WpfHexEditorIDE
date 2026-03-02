@@ -205,7 +205,10 @@ public partial class ErrorPanel : UserControl, IErrorPanel
 
     private void OnEntryDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        if (EntryList.SelectedItem is DiagnosticEntryVm vm)
+        DependencyObject? dep = e.OriginalSource as DependencyObject;
+        while (dep is not null && dep is not ListViewItem)
+            dep = System.Windows.Media.VisualTreeHelper.GetParent(dep);
+        if (dep is ListViewItem lvi && lvi.DataContext is DiagnosticEntryVm vm)
             EntryNavigationRequested?.Invoke(this, vm.Entry);
     }
 
