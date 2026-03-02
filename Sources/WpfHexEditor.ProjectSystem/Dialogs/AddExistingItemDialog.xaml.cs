@@ -235,6 +235,8 @@ public partial class AddExistingItemDialog : Window
 
     private void UpdateAutoVirtualFolderAvailability()
     {
+        if (AutoVirtualFolderCheck is null) return;   // called during InitializeComponent
+
         var copying       = CopyToProjectRadio.IsChecked == true;
         var typeSubfolder = CopyTypeSubfolderRadio.IsChecked == true;
 
@@ -247,6 +249,8 @@ public partial class AddExistingItemDialog : Window
 
     private void Refresh()
     {
+        if (AddButton is null) return;   // called during InitializeComponent
+
         var hasFiles = _filePaths.Length > 0;
         AddButton.IsEnabled = hasFiles;
 
