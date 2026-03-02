@@ -455,6 +455,12 @@ namespace WpfHexEditor.Core.Bytes
             return _insertedBytes.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Count);
         }
 
+        /// <summary>
+        /// Returns all deleted physical positions in sorted order.
+        /// Used by <see cref="WpfHexEditor.Core.Bytes.ByteProvider.GetChangesetSnapshot"/>.
+        /// </summary>
+        public IEnumerable<long> GetAllDeletedPositions() => _deletedPositions;
+
         #endregion
     }
 }
