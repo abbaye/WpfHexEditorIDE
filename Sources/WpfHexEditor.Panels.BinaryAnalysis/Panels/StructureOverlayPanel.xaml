@@ -13,10 +13,9 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="350">
     <UserControl.Resources>
-        <Style x:Key="StructureItemStyle" TargetType="TreeViewItem">
+        <Style x:Key="StructureItemStyle" TargetType="TreeViewItem"
+               BasedOn="{StaticResource PanelTreeViewItemStyle}">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-            <Setter Property="FontFamily"  Value="Segoe UI"/>
-            <Setter Property="FontSize"    Value="12"/>
         </Style>
 
         <HierarchicalDataTemplate x:Key="StructureTemplate" ItemsSource="{Binding Fields}">
@@ -136,12 +135,9 @@
                            FontSize="14" FontWeight="Bold" VerticalAlignment="Center"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <Button Grid.Column="2" x:Name="AddStructureButton"
-                        Content="+" Width="24" Height="24"
-                        FontSize="16" FontWeight="Bold"
+                        Content="&#xE710;"
+                        Style="{StaticResource PanelIconButtonStyle}"
                         ToolTip="Add structure overlay"
-                        Background="{DynamicResource Panel_ToolbarBrush}"
-                        BorderBrush="{DynamicResource PFP_BorderBrush}"
-                        Foreground="{DynamicResource PFP_TextBrush}"
                         Click="AddStructureButton_Click"/>
             </Grid>
         </Border>
@@ -154,17 +150,13 @@
                 Padding="10,6">
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="LoadFormatButton" Content="Load Format"
-                        Padding="8,3" Margin="0,0,5,0" FontSize="11"
-                        Background="{DynamicResource Panel_ToolbarBrush}"
-                        BorderBrush="{DynamicResource PFP_BorderBrush}"
-                        Foreground="{DynamicResource PFP_TextBrush}"
+                        Style="{StaticResource PanelDropdownButtonStyle}"
+                        Padding="8,3" Margin="0,0,5,0"
                         Click="LoadFormatButton_Click"
                         ToolTip="Load structure from format definition"/>
                 <Button x:Name="ClearAllButton" Content="Clear All"
-                        Padding="8,3" FontSize="11"
-                        Background="{DynamicResource Panel_ToolbarBrush}"
-                        BorderBrush="{DynamicResource PFP_BorderBrush}"
-                        Foreground="{DynamicResource PFP_TextBrush}"
+                        Style="{StaticResource PanelDropdownButtonStyle}"
+                        Padding="8,3"
                         Click="ClearAllButton_Click"
                         ToolTip="Remove all structure overlays"/>
             </StackPanel>

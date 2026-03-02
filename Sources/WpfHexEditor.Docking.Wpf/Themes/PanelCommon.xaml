@@ -189,6 +189,129 @@
     </Style>
 
     <!-- ─────────────────────────────────────────────────────────────────
+         PanelTreeExpanderStyle
+         Toggle button for the tree expand/collapse arrow.
+         Right-pointing ▶ when collapsed, down-pointing ▼ when expanded.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="PanelTreeExpanderStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Focusable"           Value="False"/>
+        <Setter Property="Width"               Value="16"/>
+        <Setter Property="Height"              Value="16"/>
+        <Setter Property="Foreground"          Value="{DynamicResource PFP_SubTextBrush}"/>
+        <Setter Property="Cursor"              Value="Hand"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border Background="Transparent" SnapsToDevicePixels="True">
+                        <Grid Width="10" Height="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <!-- Collapsed: right-pointing chevron ▶ -->
+                            <Path x:Name="ArrowRight"
+                                  Data="M 2,1 L 9,5 L 2,9"
+                                  Stroke="{TemplateBinding Foreground}"
+                                  StrokeThickness="1.5"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  Stretch="Uniform"/>
+                            <!-- Expanded: down-pointing chevron ▼ -->
+                            <Path x:Name="ArrowDown"
+                                  Data="M 1,2 L 5,9 L 9,2"
+                                  Stroke="{TemplateBinding Foreground}"
+                                  StrokeThickness="1.5"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  Stretch="Uniform"
+                                  Visibility="Collapsed"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="ArrowRight" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="ArrowDown"  Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         PanelTreeViewItemStyle
+         Full dark-themed TreeViewItem with hover + selection support.
+         Apply as ItemContainerStyle on any TreeView inside IDE panels.
+         Uses DynamicResource → fully theme-aware.
+    ───────────────────────────────────────────────────────────────────── -->
+    <Style x:Key="PanelTreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
+        <Setter Property="Background"                 Value="Transparent"/>
+        <Setter Property="Foreground"                 Value="{DynamicResource PFP_TextBrush}"/>
+        <Setter Property="FontFamily"                 Value="Segoe UI"/>
+        <Setter Property="FontSize"                   Value="12"/>
+        <Setter Property="FocusVisualStyle"           Value="{x:Null}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="SnapsToDevicePixels"        Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                    <StackPanel SnapsToDevicePixels="True">
+                        <!-- Header row — hover/selection highlight spans full width -->
+                        <Border x:Name="Bd"
+                                Background="Transparent"
+                                Padding="2,1"
+                                SnapsToDevicePixels="True">
+                            <DockPanel>
+                                <ToggleButton x:Name="Expander"
+                                              DockPanel.Dock="Left"
+                                              Style="{StaticResource PanelTreeExpanderStyle}"
+                                              IsChecked="{Binding IsExpanded,
+                                                  RelativeSource={RelativeSource TemplatedParent},
+                                                  Mode=TwoWay}"
+                                              ClickMode="Press"/>
+                                <ContentPresenter x:Name="PART_Header"
+                                                  ContentSource="Header"
+                                                  HorizontalAlignment="Stretch"
+                                                  VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Border>
+                        <!-- Children — indented by 16px per level -->
+                        <ItemsPresenter x:Name="ItemsHost"
+                                        Margin="16,0,0,0"
+                                        Visibility="Collapsed"/>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource SE_SelectedBrush}"/>
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource PFP_ItemSelectedForegroundBrush}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected"   Value="True"/>
+                                <Condition Property="IsMouseOver"  Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource SE_SelectedBrush}"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ─────────────────────────────────────────────────────────────────
          DockComboBoxStyle
          Theme-aware ComboBox for IDE dialogs and panels.
          Uses Dock* brush keys present in all 8 theme Colors.xaml files.
@@ -376,7 +499,7 @@
         <Setter Property="OverridesDefaultStyle"    Value="True"/>
         <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
         <Setter Property="Background"               Value="{DynamicResource DockBackgroundBrush}"/>
-        <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}"/>
+        <Setter Property="BorderBrush"              Value="{DynamicResource PFP_InputBorderBrush}"/>
         <Setter Property="BorderThickness"          Value="1"/>
         <Setter Property="FocusVisualStyle"         Value="{x:Null}"/>
         <Setter Property="Cursor"                   Value="Hand"/>

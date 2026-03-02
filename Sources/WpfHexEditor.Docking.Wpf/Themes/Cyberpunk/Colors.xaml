@@ -300,4 +300,8 @@
     <SolidColorBrush x:Key="DiffModified_BorderBrush"     Color="#FF9800"/>
     <SolidColorBrush x:Key="DiffRemoved_BackgroundBrush"  Color="#2A0A0A"/>
     <SolidColorBrush x:Key="DiffRemoved_BorderBrush"      Color="#FF1744"/>
+    <!-- Panel warning banners (anomaly cards, validation warnings) -->
+    <SolidColorBrush x:Key="Panel_WarningBackgroundBrush" Color="#1A1000"/>
+    <SolidColorBrush x:Key="Panel_WarningBorderBrush"     Color="#FFB300"/>
+    <SolidColorBrush x:Key="Panel_WarningTextBrush"       Color="#FFD700"/>
 </ResourceDictionary>

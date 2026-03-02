@@ -708,9 +708,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var formatInfo = new DockItem { Title = "Format Info", ContentId = FormatInfoPanelContentId };
         engine.Dock(formatInfo, parsedFields.Owner!, DockDirection.Center);
 
-        // Bottom analysis panels (tabs alongside Output/Errors/ByteChart)
+        // File Statistics docked on the right alongside Parsed Fields (vertical scroll content)
         var fileStats = new DockItem { Title = "File Statistics", ContentId = FileStatsPanelContentId };
-        engine.Dock(fileStats, byteChart.Owner!, DockDirection.Center);
+        engine.Dock(fileStats, parsedFields.Owner!, DockDirection.Center);
 
         var patternAnalysis = new DockItem { Title = "Pattern Analysis", ContentId = PatternAnalysisPanelContentId };
         engine.Dock(patternAnalysis, byteChart.Owner!, DockDirection.Center);
@@ -961,7 +961,18 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private UIElement CreateFileStatsContent()
     {
-        _fileStatisticsPanel ??= new WpfHexEditor.Panels.BinaryAnalysis.FileStatisticsPanel();
+        if (_fileStatisticsPanel is null)
+        {
+            _fileStatisticsPanel = new WpfHexEditor.Panels.BinaryAnalysis.FileStatisticsPanel();
+            _fileStatisticsPanel.RefreshRequested += async (_, _) =>
+            {
+                if (_connectedHexEditor is not null)
+                    await RefreshAnalysisPanelsAsync(_connectedHexEditor);
+            };
+            // Auto-refresh if a file is already loaded (panel opened/restored after the file)
+            if (_connectedHexEditor is not null)
+                _ = RefreshAnalysisPanelsAsync(_connectedHexEditor);
+        }
         return _fileStatisticsPanel;
     }
 
@@ -2668,6 +2679,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // ─── Tab / panel management ────────────────────────────────────────
 
+    /// <summary>Returns <c>true</c> when <paramref name="item"/> is a project document.
+    /// Project items always use the Tracked (twin-file) strategy — the SaveChanges dialog
+    /// is never shown for binary files that belong to a project.</summary>
+    private static bool IsTrackedProjectItem(DockItem item) =>
+        item.ContentId.StartsWith("doc-proj-") &&
+        item.Metadata.ContainsKey("ItemId") &&
+        item.Metadata.ContainsKey("ProjectId");
+
+    /// <summary>Auto-serializes a dirty tracked project item to its <c>.whchg</c> companion
+    /// file without showing a dialog.</summary>
+    private Task AutoSerializeTrackedItemAsync(DockItem item)
+    {
+        if (!_contentCache.TryGetValue(item.ContentId, out var ctrl)) return Task.CompletedTask;
+        if (ctrl is not IEditorPersistable persistable) return Task.CompletedTask;
+
+        var snapshot = persistable.GetChangesetSnapshot();
+        if (!snapshot.HasEdits) return Task.CompletedTask;
+
+        var proj = _solutionManager.CurrentSolution?.Projects
+            .FirstOrDefault(p => p.Id == item.Metadata["ProjectId"]);
+        var it = proj?.FindItem(item.Metadata["ItemId"]);
+        if (it is null) return Task.CompletedTask;
+
+        return ChangesetService.Instance.WriteChangesetAsync(it, snapshot);
+    }
+
     private void OnTabCloseRequested(DockItem item) => CloseTab(item, promptIfDirty: true);
 
     /// <summary>Core close logic. Set <paramref name="promptIfDirty"/> to false when
@@ -2681,28 +2718,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _contentCache.TryGetValue(item.ContentId, out var dirtyCtrl) &&
             dirtyCtrl is IDocumentEditor dirtyEditor && dirtyEditor.IsDirty)
         {
-            var settings = AppSettingsService.Instance.Current;
-            var isTrackedProjectItem =
-                settings.DefaultFileSaveMode == FileSaveMode.Tracked &&
-                item.ContentId.StartsWith("doc-proj-") &&
-                item.Metadata.TryGetValue("ItemId",    out var closeItemId) &&
-                item.Metadata.TryGetValue("ProjectId", out var closeProjectId);
-
-            if (isTrackedProjectItem)
+            if (IsTrackedProjectItem(item))
             {
                 // Auto-serialize to .whchg — no dialog
-                if (dirtyCtrl is IEditorPersistable closePersistable)
-                {
-                    var snapshot = closePersistable.GetChangesetSnapshot();
-                    if (snapshot.HasEdits)
-                    {
-                        var proj = _solutionManager.CurrentSolution?.Projects
-                            .FirstOrDefault(p => p.Id == item.Metadata["ProjectId"]);
-                        var it = proj?.FindItem(item.Metadata["ItemId"]);
-                        if (it != null)
-                            _ = ChangesetService.Instance.WriteChangesetAsync(it, snapshot);
-                    }
-                }
+                _ = AutoSerializeTrackedItemAsync(item);
             }
             else
             {
@@ -2769,6 +2788,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             _propertyProviderCache.Remove(ctrl);  // M5: evict cached provider
             _contentCache.Remove(item.ContentId);
+            _displayContent.Remove(item.ContentId);   // must clear both caches so reopen gets a fresh editor
         }
 
         _loggedFormats.Remove(item.ContentId);
@@ -3008,6 +3028,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                         && c is IDocumentEditor { IsDirty: true })
             .ToList();
 
+        // Auto-serialize Tracked project items silently
+        var tracked = dirty.Where(IsTrackedProjectItem).ToList();
+        foreach (var t in tracked)
+        {
+            _ = AutoSerializeTrackedItemAsync(t);
+            dirty.Remove(t);
+        }
+
         if (dirty.Count > 0)
         {
             var dlg = new Dialogs.SaveChangesDialog
@@ -3193,6 +3221,15 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         List<(string ContentId, string Title)> allDirty,
         List<DockItem> dirtyDocs)
     {
+        // Auto-serialize Tracked project items silently — no dialog needed
+        var trackedItems = dirtyDocs.Where(IsTrackedProjectItem).ToList();
+        foreach (var t in trackedItems)
+        {
+            await AutoSerializeTrackedItemAsync(t);
+            dirtyDocs.Remove(t);
+            allDirty.RemoveAll(x => x.ContentId == t.ContentId);
+        }
+
         if (allDirty.Count == 0) return true;
 
         var dlg = new Dialogs.SaveChangesDialog { DirtyItems = allDirty, Owner = this };
@@ -3755,34 +3792,37 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 }
             }
 
-            var fileSize = hex.Length;
-            var entropy  = 0.0;
-            if (bytes.Length > 0)
+            if (_fileStatisticsPanel is not null)
             {
-                var freq = new long[256];
-                foreach (var b in bytes) freq[b]++;
-                foreach (var f in freq)
-                {
-                    if (f <= 0) continue;
-                    var p = f / (double)bytes.Length;
-                    entropy -= p * Math.Log(p, 2);
-                }
-            }
+                var fstats = await System.Threading.Tasks.Task.Run(
+                    () => new WpfHexEditor.BinaryAnalysis.Services.DataStatisticsService().CalculateStatistics(bytes));
 
-            _fileStatisticsPanel?.UpdateStatistics(new WpfHexEditor.Panels.BinaryAnalysis.FileStats
-            {
-                FormatName        = System.IO.Path.GetExtension(hex.FileName ?? "").TrimStart('.').ToUpperInvariant(),
-                FileSize          = fileSize,
-                Entropy           = entropy,
-                HealthScore       = 100,
-                HealthMessage     = "File loaded",
-                StructureValid    = true,
-                ChecksumsPass     = true,
-                ChecksumStatus    = "N/A",
-                CompressionRatio  = 1.0,
-                FieldCount        = 0,
-                Anomalies         = new System.Collections.Generic.List<WpfHexEditor.Panels.BinaryAnalysis.AnomalyInfo>()
-            });
+                if (!ReferenceEquals(hex, _connectedHexEditor)) return;
+
+                _fileStatisticsPanel.UpdateStatistics(new WpfHexEditor.Panels.BinaryAnalysis.FileStats
+                {
+                    FileName                 = System.IO.Path.GetFileName(hex.FileName ?? ""),
+                    FilePath                 = hex.FileName ?? "",
+                    AnalysisDate             = DateTime.Now,
+                    FileSize                 = hex.Length,
+                    FormatName               = System.IO.Path.GetExtension(hex.FileName ?? "").TrimStart('.').ToUpperInvariant(),
+                    Entropy                  = fstats.Entropy,
+                    DataType                 = fstats.EstimatedDataType.ToString(),
+                    MostCommonByte           = fstats.MostCommonByte,
+                    MostCommonBytePct        = fstats.MostCommonByteCount * 100.0 / Math.Max(1, bytes.Length),
+                    UniqueBytesCount         = fstats.UniqueBytesCount,
+                    NullBytePercentage       = fstats.NullBytePercentage,
+                    PrintableAsciiPercentage = fstats.PrintableAsciiPercentage,
+                    HealthScore              = 100,
+                    HealthMessage            = "File loaded",
+                    StructureValid           = true,
+                    ChecksumsPass            = true,
+                    ChecksumStatus           = "N/A",
+                    CompressionRatio         = 1.0,
+                    FieldCount               = 0,
+                    Anomalies                = new System.Collections.Generic.List<WpfHexEditor.Panels.BinaryAnalysis.AnomalyInfo>()
+                });
+            }
         }
         catch (Exception ex)
         {
@@ -3853,7 +3893,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         => ShowOrCreatePanel("Structure Overlay", StructureOverlayPanelContentId, DockDirection.Right);
 
     private void OnShowFileStatsPanel(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("File Statistics", FileStatsPanelContentId, DockDirection.Bottom);
+        => ShowOrCreatePanel("File Statistics", FileStatsPanelContentId, DockDirection.Right);
 
     private void OnShowPatternAnalysisPanel(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Pattern Analysis", PatternAnalysisPanelContentId, DockDirection.Bottom);

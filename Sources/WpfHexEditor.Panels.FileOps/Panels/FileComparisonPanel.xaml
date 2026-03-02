@@ -29,17 +29,13 @@
                 <!-- Load buttons (docked right) -->
                 <Button DockPanel.Dock="Right"
                         Content="Load File 2…"
+                        Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="12,3" Height="22" Margin="0,0,4,0"
-                        Background="{DynamicResource Panel_ToolbarBrush}"
-                        BorderBrush="{DynamicResource PFP_BorderBrush}"
-                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                         Click="LoadFile2_Click"/>
                 <Button DockPanel.Dock="Right"
                         Content="Load File 1…"
+                        Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="12,3" Height="22" Margin="0,0,8,0"
-                        Background="{DynamicResource Panel_ToolbarBrush}"
-                        BorderBrush="{DynamicResource PFP_BorderBrush}"
-                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                         Click="LoadFile1_Click"/>
                 <Rectangle DockPanel.Dock="Right" Width="1" Margin="0,4,8,4"
                            Fill="{DynamicResource PFP_BorderBrush}"/>

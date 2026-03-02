@@ -27,10 +27,9 @@
             </StackPanel>
         </HierarchicalDataTemplate>
 
-        <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
+        <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem"
+               BasedOn="{StaticResource PanelTreeViewItemStyle}">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-            <Setter Property="Padding"    Value="2"/>
-            <Setter Property="Margin"     Value="0,1"/>
         </Style>
     </UserControl.Resources>
 

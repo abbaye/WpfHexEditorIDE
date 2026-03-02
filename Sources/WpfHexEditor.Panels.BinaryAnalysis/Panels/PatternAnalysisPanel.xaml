@@ -66,10 +66,9 @@
                                    Foreground="{DynamicResource PFP_SubTextBrush}"/>
                         <Button x:Name="AnalyzeButton"
                                 Content="Analyze Selection"
-                                Height="32" Margin="0,8,0,0"
-                                Background="{DynamicResource Panel_ToolbarBrush}"
-                                BorderBrush="{DynamicResource PFP_BorderBrush}"
-                                Foreground="{DynamicResource PFP_TextBrush}"
+                                Style="{StaticResource PanelDropdownButtonStyle}"
+                                Height="28" Margin="0,8,0,0"
+                                Padding="12,3"
                                 Click="AnalyzeButton_Click"/>
                     </StackPanel>
                 </Border>
@@ -190,15 +189,16 @@
                         <ItemsControl x:Name="AnomaliesListBox">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#FFF3CD" BorderBrush="#FFC107"
+                                    <Border Background="{DynamicResource Panel_WarningBackgroundBrush}"
+                                            BorderBrush="{DynamicResource Panel_WarningBorderBrush}"
                                             BorderThickness="1" CornerRadius="3"
                                             Padding="8" Margin="0,0,0,4">
                                         <StackPanel>
                                             <TextBlock Text="{Binding Title}"
                                                        FontWeight="SemiBold" FontSize="10"
-                                                       Foreground="#5D4037"/>
+                                                       Foreground="{DynamicResource Panel_WarningTextBrush}"/>
                                             <TextBlock Text="{Binding Description}"
-                                                       FontSize="9" Foreground="#856404"
+                                                       FontSize="9" Foreground="{DynamicResource Panel_WarningTextBrush}"
                                                        TextWrapping="Wrap" Margin="0,2,0,0"/>
                                         </StackPanel>
                                     </Border>
