@@ -677,7 +677,7 @@
             </Border>
 
             <!-- ── Pod contextuel — visible seulement quand un éditeur contribue ─── -->
-            <Border Style="{DynamicResource DockToolBarPodStyle}">
+            <Border>
                 <Border.Style>
                     <Style BasedOn="{StaticResource DockToolBarPodStyle}" TargetType="Border">
                         <Setter Property="Visibility" Value="Visible"/>

@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,15 +17,24 @@ namespace WpfHexEditor.Editor.ChangesetEditor.Controls;
 
 /// <summary>
 /// Ultra-fast changeset viewer / editor for <c>.whchg</c> companion files.
-/// Implements <see cref="IDocumentEditor"/> and <see cref="IEditorToolbarContributor"/>.
+/// Implements <see cref="IDocumentEditor"/>, <see cref="IOpenableDocument"/>,
+/// and <see cref="IEditorToolbarContributor"/>.
 /// Three virtualized DataGrid tabs: Modified / Inserted / Deleted.
 /// All contextual actions (Apply to Disk, Discard) are exposed via
 /// <see cref="IEditorToolbarContributor.ToolbarItems"/> — no embedded toolbar.
 /// </summary>
-public sealed partial class ChangesetEditorControl : UserControl, IDocumentEditor, IEditorToolbarContributor,
+public sealed partial class ChangesetEditorControl : UserControl,
+    IDocumentEditor, IOpenableDocument, IEditorToolbarContributor,
     INotifyPropertyChanged
 {
-    // ── IDocumentEditor ──────────────────────────────────────────────────────
+    // ── INotifyPropertyChanged ───────────────────────────────────────────────
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string? name = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+    // ── IDocumentEditor — State ───────────────────────────────────────────────
 
     public string? FilePath { get; private set; }
 
@@ -36,28 +47,69 @@ public sealed partial class ChangesetEditorControl : UserControl, IDocumentEdito
             if (_isDirty == value) return;
             _isDirty = value;
             ModifiedChanged?.Invoke(this, EventArgs.Empty);
-            TitleChanged?.Invoke(this, GetTitle());
+            TitleChanged?.Invoke(this, Title);
         }
     }
 
-    public bool IsReadOnly => false;
+    public bool CanUndo => false;
+    public bool CanRedo => false;
+    public bool IsBusy  => false;
 
-    public event EventHandler<string>?  TitleChanged;
+    private bool _isReadOnly;
+    public bool IsReadOnly
+    {
+        get => _isReadOnly;
+        set => _isReadOnly = value;
+    }
+
+    public string Title
+    {
+        get
+        {
+            var name = FilePath is null ? "Changeset" : Path.GetFileName(FilePath);
+            return IsDirty ? name + " *" : name;
+        }
+    }
+
+    // ── IDocumentEditor — Commands ────────────────────────────────────────────
+
+    public ICommand? SaveCommand      { get; }
+    public ICommand? UndoCommand      { get; }
+    public ICommand? RedoCommand      { get; }
+    public ICommand? CutCommand       { get; }
+    public ICommand? CopyCommand      { get; }
+    public ICommand? PasteCommand     { get; }
+    public ICommand? DeleteCommand    { get; }
+    public ICommand? SelectAllCommand { get; }
+
+    // ── IDocumentEditor — Events ──────────────────────────────────────────────
+
     public event EventHandler?          ModifiedChanged;
     public event EventHandler?          CanUndoChanged;
     public event EventHandler?          CanRedoChanged;
+    public event EventHandler<string>?  TitleChanged;
     public event EventHandler<string>?  StatusMessage;
     public event EventHandler<string>?  OutputMessage;
-    public event EventHandler?          OperationStarted;
-    public event EventHandler<int>?     OperationProgress;
-    public event EventHandler?          OperationCompleted;
+    public event EventHandler?          SelectionChanged;
 
-    public ICommand? SaveCommand   { get; }
-    public ICommand? UndoCommand   { get; }
-    public ICommand? RedoCommand   { get; }
-    public ICommand? CutCommand    { get; }
-    public ICommand? CopyCommand   { get; }
-    public ICommand? PasteCommand  { get; }
+    public event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
+    public event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
+    public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
+
+    // ── IDocumentEditor — Methods ─────────────────────────────────────────────
+
+    public void Undo() { }
+    public void Redo() { }
+    public void Save() { }
+    public Task SaveAsync(CancellationToken ct = default) => Task.CompletedTask;
+    public Task SaveAsAsync(string filePath, CancellationToken ct = default) => Task.CompletedTask;
+    public void Copy() { }
+    public void Cut() { }
+    public void Paste() { }
+    public void Delete() { }
+    public void SelectAll() { }
+    public void Close() => ViewModel.Clear();
+    public void CancelOperation() { }
 
     // ── ViewModel ─────────────────────────────────────────────────────────────
 
@@ -97,8 +149,8 @@ public sealed partial class ChangesetEditorControl : UserControl, IDocumentEdito
     {
         InitializeComponent();
 
-        _applyToDiskCommand = new RelayCommand(_ => ApplyToDisk(), _ => FilePath != null);
-        _discardCommand     = new RelayCommand(_ => Discard(),     _ => FilePath != null);
+        _applyToDiskCommand = new RelayCommand(_ => OnApplyToDisk(), _ => FilePath != null);
+        _discardCommand     = new RelayCommand(_ => OnDiscard(),     _ => FilePath != null);
 
         _toolbarItems.Add(new EditorToolbarItem
         {
@@ -106,7 +158,6 @@ public sealed partial class ChangesetEditorControl : UserControl, IDocumentEdito
             Label    = "Apply to Disk",
             Tooltip  = "Write changes to the physical file (Ctrl+Shift+W)",
             Command  = _applyToDiskCommand,
-            IsEnabled = true,
         });
         _toolbarItems.Add(new EditorToolbarItem
         {
@@ -114,22 +165,19 @@ public sealed partial class ChangesetEditorControl : UserControl, IDocumentEdito
             Label    = "Discard",
             Tooltip  = "Discard all pending changes",
             Command  = _discardCommand,
-            IsEnabled = true,
         });
     }
 
-    // ── IDocumentEditor — no-op Undo/Redo (V1) ───────────────────────────────
+    // ── IOpenableDocument ──────────────────────────────────────────────────────
 
-    public void Undo() { }
-    public void Redo() { }
-
-    // ── File I/O ─────────────────────────────────────────────────────────────
-
-    public void OpenFile(string filePath)
+    public Task OpenAsync(string filePath, CancellationToken ct = default)
     {
         FilePath = filePath;
         LoadFromDisk();
+        return Task.CompletedTask;
     }
+
+    // ── File I/O ─────────────────────────────────────────────────────────────
 
     private void LoadFromDisk()
     {
@@ -151,7 +199,7 @@ public sealed partial class ChangesetEditorControl : UserControl, IDocumentEdito
 
             IsDirty = false;
             NotifyHeadersChanged();
-            TitleChanged?.Invoke(this, GetTitle());
+            TitleChanged?.Invoke(this, Title);
             StatusMessage?.Invoke(this, StatusText);
         }
         catch (Exception ex)
@@ -160,34 +208,20 @@ public sealed partial class ChangesetEditorControl : UserControl, IDocumentEdito
         }
     }
 
-    // ── IDocumentEditor — Save ────────────────────────────────────────────────
+    // ── Toolbar command handlers ───────────────────────────────────────────────
 
-    private void ApplyToDisk()
+    private void OnApplyToDisk()
     {
-        // Delegate to the App via the toolbar command — the host handles the actual operation.
-        // In standalone use (no project system), this is a no-op placeholder.
+        // The host (App/MainWindow) handles the actual disk write via OnWriteToDisk / Ctrl+Shift+W.
         StatusMessage?.Invoke(this, "Apply to Disk: use Ctrl+Shift+W or the Solution Explorer context menu.");
     }
 
-    private void Discard()
+    private void OnDiscard()
     {
         StatusMessage?.Invoke(this, "Discard: use the Solution Explorer context menu.");
     }
 
-    // ── INotifyPropertyChanged ───────────────────────────────────────────────
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged([CallerMemberName] string? name = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
     // ── Helpers ───────────────────────────────────────────────────────────────
-
-    private string GetTitle()
-    {
-        var name = FilePath is null ? "Changeset" : Path.GetFileName(FilePath);
-        return IsDirty ? name + " *" : name;
-    }
 
     private void NotifyHeadersChanged()
     {
@@ -196,6 +230,12 @@ public sealed partial class ChangesetEditorControl : UserControl, IDocumentEdito
         OnPropertyChanged(nameof(DeletedHeader));
         OnPropertyChanged(nameof(StatusText));
     }
+
+#pragma warning disable CS0067   // events declared but never raised (no-op for this editor)
+    // CanUndoChanged, CanRedoChanged, SelectionChanged, OperationStarted,
+    // OperationProgress, OperationCompleted are part of IDocumentEditor contract
+    // but not raised by this read-only viewer.
+#pragma warning restore CS0067
 }
 
 // ── Simple RelayCommand ───────────────────────────────────────────────────────
