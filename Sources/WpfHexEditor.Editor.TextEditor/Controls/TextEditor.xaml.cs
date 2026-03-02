@@ -381,6 +381,14 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     /// <inheritdoc/>
     public void ApplyBookmarks(IReadOnlyList<BookmarkDto> bookmarks) { }
 
+    /// <inheritdoc/>
+    /// <remarks>Text editors do not have binary changeset edits.</remarks>
+    public ChangesetSnapshot GetChangesetSnapshot() => ChangesetSnapshot.Empty;
+
+    /// <inheritdoc/>
+    /// <remarks>Not applicable for text editors.</remarks>
+    public void ApplyChangeset(ChangesetDto changeset) { }
+
     // -----------------------------------------------------------------------
     // Scroll sync
     // -----------------------------------------------------------------------

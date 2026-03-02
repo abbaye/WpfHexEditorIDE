@@ -251,6 +251,14 @@ public sealed partial class ImageViewer : UserControl,
     /// <inheritdoc/>
     public void ApplyBookmarks(IReadOnlyList<BookmarkDto> bookmarks) { }
 
+    /// <inheritdoc/>
+    /// <remarks>Image viewers do not have byte-level edits.</remarks>
+    public ChangesetSnapshot GetChangesetSnapshot() => ChangesetSnapshot.Empty;
+
+    /// <inheritdoc/>
+    /// <remarks>Not applicable for image viewers.</remarks>
+    public void ApplyChangeset(ChangesetDto changeset) { }
+
     // -----------------------------------------------------------------------
     // IOpenableDocument
     // -----------------------------------------------------------------------
