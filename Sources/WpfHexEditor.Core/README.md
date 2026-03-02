@@ -1,309 +1,244 @@
-# WPFHexaEditor
+# WpfHexEditor.Core
 
-Main WPF Hex Editor control library - a fast, fully customizable hex editor for .NET applications.
+> Data access layer and service library powering the WpfHexEditor ecosystem — ByteProvider, 16+ services, search engine, rendering models, and format detection.
 
-## 📁 Project Structure
-
-```
-WPFHexaEditor/
-├── 🎯 Main Controls
-│   ├── HexEditor.xaml.cs       # Primary hex editor control (6000+ lines)
-│   ├── HexBox.xaml.cs          # Container/layout control
-│   ├── HexByte.cs              # Hexadecimal byte display control
-│   ├── StringByte.cs           # Text/ASCII byte display control
-│   ├── BaseByte.cs             # Base class for byte display controls
-│   └── FastTextLine.cs         # Optimized text rendering component
-│
-├── 📂 Core/                    # Core infrastructure and utilities
-│   ├── Bytes/                  # ByteProvider, byte manipulation
-│   ├── CharacterTable/         # TBL file support
-│   ├── Converters/             # WPF value converters
-│   ├── EventArguments/         # Custom event args
-│   ├── Interfaces/             # Core interfaces
-│   ├── MethodExtention/        # Extension methods
-│   └── Native/                 # Windows API P/Invoke
-│
-├── 🔧 Services/                # Business logic services (10 services)
-│   ├── ClipboardService.cs
-│   ├── FindReplaceService.cs
-│   ├── UndoRedoService.cs
-│   ├── SelectionService.cs
-│   ├── HighlightService.cs
-│   ├── ByteModificationService.cs
-│   ├── BookmarkService.cs
-│   ├── TblService.cs
-│   ├── PositionService.cs
-│   └── CustomBackgroundService.cs
-│
-├── 💬 Dialog/                  # UI dialogs
-│   ├── FindWindow.xaml
-│   ├── FindReplaceWindow.xaml
-│   ├── GiveByteWindow.xaml
-│   └── ReplaceByteWindow.xaml
-│
-├── 🌍 Properties/              # Assembly info and localization
-│   ├── AssemblyInfo.cs
-│   ├── Resources.resx          # English (default)
-│   ├── Resources.fr-CA.resx    # French Canadian
-│   ├── Resources.pl-PL.resx    # Polish
-│   ├── Resources.pt-BR.resx    # Brazilian Portuguese
-│   ├── Resources.ru-RU.resx    # Russian
-│   └── Resources.zh-CN1.resx   # Simplified Chinese
-│
-└── 📦 Resources/               # Embedded resources (icons, images)
-```
-
-## 🎯 Main Component: HexEditor
-
-**[HexEditor.xaml.cs](HexEditor.xaml.cs)** is the primary control that users interact with.
-
-### Key Features:
-- ✅ Binary file editing with full undo/redo support
-- ✅ Read/write streams and files (any size)
-- ✅ Hexadecimal and ASCII/text views side-by-side
-- ✅ Search and replace (byte patterns, text, regex)
-- ✅ Insert/overwrite modes with dynamic file resizing
-- ✅ Copy/paste with multiple formats (hex, text, binary)
-- ✅ Bookmarks and custom highlighting
-- ✅ TBL file support for custom character encodings
-- ✅ Selection and multi-byte operations
-- ✅ Scroll markers for visual navigation
-- ✅ Customizable appearance (colors, fonts, width)
-- ✅ High performance with lazy loading for large files
-
-### Architecture (Service-Based):
-
-The HexEditor delegates business logic to 10 specialized services:
-
-```
-HexEditor (Main Controller - 6000+ lines)
-    │
-    ├── ByteProvider (Data Access Layer)
-    │   └── Stream/File I/O with modification tracking
-    │
-    └── 10 Services (Business Logic Layer)
-        ├── ClipboardService      - Copy/paste operations
-        ├── FindReplaceService    - Search with caching
-        ├── UndoRedoService       - History management
-        ├── SelectionService      - Selection logic
-        ├── HighlightService      - Visual markers (stateful)
-        ├── ByteModificationService - Insert/delete/modify
-        ├── BookmarkService       - Bookmark management
-        ├── TblService            - Character table handling
-        ├── PositionService       - Position calculations
-        └── CustomBackgroundService - Background colors
-```
-
-**Benefits:**
-- Separation of concerns (UI vs business logic)
-- Testable services (see [WPFHexaEditor.Tests](../WPFHexaEditor.Tests/))
-- Reusable logic (services used in samples)
-- Maintainable codebase (reduced complexity)
-
-## 🧩 Byte Display Controls
-
-### HexByte.cs
-- Displays byte as hexadecimal (`FF`, `A0`, etc.)
-- Handles keyboard input for hex editing
-- Two-character input with validation
-- Inherits from `BaseByte`
-
-### StringByte.cs
-- Displays byte as character (`.`, `A`, `é`, etc.)
-- ASCII/ANSI display mode
-- Custom character table (TBL) support
-- Inherits from `BaseByte`
-
-### BaseByte.cs
-- Abstract base class for byte display controls
-- Provides common functionality:
-  - Selection rendering
-  - Mouse interaction
-  - Focus management
-  - Read-only mode
-  - Action indicators (modified, deleted, inserted)
-  - Color schemes
-
-## 🎓 Usage Example
-
-### Basic Usage:
-
-```csharp
-// In XAML
-<wpfHexEditor:HexEditor x:Name="HexEdit"
-                        Width="Auto"
-                        Height="Auto"/>
-
-// In code-behind
-// Open a file
-HexEdit.FileName = @"C:\data\file.bin";
-
-// Or use a stream
-using var stream = File.OpenRead("data.bin");
-HexEdit.Stream = stream;
-
-// Modify bytes
-HexEdit.SelectionStart = 100;
-HexEdit.SelectionStop = 110;
-HexEdit.FillWithByte(0xFF);
-
-// Search
-var positions = HexEdit.FindAll(new byte[] { 0x48, 0x65, 0x6C, 0x6C, 0x6F }); // "Hello"
-
-// Undo/Redo
-HexEdit.Undo();
-HexEdit.Redo();
-
-// Save changes
-HexEdit.SubmitChanges();
-```
-
-### Advanced Usage:
-
-```csharp
-// Load custom character table (TBL)
-HexEdit.LoadTblFile(@"pokemon_gen1.tbl");
-
-// Set custom background colors
-HexEdit.AddCustomBackgroundBlock(100, 20, Colors.Yellow);
-
-// Bookmarks
-HexEdit.AddBookmark(500);
-HexEdit.SetPosition(500, 1); // Jump to bookmark
-
-// Insert mode (vs overwrite)
-HexEdit.InsertMode = true;
-HexEdit.InsertByte(0xFF, 1000);
-
-// Events
-HexEdit.ByteModified += (s, e) =>
-{
-    Console.WriteLine($"Byte at {e.Position:X} changed");
-};
-```
-
-## 🔗 Multi-Targeting
-
-Supports multiple .NET frameworks:
-- ✅ **.NET Framework 4.8** - For legacy Windows applications
-- ✅ **.NET 8.0-windows** - Latest .NET with modern C# features
-
-## 🌍 Internationalization
-
-Built-in support for 6 languages:
-- 🇬🇧 English (default)
-- 🇨🇦 French Canadian
-- 🇵🇱 Polish
-- 🇧🇷 Brazilian Portuguese
-- 🇷🇺 Russian
-- 🇨🇳 Simplified Chinese
-
-Language resources in [Properties/](Properties/) folder.
-
-## 📚 Documentation
-
-### Detailed Component Documentation:
-- **[Core/](Core/README.md)** - Core infrastructure overview
-- **[Services/](Services/README.md)** - Service architecture (10 services)
-- **[Dialog/](Dialog/README.md)** - Find/Replace dialogs
-- **[Core/Bytes/](Core/Bytes/README.md)** - ByteProvider and data layer
-- **[Core/CharacterTable/](Core/CharacterTable/README.md)** - TBL file support
-- **[Core/Converters/](Core/Converters/README.md)** - WPF value converters
-- **[Core/EventArguments/](Core/EventArguments/README.md)** - Event argument classes
-- **[Core/Interfaces/](Core/Interfaces/README.md)** - Interface definitions
-- **[Core/MethodExtention/](Core/MethodExtention/README.md)** - Extension methods
-- **[Core/Native/](Core/Native/README.md)** - Windows API P/Invoke
-
-### Sample Applications:
-See [Samples/](../Samples/README.md) for 7 example applications demonstrating various features.
-
-### Unit Tests:
-See [WPFHexaEditor.Tests/](../WPFHexaEditor.Tests/README.md) for 80+ unit tests covering all services.
-
-## 🎨 Customization
-
-The HexEditor is highly customizable via properties:
-
-```csharp
-// Appearance
-HexEdit.Foreground = Brushes.White;
-HexEdit.Background = Brushes.Black;
-HexEdit.BytePerLine = 16;  // Bytes per line (8, 16, 32, etc.)
-
-// Behavior
-HexEdit.ReadOnlyMode = false;
-HexEdit.AllowByteInsertion = true;
-HexEdit.AutoScrollToHighlight = true;
-
-// Display
-HexEdit.ByteSpacing = 5;
-HexEdit.HexDataVisibility = Visibility.Visible;
-HexEdit.StringDataVisibility = Visibility.Visible;
-
-// Data format
-HexEdit.ByteOrder = ByteOrder.LittleEndian;
-HexEdit.DataStringVisual = DataVisualType.Hexadecimal;
-```
-
-## 🚀 Performance
-
-Optimizations for large files:
-- **Lazy Loading**: Only loads visible bytes into memory
-- **Virtual Scrolling**: Renders only visible portion
-- **Memory-Mapped Files**: Efficient I/O for multi-GB files
-- **Change Tracking**: Only modified bytes stored in memory
-- **Native APIs**: P/Invoke for high-performance operations
-- **FastTextLine**: Optimized text rendering component
-
-Capable of handling multi-GB files with low memory footprint.
-
-## 🔧 Building
-
-```bash
-# Build all targets
-dotnet build WpfHexEditorCore.csproj
-
-# Build specific framework
-dotnet build -f net8.0-windows
-dotnet build -f net48
-
-# Run tests
-cd ../WPFHexaEditor.Tests
-dotnet test
-```
-
-## 📦 NuGet Package
-
-Published as: **WpfHexaEditor** on NuGet.org
-
-```bash
-dotnet add package WpfHexaEditor
-```
-
-## 🎯 Design Philosophy
-
-1. **Separation of Concerns**: UI (HexEditor) vs Business Logic (Services)
-2. **Testability**: Services are stateless/testable in isolation
-3. **Performance**: Optimized for large files
-4. **Extensibility**: Plugin architecture via services
-5. **Backward Compatibility**: No breaking API changes
-
-## 🐛 Debugging
-
-Common issues:
-- **File locked**: Ensure file is not open in another application
-- **Out of memory**: Enable read-only mode for very large files
-- **Slow scrolling**: Check BytePerLine setting (16 is optimal)
-- **Character encoding**: Load appropriate TBL file for custom encodings
-
-## 📜 License
-
-**Apache 2.0 License** - See [LICENSE.txt](LICENSE.txt)
-
-Copyright 2016-2026
-- Original Author: Derek Tremblay
-- Contributors: ehsan69h, Janus Tida, Claude Sonnet 4.5
+[![.NET](https://img.shields.io/badge/.NET-net48%20%7C%20net8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](../../LICENSE)
 
 ---
 
-✨ High-performance WPF hex editor control for .NET applications
+## Architecture
+
+```mermaid
+graph TB
+    subgraph Core["WpfHexEditor.Core"]
+
+        subgraph DATA["Core / Data Layer"]
+            BP["ByteProvider\n(Central Coordinator — 186+ APIs)"]
+            BR["ByteReader\n(Virtual View computation)"]
+            EM["EditsManager\n(Modifications / Insertions / Deletions)"]
+            PM["PositionMapper\n(Virtual ↔ Physical — O(log n))"]
+            URM["UndoRedoManager\n(Unlimited depth, batching)"]
+            FP["FileProvider\n(File / Stream / MemoryMapped I/O)"]
+        end
+
+        subgraph SVC["Services (16+)"]
+            S_SEARCH["FindReplaceService\n(LRU cache, parallel, SIMD)"]
+            S_UNDO["UndoRedoService"]
+            S_CLIP["ClipboardService"]
+            S_BK["BookmarkService\n(+Export +Search)"]
+            S_HL["HighlightService\n(stateful)"]
+            S_SEL["SelectionService"]
+            S_MOD["ByteModificationService"]
+            S_TBL["TblService\n(character tables)"]
+            S_POS["PositionService"]
+            S_BG["CustomBackgroundService"]
+            S_FMT["FormatDetectionService\n(400+ formats)"]
+            S_CMP["ComparisonService\n(+Parallel +SIMD)"]
+            S_PAT["PatternRecognitionService"]
+            S_OVL["StructureOverlayService"]
+            S_LRO["LongRunningOperationService"]
+            S_ST["StateService"]
+        end
+
+        subgraph SM["SearchModule"]
+            HSE["HexSearchEngine\n(Parallel, SIMD, all modes)"]
+        end
+
+        subgraph OTHER["Other"]
+            REND["Rendering/\n(Brush, Highlight, Marker models)"]
+            FMT["Formatters/\n(Hex, Decimal, Text formatters)"]
+            EVT["Events/\n(ByteEventArgs, etc.)"]
+            TOOLS["Tools/\n(BinaryTools, ByteConverters)"]
+            IFACE["Interfaces/\n(Core interfaces)"]
+            MDL["Models/\n(Enums, DTOs)"]
+        end
+    end
+
+    BP --> BR & EM & PM & URM & FP
+    BR --> EM & PM & FP
+    EM --> PM
+
+    style BP fill:#ffccbc,stroke:#d84315,stroke-width:3px
+    style SVC fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style HSE fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+```
+
+---
+
+## Project Structure
+
+```
+WpfHexEditor.Core/
+├── Core/
+│   ├── Bytes/
+│   │   ├── ByteProvider.cs          ← Central coordinator (186+ APIs)
+│   │   ├── ByteReader.cs            ← Virtual view with edits applied
+│   │   ├── EditsManager.cs          ← Track mods / inserts / deletes
+│   │   ├── PositionMapper.cs        ← Virtual ↔ physical position (O(log n))
+│   │   ├── UndoRedoManager.cs       ← Unlimited undo/redo + batching
+│   │   └── FileProvider.cs          ← File / stream / memory-mapped I/O
+│   ├── CharacterTable/              ← TBL file format parser
+│   ├── Converters/                  ← WPF value converters
+│   ├── EventArguments/              ← Custom EventArgs
+│   ├── Interfaces/                  ← Core contracts
+│   ├── MethodExtention/             ← Extension methods
+│   └── Native/                      ← Windows API P/Invoke
+│
+├── Services/                        ← 16+ specialized services
+│   ├── FindReplaceService.cs
+│   ├── UndoRedoService.cs
+│   ├── ClipboardService.cs
+│   ├── BookmarkService.cs
+│   ├── BookmarkExportService.cs
+│   ├── BookmarkSearchService.cs
+│   ├── HighlightService.cs
+│   ├── SelectionService.cs
+│   ├── ByteModificationService.cs
+│   ├── TblService.cs
+│   ├── PositionService.cs
+│   ├── CustomBackgroundService.cs
+│   ├── FormatDetectionService.cs    ← 400+ format signatures
+│   ├── ComparisonService.cs
+│   ├── ComparisonServiceParallel.cs
+│   ├── ComparisonServiceSIMD.cs
+│   ├── PatternRecognitionService.cs
+│   ├── StructureOverlayService.cs
+│   ├── FileDiffService.cs
+│   ├── LongRunningOperationService.cs
+│   ├── StateService.cs
+│   └── VirtualizationService.cs
+│
+├── SearchModule/                    ← HexSearchEngine (parallel SIMD)
+├── Rendering/                       ← Brush / highlight / marker models
+├── Formatters/                      ← Hex / decimal / text output
+├── Events/                          ← Event argument classes
+├── Models/                          ← Enums, DTOs
+├── Tools/                           ← BinaryTools, ByteConverters
+├── Controls/                        ← Shared WPF controls
+├── ViewModels/                      ← Shared view models
+└── PartialClasses/                  ← Shared partial class infrastructure
+```
+
+---
+
+## ByteProvider — Central API
+
+`ByteProvider` is the single coordinator between all data-layer components. It exposes 186+ methods across categories:
+
+```mermaid
+graph LR
+    Consumer["HexEditorViewModel\nor any Consumer"] --> BP["ByteProvider"]
+
+    BP --> BR["ByteReader\n(get bytes at virtual pos)"]
+    BP --> EM["EditsManager\n(record changes)"]
+    BP --> PM["PositionMapper\n(convert positions)"]
+    BP --> URM["UndoRedoManager\n(push/pop actions)"]
+    BP --> FP["FileProvider\n(open / save / close)"]
+```
+
+### Key API groups
+
+| Category | Examples |
+|----------|---------|
+| **File** | `Open(path)`, `OpenStream(stream)`, `Close()`, `SubmitChanges()` |
+| **Read** | `GetByte(position)`, `GetBytes(position, count)`, `Length` |
+| **Write** | `ModifyByte(position, value)`, `InsertByte(position, value)`, `DeleteByte(position)` |
+| **Selection** | `SelectionStart`, `SelectionStop`, `SelectAll()` |
+| **Search** | `FindFirst(pattern)`, `FindAll(pattern)`, `CountOccurrences(pattern)` |
+| **Undo** | `Undo()`, `Redo()`, `ClearUndoHistory()`, `BeginBatch()`, `EndBatch()` |
+| **Bookmarks** | `AddBookmark(position)`, `RemoveBookmark(position)`, `Bookmarks` |
+| **State** | `IsModified`, `HasChanges`, `CanUndo`, `CanRedo`, `IsReadOnly` |
+
+---
+
+## Virtual View Pattern
+
+Users always see a **virtual representation** with all pending edits applied. The original file is never modified until `SubmitChanges()`:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant ByteReader
+    participant EditsManager
+    participant FileProvider
+
+    User->>ByteReader: GetByte(virtualPos=5)
+    ByteReader->>EditsManager: IsInserted(5)?
+    EditsManager-->>ByteReader: Yes → inserted byte
+    ByteReader-->>User: FF (inserted value)
+
+    User->>ByteReader: GetByte(virtualPos=6)
+    ByteReader->>EditsManager: IsDeleted / modified?
+    EditsManager-->>ByteReader: No change
+    ByteReader->>FileProvider: GetByte(physicalPos=5)
+    FileProvider-->>ByteReader: 43 (original)
+    ByteReader-->>User: 43 (original value)
+```
+
+---
+
+## Services
+
+### FindReplaceService
+- LRU cache for repeated patterns
+- Parallel search with thread-pool partitioning
+- SIMD vectorization on .NET 8 (AVX2 / SSE2)
+- Modes: Hex bytes, Text (UTF-8/16/etc.), Regex, TBL, Wildcard
+
+### FormatDetectionService
+- 400+ binary format signatures (magic bytes, header patterns)
+- Returns `FormatInfo` with name, confidence, sub-type
+- Used by `ParsedFieldsPanel` and IDE toolbar
+
+### ComparisonService
+- Three implementations: sequential, parallel, SIMD
+- Auto-selects based on file size and runtime capabilities
+- Returns `DiffBlock` list for diff navigation
+
+### BookmarkService + BookmarkExportService
+- In-memory bookmark collection with position + label + color
+- Export to JSON, CSV, or markdown
+
+---
+
+## Search Engine
+
+```mermaid
+flowchart LR
+    Input["Search query\n+ mode"] --> HSE["HexSearchEngine"]
+    HSE --> P1["Thread 1\nPartition 0..N/4"]
+    HSE --> P2["Thread 2\nPartition N/4..N/2"]
+    HSE --> P3["Thread 3\nPartition N/2..3N/4"]
+    HSE --> P4["Thread 4\nPartition 3N/4..N"]
+    P1 & P2 & P3 & P4 --> MERGE["Merge & sort results"]
+    MERGE --> OUT["IEnumerable&lt;long&gt; positions"]
+```
+
+---
+
+## Performance Characteristics
+
+| File Size | Load Time | Memory | Search |
+|-----------|-----------|--------|--------|
+| 1 KB | < 1 ms | ~1 MB | < 0.1 ms |
+| 10 MB | ~5 ms | ~85 MB | ~10 ms |
+| 100 MB | ~12 ms | ~90 MB | ~80 ms |
+| 1 GB | ~20 ms | ~95 MB | ~300 ms |
+
+Memory stays near-constant because `ByteProvider` uses memory-mapped I/O — only modified bytes are held in RAM.
+
+---
+
+## Dependencies
+
+`WpfHexEditor.Core` has **zero third-party dependencies**. It only references:
+- `WpfHexEditor.HexBox` (hex input controls)
+- `WpfHexEditor.ColorPicker` (color selection)
+- Standard .NET / WPF assemblies
+
+---
+
+## License
+
+Apache 2.0 — Copyright 2016–2026 Derek Tremblay. See [LICENSE](../../LICENSE).

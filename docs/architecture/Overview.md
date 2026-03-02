@@ -34,10 +34,14 @@
 - 🖥️ **VS-style docking** — float, dock, auto-hide, colored tabs, 8 themes
 - 📁 **Project system** — `.whsln` / `.whproj`, virtual & physical folders, item links
 - 🔌 **Plugin editors** — `IDocumentEditor` contract (Hex, TBL, JSON, Text + stubs)
-- 🗂️ **IDE panels** — ParsedFields, DataInspector, SolutionExplorer, Properties, ErrorPanel
+- 🗂️ **IDE panels** — ParsedFields, DataInspector, SolutionExplorer, Properties, ErrorPanel, Output
 - 🔍 **400+ File Format Auto-Detection** with binary templates and signature matching
 - 📊 **Data Inspector** with 40+ data type interpretations
 - ⚖️ **File Diff** for side-by-side binary comparison
+- 🔎 **QuickSearchBar** — inline Ctrl+F overlay (VSCode-style), per-editor, 5 search modes
+- ⚙️ **VS2026-style Options** — document tab, theme picker, auto-save, encoding, 4 pages
+- 💾 **SaveChangesDialog** — VS-style multi-file unsaved changes dialog on app close
+- 🏷️ **Live dirty flag** — `DockItem.Title` INPC, tab header updates on `" *"` change
 
 ---
 
@@ -90,6 +94,7 @@ graph LR
     subgraph "IDE Application"
         App["WpfHexEditor.App<br/>(IDE, MainWindow,<br/>DockHost)"]
         ProjectSystem["WpfHexEditor.ProjectSystem<br/>(Solution/Project,<br/>File templates)"]
+        Options["WpfHexEditor.Options<br/>(VS2026 Options tab,<br/>AppSettings, 4 pages)"]
     end
 
     subgraph "Core & Data"
@@ -127,6 +132,7 @@ graph LR
     App --> PanelsBinary
     App --> PanelsFileOps
     App --> ProjectSystem
+    App --> Options
     App --> DockingWpf
     App --> JsonEditor
     App --> TblEditor
@@ -1209,6 +1215,120 @@ finally
 
 ---
 
+## 🆕 2026-03 Features
+
+### QuickSearchBar — Inline Ctrl+F Overlay
+
+An inline, per-editor search bar (VSCode-style) that opens inside the editor's Canvas:
+
+```mermaid
+graph LR
+    subgraph "Editor (HexEditor / TblEditor / JsonEditor)"
+        ED["Editor content"]
+        CV["Canvas (ZIndex 5)"]
+        QSB["QuickSearchBar\n(movable, resizable)"]
+    end
+
+    U["User Ctrl+F"] --> |ShowQuickSearchBar| QSB
+    QSB --> |FindNext/Prev| HSE["HexSearchEngine"]
+    QSB --> |click ⋯| ASD["AdvancedSearchDialog\n(5 modes)"]
+    QSB --> |ISearchTarget| ED
+```
+
+**Key design decisions:**
+- **Per-editor model** — each editor has its own bar; Ctrl+F targets the focused editor
+- **Canvas overlay** — bar floats over content, drag-to-move grip at bottom-left, left-edge resize
+- **3-row layout** — Row 0: search input + prev/next/close; Row 1: replace (collapsible); Row 2: toggles (Ab, `.*`, 0x) + custom filters + match counter
+- **ISearchTarget** — `QuickSearchBar.BindToTarget(ISearchTarget)` decouples search UI from editor
+- **"⋯" button** — closes the bar and opens the AdvancedSearchDialog
+
+### QuickSearchBar Layout (3-row VS-style)
+
+```
+┌─[6px ResizeThumb, cursor SizeWE]────────────────────────────────┐
+│ ∨/∧ │  🔍  Find...                        ▲ ▼  ⋯  ✕            │ ← Row 0
+│     │  ⇄   Replace...                →1  →∀                    │ ← Row 1 (collapsible)
+│ [::] Ab  .*  0x  │ [CustomFiltersZone]     5/12 results        │ ← Row 2 (options)
+└──────────────────────────────────────────────────────────────────┘
+  ↑ MoveThumb (22×22, bottom-left, cursor SizeAll)
+```
+
+### Error Panel — Icons and Navigation (2026-03)
+
+**Icons fix**: `DataTrigger Value="{x:Static core:DiagnosticSeverity.Error}"` — enum comparison via `{x:Static}` instead of fragile string matching.
+
+**Double-click navigation fix**: `OnEntryDoubleClick` uses `VisualTreeHelper.GetParent` walk to find the `ListViewItem` from `e.OriginalSource` — same reliable pattern as the context menu handler.
+
+```csharp
+private void OnEntryDoubleClick(object sender, MouseButtonEventArgs e)
+{
+    DependencyObject? dep = e.OriginalSource as DependencyObject;
+    while (dep is not null && dep is not ListViewItem)
+        dep = VisualTreeHelper.GetParent(dep);
+    if (dep is ListViewItem lvi && lvi.DataContext is DiagnosticEntryVm vm)
+        EntryNavigationRequested?.Invoke(this, vm.Entry);
+}
+```
+
+### DockItem INPC — Live Dirty Flag
+
+`DockItem.Title` now implements `INotifyPropertyChanged`. Tab headers and floating window titles update immediately when the host sets `item.Title = "file.bin *"`:
+
+```csharp
+// DockItem.cs
+public required string Title
+{
+    get => _title;
+    set { if (_title != value) { _title = value; OnPropertyChanged(); } }
+}
+```
+
+`DockTabHeader` subscribes on construction:
+```csharp
+item.PropertyChanged += (_, e) =>
+{
+    if (e.PropertyName == nameof(DockItem.Title) && _titleBlock is not null)
+        _titleBlock.Text = item.Title;
+};
+```
+
+### VS2026-Style Options Document Tab
+
+`WpfHexEditor.Options` — a `UserControl` opened as a document tab in the IDE (`ContentId = "doc-options"`):
+
+| Page | Content |
+|------|---------|
+| **General** | Theme selector (live preview), language, startup behavior |
+| **Editor** | BytePerLine, font size, display options, encoding defaults |
+| **Auto-Save** | Enable/disable, interval, file paths |
+| **Advanced** | Debug options, performance flags |
+
+Settings persisted via `AppSettingsService` (JSON, `%AppData%\WpfHexEditor\settings.json`).
+
+### SaveChangesDialog — VS-Style Multi-File
+
+Shown on app close when there are unsaved documents:
+
+```
+┌─ Save Changes ──────────────────────────────────────────────┐
+│  Do you want to save changes to the following files?         │
+│                                                              │
+│  ☑ Select All                                                │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  ☑  firmware.bin                                     │   │
+│  │  ☑  chars.tbl                                        │   │
+│  │  ☐  config.json                                      │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                          [Save] [Don't Save] [Cancel] │
+└──────────────────────────────────────────────────────────────┘
+```
+
+- **Save** → saves checked documents then closes app
+- **Don't Save** → closes app without saving
+- **Cancel** → cancels `ApplicationExit`, app stays open
+
+---
+
 ## 🔗 See Also
 
 ### Core Systems Documentation
@@ -1233,6 +1353,16 @@ finally
 - [Save Operations](data-flow/save-operations.md) - Smart save algorithm
 - [Format Detection Flow](data-flow/format-detection-flow.md) - Signature matching and field parsing
 
+### Component READMEs
+- [HexEditor](../../Sources/WpfHexEditor.HexEditor/README.md) - HexEditor UserControl (partial classes, search, MVVM)
+- [Core](../../Sources/WpfHexEditor.Core/README.md) - ByteProvider + 16 services + search engine
+- [HexBox](../../Sources/WpfHexEditor.HexBox/README.md) - Lightweight hex input field (MVVM)
+- [ColorPicker](../../Sources/WpfHexEditor.ColorPicker/README.md) - Compact color picker control
+- [Docking.Wpf](../../Sources/WpfHexEditor.Docking.Wpf/README.md) - 100% in-house VS-style docking engine
+- [Editor.Core](../../Sources/WpfHexEditor.Editor.Core/README.md) - Plugin contracts (IDocumentEditor, 25+ interfaces)
+- [BinaryAnalysis](../../Sources/WpfHexEditor.BinaryAnalysis/README.md) - DataInspector, anomaly detection, templates
+- [BarChart](../../Sources/WpfHexEditor.BarChart/README.md) - Byte frequency chart control
+
 ### Related Documentation
 - [API Reference](../api-reference/) - Complete method documentation
 - [PartialClasses](../../Sources/WpfHexEditor.HexEditor/PartialClasses/) - HexEditor code organization (Core, Features, Search, UI)
@@ -1244,11 +1374,22 @@ finally
 
 **Last Updated**: 2026-03-02
 **Status**: 🚧 Active Development
-- ✅ Multi-project architecture: Core, HexEditor, Panels.*, Editors.*, Docking, BinaryAnalysis, ProjectSystem, App
-- ✅ 100% ByteProvider API (186 methods)
-- ✅ 400+ file format auto-detection
-- ✅ Custom Docking system (VS-style, no third-party dependency)
-- ✅ Plugin editor system (IDocumentEditor): HexEditor, TblEditor, JsonEditor, TextEditor
-- ✅ IDE project system (.whsln / .whproj), format versioning v2
-- ✅ Data Inspector, Parsed Fields, SolutionExplorer, Properties, ErrorPanel
-- 🔧 Stub editors: ImageViewer, AudioViewer, DiffViewer, DisassemblyViewer, EntropyViewer
+
+### ✅ Completed
+- Multi-project architecture: Core, HexEditor, Panels.*, Editors.*, Docking, BinaryAnalysis, ProjectSystem, Options, App
+- 100% ByteProvider API (186 methods)
+- 400+ file format auto-detection
+- Custom Docking system (VS-style, no third-party dependency)
+- `DockItem` INPC — live dirty-flag tab updates
+- Plugin editor system (`IDocumentEditor`): HexEditor, TblEditor, JsonEditor, TextEditor
+- IDE project system (`.whsln` / `.whproj`), format versioning v2, atomic migration
+- Panels: Data Inspector, Parsed Fields, SolutionExplorer, Properties, **ErrorPanel** (icons + navigation fixed 2026-03), Output
+- **QuickSearchBar** — inline Ctrl+F overlay, per-editor, 3-row VS layout, movable + resizable
+- **VS2026-style Options** — document tab, 4 pages, AppSettings, live theme preview
+- **SaveChangesDialog** — VS-style multi-file unsaved changes on app close
+- 8 built-in themes with `Panel_*`, `ERR_*`, `SE_*`, `PP_*` DynamicResource keys
+
+### 🔧 Stub / Planned
+- Stub editors: ImageViewer, AudioViewer, DiffViewer, DisassemblyViewer, EntropyViewer
+- QuickSearchBar split-view mode for JsonEditor (wrapper + Canvas)
+- BarChart integration into FileStatisticsPanel
