@@ -76,7 +76,7 @@
 - **400+ file format** auto-detection
 - **Parsed Fields Panel** with structure overlay
 - **Data Inspector** — 40+ type interpretations
-- **19 languages** with instant switching
+- **19 languages** with instant switching *(partial — not all languages fully translated)*
 
 </td>
 </tr>
@@ -88,17 +88,17 @@
 
 WpfHexEditor uses a **plugin architecture** (`IDocumentEditor`) — every editor is a standalone, reusable component hosted in the docking system.
 
-| Editor | Status | Description |
-|--------|--------|-------------|
-| **Hex Editor** | ✅ Complete | Binary editing — insert/overwrite, 400+ format detection, search, bookmarks, TBL |
-| **TBL Editor** | ✅ Complete | Character table editor for custom encodings and ROM hacking |
-| **JSON Editor** | ✅ Complete | JSON editing with real-time validation, syntax highlighting and diagnostics |
-| **Text Editor** | ✅ Complete | Text editing with syntax highlighting and encoding support |
-| **Image Viewer** | 🔧 Stub | Binary image viewer (planned) |
-| **Audio Viewer** | 🔧 Stub | Audio binary viewer (planned) |
-| **Diff Viewer** | 🔧 Stub | Side-by-side file comparison (planned) |
-| **Disassembly Viewer** | 🔧 Stub | Binary disassembler (planned) |
-| **Entropy Viewer** | 🔧 Stub | Entropy analysis viewer (planned) |
+| Editor | Status | Progress | Description |
+|--------|--------|----------|-------------|
+| **Hex Editor** | ✅ Active | ~70% | Binary editing — insert/overwrite, 400+ format detection, search, bookmarks, TBL |
+| **TBL Editor** | ✅ Active | ~60% | Character table editor for custom encodings and ROM hacking |
+| **JSON Editor** | ✅ Active | ~55% | JSON editing with real-time validation, syntax highlighting and diagnostics |
+| **Text Editor** | ✅ Active | ~45% | Text editing with syntax highlighting and encoding support |
+| **Image Viewer** | 🔧 Stub | ~5% | Binary image viewer (planned) |
+| **Audio Viewer** | 🔧 Stub | ~5% | Audio binary viewer (planned) |
+| **Diff Viewer** | 🔧 Stub | ~5% | Side-by-side file comparison (planned) |
+| **Disassembly Viewer** | 🔧 Stub | ~5% | Binary disassembler (planned) |
+| **Entropy Viewer** | 🔧 Stub | ~5% | Entropy analysis viewer (planned) |
 
 > **Implementing a new editor?** See [IDocumentEditor contract](Sources/WpfHexEditor.Editor.Core/) and register via `EditorRegistry`.
 
@@ -285,7 +285,7 @@ Open `WpfHexEditorControl.sln` in Visual Studio 2022, set **WpfHexEditor.App** a
 <td width="33%">
 
 ### 🌍 Multilingual
-- **19 languages** built-in
+- **19 languages** defined *(partial translations)*
 - **Instant switching** at runtime
 - No restart required
 - Extensible with new languages
@@ -341,7 +341,9 @@ Open `WpfHexEditorControl.sln` in Visual Studio 2022, set **WpfHexEditor.App** a
 
 ## 🌍 Multilingual
 
-19 built-in languages with instant runtime switching (no restart):
+19 languages defined with instant runtime switching (no restart).
+
+> ⚠️ **Partial translations** — not all languages are fully translated yet. English and French are the most complete. Contributions welcome!
 
 English · French · Spanish · German · Italian · Japanese · Korean · Dutch · Polish · Portuguese · Russian · Swedish · Turkish · Chinese · Arabic · Hindi · and more
 
