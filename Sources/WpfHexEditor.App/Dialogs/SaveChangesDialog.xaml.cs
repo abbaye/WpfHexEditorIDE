@@ -53,8 +53,8 @@ public sealed partial class SaveChangesDialog : Window
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         HeaderText.Text = _entries.Count == 1
-            ? $"Voulez-vous enregistrer les modifications apportées à \"{_entries[0].Title}\" ?"
-            : "Voulez-vous enregistrer les modifications apportées aux fichiers suivants ?";
+            ? $"Do you want to save changes to \"{_entries[0].Title}\"?"
+            : "Do you want to save changes to the following files?";
 
         foreach (var entry in _entries)
             entry.PropertyChanged += OnEntryPropertyChanged;

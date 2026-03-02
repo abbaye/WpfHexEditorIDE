@@ -5,15 +5,15 @@
 //////////////////////////////////////////////
 
 using System.Windows;
-using WpfHexEditor.HexEditor.Search.Views;
 
 namespace WpfHexEditor.HexEditor
 {
     /// <summary>
     /// HexEditor partial class — Inline Quick Search Bar (Ctrl+F).
-    /// The QuickSearchBar is a VS Code-style overlay that appears at the top-right
-    /// of the content area. For advanced options the user can click "⋯" which
-    /// delegates to <see cref="ShowAdvancedSearchDialog"/>.
+    /// The <see cref="WpfHexEditor.Editor.Core.Views.QuickSearchBar"/> is hosted in a
+    /// transparent Canvas overlay so it can be dragged anywhere within the editor area.
+    /// For advanced options the user clicks "⋯" which delegates to
+    /// <see cref="ShowAdvancedSearchDialog"/>.
     /// </summary>
     public partial class HexEditor
     {
@@ -30,23 +30,24 @@ namespace WpfHexEditor.HexEditor
             if (QuickSearchBarOverlay.Visibility == Visibility.Visible)
             {
                 // Already open — refocus so the user can type immediately
-                QuickSearchBarOverlay.ViewModel?.UpdateCommandStates();
-                QuickSearchBarOverlay.SearchInput?.Focus();
-                QuickSearchBarOverlay.SearchInput?.SelectAll();
+                QuickSearchBarOverlay.FocusSearchInput();
                 return;
             }
 
-            // Refresh ByteProvider in case file was reloaded
-            QuickSearchBarOverlay.BindToHexEditor(this);
+            // Bind to this HexEditor (implements ISearchTarget)
+            QuickSearchBarOverlay.BindToTarget(this);
 
-            // Wire AdvancedSearch button (once — guard via detach/re-bind pattern)
-            QuickSearchBarOverlay.OnCloseRequested -= QuickSearchBar_CloseRequested;
-            QuickSearchBarOverlay.OnCloseRequested += QuickSearchBar_CloseRequested;
-
+            // Wire host-level events (guard: remove first to avoid duplicate subscriptions)
+            QuickSearchBarOverlay.OnCloseRequested          -= QuickSearchBar_CloseRequested;
+            QuickSearchBarOverlay.OnCloseRequested          += QuickSearchBar_CloseRequested;
             QuickSearchBarOverlay.OnAdvancedSearchRequested -= QuickSearchBar_AdvancedSearchRequested;
             QuickSearchBarOverlay.OnAdvancedSearchRequested += QuickSearchBar_AdvancedSearchRequested;
 
             QuickSearchBarOverlay.Visibility = Visibility.Visible;
+
+            // Position the bar in the top-right corner unless the user has moved it
+            if (SearchBarCanvas != null)
+                QuickSearchBarOverlay.EnsureDefaultPosition(SearchBarCanvas);
         }
 
         /// <summary>
@@ -73,7 +74,7 @@ namespace WpfHexEditor.HexEditor
         private void QuickSearchBar_AdvancedSearchRequested(object sender, System.EventArgs e)
         {
             // Transfer the current search text so the dialog opens pre-filled
-            var currentSearch = QuickSearchBarOverlay.ViewModel?.SearchText;
+            var currentSearch = QuickSearchBarOverlay?.SearchText;
 
             // Hide the inline bar first so the two UIs don't overlap
             HideQuickSearchBar();

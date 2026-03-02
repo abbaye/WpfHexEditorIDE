@@ -1,0 +1,153 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<!--
+    DocumentInfoBar — a thin, dismissible banner shown above any non-hex viewer
+    (ImageViewer, TblEditor, etc.) to surface quick "View in …" cross-editor actions.
+
+    Layout:
+        [icon  Current Viewer]   View in:  [Hex Editor]  [Other …]   [×]
+-->
+<UserControl x:Class="WpfHexEditor.App.Controls.DocumentInfoBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="30"
+             VerticalAlignment="Top">
+
+    <UserControl.Resources>
+
+        <!-- InfoBar action button style -->
+        <Style x:Key="InfoBarButtonStyle" TargetType="Button">
+            <Setter Property="Background"       Value="{DynamicResource InfoBar_ButtonBackgroundBrush}"/>
+            <Setter Property="Foreground"       Value="{DynamicResource InfoBar_ButtonForegroundBrush}"/>
+            <Setter Property="BorderBrush"      Value="{DynamicResource InfoBar_BorderBrush}"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="Padding"          Value="7,1"/>
+            <Setter Property="Height"           Value="21"/>
+            <Setter Property="FontSize"         Value="12"/>
+            <Setter Property="Margin"           Value="0,0,4,0"/>
+            <Setter Property="Cursor"           Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="2"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource InfoBar_ButtonHoverBackgroundBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource InfoBar_ButtonBackgroundBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource InfoBar_ButtonForegroundBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dismiss (×) button style -->
+        <Style x:Key="InfoBarDismissStyle" TargetType="Button">
+            <Setter Property="Background"       Value="Transparent"/>
+            <Setter Property="Foreground"       Value="{DynamicResource InfoBar_DismissButtonBrush}"/>
+            <Setter Property="BorderThickness"  Value="0"/>
+            <Setter Property="Width"            Value="22"/>
+            <Setter Property="Height"           Value="22"/>
+            <Setter Property="FontFamily"       Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize"         Value="9"/>
+            <Setter Property="Cursor"           Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="ToolTip"          Value="Dismiss"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="2"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource InfoBar_ButtonHoverBackgroundBrush}"/>
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource InfoBar_ForegroundBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Border Background="{DynamicResource InfoBar_BackgroundBrush}"
+            BorderBrush="{DynamicResource InfoBar_BorderBrush}"
+            BorderThickness="0,0,0,1">
+
+        <Grid Margin="6,0">
+            <Grid.ColumnDefinitions>
+                <!-- Current editor label -->
+                <ColumnDefinition Width="Auto"/>
+                <!-- "View in:" + action buttons -->
+                <ColumnDefinition Width="*"/>
+                <!-- Dismiss -->
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Current editor name -->
+            <StackPanel Grid.Column="0"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Margin="0,0,10,0">
+                <TextBlock x:Name="EditorIcon"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="13"
+                           Foreground="{DynamicResource InfoBar_ForegroundBrush}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,5,0"/>
+                <TextBlock x:Name="EditorNameText"
+                           FontSize="12"
+                           Foreground="{DynamicResource InfoBar_ForegroundBrush}"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Action buttons -->
+            <StackPanel x:Name="ActionButtons"
+                        Grid.Column="1"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                <TextBlock x:Name="ViewInLabel"
+                           Text="View in:"
+                           FontSize="12"
+                           Foreground="{DynamicResource InfoBar_ForegroundBrush}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,6,0"/>
+                <!-- Action buttons are added in code-behind via Configure() -->
+            </StackPanel>
+
+            <!-- Dismiss button -->
+            <Button x:Name="DismissButton"
+                    Grid.Column="2"
+                    Content="&#xE711;"
+                    Style="{StaticResource InfoBarDismissStyle}"
+                    Click="OnDismiss"/>
+        </Grid>
+
+    </Border>
+</UserControl>

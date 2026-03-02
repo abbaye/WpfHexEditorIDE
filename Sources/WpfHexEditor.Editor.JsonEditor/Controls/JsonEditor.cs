@@ -31,7 +31,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
     /// Phase 2: Syntax highlighting with JsonSyntaxHighlighter
     /// Future phases will add: IntelliSense, validation
     /// </summary>
-    public class JsonEditor : FrameworkElement, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor
+    public class JsonEditor : FrameworkElement, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor, ISearchTarget
     {
         #region Fields - Document Model
 
@@ -1753,6 +1753,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             if (_findResults.Count == 0) return;
             _currentFindMatchIndex = (_currentFindMatchIndex + 1) % _findResults.Count;
             NavigateToFindMatch();
+            SearchResultsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -1765,6 +1766,7 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             if (_findResults.Count == 0) return;
             _currentFindMatchIndex = (_currentFindMatchIndex - 1 + _findResults.Count) % _findResults.Count;
             NavigateToFindMatch();
+            SearchResultsChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void NavigateToFindMatch()
@@ -1784,6 +1786,49 @@ namespace WpfHexEditor.Editor.JsonEditor.Controls
             _findMatchLength = 0;
             InvalidateVisual();
         }
+
+        #region ISearchTarget
+
+        public event EventHandler? SearchResultsChanged;
+
+        SearchBarCapabilities ISearchTarget.Capabilities => SearchBarCapabilities.CaseSensitive;
+
+        int ISearchTarget.MatchCount        => _findResults.Count;
+        int ISearchTarget.CurrentMatchIndex => _currentFindMatchIndex;
+
+        void ISearchTarget.Find(string query, SearchTargetOptions options)
+        {
+            _lastFindQuery = query;
+            ExecuteFind(query);
+            if (_findResults.Count > 0)
+            {
+                _currentFindMatchIndex = 0;
+                NavigateToFindMatch();
+            }
+            else
+            {
+                _currentFindMatchIndex = -1;
+                InvalidateVisual();
+            }
+            SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        void ISearchTarget.FindNext()     => FindNext();
+        void ISearchTarget.FindPrevious() => FindPrevious();
+
+        void ISearchTarget.ClearSearch()
+        {
+            ClearFind();
+            SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        // JsonEditor does not support replace
+        void ISearchTarget.Replace(string replacement)    { }
+        void ISearchTarget.ReplaceAll(string replacement) { }
+
+        UIElement? ISearchTarget.GetCustomFiltersContent() => null;
+
+        #endregion
 
         // ── Format JSON ──────────────────────────────────────────────────
 

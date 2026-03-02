@@ -4,6 +4,8 @@
 // Contributors: Claude Sonnet 4.5, Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using WpfHexEditor.Docking.Core;
 
 namespace WpfHexEditor.Docking.Core.Nodes;
@@ -11,11 +13,17 @@ namespace WpfHexEditor.Docking.Core.Nodes;
 /// <summary>
 /// Represents an individual panel or document in the dock layout.
 /// </summary>
-public class DockItem
+public class DockItem : INotifyPropertyChanged
 {
+    private string _title = string.Empty;
+
     public Guid Id { get; } = Guid.NewGuid();
 
-    public required string Title { get; set; }
+    public required string Title
+    {
+        get => _title;
+        set { if (_title != value) { _title = value; OnPropertyChanged(); } }
+    }
 
     /// <summary>
     /// Unique identifier used to match content when restoring layouts.
@@ -90,4 +98,8 @@ public class DockItem
     /// Application-defined data associated with this item. Not serialized.
     /// </summary>
     public object? Tag { get; set; }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string? name = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

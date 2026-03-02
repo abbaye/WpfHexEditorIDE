@@ -67,7 +67,7 @@
 - **IDocumentEditor** plugin contract — every editor is pluggable
 - **Undo/Redo/Copy/Cut/Paste** unified via menu bindings
 - **VS2022-style status bar** (edit mode, bytes/line, caret offset)
-- **Output panel** + **Error/Diagnostics panel**
+- **Output panel** + **Error/Diagnostics panel** + **Quick Search** (inline + advanced)
 - **VS2026-style Options** — document tab, auto-save, live theme preview
 
 </td>
@@ -116,7 +116,7 @@ All controls are **independently reusable** — no IDE required. Drop any of the
 | **[HexEditor](Sources/WpfHexEditor.HexEditor/)** | net48 · net8.0-windows | ~80% | Full-featured hex editor UserControl — MVVM, 16 services, insert/overwrite, search, bookmarks, TBL, 400+ format detection |
 | **[HexBox](Sources/WpfHexEditor.HexBox/)** | net48 · net8.0-windows | ~80% | Lightweight hex input field — zero external dependencies, MVVM-ready |
 | **[ColorPicker](Sources/WpfHexEditor.ColorPicker/)** | net48 · net8.0-windows | ~95% | Compact color picker UserControl with RGB/HSV/hex input |
-| **[BarChart](Sources/WpfHexEditor.BarChart/)** | net48 · net8.0-windows | ~75% | Byte frequency distribution chart (0x00–0xFF visualization) |
+| **[BarChart](Sources/WpfHexEditor.BarChart/)** | net48 · net8.0-windows | ~60% | Byte frequency distribution chart (0x00–0xFF visualization) — **standalone only**, not yet integrated in the IDE |
 | **[Docking.Wpf](Sources/WpfHexEditor.Docking.Wpf/)** | net8.0-windows | ~65% | **Custom-built** VS-style docking engine — float, dock, auto-hide, colored tabs, 8 themes — 100% in-house, zero third-party dependency |
 
 ### Libraries & Infrastructure
@@ -129,20 +129,23 @@ All controls are **independently reusable** — no IDE required. Drop any of the
 
 ---
 
-## 🗂️ Analysis & IDE Panels
+## 🗂️ IDE Panels
 
 Panels connect to the active document automatically via the docking system.
 
-| Panel | Description |
-|-------|-------------|
-| **Parsed Fields Panel** | 400+ format detection — parsed field list with type overlay and inline editing |
-| **Data Inspector** | 40+ byte interpretations at caret position (int, float, GUID, date, color, …) |
-| **Structure Overlay** | Visual field highlighting superimposed on the hex grid |
-| **Solution Explorer** | Project tree with virtual & physical folders, Show All Files mode |
-| **Properties Panel** | Context-aware properties for the active document (F4) |
-| **Error Panel** | Diagnostics and validation errors from any `IDiagnosticSource` editor |
-| **File Diff** | Side-by-side binary comparison with diff navigation (F7/F8) |
-| **Options** | VS2026-style settings document tab — theme, display, editing defaults, auto-save |
+| Panel | Progress | Description |
+|-------|----------|-------------|
+| **Parsed Fields Panel** | ~75% | 400+ format detection — parsed field list with type overlay and inline editing |
+| **Data Inspector** | ~65% | 40+ byte interpretations at caret position (int, float, GUID, date, color, …) |
+| **Structure Overlay** | ~55% | Visual field highlighting superimposed on the hex grid |
+| **Solution Explorer** | ~70% | Project tree with virtual & physical folders, Show All Files mode, context menus |
+| **Properties Panel** | ~50% | Context-aware properties for the active document (F4) |
+| **Error Panel** | ~70% | Diagnostics and validation errors from any `IDiagnosticSource` editor |
+| **Output Panel** | ~65% | Session log, file operation messages and build feedback |
+| **Options** | ~70% | VS2026-style settings document tab — theme, display, editing defaults, auto-save |
+| **Quick Search Bar** | ~55% | Inline Ctrl+F overlay (VSCode-style) — find next/prev, regex toggle, jump to Advanced |
+| **Advanced Search** | ~45% | Full-featured search dialog — 5 modes: Hex, Text, Regex, TBL, Wildcard |
+| **File Diff** | ~30% | Side-by-side binary comparison with diff navigation (F7/F8) |
 
 ---
 

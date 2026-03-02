@@ -477,10 +477,19 @@
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8A7;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="OpenWithMenuItem" Header="Open With..." Click="OnOpenWith">
+                    <MenuItem x:Name="OpenWithMenuItem" Header="Open With">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C8;"/>
                         </MenuItem.Icon>
+                        <!-- Submenu items are populated dynamically in UpdateContextMenu() -->
+                        <MenuItem x:Name="OpenWithHexMenuItem"
+                                  Header="Hex Editor"
+                                  Tag="__hex__"
+                                  Click="OnOpenWithSubItem">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE943;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                     <Separator x:Name="OpenSeparator"/>
 

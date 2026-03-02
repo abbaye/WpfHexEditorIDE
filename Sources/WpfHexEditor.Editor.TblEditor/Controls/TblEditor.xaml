@@ -11,6 +11,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:WpfHexEditor.Editor.TblEditor.ViewModels"
              xmlns:ct="clr-namespace:WpfHexEditor.Core.CharacterTable;assembly=WpfHexEditor.Core"
+             xmlns:coreViews="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="700"
              KeyDown="UserControl_KeyDown"
@@ -56,6 +57,41 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <!-- DataGridCell — override default SystemColors.HighlightBrush with theme brushes -->
+        <Style x:Key="TblCellStyle" TargetType="DataGridCell">
+            <Setter Property="Background"   Value="Transparent"/>
+            <Setter Property="BorderBrush"  Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"   Value="{DynamicResource ERR_ForegroundBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter SnapsToDevicePixels="True"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource ERR_SelectedRowBrush}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource ERR_ForegroundBrush}"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected"   Value="True"/>
+                        <Condition Property="IsMouseOver"  Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <MultiTrigger.Setters>
+                        <Setter Property="Background" Value="{DynamicResource ERR_HoverRowBrush}"/>
+                    </MultiTrigger.Setters>
+                </MultiTrigger>
+            </Style.Triggers>
         </Style>
 
         <!-- Conflict / invalid row highlight (+ selection) -->
@@ -108,6 +144,7 @@
                   HorizontalGridLinesBrush="{DynamicResource ERR_GridLinesBrush}"
                   ColumnHeaderStyle="{StaticResource TblColumnHeaderStyle}"
                   RowStyle="{StaticResource ConflictRowStyle}"
+                  CellStyle="{StaticResource TblCellStyle}"
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   EnableRowVirtualization="True"
@@ -237,7 +274,7 @@
 
             <DataGrid.Columns>
                 <!-- Conflict icon -->
-                <DataGridTemplateColumn Header="⚠" Width="24" IsReadOnly="True">
+                <DataGridTemplateColumn Header="⚠" Width="32" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="⚠"
@@ -326,39 +363,14 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <!-- ── Ctrl+F Search overlay (floats above the grid) ─────────────── -->
-        <Border x:Name="SearchPanel"
+        <!-- ── Canvas overlay — QuickSearchBar can be dragged freely.
+             No Background (null) so empty areas let clicks through. ──────── -->
+        <Canvas x:Name="SearchBarCanvas"
                 Grid.Row="0"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Right"
-                Margin="0,4,4,0"
-                Padding="6,4"
-                Background="{DynamicResource ERR_HeaderBrush}"
-                BorderBrush="{DynamicResource ERR_GridLinesBrush}"
-                BorderThickness="1"
-                CornerRadius="3"
-                Visibility="Collapsed"
                 Panel.ZIndex="10">
-            <StackPanel Orientation="Horizontal" Height="26">
-                <TextBox x:Name="SearchBox"
-                         Width="180"
-                         VerticalContentAlignment="Center"
-                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         KeyDown="SearchBox_KeyDown"/>
-                <ComboBox x:Name="TypeFilterCombo"
-                          Margin="4,0,0,0"
-                          Width="120"
-                          SelectionChanged="TypeFilterCombo_SelectionChanged"/>
-                <CheckBox Content="Conflicts only"
-                          Margin="6,0"
-                          VerticalAlignment="Center"
-                          IsChecked="{Binding ShowConflictsOnly, Mode=TwoWay}"/>
-                <Button Content="✕"
-                        Width="22"
-                        Margin="4,0,0,0"
-                        Click="CloseSearch_Click"
-                        ToolTip="Close search (Escape)"/>
-            </StackPanel>
-        </Border>
+            <coreViews:QuickSearchBar x:Name="QuickSearchBarOverlay"
+                                      Width="520"
+                                      Visibility="Collapsed"/>
+        </Canvas>
     </Grid>
 </UserControl>

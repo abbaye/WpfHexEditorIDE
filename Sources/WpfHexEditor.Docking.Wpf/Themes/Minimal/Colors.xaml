@@ -284,4 +284,13 @@
     <SolidColorBrush x:Key="BackgroundBrush"  Color="{StaticResource DockWindowBackgroundColor}"/>
     <SolidColorBrush x:Key="ForegroundBrush"  Color="{StaticResource DockMenuForegroundColor}"/>
     <SolidColorBrush x:Key="AccentBrush"      Color="{StaticResource AccentColor}"/>
+
+    <!-- DocumentInfoBar (InfoBar_*) -->
+    <SolidColorBrush x:Key="InfoBar_BackgroundBrush"             Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="InfoBar_ForegroundBrush"             Color="#333333"/>
+    <SolidColorBrush x:Key="InfoBar_BorderBrush"                 Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="InfoBar_ButtonBackgroundBrush"       Color="#EEEEEE"/>
+    <SolidColorBrush x:Key="InfoBar_ButtonHoverBackgroundBrush"  Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="InfoBar_ButtonForegroundBrush"       Color="#333333"/>
+    <SolidColorBrush x:Key="InfoBar_DismissButtonBrush"          Color="#888888"/>
 </ResourceDictionary>

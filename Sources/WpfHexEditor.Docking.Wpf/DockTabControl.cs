@@ -10,6 +10,7 @@ using System.Windows.Automation;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Docking.Core.Nodes;
@@ -42,8 +43,13 @@ public class DockTabControl : TabControl
     public event Action<DockItem>? TabHideRequested;
     public event Action<DockItem>? TabDockAsDocumentRequested;
     public event Action<DockItem>? TabPinToggleRequested;
+    public event Action<DockItem, int>? TabReorderRequested;
 
     private Func<DockItem, object>? _contentFactory;
+    private int  _dragOriginalModelIndex = -1;
+    private int  _currentInsertionIdx    = -1;
+    private Popup?                   _reorderGhost;
+    private ReorderInsertionAdorner? _reorderAdorner;
 
     public void Bind(DockGroupNode node, Func<DockItem, object>? contentFactory = null)
     {
@@ -85,16 +91,19 @@ public class DockTabControl : TabControl
     private TabItem CreateTabItem(DockItem item, Func<DockItem, object>? contentFactory, bool isActive)
     {
         var header = new DockTabHeader(item);
-        header.CloseClicked += () => TabCloseRequested?.Invoke(item);
-        header.DragStarted += () => TabDragStarted?.Invoke(item);
-        header.FloatRequested += () => TabFloatRequested?.Invoke(item);
-        header.AutoHideRequested += () => TabAutoHideRequested?.Invoke(item);
-        header.HideRequested += () => TabHideRequested?.Invoke(item);
-        header.DockAsDocumentRequested += () => TabDockAsDocumentRequested?.Invoke(item);
-        header.CloseAllRequested += () => CloseAllItems();
+        header.CloseClicked             += () => TabCloseRequested?.Invoke(item);
+        header.DragStarted              += () => TabDragStarted?.Invoke(item);
+        header.FloatRequested           += () => TabFloatRequested?.Invoke(item);
+        header.AutoHideRequested        += () => TabAutoHideRequested?.Invoke(item);
+        header.HideRequested            += () => TabHideRequested?.Invoke(item);
+        header.DockAsDocumentRequested  += () => TabDockAsDocumentRequested?.Invoke(item);
+        header.CloseAllRequested        += () => CloseAllItems();
         header.CloseAllButThisRequested += () => CloseAllButItem(item);
-        header.PinToggleRequested += () => TabPinToggleRequested?.Invoke(item);
+        header.PinToggleRequested       += () => TabPinToggleRequested?.Invoke(item);
         header.CloseAllButPinnedRequested += () => CloseAllButPinnedItems();
+        header.ReorderDragging          += pos => OnHeaderReorderDragging(item, pos);
+        header.ReorderDropped           += pos => OnHeaderReorderDropped(item, pos);
+        header.ReorderCancelled         += () => OnHeaderReorderCancelled(item);
 
         var tabItem = new TabItem
         {
@@ -107,6 +116,176 @@ public class DockTabControl : TabControl
         tabItem.SetResourceReference(StyleProperty, "DockTabItemStyle");
 
         return tabItem;
+    }
+
+    // ── Reorder — ghost-based, zero live Remove/Insert ──────────────────────
+    //
+    // During drag:
+    //   • The dragged tab is dimmed in place (opacity 0.4).
+    //   • A Popup ghost follows the cursor.
+    //   • An adorner draws a thin vertical insertion indicator.
+    //   • No Items.Remove/Insert and no UpdateLayout() are called.
+    //
+    // On drop: a single Remove/Insert fires TabReorderRequested which
+    // triggers RebuildVisualTree() via DockTabEventWirer.
+
+    private void OnHeaderReorderDragging(DockItem draggedItem, Point screenPos)
+    {
+        if (Node is null) return;
+
+        // Initialize on first drag event
+        if (_dragOriginalModelIndex < 0)
+        {
+            _dragOriginalModelIndex = Node.Items.ToList().IndexOf(draggedItem);
+            SetDraggedTabOpacity(draggedItem, 0.4);
+            ShowReorderGhost(draggedItem, screenPos);
+            ShowInsertionIndicator();
+        }
+
+        MoveReorderGhost(screenPos);
+
+        int idx = HitTestInsertionIndex(screenPos);
+        if (idx != _currentInsertionIdx)
+        {
+            _currentInsertionIdx = idx;
+            UpdateInsertionIndicator(idx);
+        }
+    }
+
+    private void OnHeaderReorderDropped(DockItem draggedItem, Point screenPos)
+    {
+        int origModelIdx     = _dragOriginalModelIndex;
+        _dragOriginalModelIndex = -1;
+        _currentInsertionIdx    = -1;
+
+        SetDraggedTabOpacity(draggedItem, 1.0);
+        HideReorderGhost();
+        RemoveInsertionIndicator();
+
+        if (origModelIdx < 0) return;
+
+        int insertionIdx    = HitTestInsertionIndex(screenPos);
+        int targetVisualIdx = Math.Clamp(
+            insertionIdx > origModelIdx ? insertionIdx - 1 : insertionIdx,
+            0, Items.Count - 1);
+
+        if (targetVisualIdx != origModelIdx)
+            TabReorderRequested?.Invoke(draggedItem, targetVisualIdx);
+    }
+
+    private void OnHeaderReorderCancelled(DockItem draggedItem)
+    {
+        _dragOriginalModelIndex = -1;
+        _currentInsertionIdx    = -1;
+
+        SetDraggedTabOpacity(draggedItem, 1.0);
+        HideReorderGhost();
+        RemoveInsertionIndicator();
+    }
+
+    // ── Ghost helpers ────────────────────────────────────────────────────────
+
+    private void SetDraggedTabOpacity(DockItem draggedItem, double opacity)
+    {
+        for (int i = 0; i < Items.Count; i++)
+            if (Items[i] is TabItem ti && ti.Tag is DockItem d && d == draggedItem)
+            { ti.Opacity = opacity; return; }
+    }
+
+    private void ShowReorderGhost(DockItem item, Point screenPos)
+    {
+        var text = new TextBlock
+        {
+            Text = item.Title,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        text.SetResourceReference(TextBlock.ForegroundProperty, "DockTabTextBrush");
+
+        var border = new Border
+        {
+            Child           = text,
+            Padding         = new Thickness(8, 3, 8, 3),
+            BorderThickness = new Thickness(1),
+            Opacity         = 0.85
+        };
+        border.SetResourceReference(Border.BackgroundProperty,   "DockTabActiveBrush");
+        border.SetResourceReference(Border.BorderBrushProperty,  "DockBorderBrush");
+
+        _reorderGhost = new Popup
+        {
+            Child              = border,
+            AllowsTransparency = true,
+            Placement          = PlacementMode.Absolute,
+            HorizontalOffset   = screenPos.X + 8,
+            VerticalOffset     = screenPos.Y - 24,
+            IsOpen             = true
+        };
+    }
+
+    private void MoveReorderGhost(Point screenPos)
+    {
+        if (_reorderGhost is null) return;
+        _reorderGhost.HorizontalOffset = screenPos.X + 8;
+        _reorderGhost.VerticalOffset   = screenPos.Y - 24;
+    }
+
+    private void HideReorderGhost()
+    {
+        if (_reorderGhost is null) return;
+        _reorderGhost.IsOpen = false;
+        _reorderGhost = null;
+    }
+
+    // ── Insertion-indicator helpers ──────────────────────────────────────────
+
+    private void ShowInsertionIndicator()
+    {
+        var layer = AdornerLayer.GetAdornerLayer(this);
+        if (layer is null) return;
+        _reorderAdorner = new ReorderInsertionAdorner(this);
+        layer.Add(_reorderAdorner);
+    }
+
+    private void UpdateInsertionIndicator(int insertionIdx)
+    {
+        if (_reorderAdorner is null) return;
+
+        double x;
+        if (insertionIdx >= Items.Count)
+        {
+            if (Items.Count == 0 ||
+                Items[Items.Count - 1] is not TabItem last ||
+                !last.IsArrangeValid) return;
+            x = last.TranslatePoint(new Point(last.ActualWidth, 0), this).X;
+        }
+        else
+        {
+            if (Items[insertionIdx] is not TabItem ti || !ti.IsArrangeValid) return;
+            x = ti.TranslatePoint(new Point(0, 0), this).X;
+        }
+
+        _reorderAdorner.SetX(x);
+    }
+
+    private void RemoveInsertionIndicator()
+    {
+        if (_reorderAdorner is null) return;
+        AdornerLayer.GetAdornerLayer(this)?.Remove(_reorderAdorner);
+        _reorderAdorner = null;
+    }
+
+    // ── Hit-test (screen coordinates) ───────────────────────────────────────
+
+    private int HitTestInsertionIndex(Point screenPos)
+    {
+        for (int i = 0; i < Items.Count; i++)
+        {
+            if (Items[i] is not TabItem ti || !ti.IsArrangeValid) continue;
+            var tiScreen = ti.PointToScreen(new Point(0, 0));
+            if (screenPos.X < tiScreen.X + ti.ActualWidth / 2)
+                return i;
+        }
+        return Items.Count;
     }
 
     private static object DefaultContent(DockItem item) => new TextBlock
@@ -128,6 +307,40 @@ public class DockTabControl : TabControl
             Margin = new Thickness(8);
             VerticalAlignment = VerticalAlignment.Center;
             HorizontalAlignment = HorizontalAlignment.Center;
+        }
+    }
+
+    /// <summary>
+    /// Adorner that draws a thin vertical insertion-caret on the tab strip.
+    /// </summary>
+    private sealed class ReorderInsertionAdorner : Adorner
+    {
+        private double _x = -1;
+        private static readonly Pen s_pen;
+
+        static ReorderInsertionAdorner()
+        {
+            s_pen = new Pen(SystemColors.HighlightBrush, 2)
+            {
+                StartLineCap = PenLineCap.Round,
+                EndLineCap   = PenLineCap.Round
+            };
+            s_pen.Freeze();
+        }
+
+        public ReorderInsertionAdorner(UIElement adornedElement) : base(adornedElement)
+        {
+            IsHitTestVisible = false;
+        }
+
+        public void SetX(double x) { _x = x; InvalidateVisual(); }
+        public void Clear()         { _x = -1; InvalidateVisual(); }
+
+        protected override void OnRender(DrawingContext dc)
+        {
+            if (_x < 0) return;
+            double h = Math.Min(((FrameworkElement)AdornedElement).ActualHeight, 34);
+            dc.DrawLine(s_pen, new Point(_x, 0), new Point(_x, h));
         }
     }
 
@@ -162,14 +375,20 @@ public class DockTabControl : TabControl
 public class DockTabHeader : StackPanel
 {
     private readonly DockItem _item;
-    private Button? _closeButton;
-    private Button? _pinButton;
+    private Button?    _closeButton;
+    private Button?    _pinButton;
+    private TextBlock? _titleBlock;
     private Point _dragStartPoint;
     private bool _isDragging;
+    private bool _isReordering;
+    private const double FloatThresholdY = 20.0;
 
     public event Action? CloseClicked;
     public event Action? DragStarted;
     public event Action? FloatRequested;
+    public event Action<Point>? ReorderDragging;
+    public event Action<Point>? ReorderDropped;
+    public event Action? ReorderCancelled;
     public event Action? AutoHideRequested;
     public event Action? HideRequested;
     public event Action? DockAsDocumentRequested;
@@ -199,13 +418,20 @@ public class DockTabHeader : StackPanel
             Children.Add(iconHost);
         }
 
-        var titleBlock = new TextBlock
+        _titleBlock = new TextBlock
         {
             Text = item.Title,
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(0, 0, 4, 0)
         };
-        Children.Add(titleBlock);
+        Children.Add(_titleBlock);
+
+        // React to title changes (e.g. "file *" dirty flag)
+        item.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(DockItem.Title) && _titleBlock is not null)
+                _titleBlock.Text = item.Title;
+        };
 
         // Pin button (auto-hide toggle) — only for tool panels, not documents
         if (item.Owner is not DocumentHostNode)
@@ -280,8 +506,18 @@ public class DockTabHeader : StackPanel
         ContextMenu = BuildContextMenu(item);
 
         MouseLeftButtonDown += OnMouseLeftButtonDown;
-        MouseMove += OnMouseMove;
-        MouseLeftButtonUp += OnMouseLeftButtonUp;
+        MouseMove           += OnMouseMove;
+        MouseLeftButtonUp   += OnMouseLeftButtonUp;
+
+        // Cancel reorder if mouse capture is lost unexpectedly (Alt+Tab, window blur…)
+        LostMouseCapture += (_, _) =>
+        {
+            if (_isReordering)
+            {
+                _isReordering = false;
+                ReorderCancelled?.Invoke();
+            }
+        };
 
         // VS2026 Fluent: close/pin buttons visible on hover or when tab is selected
         MouseEnter += (_, _) =>
@@ -418,27 +654,60 @@ public class DockTabHeader : StackPanel
 
         _dragStartPoint = e.GetPosition(this);
         _isDragging = false;
+        _isReordering = false;
         CaptureMouse();
     }
 
     private void OnMouseMove(object sender, MouseEventArgs e)
     {
-        if (e.LeftButton != MouseButtonState.Pressed || _isDragging) return;
+        if (e.LeftButton != MouseButtonState.Pressed) return;
 
-        var currentPos = e.GetPosition(this);
-        var diff = currentPos - _dragStartPoint;
-
-        if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
-            Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
+        if (_item.Owner is DocumentHostNode)
         {
-            _isDragging = true;
-            ReleaseMouseCapture();
-            DragStarted?.Invoke();
+            if (_isReordering)
+            {
+                // Pass true screen coordinates for consistent hit-testing in DockTabControl
+                ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
+                return;
+            }
+            if (_isDragging) return;
+
+            var diff = e.GetPosition(this) - _dragStartPoint;
+
+            if (Math.Abs(diff.Y) > FloatThresholdY)
+            {
+                _isDragging = true;
+                ReleaseMouseCapture();
+                DragStarted?.Invoke();
+                return;
+            }
+            if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance)
+            {
+                _isReordering = true;
+                ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
+            }
+        }
+        else
+        {
+            if (_isDragging) return;
+            var diff = e.GetPosition(this) - _dragStartPoint;
+            if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
+            {
+                _isDragging = true;
+                ReleaseMouseCapture();
+                DragStarted?.Invoke();
+            }
         }
     }
 
     private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
+        if (_isReordering)
+        {
+            ReorderDropped?.Invoke(PointToScreen(e.GetPosition(this)));
+            _isReordering = false;
+        }
         _isDragging = false;
         ReleaseMouseCapture();
     }

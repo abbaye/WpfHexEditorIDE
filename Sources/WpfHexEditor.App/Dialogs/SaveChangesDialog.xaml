@@ -7,7 +7,7 @@
 <Window x:Class="WpfHexEditor.App.Dialogs.SaveChangesDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Enregistrer les modifications"
+        Title="Save Changes"
         Width="460" SizeToContent="Height"
         MinWidth="360" MinHeight="160"
         WindowStartupLocation="CenterOwner"
@@ -142,7 +142,7 @@
 
         <!-- Master "Select All" (visible uniquement si plusieurs fichiers) -->
         <CheckBox x:Name="SelectAllCheck"
-                  Content="Tout sélectionner"
+                  Content="Select All"
                   IsThreeState="False"
                   Visibility="Collapsed"
                   Margin="0,0,0,4"
@@ -172,7 +172,7 @@
                 </Style>
             </StackPanel.Resources>
 
-            <Button Content="Enregistrer"
+            <Button Content="Save"
                     IsDefault="True"
                     Click="OnSaveClicked">
                 <Button.Style>
@@ -185,8 +185,8 @@
                 </Button.Style>
             </Button>
 
-            <Button Content="Ne pas enregistrer" Click="OnDontSaveClicked" />
-            <Button Content="Annuler" IsCancel="True" Click="OnCancelClicked" />
+            <Button Content="Don't Save" Click="OnDontSaveClicked" />
+            <Button Content="Cancel" IsCancel="True" Click="OnCancelClicked" />
 
         </StackPanel>
     </StackPanel>
