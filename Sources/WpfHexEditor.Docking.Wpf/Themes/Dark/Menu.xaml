@@ -426,4 +426,9 @@
         </Setter>
     </Style>
 
+    <!-- Implicit styles — wired here where the named keys are defined -->
+    <Style TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource DockDarkContextMenuStyle}"/>
+    <Style TargetType="{x:Type MenuItem}"    BasedOn="{StaticResource DockDarkMenuItemStyle}"/>
+    <Style TargetType="{x:Type Separator}"   BasedOn="{StaticResource DockDarkMenuSeparatorStyle}"/>
+
 </ResourceDictionary>

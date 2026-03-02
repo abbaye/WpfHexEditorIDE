@@ -357,24 +357,14 @@
     <!-- ═══════════════════════════════════════════════════════════════════
          Implicit control styles
          ─────────────────────────────────────────────────────────────────
-         PanelCommon.xaml is merged LAST in all theme files, so StaticResource
-         refs to Menu.xaml keys (DockDark*) and to DockComboBoxStyle (above)
-         are always valid at merge time.
-         These implicit styles override the minimal stubs in ContentControls.xaml
-         and ensure every standard WPF control is themed automatically.
+         Only styles whose named key is defined within PanelCommon.xaml itself
+         can safely use {StaticResource} here. Keys from sibling Menu.xaml files
+         (DockDark*) are added as implicit styles at the END of Dark/Menu.xaml
+         and Light/Menu.xaml, where the keys are guaranteed to be in scope.
          ═══════════════════════════════════════════════════════════════════ -->
 
     <!-- ComboBox: implicit alias — applies DockComboBoxStyle to every ComboBox in scope -->
     <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource DockComboBoxStyle}"/>
-
-    <!-- ContextMenu: implicit — all ContextMenus get the themed dark popup -->
-    <Style TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource DockDarkContextMenuStyle}"/>
-
-    <!-- MenuItem: implicit — items inside Menu and ContextMenu use the themed template -->
-    <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource DockDarkMenuItemStyle}"/>
-
-    <!-- Separator: implicit — thin 1px rule used in context menus -->
-    <Style TargetType="{x:Type Separator}" BasedOn="{StaticResource DockDarkMenuSeparatorStyle}"/>
 
     <!-- ─────────────────────────────────────────────────────────────────
          CheckBox — full VS2022-style custom template
