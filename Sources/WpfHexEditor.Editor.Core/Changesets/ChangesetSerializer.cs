@@ -91,7 +91,7 @@ public static class ChangesetSerializer
     public static byte[] ParseHexBytes(string s)
     {
         if (string.IsNullOrWhiteSpace(s)) return Array.Empty<byte>();
-        var parts = s.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var parts = s.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         var result = new byte[parts.Length];
         for (int i = 0; i < parts.Length; i++)
             result[i] = Convert.ToByte(parts[i], 16);
