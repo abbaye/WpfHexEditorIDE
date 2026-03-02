@@ -45,7 +45,7 @@ public partial class AddExistingItemDialog : Window
     // ── Type subfolder name map ─────────────────────────────────────────────
     public static string TypeSubfolderName(ProjectItemType type) => type switch
     {
-        ProjectItemType.Binary          => "ROMs",
+        ProjectItemType.Binary          => "Binaries",
         ProjectItemType.Tbl             => "Tables",
         ProjectItemType.Patch           => "Patches",
         ProjectItemType.FormatDefinition => "FormatDefs",
@@ -109,6 +109,24 @@ public partial class AddExistingItemDialog : Window
     }
 
     // ── Event handlers ──────────────────────────────────────────────────────
+
+    private void OnFileDrop(object sender, DragEventArgs e)
+    {
+        if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+
+        var dropped = (string[])e.Data.GetData(DataFormats.FileDrop);
+        // Keep only files (discard dropped directories)
+        _filePaths = dropped.Where(File.Exists).ToArray();
+
+        if (_filePaths.Length == 0) return;
+
+        FilePathBox.Text = _filePaths.Length == 1
+            ? _filePaths[0]
+            : $"{_filePaths.Length} files selected";
+
+        UpdateDetectedType();
+        Refresh();
+    }
 
     private void OnBrowse(object sender, RoutedEventArgs e)
     {
@@ -269,6 +287,11 @@ public partial class AddExistingItemDialog : Window
         var first        = _filePaths[0];
         var type         = GetSelectedType();
         var subName      = typeSubfolder ? TypeSubfolderName(type) : null;
+
+        // Update auto-create checkbox label to show the target folder name
+        AutoVirtualFolderCheck.Content = subName is not null
+            ? $"Auto-create / use folder: {subName}"
+            : "Auto-create / use folder for type";
 
         string physPreview;
         if (!copying)

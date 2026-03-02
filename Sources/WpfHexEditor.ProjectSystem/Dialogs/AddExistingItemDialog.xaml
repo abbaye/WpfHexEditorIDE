@@ -13,6 +13,8 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResizeWithGrip"
         ShowInTaskbar="False"
+        AllowDrop="True"
+        Drop="OnFileDrop"
         Background="{DynamicResource DockWindowBackgroundBrush}">
 
     <Window.Resources>
@@ -68,6 +70,7 @@
                      Background="{DynamicResource DockBackgroundBrush}" />
             <Button Grid.Column="2" Content="Browse…" Margin="6,0,0,0"
                     Padding="10,5" MinWidth="70"
+                    ToolTip="Select one or more files (multi-select supported). You can also drag and drop files onto this window."
                     Click="OnBrowse" />
         </Grid>
 
@@ -152,7 +155,7 @@
 
             <CheckBox x:Name="AutoVirtualFolderCheck"
                       Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                      Content="Auto-create / use virtual folder for type"
+                      Content="Auto-create / use folder for type"
                       IsChecked="True"
                       Checked="OnAutoVirtualFolderChanged"
                       Unchecked="OnAutoVirtualFolderChanged" />

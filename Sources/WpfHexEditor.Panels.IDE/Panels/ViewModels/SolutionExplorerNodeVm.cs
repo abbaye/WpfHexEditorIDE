@@ -170,11 +170,29 @@ public sealed class FolderNodeVm : SolutionExplorerNodeVm
     public IProject?      Project  { get; init; }
 
     /// <summary>
-    /// True when the folder is backed by a physical directory on disk
-    /// (<see cref="IVirtualFolder.PhysicalRelativePath"/> is set).
-    /// False for purely logical/virtual folders.
+    /// Relative path of this folder within the project tree (computed at build time,
+    /// e.g. "Images" or "Tables/Subtables"). Used for physical-directory auto-detection.
     /// </summary>
-    public bool IsPhysicallyBacked => Folder.PhysicalRelativePath is not null;
+    public string? ComputedRelPath { get; init; }
+
+    /// <summary>
+    /// True when the folder is backed by a physical directory on disk.
+    /// Uses the explicit <see cref="IVirtualFolder.PhysicalRelativePath"/> when set,
+    /// otherwise falls back to checking whether a directory at <see cref="ComputedRelPath"/>
+    /// exists relative to the project file.
+    /// </summary>
+    public bool IsPhysicallyBacked
+    {
+        get
+        {
+            if (Folder.PhysicalRelativePath is not null) return true;
+            if (ComputedRelPath is null || Project?.ProjectFilePath is null) return false;
+            var projectDir = System.IO.Path.GetDirectoryName(Project.ProjectFilePath);
+            if (projectDir is null) return false;
+            return System.IO.Directory.Exists(
+                System.IO.Path.Combine(projectDir, ComputedRelPath.Replace('/', System.IO.Path.DirectorySeparatorChar)));
+        }
+    }
 
     // ── Inline rename ───────────────────────────────────────────────────────
 

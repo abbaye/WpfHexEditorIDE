@@ -1783,7 +1783,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     .FirstOrDefault(f => string.Equals(f.Name, folderName,
                                         StringComparison.OrdinalIgnoreCase));
                 folderId = existing?.Id
-                    ?? (await _solutionManager.CreateFolderAsync(e.Project, folderName)).Id;
+                    ?? (await _solutionManager.CreateFolderAsync(e.Project, folderName,
+                            createPhysical: true)).Id;
             }
 
             // ── 3. Register in project ────────────────────────────────────────

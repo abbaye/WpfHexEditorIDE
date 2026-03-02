@@ -342,6 +342,30 @@ public sealed class SolutionManager : ISolutionManager
             }
         }
 
+        // Physically move the file if it lives inside the project directory
+        var projDir = Path.GetDirectoryName(proj.ProjectFilePath) ?? "";
+        var srcPath = pi.AbsolutePath;
+
+        if (!string.IsNullOrEmpty(projDir) && !string.IsNullOrEmpty(srcPath) &&
+            srcPath.StartsWith(projDir, StringComparison.OrdinalIgnoreCase))
+        {
+            var physRel = targetFolderId is not null
+                ? FindPhysicalRelPath(proj.RootFoldersMutable, targetFolderId)
+                : null;
+
+            var destDir  = physRel is not null ? Path.Combine(projDir, physRel) : projDir;
+            var destPath = Path.Combine(destDir, Path.GetFileName(srcPath));
+
+            if (!string.Equals(srcPath, destPath, StringComparison.OrdinalIgnoreCase) &&
+                File.Exists(srcPath))
+            {
+                Directory.CreateDirectory(destDir);
+                File.Move(srcPath, destPath);
+                pi.RelativePath = Path.GetRelativePath(projDir, destPath).Replace('\\', '/');
+                pi.AbsolutePath = destPath;
+            }
+        }
+
         proj.IsModified = true;
         return SaveProjectAsync(project, ct);
     }

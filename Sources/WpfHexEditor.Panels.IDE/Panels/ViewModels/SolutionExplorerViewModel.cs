@@ -121,12 +121,13 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         return node;
     }
 
-    private static FolderNodeVm BuildFolderNode(IVirtualFolder folder, IProject project)
+    private static FolderNodeVm BuildFolderNode(IVirtualFolder folder, IProject project, string parentRelPath = "")
     {
-        var node = new FolderNodeVm(folder) { IsExpanded = false, Project = project };
+        var relPath = parentRelPath.Length == 0 ? folder.Name : $"{parentRelPath}/{folder.Name}";
+        var node = new FolderNodeVm(folder) { IsExpanded = false, Project = project, ComputedRelPath = relPath };
 
         foreach (var childFolder in folder.Children)
-            node.Children.Add(BuildFolderNode(childFolder, project));
+            node.Children.Add(BuildFolderNode(childFolder, project, relPath));
 
         foreach (var id in folder.ItemIds)
         {
