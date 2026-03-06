@@ -1347,8 +1347,8 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         // External file drop from Windows Explorer: accept as Copy on any project/folder target
         if (isExternalFileDrop && !isFileDrag && !isProjectDrag)
         {
-            var target = GetDropTarget(e.OriginalSource as DependencyObject);
-            e.Effects = target is (ProjectNodeVm or FolderNodeVm)
+            var extTarget = GetDropTarget(e.OriginalSource as DependencyObject);
+            e.Effects = extTarget is (ProjectNodeVm or FolderNodeVm)
                 ? DragDropEffects.Copy
                 : DragDropEffects.None;
             e.Handled = true;

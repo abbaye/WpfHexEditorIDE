@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System;
 using System.Collections.ObjectModel;
 using WpfHexEditor.Core;
 using WpfHexEditor.Editor.Core;
@@ -25,10 +26,14 @@ namespace WpfHexEditor.HexEditor
         // ═══════════════════════════════════════════════════════════════════
 
         private ObservableCollection<StatusBarItem>? _statusBarItems;
-        private StatusBarItem _sbByteSize    = null!;
-        private StatusBarItem _sbByteOrder   = null!;
-        private StatusBarItem _sbEditMode    = null!;
-        private StatusBarItem _sbBytePerLine = null!;
+        private StatusBarItem _sbByteSize       = null!;
+        private StatusBarItem _sbByteOrder      = null!;
+        private StatusBarItem _sbEditMode       = null!;
+        private StatusBarItem _sbBytePerLine    = null!;
+        private StatusBarItem _sbOffsetVisual   = null!;
+        private StatusBarItem _sbDataVisual     = null!;
+        private StatusBarItem _sbByteGrouping   = null!;
+        private StatusBarItem _sbCopyMode       = null!;
 
         // ═══════════════════════════════════════════════════════════════════
         // IStatusBarContributor
@@ -115,6 +120,93 @@ namespace WpfHexEditor.HexEditor
                 });
             }
 
+            // ── Offset display format ──────────────────────────────────────────
+            _sbOffsetVisual = new StatusBarItem
+            {
+                Label   = "Offset",
+                Tooltip = "Click to change offset display format"
+            };
+            _sbOffsetVisual.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = "Hex",
+                Command     = new HexEditorRelayCommand(_ => OffSetStringVisual = DataVisualType.Hexadecimal)
+            });
+            _sbOffsetVisual.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = "Dec",
+                Command     = new HexEditorRelayCommand(_ => OffSetStringVisual = DataVisualType.Decimal)
+            });
+            _sbOffsetVisual.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = "Bin",
+                Command     = new HexEditorRelayCommand(_ => OffSetStringVisual = DataVisualType.Binary)
+            });
+
+            // ── Data display format ────────────────────────────────────────────
+            _sbDataVisual = new StatusBarItem
+            {
+                Label   = "Data",
+                Tooltip = "Click to change byte data display format"
+            };
+            _sbDataVisual.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = "Hex",
+                Command     = new HexEditorRelayCommand(_ => DataStringVisual = DataVisualType.Hexadecimal)
+            });
+            _sbDataVisual.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = "Dec",
+                Command     = new HexEditorRelayCommand(_ => DataStringVisual = DataVisualType.Decimal)
+            });
+            _sbDataVisual.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = "Bin",
+                Command     = new HexEditorRelayCommand(_ => DataStringVisual = DataVisualType.Binary)
+            });
+
+            // ── Byte grouping ──────────────────────────────────────────────────
+            _sbByteGrouping = new StatusBarItem
+            {
+                Label   = "Grouping",
+                Tooltip = "Click to change byte grouping"
+            };
+            _sbByteGrouping.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = "2B",
+                Command     = new HexEditorRelayCommand(_ => ByteGrouping = ByteSpacerGroup.TwoByte)
+            });
+            _sbByteGrouping.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = "4B",
+                Command     = new HexEditorRelayCommand(_ => ByteGrouping = ByteSpacerGroup.FourByte)
+            });
+            _sbByteGrouping.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = "6B",
+                Command     = new HexEditorRelayCommand(_ => ByteGrouping = ByteSpacerGroup.SixByte)
+            });
+            _sbByteGrouping.Choices.Add(new StatusBarChoice
+            {
+                DisplayName = "8B",
+                Command     = new HexEditorRelayCommand(_ => ByteGrouping = ByteSpacerGroup.EightByte)
+            });
+
+            // ── Copy-to-clipboard format ───────────────────────────────────────
+            _sbCopyMode = new StatusBarItem
+            {
+                Label   = "Copy as",
+                Tooltip = "Click to change the default copy format"
+            };
+            foreach (CopyPasteMode mode in (CopyPasteMode[])Enum.GetValues(typeof(CopyPasteMode)))
+            {
+                var capture = mode;
+                _sbCopyMode.Choices.Add(new StatusBarChoice
+                {
+                    DisplayName = capture.ToString(),
+                    Command     = new HexEditorRelayCommand(_ => DefaultCopyToClipboardMode = capture)
+                });
+            }
+
             // Initialise values from current DP state
             RefreshStatusBarItemValues();
 
@@ -123,7 +215,11 @@ namespace WpfHexEditor.HexEditor
                 _sbByteSize,
                 _sbByteOrder,
                 _sbEditMode,
-                _sbBytePerLine
+                _sbBytePerLine,
+                _sbOffsetVisual,
+                _sbDataVisual,
+                _sbByteGrouping,
+                _sbCopyMode
             };
         }
 
@@ -166,6 +262,42 @@ namespace WpfHexEditor.HexEditor
             var bplLabel = BytePerLine.ToString();
             _sbBytePerLine.Value = bplLabel;
             foreach (var c in _sbBytePerLine.Choices) c.IsActive = c.DisplayName == bplLabel;
+
+            // Offset display format
+            var offLabel = OffSetStringVisual switch
+            {
+                DataVisualType.Decimal     => "Dec",
+                DataVisualType.Binary      => "Bin",
+                _                          => "Hex"
+            };
+            _sbOffsetVisual.Value = offLabel;
+            foreach (var c in _sbOffsetVisual.Choices) c.IsActive = c.DisplayName == offLabel;
+
+            // Data display format
+            var dataLabel = DataStringVisual switch
+            {
+                DataVisualType.Decimal => "Dec",
+                DataVisualType.Binary  => "Bin",
+                _                      => "Hex"
+            };
+            _sbDataVisual.Value = dataLabel;
+            foreach (var c in _sbDataVisual.Choices) c.IsActive = c.DisplayName == dataLabel;
+
+            // Byte grouping
+            var grpLabel = ByteGrouping switch
+            {
+                ByteSpacerGroup.TwoByte   => "2B",
+                ByteSpacerGroup.SixByte   => "6B",
+                ByteSpacerGroup.EightByte => "8B",
+                _                         => "4B"
+            };
+            _sbByteGrouping.Value = grpLabel;
+            foreach (var c in _sbByteGrouping.Choices) c.IsActive = c.DisplayName == grpLabel;
+
+            // Copy-to-clipboard format
+            var copyLabel = DefaultCopyToClipboardMode.ToString();
+            _sbCopyMode.Value = copyLabel;
+            foreach (var c in _sbCopyMode.Choices) c.IsActive = c.DisplayName == copyLabel;
         }
     }
 }
