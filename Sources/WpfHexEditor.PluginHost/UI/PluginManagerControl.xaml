@@ -1,0 +1,226 @@
+<!--
+    Project: WpfHexEditor.PluginHost
+    File: PluginManagerControl.xaml
+    Author: Auto
+    Created: 2026-03-06
+    Description:
+        Plugin Manager document-tab panel. Two-column layout: left sidebar
+        with plugin list + filter/sort toolbar; right pane with plugin details,
+        live metrics, permissions table, and action buttons.
+    Theme: DynamicResource only (PanelCommon.xaml via merged parent theme).
+    ContentId: "plugin-manager"
+-->
+<UserControl x:Class="WpfHexEditor.PluginHost.UI.PluginManagerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WpfHexEditor.PluginHost.UI">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" MinWidth="180"/>
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT SIDEBAR -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <!-- Toolbar -->
+                <RowDefinition Height="26"/>
+                <!-- Filter input -->
+                <RowDefinition Height="30"/>
+                <!-- Plugin list -->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Sidebar toolbar -->
+            <Border Grid.Row="0" Style="{DynamicResource PanelToolbarStyle}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
+                    <TextBlock Text="PLUGINS" FontSize="10" FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    <Button Style="{DynamicResource PanelIconButtonStyle}"
+                            Content="&#xE710;" ToolTip="Install from File"
+                            Command="{Binding InstallFromFileCommand}"
+                            Margin="4,0,0,0"/>
+                    <Button Style="{DynamicResource PanelIconButtonStyle}"
+                            Content="&#xE72C;" ToolTip="Refresh"
+                            Command="{Binding RefreshCommand}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Filter + Sort row -->
+            <Grid Grid.Row="1" Margin="4,2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Filter plugins…"
+                         Margin="0,0,4,0"
+                         VerticalContentAlignment="Center"
+                         Padding="4,0"/>
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding SortOptions}"
+                          SelectedItem="{Binding SortBy}"
+                          ToolTip="Sort by"/>
+            </Grid>
+
+            <!-- Plugin list -->
+            <ListBox Grid.Row="2"
+                     ItemsSource="{Binding Plugins}"
+                     SelectedItem="{Binding SelectedPlugin}"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:PluginListItemViewModel}">
+                        <Grid Margin="4,3" ToolTip="{Binding Description}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- State dot -->
+                            <Ellipse Grid.Column="0" Width="8" Height="8"
+                                     VerticalAlignment="Center"
+                                     Fill="{Binding StateBadgeColor}"/>
+
+                            <StackPanel Grid.Column="1" Margin="6,0,4,0">
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding Version}" FontSize="10"
+                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                           Opacity="0.7"/>
+                            </StackPanel>
+
+                            <!-- Trust badge -->
+                            <TextBlock Grid.Column="2" Text="&#xE8A4;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="12" VerticalAlignment="Center"
+                                       Foreground="#22C55E"
+                                       Visibility="{Binding IsTrustedPublisher, Converter={StaticResource BoolToVis}}"
+                                       ToolTip="Trusted Publisher"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <!-- Splitter -->
+        <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Stretch"
+                      Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
+
+        <!-- RIGHT PANE -->
+        <Grid Grid.Column="2">
+            <!-- No selection state -->
+            <TextBlock Text="Select a plugin to view details"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                       Opacity="0.5"
+                       Visibility="{Binding SelectedPlugin, Converter={StaticResource NullToVis}}"/>
+
+            <!-- Details pane (when plugin selected) -->
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          Visibility="{Binding SelectedPlugin, Converter={StaticResource NotNullToVis}}">
+                <StackPanel Margin="12" DataContext="{Binding SelectedPlugin}">
+
+                    <!-- Header: Name + State badge -->
+                    <DockPanel Margin="0,0,0,8">
+                        <Border DockPanel.Dock="Right" CornerRadius="4" Padding="6,2"
+                                Background="{Binding StateBadgeColor}" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding StateLabel}" FontSize="11" Foreground="White"/>
+                        </Border>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                            <TextBlock FontSize="11" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
+                                <Run Text="{Binding Publisher}"/> <Run Text=" · v"/><Run Text="{Binding Version}"/>
+                                <Run Text=" · "/><Run Text="{Binding IsolationMode}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <!-- Error message -->
+                    <Border Background="#3EEF4444" CornerRadius="4" Padding="8,6" Margin="0,0,0,8"
+                            Visibility="{Binding FaultMessage, Converter={StaticResource NotNullToVis}}">
+                        <TextBlock Text="{Binding FaultMessage}" FontSize="11" Foreground="#EF4444"
+                                   TextWrapping="Wrap"/>
+                    </Border>
+
+                    <!-- Description -->
+                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="12"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Opacity="0.85" Margin="0,0,0,12"/>
+
+                    <!-- Live metrics -->
+                    <TextBlock Text="METRICS" FontSize="10" FontWeight="SemiBold"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               Margin="0,0,0,4"/>
+                    <Border Background="{DynamicResource Panel_ToolbarBrush}" CornerRadius="4" Padding="8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding CpuPercent, StringFormat={}{0:F1}%}" FontSize="14"
+                                           FontWeight="Bold" HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                <TextBlock Text="CPU" FontSize="10" HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding MemoryMb, StringFormat={}{0} MB}" FontSize="14"
+                                           FontWeight="Bold" HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                <TextBlock Text="Memory" FontSize="10" HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding InitTimeMs, StringFormat={}{0:F0} ms}" FontSize="14"
+                                           FontWeight="Bold" HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                <TextBlock Text="Init" FontSize="10" HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding AvgExecMs, StringFormat={}{0:F1} ms}" FontSize="14"
+                                           FontWeight="Bold" HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                <TextBlock Text="Avg Call" FontSize="10" HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Loaded since -->
+                    <TextBlock Margin="0,6,0,12" FontSize="11"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
+                        <Run Text="Loaded since: "/><Run Text="{Binding LoadedSince}"/>
+                    </TextBlock>
+
+                    <!-- Action buttons -->
+                    <TextBlock Text="ACTIONS" FontSize="10" FontWeight="SemiBold"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               Margin="0,0,0,4"/>
+                    <WrapPanel Margin="0,0,0,12">
+                        <Button Content="Enable" Command="{Binding EnableCommand}"
+                                Padding="10,4" Margin="0,0,6,6"/>
+                        <Button Content="Disable" Command="{Binding DisableCommand}"
+                                Padding="10,4" Margin="0,0,6,6"/>
+                        <Button Content="Reload" Command="{Binding ReloadCommand}"
+                                Padding="10,4" Margin="0,0,6,6"/>
+                        <Button Content="Uninstall" Command="{Binding UninstallCommand}"
+                                Padding="10,4" Foreground="#EF4444"/>
+                    </WrapPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>
