@@ -44,6 +44,7 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.ChangesetEditor\WpfHexEditor.Editor.ChangesetEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Definitions\WpfHexEditor.Definitions.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Options\WpfHexEditor.Options.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
   </ItemGroup>
 
 </Project>

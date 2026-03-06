@@ -356,6 +356,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         PopulateRecentMenus();
         TryRestoreSession();
         HandleStartupFile();
+
+        // Plugin system — fire-and-forget after layout is ready
+        _ = InitializePluginSystemAsync();
     }
 
     private void InitAutoSerializeTimer()
@@ -397,6 +400,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_isClosingForced)
         {
             _fileMonitorService?.Dispose();
+            _ = ShutdownPluginSystemAsync();
             AutoSaveLayout();
             return;
         }
@@ -2935,6 +2939,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnActiveDocumentChanged(DockItem item)
     {
+        // Notify plugin focus context of the document change
+        UpdatePluginFocusContext(item);
+
         // Panel tabs: clear document-specific status bar contributions and exit.
         if (item.ContentId.StartsWith("panel-"))
         {

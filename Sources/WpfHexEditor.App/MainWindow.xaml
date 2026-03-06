@@ -66,7 +66,7 @@
                        MouseLeftButtonDown="OnLogoMouseDown" />
 
                 <!-- Menu (left, inline in title bar) -->
-                <Menu DockPanel.Dock="Left" Style="{DynamicResource DockDarkMenuStyle}"
+                <Menu x:Name="MainMenuBar" DockPanel.Dock="Left" Style="{DynamicResource DockDarkMenuStyle}"
                       VerticalAlignment="Center"
                       WindowChrome.IsHitTestVisibleInChrome="True">
 
@@ -1018,7 +1018,7 @@
         <dock:DockControl Grid.Row="2" x:Name="DockHost" Margin="2" />
 
         <!-- Status Bar — VS2022-style: adapts to the active document -->
-        <StatusBar Grid.Row="3" Background="{DynamicResource DockTabActiveBrush}">
+        <StatusBar x:Name="AppStatusBar" Grid.Row="3" Background="{DynamicResource DockTabActiveBrush}">
 
             <!-- Active editor interactive items (IStatusBarContributor) -->
             <StatusBarItem>
