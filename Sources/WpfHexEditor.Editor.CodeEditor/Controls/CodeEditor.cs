@@ -4329,6 +4329,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public void LoadFromFile(string filePath)
         {
+            if (!File.Exists(filePath))
+            {
+                StatusMessage?.Invoke(this, $"File not found: {Path.GetFileName(filePath)}");
+                return;
+            }
+
             var text = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
             LoadText(text);
             _currentFilePath = filePath;

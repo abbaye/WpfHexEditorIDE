@@ -36,6 +36,15 @@ public interface IEditorRegistry
     IEditorFactory? FindFactory(string filePath);
 
     /// <summary>
+    /// Returns the factory whose <see cref="IEditorDescriptor.Id"/> matches
+    /// <paramref name="preferredId"/> (if it can open the file), otherwise falls back
+    /// to the first-match registration order.
+    /// Pass <c>null</c> as <paramref name="preferredId"/> to get the same behaviour as
+    /// the single-parameter overload.
+    /// </summary>
+    IEditorFactory? FindFactory(string filePath, string? preferredId);
+
+    /// <summary>
     /// Returns all registered factories.
     /// </summary>
     IReadOnlyList<IEditorFactory> GetAll();

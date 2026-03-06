@@ -33,5 +33,20 @@ public sealed class EditorRegistry : IEditorRegistry
     }
 
     /// <inheritdoc />
+    public IEditorFactory? FindFactory(string filePath, string? preferredId)
+    {
+        if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+
+        if (!string.IsNullOrEmpty(preferredId))
+        {
+            var preferred = _factories.FirstOrDefault(
+                f => f.Descriptor.Id == preferredId && f.CanOpen(filePath));
+            if (preferred is not null) return preferred;
+        }
+
+        return FindFactory(filePath);
+    }
+
+    /// <inheritdoc />
     public IReadOnlyList<IEditorFactory> GetAll() => _factories.AsReadOnly();
 }
