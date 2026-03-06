@@ -29,6 +29,12 @@ public class AutoHideBar : StackPanel
     /// </summary>
     public event Action<DockItem>? ItemClicked;
 
+    /// <summary>
+    /// Raised after <see cref="UpdateItems"/> rebuilds the button list,
+    /// so attached hover-preview helpers can re-wire mouse events.
+    /// </summary>
+    public event Action? ItemsUpdated;
+
     public AutoHideBar(Dock position)
     {
         Position = position;
@@ -72,6 +78,7 @@ public class AutoHideBar : StackPanel
         }
 
         Visibility = Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        ItemsUpdated?.Invoke();
     }
 }
 
@@ -100,6 +107,11 @@ public class AutoHideFlyout : Grid
 
     public DockItem? CurrentItem { get; private set; }
     public bool IsOpen => _panelContainer.Visibility == Visibility.Visible;
+
+    /// <summary>
+    /// Returns the panel container element so the host can capture a snapshot before closing.
+    /// </summary>
+    public UIElement PanelElement => _panelContainer;
 
     /// <summary>
     /// Raised when the user clicks the pin button or double-clicks the title bar to re-dock.

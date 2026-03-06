@@ -13,6 +13,7 @@ using System.Windows.Media;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Docking.Wpf.Commands;
+using WpfHexEditor.Docking.Wpf.Controls;
 
 namespace WpfHexEditor.Docking.Wpf;
 
@@ -40,6 +41,10 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     private readonly AutoHideFlyout _autoHideFlyout;
     private readonly ContentControl _centerHost;
     private Border? _activePanel;
+
+    // Bitmap snapshots captured when an auto-hide flyout is dismissed,
+    // keyed by DockItem so AutoHideBarHoverPreview can display them.
+    private readonly Dictionary<DockItem, System.Windows.Media.Imaging.BitmapSource> _autoHideBitmapCache = new();
 
     public static readonly DependencyProperty LayoutProperty =
         DependencyProperty.Register(
@@ -348,6 +353,13 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _autoHideRight.ItemClicked += OnAutoHideItemClicked;
         _autoHideTop.ItemClicked += OnAutoHideItemClicked;
         _autoHideBottom.ItemClicked += OnAutoHideItemClicked;
+
+        // Attach hover-preview to all four auto-hide bars.
+        // The bitmap provider returns the last-captured snapshot for a given item.
+        AutoHideBarHoverPreview.Attach(_autoHideLeft,   item => _autoHideBitmapCache.GetValueOrDefault(item));
+        AutoHideBarHoverPreview.Attach(_autoHideRight,  item => _autoHideBitmapCache.GetValueOrDefault(item));
+        AutoHideBarHoverPreview.Attach(_autoHideTop,    item => _autoHideBitmapCache.GetValueOrDefault(item));
+        AutoHideBarHoverPreview.Attach(_autoHideBottom, item => _autoHideBitmapCache.GetValueOrDefault(item));
 
         // Build the root structure: DockPanel with bars + center, then flyout overlay
         _rootPanel = new DockPanel { LastChildFill = true };
@@ -744,6 +756,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         }
 
         WireTabControlEvents(host);
+        TabHoverPreview.Attach(host);
         return CreatePanelBorder(host);
     }
 
@@ -770,6 +783,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         tabControl.TabStripPlacement = Dock.Bottom;
         tabControl.Bind(group, CachedContentFactory);
         WireTabControlEvents(tabControl);
+        TabHoverPreview.Attach(tabControl);
         return tabControl;
     }
 
@@ -1122,7 +1136,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     {
         if (_autoHideFlyout.IsOpen && _autoHideFlyout.CurrentItem == item)
         {
-            // Toggle off
+            // Toggle off — capture snapshot before dismissing
+            CaptureAutoHideSnapshot();
             _autoHideFlyout.Close();
             return;
         }
@@ -1132,6 +1147,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
     private void OnAutoHideRestoreRequested(DockItem item)
     {
+        CaptureAutoHideSnapshot();
         _autoHideFlyout.Close();
 
         if (_engine is null || Layout is null) return;
@@ -1152,6 +1168,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
     private void OnAutoHideCloseRequested(DockItem item)
     {
+        CaptureAutoHideSnapshot();
         _autoHideFlyout.Close();
 
         if (_engine is null) return;
@@ -1162,6 +1179,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
     private void OnAutoHideFloatRequested(DockItem item)
     {
+        CaptureAutoHideSnapshot();
         _autoHideFlyout.Close();
 
         if (_engine is null || Layout is null) return;
@@ -1170,5 +1188,40 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         _engine.RestoreFromAutoHide(item, Layout.MainDocumentHost, DockDirection.Center);
         _engine.Float(item);
         RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Captures a <see cref="System.Windows.Media.Imaging.RenderTargetBitmap"/> snapshot of the
+    /// current flyout panel and stores it in <see cref="_autoHideBitmapCache"/>
+    /// so the hover preview can display it after the flyout is dismissed.
+    /// </summary>
+    private void CaptureAutoHideSnapshot()
+    {
+        if (_autoHideFlyout.CurrentItem is not { } item) return;
+        var panel = _autoHideFlyout.PanelElement;
+        if (!panel.IsVisible) return;
+
+        try
+        {
+            var dpi    = System.Windows.Media.VisualTreeHelper.GetDpi(panel);
+            var width  = Math.Max(1, panel.RenderSize.Width);
+            var height = Math.Max(1, panel.RenderSize.Height);
+
+            var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(
+                (int)(width  * dpi.DpiScaleX),
+                (int)(height * dpi.DpiScaleY),
+                dpi.PixelsPerInchX,
+                dpi.PixelsPerInchY,
+                System.Windows.Media.PixelFormats.Pbgra32);
+
+            rtb.Render(panel);
+            rtb.Freeze();
+
+            _autoHideBitmapCache[item] = rtb;
+        }
+        catch
+        {
+            // Swallow render errors (hardware-accelerated content not yet realised, etc.)
+        }
     }
 }

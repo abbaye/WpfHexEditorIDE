@@ -5,19 +5,30 @@
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-05
 // Description:
-//     Provides a lightweight hover-preview Popup for document tabs.
-//     After a configurable delay (default 400 ms) a small thumbnail of
-//     the tab content is shown in a Popup beneath the tab header.
-//     The thumbnail is produced via RenderTargetBitmap so no extra
-//     layout is required.
+//     Provides a lightweight hover-preview Popup for document/panel tabs.
+//     After a configurable delay (default 400 ms) a small thumbnail of the
+//     tab content is shown in a Popup beneath the tab header.
 //
 // Architecture Notes:
-//     Observer Pattern — subscribes to MouseEnter/MouseLeave on each TabItem.
-//     Lazy Snapshot   — bitmap captured only when the popup is actually opening.
-//     Singleton per DockTabControl — attach with TabHoverPreview.Attach().
+//     Observer Pattern     — subscribes to MouseEnter/MouseLeave on each TabItem.
+//     Eager Snapshot       — bitmap captured on SelectionChanged (while content is
+//                            still rendered). WPF only renders the selected tab's
+//                            content; non-selected content is always IsVisible=false,
+//                            making on-the-fly capture impossible.
+//     Deselection Cache    — Dictionary<TabItem, BitmapSource> keyed per tab.
+//     Double Timer Pattern — open delay (400ms) + close delay (150ms) prevents the
+//                            popup from flashing due to spurious MouseLeave events
+//                            caused by WPF's Popup HwndSource creation.
+//     StaysOpen = true     — popup closed manually to avoid the OS-level mouse hook
+//                            that StaysOpen=false installs (which itself triggers
+//                            a spurious MouseLeave on the placement target).
+//     Singleton per owner  — attach with TabHoverPreview.Attach().
+//
+// Theme: DockMenuBackgroundBrush / DockBorderBrush (100% DynamicResource)
 // ==========================================================
 
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -36,14 +47,18 @@ public sealed class TabHoverPreview
     // ── Configuration ────────────────────────────────────────────────────────
     private const double PreviewWidth  = 200;
     private const double PreviewHeight = 150;
-    private const int    HoverDelayMs  = 400;
+    private const int    OpenDelayMs   = 400;
+    private const int    CloseDelayMs  = 150;
 
     // ── State ────────────────────────────────────────────────────────────────
-    private readonly DockTabControl _owner;
-    private readonly Popup          _popup;
-    private readonly Border         _border;
-    private readonly Image          _previewImage;
-    private readonly DispatcherTimer _hoverTimer;
+    private readonly DockTabControl                     _owner;
+    private readonly Popup                              _popup;
+    private readonly Border                             _border;
+    private readonly Image                              _previewImage;
+    private readonly DispatcherTimer                    _openTimer;
+    private readonly DispatcherTimer                    _closeTimer;
+    private readonly Dictionary<TabItem, BitmapSource> _snapshotCache = new();
+    private readonly HashSet<TabItem>                   _wired         = new();
 
     private TabItem? _hoveredTab;
 
@@ -55,9 +70,9 @@ public sealed class TabHoverPreview
 
         _previewImage = new Image
         {
-            Width   = PreviewWidth,
-            Height  = PreviewHeight,
-            Stretch = Stretch.Uniform,
+            Width               = PreviewWidth,
+            Height              = PreviewHeight,
+            Stretch             = Stretch.Uniform,
             HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment   = VerticalAlignment.Top
         };
@@ -71,122 +86,87 @@ public sealed class TabHoverPreview
         _border.SetResourceReference(Border.BackgroundProperty,  "DockMenuBackgroundBrush");
         _border.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
 
-        // Drop shadow effect via Effect — avoids a BitmapEffect dependency.
         _border.Effect = new System.Windows.Media.Effects.DropShadowEffect
         {
-            BlurRadius   = 6,
-            ShadowDepth  = 2,
-            Opacity      = 0.35,
-            Color        = Colors.Black
+            BlurRadius  = 6,
+            ShadowDepth = 2,
+            Opacity     = 0.35,
+            Color       = Colors.Black
         };
 
+        // StaysOpen = true: managed close avoids the OS-level mouse hook that
+        // StaysOpen=false installs, which causes spurious MouseLeave on the tab.
         _popup = new Popup
         {
             Child              = _border,
             AllowsTransparency = true,
             Placement          = PlacementMode.Bottom,
-            StaysOpen          = false,
-            IsHitTestVisible   = false   // pointer events pass through so hovers remain natural
+            StaysOpen          = true,
+            IsHitTestVisible   = false
         };
 
-        _hoverTimer = new DispatcherTimer(DispatcherPriority.Background)
+        // Open delay: show popup only after sustained hover.
+        _openTimer = new DispatcherTimer(DispatcherPriority.Background)
         {
-            Interval = TimeSpan.FromMilliseconds(HoverDelayMs)
+            Interval = TimeSpan.FromMilliseconds(OpenDelayMs)
         };
-        _hoverTimer.Tick += OnHoverTimerTick;
+        _openTimer.Tick += OnOpenTimerTick;
 
-        // Close popup when another tab gets focus or the control loses mouse.
-        owner.MouseLeave += (_, _) => HidePreview();
+        // Close delay: absorbs spurious MouseLeave events triggered by popup creation.
+        _closeTimer = new DispatcherTimer(DispatcherPriority.Background)
+        {
+            Interval = TimeSpan.FromMilliseconds(CloseDelayMs)
+        };
+        _closeTimer.Tick += (_, _) => { _closeTimer.Stop(); HidePreview(); };
+
+        // Immediate close when mouse exits the whole tab control.
+        owner.MouseLeave += (_, _) => { _openTimer.Stop(); _closeTimer.Stop(); HidePreview(); };
     }
 
     // ── Public API ───────────────────────────────────────────────────────────
 
     /// <summary>
     /// Attaches a <see cref="TabHoverPreview"/> to the given <paramref name="tabControl"/>.
-    /// Safe to call multiple times — only one instance is created per control.
+    /// Safe to call once per control — creates a single instance.
     /// </summary>
     public static TabHoverPreview Attach(DockTabControl tabControl)
     {
         var preview = new TabHoverPreview(tabControl);
-        // Wire future items via ItemContainerGenerator.
+
+        // Capture snapshot when a tab loses selection (content still rendered at this point).
+        tabControl.SelectionChanged += preview.OnOwnerSelectionChanged;
+
+        // Wire existing and future tab item containers.
         tabControl.ItemContainerGenerator.StatusChanged += (_, _) =>
         {
-            if (tabControl.ItemContainerGenerator.Status ==
-                System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
-            {
+            if (tabControl.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
                 preview.WireAllTabs(tabControl);
-            }
         };
-        // Wire items that already exist.
         tabControl.Loaded += (_, _) => preview.WireAllTabs(tabControl);
+
         return preview;
     }
 
-    // ── Wire / unwire tab items ──────────────────────────────────────────────
+    // ── Eager Snapshot on Deselection ────────────────────────────────────────
 
-    private void WireAllTabs(DockTabControl tabControl)
+    private void OnOwnerSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        for (int i = 0; i < tabControl.Items.Count; i++)
+        // RemovedItems contains the tab that just lost selection.
+        // At this point in the handler the content is still rendered (IsVisible=true).
+        foreach (var item in e.RemovedItems)
         {
-            if (tabControl.ItemContainerGenerator.ContainerFromIndex(i) is TabItem ti)
-                WireTab(ti);
+            if (item is TabItem tab)
+                CaptureAndCache(tab);
         }
     }
-
-    private void WireTab(TabItem tab)
-    {
-        // Guard against double-subscription via attached tag.
-        if (tab.Tag is string s && s.Contains("__hovered__")) return;
-
-        tab.MouseEnter += OnTabMouseEnter;
-        tab.MouseLeave += OnTabMouseLeave;
-    }
-
-    // ── Hover handlers ───────────────────────────────────────────────────────
-
-    private void OnTabMouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-    {
-        if (sender is not TabItem tab) return;
-
-        // Do not preview the currently selected tab (it is already fully visible).
-        if (tab.IsSelected) return;
-
-        _hoveredTab = tab;
-        _popup.PlacementTarget = tab;
-        _hoverTimer.Stop();
-        _hoverTimer.Start();
-    }
-
-    private void OnTabMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-    {
-        _hoverTimer.Stop();
-        // Small delay so cursor movement between popup and tab doesn't flash.
-        HidePreview();
-    }
-
-    private void OnHoverTimerTick(object? sender, EventArgs e)
-    {
-        _hoverTimer.Stop();
-        if (_hoveredTab is null) return;
-
-        TakeSnapshot(_hoveredTab);
-        _popup.IsOpen = true;
-    }
-
-    // ── Snapshot ─────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Captures the tab's content via <see cref="RenderTargetBitmap"/> and
-    /// displays it in the preview popup.
+    /// Renders the tab's content into a <see cref="RenderTargetBitmap"/> and caches it.
+    /// Must be called while the content is still in the visual tree and visible.
     /// </summary>
-    private void TakeSnapshot(TabItem tab)
+    private void CaptureAndCache(TabItem tab)
     {
-        var content = tab.Content as UIElement;
-        if (content is null || !content.IsVisible)
-        {
-            _previewImage.Source = null;
-            return;
-        }
+        if (tab.Content is not UIElement content) return;
 
         try
         {
@@ -204,13 +184,72 @@ public sealed class TabHoverPreview
             rtb.Render(content);
             rtb.Freeze();
 
-            _previewImage.Source = rtb;
+            _snapshotCache[tab] = rtb;
         }
         catch
         {
-            // Swallow render errors (e.g. hardware-accelerated content not yet realised).
-            _previewImage.Source = null;
+            // Swallow render errors (hardware-accelerated content not yet realised, etc.)
         }
+    }
+
+    // ── Wire tab items ───────────────────────────────────────────────────────
+
+    private void WireAllTabs(DockTabControl tabControl)
+    {
+        for (int i = 0; i < tabControl.Items.Count; i++)
+        {
+            if (tabControl.ItemContainerGenerator.ContainerFromIndex(i) is TabItem ti)
+                WireTab(ti);
+        }
+    }
+
+    private void WireTab(TabItem tab)
+    {
+        if (_wired.Contains(tab)) return;
+        _wired.Add(tab);
+
+        tab.MouseEnter += OnTabMouseEnter;
+        tab.MouseLeave += OnTabMouseLeave;
+    }
+
+    // ── Hover handlers ───────────────────────────────────────────────────────
+
+    private void OnTabMouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        if (sender is not TabItem tab) return;
+
+        // Cancel any pending close from a previous hover.
+        _closeTimer.Stop();
+
+        // Do not preview the currently selected tab (it is already fully visible).
+        if (tab.IsSelected) return;
+
+        _hoveredTab = tab;
+        _popup.PlacementTarget = tab;
+        _openTimer.Stop();
+        _openTimer.Start();
+    }
+
+    private void OnTabMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+        _openTimer.Stop();
+        // Close after a short grace period to absorb spurious MouseLeave events
+        // that WPF fires when the Popup HwndSource is created.
+        _closeTimer.Stop();
+        _closeTimer.Start();
+    }
+
+    private void OnOpenTimerTick(object? sender, EventArgs e)
+    {
+        _openTimer.Stop();
+        if (_hoveredTab is null) return;
+
+        // Use the cached snapshot — never attempt to render invisible content on-the-fly.
+        var bitmap = _snapshotCache.GetValueOrDefault(_hoveredTab);
+        if (bitmap is null) return;   // tab never activated, no snapshot available
+
+        _previewImage.Source = bitmap;
+        _popup.IsOpen = true;
     }
 
     // ── Hide ─────────────────────────────────────────────────────────────────
