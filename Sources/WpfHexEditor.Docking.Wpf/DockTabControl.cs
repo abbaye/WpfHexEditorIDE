@@ -478,14 +478,11 @@ public class DockTabHeader : StackPanel
                 FontFamily      = new FontFamily("Segoe MDL2 Assets"),
                 Padding         = new Thickness(2, 0, 2, 0),
                 Margin          = new Thickness(0, 0, 1, 0),
-                BorderThickness = new Thickness(0),
-                Background      = Brushes.Transparent,
-                Foreground      = Brushes.Transparent, // inherit from tab style via binding below
                 Cursor          = Cursors.Hand,
                 VerticalAlignment = VerticalAlignment.Center,
                 ToolTip         = "Auto-Hide"
             };
-            pinButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
+            pinButton.SetResourceReference(StyleProperty, "DockTitleButtonStyle");
             AutomationProperties.SetName(pinButton, $"Auto-Hide {item.Title}");
             pinButton.Click += (_, _) => AutoHideRequested?.Invoke();
             Children.Add(pinButton);
@@ -501,8 +498,6 @@ public class DockTabHeader : StackPanel
                 FontFamily      = new FontFamily("Segoe MDL2 Assets"),
                 Padding         = new Thickness(2, 0, 2, 0),
                 Margin          = new Thickness(0, 0, 1, 0),
-                BorderThickness = new Thickness(0),
-                Background      = Brushes.Transparent,
                 Cursor          = Cursors.Hand,
                 VerticalAlignment = VerticalAlignment.Center,
                 ToolTip         = item.IsPinned ? "Unpin Tab" : "Pin Tab",
@@ -510,7 +505,7 @@ public class DockTabHeader : StackPanel
                 RenderTransform = new RotateTransform(item.IsPinned ? 0 : 90),
                 Opacity         = item.IsPinned ? 1 : 0
             };
-            _pinButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
+            _pinButton.SetResourceReference(StyleProperty, "DockTitleButtonStyle");
             AutomationProperties.SetName(_pinButton, $"Pin {item.Title}");
             _pinButton.Click += (_, _) => PinToggleRequested?.Invoke();
             Children.Add(_pinButton);
@@ -524,14 +519,12 @@ public class DockTabHeader : StackPanel
                 FontSize = 10,
                 Padding = new Thickness(2, 0, 2, 0),
                 Margin = new Thickness(0),
-                BorderThickness = new Thickness(0),
-                Background = Brushes.Transparent,
                 Cursor = Cursors.Hand,
                 VerticalAlignment = VerticalAlignment.Center,
                 ToolTip = "Close",
                 Opacity = 0 // VS2026: hidden by default, shown on hover or when active
             };
-            _closeButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
+            _closeButton.SetResourceReference(StyleProperty, "DockTitleButtonStyle");
             AutomationProperties.SetName(_closeButton, $"Close {item.Title}");
             _closeButton.Click += (_, _) => CloseClicked?.Invoke();
             Children.Add(_closeButton);
