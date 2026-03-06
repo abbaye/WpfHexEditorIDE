@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="Images/Logo2026.png"><img src="Images/Logo2026.png" width="750" height="250" /></a>
+  <a href="Images/Logo2026.png"><img src="Images/Logo2026.png" width="750" /></a>
   <br/><br/>
 
   <h3>⚡ The Fastest Wpf Hex Editor IDE for .NET ⚡</h3>
