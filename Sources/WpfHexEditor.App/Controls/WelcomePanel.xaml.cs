@@ -181,15 +181,16 @@ public partial class WelcomePanel : UserControl
         var isSolution = path.EndsWith(".whsln", StringComparison.OrdinalIgnoreCase)
                       || path.EndsWith(".whproj", StringComparison.OrdinalIgnoreCase);
 
-        sp.Children.Add(new TextBlock
+        var iconBlock = new TextBlock
         {
             Text        = isSolution ? "\uE8B7" : "\uE8A5",
             FontFamily  = new FontFamily("Segoe MDL2 Assets"),
             FontSize    = 13,
             VerticalAlignment = VerticalAlignment.Center,
             Margin      = new Thickness(0, 0, 8, 0),
-            Foreground  = (Brush)FindResource("DockTabActiveBrush")
-        });
+        };
+        iconBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockTabActiveBrush");
+        sp.Children.Add(iconBlock);
 
         sp.Children.Add(new TextBlock
         {
@@ -343,11 +344,11 @@ public partial class WelcomePanel : UserControl
 
         var badge = new Border
         {
-            Background   = (Brush)FindResource("DockTabActiveBrush"),
             CornerRadius = new CornerRadius(3),
             Padding      = new Thickness(7, 2, 7, 2),
             Margin       = new Thickness(0, 0, 10, 0)
         };
+        badge.SetResourceReference(Border.BackgroundProperty, "DockTabActiveBrush");
         badge.Child = new TextBlock
         {
             Text       = version.Label,
@@ -358,25 +359,31 @@ public partial class WelcomePanel : UserControl
         headerRow.Children.Add(badge);
 
         if (!string.IsNullOrEmpty(version.Date))
-            headerRow.Children.Add(new TextBlock
+        {
+            var dateBlock = new TextBlock
             {
                 Text              = version.Date,
                 FontSize          = 12,
-                Foreground        = (Brush)FindResource("DockTabTextBrush"),
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin            = new Thickness(0, 0, 8, 0),
                 Opacity           = 0.7
-            });
+            };
+            dateBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockTabTextBrush");
+            headerRow.Children.Add(dateBlock);
+        }
 
         if (!string.IsNullOrEmpty(version.Title))
-            headerRow.Children.Add(new TextBlock
+        {
+            var titleBlock = new TextBlock
             {
                 Text              = "— " + version.Title,
                 FontSize          = 12,
-                Foreground        = (Brush)FindResource("DockMenuForegroundBrush"),
                 VerticalAlignment = VerticalAlignment.Center,
                 Opacity           = 0.85
-            });
+            };
+            titleBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
+            headerRow.Children.Add(titleBlock);
+        }
 
         container.Children.Add(headerRow);
 
@@ -405,15 +412,16 @@ public partial class WelcomePanel : UserControl
 
         foreach (var entry in section.Entries)
         {
-            sp.Children.Add(new TextBlock
+            var entryBlock = new TextBlock
             {
                 Text         = "· " + entry,
                 FontSize     = 12,
-                Foreground   = (Brush)FindResource("DockMenuForegroundBrush"),
                 Margin       = new Thickness(10, 0, 0, 2),
                 TextWrapping = TextWrapping.Wrap,
                 Opacity      = 0.9
-            });
+            };
+            entryBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
+            sp.Children.Add(entryBlock);
         }
 
         return sp;
