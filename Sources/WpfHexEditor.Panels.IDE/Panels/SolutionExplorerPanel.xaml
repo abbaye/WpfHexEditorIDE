@@ -687,7 +687,6 @@
                     <Separator x:Name="NavigationSeparator"/>
 
                     <!-- Clipboard: Copy / Cut / Paste (file and folder context) -->
-                    <Separator x:Name="ClipboardSeparator"/>
                     <MenuItem x:Name="CopyMenuItem" Header="Copy" Click="OnMenuCopy" InputGestureText="Ctrl+C">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C8;"/>
