@@ -13,7 +13,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 /// <summary>
 /// Read-only properties dialog for a <see cref="IProject"/>.
 /// </summary>
-public partial class ProjectPropertiesDialog : Window
+public partial class ProjectPropertiesDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
     public ProjectPropertiesDialog(IProject project)
     {

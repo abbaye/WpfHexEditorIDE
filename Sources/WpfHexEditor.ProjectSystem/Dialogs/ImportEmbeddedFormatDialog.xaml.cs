@@ -23,7 +23,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 /// </list>
 /// </para>
 /// </summary>
-public partial class ImportEmbeddedFormatDialog : Window
+public partial class ImportEmbeddedFormatDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
     // ── Output properties ──────────────────────────────────────────────────
     public IReadOnlyList<EmbeddedFormatEntry> SelectedEntries { get; private set; } = [];

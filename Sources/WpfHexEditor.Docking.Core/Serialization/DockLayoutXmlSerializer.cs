@@ -250,7 +250,7 @@ public static class DockLayoutXmlSerializer
             CanClose = (bool?)el.Attribute("CanClose") ?? true,
             CanFloat = (bool?)el.Attribute("CanFloat") ?? true,
             State = ParseEnum<DockItemState>(el, "State"),
-            LastDockSide = ParseEnum<DockSide>(el, "LastDockSide"),
+            LastDockSide = ParseEnum(el, "LastDockSide", DockSide.Bottom),
             FloatLeft = ParseNullableDouble(el, "FloatLeft"),
             FloatTop = ParseNullableDouble(el, "FloatTop"),
             FloatWidth = ParseNullableDouble(el, "FloatWidth"),
@@ -272,8 +272,8 @@ public static class DockLayoutXmlSerializer
         return item;
     }
 
-    private static T ParseEnum<T>(XElement el, string attr) where T : struct, Enum =>
-        Enum.TryParse<T>((string?)el.Attribute(attr), out var v) ? v : default;
+    private static T ParseEnum<T>(XElement el, string attr, T defaultValue = default) where T : struct, Enum =>
+        Enum.TryParse<T>((string?)el.Attribute(attr), out var v) ? v : defaultValue;
 
     private static double? ParseNullableDouble(XElement el, string attr)
     {

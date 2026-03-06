@@ -194,14 +194,19 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
 
         if (c == '\n' || c == '\r')
         {
-            var before = line[..col];
-            var after  = line[col..];
-            var edit   = new TextEdit(TextEditType.NewLine, _caretLine, col, "\n", before, after);
+            var before      = line[..col];
+            var after       = line[col..];
+            var edit        = new TextEdit(TextEditType.NewLine, _caretLine, col, "\n", before, after);
+            int splitLine   = _caretLine; // capture before increment
             _lines[_caretLine] = before;
             _lines.Insert(_caretLine + 1, after);
             _undoRedo.Push(edit);
             _caretLine++;
             _caretColumn = 0;
+            // A line was inserted: all cache entries from splitLine onward are
+            // shifted by +1 in _lines but not in the cache array → must invalidate
+            // everything from the split point to keep spans aligned with content.
+            InvalidateHighlightCache(splitLine);
         }
         else
         {
@@ -210,9 +215,8 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             _lines[_caretLine] = newLine;
             _undoRedo.Push(edit);
             _caretColumn = col + 1;
+            InvalidateHighlightLine(_caretLine);
         }
-
-        InvalidateHighlightLine(_caretLine);
         IsDirty = true;
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
@@ -237,15 +241,23 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         else if (_caretLine > 0)
         {
             // Merge with previous line
-            var prevLine = _lines[_caretLine - 1];
-            var curLine  = _lines[_caretLine];
-            var merged   = prevLine + curLine;
-            var edit     = new TextEdit(TextEditType.DeleteLine, _caretLine, 0, "\n", curLine, string.Empty);
+            var prevLine  = _lines[_caretLine - 1];
+            var curLine   = _lines[_caretLine];
+            var merged    = prevLine + curLine;
+            var edit      = new TextEdit(TextEditType.DeleteLine, _caretLine, 0, "\n", curLine, string.Empty);
+            int mergeLine = _caretLine - 1; // line that absorbs content
             _lines[_caretLine - 1] = merged;
             _lines.RemoveAt(_caretLine);
             _undoRedo.Push(edit);
             _caretLine--;
             _caretColumn = prevLine.Length;
+            // A line was removed: cache entries after the merge point are now
+            // shifted by -1 in _lines → invalidate everything from merge point.
+            InvalidateHighlightCache(mergeLine);
+            IsDirty = true;
+            OnPropertyChanged(nameof(Lines));
+            OnPropertyChanged(nameof(LineCount));
+            return;
         }
         InvalidateHighlightLine(_caretLine);
         IsDirty = true;
@@ -276,6 +288,12 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
             _lines[_caretLine] = merged;
             _lines.RemoveAt(_caretLine + 1);
             _undoRedo.Push(edit);
+            // A line was removed: cache entries after _caretLine are shifted by -1.
+            InvalidateHighlightCache(_caretLine);
+            IsDirty = true;
+            OnPropertyChanged(nameof(Lines));
+            OnPropertyChanged(nameof(LineCount));
+            return;
         }
         InvalidateHighlightLine(_caretLine);
         IsDirty = true;
@@ -292,7 +310,12 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         if (!_undoRedo.CanUndo) return;
         var edit = _undoRedo.Undo();
         ApplyEditInverse(edit);
-        InvalidateHighlightLine(_caretLine);
+        // Line-count-changing ops shift the cache: invalidate from the affected line.
+        // Single-line ops only need the one modified line invalidated.
+        if (edit.Type is TextEditType.NewLine or TextEditType.DeleteLine or TextEditType.Replace)
+            InvalidateHighlightCache(edit.Line);
+        else
+            InvalidateHighlightLine(_caretLine);
         IsDirty = _undoRedo.CanUndo;
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
@@ -305,7 +328,10 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         if (!_undoRedo.CanRedo) return;
         var edit = _undoRedo.Redo();
         ApplyEdit(edit);
-        InvalidateHighlightLine(_caretLine);
+        if (edit.Type is TextEditType.NewLine or TextEditType.DeleteLine or TextEditType.Replace)
+            InvalidateHighlightCache(edit.Line);
+        else
+            InvalidateHighlightLine(_caretLine);
         IsDirty = true;
         OnPropertyChanged(nameof(Lines));
         OnPropertyChanged(nameof(LineCount));
@@ -328,8 +354,10 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
                 _lines[edit.Line] = edit.NewText;
                 break;
             case TextEditType.NewLine:
-                _lines[edit.Line] = edit.OldText![..edit.Column];
-                _lines.Insert(edit.Line + 1, edit.OldText![edit.Column..]);
+                // OldText = "before" (prefix up to col), NewText = "after" (suffix from col).
+                // Restore both halves explicitly — OldText[col..] would always be "" and is wrong.
+                _lines[edit.Line] = edit.OldText ?? string.Empty;
+                _lines.Insert(edit.Line + 1, edit.NewText ?? string.Empty);
                 _caretLine++;
                 _caretColumn = 0;
                 break;
@@ -340,6 +368,25 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
                 _caretLine   = edit.Line - 1;
                 _caretColumn = prevLine.Length;
                 break;
+
+            case TextEditType.Replace:
+            {
+                // Redo a multi-line selection delete.
+                // edit.Text    = selected text (\n-separated) — tells us how many lines to remove.
+                // At redo time the lines have been restored by the undo, so we re-merge them.
+                var parts   = edit.Text.Split('\n');
+                int endLine = edit.Line + parts.Length - 1;
+                var lastLine = _lines[endLine];
+                int endCol   = Math.Min(parts[^1].Length, lastLine.Length);
+                var merged   = _lines[edit.Line][..Math.Min(edit.Column, _lines[edit.Line].Length)]
+                             + lastLine[endCol..];
+                _lines[edit.Line] = merged;
+                if (endLine > edit.Line)
+                    _lines.RemoveRange(edit.Line + 1, endLine - edit.Line);
+                _caretLine   = edit.Line;
+                _caretColumn = edit.Column;
+                break;
+            }
         }
     }
 
@@ -371,6 +418,32 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
                 _caretLine   = edit.Line;
                 _caretColumn = 0;
                 break;
+
+            case TextEditType.Replace:
+            {
+                // Undo a multi-line selection delete.
+                // edit.Text    = original selected text (\n-separated)
+                // edit.OldText = merged line that replaced the selection
+                //
+                // At undo time _lines[edit.Line] == edit.OldText (all subsequent
+                // char-inserts have already been undone).  Re-expand it.
+                var mergedLine = edit.OldText ?? string.Empty;
+                var prefix     = mergedLine[..Math.Min(edit.Column, mergedLine.Length)];
+                var suffix     = mergedLine[Math.Min(edit.Column, mergedLine.Length)..];
+                var parts      = edit.Text.Split('\n');
+
+                _lines[edit.Line] = prefix + parts[0];
+                for (int i = 1; i < parts.Length; i++)
+                {
+                    var lineContent = i == parts.Length - 1
+                        ? parts[i] + suffix
+                        : parts[i];
+                    _lines.Insert(edit.Line + i, lineContent);
+                }
+                _caretLine   = edit.Line + parts.Length - 1;
+                _caretColumn = parts[^1].Length;
+                break;
+            }
         }
     }
 
@@ -381,17 +454,89 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
     public string GetSelectedText()
     {
         if (!HasSelection) return string.Empty;
-        // Single-line selection only in this simple implementation.
-        if (_selAnchorLine == _caretLine)
+
+        NormalizeSelection(out int startLine, out int startCol, out int endLine, out int endCol);
+
+        if (startLine == endLine)
         {
-            int start = Math.Min(_selAnchorColumn, _caretColumn);
-            int end   = Math.Max(_selAnchorColumn, _caretColumn);
-            var line  = _lines[_caretLine];
-            start = Math.Min(start, line.Length);
-            end   = Math.Min(end, line.Length);
-            return line[start..end];
+            var line = _lines[startLine];
+            startCol = Math.Min(startCol, line.Length);
+            endCol   = Math.Min(endCol,   line.Length);
+            return line[startCol..endCol];
         }
-        return string.Empty; // Multi-line selection: handled at view level.
+
+        var sb = new System.Text.StringBuilder();
+        var firstLine = _lines[startLine];
+        sb.Append(firstLine[Math.Min(startCol, firstLine.Length)..]);
+        for (int i = startLine + 1; i < endLine; i++)
+        {
+            sb.Append('\n');
+            sb.Append(_lines[i]);
+        }
+        sb.Append('\n');
+        var lastLine = _lines[endLine];
+        sb.Append(lastLine[..Math.Min(endCol, lastLine.Length)]);
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Deletes the currently selected text and positions the caret at the selection start.
+    /// No-op if there is no selection.
+    /// </summary>
+    public void DeleteSelectedText()
+    {
+        if (!HasSelection || _isReadOnly) return;
+
+        NormalizeSelection(out int startLine, out int startCol, out int endLine, out int endCol);
+
+        if (startLine == endLine)
+        {
+            var line    = _lines[startLine];
+            startCol    = Math.Min(startCol, line.Length);
+            endCol      = Math.Min(endCol,   line.Length);
+            var deleted = line[startCol..endCol];
+            var newLine = line[..startCol] + line[endCol..];
+            _undoRedo.Push(new TextEdit(TextEditType.Delete, startLine, startCol, deleted, line, newLine));
+            _lines[startLine] = newLine;
+        }
+        else
+        {
+            // Fuse first line prefix + last line suffix; remove intermediate lines.
+            var first  = _lines[startLine];
+            var last   = _lines[endLine];
+            startCol   = Math.Min(startCol, first.Length);
+            endCol     = Math.Min(endCol,   last.Length);
+            var merged = first[..startCol] + last[endCol..];
+
+            // Push a replace edit storing the merged line in OldText so that
+            // ApplyEditInverse can reconstruct all original lines without reading
+            // stale _lines state.
+            _undoRedo.Push(new TextEdit(TextEditType.Replace, startLine, startCol,
+                GetSelectedText(), merged, null));
+
+            _lines[startLine] = merged;
+            _lines.RemoveRange(startLine + 1, endLine - startLine);
+        }
+
+        _caretLine   = startLine;
+        _caretColumn = startCol;
+        ClearSelection();
+        InvalidateHighlightCache(startLine);
+        IsDirty = true;
+        OnPropertyChanged(nameof(Lines));
+        OnPropertyChanged(nameof(LineCount));
+        OnPropertyChanged(nameof(CanUndo));
+        OnPropertyChanged(nameof(CanRedo));
+    }
+
+    /// <summary>
+    /// Inserts <paramref name="text"/> at the current caret, replacing any active selection.
+    /// </summary>
+    public void InsertText(string text)
+    {
+        if (_isReadOnly) return;
+        if (HasSelection) DeleteSelectedText();
+        foreach (var c in text) InsertChar(c);
     }
 
     public void ClearSelection()
@@ -399,6 +544,23 @@ internal sealed class TextEditorViewModel : INotifyPropertyChanged
         _selAnchorLine   = -1;
         _selAnchorColumn = -1;
         OnPropertyChanged(nameof(HasSelection));
+    }
+
+    // Returns (startLine, startCol, endLine, endCol) in document order (start <= end).
+    private void NormalizeSelection(out int startLine, out int startCol, out int endLine, out int endCol)
+    {
+        bool anchorFirst = _selAnchorLine < _caretLine
+                        || (_selAnchorLine == _caretLine && _selAnchorColumn <= _caretColumn);
+        if (anchorFirst)
+        {
+            startLine = _selAnchorLine; startCol = _selAnchorColumn;
+            endLine   = _caretLine;     endCol   = _caretColumn;
+        }
+        else
+        {
+            startLine = _caretLine;     startCol = _caretColumn;
+            endLine   = _selAnchorLine; endCol   = _selAnchorColumn;
+        }
     }
 
     // -----------------------------------------------------------------------

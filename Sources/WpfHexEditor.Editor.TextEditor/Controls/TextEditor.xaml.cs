@@ -59,6 +59,56 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
 
         Loaded   += (_, _) => Viewport.Focus();
         Unloaded += (_, _) => Viewport.StopCursorBlink();
+
+        InitializeContextMenu();
+    }
+
+    // -----------------------------------------------------------------------
+    // Context menu
+    // -----------------------------------------------------------------------
+
+    private void InitializeContextMenu()
+    {
+        var cm = new ContextMenu();
+
+        cm.Items.Add(new MenuItem { Header = "Cu_t",        InputGestureText = "Ctrl+X",  Command = ApplicationCommands.Cut,       CommandTarget = Viewport });
+        cm.Items.Add(new MenuItem { Header = "_Copy",       InputGestureText = "Ctrl+C",  Command = ApplicationCommands.Copy,      CommandTarget = Viewport });
+        cm.Items.Add(new MenuItem { Header = "_Paste",      InputGestureText = "Ctrl+V",  Command = ApplicationCommands.Paste,     CommandTarget = Viewport });
+        cm.Items.Add(new Separator());
+        cm.Items.Add(new MenuItem { Header = "_Undo",       InputGestureText = "Ctrl+Z",  Command = ApplicationCommands.Undo,      CommandTarget = Viewport });
+        cm.Items.Add(new MenuItem { Header = "_Redo",       InputGestureText = "Ctrl+Y",  Command = ApplicationCommands.Redo,      CommandTarget = Viewport });
+        cm.Items.Add(new Separator());
+        cm.Items.Add(new MenuItem { Header = "Select _All", InputGestureText = "Ctrl+A",  Command = ApplicationCommands.SelectAll, CommandTarget = Viewport });
+        cm.Items.Add(new MenuItem { Header = "_Delete",     InputGestureText = "Del",     Command = ApplicationCommands.Delete,    CommandTarget = Viewport });
+
+        Viewport.ContextMenu = cm;
+
+        Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Cut,
+            (_, _) => Cut(),
+            (_, e) => e.CanExecute = _vm.HasSelection && !IsReadOnly));
+
+        Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy,
+            (_, _) => Copy(),
+            (_, e) => e.CanExecute = _vm.HasSelection));
+
+        Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste,
+            (_, _) => Paste(),
+            (_, e) => e.CanExecute = !IsReadOnly && Clipboard.ContainsText()));
+
+        Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Undo,
+            (_, _) => Undo(),
+            (_, e) => e.CanExecute = CanUndo));
+
+        Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Redo,
+            (_, _) => Redo(),
+            (_, e) => e.CanExecute = CanRedo));
+
+        Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll,
+            (_, _) => SelectAll()));
+
+        Viewport.CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete,
+            (_, _) => Delete(),
+            (_, e) => e.CanExecute = !IsReadOnly));
     }
 
     // -----------------------------------------------------------------------
@@ -200,23 +250,29 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     public void Cut()
     {
         Copy();
-        if (_vm.HasSelection) _vm.ClearSelection();
+        if (_vm.HasSelection)
+        {
+            _vm.DeleteSelectedText();
+            RefreshCommands();
+        }
     }
 
     /// <inheritdoc/>
     public void Paste()
     {
         if (!IsReadOnly && Clipboard.ContainsText())
-        {
-            var text = Clipboard.GetText();
-            foreach (var c in text) _vm.InsertChar(c);
-        }
+            _vm.InsertText(Clipboard.GetText());
     }
 
     /// <inheritdoc/>
     public void Delete()
     {
-        if (!IsReadOnly) _vm.DeleteForward();
+        if (!IsReadOnly)
+        {
+            if (_vm.HasSelection) _vm.DeleteSelectedText();
+            else _vm.DeleteForward();
+            RefreshCommands();
+        }
     }
 
     /// <inheritdoc/>

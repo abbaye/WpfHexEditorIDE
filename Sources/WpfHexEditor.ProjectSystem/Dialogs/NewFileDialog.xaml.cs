@@ -25,7 +25,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 ///   <item><see cref="SaveLater"/> — when true, caller should use <c>HexEditor.OpenNew()</c></item>
 /// </list>
 /// </summary>
-public partial class NewFileDialog : Window
+public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
     // ── Output properties ──────────────────────────────────────────────
     public string         FileName         { get; private set; } = "";

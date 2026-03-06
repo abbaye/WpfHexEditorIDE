@@ -1683,6 +1683,20 @@ namespace WpfHexEditor.HexEditor.Controls
 
             if (_linesCached == null || _linesCached.Count == 0)
             {
+                // In Insert mode with no data, compute a virtual cursor rect at the first hex cell
+                // so UpdateCursorOverlay can blink it — giving the user visual feedback on empty files.
+                if (EditMode == Core.Models.EditMode.Insert)
+                {
+                    double cursorHeight = _lineHeight > 0 ? _lineHeight : 20;
+                    _cursorHexRect = new Rect(LeftMargin + OffsetWidth, TopMargin, HexByteWidth, cursorHeight);
+                }
+                else
+                {
+                    _cursorHexRect = null;
+                }
+                _cursorAsciiRect = null;
+                UpdateCursorOverlay();
+
                 _refreshStopwatch.Stop();
                 LastRenderReason = _dirtyReason;
                 LastRenderLinesDrawn = 0;

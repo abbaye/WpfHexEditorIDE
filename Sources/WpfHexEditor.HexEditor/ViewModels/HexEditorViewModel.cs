@@ -544,8 +544,8 @@ namespace WpfHexEditor.HexEditor.ViewModels
             }
             else
             {
-                // File is empty after deletion
-                SelectionStart = VirtualPosition.Invalid;
+                // File is empty after deletion — in Insert mode, keep a logical cursor at 0.
+                SelectionStart = EditMode == EditMode.Insert ? VirtualPosition.Zero : VirtualPosition.Invalid;
                 SelectionStop = VirtualPosition.Invalid;
             }
 
@@ -580,8 +580,8 @@ namespace WpfHexEditor.HexEditor.ViewModels
             }
             else
             {
-                // File is empty after deletion
-                SelectionStart = VirtualPosition.Invalid;
+                // File is empty after deletion — in Insert mode, keep a logical cursor at 0.
+                SelectionStart = EditMode == EditMode.Insert ? VirtualPosition.Zero : VirtualPosition.Invalid;
                 SelectionStop = VirtualPosition.Invalid;
             }
 
@@ -835,7 +835,9 @@ namespace WpfHexEditor.HexEditor.ViewModels
         /// </summary>
         public void SetSelection(VirtualPosition position)
         {
-            if (position.Value < 0 || position.Value >= VirtualLength)
+            // Allow position 0 as the logical insert point when the file is empty and in Insert mode.
+            bool isEmptyInsertCursor = position.Value == 0 && VirtualLength == 0 && EditMode == EditMode.Insert;
+            if (!isEmptyInsertCursor && (position.Value < 0 || position.Value >= VirtualLength))
                 return;
 
             SelectionStart = position;

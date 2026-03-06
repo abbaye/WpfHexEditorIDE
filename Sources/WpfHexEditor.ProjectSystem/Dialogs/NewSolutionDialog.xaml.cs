@@ -13,7 +13,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 /// Dialog for creating a new solution (.whsln).
 /// After ShowDialog() returns true, read <see cref="SolutionName"/> and <see cref="SolutionDirectory"/>.
 /// </summary>
-public partial class NewSolutionDialog : Window
+public partial class NewSolutionDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
     public string SolutionName      { get; private set; } = "";
     public string SolutionDirectory { get; private set; } = "";

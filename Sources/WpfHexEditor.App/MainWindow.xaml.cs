@@ -543,6 +543,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(LayoutFilePath));
                 RestoreWindowState(layout);
+                PruneStaleDocumentItems(layout);
                 // Panel must exist BEFORE ApplyLayout so the content factory can early-connect
                 // it to the first HexEditor and format-detection events are not missed.
                 _parsedFieldsPanel ??= new ParsedFieldsPanel();
@@ -575,6 +576,84 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (layout.WindowState is 2)
             WindowState = WindowState.Maximized;
+    }
+
+    /// <summary>
+    /// Removes document tabs whose backing file no longer exists on disk.
+    /// Called before ApplyLayout to prevent creating editor instances for missing files.
+    /// </summary>
+    private void PruneStaleDocumentItems(DockLayoutRoot layout)
+    {
+        var pruned = new List<string>();
+        PruneStaleItemsFromNode(layout.RootNode, pruned);
+        PruneStaleItemsFromList(layout.FloatingItems, pruned);
+        PruneStaleItemsFromList(layout.AutoHideItems, pruned);
+        PruneStaleItemsFromList(layout.HiddenItems,   pruned);
+
+        if (pruned.Count > 0)
+            OutputLogger.Info(
+                $"Layout restore: skipped {pruned.Count} document(s) — file no longer exists: " +
+                string.Join(", ", pruned));
+    }
+
+    private static void PruneStaleItemsFromNode(DockNode node, List<string> pruned)
+    {
+        switch (node)
+        {
+            case DockGroupNode group:
+                foreach (var item in group.Items.ToList())
+                {
+                    if (IsStaleDocumentItem(item, out var label))
+                    {
+                        group.RemoveItem(item);
+                        pruned.Add(label);
+                    }
+                }
+                break;
+
+            case DockSplitNode split:
+                foreach (var child in split.Children)
+                    PruneStaleItemsFromNode(child, pruned);
+                break;
+        }
+    }
+
+    private static void PruneStaleItemsFromList(List<DockItem> items, List<string> pruned)
+    {
+        for (int i = items.Count - 1; i >= 0; i--)
+        {
+            if (IsStaleDocumentItem(items[i], out var label))
+            {
+                items.RemoveAt(i);
+                pruned.Add(label);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns true if <paramref name="item"/> is a file-backed document whose physical file is missing.
+    /// In-memory new files (IsNewFile=true) and items without a FilePath are excluded.
+    /// </summary>
+    private static bool IsStaleDocumentItem(DockItem item, out string label)
+    {
+        label = string.Empty;
+
+        bool isDocument = item.ContentId.StartsWith("doc-file-")
+                       || item.ContentId.StartsWith("doc-hex-")
+                       || item.ContentId.StartsWith("doc-proj-");
+        if (!isDocument) return false;
+
+        if (!item.Metadata.TryGetValue("FilePath", out var filePath) || filePath is null)
+            return false;
+
+        // In-memory new documents have no physical backing file
+        if (item.Metadata.TryGetValue("IsNewFile", out var isNew) && isNew == "true")
+            return false;
+
+        if (File.Exists(filePath)) return false;
+
+        label = item.Title ?? Path.GetFileName(filePath) ?? filePath;
+        return true;
     }
 
     private void AutoSaveLayout()
@@ -4111,6 +4190,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         try
         {
             var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(dlg.FileName));
+            PruneStaleDocumentItems(layout);
             _contentCache.Clear();
             _parsedFieldsPanel ??= new ParsedFieldsPanel();
             ApplyLayout(layout);
@@ -4269,13 +4349,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (!GetMonitorInfo(hMon, ref mi)) return IntPtr.Zero;
 
         var mmi = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-        // rcWork is already in physical pixels — no DPI matrix multiplication needed.
-        mmi.ptMaxPosition.x = mi.rcWork.left;
-        mmi.ptMaxPosition.y = mi.rcWork.top;
+        // ptMaxPosition is relative to the monitor's top-left corner, NOT the virtual screen.
+        // Using rcWork directly (screen coords) causes the window to offset by the monitor
+        // origin and fly off-screen on secondary monitors.
+        mmi.ptMaxPosition.x = Math.Abs(mi.rcWork.left - mi.rcMonitor.left);
+        mmi.ptMaxPosition.y = Math.Abs(mi.rcWork.top  - mi.rcMonitor.top);
         mmi.ptMaxSize.x     = mi.rcWork.right  - mi.rcWork.left;
         mmi.ptMaxSize.y     = mi.rcWork.bottom - mi.rcWork.top;
         Marshal.StructureToPtr(mmi, lParam, true);
 
+        handled = true;
         return IntPtr.Zero;
     }
 

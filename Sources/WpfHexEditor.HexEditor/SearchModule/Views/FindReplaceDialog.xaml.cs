@@ -12,7 +12,7 @@ namespace WpfHexEditor.HexEditor.Search.Views
     /// <summary>
     /// Interaction logic for FindReplaceDialog.xaml
     /// </summary>
-    public partial class FindReplaceDialog : Window
+    public partial class FindReplaceDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
     {
         public FindReplaceDialog()
         {

@@ -12,7 +12,7 @@ namespace WpfHexEditor.HexEditor.Search.Views
     /// <summary>
     /// Interaction logic for RelativeSearchDialog.xaml
     /// </summary>
-    public partial class RelativeSearchDialog : Window
+    public partial class RelativeSearchDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
     {
         public RelativeSearchDialog()
         {

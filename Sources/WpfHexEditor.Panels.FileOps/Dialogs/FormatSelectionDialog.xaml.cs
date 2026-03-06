@@ -19,7 +19,7 @@ namespace WpfHexEditor.Panels.FileOps
     /// <summary>
     /// Dialog for manual format selection when auto-detection is ambiguous
     /// </summary>
-    public partial class FormatSelectionDialog : Window
+    public partial class FormatSelectionDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
     {
         /// <summary>
         /// The format candidate selected by the user

@@ -18,7 +18,7 @@ public enum SaveChangesChoice { Save, DontSave, Cancel }
 /// Populate <see cref="DirtyItems"/> before showing; then read
 /// <see cref="Choice"/> and <see cref="SelectedContentIds"/> after close.
 /// </summary>
-public sealed partial class SaveChangesDialog : Window
+public sealed partial class SaveChangesDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
     private readonly List<FileEntry> _entries = [];
     private bool _updatingAll;

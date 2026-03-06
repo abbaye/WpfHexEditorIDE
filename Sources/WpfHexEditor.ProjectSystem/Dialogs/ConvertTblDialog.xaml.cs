@@ -17,7 +17,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 /// Dialog that lets the user configure a .tbl → .tblx conversion, including
 /// optional game metadata (title, platform, region, author, release year).
 /// </summary>
-public partial class ConvertTblDialog : Window
+public partial class ConvertTblDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
     private readonly string _sourcePath;
     private          string _targetFolder;

@@ -92,10 +92,10 @@ public partial class DocumentInfoBar : UserControl
 
     private void OnActionButtonClick(object sender, RoutedEventArgs e)
     {
-        if (sender is Button { Tag: string factoryId })
+        if (sender is Button btn)
             OpenWithRequested?.Invoke(this, new OpenWithEditorRequestedEventArgs
             {
-                FactoryId       = factoryId,
+                FactoryId       = btn.Tag as string,   // null ⇒ Hex Editor fallback (handled by MainWindow)
                 FilePath        = _filePath,
                 SourceContentId = _sourceContentId,
             });

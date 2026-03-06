@@ -24,6 +24,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -45,6 +46,21 @@ namespace WpfHexEditor.Editor.Core.Views;
 /// </remarks>
 public class ThemedDialog : Window
 {
+    // ── ShowIcon dependency property ──────────────────────────────────────
+    public static readonly DependencyProperty ShowIconProperty =
+        DependencyProperty.Register(nameof(ShowIcon), typeof(bool),
+            typeof(ThemedDialog), new PropertyMetadata(false));
+
+    /// <summary>
+    /// When true, shows the application icon on the left of the title bar.
+    /// Right-click opens the system menu; double-click closes the dialog.
+    /// </summary>
+    public bool ShowIcon
+    {
+        get => (bool)GetValue(ShowIconProperty);
+        set => SetValue(ShowIconProperty, value);
+    }
+
     // ── Wrapper elements kept as fields so StateChanged can mutate them ──
     private Border? _outerBorder;
     private Button? _maxButton;
@@ -84,7 +100,7 @@ public class ThemedDialog : Window
         // the subclass constructor has had a chance to set ResizeMode.
         WindowChrome.SetWindowChrome(this, new WindowChrome
         {
-            CaptionHeight         = 0,
+            CaptionHeight         = 28,
             ResizeBorderThickness = new Thickness(4),
             GlassFrameThickness   = new Thickness(0),
             UseAeroCaptionButtons = false,
@@ -138,12 +154,48 @@ public class ThemedDialog : Window
             titleDock.Children.Add(_maxButton);
         }
 
+        // ── Optional app icon (left of title) ─────────────────────────
+        if (ShowIcon)
+        {
+            var iconImage = new Image
+            {
+                Width             = 16,
+                Height            = 16,
+                Margin            = new Thickness(6, 0, 4, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+                Cursor            = Cursors.Arrow,
+            };
+            iconImage.SetBinding(Image.SourceProperty,
+                new Binding(nameof(Icon)) { Source = this });
+
+            WindowChrome.SetIsHitTestVisibleInChrome(iconImage, true);
+
+            // Double left-click → close (Windows standard)
+            iconImage.MouseLeftButtonDown += (_, e) =>
+            {
+                if (e.ClickCount == 2) { Close(); e.Handled = true; }
+            };
+
+            // Right-click → Win32 system menu
+            iconImage.MouseRightButtonUp += (_, e) =>
+            {
+                var pos = iconImage.PointToScreen(new Point(0, 28));
+                SystemCommands.ShowSystemMenu(this, pos);
+                e.Handled = true;
+            };
+
+            DockPanel.SetDock(iconImage, Dock.Left);
+            titleDock.Children.Insert(0, iconImage);
+        }
+
         titleDock.Children.Add(titleText);
 
         var titleBar = new Border { Height = 28 };
         titleBar.SetResourceReference(BackgroundProperty, "DockMenuBackgroundBrush");
         titleBar.Child = titleDock;
-        titleBar.MouseLeftButtonDown += (_, _) => DragMove();
+
+        // CaptionHeight = 28 → OS handles drag and double-click maximize natively.
+        // No MouseLeftButtonDown handler needed on the title bar.
 
         // ── Wrapper grid ──────────────────────────────────────────────
         var rootGrid = new Grid();
@@ -263,13 +315,16 @@ public class ThemedDialog : Window
         if (!GetMonitorInfo(hMon, ref mi)) return IntPtr.Zero;
 
         var mmi = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-        // rcWork is already in physical pixels — no DPI matrix multiplication needed.
-        mmi.ptMaxPosition.x = mi.rcWork.left;
-        mmi.ptMaxPosition.y = mi.rcWork.top;
+        // ptMaxPosition is relative to the monitor's top-left corner, NOT the virtual screen.
+        // Using rcWork directly (screen coords) causes the window to offset by the monitor
+        // origin and fly off-screen on secondary monitors.
+        mmi.ptMaxPosition.x = Math.Abs(mi.rcWork.left - mi.rcMonitor.left);
+        mmi.ptMaxPosition.y = Math.Abs(mi.rcWork.top  - mi.rcMonitor.top);
         mmi.ptMaxSize.x     = mi.rcWork.right  - mi.rcWork.left;
         mmi.ptMaxSize.y     = mi.rcWork.bottom - mi.rcWork.top;
         Marshal.StructureToPtr(mmi, lParam, true);
 
+        handled = true;
         return IntPtr.Zero;
     }
 }

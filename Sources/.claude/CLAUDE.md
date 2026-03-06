@@ -454,3 +454,6 @@ flowchart TD
     RECENT --> END
     PLAN --> WAITGO
     DOC --> END
+
+    ##17 Comit restriction
+    - Claude ne doit pas comiter le dossier DevPlans
