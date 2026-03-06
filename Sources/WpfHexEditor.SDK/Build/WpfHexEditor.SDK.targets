@@ -1,0 +1,80 @@
+<!--
+  WpfHexEditor.SDK.targets
+  MSBuild targets for automatic plugin Build Manifest generation.
+
+  Usage: Import this file in your plugin .csproj (automatic if using SDK NuGet package).
+  Required project properties:
+    <PluginId>           - Unique plugin identifier (e.g. "WpfHexEditor.Plugins.Barchart")
+    <PluginName>         - Display name
+    <PluginVersion>      - SemVer (e.g. "1.0.0")
+    <PluginEntryPoint>   - Fully qualified class implementing IWpfHexEditorPlugin
+    <PluginIsolationMode>- InProcess | Sandbox (default: InProcess)
+    <PluginSdkVersion>   - SDK version required (default: "1.0.0")
+    <PluginMinIDEVersion>- Minimum IDE version (default: "0.1.0")
+
+  Optional properties:
+    <PluginAuthor>       - Author name
+    <PluginPublisher>    - Publisher name
+    <PluginDescription>  - Plugin description
+    <PluginLoadPriority> - Integer load priority (default: 100)
+
+  Output: $(OutputPath)manifest.json  (Build Manifest — no hash/signature)
+  This file is suitable for:
+    - Local development and testing
+    - Build validation
+  For distribution, run: whxpack --input $(OutputPath) --output plugin.whxplugin
+  which produces the Distribution Manifest with hash and optional signature.
+-->
+<Project>
+
+  <PropertyGroup>
+    <!-- Defaults for optional properties -->
+    <PluginIsolationMode Condition="'$(PluginIsolationMode)' == ''">InProcess</PluginIsolationMode>
+    <PluginSdkVersion Condition="'$(PluginSdkVersion)' == ''">1.0.0</PluginSdkVersion>
+    <PluginMinIDEVersion Condition="'$(PluginMinIDEVersion)' == ''">0.1.0</PluginMinIDEVersion>
+    <PluginLoadPriority Condition="'$(PluginLoadPriority)' == ''">100</PluginLoadPriority>
+    <PluginAuthor Condition="'$(PluginAuthor)' == ''">Unknown</PluginAuthor>
+    <PluginPublisher Condition="'$(PluginPublisher)' == ''">Unknown</PluginPublisher>
+    <PluginDescription Condition="'$(PluginDescription)' == ''"></PluginDescription>
+  </PropertyGroup>
+
+  <!--
+    Target: GeneratePluginManifest
+    Runs after a successful build to produce the Build Manifest (manifest.json).
+    Skipped if PluginId is not set (not a plugin project).
+  -->
+  <Target Name="GeneratePluginManifest"
+          AfterTargets="Build"
+          Condition="'$(PluginId)' != ''">
+
+    <PropertyGroup>
+      <_ManifestPath>$(OutputPath)manifest.json</_ManifestPath>
+      <_ManifestContent>{
+  "id": "$(PluginId)",
+  "name": "$(PluginName)",
+  "author": "$(PluginAuthor)",
+  "publisher": "$(PluginPublisher)",
+  "trustedPublisher": false,
+  "description": "$(PluginDescription)",
+  "version": "$(PluginVersion)",
+  "sdkVersion": "$(PluginSdkVersion)",
+  "minIDEVersion": "$(PluginMinIDEVersion)",
+  "entryPoint": "$(PluginEntryPoint)",
+  "isolationMode": "$(PluginIsolationMode)",
+  "loadPriority": $(PluginLoadPriority),
+  "permissions": {},
+  "dependencies": [],
+  "uiElements": []
+}
+</_ManifestContent>
+    </PropertyGroup>
+
+    <WriteLinesToFile File="$(_ManifestPath)"
+                      Lines="$(_ManifestContent)"
+                      Overwrite="true"
+                      Encoding="UTF-8" />
+
+    <Message Text="WpfHexEditor SDK: Plugin manifest generated → $(_ManifestPath)" Importance="Normal" />
+  </Target>
+
+</Project>

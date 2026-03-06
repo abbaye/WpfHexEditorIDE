@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>WpfHexEditor.SDK</RootNamespace>
+    <AssemblyName>WpfHexEditor.SDK</AssemblyName>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Description>Public SDK for WpfHexEditor plugin development — interfaces, contracts, models, and MSBuild targets.</Description>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+  </ItemGroup>
+
+</Project>
