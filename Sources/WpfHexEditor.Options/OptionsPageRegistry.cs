@@ -31,6 +31,8 @@ internal static class OptionsPageRegistry
         // Hex Editor
         new("Hex Editor",         "Display",          () => new HexEditorDisplayPage()),
         new("Hex Editor",         "Editing",          () => new HexEditorEditingPage()),
+        new("Hex Editor",         "Status Bar",       () => new HexEditorStatusBarPage()),
+        new("Hex Editor",         "Behavior",         () => new HexEditorBehaviorPage()),
 
         // Solution Explorer
         new("Solution Explorer",  "General",          () => new SolutionExplorerOptionsPage()),
