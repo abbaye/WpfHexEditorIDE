@@ -14,7 +14,7 @@ namespace WpfHexEditor.Panels.BinaryAnalysis
     /// <summary>
     /// Dialog for editing a parsed field value
     /// </summary>
-    public partial class FieldEditDialog : Window, INotifyPropertyChanged
+    public partial class FieldEditDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog, INotifyPropertyChanged
     {
         private ParsedFieldViewModel _field;
         private string _editedValue;

@@ -203,7 +203,7 @@ namespace WpfHexEditor.HexEditor
                     FontSize = 11,
                     FontWeight = isSelectionColumn ? FontWeights.Bold : FontWeights.Normal,
                     Foreground = Resources["HeaderTextBrush"] as System.Windows.Media.Brush,
-                    Margin = new Thickness(0, 0, 2, 0) // HexByteSpacing
+                    // No right margin: HexViewport uses HexByteSpacing=0, margin must match exactly
                 };
 
                 _hexHeaderStackPanel.Children.Add(headerText);

@@ -17,13 +17,15 @@ internal sealed class Solution : ISolution, INotifyPropertyChanged
     private IProject? _startupProject;
     private bool     _isReadOnlyFormat;
 
-    private readonly ObservableCollection<Project> _projects = [];
+    private readonly ObservableCollection<Project>        _projects     = [];
+    private readonly ObservableCollection<SolutionFolder> _rootFolders  = [];
 
     public string Name     { get; set; } = "";
     public string FilePath { get; set; } = "";
 
-    public IReadOnlyList<IProject> Projects       => _projects;
-    public IProject?               StartupProject => _startupProject;
+    public IReadOnlyList<IProject>        Projects     => _projects;
+    public IReadOnlyList<ISolutionFolder> RootFolders  => _rootFolders;
+    public IProject?                      StartupProject => _startupProject;
 
     public bool IsModified
     {
@@ -45,7 +47,8 @@ internal sealed class Solution : ISolution, INotifyPropertyChanged
 
     // ── Internal helpers ──────────────────────────────────────────────────
 
-    internal ObservableCollection<Project> ProjectsMutable => _projects;
+    internal ObservableCollection<Project>        ProjectsMutable    => _projects;
+    internal ObservableCollection<SolutionFolder> RootFoldersMutable => _rootFolders;
 
     internal void SetStartupProject(IProject? project)
     {

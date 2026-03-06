@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.App", "WpfHexE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Docking.Tests", "WpfHexEditor.Docking.Tests\WpfHexEditor.Docking.Tests.csproj", "{E3B2C99D-8506-4B91-A75E-2062F0E2F26D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.JsonEditor", "WpfHexEditor.Editor.JsonEditor\WpfHexEditor.Editor.JsonEditor.csproj", "{D4CD9155-5A32-429A-AA18-9E4BF03F1D8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.CodeEditor", "WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj", "{D4CD9155-5A32-429A-AA18-9E4BF03F1D8D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Editor.TextEditor", "WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj", "{E5F6A7B8-C9D0-1234-5678-9ABCDEF01234}"
 EndProject

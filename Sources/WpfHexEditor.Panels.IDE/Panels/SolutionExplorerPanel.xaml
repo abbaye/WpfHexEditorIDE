@@ -293,6 +293,37 @@
             </DataTemplate.Triggers>
         </DataTemplate>
 
+        <!-- ── Solution Folder node (VS-like, holds projects) ── -->
+        <DataTemplate DataType="{x:Type vm:SolutionFolderNodeVm}">
+            <Grid>
+                <!-- Normal display -->
+                <StackPanel x:Name="SolFolderDisplayPanel" Orientation="Horizontal"
+                            ToolTip="Solution folder — groups projects logically">
+                    <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE8B7;" Foreground="#DCA95A"/>
+                    <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
+                </StackPanel>
+                <!-- Inline rename TextBox -->
+                <TextBox x:Name="SolutionFolderInlineEditBox"
+                         Visibility="Collapsed"
+                         Text="{Binding EditingName, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalAlignment="Center"
+                         MinWidth="100"
+                         Background="{DynamicResource SE_SearchBoxBrush}"
+                         Foreground="{DynamicResource SE_ForegroundBrush}"
+                         BorderBrush="{DynamicResource SE_SelectionBorderBrush}"
+                         BorderThickness="1"
+                         Padding="2,1"
+                         KeyDown="OnSolutionFolderInlineEditKeyDown"
+                         LostKeyboardFocus="OnSolutionFolderInlineEditLostFocus"/>
+            </Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                    <Setter TargetName="SolFolderDisplayPanel"       Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="SolutionFolderInlineEditBox" Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type vm:FileNodeVm}">
             <Grid>
                 <!-- Normal display (IsEditing = false) -->
@@ -324,6 +355,13 @@
                                VerticalAlignment="Center" Margin="3,0,0,0"
                                ToolTip="File is located outside the project directory"
                                Visibility="Collapsed"/>
+                    <!-- Externally-modified warning badge -->
+                    <TextBlock x:Name="ExternalModBadge"
+                               Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="9"
+                               Foreground="{DynamicResource SE_ModifiedIndicatorBrush}"
+                               VerticalAlignment="Center" Margin="2,0,0,0"
+                               ToolTip="Modified externally — consider reloading"
+                               Visibility="Collapsed"/>
                 </StackPanel>
 
                 <!-- Inline rename TextBox (IsEditing = true) -->
@@ -348,6 +386,9 @@
                 <DataTrigger Binding="{Binding IsExternal}" Value="True">
                     <Setter TargetName="ExternalBadge" Property="Visibility" Value="Visible"/>
                 </DataTrigger>
+                <DataTrigger Binding="{Binding IsModifiedExternally}" Value="True">
+                    <Setter TargetName="ExternalModBadge" Property="Visibility" Value="Visible"/>
+                </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
@@ -369,6 +410,16 @@
                     <Setter TargetName="PhysFilePanel" Property="Opacity" Value="0.45"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- ── Changeset companion file (.whchg) ──────────────────────── -->
+        <DataTemplate DataType="{x:Type vm:ChangesetNodeVm}">
+            <StackPanel Orientation="Horizontal" Opacity="0.7">
+                <TextBlock Style="{StaticResource NodeIcon}" Text="{Binding Icon}"
+                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"
+                           FontStyle="Italic"/>
+            </StackPanel>
         </DataTemplate>
 
     </UserControl.Resources>
@@ -405,6 +456,44 @@
                     <Button Style="{StaticResource SE_IconButton}" ToolTip="Refresh" Click="OnRefresh">
                         <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                    </Button>
+                </StackPanel>
+
+                <!-- Sort and Filter dropdowns (DockPanel.Dock="Left" so they appear first) -->
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <!-- Sort -->
+                    <Button Style="{StaticResource SE_IconButton}" ToolTip="Sort"
+                            Click="OnSortButtonClick" x:Name="SortButton">
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="SortContextMenu">
+                                <MenuItem Header="None"          Tag="None"         Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="Name"          Tag="Name"         Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="Type"          Tag="Type"         Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="Date Modified" Tag="DateModified" Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="Size"          Tag="Size"         Click="OnSortMenuItemClick"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                       Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                        </StackPanel>
+                    </Button>
+                    <!-- Filter -->
+                    <Button Style="{StaticResource SE_IconButton}" ToolTip="Filter"
+                            Click="OnFilterButtonClick" x:Name="FilterButton">
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="FilterContextMenu">
+                                <MenuItem Header="All"      Tag="All"      Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="Binary"   Tag="Binary"   Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="Text"     Tag="Text"     Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="Images"   Tag="Image"    Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="Language" Tag="Language" Click="OnFilterMenuItemClick"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE71C;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                       Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                        </StackPanel>
                     </Button>
                 </StackPanel>
             </DockPanel>
@@ -493,36 +582,54 @@
                     </MenuItem>
                     <Separator x:Name="OpenSeparator"/>
 
-                    <!-- Add operations (project / folder) -->
-                    <MenuItem x:Name="AddNewItemMenuItem" Header="Add New Item..." Click="OnAddNewItem">
+                    <!-- Add > submenu (solution / project / folder) -->
+                    <MenuItem x:Name="AddSubmenuMenuItem" Header="Add">
                         <MenuItem.Icon>
-                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8A5;"/>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE710;"/>
                         </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem x:Name="AddExistingItemMenuItem" Header="Add Existing Item..." Click="OnAddExistingItem">
-                        <MenuItem.Icon>
-                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8E5;"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem x:Name="ImportFormatMenuItem" Header="Import Built-in Format..." Click="OnImportFormatDefinition">
-                        <MenuItem.Icon>
-                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE896;"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem x:Name="NewFolderMenuItem" Header="New Folder" Click="OnNewFolder">
-                        <MenuItem.Icon>
-                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8F4;"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem x:Name="NewPhysicalFolderMenuItem" Header="New Solution Folder" Click="OnNewPhysicalFolder">
-                        <MenuItem.Icon>
-                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8D5;"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem x:Name="AddFolderFromDiskMenuItem" Header="Add Existing Folder..." Click="OnAddFolderFromDisk">
-                        <MenuItem.Icon>
-                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8DA;"/>
-                        </MenuItem.Icon>
+
+                        <!-- Items: project &amp; folder only -->
+                        <MenuItem x:Name="AddNewItemMenuItem" Header="Add New Item..." Click="OnAddNewItem">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8A5;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem x:Name="AddExistingItemMenuItem" Header="Add Existing Item..." Click="OnAddExistingItem">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8E5;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator x:Name="AddItemsSeparator"/>
+
+                        <!-- Import: project &amp; solution -->
+                        <MenuItem x:Name="ImportFormatMenuItem" Header="Import Built-in Format..." Click="OnImportFormatDefinition">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE896;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem x:Name="ImportSyntaxMenuItem" Header="Import Built-in Syntax..." Click="OnImportSyntaxDefinition">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE943;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator x:Name="AddFolderSeparator"/>
+
+                        <!-- Folders: project &amp; folder; NewPhysicalFolder also on solution -->
+                        <MenuItem x:Name="NewFolderMenuItem" Header="New Folder" Click="OnNewFolder">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8F4;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem x:Name="NewPhysicalFolderMenuItem" Header="New Solution Folder" Click="OnNewPhysicalFolder">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8D5;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem x:Name="AddFolderFromDiskMenuItem" Header="Add Existing Folder..." Click="OnAddFolderFromDisk">
+                            <MenuItem.Icon>
+                                <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8DA;"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                     <Separator x:Name="AddSeparator"/>
 

@@ -61,6 +61,13 @@ public interface IEditorPersistable
     /// </summary>
     void ApplyChangeset(ChangesetDto changeset);
 
+    /// <summary>
+    /// Marks the current undo-history position as the "clean" baseline after a tracked save
+    /// to a .whchg companion file.  The editor will report <c>IsDirty = false</c> until new
+    /// byte-level edits are made.  Default implementation is a no-op.
+    /// </summary>
+    void MarkChangesetSaved();
+
     // ── Bookmarks ─────────────────────────────────────────────────────────
 
     /// <summary>

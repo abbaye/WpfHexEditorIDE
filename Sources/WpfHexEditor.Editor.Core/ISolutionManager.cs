@@ -72,7 +72,38 @@ public interface ISolutionManager
     /// </param>
     Task ImportExternalItemAsync(IProject project, IProjectItem item, string? targetSubDirectory = null, CancellationToken ct = default);
 
-    // ── Folder CRUD ───────────────────────────────────────────────────────
+    // ── Solution Folder CRUD ─────────────────────────────────────────────
+    /// <summary>
+    /// Creates a VS-like Solution Folder in the solution, optionally nested under
+    /// an existing folder. Persists the solution immediately.
+    /// Solution Folders hold <see cref="IProject"/>s, not project items (files).
+    /// </summary>
+    Task<ISolutionFolder> CreateSolutionFolderAsync(ISolution solution, string name,
+        string? parentFolderId = null, CancellationToken ct = default);
+
+    /// <summary>
+    /// Renames a Solution Folder. Persists the solution immediately.
+    /// </summary>
+    Task RenameSolutionFolderAsync(ISolution solution, ISolutionFolder folder,
+        string newName, CancellationToken ct = default);
+
+    /// <summary>
+    /// Removes a Solution Folder from the solution tree.
+    /// Projects it contained are moved to the solution root.
+    /// Persists the solution immediately.
+    /// </summary>
+    Task DeleteSolutionFolderAsync(ISolution solution, ISolutionFolder folder,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// Moves <paramref name="project"/> into <paramref name="targetFolderId"/>.
+    /// Pass <see langword="null"/> for <paramref name="targetFolderId"/> to place it at the solution root.
+    /// Persists the solution immediately.
+    /// </summary>
+    Task MoveProjectToSolutionFolderAsync(ISolution solution, IProject project,
+        string? targetFolderId, CancellationToken ct = default);
+
+    // ── Project-level Folder CRUD ─────────────────────────────────────────
     /// <summary>
     /// Creates a virtual folder in the project, optionally also creating the corresponding
     /// physical directory on disk.  Persists the project immediately.

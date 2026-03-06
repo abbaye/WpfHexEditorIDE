@@ -23,7 +23,7 @@ namespace WpfHexEditor.Panels.FileOps
     /// <summary>
     /// Dialog for side-by-side file comparison
     /// </summary>
-    public partial class FileDiffDialog : Window
+    public partial class FileDiffDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
     {
         private WpfHexEditor.HexEditor.HexEditor _editor1;
         private WpfHexEditor.HexEditor.HexEditor _editor2;

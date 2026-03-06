@@ -205,6 +205,48 @@ public sealed class ImportExternalFileRequestedEventArgs : EventArgs
     public IProject     Project { get; init; } = null!;
 }
 
+// ── Solution Folder (panel → host) ───────────────────────────────────────────
+
+/// <summary>
+/// Fired when the user requests creation of a new Solution Folder.
+/// </summary>
+public sealed class SolutionFolderCreateRequestedEventArgs : EventArgs
+{
+    public ISolution Solution       { get; init; } = null!;
+    /// <summary>Id of the parent solution folder, or <see langword="null"/> for the solution root.</summary>
+    public string?   ParentFolderId { get; init; }
+}
+
+/// <summary>
+/// Fired when the user commits an inline rename on a Solution Folder node.
+/// </summary>
+public sealed class SolutionFolderRenameRequestedEventArgs : EventArgs
+{
+    public ISolution       Solution { get; init; } = null!;
+    public ISolutionFolder Folder   { get; init; } = null!;
+    public string          NewName  { get; init; } = string.Empty;
+}
+
+/// <summary>
+/// Fired when the user requests deletion of a Solution Folder via the context menu.
+/// </summary>
+public sealed class SolutionFolderDeleteRequestedEventArgs : EventArgs
+{
+    public ISolution       Solution { get; init; } = null!;
+    public ISolutionFolder Folder   { get; init; } = null!;
+}
+
+/// <summary>
+/// Fired when the user drops a project onto a Solution Folder (or back to the solution root).
+/// </summary>
+public sealed class ProjectMovedEventArgs : EventArgs
+{
+    public ISolution Solution       { get; init; } = null!;
+    public IProject  Project        { get; init; } = null!;
+    /// <summary>Id of the target solution folder, or <see langword="null"/> for the solution root.</summary>
+    public string?   TargetFolderId { get; init; }
+}
+
 // ── Format upgrade ────────────────────────────────────────────────────────────
 
 /// <summary>

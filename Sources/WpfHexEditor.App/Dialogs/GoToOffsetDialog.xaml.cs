@@ -13,7 +13,7 @@ namespace WpfHexEditor.App.Dialogs;
 /// VS-style "Go To Offset" dialog.
 /// The caller reads <see cref="Offset"/> when <see cref="DialogResult"/> is true.
 /// </summary>
-public partial class GoToOffsetDialog : Window
+public partial class GoToOffsetDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
     /// <summary>
     /// Parsed offset value — valid only when DialogResult is true.

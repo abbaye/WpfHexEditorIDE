@@ -12,7 +12,7 @@ namespace WpfHexEditor.Panels.BinaryAnalysis
     /// <summary>
     /// Dialog for jumping to a specific offset
     /// </summary>
-    public partial class JumpToOffsetDialog : Window
+    public partial class JumpToOffsetDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
     {
         public long Offset { get; private set; }
 

@@ -16,7 +16,7 @@ namespace WpfHexEditor.HexEditor.Search.Views
     /// <summary>
     /// Advanced Search Dialog - Code-behind (minimal).
     /// </summary>
-    public partial class AdvancedSearchDialog : Window
+    public partial class AdvancedSearchDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
     {
         public AdvancedSearchDialog()
         {

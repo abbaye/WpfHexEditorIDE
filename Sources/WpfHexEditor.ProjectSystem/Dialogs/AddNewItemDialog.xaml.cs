@@ -25,7 +25,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 /// </list>
 /// </para>
 /// </summary>
-public partial class AddNewItemDialog : Window
+public partial class AddNewItemDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
     // ── Output properties ──────────────────────────────────────────────────
     public string         FileName         { get; private set; } = "";

@@ -47,6 +47,7 @@ namespace WpfHexEditor.HexEditor
         private StackPanel _hexHeaderStackPanel;
         private StackPanel _asciiHeaderStackPanel;
         private Controls.ScrollMarkerPanel _scrollMarkers;
+        private System.Windows.Media.TranslateTransform _headerScrollTransform;
 
         // Bookmarks
         private readonly List<long> _bookmarks = new List<long>();
@@ -116,12 +117,16 @@ namespace WpfHexEditor.HexEditor
             // Handle mouse wheel scrolling (use PreviewMouseWheel on ScrollViewer to intercept before it scrolls)
             ContentScroller.PreviewMouseWheel += ContentScroller_PreviewMouseWheel;
 
+            // Sync header horizontal position with content horizontal scroll
+            ContentScroller.ScrollChanged += ContentScroller_ScrollChanged;
+
             // Find XAML elements for display options
             _headerBorder = this.FindName("HeaderBorder") as Border;
             _statusBar = this.FindName("StatusBar") as System.Windows.Controls.Primitives.StatusBar;
             _hexHeaderStackPanel = this.FindName("HexHeaderStackPanel") as StackPanel;
             _asciiHeaderStackPanel = this.FindName("AsciiHeaderStackPanel") as StackPanel;
             _scrollMarkers = this.FindName("ScrollMarkers") as Controls.ScrollMarkerPanel;
+            _headerScrollTransform = this.FindName("HeaderScrollTransform") as System.Windows.Media.TranslateTransform;
 
             // Subscribe to scroll marker click event for navigation
             // Disabled: clicking on markers complicates navigation

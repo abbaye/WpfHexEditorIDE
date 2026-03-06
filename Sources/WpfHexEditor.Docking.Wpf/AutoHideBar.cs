@@ -10,6 +10,7 @@ using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Docking.Wpf.Automation;
@@ -60,13 +61,11 @@ public class AutoHideBar : StackPanel
                 },
                 Padding = new Thickness(6, 4, 6, 4),
                 Margin = new Thickness(1),
-                Background = Brushes.Transparent,
-                BorderThickness = new Thickness(0),
-                Cursor = Cursors.Hand,
                 Tag = item
             };
 
-            button.SetResourceReference(Control.ForegroundProperty, "DockTabTextBrush");
+            // Apply themed style so IsMouseOver uses DockTabHoverBrush instead of default WPF chrome.
+            button.SetResourceReference(FrameworkElement.StyleProperty, "DockTitleButtonStyle");
             AutomationProperties.SetName(button, $"Show {item.Title}");
             button.Click += (_, _) => ItemClicked?.Invoke(item);
             Children.Add(button);
@@ -341,14 +340,55 @@ public class AutoHideFlyout : Grid
             Margin     = new Thickness(8)
         };
 
+        // Animate slide-in from the edge.
+        bool isHorizontal = side is DockSide.Left or DockSide.Right;
+        double targetSize  = isHorizontal ? DefaultSideSize : DefaultTopBottomSize;
+
+        // Stop any ongoing close animation on the container.
+        if (isHorizontal)
+            _panelContainer.BeginAnimation(WidthProperty, null);
+        else
+            _panelContainer.BeginAnimation(HeightProperty, null);
+
+        // Start with size 0 then expand to target.
+        if (isHorizontal)
+            _panelContainer.Width  = 0;
+        else
+            _panelContainer.Height = 0;
+
         Visibility = Visibility.Visible;
+
+        var showAnim = new DoubleAnimation(targetSize,
+            new Duration(TimeSpan.FromMilliseconds(120)))
+        {
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+        };
+        showAnim.Freeze();
+
+        if (isHorizontal)
+            _panelContainer.BeginAnimation(WidthProperty, showAnim);
+        else
+            _panelContainer.BeginAnimation(HeightProperty, showAnim);
     }
 
     public void Close()
     {
-        Visibility           = Visibility.Collapsed;
-        _contentHost.Content = null;
-        CurrentItem          = null;
+        bool isHorizontal = _currentSide is DockSide.Left or DockSide.Right;
+
+        var hideAnim = new DoubleAnimation(0,
+            new Duration(TimeSpan.FromMilliseconds(100)));
+        hideAnim.Completed += (_, _) =>
+        {
+            Visibility           = Visibility.Collapsed;
+            _contentHost.Content = null;
+            CurrentItem          = null;
+        };
+        hideAnim.Freeze();
+
+        if (isHorizontal)
+            _panelContainer.BeginAnimation(WidthProperty, hideAnim);
+        else
+            _panelContainer.BeginAnimation(HeightProperty, hideAnim);
     }
 
     // ── Resize ───────────────────────────────────────────────────────────────────

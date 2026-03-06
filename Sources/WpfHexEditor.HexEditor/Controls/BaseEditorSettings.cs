@@ -53,7 +53,7 @@ namespace WpfHexEditor.HexEditor.Controls
     /// }
     /// </code>
     /// </summary>
-    /// <typeparam name="TEditor">Type of editor control (e.g., HexEditor, JsonEditor)</typeparam>
+    /// <typeparam name="TEditor">Type of editor control (e.g., HexEditor, CodeEditor)</typeparam>
     public class BaseEditorSettings<TEditor> where TEditor : FrameworkElement
     {
         #region Fields

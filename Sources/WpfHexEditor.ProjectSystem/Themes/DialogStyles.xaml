@@ -168,4 +168,109 @@
         </Setter>
     </Style>
 
+    <!-- ── TreeView ────────────────────────────────────────────────── -->
+    <Style TargetType="TreeView">
+        <Setter Property="Background"      Value="{DynamicResource DockBackgroundBrush}" />
+        <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding"         Value="2" />
+    </Style>
+
+    <!-- Expander toggle for TreeViewItem — right chevron / down chevron -->
+    <Style x:Key="_DialogTreeExpanderStyle" TargetType="ToggleButton">
+        <Setter Property="Focusable"    Value="False" />
+        <Setter Property="Width"        Value="16" />
+        <Setter Property="Height"       Value="16" />
+        <Setter Property="Cursor"       Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="Transparent">
+                        <Path x:Name="Arrow"
+                              Data="M 4,2 L 10,8 L 4,14"
+                              Stroke="{DynamicResource DockMenuForegroundBrush}"
+                              StrokeThickness="1.5"
+                              StrokeStartLineCap="Round"
+                              StrokeEndLineCap="Round"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Arrow" Property="Data" Value="M 2,5 L 8,11 L 14,5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── TreeViewItem ─────────────────────────────────────────────── -->
+    <Style TargetType="TreeViewItem">
+        <Setter Property="Background"                 Value="Transparent" />
+        <Setter Property="Foreground"                 Value="{DynamicResource DockMenuForegroundBrush}" />
+        <Setter Property="FocusVisualStyle"           Value="{x:Null}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="SnapsToDevicePixels"        Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TreeViewItem">
+                    <StackPanel SnapsToDevicePixels="True">
+                        <!-- Header row: expander + highlight + content -->
+                        <Border x:Name="Bd"
+                                Background="Transparent"
+                                Padding="2,2"
+                                SnapsToDevicePixels="True">
+                            <DockPanel>
+                                <ToggleButton x:Name="Expander"
+                                              DockPanel.Dock="Left"
+                                              Style="{StaticResource _DialogTreeExpanderStyle}"
+                                              IsChecked="{Binding IsExpanded,
+                                                  RelativeSource={RelativeSource TemplatedParent},
+                                                  Mode=TwoWay}"
+                                              ClickMode="Press" />
+                                <ContentPresenter x:Name="PART_Header"
+                                                  ContentSource="Header"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center" />
+                            </DockPanel>
+                        </Border>
+                        <!-- Children — indented 16 px per level -->
+                        <ItemsPresenter x:Name="ItemsHost"
+                                        Margin="16,0,0,0"
+                                        Visibility="Collapsed" />
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource DockTabActiveBrush}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected"  Value="True" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource DockTabActiveBrush}" />
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

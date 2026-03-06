@@ -102,6 +102,11 @@ public interface ISolutionExplorerPanel
     event EventHandler<AddItemRequestedEventArgs>? ImportFormatDefinitionRequested;
 
     /// <summary>
+    /// Fired when the user chooses "Import Built-in Syntax…" from the context menu on a project node.
+    /// </summary>
+    event EventHandler<AddItemRequestedEventArgs>? ImportSyntaxDefinitionRequested;
+
+    /// <summary>
     /// Fired when the user chooses "Convert to TBLX…" from the context menu on a .tbl file node.
     /// The host is responsible for showing the conversion dialog and producing the .tblx output.
     /// </summary>
@@ -170,6 +175,35 @@ public interface ISolutionExplorerPanel
     /// Call this immediately after creating a new folder to give it a VS-like creation-rename flow.
     /// </summary>
     void BeginFolderRename(IVirtualFolder folder);
+
+    // ── Solution Folder events ────────────────────────────────────────────────
+
+    /// <summary>
+    /// Fired when the user requests creation of a new Solution Folder from the context menu.
+    /// </summary>
+    event EventHandler<SolutionFolderCreateRequestedEventArgs>? SolutionFolderCreateRequested;
+
+    /// <summary>
+    /// Fired when the user commits an inline rename on a Solution Folder node.
+    /// </summary>
+    event EventHandler<SolutionFolderRenameRequestedEventArgs>? SolutionFolderRenameRequested;
+
+    /// <summary>
+    /// Fired when the user requests deletion of a Solution Folder (context menu "Remove").
+    /// Projects inside the folder are moved back to the solution root.
+    /// </summary>
+    event EventHandler<SolutionFolderDeleteRequestedEventArgs>? SolutionFolderDeleteRequested;
+
+    /// <summary>
+    /// Fired when the user drops a project node onto a Solution Folder or onto the solution root.
+    /// </summary>
+    event EventHandler<ProjectMovedEventArgs>? ProjectMoveRequested;
+
+    /// <summary>
+    /// Enters inline-rename mode on the tree node that corresponds to <paramref name="folder"/>.
+    /// Call this immediately after creating a new Solution Folder.
+    /// </summary>
+    void BeginSolutionFolderRename(ISolutionFolder folder);
 
     /// <summary>
     /// Gets or sets whether the tree displays the physical file system under the project directory

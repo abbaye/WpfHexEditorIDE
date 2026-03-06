@@ -25,6 +25,18 @@ public class DockTabControl : TabControl
 {
     public DockGroupNode? Node { get; private set; }
 
+    // ── MaxTabWidth DP — caps the title text width so long filenames are ellipsis-truncated.
+    public static readonly DependencyProperty MaxTabWidthProperty =
+        DependencyProperty.Register(nameof(MaxTabWidth), typeof(double), typeof(DockTabControl),
+            new PropertyMetadata(180.0));
+
+    /// <summary>Maximum display width (in pixels) for a tab header's title text.</summary>
+    public double MaxTabWidth
+    {
+        get => (double)GetValue(MaxTabWidthProperty);
+        set => SetValue(MaxTabWidthProperty, value);
+    }
+
     public DockTabControl()
     {
         SetResourceReference(BackgroundProperty, "DockBackgroundBrush");
@@ -43,6 +55,7 @@ public class DockTabControl : TabControl
     public event Action<DockItem>? TabHideRequested;
     public event Action<DockItem>? TabDockAsDocumentRequested;
     public event Action<DockItem>? TabPinToggleRequested;
+    public event Action<DockItem>? TabStickyToggleRequested;
     public event Action<DockItem, int>? TabReorderRequested;
 
     private Func<DockItem, object>? _contentFactory;
@@ -79,12 +92,21 @@ public class DockTabControl : TabControl
     {
         base.OnSelectionChanged(e);
 
-        if (_contentFactory is null) return;
-
-        foreach (var added in e.AddedItems)
+        if (_contentFactory is not null)
         {
-            if (added is TabItem { Tag: DockItem item } tab && tab.Content is LazyContentPlaceholder)
-                tab.Content = _contentFactory.Invoke(item);
+            foreach (var added in e.AddedItems)
+            {
+                if (added is TabItem { Tag: DockItem item } tab && tab.Content is LazyContentPlaceholder)
+                    tab.Content = _contentFactory.Invoke(item);
+            }
+        }
+
+        // C1: Scroll the newly selected tab into view so it is always visible
+        // even when the tab strip overflows the available width.
+        if (SelectedItem is TabItem selectedTab)
+        {
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                (System.Action)(() => selectedTab.BringIntoView()));
         }
     }
 
@@ -100,6 +122,7 @@ public class DockTabControl : TabControl
         header.CloseAllRequested        += () => CloseAllItems();
         header.CloseAllButThisRequested += () => CloseAllButItem(item);
         header.PinToggleRequested       += () => TabPinToggleRequested?.Invoke(item);
+        header.StickyToggleRequested    += () => TabStickyToggleRequested?.Invoke(item);
         header.CloseAllButPinnedRequested += () => CloseAllButPinnedItems();
         header.ReorderDragging          += pos => OnHeaderReorderDragging(item, pos);
         header.ReorderDropped           += pos => OnHeaderReorderDropped(item, pos);
@@ -395,6 +418,7 @@ public class DockTabHeader : StackPanel
     public event Action? CloseAllRequested;
     public event Action? CloseAllButThisRequested;
     public event Action? PinToggleRequested;
+    public event Action? StickyToggleRequested;
     public event Action? CloseAllButPinnedRequested;
 
     public DockTabHeader(DockItem item)
@@ -420,10 +444,21 @@ public class DockTabHeader : StackPanel
 
         _titleBlock = new TextBlock
         {
-            Text = item.Title,
+            Text             = item.Title,
             VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(0, 0, 4, 0)
+            Margin           = new Thickness(0, 0, 4, 0),
+            TextTrimming     = TextTrimming.CharacterEllipsis
         };
+        // Bind MaxWidth to the nearest DockTabControl.MaxTabWidth so that
+        // the host can configure tab name truncation centrally.
+        _titleBlock.SetBinding(FrameworkElement.MaxWidthProperty,
+            new System.Windows.Data.Binding(nameof(DockTabControl.MaxTabWidth))
+            {
+                RelativeSource = new System.Windows.Data.RelativeSource(
+                    System.Windows.Data.RelativeSourceMode.FindAncestor,
+                    typeof(DockTabControl), 1),
+                FallbackValue = 180.0
+            });
         Children.Add(_titleBlock);
 
         // React to title changes (e.g. "file *" dirty flag)
@@ -583,12 +618,23 @@ public class DockTabHeader : StackPanel
     {
         var menu = new ContextMenu();
 
-        // Pin/Unpin — only for document tabs
+        // Pin/Unpin + Keep Tab Visible — only for document tabs
         if (item.Owner is DocumentHostNode)
         {
             var pinMenuItem = new MenuItem { Header = item.IsPinned ? "Unpin Tab" : "Pin Tab" };
             pinMenuItem.Click += (_, _) => PinToggleRequested?.Invoke();
             menu.Items.Add(pinMenuItem);
+
+            // IsSticky: keeps the tab permanently in the tab strip (never overflowed).
+            var stickyMenuItem = new MenuItem
+            {
+                Header      = item.IsSticky ? "Remove from Tab Strip Pin" : "Keep Tab Visible",
+                IsCheckable = true,
+                IsChecked   = item.IsSticky
+            };
+            stickyMenuItem.Click += (_, _) => StickyToggleRequested?.Invoke();
+            menu.Items.Add(stickyMenuItem);
+
             menu.Items.Add(new Separator());
         }
 

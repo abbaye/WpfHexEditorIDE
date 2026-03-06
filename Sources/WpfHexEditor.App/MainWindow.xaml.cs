@@ -23,6 +23,7 @@ using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Docking.Core.Serialization;
 using WpfHexEditor.Docking.Wpf;
 using WpfHexEditor.App.Controls;
+using WpfHexEditor.App.Dialogs;
 using WpfHexEditor.App.Models;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.Editor.Core;
@@ -31,7 +32,7 @@ using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Editor.TblEditor;
 using WpfHexEditor.Editor.TblEditor.Models;
 using WpfHexEditor.Editor.TblEditor.Services;
-using WpfHexEditor.Editor.JsonEditor;
+using WpfHexEditor.Editor.CodeEditor;
 using WpfHexEditor.Editor.TextEditor;
 using WpfHexEditor.Editor.ImageViewer;
 using WpfHexEditor.Editor.EntropyViewer;
@@ -56,7 +57,7 @@ using System.Windows.Shell;
 using System.Windows.Threading;
 using WpfHexEditor.Options;
 using WpfHexEditor.Editor.Core.Views;
-using JsonEditorControl = WpfHexEditor.Editor.JsonEditor.Controls.JsonEditor;
+using CodeEditorControl = WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor;
 using TblEditorControl  = WpfHexEditor.Editor.TblEditor.Controls.TblEditor;
 
 namespace WpfHexEditor.App;
@@ -119,8 +120,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Per-document format tracking: ContentId → last logged format name
     private readonly Dictionary<string, string> _loggedFormats = new();
 
-    // QuickSearchBar instances for JsonEditor documents (JsonEditor has no embedded Canvas)
-    private readonly Dictionary<JsonEditorControl, QuickSearchBar> _jsonEditorBars = new();
+    // QuickSearchBar instances for CodeEditor documents (CodeEditor has no embedded Canvas)
+    private readonly Dictionary<CodeEditorControl, QuickSearchBar> _codeEditorBars = new();
 
     // M5: PropertyProvider cache — avoids recreating the provider on every tab switch
     private readonly Dictionary<UIElement, IPropertyProvider?> _propertyProviderCache = new();
@@ -316,7 +317,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Register editor factories (doc-proj-* dispatcher)
         _editorRegistry.Register(new TblEditorFactory());
-        _editorRegistry.Register(new JsonEditorFactory());
+        _editorRegistry.Register(new CodeEditorFactory());
         _editorRegistry.Register(new TextEditorFactory());
         _editorRegistry.Register(new ImageViewerFactory());
         _editorRegistry.Register(new EntropyViewerFactory());
@@ -542,6 +543,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(LayoutFilePath));
                 RestoreWindowState(layout);
+                PruneStaleDocumentItems(layout);
                 // Panel must exist BEFORE ApplyLayout so the content factory can early-connect
                 // it to the first HexEditor and format-detection events are not missed.
                 _parsedFieldsPanel ??= new ParsedFieldsPanel();
@@ -574,6 +576,84 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (layout.WindowState is 2)
             WindowState = WindowState.Maximized;
+    }
+
+    /// <summary>
+    /// Removes document tabs whose backing file no longer exists on disk.
+    /// Called before ApplyLayout to prevent creating editor instances for missing files.
+    /// </summary>
+    private void PruneStaleDocumentItems(DockLayoutRoot layout)
+    {
+        var pruned = new List<string>();
+        PruneStaleItemsFromNode(layout.RootNode, pruned);
+        PruneStaleItemsFromList(layout.FloatingItems, pruned);
+        PruneStaleItemsFromList(layout.AutoHideItems, pruned);
+        PruneStaleItemsFromList(layout.HiddenItems,   pruned);
+
+        if (pruned.Count > 0)
+            OutputLogger.Info(
+                $"Layout restore: skipped {pruned.Count} document(s) — file no longer exists: " +
+                string.Join(", ", pruned));
+    }
+
+    private static void PruneStaleItemsFromNode(DockNode node, List<string> pruned)
+    {
+        switch (node)
+        {
+            case DockGroupNode group:
+                foreach (var item in group.Items.ToList())
+                {
+                    if (IsStaleDocumentItem(item, out var label))
+                    {
+                        group.RemoveItem(item);
+                        pruned.Add(label);
+                    }
+                }
+                break;
+
+            case DockSplitNode split:
+                foreach (var child in split.Children)
+                    PruneStaleItemsFromNode(child, pruned);
+                break;
+        }
+    }
+
+    private static void PruneStaleItemsFromList(List<DockItem> items, List<string> pruned)
+    {
+        for (int i = items.Count - 1; i >= 0; i--)
+        {
+            if (IsStaleDocumentItem(items[i], out var label))
+            {
+                items.RemoveAt(i);
+                pruned.Add(label);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns true if <paramref name="item"/> is a file-backed document whose physical file is missing.
+    /// In-memory new files (IsNewFile=true) and items without a FilePath are excluded.
+    /// </summary>
+    private static bool IsStaleDocumentItem(DockItem item, out string label)
+    {
+        label = string.Empty;
+
+        bool isDocument = item.ContentId.StartsWith("doc-file-")
+                       || item.ContentId.StartsWith("doc-hex-")
+                       || item.ContentId.StartsWith("doc-proj-");
+        if (!isDocument) return false;
+
+        if (!item.Metadata.TryGetValue("FilePath", out var filePath) || filePath is null)
+            return false;
+
+        // In-memory new documents have no physical backing file
+        if (item.Metadata.TryGetValue("IsNewFile", out var isNew) && isNew == "true")
+            return false;
+
+        if (File.Exists(filePath)) return false;
+
+        label = item.Title ?? Path.GetFileName(filePath) ?? filePath;
+        return true;
     }
 
     private void AutoSaveLayout()
@@ -887,6 +967,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.AddNewItemRequested              += OnSEAddNewItem;
         panel.AddExistingItemRequested         += OnSEAddExistingItem;
         panel.ImportFormatDefinitionRequested  += OnSEImportFormatDefinition;
+        panel.ImportSyntaxDefinitionRequested  += OnSEImportSyntaxDefinition;
         panel.ConvertTblRequested              += OnSEConvertTbl;
         panel.FolderCreateRequested            += OnSEFolderCreateRequested;
         panel.FolderRenameRequested            += OnSEFolderRenameRequested;
@@ -903,6 +984,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.PropertiesRequested              += OnSEPropertiesRequested;
         panel.WriteToDiskRequested             += OnSEWriteToDisk;
         panel.DiscardChangesetRequested        += OnSEDiscardChangeset;
+        panel.SolutionFolderCreateRequested    += OnSESolutionFolderCreateRequested;
+        panel.SolutionFolderRenameRequested    += OnSESolutionFolderRenameRequested;
+        panel.SolutionFolderDeleteRequested    += OnSESolutionFolderDeleteRequested;
+        panel.ProjectMoveRequested             += OnSEProjectMoveRequested;
         _solutionManager.ItemRenamed           += OnProjectItemRenamed;
         // Provide the editor registry so the panel can build the "Open With ›" submenu
         panel.SetEditorRegistry(_editorRegistry.GetAll());
@@ -1022,7 +1107,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// <summary>
     /// Creates <see cref="_errorPanel"/> the first time it is needed, without docking it.
     /// Call this instead of null-checking <see cref="_errorPanel"/> so that diagnostic sources
-    /// (e.g. TblEditor, JsonEditor) can register even before the panel is first shown.
+    /// (e.g. TblEditor, CodeEditor) can register even before the panel is first shown.
     /// </summary>
     private ErrorPanel EnsureErrorPanelInstance()
     {
@@ -1350,6 +1435,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
                     var bkms = projItem.Bookmarks;
                     if (bkms is { Count: > 0 }) hexPers.ApplyBookmarks(bkms);
+
+                    // Restore pending changeset from .whchg companion file
+                    if (ChangesetService.Instance.HasChangeset(projItem))
+                    {
+                        var dto = ChangesetService.Instance.ReadChangeset(projItem);
+                        if (dto is not null)
+                            hexPers.ApplyChangeset(dto);
+                    }
                 }
             }
         }
@@ -1397,9 +1490,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             var display = WrapWithInfoBar(fe, factory, filePath, item.ContentId);
 
-            // JsonEditor is a FrameworkElement with no embedded Canvas. Add a Canvas overlay
+            // CodeEditor is a FrameworkElement with no embedded Canvas. Add a Canvas overlay
             // to the InfoBar Grid (Row 1) so the QuickSearchBar can be shown inline.
-            if (editor is JsonEditorControl json && display is Grid infoBarGrid)
+            if (editor is CodeEditorControl json && display is Grid infoBarGrid)
             {
                 // No Background + default IsHitTestVisible=True → empty areas let clicks
                 // through to the editor; the QuickSearchBar captures clicks in its own area.
@@ -1418,7 +1511,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 };
                 canvas.Children.Add(bar);
                 infoBarGrid.Children.Add(canvas);
-                _jsonEditorBars[json] = bar;
+                _codeEditorBars[json] = bar;
             }
 
             return display;
@@ -1755,40 +1848,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var dlg = new AddExistingItemDialog(e.Project) { Owner = this };
         if (dlg.ShowDialog() != true) return;
 
-        var projDir = Path.GetDirectoryName(e.Project.ProjectFilePath) ?? "";
-
         foreach (var srcPath in dlg.SelectedFilePaths)
         {
-            var itemType  = ProjectItemTypeHelper.FromExtension(Path.GetExtension(srcPath));
             var finalPath = srcPath;
-            var folderId  = dlg.SelectedVirtualFolderId ?? e.TargetFolderId;
 
-            // ── 1. Physical copy ──────────────────────────────────────────────
+            // ── 1. Physical copy to user-selected destination folder ──────────
             if (dlg.CopyToProject)
             {
-                var destDir = projDir;
-                if (dlg.UseTypeSubfolder)
-                    destDir = Path.Combine(destDir, AddExistingItemDialog.TypeSubfolderName(itemType));
+                var destDir = dlg.SelectedPhysicalDestination
+                           ?? Path.GetDirectoryName(e.Project.ProjectFilePath)!;
                 Directory.CreateDirectory(destDir);
                 finalPath = Path.Combine(destDir, Path.GetFileName(srcPath));
                 if (!string.Equals(finalPath, srcPath, StringComparison.OrdinalIgnoreCase))
                     File.Copy(srcPath, finalPath, overwrite: false);
             }
 
-            // ── 2. Virtual folder ─────────────────────────────────────────────
-            if (dlg.CreateVirtualFolder && dlg.UseTypeSubfolder && folderId is null)
-            {
-                var folderName = AddExistingItemDialog.TypeSubfolderName(itemType);
-                var existing   = e.Project.RootFolders
-                    .FirstOrDefault(f => string.Equals(f.Name, folderName,
-                                        StringComparison.OrdinalIgnoreCase));
-                folderId = existing?.Id
-                    ?? (await _solutionManager.CreateFolderAsync(e.Project, folderName,
-                            createPhysical: true)).Id;
-            }
-
-            // ── 3. Register in project ────────────────────────────────────────
-            await _solutionManager.AddItemAsync(e.Project, finalPath, folderId);
+            // ── 2. Register item in project (no virtual-folder assignment for files) ──
+            await _solutionManager.AddItemAsync(e.Project, finalPath, virtualFolderId: null);
         }
     }
 
@@ -1816,6 +1892,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         OutputLogger.Info(
             $"Imported {dlg.SelectedEntries.Count} format definition(s) into project '{e.Project.Name}'.");
+    }
+
+    private void OnSEImportSyntaxDefinition(object? sender, AddItemRequestedEventArgs e)
+    {
+        var catalog = EmbeddedSyntaxCatalog.Instance;
+        var dlg     = new ImportEmbeddedSyntaxDialog(catalog, e.Project) { Owner = this };
+        if (dlg.ShowDialog() != true || dlg.SelectedEntries.Count == 0) return;
+
+        var projDir = Path.GetDirectoryName(e.Project.ProjectFilePath)!;
+        foreach (var entry in dlg.SelectedEntries)
+        {
+            var destDir  = Path.Combine(projDir, "SyntaxDefinitions", entry.Category);
+            Directory.CreateDirectory(destDir);
+            var safeName = string.Concat(entry.Name.Split(Path.GetInvalidFileNameChars()))
+                                 .Replace(' ', '_');
+            var destPath = Path.Combine(destDir, safeName + ".whlang");
+            var content  = catalog.GetContent(entry.ResourceKey);
+            File.WriteAllText(destPath, content, System.Text.Encoding.UTF8);
+
+            _ = _solutionManager.AddItemAsync(
+                e.Project, destPath,
+                virtualFolderId: dlg.TargetFolderId ?? e.TargetFolderId);
+        }
+
+        OutputLogger.Info(
+            $"Imported {dlg.SelectedEntries.Count} syntax definition(s) into project '{e.Project.Name}'.");
     }
 
     // ── ROM-hint helpers for ConvertTblDialog auto-fill ──────────────────────
@@ -1998,7 +2100,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _propertiesPanel?.SetProvider(new ProjectItemPropertyProvider(e.Item));
     }
 
-    private void OnSolutionExplorerItemRenameRequested(object? sender, ProjectItemEventArgs e)
+    private async void OnSolutionExplorerItemRenameRequested(object? sender, ProjectItemEventArgs e)
     {
         if (e.Project is null) return;
 
@@ -2053,8 +2155,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (newName.Length == 0 || newName == e.Item.Name) return;
 
+        // Release the FileStream before File.Move (FileProvider opens with FileShare.Read)
+        await CloseHexStreamIfOpenAsync(e.Item);
+
         _ = _solutionManager.RenameItemAsync(e.Project, e.Item, newName);
-        // Log is emitted by OnProjectItemRenamed via the ItemRenamed event
+        // Reopen + log are handled in OnProjectItemRenamed via the ItemRenamed event
     }
 
     private void OnSolutionExplorerItemDeleteRequested(object? sender, ProjectItemEventArgs e)
@@ -2073,14 +2178,39 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         OutputLogger.Info($"Removed '{e.Item.Name}' from project '{e.Project.Name}'");
     }
 
-    private void OnSolutionExplorerItemMoveRequested(object? sender, ItemMoveRequestedEventArgs e)
+    private async void OnSolutionExplorerItemMoveRequested(object? sender, ItemMoveRequestedEventArgs e)
     {
-        _ = _solutionManager.MoveItemToFolderAsync(e.Project, e.Item, e.TargetFolderId);
+        // Release the FileStream before File.Move (FileProvider opens with FileShare.Read which blocks moves)
+        var openHex = await CloseHexStreamIfOpenAsync(e.Item);
+
+        await _solutionManager.MoveItemToFolderAsync(e.Project, e.Item, e.TargetFolderId);
+
+        // Reopen from the new path (updated by MoveItemToFolderAsync)
+        openHex?.OpenFile(e.Item.AbsolutePath);
 
         var destination = e.TargetFolderId is null
             ? $"project root of '{e.Project.Name}'"
             : $"folder '{e.TargetFolderId}' in '{e.Project.Name}'";
         OutputLogger.Info($"Moved '{e.Item.Name}' → {destination}");
+    }
+
+    /// <summary>
+    /// If <paramref name="item"/> is currently open in a <see cref="HexEditorControl"/> tab,
+    /// saves pending changes (if any) and closes the file stream so callers can safely
+    /// perform a <c>File.Move</c> or <c>File.Delete</c>.
+    /// </summary>
+    /// <returns>The <see cref="HexEditorControl"/> whose stream was closed, or <c>null</c>.</returns>
+    private async Task<HexEditorControl?> CloseHexStreamIfOpenAsync(IProjectItem item)
+    {
+        var contentId = $"doc-proj-{item.Id}";
+        if (!_contentCache.TryGetValue(contentId, out var cached) || cached is not HexEditorControl hex)
+            return null;
+
+        if ((hex as IDocumentEditor)?.IsDirty == true)
+            await (hex as IDocumentEditor)!.SaveAsync();
+
+        hex.Close();
+        return hex;
     }
 
     // ─── Folder management ──────────────────────────────────────────────
@@ -2111,6 +2241,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         dockItem.Title = e.Item.Name;
         dockItem.Metadata["FilePath"] = e.Item.AbsolutePath;
+
+        // Reopen from the new path (stream was closed before rename to release the file lock)
+        if (_contentCache.TryGetValue(contentId, out var ctrl) && ctrl is HexEditorControl hex)
+            hex.OpenFile(e.Item.AbsolutePath);
+
         OutputLogger.Info($"Renamed '{e.OldName}' → '{e.Item.Name}'");
     }
 
@@ -2128,6 +2263,54 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _ = _solutionManager.DeleteFolderAsync(e.Project, e.Folder);
         _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
         OutputLogger.Info($"Folder '{e.Folder.Name}' removed from '{e.Project.Name}'");
+    }
+
+    // ─── Solution Folder management ─────────────────────────────────────────
+
+    private void OnSESolutionFolderCreateRequested(object? sender, SolutionFolderCreateRequestedEventArgs e)
+        => _ = CreateSolutionFolderAndBeginRenameAsync(e.Solution, e.ParentFolderId);
+
+    private async Task CreateSolutionFolderAndBeginRenameAsync(ISolution solution, string? parentId)
+    {
+        var folder = await _solutionManager.CreateSolutionFolderAsync(solution, "New Solution Folder", parentId);
+        _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+        _solutionExplorerPanel?.BeginSolutionFolderRename(folder);
+        OutputLogger.Info($"Solution folder created in '{solution.Name}'");
+    }
+
+    private void OnSESolutionFolderRenameRequested(object? sender, SolutionFolderRenameRequestedEventArgs e)
+    {
+        _ = _solutionManager.RenameSolutionFolderAsync(e.Solution, e.Folder, e.NewName);
+        _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+        OutputLogger.Info($"Solution folder renamed to '{e.NewName}'");
+    }
+
+    private void OnSESolutionFolderDeleteRequested(object? sender, SolutionFolderDeleteRequestedEventArgs e)
+    {
+        var result = MessageBox.Show(
+            $"Remove solution folder '{e.Folder.Name}'?\n" +
+            "Projects inside will be kept at the solution root.",
+            "Remove solution folder",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (result != MessageBoxResult.Yes) return;
+
+        _ = _solutionManager.DeleteSolutionFolderAsync(e.Solution, e.Folder);
+        _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+        OutputLogger.Info($"Solution folder '{e.Folder.Name}' removed");
+    }
+
+    private void OnSEProjectMoveRequested(object? sender, ProjectMovedEventArgs e)
+    {
+        _ = MoveProjectToSolutionFolderAsync(e.Solution, e.Project, e.TargetFolderId);
+    }
+
+    private async Task MoveProjectToSolutionFolderAsync(ISolution solution, IProject project, string? targetFolderId)
+    {
+        await _solutionManager.MoveProjectToSolutionFolderAsync(solution, project, targetFolderId);
+        _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+        OutputLogger.Info($"Project '{project.Name}' moved to {(targetFolderId is null ? "solution root" : "solution folder")}");
     }
 
     private void OnSEFolderFromDiskRequested(object? sender, FolderFromDiskRequestedEventArgs e)
@@ -2355,6 +2538,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         try
         {
             await _solutionManager.DiscardChangesetAsync(e.Project, e.Item);
+
+            // If the file is currently open, close and reopen to restore the original state
+            var contentId = $"doc-proj-{e.Item.Id}";
+            if (_layout.FindItemByContentId(contentId) is { } dockItem)
+            {
+                CloseTab(dockItem, promptIfDirty: false);
+                OpenProjectItem(e.Item, e.Project);
+            }
             OutputLogger.Info($"Discarded changeset for '{e.Item.Name}'.");
         }
         catch (Exception ex)
@@ -2532,7 +2723,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     /// <summary>
     /// Shows (or refocuses) the inline QuickSearchBar for the given <see cref="ISearchTarget"/>.
-    /// HexEditor and TblEditor have their own embedded Canvas; JsonEditor uses the one injected
+    /// HexEditor and TblEditor have their own embedded Canvas; CodeEditor uses the one injected
     /// by the App during content creation.
     /// </summary>
     private void ShowSearchBarForTarget(ISearchTarget target)
@@ -2543,7 +2734,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (target is TblEditorControl tbl)
         { tbl.ShowSearch(); return; }
 
-        if (target is JsonEditorControl json && _jsonEditorBars.TryGetValue(json, out var bar))
+        if (target is CodeEditorControl json && _codeEditorBars.TryGetValue(json, out var bar))
         {
             if (bar.Visibility == Visibility.Visible)
             { bar.FocusSearchInput(); return; }
@@ -2689,21 +2880,28 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         item.Metadata.ContainsKey("ProjectId");
 
     /// <summary>Auto-serializes a dirty tracked project item to its <c>.whchg</c> companion
-    /// file without showing a dialog.</summary>
-    private Task AutoSerializeTrackedItemAsync(DockItem item)
+    /// file without showing a dialog.  On success clears the editor dirty flag and refreshes
+    /// the Solution Explorer changeset node.</summary>
+    private async Task AutoSerializeTrackedItemAsync(DockItem item)
     {
-        if (!_contentCache.TryGetValue(item.ContentId, out var ctrl)) return Task.CompletedTask;
-        if (ctrl is not IEditorPersistable persistable) return Task.CompletedTask;
+        if (!_contentCache.TryGetValue(item.ContentId, out var ctrl)) return;
+        if (ctrl is not IEditorPersistable persistable) return;
 
         var snapshot = persistable.GetChangesetSnapshot();
-        if (!snapshot.HasEdits) return Task.CompletedTask;
+        if (!snapshot.HasEdits) return;
 
         var proj = _solutionManager.CurrentSolution?.Projects
             .FirstOrDefault(p => p.Id == item.Metadata["ProjectId"]);
         var it = proj?.FindItem(item.Metadata["ItemId"]);
-        if (it is null) return Task.CompletedTask;
+        if (it is null) return;
 
-        return ChangesetService.Instance.WriteChangesetAsync(it, snapshot);
+        await ChangesetService.Instance.WriteChangesetAsync(it, snapshot);
+
+        // Mark the editor as clean after the tracked save
+        persistable.MarkChangesetSaved();
+
+        // Refresh the .whchg child node in Solution Explorer
+        Dispatcher.BeginInvoke(() => _solutionExplorerPanel?.RefreshChangesetNode(it));
     }
 
     private void OnTabCloseRequested(DockItem item) => CloseTab(item, promptIfDirty: true);
@@ -3304,7 +3502,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (!snapshot.HasEdits)
                 return;   // nothing to write
 
-            _ = ChangesetService.Instance.WriteChangesetAsync(saveItem!, snapshot);
+            _ = ChangesetService.Instance.WriteChangesetAsync(saveItem!, snapshot)
+                    .ContinueWith(_ =>
+                    {
+                        savePersistable.MarkChangesetSaved();
+                        Dispatcher.BeginInvoke(() => _solutionExplorerPanel?.RefreshChangesetNode(saveItem!));
+                    }, TaskScheduler.Default);
             OutputLogger.Info($"Saved '{saveItem!.Name}' (tracked).");
             return;
         }
@@ -4022,6 +4225,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         try
         {
             var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(dlg.FileName));
+            PruneStaleDocumentItems(layout);
             _contentCache.Clear();
             _parsedFieldsPanel ??= new ParsedFieldsPanel();
             ApplyLayout(layout);
@@ -4141,13 +4345,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         e.Handled = true;
     }
 
-    // ─── WM_GETMINMAXINFO — maximize respects taskbar ────────────────
+    // ─── WM_GETMINMAXINFO — maximize respects taskbar (per-monitor) ──────
 
-    [StructLayout(LayoutKind.Sequential)] private struct POINT { public int x, y; }
+    [StructLayout(LayoutKind.Sequential)] private struct POINT      { public int x, y; }
+    [StructLayout(LayoutKind.Sequential)] private struct WINRECT    { public int left, top, right, bottom; }
     [StructLayout(LayoutKind.Sequential)] private struct MINMAXINFO
     {
         public POINT ptReserved, ptMaxSize, ptMaxPosition, ptMinTrackSize, ptMaxTrackSize;
     }
+    [StructLayout(LayoutKind.Sequential)] private struct MONITORINFO
+    {
+        public int     cbSize;
+        public WINRECT rcMonitor;
+        public WINRECT rcWork;
+        public uint    dwFlags;
+    }
+
+    [DllImport("user32.dll")] private static extern IntPtr MonitorFromWindow(IntPtr hwnd, int flags);
+    [DllImport("user32.dll")] private static extern bool   GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
     protected override void OnSourceInitialized(EventArgs e)
     {
@@ -4157,22 +4372,28 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
+        // Intercept WM_GETMINMAXINFO to constrain maximize to the current monitor's
+        // work area. MonitorFromWindow identifies the correct monitor for multi-screen
+        // setups — unlike SystemParameters.WorkArea which always returns the primary
+        // monitor's work area regardless of where the window currently lives.
         const int WM_GETMINMAXINFO = 0x0024;
-        if (msg == WM_GETMINMAXINFO)
-        {
-            var source = PresentationSource.FromVisual(this);
-            if (source?.CompositionTarget != null)
-            {
-                var mmi = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                var m   = source.CompositionTarget.TransformToDevice;
-                var wa  = SystemParameters.WorkArea;
-                mmi.ptMaxPosition.x = (int)(wa.Left   * m.M11);
-                mmi.ptMaxPosition.y = (int)(wa.Top    * m.M22);
-                mmi.ptMaxSize.x     = (int)(wa.Width  * m.M11);
-                mmi.ptMaxSize.y     = (int)(wa.Height * m.M22);
-                Marshal.StructureToPtr(mmi, lParam, true);
-            }
-        }
+        if (msg != WM_GETMINMAXINFO) return IntPtr.Zero;
+
+        var hMon = MonitorFromWindow(hwnd, 2 /* MONITOR_DEFAULTTONEAREST */);
+        var mi   = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
+        if (!GetMonitorInfo(hMon, ref mi)) return IntPtr.Zero;
+
+        var mmi = Marshal.PtrToStructure<MINMAXINFO>(lParam);
+        // ptMaxPosition is relative to the monitor's top-left corner, NOT the virtual screen.
+        // Using rcWork directly (screen coords) causes the window to offset by the monitor
+        // origin and fly off-screen on secondary monitors.
+        mmi.ptMaxPosition.x = Math.Abs(mi.rcWork.left - mi.rcMonitor.left);
+        mmi.ptMaxPosition.y = Math.Abs(mi.rcWork.top  - mi.rcMonitor.top);
+        mmi.ptMaxSize.x     = mi.rcWork.right  - mi.rcWork.left;
+        mmi.ptMaxSize.y     = mi.rcWork.bottom - mi.rcWork.top;
+        Marshal.StructureToPtr(mmi, lParam, true);
+
+        handled = true;
         return IntPtr.Zero;
     }
 

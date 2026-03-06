@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="Images/Logo2026.png?raw=true" width="750" height="250" />
+  <a href="Images/Logo2026.png"><img src="Images/Logo2026.png" width="750" height="250" /></a>
   <br/><br/>
 
   <h3>⚡ The Fastest Wpf Hex Editor IDE for .NET ⚡</h3>
@@ -18,7 +18,7 @@
 
   <br/>
 
-  <img src="Images/Sample2026-001.png?raw=true" alt="WPF HexEditor IDE" width="900"/>
+  <a href="Images/Sample2026-001.png"><img src="Images/Sample2026-001.png" alt="WPF HexEditor IDE" width="900"/></a>
   <br/>
   <sub><i>WpfHexEditor — Full IDE with VS-style docking, project system, and multiple editors</i></sub>
 
@@ -156,24 +156,24 @@ Panels connect to the active document automatically via the docking system.
 <td width="50%" align="center">
   <b>🖥️ IDE Overview</b><br/>
   <sub>VS-style docking with Solution Explorer, HexEditor and ParsedFieldsPanel</sub><br/><br/>
-  <img src="Images/App-IDE-Overview.png?raw=true" alt="IDE Overview"/>
+  <a href="Images/App-IDE-Overview.png"><img src="Images/App-IDE-Overview.png" alt="IDE Overview"/></a>
 </td>
 <td width="50%" align="center">
   <b>🔬 Parsed Fields Panel</b><br/>
   <sub>400+ format auto-detection with structured field analysis</sub><br/><br/>
-  <img src="Images/App-ParsedFields.png?raw=true" alt="Parsed Fields"/>
+  <a href="Images/App-ParsedFields.png"><img src="Images/App-ParsedFields.png" alt="Parsed Fields"/></a>
 </td>
 </tr>
 <tr>
 <td width="50%" align="center">
   <b>📝 Multi-Editor Tabs</b><br/>
   <sub>HexEditor, TBL, JSON and Text editors side by side</sub><br/><br/>
-  <img src="Images/App-Editors.png?raw=true" alt="Multiple Editors"/>
+  <a href="Images/App-Editors.png"><img src="Images/App-Editors.png" alt="Multiple Editors"/></a>
 </td>
 <td width="50%" align="center">
   <b>🗂️ Solution Explorer</b><br/>
   <sub>VS-style project tree with virtual and physical folders</sub><br/><br/>
-  <img src="Images/App-SolutionExplorer.png?raw=true" alt="Solution Explorer"/>
+  <a href="Images/App-SolutionExplorer.png"><img src="Images/App-SolutionExplorer.png" alt="Solution Explorer"/></a>
 </td>
 </tr>
 </table>
@@ -188,31 +188,31 @@ Panels connect to the active document automatically via the docking system.
 <td width="50%" align="center">
   <b>📋 TBL Editor</b><br/>
   <sub>Custom character table editor for ROM hacking and encodings</sub><br/><br/>
-  <img src="Images/App-TBLEditor.png?raw=true" alt="TBL Editor"/>
+  <a href="Images/App-TBLEditor.png"><img src="Images/App-TBLEditor.png" alt="TBL Editor"/></a>
 </td>
 <td width="50%" align="center">
   <b>🔴 Error Panel</b><br/>
   <sub>Diagnostics and validation errors from active editors</sub><br/><br/>
-  <img src="Images/App-ErrorList.png?raw=true" alt="Error Panel"/>
+  <a href="Images/App-ErrorList.png"><img src="Images/App-ErrorList.png" alt="Error Panel"/></a>
 </td>
 </tr>
 <tr>
 <td width="50%" align="center">
   <b>📤 Output Panel</b><br/>
   <sub>Session log, messages and file operation feedback</sub><br/><br/>
-  <img src="Images/App-Output.png?raw=true" alt="Output Panel"/>
+  <a href="Images/App-Output.png"><img src="Images/App-Output.png" alt="Output Panel"/></a>
 </td>
 <td width="50%" align="center">
   <b>☀️ Light Theme</b><br/>
   <sub>8 built-in themes — Dark, Light, VS2022Dark, DarkGlass, and more</sub><br/><br/>
-  <img src="Images/App-Theme-Light.png?raw=true" alt="Light Theme"/>
+  <a href="Images/App-Theme-Light.png"><img src="Images/App-Theme-Light.png" alt="Light Theme"/></a>
 </td>
 </tr>
 <tr>
 <td colspan="2" align="center">
   <b>🎮 TBL Format Explained</b><br/>
   <sub>Custom character table format for game ROM editing</sub><br/><br/>
-  <img src="Images/TBLExplain.png?raw=true" alt="TBL Explained" width="600"/>
+  <a href="Images/TBLExplain.png"><img src="Images/TBLExplain.png" alt="TBL Explained" width="600"/></a>
 </td>
 </tr>
 </table>

@@ -4,15 +4,14 @@
     Contributors: Claude Sonnet 4.6
 -->
 
-<Window x:Class="WpfHexEditor.ProjectSystem.Dialogs.ProjectPropertiesDialog"
+<ec:ThemedDialog x:Class="WpfHexEditor.ProjectSystem.Dialogs.ProjectPropertiesDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         Title="Project Properties"
         Width="480" Height="320"
         MinWidth="380" MinHeight="260"
-        WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
-        ShowInTaskbar="False"
         Background="{DynamicResource DockWindowBackgroundBrush}">
 
     <Window.Resources>
@@ -95,4 +94,4 @@
             <Button Content="Close" IsCancel="True" IsDefault="True" />
         </StackPanel>
     </Grid>
-</Window>
+</ec:ThemedDialog>

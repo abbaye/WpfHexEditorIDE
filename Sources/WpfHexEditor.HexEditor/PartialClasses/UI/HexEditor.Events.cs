@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Models;
@@ -824,6 +825,17 @@ namespace WpfHexEditor.HexEditor
         }
 
         /// <summary>
+        /// Synchronize the column header horizontal offset with ContentScroller horizontal scroll.
+        /// The offset column (Column 0 of the header Grid) is pinned; the hex/ASCII header
+        /// panel translates left by the same amount the content has scrolled.
+        /// </summary>
+        private void ContentScroller_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (_headerScrollTransform != null && e.HorizontalChange != 0)
+                _headerScrollTransform.X = -ContentScroller.HorizontalOffset;
+        }
+
+        /// <summary>
         /// Update visible lines based on BaseGrid Row 1 height (exact V1 approach)
         /// V1 uses: (int)(BaseGrid.RowDefinitions[1].ActualHeight / (LineHeight * ZoomScale)) + 1
         /// V2 uses: (int)(BaseGrid.RowDefinitions[1].ActualHeight / LineHeight) + 1 (no ZoomScale)
@@ -986,7 +998,12 @@ namespace WpfHexEditor.HexEditor
         {
             if (_viewModel?.Provider != null)
             {
-                var isModified = _viewModel.Provider.UndoCount > 0;
+                var raw = _viewModel.Provider.UndoCount > 0;
+                // When a tracked save baseline has been set, IsDirty = true only when
+                // the undo count diverges from that baseline (new edits or undo past save point).
+                var isModified = _changesetSavedUndoCount < 0
+                    ? raw
+                    : _viewModel.Provider.UndoCount != _changesetSavedUndoCount;
                 if (IsModified != isModified)
                     IsModified = isModified;
             }

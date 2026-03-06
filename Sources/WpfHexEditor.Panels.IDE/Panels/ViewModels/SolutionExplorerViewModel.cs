@@ -4,13 +4,39 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Panels.IDE.ViewModels;
+
+/// <summary>
+/// Controls how items inside each project node are sorted.
+/// </summary>
+public enum SortMode
+{
+    None,
+    Name,
+    Type,
+    DateModified,
+    Size
+}
+
+/// <summary>
+/// Controls which item types are visible in the tree.
+/// </summary>
+public enum FilterMode
+{
+    All,
+    Binary,
+    Text,
+    Image,
+    Language
+}
 
 /// <summary>
 /// Root view-model for <see cref="SolutionExplorerPanel"/>.
@@ -21,10 +47,116 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     private ISolution? _solution;
     private string     _searchText = "";
     private bool       _showAllFiles;
+    private SortMode   _currentSort   = SortMode.None;
+    private FilterMode _currentFilter = FilterMode.All;
 
     // ── Tree ─────────────────────────────────────────────────────────────────
 
     public ObservableCollection<SolutionExplorerNodeVm> Roots { get; } = [];
+
+    // ── Multi-select (D3) ────────────────────────────────────────────────────
+
+    /// <summary>
+    /// All nodes that currently have <see cref="SolutionExplorerNodeVm.IsSelected"/> set.
+    /// Updated by <see cref="SelectNode"/> / <see cref="ToggleNodeSelection"/> /
+    /// <see cref="RangeSelectTo"/>.
+    /// </summary>
+    public IReadOnlyList<SolutionExplorerNodeVm> SelectedNodes
+        => CollectSelected(Roots);
+
+    /// <summary>
+    /// Clears all selections, then selects <paramref name="node"/> as the sole selection.
+    /// Stores it as the anchor for future range selections.
+    /// </summary>
+    public void SelectNode(SolutionExplorerNodeVm node)
+    {
+        ClearAllSelected(Roots);
+        node.IsSelected  = true;
+        _lastAnchor      = node;
+        OnPropertyChanged(nameof(SelectedNodes));
+    }
+
+    /// <summary>
+    /// Toggles the selection state of <paramref name="node"/> (Ctrl+Click).
+    /// </summary>
+    public void ToggleNodeSelection(SolutionExplorerNodeVm node)
+    {
+        node.IsSelected = !node.IsSelected;
+        if (node.IsSelected) _lastAnchor = node;
+        OnPropertyChanged(nameof(SelectedNodes));
+    }
+
+    /// <summary>
+    /// Selects all nodes between <see cref="_lastAnchor"/> and <paramref name="target"/>
+    /// in document order (Shift+Click).
+    /// </summary>
+    public void RangeSelectTo(SolutionExplorerNodeVm target)
+    {
+        var flat    = FlattenVisible(Roots);
+        var anchorIdx = _lastAnchor is null ? 0 : flat.IndexOf(_lastAnchor);
+        var targetIdx = flat.IndexOf(target);
+
+        if (anchorIdx < 0 || targetIdx < 0) { SelectNode(target); return; }
+
+        int start = Math.Min(anchorIdx, targetIdx);
+        int end   = Math.Max(anchorIdx, targetIdx);
+
+        ClearAllSelected(Roots);
+        for (int i = start; i <= end; i++)
+            flat[i].IsSelected = true;
+
+        OnPropertyChanged(nameof(SelectedNodes));
+    }
+
+    private SolutionExplorerNodeVm? _lastAnchor;
+
+    private static IReadOnlyList<SolutionExplorerNodeVm> CollectSelected(
+        IEnumerable<SolutionExplorerNodeVm> nodes)
+    {
+        var result = new List<SolutionExplorerNodeVm>();
+        CollectSelectedCore(nodes, result);
+        return result;
+    }
+
+    private static void CollectSelectedCore(
+        IEnumerable<SolutionExplorerNodeVm> nodes,
+        List<SolutionExplorerNodeVm> result)
+    {
+        foreach (var node in nodes)
+        {
+            if (node.IsSelected) result.Add(node);
+            CollectSelectedCore(node.Children, result);
+        }
+    }
+
+    private static void ClearAllSelected(IEnumerable<SolutionExplorerNodeVm> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            node.IsSelected = false;
+            ClearAllSelected(node.Children);
+        }
+    }
+
+    private static List<SolutionExplorerNodeVm> FlattenVisible(
+        IEnumerable<SolutionExplorerNodeVm> nodes)
+    {
+        var result = new List<SolutionExplorerNodeVm>();
+        FlattenCore(nodes, result);
+        return result;
+    }
+
+    private static void FlattenCore(
+        IEnumerable<SolutionExplorerNodeVm> nodes,
+        List<SolutionExplorerNodeVm> result)
+    {
+        foreach (var node in nodes)
+        {
+            result.Add(node);
+            if (node.IsExpanded)
+                FlattenCore(node.Children, result);
+        }
+    }
 
     // ── Search ───────────────────────────────────────────────────────────────
 
@@ -54,6 +186,34 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
+    // ── Sort ─────────────────────────────────────────────────────────────────
+
+    public SortMode CurrentSort
+    {
+        get => _currentSort;
+        set
+        {
+            if (_currentSort == value) return;
+            _currentSort = value;
+            OnPropertyChanged();
+            Rebuild();
+        }
+    }
+
+    // ── Filter ───────────────────────────────────────────────────────────────
+
+    public FilterMode CurrentFilter
+    {
+        get => _currentFilter;
+        set
+        {
+            if (_currentFilter == value) return;
+            _currentFilter = value;
+            OnPropertyChanged();
+            Rebuild();
+        }
+    }
+
     // ── Solution binding ─────────────────────────────────────────────────────
 
     public void SetSolution(ISolution? solution)
@@ -71,13 +231,40 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         var solutionNode = new SolutionNodeVm(_solution);
         Roots.Add(solutionNode);
 
+        // Solution Folders come first; collect which project names are inside a folder.
+        var folderedNames = CollectFolderedProjectNames(_solution.RootFolders);
+
+        foreach (var folder in _solution.RootFolders)
+            solutionNode.Children.Add(BuildSolutionFolderNode(folder, _solution));
+
+        // Unfoldered projects follow directly under the solution node.
         foreach (var project in _solution.Projects)
         {
+            if (folderedNames.Contains(project.Name)) continue;
+
             var projNode = _showAllFiles
                 ? BuildProjectNodePhysical(project)
                 : BuildProjectNode(project);
             solutionNode.Children.Add(projNode);
         }
+
+        // Apply sort and filter after building the tree.
+        ApplySort(solutionNode.Children);
+        if (_currentFilter != FilterMode.All)
+            ApplyFilterVisibility(solutionNode.Children);
+    }
+
+    private void ApplyFilterVisibility(ObservableCollection<SolutionExplorerNodeVm> children)
+    {
+        // Filter is a view concern: here we just collapse non-matching file nodes
+        // by leaving them out. Since we rebuild, we can remove them.
+        var toRemove = children
+            .Where(n => n is FileNodeVm && !PassesFilter(n))
+            .ToList();
+        foreach (var n in toRemove) children.Remove(n);
+
+        foreach (var child in children)
+            ApplyFilterVisibility(child.Children);
     }
 
     /// <summary>
@@ -98,6 +285,42 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     }
 
     // ── Node construction ────────────────────────────────────────────────────
+
+    private static HashSet<string> CollectFolderedProjectNames(IReadOnlyList<ISolutionFolder> folders)
+    {
+        var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var f in folders) CollectFolderedNamesCore(f, set);
+        return set;
+    }
+
+    private static void CollectFolderedNamesCore(ISolutionFolder folder, HashSet<string> set)
+    {
+        foreach (var id in folder.ProjectIds) set.Add(id);
+        foreach (var child in folder.Children) CollectFolderedNamesCore(child, set);
+    }
+
+    private SolutionFolderNodeVm BuildSolutionFolderNode(ISolutionFolder folder, ISolution solution)
+    {
+        var node = new SolutionFolderNodeVm(folder, solution) { IsExpanded = true };
+
+        // Nested solution folders first (recursive).
+        foreach (var child in folder.Children)
+            node.Children.Add(BuildSolutionFolderNode(child, solution));
+
+        // Projects inside this folder.
+        foreach (var projectName in folder.ProjectIds)
+        {
+            var project = solution.Projects.FirstOrDefault(p => p.Name == projectName);
+            if (project is null) continue;
+
+            var projNode = _showAllFiles
+                ? BuildProjectNodePhysical(project)
+                : BuildProjectNode(project);
+            node.Children.Add(projNode);
+        }
+
+        return node;
+    }
 
     private static ProjectNodeVm BuildProjectNode(IProject project)
     {
@@ -199,6 +422,122 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
                 fn.IsDefaultTbl = fn.Source.Id == defaultId;
             MarkDefaultTbl(child, defaultId);
         }
+    }
+
+    // ── External modification (D1) ───────────────────────────────────────────
+
+    /// <summary>
+    /// Marks or clears the <see cref="FileNodeVm.IsModifiedExternally"/> flag for
+    /// the node whose backing item has <paramref name="fullPath"/> as its absolute path.
+    /// Safe to call from any thread — walks the tree on the calling thread.
+    /// </summary>
+    public void SetFileModifiedExternally(string fullPath, bool modified)
+    {
+        var node = FindFileNode(Roots, fullPath);
+        if (node is not null)
+            node.IsModifiedExternally = modified;
+    }
+
+    private static FileNodeVm? FindFileNode(IEnumerable<SolutionExplorerNodeVm> nodes, string fullPath)
+    {
+        foreach (var node in nodes)
+        {
+            if (node is FileNodeVm fn &&
+                string.Equals(fn.Source.AbsolutePath, fullPath, StringComparison.OrdinalIgnoreCase))
+                return fn;
+
+            var hit = FindFileNode(node.Children, fullPath);
+            if (hit is not null) return hit;
+        }
+        return null;
+    }
+
+    // ── Active document tracking (D5) ────────────────────────────────────────
+
+    /// <summary>
+    /// Finds the <see cref="FileNodeVm"/> matching <paramref name="filePath"/>, expands
+    /// all ancestors so it is visible, and sets <see cref="SolutionExplorerNodeVm.IsSelected"/>.
+    /// </summary>
+    public FileNodeVm? SyncWithFile(string? filePath)
+    {
+        if (string.IsNullOrEmpty(filePath)) return null;
+
+        var node = FindFileNode(Roots, filePath);
+        if (node is null) return null;
+
+        node.IsSelected = true;
+
+        // Expand ancestors so the node is visible.
+        ExpandAncestors(Roots, node);
+
+        return node;
+    }
+
+    private static bool ExpandAncestors(IEnumerable<SolutionExplorerNodeVm> nodes, SolutionExplorerNodeVm target)
+    {
+        foreach (var node in nodes)
+        {
+            if (node == target) return true;
+
+            if (ExpandAncestors(node.Children, target))
+            {
+                node.IsExpanded = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ── Sort helpers (D2) ────────────────────────────────────────────────────
+
+    private void ApplySort(ObservableCollection<SolutionExplorerNodeVm> children)
+    {
+        if (_currentSort == SortMode.None) return;
+
+        var sorted = _currentSort switch
+        {
+            SortMode.Name         => children.OrderBy(n => n.DisplayName, StringComparer.OrdinalIgnoreCase).ToList(),
+            SortMode.Type         => children.OrderBy(n => n is FileNodeVm fn ? fn.Source.ItemType.ToString() : "")
+                                             .ThenBy(n => n.DisplayName, StringComparer.OrdinalIgnoreCase).ToList(),
+            SortMode.DateModified => children.OrderByDescending(n =>
+                                        n is FileNodeVm fn && File.Exists(fn.Source.AbsolutePath)
+                                            ? File.GetLastWriteTime(fn.Source.AbsolutePath)
+                                            : DateTime.MinValue).ToList(),
+            SortMode.Size         => children.OrderByDescending(n =>
+                                        n is FileNodeVm fn && File.Exists(fn.Source.AbsolutePath)
+                                            ? new FileInfo(fn.Source.AbsolutePath).Length
+                                            : 0L).ToList(),
+            _                     => null
+        };
+
+        if (sorted is null) return;
+
+        for (int i = 0; i < sorted.Count; i++)
+        {
+            var current = children.IndexOf(sorted[i]);
+            if (current != i) children.Move(current, i);
+        }
+
+        // Recurse into folders.
+        foreach (var child in children)
+            ApplySort(child.Children);
+    }
+
+    // ── Filter helpers (D2) ──────────────────────────────────────────────────
+
+    private bool PassesFilter(SolutionExplorerNodeVm node)
+    {
+        if (_currentFilter == FilterMode.All) return true;
+        if (node is not FileNodeVm fn) return true;  // always show folders
+
+        return _currentFilter switch
+        {
+            FilterMode.Binary   => fn.Source.ItemType is ProjectItemType.Binary,
+            FilterMode.Text     => fn.Source.ItemType is ProjectItemType.Text or ProjectItemType.Tbl or ProjectItemType.Json,
+            FilterMode.Image    => fn.Source.ItemType is ProjectItemType.Image or ProjectItemType.Tile,
+            FilterMode.Language => fn.Source.ItemType is ProjectItemType.FormatDefinition or ProjectItemType.Script,
+            _                   => true
+        };
     }
 
     // ── Search filter ─────────────────────────────────────────────────────────

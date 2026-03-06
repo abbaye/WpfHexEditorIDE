@@ -27,7 +27,7 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.ProjectSystem\WpfHexEditor.ProjectSystem.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.TblEditor\WpfHexEditor.Editor.TblEditor.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Editor.JsonEditor\WpfHexEditor.Editor.JsonEditor.csproj" />
+    <ProjectReference Include="..\WpfHexEditor.Editor.CodeEditor\WpfHexEditor.Editor.CodeEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.TextEditor\WpfHexEditor.Editor.TextEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.ImageViewer\WpfHexEditor.Editor.ImageViewer.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.EntropyViewer\WpfHexEditor.Editor.EntropyViewer.csproj" />

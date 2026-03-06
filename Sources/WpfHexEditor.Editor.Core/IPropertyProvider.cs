@@ -11,7 +11,7 @@ namespace WpfHexEditor.Editor.Core;
 /// the Properties panel (F4).
 /// <para>
 /// Implementations live in the editor assemblies (HexEditor, TblEditor,
-/// JsonEditor) and in the ProjectSystem assembly (for project items).
+/// CodeEditor) and in the ProjectSystem assembly (for project items).
 /// They are obtained either via <see cref="IPropertyProviderSource"/> on a
 /// document editor or constructed directly by the host for non-editor contexts
 /// (e.g. a project item selected in the Solution Explorer).

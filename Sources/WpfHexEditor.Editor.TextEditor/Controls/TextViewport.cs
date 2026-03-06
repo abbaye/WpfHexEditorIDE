@@ -52,6 +52,9 @@ internal sealed class TextViewport : FrameworkElement
     private Typeface? _typeface;
     private double _emSize;
 
+    // Mouse drag selection
+    private bool _isDragging;
+
     // Brush cache — keyed by theme resource key
     private readonly Dictionary<string, Brush> _brushCache = new();
 
@@ -184,7 +187,21 @@ internal sealed class TextViewport : FrameworkElement
     protected override Size MeasureOverride(Size availableSize)
     {
         EnsureFontMetrics();
-        return availableSize;
+
+        // WPF forbids returning PositiveInfinity from MeasureOverride.
+        // When hosted inside a ScrollViewer, availableSize may be infinite on one or both axes.
+        // Return a finite desired size: actual document dimensions clamped to available space.
+        double desiredWidth  = double.IsInfinity(availableSize.Width)
+            ? EstimatedMaxWidth
+            : availableSize.Width;
+
+        double desiredHeight = double.IsInfinity(availableSize.Height)
+            ? TotalHeight
+            : availableSize.Height;
+
+        return new Size(
+            Math.Max(0, desiredWidth),
+            Math.Max(0, desiredHeight));
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -226,6 +243,10 @@ internal sealed class TextViewport : FrameworkElement
 
         double codeX = LineNumberColumnWidth + LeftMargin - _horizontalOffset;
 
+        // Selection highlight (drawn before text so text renders on top)
+        if (_vm.HasSelection)
+            RenderSelection(dc, firstLine, lastLine, codeX);
+
         for (int li = firstLine; li <= lastLine; li++)
         {
             double y    = (li - firstLine) * _lineHeight;
@@ -261,6 +282,62 @@ internal sealed class TextViewport : FrameworkElement
         DrawCursor();
     }
 
+    private void RenderSelection(DrawingContext dc, int firstVisLine, int lastVisLine, double codeX)
+    {
+        if (_vm is null || !_vm.HasSelection) return;
+
+        int ancLine = _vm.SelectionAnchorLine;
+        int ancCol  = _vm.SelectionAnchorColumn;
+        int carLine = _vm.CaretLine;
+        int carCol  = _vm.CaretColumn;
+
+        // Normalise: startLine <= endLine
+        bool anchorFirst = ancLine < carLine || (ancLine == carLine && ancCol <= carCol);
+        int startLine = anchorFirst ? ancLine : carLine;
+        int startCol  = anchorFirst ? ancCol  : carCol;
+        int endLine   = anchorFirst ? carLine : ancLine;
+        int endCol    = anchorFirst ? carCol  : ancCol;
+
+        var selBrush = GetBrush("TE_SelectionBackground");
+
+        if (startLine == endLine)
+        {
+            if (startLine < firstVisLine || startLine > lastVisLine) return;
+            double y  = (startLine - firstVisLine) * _lineHeight;
+            double x1 = codeX + startCol * _charWidth;
+            double x2 = codeX + endCol   * _charWidth;
+            if (x2 > x1) dc.DrawRectangle(selBrush, null, new Rect(x1, y, x2 - x1, _lineHeight));
+            return;
+        }
+
+        // First (partial) line
+        if (startLine >= firstVisLine && startLine <= lastVisLine)
+        {
+            double y      = (startLine - firstVisLine) * _lineHeight;
+            double x1     = codeX + startCol * _charWidth;
+            double lineW  = (_vm.GetLine(startLine).Length - startCol) * _charWidth;
+            double width  = Math.Max(lineW, _charWidth);
+            dc.DrawRectangle(selBrush, null, new Rect(x1, y, width, _lineHeight));
+        }
+
+        // Middle (full) lines
+        for (int li = startLine + 1; li < endLine; li++)
+        {
+            if (li < firstVisLine || li > lastVisLine) continue;
+            double y     = (li - firstVisLine) * _lineHeight;
+            double width = Math.Max(_vm.GetLine(li).Length * _charWidth, _charWidth);
+            dc.DrawRectangle(selBrush, null, new Rect(codeX, y, width, _lineHeight));
+        }
+
+        // Last (partial) line
+        if (endLine >= firstVisLine && endLine <= lastVisLine)
+        {
+            double y     = (endLine - firstVisLine) * _lineHeight;
+            double width = Math.Max(endCol * _charWidth, _charWidth);
+            dc.DrawRectangle(selBrush, null, new Rect(codeX, y, width, _lineHeight));
+        }
+    }
+
     private void RenderHighlightedLine(DrawingContext dc, string line,
         IReadOnlyList<ColoredSpan> spans, double codeX, double y)
     {
@@ -269,14 +346,20 @@ internal sealed class TextViewport : FrameworkElement
 
         foreach (var span in spans)
         {
+            // Guard: spans computed on a stale/different line version must not
+            // reference positions beyond the current line length.
+            if (span.Start >= line.Length) break;
+
             // Render unstyled text before this span
             if (span.Start > pos)
             {
-                var raw = line[pos..span.Start];
+                int safeEnd = Math.Min(span.Start, line.Length);
+                int safePos = Math.Min(pos, safeEnd);
+                var raw = line[safePos..safeEnd];
                 if (!string.IsNullOrEmpty(raw))
                 {
                     var ft = BuildFormattedText(raw, defaultBrush);
-                    dc.DrawText(ft, new Point(codeX + pos * _charWidth, y));
+                    dc.DrawText(ft, new Point(codeX + safePos * _charWidth, y));
                 }
             }
 
@@ -363,48 +446,95 @@ internal sealed class TextViewport : FrameworkElement
 
         switch (e.Key)
         {
+            // ── Clipboard / Edit shortcuts ──────────────────────────────
+            case Key.A when ctrl:
+                ViewportSelectAll();
+                e.Handled = true; break;
+            case Key.C when ctrl:
+                ViewportCopy();
+                e.Handled = true; break;
+            case Key.X when ctrl:
+                ViewportCut();
+                e.Handled = true; break;
+            case Key.V when ctrl:
+                ViewportPaste(); ScrollIntoView(_vm.CaretLine);
+                e.Handled = true; break;
+
+            // ── Navigation (with optional Shift selection) ──────────────
             case Key.Left:
+                BeginSelectionIfShift(shift);
                 if (_vm.CaretColumn > 0) _vm.CaretColumn--;
                 else if (_vm.CaretLine > 0) { _vm.CaretLine--; _vm.CaretColumn = _vm.GetLine(_vm.CaretLine).Length; }
+                if (!shift) _vm.ClearSelection();
                 e.Handled = true; break;
             case Key.Right:
+                BeginSelectionIfShift(shift);
                 var curLine = _vm.GetLine(_vm.CaretLine);
                 if (_vm.CaretColumn < curLine.Length) _vm.CaretColumn++;
                 else if (_vm.CaretLine < _vm.LineCount - 1) { _vm.CaretLine++; _vm.CaretColumn = 0; }
+                if (!shift) _vm.ClearSelection();
                 e.Handled = true; break;
             case Key.Up:
+                BeginSelectionIfShift(shift);
                 if (_vm.CaretLine > 0) _vm.CaretLine--;
+                if (!shift) _vm.ClearSelection();
                 e.Handled = true; break;
             case Key.Down:
+                BeginSelectionIfShift(shift);
                 if (_vm.CaretLine < _vm.LineCount - 1) _vm.CaretLine++;
+                if (!shift) _vm.ClearSelection();
                 e.Handled = true; break;
             case Key.Home:
+                BeginSelectionIfShift(shift);
                 _vm.CaretColumn = ctrl ? 0 : GetFirstNonWhiteSpace(_vm.GetLine(_vm.CaretLine));
                 if (ctrl) _vm.CaretLine = 0;
+                if (!shift) _vm.ClearSelection();
                 e.Handled = true; break;
             case Key.End:
+                BeginSelectionIfShift(shift);
                 _vm.CaretColumn = _vm.GetLine(_vm.CaretLine).Length;
                 if (ctrl) _vm.CaretLine = _vm.LineCount - 1;
+                if (!shift) _vm.ClearSelection();
                 e.Handled = true; break;
             case Key.PageUp:
+                BeginSelectionIfShift(shift);
                 _vm.CaretLine = Math.Max(0, _vm.CaretLine - Math.Max(1, _visibleLineCount - 1));
+                if (!shift) _vm.ClearSelection();
                 ScrollIntoView(_vm.CaretLine);
                 e.Handled = true; break;
             case Key.PageDown:
+                BeginSelectionIfShift(shift);
                 _vm.CaretLine = Math.Min(_vm.LineCount - 1, _vm.CaretLine + Math.Max(1, _visibleLineCount - 1));
+                if (!shift) _vm.ClearSelection();
                 ScrollIntoView(_vm.CaretLine);
                 e.Handled = true; break;
+
+            // ── Edit operations ─────────────────────────────────────────
             case Key.Back:
-                _vm.Backspace(); ScrollIntoView(_vm.CaretLine);
+                if (_vm.HasSelection) _vm.DeleteSelectedText();
+                else _vm.Backspace();
+                ScrollIntoView(_vm.CaretLine);
                 e.Handled = true; break;
             case Key.Delete:
-                _vm.DeleteForward(); ScrollIntoView(_vm.CaretLine);
+                if (_vm.HasSelection) _vm.DeleteSelectedText();
+                else _vm.DeleteForward();
+                ScrollIntoView(_vm.CaretLine);
                 e.Handled = true; break;
             case Key.Return:
-                if (!_vm.IsReadOnly) { _vm.InsertChar('\n'); ScrollIntoView(_vm.CaretLine); }
+                if (!_vm.IsReadOnly)
+                {
+                    if (_vm.HasSelection) _vm.DeleteSelectedText();
+                    _vm.InsertChar('\n');
+                    ScrollIntoView(_vm.CaretLine);
+                }
                 e.Handled = true; break;
             case Key.Tab:
-                if (!_vm.IsReadOnly) { foreach (var c in "    ") _vm.InsertChar(c); ScrollIntoView(_vm.CaretLine); }
+                if (!_vm.IsReadOnly)
+                {
+                    if (_vm.HasSelection) _vm.DeleteSelectedText();
+                    foreach (var c in "    ") _vm.InsertChar(c);
+                    ScrollIntoView(_vm.CaretLine);
+                }
                 e.Handled = true; break;
             case Key.Z when ctrl:
                 _vm.Undo(); ScrollIntoView(_vm.CaretLine);
@@ -419,10 +549,24 @@ internal sealed class TextViewport : FrameworkElement
         DrawCursor();
     }
 
+    // Sets the selection anchor to the current caret position if there is no selection yet.
+    private void BeginSelectionIfShift(bool shift)
+    {
+        if (!shift || _vm is null) return;
+        if (!_vm.HasSelection)
+        {
+            _vm.SelectionAnchorLine   = _vm.CaretLine;
+            _vm.SelectionAnchorColumn = _vm.CaretColumn;
+        }
+    }
+
     protected override void OnTextInput(TextCompositionEventArgs e)
     {
         if (_vm is null || _vm.IsReadOnly) return;
         base.OnTextInput(e);
+
+        // Replace selection with the typed text
+        if (_vm.HasSelection) _vm.DeleteSelectedText();
 
         foreach (var c in e.Text)
         {
@@ -439,22 +583,108 @@ internal sealed class TextViewport : FrameworkElement
 
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
+        // Right-click must never clear the selection — the context menu
+        // should open with the current selection intact.
+        if (e.ChangedButton == MouseButton.Right)
+            return;
+
         base.OnMouseDown(e);
         Focus();
 
         if (_vm is null) return;
 
-        var pos = e.GetPosition(this);
-        int line = (int)((pos.Y) / _lineHeight) + _firstVisibleLine;
-        int col  = (int)((pos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth);
+        var shift = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
 
-        _vm.CaretLine   = Math.Clamp(line, 0, _vm.LineCount - 1);
-        _vm.CaretColumn = Math.Clamp(col, 0, _vm.GetLine(_vm.CaretLine).Length);
+        // Save caret before move — needed for Shift+click anchor
+        int oldLine = _vm.CaretLine;
+        int oldCol  = _vm.CaretColumn;
+
+        var pos  = e.GetPosition(this);
+        int line = Math.Clamp((int)(pos.Y / _lineHeight) + _firstVisibleLine, 0, _vm.LineCount - 1);
+        int col  = Math.Clamp((int)((pos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth), 0, _vm.GetLine(line).Length);
+
+        // Double-click: select word
+        if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left)
+        {
+            _vm.CaretLine   = line;
+            _vm.CaretColumn = col;
+            SelectWordAtCaret();
+            e.Handled = true;
+            InvalidateVisual();
+            return;
+        }
+
+        if (shift)
+        {
+            // Shift+click: extend existing selection or start one from old caret
+            if (!_vm.HasSelection)
+            {
+                _vm.SelectionAnchorLine   = oldLine;
+                _vm.SelectionAnchorColumn = oldCol;
+            }
+        }
+        else
+        {
+            _vm.ClearSelection();
+        }
+
+        _vm.CaretLine   = line;
+        _vm.CaretColumn = col;
+
+        if (e.ChangedButton == MouseButton.Left)
+        {
+            _isDragging = true;
+            CaptureMouse();
+        }
 
         InvalidateVisual();
         _cursorVisible = true;
         DrawCursor();
         e.Handled = true;
+    }
+
+    protected override void OnMouseMove(MouseEventArgs e)
+    {
+        base.OnMouseMove(e);
+
+        if (!_isDragging || _vm is null || e.LeftButton != MouseButtonState.Pressed) return;
+
+        // Set anchor on first movement after button-down
+        if (!_vm.HasSelection)
+        {
+            _vm.SelectionAnchorLine   = _vm.CaretLine;
+            _vm.SelectionAnchorColumn = _vm.CaretColumn;
+        }
+
+        var pos  = e.GetPosition(this);
+        int line = Math.Clamp((int)(pos.Y / _lineHeight) + _firstVisibleLine, 0, _vm.LineCount - 1);
+        int col  = Math.Clamp((int)((pos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth), 0, _vm.GetLine(line).Length);
+
+        _vm.CaretLine   = line;
+        _vm.CaretColumn = col;
+
+        InvalidateVisual();
+        _cursorVisible = true;
+        DrawCursor();
+    }
+
+    protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+    {
+        base.OnMouseLeftButtonUp(e);
+
+        if (!_isDragging) return;
+        _isDragging = false;
+        ReleaseMouseCapture();
+
+        // Simple click (no movement): clear the selection that may have been set
+        if (_vm is not null && _vm.HasSelection
+            && _vm.SelectionAnchorLine   == _vm.CaretLine
+            && _vm.SelectionAnchorColumn == _vm.CaretColumn)
+        {
+            _vm.ClearSelection();
+        }
+
+        InvalidateVisual();
     }
 
     protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -546,6 +776,80 @@ internal sealed class TextViewport : FrameworkElement
     // -----------------------------------------------------------------------
     // Helpers
     // -----------------------------------------------------------------------
+
+    // -----------------------------------------------------------------------
+    // Clipboard helpers (called from OnKeyDown Ctrl+C/X/V/A)
+    // -----------------------------------------------------------------------
+
+    private void ViewportSelectAll()
+    {
+        if (_vm is null) return;
+        _vm.SelectionAnchorLine   = 0;
+        _vm.SelectionAnchorColumn = 0;
+        _vm.CaretLine   = _vm.LineCount - 1;
+        _vm.CaretColumn = _vm.GetLine(_vm.CaretLine).Length;
+        InvalidateVisual();
+    }
+
+    private void ViewportCopy()
+    {
+        if (_vm is null || !_vm.HasSelection) return;
+        var text = _vm.GetSelectedText();
+        if (!string.IsNullOrEmpty(text)) Clipboard.SetText(text);
+    }
+
+    private void ViewportCut()
+    {
+        if (_vm is null || !_vm.HasSelection || _vm.IsReadOnly) return;
+        ViewportCopy();
+        _vm.DeleteSelectedText();
+        InvalidateVisual();
+    }
+
+    private void ViewportPaste()
+    {
+        if (_vm is null || _vm.IsReadOnly || !Clipboard.ContainsText()) return;
+        _vm.InsertText(Clipboard.GetText());
+        InvalidateVisual();
+    }
+
+    // -----------------------------------------------------------------------
+    // Word selection (double-click)
+    // -----------------------------------------------------------------------
+
+    private void SelectWordAtCaret()
+    {
+        if (_vm is null) return;
+
+        var line = _vm.GetLine(_vm.CaretLine);
+        int col  = Math.Clamp(_vm.CaretColumn, 0, line.Length);
+
+        // Boundary condition: empty line or caret past end
+        if (col >= line.Length)
+        {
+            _vm.ClearSelection();
+            return;
+        }
+
+        bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
+
+        // Find word start
+        int start = col;
+        if (IsWordChar(line[col]))
+            while (start > 0 && IsWordChar(line[start - 1])) start--;
+
+        // Find word end
+        int end = col;
+        if (IsWordChar(line[col]))
+            while (end < line.Length && IsWordChar(line[end])) end++;
+
+        if (start == end) { _vm.ClearSelection(); return; }
+
+        _vm.SelectionAnchorLine   = _vm.CaretLine;
+        _vm.SelectionAnchorColumn = start;
+        _vm.CaretColumn           = end;
+        InvalidateVisual();
+    }
 
     private static int GetFirstNonWhiteSpace(string line)
     {

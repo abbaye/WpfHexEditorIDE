@@ -84,6 +84,18 @@ public sealed class EmbeddedSyntaxCatalog
         => DefinitionsAssembly.GetManifestResourceStream(resourceKey);
 
     /// <summary>
+    /// Returns the full JSON text for the given resource key.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the resource key does not exist.</exception>
+    public string GetContent(string resourceKey)
+    {
+        using var stream = GetStream(resourceKey)
+            ?? throw new InvalidOperationException($"Resource not found: {resourceKey}");
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
+    }
+
+    /// <summary>
     /// Finds the first entry whose <see cref="EmbeddedSyntaxEntry.Extensions"/>
     /// contains <paramref name="ext"/> (case-insensitive, leading dot required).
     /// </summary>

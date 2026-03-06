@@ -269,6 +269,9 @@ public sealed partial class ImageViewer : UserControl,
     /// <remarks>Not applicable for image viewers.</remarks>
     public void ApplyChangeset(ChangesetDto changeset) { }
 
+    /// <inheritdoc/>
+    public void MarkChangesetSaved() { }
+
     // -----------------------------------------------------------------------
     // IOpenableDocument
     // -----------------------------------------------------------------------

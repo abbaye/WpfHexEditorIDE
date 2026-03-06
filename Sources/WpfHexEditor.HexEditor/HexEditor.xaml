@@ -361,22 +361,27 @@
         <Border x:Name="HeaderBorder" Grid.Row="0" Background="{DynamicResource HeaderBrush}" BorderBrush="{DynamicResource ColumnSeparatorBrush}" BorderThickness="0,0,0,1" Padding="0,5,0,5">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding ActualOffsetWidth, RelativeSource={RelativeSource AncestorType=local:HexEditor}}"/> <!-- Offset: dynamic width based on format -->
-                    <ColumnDefinition Width="Auto"/>   <!-- Hex: auto-size for all columns with spacers -->
-                    <ColumnDefinition Width="20"/> <!-- Separator: matches SeparatorWidth -->
-                    <ColumnDefinition Width="Auto"/> <!-- ASCII: auto-size -->
-                    <ColumnDefinition Width="*"/> <!-- Remaining space -->
+                    <ColumnDefinition Width="{Binding ActualOffsetWidth, RelativeSource={RelativeSource AncestorType=local:HexEditor}}"/> <!-- Offset: pinned, does not scroll -->
+                    <ColumnDefinition Width="*"/> <!-- Scrollable hex + ASCII headers -->
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="{DynamicResource OffsetString}" Style="{StaticResource HeaderTextStyle}" Margin="8,0,0,0"/>
 
-                <!-- Dynamic hex column headers (00 01 02...0F) with byte spacers -->
-                <StackPanel x:Name="HexHeaderStackPanel" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,0"/>
-
-                <Border Grid.Column="2" Width="1" Background="Transparent" Margin="8,0,8,0"/>
-
-                <!-- Dynamic ASCII column headers with byte spacers -->
-                <StackPanel x:Name="AsciiHeaderStackPanel" Grid.Column="3" Orientation="Horizontal" Margin="8,0,0,0"/>
+                <!-- Clipping area: scrolls in sync with ContentScroller via TranslateTransform -->
+                <Border Grid.Column="1" ClipToBounds="True">
+                    <StackPanel x:Name="HeaderScrollContent" Orientation="Horizontal">
+                        <StackPanel.RenderTransform>
+                            <TranslateTransform x:Name="HeaderScrollTransform" X="0"/>
+                        </StackPanel.RenderTransform>
+                        <!-- Dynamic hex column headers (00 01 02...0F) with byte spacers -->
+                        <StackPanel x:Name="HexHeaderStackPanel" Orientation="Horizontal"/>
+                        <!-- Separator: matches HexViewport layout (separatorX = hexX+4, asciiX = separatorX+SeparatorWidth=20)
+                             Total gap = 4px left + 1px line + 19px right = 24px, same as viewport -->
+                        <Border Width="1" Background="{DynamicResource ColumnSeparatorBrush}" Margin="4,0,19,0"/>
+                        <!-- Dynamic ASCII column headers with byte spacers -->
+                        <StackPanel x:Name="AsciiHeaderStackPanel" Orientation="Horizontal"/>
+                    </StackPanel>
+                </Border>
             </Grid>
         </Border>
 

@@ -314,11 +314,11 @@ namespace WpfHexEditor.Sample.Main.Views
         }
 
         /// <summary>
-        /// Opens the JSON Editor Demo window with JsonEditor and Settings Panel
+        /// Opens the Code Editor Demo window with CodeEditor and Settings Panel
         /// </summary>
-        private void JsonEditorDemoMenuItem_Click(object sender, RoutedEventArgs e)
+        private void CodeEditorDemoMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var demoWindow = new JsonEditorDemoWindow
+            var demoWindow = new CodeEditorDemoWindow
             {
                 Owner = this
             };

@@ -18,7 +18,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 /// After <see cref="Window.ShowDialog"/> returns <see langword="true"/>, read
 /// <see cref="ProjectName"/>, <see cref="ProjectDirectory"/> and <see cref="SelectedTemplate"/>.
 /// </summary>
-public partial class NewProjectDialog : Window
+public partial class NewProjectDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
     // ── Outputs ──────────────────────────────────────────────────────────
 

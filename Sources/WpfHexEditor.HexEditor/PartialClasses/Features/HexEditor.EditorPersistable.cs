@@ -142,6 +142,10 @@ namespace WpfHexEditor.HexEditor
             }
         }
 
+        /// <inheritdoc />
+        void IEditorPersistable.MarkChangesetSaved()
+            => _changesetSavedUndoCount = _viewModel?.Provider?.UndoCount ?? 0;
+
         // ── IEditorPersistable — Bookmarks ────────────────────────────────────
         // Explicit interface implementation to avoid collision with the existing
         // public long[] GetBookmarks() method in HexEditor.Bookmarks.cs.

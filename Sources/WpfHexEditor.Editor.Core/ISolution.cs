@@ -23,6 +23,12 @@ public interface ISolution
     IReadOnlyList<IProject> Projects { get; }
 
     /// <summary>
+    /// Top-level VS-like Solution Folders that group projects logically.
+    /// Projects not in any folder are accessible directly via <see cref="Projects"/>.
+    /// </summary>
+    IReadOnlyList<ISolutionFolder> RootFolders { get; }
+
+    /// <summary>
     /// The project that is considered "active" when the solution is opened.
     /// </summary>
     IProject? StartupProject { get; }

@@ -11,6 +11,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.ProjectSystem.Dto;
 using WpfHexEditor.ProjectSystem.Models;
 using WpfHexEditor.ProjectSystem.Serialization.Migration;
+using System.Collections.ObjectModel;
 
 namespace WpfHexEditor.ProjectSystem.Serialization;
 
@@ -72,6 +73,18 @@ internal static class SolutionSerializer
             }
         }
 
+        // Rebuild Solution Folder tree from DTO.
+        if (dto.SolutionFolders is { Count: > 0 })
+            foreach (var folderDto in dto.SolutionFolders)
+                solution.RootFoldersMutable.Add(DtoToSolutionFolder(folderDto));
+
+        // Assign each project to its folder using the SolutionFolderId on the project ref.
+        foreach (var projRef in dto.Projects.Where(p => p.SolutionFolderId is not null))
+        {
+            var folder = FindSolutionFolder(solution.RootFoldersMutable, projRef.SolutionFolderId!);
+            folder?.ProjectIdsMutable.Add(projRef.Name);
+        }
+
         if (dto.StartupProject is not null)
         {
             var startup = solution.ProjectsMutable.FirstOrDefault(p => p.Name == dto.StartupProject);
@@ -97,13 +110,73 @@ internal static class SolutionSerializer
 
         foreach (var proj in solution.ProjectsMutable)
         {
-            var relPath = Path.GetRelativePath(solutionDir, proj.ProjectFilePath)
-                              .Replace(Path.DirectorySeparatorChar, '/');
-            dto.Projects.Add(new SolutionProjectRefDto { Name = proj.Name, Path = relPath });
+            var relPath  = Path.GetRelativePath(solutionDir, proj.ProjectFilePath)
+                               .Replace(Path.DirectorySeparatorChar, '/');
+            var folderId = FindProjectSolutionFolderId(solution.RootFoldersMutable, proj.Name);
+            dto.Projects.Add(new SolutionProjectRefDto
+            {
+                Name             = proj.Name,
+                Path             = relPath,
+                SolutionFolderId = folderId,
+            });
         }
+
+        // Serialize Solution Folder tree (omitted when empty for backwards compatibility).
+        if (solution.RootFoldersMutable.Count > 0)
+            dto.SolutionFolders = solution.RootFoldersMutable
+                .Select(SolutionFolderToDto)
+                .ToList();
 
         Directory.CreateDirectory(solutionDir);
         await using var stream = File.Create(solution.FilePath);
         await JsonSerializer.SerializeAsync(stream, dto, _options, ct);
+    }
+
+    // ── Solution Folder mapping helpers ───────────────────────────────────
+
+    private static SolutionFolder DtoToSolutionFolder(SolutionFolderDto dto)
+    {
+        var folder = new SolutionFolder { Id = dto.Id, Name = dto.Name };
+        if (dto.ProjectIds is not null)
+            foreach (var id in dto.ProjectIds)
+                folder.ProjectIdsMutable.Add(id);
+        if (dto.Children is not null)
+            foreach (var child in dto.Children)
+                folder.ChildrenMutable.Add(DtoToSolutionFolder(child));
+        return folder;
+    }
+
+    private static SolutionFolderDto SolutionFolderToDto(SolutionFolder folder) => new()
+    {
+        Id         = folder.Id,
+        Name       = folder.Name,
+        ProjectIds = folder.ProjectIdsMutable.Count > 0 ? [.. folder.ProjectIdsMutable] : null,
+        Children   = folder.ChildrenMutable.Count > 0
+            ? folder.ChildrenMutable.Select(SolutionFolderToDto).ToList()
+            : null,
+    };
+
+    internal static SolutionFolder? FindSolutionFolder(
+        IEnumerable<SolutionFolder> roots, string id)
+    {
+        foreach (var f in roots)
+        {
+            if (f.Id == id) return f;
+            var found = FindSolutionFolder(f.ChildrenMutable, id);
+            if (found is not null) return found;
+        }
+        return null;
+    }
+
+    private static string? FindProjectSolutionFolderId(
+        IEnumerable<SolutionFolder> roots, string projectName)
+    {
+        foreach (var f in roots)
+        {
+            if (f.ProjectIdsMutable.Contains(projectName)) return f.Id;
+            var found = FindProjectSolutionFolderId(f.ChildrenMutable, projectName);
+            if (found is not null) return found;
+        }
+        return null;
     }
 }

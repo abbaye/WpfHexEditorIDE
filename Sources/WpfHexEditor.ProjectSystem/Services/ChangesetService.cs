@@ -73,6 +73,17 @@ public sealed class ChangesetService
         await ChangesetSerializer.WriteAsync(dto, fs, ct).ConfigureAwait(false);
     }
 
+    /// <summary>Reads the .whchg companion file synchronously.
+    /// Safe on the UI thread for small .whchg files (e.g. during content factory calls).
+    /// Returns null if the file does not exist.</summary>
+    public ChangesetDto? ReadChangeset(IProjectItem item)
+    {
+        string path = GetChangesetPath(item);
+        if (!File.Exists(path)) return null;
+        using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        return ChangesetSerializer.Read(fs);
+    }
+
     /// <summary>Reads the .whchg companion file, or returns null if it doesn't exist.</summary>
     public async Task<ChangesetDto?> ReadChangesetAsync(
         IProjectItem      item,

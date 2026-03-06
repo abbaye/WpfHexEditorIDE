@@ -33,6 +33,11 @@ public static class ChangesetSerializer
     public static Task<ChangesetDto?> ReadAsync(Stream src, CancellationToken ct = default)
         => JsonSerializer.DeserializeAsync<ChangesetDto>(src, Options, ct).AsTask();
 
+    /// <summary>Deserialises a <see cref="ChangesetDto"/> synchronously.
+    /// Safe on the UI thread for small .whchg files.</summary>
+    public static ChangesetDto? Read(Stream src)
+        => JsonSerializer.Deserialize<ChangesetDto>(src, Options);
+
     // ── Conversion helpers ─────────────────────────────────────────────────
 
     /// <summary>

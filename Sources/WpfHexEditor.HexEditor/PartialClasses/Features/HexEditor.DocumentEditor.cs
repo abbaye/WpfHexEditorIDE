@@ -43,6 +43,12 @@ namespace WpfHexEditor.HexEditor
         internal bool   _isNewUnsavedFile;
         internal string _newFileDisplayName = "";
 
+        /// <summary>
+        /// Undo-count baseline set by <see cref="IEditorPersistable.MarkChangesetSaved"/>.
+        /// -1 = no tracked save yet (standard IsModified = UndoCount > 0 behaviour).
+        /// </summary>
+        private long _changesetSavedUndoCount = -1;
+
         // ═══════════════════════════════════════════════════════════════════
         // IDocumentEditor — State
         // ═══════════════════════════════════════════════════════════════════

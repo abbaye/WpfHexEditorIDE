@@ -220,10 +220,16 @@ public class DockEngine
 
     /// <summary>
     /// Moves an item to auto-hide state.
+    /// Infers the correct <see cref="DockSide"/> from the item's current position in the
+    /// layout tree before removing it, so the auto-hide bar routing is always correct.
     /// </summary>
     public void AutoHide(DockItem item)
     {
         ArgumentNullException.ThrowIfNull(item);
+
+        // Infer dock side from tree position before removing the item from its owner.
+        if (item.Owner is { } owner)
+            item.LastDockSide = InferDockSide(owner);
 
         item.Owner?.RemoveItem(item);
         Layout.FloatingItems.Remove(item);
@@ -234,6 +240,23 @@ public class DockEngine
 
         AutoNormalize();
         if (!IsInTransaction) LayoutChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Infers the dock side of a group from its position in the parent split node.
+    /// Horizontal split: index 0 → Left, index &gt; 0 → Right.
+    /// Vertical split:   index 0 → Top,  index &gt; 0 → Bottom.
+    /// Falls back to Bottom when the group has no parent split (e.g. it is the root).
+    /// </summary>
+    private static DockSide InferDockSide(DockGroupNode group)
+    {
+        if (group.Parent is not DockSplitNode parent)
+            return DockSide.Bottom;
+
+        var isFirst = parent.Children.Count > 0 && parent.Children[0] == group;
+        return parent.Orientation == SplitOrientation.Horizontal
+            ? (isFirst ? DockSide.Left : DockSide.Right)
+            : (isFirst ? DockSide.Top  : DockSide.Bottom);
     }
 
     /// <summary>

@@ -419,7 +419,7 @@
 
             <!-- Tools Menu -->
             <MenuItem Header="Tools">
-                <MenuItem Click="JsonEditorDemoMenuItem_Click">
+                <MenuItem Click="CodeEditorDemoMenuItem_Click">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📝 " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>

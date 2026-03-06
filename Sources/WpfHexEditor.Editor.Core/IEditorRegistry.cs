@@ -14,7 +14,7 @@ namespace WpfHexEditor.Editor.Core;
 /// Typical usage (host at startup):
 /// <code>
 /// registry.Register(new TblEditorFactory());
-/// registry.Register(new JsonEditorFactory());
+/// registry.Register(new CodeEditorFactory());
 /// // …
 /// // When opening a file:
 /// var factory = registry.FindFactory(filePath) ?? registry.GetFallback();

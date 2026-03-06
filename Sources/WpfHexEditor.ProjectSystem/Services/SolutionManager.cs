@@ -489,6 +489,72 @@ public sealed class SolutionManager : ISolutionManager
         return folder;
     }
 
+    // ── Solution Folder CRUD ──────────────────────────────────────────────
+
+    public async Task<ISolutionFolder> CreateSolutionFolderAsync(ISolution solution, string name,
+        string? parentFolderId = null, CancellationToken ct = default)
+    {
+        if (solution is not Solution sol)
+            throw new ArgumentException("Invalid solution type.");
+
+        var folder = new SolutionFolder { Name = name };
+
+        if (parentFolderId is null)
+            sol.RootFoldersMutable.Add(folder);
+        else
+            AddSolutionFolderToParent(sol.RootFoldersMutable, parentFolderId, folder);
+
+        sol.IsModified = true;
+        await SolutionSerializer.WriteAsync(sol, ct);
+        RaiseSolutionChanged(SolutionChangeKind.Modified);
+        return folder;
+    }
+
+    public async Task RenameSolutionFolderAsync(ISolution solution, ISolutionFolder folder,
+        string newName, CancellationToken ct = default)
+    {
+        if (solution is not Solution sol) return;
+        if (SolutionSerializer.FindSolutionFolder(sol.RootFoldersMutable, folder.Id) is not SolutionFolder sf) return;
+
+        sf.Name = newName;
+        sol.IsModified = true;
+        await SolutionSerializer.WriteAsync(sol, ct);
+        RaiseSolutionChanged(SolutionChangeKind.Modified);
+    }
+
+    public async Task DeleteSolutionFolderAsync(ISolution solution, ISolutionFolder folder,
+        CancellationToken ct = default)
+    {
+        if (solution is not Solution sol) return;
+
+        // Projects in the deleted folder remain in the solution, just without a folder assignment.
+        RemoveSolutionFolderFromTree(sol.RootFoldersMutable, folder.Id);
+        sol.IsModified = true;
+        await SolutionSerializer.WriteAsync(sol, ct);
+        RaiseSolutionChanged(SolutionChangeKind.Modified);
+    }
+
+    public async Task MoveProjectToSolutionFolderAsync(ISolution solution, IProject project,
+        string? targetFolderId, CancellationToken ct = default)
+    {
+        if (solution is not Solution sol) return;
+
+        // Remove the project from any folder it currently belongs to.
+        foreach (var f in sol.RootFoldersMutable)
+            RemoveProjectFromFolderTree(f, project.Name);
+
+        // Add to the target folder (null = solution root = no folder assignment).
+        if (targetFolderId is not null)
+        {
+            var target = SolutionSerializer.FindSolutionFolder(sol.RootFoldersMutable, targetFolderId);
+            target?.ProjectIdsMutable.Add(project.Name);
+        }
+
+        sol.IsModified = true;
+        await SolutionSerializer.WriteAsync(sol, ct);
+        RaiseSolutionChanged(SolutionChangeKind.Modified);
+    }
+
     // ── Modification tracking ─────────────────────────────────────────────
 
     public async Task PersistItemModificationsAsync(IProject project, IProjectItem item,
@@ -678,6 +744,37 @@ public sealed class SolutionManager : ISolutionManager
         ProjectItemType.Script           => ".lua",
         _                                => ".bin",
     };
+
+    // ── Solution Folder private helpers ──────────────────────────────────
+
+    private static bool AddSolutionFolderToParent(
+        ObservableCollection<SolutionFolder> list, string parentId, SolutionFolder newFolder)
+    {
+        foreach (var f in list)
+        {
+            if (f.Id == parentId) { f.ChildrenMutable.Add(newFolder); return true; }
+            if (AddSolutionFolderToParent(f.ChildrenMutable, parentId, newFolder)) return true;
+        }
+        return false;
+    }
+
+    private static bool RemoveSolutionFolderFromTree(
+        ObservableCollection<SolutionFolder> list, string folderId)
+    {
+        for (var i = 0; i < list.Count; i++)
+        {
+            if (list[i].Id == folderId) { list.RemoveAt(i); return true; }
+            if (RemoveSolutionFolderFromTree(list[i].ChildrenMutable, folderId)) return true;
+        }
+        return false;
+    }
+
+    private static void RemoveProjectFromFolderTree(SolutionFolder folder, string projectName)
+    {
+        folder.ProjectIdsMutable.Remove(projectName);
+        foreach (var child in folder.ChildrenMutable)
+            RemoveProjectFromFolderTree(child, projectName);
+    }
 
     // ── Events ────────────────────────────────────────────────────────────
 
