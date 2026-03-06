@@ -389,6 +389,10 @@
                 <DataTrigger Binding="{Binding IsModifiedExternally}" Value="True">
                     <Setter TargetName="ExternalModBadge" Property="Visibility" Value="Visible"/>
                 </DataTrigger>
+                <!-- Pending-cut items (Ctrl+X) are dimmed at 45% opacity, mirroring Visual Studio behaviour -->
+                <DataTrigger Binding="{Binding IsPendingCut}" Value="True">
+                    <Setter TargetName="DisplayPanel" Property="Opacity" Value="0.45"/>
+                </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
@@ -681,6 +685,24 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator x:Name="NavigationSeparator"/>
+
+                    <!-- Clipboard: Copy / Cut / Paste (file and folder context) -->
+                    <Separator x:Name="ClipboardSeparator"/>
+                    <MenuItem x:Name="CopyMenuItem" Header="Copy" Click="OnMenuCopy" InputGestureText="Ctrl+C">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C8;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="CutMenuItem" Header="Cut" Click="OnMenuCut" InputGestureText="Ctrl+X">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C6;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="PasteMenuItem" Header="Paste" Click="OnMenuPaste" InputGestureText="Ctrl+V">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE77F;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
 
                     <!-- Rename / Remove / Exclude -->
                     <MenuItem x:Name="RenameMenuItem" Header="Rename" Click="OnRename">

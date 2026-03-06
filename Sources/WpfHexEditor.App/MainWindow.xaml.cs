@@ -47,6 +47,7 @@ using WpfHexEditor.Editor.ScriptEditor;
 using WpfHexEditor.Editor.ChangesetEditor;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
+using WpfHexEditor.Panels.IDE.Services;
 using WpfHexEditor.Panels.BinaryAnalysis;
 using WpfHexEditor.Definitions;
 using WpfHexEditor.ProjectSystem;
@@ -988,6 +989,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.SolutionFolderRenameRequested    += OnSESolutionFolderRenameRequested;
         panel.SolutionFolderDeleteRequested    += OnSESolutionFolderDeleteRequested;
         panel.ProjectMoveRequested             += OnSEProjectMoveRequested;
+        panel.ClipboardPasteRequested          += OnSEClipboardPaste;
         _solutionManager.ItemRenamed           += OnProjectItemRenamed;
         // Provide the editor registry so the panel can build the "Open With ›" submenu
         panel.SetEditorRegistry(_editorRegistry.GetAll());
@@ -1868,10 +1870,69 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void OnSEImportFormatDefinition(object? sender, AddItemRequestedEventArgs e)
+    /// <summary>
+    /// Handles clipboard paste from the Solution Explorer (Ctrl+V or "Paste" context menu).
+    /// Performs the physical file operation (copy or move) then registers the item in the project.
+    /// </summary>
+    private async void OnSEClipboardPaste(object? sender, AddExistingItemEventArgs e)
+    {
+        var project = ResolveProjectForPaste(e.TargetFolder);
+        if (project is null) return;
+
+        var projDir = Path.GetDirectoryName(project.ProjectFilePath)!;
+
+        foreach (var srcPath in e.FilePaths)
+        {
+            if (!File.Exists(srcPath)) continue;
+
+            var destPath = srcPath;
+
+            if (e.IsCut)
+            {
+                // Move the file into the project directory when it originates from elsewhere.
+                var dest = Path.Combine(projDir, Path.GetFileName(srcPath));
+                if (!string.Equals(srcPath, dest, StringComparison.OrdinalIgnoreCase))
+                {
+                    Directory.CreateDirectory(projDir);
+                    File.Move(srcPath, dest, overwrite: false);
+                }
+                destPath = dest;
+            }
+
+            await _solutionManager.AddItemAsync(project, destPath, virtualFolderId: null);
+        }
+    }
+
+    /// <summary>
+    /// Resolves the <see cref="IProject"/> that owns <paramref name="targetFolder"/>,
+    /// or returns the first project in the solution when no folder is specified.
+    /// </summary>
+    private IProject? ResolveProjectForPaste(IVirtualFolder? targetFolder)
+    {
+        var solution = _solutionManager.CurrentSolution;
+        if (solution is null || solution.Projects.Count == 0) return null;
+
+        if (targetFolder is not null)
+            return solution.Projects.FirstOrDefault(
+                p => ContainsFolderById(p.RootFolders, targetFolder.Id));
+
+        return solution.Projects[0];
+    }
+
+    private static bool ContainsFolderById(IReadOnlyList<IVirtualFolder> folders, string id)
+    {
+        foreach (var folder in folders)
+        {
+            if (folder.Id == id) return true;
+            if (ContainsFolderById(folder.Children, id)) return true;
+        }
+        return false;
+    }
+
+    private async void OnSEImportFormatDefinition(object? sender, AddItemRequestedEventArgs e)
     {
         var catalog = EmbeddedFormatCatalog.Instance;
-        var dlg     = new ImportEmbeddedFormatDialog(catalog, e.Project) { Owner = this };
+        var dlg     = new ImportEmbeddedFormatDialog(catalog, e.Project, e.TargetFolderId) { Owner = this };
         if (dlg.ShowDialog() != true || dlg.SelectedEntries.Count == 0) return;
 
         var projDir = Path.GetDirectoryName(e.Project.ProjectFilePath)!;
@@ -1882,22 +1943,27 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var safeName = string.Concat(entry.Name.Split(Path.GetInvalidFileNameChars()))
                                  .Replace(' ', '_');
             var destPath = Path.Combine(destDir, safeName + ".whfmt");
-            var json     = catalog.GetJson(entry.ResourceKey);
+
+            // Read the full embedded resource content and write it to disk.
+            var json = catalog.GetJson(entry.ResourceKey);
             File.WriteAllText(destPath, json, System.Text.Encoding.UTF8);
 
-            _ = _solutionManager.AddItemAsync(
+            // Await the item registration so we can open it immediately in the editor,
+            // ensuring the user sees the freshly imported content (not a stale open tab).
+            var item = await _solutionManager.AddItemAsync(
                 e.Project, destPath,
                 virtualFolderId: dlg.TargetFolderId ?? e.TargetFolderId);
+            OpenProjectItem(item, e.Project);
         }
 
         OutputLogger.Info(
             $"Imported {dlg.SelectedEntries.Count} format definition(s) into project '{e.Project.Name}'.");
     }
 
-    private void OnSEImportSyntaxDefinition(object? sender, AddItemRequestedEventArgs e)
+    private async void OnSEImportSyntaxDefinition(object? sender, AddItemRequestedEventArgs e)
     {
         var catalog = EmbeddedSyntaxCatalog.Instance;
-        var dlg     = new ImportEmbeddedSyntaxDialog(catalog, e.Project) { Owner = this };
+        var dlg     = new ImportEmbeddedSyntaxDialog(catalog, e.Project, e.TargetFolderId) { Owner = this };
         if (dlg.ShowDialog() != true || dlg.SelectedEntries.Count == 0) return;
 
         var projDir = Path.GetDirectoryName(e.Project.ProjectFilePath)!;
@@ -1908,12 +1974,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var safeName = string.Concat(entry.Name.Split(Path.GetInvalidFileNameChars()))
                                  .Replace(' ', '_');
             var destPath = Path.Combine(destDir, safeName + ".whlang");
-            var content  = catalog.GetContent(entry.ResourceKey);
+
+            // Read the full embedded resource content and write it to disk.
+            var content = catalog.GetContent(entry.ResourceKey);
             File.WriteAllText(destPath, content, System.Text.Encoding.UTF8);
 
-            _ = _solutionManager.AddItemAsync(
+            // Await registration then open the file so the user sees the imported content.
+            var item = await _solutionManager.AddItemAsync(
                 e.Project, destPath,
                 virtualFolderId: dlg.TargetFolderId ?? e.TargetFolderId);
+            OpenProjectItem(item, e.Project);
         }
 
         OutputLogger.Info(

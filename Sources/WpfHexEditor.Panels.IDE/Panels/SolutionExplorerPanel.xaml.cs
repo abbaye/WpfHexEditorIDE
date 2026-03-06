@@ -40,10 +40,13 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             new MouseButtonEventHandler(OnTreeMouseLeftButtonUp),
             handledEventsToo: true);
 
-        // Clipboard: forward the paste-request to the panel's own AddExistingItemRequested event.
-        // Project is intentionally left as default (resolved by host via args.FilePaths / IsCut).
-        _clipboard.AddExistingItemRequested += (_, _) =>
-            AddExistingItemRequested?.Invoke(this, new AddItemRequestedEventArgs());
+        // Clipboard: forward paste-request to the host via ClipboardPasteRequested.
+        // The host (MainWindow) resolves the target project and performs the file operation.
+        _clipboard.AddExistingItemRequested += (_, args) =>
+            ClipboardPasteRequested?.Invoke(this, args);
+
+        // Initialise the shared static reference so FileNodeVm can call IsPendingCut.
+        FileNodeVm.SetSharedClipboard(_clipboard);
 
         // File watcher: propagate external changes to the ViewModel
         _watcher.FileChangedExternally += (_, args) =>
@@ -185,7 +188,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
         // Granular add capabilities — controls Add > submenu parent and each sub-item independently
         bool canAddItems          = isProject || isFolder;                               // Add New/Existing Item
-        bool canImport            = isProject;                                           // Import Format/Syntax (project only)
+        bool canImport            = isProject || isFolder;                              // Import Format/Syntax (project + virtual project folder)
         bool canAddFolders        = isProject || isFolder;                               // New Folder / Add Existing Folder
         bool canAddSolutionFolder = isSolution || isSolutionFolder;                      // New Solution Folder (solution level only)
         bool canAdd               = canAddItems || canImport || canAddSolutionFolder || canAddFolders;
@@ -244,6 +247,16 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         OpenInExplorerMenuItem.Visibility = hasExplorer               ? Visibility.Visible : Visibility.Collapsed;
         CopyPathMenuItem      .Visibility = hasCopyPath               ? Visibility.Visible : Visibility.Collapsed;
         NavigationSeparator   .Visibility = hasExplorer && hasAfterNav ? Visibility.Visible : Visibility.Collapsed;
+
+        // Clipboard: Copy / Cut only when file items are selected; Paste when clipboard is ready
+        bool hasSelectedFiles = GetSelectedFileItems().Count > 0;
+        bool canClipPaste     = _clipboard.CanPaste() && (isFile || isFolder || isProject);
+        // Separator visible only when at least one clipboard action (Copy, Cut, or Paste) is visible
+        bool anyClipboard = (isFile && hasSelectedFiles) || canClipPaste;
+        ClipboardSeparator.Visibility = anyClipboard ? Visibility.Visible : Visibility.Collapsed;
+        CopyMenuItem      .Visibility = (isFile && hasSelectedFiles) ? Visibility.Visible : Visibility.Collapsed;
+        CutMenuItem       .Visibility = (isFile && hasSelectedFiles) ? Visibility.Visible : Visibility.Collapsed;
+        PasteMenuItem     .Visibility = canClipPaste                 ? Visibility.Visible : Visibility.Collapsed;
 
         // Rename / Remove / Exclude
         RenameMenuItem            .Visibility = (isSolution || isSolutionFolder || isFile || isFolder || isProject) ? Visibility.Visible : Visibility.Collapsed;
@@ -481,23 +494,78 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private void OnSaveAll(object sender, RoutedEventArgs e)
         => SaveAllRequested?.Invoke(this, EventArgs.Empty);
 
+    // ── Clipboard context-menu handlers (Copy / Cut / Paste) ─────────────────
+
+    private void OnMenuCopy(object sender, RoutedEventArgs e)
+    {
+        var items = GetSelectedFileItems();
+        if (items.Count > 0)
+        {
+            _clipboard.Copy(items);
+            RefreshPendingCutVisuals();
+        }
+    }
+
+    private void OnMenuCut(object sender, RoutedEventArgs e)
+    {
+        var items = GetSelectedFileItems();
+        if (items.Count > 0)
+        {
+            _clipboard.Cut(items);
+            RefreshPendingCutVisuals();
+        }
+    }
+
+    private void OnMenuPaste(object sender, RoutedEventArgs e)
+    {
+        if (!_clipboard.CanPaste()) return;
+        var folder = _contextMenuTarget switch
+        {
+            FolderNodeVm fv => fv.Folder as IVirtualFolder,
+            _               => null,
+        };
+        _clipboard.Paste(folder);
+    }
+
+    /// <summary>
+    /// Notifies all <see cref="FileNodeVm"/> nodes to re-evaluate their <c>IsPendingCut</c>
+    /// property so the tree re-renders the correct opacity after a Copy or Cut operation.
+    /// </summary>
+    private void RefreshPendingCutVisuals()
+    {
+        foreach (var node in AllFileNodes(_vm.Roots))
+            node.RefreshPendingCut();
+    }
+
+    private static IEnumerable<FileNodeVm> AllFileNodes(IEnumerable<SolutionExplorerNodeVm> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            if (node is FileNodeVm fn) yield return fn;
+            foreach (var child in AllFileNodes(node.Children))
+                yield return child;
+        }
+    }
+
     private void OnImportFormatDefinition(object sender, RoutedEventArgs e)
     {
-        if (_contextMenuTarget is not ProjectNodeVm pv) return;
+        var (project, folderId) = GetContextProjectAndFolder();
+        if (project is null) return;
         ImportFormatDefinitionRequested?.Invoke(this, new AddItemRequestedEventArgs
         {
-            Project        = pv.Source,
-            TargetFolderId = null,
+            Project        = project,
+            TargetFolderId = folderId,
         });
     }
 
     private void OnImportSyntaxDefinition(object sender, RoutedEventArgs e)
     {
-        if (_contextMenuTarget is not ProjectNodeVm pv) return;
+        var (project, folderId) = GetContextProjectAndFolder();
+        if (project is null) return;
         ImportSyntaxDefinitionRequested?.Invoke(this, new AddItemRequestedEventArgs
         {
-            Project        = pv.Source,
-            TargetFolderId = null,
+            Project        = project,
+            TargetFolderId = folderId,
         });
     }
 
@@ -678,6 +746,13 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     /// <inheritdoc/>
     public event EventHandler<AddItemRequestedEventArgs>? AddExistingItemRequested;
 
+    /// <summary>
+    /// Raised when the user performs a clipboard paste (Ctrl+V or context menu "Paste").
+    /// Contains the file paths, the target folder, and whether the operation is a Cut (move).
+    /// The host performs the actual file-system operation and project-model update.
+    /// </summary>
+    public event EventHandler<AddExistingItemEventArgs>? ClipboardPasteRequested;
+
     /// <inheritdoc/>
     public event EventHandler<AddItemRequestedEventArgs>? ImportFormatDefinitionRequested;
 
@@ -798,7 +873,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         else if (e.Key == Key.X)
         {
             var items = GetSelectedFileItems();
-            if (items.Count > 0) { _clipboard.Cut(items); e.Handled = true; }
+            if (items.Count > 0) { _clipboard.Cut(items); RefreshPendingCutVisuals(); e.Handled = true; }
         }
         else if (e.Key == Key.V)
         {
