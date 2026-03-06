@@ -25,6 +25,18 @@ public class DockTabControl : TabControl
 {
     public DockGroupNode? Node { get; private set; }
 
+    // ── MaxTabWidth DP — caps the title text width so long filenames are ellipsis-truncated.
+    public static readonly DependencyProperty MaxTabWidthProperty =
+        DependencyProperty.Register(nameof(MaxTabWidth), typeof(double), typeof(DockTabControl),
+            new PropertyMetadata(180.0));
+
+    /// <summary>Maximum display width (in pixels) for a tab header's title text.</summary>
+    public double MaxTabWidth
+    {
+        get => (double)GetValue(MaxTabWidthProperty);
+        set => SetValue(MaxTabWidthProperty, value);
+    }
+
     public DockTabControl()
     {
         SetResourceReference(BackgroundProperty, "DockBackgroundBrush");
@@ -79,12 +91,21 @@ public class DockTabControl : TabControl
     {
         base.OnSelectionChanged(e);
 
-        if (_contentFactory is null) return;
-
-        foreach (var added in e.AddedItems)
+        if (_contentFactory is not null)
         {
-            if (added is TabItem { Tag: DockItem item } tab && tab.Content is LazyContentPlaceholder)
-                tab.Content = _contentFactory.Invoke(item);
+            foreach (var added in e.AddedItems)
+            {
+                if (added is TabItem { Tag: DockItem item } tab && tab.Content is LazyContentPlaceholder)
+                    tab.Content = _contentFactory.Invoke(item);
+            }
+        }
+
+        // C1: Scroll the newly selected tab into view so it is always visible
+        // even when the tab strip overflows the available width.
+        if (SelectedItem is TabItem selectedTab)
+        {
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
+                (System.Action)(() => selectedTab.BringIntoView()));
         }
     }
 
@@ -420,10 +441,21 @@ public class DockTabHeader : StackPanel
 
         _titleBlock = new TextBlock
         {
-            Text = item.Title,
+            Text             = item.Title,
             VerticalAlignment = VerticalAlignment.Center,
-            Margin = new Thickness(0, 0, 4, 0)
+            Margin           = new Thickness(0, 0, 4, 0),
+            TextTrimming     = TextTrimming.CharacterEllipsis
         };
+        // Bind MaxWidth to the nearest DockTabControl.MaxTabWidth so that
+        // the host can configure tab name truncation centrally.
+        _titleBlock.SetBinding(FrameworkElement.MaxWidthProperty,
+            new System.Windows.Data.Binding(nameof(DockTabControl.MaxTabWidth))
+            {
+                RelativeSource = new System.Windows.Data.RelativeSource(
+                    System.Windows.Data.RelativeSourceMode.FindAncestor,
+                    typeof(DockTabControl), 1),
+                FallbackValue = 180.0
+            });
         Children.Add(_titleBlock);
 
         // React to title changes (e.g. "file *" dirty flag)

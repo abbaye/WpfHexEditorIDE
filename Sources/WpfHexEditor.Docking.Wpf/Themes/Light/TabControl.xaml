@@ -161,27 +161,21 @@
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Center" />
                         </Border>
-                        <!-- Per-tab color stripe (always visible when AccentBrush is set) -->
+                        <!-- Full-width accent bar: 2px stripe spanning the entire tab width. -->
                         <Border x:Name="ColorStripe"
-                                Height="4"
+                                Height="2"
+                                HorizontalAlignment="Stretch"
                                 VerticalAlignment="Top"
-                                CornerRadius="4,4,0,0"
                                 Opacity="0.65"
                                 Background="{Binding Path=(attached:TabColorizerAttached.AccentBrush),
                                                      RelativeSource={RelativeSource TemplatedParent}}" />
-                        <!-- Selection accent indicator: 2px line at top (Fluent-style) -->
-                        <Border x:Name="ActiveIndicator"
-                                Height="2"
-                                VerticalAlignment="Top"
-                                CornerRadius="4,4,0,0"
-                                Background="Transparent" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <!-- Selected: bg matches content area, accent line visible, stripe full opacity -->
+                        <!-- Selected: bg matches content area, full-width accent bar visible -->
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="TabBorder" Property="Background"
                                     Value="{DynamicResource DockBackgroundBrush}" />
-                            <Setter TargetName="ActiveIndicator" Property="Background"
+                            <Setter TargetName="ColorStripe" Property="Background"
                                     Value="{DynamicResource DockTabActiveBrush}" />
                             <Setter TargetName="ColorStripe" Property="Opacity" Value="1.0" />
                             <!-- Light theme: keep dark text since bg is light -->
