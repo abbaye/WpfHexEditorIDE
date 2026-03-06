@@ -19,6 +19,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Editor.CodeEditor.Models;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
+using WpfHexEditor.Editor.CodeEditor.Rendering;
 using WpfHexEditor.Editor.CodeEditor.Services;
 using WpfHexEditor.Core.Settings;
 using WpfHexEditor.Editor.Core;
@@ -145,6 +146,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private double _charWidth;          // Cached character width
         private double _charHeight;         // Cached character height
         private double _lineHeight;         // Line height with padding
+
+        // GlyphRun renderer — recreated whenever font or DPI changes.
+        private GlyphRunRenderer? _glyphRenderer;
         private int _firstVisibleLine = 0;  // Scrolling support (Phase 1: always 0)
         private int _lastVisibleLine = 0;   // Will be calculated in Phase 1
 
@@ -1383,23 +1387,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         #region Character Dimension Calculation
 
         /// <summary>
-        /// Calculate character dimensions using FormattedText
-        /// Same pattern as HexViewport
+        /// Calculates character dimensions and (re)creates the <see cref="GlyphRunRenderer"/>
+        /// for the current font, size and display DPI.
         /// </summary>
         private void CalculateCharacterDimensions()
         {
-            var formattedText = new FormattedText(
-                "M", // Use 'M' as reference (monospace width)
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                _typeface,
-                _fontSize,
-                Brushes.Black,
-                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
 
-            _charWidth = formattedText.Width;
-            _charHeight = formattedText.Height;
-            _lineHeight = (_charHeight + 4) * LineHeightMultiplier; // Apply line height multiplier DP
+            // Rebuild GlyphRunRenderer — this also caches char width / height
+            // from the GlyphTypeface (fast path) or FormattedText (fallback).
+            _glyphRenderer = new GlyphRunRenderer(
+                _typeface, _boldTypeface, _fontSize, pixelsPerDip);
+
+            _charWidth  = _glyphRenderer.CharWidth;
+            _charHeight = _glyphRenderer.CharHeight;
+            _lineHeight = (_charHeight + 4) * LineHeightMultiplier;
         }
 
 
@@ -2571,24 +2573,31 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                             t.Foreground ?? EditorForeground, t.IsBold, t.IsItalic));
                     }
 
+                    // Pre-compute baseline Y once per line (GlyphRun requires it).
+                    double baselineY = _glyphRenderer != null
+                        ? y + _glyphRenderer.Baseline
+                        : y + _charHeight * 0.8;
+
                     foreach (var token in renderTokens)
                     {
-                        var typeface = token.IsBold ? _boldTypeface : _typeface;
-
-                        var formattedText = new FormattedText(
-                            token.Text,
-                            CultureInfo.CurrentCulture,
-                            FlowDirection.LeftToRight,
-                            typeface,
-                            _fontSize,
-                            token.Foreground,
-                            VisualTreeHelper.GetDpi(this).PixelsPerDip);
-
-                        if (token.IsItalic)
-                            formattedText.SetFontStyle(FontStyles.Italic);
-
                         double tokenX = x + (token.StartColumn * _charWidth);
-                        dc.DrawText(formattedText, new Point(tokenX, y));
+
+                        if (_glyphRenderer != null)
+                        {
+                            _glyphRenderer.RenderToken(dc, token, tokenX, y, baselineY);
+                        }
+                        else
+                        {
+                            // Safety fallback: FormattedText (e.g. before first measure pass).
+                            var typeface = token.IsBold ? _boldTypeface : _typeface;
+                            var ft = new FormattedText(
+                                token.Text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                                typeface, _fontSize, token.Foreground,
+                                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+                            if (token.IsItalic)
+                                ft.SetFontStyle(FontStyles.Italic);
+                            dc.DrawText(ft, new Point(tokenX, y));
+                        }
                     }
                 }
             }
@@ -3944,8 +3953,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _currentScrollOffset    = 0;
             _targetScrollOffset     = 0;
             _horizontalScrollOffset = 0;
-            if (_virtualizationEngine != null)
-                _virtualizationEngine.ScrollOffset = 0;
+            // Sync TotalLines so the virtualization engine reflects the newly loaded document.
+            // Without this call, the engine keeps the initial count (27 lines from the default
+            // template) and clamps LastVisibleLine prematurely for any larger file.
+            UpdateVirtualization();
             InvalidateMeasure();
         }
 
