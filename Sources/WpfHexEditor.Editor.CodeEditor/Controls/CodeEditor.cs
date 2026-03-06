@@ -1158,7 +1158,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 var fontFamily = editor.EditorFontFamily;
                 editor._typeface = new Typeface(fontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
                 editor._boldTypeface = new Typeface(fontFamily, FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
-                editor._fontSize = editor.EditorFontSize;
+                editor._baseFontSize = editor.EditorFontSize;
+                editor._fontSize     = editor._baseFontSize * editor.ZoomLevel;
 
                 // Recalculate character dimensions
                 editor.CalculateCharacterDimensions();
@@ -1348,10 +1349,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private void UpdateTypefacesFromDPs()
         {
-            _typeface = new Typeface(EditorFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-            _boldTypeface = new Typeface(EditorFontFamily, FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+            _typeface           = new Typeface(EditorFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+            _boldTypeface       = new Typeface(EditorFontFamily, FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
             _lineNumberTypeface = new Typeface(LineNumberFontFamily, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-            _fontSize = EditorFontSize;
+            _baseFontSize       = EditorFontSize;
+            _fontSize           = _baseFontSize * ZoomLevel;
         }
 
         #region Visual Children (ScrollBars)
@@ -3551,6 +3553,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             base.OnMouseWheel(e);
+
+            // Ctrl + wheel → zoom in / out (B6).
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                double step  = e.Delta > 0 ? 0.1 : -0.1;
+                ZoomLevel = Math.Clamp(ZoomLevel + step, 0.5, 4.0);
+                e.Handled = true;
+                return;
+            }
 
             if (Keyboard.Modifiers == ModifierKeys.Shift)
             {
