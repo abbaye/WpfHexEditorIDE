@@ -1,0 +1,232 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+-->
+
+<ec:ThemedDialog x:Class="WpfHexEditor.App.Dialogs.ImportEmbeddedSyntaxDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
+        xmlns:ce="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls;assembly=WpfHexEditor.Editor.CodeEditor"
+        Title="Import Built-in Syntax Definition"
+        Width="880" Height="560"
+        MinWidth="640" MinHeight="420"
+        ResizeMode="CanResizeWithGrip"
+        Background="{DynamicResource DockWindowBackgroundBrush}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/WpfHexEditor.ProjectSystem;component/Themes/DialogStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Search box -->
+            <Style TargetType="TextBox">
+                <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Background"               Value="{DynamicResource DockBackgroundBrush}"/>
+                <Setter Property="BorderBrush"              Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="CaretBrush"               Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Padding"                  Value="6,3"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
+
+            <!-- TreeViewItem base style -->
+            <Style TargetType="TreeViewItem">
+                <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Background"        Value="Transparent"/>
+                <Setter Property="Padding"           Value="3,2"/>
+                <Setter Property="FocusVisualStyle"  Value="{x:Null}"/>
+                <Setter Property="IsExpanded"        Value="False"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource ERR_HoverRowBrush}"/>
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource ERR_SelectedRowBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- ToggleButton (Show Preview) — VS2022 style with checked state -->
+            <Style TargetType="ToggleButton">
+                <Setter Property="Padding"     Value="10,4"/>
+                <Setter Property="MinWidth"    Value="80"/>
+                <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="Background"  Value="{DynamicResource DockBackgroundBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border x:Name="Root"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="1"
+                                    SnapsToDevicePixels="True">
+                                <Border x:Name="Overlay" Background="Transparent">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"
+                                                      Margin="{TemplateBinding Padding}"
+                                                      RecognizesAccessKey="True"/>
+                                </Border>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Overlay" Property="Background"  Value="#20FFFFFF"/>
+                                    <Setter TargetName="Root"    Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Root"    Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                    <Setter TargetName="Overlay" Property="Background"  Value="#30FFFFFF"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.45"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- TreeView base style -->
+            <Style TargetType="TreeView">
+                <Setter Property="Background"      Value="{DynamicResource DockBackgroundBrush}"/>
+                <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Search + preview toggle -->
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="*"/>     <!-- TreeView + detail + preview -->
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="Auto"/>  <!-- Folder picker -->
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="Auto"/>  <!-- Status + buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Search bar + preview toggle ────────────────────────────────── -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="&#xE71E;"
+                       FontFamily="Segoe MDL2 Assets"
+                       FontSize="14"
+                       VerticalAlignment="Center"
+                       Margin="0,0,6,0"
+                       Opacity="0.6"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBox x:Name="SearchBox" Grid.Column="1"
+                     TextChanged="OnSearchChanged"/>
+
+            <ToggleButton x:Name="PreviewToggle"
+                          Grid.Column="3"
+                          Content="Show Preview"
+                          Checked="OnPreviewToggle"
+                          Unchecked="OnPreviewToggle"/>
+        </Grid>
+
+        <!-- ── Main content: TreeView | Detail | Preview ───────────────────── -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" MinWidth="140"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*" MinWidth="160"/>
+                <ColumnDefinition x:Name="PreviewSplitterColumn" Width="0"/>
+                <ColumnDefinition x:Name="PreviewColumn" Width="0"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ── TreeView ─────────────────────────────────────────────── -->
+            <TreeView x:Name="SyntaxTree" Grid.Column="0"/>
+
+            <!-- Splitter: tree / detail -->
+            <GridSplitter Grid.Column="1"
+                          Width="5"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockBorderBrush}"/>
+
+            <!-- ── Detail panel ──────────────────────────────────────────── -->
+            <Border Grid.Column="2"
+                    Background="{DynamicResource DockBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    BorderThickness="1">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="10">
+                    <StackPanel>
+                        <TextBlock x:Name="DetailName"
+                                   FontWeight="SemiBold" FontSize="14"
+                                   TextWrapping="Wrap" Margin="0,0,0,2"/>
+                        <TextBlock x:Name="DetailCategory"
+                                   FontStyle="Italic" Opacity="0.65"
+                                   FontSize="11" Margin="0,0,0,8"/>
+                        <Rectangle Height="1" Margin="0,0,0,8"
+                                   Fill="{DynamicResource DockBorderBrush}"/>
+                        <TextBlock Text="Extensions" Opacity="0.65"
+                                   FontSize="11" Margin="0,0,0,4"/>
+                        <WrapPanel x:Name="DetailExtWrap" Margin="0,0,0,10"/>
+                        <TextBlock x:Name="DetailDescription"
+                                   TextWrapping="Wrap" FontSize="12"
+                                   Visibility="Collapsed"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- Splitter: detail / preview -->
+            <GridSplitter x:Name="PreviewSplitter"
+                          Grid.Column="3"
+                          Width="5"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource DockBorderBrush}"
+                          Visibility="Collapsed"/>
+
+            <!-- ── Preview (CodeEditor read-only) ───────────────────────── -->
+            <Border x:Name="PreviewBorder"
+                    Grid.Column="4"
+                    Background="{DynamicResource DockBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    BorderThickness="1"
+                    Visibility="Collapsed">
+                <ce:CodeEditor x:Name="PreviewEditor"
+                               IsReadOnly="True"
+                               ShowLineNumbers="False"/>
+            </Border>
+        </Grid>
+
+        <!-- ── Target folder ──────────────────────────────────────────────── -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="_Destination folder:"/>
+            <ComboBox x:Name="FolderCombo" Grid.Column="1"
+                      Style="{StaticResource DockComboBoxStyle}"/>
+        </Grid>
+
+        <!-- ── Status + buttons ───────────────────────────────────────────── -->
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="SelectionCountText"
+                       VerticalAlignment="Center" Opacity="0.7"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button x:Name="ImportButton" Content="_Import" IsDefault="True"
+                        IsEnabled="False" Click="OnImport" Margin="0,0,8,0"/>
+                <Button Content="Cancel" IsCancel="True"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</ec:ThemedDialog>

@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Panels.IDE.Services;
 using WpfHexEditor.Panels.IDE.ViewModels;
 
 namespace WpfHexEditor.Panels.IDE;
@@ -21,7 +22,9 @@ namespace WpfHexEditor.Panels.IDE;
 /// </summary>
 public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 {
-    private readonly SolutionExplorerViewModel _vm = new();
+    private readonly SolutionExplorerViewModel  _vm        = new();
+    private readonly SolutionClipboardManager    _clipboard = new();
+    private readonly SolutionFileWatcher         _watcher   = new();
     private SolutionExplorerNodeVm? _contextMenuTarget;
     private IReadOnlyList<IEditorFactory> _editorFactories = [];
 
@@ -36,12 +39,30 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             UIElement.MouseLeftButtonUpEvent,
             new MouseButtonEventHandler(OnTreeMouseLeftButtonUp),
             handledEventsToo: true);
+
+        // Clipboard: forward the paste-request to the panel's own AddExistingItemRequested event.
+        // Project is intentionally left as default (resolved by host via args.FilePaths / IsCut).
+        _clipboard.AddExistingItemRequested += (_, _) =>
+            AddExistingItemRequested?.Invoke(this, new AddItemRequestedEventArgs());
+
+        // File watcher: propagate external changes to the ViewModel
+        _watcher.FileChangedExternally += (_, args) =>
+        {
+            var modified = args.ChangeType is not System.IO.WatcherChangeTypes.Deleted;
+            Dispatcher.BeginInvoke(() =>
+                _vm.SetFileModifiedExternally(args.FullPath, modified));
+        };
     }
 
     // ── ISolutionExplorerPanel ────────────────────────────────────────────────
 
     public void SetSolution(ISolution? solution)
-        => _vm.SetSolution(solution);
+    {
+        _vm.SetSolution(solution);
+        _watcher.Stop();
+        if (solution is not null)
+            _watcher.Watch(solution);
+    }
 
     public void SyncWithFile(string absolutePath)
     {
@@ -94,6 +115,32 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnRefresh(object sender, RoutedEventArgs e)
         => _vm.Rebuild();
+
+    // D2 — Sort / Filter ───────────────────────────────────────────────────────
+
+    private void OnSortButtonClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn)
+            btn.ContextMenu!.IsOpen = true;
+    }
+
+    private void OnSortMenuItemClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi && Enum.TryParse<SortMode>(mi.Tag as string, out var mode))
+            _vm.CurrentSort = mode;
+    }
+
+    private void OnFilterButtonClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn)
+            btn.ContextMenu!.IsOpen = true;
+    }
+
+    private void OnFilterMenuItemClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi && Enum.TryParse<FilterMode>(mi.Tag as string, out var mode))
+            _vm.CurrentFilter = mode;
+    }
 
     // ── Search box ────────────────────────────────────────────────────────────
 
@@ -408,6 +455,16 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         });
     }
 
+    private void OnImportSyntaxDefinition(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is not ProjectNodeVm pv) return;
+        ImportSyntaxDefinitionRequested?.Invoke(this, new AddItemRequestedEventArgs
+        {
+            Project        = pv.Source,
+            TargetFolderId = null,
+        });
+    }
+
     private void OnConvertToTblx(object sender, RoutedEventArgs e)
     {
         if (_contextMenuTarget is not FileNodeVm fn || fn.Project is null) return;
@@ -571,6 +628,9 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     public event EventHandler<AddItemRequestedEventArgs>? ImportFormatDefinitionRequested;
 
     /// <inheritdoc/>
+    public event EventHandler<AddItemRequestedEventArgs>? ImportSyntaxDefinitionRequested;
+
+    /// <inheritdoc/>
     public event EventHandler<ProjectItemEventArgs>? ConvertTblRequested;
 
     /// <inheritdoc/>
@@ -636,8 +696,42 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             else if (SolutionTree.SelectedItem is FileNodeVm     fn) { StartInlineEdit(fn);          e.Handled = true; }
             else if (SolutionTree.SelectedItem is FolderNodeVm   fv) { StartInlineFolderEdit(fv);    e.Handled = true; }
             else if (SolutionTree.SelectedItem is ProjectNodeVm  pv) { StartInlineProjectEdit(pv);   e.Handled = true; }
+            return;
+        }
+
+        // D4 — Clipboard shortcuts
+        if ((Keyboard.Modifiers & ModifierKeys.Control) == 0) return;
+
+        if (e.Key == Key.C)
+        {
+            var items = GetSelectedFileItems();
+            if (items.Count > 0) { _clipboard.Copy(items); e.Handled = true; }
+        }
+        else if (e.Key == Key.X)
+        {
+            var items = GetSelectedFileItems();
+            if (items.Count > 0) { _clipboard.Cut(items); e.Handled = true; }
+        }
+        else if (e.Key == Key.V)
+        {
+            if (_clipboard.CanPaste())
+            {
+                var folder = (_contextMenuTarget ?? SolutionTree.SelectedItem as SolutionExplorerNodeVm) switch
+                {
+                    FolderNodeVm fv => fv.Folder as IVirtualFolder,
+                    _               => null,
+                };
+                _clipboard.Paste(folder);
+                e.Handled = true;
+            }
         }
     }
+
+    private List<IProjectItem> GetSelectedFileItems()
+        => _vm.SelectedNodes
+              .OfType<FileNodeVm>()
+              .Select(fn => fn.Source)
+              .ToList();
 
     private void StartInlineEdit(FileNodeVm fn)
     {
@@ -919,17 +1013,36 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         _dragStartPoint = e.GetPosition(null);
         _draggedNode    = null;
 
-        if (e.OriginalSource is DependencyObject src)
-        {
-            var tvi = FindAncestor<TreeViewItem>(src);
-            if (tvi?.DataContext is FileNodeVm fn)
-                _draggedNode = fn;
+        if (e.OriginalSource is not DependencyObject src) return;
 
-            // Record slow-click candidate only when the node is already selected
-            if      (tvi?.DataContext is SolutionNodeVm sv2 && sv2.IsSelected) _slowClickCandidate = sv2;
-            else if (tvi?.DataContext is FileNodeVm     fn2 && fn2.IsSelected) _slowClickCandidate = fn2;
-            else if (tvi?.DataContext is FolderNodeVm   fv2 && fv2.IsSelected) _slowClickCandidate = fv2;
-            else if (tvi?.DataContext is ProjectNodeVm  pv2 && pv2.IsSelected) _slowClickCandidate = pv2;
+        var tvi  = FindAncestor<TreeViewItem>(src);
+        var node = tvi?.DataContext as SolutionExplorerNodeVm;
+
+        if (tvi?.DataContext is FileNodeVm fn0)
+            _draggedNode = fn0;
+
+        // D3 — Multi-select: Ctrl = toggle, Shift = range, plain click = single
+        if (node is not null)
+        {
+            var ctrl  = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
+            var shift = (Keyboard.Modifiers & ModifierKeys.Shift)   != 0;
+
+            if (ctrl)
+            {
+                _vm.ToggleNodeSelection(node);
+                e.Handled = true;  // prevent TreeView from resetting selection
+            }
+            else if (shift)
+            {
+                _vm.RangeSelectTo(node);
+                e.Handled = true;
+            }
+            else
+            {
+                // Record slow-click candidate only when the node is already selected
+                if (node.IsSelected) _slowClickCandidate = node;
+                _vm.SelectNode(node);
+            }
         }
     }
 

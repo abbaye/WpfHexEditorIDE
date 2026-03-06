@@ -324,6 +324,13 @@
                                VerticalAlignment="Center" Margin="3,0,0,0"
                                ToolTip="File is located outside the project directory"
                                Visibility="Collapsed"/>
+                    <!-- Externally-modified warning badge -->
+                    <TextBlock x:Name="ExternalModBadge"
+                               Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="9"
+                               Foreground="{DynamicResource SE_ModifiedIndicatorBrush}"
+                               VerticalAlignment="Center" Margin="2,0,0,0"
+                               ToolTip="Modified externally — consider reloading"
+                               Visibility="Collapsed"/>
                 </StackPanel>
 
                 <!-- Inline rename TextBox (IsEditing = true) -->
@@ -347,6 +354,9 @@
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsExternal}" Value="True">
                     <Setter TargetName="ExternalBadge" Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsModifiedExternally}" Value="True">
+                    <Setter TargetName="ExternalModBadge" Property="Visibility" Value="Visible"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -415,6 +425,44 @@
                     <Button Style="{StaticResource SE_IconButton}" ToolTip="Refresh" Click="OnRefresh">
                         <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                    </Button>
+                </StackPanel>
+
+                <!-- Sort and Filter dropdowns (DockPanel.Dock="Left" so they appear first) -->
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <!-- Sort -->
+                    <Button Style="{StaticResource SE_IconButton}" ToolTip="Sort"
+                            Click="OnSortButtonClick" x:Name="SortButton">
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="SortContextMenu">
+                                <MenuItem Header="None"          Tag="None"         Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="Name"          Tag="Name"         Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="Type"          Tag="Type"         Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="Date Modified" Tag="DateModified" Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="Size"          Tag="Size"         Click="OnSortMenuItemClick"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                       Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                        </StackPanel>
+                    </Button>
+                    <!-- Filter -->
+                    <Button Style="{StaticResource SE_IconButton}" ToolTip="Filter"
+                            Click="OnFilterButtonClick" x:Name="FilterButton">
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="FilterContextMenu">
+                                <MenuItem Header="All"      Tag="All"      Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="Binary"   Tag="Binary"   Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="Text"     Tag="Text"     Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="Images"   Tag="Image"    Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="Language" Tag="Language" Click="OnFilterMenuItemClick"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE71C;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                       Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                        </StackPanel>
                     </Button>
                 </StackPanel>
             </DockPanel>
@@ -517,6 +565,11 @@
                     <MenuItem x:Name="ImportFormatMenuItem" Header="Import Built-in Format..." Click="OnImportFormatDefinition">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE896;"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="ImportSyntaxMenuItem" Header="Import Built-in Syntax..." Click="OnImportSyntaxDefinition">
+                        <MenuItem.Icon>
+                            <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE943;"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="NewFolderMenuItem" Header="New Folder" Click="OnNewFolder">

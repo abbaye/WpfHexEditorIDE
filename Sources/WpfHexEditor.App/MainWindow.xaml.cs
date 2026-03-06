@@ -23,6 +23,7 @@ using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Docking.Core.Serialization;
 using WpfHexEditor.Docking.Wpf;
 using WpfHexEditor.App.Controls;
+using WpfHexEditor.App.Dialogs;
 using WpfHexEditor.App.Models;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.Editor.Core;
@@ -887,6 +888,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.AddNewItemRequested              += OnSEAddNewItem;
         panel.AddExistingItemRequested         += OnSEAddExistingItem;
         panel.ImportFormatDefinitionRequested  += OnSEImportFormatDefinition;
+        panel.ImportSyntaxDefinitionRequested  += OnSEImportSyntaxDefinition;
         panel.ConvertTblRequested              += OnSEConvertTbl;
         panel.FolderCreateRequested            += OnSEFolderCreateRequested;
         panel.FolderRenameRequested            += OnSEFolderRenameRequested;
@@ -1824,6 +1826,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         OutputLogger.Info(
             $"Imported {dlg.SelectedEntries.Count} format definition(s) into project '{e.Project.Name}'.");
+    }
+
+    private void OnSEImportSyntaxDefinition(object? sender, AddItemRequestedEventArgs e)
+    {
+        var catalog = EmbeddedSyntaxCatalog.Instance;
+        var dlg     = new ImportEmbeddedSyntaxDialog(catalog, e.Project) { Owner = this };
+        if (dlg.ShowDialog() != true || dlg.SelectedEntries.Count == 0) return;
+
+        var projDir = Path.GetDirectoryName(e.Project.ProjectFilePath)!;
+        foreach (var entry in dlg.SelectedEntries)
+        {
+            var destDir  = Path.Combine(projDir, "SyntaxDefinitions", entry.Category);
+            Directory.CreateDirectory(destDir);
+            var safeName = string.Concat(entry.Name.Split(Path.GetInvalidFileNameChars()))
+                                 .Replace(' ', '_');
+            var destPath = Path.Combine(destDir, safeName + ".whlang");
+            var content  = catalog.GetContent(entry.ResourceKey);
+            File.WriteAllText(destPath, content, System.Text.Encoding.UTF8);
+
+            _ = _solutionManager.AddItemAsync(
+                e.Project, destPath,
+                virtualFolderId: dlg.TargetFolderId ?? e.TargetFolderId);
+        }
+
+        OutputLogger.Info(
+            $"Imported {dlg.SelectedEntries.Count} syntax definition(s) into project '{e.Project.Name}'.");
     }
 
     // ── ROM-hint helpers for ConvertTblDialog auto-fill ──────────────────────
@@ -4202,13 +4230,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         e.Handled = true;
     }
 
-    // ─── WM_GETMINMAXINFO — maximize respects taskbar ────────────────
+    // ─── WM_GETMINMAXINFO — maximize respects taskbar (per-monitor) ──────
 
-    [StructLayout(LayoutKind.Sequential)] private struct POINT { public int x, y; }
+    [StructLayout(LayoutKind.Sequential)] private struct POINT      { public int x, y; }
+    [StructLayout(LayoutKind.Sequential)] private struct WINRECT    { public int left, top, right, bottom; }
     [StructLayout(LayoutKind.Sequential)] private struct MINMAXINFO
     {
         public POINT ptReserved, ptMaxSize, ptMaxPosition, ptMinTrackSize, ptMaxTrackSize;
     }
+    [StructLayout(LayoutKind.Sequential)] private struct MONITORINFO
+    {
+        public int     cbSize;
+        public WINRECT rcMonitor;
+        public WINRECT rcWork;
+        public uint    dwFlags;
+    }
+
+    [DllImport("user32.dll")] private static extern IntPtr MonitorFromWindow(IntPtr hwnd, int flags);
+    [DllImport("user32.dll")] private static extern bool   GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
     protected override void OnSourceInitialized(EventArgs e)
     {
@@ -4218,22 +4257,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
+        // Intercept WM_GETMINMAXINFO to constrain maximize to the current monitor's
+        // work area. MonitorFromWindow identifies the correct monitor for multi-screen
+        // setups — unlike SystemParameters.WorkArea which always returns the primary
+        // monitor's work area regardless of where the window currently lives.
         const int WM_GETMINMAXINFO = 0x0024;
-        if (msg == WM_GETMINMAXINFO)
-        {
-            var source = PresentationSource.FromVisual(this);
-            if (source?.CompositionTarget != null)
-            {
-                var mmi = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                var m   = source.CompositionTarget.TransformToDevice;
-                var wa  = SystemParameters.WorkArea;
-                mmi.ptMaxPosition.x = (int)(wa.Left   * m.M11);
-                mmi.ptMaxPosition.y = (int)(wa.Top    * m.M22);
-                mmi.ptMaxSize.x     = (int)(wa.Width  * m.M11);
-                mmi.ptMaxSize.y     = (int)(wa.Height * m.M22);
-                Marshal.StructureToPtr(mmi, lParam, true);
-            }
-        }
+        if (msg != WM_GETMINMAXINFO) return IntPtr.Zero;
+
+        var hMon = MonitorFromWindow(hwnd, 2 /* MONITOR_DEFAULTTONEAREST */);
+        var mi   = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
+        if (!GetMonitorInfo(hMon, ref mi)) return IntPtr.Zero;
+
+        var mmi = Marshal.PtrToStructure<MINMAXINFO>(lParam);
+        // rcWork is already in physical pixels — no DPI matrix multiplication needed.
+        mmi.ptMaxPosition.x = mi.rcWork.left;
+        mmi.ptMaxPosition.y = mi.rcWork.top;
+        mmi.ptMaxSize.x     = mi.rcWork.right  - mi.rcWork.left;
+        mmi.ptMaxSize.y     = mi.rcWork.bottom - mi.rcWork.top;
+        Marshal.StructureToPtr(mmi, lParam, true);
+
         return IntPtr.Zero;
     }
 

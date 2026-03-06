@@ -6,6 +6,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Docking.Core.Nodes;
 
 namespace WpfHexEditor.Docking.Wpf.Controls;
 
@@ -39,30 +40,52 @@ public class TabOverflowPanel : Panel
         OverflowItems.Clear();
         var usedWidth = 0.0;
         var maxHeight = 0.0;
-        var overflow = false;
+
+        // Measure all children first so DesiredSize is available.
+        foreach (UIElement child in InternalChildren)
+            child.Measure(new Size(double.PositiveInfinity, availableSize.Height));
+
+        // Reserve width for sticky tabs — they are always visible regardless of overflow.
+        double stickyWidth = 0;
+        foreach (UIElement child in InternalChildren)
+        {
+            if (IsSticky(child))
+                stickyWidth += child.DesiredSize.Width;
+        }
+
+        // Remaining space is distributed to non-sticky tabs in order.
+        double remainingWidth = availableSize.Width - stickyWidth;
 
         foreach (UIElement child in InternalChildren)
         {
-            child.Measure(new Size(double.PositiveInfinity, availableSize.Height));
-            var desiredWidth = child.DesiredSize.Width;
+            maxHeight = Math.Max(maxHeight, child.DesiredSize.Height);
 
-            if (!overflow && usedWidth + desiredWidth <= availableSize.Width)
+            if (IsSticky(child))
             {
-                usedWidth += desiredWidth;
-                maxHeight = Math.Max(maxHeight, child.DesiredSize.Height);
+                // Sticky tabs are always visible — they consume their reserved space.
+                child.Visibility = Visibility.Visible;
+                usedWidth += child.DesiredSize.Width;
+            }
+            else if (remainingWidth >= child.DesiredSize.Width)
+            {
+                remainingWidth -= child.DesiredSize.Width;
+                usedWidth      += child.DesiredSize.Width;
                 child.Visibility = Visibility.Visible;
             }
             else
             {
-                overflow = true;
                 child.Visibility = Visibility.Collapsed;
                 OverflowItems.Add(child);
             }
         }
 
-        HasOverflow = overflow;
+        HasOverflow = OverflowItems.Count > 0;
         return new Size(usedWidth, maxHeight);
     }
+
+    /// <summary>Returns true when the child is a TabItem whose DockItem has IsSticky set.</summary>
+    private static bool IsSticky(UIElement element) =>
+        element is TabItem { Tag: DockItem { IsSticky: true } };
 
     protected override Size ArrangeOverride(Size finalSize)
     {

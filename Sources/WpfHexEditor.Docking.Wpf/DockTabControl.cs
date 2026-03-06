@@ -55,6 +55,7 @@ public class DockTabControl : TabControl
     public event Action<DockItem>? TabHideRequested;
     public event Action<DockItem>? TabDockAsDocumentRequested;
     public event Action<DockItem>? TabPinToggleRequested;
+    public event Action<DockItem>? TabStickyToggleRequested;
     public event Action<DockItem, int>? TabReorderRequested;
 
     private Func<DockItem, object>? _contentFactory;
@@ -121,6 +122,7 @@ public class DockTabControl : TabControl
         header.CloseAllRequested        += () => CloseAllItems();
         header.CloseAllButThisRequested += () => CloseAllButItem(item);
         header.PinToggleRequested       += () => TabPinToggleRequested?.Invoke(item);
+        header.StickyToggleRequested    += () => TabStickyToggleRequested?.Invoke(item);
         header.CloseAllButPinnedRequested += () => CloseAllButPinnedItems();
         header.ReorderDragging          += pos => OnHeaderReorderDragging(item, pos);
         header.ReorderDropped           += pos => OnHeaderReorderDropped(item, pos);
@@ -416,6 +418,7 @@ public class DockTabHeader : StackPanel
     public event Action? CloseAllRequested;
     public event Action? CloseAllButThisRequested;
     public event Action? PinToggleRequested;
+    public event Action? StickyToggleRequested;
     public event Action? CloseAllButPinnedRequested;
 
     public DockTabHeader(DockItem item)
@@ -615,12 +618,23 @@ public class DockTabHeader : StackPanel
     {
         var menu = new ContextMenu();
 
-        // Pin/Unpin — only for document tabs
+        // Pin/Unpin + Keep Tab Visible — only for document tabs
         if (item.Owner is DocumentHostNode)
         {
             var pinMenuItem = new MenuItem { Header = item.IsPinned ? "Unpin Tab" : "Pin Tab" };
             pinMenuItem.Click += (_, _) => PinToggleRequested?.Invoke();
             menu.Items.Add(pinMenuItem);
+
+            // IsSticky: keeps the tab permanently in the tab strip (never overflowed).
+            var stickyMenuItem = new MenuItem
+            {
+                Header      = item.IsSticky ? "Remove from Tab Strip Pin" : "Keep Tab Visible",
+                IsCheckable = true,
+                IsChecked   = item.IsSticky
+            };
+            stickyMenuItem.Click += (_, _) => StickyToggleRequested?.Invoke();
+            menu.Items.Add(stickyMenuItem);
+
             menu.Items.Add(new Separator());
         }
 

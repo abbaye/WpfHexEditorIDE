@@ -39,6 +39,19 @@ public class DockItem : INotifyPropertyChanged
     /// </summary>
     public bool IsPinned { get; set; }
 
+    private bool _isSticky;
+
+    /// <summary>
+    /// When <c>true</c> the tab is never moved to the overflow menu —
+    /// it remains permanently visible in the tab strip.
+    /// Toggle via the "Pin Tab" context menu item.
+    /// </summary>
+    public bool IsSticky
+    {
+        get => _isSticky;
+        set { if (_isSticky != value) { _isSticky = value; OnPropertyChanged(); } }
+    }
+
     /// <summary>
     /// True if this item is a document (file content) rather than a tool panel.
     /// Set automatically by <see cref="DockGroupNode.AddItem"/> / <see cref="DockGroupNode.InsertItem"/>

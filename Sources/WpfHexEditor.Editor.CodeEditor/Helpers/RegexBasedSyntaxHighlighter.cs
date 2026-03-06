@@ -19,6 +19,9 @@ using System.Windows;
 using System.Windows.Media;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 
+// Alias to avoid ambiguity with WpfHexEditor.Editor.CodeEditor.Helpers.RegexSyntaxHighlighter
+using TextEditorHighlighter = WpfHexEditor.Editor.TextEditor.Highlighting.RegexSyntaxHighlighter;
+
 namespace WpfHexEditor.Editor.CodeEditor.Helpers;
 
 /// <summary>
@@ -46,7 +49,7 @@ public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
             ["TE_Foreground"]   = Brushes.WhiteSmoke,
         };
 
-    private readonly RegexSyntaxHighlighter _inner;
+    private readonly TextEditorHighlighter _inner;
     private readonly Brush                  _defaultForeground;
     private readonly FrameworkElement?      _resourceHost;
 
@@ -65,7 +68,7 @@ public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
         Brush?            defaultForeground = null)
     {
         ArgumentNullException.ThrowIfNull(definition);
-        _inner             = new RegexSyntaxHighlighter(definition);
+        _inner             = new TextEditorHighlighter(definition);
         _resourceHost      = resourceHost;
         _defaultForeground = defaultForeground ?? Brushes.WhiteSmoke;
     }

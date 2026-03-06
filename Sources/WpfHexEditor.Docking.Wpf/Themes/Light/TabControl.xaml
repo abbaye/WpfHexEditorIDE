@@ -139,9 +139,9 @@
         </Setter>
     </Style>
 
-    <!-- DockTabItem: Fluent fused design — rounded top corners, thin accent (VS2026-style)
-         ColorStripe: always-visible 4px top stripe driven by TabColorizerAttached.AccentBrush.
-         When Transparent (no colorization), it is invisible. -->
+    <!-- DockTabItem: VSCode-style selection — top 2px accent + 1px left/right frame when selected.
+         SelectionBorder: collapsed by default, visible on IsSelected=True (BorderThickness=1,2,1,0).
+         ColorStripe: AccentBrush overlay (per-tab colorization), hidden when AccentBrush=Transparent. -->
     <Style x:Key="DockTabItemStyle" TargetType="{x:Type TabItem}">
         <Setter Property="Foreground" Value="{DynamicResource DockTabTextBrush}" />
         <Setter Property="Background" Value="Transparent" />
@@ -161,26 +161,31 @@
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Center" />
                         </Border>
-                        <!-- Full-width accent bar: 2px stripe spanning the entire tab width. -->
+                        <!-- VSCode-style selection frame: top 2px accent + left/right 1px borders.
+                             Collapsed by default; shown only when tab is selected. -->
+                        <Border x:Name="SelectionBorder"
+                                BorderThickness="1,2,1,0"
+                                BorderBrush="{DynamicResource DockTabActiveBrush}"
+                                CornerRadius="4,4,0,0"
+                                Visibility="Collapsed" />
+                        <!-- AccentBrush colorizer: 2px top stripe for per-tab color coding.
+                             Opacity=0 by default; shown at full opacity when tab is selected. -->
                         <Border x:Name="ColorStripe"
                                 Height="2"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Top"
-                                Opacity="0.65"
+                                Opacity="0"
                                 Background="{Binding Path=(attached:TabColorizerAttached.AccentBrush),
                                                      RelativeSource={RelativeSource TemplatedParent}}" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <!-- Selected: bg matches content area, full-width accent bar visible -->
+                        <!-- Selected: bg matches content area, VSCode frame visible, AccentBrush overlay shown -->
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="TabBorder" Property="Background"
-                                    Value="{DynamicResource DockBackgroundBrush}" />
-                            <Setter TargetName="ColorStripe" Property="Background"
-                                    Value="{DynamicResource DockTabActiveBrush}" />
-                            <Setter TargetName="ColorStripe" Property="Opacity" Value="1.0" />
+                            <Setter TargetName="TabBorder"       Property="Background"  Value="{DynamicResource DockBackgroundBrush}" />
+                            <Setter TargetName="SelectionBorder" Property="Visibility"  Value="Visible" />
+                            <Setter TargetName="ColorStripe"     Property="Opacity"     Value="1.0" />
                             <!-- Light theme: keep dark text since bg is light -->
-                            <Setter Property="Foreground"
-                                    Value="{DynamicResource DockTabTextBrush}" />
+                            <Setter Property="Foreground"                               Value="{DynamicResource DockTabTextBrush}" />
                         </Trigger>
                         <!-- Hover on unselected -->
                         <MultiTrigger>

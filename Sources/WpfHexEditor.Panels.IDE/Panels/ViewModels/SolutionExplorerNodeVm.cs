@@ -270,6 +270,19 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
 
     public bool IsModified => _item.IsModified;
 
+    private bool _isModifiedExternally;
+
+    /// <summary>
+    /// True when the file has been modified externally (by another process).
+    /// Shows a warning overlay icon + tooltip in the Solution Explorer.
+    /// Set by <see cref="WpfHexEditor.Panels.IDE.Services.SolutionFileWatcher"/>.
+    /// </summary>
+    public bool IsModifiedExternally
+    {
+        get => _isModifiedExternally;
+        set { _isModifiedExternally = value; OnPropertyChanged(); }
+    }
+
     /// <summary>
     /// True when the item's physical file lives outside the project directory.
     /// Such files show a small external-link badge and offer an "Import into Project" context menu action.

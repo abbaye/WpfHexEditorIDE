@@ -102,6 +102,11 @@ public interface ISolutionExplorerPanel
     event EventHandler<AddItemRequestedEventArgs>? ImportFormatDefinitionRequested;
 
     /// <summary>
+    /// Fired when the user chooses "Import Built-in Syntax…" from the context menu on a project node.
+    /// </summary>
+    event EventHandler<AddItemRequestedEventArgs>? ImportSyntaxDefinitionRequested;
+
+    /// <summary>
     /// Fired when the user chooses "Convert to TBLX…" from the context menu on a .tbl file node.
     /// The host is responsible for showing the conversion dialog and producing the .tblx output.
     /// </summary>
