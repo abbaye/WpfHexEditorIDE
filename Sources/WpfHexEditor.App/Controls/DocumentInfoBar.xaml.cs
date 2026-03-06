@@ -58,8 +58,9 @@ public partial class DocumentInfoBar : UserControl
         while (ActionButtons.Children.Count > 1)
             ActionButtons.Children.RemoveAt(ActionButtons.Children.Count - 1);
 
-        // Always offer Hex Editor as the first action
-        ActionButtons.Children.Add(MakeButton("Hex Editor", null));
+        // Only offer "Hex Editor" when the current editor is not already the hex editor
+        if (currentEditorId != "hex-editor")
+            ActionButtons.Children.Add(MakeButton("Hex Editor", null));
 
         // Add alternatives from registry
         foreach (var factory in alternatives)

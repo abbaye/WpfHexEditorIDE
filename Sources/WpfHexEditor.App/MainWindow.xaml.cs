@@ -188,6 +188,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Auto-serialize timer (Tracked mode)
     private DispatcherTimer? _autoSerializeTimer;
 
+    // Default (empty) status bar contributor — used when no active editor provides one.
+    // Ensures the status bar shows a clean state instead of stale items from a closed editor.
+    private static readonly IStatusBarContributor _defaultStatusBarContributor =
+        new EmptyStatusBarContributor();
+
+    private sealed class EmptyStatusBarContributor : IStatusBarContributor
+    {
+        public ObservableCollection<StatusBarItem> StatusBarItems { get; } = [];
+    }
+
     // ─── Bindable properties ────────────────────────────────────────────
 
     private IDocumentEditor? _activeDocumentEditor;
@@ -940,11 +950,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             OptionsContentId               => CreateOptionsContent(),
             "doc-welcome"                  => CreateWelcomeContent(),
             _ when item.ContentId.StartsWith("doc-file-") => CreateSmartFileEditorContent(item),
-            _ when item.ContentId.StartsWith("doc-hex-")  => CreateHexEditorContent(
-                item.Metadata.TryGetValue("FilePath",    out var fp)   ? fp   : null,
-                item.Metadata.TryGetValue("DisplayName", out var dn)   ? dn   : null,
-                item.Metadata.TryGetValue("IsNewFile",   out var isNew) && isNew == "true",
-                ownerItem: item),
+            _ when item.ContentId.StartsWith("doc-hex-")  => WrapHexDocItemWithInfoBar(item),
             _ when item.ContentId.StartsWith("doc-proj-") => CreateProjectItemContent(item),
             _ => CreateDocumentContent(item)
         };
@@ -1479,7 +1485,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             }
         }
 
-        return hexContent;
+        // Wrap with InfoBar so the user can switch to another editor (Structure Editor, Code Editor, etc.)
+        return hexContent is FrameworkElement hexFe
+            ? WrapWithInfoBar(hexFe, null, filePath, item.ContentId)
+            : hexContent;
     }
 
     /// <summary>
@@ -1549,17 +1558,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return display;
         }
 
-        // Fallback: HexEditor for any binary/unknown file
-        return CreateHexEditorContent(filePath, ownerItem: item);
+        // Fallback: HexEditor for any binary/unknown file — wrapped with InfoBar
+        var hexFallback = CreateHexEditorContent(filePath, ownerItem: item);
+        return hexFallback is FrameworkElement hexFe2
+            ? WrapWithInfoBar(hexFe2, null, filePath, item.ContentId)
+            : hexFallback;
     }
 
     /// <summary>
     /// Derives the preferred editor factory ID for <paramref name="filePath"/> by consulting the
     /// <see cref="EmbeddedFormatCatalog"/> for a matching format entry.
-    /// Resolution order:
-    /// 1. Explicit <c>preferredEditor</c> field in the matching .whfmt definition.
-    /// 2. <c>detection.isTextFormat = true</c> → "code-editor".
-    /// 3. <c>null</c> — falls back to registry first-match order.
+    /// Returns the explicit <c>preferredEditor</c> field from the .whfmt definition,
+    /// or <c>null</c> to fall back to registry first-match order.
+    /// All 427 built-in format definitions carry an explicit tag — no implicit derivation needed.
     /// </summary>
     private static string? GetPreferredEditorId(string filePath)
     {
@@ -1570,12 +1581,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             .FirstOrDefault(e => e.Extensions.Any(
                 x => string.Equals(x, ext, StringComparison.OrdinalIgnoreCase)));
 
-        if (entry is null) return null;
-
-        if (!string.IsNullOrEmpty(entry.PreferredEditor)) return entry.PreferredEditor;
-        if (entry.IsTextFormat) return "code-editor";
-
-        return null;
+        return entry?.PreferredEditor;
     }
 
     /// <summary>
@@ -1585,10 +1591,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// </summary>
     private UIElement WrapWithInfoBar(
         FrameworkElement editorElement,
-        IEditorFactory   usedFactory,
+        IEditorFactory?  usedFactory,     // null = HexEditor fallback
         string           filePath,
         string           sourceContentId)
     {
+        var currentName = usedFactory?.Descriptor.DisplayName ?? "Hex Editor";
+        var currentId   = usedFactory?.Descriptor.Id          ?? "hex-editor";
+
         // Build the list of alternative editors for the InfoBar buttons
         var alternatives = _editorRegistry.GetAll()
             .Where(f => f != usedFactory && f.CanOpen(filePath))
@@ -1598,8 +1607,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         bar.Configure(
             filePath:          filePath,
             sourceContentId:   sourceContentId,
-            currentEditorName: usedFactory.Descriptor.DisplayName,
-            currentEditorId:   usedFactory.Descriptor.Id,
+            currentEditorName: currentName,
+            currentEditorId:   currentId,
             alternatives:      alternatives);
         bar.OpenWithRequested += OnInfoBarOpenWith;
 
@@ -1614,6 +1623,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         grid.Children.Add(bar);
         grid.Children.Add(editorElement);
         return grid;
+    }
+
+    /// <summary>
+    /// Creates a HexEditor for a <c>doc-hex-*</c> <see cref="DockItem"/> and wraps it
+    /// in an InfoBar so the user can switch to another editor from the View-in bar.
+    /// New/unnamed documents (IsNewFile=true) and documents without a file path are
+    /// returned unwrapped because there is no format context to offer alternatives.
+    /// </summary>
+    private UIElement WrapHexDocItemWithInfoBar(DockItem item)
+    {
+        item.Metadata.TryGetValue("FilePath",    out var fp);
+        item.Metadata.TryGetValue("DisplayName", out var dn);
+        var isNew = item.Metadata.TryGetValue("IsNewFile", out var isNewStr) && isNewStr == "true";
+        var hex   = CreateHexEditorContent(fp, dn, isNew, ownerItem: item);
+
+        // Only wrap when we have a real file path (new/unnamed docs have no format context)
+        return fp is not null && !isNew && hex is FrameworkElement fe
+            ? WrapWithInfoBar(fe, null, fp, item.ContentId)
+            : hex;
     }
 
     /// <summary>
@@ -2907,11 +2935,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnActiveDocumentChanged(DockItem item)
     {
-        if (!_contentCache.TryGetValue(item.ContentId, out var content))
-            return;
-
+        // Panel tabs: clear document-specific status bar contributions and exit.
         if (item.ContentId.StartsWith("panel-"))
+        {
+            ActiveStatusBarContributor = _defaultStatusBarContributor;
             return;
+        }
+
+        // Content not yet materialized (lazy tab never selected): clear and exit.
+        if (!_contentCache.TryGetValue(item.ContentId, out var content))
+        {
+            ActiveStatusBarContributor = _defaultStatusBarContributor;
+            return;
+        }
 
         // Unwrap the InfoBar Grid wrapper if present — the actual editor is in Tag
         content = UnwrapEditor(content);
@@ -2950,7 +2986,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         ActiveDocumentEditor       = content as IDocumentEditor;
         ActiveHexEditor            = hex;
-        ActiveStatusBarContributor = content as IStatusBarContributor;
+        ActiveStatusBarContributor = content as IStatusBarContributor ?? _defaultStatusBarContributor;
         ActiveToolbarContributor   = content as IEditorToolbarContributor;
         SyncTblDropdownToActiveEditor();
 
@@ -4740,5 +4776,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         return IntPtr.Zero;
     }
 
-    private void UpdateStatusBar() { }
+    private void UpdateStatusBar()
+    {
+        var activeItem = _layout?.MainDocumentHost?.ActiveItem;
+        if (activeItem is null)
+        {
+            ActiveStatusBarContributor = _defaultStatusBarContributor;
+            ActiveDocumentEditor       = null;
+            ActiveToolbarContributor   = null;
+            return;
+        }
+        OnActiveDocumentChanged(activeItem);
+    }
 }

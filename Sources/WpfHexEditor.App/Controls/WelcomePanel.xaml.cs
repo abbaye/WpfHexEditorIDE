@@ -6,12 +6,13 @@
 // Created: 2026-03-06
 // Description:
 //     VS Start Page-style welcome document shown on IDE launch.
-//     Displays quick actions, recent files/projects, and a
-//     parsed CHANGELOG.md section (Pure WPF, no external deps).
+//     Displays quick actions, recent files/projects, and a live
+//     changelog fetched from GitHub (raw content).
 //
 // Architecture Notes:
-//     - Callbacks injected via constructor for loose coupling with MainWindow
-//     - Changelog parsed from CHANGELOG.md found by walking up from AppContext.BaseDirectory
+//     - Callbacks injected via Configure() for loose coupling with MainWindow
+//     - Changelog fetched async from raw.githubusercontent.com via static HttpClient
+//     - Falls back to "unavailable" message on network error (no crash)
 //     - Uses only existing DynamicResource brush keys (DockBackgroundBrush, etc.)
 //     - FlowDocument-free: dynamic StackPanel + TextBlock content
 // ==========================================================
@@ -19,6 +20,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -50,6 +53,13 @@ public partial class WelcomePanel : UserControl
     private static readonly Brush BrushChanged = new SolidColorBrush(Color.FromArgb(0xFF, 0x56, 0x9C, 0xD6)); // blue
     private static readonly Brush BrushFixed   = new SolidColorBrush(Color.FromArgb(0xFF, 0xCE, 0x91, 0x78)); // orange
     private static readonly Brush BrushRemoved = new SolidColorBrush(Color.FromArgb(0xFF, 0xF4, 0x47, 0x47)); // red
+
+    // ── GitHub changelog fetch ─────────────────────────────────────────
+
+    private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(8) };
+
+    private const string ChangelogUrl =
+        "https://raw.githubusercontent.com/abbaye/WpfHexEditorControl/master/CHANGELOG.md";
 
     // ── Max versions shown in changelog ───────────────────────────────
 
@@ -95,9 +105,10 @@ public partial class WelcomePanel : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        Loaded -= OnLoaded; // prevent Click-handler accumulation on docking re-attach
         BindActionButtons();
         SetVersionText();
-        LoadChangelog();
+        LoadChangelogAsync();
     }
 
     // ── Action buttons ─────────────────────────────────────────────────
@@ -108,6 +119,14 @@ public partial class WelcomePanel : UserControl
         OpenFileButton.Click    += (_, _) => _onOpenFile?.Invoke();
         OpenProjectButton.Click += (_, _) => _onOpenProject?.Invoke();
         OptionsButton.Click     += (_, _) => _onOptions?.Invoke();
+        GitHubButton.Click      += (_, _) => OpenUrl("https://github.com/abbaye/WpfHexEditorControl");
+        IssueButton.Click       += (_, _) => OpenUrl("https://github.com/abbaye/WpfHexEditorControl/issues");
+    }
+
+    private static void OpenUrl(string url)
+    {
+        try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
+        catch { /* silently ignore if browser unavailable */ }
     }
 
     // ── Version display ────────────────────────────────────────────────
@@ -124,25 +143,27 @@ public partial class WelcomePanel : UserControl
 
     private void PopulateRecentFiles(IReadOnlyList<string> paths)
     {
-        if (paths.Count == 0)
+        var existing = paths.Where(File.Exists).ToList();
+        if (existing.Count == 0)
         {
             NoRecentText.Visibility = Visibility.Visible;
             return;
         }
 
-        foreach (var path in paths)
+        foreach (var path in existing)
             RecentFilesPanel.Children.Add(BuildRecentButton(path, _openRecentFile));
     }
 
     private void PopulateRecentSolutions(IReadOnlyList<string> paths)
     {
-        if (paths.Count == 0)
+        var existing = paths.Where(File.Exists).ToList();
+        if (existing.Count == 0)
         {
             NoRecentSolutionsText.Visibility = Visibility.Visible;
             return;
         }
 
-        foreach (var path in paths)
+        foreach (var path in existing)
             RecentSolutionsPanel.Children.Add(BuildRecentButton(path, _openRecentSolution));
     }
 
@@ -182,44 +203,37 @@ public partial class WelcomePanel : UserControl
         return btn;
     }
 
-    // ── Changelog parsing ──────────────────────────────────────────────
-
-    private void LoadChangelog()
-    {
-        var changelogPath = FindChangelogPath();
-        if (changelogPath is null)
-        {
-            NoChangelogText.Visibility = Visibility.Visible;
-            return;
-        }
-
-        var versions = ParseChangelog(File.ReadAllLines(changelogPath));
-        if (versions.Count == 0)
-        {
-            NoChangelogText.Visibility = Visibility.Visible;
-            return;
-        }
-
-        foreach (var version in versions)
-            ChangelogPanel.Children.Add(BuildVersionBlock(version));
-    }
+    // ── Changelog fetch + parse ────────────────────────────────────────
 
     /// <summary>
-    /// Walks up the directory tree from the app's base directory to find CHANGELOG.md.
+    /// Fetches CHANGELOG.md from GitHub and populates the changelog panel.
+    /// Shows a loading placeholder while in-flight; degrades gracefully on network error.
     /// </summary>
-    private static string? FindChangelogPath()
+    private async void LoadChangelogAsync()
     {
-        var dir = AppContext.BaseDirectory;
-        for (var depth = 0; depth < 10; depth++)
+        ChangelogLoadingText.Visibility = Visibility.Visible;
+        try
         {
-            var candidate = Path.Combine(dir, "CHANGELOG.md");
-            if (File.Exists(candidate)) return candidate;
+            var content  = await Http.GetStringAsync(ChangelogUrl).ConfigureAwait(true);
+            var versions = ParseChangelog(content.Split('\n'));
 
-            var parent = Path.GetDirectoryName(dir);
-            if (parent is null || parent == dir) break;
-            dir = parent;
+            ChangelogLoadingText.Visibility = Visibility.Collapsed;
+
+            if (versions.Count == 0)
+            {
+                NoChangelogText.Visibility = Visibility.Visible;
+                return;
+            }
+
+            foreach (var version in versions)
+                ChangelogPanel.Children.Add(BuildVersionBlock(version));
         }
-        return null;
+        catch
+        {
+            ChangelogLoadingText.Visibility = Visibility.Collapsed;
+            NoChangelogText.Text            = "Changelog unavailable — check your connection.";
+            NoChangelogText.Visibility      = Visibility.Visible;
+        }
     }
 
     // ── Changelog model ────────────────────────────────────────────────

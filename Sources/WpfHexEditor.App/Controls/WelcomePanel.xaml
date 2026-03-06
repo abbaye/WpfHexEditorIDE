@@ -22,7 +22,6 @@
             <Setter Property="Foreground"   Value="{DynamicResource DockTabActiveBrush}" />
             <Setter Property="FontSize"     Value="11" />
             <Setter Property="FontWeight"   Value="SemiBold" />
-            <Setter Property="LetterSpacing" Value="1" />
             <Setter Property="Margin"       Value="0,0,0,8" />
         </Style>
 
@@ -108,12 +107,11 @@
 
                     <StackPanel Grid.Column="0">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
-                            <!-- Hex icon (⬡ U+2B21) -->
-                            <TextBlock Text="⬡"
-                                       FontSize="30"
-                                       Foreground="{DynamicResource DockTabActiveBrush}"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,12,0" />
+                            <Image Source="pack://application:,,,/WpfHexEditor.App;component/Logo.ico"
+                                   Width="32" Height="32"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,12,0"
+                                   RenderOptions.BitmapScalingMode="HighQuality" />
                             <TextBlock Text="WpfHexEditor IDE"
                                        FontSize="30"
                                        FontWeight="Light"
@@ -254,6 +252,43 @@
                                Margin="6,4,0,0"
                                Visibility="Collapsed" />
 
+                    <!-- Divider -->
+                    <Rectangle Height="1"
+                               Fill="{DynamicResource DockBorderBrush}"
+                               Margin="0,20,0,16" />
+
+                    <!-- RESOURCES -->
+                    <TextBlock Text="RESOURCES"
+                               Style="{StaticResource WelcomeSectionTitle}" />
+
+                    <Button x:Name="GitHubButton"
+                            Style="{StaticResource WelcomeActionButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE774;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,10,0" />
+                            <TextBlock Text="GitHub Repository ↗"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="IssueButton"
+                            Style="{StaticResource WelcomeActionButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xEBE8;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,10,0" />
+                            <TextBlock Text="Report an Issue ↗"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
                 </StackPanel>
 
                 <!-- ── RIGHT COLUMN: CHANGELOG ─────────────────────────── -->
@@ -261,6 +296,15 @@
 
                     <TextBlock Text="WHAT'S NEW"
                                Style="{StaticResource WelcomeSectionTitle}" />
+
+                    <!-- Loading placeholder (hidden once data arrives) -->
+                    <TextBlock x:Name="ChangelogLoadingText"
+                               Text="Loading changelog…"
+                               FontSize="12"
+                               Foreground="{DynamicResource DockTabTextBrush}"
+                               Opacity="0.55"
+                               Margin="0,0,0,4"
+                               Visibility="Collapsed" />
 
                     <!-- Changelog entries are populated in code-behind -->
                     <StackPanel x:Name="ChangelogPanel" />
@@ -286,33 +330,30 @@
 
                     <TextBlock FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}">
-                        <Hyperlink x:Name="GithubLink"
-                                   Style="{StaticResource WelcomeHyperlinkStyle}"
+                        <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
                                    RequestNavigate="OnHyperlinkNavigate"
                                    NavigateUri="https://github.com/abbaye/WpfHexEditorControl">
-                            &#xE774; GitHub
+                            GitHub
                         </Hyperlink>
                     </TextBlock>
 
                     <TextBlock FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}"
                                Margin="28,0,0,0">
-                        <Hyperlink x:Name="IssuesLink"
-                                   Style="{StaticResource WelcomeHyperlinkStyle}"
+                        <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
                                    RequestNavigate="OnHyperlinkNavigate"
                                    NavigateUri="https://github.com/abbaye/WpfHexEditorControl/issues">
-                            &#xEBE8; Report Issue
+                            Report Issue
                         </Hyperlink>
                     </TextBlock>
 
                     <TextBlock FontSize="12"
                                Foreground="{DynamicResource DockTabTextBrush}"
                                Margin="28,0,0,0">
-                        <Hyperlink x:Name="ChangelogLink"
-                                   Style="{StaticResource WelcomeHyperlinkStyle}"
+                        <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
                                    RequestNavigate="OnHyperlinkNavigate"
                                    NavigateUri="https://github.com/abbaye/WpfHexEditorControl/blob/master/CHANGELOG.md">
-                            &#xE823; Full Changelog
+                            Full Changelog
                         </Hyperlink>
                     </TextBlock>
 
