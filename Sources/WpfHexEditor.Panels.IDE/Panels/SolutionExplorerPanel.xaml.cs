@@ -253,7 +253,6 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         bool canClipPaste     = _clipboard.CanPaste() && (isFile || isFolder || isProject);
         // Separator visible only when at least one clipboard action (Copy, Cut, or Paste) is visible
         bool anyClipboard = (isFile && hasSelectedFiles) || canClipPaste;
-        ClipboardSeparator.Visibility = anyClipboard ? Visibility.Visible : Visibility.Collapsed;
         CopyMenuItem      .Visibility = (isFile && hasSelectedFiles) ? Visibility.Visible : Visibility.Collapsed;
         CutMenuItem       .Visibility = (isFile && hasSelectedFiles) ? Visibility.Visible : Visibility.Collapsed;
         PasteMenuItem     .Visibility = canClipPaste                 ? Visibility.Visible : Visibility.Collapsed;
@@ -1334,12 +1333,24 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnTreeDragOver(object sender, DragEventArgs e)
     {
-        var isFileDrag    = e.Data.GetDataPresent(DragDataFormat);
-        var isProjectDrag = e.Data.GetDataPresent(DragDataFormatProject);
+        var isFileDrag         = e.Data.GetDataPresent(DragDataFormat);
+        var isProjectDrag      = e.Data.GetDataPresent(DragDataFormatProject);
+        var isExternalFileDrop = e.Data.GetDataPresent(DataFormats.FileDrop);
 
-        if (!isFileDrag && !isProjectDrag)
+        if (!isFileDrag && !isProjectDrag && !isExternalFileDrop)
         {
             e.Effects = DragDropEffects.None;
+            e.Handled = true;
+            return;
+        }
+
+        // External file drop from Windows Explorer: accept as Copy on any project/folder target
+        if (isExternalFileDrop && !isFileDrag && !isProjectDrag)
+        {
+            var target = GetDropTarget(e.OriginalSource as DependencyObject);
+            e.Effects = target is (ProjectNodeVm or FolderNodeVm)
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
             e.Handled = true;
             return;
         }
@@ -1366,6 +1377,57 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnTreeDrop(object sender, DragEventArgs e)
     {
+        // ── External file drop from Windows Explorer ───────────────────────────
+        if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
+            !e.Data.GetDataPresent(DragDataFormat) &&
+            !e.Data.GetDataPresent(DragDataFormatProject))
+        {
+            if (e.Data.GetData(DataFormats.FileDrop) is not string[] droppedPaths) return;
+
+            var target = GetDropTarget(e.OriginalSource as DependencyObject);
+
+            // Resolve target project and optional virtual folder
+            IProject? project      = null;
+            string?   targetFolder = null;
+
+            switch (target)
+            {
+                case FolderNodeVm fv:
+                    project      = fv.Project;
+                    targetFolder = fv.Folder.Id;
+                    break;
+                case ProjectNodeVm pv:
+                    project = pv.Source;
+                    break;
+                default:
+                    // Try to fall back to the first active project in the tree
+                    project = _vm.Roots
+                        .OfType<SolutionNodeVm>()
+                        .SelectMany(s => s.Children.OfType<ProjectNodeVm>())
+                        .FirstOrDefault()?.Source;
+                    break;
+            }
+
+            if (project is null) return;
+
+            // Only keep file paths (skip directories)
+            var filePaths = droppedPaths
+                .Where(p => File.Exists(p))
+                .ToArray();
+
+            if (filePaths.Length == 0) return;
+
+            AddExistingItemRequested?.Invoke(this, new AddItemRequestedEventArgs
+            {
+                Project        = project,
+                TargetFolderId = targetFolder,
+                FilePaths      = filePaths,
+            });
+
+            e.Handled = true;
+            return;
+        }
+
         // ── File drop (project-level folder move) ──────────────────────────────
         if (e.Data.GetDataPresent(DragDataFormat))
         {

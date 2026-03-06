@@ -1847,6 +1847,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async void OnSEAddExistingItem(object? sender, AddItemRequestedEventArgs e)
     {
+        // ── Direct import path (D&D from Windows Explorer, clipboard paste with known paths) ──
+        if (e.FilePaths is { Count: > 0 } directPaths)
+        {
+            foreach (var srcPath in directPaths)
+            {
+                if (!File.Exists(srcPath)) continue;
+                await _solutionManager.AddItemAsync(e.Project, srcPath,
+                    virtualFolderId: e.TargetFolderId);
+            }
+            return;
+        }
+
+        // ── Normal flow: show dialog for user to pick file(s) ──────────────
         var dlg = new AddExistingItemDialog(e.Project) { Owner = this };
         if (dlg.ShowDialog() != true) return;
 
