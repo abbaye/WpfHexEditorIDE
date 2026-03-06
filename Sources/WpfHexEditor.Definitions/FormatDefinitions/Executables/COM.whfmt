@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "DOS COM Executable",
   "version": "2.3",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "DOS Command file - Simple executable",
   "category": "Executables",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "DOS COM Executable Format",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "HL7 Message",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Health Level 7 medical messaging format",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "HL7 Message Format"

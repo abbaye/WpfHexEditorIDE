@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "BPS Patch",
   "version": "1.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "BPS (Beat Patch System) binary patch format by Near/byuu. Uses variable-length quantities (VLQ), four action types (SourceRead, TargetRead, SourceCopy, TargetCopy), and three CRC-32 checksums for integrity verification. No file size limit.",
   "category": "RomHacking",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "BPS format specification by Near/byuu"

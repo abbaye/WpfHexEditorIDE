@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "OpenType Font",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "OpenType Font format with CFF (Compact Font Format) outlines - a cross-platform font standard jointly developed by Microsoft and Adobe. Identified by the 'OTTO' signature (0x4F54544F), indicating PostScript/CFF-based outlines (cubic Bezier curves) rather than TrueType quadratic outlines. The file structure mirrors TrueType with an Offset Table header followed by a Table Directory containing 16-byte entries per table. OpenType CFF fonts typically include CFF/CFF2 (outline data), GPOS (glyph positioning for kerning, mark attachment), GSUB (glyph substitution for ligatures, alternates), and GDEF (glyph class definitions) tables for advanced typographic features.",
   "category": "Fonts",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "OpenType Specification 1.9",

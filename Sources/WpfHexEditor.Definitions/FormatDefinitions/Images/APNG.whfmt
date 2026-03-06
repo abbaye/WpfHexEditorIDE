@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "APNG Animated Image",
   "version": "2.3",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Animated Portable Network Graphics",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "RFC 2325 - Portable Network Graphics (PNG) Specification",

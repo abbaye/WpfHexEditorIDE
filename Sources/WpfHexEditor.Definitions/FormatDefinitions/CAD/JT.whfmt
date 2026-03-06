@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Jupiter Tessellation",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Siemens JT 3D CAD format",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Jupiter Tessellation Format"

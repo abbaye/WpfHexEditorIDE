@@ -10,6 +10,7 @@
   "description": "Executable and Linkable Format (ELF) - the standard binary format for executables, object code, shared libraries, and core dumps on Linux, Unix, and many embedded systems. Defined by the System V ABI and Tool Interface Standard (TIS).",
   "category": "Executables",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ELF-64 Object File Format",

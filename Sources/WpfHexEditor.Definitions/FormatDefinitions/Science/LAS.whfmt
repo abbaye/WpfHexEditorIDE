@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "LAS Well Log",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Log ASCII Standard for well log data",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "LAS Well Log Format"

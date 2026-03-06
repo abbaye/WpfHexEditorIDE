@@ -54,11 +54,10 @@ public class TabConfigButton : Button
         FontFamily = new System.Windows.Media.FontFamily("Segoe MDL2 Assets");
         FontSize = 12;
         Padding = new Thickness(4, 2, 4, 2);
-        BorderThickness = new Thickness(0);
-        Background = System.Windows.Media.Brushes.Transparent;
         Cursor = System.Windows.Input.Cursors.Hand;
         VerticalAlignment = VerticalAlignment.Center;
         ToolTip = "Configure document tab bar";
+        SetResourceReference(StyleProperty, "DockTitleButtonStyle");
     }
 
     // ─── Click handler ────────────────────────────────────────────────────────

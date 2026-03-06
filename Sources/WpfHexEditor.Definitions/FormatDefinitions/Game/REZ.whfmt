@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Game Resource Archive",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "LithTech/various game resource archive",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "LithTech REZ Archive Format",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Unix Core Dump",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Unix/Linux core dump file - Process memory snapshot",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Unix Core Dump Format"

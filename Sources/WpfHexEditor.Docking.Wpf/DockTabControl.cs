@@ -478,14 +478,11 @@ public class DockTabHeader : StackPanel
                 FontFamily      = new FontFamily("Segoe MDL2 Assets"),
                 Padding         = new Thickness(2, 0, 2, 0),
                 Margin          = new Thickness(0, 0, 1, 0),
-                BorderThickness = new Thickness(0),
-                Background      = Brushes.Transparent,
-                Foreground      = Brushes.Transparent, // inherit from tab style via binding below
                 Cursor          = Cursors.Hand,
                 VerticalAlignment = VerticalAlignment.Center,
                 ToolTip         = "Auto-Hide"
             };
-            pinButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
+            pinButton.SetResourceReference(StyleProperty, "DockTitleButtonStyle");
             AutomationProperties.SetName(pinButton, $"Auto-Hide {item.Title}");
             pinButton.Click += (_, _) => AutoHideRequested?.Invoke();
             Children.Add(pinButton);
@@ -501,8 +498,6 @@ public class DockTabHeader : StackPanel
                 FontFamily      = new FontFamily("Segoe MDL2 Assets"),
                 Padding         = new Thickness(2, 0, 2, 0),
                 Margin          = new Thickness(0, 0, 1, 0),
-                BorderThickness = new Thickness(0),
-                Background      = Brushes.Transparent,
                 Cursor          = Cursors.Hand,
                 VerticalAlignment = VerticalAlignment.Center,
                 ToolTip         = item.IsPinned ? "Unpin Tab" : "Pin Tab",
@@ -510,7 +505,7 @@ public class DockTabHeader : StackPanel
                 RenderTransform = new RotateTransform(item.IsPinned ? 0 : 90),
                 Opacity         = item.IsPinned ? 1 : 0
             };
-            _pinButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
+            _pinButton.SetResourceReference(StyleProperty, "DockTitleButtonStyle");
             AutomationProperties.SetName(_pinButton, $"Pin {item.Title}");
             _pinButton.Click += (_, _) => PinToggleRequested?.Invoke();
             Children.Add(_pinButton);
@@ -524,14 +519,12 @@ public class DockTabHeader : StackPanel
                 FontSize = 10,
                 Padding = new Thickness(2, 0, 2, 0),
                 Margin = new Thickness(0),
-                BorderThickness = new Thickness(0),
-                Background = Brushes.Transparent,
                 Cursor = Cursors.Hand,
                 VerticalAlignment = VerticalAlignment.Center,
                 ToolTip = "Close",
                 Opacity = 0 // VS2026: hidden by default, shown on hover or when active
             };
-            _closeButton.SetResourceReference(Button.ForegroundProperty, "DockTabTextBrush");
+            _closeButton.SetResourceReference(StyleProperty, "DockTitleButtonStyle");
             AutomationProperties.SetName(_closeButton, $"Close {item.Title}");
             _closeButton.Click += (_, _) => CloseClicked?.Invoke();
             Children.Add(_closeButton);
@@ -710,21 +703,26 @@ public class DockTabHeader : StackPanel
 
         if (_item.Owner is DocumentHostNode)
         {
-            if (_isReordering)
-            {
-                // Pass true screen coordinates for consistent hit-testing in DockTabControl
-                ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
-                return;
-            }
             if (_isDragging) return;
 
             var diff = e.GetPosition(this) - _dragStartPoint;
 
+            // Float takes priority: a large vertical move cancels any pending reorder and floats the tab.
+            // Checking this BEFORE _isReordering prevents the reorder state from permanently blocking float.
             if (Math.Abs(diff.Y) > FloatThresholdY)
             {
-                _isDragging = true;
+                _isReordering = false;
+                _isDragging   = true;
                 ReleaseMouseCapture();
                 DragStarted?.Invoke();
+                return;
+            }
+
+            // Reorder: horizontal drag within the document tab strip.
+            if (_isReordering)
+            {
+                // Pass true screen coordinates for consistent hit-testing in DockTabControl
+                ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
                 return;
             }
             if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance)

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "DER Certificate",
   "version": "1.11",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Distinguished Encoding Rules - X.509 certificate",
   "category": "Certificates",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Distinguished Encoding Rules (DER) - ITU-T X.690",

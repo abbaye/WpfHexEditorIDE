@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "RPG Maker Encrypted Archive",
   "version": "1.13",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "RPG Maker encrypted game archive",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RPG Maker RGSSAD Encrypted Archive",

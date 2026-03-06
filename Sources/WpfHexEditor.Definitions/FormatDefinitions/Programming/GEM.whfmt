@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Ruby Gem Package",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Ruby package format",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Ruby Gem Package Format"

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Cinema 4D",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Maxon Cinema 4D scene file",
   "category": "3D",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Cinema 4D Format"

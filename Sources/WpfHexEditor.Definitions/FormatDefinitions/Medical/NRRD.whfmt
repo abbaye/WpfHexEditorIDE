@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "NRRD Medical Image",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Nearly Raw Raster Data medical imaging format",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "NRRD Medical Image Format"

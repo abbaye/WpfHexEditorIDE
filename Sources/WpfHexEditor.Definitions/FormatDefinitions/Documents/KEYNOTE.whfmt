@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Apple Keynote",
   "version": "2.0",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Apple Keynote presentation format, a ZIP-based iWork package. The file begins with a ZIP Local File Header. Keynote packages contain Index/Slide.iwa protobuf files, embedded images, and metadata in the iWork archive structure.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Apple iWork Archive Format (reverse-engineered)",

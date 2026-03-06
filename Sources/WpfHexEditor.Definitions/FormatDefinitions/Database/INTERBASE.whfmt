@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "InterBase Database",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Borland/Embarcadero InterBase database format",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "InterBase Database Format"

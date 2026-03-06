@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "TIFF Image",
   "version": "2.0",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Tagged Image File Format (TIFF) is a flexible, adaptable file format for handling images and data within a single file. The file begins with a 2-byte byte order indicator (II for little-endian or MM for big-endian), followed by a magic number 42 (0x002A), and a 4-byte offset to the first Image File Directory (IFD). Each IFD entry is 12 bytes containing a tag ID, data type, count, and value/offset.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "TIFF Revision 6.0 Specification",

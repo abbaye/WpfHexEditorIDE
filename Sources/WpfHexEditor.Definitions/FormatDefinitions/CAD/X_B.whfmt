@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Parasolid Binary",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Parasolid transmit binary format",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Parasolid Binary Format"

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Sega Saturn Disc Image",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Sega Saturn CD-ROM disc image format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Sega Saturn Disc Format Standards Specification Sheet (ST-040-R4-051795)",

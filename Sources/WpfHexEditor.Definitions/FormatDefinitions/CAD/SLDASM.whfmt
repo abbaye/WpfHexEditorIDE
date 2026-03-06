@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SolidWorks Assembly",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "SolidWorks assembly file (OLE2 Compound Document)",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SolidWorks Assembly Format"

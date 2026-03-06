@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Protocol Buffers",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Google Protocol Buffers binary serialization format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Protocol Buffers Format"

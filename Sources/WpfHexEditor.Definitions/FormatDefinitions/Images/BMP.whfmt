@@ -8,6 +8,7 @@
   "description": "Windows Bitmap (BMP) is an uncompressed or minimally compressed raster image format. The file consists of a 14-byte BITMAPFILEHEADER followed by a DIB (Device Independent Bitmap) header (commonly the 40-byte BITMAPINFOHEADER), an optional color table, and pixel data. All multi-byte values are stored in little-endian byte order.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Microsoft BMP File Format - Windows GDI Bitmap Storage",

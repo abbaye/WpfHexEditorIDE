@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Atari 2600 ROM",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Atari 2600 ROM cartridge format (raw binary, no header)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Atari 2600 Hardware Specification",

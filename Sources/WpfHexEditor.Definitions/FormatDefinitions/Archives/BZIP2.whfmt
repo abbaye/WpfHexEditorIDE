@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "BZIP2 Compressed File",
   "version": "1.10",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "BZIP2 compression format",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PKWARE APPNOTE.TXT - ZIP File Format Specification",

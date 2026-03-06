@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "ACIS SAT",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "ACIS text format (Standard ACIS Text)",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ACIS SAT Format"

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "VP8 Video",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "VP8 video codec, open video compression format developed by Google",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RFC 6386 - VP8 Data Format and Decoding Guide",

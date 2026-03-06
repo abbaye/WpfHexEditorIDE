@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Apache ORC",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Apache Optimized Row Columnar file format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Apache ORC Format"

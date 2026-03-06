@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "IPS Patch",
   "version": "1.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "IPS (International Patching System) binary patch format — used for ROM hacking. Contains offset/data records with optional RLE encoding and truncation extension. Limited to 16 MB files.",
   "category": "RomHacking",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "IPS (International Patching System) informal specification"

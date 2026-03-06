@@ -129,37 +129,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Models
         {
             // CRITICAL: Initialize Lines collection FIRST before calling any methods
             Lines = new ObservableCollection<CodeLine>();
-
-            // Initialize with example format definition for demo/testing
-            var defaultContent = @"{
-  ""formatName"": ""PNG Image"",
-  ""description"": ""Portable Network Graphics format"",
-  ""fileExtensions"": [""png""],
-  ""mimeType"": ""image/png"",
-
-  ""detection"": {
-    ""signatures"": [
-      {
-        ""offset"": 0,
-        ""bytes"": ""89 50 4E 47 0D 0A 1A 0A"",
-        ""description"": ""PNG magic bytes""
-      }
-    ]
-  },
-
-  ""blocks"": [
-    {
-      ""name"": ""Header"",
-      ""fields"": [
-        { ""name"": ""Magic"", ""valueType"": ""bytes"", ""size"": 8 },
-        { ""name"": ""ChunkLength"", ""valueType"": ""uint32"", ""endianness"": ""big"" },
-        { ""name"": ""ChunkType"", ""valueType"": ""string"", ""size"": 4 }
-      ]
-    }
-  ]
-}";
-
-            LoadFromString(defaultContent);
+            Lines.Add(new CodeLine(string.Empty, 0));
             IsModified = false;
         }
 

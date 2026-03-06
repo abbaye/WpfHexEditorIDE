@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "QuickTime Movie",
   "version": "2.0",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Apple QuickTime Movie format based on the atom/box container structure that became the ancestor of ISO Base Media File Format (ISOBMFF). Files typically begin with a File Type Box (ftyp) with major brand 'qt  ', though legacy MOV files may start with 'moov', 'wide', or 'mdat' atoms. All data is organized in nested atoms, each prefixed by a 32-bit size and 4-byte type code.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Apple QuickTime File Format Specification",

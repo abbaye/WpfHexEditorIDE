@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Linux Shared Object",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Linux Shared Object library file using ELF (Executable and Linkable Format) structure",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Linux Shared Object Format"

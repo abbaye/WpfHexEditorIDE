@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "TAR Archive",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "POSIX TAR (Tape Archive) format stores files sequentially in 512-byte blocks without compression. Each file entry consists of a 512-byte header followed by the file data padded to 512-byte boundaries. The USTAR (Unix Standard TAR) extension adds a magic string at offset 257, owner/group names, and device number fields. TAR is commonly combined with GZIP (.tar.gz) or BZIP2 (.tar.bz2) for compression.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "POSIX.1-1988 (ustar) Format Specification",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PCAPNG Network Capture",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "PCAP Next Generation - Enhanced packet capture format",
   "category": "Network",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RFC 2325 - Portable Network Graphics (PNG) Specification",

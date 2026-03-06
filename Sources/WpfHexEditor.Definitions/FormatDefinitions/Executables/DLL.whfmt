@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "DLL Library",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Dynamic Link Library - Windows library file",
   "category": "Executables",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Microsoft PE Format Specification",

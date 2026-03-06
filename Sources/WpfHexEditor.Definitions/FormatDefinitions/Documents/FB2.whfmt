@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "FictionBook 2.0",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "FictionBook 2.0 e-book format, XML-based format popular in Russia for fiction books",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "FictionBook 2.0 Format"
@@ -33,6 +34,7 @@
     "currentOffset": 0,
     "title": "Unknown",
     "author": "Unknown",
+  "preferredEditor": "hex-editor",
     "publisher": "Unknown",
     "language": "ru",
     "genre": "Unknown",

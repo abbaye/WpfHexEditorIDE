@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Microsoft Xbox (Original) Image",
   "version": "2.5",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Microsoft Xbox (original) disc image format (XISO)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "XISO Disc Image Format",

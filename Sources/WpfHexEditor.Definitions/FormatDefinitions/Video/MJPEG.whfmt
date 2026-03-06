@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Motion JPEG",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Motion JPEG video format where each frame is a separate JPEG image",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ISO/IEC 10918-1 - Digital Compression and Coding",

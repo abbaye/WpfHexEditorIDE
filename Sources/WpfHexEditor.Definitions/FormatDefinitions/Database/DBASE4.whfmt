@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "dBASE IV Database",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "dBASE IV database table format with memo support",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "dBASE IV Database Format"

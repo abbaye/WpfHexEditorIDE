@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "XZ Compressed File",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "XZ/LZMA2 compression format",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "XZ File Format Specification 1.0.0",

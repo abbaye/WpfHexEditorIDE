@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "GIF Image",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Graphics Interchange Format (GIF) is an indexed-color raster image format supporting up to 256 colors per frame, lossless LZW compression, animation, and simple transparency. The file begins with a 6-byte header (signature + version), followed by a 7-byte Logical Screen Descriptor containing canvas dimensions, a packed byte with Global Color Table parameters, background color index, and pixel aspect ratio.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "GIF89a Specification - CompuServe Incorporated (1990)",

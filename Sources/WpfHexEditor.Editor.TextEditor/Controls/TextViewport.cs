@@ -90,6 +90,11 @@ internal sealed class TextViewport : FrameworkElement
         Focusable = true;
         ClipToBounds = true;
         SnapsToDevicePixels = true;
+
+        // Watch TE_Background via DynamicResource so that any theme swap
+        // (Application.Resources.MergedDictionaries replacement) triggers
+        // OnThemeWatcherChanged → brush cache flush + re-render.
+        SetResourceReference(ThemeWatcherProperty, "TE_Background");
     }
 
     // -----------------------------------------------------------------------
@@ -856,6 +861,35 @@ internal sealed class TextViewport : FrameworkElement
         for (int i = 0; i < line.Length; i++)
             if (!char.IsWhiteSpace(line[i])) return i;
         return 0;
+    }
+
+    // -----------------------------------------------------------------------
+    // Theme change detection
+    // -----------------------------------------------------------------------
+
+    // Sentinel DependencyProperty: bound to TE_Background via SetResourceReference.
+    // When the application theme swaps its MergedDictionaries, WPF re-resolves every
+    // DynamicResource binding — this triggers OnThemeWatcherChanged, which flushes
+    // the brush cache and forces a re-render with the new theme colours.
+    private static readonly DependencyProperty ThemeWatcherProperty =
+        DependencyProperty.Register(
+            nameof(ThemeWatcher),
+            typeof(Brush),
+            typeof(TextViewport),
+            new PropertyMetadata(null, OnThemeWatcherChanged));
+
+    private Brush? ThemeWatcher
+    {
+        get => (Brush?)GetValue(ThemeWatcherProperty);
+        set => SetValue(ThemeWatcherProperty, value);
+    }
+
+    private static void OnThemeWatcherChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var vp = (TextViewport)d;
+        vp._brushCache.Clear();
+        vp._cachedFontSize = -1; // force TE_FontFamily / TE_FontSize re-read
+        vp.InvalidateVisual();
     }
 
     // -----------------------------------------------------------------------

@@ -7,6 +7,7 @@
   "description": "RAR archive format created by Eugene Roshal. Supports high compression ratios, solid archives, multi-volume spanning, recovery records, and AES encryption. RAR4 uses a 7-byte signature (52 61 72 21 1A 07 00) followed by a structured header block starting with a CRC, type byte, flags, and size fields. RAR5 uses an 8-byte signature (52 61 72 21 1A 07 01 00) with variable-length integer encoding.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RAR 5.0 Archive Format Technical Note",

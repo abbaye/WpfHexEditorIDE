@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Apple Numbers",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Apple Numbers spreadsheet - a ZIP-based iWork package containing protobuf (.iwa) files and embedded resources. The file begins with a ZIP Local File Header. Numbers packages contain Index/Tables/ directory with table data, charts, and metadata in the iWork archive structure.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Apple iWork Archive Format (reverse-engineered)",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "TGA Image",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Truevision TGA/TARGA image format",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Truevision TGA File Format Specification Version 2.0",

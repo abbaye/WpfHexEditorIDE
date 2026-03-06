@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Meridian Lossless Packing",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Meridian Lossless Packing lossless audio compression for DVD-Audio",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "Meridian Lossless Packing Specification",

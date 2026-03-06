@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Comic Book ZIP",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Comic Book ZIP archive - a ZIP container holding sequential images (JPG/PNG/GIF) for digital comics reading. The file begins with a ZIP Local File Header. CBZ files contain ordered image files that comic readers display in sequence.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PKWARE APPNOTE.TXT - ZIP File Format Specification",

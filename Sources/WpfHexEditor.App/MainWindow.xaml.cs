@@ -47,6 +47,7 @@ using WpfHexEditor.Editor.ScriptEditor;
 using WpfHexEditor.Editor.ChangesetEditor;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
+using WpfHexEditor.Panels.IDE.Services;
 using WpfHexEditor.Panels.BinaryAnalysis;
 using WpfHexEditor.Definitions;
 using WpfHexEditor.ProjectSystem;
@@ -186,6 +187,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // Auto-serialize timer (Tracked mode)
     private DispatcherTimer? _autoSerializeTimer;
+
+    // Default (empty) status bar contributor — used when no active editor provides one.
+    // Ensures the status bar shows a clean state instead of stale items from a closed editor.
+    private static readonly IStatusBarContributor _defaultStatusBarContributor =
+        new EmptyStatusBarContributor();
+
+    private sealed class EmptyStatusBarContributor : IStatusBarContributor
+    {
+        public ObservableCollection<StatusBarItem> StatusBarItems { get; } = [];
+    }
 
     // ─── Bindable properties ────────────────────────────────────────────
 
@@ -937,11 +948,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             FileComparisonPanelContentId   => CreateFileComparisonContent(),
             ArchivePanelContentId          => CreateArchivePanelContent(),
             OptionsContentId               => CreateOptionsContent(),
+            "doc-welcome"                  => CreateWelcomeContent(),
             _ when item.ContentId.StartsWith("doc-file-") => CreateSmartFileEditorContent(item),
-            _ when item.ContentId.StartsWith("doc-hex-")  => CreateHexEditorContent(
-                item.Metadata.TryGetValue("FilePath",    out var fp)   ? fp   : null,
-                item.Metadata.TryGetValue("DisplayName", out var dn)   ? dn   : null,
-                item.Metadata.TryGetValue("IsNewFile",   out var isNew) && isNew == "true"),
+            _ when item.ContentId.StartsWith("doc-hex-")  => WrapHexDocItemWithInfoBar(item),
             _ when item.ContentId.StartsWith("doc-proj-") => CreateProjectItemContent(item),
             _ => CreateDocumentContent(item)
         };
@@ -960,7 +969,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.ItemActivated             += OnSolutionExplorerItemActivated;
         panel.ItemSelected              += OnSolutionExplorerItemSelected;
         panel.ItemRenameRequested       += OnSolutionExplorerItemRenameRequested;
-        panel.ItemDeleteRequested       += OnSolutionExplorerItemDeleteRequested;
+        panel.ItemDeleteRequested           += OnSolutionExplorerItemDeleteRequested;
+        panel.ItemDeleteFromDiskRequested   += OnSEItemDeleteFromDiskRequested;
         panel.ItemMoveRequested         += OnSolutionExplorerItemMoveRequested;
         panel.DefaultTblChangeRequested += OnDefaultTblChangeRequested;
         panel.ApplyTblRequested         += OnSEApplyTbl;
@@ -988,6 +998,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         panel.SolutionFolderRenameRequested    += OnSESolutionFolderRenameRequested;
         panel.SolutionFolderDeleteRequested    += OnSESolutionFolderDeleteRequested;
         panel.ProjectMoveRequested             += OnSEProjectMoveRequested;
+        panel.ClipboardPasteRequested          += OnSEClipboardPaste;
         _solutionManager.ItemRenamed           += OnProjectItemRenamed;
         // Provide the editor registry so the panel can build the "Open With ›" submenu
         panel.SetEditorRegistry(_editorRegistry.GetAll());
@@ -1103,6 +1114,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         StoreContent(OptionsContentId, ctrl);
         return ctrl;
     }
+
+    private UIElement CreateWelcomeContent() =>
+        new Controls.WelcomePanel().Configure(
+            onNewFile:           () => OnNewFile(this, new RoutedEventArgs()),
+            onOpenFile:          () => OnOpenFile(this, new RoutedEventArgs()),
+            onOpenProject:       () => OnOpenSolutionOrProject(this, new RoutedEventArgs()),
+            onOptions:           () => OnSettings(this, new RoutedEventArgs()),
+            recentFiles:         _solutionManager.RecentFiles,
+            recentSolutions:     _solutionManager.RecentSolutions,
+            openRecentFile:      path => { OpenFileDirectly(path); PopulateRecentMenus(); },
+            openRecentSolution:  path => _ = OpenSolutionAsync(path));
 
     /// <summary>
     /// Creates <see cref="_errorPanel"/> the first time it is needed, without docking it.
@@ -1238,7 +1260,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         string?   filePath,
         string?   displayName = null,
         bool      isNewFile   = false,
-        IProject? project     = null)
+        IProject? project     = null,
+        DockItem? ownerItem   = null)
     {
         var hexEditor = new HexEditorControl();
         ApplyHexEditorDefaults(hexEditor);
@@ -1298,17 +1321,29 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 var msg = $"Cannot open '{Path.GetFileName(filePath)}': {ex.Message}";
                 OutputLogger.Error(msg);
+                ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+                if (ownerItem is not null)
+                    Dispatcher.InvokeAsync(() => CloseTab(ownerItem, promptIfDirty: false),
+                                           System.Windows.Threading.DispatcherPriority.Background);
                 return MakeErrorBlock(msg);
             }
             catch (UnauthorizedAccessException ex)
             {
                 var msg = $"Access denied '{Path.GetFileName(filePath)}': {ex.Message}";
                 OutputLogger.Error(msg);
+                ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+                if (ownerItem is not null)
+                    Dispatcher.InvokeAsync(() => CloseTab(ownerItem, promptIfDirty: false),
+                                           System.Windows.Threading.DispatcherPriority.Background);
                 return MakeErrorBlock(msg);
             }
         }
 
         OutputLogger.Error($"File not found: {filePath}");
+        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+        if (ownerItem is not null)
+            Dispatcher.InvokeAsync(() => CloseTab(ownerItem, promptIfDirty: false),
+                                   System.Windows.Threading.DispatcherPriority.Background);
         return new TextBlock
         {
             Text = $"File not found:\n{filePath}",
@@ -1354,8 +1389,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         else
         {
-            factory = _editorRegistry.FindFactory(filePath);
+            factory = _editorRegistry.FindFactory(filePath, GetPreferredEditorId(filePath));
         }
+
+        // Record which editor was resolved so "View in" deduplication can match back to this tab.
+        item.Metadata["ActiveEditorId"] = factory?.Descriptor.Id ?? "hex-editor";
 
         if (factory != null)
         {
@@ -1447,7 +1485,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             }
         }
 
-        return hexContent;
+        // Wrap with InfoBar so the user can switch to another editor (Structure Editor, Code Editor, etc.)
+        return hexContent is FrameworkElement hexFe
+            ? WrapWithInfoBar(hexFe, null, filePath, item.ContentId)
+            : hexContent;
     }
 
     /// <summary>
@@ -1472,7 +1513,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         else
         {
-            factory = _editorRegistry.FindFactory(filePath);
+            factory = _editorRegistry.FindFactory(filePath, GetPreferredEditorId(filePath));
         }
 
         if (factory?.Create() is IDocumentEditor editor && editor is FrameworkElement fe)
@@ -1517,8 +1558,30 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return display;
         }
 
-        // Fallback: HexEditor for any binary/unknown file
-        return CreateHexEditorContent(filePath);
+        // Fallback: HexEditor for any binary/unknown file — wrapped with InfoBar
+        var hexFallback = CreateHexEditorContent(filePath, ownerItem: item);
+        return hexFallback is FrameworkElement hexFe2
+            ? WrapWithInfoBar(hexFe2, null, filePath, item.ContentId)
+            : hexFallback;
+    }
+
+    /// <summary>
+    /// Derives the preferred editor factory ID for <paramref name="filePath"/> by consulting the
+    /// <see cref="EmbeddedFormatCatalog"/> for a matching format entry.
+    /// Returns the explicit <c>preferredEditor</c> field from the .whfmt definition,
+    /// or <c>null</c> to fall back to registry first-match order.
+    /// All 427 built-in format definitions carry an explicit tag — no implicit derivation needed.
+    /// </summary>
+    private static string? GetPreferredEditorId(string filePath)
+    {
+        var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
+        if (string.IsNullOrEmpty(ext)) return null;
+
+        var entry = EmbeddedFormatCatalog.Instance.GetAll()
+            .FirstOrDefault(e => e.Extensions.Any(
+                x => string.Equals(x, ext, StringComparison.OrdinalIgnoreCase)));
+
+        return entry?.PreferredEditor;
     }
 
     /// <summary>
@@ -1528,10 +1591,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// </summary>
     private UIElement WrapWithInfoBar(
         FrameworkElement editorElement,
-        IEditorFactory   usedFactory,
+        IEditorFactory?  usedFactory,     // null = HexEditor fallback
         string           filePath,
         string           sourceContentId)
     {
+        var currentName = usedFactory?.Descriptor.DisplayName ?? "Hex Editor";
+        var currentId   = usedFactory?.Descriptor.Id          ?? "hex-editor";
+
         // Build the list of alternative editors for the InfoBar buttons
         var alternatives = _editorRegistry.GetAll()
             .Where(f => f != usedFactory && f.CanOpen(filePath))
@@ -1541,8 +1607,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         bar.Configure(
             filePath:          filePath,
             sourceContentId:   sourceContentId,
-            currentEditorName: usedFactory.Descriptor.DisplayName,
-            currentEditorId:   usedFactory.Descriptor.Id,
+            currentEditorName: currentName,
+            currentEditorId:   currentId,
             alternatives:      alternatives);
         bar.OpenWithRequested += OnInfoBarOpenWith;
 
@@ -1557,6 +1623,25 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         grid.Children.Add(bar);
         grid.Children.Add(editorElement);
         return grid;
+    }
+
+    /// <summary>
+    /// Creates a HexEditor for a <c>doc-hex-*</c> <see cref="DockItem"/> and wraps it
+    /// in an InfoBar so the user can switch to another editor from the View-in bar.
+    /// New/unnamed documents (IsNewFile=true) and documents without a file path are
+    /// returned unwrapped because there is no format context to offer alternatives.
+    /// </summary>
+    private UIElement WrapHexDocItemWithInfoBar(DockItem item)
+    {
+        item.Metadata.TryGetValue("FilePath",    out var fp);
+        item.Metadata.TryGetValue("DisplayName", out var dn);
+        var isNew = item.Metadata.TryGetValue("IsNewFile", out var isNewStr) && isNewStr == "true";
+        var hex   = CreateHexEditorContent(fp, dn, isNew, ownerItem: item);
+
+        // Only wrap when we have a real file path (new/unnamed docs have no format context)
+        return fp is not null && !isNew && hex is FrameworkElement fe
+            ? WrapWithInfoBar(fe, null, fp, item.ContentId)
+            : hex;
     }
 
     /// <summary>
@@ -1845,6 +1930,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async void OnSEAddExistingItem(object? sender, AddItemRequestedEventArgs e)
     {
+        // ── Direct import path (D&D from Windows Explorer, clipboard paste with known paths) ──
+        if (e.FilePaths is { Count: > 0 } directPaths)
+        {
+            foreach (var srcPath in directPaths)
+            {
+                if (!File.Exists(srcPath)) continue;
+                await _solutionManager.AddItemAsync(e.Project, srcPath,
+                    virtualFolderId: e.TargetFolderId);
+            }
+            return;
+        }
+
+        // ── Normal flow: show dialog for user to pick file(s) ──────────────
         var dlg = new AddExistingItemDialog(e.Project) { Owner = this };
         if (dlg.ShowDialog() != true) return;
 
@@ -1868,10 +1966,127 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void OnSEImportFormatDefinition(object? sender, AddItemRequestedEventArgs e)
+    /// <summary>
+    /// Handles clipboard paste from the Solution Explorer (Ctrl+V or "Paste" context menu).
+    /// Always performs a physical file copy (or move for Cut) into the destination folder,
+    /// then registers the item in the project under the correct virtual folder.
+    /// Shows <see cref="PasteConflictDialog"/> when a file with the same name already exists.
+    /// </summary>
+    private async void OnSEClipboardPaste(object? sender, AddExistingItemEventArgs e)
+    {
+        var project = ResolveProjectForPaste(e.TargetFolder);
+        if (project is null) return;
+
+        // Resolve the physical directory that maps to the selected virtual folder.
+        // If the folder has a PhysicalRelativePath (disk-backed folder), use it;
+        // otherwise fall back to the project root directory.
+        var projDir     = Path.GetDirectoryName(project.ProjectFilePath)!;
+        var physDestDir = e.TargetFolder?.PhysicalRelativePath is { } rel
+            ? Path.Combine(projDir, rel)
+            : projDir;
+        Directory.CreateDirectory(physDestDir);
+
+        var targetFolderId = e.TargetFolder?.Id;
+
+        try
+        {
+            foreach (var srcPath in e.FilePaths)
+            {
+                if (!File.Exists(srcPath)) continue;
+
+                var fileName = Path.GetFileName(srcPath);
+                var destPath = Path.Combine(physDestDir, fileName);
+
+                // ── Name-conflict resolution ──────────────────────────────────────
+                if (File.Exists(destPath) &&
+                    !string.Equals(srcPath, destPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    var dlg = new PasteConflictDialog
+                    {
+                        OriginalName = fileName,
+                        NewName      = BuildSuggestedName(physDestDir, fileName),
+                        Owner        = this,
+                    };
+
+                    if (dlg.ShowDialog() != true)
+                    {
+                        if (dlg.CancelAll) return;  // user chose "Cancel All" — stop processing
+                        continue;                    // user chose "Skip" — move to next file
+                    }
+
+                    destPath = Path.Combine(physDestDir, dlg.NewName);
+                }
+
+                // ── Physical file operation ───────────────────────────────────────
+                if (e.IsCut)
+                {
+                    if (!string.Equals(srcPath, destPath, StringComparison.OrdinalIgnoreCase))
+                        File.Move(srcPath, destPath, overwrite: false);
+                }
+                else
+                {
+                    // Copy: always produce a physical file at the destination,
+                    // never keep a reference to the source path.
+                    File.Copy(srcPath, destPath, overwrite: false);
+                }
+
+                await _solutionManager.AddItemAsync(project, destPath,
+                                                    virtualFolderId: targetFolderId);
+            }
+        }
+        finally
+        {
+            // Safety-net: guarantee the SE tree reflects the current solution state,
+            // even when AddItemAsync threw silently (async void swallows exceptions).
+            _solutionExplorerPanel?.SetSolution(_solutionManager.CurrentSolution);
+        }
+    }
+
+    /// <summary>
+    /// Returns a free file name by appending "(copy)", "(copy 2)", etc.
+    /// until a name that does not already exist in <paramref name="directory"/> is found.
+    /// </summary>
+    private static string BuildSuggestedName(string directory, string fileName)
+    {
+        var nameNoExt = Path.GetFileNameWithoutExtension(fileName);
+        var ext       = Path.GetExtension(fileName);
+        var candidate = $"{nameNoExt} (copy){ext}";
+        var counter   = 2;
+        while (File.Exists(Path.Combine(directory, candidate)))
+            candidate = $"{nameNoExt} (copy {counter++}){ext}";
+        return candidate;
+    }
+
+    /// <summary>
+    /// Resolves the <see cref="IProject"/> that owns <paramref name="targetFolder"/>,
+    /// or returns the first project in the solution when no folder is specified.
+    /// </summary>
+    private IProject? ResolveProjectForPaste(IVirtualFolder? targetFolder)
+    {
+        var solution = _solutionManager.CurrentSolution;
+        if (solution is null || solution.Projects.Count == 0) return null;
+
+        if (targetFolder is not null)
+            return solution.Projects.FirstOrDefault(
+                p => ContainsFolderById(p.RootFolders, targetFolder.Id));
+
+        return solution.Projects[0];
+    }
+
+    private static bool ContainsFolderById(IReadOnlyList<IVirtualFolder> folders, string id)
+    {
+        foreach (var folder in folders)
+        {
+            if (folder.Id == id) return true;
+            if (ContainsFolderById(folder.Children, id)) return true;
+        }
+        return false;
+    }
+
+    private async void OnSEImportFormatDefinition(object? sender, AddItemRequestedEventArgs e)
     {
         var catalog = EmbeddedFormatCatalog.Instance;
-        var dlg     = new ImportEmbeddedFormatDialog(catalog, e.Project) { Owner = this };
+        var dlg     = new ImportEmbeddedFormatDialog(catalog, e.Project, e.TargetFolderId) { Owner = this };
         if (dlg.ShowDialog() != true || dlg.SelectedEntries.Count == 0) return;
 
         var projDir = Path.GetDirectoryName(e.Project.ProjectFilePath)!;
@@ -1882,22 +2097,27 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var safeName = string.Concat(entry.Name.Split(Path.GetInvalidFileNameChars()))
                                  .Replace(' ', '_');
             var destPath = Path.Combine(destDir, safeName + ".whfmt");
-            var json     = catalog.GetJson(entry.ResourceKey);
+
+            // Read the full embedded resource content and write it to disk.
+            var json = catalog.GetJson(entry.ResourceKey);
             File.WriteAllText(destPath, json, System.Text.Encoding.UTF8);
 
-            _ = _solutionManager.AddItemAsync(
+            // Await the item registration so we can open it immediately in the editor,
+            // ensuring the user sees the freshly imported content (not a stale open tab).
+            var item = await _solutionManager.AddItemAsync(
                 e.Project, destPath,
                 virtualFolderId: dlg.TargetFolderId ?? e.TargetFolderId);
+            OpenProjectItem(item, e.Project);
         }
 
         OutputLogger.Info(
             $"Imported {dlg.SelectedEntries.Count} format definition(s) into project '{e.Project.Name}'.");
     }
 
-    private void OnSEImportSyntaxDefinition(object? sender, AddItemRequestedEventArgs e)
+    private async void OnSEImportSyntaxDefinition(object? sender, AddItemRequestedEventArgs e)
     {
         var catalog = EmbeddedSyntaxCatalog.Instance;
-        var dlg     = new ImportEmbeddedSyntaxDialog(catalog, e.Project) { Owner = this };
+        var dlg     = new ImportEmbeddedSyntaxDialog(catalog, e.Project, e.TargetFolderId) { Owner = this };
         if (dlg.ShowDialog() != true || dlg.SelectedEntries.Count == 0) return;
 
         var projDir = Path.GetDirectoryName(e.Project.ProjectFilePath)!;
@@ -1908,12 +2128,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var safeName = string.Concat(entry.Name.Split(Path.GetInvalidFileNameChars()))
                                  .Replace(' ', '_');
             var destPath = Path.Combine(destDir, safeName + ".whlang");
-            var content  = catalog.GetContent(entry.ResourceKey);
+
+            // Read the full embedded resource content and write it to disk.
+            var content = catalog.GetContent(entry.ResourceKey);
             File.WriteAllText(destPath, content, System.Text.Encoding.UTF8);
 
-            _ = _solutionManager.AddItemAsync(
+            // Await registration then open the file so the user sees the imported content.
+            var item = await _solutionManager.AddItemAsync(
                 e.Project, destPath,
                 virtualFolderId: dlg.TargetFolderId ?? e.TargetFolderId);
+            OpenProjectItem(item, e.Project);
         }
 
         OutputLogger.Info(
@@ -2082,6 +2306,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// </summary>
     private void OpenFileDirectly(string filePath)
     {
+        // Pre-flight: verify file accessibility before creating a document tab.
+        // If the file is locked or missing the error is routed to the Output panel
+        // and no tab is created.
+        if (!TryCheckFileAccess(filePath, out var accessError))
+        {
+            OutputLogger.Error(accessError);
+            ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+            return;
+        }
+
         _documentCounter++;
         var item = new DockItem
         {
@@ -2093,6 +2327,38 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         DockHost.RebuildVisualTree();
         UpdateStatusBar();
         _solutionManager.PushRecentFile(filePath);
+    }
+
+    /// <summary>
+    /// Verifies that <paramref name="filePath"/> exists and can be opened for reading
+    /// before a document tab is created. Catches <see cref="IOException"/> and
+    /// <see cref="UnauthorizedAccessException"/> to prevent creating a broken tab.
+    /// </summary>
+    private static bool TryCheckFileAccess(string filePath, out string errorMessage)
+    {
+        errorMessage = string.Empty;
+
+        if (!File.Exists(filePath))
+        {
+            errorMessage = $"File not found: {filePath}";
+            return false;
+        }
+
+        try
+        {
+            using var _ = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return true;
+        }
+        catch (IOException ex)
+        {
+            errorMessage = $"Cannot open '{Path.GetFileName(filePath)}': {ex.Message}";
+            return false;
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            errorMessage = $"Access denied '{Path.GetFileName(filePath)}': {ex.Message}";
+            return false;
+        }
     }
 
     private void OnSolutionExplorerItemSelected(object? sender, ProjectItemEventArgs e)
@@ -2176,6 +2442,38 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         _ = _solutionManager.RemoveItemAsync(e.Project, e.Item, deleteFromDisk: false);
         OutputLogger.Info($"Removed '{e.Item.Name}' from project '{e.Project.Name}'");
+    }
+
+    private void OnSEItemDeleteFromDiskRequested(object? sender, ProjectItemEventArgs e)
+    {
+        if (e.Project is null) return;
+
+        var path = e.Item.AbsolutePath;
+        if (!File.Exists(path)) return;
+
+        var result = MessageBox.Show(
+            $"Delete '{e.Item.Name}' and send it to the Recycle Bin?\n\nThis will also remove it from the project.",
+            "Delete File",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+        if (result != MessageBoxResult.Yes) return;
+
+        // Close any open editor tab for this file (no dirty prompt — file is being deleted)
+        var contentId = $"doc-proj-{e.Item.Id}";
+        if (_layout.FindItemByContentId(contentId) is { } dockItem)
+            CloseTab(dockItem, promptIfDirty: false);
+
+        // Remove from project model
+        _ = _solutionManager.RemoveItemAsync(e.Project, e.Item, deleteFromDisk: false);
+
+        // Send to Recycle Bin (recoverable delete)
+        Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(
+            path,
+            Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
+            Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+
+        OutputLogger.Info($"Deleted '{e.Item.Name}' from '{e.Project.Name}' → Recycle Bin");
     }
 
     private async void OnSolutionExplorerItemMoveRequested(object? sender, ItemMoveRequestedEventArgs e)
@@ -2397,6 +2695,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return;
         }
 
+        // Also check the bare default tab (doc-proj-{itemId}) in case it was opened with
+        // the same editor as the one being requested via "View in".
+        var bareContentId = $"doc-proj-{item.Id}";
+        if (_layout.FindItemByContentId(bareContentId) is { } bareItem)
+        {
+            bareItem.Metadata.TryGetValue("ActiveEditorId", out var activeEditorId);
+            if (activeEditorId == suffix || (activeEditorId is null && suffix == "hex-editor"))
+            {
+                if (bareItem.Owner is { } bareOwner) bareOwner.ActiveItem = bareItem;
+                DockHost.RebuildVisualTree();
+                return;
+            }
+        }
+
         var meta = new System.Collections.Generic.Dictionary<string, string>
         {
             ["FilePath"]  = item.AbsolutePath,
@@ -2449,6 +2761,31 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// </summary>
     private void OpenStandaloneFileWithEditor(string filePath, string? factoryId)
     {
+        // Activate existing tab if the same file is already open in the requested editor.
+        var allItems = _layout.GetAllGroups().SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems);
+
+        foreach (var di in allItems)
+        {
+            if (!di.Metadata.TryGetValue("FilePath", out var fp)) continue;
+            if (!string.Equals(fp, filePath, StringComparison.OrdinalIgnoreCase)) continue;
+
+            di.Metadata.TryGetValue("ForceEditorId",  out var feid);
+            di.Metadata.TryGetValue("ActiveEditorId", out var aeid);
+            var effectiveId = feid ?? aeid;
+
+            var matches = factoryId is null
+                ? (di.Metadata.TryGetValue("ForceHexEditor", out var fh) && fh == "true")
+                : effectiveId == factoryId;
+
+            if (!matches) continue;
+
+            if (di.Owner is { } o) o.ActiveItem = di;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
         _documentCounter++;
         var suffix    = factoryId is null ? "hex" : factoryId;
         var contentId = $"doc-file-{suffix}-{_documentCounter}";
@@ -2598,11 +2935,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnActiveDocumentChanged(DockItem item)
     {
-        if (!_contentCache.TryGetValue(item.ContentId, out var content))
-            return;
-
+        // Panel tabs: clear document-specific status bar contributions and exit.
         if (item.ContentId.StartsWith("panel-"))
+        {
+            ActiveStatusBarContributor = _defaultStatusBarContributor;
             return;
+        }
+
+        // Content not yet materialized (lazy tab never selected): clear and exit.
+        if (!_contentCache.TryGetValue(item.ContentId, out var content))
+        {
+            ActiveStatusBarContributor = _defaultStatusBarContributor;
+            return;
+        }
 
         // Unwrap the InfoBar Grid wrapper if present — the actual editor is in Tag
         content = UnwrapEditor(content);
@@ -2641,7 +2986,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         ActiveDocumentEditor       = content as IDocumentEditor;
         ActiveHexEditor            = hex;
-        ActiveStatusBarContributor = content as IStatusBarContributor;
+        ActiveStatusBarContributor = content as IStatusBarContributor ?? _defaultStatusBarContributor;
         ActiveToolbarContributor   = content as IEditorToolbarContributor;
         SyncTblDropdownToActiveEditor();
 
@@ -3641,6 +3986,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void ApplyHexEditorDefaults(HexEditorControl hex)
     {
         var d = AppSettingsService.Instance.Current.HexEditorDefaults;
+
+        // Display
         hex.BytePerLine           = d.BytePerLine;
         hex.ShowOffset            = d.ShowOffset;
         hex.ShowAscii             = d.ShowAscii;
@@ -3648,10 +3995,42 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         hex.OffSetStringVisual    = d.OffSetStringVisual;
         hex.ByteGrouping          = d.ByteGrouping;
         hex.ByteSpacerPositioning = d.ByteSpacerPositioning;
+
+        // Editing
         hex.EditMode              = d.DefaultEditMode;
         hex.AllowZoom             = d.AllowZoom;
         hex.MouseWheelSpeed       = d.MouseWheelSpeed;
         hex.AllowFileDrop         = d.AllowFileDrop;
+
+        // Data interpretation
+        hex.ByteSize                    = d.ByteSize;
+        hex.ByteOrder                   = d.ByteOrder;
+        hex.DefaultCopyToClipboardMode  = d.DefaultCopyToClipboardMode;
+        hex.ByteSpacerVisualStyle       = d.ByteSpacerVisualStyle;
+
+        // Scroll markers
+        hex.ShowBookmarkMarkers     = d.ShowBookmarkMarkers;
+        hex.ShowModifiedMarkers     = d.ShowModifiedMarkers;
+        hex.ShowInsertedMarkers     = d.ShowInsertedMarkers;
+        hex.ShowDeletedMarkers      = d.ShowDeletedMarkers;
+        hex.ShowSearchResultMarkers = d.ShowSearchResultMarkers;
+
+        // Status bar visibility
+        hex.ShowStatusMessage          = d.ShowStatusMessage;
+        hex.ShowFileSizeInStatusBar    = d.ShowFileSizeInStatusBar;
+        hex.ShowSelectionInStatusBar   = d.ShowSelectionInStatusBar;
+        hex.ShowPositionInStatusBar    = d.ShowPositionInStatusBar;
+        hex.ShowEditModeInStatusBar    = d.ShowEditModeInStatusBar;
+        hex.ShowBytesPerLineInStatusBar = d.ShowBytesPerLineInStatusBar;
+
+        // Advanced behaviour
+        hex.AllowAutoHighLightSelectionByte      = d.AllowAutoHighLightSelectionByte;
+        hex.AllowAutoSelectSameByteAtDoubleClick = d.AllowAutoSelectSameByteAtDoubleClick;
+        hex.AllowContextMenu                     = d.AllowContextMenu;
+        hex.AllowDeleteByte                      = d.AllowDeleteByte;
+        hex.AllowExtend                          = d.AllowExtend;
+        hex.FileDroppingConfirmation             = d.FileDroppingConfirmation;
+        hex.PreloadByteInEditorMode              = d.PreloadByteInEditorMode;
     }
 
     // ─── Menu: Project ─────────────────────────────────────────────────
@@ -4397,5 +4776,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         return IntPtr.Zero;
     }
 
-    private void UpdateStatusBar() { }
+    private void UpdateStatusBar()
+    {
+        var activeItem = _layout?.MainDocumentHost?.ActiveItem;
+        if (activeItem is null)
+        {
+            ActiveStatusBarContributor = _defaultStatusBarContributor;
+            ActiveDocumentEditor       = null;
+            ActiveToolbarContributor   = null;
+            return;
+        }
+        OnActiveDocumentChanged(activeItem);
+    }
 }

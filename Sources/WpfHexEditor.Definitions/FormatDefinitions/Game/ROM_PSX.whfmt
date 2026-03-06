@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PlayStation EXE",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "PlayStation 1 (PSX/PS1) executable format (PS-X EXE)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PS-X EXE File Format Specification",

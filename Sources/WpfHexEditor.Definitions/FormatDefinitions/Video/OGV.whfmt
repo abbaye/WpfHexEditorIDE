@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Ogg Video",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Ogg container format for video, part of the Xiph.Org Foundation's Ogg project",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RFC 3533 - The Ogg Encapsulation Format",

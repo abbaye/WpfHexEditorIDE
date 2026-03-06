@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Apple Disk Image",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Apple macOS disk image format",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Apple Disk Image Format Specification",

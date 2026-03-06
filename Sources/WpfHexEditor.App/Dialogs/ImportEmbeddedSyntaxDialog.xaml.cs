@@ -43,7 +43,7 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
     // ── Constructor ────────────────────────────────────────────────────────
     /// <param name="catalog">Catalog of embedded syntax definitions.</param>
     /// <param name="project">Project that will receive the imported items.</param>
-    public ImportEmbeddedSyntaxDialog(EmbeddedSyntaxCatalog catalog, IProject project)
+    public ImportEmbeddedSyntaxDialog(EmbeddedSyntaxCatalog catalog, IProject project, string? initialFolderId = null)
     {
         _catalog = catalog;
         InitializeComponent();
@@ -51,7 +51,21 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
         BuildCategories();
         BuildTree(filter: "");
         PopulateFolderCombo(project);
+        PreSelectFolder(initialFolderId);
         RefreshStatus();
+    }
+
+    private void PreSelectFolder(string? folderId)
+    {
+        if (folderId is null) return;
+        foreach (ComboBoxItem item in FolderCombo.Items)
+        {
+            if (item.Tag as string == folderId)
+            {
+                FolderCombo.SelectedItem = item;
+                return;
+            }
+        }
     }
 
     // ── Initialisation ─────────────────────────────────────────────────────

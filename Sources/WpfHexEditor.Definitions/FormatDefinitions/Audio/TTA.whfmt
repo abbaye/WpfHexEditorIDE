@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "True Audio",
   "version": "2.3",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "True Audio lossless audio compression format",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "TTA - True Audio Lossless Format",

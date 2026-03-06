@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Unreal Map",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Unreal Engine map/level file",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Unreal Engine Map/Level Format",

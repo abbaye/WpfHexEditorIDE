@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "CATIA Product",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "CATIA V5 product assembly file (OLE2 Compound Document)",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "CATIA Product Format"

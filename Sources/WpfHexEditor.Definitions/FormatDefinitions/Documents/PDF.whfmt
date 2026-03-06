@@ -7,6 +7,7 @@
   "description": "Portable Document Format by Adobe - A page-description language for representing documents independently of software, hardware, and operating system. The file begins with a '%PDF-' header followed by a version number. The body contains a sequence of indirect objects, followed by a cross-reference table and trailer dictionary that enable random access to any object in the file.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ISO 32000-1:2008 - PDF 1.7 Standard",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "UHA Archive",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "UHARC archive format with high compression ratio, developed by Uwe Herklotz",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "UHARC Archive Format - Uwe Herklotz",

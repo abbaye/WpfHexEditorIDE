@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "JFIF Image",
   "version": "1.13",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "JPEG File Interchange Format",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "ITU-T T.871 - JPEG File Interchange Format",

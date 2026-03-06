@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "YUV4MPEG2",
   "version": "2.3",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "YUV4MPEG2 uncompressed video format used by the mjpegtools project",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "YUV4MPEG2 Stream Format",

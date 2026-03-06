@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Nikon Raw Image",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Nikon Electronic Format RAW",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Nikon Electronic Format (NEF) - TIFF-based RAW",

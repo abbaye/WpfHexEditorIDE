@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "OpenDocument Presentation",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "OpenDocument Presentation - a ZIP-based open standard presentation format used by LibreOffice and OpenOffice. The first entry is typically 'mimetype' (stored uncompressed) containing 'application/vnd.oasis.opendocument.presentation'.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "OASIS OpenDocument Format v1.3 (ISO/IEC 26300)",

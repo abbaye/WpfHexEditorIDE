@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "NetFlow v5",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Cisco NetFlow v5 - Network flow data format",
   "category": "Network",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "NetFlow v5 Format"

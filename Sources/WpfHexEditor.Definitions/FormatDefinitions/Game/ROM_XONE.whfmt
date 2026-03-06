@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Xbox One Package",
   "version": "2.4",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Xbox One XVD (Xbox Virtual Disk) format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Xbox Virtual Disk (XVD) Format",

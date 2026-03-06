@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Syslog Binary Format",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Unix syslog binary format - System logging",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Syslog Binary Format Format"

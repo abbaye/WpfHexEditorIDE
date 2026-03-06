@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "EPUB eBook",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "EPUB (Electronic Publication) is the most widely supported open eBook standard, defined by the IDPF (now part of W3C). An EPUB file is a ZIP archive containing XHTML content, CSS stylesheets, images, fonts, and metadata. The ZIP container starts with a Local File Header (PK signature 0x504B0304), and the first entry must be an uncompressed 'mimetype' file containing 'application/epub+zip'. The META-INF/container.xml file points to the OPF package document.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "EPUB 3.2 Specification",
@@ -51,6 +52,7 @@
     "compressionRatio": 0,
     "title": "Unknown",
     "author": "Unknown",
+  "preferredEditor": "hex-editor",
     "publisher": "Unknown",
     "language": "en",
     "fileCount": 0,

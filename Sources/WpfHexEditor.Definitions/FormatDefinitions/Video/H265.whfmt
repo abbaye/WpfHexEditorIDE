@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Raw H.265/HEVC",
   "version": "1.13",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Raw H.265/HEVC (High Efficiency Video Coding) elementary stream",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ITU-T H.265 - High Efficiency Video Coding",

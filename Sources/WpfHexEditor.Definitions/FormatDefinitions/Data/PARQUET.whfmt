@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Apache Parquet",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Apache Parquet columnar storage format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Apache Parquet Format"

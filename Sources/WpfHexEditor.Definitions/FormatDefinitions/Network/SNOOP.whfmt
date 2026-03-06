@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Snoop Capture",
   "version": "2.3",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Solaris snoop packet capture format",
   "category": "Network",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Snoop Capture Format"

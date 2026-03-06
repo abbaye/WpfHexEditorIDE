@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Material Exchange Format",
   "version": "2.3",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "SMPTE standard container format for professional digital video and audio media",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SMPTE ST 377-1:2019 - MXF File Format Specification",

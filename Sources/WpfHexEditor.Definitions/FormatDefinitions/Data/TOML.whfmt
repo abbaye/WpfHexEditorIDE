@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "TOML Configuration",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Tom's Obvious, Minimal Language configuration format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "TOML Configuration Format"

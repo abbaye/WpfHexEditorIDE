@@ -47,7 +47,19 @@ public sealed record EmbeddedFormatEntry(
     /// .whfmt file, e.g. "Nintendo Entertainment System", "SNES".
     /// Empty string when the format is not platform-specific.
     /// </summary>
-    string Platform);
+    string Platform,
+    /// <summary>
+    /// Preferred editor factory ID declared in the <c>preferredEditor</c> field of the
+    /// .whfmt file. Null when not declared.
+    /// Typical values: "code-editor", "structure-editor", "hex-editor".
+    /// </summary>
+    string? PreferredEditor,
+    /// <summary>
+    /// Whether the format is text-based, from <c>detection.isTextFormat</c>.
+    /// Used as a fallback to derive a preferred editor when <see cref="PreferredEditor"/>
+    /// is null: <c>true</c> → "code-editor".
+    /// </summary>
+    bool IsTextFormat);
 
 /// <summary>
 /// Read-only catalog of the embedded format definitions shipped with the assembly.

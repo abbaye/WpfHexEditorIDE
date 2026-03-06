@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "WAV Audio",
   "version": "2.0",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Waveform Audio File Format - A RIFF-based container for uncompressed (PCM) and compressed audio. The file begins with a 12-byte RIFF header followed by a mandatory 'fmt ' chunk describing the audio encoding parameters and a 'data' chunk containing the sample payload.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "Microsoft WAVE Audio File Format",

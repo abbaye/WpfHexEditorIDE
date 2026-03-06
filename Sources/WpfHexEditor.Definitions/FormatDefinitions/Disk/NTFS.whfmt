@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "NTFS Filesystem",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Windows NT File System",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "NTFS Partition Boot Sector Specification",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PC Engine/TurboGrafx-16 ROM",
   "version": "2.4",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "PC Engine / TurboGrafx-16 HuCard ROM format (no standard header)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PC Engine / TurboGrafx-16 HuCard Format",

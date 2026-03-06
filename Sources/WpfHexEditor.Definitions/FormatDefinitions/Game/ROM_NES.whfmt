@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "NES ROM",
   "version": "2.2",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Nintendo Entertainment System ROM (iNES format)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "iNES ROM Format Specification",

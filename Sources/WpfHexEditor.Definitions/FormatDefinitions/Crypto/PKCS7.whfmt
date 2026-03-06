@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PKCS#7 Certificate",
   "version": "1.12",
   "extensions": [
@@ -10,6 +10,7 @@
   "description": "PKCS#7 Cryptographic Message Syntax - Certificate chain format",
   "category": "Crypto",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PKCS #7: Cryptographic Message Syntax - RFC 2315",

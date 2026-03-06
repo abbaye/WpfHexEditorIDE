@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "TrueType Font",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "TrueType Font format - a scalable outline font standard originally developed by Apple and later adopted by Microsoft. The file begins with an Offset Table header containing a scaler type identifier, the number of font tables, and binary search optimization values. Following the header is a Table Directory with 16-byte entries for each table (tag, checksum, offset, length). Common tables include 'cmap' (character mapping), 'glyf' (glyph outlines), 'head' (font header), 'hhea' (horizontal metrics header), 'hmtx' (horizontal metrics), 'loca' (glyph locations), 'maxp' (maximum profile), 'name' (naming), and 'post' (PostScript).",
   "category": "Fonts",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "TrueType Reference Manual",

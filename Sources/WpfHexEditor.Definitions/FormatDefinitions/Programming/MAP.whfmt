@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Linker MAP File",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Linker MAP file containing memory map and symbol information from the linking process (text format)",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Linker MAP File Format"

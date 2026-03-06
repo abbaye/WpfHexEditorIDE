@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "BUFR Weather Data",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Binary Universal Form for Representation of meteorological data",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "BUFR Weather Data Format"

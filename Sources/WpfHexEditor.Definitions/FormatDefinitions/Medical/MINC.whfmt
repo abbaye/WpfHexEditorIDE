@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "MINC Medical Image",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Medical Image NetCDF format",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "MINC Medical Image Format"

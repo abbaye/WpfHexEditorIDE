@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PowerPoint Presentation",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft PowerPoint Open XML presentation stored as a ZIP container. The file begins with a ZIP Local File Header containing the first entry of the Office Open XML package, typically [Content_Types].xml.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ECMA-376 - Office Open XML File Formats",
@@ -33,6 +34,7 @@
     "fileCount": 0,
     "title": "Unknown",
     "author": "Unknown",
+  "preferredEditor": "hex-editor",
     "subject": "Unknown",
     "slides": 0,
     "notes": 0,

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PlayStation 3 Disc/Package",
   "version": "2.5",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "PlayStation 3 Blu-ray disc image or PKG package format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PS3 PKG Package Format",

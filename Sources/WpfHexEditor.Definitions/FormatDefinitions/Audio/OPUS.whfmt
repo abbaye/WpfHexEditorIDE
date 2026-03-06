@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Opus Audio",
   "version": "2.3",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Opus lossy audio codec designed for interactive speech and audio transmission",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "RFC 6716 - Definition of the Opus Audio Codec",

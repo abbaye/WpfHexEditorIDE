@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Protein Data Bank",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Protein Data Bank format for 3D molecular structures",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Protein Data Bank Format"

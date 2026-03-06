@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Structure Data File",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Structure Data File format (multiple MOL files)",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Structure Data File Format"

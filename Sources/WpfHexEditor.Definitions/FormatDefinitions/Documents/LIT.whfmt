@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Microsoft Reader",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Reader e-book format with DRM support, based on Microsoft's LIT (Literature) format",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Microsoft Reader Format"
@@ -35,6 +36,7 @@
     "headerLength": 0,
     "title": "Unknown",
     "author": "Unknown",
+  "preferredEditor": "hex-editor",
     "hasDRM": false,
     "encoding": "UTF-8",
     "itsfSignature": ""

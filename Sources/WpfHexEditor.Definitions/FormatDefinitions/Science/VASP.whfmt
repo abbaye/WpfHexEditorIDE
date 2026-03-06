@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "VASP POSCAR",
   "version": "1.12",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Vienna Ab-initio Simulation Package structure file",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "VASP POSCAR Format"

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Tag-Length-Value",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Generic Tag-Length-Value encoding format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Tag-Length-Value Format"

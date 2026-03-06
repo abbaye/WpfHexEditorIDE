@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Parallel Compression Archive",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Parallel compression archive format optimized for multi-threaded compression and decompression",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PCompress Parallel Deduplication and Compression",

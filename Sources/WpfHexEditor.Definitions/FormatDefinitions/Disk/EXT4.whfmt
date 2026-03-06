@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Ext4 Filesystem",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Fourth Extended Filesystem for Linux",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Ext4 Disk Layout Documentation",

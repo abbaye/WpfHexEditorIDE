@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "IGES",
   "version": "2.3",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Initial Graphics Exchange Specification (ASCII format)",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "IGES Format"

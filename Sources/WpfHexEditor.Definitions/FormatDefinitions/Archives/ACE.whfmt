@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "ACE Archive",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "ACE compressed archive format",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "WinACE Archive Format Specification",

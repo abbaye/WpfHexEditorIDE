@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Windows Minidump",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Windows minidump crash file - Compact crash information",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Windows Minidump Format"

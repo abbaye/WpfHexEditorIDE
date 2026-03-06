@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "ASTC Texture",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Adaptive Scalable Texture Compression",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "ARM ASTC Specification - Khronos Extension",

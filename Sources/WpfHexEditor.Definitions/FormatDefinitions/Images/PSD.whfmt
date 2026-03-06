@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Photoshop Document",
   "version": "2.0",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Adobe Photoshop native document format. PSD (Photoshop Document) and PSB (Photoshop Big/Large Document) store layered image data with full editing capabilities. The file begins with a 26-byte header containing a 4-byte '8BPS' signature, version number, reserved bytes, channel count, dimensions, bit depth, and color mode. Version 1 is standard PSD (max 30000x30000), version 2 is PSB (max 300000x300000).",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Adobe Photoshop File Formats Specification",

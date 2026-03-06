@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Blu-ray MPEG-2 Transport Stream",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Blu-ray Disc Audio-Video (BDAV) MPEG-2 Transport Stream container",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Blu-ray Disc Format 2.B - BDAV MPEG-2 Transport Stream",

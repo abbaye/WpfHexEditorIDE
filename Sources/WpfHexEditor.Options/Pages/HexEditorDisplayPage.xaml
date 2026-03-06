@@ -108,5 +108,48 @@
                       SelectionChanged="OnComboChanged"/>
         </Grid>
 
+        <Separator Margin="0,8,0,16"
+                   Background="{DynamicResource DockBorderBrush}"/>
+
+        <TextBlock Text="Scroll Bar Markers"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,16"/>
+
+        <CheckBox x:Name="CheckShowBookmarkMarkers"
+                  Content="Show bookmark markers"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowModifiedMarkers"
+                  Content="Show modified markers"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowInsertedMarkers"
+                  Content="Show inserted markers"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowDeletedMarkers"
+                  Content="Show deleted markers"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,8"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowSearchResultMarkers"
+                  Content="Show search result markers"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,0"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
     </StackPanel>
 </UserControl>

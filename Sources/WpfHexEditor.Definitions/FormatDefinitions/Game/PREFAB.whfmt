@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Unity Prefab",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Unity prefab object file",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Unity Prefab YAML Format",

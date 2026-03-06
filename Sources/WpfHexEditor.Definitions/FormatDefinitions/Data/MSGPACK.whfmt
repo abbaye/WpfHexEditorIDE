@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "MessagePack",
   "version": "2.3",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "MessagePack binary serialization format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "MessagePack Format"

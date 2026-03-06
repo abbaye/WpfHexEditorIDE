@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Sony SR2 RAW",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Sony RAW format (DSLR cameras)",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Sony RAW Format 2 (SR2) Specification",

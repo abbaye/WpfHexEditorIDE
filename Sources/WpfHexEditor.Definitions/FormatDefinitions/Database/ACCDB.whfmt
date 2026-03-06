@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Microsoft Access 2007+ Database",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Access 2007+ database file",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Microsoft Access 2007+ Database Format"

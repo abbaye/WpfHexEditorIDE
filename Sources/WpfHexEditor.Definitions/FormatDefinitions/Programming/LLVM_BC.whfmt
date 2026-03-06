@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "LLVM Bitcode",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "LLVM Bitcode binary format, intermediate representation used by LLVM compiler infrastructure",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "LLVM Bitcode Format"

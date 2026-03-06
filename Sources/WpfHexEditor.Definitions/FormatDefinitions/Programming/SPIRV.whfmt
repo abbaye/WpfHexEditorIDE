@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SPIR-V Binary",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "SPIR-V (Standard Portable Intermediate Representation - Vulkan) binary format for GPU shaders",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SPIR-V Binary Format"

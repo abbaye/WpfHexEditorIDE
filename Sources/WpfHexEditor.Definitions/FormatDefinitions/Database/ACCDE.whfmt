@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Microsoft Access Compiled Database",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Access compiled executable-only database format",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Microsoft Access Compiled Database Format"

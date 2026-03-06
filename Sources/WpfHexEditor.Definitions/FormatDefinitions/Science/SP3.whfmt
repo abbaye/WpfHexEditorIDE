@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SP3 Orbit Data",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Standard Product 3 GPS precise orbit format",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SP3 Orbit Data Format"

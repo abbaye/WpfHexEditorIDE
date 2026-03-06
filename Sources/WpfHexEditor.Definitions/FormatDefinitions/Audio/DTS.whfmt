@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "DTS Audio",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "DTS (Digital Theater Systems) multi-channel audio codec",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "DTS Coherent Acoustics - ETSI TS 102 114",

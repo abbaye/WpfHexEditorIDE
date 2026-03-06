@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Monkey's Audio",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Monkey's Audio lossless compression",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "Monkey's Audio Compression Algorithm",

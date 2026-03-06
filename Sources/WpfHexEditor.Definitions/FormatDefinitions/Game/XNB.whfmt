@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "XNA Game Studio",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft XNA compiled content file",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "XNA Compiled Content Format",

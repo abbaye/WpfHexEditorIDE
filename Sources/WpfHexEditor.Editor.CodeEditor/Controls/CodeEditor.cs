@@ -34,7 +34,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
     /// Phase 2: Syntax highlighting with CodeSyntaxHighlighter
     /// Future phases will add: IntelliSense, validation
     /// </summary>
-    public class CodeEditor : FrameworkElement, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor, ISearchTarget
+    public class CodeEditor : FrameworkElement, IDocumentEditor, IDiagnosticSource, IPropertyProviderSource, IOpenableDocument, IStatusBarContributor, ISearchTarget, IEditorPersistable
     {
         #region Fields - Document Model
 
@@ -1944,9 +1944,47 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             SearchResultsChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        // CodeEditor does not support replace
-        void ISearchTarget.Replace(string replacement)    { }
-        void ISearchTarget.ReplaceAll(string replacement) { }
+        void ISearchTarget.Replace(string replacement)
+        {
+            // Replace the current find match with the replacement text
+            if (_currentFindMatchIndex < 0 || _currentFindMatchIndex >= _findResults.Count) return;
+            var match = _findResults[_currentFindMatchIndex];
+            _selection.Start = match;
+            _selection.End   = new Models.TextPosition(match.Line, match.Column + _findMatchLength);
+            DeleteSelection();
+            foreach (var ch in replacement) InsertChar(ch);
+            // Re-run find and advance to next match
+            ExecuteFind(_lastFindQuery ?? string.Empty);
+            if (_findResults.Count > 0)
+            {
+                _currentFindMatchIndex = Math.Min(_currentFindMatchIndex, _findResults.Count - 1);
+                NavigateToFindMatch();
+            }
+            SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        void ISearchTarget.ReplaceAll(string replacement)
+        {
+            if (string.IsNullOrEmpty(_lastFindQuery)) return;
+            ExecuteFind(_lastFindQuery);
+            if (_findResults.Count == 0) return;
+
+            // Iterate results in reverse to preserve column / line offsets
+            for (int i = _findResults.Count - 1; i >= 0; i--)
+            {
+                var match = _findResults[i];
+                _selection.Start = match;
+                _selection.End   = new Models.TextPosition(match.Line, match.Column + _findMatchLength);
+                DeleteSelection();
+                _isInternalEdit = true; // suppress undo coalescing inside loop
+                try { foreach (var ch in replacement) InsertChar(ch); }
+                finally { _isInternalEdit = false; }
+            }
+            ClearFind();
+            _isDirty = true;
+            ModifiedChanged?.Invoke(this, EventArgs.Empty);
+            SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         UIElement? ISearchTarget.GetCustomFiltersContent() => null;
 
@@ -4291,6 +4329,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public void LoadFromFile(string filePath)
         {
+            if (!File.Exists(filePath))
+            {
+                StatusMessage?.Invoke(this, $"File not found: {Path.GetFileName(filePath)}");
+                return;
+            }
+
             var text = File.ReadAllText(filePath, System.Text.Encoding.UTF8);
             LoadText(text);
             _currentFilePath = filePath;
@@ -4388,6 +4432,56 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 ? Path.GetFileName(_currentFilePath)
                 : "(unsaved)";
         }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // IEditorPersistable
+        // Persists caret position, scroll offset, and syntax language id.
+        // Binary changeset (byte-level) is not applicable to a text editor —
+        // GetChangesetSnapshot returns Empty and ApplyChangeset is a no-op.
+        // ═══════════════════════════════════════════════════════════════════
+
+        EditorConfigDto IEditorPersistable.GetEditorConfig()
+        {
+            return new EditorConfigDto
+            {
+                CaretLine        = _cursorLine + 1,   // store 1-based
+                CaretColumn      = _cursorColumn + 1,
+                FirstVisibleLine = (int)(_verticalScrollOffset / Math.Max(1, _lineHeight)) + 1,
+                SyntaxLanguageId = ExternalHighlighter is not null ? "external" : null,
+            };
+        }
+
+        void IEditorPersistable.ApplyEditorConfig(EditorConfigDto config)
+        {
+            if (config.CaretLine > 0 && _document != null)
+            {
+                _cursorLine   = Math.Clamp(config.CaretLine - 1, 0, _document.Lines.Count - 1);
+                _cursorColumn = Math.Max(0, config.CaretColumn - 1);
+            }
+            if (config.FirstVisibleLine > 0 && _lineHeight > 0)
+            {
+                _verticalScrollOffset = (config.FirstVisibleLine - 1) * _lineHeight;
+            }
+            InvalidateVisual();
+        }
+
+        // CodeEditor has no binary modifications — return null / no-op
+        byte[]? IEditorPersistable.GetUnsavedModifications() => null;
+        void IEditorPersistable.ApplyUnsavedModifications(byte[] data) { }
+
+        // Binary changeset model is not applicable for a text editor
+        ChangesetSnapshot IEditorPersistable.GetChangesetSnapshot() => ChangesetSnapshot.Empty;
+        void IEditorPersistable.ApplyChangeset(ChangesetDto changeset) { }
+
+        void IEditorPersistable.MarkChangesetSaved()
+        {
+            _isDirty = false;
+            ModifiedChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        // No bookmark concept in CodeEditor yet
+        IReadOnlyList<BookmarkDto>? IEditorPersistable.GetBookmarks() => null;
+        void IEditorPersistable.ApplyBookmarks(IReadOnlyList<BookmarkDto> bookmarks) { }
 
         // ═══════════════════════════════════════════════════════════════════
         // IDiagnosticSource

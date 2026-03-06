@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "XFS Filesystem",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "XFS high-performance journaling filesystem",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "XFS Filesystem Specification (SGI)",

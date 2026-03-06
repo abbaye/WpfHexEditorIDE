@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Game Package",
   "version": "2.3",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Generic game package/archive format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Generic Game Package Format",

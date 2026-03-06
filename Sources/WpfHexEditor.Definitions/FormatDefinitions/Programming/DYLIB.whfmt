@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "macOS Dynamic Library",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "macOS Dynamic Library using Mach-O (Mach Object) file format for dynamic linking",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Mach-O File Format",

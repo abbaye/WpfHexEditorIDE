@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "GZIP Compressed File",
   "version": "2.0",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "GZIP compression format defined by RFC 1952. Wraps a single DEFLATE-compressed stream with a 10-byte header containing magic bytes, compression method, flags, modification time, extra flags, and OS identifier. Optional fields (extra data, original filename, comment, header CRC) follow the fixed header when corresponding flag bits are set. An 8-byte trailer contains the CRC-32 and original file size.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RFC 1952 - GZIP File Format Specification Version 4.3",

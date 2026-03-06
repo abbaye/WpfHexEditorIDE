@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Minecraft Anvil Region",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Minecraft Anvil world region format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Minecraft Anvil Region Format",

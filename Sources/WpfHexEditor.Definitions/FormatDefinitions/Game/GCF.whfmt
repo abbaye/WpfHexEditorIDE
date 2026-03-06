@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Steam Game Cache",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Steam Game Cache File",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Valve GCF Archive Format",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PEM Certificate",
   "version": "1.11",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "PEM-encoded X.509 certificate - Base64 encoded certificate",
   "category": "Certificates",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Privacy-Enhanced Mail (PEM) - RFC 1421",

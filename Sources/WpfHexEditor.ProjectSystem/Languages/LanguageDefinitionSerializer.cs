@@ -76,8 +76,9 @@ public static class LanguageDefinitionSerializer
                 Body        = s.Body    ?? string.Empty,
                 Description = s.Description ?? string.Empty
             }).ToArray() ?? [],
-            FoldingStrategy  = dto.FoldingStrategy,
-            LineCommentPrefix = dto.LineCommentPrefix
+            FoldingStrategy   = dto.FoldingStrategy,
+            LineCommentPrefix = dto.LineCommentPrefix,
+            IsDefault         = dto.IsDefault,
         };
     }
 
@@ -92,6 +93,11 @@ public static class LanguageDefinitionSerializer
         public SnippetDefinitionDto[]? Snippets         { get; set; }
         public FoldingStrategyKind   FoldingStrategy   { get; set; } = FoldingStrategyKind.Brace;
         public string?               LineCommentPrefix { get; set; }
+        /// <summary>
+        /// When true, the registry will call SetProjectDefault() automatically for all
+        /// extensions declared in the file, making this the preferred language.
+        /// </summary>
+        public bool IsDefault { get; set; }
     }
 
     private sealed class SyntaxRuleDto

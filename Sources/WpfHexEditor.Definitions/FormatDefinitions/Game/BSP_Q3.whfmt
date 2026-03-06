@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Quake 3 BSP",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Quake 3 engine BSP map format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Quake 3 Arena IBSP v46 Format",

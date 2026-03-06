@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Quake II WAD",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Quake II WAD texture archive",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Quake WAD2 Texture Format",

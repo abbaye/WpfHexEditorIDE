@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "MP3 Audio",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "MPEG-1/2 Audio Layer III - A lossy audio compression format. Most MP3 files begin with an ID3v2 tag containing metadata, followed by a sequence of MPEG audio frames. Each frame has a 4-byte header encoding the MPEG version, layer, bitrate, sample rate, channel mode, and other parameters.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "ISO/IEC 11172-3 - MPEG-1 Audio Layer III",

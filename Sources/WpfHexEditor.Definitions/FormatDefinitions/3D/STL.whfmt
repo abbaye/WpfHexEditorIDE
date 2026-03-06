@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "STL 3D Model",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Stereolithography CAD format - 3D model file",
   "category": "3D",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "STL 3D Model Format"

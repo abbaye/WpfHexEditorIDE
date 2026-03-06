@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "MP4 Video",
   "version": "2.0",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "MPEG-4 Part 14 multimedia container based on ISO Base Media File Format (ISOBMFF). The file begins with a File Type Box (ftyp) that declares the major brand, minor version, and compatible brands. All data is organized in nested boxes (atoms), each prefixed by a 32-bit size and 4-byte type code. The ftyp box is followed by movie metadata (moov) and media data (mdat) boxes.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ISO/IEC 14496-12 - ISO Base Media File Format",

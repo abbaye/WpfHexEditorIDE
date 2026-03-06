@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "CATIA Part",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "CATIA V5 part file",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "CATIA Part Format"

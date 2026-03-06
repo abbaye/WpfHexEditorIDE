@@ -8,6 +8,7 @@
   "description": "Windows Portable Executable format. The PE format is the standard executable file format on Windows, consisting of a DOS MZ stub header followed by a PE signature, COFF file header, and Optional Header with data directories and section tables.",
   "category": "Executables",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Microsoft PE and COFF Specification",

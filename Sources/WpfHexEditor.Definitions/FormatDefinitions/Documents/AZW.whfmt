@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Amazon Kindle eBook",
   "version": "1.10",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Amazon Kindle format - Based on Mobipocket",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Amazon Kindle eBook Format"
@@ -35,6 +36,7 @@
     "databaseName": "Unknown",
     "title": "Unknown",
     "author": "Unknown",
+  "preferredEditor": "hex-editor",
     "recordCount": 0,
     "kindleFormat": "AZW",
     "hasdrm": false,

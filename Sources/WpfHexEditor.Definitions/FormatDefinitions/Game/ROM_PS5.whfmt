@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PlayStation 5 Package",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "PlayStation 5 PKG package format (next-gen encrypted packages)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PlayStation 5 PKG Package Format",

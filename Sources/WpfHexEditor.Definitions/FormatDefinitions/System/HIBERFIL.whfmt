@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Windows Hibernation File",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Windows hibernation file (hiberfil.sys) - Suspended system state",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Windows Hibernation File Format"

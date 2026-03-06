@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Windows Registry Hive",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Windows Registry hive file - Binary registry database",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Windows Registry Hive Format"

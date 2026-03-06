@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PGP Message",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Pretty Good Privacy encrypted/signed message",
   "category": "Crypto",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "OpenPGP Message Format - RFC 4880",

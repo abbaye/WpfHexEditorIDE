@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "MPEG Video",
   "version": "1.11",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "MPEG-1/2 video stream",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ISO/IEC 11172 - MPEG-1 Video Standard",

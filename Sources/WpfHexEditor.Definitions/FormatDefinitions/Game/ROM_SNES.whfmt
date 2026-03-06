@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Super Nintendo ROM",
   "version": "3.2",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Super Nintendo Entertainment System ROM (HiROM internal header at $FFB0-$FFFF)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SNES Internal ROM Header Specification",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Dolby Digital Plus",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Dolby Digital Plus (Enhanced AC-3) advanced audio codec",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "ATSC A/52:2012 - Digital Audio Compression (AC-3) (E-AC-3)",

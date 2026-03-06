@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "ZPAQ Archive",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "ZPAQ incremental archiver format",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ZPAQ Incremental Archiver Specification - Matt Mahoney",

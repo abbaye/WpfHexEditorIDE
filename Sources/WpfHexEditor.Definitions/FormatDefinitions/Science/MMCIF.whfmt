@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "MacroMolecular CIF",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "MacroMolecular Crystallographic Information File",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "MacroMolecular CIF Format"

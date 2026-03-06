@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Pro/ENGINEER Assembly",
   "version": "2.3",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Pro/ENGINEER (Creo) assembly file",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Pro/ENGINEER Assembly Format"

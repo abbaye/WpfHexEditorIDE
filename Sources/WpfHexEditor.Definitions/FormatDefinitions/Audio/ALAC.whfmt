@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Apple Lossless Audio Codec",
   "version": "2.3",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Apple Lossless Audio Codec for lossless compression of digital music",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "Apple Lossless Audio Codec Specification",

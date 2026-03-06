@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SketchUp Model",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "SketchUp 3D model file",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SketchUp Model Format"

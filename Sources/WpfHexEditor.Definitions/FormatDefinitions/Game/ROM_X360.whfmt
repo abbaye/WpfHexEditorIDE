@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Xbox 360 Disc Image",
   "version": "2.5",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Microsoft Xbox 360 disc image and executable format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "XEX (Xbox 360 Executable) File Format",

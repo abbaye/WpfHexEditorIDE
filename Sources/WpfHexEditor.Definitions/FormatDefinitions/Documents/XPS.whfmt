@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "XML Paper Specification",
   "version": "2.0",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Microsoft XPS (XML Paper Specification) document format, a ZIP-based fixed-layout document format. The file begins with a ZIP Local File Header containing the first entry of the OOXML package.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ECMA-388 - Open XML Paper Specification",

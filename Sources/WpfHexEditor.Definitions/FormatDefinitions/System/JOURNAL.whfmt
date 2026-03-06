@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "systemd Journal",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "systemd journal binary log format - Linux system logging",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "systemd Journal Format"

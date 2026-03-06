@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "JSON Data",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "JavaScript Object Notation - a lightweight text-based data interchange format. JSON files begin with either an opening brace { for objects or an opening bracket [ for arrays. Optionally preceded by a UTF-8 BOM.",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ECMA-404 - The JSON Data Interchange Standard",

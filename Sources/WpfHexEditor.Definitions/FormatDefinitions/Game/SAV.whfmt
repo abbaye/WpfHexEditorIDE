@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Game Save File",
   "version": "2.3",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Generic game save file",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Generic Game Save File Format",

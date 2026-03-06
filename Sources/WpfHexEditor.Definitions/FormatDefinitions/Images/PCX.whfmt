@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PCX Image",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "ZSoft PC Paintbrush image format",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "ZSoft PCX File Format Technical Reference Manual",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Ubisoft FORGE",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Ubisoft FORGE archive format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Ubisoft FORGE Archive Format",

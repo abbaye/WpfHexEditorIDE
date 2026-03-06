@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Enterprise Archive",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Java Enterprise Archive - a ZIP container for deploying enterprise Java applications with multiple modules (WARs, JARs, EJBs). The file begins with a ZIP Local File Header containing the first entry of the EAR package.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Java EE Application Packaging - Enterprise Archive",

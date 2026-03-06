@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Sega Genesis/Mega Drive ROM",
   "version": "1.11",
   "extensions": [
@@ -10,6 +10,7 @@
   "description": "Sega Genesis / Mega Drive ROM cartridge format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Sega Mega Drive ROM Header Specification",

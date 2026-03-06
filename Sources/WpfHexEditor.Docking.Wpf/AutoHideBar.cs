@@ -29,6 +29,12 @@ public class AutoHideBar : StackPanel
     /// </summary>
     public event Action<DockItem>? ItemClicked;
 
+    /// <summary>
+    /// Raised after <see cref="UpdateItems"/> rebuilds the button list,
+    /// so attached hover-preview helpers can re-wire mouse events.
+    /// </summary>
+    public event Action? ItemsUpdated;
+
     public AutoHideBar(Dock position)
     {
         Position = position;
@@ -72,6 +78,7 @@ public class AutoHideBar : StackPanel
         }
 
         Visibility = Children.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        ItemsUpdated?.Invoke();
     }
 }
 
@@ -102,9 +109,28 @@ public class AutoHideFlyout : Grid
     public bool IsOpen => _panelContainer.Visibility == Visibility.Visible;
 
     /// <summary>
+    /// Returns the panel container element so the host can capture a snapshot before closing.
+    /// </summary>
+    public UIElement PanelElement => _panelContainer;
+
+    /// <summary>
     /// Raised when the user clicks the pin button or double-clicks the title bar to re-dock.
     /// </summary>
     public event Action<DockItem>? RestoreRequested;
+
+    /// <summary>
+    /// Raised at the very start of <see cref="Close"/>, before the hide animation begins,
+    /// so the host can capture a snapshot while the panel content is still fully visible.
+    /// Covers all dismiss paths including the click-catcher (outside click).
+    /// </summary>
+    public event Action? Dismissing;
+
+    /// <summary>
+    /// Raised after the open animation completes and after <see cref="DispatcherPriority.Render"/>
+    /// so the host can capture a high-quality snapshot when the panel is at full size and fully painted.
+    /// This is the preferred capture point; <see cref="Dismissing"/> is the fallback.
+    /// </summary>
+    public event Action? SnapshotReady;
 
     /// <summary>
     /// Raised when the user clicks close.
@@ -363,6 +389,14 @@ public class AutoHideFlyout : Grid
         {
             EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
         };
+
+        // Notify the host AFTER the open animation finishes AND after the WPF render pipeline
+        // has committed a frame (DispatcherPriority.Render). This is the ideal moment to capture
+        // a snapshot: panel is at full size and content is fully painted.
+        showAnim.Completed += (_, _) =>
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,
+                (System.Action)(() => SnapshotReady?.Invoke()));
+
         showAnim.Freeze();
 
         if (isHorizontal)
@@ -373,6 +407,10 @@ public class AutoHideFlyout : Grid
 
     public void Close()
     {
+        // Notify the host BEFORE animation starts so it can capture a snapshot
+        // while the panel content is still fully rendered and visible.
+        Dismissing?.Invoke();
+
         bool isHorizontal = _currentSide is DockSide.Left or DockSide.Right;
 
         var hideAnim = new DoubleAnimation(0,

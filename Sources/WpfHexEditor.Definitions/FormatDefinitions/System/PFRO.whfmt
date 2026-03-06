@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PFRO Registry Data",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "PendingFileRenameOperations - Delayed file operations",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PFRO Registry Data Format"

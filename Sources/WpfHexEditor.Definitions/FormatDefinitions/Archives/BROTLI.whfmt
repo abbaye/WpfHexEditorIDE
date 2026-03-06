@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Brotli Compression",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Brotli compressed format developed by Google, used for web compression and file compression",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RFC 7932 - Brotli Compressed Data Format",

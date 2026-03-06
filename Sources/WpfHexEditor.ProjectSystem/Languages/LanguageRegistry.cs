@@ -64,9 +64,15 @@ public sealed class LanguageRegistry
     /// <summary>
     /// Loads and registers a user-defined <c>.whlang</c> file.
     /// Overwrites any previous user registration for the same extensions.
+    /// If the definition has <c>IsDefault = true</c> and a <paramref name="projectId"/>
+    /// is supplied, also calls <see cref="SetProjectDefault"/> automatically.
     /// </summary>
     /// <param name="whlangPath">Absolute path to the <c>.whlang</c> file.</param>
-    public void RegisterFromFile(string whlangPath)
+    /// <param name="projectId">
+    /// Optional project context. When provided and the file is marked <c>isDefault: true</c>,
+    /// the language is automatically promoted to the project-level default for all its extensions.
+    /// </param>
+    public void RegisterFromFile(string whlangPath, string? projectId = null)
     {
         var definition = LanguageDefinitionSerializer.Load(whlangPath);
         lock (_lock)
@@ -74,6 +80,10 @@ public sealed class LanguageRegistry
             foreach (var ext in definition.Extensions)
                 _user[ext] = definition;
         }
+
+        // Honour the IsDefault flag by promoting to project-level default when a context is available
+        if (definition.IsDefault && projectId is not null)
+            SetProjectDefault(projectId, definition);
     }
 
     /// <summary>

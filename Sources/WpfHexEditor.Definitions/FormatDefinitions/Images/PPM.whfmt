@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Portable Pixmap",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Netpbm Portable Pixmap (RGB color)",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Netpbm PPM Format Specification",

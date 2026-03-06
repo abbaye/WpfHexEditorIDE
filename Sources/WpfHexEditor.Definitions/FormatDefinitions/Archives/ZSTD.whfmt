@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Zstandard Compressed",
   "version": "1.10",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Zstandard compression format by Facebook",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RFC 8878 - Zstandard Compression Format",

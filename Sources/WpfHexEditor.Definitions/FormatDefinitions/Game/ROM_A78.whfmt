@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Atari 7800 ROM",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Atari 7800 ROM format with A78 header (ProSystem standard)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Atari 7800 A78 Header Specification",

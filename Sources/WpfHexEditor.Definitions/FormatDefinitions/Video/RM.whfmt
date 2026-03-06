@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "RealMedia",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "RealMedia multimedia container format developed by RealNetworks",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RealMedia Container Format Specification",

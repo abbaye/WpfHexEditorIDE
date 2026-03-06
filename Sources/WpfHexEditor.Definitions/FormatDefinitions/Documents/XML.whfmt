@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "XML Document",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Extensible Markup Language (XML) is a text-based markup language that defines rules for encoding documents in a format readable by both humans and machines. Files typically begin with an optional Byte Order Mark (BOM), followed by the XML declaration '<?xml version=\"1.0\" encoding=\"UTF-8\"?>' which specifies the XML version and character encoding. The declaration is a processing instruction that must appear before any other content if present.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "W3C XML 1.0 (Fifth Edition) Recommendation",

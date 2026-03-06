@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Snappy Compression",
   "version": "1.10",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Snappy compressed stream format developed by Google, optimized for speed rather than compression ratio",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Snappy Framing Format Specification",

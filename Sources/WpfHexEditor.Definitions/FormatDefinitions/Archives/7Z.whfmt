@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "7-Zip Archive",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "7-Zip archive format designed by Igor Pavlov. Uses a 32-byte Start Header containing a 6-byte signature, version info, and pointers to the Next Header which holds the archive metadata (file list, sizes, CRCs, and codec information). Supports LZMA, LZMA2, BZIP2, DEFLATE, and BCJ filter chains with optional AES-256 encryption.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "7z Format Specification (7zFormat.txt from LZMA SDK)",

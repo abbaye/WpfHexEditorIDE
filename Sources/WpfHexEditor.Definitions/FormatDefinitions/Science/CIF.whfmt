@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Crystallographic Information File",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Crystallographic Information File for crystal structures",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Crystallographic Information File Format"

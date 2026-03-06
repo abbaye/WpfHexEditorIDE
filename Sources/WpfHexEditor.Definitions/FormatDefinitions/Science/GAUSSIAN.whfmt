@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Gaussian Cube File",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Gaussian volumetric data cube format",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Gaussian Cube File Format"

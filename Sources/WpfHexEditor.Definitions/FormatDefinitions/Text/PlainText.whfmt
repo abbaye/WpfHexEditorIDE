@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Plain Text",
   "version": "1.5",
   "extensions": [
@@ -7,6 +7,7 @@
   ],
   "description": "Plain text document with character encoding support (ASCII, UTF-8, UTF-16)",
   "author": "Derek Tremblay",
+  "preferredEditor": "text-editor",
   "category": "Text Documents",
   "detection": {
     "signature": null,

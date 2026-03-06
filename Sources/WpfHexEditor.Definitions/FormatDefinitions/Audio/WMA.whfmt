@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Windows Media Audio",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Windows Media Audio lossy audio codec",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "Advanced Systems Format (ASF) Specification",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SQLite Write-Ahead Log",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "SQLite Write-Ahead Logging file for database transactions",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SQLite Write-Ahead Log Format"

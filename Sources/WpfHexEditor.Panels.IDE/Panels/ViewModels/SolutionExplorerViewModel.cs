@@ -50,6 +50,12 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     private SortMode   _currentSort   = SortMode.None;
     private FilterMode _currentFilter = FilterMode.All;
 
+    // ── Collapse-state memory (session-level) ─────────────────────────────────
+    // Persists IsExpanded across Rebuild() calls so tree state is not lost on
+    // sort/filter/file-watcher refreshes.  Keyed by a stable node identifier.
+
+    private readonly Dictionary<string, bool> _expandedState = new(StringComparer.Ordinal);
+
     // ── Tree ─────────────────────────────────────────────────────────────────
 
     public ObservableCollection<SolutionExplorerNodeVm> Roots { get; } = [];
@@ -224,6 +230,9 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
 
     public void Rebuild()
     {
+        // Capture current IsExpanded state before clearing the tree
+        CaptureExpandedState(Roots);
+
         Roots.Clear();
 
         if (_solution is null) return;
@@ -252,7 +261,59 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         ApplySort(solutionNode.Children);
         if (_currentFilter != FilterMode.All)
             ApplyFilterVisibility(solutionNode.Children);
+
+        // Restore remembered IsExpanded state (first Rebuild after loading will use defaults)
+        RestoreExpandedState(Roots);
     }
+
+    // ── Collapse-state helpers ────────────────────────────────────────────────
+
+    /// <summary>
+    /// Recursively walks <paramref name="nodes"/> and records each node's
+    /// <see cref="SolutionExplorerNodeVm.IsExpanded"/> into <see cref="_expandedState"/>
+    /// keyed by a stable identifier derived from the node type and its domain ID.
+    /// </summary>
+    private void CaptureExpandedState(IEnumerable<SolutionExplorerNodeVm> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            var key = StableKeyFor(node);
+            if (key is not null)
+                _expandedState[key] = node.IsExpanded;
+            CaptureExpandedState(node.Children);
+        }
+    }
+
+    /// <summary>
+    /// Recursively walks <paramref name="nodes"/> and restores each node's
+    /// <see cref="SolutionExplorerNodeVm.IsExpanded"/> from <see cref="_expandedState"/>
+    /// if a matching key exists; otherwise the node keeps its default value.
+    /// </summary>
+    private void RestoreExpandedState(IEnumerable<SolutionExplorerNodeVm> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            var key = StableKeyFor(node);
+            if (key is not null && _expandedState.TryGetValue(key, out bool expanded))
+                node.IsExpanded = expanded;
+            RestoreExpandedState(node.Children);
+        }
+    }
+
+    /// <summary>
+    /// Returns a stable string key for <paramref name="node"/> based on its
+    /// concrete type and domain identifier (folder ID, project ID, path …).
+    /// Returns <see langword="null"/> for node types that do not need state persistence.
+    /// </summary>
+    private static string? StableKeyFor(SolutionExplorerNodeVm node) => node switch
+    {
+        SolutionNodeVm       sn  => $"sol:{sn.Source.Name}",
+        SolutionFolderNodeVm sfv => $"sfolder:{sfv.Folder.Id}",
+        ProjectNodeVm        pv  => $"proj:{pv.Source.Id}",
+        FolderNodeVm         fv  => $"vfolder:{fv.Folder.Id}",
+        PhysicalFolderNodeVm pfv => $"phys:{pfv.PhysicalPath}",
+        _                        => null,
+    };
 
     private void ApplyFilterVisibility(ObservableCollection<SolutionExplorerNodeVm> children)
     {

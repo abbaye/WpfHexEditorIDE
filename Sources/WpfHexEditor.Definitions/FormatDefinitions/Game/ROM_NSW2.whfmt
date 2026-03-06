@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Nintendo Switch 2 Package",
   "version": "1.12",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Nintendo Switch 2 next-gen package formats (NSP2/XCI2/NCA2 - enhanced versions)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Nintendo Switch File Formats (Base)",

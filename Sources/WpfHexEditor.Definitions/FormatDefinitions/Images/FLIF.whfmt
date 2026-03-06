@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Free Lossless Image Format",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "FLIF - Free Lossless Image Format",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "FLIF16 Specification - Free Lossless Image Format",

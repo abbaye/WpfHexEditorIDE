@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Encapsulated Packet",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Generic encapsulated packet format for tunneling protocols",
   "category": "Network",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Encapsulated Packet Format"

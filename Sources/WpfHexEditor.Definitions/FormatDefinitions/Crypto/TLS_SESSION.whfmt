@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "TLS Session Ticket",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "TLS Session Ticket - Encrypted session resumption data",
   "category": "Crypto",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "TLS Session Resumption without Server-Side State - RFC 5077",

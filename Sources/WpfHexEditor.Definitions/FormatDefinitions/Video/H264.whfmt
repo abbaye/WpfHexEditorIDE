@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Raw H.264/AVC",
   "version": "1.13",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Raw H.264/MPEG-4 AVC elementary stream video format",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ITU-T H.264 - Advanced Video Coding",

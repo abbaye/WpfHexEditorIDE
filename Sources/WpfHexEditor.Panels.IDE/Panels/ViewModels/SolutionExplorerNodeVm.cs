@@ -218,6 +218,18 @@ public sealed class FolderNodeVm : SolutionExplorerNodeVm
 
 public sealed class FileNodeVm : SolutionExplorerNodeVm
 {
+    // Shared static reference set once by SolutionExplorerPanel after it creates the clipboard manager.
+    // Using a static avoids threading all nodes with a per-instance reference while still enabling
+    // the IsPendingCut binding without coupling the VM layer to the service layer.
+    private static WpfHexEditor.Panels.IDE.Services.SolutionClipboardManager? _sharedClipboard;
+
+    /// <summary>
+    /// Provides the shared clipboard manager used to evaluate <see cref="IsPendingCut"/>.
+    /// Must be called once from <c>SolutionExplorerPanel</c> after the manager is created.
+    /// </summary>
+    public static void SetSharedClipboard(WpfHexEditor.Panels.IDE.Services.SolutionClipboardManager manager)
+        => _sharedClipboard = manager;
+
     private readonly IProjectItem _item;
     private bool _isDefaultTbl;
 
@@ -269,6 +281,19 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
     }
 
     public bool IsModified => _item.IsModified;
+
+    /// <summary>
+    /// True when the file has been cut (Ctrl+X) and is awaiting a paste operation.
+    /// The tree renders these nodes at reduced opacity (0.45) as a visual cue.
+    /// </summary>
+    public bool IsPendingCut => _sharedClipboard?.IsPendingCut(_item.AbsolutePath) ?? false;
+
+    /// <summary>
+    /// Triggers a PropertyChanged notification for <see cref="IsPendingCut"/> so the
+    /// data binding updates the node's opacity in the tree.
+    /// Call this after any Copy or Cut operation on the clipboard manager.
+    /// </summary>
+    public void RefreshPendingCut() => OnPropertyChanged(nameof(IsPendingCut));
 
     private bool _isModifiedExternally;
 

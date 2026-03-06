@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Sega Master System ROM",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Sega Master System / Game Gear ROM format (TMR SEGA header)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SMS ROM Header Specification",

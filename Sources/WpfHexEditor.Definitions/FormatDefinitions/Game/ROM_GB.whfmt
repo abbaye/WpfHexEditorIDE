@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Game Boy ROM",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Game Boy/Game Boy Color ROM cartridge format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Game Boy Programming Manual",

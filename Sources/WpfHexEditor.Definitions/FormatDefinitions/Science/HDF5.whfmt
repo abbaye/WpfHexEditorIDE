@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "HDF5 Data File",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Hierarchical Data Format v5",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "HDF5 Data File Format"

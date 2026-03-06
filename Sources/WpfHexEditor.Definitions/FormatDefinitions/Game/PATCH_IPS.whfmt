@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "IPS Patch",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "International Patching System (IPS) format - Classic ROM patching format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "International Patching System (IPS)",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "USD Binary (Crate)",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Pixar USD binary crate format",
   "category": "3D",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "USD Binary (Crate) Format"

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SolidWorks Part",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "SolidWorks part file",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SolidWorks Part Format"

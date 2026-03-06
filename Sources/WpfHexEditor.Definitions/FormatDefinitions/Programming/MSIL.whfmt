@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": ".NET MSIL Assembly",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": ".NET Microsoft Intermediate Language (MSIL/CIL) assembly format using PE/COFF structure",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       ".NET MSIL Assembly Format"

@@ -1757,6 +1757,8 @@ namespace WpfHexEditor.HexEditor
 
                 // Refresh viewport rendering to show new spacers
                 editor.HexViewport?.InvalidateVisual();
+
+                editor.RaiseHexStatusChanged();
             }
         }
 
@@ -2939,6 +2941,8 @@ namespace WpfHexEditor.HexEditor
                     // Refresh column headers to match the new format
                     editor.RefreshColumnHeader();
                 }
+
+                editor.RaiseHexStatusChanged();
             }
         }
 
@@ -2962,6 +2966,8 @@ namespace WpfHexEditor.HexEditor
                     // Update ActualOffsetWidth to reflect the new format
                     editor.ActualOffsetWidth = new GridLength(editor.HexViewport.ActualOffsetWidth);
                 }
+
+                editor.RaiseHexStatusChanged();
             }
         }
 
@@ -3028,7 +3034,7 @@ namespace WpfHexEditor.HexEditor
         /// </summary>
         public static readonly DependencyProperty DefaultCopyToClipboardModeProperty =
             DependencyProperty.Register(nameof(DefaultCopyToClipboardMode), typeof(CopyPasteMode), typeof(HexEditor),
-                new PropertyMetadata(CopyPasteMode.Auto));
+                new PropertyMetadata(CopyPasteMode.Auto, (d, _) => (d as HexEditor)?.RaiseHexStatusChanged()));
 
         /// <summary>
         /// VisualCaretMode DependencyProperty for XAML binding

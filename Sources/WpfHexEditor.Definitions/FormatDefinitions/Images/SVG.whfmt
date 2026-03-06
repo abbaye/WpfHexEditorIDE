@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SVG Vector Image",
   "version": "2.0",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Scalable Vector Graphics (SVG) is an XML-based vector image format for two-dimensional graphics defined by the W3C. SVG files are text-based and may begin with an optional UTF-8 BOM (EF BB BF), followed by an XML declaration (<?xml version=\"1.0\"...) and then the <svg> root element with namespace and viewport attributes. SVGZ files are gzip-compressed SVG. Since SVG is text-based, header parsing examines the BOM, XML declaration bytes, and opening SVG tag.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "W3C SVG 2 Specification",

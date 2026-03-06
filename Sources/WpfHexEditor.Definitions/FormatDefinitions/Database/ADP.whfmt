@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Microsoft Access Project",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Access project file for SQL Server",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Microsoft Access Project Format"

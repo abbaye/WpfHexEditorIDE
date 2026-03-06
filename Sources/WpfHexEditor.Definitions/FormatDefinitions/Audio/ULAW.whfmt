@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "μ-law Audio",
   "version": "1.13",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "μ-law (mu-law) algorithm compressed audio format used in telephony",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "ITU-T Recommendation G.711 - PCM of Voice Frequencies",

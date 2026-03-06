@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Windows Registry File",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Windows Registry export file",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Windows Registry File Format"

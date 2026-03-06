@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "ICO Icon",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Windows Icon format",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Windows ICO File Format Specification",

@@ -40,10 +40,13 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             new MouseButtonEventHandler(OnTreeMouseLeftButtonUp),
             handledEventsToo: true);
 
-        // Clipboard: forward the paste-request to the panel's own AddExistingItemRequested event.
-        // Project is intentionally left as default (resolved by host via args.FilePaths / IsCut).
-        _clipboard.AddExistingItemRequested += (_, _) =>
-            AddExistingItemRequested?.Invoke(this, new AddItemRequestedEventArgs());
+        // Clipboard: forward paste-request to the host via ClipboardPasteRequested.
+        // The host (MainWindow) resolves the target project and performs the file operation.
+        _clipboard.AddExistingItemRequested += (_, args) =>
+            ClipboardPasteRequested?.Invoke(this, args);
+
+        // Initialise the shared static reference so FileNodeVm can call IsPendingCut.
+        FileNodeVm.SetSharedClipboard(_clipboard);
 
         // File watcher: propagate external changes to the ViewModel
         _watcher.FileChangedExternally += (_, args) =>
@@ -78,6 +81,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     public event EventHandler<ProjectItemEventArgs>?               ItemSelected;
     public event EventHandler<ProjectItemEventArgs>?               ItemRenameRequested;
     public event EventHandler<ProjectItemEventArgs>?               ItemDeleteRequested;
+    public event EventHandler<ProjectItemEventArgs>?               ItemDeleteFromDiskRequested;
     public event EventHandler<ItemMoveRequestedEventArgs>?         ItemMoveRequested;
     public event EventHandler<OpenWithSpecificEditorEventArgs>?    OpenWithSpecificRequested;
 
@@ -185,7 +189,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
         // Granular add capabilities — controls Add > submenu parent and each sub-item independently
         bool canAddItems          = isProject || isFolder;                               // Add New/Existing Item
-        bool canImport            = isProject;                                           // Import Format/Syntax (project only)
+        bool canImport            = isProject || isFolder;                              // Import Format/Syntax (project + virtual project folder)
         bool canAddFolders        = isProject || isFolder;                               // New Folder / Add Existing Folder
         bool canAddSolutionFolder = isSolution || isSolutionFolder;                      // New Solution Folder (solution level only)
         bool canAdd               = canAddItems || canImport || canAddSolutionFolder || canAddFolders;
@@ -245,9 +249,19 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         CopyPathMenuItem      .Visibility = hasCopyPath               ? Visibility.Visible : Visibility.Collapsed;
         NavigationSeparator   .Visibility = hasExplorer && hasAfterNav ? Visibility.Visible : Visibility.Collapsed;
 
-        // Rename / Remove / Exclude
+        // Clipboard: Copy / Cut only when file items are selected; Paste when clipboard is ready
+        bool hasSelectedFiles = GetSelectedFileItems().Count > 0;
+        bool canClipPaste     = _clipboard.CanPaste() && (isFile || isFolder || isProject);
+        // Separator visible only when at least one clipboard action (Copy, Cut, or Paste) is visible
+        bool anyClipboard = (isFile && hasSelectedFiles) || canClipPaste;
+        CopyMenuItem      .Visibility = (isFile && hasSelectedFiles) ? Visibility.Visible : Visibility.Collapsed;
+        CutMenuItem       .Visibility = (isFile && hasSelectedFiles) ? Visibility.Visible : Visibility.Collapsed;
+        PasteMenuItem     .Visibility = canClipPaste                 ? Visibility.Visible : Visibility.Collapsed;
+
+        // Rename / Remove / Delete / Exclude
         RenameMenuItem            .Visibility = (isSolution || isSolutionFolder || isFile || isFolder || isProject) ? Visibility.Visible : Visibility.Collapsed;
         RemoveMenuItem            .Visibility = (isFile || isFolder || isSolutionFolder)                             ? Visibility.Visible : Visibility.Collapsed;
+        DeleteMenuItem            .Visibility = isFile                                                                ? Visibility.Visible : Visibility.Collapsed;
         ExcludeFromProjectMenuItem.Visibility = isPhysIn                                                              ? Visibility.Visible : Visibility.Collapsed;
 
         // Import external file (file node whose path is outside the project directory)
@@ -481,23 +495,78 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private void OnSaveAll(object sender, RoutedEventArgs e)
         => SaveAllRequested?.Invoke(this, EventArgs.Empty);
 
+    // ── Clipboard context-menu handlers (Copy / Cut / Paste) ─────────────────
+
+    private void OnMenuCopy(object sender, RoutedEventArgs e)
+    {
+        var items = GetSelectedFileItems();
+        if (items.Count > 0)
+        {
+            _clipboard.Copy(items);
+            RefreshPendingCutVisuals();
+        }
+    }
+
+    private void OnMenuCut(object sender, RoutedEventArgs e)
+    {
+        var items = GetSelectedFileItems();
+        if (items.Count > 0)
+        {
+            _clipboard.Cut(items);
+            RefreshPendingCutVisuals();
+        }
+    }
+
+    private void OnMenuPaste(object sender, RoutedEventArgs e)
+    {
+        if (!_clipboard.CanPaste()) return;
+        var folder = _contextMenuTarget switch
+        {
+            FolderNodeVm fv => fv.Folder as IVirtualFolder,
+            _               => null,
+        };
+        _clipboard.Paste(folder);
+    }
+
+    /// <summary>
+    /// Notifies all <see cref="FileNodeVm"/> nodes to re-evaluate their <c>IsPendingCut</c>
+    /// property so the tree re-renders the correct opacity after a Copy or Cut operation.
+    /// </summary>
+    private void RefreshPendingCutVisuals()
+    {
+        foreach (var node in AllFileNodes(_vm.Roots))
+            node.RefreshPendingCut();
+    }
+
+    private static IEnumerable<FileNodeVm> AllFileNodes(IEnumerable<SolutionExplorerNodeVm> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            if (node is FileNodeVm fn) yield return fn;
+            foreach (var child in AllFileNodes(node.Children))
+                yield return child;
+        }
+    }
+
     private void OnImportFormatDefinition(object sender, RoutedEventArgs e)
     {
-        if (_contextMenuTarget is not ProjectNodeVm pv) return;
+        var (project, folderId) = GetContextProjectAndFolder();
+        if (project is null) return;
         ImportFormatDefinitionRequested?.Invoke(this, new AddItemRequestedEventArgs
         {
-            Project        = pv.Source,
-            TargetFolderId = null,
+            Project        = project,
+            TargetFolderId = folderId,
         });
     }
 
     private void OnImportSyntaxDefinition(object sender, RoutedEventArgs e)
     {
-        if (_contextMenuTarget is not ProjectNodeVm pv) return;
+        var (project, folderId) = GetContextProjectAndFolder();
+        if (project is null) return;
         ImportSyntaxDefinitionRequested?.Invoke(this, new AddItemRequestedEventArgs
         {
-            Project        = pv.Source,
-            TargetFolderId = null,
+            Project        = project,
+            TargetFolderId = folderId,
         });
     }
 
@@ -597,6 +666,12 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             });
     }
 
+    private void OnDeleteFromDisk(object sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTarget is FileNodeVm fn && fn.Project is not null)
+            ItemDeleteFromDiskRequested?.Invoke(this, new ProjectItemEventArgs { Item = fn.Source, Project = fn.Project });
+    }
+
     /// <inheritdoc/>
     public event EventHandler<NodePropertiesEventArgs>? PropertiesRequested;
 
@@ -677,6 +752,13 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     /// <inheritdoc/>
     public event EventHandler<AddItemRequestedEventArgs>? AddExistingItemRequested;
+
+    /// <summary>
+    /// Raised when the user performs a clipboard paste (Ctrl+V or context menu "Paste").
+    /// Contains the file paths, the target folder, and whether the operation is a Cut (move).
+    /// The host performs the actual file-system operation and project-model update.
+    /// </summary>
+    public event EventHandler<AddExistingItemEventArgs>? ClipboardPasteRequested;
 
     /// <inheritdoc/>
     public event EventHandler<AddItemRequestedEventArgs>? ImportFormatDefinitionRequested;
@@ -798,7 +880,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         else if (e.Key == Key.X)
         {
             var items = GetSelectedFileItems();
-            if (items.Count > 0) { _clipboard.Cut(items); e.Handled = true; }
+            if (items.Count > 0) { _clipboard.Cut(items); RefreshPendingCutVisuals(); e.Handled = true; }
         }
         else if (e.Key == Key.V)
         {
@@ -1259,12 +1341,24 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnTreeDragOver(object sender, DragEventArgs e)
     {
-        var isFileDrag    = e.Data.GetDataPresent(DragDataFormat);
-        var isProjectDrag = e.Data.GetDataPresent(DragDataFormatProject);
+        var isFileDrag         = e.Data.GetDataPresent(DragDataFormat);
+        var isProjectDrag      = e.Data.GetDataPresent(DragDataFormatProject);
+        var isExternalFileDrop = e.Data.GetDataPresent(DataFormats.FileDrop);
 
-        if (!isFileDrag && !isProjectDrag)
+        if (!isFileDrag && !isProjectDrag && !isExternalFileDrop)
         {
             e.Effects = DragDropEffects.None;
+            e.Handled = true;
+            return;
+        }
+
+        // External file drop from Windows Explorer: accept as Copy on any project/folder target
+        if (isExternalFileDrop && !isFileDrag && !isProjectDrag)
+        {
+            var extTarget = GetDropTarget(e.OriginalSource as DependencyObject);
+            e.Effects = extTarget is (ProjectNodeVm or FolderNodeVm)
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
             e.Handled = true;
             return;
         }
@@ -1291,6 +1385,57 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnTreeDrop(object sender, DragEventArgs e)
     {
+        // ── External file drop from Windows Explorer ───────────────────────────
+        if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
+            !e.Data.GetDataPresent(DragDataFormat) &&
+            !e.Data.GetDataPresent(DragDataFormatProject))
+        {
+            if (e.Data.GetData(DataFormats.FileDrop) is not string[] droppedPaths) return;
+
+            var target = GetDropTarget(e.OriginalSource as DependencyObject);
+
+            // Resolve target project and optional virtual folder
+            IProject? project      = null;
+            string?   targetFolder = null;
+
+            switch (target)
+            {
+                case FolderNodeVm fv:
+                    project      = fv.Project;
+                    targetFolder = fv.Folder.Id;
+                    break;
+                case ProjectNodeVm pv:
+                    project = pv.Source;
+                    break;
+                default:
+                    // Try to fall back to the first active project in the tree
+                    project = _vm.Roots
+                        .OfType<SolutionNodeVm>()
+                        .SelectMany(s => s.Children.OfType<ProjectNodeVm>())
+                        .FirstOrDefault()?.Source;
+                    break;
+            }
+
+            if (project is null) return;
+
+            // Only keep file paths (skip directories)
+            var filePaths = droppedPaths
+                .Where(p => File.Exists(p))
+                .ToArray();
+
+            if (filePaths.Length == 0) return;
+
+            AddExistingItemRequested?.Invoke(this, new AddItemRequestedEventArgs
+            {
+                Project        = project,
+                TargetFolderId = targetFolder,
+                FilePaths      = filePaths,
+            });
+
+            e.Handled = true;
+            return;
+        }
+
         // ── File drop (project-level folder move) ──────────────────────────────
         if (e.Data.GetDataPresent(DragDataFormat))
         {

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Web Open Font Format 2",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "WOFF2 - Improved web font format",
   "category": "Fonts",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "WOFF File Format 1.0",

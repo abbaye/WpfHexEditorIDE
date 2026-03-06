@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "OGG Audio",
   "version": "2.0",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Ogg is a free, open container format maintained by the Xiph.Org Foundation. The file is composed of pages, each beginning with the 'OggS' capture pattern. Each page has a 27-byte fixed header followed by a variable-length segment table. Pages carry codec data (typically Vorbis, Opus, or FLAC for audio, Theora for video) multiplexed by serial number.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "RFC 3533 - The Ogg Encapsulation Format",

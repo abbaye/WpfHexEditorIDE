@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Panasonic Raw Image",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Panasonic RAW camera image",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Panasonic RAW Version 2 (RW2) Format",

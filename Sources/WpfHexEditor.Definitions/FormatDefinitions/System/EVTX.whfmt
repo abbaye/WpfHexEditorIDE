@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Windows Event Log XML",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Windows Event Log file (modern XML format)",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Windows Event Log XML Format"

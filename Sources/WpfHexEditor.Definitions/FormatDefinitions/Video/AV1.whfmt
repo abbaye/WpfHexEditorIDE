@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "AV1 Video",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "AOMedia Video 1 (AV1) open, royalty-free video coding format",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "AV1 Bitstream & Decoding Process Specification",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "VP9 Video",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "VP9 video codec, successor to VP8 developed by Google",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "VP9 Bitstream Specification",

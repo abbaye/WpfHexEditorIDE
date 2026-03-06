@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Android App Bundle",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Android App Bundle - a ZIP-based publishing format for Android apps that defers APK generation and signing to Google Play. The file begins with a ZIP Local File Header. AAB files contain compiled code, resources, and module configurations that Google Play uses to generate optimized APKs.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Android App Bundle Format (Google)",

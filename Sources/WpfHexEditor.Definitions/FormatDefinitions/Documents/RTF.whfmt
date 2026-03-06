@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Rich Text Format",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Rich Text Format document",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Rich Text Format Format"
@@ -34,6 +35,7 @@
     "version": 1,
     "title": "Unknown",
     "author": "Unknown",
+  "preferredEditor": "hex-editor",
     "subject": "Unknown",
     "pages": 0,
     "defaultFont": 0,

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "AVIF Image",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "AV1 Image File Format - Modern image format",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Microsoft AVI RIFF File Format",

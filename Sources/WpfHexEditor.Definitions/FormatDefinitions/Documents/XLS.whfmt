@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Excel Workbook (Legacy)",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Excel 97-2003 workbook (OLE2)",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Excel Workbook (Legacy) Format"

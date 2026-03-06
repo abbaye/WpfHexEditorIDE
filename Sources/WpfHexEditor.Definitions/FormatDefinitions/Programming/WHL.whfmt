@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Python Wheel Package",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Python Wheel - a ZIP-based built distribution format for Python packages, designed to replace eggs. The file begins with a ZIP Local File Header containing the first entry of the wheel package.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PEP 427 - The Wheel Binary Package Format",

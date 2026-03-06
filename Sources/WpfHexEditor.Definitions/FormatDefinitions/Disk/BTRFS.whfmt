@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Btrfs Filesystem",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "B-tree Filesystem with copy-on-write",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Btrfs On-disk Format Documentation",

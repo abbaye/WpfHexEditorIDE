@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "No Cache File",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Steam No Cache File format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Valve No Cache File Format",

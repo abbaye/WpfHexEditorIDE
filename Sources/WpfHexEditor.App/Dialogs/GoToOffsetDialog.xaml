@@ -14,36 +14,11 @@
         Background="{DynamicResource DockWindowBackgroundBrush}">
 
     <Window.Resources>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
-        </Style>
-        <Style TargetType="RadioButton">
-            <Setter Property="Foreground"               Value="{DynamicResource DockMenuForegroundBrush}" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Margin"                   Value="0,2" />
-        </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Background"  Value="{DynamicResource DockWindowBackgroundBrush}" />
-            <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
-            <Setter Property="Padding"     Value="4,2" />
-        </Style>
-        <Style TargetType="Button">
-            <Setter Property="Background"         Value="{DynamicResource DockWindowBackgroundBrush}" />
-            <Setter Property="Foreground"         Value="{DynamicResource DockMenuForegroundBrush}" />
-            <Setter Property="BorderBrush"        Value="{DynamicResource DockBorderBrush}" />
-            <Setter Property="Padding"            Value="16,4" />
-            <Setter Property="MinWidth"           Value="80" />
-            <Setter Property="Cursor"             Value="Hand" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource DockMenuItemHoverBrush}" />
-                </Trigger>
-                <Trigger Property="IsDefault" Value="True">
-                    <Setter Property="BorderBrush" Value="{DynamicResource DockMenuForegroundBrush}" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.App;component/Themes/DialogStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <StackPanel Margin="16">

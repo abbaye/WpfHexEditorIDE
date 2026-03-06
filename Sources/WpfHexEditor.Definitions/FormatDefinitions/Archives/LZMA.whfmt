@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "LZMA Compression",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "LZMA (Lempel-Ziv-Markov chain Algorithm) compressed file format, used in 7-Zip and XZ Utils",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "LZMA Algorithm Specification - Igor Pavlov",

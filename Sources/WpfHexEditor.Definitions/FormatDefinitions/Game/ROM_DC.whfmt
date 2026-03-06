@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Sega Dreamcast Disc Image",
   "version": "1.12",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Sega Dreamcast GD-ROM disc image format (IP.BIN header)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Dreamcast GD-ROM IP.BIN Format",

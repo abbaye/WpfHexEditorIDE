@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "MATLAB Data File",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "MATLAB workspace data",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "MATLAB Data File Format"

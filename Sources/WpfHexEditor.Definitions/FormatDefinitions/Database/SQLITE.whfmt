@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SQLite Database",
   "version": "2.0",
   "extensions": [
@@ -10,6 +10,7 @@
   "description": "SQLite database file format. SQLite is a self-contained, serverless, zero-configuration, transactional SQL database engine. The file begins with a 100-byte header containing the magic string, page size, format versions, and database configuration parameters.",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SQLite Database File Format",

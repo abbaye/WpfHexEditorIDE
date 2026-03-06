@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Doom WAD File",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Doom/Quake WAD archive",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Doom WAD File Format",

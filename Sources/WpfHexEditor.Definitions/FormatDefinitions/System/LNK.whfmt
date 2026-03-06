@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Windows Shortcut",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Windows shell link (shortcut)",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Windows Shortcut Format"

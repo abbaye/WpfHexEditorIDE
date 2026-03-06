@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Advanced Systems Format",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Advanced Systems Format multimedia container",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Advanced Systems Format (ASF) Specification Rev 01.20.03",

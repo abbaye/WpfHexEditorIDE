@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "MPEG Transport Stream",
   "version": "1.10",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "MPEG-2 Transport Stream container format used for broadcasting and streaming",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ISO/IEC 13818-1 - MPEG-2 Systems Transport Stream",

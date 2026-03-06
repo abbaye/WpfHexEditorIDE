@@ -10,6 +10,7 @@
   "description": "JPEG (Joint Photographic Experts Group) image using JFIF (JPEG File Interchange Format) container. The file begins with an SOI marker (0xFFD8) followed by APP0/JFIF segment containing version, density, and thumbnail information. Image dimensions and encoding parameters are found in the SOF (Start of Frame) marker located later in the stream.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "ISO/IEC 10918-1 - Digital Compression and Coding of Continuous-Tone Still Images",

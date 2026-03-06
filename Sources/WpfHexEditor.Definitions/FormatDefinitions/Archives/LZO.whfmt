@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "LZO Compression",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "LZO compressed file format using Lempel-Ziv-Oberhumer algorithm, optimized for decompression speed",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "LZO Compression Algorithm - Markus F.X.J. Oberhumer",

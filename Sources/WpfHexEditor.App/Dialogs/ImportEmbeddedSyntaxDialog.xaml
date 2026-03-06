@@ -10,8 +10,8 @@
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:ce="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls;assembly=WpfHexEditor.Editor.CodeEditor"
         Title="Import Built-in Syntax Definition"
-        Width="880" Height="560"
-        MinWidth="640" MinHeight="420"
+        Width="880" Height="820"
+        MinWidth="640" MinHeight="620"
         ResizeMode="CanResizeWithGrip"
         Background="{DynamicResource DockWindowBackgroundBrush}">
 

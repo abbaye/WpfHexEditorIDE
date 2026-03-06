@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Digital Negative",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Adobe Digital Negative RAW format",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Adobe Digital Negative (DNG) Specification v1.7.0.0",

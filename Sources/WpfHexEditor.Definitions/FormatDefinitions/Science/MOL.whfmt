@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "MDL Molfile",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "MDL Molfile chemical structure format",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "MDL Molfile Format"

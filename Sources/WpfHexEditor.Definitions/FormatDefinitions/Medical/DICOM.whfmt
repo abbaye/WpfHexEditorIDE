@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "DICOM Medical Image",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Digital Imaging and Communications in Medicine",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "DICOM Medical Image Format"

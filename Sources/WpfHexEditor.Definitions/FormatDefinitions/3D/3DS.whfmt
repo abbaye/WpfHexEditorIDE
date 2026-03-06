@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "3D Studio Model",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Autodesk 3D Studio mesh format",
   "category": "3D",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "3D Studio Model Format"

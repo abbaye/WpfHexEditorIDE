@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Dolby Digital AC-3",
   "version": "3.2",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Dolby Digital (AC-3) audio bitstream - standard surround sound codec for DVD, Blu-ray, HDTV (ATSC A/52). Each sync frame consists of a sync word, CRC1, sample rate/frame size info, bit stream information (BSI), audio blocks, and CRC2. The BSI header encodes version, mode, channel layout, dialogue normalization, and dynamic range control parameters.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "ATSC A/52:2018 - Digital Audio Compression (AC-3, E-AC-3)",

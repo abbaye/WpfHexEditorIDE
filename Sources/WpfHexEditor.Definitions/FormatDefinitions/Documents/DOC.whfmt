@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Word Document (Legacy)",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Word 97-2003 document (OLE2)",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Word Document (Legacy) Format"

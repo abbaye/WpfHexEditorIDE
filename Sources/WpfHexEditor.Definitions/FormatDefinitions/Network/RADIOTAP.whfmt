@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Radiotap 802.11",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Radiotap header for 802.11 wireless captures",
   "category": "Network",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Radiotap 802.11 Format"

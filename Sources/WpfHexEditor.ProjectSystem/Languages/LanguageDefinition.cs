@@ -49,6 +49,14 @@ public sealed class LanguageDefinition
     /// Used for Toggle Comment commands.
     /// </summary>
     public string? LineCommentPrefix { get; init; }
+
+    /// <summary>
+    /// When <see langword="true"/>, this language is the preferred (default) highlighter
+    /// for its declared extensions inside the owning project.
+    /// Only one definition per extension should be marked default; the registry uses
+    /// <see cref="LanguageRegistry.SetProjectDefault"/> to enforce this constraint.
+    /// </summary>
+    public bool IsDefault { get; init; }
 }
 
 /// <summary>Maps a regex pattern to a token kind for syntax highlighting.</summary>

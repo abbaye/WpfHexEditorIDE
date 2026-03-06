@@ -7,7 +7,8 @@
 namespace WpfHexEditor.Editor.Core;
 
 /// <summary>
-/// Event args for "Add New Item" / "Add Existing Item" requests from the Solution Explorer context menu.
+/// Event args for "Add New Item" / "Add Existing Item" requests from the Solution Explorer context menu
+/// or from an external drag-and-drop operation (Windows Explorer).
 /// </summary>
 public sealed class AddItemRequestedEventArgs : EventArgs
 {
@@ -20,6 +21,13 @@ public sealed class AddItemRequestedEventArgs : EventArgs
     /// Virtual folder id to place the item in, or <see langword="null"/> for the project root.
     /// </summary>
     public string? TargetFolderId { get; set; }
+
+    /// <summary>
+    /// When set, the host should import exactly these file paths without showing a file-picker dialog.
+    /// <see langword="null"/> means the normal "open file dialog" flow.
+    /// Populated by external drag-and-drop from Windows Explorer.
+    /// </summary>
+    public IReadOnlyList<string>? FilePaths { get; set; }
 }
 
 /// <summary>
@@ -75,6 +83,11 @@ public interface ISolutionExplorerPanel
     /// Fired when the user requests to delete an item via the context menu.
     /// </summary>
     event EventHandler<ProjectItemEventArgs>? ItemDeleteRequested;
+
+    /// <summary>
+    /// Raised when the user requests to delete an item from disk (send to Recycle Bin).
+    /// </summary>
+    event EventHandler<ProjectItemEventArgs>? ItemDeleteFromDiskRequested;
 
     /// <summary>
     /// Fired when the user drags a file node to a new folder or the project root.

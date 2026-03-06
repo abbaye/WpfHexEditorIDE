@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "xdelta / VCDIFF Patch",
   "version": "1.0",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "VCDIFF delta encoding (RFC 3284) used by xdelta3. Encodes differences as ADD, COPY and RUN instructions across one or more windows. Supports source and target COPY with NEAR/SAME address cache. No file size limit, optional secondary compression.",
   "category": "RomHacking",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RFC 3284 — The VCDIFF Generic Differencing and Compression Data Format",

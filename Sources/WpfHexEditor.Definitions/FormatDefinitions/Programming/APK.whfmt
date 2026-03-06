@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Android Package",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Android Application Package - a ZIP-based container for Android apps containing compiled code (classes.dex), resources, assets, and AndroidManifest.xml. The file begins with a ZIP Local File Header. APK files are signed ZIP archives that the Android runtime installs and executes.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Android Application Package Format",

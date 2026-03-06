@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "CBOR (Concise Binary Object Representation)",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "CBOR binary data format (RFC 7049)",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "CBOR (Concise Binary Object Representation) Format"

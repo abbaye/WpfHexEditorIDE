@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "GL Transmission Format",
   "version": "2.3",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Khronos glTF 3D model (JSON format)",
   "category": "3D",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "GL Transmission Format Format"

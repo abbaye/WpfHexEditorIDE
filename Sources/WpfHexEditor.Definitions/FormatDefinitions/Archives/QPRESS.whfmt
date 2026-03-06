@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Qpress Compression",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Qpress archive format using QuickLZ compression, commonly used for MySQL/MariaDB backups",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Qpress QuickLZ Compression",

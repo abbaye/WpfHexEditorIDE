@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PostScript Document",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "PostScript document format",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PostScript Document Format"

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Analyze 7.5 Image",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Analyze 7.5 medical image format",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Analyze 7.5 Image Format"

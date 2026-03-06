@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "AVCHD Video",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "AVCHD (Advanced Video Coding High Definition) video format used by camcorders",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "AVCHD Specification - Sony/Panasonic",

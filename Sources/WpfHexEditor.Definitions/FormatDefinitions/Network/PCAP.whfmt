@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PCAP Network Capture",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Packet Capture file - Network traffic recording",
   "category": "Network",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PCAP Network Capture Format"

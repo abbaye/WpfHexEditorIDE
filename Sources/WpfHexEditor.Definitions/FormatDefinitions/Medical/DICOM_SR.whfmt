@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "DICOM Structured Report",
   "version": "1.13",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "DICOM Structured Report for medical data",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "DICOM Structured Report Format"

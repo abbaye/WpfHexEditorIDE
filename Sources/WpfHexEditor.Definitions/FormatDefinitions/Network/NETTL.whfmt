@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "HP-UX nettl",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "HP-UX network tracing and logging format",
   "category": "Network",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "HP-UX nettl Format"

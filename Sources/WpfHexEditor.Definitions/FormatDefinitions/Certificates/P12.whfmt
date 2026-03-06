@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PKCS#12 Certificate",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Personal Information Exchange - Certificate bundle",
   "category": "Certificates",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PKCS #12: Personal Information Exchange Syntax v1.1 - RFC 7292",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Ruby Marshal",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Ruby object serialization format",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Ruby Marshal Format"

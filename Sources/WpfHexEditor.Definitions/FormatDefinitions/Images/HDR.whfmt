@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Radiance HDR Image",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Radiance RGBE High Dynamic Range image",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Radiance RGBE Image Format - Gregory Ward Larson",

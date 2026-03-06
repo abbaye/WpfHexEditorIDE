@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Nintendo GameCube Disc",
   "version": "2.5",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Nintendo GameCube disc image format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Yet Another GameCube Documentation (YAGCD)",

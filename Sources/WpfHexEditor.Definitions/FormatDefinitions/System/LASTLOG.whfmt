@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Unix lastlog",
   "version": "2.4",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Unix lastlog file - Last login information per user",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Unix lastlog Format"

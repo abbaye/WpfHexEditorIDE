@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "GRIB Weather Data",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Gridded Binary meteorological data format",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "GRIB Weather Data Format"

@@ -95,6 +95,14 @@ namespace WpfHexEditor.Core.FormatDetection
         public List<string> UseCases { get; set; } = new List<string>();
 
         /// <summary>
+        /// Preferred editor factory ID for files matching this format.
+        /// When null, the editor is derived automatically: IsTextFormat=true → "code-editor";
+        /// binary with blocks → "structure-editor"; otherwise falls back to registry first-match.
+        /// Valid values: "code-editor", "structure-editor", "hex-editor", "text-editor", "tbl-editor".
+        /// </summary>
+        public string? PreferredEditor { get; set; }
+
+        /// <summary>
         /// Format relationships and associations
         /// </summary>
         public FormatRelationships FormatRelationships { get; set; }

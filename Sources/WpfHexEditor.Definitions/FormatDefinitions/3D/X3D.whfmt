@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Extensible 3D",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Web3D X3D format (XML based)",
   "category": "3D",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Extensible 3D Format"

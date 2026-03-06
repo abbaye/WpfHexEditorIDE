@@ -25,7 +25,9 @@ public class DockGroupNode : DockNode
         ArgumentNullException.ThrowIfNull(item);
 
         item.Owner = this;
-        if (this is DocumentHostNode) item.IsDocument = true;
+        // Always sync IsDocument to reflect the actual host type.
+        // Setting only to true (never to false) corrupts tool panels dragged into DocumentHostNode.
+        item.IsDocument = this is DocumentHostNode;
         _items.Add(item);
         ActiveItem ??= item;
     }
@@ -38,7 +40,8 @@ public class DockGroupNode : DockNode
         ArgumentNullException.ThrowIfNull(item);
 
         item.Owner = this;
-        if (this is DocumentHostNode) item.IsDocument = true;
+        // Always sync IsDocument to reflect the actual host type.
+        item.IsDocument = this is DocumentHostNode;
         _items.Insert(index, item);
         ActiveItem ??= item;
     }

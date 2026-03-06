@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "NumPy Compressed Archive",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "NumPy Compressed Archive - a ZIP container for storing multiple NumPy arrays in .npy format. The file begins with a ZIP Local File Header containing the first entry of the NPZ archive.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "NumPy NPZ Archive Format",

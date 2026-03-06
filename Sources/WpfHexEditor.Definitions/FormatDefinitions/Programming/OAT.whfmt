@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Android OAT",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Android OAT (Ahead-of-Time compiled) file format, contains native code compiled from DEX",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Android OAT Format"

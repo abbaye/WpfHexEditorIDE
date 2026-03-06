@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PlayStation Portable ISO",
   "version": "2.5",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "PlayStation Portable UMD disc image (ISO or compressed CSO)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PSP UMD Disc Image Format (ISO)",

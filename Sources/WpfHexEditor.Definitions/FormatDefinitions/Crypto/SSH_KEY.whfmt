@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "OpenSSH Private Key",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "OpenSSH private key format - Encrypted SSH authentication key",
   "category": "Crypto",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "OpenSSH Private Key Format (openssh-key-v1)",

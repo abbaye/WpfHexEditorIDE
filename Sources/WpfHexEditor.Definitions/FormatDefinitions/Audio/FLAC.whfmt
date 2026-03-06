@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "FLAC Audio",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Free Lossless Audio Codec - An open-source lossless audio compression format. The file begins with a 4-byte 'fLaC' signature followed by one or more metadata blocks. The first metadata block must be STREAMINFO (type 0), which contains the audio stream parameters: sample rate, channel count, bit depth, total samples, and MD5 signature of the uncompressed audio data.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "FLAC Format Specification",

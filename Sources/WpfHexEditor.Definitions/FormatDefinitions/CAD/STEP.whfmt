@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "STEP 3D Model",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "ISO 10303 STEP CAD format",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "STEP 3D Model Format"

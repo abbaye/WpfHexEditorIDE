@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Cabinet Archive",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Cabinet archive format",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "POSIX.1-1988 (IEEE Std 1003.1)",

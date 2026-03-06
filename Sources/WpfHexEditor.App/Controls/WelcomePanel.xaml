@@ -1,0 +1,346 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+
+    WelcomePanel — VS Start Page-style welcome document.
+    Theme compliance: uses DynamicResource DockBackgroundBrush / DockMenuBackgroundBrush /
+                      DockMenuForegroundBrush / DockTabActiveBrush / DockTabTextBrush /
+                      DockTabHoverBrush / DockBorderBrush (all 8 themes via PanelCommon merge).
+-->
+
+<UserControl x:Class="WpfHexEditor.App.Controls.WelcomePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource DockBackgroundBrush}"
+             FontFamily="Segoe UI, Arial">
+
+    <UserControl.Resources>
+
+        <!-- Section title (QUICK ACTIONS / RECENT / WHAT'S NEW) -->
+        <Style x:Key="WelcomeSectionTitle" TargetType="TextBlock">
+            <Setter Property="Foreground"   Value="{DynamicResource DockTabActiveBrush}" />
+            <Setter Property="FontSize"     Value="11" />
+            <Setter Property="FontWeight"   Value="SemiBold" />
+            <Setter Property="Margin"       Value="0,0,0,8" />
+        </Style>
+
+        <!-- Flat action button for Start section -->
+        <Style x:Key="WelcomeActionButton" TargetType="Button">
+            <Setter Property="Background"           Value="Transparent" />
+            <Setter Property="BorderThickness"      Value="0" />
+            <Setter Property="Foreground"           Value="{DynamicResource DockMenuForegroundBrush}" />
+            <Setter Property="FontSize"             Value="13" />
+            <Setter Property="HorizontalAlignment"  Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding"              Value="6,7,6,7" />
+            <Setter Property="Cursor"               Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="0"
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabActiveBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Recent file button: smaller, path ellipsis -->
+        <Style x:Key="WelcomeRecentButton" TargetType="Button" BasedOn="{StaticResource WelcomeActionButton}">
+            <Setter Property="FontSize"  Value="12" />
+            <Setter Property="Padding"   Value="6,5,6,5" />
+            <Setter Property="Foreground" Value="{DynamicResource DockTabTextBrush}" />
+        </Style>
+
+        <!-- Changelog version badge -->
+        <Style x:Key="WelcomeVersionBadge" TargetType="Border">
+            <Setter Property="Background"     Value="{DynamicResource DockTabActiveBrush}" />
+            <Setter Property="CornerRadius"   Value="3" />
+            <Setter Property="Padding"        Value="6,2,6,2" />
+            <Setter Property="Margin"         Value="0,0,8,0" />
+        </Style>
+
+        <!-- Hyperlink style for footer -->
+        <Style x:Key="WelcomeHyperlinkStyle" TargetType="Hyperlink">
+            <Setter Property="Foreground"       Value="{DynamicResource DockTabActiveBrush}" />
+            <Setter Property="TextDecorations"  Value="None" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="TextDecorations" Value="Underline" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 HEADER
+                 ═══════════════════════════════════════════════════════════ -->
+            <Border Background="{DynamicResource DockWindowBackgroundBrush}"
+                    Padding="48,10,48,10">
+                <!-- Grid auto-sizes to image width so VersionText aligns to image right edge -->
+                <Grid HorizontalAlignment="Left">
+                    <!-- Logo banner — fills header height, respects aspect ratio -->
+                    <Image Source="pack://application:,,,/WpfHexEditor.App;component/Images/Logo2026.png"
+                           MaxHeight="200"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Left"
+                           RenderOptions.BitmapScalingMode="HighQuality" />
+
+                    <!-- Version overlay — bottom-right of image -->
+                    <TextBlock x:Name="VersionText"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Bottom"
+                               Margin="0,0,6,14"
+                               FontSize="11"
+                               Foreground="White"
+                               Opacity="0.65" />
+                </Grid>
+            </Border>
+
+            <!-- Accent separator -->
+            <Rectangle Height="2" Fill="{DynamicResource DockTabActiveBrush}" />
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 BODY  (2 columns)
+                 ═══════════════════════════════════════════════════════════ -->
+            <Grid Margin="48,32,48,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- ── LEFT COLUMN ─────────────────────────────────────── -->
+                <StackPanel Grid.Column="0">
+
+                    <!-- QUICK ACTIONS -->
+                    <TextBlock Text="QUICK ACTIONS" Style="{StaticResource WelcomeSectionTitle}" />
+
+                    <Button x:Name="NewFileButton"
+                            Style="{StaticResource WelcomeActionButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8A5;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,10,0" />
+                            <TextBlock Text="New File"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="OpenFileButton"
+                            Style="{StaticResource WelcomeActionButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8E5;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,10,0" />
+                            <TextBlock Text="Open File…"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="OpenProjectButton"
+                            Style="{StaticResource WelcomeActionButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8B7;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,10,0" />
+                            <TextBlock Text="Open Project / Solution…"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="OptionsButton"
+                            Style="{StaticResource WelcomeActionButton}"
+                            Margin="0,0,0,24">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE713;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,10,0" />
+                            <TextBlock Text="Options"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Divider -->
+                    <Rectangle Height="1"
+                               Fill="{DynamicResource DockBorderBrush}"
+                               Margin="0,0,0,16" />
+
+                    <!-- RECENT FILES -->
+                    <TextBlock Text="RECENT" Style="{StaticResource WelcomeSectionTitle}" />
+
+                    <StackPanel x:Name="RecentFilesPanel" />
+
+                    <TextBlock x:Name="NoRecentText"
+                               Text="No recent files"
+                               FontSize="12"
+                               Foreground="{DynamicResource DockTabTextBrush}"
+                               Opacity="0.5"
+                               Margin="6,4,0,0"
+                               Visibility="Collapsed" />
+
+                    <!-- RECENT SOLUTIONS -->
+                    <TextBlock Text="RECENT PROJECTS"
+                               Style="{StaticResource WelcomeSectionTitle}"
+                               Margin="0,20,0,8" />
+
+                    <StackPanel x:Name="RecentSolutionsPanel" />
+
+                    <TextBlock x:Name="NoRecentSolutionsText"
+                               Text="No recent projects"
+                               FontSize="12"
+                               Foreground="{DynamicResource DockTabTextBrush}"
+                               Opacity="0.5"
+                               Margin="6,4,0,0"
+                               Visibility="Collapsed" />
+
+                    <!-- Divider -->
+                    <Rectangle Height="1"
+                               Fill="{DynamicResource DockBorderBrush}"
+                               Margin="0,20,0,16" />
+
+                    <!-- RESOURCES -->
+                    <TextBlock Text="RESOURCES"
+                               Style="{StaticResource WelcomeSectionTitle}" />
+
+                    <Button x:Name="GitHubButton"
+                            Style="{StaticResource WelcomeActionButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE774;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,10,0" />
+                            <TextBlock Text="GitHub Repository ↗"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="IssueButton"
+                            Style="{StaticResource WelcomeActionButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xEBE8;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,10,0" />
+                            <TextBlock Text="Report an Issue ↗"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
+                </StackPanel>
+
+                <!-- ── RIGHT COLUMN: CHANGELOG ─────────────────────────── -->
+                <StackPanel Grid.Column="2">
+
+                    <TextBlock Text="WHAT'S NEW"
+                               Style="{StaticResource WelcomeSectionTitle}" />
+
+                    <!-- Loading placeholder (hidden once data arrives) -->
+                    <TextBlock x:Name="ChangelogLoadingText"
+                               Text="Loading changelog…"
+                               FontSize="12"
+                               Foreground="{DynamicResource DockTabTextBrush}"
+                               Opacity="0.55"
+                               Margin="0,0,0,4"
+                               Visibility="Collapsed" />
+
+                    <!-- Changelog entries are populated in code-behind -->
+                    <StackPanel x:Name="ChangelogPanel" />
+
+                    <TextBlock x:Name="NoChangelogText"
+                               Text="Changelog not available."
+                               FontSize="12"
+                               Foreground="{DynamicResource DockTabTextBrush}"
+                               Opacity="0.5"
+                               Visibility="Collapsed" />
+
+                </StackPanel>
+            </Grid>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 FOOTER
+                 ═══════════════════════════════════════════════════════════ -->
+            <Border Background="{DynamicResource DockMenuBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    BorderThickness="0,1,0,0"
+                    Padding="48,14,48,14">
+                <DockPanel>
+
+                    <!-- Links — left -->
+                    <StackPanel Orientation="Horizontal">
+
+                        <TextBlock FontSize="12"
+                                   Foreground="{DynamicResource DockTabTextBrush}">
+                            <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
+                                       RequestNavigate="OnHyperlinkNavigate"
+                                       NavigateUri="https://github.com/abbaye/WpfHexEditorControl">
+                                GitHub
+                            </Hyperlink>
+                        </TextBlock>
+
+                        <TextBlock FontSize="12"
+                                   Foreground="{DynamicResource DockTabTextBrush}"
+                                   Margin="28,0,0,0">
+                            <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
+                                       RequestNavigate="OnHyperlinkNavigate"
+                                       NavigateUri="https://github.com/abbaye/WpfHexEditorControl/issues">
+                                Report Issue
+                            </Hyperlink>
+                        </TextBlock>
+
+                        <TextBlock FontSize="12"
+                                   Foreground="{DynamicResource DockTabTextBrush}"
+                                   Margin="28,0,0,0">
+                            <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
+                                       RequestNavigate="OnHyperlinkNavigate"
+                                       NavigateUri="https://github.com/abbaye/WpfHexEditorControl/blob/master/CHANGELOG.md">
+                                Full Changelog
+                            </Hyperlink>
+                        </TextBlock>
+
+                    </StackPanel>
+
+                </DockPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

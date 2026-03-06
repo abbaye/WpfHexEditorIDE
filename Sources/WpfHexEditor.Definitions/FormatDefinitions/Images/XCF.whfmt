@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "GIMP Image",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "GIMP native image format (eXperimental Computing Facility)",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "XCF (eXperimental Computing Facility) Format",

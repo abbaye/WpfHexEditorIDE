@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "ISO Disk Image",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "ISO 9660 CD/DVD image format",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ISO 9660 Standard Specification",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Compiled HTML Help",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Compiled HTML Help file",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Compiled HTML Help Format"

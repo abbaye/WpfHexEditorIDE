@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PlayStation Vita Package",
   "version": "2.4",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "PlayStation Vita VPK/PKG package format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PlayStation Vita VPK Package Format",

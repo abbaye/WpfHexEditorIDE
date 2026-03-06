@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "ASN.1 DER Encoding",
   "version": "1.10",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Abstract Syntax Notation One Distinguished Encoding Rules",
   "category": "Data",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ASN.1 DER Encoding Format"

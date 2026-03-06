@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "BPS Patch",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Beat Patching System (BPS) format - Modern ROM patching with metadata support, CRC32 validation, and optimal compression",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Beat Patching System (BPS) Format",

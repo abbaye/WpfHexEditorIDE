@@ -36,6 +36,13 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
             OffsetVisualCombo.SelectedItem = s.HexEditorDefaults.OffSetStringVisual;
             ByteGroupingCombo.SelectedItem = s.HexEditorDefaults.ByteGrouping;
             SpacerPositionCombo.SelectedItem = s.HexEditorDefaults.ByteSpacerPositioning;
+
+            // Scroll markers
+            CheckShowBookmarkMarkers.IsChecked     = s.HexEditorDefaults.ShowBookmarkMarkers;
+            CheckShowModifiedMarkers.IsChecked     = s.HexEditorDefaults.ShowModifiedMarkers;
+            CheckShowInsertedMarkers.IsChecked     = s.HexEditorDefaults.ShowInsertedMarkers;
+            CheckShowDeletedMarkers.IsChecked      = s.HexEditorDefaults.ShowDeletedMarkers;
+            CheckShowSearchResultMarkers.IsChecked = s.HexEditorDefaults.ShowSearchResultMarkers;
         }
         finally { _loading = false; }
     }
@@ -57,6 +64,12 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
             s.HexEditorDefaults.ByteGrouping = bsg;
         if (SpacerPositionCombo.SelectedItem is ByteSpacerPosition bsp)
             s.HexEditorDefaults.ByteSpacerPositioning = bsp;
+
+        s.HexEditorDefaults.ShowBookmarkMarkers     = CheckShowBookmarkMarkers.IsChecked == true;
+        s.HexEditorDefaults.ShowModifiedMarkers     = CheckShowModifiedMarkers.IsChecked == true;
+        s.HexEditorDefaults.ShowInsertedMarkers     = CheckShowInsertedMarkers.IsChecked == true;
+        s.HexEditorDefaults.ShowDeletedMarkers      = CheckShowDeletedMarkers.IsChecked  == true;
+        s.HexEditorDefaults.ShowSearchResultMarkers = CheckShowSearchResultMarkers.IsChecked == true;
     }
 
     // ── Control handlers ─────────────────────────────────────────────────

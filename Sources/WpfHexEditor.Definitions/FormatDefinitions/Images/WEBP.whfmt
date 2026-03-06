@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "WebP Image",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "WebP is a modern image format developed by Google that provides both lossy and lossless compression. Built on the RIFF container, WebP files begin with a RIFF header followed by 'WEBP' form type. The first data chunk identifies the encoding: 'VP8 ' for lossy (based on VP8 video codec intra-frame), 'VP8L' for lossless, or 'VP8X' for extended format supporting alpha, ICC profiles, EXIF, XMP, and animation.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "WebP Container Specification",

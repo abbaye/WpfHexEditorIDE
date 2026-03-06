@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Python Compiled Bytecode",
   "version": "2.3",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Python compiled bytecode file",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Python Compiled Bytecode Format"

@@ -9,7 +9,7 @@
     (ImageViewer, TblEditor, etc.) to surface quick "View in …" cross-editor actions.
 
     Layout:
-        [icon  Current Viewer]   View in:  [Hex Editor]  [Other …]   [×]
+        [Current Viewer]   View in:  [Hex Editor]  [Other …]   [×]
 -->
 <UserControl x:Class="WpfHexEditor.App.Controls.DocumentInfoBar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -60,15 +60,14 @@
             </Setter>
         </Style>
 
-        <!-- Dismiss (×) button style -->
+        <!-- Dismiss (×) button style — uses U+00D7 (×), no Segoe MDL2 required -->
         <Style x:Key="InfoBarDismissStyle" TargetType="Button">
             <Setter Property="Background"       Value="Transparent"/>
             <Setter Property="Foreground"       Value="{DynamicResource InfoBar_DismissButtonBrush}"/>
             <Setter Property="BorderThickness"  Value="0"/>
             <Setter Property="Width"            Value="22"/>
             <Setter Property="Height"           Value="22"/>
-            <Setter Property="FontFamily"       Value="Segoe MDL2 Assets"/>
-            <Setter Property="FontSize"         Value="9"/>
+            <Setter Property="FontSize"         Value="13"/>
             <Setter Property="Cursor"           Value="Hand"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="ToolTip"          Value="Dismiss"/>
@@ -110,22 +109,13 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Current editor name -->
-            <StackPanel Grid.Column="0"
-                        Orientation="Horizontal"
-                        VerticalAlignment="Center"
-                        Margin="0,0,10,0">
-                <TextBlock x:Name="EditorIcon"
-                           FontFamily="Segoe MDL2 Assets"
-                           FontSize="13"
-                           Foreground="{DynamicResource InfoBar_ForegroundBrush}"
-                           VerticalAlignment="Center"
-                           Margin="0,0,5,0"/>
-                <TextBlock x:Name="EditorNameText"
-                           FontSize="12"
-                           Foreground="{DynamicResource InfoBar_ForegroundBrush}"
-                           VerticalAlignment="Center"/>
-            </StackPanel>
+            <!-- Current editor name — icon removed (MDL2 PUA glyphs unreliable across Windows versions) -->
+            <TextBlock x:Name="EditorNameText"
+                       Grid.Column="0"
+                       FontSize="12"
+                       Foreground="{DynamicResource InfoBar_ForegroundBrush}"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"/>
 
             <!-- Action buttons -->
             <StackPanel x:Name="ActionButtons"
@@ -141,10 +131,10 @@
                 <!-- Action buttons are added in code-behind via Configure() -->
             </StackPanel>
 
-            <!-- Dismiss button -->
+            <!-- Dismiss button — uses regular × (U+00D7) like DockTabHeader, no Segoe MDL2 dependency -->
             <Button x:Name="DismissButton"
                     Grid.Column="2"
-                    Content="&#xE711;"
+                    Content="&#xD7;"
                     Style="{StaticResource InfoBarDismissStyle}"
                     Click="OnDismiss"/>
         </Grid>

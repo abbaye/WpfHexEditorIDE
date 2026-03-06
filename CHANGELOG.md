@@ -71,6 +71,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - **Ctrl+Shift+F** → opens full AdvancedSearchDialog (5 search modes)
 - **"⋯" button** in QuickSearchBar — closes bar and opens AdvancedSearchDialog
 
+### ✨ Added — IDE
+- **WelcomePanel** — VS Start Page-style welcome document shown on IDE launch (`doc-welcome` ContentId)
+  - Quick Actions: New File, Open File, Open Project / Solution, Options
+  - Recent Files & Recent Projects filtered to physically existing paths only (deleted entries hidden)
+  - Live changelog fetched from GitHub (`raw.githubusercontent.com`) — loading state + offline fallback
+  - Resources section: GitHub Repository + Report an Issue buttons (opens default browser)
+  - App `Logo.ico` displayed in header
+  - Full theme compliance via existing `DockBackgroundBrush` / `DockTabActiveBrush` / `DockMenuForegroundBrush` keys
+  - Fix: `Loaded -= OnLoaded` prevents dialog-loop caused by Click-handler accumulation on docking re-attach
+
 ### ✨ Added — Themes & UI
 - **`PanelCommon.xaml`** — shared panel toolbar styles (30px VS-style toolbar, Segoe MDL2 icon buttons)
 - **`Panel_*` theme keys** — `ToolbarBrush`, `ToolbarBorderBrush`, `ToolbarButtonHoverBrush`, etc. in all 8 themes

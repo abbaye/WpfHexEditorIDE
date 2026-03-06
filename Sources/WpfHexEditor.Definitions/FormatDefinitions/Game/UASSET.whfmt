@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Unreal Engine Asset",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Unreal Engine 4/5 asset file format",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Unreal Engine Asset Package Format",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Matroska Video",
   "version": "2.0",
   "extensions": [
@@ -10,6 +10,7 @@
   "description": "Matroska is an open-standard multimedia container format based on EBML (Extensible Binary Meta Language). The file begins with an EBML Header element (ID 0x1A45DFA3) containing version information and document type declaration, followed by a Segment element (ID 0x18538067) containing all media data. Each EBML element consists of an Element ID, a VINT-encoded size, and element data.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "IETF RFC 8794 - Matroska Media Container",

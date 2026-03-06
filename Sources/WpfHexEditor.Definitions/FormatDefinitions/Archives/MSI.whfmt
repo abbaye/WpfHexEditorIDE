@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Windows Installer Package",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Windows Installer package (OLE2)",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Windows Installer Package Format",

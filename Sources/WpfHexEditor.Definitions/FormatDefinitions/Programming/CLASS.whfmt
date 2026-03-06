@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Java Class File",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Java compiled bytecode",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Java Class File Format"

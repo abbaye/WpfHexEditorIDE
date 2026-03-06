@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "DVD Video Object",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "DVD Video Object file - MPEG-2 container",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "DVD Video Object Format",

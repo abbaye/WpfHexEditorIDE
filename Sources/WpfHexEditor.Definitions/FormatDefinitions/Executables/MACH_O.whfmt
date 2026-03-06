@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Mach-O Executable",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Mach Object - macOS/iOS executable format",
   "category": "Executables",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Mach-O Programming Topics",

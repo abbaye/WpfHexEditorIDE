@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "PlayStation 2 Disc Image",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "PlayStation 2 DVD-ROM disc image (ISO 9660 + PS2 extensions)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PlayStation 2 DVD-ROM Format",

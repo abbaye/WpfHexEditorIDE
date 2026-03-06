@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Windows Media Video",
   "version": "1.11",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Windows Media Video/Audio format (ASF container)",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Microsoft AVI RIFF File Format",

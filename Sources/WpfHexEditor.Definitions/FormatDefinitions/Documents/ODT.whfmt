@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "OpenDocument Text",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "OpenDocument Text - a ZIP-based open standard word processing document format used by LibreOffice and OpenOffice. The first entry is typically 'mimetype' (stored uncompressed) containing 'application/vnd.oasis.opendocument.text'.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "OASIS OpenDocument Format v1.3 (ISO/IEC 26300)",

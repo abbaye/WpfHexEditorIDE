@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Unity Asset Bundle",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Unity Engine asset bundle file",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Unity AssetBundle Format",

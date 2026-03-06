@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SolidWorks Drawing",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "SolidWorks drawing file (OLE2 Compound Document)",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SolidWorks Drawing Format"

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Cloud Point File",
   "version": "2.4",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "3D point cloud exchange format",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Cloud Point File Format"

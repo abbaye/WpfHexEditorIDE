@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "NIfTI-2 Medical Image",
   "version": "1.12",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Neuroimaging Informatics Technology Initiative v2 format",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "NIfTI-2 Medical Image Format"

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Pentax PEF RAW",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Pentax Electronic File (RAW)",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "Pentax Electronic File (PEF) - TIFF/EP Format",

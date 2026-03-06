@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "HEIF/HEIC Image",
   "version": "2.0",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "High Efficiency Image Format (HEIF/HEIC) based on the ISO Base Media File Format (ISOBMFF/MP4). Files begin with an 'ftyp' box containing a 4-byte box size, 4-byte box type ('ftyp'), 4-byte major brand identifier, 4-byte minor version, and variable-length compatible brand list. HEIC uses HEVC (H.265) compression, providing approximately 40% better compression than JPEG at equivalent quality.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "ISO/IEC 23008-12 - HEIF Container Format",

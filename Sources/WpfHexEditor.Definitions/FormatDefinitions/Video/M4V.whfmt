@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "iTunes Video",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "MPEG-4 video container developed by Apple for iTunes Store",
   "category": "Video",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "MPEG-4 Part 14 Container (M4V variant)",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Mobipocket eBook",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Mobipocket eBook format",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Mobipocket eBook Format"
@@ -35,6 +36,7 @@
     "databaseName": "Unknown",
     "title": "Unknown",
     "author": "Unknown",
+  "preferredEditor": "hex-editor",
     "recordCount": 0,
     "mobiType": "Unknown",
     "encoding": "UTF-8",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "QOI Image",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Quite OK Image Format - Fast lossless compression",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "QOI (Quite OK Image) Specification v1.0",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "DjVu Document",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "DjVu scanned document format",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "DjVu Document Format"
@@ -30,6 +31,7 @@
     "pageCount": 0,
     "title": "",
     "author": "",
+  "preferredEditor": "hex-editor",
     "atTForm": 0,
     "fileSize": 0,
     "djvuType": "",

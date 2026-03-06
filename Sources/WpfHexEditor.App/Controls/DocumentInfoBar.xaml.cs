@@ -4,7 +4,6 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Editor.Core;
@@ -21,22 +20,6 @@ namespace WpfHexEditor.App.Controls;
 /// </summary>
 public partial class DocumentInfoBar : UserControl
 {
-    // ── Segoe MDL2 icon codepoints for common editor types ─────────────────
-    private static readonly Dictionary<string, string> _editorIcons = new(StringComparer.OrdinalIgnoreCase)
-    {
-        { "image-viewer",       "\uEB9F" },   // Photo
-        { "tbl-editor",         "\uE8FD" },   // Page
-        { "json-editor",        "\uE943" },   // Code
-        { "text-editor",        "\uE8A5" },   // Document
-        { "entropy-viewer",     "\uE9D9" },   // Chart
-        { "diff-viewer",        "\uE8C8" },   // Split
-        { "disassembly-viewer", "\uE943" },   // Code
-        { "structure-editor",   "\uE8A5" },   // Layers
-        { "tile-editor",        "\uEB9F" },   // Tiles
-        { "audio-viewer",       "\uE8D6" },   // Music
-        { "script-editor",      "\uE943" },   // Script
-        { "changeset-editor",   "\uE8AB" },   // History
-    };
 
     private string _filePath        = string.Empty;
     private string _sourceContentId = string.Empty;
@@ -69,16 +52,15 @@ public partial class DocumentInfoBar : UserControl
         _filePath        = filePath;
         _sourceContentId = sourceContentId;
 
-        // Set icon + name for the current editor
-        EditorIcon.Text    = _editorIcons.TryGetValue(currentEditorId, out var ic) ? ic : "\uE8A5";
         EditorNameText.Text = currentEditorName;
 
         // Remove previously added dynamic buttons (keep ViewInLabel)
         while (ActionButtons.Children.Count > 1)
             ActionButtons.Children.RemoveAt(ActionButtons.Children.Count - 1);
 
-        // Always offer Hex Editor as the first action
-        ActionButtons.Children.Add(MakeButton("Hex Editor", null));
+        // Only offer "Hex Editor" when the current editor is not already the hex editor
+        if (currentEditorId != "hex-editor")
+            ActionButtons.Children.Add(MakeButton("Hex Editor", null));
 
         // Add alternatives from registry
         foreach (var factory in alternatives)

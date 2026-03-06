@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Quake BSP Map",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Binary Space Partition game map",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Quake BSP Format Specification",

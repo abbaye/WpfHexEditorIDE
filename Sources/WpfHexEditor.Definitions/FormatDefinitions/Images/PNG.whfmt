@@ -7,6 +7,7 @@
   "description": "Portable Network Graphics (PNG) is a lossless raster image format that uses DEFLATE compression. The file begins with an 8-byte signature followed by a series of typed chunks. The first chunk must be IHDR, which contains the image dimensions, bit depth, color type, and rendering methods.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
       "RFC 2083 - PNG (Portable Network Graphics) Specification Version 1.0",

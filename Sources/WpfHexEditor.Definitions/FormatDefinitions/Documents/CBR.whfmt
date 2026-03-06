@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Comic Book RAR",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Comic Book RAR archive format, a RAR file containing sequential images for digital comics",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "RAR 5.0 Archive Format",

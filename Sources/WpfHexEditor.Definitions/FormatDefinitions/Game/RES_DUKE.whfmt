@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Duke Nukem GRP",
   "version": "1.13",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Duke Nukem 3D GRP resource archive",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Duke Nukem 3D GRP Format",

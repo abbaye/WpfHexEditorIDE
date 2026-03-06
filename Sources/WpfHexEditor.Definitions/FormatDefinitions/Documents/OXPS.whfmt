@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Open XML Paper Specification",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft OXPS (Open XML Paper Specification) document - a ZIP-based fixed-layout document format, successor to XPS. The file begins with a ZIP Local File Header. OXPS packages contain fixed-layout pages, fonts, images, and metadata conforming to ECMA-388.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ECMA-388 - Open XML Paper Specification",

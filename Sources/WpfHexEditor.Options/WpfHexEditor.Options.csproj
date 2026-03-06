@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Docking.Wpf\WpfHexEditor.Docking.Wpf.csproj" />

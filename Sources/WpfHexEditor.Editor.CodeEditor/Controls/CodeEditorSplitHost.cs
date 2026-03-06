@@ -9,6 +9,9 @@
 //     CodeDocument. A toggle button lets the user split the view horizontally.
 //     Implements IDocumentEditor by delegating to the last-focused editor
 //     so the host (docking, menu) interacts transparently.
+//     Implements IOpenableDocument by delegating to _primaryEditor.LoadFromFile
+//     (both editors share the same CodeDocument, so the secondary view is
+//     automatically updated).
 //
 // Architecture Notes:
 //     Proxy / Delegate Pattern — IDocumentEditor forwarded to _activeEditor.
@@ -33,7 +36,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls;
 /// Both editors share the same <see cref="CodeDocument"/>; scroll positions
 /// and caret positions are independent.
 /// </summary>
-public sealed class CodeEditorSplitHost : Grid, IDocumentEditor
+public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocument
 {
     #region Child controls
 
@@ -177,6 +180,19 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor
         var doc = _primaryEditor.Document;
         if (doc != null)
             _secondaryEditor.SetDocument(doc);
+    }
+
+    #endregion
+
+    #region IOpenableDocument — delegates to primary editor
+
+    Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
+    {
+        // Load the file into the primary editor; the secondary editor shares the same
+        // CodeDocument, so both views reflect the loaded content immediately.
+        ct.ThrowIfCancellationRequested();
+        _primaryEditor.LoadFromFile(filePath);
+        return Task.CompletedTask;
     }
 
     #endregion

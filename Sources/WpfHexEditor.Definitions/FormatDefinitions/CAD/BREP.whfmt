@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "BREP Format",
   "version": "2.3",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Boundary Representation CAD format",
   "category": "CAD",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "BREP Format Format"

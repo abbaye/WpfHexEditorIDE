@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "ECAT PET Image",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "ECAT PET medical imaging format",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ECAT PET Image Format"

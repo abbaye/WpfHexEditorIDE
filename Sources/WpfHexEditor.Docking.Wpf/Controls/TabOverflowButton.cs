@@ -66,12 +66,11 @@ public class TabOverflowButton : Button
         Content = "\u22EF"; // ⋯
         FontSize = 10;
         Padding = new Thickness(4, 2, 4, 2);
-        BorderThickness = new Thickness(0);
-        Background = Brushes.Transparent;
         Cursor = System.Windows.Input.Cursors.Hand;
         VerticalAlignment = VerticalAlignment.Center;
         ToolTip = "Show all documents";
         Visibility = Visibility.Collapsed;
+        SetResourceReference(StyleProperty, "DockTitleButtonStyle");
     }
 
     // ─── DP callbacks ────────────────────────────────────────────────────────

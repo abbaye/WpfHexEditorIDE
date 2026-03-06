@@ -131,7 +131,17 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         if (root.TryGetProperty("TechnicalDetails", out var td))
             platform = GetString(td, "Platform") ?? "";
 
-        return new EmbeddedFormatEntry(resourceKey, name, category, description, extensions, quality, version, author, platform);
+        // Preferred editor hint (optional — guides initial editor selection in MainWindow)
+        var preferredEditor = GetString(root, "preferredEditor");
+
+        // Text-format flag from detection rule (fallback derivation for editor selection)
+        var isTextFormat = false;
+        if (root.TryGetProperty("detection", out var det) &&
+            det.TryGetProperty("isTextFormat", out var itf) &&
+            itf.ValueKind == JsonValueKind.True)
+            isTextFormat = true;
+
+        return new EmbeddedFormatEntry(resourceKey, name, category, description, extensions, quality, version, author, platform, preferredEditor, isTextFormat);
     }
 
     private static string? GetString(JsonElement root, string property)

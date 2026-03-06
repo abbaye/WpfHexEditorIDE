@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Maya ASCII",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Autodesk Maya ASCII scene file",
   "category": "3D",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Maya ASCII Format"

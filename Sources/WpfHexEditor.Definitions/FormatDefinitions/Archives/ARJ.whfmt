@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "ARJ Archive",
   "version": "1.10",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "ARJ compressed archive format",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ARJ Archive Format Specification - Robert K. Jung",

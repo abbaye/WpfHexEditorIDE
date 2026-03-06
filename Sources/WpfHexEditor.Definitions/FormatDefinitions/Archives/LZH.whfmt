@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "LZH Archive",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "LHA/LZH compressed archive",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "LHA/LZH Archive Format - Haruyasu Yoshizaki",

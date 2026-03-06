@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Nintendo 64 ROM",
   "version": "1.13",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Nintendo 64 ROM image (z64 big-endian format)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Nintendo 64 Programming Manual",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SQLite Shared Memory",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "SQLite shared-memory file for WAL mode coordination",
   "category": "Database",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SQLite Shared Memory Format"

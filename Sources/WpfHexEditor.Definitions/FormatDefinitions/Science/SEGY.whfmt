@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "SEG-Y Seismic Data",
   "version": "1.11",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Society of Exploration Geophysicists Y format for seismic data",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "SEG-Y Seismic Data Format"

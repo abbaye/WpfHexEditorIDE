@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Xbox Series X/S Package",
   "version": "2.4",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "Xbox Series X/S optimized package format (enhanced XVD)",
   "category": "Game",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Xbox Series X/S Enhanced XVD Format",

@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Virtual Memory Dump",
   "version": "1.12",
   "extensions": [
@@ -8,6 +8,7 @@
   "description": "VMware virtual machine memory snapshot",
   "category": "System",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Virtual Memory Dump Format"

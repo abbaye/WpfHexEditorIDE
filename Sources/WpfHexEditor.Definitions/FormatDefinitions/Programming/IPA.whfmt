@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "iOS App Store Package",
   "version": "2.0",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "iOS App Store Package - a ZIP container for iOS applications containing the signed .app bundle. The file begins with a ZIP Local File Header containing the first entry of the IPA package.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Apple iOS App Distribution Format",

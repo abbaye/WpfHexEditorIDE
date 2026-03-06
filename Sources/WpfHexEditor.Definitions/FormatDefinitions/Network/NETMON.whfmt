@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Microsoft Network Monitor",
   "version": "1.12",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "Microsoft Network Monitor capture format",
   "category": "Network",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Microsoft Network Monitor Format"

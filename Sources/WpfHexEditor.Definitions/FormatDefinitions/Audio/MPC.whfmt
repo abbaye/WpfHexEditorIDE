@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "Musepack Audio",
   "version": "1.12",
   "extensions": [
@@ -9,6 +9,7 @@
   "description": "Musepack lossy audio compression format optimized for transparency",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "Musepack SV8 Specification",

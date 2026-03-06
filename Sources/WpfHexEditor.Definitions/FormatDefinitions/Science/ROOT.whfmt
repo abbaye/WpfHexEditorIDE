@@ -1,4 +1,4 @@
-{
+﻿{
   "formatName": "ROOT Data File",
   "version": "1.11",
   "extensions": [
@@ -7,6 +7,7 @@
   "description": "ROOT data analysis framework file format (CERN)",
   "category": "Science",
   "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "ROOT Data File Format"
