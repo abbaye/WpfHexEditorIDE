@@ -93,6 +93,10 @@ public class DockDragManager
         if (_panelOverlay is null || _edgeOverlay is null) return;
 
         var targetNode = targetTab?.Node;
+        // DocumentTabHost can be unbound (Node = null) when it is empty (ShowEmptyPlaceholder path).
+        // Fall back to MainDocumentHost so the compass still appears and documents can be re-docked.
+        if (targetNode is null && targetTab is DocumentTabHost)
+            targetNode = _dockControl.Layout?.MainDocumentHost;
         var isSelfDrag = targetNode != null && targetNode == _originalGroup;
 
         // Documents: compass only over DocumentTabHost.

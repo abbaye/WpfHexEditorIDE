@@ -703,21 +703,26 @@ public class DockTabHeader : StackPanel
 
         if (_item.Owner is DocumentHostNode)
         {
-            if (_isReordering)
-            {
-                // Pass true screen coordinates for consistent hit-testing in DockTabControl
-                ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
-                return;
-            }
             if (_isDragging) return;
 
             var diff = e.GetPosition(this) - _dragStartPoint;
 
+            // Float takes priority: a large vertical move cancels any pending reorder and floats the tab.
+            // Checking this BEFORE _isReordering prevents the reorder state from permanently blocking float.
             if (Math.Abs(diff.Y) > FloatThresholdY)
             {
-                _isDragging = true;
+                _isReordering = false;
+                _isDragging   = true;
                 ReleaseMouseCapture();
                 DragStarted?.Invoke();
+                return;
+            }
+
+            // Reorder: horizontal drag within the document tab strip.
+            if (_isReordering)
+            {
+                // Pass true screen coordinates for consistent hit-testing in DockTabControl
+                ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
                 return;
             }
             if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance)

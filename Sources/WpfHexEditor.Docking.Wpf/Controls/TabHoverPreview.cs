@@ -55,6 +55,7 @@ public sealed class TabHoverPreview
     private readonly Popup                              _popup;
     private readonly Border                             _border;
     private readonly Image                              _previewImage;
+    private readonly TextBlock                          _titleBlock;
     private readonly DispatcherTimer                    _openTimer;
     private readonly DispatcherTimer                    _closeTimer;
     private readonly Dictionary<TabItem, BitmapSource> _snapshotCache = new();
@@ -77,9 +78,24 @@ public sealed class TabHoverPreview
             VerticalAlignment   = VerticalAlignment.Top
         };
 
+        // Title fallback: shown when no snapshot is cached (tab never activated).
+        _titleBlock = new TextBlock
+        {
+            FontWeight        = FontWeights.SemiBold,
+            FontSize          = 11,
+            Margin            = new Thickness(6, 4, 6, 4),
+            VerticalAlignment = VerticalAlignment.Center,
+            Visibility        = Visibility.Collapsed
+        };
+        _titleBlock.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
+
+        var stack = new StackPanel();
+        stack.Children.Add(_previewImage);
+        stack.Children.Add(_titleBlock);
+
         _border = new Border
         {
-            Child           = _previewImage,
+            Child           = stack,
             BorderThickness = new Thickness(1),
             Padding         = new Thickness(1)
         };
@@ -222,7 +238,14 @@ public sealed class TabHoverPreview
         _closeTimer.Stop();
 
         // Do not preview the currently selected tab (it is already fully visible).
-        if (tab.IsSelected) return;
+        // However, explicitly hide any existing preview so it does not persist when
+        // the mouse moves from an unselected tab (with an open preview) to the
+        // selected tab — stopping the close timer would otherwise leave it open forever.
+        if (tab.IsSelected)
+        {
+            HidePreview();
+            return;
+        }
 
         _hoveredTab = tab;
         _popup.PlacementTarget = tab;
@@ -246,9 +269,25 @@ public sealed class TabHoverPreview
 
         // Use the cached snapshot — never attempt to render invisible content on-the-fly.
         var bitmap = _snapshotCache.GetValueOrDefault(_hoveredTab);
-        if (bitmap is null) return;   // tab never activated, no snapshot available
 
-        _previewImage.Source = bitmap;
+        if (bitmap is not null)
+        {
+            _previewImage.Source     = bitmap;
+            _previewImage.Visibility = Visibility.Visible;
+            _titleBlock.Visibility   = Visibility.Collapsed;
+        }
+        else
+        {
+            // Tab was never activated — no snapshot available.
+            // Show a title-only fallback card so the user still gets visual feedback.
+            var title = _hoveredTab.Header as string ?? _hoveredTab.Header?.ToString() ?? string.Empty;
+            if (string.IsNullOrEmpty(title)) return;
+
+            _previewImage.Visibility = Visibility.Collapsed;
+            _titleBlock.Text         = title;
+            _titleBlock.Visibility   = Visibility.Visible;
+        }
+
         _popup.IsOpen = true;
     }
 

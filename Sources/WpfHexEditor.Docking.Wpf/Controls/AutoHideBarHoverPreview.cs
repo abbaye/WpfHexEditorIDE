@@ -46,6 +46,7 @@ public sealed class AutoHideBarHoverPreview
     // ── State ────────────────────────────────────────────────────────────────
     private readonly AutoHideBar                    _owner;
     private readonly Func<DockItem, BitmapSource?>  _bitmapProvider;
+    private readonly Dock                           _barSide;
     private readonly Popup                          _popup;
     private readonly Border                         _border;
     private readonly Image                          _previewImage;
@@ -57,10 +58,11 @@ public sealed class AutoHideBarHoverPreview
 
     // ── Constructor ──────────────────────────────────────────────────────────
 
-    private AutoHideBarHoverPreview(AutoHideBar owner, Func<DockItem, BitmapSource?> bitmapProvider)
+    private AutoHideBarHoverPreview(AutoHideBar owner, Func<DockItem, BitmapSource?> bitmapProvider, Dock barSide)
     {
         _owner          = owner;
         _bitmapProvider = bitmapProvider;
+        _barSide        = barSide;
 
         // ── Preview image ────────────────────────────────────────────────────
         _previewImage = new Image
@@ -104,11 +106,16 @@ public sealed class AutoHideBarHoverPreview
         };
 
         // ── Popup ────────────────────────────────────────────────────────────
+        // PlacementMode.Mouse was intentionally NOT used here: it positions the popup
+        // directly under the cursor, creating a Win32 layered window (WS_EX_TRANSPARENT)
+        // that prevents WPF from firing MouseLeave on the button → popup never closes.
+        // Instead we use a button-relative placement that is configured lazily in
+        // ConfigurePlacement() to respect the bar side.
         _popup = new Popup
         {
             Child              = _border,
             AllowsTransparency = true,
-            Placement          = PlacementMode.Mouse,
+            Placement          = PlacementMode.Right,  // overridden by ConfigurePlacement()
             StaysOpen          = false,
             IsHitTestVisible   = false   // pointer events pass through
         };
@@ -133,7 +140,7 @@ public sealed class AutoHideBarHoverPreview
     /// </summary>
     public static AutoHideBarHoverPreview Attach(AutoHideBar bar, Func<DockItem, BitmapSource?> bitmapProvider)
     {
-        var preview = new AutoHideBarHoverPreview(bar, bitmapProvider);
+        var preview = new AutoHideBarHoverPreview(bar, bitmapProvider, bar.Position);
 
         // Re-wire on every UpdateItems call (bar rebuilds its children).
         bar.ItemsUpdated += preview.WireButtons;
@@ -168,7 +175,6 @@ public sealed class AutoHideBarHoverPreview
     {
         _hoveredButton = btn;
         _hoveredItem   = item;
-        _popup.PlacementTarget = btn;
         _hoverTimer.Stop();
         _hoverTimer.Start();
     }
@@ -186,11 +192,36 @@ public sealed class AutoHideBarHoverPreview
 
         var bitmap = _bitmapProvider(_hoveredItem);
 
-        _titleBlock.Text      = _hoveredItem.Title;
-        _previewImage.Source  = bitmap;
+        _titleBlock.Text         = _hoveredItem.Title;
+        _previewImage.Source     = bitmap;
         _previewImage.Visibility = bitmap is null ? Visibility.Collapsed : Visibility.Visible;
 
+        ConfigurePlacement(_hoveredButton);
         _popup.IsOpen = true;
+    }
+
+    // ── Placement ────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Configures the popup placement relative to <paramref name="btn"/> based on the bar side.
+    /// Placing the popup NEXT TO the button (not at cursor position) avoids the Win32
+    /// layered-window issue where <c>PlacementMode.Mouse</c> creates a transparent HWND
+    /// directly under the cursor, preventing WPF from firing <see cref="UIElement.MouseLeave"/>
+    /// on the button — which would otherwise leave the popup open indefinitely.
+    /// </summary>
+    private void ConfigurePlacement(Button btn)
+    {
+        _popup.PlacementTarget = btn;
+        _popup.Placement = _barSide switch
+        {
+            Dock.Left   => PlacementMode.Right,
+            Dock.Right  => PlacementMode.Left,
+            Dock.Top    => PlacementMode.Bottom,
+            Dock.Bottom => PlacementMode.Top,
+            _           => PlacementMode.Right
+        };
+        _popup.HorizontalOffset = 2;
+        _popup.VerticalOffset   = 0;
     }
 
     // ── Hide ─────────────────────────────────────────────────────────────────
