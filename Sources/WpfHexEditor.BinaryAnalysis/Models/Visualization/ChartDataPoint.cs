@@ -28,18 +28,18 @@ namespace WpfHexEditor.BinaryAnalysis.Models.Visualization
         /// <summary>
         /// Optional label for this point
         /// </summary>
-        public string Label { get; set; }
+        public string? Label { get; set; }
 
         /// <summary>
         /// Optional color hint for rendering
         /// </summary>
-        public string Color { get; set; }
+        public string? Color { get; set; }
 
         public ChartDataPoint()
         {
         }
 
-        public ChartDataPoint(double x, double y, string label = null)
+        public ChartDataPoint(double x, double y, string? label = null)
         {
             X = x;
             Y = y;
@@ -60,17 +60,17 @@ namespace WpfHexEditor.BinaryAnalysis.Models.Visualization
         /// <summary>
         /// Chart title
         /// </summary>
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// X-axis label
         /// </summary>
-        public string XAxisLabel { get; set; }
+        public string? XAxisLabel { get; set; }
 
         /// <summary>
         /// Y-axis label
         /// </summary>
-        public string YAxisLabel { get; set; }
+        public string? YAxisLabel { get; set; }
 
         /// <summary>
         /// Data points
@@ -106,7 +106,7 @@ namespace WpfHexEditor.BinaryAnalysis.Models.Visualization
         {
         }
 
-        public ChartData(string title)
+        public ChartData(string? title)
         {
             Title = title;
         }
@@ -114,7 +114,7 @@ namespace WpfHexEditor.BinaryAnalysis.Models.Visualization
         /// <summary>
         /// Add data point
         /// </summary>
-        public void AddPoint(double x, double y, string label = null)
+        public void AddPoint(double x, double y, string? label = null)
         {
             DataPoints.Add(new ChartDataPoint(x, y, label));
         }

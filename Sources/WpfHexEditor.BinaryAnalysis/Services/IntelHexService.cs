@@ -250,12 +250,12 @@ namespace WpfHexEditor.BinaryAnalysis.Services
         /// <summary>
         /// Error message if import failed
         /// </summary>
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
         /// <summary>
         /// Imported binary data
         /// </summary>
-        public byte[] Data { get; set; }
+        public byte[]? Data { get; set; }
 
         /// <summary>
         /// Base address where data starts

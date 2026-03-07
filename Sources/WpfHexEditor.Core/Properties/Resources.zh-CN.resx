@@ -1029,18 +1029,12 @@
 <data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
     <value>显示字节工具提示</value>
   </data>
-<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
-    <value>每行字节数：</value>
-  </data>
-<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
-    <value>缩放比例：</value>
-  </data>
+
+
 <data name="HexSettings_Editing_Title" xml:space="preserve">
     <value>✏️ 编辑选项</value>
   </data>
-<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
-    <value>只读模式</value>
-  </data>
+
 <data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
     <value>允许在任意位置插入</value>
   </data>
@@ -1053,42 +1047,20 @@
 <data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
     <value>追加需要确认</value>
   </data>
-<data name="HexSettings_Editing_EditMode" xml:space="preserve">
-    <value>编辑模式：</value>
-  </data>
-<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
-    <value>覆盖</value>
-  </data>
-<data name="HexSettings_Editing_Insert" xml:space="preserve">
-    <value>插入</value>
-  </data>
-<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
-    <value>光标模式：</value>
-  </data>
+
+
+
+
 <data name="HexSettings_Clipboard_Title" xml:space="preserve">
     <value>📋 剪贴板选项</value>
   </data>
-<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
-    <value>默认复制模式：</value>
-  </data>
-<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
-    <value>十六进制字符串</value>
-  </data>
-<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
-    <value>字节数组</value>
-  </data>
-<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
-    <value>C# 代码</value>
-  </data>
-<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
-    <value>VB 代码</value>
-  </data>
-<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
-    <value>C 代码</value>
-  </data>
-<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
-    <value>Java 代码</value>
-  </data>
+
+
+
+
+
+
+
 <data name="HexSettings_DragDrop_Title" xml:space="preserve">
     <value>📎 拖放选项</value>
   </data>
@@ -1104,9 +1076,7 @@
 <data name="HexSettings_Highlight_Title" xml:space="preserve">
     <value>🎨 高亮和选择</value>
   </data>
-<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
-    <value>自动高亮选择的字节</value>
-  </data>
+
 <data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
     <value>自动选择相同字节（双击）</value>
   </data>
@@ -1125,12 +1095,8 @@
 <data name="HexSettings_Search_UseWildcard" xml:space="preserve">
     <value>使用通配符搜索（??）</value>
   </data>
-<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
-    <value>高亮所有匹配项</value>
-  </data>
-<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
-    <value>搜索结果限制：</value>
-  </data>
+
+
 <data name="HexSettings_Statistics_Title" xml:space="preserve">
     <value>📊 统计</value>
   </data>
@@ -1143,12 +1109,8 @@
 <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>字节左移：</value>
   </data>
-<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
-    <value>保存当前状态</value>
-  </data>
-<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
-    <value>加载已保存的状态</value>
-  </data>
+
+
 <data name="HexSettings_ResetButton" xml:space="preserve">
     <value>🔄 全部重置为默认值</value>
   </data>

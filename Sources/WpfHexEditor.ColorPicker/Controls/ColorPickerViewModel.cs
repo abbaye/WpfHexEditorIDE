@@ -25,11 +25,11 @@ namespace WpfHexEditor.ColorPicker.Controls
         private double _hue;
         private double _saturation;
         private double _value;
-        private string _hexColor;
+        private string? _hexColor;
         private bool _isHexValid;
         private Color _selectedColor;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Initializes a new instance with default color (Blue).
@@ -178,7 +178,7 @@ namespace WpfHexEditor.ColorPicker.Controls
         /// <summary>
         /// Hex color string (#AARRGGBB or #RRGGBB)
         /// </summary>
-        public string HexColor
+        public string? HexColor
         {
             get => _hexColor;
             set
@@ -458,7 +458,7 @@ namespace WpfHexEditor.ColorPicker.Controls
 
         #region INotifyPropertyChanged
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

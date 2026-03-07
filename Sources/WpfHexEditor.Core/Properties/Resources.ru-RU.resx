@@ -1029,18 +1029,12 @@
 <data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
     <value>Показать подсказку байта</value>
   </data>
-<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
-    <value>Байт в строке:</value>
-  </data>
-<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
-    <value>Масштаб:</value>
-  </data>
+
+
 <data name="HexSettings_Editing_Title" xml:space="preserve">
     <value>✏️ Параметры редактирования</value>
   </data>
-<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
-    <value>Режим только для чтения</value>
-  </data>
+
 <data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
     <value>Разрешить вставку везде</value>
   </data>
@@ -1053,42 +1047,20 @@
 <data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
     <value>Добавление требует подтверждения</value>
   </data>
-<data name="HexSettings_Editing_EditMode" xml:space="preserve">
-    <value>Режим редактирования:</value>
-  </data>
-<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
-    <value>Перезапись</value>
-  </data>
-<data name="HexSettings_Editing_Insert" xml:space="preserve">
-    <value>Вставка</value>
-  </data>
-<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
-    <value>Режим каретки:</value>
-  </data>
+
+
+
+
 <data name="HexSettings_Clipboard_Title" xml:space="preserve">
     <value>📋 Параметры буфера обмена</value>
   </data>
-<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
-    <value>Режим копирования по умолчанию:</value>
-  </data>
-<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
-    <value>Шестнадцатеричная строка</value>
-  </data>
-<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
-    <value>Массив байтов</value>
-  </data>
-<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
-    <value>Код C#</value>
-  </data>
-<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
-    <value>Код VB</value>
-  </data>
-<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
-    <value>Код C</value>
-  </data>
-<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
-    <value>Код Java</value>
-  </data>
+
+
+
+
+
+
+
 <data name="HexSettings_DragDrop_Title" xml:space="preserve">
     <value>📎 Параметры перетаскивания</value>
   </data>
@@ -1104,9 +1076,7 @@
 <data name="HexSettings_Highlight_Title" xml:space="preserve">
     <value>🎨 Выделение и выбор</value>
   </data>
-<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
-    <value>Автоматическое выделение выбранного байта</value>
-  </data>
+
 <data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
     <value>Автоматический выбор того же байта (двойной щелчок)</value>
   </data>
@@ -1125,12 +1095,8 @@
 <data name="HexSettings_Search_UseWildcard" xml:space="preserve">
     <value>Использовать поиск с подстановочными знаками (??)</value>
   </data>
-<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
-    <value>Выделить все совпадения</value>
-  </data>
-<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
-    <value>Лимит результатов поиска:</value>
-  </data>
+
+
 <data name="HexSettings_Statistics_Title" xml:space="preserve">
     <value>📊 Статистика</value>
   </data>
@@ -1143,12 +1109,8 @@
 <data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
     <value>Сдвиг байта влево:</value>
   </data>
-<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
-    <value>Сохранить текущее состояние</value>
-  </data>
-<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
-    <value>Загрузить сохраненное состояние</value>
-  </data>
+
+
 <data name="HexSettings_ResetButton" xml:space="preserve">
     <value>🔄 Сбросить все к значениям по умолчанию</value>
   </data>

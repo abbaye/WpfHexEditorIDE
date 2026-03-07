@@ -879,15 +879,9 @@
 <data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
     <value>Afficher info-bulle d'octet</value>
   </data>
-<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
-    <value>Octets par ligne :</value>
-  </data>
-<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
-    <value>Échelle de zoom :</value>
-  </data>
-<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
-    <value>Mode lecture seule</value>
-  </data>
+
+
+
 <data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
     <value>Autoriser insertion n'importe où</value>
   </data>
@@ -900,39 +894,19 @@
 <data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
     <value>Ajout nécessite confirmation</value>
   </data>
-<data name="HexSettings_Editing_EditMode" xml:space="preserve">
-    <value>Mode d'édition :</value>
-  </data>
+
 <data name="HexSettings_Editing_Overwrite" xml:space="preserve">
     <value>Remplacer</value>
   </data>
-<data name="HexSettings_Editing_Insert" xml:space="preserve">
-    <value>Insérer</value>
-  </data>
-<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
-    <value>Mode curseur :</value>
-  </data>
-<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
-    <value>Mode de copie par défaut :</value>
-  </data>
-<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
-    <value>Chaîne hexadécimale</value>
-  </data>
-<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
-    <value>Tableau d'octets</value>
-  </data>
-<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
-    <value>Code C#</value>
-  </data>
-<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
-    <value>Code VB</value>
-  </data>
-<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
-    <value>Code C</value>
-  </data>
-<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
-    <value>Code Java</value>
-  </data>
+
+
+
+
+
+
+
+
+
 <data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
     <value>Autoriser dépôt de fichier</value>
   </data>
@@ -942,9 +916,7 @@
 <data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
     <value>Autoriser dépôt de texte</value>
   </data>
-<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
-    <value>Surligner automatiquement l'octet sélectionné</value>
-  </data>
+
 <data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
     <value>Sélection automatique du même octet (double-clic)</value>
   </data>
@@ -963,21 +935,15 @@
 <data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
     <value>Surligner tous les résultats</value>
   </data>
-<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
-    <value>Limite de résultats de recherche :</value>
-  </data>
+
 <data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
     <value>Autoriser compte d'octets</value>
   </data>
 <data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
     <value>Décalage d'octet à gauche :</value>
   </data>
-<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
-    <value>Enregistrer l'état actuel</value>
-  </data>
-<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
-    <value>Charger l'état enregistré</value>
-  </data>
+
+
 <data name="HexSettings_Title" xml:space="preserve">
     <value>PARAMÈTRES DE L'ÉDITEUR HEX</value>
   </data>
@@ -1020,9 +986,7 @@
 <data name="HexSettings_Editing_EditMode" xml:space="preserve">
     <value>Mode d'édition :</value>
   </data>
-<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
-    <value>Écraser</value>
-  </data>
+
 <data name="HexSettings_Editing_Insert" xml:space="preserve">
     <value>Insérer</value>
   </data>
@@ -1089,9 +1053,7 @@
 <data name="HexSettings_Search_UseWildcard" xml:space="preserve">
     <value>Utiliser la recherche par joker (??)</value>
   </data>
-<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
-    <value>Surligner toutes les correspondances</value>
-  </data>
+
 <data name="HexSettings_Search_ResultLimit" xml:space="preserve">
     <value>Limite de résultats de recherche :</value>
   </data>

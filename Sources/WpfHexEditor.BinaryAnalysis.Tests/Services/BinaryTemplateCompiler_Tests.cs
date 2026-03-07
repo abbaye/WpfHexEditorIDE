@@ -14,7 +14,7 @@ namespace WpfHexEditor.BinaryAnalysis.Tests.Services
     [TestClass]
     public class BinaryTemplateCompiler_Tests
     {
-        private BinaryTemplateCompiler _compiler;
+        private BinaryTemplateCompiler _compiler = null!;
 
         [TestInitialize]
         public void Setup() => _compiler = new BinaryTemplateCompiler();
@@ -66,12 +66,12 @@ struct FileHeader {
         {
             var script = "struct S { DWORD size; WORD type; BYTE flags; };";
             var result = _compiler.CompileTemplate(script);
-            var blocks = result["blocks"];
-            var fields = blocks[0]["fields"];
+            var blocks = result["blocks"]!.AsArray();
+            var fields = blocks[0]!["fields"]!.AsArray();
 
-            Assert.AreEqual("uint32", fields[0]["type"]?.ToString()); // DWORD → uint32
-            Assert.AreEqual("uint16", fields[1]["type"]?.ToString()); // WORD  → uint16
-            Assert.AreEqual("uint8",  fields[2]["type"]?.ToString()); // BYTE  → uint8
+            Assert.AreEqual("uint32", fields[0]!["type"]?.ToString()); // DWORD → uint32
+            Assert.AreEqual("uint16", fields[1]!["type"]?.ToString()); // WORD  → uint16
+            Assert.AreEqual("uint8",  fields[2]!["type"]?.ToString()); // BYTE  → uint8
         }
 
         [TestMethod]
@@ -79,9 +79,9 @@ struct FileHeader {
         {
             var script = "struct S {\n// Size in bytes\nuint32 size;\n};";
             var result = _compiler.CompileTemplate(script);
-            var field = result["blocks"][0]["fields"][0];
+            var field = result["blocks"]!.AsArray()[0]!["fields"]!.AsArray()[0]!;
             Assert.IsNotNull(field["description"]);
-            StringAssert.Contains(field["description"].ToString(), "Size in bytes");
+            StringAssert.Contains(field["description"]!.ToString(), "Size in bytes");
         }
 
         [TestMethod]
@@ -115,9 +115,9 @@ struct FileHeader {
         {
             var script = "struct S { byte data[16]; };";
             var result = _compiler.CompileTemplate(script);
-            var field = result["blocks"][0]["fields"][0];
+            var field = result["blocks"]!.AsArray()[0]!["fields"]!.AsArray()[0]!;
             Assert.IsNotNull(field["length"]);
-            Assert.AreEqual(16, (int)field["length"]);
+            Assert.AreEqual(16, (int)field["length"]!);
         }
     }
 }

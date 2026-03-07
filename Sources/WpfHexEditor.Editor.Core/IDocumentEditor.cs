@@ -30,14 +30,15 @@ public interface IDocumentEditor
     string Title { get; }
 
     // -- Bindable commands (host: MenuItem.Command, toolbar…) -------------
-    ICommand UndoCommand      { get; }
-    ICommand RedoCommand      { get; }
-    ICommand SaveCommand      { get; }
-    ICommand CopyCommand      { get; }
-    ICommand CutCommand       { get; }
-    ICommand PasteCommand     { get; }
-    ICommand DeleteCommand    { get; }
-    ICommand SelectAllCommand { get; }
+    // Nullable: editors that don't support a command may return null.
+    ICommand? UndoCommand      { get; }
+    ICommand? RedoCommand      { get; }
+    ICommand? SaveCommand      { get; }
+    ICommand? CopyCommand      { get; }
+    ICommand? CutCommand       { get; }
+    ICommand? PasteCommand     { get; }
+    ICommand? DeleteCommand    { get; }
+    ICommand? SelectAllCommand { get; }
 
     // -- Methods ----------------------------------------------------------
     void Undo();

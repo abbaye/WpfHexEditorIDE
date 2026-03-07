@@ -14,7 +14,7 @@ namespace WpfHexEditor.BinaryAnalysis.Tests.Services
     [TestClass]
     public class SRecordService_Tests
     {
-        private SRecordService _service;
+        private SRecordService _service = null!;
 
         [TestInitialize]
         public void Setup() => _service = new SRecordService();

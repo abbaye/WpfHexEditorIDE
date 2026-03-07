@@ -16,10 +16,10 @@ namespace WpfHexEditor.BinaryAnalysis.Models.BinaryTemplates
     /// </summary>
     public class TemplateStructure : INotifyPropertyChanged
     {
-        private string _name;
-        private string _description;
+        private string? _name;
+        private string? _description;
         private ObservableCollection<TemplateField> _fields;
-        private string _script;
+        private string? _script;
 
         public TemplateStructure()
         {
@@ -29,7 +29,7 @@ namespace WpfHexEditor.BinaryAnalysis.Models.BinaryTemplates
         /// <summary>
         /// Template name
         /// </summary>
-        public string Name
+        public string? Name
         {
             get => _name;
             set { _name = value; OnPropertyChanged(); }
@@ -38,7 +38,7 @@ namespace WpfHexEditor.BinaryAnalysis.Models.BinaryTemplates
         /// <summary>
         /// Template description
         /// </summary>
-        public string Description
+        public string? Description
         {
             get => _description;
             set { _description = value; OnPropertyChanged(); }
@@ -56,15 +56,15 @@ namespace WpfHexEditor.BinaryAnalysis.Models.BinaryTemplates
         /// <summary>
         /// Template script (C-like syntax)
         /// </summary>
-        public string Script
+        public string? Script
         {
             get => _script;
             set { _script = value; OnPropertyChanged(); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -75,45 +75,45 @@ namespace WpfHexEditor.BinaryAnalysis.Models.BinaryTemplates
     /// </summary>
     public class TemplateField : INotifyPropertyChanged
     {
-        private string _name;
-        private string _type;
-        private string _arraySize;
-        private string _condition;
-        private string _comment;
+        private string? _name;
+        private string? _type;
+        private string? _arraySize;
+        private string? _condition;
+        private string? _comment;
 
-        public string Name
+        public string? Name
         {
             get => _name;
             set { _name = value; OnPropertyChanged(); }
         }
 
-        public string Type
+        public string? Type
         {
             get => _type;
             set { _type = value; OnPropertyChanged(); }
         }
 
-        public string ArraySize
+        public string? ArraySize
         {
             get => _arraySize;
             set { _arraySize = value; OnPropertyChanged(); }
         }
 
-        public string Condition
+        public string? Condition
         {
             get => _condition;
             set { _condition = value; OnPropertyChanged(); }
         }
 
-        public string Comment
+        public string? Comment
         {
             get => _comment;
             set { _comment = value; OnPropertyChanged(); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

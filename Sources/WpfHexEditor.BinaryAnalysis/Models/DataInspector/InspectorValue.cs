@@ -15,16 +15,16 @@ namespace WpfHexEditor.BinaryAnalysis.Models.DataInspector
     /// </summary>
     public class InspectorValue : INotifyPropertyChanged
     {
-        private string _category;
-        private string _format;
-        private string _value;
-        private string _hexValue;
+        private string? _category;
+        private string? _format;
+        private string? _value;
+        private string? _hexValue;
         private bool _isValid;
 
         /// <summary>
         /// Category of the value (Integer, Float, Date/Time, Network, etc.)
         /// </summary>
-        public string Category
+        public string? Category
         {
             get => _category;
             set { _category = value; OnPropertyChanged(); }
@@ -33,7 +33,7 @@ namespace WpfHexEditor.BinaryAnalysis.Models.DataInspector
         /// <summary>
         /// Format description (e.g., "Int32 LE", "Float64", "Unix Timestamp")
         /// </summary>
-        public string Format
+        public string? Format
         {
             get => _format;
             set { _format = value; OnPropertyChanged(); }
@@ -42,7 +42,7 @@ namespace WpfHexEditor.BinaryAnalysis.Models.DataInspector
         /// <summary>
         /// Interpreted value as string
         /// </summary>
-        public string Value
+        public string? Value
         {
             get => _value;
             set { _value = value; OnPropertyChanged(); }
@@ -51,7 +51,7 @@ namespace WpfHexEditor.BinaryAnalysis.Models.DataInspector
         /// <summary>
         /// Hexadecimal representation of raw bytes
         /// </summary>
-        public string HexValue
+        public string? HexValue
         {
             get => _hexValue;
             set { _hexValue = value; OnPropertyChanged(); }
@@ -66,9 +66,9 @@ namespace WpfHexEditor.BinaryAnalysis.Models.DataInspector
             set { _isValid = value; OnPropertyChanged(); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

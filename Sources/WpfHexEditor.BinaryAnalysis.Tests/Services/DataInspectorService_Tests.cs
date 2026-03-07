@@ -13,7 +13,7 @@ namespace WpfHexEditor.BinaryAnalysis.Tests.Services
     [TestClass]
     public class DataInspectorService_Tests
     {
-        private DataInspectorService _service;
+        private DataInspectorService _service = null!;
 
         [TestInitialize]
         public void Setup() => _service = new DataInspectorService();
@@ -22,7 +22,7 @@ namespace WpfHexEditor.BinaryAnalysis.Tests.Services
         public void InterpretBytes_EmptyArray_ReturnsEmptyList()
         {
             var results = _service.InterpretBytes(new byte[0]);
-            Assert.AreEqual(0, results.Count);
+            Assert.IsEmpty(results);
         }
 
         [TestMethod]

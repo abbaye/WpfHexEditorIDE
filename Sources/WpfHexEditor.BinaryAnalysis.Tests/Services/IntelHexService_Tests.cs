@@ -14,7 +14,7 @@ namespace WpfHexEditor.BinaryAnalysis.Tests.Services
     [TestClass]
     public class IntelHexService_Tests
     {
-        private IntelHexService _service;
+        private IntelHexService _service = null!;
 
         [TestInitialize]
         public void Setup() => _service = new IntelHexService();

@@ -254,12 +254,12 @@ namespace WpfHexEditor.BinaryAnalysis.Services
         /// <summary>
         /// Error message if import failed
         /// </summary>
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
         /// <summary>
         /// Imported binary data
         /// </summary>
-        public byte[] Data { get; set; }
+        public byte[]? Data { get; set; }
 
         /// <summary>
         /// Base address where data starts
@@ -274,7 +274,7 @@ namespace WpfHexEditor.BinaryAnalysis.Services
         /// <summary>
         /// Header text from S0 record
         /// </summary>
-        public string HeaderText { get; set; }
+        public string? HeaderText { get; set; }
 
         /// <summary>
         /// Total number of records processed

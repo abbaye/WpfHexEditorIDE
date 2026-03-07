@@ -220,7 +220,7 @@ namespace WpfHexEditor.BinaryAnalysis.Services
 
         #region Private Methods
 
-        private JsonObject ParseStruct(string structName, string structBody)
+        private JsonObject? ParseStruct(string structName, string structBody)
         {
             var block = new JsonObject
             {
@@ -261,7 +261,7 @@ namespace WpfHexEditor.BinaryAnalysis.Services
             return fields.Count > 0 ? block : null;
         }
 
-        private JsonObject ParseFlatFields(string templateScript)
+        private JsonObject? ParseFlatFields(string templateScript)
         {
             var block = new JsonObject
             {
@@ -300,8 +300,9 @@ namespace WpfHexEditor.BinaryAnalysis.Services
             return TypeMap.ContainsKey(cType) ? TypeMap[cType] : "bytes";
         }
 
-        private string MapJsonTypeToC(string jsonType)
+        private string MapJsonTypeToC(string? jsonType)
         {
+            if (jsonType is null) return "byte";
             foreach (var kvp in TypeMap)
             {
                 if (kvp.Value == jsonType)

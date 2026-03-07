@@ -15,7 +15,7 @@ namespace WpfHexEditor.BinaryAnalysis.Tests.Services
     [TestClass]
     public class AnomalyDetectionService_Tests
     {
-        private AnomalyDetectionService _service;
+        private AnomalyDetectionService _service = null!;
 
         [TestInitialize]
         public void Setup() => _service = new AnomalyDetectionService();
