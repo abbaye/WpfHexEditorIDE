@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.IO;
 using System.Text.Json;
 using System.Windows;
 using WpfHexEditor.SDK.Contracts;
@@ -119,7 +120,13 @@ public sealed class PermissionService : IPermissionService
 
     private void RaisePermissionChanged(string pluginId, PluginPermission previous, PluginPermission current)
     {
-        var args = new PermissionChangedEventArgs(pluginId, previous, current);
+        var changed = previous ^ current;
+        var args = new PermissionChangedEventArgs
+        {
+            PluginId  = pluginId,
+            Permission = changed,
+            IsGranted  = (current & changed) != PluginPermission.None
+        };
         if (Application.Current?.Dispatcher is { } d && !d.CheckAccess())
             d.InvokeAsync(() => PermissionChanged?.Invoke(this, args));
         else
