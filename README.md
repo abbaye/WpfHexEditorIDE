@@ -69,12 +69,14 @@
 - **VS2022-style status bar** (edit mode, bytes/line, caret offset)
 - **Output panel** + **Error/Diagnostics panel** + **Quick Search** (inline + advanced)
 - **VS2026-style Options** — document tab, auto-save, live theme preview
+- **Integrated Terminal** (`Ctrl+`` `) — 31 built-in commands, panel/plugin/file management
+- **Plugin System** — `WpfHexEditor.SDK` open API, `.whxplugin` packages, Plugin Manager
 
 </td>
 <td width="50%">
 
 ### 🔍 Binary Intelligence
-- **400+ file format** auto-detection
+- **400+ file format** auto-detection with **format-aware editor routing**
 - **Parsed Fields Panel** with structure overlay
 - **Data Inspector** — 40+ type interpretations
 - **19 languages** with instant switching *(partial — not all languages fully translated)*
@@ -91,15 +93,15 @@ WpfHexEditor uses a **plugin architecture** (`IDocumentEditor`) — every editor
 
 | Editor | Status | Progress | Description |
 |--------|--------|----------|-------------|
-| **Hex Editor** | ✅ Active | ~70% | Binary editing — insert/overwrite, 400+ format detection, search, bookmarks, TBL |
+| **Hex Editor** | ✅ Active | ~75% | Binary editing — insert/overwrite, 400+ format detection, search, bookmarks, TBL, status bar contributor |
 | **TBL Editor** | ✅ Active | ~60% | Character table editor for custom encodings and ROM hacking |
-| **JSON Editor** | ✅ Active | ~55% | JSON editing with real-time validation, syntax highlighting and diagnostics |
-| **Text Editor** | ✅ Active | ~45% | Text editing with syntax highlighting and encoding support |
-| **Image Viewer** | 🔧 Stub | ~5% | Binary image viewer (planned) |
+| **Code Editor** | ✅ Active | ~55% | Multi-language code editor with syntax highlighting, find/replace, `IEditorPersistable`, split view |
+| **Text Editor** | ✅ Active | ~50% | Text editing with syntax highlighting and encoding support |
+| **Image Viewer** | 🔧 Stub | ~10% | Binary image viewer — open/zoom/pan; transform dialogs in progress |
 | **Audio Viewer** | 🔧 Stub | ~5% | Audio binary viewer (planned) |
-| **Diff Viewer** | 🔧 Stub | ~5% | Side-by-side file comparison (planned) |
+| **Diff / Changeset Viewer** | 🔧 Active | ~35% | Side-by-side binary comparison and changeset replay |
 | **Disassembly Viewer** | 🔧 Stub | ~5% | Binary disassembler (planned) |
-| **Entropy Viewer** | 🔧 Stub | ~5% | Entropy analysis viewer (planned) |
+| **Structure Editor** | 🔧 Active | ~30% | Binary template / structure editor |
 
 > **Implementing a new editor?** See [IDocumentEditor contract](Sources/WpfHexEditor.Editor.Core/) and register via `EditorRegistry`.
 
@@ -124,8 +126,11 @@ All controls are **independently reusable** — no IDE required. Drop any of the
 | Library | Frameworks | Description |
 |---------|-----------|-------------|
 | **[Core](Sources/WpfHexEditor.Core/)** | net48 · net8.0-windows | ByteProvider, 16 services, data layer — the engine powering HexEditor |
-| **[Editor.Core](Sources/WpfHexEditor.Editor.Core/)** | net48 · net8.0-windows | `IDocumentEditor` plugin contract, editor registry, shared interfaces |
+| **[Editor.Core](Sources/WpfHexEditor.Editor.Core/)** | net48 · net8.0-windows | `IDocumentEditor` plugin contract, editor registry, changeset system, shared interfaces |
 | **[BinaryAnalysis](Sources/WpfHexEditor.BinaryAnalysis/)** | net8.0-windows | 400+ format detection engine, binary templates, DataInspector service |
+| **[SDK](Sources/WpfHexEditor.SDK/)** | net8.0-windows | Public plugin API — `IWpfHexEditorPlugin`, `IIDEHostContext`, `IUIRegistry`, 10+ service contracts |
+| **[PluginHost](Sources/WpfHexEditor.PluginHost/)** | net8.0-windows | Runtime plugin infrastructure — discovery, load, watchdog, `PluginManagerControl`, `PermissionService` |
+| **[Core.Terminal](Sources/WpfHexEditor.Core.Terminal/)** | net8.0-windows | Command engine — 31 built-in commands, `HxScriptEngine`, `CommandHistory` |
 
 ---
 
@@ -136,13 +141,15 @@ Panels connect to the active document automatically via the docking system.
 | Panel | Progress | Description |
 |-------|----------|-------------|
 | **Parsed Fields Panel** | ~75% | 400+ format detection — parsed field list with type overlay and inline editing |
-| **Data Inspector** | ~65% | 40+ byte interpretations at caret position (int, float, GUID, date, color, …) |
+| **Data Inspector** | ~65% | 40+ byte interpretations at caret position (int, float, GUID, date, color, …); plugin with settings page |
 | **Structure Overlay** | ~55% | Visual field highlighting superimposed on the hex grid |
-| **Solution Explorer** | ~70% | Project tree with virtual & physical folders, Show All Files mode, context menus |
+| **Solution Explorer** | ~75% | Project tree with virtual & physical folders, Show All Files, D&D from Windows Explorer, expand-state persistence, delete from disk |
 | **Properties Panel** | ~50% | Context-aware properties for the active document (F4) |
 | **Error Panel** | ~70% | Diagnostics and validation errors from any `IDiagnosticSource` editor |
 | **Output Panel** | ~65% | Session log, file operation messages and build feedback |
-| **Options** | ~70% | VS2026-style settings document tab — theme, display, editing defaults, auto-save |
+| **Terminal Panel** | ~60% | Integrated command terminal — 31 built-in commands, colored output, history (`Ctrl+\`` `) |
+| **Plugin Manager** | ~60% | Browse, enable/disable, uninstall plugins; settings integration via `IPluginWithOptions` |
+| **Options** | ~75% | VS2026-style settings document tab — 9 pages: theme, display, editing, behavior, status bar, plugins, auto-save |
 | **Quick Search Bar** | ~55% | Inline Ctrl+F overlay (VSCode-style) — find next/prev, regex toggle, jump to Advanced |
 | **Advanced Search** | ~45% | Full-featured search dialog — 5 modes: Hex, Text, Regex, TBL, Wildcard |
 | **File Diff** | ~30% | Side-by-side binary comparison with diff navigation (F7/F8) |
@@ -284,7 +291,9 @@ Open `WpfHexEditorControl.sln` in Visual Studio 2022, set **WpfHexEditor.App** a
 - **Project system** (.whsln / .whproj)
 - **VS-style docking** (no third-party lib)
 - **8 themes** out of the box
-- **4 functional editors** + 5 planned
+- **4 functional editors** + structure, diff, image viewers
+- **Plugin system** — open SDK + `.whxplugin` packages
+- **Integrated terminal** — 31 commands
 
 </td>
 </tr>
