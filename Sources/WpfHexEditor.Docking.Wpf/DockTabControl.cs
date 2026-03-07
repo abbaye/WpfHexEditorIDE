@@ -607,6 +607,21 @@ public class DockTabHeader : StackPanel
         if (_pinButton is not null && !_item.IsPinned) _pinButton.Opacity = 0;
     }
 
+    /// <summary>
+    /// Creates a 14-px Segoe MDL2 Assets glyph for use as a MenuItem.Icon.
+    /// </summary>
+    private static TextBlock MakeMenuIcon(string glyph) => new()
+    {
+        Text       = glyph,
+        FontFamily = new FontFamily("Segoe MDL2 Assets"),
+        FontSize   = 14,
+        Width      = 16,
+        Height     = 16,
+        TextAlignment         = TextAlignment.Center,
+        VerticalAlignment     = VerticalAlignment.Center,
+        HorizontalAlignment   = HorizontalAlignment.Center,
+    };
+
     private ContextMenu BuildContextMenu(DockItem item)
     {
         var menu = new ContextMenu();
@@ -614,7 +629,12 @@ public class DockTabHeader : StackPanel
         // Pin/Unpin + Keep Tab Visible — only for document tabs
         if (item.Owner is DocumentHostNode)
         {
-            var pinMenuItem = new MenuItem { Header = item.IsPinned ? "Unpin Tab" : "Pin Tab" };
+            var pinIcon     = item.IsPinned ? "\uE196" : "\uE141"; // Unpin : Pin
+            var pinMenuItem = new MenuItem
+            {
+                Header = item.IsPinned ? "Unpin Tab" : "Pin Tab",
+                Icon   = MakeMenuIcon(pinIcon)
+            };
             pinMenuItem.Click += (_, _) => PinToggleRequested?.Invoke();
             menu.Items.Add(pinMenuItem);
 
@@ -622,6 +642,7 @@ public class DockTabHeader : StackPanel
             var stickyMenuItem = new MenuItem
             {
                 Header      = item.IsSticky ? "Remove from Tab Strip Pin" : "Keep Tab Visible",
+                Icon        = MakeMenuIcon(item.IsSticky ? "\uE77A" : "\uE718"), // UnLock : Lock
                 IsCheckable = true,
                 IsChecked   = item.IsSticky
             };
@@ -633,46 +654,76 @@ public class DockTabHeader : StackPanel
 
         if (item.CanFloat)
         {
-            var floatItem = new MenuItem { Header = "Float" };
+            var floatItem = new MenuItem
+            {
+                Header = "Float",
+                Icon   = MakeMenuIcon("\uE8A7")  // OpenInNewWindow
+            };
             floatItem.Click += (_, _) => FloatRequested?.Invoke();
             menu.Items.Add(floatItem);
         }
 
-        var autoHideItem = new MenuItem { Header = "Auto-Hide" };
+        var autoHideItem = new MenuItem
+        {
+            Header = "Auto-Hide",
+            Icon   = MakeMenuIcon("\uE141")  // Pin
+        };
         autoHideItem.Click += (_, _) => AutoHideRequested?.Invoke();
         menu.Items.Add(autoHideItem);
 
         if (item.Owner is not DocumentHostNode)
         {
-            var dockAsDocItem = new MenuItem { Header = "Dock as Tabbed Document" };
+            var dockAsDocItem = new MenuItem
+            {
+                Header = "Dock as Tabbed Document",
+                Icon   = MakeMenuIcon("\uE737")  // TabletMode / dock-to-doc
+            };
             dockAsDocItem.Click += (_, _) => DockAsDocumentRequested?.Invoke();
             menu.Items.Add(dockAsDocItem);
         }
 
-        var hideItem = new MenuItem { Header = "Hide" };
+        var hideItem = new MenuItem
+        {
+            Header = "Hide",
+            Icon   = MakeMenuIcon("\uED1A")  // Hide
+        };
         hideItem.Click += (_, _) => HideRequested?.Invoke();
         menu.Items.Add(hideItem);
 
         menu.Items.Add(new Separator());
 
-        if (item.CanClose)
+        var closeItem = new MenuItem
         {
-            var closeItem = new MenuItem { Header = "Close" };
-            closeItem.Click += (_, _) => CloseClicked?.Invoke();
-            menu.Items.Add(closeItem);
-        }
+            Header    = "Close",
+            Icon      = MakeMenuIcon("\uE8BB"),  // ChromeClose
+            IsEnabled = item.CanClose
+        };
+        closeItem.Click += (_, _) => CloseClicked?.Invoke();
+        menu.Items.Add(closeItem);
 
-        var closeAllItem = new MenuItem { Header = "Close All" };
+        var closeAllItem = new MenuItem
+        {
+            Header = "Close All",
+            Icon   = MakeMenuIcon("\uE74D")  // Delete (close all)
+        };
         closeAllItem.Click += (_, _) => CloseAllRequested?.Invoke();
         menu.Items.Add(closeAllItem);
 
-        var closeAllButItem = new MenuItem { Header = "Close All But This" };
+        var closeAllButItem = new MenuItem
+        {
+            Header = "Close All But This",
+            Icon   = MakeMenuIcon("\uE8C6")  // RemoveFrom
+        };
         closeAllButItem.Click += (_, _) => CloseAllButThisRequested?.Invoke();
         menu.Items.Add(closeAllButItem);
 
         if (item.Owner is DocumentHostNode)
         {
-            var closeAllButPinnedItem = new MenuItem { Header = "Close All But Pinned" };
+            var closeAllButPinnedItem = new MenuItem
+            {
+                Header = "Close All But Pinned",
+                Icon   = MakeMenuIcon("\uE8F4")  // FilterError / pin-protected close
+            };
             closeAllButPinnedItem.Click += (_, _) => CloseAllButPinnedRequested?.Invoke();
             menu.Items.Add(closeAllButPinnedItem);
         }

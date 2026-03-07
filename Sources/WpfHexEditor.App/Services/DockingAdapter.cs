@@ -45,7 +45,17 @@ public sealed class DockingAdapter : IDockingAdapter
     /// <inheritdoc />
     public void AddDockablePanel(string uiId, UIElement content, PanelDescriptor descriptor)
     {
-        if (_layout.FindItemByContentId(uiId) is not null) return;
+        var existing = _layout.FindItemByContentId(uiId);
+        if (existing is not null)
+        {
+            // Item was restored from a saved layout — override persisted flags with the current
+            // plugin descriptor so stale values (e.g. CanClose=false from an old layout) do not
+            // prevent the panel from being closed or hide property changes from plugin updates.
+            existing.CanClose = descriptor.CanClose;
+            existing.Title    = descriptor.Title;
+            _storeContent(uiId, content);
+            return;
+        }
 
         var direction = descriptor.DefaultDockSide?.ToLowerInvariant() switch
         {

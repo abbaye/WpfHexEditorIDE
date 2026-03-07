@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WpfHexEditor.Plugins.ParsedFields</RootNamespace>
+    <AssemblyName>WpfHexEditor.Plugins.ParsedFields</AssemblyName>
+    <!-- Plugin metadata required by WpfHexEditor.SDK.targets to generate manifest.json -->
+    <PluginId>WpfHexEditor.Plugins.ParsedFields</PluginId>
+    <PluginName>Parsed Fields</PluginName>
+    <PluginVersion>1.0.0</PluginVersion>
+    <PluginEntryPoint>WpfHexEditor.Plugins.ParsedFields.ParsedFieldsPlugin</PluginEntryPoint>
+    <PluginAuthor>Derek Tremblay</PluginAuthor>
+    <PluginPublisher>WpfHexEditor</PluginPublisher>
+    <PluginTrustedPublisher>true</PluginTrustedPublisher>
+    <PluginDescription>Displays parsed fields from the active binary format, custom templates, and format candidates.</PluginDescription>
+    <PluginIsolationMode>InProcess</PluginIsolationMode>
+    <PluginLoadPriority>50</PluginLoadPriority>
+    <PluginSdkVersion>1.0.0</PluginSdkVersion>
+    <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>
+    <PluginPermAccessHexEditor>true</PluginPermAccessHexEditor>
+    <PluginPermAccessFileSystem>false</PluginPermAccessFileSystem>
+    <PluginPermAccessNetwork>false</PluginPermAccessNetwork>
+    <PluginPermRegisterMenus>true</PluginPermRegisterMenus>
+    <PluginPermWriteOutput>false</PluginPermWriteOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
+    <ProjectReference Include="..\..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Copy compiled plugin to App Plugins directory after build -->
+  <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
+    <PropertyGroup>
+      <PluginDestDir>$(SolutionDir)Sources\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(PluginDestDir)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"
+          DestinationFolder="$(PluginDestDir)"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

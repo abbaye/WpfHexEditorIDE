@@ -120,6 +120,7 @@ public partial class WelcomePanel : UserControl
         OpenProjectButton.Click += (_, _) => _onOpenProject?.Invoke();
         OptionsButton.Click     += (_, _) => _onOptions?.Invoke();
         GitHubButton.Click      += (_, _) => OpenUrl("https://github.com/abbaye/WpfHexEditorControl");
+        WikiButton.Click        += (_, _) => OpenUrl("https://github.com/abbaye/WpfHexEditorIDE/wiki");
         IssueButton.Click       += (_, _) => OpenUrl("https://github.com/abbaye/WpfHexEditorControl/issues");
     }
 

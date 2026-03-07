@@ -15,7 +15,6 @@
         xmlns:components="clr-namespace:WpfHexEditor.Sample.HexEditor.Views.Components"
         xmlns:hexEditor="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor"
         xmlns:hexControls="clr-namespace:WpfHexEditor.HexEditor.Controls;assembly=WpfHexEditor.HexEditor"
-        xmlns:hexPanels="clr-namespace:WpfHexEditor.Panels.BinaryAnalysis;assembly=WpfHexEditor.Panels.BinaryAnalysis"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Height="900" Width="1600"
@@ -371,10 +370,6 @@
                              IsChecked="{Binding ElementName=HexEditorControl, Path=ShowAscii, Mode=TwoWay}"/>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="{DynamicResource Menu_View_ShowParsedFields}"
-                         IsCheckable="True"
-                         IsChecked="{Binding IsParsedFieldsPanelVisible, Mode=TwoWay}"/>
-                <Separator/>
                 <MenuItem Header="{DynamicResource Menu_View_BytesPerLine}">
                     <MenuItem Header="8" Tag="8"/>
                     <MenuItem Header="16" Tag="16" IsChecked="True"/>
@@ -481,15 +476,13 @@
             </ToggleButton>
         </ToolBar>
 
-        <!-- Main Content : HexEditor | Splitter | ParsedFieldsPanel | SettingsPanel -->
+        <!-- Main Content : HexEditor | SettingsPanel -->
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>    <!-- Row 0: HexEditor + side panels -->
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>    <!-- HexEditor -->
-                <ColumnDefinition x:Name="SplitterColumn" Width="0"/> <!-- GridSplitter (géré en code-behind) -->
-                <ColumnDefinition x:Name="ParsedFieldsColumn" Width="0" MinWidth="0"/> <!-- ParsedFieldsPanel (géré en code-behind) -->
                 <ColumnDefinition Width="Auto"/> <!-- Settings Panel -->
             </Grid.ColumnDefinitions>
 
@@ -498,25 +491,9 @@
                                 Grid.Column="0"
                                 Margin="4"/>
 
-            <!-- GridSplitter between HexEditor and ParsedFieldsPanel -->
-            <GridSplitter x:Name="ParsedFieldsSplitter"
-                          Grid.Column="1"
-                          Width="5"
-                          Background="#B0B0B0"
-                          HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch"
-                          ShowsPreview="True"
-                          ResizeBehavior="PreviousAndNext"
-                          Visibility="Collapsed"/>
-
-            <!-- ParsedFieldsPanel (droite, redimensionnable via GridSplitter) -->
-            <hexPanels:ParsedFieldsPanel x:Name="ParsedFieldsPanelControl"
-                                        Grid.Column="2"
-                                        Visibility="Collapsed"/>
-
             <!-- Settings Panel (Slide-in from right) -->
             <hexControls:HexEditorSettings x:Name="HexEditorSettingsPanel"
-                                         Grid.Column="3"
+                                         Grid.Column="1"
                                          Visibility="{Binding IsSettingsPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <hexControls:HexEditorSettings.Style>
                     <Style TargetType="hexControls:HexEditorSettings">

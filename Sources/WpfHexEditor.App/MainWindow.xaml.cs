@@ -48,7 +48,6 @@ using WpfHexEditor.Editor.ChangesetEditor;
 using WpfHexEditor.Panels.IDE;
 using WpfHexEditor.Panels.IDE.Panels;
 using WpfHexEditor.Panels.IDE.Services;
-using WpfHexEditor.Panels.BinaryAnalysis;
 using WpfHexEditor.Definitions;
 using WpfHexEditor.ProjectSystem;
 using WpfHexEditor.ProjectSystem.Dialogs;
@@ -107,7 +106,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "WpfHexEditor", "session.json");
 
-    private const string ParsedFieldsPanelContentId   = "panel-parsed-fields";
     private const string SolutionExplorerContentId    = "panel-solution-explorer";
 
     // --- Fields --------------------------------------------------------
@@ -132,8 +130,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // M5: PropertyProvider cache — avoids recreating the provider on every tab switch
     private readonly Dictionary<UIElement, IPropertyProvider?> _propertyProviderCache = new();
 
-    // ParsedFieldsPanel (persistent singleton)
-    private ParsedFieldsPanel? _parsedFieldsPanel;
     private HexEditorControl?  _connectedHexEditor;
 
     // SolutionExplorer (persistent singleton)
@@ -551,11 +547,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(LayoutFilePath));
                 RestoreWindowState(layout);
                 PruneStaleDocumentItems(layout);
-                // Panel must exist BEFORE ApplyLayout so the content factory can early-connect
-                // it to the first HexEditor and format-detection events are not missed.
-                _parsedFieldsPanel ??= new ParsedFieldsPanel();
                 ApplyLayout(layout);
-                EnsureParsedFieldsPanel();
                 EnsureErrorPanel();
                 OutputLogger.Debug($"Layout restored from: {LayoutFilePath}");
                 return;
@@ -755,7 +747,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void SetupDefaultLayout()
     {
-        _parsedFieldsPanel    ??= new ParsedFieldsPanel();
         _solutionExplorerPanel ??= CreateSolutionExplorerPanel();
 
         var layout = new DockLayoutRoot();
@@ -773,16 +764,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var output = new DockItem { Title = "Output", ContentId = "panel-output" };
         engine.Dock(output, errorsItem.Owner!, DockDirection.Center);
 
-        var parsedFields = new DockItem
-        {
-            Title      = "Parsed Fields",
-            ContentId  = ParsedFieldsPanelContentId,
-            CanClose   = false
-        };
-        engine.Dock(parsedFields, layout.MainDocumentHost, DockDirection.Right);
-
-        // Note: analysis panels (DataInspector, StructureOverlay, FormatInfo, FileStatistics, PatternAnalysis)
-        // are now registered by their respective plugins via UIRegistry.RegisterPanel.
+        // Note: analysis panels (DataInspector, StructureOverlay, FormatInfo, FileStatistics,
+        // PatternAnalysis, ParsedFields) are registered by their respective plugins via UIRegistry.
         // They dock automatically based on PanelDescriptor.DefaultDockSide.
 
         ApplyLayout(layout, engine);
@@ -812,24 +795,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         SyncDocumentCounter();
         UpdateStatusBar();
-    }
-
-    private void EnsureParsedFieldsPanel()
-    {
-        _parsedFieldsPanel ??= new ParsedFieldsPanel();
-
-        if (_layout.FindItemByContentId(ParsedFieldsPanelContentId) == null)
-        {
-            var item = new DockItem
-            {
-                Title    = "Parsed Fields",
-                ContentId = ParsedFieldsPanelContentId,
-                CanClose  = false
-            };
-            _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Right);
-            DockHost.RebuildVisualTree();
-            OutputLogger.Debug("ParsedFields panel added to restored layout.");
-        }
     }
 
     private void EnsureErrorPanel()
@@ -900,7 +865,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             SolutionExplorerContentId  => CreateSolutionExplorerContent(),
             "panel-output"             => CreateOutputContent(),
-            ParsedFieldsPanelContentId => CreateParsedFieldsContent(),
             "panel-properties"         => CreatePropertiesContent(),
             ErrorPanelContentId        => CreateErrorPanelContent(),
             FileComparisonPanelContentId   => CreateFileComparisonContent(),
@@ -991,12 +955,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _archivePanel ??= new WpfHexEditor.Panels.FileOps.ArchiveStructurePanel();
         return _archivePanel;
-    }
-
-    private UIElement CreateParsedFieldsContent()
-    {
-        _parsedFieldsPanel ??= new ParsedFieldsPanel();
-        return _parsedFieldsPanel;
     }
 
     private UIElement CreateErrorPanelContent() => EnsureErrorPanelInstance();
@@ -1163,15 +1121,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         ApplyHexEditorDefaults(hexEditor);
         hexEditor.ShowStatusBar       = false;
         hexEditor.ShowProgressOverlay = false;  // App handles progress in its own status bar
-
-        if (_parsedFieldsPanel != null && _connectedHexEditor == null)
-        {
-            _connectedHexEditor = hexEditor;
-            hexEditor.ConnectParsedFieldsPanel(_parsedFieldsPanel);
-            ActiveDocumentEditor       = hexEditor as IDocumentEditor;
-            ActiveHexEditor            = hexEditor;
-            ActiveStatusBarContributor = hexEditor as IStatusBarContributor;
-        }
 
         // -- Phase 12: in-memory new document --------------------------
         if (isNewFile)
@@ -2919,12 +2868,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // Switching to a different hex editor — reconnect panels.
             if (_connectedHexEditor is IDiagnosticSource prevDiag)
                 _errorPanel?.RemoveSource(prevDiag);
-            _connectedHexEditor?.DisconnectParsedFieldsPanel();
             if (_connectedHexEditor is not null)
                 _connectedHexEditor.ByteDistributionPanel = null;
 
             _connectedHexEditor = hex;
-            _connectedHexEditor.ConnectParsedFieldsPanel(_parsedFieldsPanel);
             if (_connectedHexEditor is IDiagnosticSource newDiag)
                 EnsureErrorPanelInstance().AddSource(newDiag);
 
@@ -3256,12 +3203,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (ctrl is HexEditorControl hex)
             {
                 if (ReferenceEquals(hex, _connectedHexEditor))
-                {
-                    hex.DisconnectParsedFieldsPanel();
                     _connectedHexEditor = null;
-                    _parsedFieldsPanel?.Clear();
-                    // Plugins handle their own clear via FileOpened event when next file opens.
-                }
                 if (ReferenceEquals(hex, ActiveHexEditor))
                 {
                     ActiveDocumentEditor = null;
@@ -4185,34 +4127,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _ = viewer.OpenAsync(filePath);
     }
 
-    private static (object rawVal, string fmtVal) InterpretTemplateBytes(byte[] data, string? type)
-    {
-        if (data is not { Length: > 0 }) return (data!, "(empty)");
-        try
-        {
-            return type?.ToLowerInvariant() switch
-            {
-                "uint8"   => ((object)(byte)data[0],                                    $"{data[0]}"),
-                "int8"    => ((object)(sbyte)data[0],                                   $"{(sbyte)data[0]}"),
-                "uint16"  when data.Length >= 2 => ((object)BitConverter.ToUInt16(data, 0), $"{BitConverter.ToUInt16(data, 0)}"),
-                "int16"   when data.Length >= 2 => ((object)BitConverter.ToInt16 (data, 0), $"{BitConverter.ToInt16 (data, 0)}"),
-                "uint32"  when data.Length >= 4 => ((object)BitConverter.ToUInt32(data, 0), $"{BitConverter.ToUInt32(data, 0)}"),
-                "int32"   when data.Length >= 4 => ((object)BitConverter.ToInt32 (data, 0), $"{BitConverter.ToInt32 (data, 0)}"),
-                "uint64"  when data.Length >= 8 => ((object)BitConverter.ToUInt64(data, 0), $"{BitConverter.ToUInt64(data, 0)}"),
-                "int64"   when data.Length >= 8 => ((object)BitConverter.ToInt64 (data, 0), $"{BitConverter.ToInt64 (data, 0)}"),
-                "float"   when data.Length >= 4 => ((object)BitConverter.ToSingle(data, 0), $"{BitConverter.ToSingle(data, 0):F4}"),
-                "double"  when data.Length >= 8 => ((object)BitConverter.ToDouble(data, 0), $"{BitConverter.ToDouble(data, 0):F6}"),
-                "string"  or "ascii"            => ((object)System.Text.Encoding.ASCII  .GetString(data).TrimEnd('\0'), System.Text.Encoding.ASCII  .GetString(data).TrimEnd('\0')),
-                "utf8"                          => ((object)System.Text.Encoding.UTF8   .GetString(data).TrimEnd('\0'), System.Text.Encoding.UTF8   .GetString(data).TrimEnd('\0')),
-                "utf16"                         => ((object)System.Text.Encoding.Unicode.GetString(data).TrimEnd('\0'), System.Text.Encoding.Unicode.GetString(data).TrimEnd('\0')),
-                "boolean"                       => ((object)(data[0] != 0), data[0] != 0 ? "True" : "False"),
-                "binary"                        => ((object)data, string.Join(" ", data.Select(b => Convert.ToString(b, 2).PadLeft(8, '0')))),
-                _                               => ((object)data, BitConverter.ToString(data).Replace("-", " ")),
-            };
-        }
-        catch { return (data, BitConverter.ToString(data).Replace("-", " ")); }
-    }
-
     private void OnShowSolutionExplorer(object sender, RoutedEventArgs e)
     {
         ShowOrCreatePanel("Solution Explorer", SolutionExplorerContentId, DockDirection.Left);
@@ -4379,7 +4293,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     private void OnShowParsedFields(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("Parsed Fields", ParsedFieldsPanelContentId, DockDirection.Right);
+        => _ideHostContext?.UIRegistry.ShowPanel(
+               "WpfHexEditor.Plugins.ParsedFields.Panel.ParsedFieldsPanel");
 
     private void ShowOrCreatePanel(string title, string contentId, DockDirection direction)
     {
@@ -4466,9 +4381,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var layout = DockLayoutSerializer.Deserialize(File.ReadAllText(dlg.FileName));
             PruneStaleDocumentItems(layout);
             _contentCache.Clear();
-            _parsedFieldsPanel ??= new ParsedFieldsPanel();
             ApplyLayout(layout);
-            EnsureParsedFieldsPanel();
             OutputLogger.Debug($"Layout loaded from: {dlg.FileName}");
         }
         catch (Exception ex)

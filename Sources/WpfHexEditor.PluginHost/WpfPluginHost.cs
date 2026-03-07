@@ -32,6 +32,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
     private readonly PermissionService _permissionService;
     private readonly PluginWatchdog _watchdog;
     private readonly SlowPluginDetector _slowDetector;
+    private readonly Action<string> _log;
 
     private readonly Dictionary<string, PluginEntry> _entries = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _lock = new();
@@ -72,11 +73,13 @@ public sealed class WpfPluginHost : IAsyncDisposable
         IIDEHostContext hostContext,
         UIRegistry uiRegistry,
         PermissionService permissionService,
-        Dispatcher dispatcher)
+        Dispatcher dispatcher,
+        Action<string>? logger = null)
     {
         _hostContext = hostContext ?? throw new ArgumentNullException(nameof(hostContext));
         _uiRegistry = uiRegistry ?? throw new ArgumentNullException(nameof(uiRegistry));
         _permissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+        _log = logger ?? (_ => { });
         _watchdog = new PluginWatchdog();
         _watchdog.PluginNonResponsive += OnPluginNonResponsive;
 
@@ -110,6 +113,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
         foreach (var dir in searchDirs)
         {
+            _log($"[PluginSystem] Scanning: {dir} (exists: {Directory.Exists(dir)})");
             if (!Directory.Exists(dir)) continue;
 
             foreach (var pluginDir in Directory.GetDirectories(dir))
@@ -120,6 +124,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
             }
         }
 
+        _log($"[PluginSystem] Discovered {result.Count} plugin(s).");
         return result;
     }
 
@@ -395,7 +400,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
     // --- Private helpers ---------------------------------------------------------
 
-    private static async Task<PluginManifest?> TryLoadManifestAsync(string pluginDir)
+    private async Task<PluginManifest?> TryLoadManifestAsync(string pluginDir)
     {
         var manifestPath = Path.Combine(pluginDir, "manifest.json");
         if (!File.Exists(manifestPath)) return null;
@@ -406,19 +411,28 @@ public sealed class WpfPluginHost : IAsyncDisposable
             var manifest = JsonSerializer.Deserialize<PluginManifest>(json,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            if (manifest is null) return null;
+            if (manifest is null)
+            {
+                _log($"[PluginSystem] manifest.json is null after deserialization in '{pluginDir}'.");
+                return null;
+            }
 
             // Store the directory for later assembly resolution
             manifest.ResolvedDirectory = pluginDir;
 
             var validator = new PluginManifestValidator(new Version(1, 0), new Version(1, 0));
             var result = validator.Validate(manifest, pluginDir);
-            if (!result.IsValid) return null; // Faulted manifest — skip silently
+            if (!result.IsValid)
+            {
+                _log($"[PluginSystem] Manifest invalid in '{pluginDir}': {string.Join(", ", result.Errors)}");
+                return null;
+            }
 
             return manifest;
         }
-        catch
+        catch (Exception ex)
         {
+            _log($"[PluginSystem] Failed to read manifest in '{pluginDir}': {ex.Message}");
             return null;
         }
     }

@@ -25,7 +25,6 @@ namespace WpfHexEditor.Sample.HexEditor.Views
     public partial class MainWindow : Window
     {
         private readonly ModernMainWindowViewModel _viewModel;
-        private double _parsedFieldsPanelSavedWidth = 350;
 
         public MainWindow()
         {
@@ -58,13 +57,6 @@ namespace WpfHexEditor.Sample.HexEditor.Views
 
             // Connect HexEditor to Settings Panel for property bindings
             HexEditorSettingsPanel.HexEditorControl = HexEditorControl;
-
-            // Connect the external ParsedFieldsPanel to HexEditor (via DP)
-            HexEditorControl.ConnectParsedFieldsPanel(ParsedFieldsPanelControl);
-
-            // Synchronize initial ParsedFieldsPanel column state
-            _viewModel.PropertyChanged += ViewModel_ParsedFieldsPanelVisibilityChanged;
-            ApplyParsedFieldsPanelVisibility(_viewModel.IsParsedFieldsPanelVisible);
 
             // Wire up file operations
             _viewModel.FileOpenRequested += OnFileOpenRequested;
@@ -114,35 +106,6 @@ namespace WpfHexEditor.Sample.HexEditor.Views
                 System.Diagnostics.Debug.WriteLine($"[MainWindow_Loaded] ERROR loading settings: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"  Exception type: {ex.GetType().Name}");
                 System.Diagnostics.Debug.WriteLine($"  Stack trace: {ex.StackTrace}");
-            }
-        }
-
-        private void ViewModel_ParsedFieldsPanelVisibilityChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ModernMainWindowViewModel.IsParsedFieldsPanelVisible))
-                ApplyParsedFieldsPanelVisibility(_viewModel.IsParsedFieldsPanelVisible);
-        }
-
-        private void ApplyParsedFieldsPanelVisibility(bool visible)
-        {
-            if (visible)
-            {
-                ParsedFieldsColumn.Width = new GridLength(_parsedFieldsPanelSavedWidth);
-                ParsedFieldsColumn.MinWidth = 150;
-                SplitterColumn.Width = new GridLength(5);
-                ParsedFieldsPanelControl.Visibility = Visibility.Visible;
-                ParsedFieldsSplitter.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                // Save the current width before hiding
-                if (ParsedFieldsColumn.ActualWidth > 0)
-                    _parsedFieldsPanelSavedWidth = ParsedFieldsColumn.ActualWidth;
-                ParsedFieldsColumn.Width = new GridLength(0);
-                ParsedFieldsColumn.MinWidth = 0;
-                SplitterColumn.Width = new GridLength(0);
-                ParsedFieldsPanelControl.Visibility = Visibility.Collapsed;
-                ParsedFieldsSplitter.Visibility = Visibility.Collapsed;
             }
         }
 

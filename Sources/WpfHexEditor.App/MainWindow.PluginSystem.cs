@@ -134,9 +134,6 @@ public partial class MainWindow
                 extraDirectories: Directory.Exists(bundledPluginsDir) ? [bundledPluginsDir] : null,
                 ct: CancellationToken.None).ConfigureAwait(false);
 
-            // Subscribe: CustomParser template applied via plugin → populate ParsedFieldsPanel in MainWindow
-            eventBus.Subscribe<TemplateApplyRequestedEvent>(OnTemplateAppliedViaPlugin);
-
             // Register a dynamic Options page for every plugin that supports IPluginWithOptions.
             foreach (var entry in _pluginHost.OptionsRegistry.GetAll())
             {
@@ -625,65 +622,6 @@ public partial class MainWindow
             _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Bottom);
 
         DockHost.RebuildVisualTree();
-    }
-
-    // --- EventBus handlers -----------------------------------------------
-
-    /// <summary>
-    /// Called when the CustomParserTemplate plugin applies a template.
-    /// Routes parsed blocks to the MainWindow-managed ParsedFieldsPanel.
-    /// Must be called on the UI thread (PluginEventBus dispatches synchronously).
-    /// </summary>
-    private void OnTemplateAppliedViaPlugin(TemplateApplyRequestedEvent evt)
-    {
-        Dispatcher.InvokeAsync(() =>
-        {
-            if (ActiveHexEditor is not { IsFileOrStreamLoaded: true } hex)
-                return;
-
-            ShowOrCreatePanel("Parsed Fields", ParsedFieldsPanelContentId, DockDirection.Right);
-            if (_parsedFieldsPanel is null) return;
-
-            var allBytes = hex.GetAllBytes();
-
-            _parsedFieldsPanel.Clear();
-            _parsedFieldsPanel.TotalFileSize = allBytes?.LongLength ?? 0;
-            _parsedFieldsPanel.FormatInfo = new WpfHexEditor.Core.Interfaces.FormatInfo
-            {
-                IsDetected  = true,
-                Name        = evt.TemplateName,
-                Description = string.Empty,
-                Category    = "Custom Template"
-            };
-
-            foreach (var block in evt.Blocks)
-            {
-                var offset = (int)block.Offset;
-                if (allBytes is null || offset < 0 || offset + block.Length > allBytes.Length)
-                    continue;
-
-                var data = new byte[block.Length];
-                Array.Copy(allBytes, offset, data, 0, block.Length);
-                var (rawVal, fmtVal) = InterpretTemplateBytes(data, block.TypeHint);
-
-                _parsedFieldsPanel.ParsedFields.Add(
-                    new WpfHexEditor.Core.ViewModels.ParsedFieldViewModel
-                    {
-                        Name           = block.Name,
-                        Offset         = offset,
-                        Length         = block.Length,
-                        RawValue       = rawVal,
-                        FormattedValue = fmtVal,
-                        ValueType      = block.TypeHint,
-                        Description    = block.DisplayValue,
-                        IsValid        = true
-                    });
-            }
-
-            _parsedFieldsPanel.RefreshView();
-            if (RefreshText is not null)
-                RefreshText.Text = $"Template '{evt.TemplateName}' applied — {evt.Blocks.Count} fields.";
-        });
     }
 
     // --- Plugin system shutdown ------------------------------------------
