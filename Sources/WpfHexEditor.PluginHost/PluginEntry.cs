@@ -25,7 +25,7 @@ public sealed class PluginEntry
     public IWpfHexEditorPlugin? Instance { get; set; }
 
     /// <summary>Isolated AssemblyLoadContext for InProcess plugins (null for Sandbox).</summary>
-    public PluginLoadContext? LoadContext { get; set; }
+    internal PluginLoadContext? LoadContext { get; set; }
 
     // â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -52,7 +52,7 @@ public sealed class PluginEntry
     // â”€â”€ Diagnostics â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /// <summary>Rolling performance diagnostics collector for this plugin.</summary>
-    public PluginDiagnosticsCollector Diagnostics { get; } = new();
+    internal PluginDiagnosticsCollector Diagnostics { get; } = new();
 
     // â”€â”€ Constructor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 

@@ -41,21 +41,27 @@ internal sealed class PluginWatchdog
     /// <param name="operation">Operation name (for diagnostics).</param>
     /// <param name="task">The async operation to wrap.</param>
     /// <param name="timeout">Timeout (null = use default per-call timeout).</param>
-    public async Task WrapAsync(string pluginId, string operation, Task task, TimeSpan? timeout = null)
+    /// <summary>
+    /// Executes a plugin async operation with a timeout guard.
+    /// Returns the measured wall-clock execution time, or throws <see cref="TimeoutException"/> if exceeded.
+    /// </summary>
+    public async Task<TimeSpan> WrapAsync(string pluginId, string operation, Task task, TimeSpan? timeout = null)
     {
         TimeSpan limit = timeout ?? DefaultCallTimeout;
-        using var cts = new CancellationTokenSource(limit);
+        using var cts  = new CancellationTokenSource(limit);
 
+        var sw          = System.Diagnostics.Stopwatch.StartNew();
         var timeoutTask = Task.Delay(limit, cts.Token);
-        var completedTask = await Task.WhenAny(task, timeoutTask).ConfigureAwait(false);
+        var completed   = await Task.WhenAny(task, timeoutTask).ConfigureAwait(false);
+        sw.Stop();
 
-        if (completedTask == timeoutTask)
+        if (completed == timeoutTask)
         {
             PluginNonResponsive?.Invoke(this, new PluginNonResponsiveEventArgs
             {
-                PluginId = pluginId,
+                PluginId  = pluginId,
                 Operation = operation,
-                Timeout = limit
+                Timeout   = limit
             });
             throw new TimeoutException($"Plugin '{pluginId}' did not complete '{operation}' within {limit.TotalSeconds:F1}s.");
         }
@@ -65,6 +71,8 @@ internal sealed class PluginWatchdog
 
         // Re-throw any exception from the plugin's task.
         await task.ConfigureAwait(false);
+
+        return sw.Elapsed;
     }
 
     /// <summary>

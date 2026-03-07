@@ -95,6 +95,30 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public ICommand ReloadCommand { get; }
     public ICommand UninstallCommand { get; }
 
+    // ── Plugin options ────────────────────────────────────────────────────────
+
+    /// <summary>True if the plugin exposes an options page via IPluginWithOptions.</summary>
+    public bool HasOptions => _entry.Instance is SDK.Contracts.IPluginWithOptions;
+
+    private System.Windows.FrameworkElement? _optionsPage;
+
+    /// <summary>
+    /// Lazily created options page control. Null if the plugin has no options.
+    /// Calls LoadOptions() each time the tab is first shown.
+    /// </summary>
+    public System.Windows.FrameworkElement? OptionsPage
+    {
+        get
+        {
+            if (_optionsPage is null && _entry.Instance is SDK.Contracts.IPluginWithOptions opts)
+            {
+                opts.LoadOptions();
+                _optionsPage = opts.CreateOptionsPage();
+            }
+            return _optionsPage;
+        }
+    }
+
     /// <summary>
     /// Called periodically by PluginManagerViewModel to refresh live metrics.
     /// </summary>

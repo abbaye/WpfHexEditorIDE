@@ -15,6 +15,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WpfHexEditor.PluginHost.UI">
 
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <local:NullToVisibilityConverter    x:Key="NullToVis"    Invert="False"/>
+        <local:NullToVisibilityConverter    x:Key="NotNullToVis" Invert="True"/>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="260" MinWidth="180"/>
@@ -122,10 +128,17 @@
                        Opacity="0.5"
                        Visibility="{Binding SelectedPlugin, Converter={StaticResource NullToVis}}"/>
 
-            <!-- Details pane (when plugin selected) -->
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                          Visibility="{Binding SelectedPlugin, Converter={StaticResource NotNullToVis}}">
-                <StackPanel Margin="12" DataContext="{Binding SelectedPlugin}">
+            <!-- Details pane (when plugin selected) — tabbed: Info / Settings -->
+            <TabControl Visibility="{Binding SelectedPlugin, Converter={StaticResource NotNullToVis}}"
+                        Background="Transparent"
+                        BorderThickness="0,1,0,0"
+                        BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                        DataContext="{Binding SelectedPlugin}">
+
+                <!-- ── Tab: Info ─────────────────────────────────────────────────── -->
+                <TabItem Header="Info">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="12">
 
                     <!-- Header: Name + State badge -->
                     <DockPanel Margin="0,0,0,8">
@@ -220,7 +233,19 @@
                     </WrapPanel>
 
                 </StackPanel>
-            </ScrollViewer>
+                </ScrollViewer>
+                </TabItem>
+
+                <!-- ── Tab: Settings (only when HasOptions=true) ─────────────────── -->
+                <TabItem Header="Settings"
+                         Visibility="{Binding HasOptions, Converter={StaticResource BoolToVis}}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                        <ContentPresenter Content="{Binding OptionsPage}"
+                                          Margin="12"/>
+                    </ScrollViewer>
+                </TabItem>
+
+            </TabControl>
         </Grid>
     </Grid>
 </UserControl>

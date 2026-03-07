@@ -34,6 +34,9 @@ public sealed class WpfPluginHost : IAsyncDisposable
     private readonly Dictionary<string, PluginEntry> _entries = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _lock = new();
 
+    /// <summary>Registry of per-plugin options pages (populated automatically on load).</summary>
+    public PluginOptionsRegistry OptionsRegistry { get; } = new();
+
     // -- Events --
 
     /// <summary>Raised on the Dispatcher thread when a plugin has been successfully loaded.</summary>
@@ -144,14 +147,25 @@ public sealed class WpfPluginHost : IAsyncDisposable
             var declaredPerms = instance.Capabilities.ToPermissionFlags();
             _permissionService.InitializeForPlugin(manifest.Id, declaredPerms);
 
-            // Run InitializeAsync under watchdog
-            var started = DateTime.UtcNow;
-            await _watchdog.WrapAsync(manifest.Id, "InitializeAsync",
+            // Run InitializeAsync under watchdog; measure execution time for diagnostics.
+            var cpuBefore = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
+            var elapsed   = await _watchdog.WrapAsync(manifest.Id, "InitializeAsync",
                 instance.InitializeAsync(_hostContext, ct),
-                PluginWatchdog.InitTimeout).ConfigureAwait(false);
+                _watchdog.InitTimeout).ConfigureAwait(false);
 
-            entry.SetInitDuration(DateTime.UtcNow - started);
+            var cpuAfter  = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
+            var cpuDelta  = cpuAfter - cpuBefore;
+            var cpuPct    = elapsed.TotalMilliseconds > 0
+                ? cpuDelta.TotalMilliseconds / (elapsed.TotalMilliseconds * Environment.ProcessorCount) * 100.0
+                : 0.0;
+            var memBytes  = GC.GetTotalMemory(forceFullCollection: false);
+            entry.Diagnostics.Record(cpuPct, memBytes, elapsed);
+            entry.SetInitDuration(elapsed);
             entry.SetState(PluginState.Loaded);
+
+            // Auto-register options page if the plugin supports it.
+            if (instance is IPluginWithOptions optionsPlugin)
+                OptionsRegistry.RegisterPluginPage(manifest.Id, manifest.Name, optionsPlugin);
             entry.SetLoadedAt(DateTime.UtcNow);
 
             RaiseOnDispatcher(() => PluginLoaded?.Invoke(this, new PluginEventArgs(manifest.Id, manifest.Name)));
@@ -196,15 +210,17 @@ public sealed class WpfPluginHost : IAsyncDisposable
         {
             if (entry.Instance is not null)
             {
-                await _watchdog.WrapAsync(pluginId, "ShutdownAsync",
+                var elapsed = await _watchdog.WrapAsync(pluginId, "ShutdownAsync",
                     entry.Instance.ShutdownAsync(ct),
                     TimeSpan.FromSeconds(3)).ConfigureAwait(false);
+                entry.Diagnostics.Record(0.0, GC.GetTotalMemory(false), elapsed);
             }
         }
         catch { /* best-effort shutdown */ }
         finally
         {
             _uiRegistry.UnregisterAllForPlugin(pluginId);
+            OptionsRegistry.UnregisterPluginPage(pluginId);
             entry.Unload();
             entry.SetState(PluginState.Unloaded);
             RaiseOnDispatcher(() => PluginUnloaded?.Invoke(this, new PluginEventArgs(pluginId, entry.Manifest.Name)));
@@ -226,9 +242,10 @@ public sealed class WpfPluginHost : IAsyncDisposable
         // Try V2 ReloadAsync first
         if (entry.Instance is IWpfHexEditorPluginV2 v2 && v2.SupportsHotReload)
         {
-            await _watchdog.WrapAsync(pluginId, "ReloadAsync",
+            var reloadElapsed = await _watchdog.WrapAsync(pluginId, "ReloadAsync",
                 v2.ReloadAsync(ct),
-                PluginWatchdog.InitTimeout).ConfigureAwait(false);
+                _watchdog.InitTimeout).ConfigureAwait(false);
+            entry.Diagnostics.Record(0.0, GC.GetTotalMemory(false), reloadElapsed);
             return;
         }
 

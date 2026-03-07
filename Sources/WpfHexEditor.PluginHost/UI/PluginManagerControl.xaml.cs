@@ -4,11 +4,30 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace WpfHexEditor.PluginHost.UI;
+
+/// <summary>Converts a null/non-null object to Visibility. Invert=true → null=Visible, non-null=Collapsed.</summary>
+[ValueConversion(typeof(object), typeof(Visibility))]
+public sealed class NullToVisibilityConverter : IValueConverter
+{
+    public bool Invert { get; set; }
+
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        bool isNull = value is null;
+        bool visible = Invert ? !isNull : isNull;
+        return visible ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        => DependencyProperty.UnsetValue;
+}
 
 /// <summary>
 /// Plugin Manager document tab â€” lists all plugins with live metrics and lifecycle actions.
