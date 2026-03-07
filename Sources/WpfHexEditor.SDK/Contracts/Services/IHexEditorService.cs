@@ -4,6 +4,8 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using WpfHexEditor.Core.Interfaces;
+
 namespace WpfHexEditor.SDK.Contracts.Services;
 
 /// <summary>
@@ -77,4 +79,35 @@ public interface IHexEditorService
     /// Raised on the UI thread.
     /// </summary>
     event EventHandler FileOpened;
+
+    /// <summary>
+    /// Raised when the HexEditor completes automatic format detection.
+    /// Raised on the UI thread.
+    /// </summary>
+    event EventHandler<FormatDetectedArgs> FormatDetected;
+
+    /// <summary>
+    /// Programmatically sets the HexEditor selection range.
+    /// Used by the StructureOverlay plugin to highlight parsed fields.
+    /// </summary>
+    /// <param name="start">Start byte offset (inclusive).</param>
+    /// <param name="end">End byte offset (inclusive).</param>
+    void SetSelection(long start, long end);
+
+    /// <summary>
+    /// Raised when the active HexEditor document tab changes (a different file becomes active).
+    /// Plugins use this to disconnect/reconnect panels that have a 1:1 binding with the active editor.
+    /// Raised on the UI thread.
+    /// </summary>
+    event EventHandler ActiveEditorChanged;
+
+    /// <summary>
+    /// Connects a <see cref="IParsedFieldsPanel"/> to the currently active HexEditor.
+    /// Auto-wires all 5 bidirectional events (FieldSelected, RefreshRequested, FormatterChanged,
+    /// FieldValueEdited, FormatCandidateSelected) via the HexEditor DependencyProperty.
+    /// </summary>
+    void ConnectParsedFieldsPanel(IParsedFieldsPanel panel);
+
+    /// <summary>Disconnects the currently connected <see cref="IParsedFieldsPanel"/>.</summary>
+    void DisconnectParsedFieldsPanel();
 }

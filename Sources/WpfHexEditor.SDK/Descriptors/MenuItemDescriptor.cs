@@ -40,4 +40,12 @@ public sealed class MenuItemDescriptor
 
     /// <summary>Insertion position in the parent menu (-1 = append at end).</summary>
     public int InsertPosition { get; init; } = -1;
+
+    /// <summary>
+    /// Optional group name used to cluster plugin menu items under a shared separator.
+    /// All items sharing the same Group value in the same parent menu are placed together,
+    /// separated from other groups by a <see cref="System.Windows.Controls.Separator"/>.
+    /// Example: "Analysis", "FileTools", "Statistics".
+    /// </summary>
+    public string? Group { get; init; }
 }

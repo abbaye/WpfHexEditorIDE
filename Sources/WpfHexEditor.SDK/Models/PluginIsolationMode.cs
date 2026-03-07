@@ -4,11 +4,14 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Text.Json.Serialization;
+
 namespace WpfHexEditor.SDK.Models;
 
 /// <summary>
 /// Defines how a plugin is isolated from the IDE host process.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum PluginIsolationMode
 {
     /// <summary>

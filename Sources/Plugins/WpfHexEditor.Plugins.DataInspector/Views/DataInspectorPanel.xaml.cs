@@ -275,13 +275,13 @@ public partial class DataInspectorPanel : UserControl
     // ── Toolbar toggles ──────────────────────────────────────────────────────
 
     private void OnToggleLabels(object sender, RoutedEventArgs e)
-        => Chart.ShowAxisLabels = ToggleLabels.IsChecked == true;
+    { if (Chart is not null) Chart.ShowAxisLabels = ToggleLabels.IsChecked == true; }
 
     private void OnToggleGrid(object sender, RoutedEventArgs e)
-        => Chart.ShowGridLines = ToggleGrid.IsChecked == true;
+    { if (Chart is not null) Chart.ShowGridLines = ToggleGrid.IsChecked == true; }
 
     private void OnToggleStats(object sender, RoutedEventArgs e)
-        => Chart.ShowStatistics = ToggleStats.IsChecked == true;
+    { if (Chart is not null) Chart.ShowStatistics = ToggleStats.IsChecked == true; }
 
     private void OnRefresh(object sender, RoutedEventArgs e)
     {

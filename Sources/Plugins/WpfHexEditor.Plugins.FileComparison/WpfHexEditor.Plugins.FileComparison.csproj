@@ -10,7 +10,7 @@
     <!-- Plugin metadata required by WpfHexEditor.SDK.targets to generate manifest.json -->
     <PluginId>WpfHexEditor.Plugins.FileComparison</PluginId>
     <PluginName>File Comparison</PluginName>
-    <PluginVersion>1.0.0</PluginVersion>
+    <PluginVersion>0.2.0</PluginVersion>
     <PluginEntryPoint>WpfHexEditor.Plugins.FileComparison.FileComparisonPlugin</PluginEntryPoint>
     <PluginAuthor>Derek Tremblay</PluginAuthor>
     <PluginPublisher>WpfHexEditor</PluginPublisher>
@@ -31,10 +31,12 @@
     <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
   </ItemGroup>
 
+  <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />
+
   <!-- Copy compiled plugin to App Plugins directory after build -->
   <Target Name="CopyToPluginsDir" AfterTargets="GeneratePluginManifest">
     <PropertyGroup>
-      <PluginDestDir>$(SolutionDir)Sources\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
+      <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
     </PropertyGroup>
     <MakeDir Directories="$(PluginDestDir)" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json"

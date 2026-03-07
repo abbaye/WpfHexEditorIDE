@@ -18,6 +18,7 @@
 // ==========================================================
 
 using System.Windows;
+using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
@@ -35,7 +36,7 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
 {
     public string  Id      => "WpfHexEditor.Plugins.DataInspector";
     public string  Name    => "Data Inspector";
-    public Version Version => new(1, 0, 0);
+    public Version Version => new(0, 6, 0);
 
     public PluginCapabilities Capabilities => new()
     {
@@ -58,18 +59,33 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
         // Pass context so the panel can perform scope-aware reads (WholeFile mode).
         _panel.SetContext(context);
 
-        // Register ONE unified panel docked at the bottom.
+        // Register ONE unified panel docked on the Right (alongside ParsedFields).
         // ByteChart and byte interpretations are both inside this panel.
         context.UIRegistry.RegisterPanel(
-            "WpfHexEditor.Plugins.DataInspector.Panel",
+            "WpfHexEditor.Plugins.DataInspector.Panel.DataInspectorPanel",
             _panel,
             Id,
             new PanelDescriptor
             {
                 Title           = "Data Inspector",
-                DefaultDockSide = "Bottom",
+                DefaultDockSide = "Right",
+                DefaultAutoHide = false,
                 CanClose        = true,
-                PreferredHeight = 180
+                PreferredHeight = 280
+            });
+
+        // Register View menu item so the user can show/hide this panel.
+        context.UIRegistry.RegisterMenuItem(
+            $"{Id}.Menu.Show",
+            Id,
+            new MenuItemDescriptor
+            {
+                Header     = "_Data Inspector",
+                ParentPath = "View",
+                Group      = "Analysis",
+                IconGlyph  = "\uE9E6",
+                Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
+                                 "WpfHexEditor.Plugins.DataInspector.Panel.DataInspectorPanel"))
             });
 
         // Subscribe to HexEditor events to drive panel updates automatically.

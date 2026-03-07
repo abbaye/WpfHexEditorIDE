@@ -19,7 +19,15 @@ namespace WpfHexEditor.App.Services;
 public sealed class MenuAdapter : IMenuAdapter
 {
     private readonly Menu _mainMenu;
+
+    // uiId → added MenuItem
     private readonly Dictionary<string, MenuItem> _addedItems = new(StringComparer.OrdinalIgnoreCase);
+
+    // (normalised parentPath + group) → Separator element that heads that group block
+    private readonly Dictionary<string, Separator> _groupSeparators = new(StringComparer.OrdinalIgnoreCase);
+
+    // uiIds in each group block — used to clean up separators when a group is emptied
+    private readonly Dictionary<string, List<string>> _groupMembers = new(StringComparer.OrdinalIgnoreCase);
 
     public MenuAdapter(Menu mainMenu)
     {
@@ -33,10 +41,10 @@ public sealed class MenuAdapter : IMenuAdapter
 
         var item = new MenuItem
         {
-            Header = descriptor.Header,
-            Command = descriptor.Command,
-            CommandParameter = descriptor.CommandParameter,
-            ToolTip = descriptor.ToolTip
+            Header             = descriptor.Header,
+            Command            = descriptor.Command,
+            CommandParameter   = descriptor.CommandParameter,
+            ToolTip            = descriptor.ToolTip
         };
 
         if (!string.IsNullOrEmpty(descriptor.GestureText))
@@ -46,17 +54,38 @@ public sealed class MenuAdapter : IMenuAdapter
         {
             item.Icon = new TextBlock
             {
-                Text = descriptor.IconGlyph,
+                Text       = descriptor.IconGlyph,
                 FontFamily = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"),
-                FontSize = 12
+                FontSize   = 12
             };
         }
 
         var parent = FindOrCreateParent(descriptor.ParentPath);
-        if (descriptor.InsertPosition >= 0 && descriptor.InsertPosition < parent.Items.Count)
-            parent.Items.Insert(descriptor.InsertPosition, item);
-        else
+
+        if (!string.IsNullOrEmpty(descriptor.Group))
+        {
+            var groupKey = $"{descriptor.ParentPath}|{descriptor.Group}";
+
+            if (!_groupSeparators.ContainsKey(groupKey))
+            {
+                // First item for this group — prepend a separator to start the block.
+                var sep = new Separator();
+                parent.Items.Add(sep);
+                _groupSeparators[groupKey] = sep;
+                _groupMembers[groupKey]    = new List<string>();
+            }
+
             parent.Items.Add(item);
+            _groupMembers[groupKey].Add(uiId);
+        }
+        else if (descriptor.InsertPosition >= 0 && descriptor.InsertPosition < parent.Items.Count)
+        {
+            parent.Items.Insert(descriptor.InsertPosition, item);
+        }
+        else
+        {
+            parent.Items.Add(item);
+        }
 
         _addedItems[uiId] = item;
     }
@@ -70,6 +99,21 @@ public sealed class MenuAdapter : IMenuAdapter
             parent.Items.Remove(item);
 
         _addedItems.Remove(uiId);
+
+        // Remove the group separator if this was the last item in the group.
+        foreach (var kv in _groupMembers)
+        {
+            if (!kv.Value.Remove(uiId)) continue;
+            if (kv.Value.Count == 0
+                && _groupSeparators.TryGetValue(kv.Key, out var sep)
+                && sep.Parent is ItemsControl sepParent)
+            {
+                sepParent.Items.Remove(sep);
+                _groupSeparators.Remove(kv.Key);
+                _groupMembers.Remove(kv.Key);
+            }
+            break;
+        }
     }
 
     private ItemsControl FindOrCreateParent(string parentPath)
@@ -78,11 +122,13 @@ public sealed class MenuAdapter : IMenuAdapter
 
         foreach (var topItem in _mainMenu.Items.OfType<MenuItem>())
         {
-            if (string.Equals(topItem.Header?.ToString(), parentPath, StringComparison.OrdinalIgnoreCase))
+            // Strip leading underscore (WPF access key prefix, e.g. "_View" → "View").
+            var headerText = topItem.Header?.ToString()?.TrimStart('_') ?? string.Empty;
+            if (string.Equals(headerText, parentPath.TrimStart('_'), StringComparison.OrdinalIgnoreCase))
                 return topItem;
         }
 
-        // Parent not found — create a new top-level menu group
+        // Parent not found — create a new top-level menu group.
         var newParent = new MenuItem { Header = parentPath };
         _mainMenu.Items.Add(newParent);
         return newParent;

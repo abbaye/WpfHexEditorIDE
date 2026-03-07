@@ -1,4 +1,4 @@
-# 🚀 Using WPF HexEditor in JetBrains Rider
+﻿# 🚀 Using WPF HexEditor in JetBrains Rider
 
 **Quick Answer:** Yes, WpfHexEditor works perfectly in Rider! You just add it via XAML code instead of drag-n-drop.
 
@@ -338,7 +338,7 @@ Hover over any property/method → Press `Ctrl+Q` → See XML documentation.
 **Ready-to-use examples:**
 
 1. **[Simple Viewer](../../Sources/Samples/Rider/SimpleExample/)** (Minimal setup)
-2. **[Main Sample](../../Sources/Samples/WpfHexEditor.Sample.Main/)** (All features)
+2. **[Main Sample](../../Sources/Samples/WpfHexEditor.Sample.HexEditor/)** (All features)
 3. **[Legacy Samples](../../Sources/Samples/Legacy/)** (V1 examples)
 
 **Open in Rider:**
@@ -348,7 +348,7 @@ git clone https://github.com/abbaye/WpfHexEditorIDE.git
 cd WpfHexEditorIDE
 
 # Open sample in Rider
-rider Sources/Samples/WpfHexEditor.Sample.Main/WpfHexEditor.Sample.Main.csproj
+rider Sources/Samples/WpfHexEditor.Sample.HexEditor/WpfHexEditor.Sample.HexEditor.csproj
 ```
 
 ---

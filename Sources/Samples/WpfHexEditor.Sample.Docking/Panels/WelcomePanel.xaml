@@ -1,0 +1,156 @@
+<!-- ==========================================================
+     Project: WpfHexEditor.Sample.Docking
+     File: Panels/WelcomePanel.xaml
+     Author: Derek Tremblay (derektremblay666@gmail.com)
+     Contributors: Claude Sonnet 4.6
+     Created: 2026-03-07
+     Description:
+         Welcome document shown in the center document host on first launch.
+         Uses DynamicResource bindings so text colours switch correctly with the theme.
+
+     Architecture Notes:
+         Theme: DockTabTextBrush, DockTabActiveBrush (dynamic — auto-updates on theme switch)
+         ResourceDictionaries applied: inherited from App.xaml active theme.
+     ========================================================== -->
+
+<UserControl x:Class="WpfHexEditor.Sample.Docking.Panels.WelcomePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource DockBackgroundBrush}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="48,36,48,36" MaxWidth="680">
+
+            <!-- Title -->
+            <TextBlock Text="WpfHexEditor — Docking Sample"
+                       FontSize="26"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DockTabActiveBrush}"
+                       Margin="0,0,0,6" />
+
+            <TextBlock Text="A minimal reference project for building docking-based WPF applications."
+                       FontSize="13"
+                       Foreground="{DynamicResource DockTabTextBrush}"
+                       Opacity="0.7"
+                       Margin="0,0,0,32" />
+
+            <!-- Separator -->
+            <Rectangle Height="1"
+                       Fill="{DynamicResource DockBorderBrush}"
+                       Margin="0,0,0,28" />
+
+            <!-- Section: Panels -->
+            <TextBlock Text="Panels in this layout"
+                       FontSize="15"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DockTabTextBrush}"
+                       Margin="0,0,0,10" />
+
+            <Grid Margin="0,0,0,28">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="● Explorer"
+                           FontSize="13" FontWeight="SemiBold"
+                           Foreground="{DynamicResource DockTabActiveBrush}"
+                           Margin="0,0,16,8" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Left panel — a sample TreeView side panel"
+                           FontSize="13" Foreground="{DynamicResource DockTabTextBrush}"
+                           Opacity="0.8" VerticalAlignment="Center" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="● Output"
+                           FontSize="13" FontWeight="SemiBold"
+                           Foreground="{DynamicResource DockTabActiveBrush}"
+                           Margin="0,0,16,8" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Bottom panel — RichTextBox log, cleared via toolbar"
+                           FontSize="13" Foreground="{DynamicResource DockTabTextBrush}"
+                           Opacity="0.8" VerticalAlignment="Center" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="● Properties"
+                           FontSize="13" FontWeight="SemiBold"
+                           Foreground="{DynamicResource DockTabActiveBrush}"
+                           Margin="0,0,16,0" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Bottom panel (tab) — sample key / value property grid"
+                           FontSize="13" Foreground="{DynamicResource DockTabTextBrush}"
+                           Opacity="0.8" VerticalAlignment="Center" />
+            </Grid>
+
+            <!-- Section: Try it -->
+            <TextBlock Text="Try it"
+                       FontSize="15"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DockTabTextBrush}"
+                       Margin="0,0,0,10" />
+
+            <StackPanel Margin="0,0,0,28">
+                <TextBlock FontSize="13" Foreground="{DynamicResource DockTabTextBrush}" Opacity="0.85"
+                           Margin="0,0,0,5"
+                           Text="• Drag any panel tab to a new edge to re-dock it" />
+                <TextBlock FontSize="13" Foreground="{DynamicResource DockTabTextBrush}" Opacity="0.85"
+                           Margin="0,0,0,5"
+                           Text="• Right-click a tab → Float to detach it as a floating window" />
+                <TextBlock FontSize="13" Foreground="{DynamicResource DockTabTextBrush}" Opacity="0.85"
+                           Margin="0,0,0,5"
+                           Text="• Right-click a tab → Auto-Hide to collapse it to an edge bar" />
+                <TextBlock FontSize="13" Foreground="{DynamicResource DockTabTextBrush}" Opacity="0.85"
+                           Margin="0,0,0,5"
+                           Text="• Click ⚙ in the title bar to toggle Dark / Light theme" />
+                <TextBlock FontSize="13" Foreground="{DynamicResource DockTabTextBrush}" Opacity="0.85"
+                           Text="• Close and reopen — the layout is restored automatically" />
+            </StackPanel>
+
+            <!-- Section: Integration -->
+            <TextBlock Text="Integration — 3 steps"
+                       FontSize="15"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DockTabTextBrush}"
+                       Margin="0,0,0,10" />
+
+            <Border Background="{DynamicResource DockMenuBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="16,12">
+                <StackPanel>
+                    <TextBlock FontSize="12" FontFamily="Consolas"
+                               Foreground="{DynamicResource DockTabTextBrush}"
+                               Margin="0,0,0,4"
+                               Text="// 1. Reference WpfHexEditor.Docking.Wpf in your .csproj" />
+                    <TextBlock FontSize="12" FontFamily="Consolas"
+                               Foreground="{DynamicResource DockTabActiveBrush}"
+                               Margin="0,0,0,12"
+                               Text="&lt;ProjectReference Include=&quot;WpfHexEditor.Docking.Wpf.csproj&quot; /&gt;" />
+
+                    <TextBlock FontSize="12" FontFamily="Consolas"
+                               Foreground="{DynamicResource DockTabTextBrush}"
+                               Margin="0,0,0,4"
+                               Text="// 2. Add DockControl to your Window XAML" />
+                    <TextBlock FontSize="12" FontFamily="Consolas"
+                               Foreground="{DynamicResource DockTabActiveBrush}"
+                               Margin="0,0,0,12"
+                               Text="&lt;dock:DockControl x:Name=&quot;DockHost&quot; /&gt;" />
+
+                    <TextBlock FontSize="12" FontFamily="Consolas"
+                               Foreground="{DynamicResource DockTabTextBrush}"
+                               Margin="0,0,0,4"
+                               Text="// 3. Wire ContentFactory and Layout in code-behind" />
+                    <TextBlock FontSize="12" FontFamily="Consolas"
+                               Foreground="{DynamicResource DockTabActiveBrush}"
+                               Text="DockHost.ContentFactory = item =&gt; BuildContent(item);" />
+                    <TextBlock FontSize="12" FontFamily="Consolas"
+                               Foreground="{DynamicResource DockTabActiveBrush}"
+                               Text="DockHost.Layout = BuildDefaultLayout();" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -22,7 +22,7 @@
   This file is suitable for:
     - Local development and testing
     - Build validation
-  For distribution, run: whxpack --input $(OutputPath) --output plugin.whxplugin
+  For distribution, run: whxpack -input $(OutputPath) -output plugin.whxplugin
   which produces the Distribution Manifest with hash and optional signature.
 -->
 <Project>

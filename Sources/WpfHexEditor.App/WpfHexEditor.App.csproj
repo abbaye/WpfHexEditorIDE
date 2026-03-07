@@ -26,7 +26,6 @@
     <ProjectReference Include="..\WpfHexEditor.Core\WpfHexEditor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Panels.IDE\WpfHexEditor.Panels.IDE.csproj" />
-    <ProjectReference Include="..\WpfHexEditor.Panels.BinaryAnalysis\WpfHexEditor.Panels.BinaryAnalysis.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Panels.FileOps\WpfHexEditor.Panels.FileOps.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
     <ProjectReference Include="..\WpfHexEditor.ProjectSystem\WpfHexEditor.ProjectSystem.csproj" />
@@ -47,6 +46,29 @@
     <ProjectReference Include="..\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Terminal\WpfHexEditor.Terminal.csproj" />
     <ProjectReference Include="..\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
+  </ItemGroup>
+
+  <!-- Build-order dependencies: ensure plugins are compiled and their CopyToPluginsDir
+       post-build target runs before the App is launched. No runtime coupling. -->
+  <ItemGroup Label="PluginBuildOrder">
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.DataInspector\WpfHexEditor.Plugins.DataInspector.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.StructureOverlay\WpfHexEditor.Plugins.StructureOverlay.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.FileStatistics\WpfHexEditor.Plugins.FileStatistics.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.PatternAnalysis\WpfHexEditor.Plugins.PatternAnalysis.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.FormatInfo\WpfHexEditor.Plugins.FormatInfo.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.FileComparison\WpfHexEditor.Plugins.FileComparison.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.ArchiveStructure\WpfHexEditor.Plugins.ArchiveStructure.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.CustomParserTemplate\WpfHexEditor.Plugins.CustomParserTemplate.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\Plugins\WpfHexEditor.Plugins.ParsedFields\WpfHexEditor.Plugins.ParsedFields.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" />
   </ItemGroup>
 
 </Project>

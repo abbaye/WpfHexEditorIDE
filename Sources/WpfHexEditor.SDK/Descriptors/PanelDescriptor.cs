@@ -31,4 +31,10 @@ public sealed class PanelDescriptor
 
     /// <summary>Preferred height when docked vertically (0 = auto).</summary>
     public double PreferredHeight { get; init; }
+
+    /// <summary>
+    /// When true, the panel starts in auto-hide (pinned to the side bar) instead of docked open.
+    /// Use for secondary panels that should not consume screen space by default.
+    /// </summary>
+    public bool DefaultAutoHide { get; init; }
 }

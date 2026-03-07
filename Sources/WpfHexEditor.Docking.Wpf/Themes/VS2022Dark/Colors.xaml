@@ -308,4 +308,19 @@
     <SolidColorBrush x:Key="Panel_WarningBackgroundBrush" Color="#2D2000"/>
     <SolidColorBrush x:Key="Panel_WarningBorderBrush"     Color="#F5A623"/>
     <SolidColorBrush x:Key="Panel_WarningTextBrush"       Color="#E0A000"/>
+
+    <!-- Plugin Manager (PM_*) -->
+    <SolidColorBrush x:Key="PM_ListBackgroundBrush"              Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="PM_ListItemHoverBrush"               Color="#2A2D2E"/>
+    <SolidColorBrush x:Key="PM_ListItemSelectedBrush"            Color="#094771"/>
+    <SolidColorBrush x:Key="PM_CategoryHeaderBrush"              Color="#2D2D30"/>
+    <SolidColorBrush x:Key="PM_CategoryHeaderForegroundBrush"    Color="#858585"/>
+    <SolidColorBrush x:Key="PM_DetailHeaderBackgroundBrush"      Color="#252526"/>
+    <SolidColorBrush x:Key="PM_BadgeLoadedBrush"                 Color="#22C55E"/>
+    <SolidColorBrush x:Key="PM_BadgeDisabledBrush"               Color="#6B7280"/>
+    <SolidColorBrush x:Key="PM_BadgeFaultedBrush"                Color="#EF4444"/>
+    <SolidColorBrush x:Key="PM_BadgeSlowBrush"                   Color="#F59E0B"/>
+    <SolidColorBrush x:Key="PM_BadgeTrustedBrush"                Color="#22C55E"/>
+    <SolidColorBrush x:Key="DangerBrush"                         Color="#EF4444"/>
+    <SolidColorBrush x:Key="DangerHoverBrush"                    Color="#DC2626"/>
 </ResourceDictionary>

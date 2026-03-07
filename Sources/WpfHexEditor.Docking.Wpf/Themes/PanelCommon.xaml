@@ -577,4 +577,123 @@
     <!-- CheckBox: implicit alias — applies DockCheckBoxStyle to every CheckBox in scope -->
     <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource DockCheckBoxStyle}"/>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         Plugin Manager (PM_*) — shared styles for PluginManagerControl
+         ══════════════════════════════════════════════════════════= -->
+
+    <!-- Plugin list item container — hover + selected state via DynamicResource.
+         Selected trigger also sets Foreground=White so subtitle text (bound via
+         RelativeSource to ListBoxItem.Foreground) remains readable on the accent bg. -->
+    <Style x:Key="PM_PluginListItemStyle" TargetType="ListBoxItem">
+        <Setter Property="Background"   Value="Transparent"/>
+        <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding"      Value="0"/>
+        <Setter Property="Cursor"       Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                            CornerRadius="2" Padding="4,2">
+                        <ContentPresenter/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource PM_ListItemHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource PM_ListItemSelectedBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Plugin category header — non-interactive section label -->
+    <Style x:Key="PM_CategoryHeaderStyle" TargetType="Border">
+        <Setter Property="Background"  Value="{DynamicResource PM_CategoryHeaderBrush}"/>
+        <Setter Property="Padding"     Value="8,3"/>
+        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Panel_ToolbarBorderBrush}"/>
+    </Style>
+
+    <!-- State badge capsule (coloured background, white text) -->
+    <Style x:Key="PM_BadgeStyle" TargetType="Border">
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding"      Value="6,1"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Action button: Enable / Disable / Reload — panel-style flat button.
+         Hover/Pressed states use Style.Triggers so derived styles can override independently. -->
+    <Style x:Key="PM_ActionButtonStyle" TargetType="Button">
+        <Setter Property="Background"      Value="{DynamicResource Panel_ToolbarBrush}"/>
+        <Setter Property="Foreground"      Value="{DynamicResource DockMenuForegroundBrush}"/>
+        <Setter Property="BorderBrush"     Value="{DynamicResource Panel_ToolbarBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding"         Value="10,4"/>
+        <Setter Property="Margin"          Value="0,0,6,6"/>
+        <Setter Property="Cursor"          Value="Hand"/>
+        <Setter Property="FontSize"        Value="12"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="3"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background"  Value="{DynamicResource PM_ListItemHoverBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background"  Value="{DynamicResource PM_ListItemSelectedBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Danger button: Uninstall — keeps DangerBrush border on all interactive states -->
+    <Style x:Key="PM_DangerButtonStyle" TargetType="Button"
+           BasedOn="{StaticResource PM_ActionButtonStyle}">
+        <Setter Property="Foreground"  Value="{DynamicResource DangerBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource DangerBrush}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background"  Value="{DynamicResource PM_ListItemHoverBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource DangerBrush}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background"  Value="{DynamicResource PM_ListItemSelectedBrush}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource DangerBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Metric card: small dark card showing CPU / RAM / Init / Avg -->
+    <Style x:Key="PM_MetricCardStyle" TargetType="Border">
+        <Setter Property="Background"   Value="{DynamicResource Panel_ToolbarBrush}"/>
+        <Setter Property="BorderBrush"  Value="{DynamicResource Panel_ToolbarBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding"      Value="8"/>
+    </Style>
+
 </ResourceDictionary>

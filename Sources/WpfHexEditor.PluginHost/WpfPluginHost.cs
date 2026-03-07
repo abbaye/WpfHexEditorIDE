@@ -32,6 +32,9 @@ public sealed class WpfPluginHost : IAsyncDisposable
     private readonly PermissionService _permissionService;
     private readonly PluginWatchdog _watchdog;
     private readonly SlowPluginDetector _slowDetector;
+    private readonly Action<string> _log;
+    private readonly Action<string> _logError;
+    private readonly Dispatcher _dispatcher;
 
     private readonly Dictionary<string, PluginEntry> _entries = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _lock = new();
@@ -72,11 +75,16 @@ public sealed class WpfPluginHost : IAsyncDisposable
         IIDEHostContext hostContext,
         UIRegistry uiRegistry,
         PermissionService permissionService,
-        Dispatcher dispatcher)
+        Dispatcher dispatcher,
+        Action<string>? logger = null,
+        Action<string>? errorLogger = null)
     {
         _hostContext = hostContext ?? throw new ArgumentNullException(nameof(hostContext));
         _uiRegistry = uiRegistry ?? throw new ArgumentNullException(nameof(uiRegistry));
         _permissionService = permissionService ?? throw new ArgumentNullException(nameof(permissionService));
+        _log = logger ?? (_ => { });
+        _logError = errorLogger ?? _log;
+        _dispatcher = dispatcher;
         _watchdog = new PluginWatchdog();
         _watchdog.PluginNonResponsive += OnPluginNonResponsive;
 
@@ -110,6 +118,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
         foreach (var dir in searchDirs)
         {
+            _log($"[PluginSystem] Scanning: {dir} (exists: {Directory.Exists(dir)})");
             if (!Directory.Exists(dir)) continue;
 
             foreach (var pluginDir in Directory.GetDirectories(dir))
@@ -120,6 +129,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
             }
         }
 
+        _log($"[PluginSystem] Discovered {result.Count} plugin(s).");
         return result;
     }
 
@@ -173,10 +183,12 @@ public sealed class WpfPluginHost : IAsyncDisposable
             var declaredPerms = instance.Capabilities.ToPermissionFlags();
             _permissionService.InitializeForPlugin(manifest.Id, declaredPerms);
 
-            // Run InitializeAsync under watchdog; measure execution time for diagnostics.
+            // Run InitializeAsync on the STA dispatcher thread: plugins create WPF controls
+            // (UserControl, Window, etc.) which require an STA thread.
             var cpuBefore = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
+            var initTask  = await _dispatcher.InvokeAsync(() => instance.InitializeAsync(_hostContext, ct));
             var elapsed   = await _watchdog.WrapAsync(manifest.Id, "InitializeAsync",
-                instance.InitializeAsync(_hostContext, ct),
+                initTask,
                 _watchdog.InitTimeout).ConfigureAwait(false);
 
             var cpuAfter  = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
@@ -217,8 +229,17 @@ public sealed class WpfPluginHost : IAsyncDisposable
         foreach (var manifest in sorted)
         {
             ct.ThrowIfCancellationRequested();
-            try { await LoadPluginAsync(manifest, ct).ConfigureAwait(false); }
-            catch { /* recorded in entry; PluginCrashed already raised */ }
+            _log($"[PluginSystem] Loading '{manifest.Name}' ({manifest.Id})...");
+            try
+            {
+                await LoadPluginAsync(manifest, ct).ConfigureAwait(false);
+                _log($"[PluginSystem] '{manifest.Name}' loaded OK.");
+            }
+            catch (Exception ex)
+            {
+                _logError($"[PluginSystem] ERROR loading '{manifest.Name}': {ex.Message}");
+                /* entry already marked Faulted; PluginCrashed already raised */
+            }
         }
     }
 
@@ -395,7 +416,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
     // --- Private helpers ---------------------------------------------------------
 
-    private static async Task<PluginManifest?> TryLoadManifestAsync(string pluginDir)
+    private async Task<PluginManifest?> TryLoadManifestAsync(string pluginDir)
     {
         var manifestPath = Path.Combine(pluginDir, "manifest.json");
         if (!File.Exists(manifestPath)) return null;
@@ -406,19 +427,28 @@ public sealed class WpfPluginHost : IAsyncDisposable
             var manifest = JsonSerializer.Deserialize<PluginManifest>(json,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            if (manifest is null) return null;
+            if (manifest is null)
+            {
+                _logError($"[PluginSystem] manifest.json is null after deserialization in '{pluginDir}'.");
+                return null;
+            }
 
             // Store the directory for later assembly resolution
             manifest.ResolvedDirectory = pluginDir;
 
             var validator = new PluginManifestValidator(new Version(1, 0), new Version(1, 0));
             var result = validator.Validate(manifest, pluginDir);
-            if (!result.IsValid) return null; // Faulted manifest — skip silently
+            if (!result.IsValid)
+            {
+                _logError($"[PluginSystem] Manifest invalid in '{pluginDir}': {string.Join(", ", result.Errors)}");
+                return null;
+            }
 
             return manifest;
         }
-        catch
+        catch (Exception ex)
         {
+            _logError($"[PluginSystem] Failed to read manifest in '{pluginDir}': {ex.Message}");
             return null;
         }
     }

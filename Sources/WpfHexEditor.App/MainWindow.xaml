@@ -342,13 +342,6 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Parsed Fields" Click="OnShowParsedFields">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
                         <MenuItem Header="_Properties" Click="OnShowProperties" InputGestureText="F4">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -370,62 +363,8 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Data Inspector" Click="OnShowDataInspectorPanel">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE9E6;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="_Structure Overlay" Click="OnShowStructureOverlayPanel">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE82D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="File _Statistics" Click="OnShowFileStatsPanel">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE9F5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="_Pattern Analysis" Click="OnShowPatternAnalysisPanel">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE773;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Format _Info" Click="OnShowFormatInfoPanel">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE946;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="File _Comparison" Click="OnShowFileComparisonPanel">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE93D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="_Archive Structure" Click="OnShowArchivePanel">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="_Custom Parser Template" Click="OnShowCustomParserTemplate">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE9A1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
+                        <!-- Plugin-contributed View menu items are injected here dynamically
+                             by each plugin via IUIRegistry.RegisterMenuItem() at load time. -->
                         <Separator/>
                         <MenuItem Header="_Compare Files…" Click="OnCompareFiles" InputGestureText="Ctrl+Alt+D">
                             <MenuItem.Icon>
@@ -514,14 +453,6 @@
 
                     <!-- ═══════════ Tools ═══════════ -->
                     <MenuItem Header="_Tools">
-                        <MenuItem Header="_Plugin Manager" Click="OnOpenPluginManager">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE74C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator/>
                         <MenuItem Header="_Terminal" Click="OnOpenTerminal">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -529,9 +460,46 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Plugin Monitor" Click="OnOpenPluginMonitor">
+                    </MenuItem>
+
+                    <!-- ═══════════ Plugins ═══════════ -->
+                    <MenuItem Header="_Plugins">
+                        <MenuItem Header="_Plugin Manager"
+                                  Command="{x:Static local:MainWindow.OpenPluginManagerCommand}"
+                                  CommandTarget="{Binding ElementName=ThisWindow}"
+                                  InputGestureText="Ctrl+Shift+P">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE74C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Plugin _Monitor" Click="OnOpenPluginMonitor">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Header="_Install from File..." Click="OnInstallPluginFromMenu">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8F4;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="_Refresh All Plugins" Click="OnRefreshAllPlugins">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Header="Plugin System _Settings..." Click="OnOpenPluginSettings">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
@@ -1181,7 +1149,7 @@
 
             <!-- Plugin InfoBar — shown when a plugin is slow or has faulted (VS-style notification) -->
             <Border x:Name="PluginInfoBar" Grid.Row="0" Visibility="Collapsed"
-                    Background="#E07B16" Padding="8,5">
+                    Background="{DynamicResource PM_BadgeSlowBrush}" Padding="8,5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -1310,7 +1278,8 @@
             <!-- Plugin health indicator (click to open Plugin Manager) -->
             <StatusBarItem x:Name="PluginStatusItem" HorizontalAlignment="Right"
                            Cursor="Hand" ToolTip="Plugin System Status — Click to open Plugin Manager"
-                           MouseLeftButtonDown="OnPluginStatusBarClick">
+                           MouseLeftButtonDown="OnPluginStatusBarClick"
+                           MouseRightButtonDown="OnPluginStatusBarRightClick">
                 <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
                     <TextBlock x:Name="PluginStatusIcon" Text="&#xE74C;" FontFamily="Segoe MDL2 Assets"
                                FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0"
@@ -1319,7 +1288,7 @@
                                FontSize="11" VerticalAlignment="Center"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"/>
                     <!-- Warning badge (hidden until a plugin faults) -->
-                    <Border x:Name="PluginWarningBadge" Background="#EF4444" CornerRadius="8"
+                    <Border x:Name="PluginWarningBadge" Background="{DynamicResource PM_BadgeFaultedBrush}" CornerRadius="8"
                             Padding="4,1" Margin="4,0,0,0" VerticalAlignment="Center"
                             Visibility="Collapsed">
                         <TextBlock x:Name="PluginWarningText" Text="" FontSize="10" Foreground="White"/>
@@ -1350,6 +1319,7 @@
         <KeyBinding Key="F3"               Command="{x:Static local:MainWindow.FindNextCommand}" />
         <KeyBinding Gesture="Shift+F3"     Command="{x:Static local:MainWindow.FindPreviousCommand}" />
         <KeyBinding Gesture="Ctrl+G"       Command="{x:Static local:MainWindow.GoToOffsetCommand}" />
+        <KeyBinding Gesture="Ctrl+Shift+P" Command="{x:Static local:MainWindow.OpenPluginManagerCommand}" />
     </Window.InputBindings>
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static ApplicationCommands.New}"   Executed="OnNewFile" />
@@ -1362,5 +1332,6 @@
         <CommandBinding Command="{x:Static local:MainWindow.FindPreviousCommand}"    Executed="OnFindPrevious" />
         <CommandBinding Command="{x:Static local:MainWindow.WriteToDiskCommand}"  Executed="OnWriteToDisk" />
         <CommandBinding Command="{x:Static local:MainWindow.GoToOffsetCommand}"   Executed="OnGoToOffset" />
+        <CommandBinding Command="{x:Static local:MainWindow.OpenPluginManagerCommand}" Executed="OnOpenPluginManager" />
     </Window.CommandBindings>
 </Window>

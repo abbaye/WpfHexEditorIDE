@@ -27,13 +27,15 @@
                            Margin="4,0,6,0"
                            FontSize="12" />
                 <ComboBox x:Name="SourceComboBox"
-                          Width="140"
+                          Width="150"
                           SelectedIndex="0"
                           VerticalAlignment="Center"
-                          FontSize="12">
-                    <ComboBoxItem Content="Debug" />
-                    <ComboBoxItem Content="Build" />
+                          FontSize="12"
+                          SelectionChanged="OnSourceChanged">
                     <ComboBoxItem Content="General" />
+                    <ComboBoxItem Content="Plugin System" />
+                    <ComboBoxItem Content="Build" />
+                    <ComboBoxItem Content="Debug" />
                 </ComboBox>
                 <Button Content="&#xD7;"
                         ToolTip="Clear All"

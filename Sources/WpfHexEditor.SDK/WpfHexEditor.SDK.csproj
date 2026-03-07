@@ -20,9 +20,6 @@
     <ProjectReference Include="..\WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\WpfHexEditor.Panels.BinaryAnalysis\WpfHexEditor.Panels.BinaryAnalysis.csproj">
-      <PrivateAssets>none</PrivateAssets>
-    </ProjectReference>
     <ProjectReference Include="..\WpfHexEditor.Panels.FileOps\WpfHexEditor.Panels.FileOps.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>

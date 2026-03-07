@@ -1,4 +1,4 @@
-# WPF HexEditor Samples
+﻿# WPF HexEditor Samples
 
 This directory contains sample applications demonstrating the features and capabilities of the WPF HexEditor control (V2 Architecture).
 
@@ -9,9 +9,9 @@ This directory contains sample applications demonstrating the features and capab
 
 ## 📁 Active V2 Samples
 
-### 🖥️ WpfHexEditor.Sample.Main
+### 🖥️ WpfHexEditor.Sample.HexEditor
 **Platform:** WPF (C# | .NET 8.0 & .NET Framework 4.8)
-**Path:** `Sources/Samples/WpfHexEditor.Sample.Main/`
+**Path:** `Sources/Samples/WpfHexEditor.Sample.HexEditor/`
 **Description:** Primary V2 sample application showcasing the modern HexEditor architecture with all major features.
 
 **Features demonstrated:**
@@ -28,11 +28,11 @@ This directory contains sample applications demonstrating the features and capab
 
 **How to run:**
 ```bash
-cd Sources/Samples/WpfHexEditor.Sample.Main
+cd Sources/Samples/WpfHexEditor.Sample.HexEditor
 dotnet run
 ```
 
-Or open `WpfHexEditorControl.sln` and set `WpfHexEditor.Sample.Main` as the startup project.
+Or open `WpfHexEditorControl.sln` and set `WpfHexEditor.Sample.HexEditor` as the startup project.
 
 ---
 
@@ -80,7 +80,7 @@ dotnet build WpfHexEditorControl.sln
 
 This builds:
 - WpfHexEditorCore (main library)
-- WpfHexEditor.Sample.Main (primary V2 sample)
+- WpfHexEditor.Sample.HexEditor (primary V2 sample)
 - WpfHexEditor.RiderSimpleExample (Rider sample)
 - WPFHexaEditor.Tests (unit tests)
 
@@ -101,7 +101,7 @@ Or use Visual Studio/Rider:
 
 **Recommended order:**
 
-1. **Start with:** `WpfHexEditor.Sample.Main` ⭐ **RECOMMENDED**
+1. **Start with:** `WpfHexEditor.Sample.HexEditor` ⭐ **RECOMMENDED**
    - Explore all features in one comprehensive application
    - See real-world usage patterns
    - Learn the complete V2 API surface
@@ -276,7 +276,7 @@ The `Legacy/` folder contains 6 V1 sample projects that were removed from the so
 **Purpose:** Historical reference only
 **Note:** These samples use deprecated `HexEditorLegacy` API which was removed in v2.6.0
 
-All functionality from V1 samples is now available in `WpfHexEditor.Sample.Main` (V2) with significantly better performance.
+All functionality from V1 samples is now available in `WpfHexEditor.Sample.HexEditor` (V2) with significantly better performance.
 
 ---
 

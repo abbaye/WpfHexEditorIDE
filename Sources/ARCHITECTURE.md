@@ -1,4 +1,4 @@
-# WPF HexEditor IDE — Architecture Documentation
+﻿# WPF HexEditor IDE — Architecture Documentation
 
 **Version:** 2026-03 · **Target:** .NET 8.0-windows · **Projects:** ~42 · **Authors:** Derek Tremblay, Claude Sonnet 4.6
 
@@ -114,7 +114,7 @@ graph TB
 | `WpfHexEditor.Docking.Tests` | Tests | Docking engine unit tests |
 | `WpfHexEditor.PackagingTool` | Tools | `whxpack` CLI — `ManifestFinalizer` (SHA-256), `.whxplugin` packaging |
 | `WpfHexEditor.PluginInstaller` | Tools | WPF installer dialog, `PluginPackageExtractor`, `--silent` mode |
-| `WpfHexEditor.Sample.Main` | Samples | Comprehensive sample (MVVM, ModernMainWindowViewModel) |
+| `WpfHexEditor.Sample.HexEditor` | Samples | Comprehensive sample (MVVM, ModernMainWindowViewModel) |
 
 ---
 

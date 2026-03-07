@@ -21,14 +21,25 @@ public partial class OutputPanel : UserControl
     private bool _autoScroll = true;
     private bool _wordWrap   = false;
 
+    // One FlowDocument per named source channel.
+    private readonly Dictionary<string, FlowDocument> _sourceDocs = new();
+    private string _activeSource = "General";
+
     public OutputPanel()
     {
         InitializeComponent();
         OutputLogger.Register(this);
-        // Start with no-wrap: large page width = horizontal scroll
-        OutputTextBox.Document.PageWidth = 10000;
+
+        // Pre-create one document per source channel.
+        foreach (var src in new[] { "General", "Plugin System", "Build", "Debug" })
+            _sourceDocs[src] = CreateDocument();
+
+        OutputTextBox.Document = _sourceDocs[_activeSource];
         Loaded += (_, _) => UpdateAutoScrollVisual();
     }
+
+    private static FlowDocument CreateDocument()
+        => new FlowDocument { PagePadding = new Thickness(0), PageWidth = 10000 };
 
     /// <summary>
     /// The internal RichTextBox used by <see cref="OutputLogger"/> to append messages.
@@ -38,11 +49,17 @@ public partial class OutputPanel : UserControl
     // --- Public append API (called by OutputLogger) --------------------
 
     /// <summary>
-    /// Appends a line of text with an optional foreground color.
+    /// Appends a line of text to the given source channel with an optional foreground color.
     /// <c>null</c> color = default theme foreground.
     /// </summary>
-    internal void AppendLine(string text, Brush? color)
+    internal void AppendLine(string text, Brush? color, string source = "General")
     {
+        if (!_sourceDocs.TryGetValue(source, out var doc))
+        {
+            doc = CreateDocument();
+            _sourceDocs[source] = doc;
+        }
+
         var run = new Run(text);
         if (color is not null) run.Foreground = color;
 
@@ -53,25 +70,42 @@ public partial class OutputPanel : UserControl
             LineStackingStrategy = LineStackingStrategy.BlockLineHeight
         };
 
-        OutputTextBox.Document.Blocks.Add(para);
+        doc.Blocks.Add(para);
 
-        if (_autoScroll)
+        if (_autoScroll && source == _activeSource)
             OutputTextBox.ScrollToEnd();
     }
 
     /// <summary>
-    /// Clears all output.
+    /// Clears the currently active source channel.
     /// </summary>
-    internal void ClearOutput() => OutputTextBox.Document.Blocks.Clear();
+    internal void ClearOutput()
+    {
+        if (_sourceDocs.TryGetValue(_activeSource, out var doc))
+            doc.Blocks.Clear();
+    }
 
     /// <summary>
-    /// Returns the full plain text of the document (for Copy All).
+    /// Returns the full plain text of the active source document (for Copy All).
     /// </summary>
     internal string GetAllText() =>
         new TextRange(OutputTextBox.Document.ContentStart,
                       OutputTextBox.Document.ContentEnd).Text;
 
     // --- Toolbar handlers ----------------------------------------------
+
+    private void OnSourceChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (SourceComboBox.SelectedItem is not ComboBoxItem item) return;
+        _activeSource = item.Content?.ToString() ?? "General";
+        if (_sourceDocs.TryGetValue(_activeSource, out var doc))
+        {
+            OutputTextBox.Document = doc;
+            // Apply current word-wrap preference to the newly displayed document.
+            doc.PageWidth = _wordWrap ? double.NaN : 10000;
+            if (_autoScroll) OutputTextBox.ScrollToEnd();
+        }
+    }
 
     private void OnClear(object sender, RoutedEventArgs e)
         => OutputLogger.Clear();

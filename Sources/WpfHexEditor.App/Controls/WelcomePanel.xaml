@@ -251,6 +251,20 @@
                         </StackPanel>
                     </Button>
 
+                    <Button x:Name="WikiButton"
+                            Style="{StaticResource WelcomeActionButton}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE82D;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource DockTabActiveBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,10,0" />
+                            <TextBlock Text="Wiki ↗"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
                     <Button x:Name="IssueButton"
                             Style="{StaticResource WelcomeActionButton}">
                         <StackPanel Orientation="Horizontal">
@@ -311,7 +325,7 @@
                                    Foreground="{DynamicResource DockTabTextBrush}">
                             <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
                                        RequestNavigate="OnHyperlinkNavigate"
-                                       NavigateUri="https://github.com/abbaye/WpfHexEditorIDE">
+                                       NavigateUri="https://github.com/abbaye/WpfHexEditorControl">
                                 GitHub
                             </Hyperlink>
                         </TextBlock>
@@ -321,7 +335,17 @@
                                    Margin="28,0,0,0">
                             <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
                                        RequestNavigate="OnHyperlinkNavigate"
-                                       NavigateUri="https://github.com/abbaye/WpfHexEditorIDE/issues">
+                                       NavigateUri="https://github.com/abbaye/WpfHexEditorIDE/wiki">
+                                Wiki
+                            </Hyperlink>
+                        </TextBlock>
+
+                        <TextBlock FontSize="12"
+                                   Foreground="{DynamicResource DockTabTextBrush}"
+                                   Margin="28,0,0,0">
+                            <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
+                                       RequestNavigate="OnHyperlinkNavigate"
+                                       NavigateUri="https://github.com/abbaye/WpfHexEditorControl/issues">
                                 Report Issue
                             </Hyperlink>
                         </TextBlock>
@@ -331,7 +355,7 @@
                                    Margin="28,0,0,0">
                             <Hyperlink Style="{StaticResource WelcomeHyperlinkStyle}"
                                        RequestNavigate="OnHyperlinkNavigate"
-                                       NavigateUri="https://github.com/abbaye/WpfHexEditorIDE/blob/master/CHANGELOG.md">
+                                       NavigateUri="https://github.com/abbaye/WpfHexEditorControl/blob/master/CHANGELOG.md">
                                 Full Changelog
                             </Hyperlink>
                         </TextBlock>

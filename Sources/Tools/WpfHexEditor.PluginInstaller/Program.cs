@@ -9,6 +9,7 @@
 //   WpfHexEditor.PluginInstaller.exe <path-to.whxplugin>   — show installer dialog
 //   WpfHexEditor.PluginInstaller.exe --silent <path>        — silent install (exit code 0=ok, 1=error)
 
+using System.IO;
 using System.Windows;
 
 namespace WpfHexEditor.PluginInstaller;

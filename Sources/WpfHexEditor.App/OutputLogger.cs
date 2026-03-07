@@ -38,21 +38,34 @@ internal static class OutputLogger
         _panel = panel;
     }
 
-    // --- Public API ----------------------------------------------------
+    // --- Source channel constants --------------------------------------
 
-    public static void Info(string message)  => Log("INFO ", message, null);
-    public static void Warn(string message)  => Log("WARN ", message, WarnBrush);
-    public static void Error(string message) => Log("ERROR", message, ErrorBrush);
-    public static void Debug(string message) => Log("DEBUG", message, DebugBrush);
+    public const string SourceGeneral      = "General";
+    public const string SourcePluginSystem = "Plugin System";
+    public const string SourceBuild        = "Build";
+    public const string SourceDebug        = "Debug";
+
+    // --- Public API — General channel ----------------------------------
+
+    public static void Info(string message)  => Log("INFO ", message, null,       SourceGeneral);
+    public static void Warn(string message)  => Log("WARN ", message, WarnBrush,  SourceGeneral);
+    public static void Error(string message) => Log("ERROR", message, ErrorBrush, SourceGeneral);
+    public static void Debug(string message) => Log("DEBUG", message, DebugBrush, SourceDebug);
+
+    // --- Public API — Plugin System channel ----------------------------
+
+    public static void PluginInfo(string message)  => Log("INFO ", message, null,       SourcePluginSystem);
+    public static void PluginWarn(string message)  => Log("WARN ", message, WarnBrush,  SourcePluginSystem);
+    public static void PluginError(string message) => Log("ERROR", message, ErrorBrush, SourcePluginSystem);
 
     /// <summary>
-    /// Writes a separator line to visually group output sections.
+    /// Writes a separator line to visually group output sections in the General channel.
     /// </summary>
     public static void Section(string title)
-        => Append($"---- {title} ------------------------------------", null);
+        => Append($"---- {title} ------------------------------------", null, SourceGeneral);
 
     /// <summary>
-    /// Clears all output.
+    /// Clears the currently visible source channel.
     /// </summary>
     public static void Clear()
     {
@@ -62,12 +75,12 @@ internal static class OutputLogger
 
     // --- Internals -----------------------------------------------------
 
-    private static void Log(string level, string message, Brush? color)
-        => Append($"[{DateTime.Now:HH:mm:ss}] {level}  {message}", color);
+    private static void Log(string level, string message, Brush? color, string source)
+        => Append($"[{DateTime.Now:HH:mm:ss}] {level}  {message}", color, source);
 
-    private static void Append(string text, Brush? color)
+    private static void Append(string text, Brush? color, string source)
     {
         if (_panel is null) return;
-        _panel.OutputBox.Dispatcher.Invoke(() => _panel.AppendLine(text, color));
+        _panel.OutputBox.Dispatcher.Invoke(() => _panel.AppendLine(text, color, source));
     }
 }

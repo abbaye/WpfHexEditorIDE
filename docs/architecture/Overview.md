@@ -10,8 +10,13 @@
 - [Design Principles](#design-principles)
 - [System Architecture](#system-architecture)
 - [IDE Application Architecture](#-ide-application-architecture)
+  - [Plugin System (SDK + PluginHost)](#plugin-system-sdk--pluginhost)
+  - [ContentId Routing](#contentid-routing)
 - [Layered Architecture](#layered-architecture)
 - [Core Components](#core-components)
+  - [CodeEditor (Multi-Language Code Editor)](#12-codeeditor-multi-language-code-editor)
+  - [ImageViewer](#13-imageviewer-image-editorviewer)
+  - [Terminal (Integrated Shell)](#11-terminal-integrated-shell)
 - [Rendering Engine](#rendering-engine)
 - [Data Flow](#data-flow)
 - [Key Innovations](#key-innovations)
@@ -33,15 +38,15 @@
 ### IDE Application (2026-03)
 - 🖥️ **VS-style docking** — float, dock, auto-hide, colored tabs, 8 themes
 - 📁 **Project system** — `.whsln` / `.whproj`, virtual & physical folders, item links
-- 🔌 **Plugin editors** — `IDocumentEditor` contract (Hex, TBL, JSON, Text + stubs)
-- 🗂️ **IDE panels** — ParsedFields, DataInspector, SolutionExplorer, Properties, ErrorPanel, Output
+- 🔌 **Plugin editors** — `IDocumentEditor` contract (Hex, CodeEditor, TBL, Text, ImageViewer, DiffViewer…)
+- 🗂️ **IDE panels** — ParsedFields, DataInspector, SolutionExplorer, Properties, ErrorPanel, PluginMonitoring
 - 🔍 **400+ File Format Auto-Detection** with binary templates and signature matching
 - 📊 **Data Inspector** with 40+ data type interpretations
 - ⚖️ **File Diff** for side-by-side binary comparison
-- 🔎 **QuickSearchBar** — inline Ctrl+F overlay (VSCode-style), per-editor, 5 search modes
-- ⚙️ **VS2026-style Options** — document tab, theme picker, auto-save, encoding, 4 pages
-- 💾 **SaveChangesDialog** — VS-style multi-file unsaved changes dialog on app close
-- 🏷️ **Live dirty flag** — `DockItem.Title` INPC, tab header updates on `" *"` change
+- 🔌 **Plugin System** — SDK contracts, `WpfPluginHost`, watchdog, sandbox (out-of-process IPC)
+- 💻 **Terminal Panel** — `TerminalMode`, `HxScriptEngine`, 31+ commands, 6 export formats
+- 🖼️ **ImageViewer** — zoom/pan, transform pipeline, crop with handles, `IImageTransform`
+- 🗂️ **Sample.Docking** — standalone WPF docking sample (2 themes, layout persistence)
 
 ---
 
@@ -94,7 +99,6 @@ graph LR
     subgraph "IDE Application"
         App["WpfHexEditor.App<br/>(IDE, MainWindow,<br/>DockHost)"]
         ProjectSystem["WpfHexEditor.ProjectSystem<br/>(Solution/Project,<br/>File templates)"]
-        Options["WpfHexEditor.Options<br/>(VS2026 Options tab,<br/>AppSettings, 4 pages)"]
     end
 
     subgraph "Core & Data"
@@ -107,19 +111,27 @@ graph LR
     end
 
     subgraph "Editors (Plugin)"
-        JsonEditor["WpfHexEditor.Editor.JsonEditor"]
+        CodeEditor["WpfHexEditor.Editor.CodeEditor"]
         TblEditor["WpfHexEditor.Editor.TblEditor"]
         TextEditor["WpfHexEditor.Editor.TextEditor"]
+        ImageViewer["WpfHexEditor.Editor.ImageViewer"]
+        DiffViewer["WpfHexEditor.Editor.DiffViewer"]
+    end
+
+    subgraph "Plugin System"
+        SDK["WpfHexEditor.SDK<br/>(IWpfHexEditorPlugin,<br/>11 service contracts)"]
+        PluginHost["WpfHexEditor.PluginHost<br/>(Discovery, Load/Unload,<br/>Watchdog, PluginManagerControl)"]
+        Terminal["WpfHexEditor.Terminal<br/>(TerminalPanel, TerminalMode,<br/>TerminalExportService)"]
+        CoreTerm["WpfHexEditor.Core.Terminal<br/>(31+ commands, HxScriptEngine,<br/>CommandHistory)"]
     end
 
     subgraph "Panels"
-        PanelsIDE["WpfHexEditor.Panels.IDE<br/>(SolutionExplorer,<br/>Properties, ErrorPanel)"]
-        PanelsBinary["WpfHexEditor.Panels.BinaryAnalysis<br/>(ParsedFields,<br/>DataInspector, StructureOverlay)"]
+        PanelsIDE["WpfHexEditor.Panels.IDE<br/>(SolutionExplorer, Properties,<br/>ErrorPanel, PluginMonitoring)"]
+        PanelsBinary["WpfHexEditor.Panels.BinaryAnalysis<br/>(ParsedFields, DataInspector,<br/>StructureOverlay, FileStatistics,<br/>PatternAnalysis, EnrichedFormatInfo)"]
         PanelsFileOps["WpfHexEditor.Panels.FileOps<br/>(FileDiff,<br/>FileComparison)"]
     end
 
     subgraph "Standalone Controls"
-        BarChart["WpfHexEditor.BarChart"]
         BinaryAnalysis["WpfHexEditor.BinaryAnalysis"]
         ColorPicker["WpfHexEditor.ColorPicker"]
         HexBox["WpfHexEditor.HexBox"]
@@ -132,11 +144,16 @@ graph LR
     App --> PanelsBinary
     App --> PanelsFileOps
     App --> ProjectSystem
-    App --> Options
     App --> DockingWpf
-    App --> JsonEditor
+    App --> SDK
+    App --> CodeEditor
     App --> TblEditor
     App --> TextEditor
+    App --> ImageViewer
+    App --> DiffViewer
+
+    SDK --> PluginHost
+    PluginHost --> Terminal --> CoreTerm
 
     HexEditor --> Core
     HexEditor --> EditorCore
@@ -149,14 +166,13 @@ graph LR
     PanelsFileOps --> Core
     PanelsFileOps --> HexEditor
 
-    JsonEditor --> Core
-    JsonEditor --> EditorCore
+    CodeEditor --> Core
+    CodeEditor --> EditorCore
     TblEditor --> Core
     TblEditor --> EditorCore
     TextEditor --> Core
     TextEditor --> EditorCore
 
-    BarChart --> Core
     BinaryAnalysis --> Core
     DockingWpf --> DockingCore
     ProjectSystem --> EditorCore
@@ -277,17 +293,55 @@ IDocumentEditor
   ├── SaveAsync(), CloseAsync()
   ├── StatusMessage event
   ├── ModifiedChanged, TitleChanged events
-  └── (optional) IDiagnosticSource  — ErrorPanel integration
-               IEditorPersistable   — state save/restore
+  └── (optional) IDiagnosticSource     — ErrorPanel integration
+               IEditorPersistable      — state save/restore
                IPropertyProviderSource — Properties panel (F4)
+               ISearchTarget           — Find/Replace integration
+               IChangesetEditor        — Changeset replay (DiffViewer)
 ```
 
 Registration at startup:
 ```csharp
 EditorRegistry.Instance.Register(new TblEditorFactory());
-EditorRegistry.Instance.Register(new JsonEditorFactory());
+EditorRegistry.Instance.Register(new CodeEditorFactory());
+EditorRegistry.Instance.Register(new ImageViewerFactory());
 // etc.
 ```
+
+**Format-aware editor selection** — `EditorRegistry.FindFactory(filePath, preferredId?)` consults `EmbeddedFormatCatalog` for `PreferredEditor` first, then falls back to the first registered factory that matches the extension.
+
+### ContentId Routing
+
+Every docked item has a deterministic `ContentId`:
+
+| ContentId | Content |
+|-----------|---------|
+| `doc-welcome` | WelcomePanel |
+| `doc-proj-{itemId}` | Project item (default editor) |
+| `doc-proj-{factoryId}-{itemId}` | Project item (specific editor) |
+| `doc-file-{path}` | Standalone file |
+| `panel-terminal` | TerminalPanel |
+| `plugin-manager` | PluginManagerControl |
+| `panel-properties` | PropertiesPanel |
+| `panel-solution-explorer` | SolutionExplorerPanel |
+
+### Plugin System (SDK + PluginHost)
+
+`WpfHexEditor.SDK` contains only public contracts — no UI dependencies:
+- `IWpfHexEditorPlugin` — plugin entry point
+- `IIDEHostContext` — gateway to all IDE services from a plugin
+- 11 service contracts: `IHexEditorService`, `ITerminalService`, `ISolutionExplorerService`, `IOutputService`, `IErrorPanelService`, `IParsedFieldService`, `IFocusContextService`, `IThemeService`, `IPermissionService`, `IMarketplaceService`, `ICodeEditorService`
+
+`WpfHexEditor.PluginHost` is the runtime:
+- `WpfPluginHost` — discovery, load/unload, `AssemblyLoadContext` (collectible)
+- `PluginWatchdog` — wraps async plugin calls with timeout
+- `PluginCrashHandler`, `PluginEventBus`, `PluginScheduler`
+- `PluginManagerControl` — WPF management UI (list, enable/disable, details)
+- `PluginMonitoringPanel` — real-time CPU%/memory charting per plugin
+
+`WpfHexEditor.PluginSandbox` — out-of-process isolation via IPC named pipes for untrusted plugins.
+
+`MainWindow.PluginSystem.cs` owns `InitializePluginSystemAsync()` — bootstraps host, wires `IDEHostContext` services, defers DataContext to panels via `Dispatcher.InvokeAsync`.
 
 ### Project System
 
@@ -362,7 +416,9 @@ graph LR
 | **1. UI** | `WpfHexEditor.Panels.BinaryAnalysis` | ParsedFieldsPanel, DataInspector, StructureOverlay | Binary analysis panels |
 | **1. UI** | `WpfHexEditor.Panels.IDE` | SolutionExplorer, Properties, ErrorPanel | IDE panels |
 | **1. UI** | `WpfHexEditor.Panels.FileOps` | FileDiff, FileComparison | File operation panels |
-| **1. UI** | `WpfHexEditor.Editor.*` | TblEditor, JsonEditor, TextEditor | Plugin editors |
+| **1. UI** | `WpfHexEditor.Editor.*` | TblEditor, CodeEditor, TextEditor, ImageViewer, DiffViewer | Plugin editors |
+| **1. UI** | `WpfHexEditor.Terminal` | TerminalPanel | Integrated terminal with script engine |
+| **1. UI** | `WpfHexEditor.PluginHost` | PluginManagerControl, PluginMonitoringPanel | Plugin management UI |
 | **2. Presentation** | `WpfHexEditor.HexEditor` | HexEditorViewModel | MVVM — business logic, state management |
 | **3. Services** | `WpfHexEditor.Core` | 16 specialized services | Search, format detection, clipboard, etc. |
 | **3. Services** | `WpfHexEditor.BinaryAnalysis` | DataInspectorService | Multi-type interpretation |
@@ -961,7 +1017,39 @@ var interpretations = dataInspectorService.Interpret(byteProvider, position: 100
    └─ CRC: 0xAE426082 (uint32) ✅
 ```
 
-### 11. FileDiffService (Binary Comparison)
+### 11. Terminal (Integrated Shell)
+
+**Location**: [WpfHexEditor.Terminal/](../../Sources/WpfHexEditor.Terminal/) + [WpfHexEditor.Core.Terminal/](../../Sources/WpfHexEditor.Core.Terminal/)
+
+**Purpose**: VS Code-style integrated terminal with custom `HxScript` engine and plugin API.
+
+**TerminalMode state machine**:
+
+| Mode | Behaviour |
+|------|-----------|
+| `Interactive` | Default — accepts user commands, shows prompt |
+| `Script` | Running `.hxscript` — prompt hidden, commands echoed |
+| `ReadOnly` | Output only — input disabled (e.g. build output sink) |
+
+**TerminalPanelViewModel** implements both `ITerminalContext` and `ITerminalOutput` (saves an adapter class; VM is single source of truth).
+
+**Export formats** (6, zero NuGet dependencies):
+
+| Format | Extension | Notes |
+|--------|-----------|-------|
+| Plain Text | `.txt` | Default |
+| HTML | `.html` | CSS `<span>` coloring |
+| RTF/Word | `.rtf` | Color table `\cf` |
+| ANSI | `.ansi` | Escape codes |
+| Markdown | `.md` | Table |
+| SpreadsheetML | `.xml` | XmlWriter, Excel/LibreOffice |
+
+**Key patterns**:
+- `ToggleButton` with `IsChecked=TwoWay` must NOT also have `Command=` (causes double-toggle)
+- `BringIntoView()` must be deferred via `Dispatcher.InvokeAsync(DispatcherPriority.Background)` to prevent scroll overshoot
+- `PanelIconButtonStyle` / `PanelDropdownButtonStyle` inherit `FontFamily="Segoe MDL2 Assets"` — add `FontFamily="Segoe UI"` explicitly on text `TextBlock`s
+
+### 11b. FileDiffService (Binary Comparison)
 
 **Location**: [FileDiffService.cs](../../Sources/WpfHexEditor.Core/Services/FileDiffService.cs)
 
@@ -980,13 +1068,15 @@ var interpretations = dataInspectorService.Interpret(byteProvider, position: 100
 - 🐛 Debugging binary protocol changes
 - 🎮 ROM hacking comparison
 
-### 12. JsonEditor (Format Script Editor)
+### 12. CodeEditor (Multi-Language Code Editor)
 
-**Location**: [WpfHexEditor.Editor.JsonEditor/Controls/](../../Sources/WpfHexEditor.Editor.JsonEditor/Controls/)
+**Location**: [WpfHexEditor.Editor.CodeEditor/](../../Sources/WpfHexEditor.Editor.CodeEditor/)
 
-**Purpose**: Professional JSON editor for creating binary format definitions. Standalone project implementing `IDocumentEditor`.
+**Purpose**: Multi-language code editor (formerly `JsonEditor`). Standalone project implementing `IDocumentEditor`, `IEditorPersistable`, `IDiagnosticSource`, and `ISearchTarget`.
 
-**JsonEditor Features** (61 Dependency Properties):
+> **Note**: The project was renamed from `WpfHexEditor.Editor.JsonEditor` to `WpfHexEditor.Editor.CodeEditor` to reflect its expanded scope beyond JSON.
+
+**CodeEditor Features** (61 Dependency Properties):
 - 🎨 **Syntax Highlighting** - 13+ token types (keys, values, keywords, etc.)
 - 💡 **IntelliSense** - Context-aware autocomplete with 9 contexts
 - ✅ **Real-time Validation** - 4-layer validation with squiggly lines
@@ -995,8 +1085,9 @@ var interpretations = dataInspectorService.Interpret(byteProvider, position: 100
 - ↩️ **Auto-Indent** - Smart indentation on Enter
 - 📋 **Clipboard** - Copy/Paste/Cut with formatting
 - ⏮️ **Undo/Redo** - Unlimited history
-- 🔍 **Find/Replace** - Regex support
+- 🔍 **Find/Replace** - Full `Replace()` and `ReplaceAll()` implementation
 - 📄 **Code Folding** - Collapse/expand blocks
+- 💾 **IEditorPersistable** - Scroll position, caret, encoding, edit mode restored on reopen
 
 **IntelliSense Contexts**:
 1. Root level (formatName, signature, fields, etc.)
@@ -1014,6 +1105,19 @@ var interpretations = dataInspectorService.Interpret(byteProvider, position: 100
 2. **Schema** - Missing required fields (formatName, signature)
 3. **Format Rules** - Invalid field types, offset conflicts
 4. **Semantic** - Undefined variable references, circular dependencies
+
+### 13. ImageViewer (Image Editor/Viewer)
+
+**Location**: [WpfHexEditor.Editor.ImageViewer/Controls/](../../Sources/WpfHexEditor.Editor.ImageViewer/Controls/)
+
+**Purpose**: Image viewer implementing `IDocumentEditor` (read-only). Supports zoom/pan, transform pipeline, and non-destructive crop.
+
+**Features**:
+- 🔍 **Zoom / Pan** — mouse wheel + drag, pinch-to-zoom
+- 🔄 **Transform Pipeline** — `IImageTransform` chain (rotate, flip, resize, color adjust)
+- ✂️ **Crop with handles** — 4 veil rectangles + 8 resize handles, `_cropRect` state model
+- 💾 **Multi-format save** — PNG, JPEG, BMP, TIFF via `BitmapEncoder` (no NuGet)
+- 📂 **Concurrent access** — `FileShare.ReadWrite` allows HexEditor to hold same file open simultaneously
 
 ---
 
@@ -1215,120 +1319,6 @@ finally
 
 ---
 
-## 🆕 2026-03 Features
-
-### QuickSearchBar — Inline Ctrl+F Overlay
-
-An inline, per-editor search bar (VSCode-style) that opens inside the editor's Canvas:
-
-```mermaid
-graph LR
-    subgraph "Editor (HexEditor / TblEditor / JsonEditor)"
-        ED["Editor content"]
-        CV["Canvas (ZIndex 5)"]
-        QSB["QuickSearchBar\n(movable, resizable)"]
-    end
-
-    U["User Ctrl+F"] --> |ShowQuickSearchBar| QSB
-    QSB --> |FindNext/Prev| HSE["HexSearchEngine"]
-    QSB --> |click ⋯| ASD["AdvancedSearchDialog\n(5 modes)"]
-    QSB --> |ISearchTarget| ED
-```
-
-**Key design decisions:**
-- **Per-editor model** — each editor has its own bar; Ctrl+F targets the focused editor
-- **Canvas overlay** — bar floats over content, drag-to-move grip at bottom-left, left-edge resize
-- **3-row layout** — Row 0: search input + prev/next/close; Row 1: replace (collapsible); Row 2: toggles (Ab, `.*`, 0x) + custom filters + match counter
-- **ISearchTarget** — `QuickSearchBar.BindToTarget(ISearchTarget)` decouples search UI from editor
-- **"⋯" button** — closes the bar and opens the AdvancedSearchDialog
-
-### QuickSearchBar Layout (3-row VS-style)
-
-```
-┌─[6px ResizeThumb, cursor SizeWE]────────────────────────────────┐
-│ ∨/∧ │  🔍  Find...                        ▲ ▼  ⋯  ✕            │ ← Row 0
-│     │  ⇄   Replace...                →1  →∀                    │ ← Row 1 (collapsible)
-│ [::] Ab  .*  0x  │ [CustomFiltersZone]     5/12 results        │ ← Row 2 (options)
-└──────────────────────────────────────────────────────────────────┘
-  ↑ MoveThumb (22×22, bottom-left, cursor SizeAll)
-```
-
-### Error Panel — Icons and Navigation (2026-03)
-
-**Icons fix**: `DataTrigger Value="{x:Static core:DiagnosticSeverity.Error}"` — enum comparison via `{x:Static}` instead of fragile string matching.
-
-**Double-click navigation fix**: `OnEntryDoubleClick` uses `VisualTreeHelper.GetParent` walk to find the `ListViewItem` from `e.OriginalSource` — same reliable pattern as the context menu handler.
-
-```csharp
-private void OnEntryDoubleClick(object sender, MouseButtonEventArgs e)
-{
-    DependencyObject? dep = e.OriginalSource as DependencyObject;
-    while (dep is not null && dep is not ListViewItem)
-        dep = VisualTreeHelper.GetParent(dep);
-    if (dep is ListViewItem lvi && lvi.DataContext is DiagnosticEntryVm vm)
-        EntryNavigationRequested?.Invoke(this, vm.Entry);
-}
-```
-
-### DockItem INPC — Live Dirty Flag
-
-`DockItem.Title` now implements `INotifyPropertyChanged`. Tab headers and floating window titles update immediately when the host sets `item.Title = "file.bin *"`:
-
-```csharp
-// DockItem.cs
-public required string Title
-{
-    get => _title;
-    set { if (_title != value) { _title = value; OnPropertyChanged(); } }
-}
-```
-
-`DockTabHeader` subscribes on construction:
-```csharp
-item.PropertyChanged += (_, e) =>
-{
-    if (e.PropertyName == nameof(DockItem.Title) && _titleBlock is not null)
-        _titleBlock.Text = item.Title;
-};
-```
-
-### VS2026-Style Options Document Tab
-
-`WpfHexEditor.Options` — a `UserControl` opened as a document tab in the IDE (`ContentId = "doc-options"`):
-
-| Page | Content |
-|------|---------|
-| **General** | Theme selector (live preview), language, startup behavior |
-| **Editor** | BytePerLine, font size, display options, encoding defaults |
-| **Auto-Save** | Enable/disable, interval, file paths |
-| **Advanced** | Debug options, performance flags |
-
-Settings persisted via `AppSettingsService` (JSON, `%AppData%\WpfHexEditor\settings.json`).
-
-### SaveChangesDialog — VS-Style Multi-File
-
-Shown on app close when there are unsaved documents:
-
-```
-┌─ Save Changes ──────────────────────────────────────────────┐
-│  Do you want to save changes to the following files?         │
-│                                                              │
-│  ☑ Select All                                                │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  ☑  firmware.bin                                     │   │
-│  │  ☑  chars.tbl                                        │   │
-│  │  ☐  config.json                                      │   │
-│  └──────────────────────────────────────────────────────┘   │
-│                                          [Save] [Don't Save] [Cancel] │
-└──────────────────────────────────────────────────────────────┘
-```
-
-- **Save** → saves checked documents then closes app
-- **Don't Save** → closes app without saving
-- **Cancel** → cancels `ApplicationExit`, app stays open
-
----
-
 ## 🔗 See Also
 
 ### Core Systems Documentation
@@ -1353,16 +1343,6 @@ Shown on app close when there are unsaved documents:
 - [Save Operations](data-flow/save-operations.md) - Smart save algorithm
 - [Format Detection Flow](data-flow/format-detection-flow.md) - Signature matching and field parsing
 
-### Component READMEs
-- [HexEditor](../../Sources/WpfHexEditor.HexEditor/README.md) - HexEditor UserControl (partial classes, search, MVVM)
-- [Core](../../Sources/WpfHexEditor.Core/README.md) - ByteProvider + 16 services + search engine
-- [HexBox](../../Sources/WpfHexEditor.HexBox/README.md) - Lightweight hex input field (MVVM)
-- [ColorPicker](../../Sources/WpfHexEditor.ColorPicker/README.md) - Compact color picker control
-- [Docking.Wpf](../../Sources/WpfHexEditor.Docking.Wpf/README.md) - 100% in-house VS-style docking engine
-- [Editor.Core](../../Sources/WpfHexEditor.Editor.Core/README.md) - Plugin contracts (IDocumentEditor, 25+ interfaces)
-- [BinaryAnalysis](../../Sources/WpfHexEditor.BinaryAnalysis/README.md) - DataInspector, anomaly detection, templates
-- [BarChart](../../Sources/WpfHexEditor.BarChart/README.md) - Byte frequency chart control
-
 ### Related Documentation
 - [API Reference](../api-reference/) - Complete method documentation
 - [PartialClasses](../../Sources/WpfHexEditor.HexEditor/PartialClasses/) - HexEditor code organization (Core, Features, Search, UI)
@@ -1372,24 +1352,17 @@ Shown on app close when there are unsaved documents:
 
 ---
 
-**Last Updated**: 2026-03-02
+**Last Updated**: 2026-03-07
 **Status**: 🚧 Active Development
-
-### ✅ Completed
-- Multi-project architecture: Core, HexEditor, Panels.*, Editors.*, Docking, BinaryAnalysis, ProjectSystem, Options, App
-- 100% ByteProvider API (186 methods)
-- 400+ file format auto-detection
-- Custom Docking system (VS-style, no third-party dependency)
-- `DockItem` INPC — live dirty-flag tab updates
-- Plugin editor system (`IDocumentEditor`): HexEditor, TblEditor, JsonEditor, TextEditor
-- IDE project system (`.whsln` / `.whproj`), format versioning v2, atomic migration
-- Panels: Data Inspector, Parsed Fields, SolutionExplorer, Properties, **ErrorPanel** (icons + navigation fixed 2026-03), Output
-- **QuickSearchBar** — inline Ctrl+F overlay, per-editor, 3-row VS layout, movable + resizable
-- **VS2026-style Options** — document tab, 4 pages, AppSettings, live theme preview
-- **SaveChangesDialog** — VS-style multi-file unsaved changes on app close
-- 8 built-in themes with `Panel_*`, `ERR_*`, `SE_*`, `PP_*` DynamicResource keys
-
-### 🔧 Stub / Planned
-- Stub editors: ImageViewer, AudioViewer, DiffViewer, DisassemblyViewer, EntropyViewer
-- QuickSearchBar split-view mode for JsonEditor (wrapper + Canvas)
-- BarChart integration into FileStatisticsPanel
+- ✅ Multi-project architecture: Core, HexEditor, Panels.*, Editors.*, Docking, BinaryAnalysis, ProjectSystem, App
+- ✅ 100% ByteProvider API (186 methods)
+- ✅ 400+ file format auto-detection + format-aware preferred editor selection
+- ✅ Custom Docking system (VS-style, no third-party dependency)
+- ✅ Plugin editor system (IDocumentEditor): HexEditor, CodeEditor, TblEditor, TextEditor, ImageViewer, DiffViewer
+- ✅ IDE project system (.whsln / .whproj), format versioning v2
+- ✅ Data Inspector, Parsed Fields, SolutionExplorer, Properties, ErrorPanel, PluginMonitoring
+- ✅ Plugin System: SDK (11 contracts), PluginHost (watchdog, crash handler, event bus), PluginSandbox (IPC)
+- ✅ Terminal Panel: TerminalMode, HxScriptEngine (31+ commands), 6 export formats
+- ✅ ImageViewer: transform pipeline, IImageTransform, crop with 8 handles
+- ✅ Sample.Docking: standalone WPF docking sample (2 themes, layout persistence)
+- 🔧 Stub editors: AudioViewer, DisassemblyViewer, EntropyViewer, TileEditor

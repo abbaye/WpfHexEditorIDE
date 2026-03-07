@@ -17,7 +17,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:chart="clr-namespace:WpfHexEditor.Panels.BinaryAnalysis.Controls;assembly=WpfHexEditor.Panels.BinaryAnalysis"
+             xmlns:chart="clr-namespace:WpfHexEditor.Plugins.DataInspector.Controls"
              mc:Ignorable="d"
              d:DesignHeight="180" d:DesignWidth="1000">
 
@@ -287,7 +287,7 @@
                                          MouseMove="OnChartMouseMove"
                                          MouseLeftButtonUp="OnChartMouseUp"
                                          MouseWheel="OnChartMouseWheel"
-                                         Cursor="Crosshair"/>
+                                         Cursor="Cross"/>
                 </ScrollViewer>
 
                 <!-- Entropy mode: sliding-window canvas (alternate) -->
