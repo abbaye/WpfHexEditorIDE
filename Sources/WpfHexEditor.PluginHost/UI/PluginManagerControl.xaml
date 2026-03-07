@@ -19,6 +19,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <local:NullToVisibilityConverter    x:Key="NullToVis"    Invert="False"/>
         <local:NullToVisibilityConverter    x:Key="NotNullToVis" Invert="True"/>
+        <local:CountToVisibilityConverter   x:Key="ZeroToVis"/>
     </UserControl.Resources>
 
     <Grid>
@@ -73,13 +74,30 @@
                           ToolTip="Sort by"/>
             </Grid>
 
-            <!-- Plugin list -->
-            <ListBox Grid.Row="2"
-                     ItemsSource="{Binding Plugins}"
+            <!-- Plugin list (with empty-state overlay) -->
+            <Grid Grid.Row="2">
+                <!-- Empty state message shown when no plugins are loaded -->
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Visibility="{Binding Plugins.Count, Converter={StaticResource ZeroToVis}}"
+                            Margin="8">
+                    <TextBlock Text="&#xE737;" FontFamily="Segoe MDL2 Assets" FontSize="28"
+                               HorizontalAlignment="Center" Opacity="0.3"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    <TextBlock Text="No plugins loaded" FontSize="11" Margin="0,6,0,2"
+                               HorizontalAlignment="Center" Opacity="0.5" TextWrapping="Wrap"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    <TextBlock Text="Build the solution to copy plugins&#x0A;or use Install to add a .whxplugin"
+                               FontSize="10" HorizontalAlignment="Center" Opacity="0.4"
+                               TextAlignment="Center" TextWrapping="Wrap"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                </StackPanel>
+
+            <ListBox ItemsSource="{Binding Plugins}"
                      SelectedItem="{Binding SelectedPlugin}"
                      Background="Transparent"
                      BorderThickness="0"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     Visibility="{Binding Plugins.Count, Converter={StaticResource ZeroToVis}, ConverterParameter=invert}">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type local:PluginListItemViewModel}">
                         <Grid Margin="4,3" ToolTip="{Binding Description}">
@@ -98,7 +116,7 @@
                                 <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Text="{Binding Version}" FontSize="10"
+                                <TextBlock Text="{Binding VersionLabel}" FontSize="10"
                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                            Opacity="0.7"/>
                             </StackPanel>
@@ -113,6 +131,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            </Grid>
         </Grid>
 
         <!-- Splitter -->
@@ -150,7 +169,7 @@
                             <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                             <TextBlock FontSize="11" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
-                                <Run Text="{Binding Publisher}"/> <Run Text=" · v"/><Run Text="{Binding Version}"/>
+                                <Run Text="{Binding Publisher}"/><Run Text=" · "/><Run Text="{Binding VersionLabel}"/>
                                 <Run Text=" · "/><Run Text="{Binding IsolationMode}"/>
                             </TextBlock>
                         </StackPanel>
@@ -234,6 +253,46 @@
 
                 </StackPanel>
                 </ScrollViewer>
+                </TabItem>
+
+                <!-- ── Tab: Permissions ──────────────────────────────────────────── -->
+                <TabItem Header="Permissions">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="12">
+                            <TextBlock Text="Toggle individual permissions for this plugin. Changes take effect immediately."
+                                       FontSize="11" TextWrapping="Wrap" Margin="0,0,0,8"
+                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                       Opacity="0.7"/>
+                            <ItemsControl ItemsSource="{Binding Permissions}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type local:PluginPermissionItemViewModel}">
+                                        <Border Padding="6,5" Margin="0,0,0,4"
+                                                Background="{DynamicResource Panel_ToolbarBrush}"
+                                                CornerRadius="4">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Label}" FontSize="12"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                                    <TextBlock Text="{Binding Description}" FontSize="10"
+                                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                                               Opacity="0.65" TextWrapping="Wrap"/>
+                                                </StackPanel>
+                                                <CheckBox Grid.Column="1"
+                                                          IsChecked="{Binding IsGranted}"
+                                                          VerticalAlignment="Center" Margin="8,0,0,0"
+                                                          Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
                 </TabItem>
 
                 <!-- ── Tab: Settings (only when HasOptions=true) ─────────────────── -->

@@ -24,6 +24,10 @@
         DragOver="OnFileDragOver"
         Background="{DynamicResource DockWindowBackgroundBrush}">
 
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
+
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="32"
                       ResizeBorderThickness="4"
@@ -532,6 +536,13 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="_Plugin Monitor" Click="OnOpenPluginMonitor">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
 
                     <!-- ═══════════ Theme ═══════════ -->
@@ -594,6 +605,95 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
+
+                    <!-- ═══════════ Image ═══════════ -->
+                    <!-- Visible only when an ImageViewer is the active/last-focused editor -->
+                    <MenuItem Header="_Image"
+                              Visibility="{Binding IsImageViewerActive, RelativeSource={RelativeSource AncestorType=Window},
+                                           Converter={StaticResource BoolToVisibilityConverter}}">
+                        <MenuItem.HeaderTemplate>
+                            <DataTemplate>
+                                <StackPanel VerticalAlignment="Center">
+                                    <AccessText Text="{Binding}" Margin="0,0,0,1"/>
+                                    <Rectangle Height="2"
+                                               Fill="{DynamicResource AccentBrush}"
+                                               HorizontalAlignment="Stretch"
+                                               Margin="-2,0,-2,0"
+                                               IsHitTestVisible="False"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </MenuItem.HeaderTemplate>
+                        <!-- Transform -->
+                        <MenuItem Header="Rotate _Right" InputGestureText="Ctrl+R"
+                                  Click="OnImageRotateRight">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE7AD;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Rotate _Left" InputGestureText="Ctrl+Shift+R"
+                                  Click="OnImageRotateLeft">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE7AE;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Flip _Horizontal" InputGestureText="Ctrl+H"
+                                  Click="OnImageFlipH">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Flip _Vertical" InputGestureText="Ctrl+Shift+H"
+                                  Click="OnImageFlipV">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8B0;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <!-- Crop & Resize -->
+                        <MenuItem Header="_Crop Mode" InputGestureText="Ctrl+K"
+                                  Click="OnImageCropMode">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE7A8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="R_esize..." InputGestureText="Ctrl+Shift+Z"
+                                  Click="OnImageResize">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE8D4;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <!-- Export -->
+                        <MenuItem Header="_Export..." InputGestureText="Ctrl+Shift+S"
+                                  Click="OnImageSaveAs">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Header="Reset All _Transforms"
+                                  Click="OnImageResetTransforms">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
                 </Menu>
 
                 <!-- Title (center, fills remaining space) -->
@@ -610,6 +710,17 @@
              └────────────────────────┘ └───────────────────────────┘ └────────────────┘ └──────────────────────────────────┘ └──────────────┘ └──────────────────┘ └────────────────┘
                      Pod File                    Pod Edit                   Pod Find                     Pod View                  Pod Layout      Pod contextuel       Pod TBL        -->
         <ToolBar Grid.Row="1" Style="{DynamicResource DockDarkToolBarStyle}">
+
+            <!-- ── Home ──────────────────────────────────────────────────── -->
+            <Border Style="{DynamicResource DockToolBarPodStyle}">
+                <Button Click="OnShowWelcome" ToolTip="Welcome Page"
+                        Style="{DynamicResource DockDarkToolBarButtonStyle}">
+                    <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                               VerticalAlignment="Center"/>
+                </Button>
+            </Border>
+
+            <Separator Style="{DynamicResource DockDarkToolBarSeparatorStyle}"/>
 
             <!-- ── Pod 1 : File ───────────────────────────────────────────── -->
             <Border Style="{DynamicResource DockToolBarPodStyle}">
@@ -1068,8 +1179,61 @@
 
         </ToolBar>
 
-        <!-- Main Dock Area -->
-        <dock:DockControl Grid.Row="2" x:Name="DockHost" Margin="2" />
+        <!-- Main Dock Area + Plugin InfoBar wrapper -->
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Plugin InfoBar — shown when a plugin is slow or has faulted (VS-style notification) -->
+            <Border x:Name="PluginInfoBar" Grid.Row="0" Visibility="Collapsed"
+                    Background="#E07B16" Padding="8,5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="&#xE7BA;"
+                               FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="White" VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+                    <TextBlock x:Name="PluginInfoBarMessage" Grid.Column="1"
+                               Text="" Foreground="White" FontSize="12"
+                               VerticalAlignment="Center" TextWrapping="NoWrap"/>
+                    <Button x:Name="PluginInfoBarDisable" Grid.Column="2"
+                            Content="Disable" Margin="8,0,4,0" Padding="8,2"
+                            Click="OnPluginInfoBarDisable"
+                            Foreground="White" Background="Transparent"
+                            BorderBrush="White" BorderThickness="1" Cursor="Hand"
+                            Visibility="Collapsed"/>
+                    <Button x:Name="PluginInfoBarRestart" Grid.Column="3"
+                            Content="Restart" Margin="4,0" Padding="8,2"
+                            Click="OnPluginInfoBarRestart"
+                            Foreground="White" Background="Transparent"
+                            BorderBrush="White" BorderThickness="1" Cursor="Hand"
+                            Visibility="Collapsed"/>
+                    <Button x:Name="PluginInfoBarIgnore" Grid.Column="4"
+                            Content="Ignore" Margin="4,0" Padding="8,2"
+                            Click="OnPluginInfoBarIgnore"
+                            Foreground="White" Background="Transparent"
+                            BorderBrush="White" BorderThickness="1" Cursor="Hand"
+                            Visibility="Collapsed"/>
+                    <Button Grid.Column="5" Content="&#xE711;"
+                            FontFamily="Segoe MDL2 Assets" FontSize="10"
+                            Margin="8,0,0,0" Padding="4,2"
+                            Click="OnPluginInfoBarClose"
+                            Foreground="White" Background="Transparent"
+                            BorderBrush="Transparent" Cursor="Hand" ToolTip="Dismiss"/>
+                </Grid>
+            </Border>
+
+            <dock:DockControl Grid.Row="1" x:Name="DockHost" Margin="2" />
+        </Grid>
 
         <!-- Status Bar — VS2022-style: adapts to the active document -->
         <StatusBar x:Name="AppStatusBar" Grid.Row="3" Background="{DynamicResource DockTabActiveBrush}">
@@ -1147,6 +1311,26 @@
                             Padding="6,1"
                             Style="{DynamicResource DockDarkButtonStyle}"
                             VerticalAlignment="Center"/>
+                </StackPanel>
+            </StatusBarItem>
+
+            <!-- Plugin health indicator (click to open Plugin Manager) -->
+            <StatusBarItem x:Name="PluginStatusItem" HorizontalAlignment="Right"
+                           Cursor="Hand" ToolTip="Plugin System Status — Click to open Plugin Manager"
+                           MouseLeftButtonDown="OnPluginStatusBarClick">
+                <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
+                    <TextBlock x:Name="PluginStatusIcon" Text="&#xE74C;" FontFamily="Segoe MDL2 Assets"
+                               FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0"
+                               Foreground="{DynamicResource DockTabActiveTextBrush}"/>
+                    <TextBlock x:Name="PluginStatusText" Text="0 plugins"
+                               FontSize="11" VerticalAlignment="Center"
+                               Foreground="{DynamicResource DockTabActiveTextBrush}"/>
+                    <!-- Warning badge (hidden until a plugin faults) -->
+                    <Border x:Name="PluginWarningBadge" Background="#EF4444" CornerRadius="8"
+                            Padding="4,1" Margin="4,0,0,0" VerticalAlignment="Center"
+                            Visibility="Collapsed">
+                        <TextBlock x:Name="PluginWarningText" Text="" FontSize="10" Foreground="White"/>
+                    </Border>
                 </StackPanel>
             </StatusBarItem>
 

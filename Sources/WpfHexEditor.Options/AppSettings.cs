@@ -71,6 +71,14 @@ public sealed class AppSettings
     /// </summary>
     public TextEditorDefaultSettings TextEditorDefaults { get; set; } = new();
 
+    // -- Standalone File Save ----------------------------------------------------
+
+    /// <summary>
+    /// Per-editor Ctrl+S behaviour for files opened outside any project.
+    /// Serialised as "standaloneFileSave": { … } in settings.json.
+    /// </summary>
+    public StandaloneFileSaveSettings StandaloneFileSave { get; set; } = new();
+
     // -- Plugin System ----------------------------------------------------------------
 
     /// <summary>
@@ -249,6 +257,35 @@ public sealed class TextEditorDefaultSettings
 }
 
 // --------------------------------------------------------------------------------
+// Standalone File Save Settings
+// --------------------------------------------------------------------------------
+
+/// <summary>
+/// Controls whether Ctrl+S on a standalone file (not belonging to any project)
+/// overwrites the original directly or prompts a Save As dialog — per editor type.
+/// </summary>
+public sealed class StandaloneFileSaveSettings
+{
+    /// <summary>When true, Ctrl+S overwrites the original binary file directly.</summary>
+    public bool HexEditorDirectSave   { get; set; } = true;
+
+    /// <summary>When true, Ctrl+S overwrites the original code/text file directly.</summary>
+    public bool CodeEditorDirectSave  { get; set; } = true;
+
+    /// <summary>When true, Ctrl+S overwrites the original text file directly.</summary>
+    public bool TextEditorDirectSave  { get; set; } = true;
+
+    /// <summary>When true, Ctrl+S overwrites the original TBL file directly.</summary>
+    public bool TblEditorDirectSave   { get; set; } = true;
+
+    /// <summary>
+    /// When true, Ctrl+S overwrites the original image file with the current
+    /// transform result. When false, a Save As / Export dialog is shown.
+    /// </summary>
+    public bool ImageViewerDirectSave { get; set; } = true;
+}
+
+// --------------------------------------------------------------------------------
 // Plugin System Settings
 // --------------------------------------------------------------------------------
 
@@ -280,4 +317,16 @@ public sealed class PluginSystemSettings
 
     /// <summary>Seconds before the watchdog considers an InitializeAsync call timed-out.</summary>
     public int WatchdogTimeoutSeconds { get; set; } = 5;
+
+    /// <summary>
+    /// Interval (seconds) between continuous CPU/memory diagnostic samples
+    /// recorded for each loaded plugin. Drives the Plugin Monitor charts.
+    /// </summary>
+    public int DiagnosticSamplingSeconds { get; set; } = 5;
+
+    /// <summary>
+    /// When true, all plugins discovered at startup are loaded automatically
+    /// without prompting the user.
+    /// </summary>
+    public bool AutoLoadPlugins { get; set; } = true;
 }

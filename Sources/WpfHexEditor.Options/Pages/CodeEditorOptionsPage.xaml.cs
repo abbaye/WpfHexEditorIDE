@@ -17,7 +17,26 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
     public event EventHandler? Changed;
     private bool _loading;
 
-    public CodeEditorOptionsPage() => InitializeComponent();
+    public CodeEditorOptionsPage()
+    {
+        InitializeComponent();
+
+        // Auto-check the override checkbox whenever the user picks a new color.
+        WireAutoCheck(ChkBg,  CpBg);
+        WireAutoCheck(ChkFg,  CpFg);
+        WireAutoCheck(ChkKw,  CpKw);
+        WireAutoCheck(ChkStr, CpStr);
+        WireAutoCheck(ChkCmt, CpCmt);
+        WireAutoCheck(ChkNum, CpNum);
+    }
+
+    private void WireAutoCheck(CheckBox chk, ColorPickerControl cp)
+    {
+        cp.ColorChanged += (_, _) =>
+        {
+            if (!_loading) chk.IsChecked = true;
+        };
+    }
 
     // -- IOptionsPage ------------------------------------------------------
 
@@ -129,6 +148,7 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         if (string.IsNullOrWhiteSpace(value))
         {
             chk.IsChecked = false;
+            cp.SelectedColor = Colors.White;
             return;
         }
         try
@@ -139,6 +159,7 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         catch
         {
             chk.IsChecked = false;
+            cp.SelectedColor = Colors.White;
         }
     }
 

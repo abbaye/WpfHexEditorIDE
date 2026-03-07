@@ -4,7 +4,9 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows;
@@ -34,8 +36,23 @@ public sealed class WpfPluginHost : IAsyncDisposable
     private readonly Dictionary<string, PluginEntry> _entries = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _lock = new();
 
+    // Continuous diagnostics sampling (default: every 5 seconds).
+    private readonly DispatcherTimer _samplingTimer;
+    private TimeSpan _lastCpuTime = TimeSpan.Zero;
+    private DateTime _lastCpuCheck = DateTime.UtcNow;
+
+    /// <summary>Interval between diagnostics samples. Default: 5 seconds.</summary>
+    public TimeSpan DiagnosticSamplingInterval
+    {
+        get => _samplingTimer.Interval;
+        set => _samplingTimer.Interval = value;
+    }
+
     /// <summary>Registry of per-plugin options pages (populated automatically on load).</summary>
     public PluginOptionsRegistry OptionsRegistry { get; } = new();
+
+    /// <summary>Exposes the runtime permission service so the Plugin Manager UI can show permission toggles.</summary>
+    public PermissionService Permissions => _permissionService;
 
     // -- Events --
 
@@ -66,6 +83,15 @@ public sealed class WpfPluginHost : IAsyncDisposable
         _slowDetector = new SlowPluginDetector(GetLoadedEntries, dispatcher);
         _slowDetector.SlowPluginDetected += (s, e) => SlowPluginDetected?.Invoke(this, e);
         _slowDetector.Start();
+
+        // Sample CPU/memory for all loaded plugins on a background timer tick.
+        _samplingTimer = new System.Windows.Threading.DispatcherTimer(
+            System.Windows.Threading.DispatcherPriority.Background, dispatcher)
+        {
+            Interval = TimeSpan.FromSeconds(5)
+        };
+        _samplingTimer.Tick += OnSamplingTick;
+        _samplingTimer.Start();
     }
 
     // --- Discovery --------------------------------------------------------------
@@ -187,12 +213,41 @@ public sealed class WpfPluginHost : IAsyncDisposable
     public async Task LoadAllAsync(IEnumerable<string>? extraDirectories = null, CancellationToken ct = default)
     {
         var manifests = await DiscoverPluginsAsync(extraDirectories, ct).ConfigureAwait(false);
-        foreach (var manifest in manifests.OrderBy(m => m.LoadPriority))
+        var sorted    = TopologicalSort(manifests);
+        foreach (var manifest in sorted)
         {
             ct.ThrowIfCancellationRequested();
             try { await LoadPluginAsync(manifest, ct).ConfigureAwait(false); }
             catch { /* recorded in entry; PluginCrashed already raised */ }
         }
+    }
+
+    /// <summary>
+    /// Sorts manifests so that dependencies are loaded before dependents.
+    /// Within the same dependency level, lower LoadPriority values load first.
+    /// Cycles and unknown dependencies are silently skipped.
+    /// </summary>
+    private static IEnumerable<PluginManifest> TopologicalSort(IReadOnlyList<PluginManifest> manifests)
+    {
+        var byId   = manifests.ToDictionary(m => m.Id);
+        var result = new List<PluginManifest>(manifests.Count);
+        var visited = new HashSet<string>();
+
+        void Visit(PluginManifest m)
+        {
+            if (!visited.Add(m.Id)) return;
+            foreach (var depId in m.Dependencies)
+            {
+                if (byId.TryGetValue(depId, out var dep))
+                    Visit(dep);
+            }
+            result.Add(m);
+        }
+
+        foreach (var m in manifests.OrderBy(x => x.LoadPriority))
+            Visit(m);
+
+        return result;
     }
 
     // --- Unload ------------------------------------------------------------------
@@ -286,6 +341,46 @@ public sealed class WpfPluginHost : IAsyncDisposable
         // Physical file removal is handled by PluginInstaller, not PluginHost.
     }
 
+    // --- Install from package ----------------------------------------------------
+
+    /// <summary>
+    /// Extracts a .whxplugin package (ZIP) into the user plugins directory,
+    /// validates the manifest, then immediately loads the plugin.
+    /// </summary>
+    public async Task<PluginEntry> InstallFromFileAsync(string packagePath, CancellationToken ct = default)
+    {
+        if (!File.Exists(packagePath))
+            throw new FileNotFoundException("Plugin package not found.", packagePath);
+
+        // Read the manifest from the ZIP to get the plugin ID for the target directory.
+        string pluginId;
+        using (var archive = ZipFile.OpenRead(packagePath))
+        {
+            var manifestEntry = archive.GetEntry("manifest.json")
+                ?? throw new InvalidOperationException("Invalid plugin package: manifest.json not found.");
+
+            using var stream = manifestEntry.Open();
+            var manifest = await JsonSerializer.DeserializeAsync<PluginManifest>(stream,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, ct).ConfigureAwait(false)
+                ?? throw new InvalidOperationException("manifest.json could not be deserialized.");
+
+            pluginId = manifest.Id;
+        }
+
+        // Extract into UserPlugins/<pluginId>/
+        var targetDir = Path.Combine(UserPluginsDir, pluginId);
+        if (Directory.Exists(targetDir))
+            Directory.Delete(targetDir, recursive: true);
+
+        ZipFile.ExtractToDirectory(packagePath, targetDir);
+
+        // Discover + load the freshly installed plugin.
+        var manifest2 = await TryLoadManifestAsync(targetDir).ConfigureAwait(false)
+            ?? throw new InvalidOperationException($"Manifest validation failed after extraction to '{targetDir}'.");
+
+        return await LoadPluginAsync(manifest2, ct).ConfigureAwait(false);
+    }
+
     // --- Queries -----------------------------------------------------------------
 
     public IReadOnlyList<PluginEntry> GetAllPlugins()
@@ -336,6 +431,40 @@ public sealed class WpfPluginHost : IAsyncDisposable
         return Path.Combine(UserPluginsDir, manifest.Id);
     }
 
+    /// <summary>
+    /// Called every DiagnosticSamplingInterval. Records a process-level CPU % and GC memory
+    /// snapshot into each loaded plugin's diagnostics ring buffer.
+    /// CPU is computed as delta TotalProcessorTime / elapsed wall time / processor count.
+    /// </summary>
+    private void OnSamplingTick(object? sender, EventArgs e)
+    {
+        var now = DateTime.UtcNow;
+        var wallElapsed = now - _lastCpuCheck;
+        if (wallElapsed.TotalMilliseconds < 1) return;
+
+        var process = Process.GetCurrentProcess();
+        var cpuNow = process.TotalProcessorTime;
+        var cpuDelta = cpuNow - _lastCpuTime;
+
+        double cpuPct = cpuDelta.TotalMilliseconds
+            / (wallElapsed.TotalMilliseconds * Environment.ProcessorCount) * 100.0;
+        cpuPct = Math.Clamp(cpuPct, 0.0, 100.0);
+
+        _lastCpuTime = cpuNow;
+        _lastCpuCheck = now;
+
+        long memBytes = process.WorkingSet64;
+
+        IReadOnlyList<PluginEntry> loaded;
+        lock (_lock) loaded = _entries.Values.Where(e2 => e2.State == PluginState.Loaded).ToList();
+
+        // Distribute a single process-level sample to every loaded plugin.
+        // Per-plugin isolation is not possible in InProcess mode; the process metrics
+        // serve as an upper-bound indicator for the monitoring UI.
+        foreach (var entry in loaded)
+            entry.Diagnostics.Record(cpuPct, memBytes, wallElapsed);
+    }
+
     private IReadOnlyList<PluginEntry> GetLoadedEntries()
     {
         lock (_lock) return _entries.Values.Where(e => e.State == PluginState.Loaded).ToList();
@@ -362,6 +491,8 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        _samplingTimer.Stop();
+        _samplingTimer.Tick -= OnSamplingTick;
         _slowDetector.Dispose();
         _watchdog.PluginNonResponsive -= OnPluginNonResponsive;
 

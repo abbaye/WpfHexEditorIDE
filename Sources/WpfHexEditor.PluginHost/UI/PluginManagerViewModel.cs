@@ -7,7 +7,9 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using System.Windows.Threading;
+using Microsoft.Win32;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -36,6 +38,9 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         };
         _refreshTimer.Tick += OnRefreshTick;
         _refreshTimer.Start();
+
+        RefreshCommand = new RelayCommand(_ => Rebuild());
+        InstallFromFileCommand = new RelayCommand(_ => ExecuteInstallFromFile());
 
         Rebuild();
     }
@@ -72,6 +77,9 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
 
     public IReadOnlyList<string> SortOptions { get; } = new[] { "Name", "State", "CPU", "InitTime" };
 
+    public ICommand RefreshCommand { get; }
+    public ICommand InstallFromFileCommand { get; }
+
     // --- Plugin lifecycle callbacks passed into item VMs ---
 
     public void EnablePlugin(string id)
@@ -86,6 +94,37 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
     public void UninstallPlugin(string id)
         => _ = Task.Run(async () => await _host.UninstallPluginAsync(id)).ContinueWith(_ => Rebuild());
 
+    // --- Commands ---
+
+    private void ExecuteInstallFromFile()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Install Plugin Package",
+            Filter = "Plugin Package (*.whxplugin)|*.whxplugin|All Files (*.*)|*.*",
+            CheckFileExists = true
+        };
+
+        if (dialog.ShowDialog() != true)
+            return;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _host.InstallFromFileAsync(dialog.FileName);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    $"Installation failed:\n{ex.Message}",
+                    "Plugin Install Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+            }
+        }).ContinueWith(_ => Rebuild());
+    }
+
     // --- Internal ---
 
     private void Rebuild()
@@ -97,7 +136,8 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
                 onEnable: EnablePlugin,
                 onDisable: DisablePlugin,
                 onReload: ReloadPlugin,
-                onUninstall: UninstallPlugin));
+                onUninstall: UninstallPlugin,
+                permissionService: _host.Permissions));
         }
         ApplyFilterAndSort();
     }
@@ -136,4 +176,23 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+    // Minimal ICommand relay
+    private sealed class RelayCommand : ICommand
+    {
+        private readonly Action<object?> _execute;
+        private readonly Func<object?, bool>? _canExecute;
+
+        public event EventHandler? CanExecuteChanged;
+
+        public RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute = null)
+        {
+            _execute = execute;
+            _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object? parameter) => _canExecute?.Invoke(parameter) ?? true;
+        public void Execute(object? parameter) => _execute(parameter);
+        public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+    }
 }

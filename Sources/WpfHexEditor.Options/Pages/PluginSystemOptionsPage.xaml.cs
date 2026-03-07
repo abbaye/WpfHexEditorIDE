@@ -5,14 +5,17 @@
 //////////////////////////////////////////////
 
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Win32;
 
 namespace WpfHexEditor.Options.Pages;
 
 /// <summary>
 /// Options page for the Plugin System.
-/// Covers: plugin directory, watchdog, slow-plugin monitoring.
+/// Covers: general load behaviour, plugin directory (with Browse), watchdog,
+/// diagnostics sampling interval, and slow-plugin detection thresholds.
 /// </summary>
 public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
 {
@@ -28,21 +31,25 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
         _loading = true;
         try
         {
-            TextPluginsDir.Text         = s.PluginSystem.PluginsDirectory;
-            CheckEnableWatchdog.IsChecked = s.PluginSystem.EnableWatchdog;
-            TextWatchdogTimeout.Text    = s.PluginSystem.WatchdogTimeoutSeconds.ToString();
-            TextMonitoringInterval.Text = s.PluginSystem.MonitoringIntervalSeconds.ToString();
-            TextResponseTime.Text       = s.PluginSystem.ResponseTimeThresholdMs.ToString();
-            TextCpuThreshold.Text       = s.PluginSystem.CpuThresholdPercent.ToString("F1");
+            CheckAutoLoad.IsChecked         = s.PluginSystem.AutoLoadPlugins;
+            TextPluginsDir.Text             = s.PluginSystem.PluginsDirectory;
+            CheckEnableWatchdog.IsChecked   = s.PluginSystem.EnableWatchdog;
+            TextWatchdogTimeout.Text        = s.PluginSystem.WatchdogTimeoutSeconds.ToString();
+            TextDiagnosticSampling.Text     = s.PluginSystem.DiagnosticSamplingSeconds.ToString();
+            TextMonitoringInterval.Text     = s.PluginSystem.MonitoringIntervalSeconds.ToString();
+            TextResponseTime.Text           = s.PluginSystem.ResponseTimeThresholdMs.ToString();
+            TextCpuThreshold.Text           = s.PluginSystem.CpuThresholdPercent.ToString("F1");
         }
         finally { _loading = false; }
     }
 
     public void Flush(AppSettings s)
     {
-        s.PluginSystem.PluginsDirectory       = TextPluginsDir.Text.Trim();
-        s.PluginSystem.EnableWatchdog         = CheckEnableWatchdog.IsChecked == true;
-        s.PluginSystem.WatchdogTimeoutSeconds = ParseInt(TextWatchdogTimeout.Text, 5);
+        s.PluginSystem.AutoLoadPlugins           = CheckAutoLoad.IsChecked == true;
+        s.PluginSystem.PluginsDirectory          = TextPluginsDir.Text.Trim();
+        s.PluginSystem.EnableWatchdog            = CheckEnableWatchdog.IsChecked == true;
+        s.PluginSystem.WatchdogTimeoutSeconds    = ParseInt(TextWatchdogTimeout.Text, 5);
+        s.PluginSystem.DiagnosticSamplingSeconds = ParseInt(TextDiagnosticSampling.Text, 5);
         s.PluginSystem.MonitoringIntervalSeconds = ParseInt(TextMonitoringInterval.Text, 5);
         s.PluginSystem.ResponseTimeThresholdMs   = ParseInt(TextResponseTime.Text, 500);
         s.PluginSystem.CpuThresholdPercent       = ParseDouble(TextCpuThreshold.Text, 25.0);
@@ -55,9 +62,27 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
     }
 
-    private void OnTextChanged(object sender, TextChangedEventArgs e)
+    private void OnTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
     {
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnBrowsePluginsDir(object sender, RoutedEventArgs e)
+    {
+        // OpenFolderDialog is available in WPF on .NET 8+
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select additional plugins directory"
+        };
+
+        if (!string.IsNullOrWhiteSpace(TextPluginsDir.Text) && Directory.Exists(TextPluginsDir.Text))
+            dialog.InitialDirectory = TextPluginsDir.Text;
+
+        if (dialog.ShowDialog() == true)
+        {
+            TextPluginsDir.Text = dialog.FolderName;
+            Changed?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     // -- Helpers ------------------------------------------------------------------

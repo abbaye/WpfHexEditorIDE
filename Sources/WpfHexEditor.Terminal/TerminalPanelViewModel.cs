@@ -101,7 +101,7 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
     public void WriteLine(string text = "") => AppendLine(text, TerminalOutputKind.Standard);
     public void WriteError(string text)   => AppendLine(text, TerminalOutputKind.Error);
     public void WriteWarning(string text) => AppendLine(text, TerminalOutputKind.Warning);
-    public void Clear() => System.Windows.Application.Current?.Dispatcher.InvokeAsync(OutputLines.Clear);
+    public void Clear() => System.Windows.Application.Current?.Dispatcher.InvokeAsync(() => OutputLines.Clear());
 
     // -- Private helpers -----------------------------------------------------------
 

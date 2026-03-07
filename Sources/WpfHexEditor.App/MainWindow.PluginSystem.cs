@@ -20,6 +20,7 @@
 using System.IO;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
@@ -46,8 +47,12 @@ public partial class MainWindow
     private ErrorPanelServiceImpl? _errorPanelService;
     private ThemeServiceImpl? _themeService;
 
-    private const string PluginManagerContentId = "plugin-manager";
-    private const string TerminalPanelContentId  = "panel-terminal";
+    private const string PluginManagerContentId   = "plugin-manager";
+    private const string TerminalPanelContentId   = "panel-terminal";
+    private const string PluginMonitorContentId   = "plugin-monitor";
+
+    private int    _pluginFaultCount = 0;
+    private string? _infoBarPluginId;   // ID of the plugin currently shown in the InfoBar
 
     // --- Startup --------------------------------------------------------
 
@@ -99,8 +104,10 @@ public partial class MainWindow
             _pluginHost = new WpfPluginHost(hostContext, uiRegistry, permissionService, Dispatcher);
 
             // 4. Subscribe to host events
-            _pluginHost.PluginCrashed += OnPluginCrashed;
-            _pluginHost.SlowPluginDetected += OnSlowPluginDetected;
+            _pluginHost.PluginCrashed       += OnPluginCrashed;
+            _pluginHost.SlowPluginDetected  += OnSlowPluginDetected;
+            _pluginHost.PluginLoaded        += (_, _) => Dispatcher.InvokeAsync(() => UpdatePluginStatusBar());
+            _pluginHost.PluginUnloaded      += (_, _) => Dispatcher.InvokeAsync(() => UpdatePluginStatusBar());
 
             // 5. Discover + load all plugins
             var binDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -161,7 +168,49 @@ public partial class MainWindow
             $"[PluginSystem] Warning: Plugin '{e.PluginName}' is slow " +
             $"(avg {e.AverageExecutionTime.TotalMilliseconds:F0} ms, " +
             $"threshold {e.Threshold.TotalMilliseconds:F0} ms).");
+
+        Dispatcher.InvokeAsync(() => ShowPluginInfoBar(
+            e.PluginId,
+            $"Plugin '{e.PluginName}' is slowing down the IDE " +
+            $"(avg {e.AverageExecutionTime.TotalMilliseconds:F0} ms).",
+            showDisable: true, showRestart: true));
     }
+
+    // --- Plugin InfoBar (VS-style notification banner) -------------------
+
+    private void ShowPluginInfoBar(string pluginId, string message, bool showDisable, bool showRestart)
+    {
+        _infoBarPluginId = pluginId;
+        PluginInfoBarMessage.Text = message;
+        PluginInfoBarDisable.Visibility = showDisable  ? Visibility.Visible : Visibility.Collapsed;
+        PluginInfoBarRestart.Visibility  = showRestart ? Visibility.Visible : Visibility.Collapsed;
+        PluginInfoBarIgnore.Visibility   = (showDisable || showRestart) ? Visibility.Visible : Visibility.Collapsed;
+        PluginInfoBar.Visibility = Visibility.Visible;
+    }
+
+    private void HidePluginInfoBar()
+    {
+        PluginInfoBar.Visibility = Visibility.Collapsed;
+        _infoBarPluginId = null;
+    }
+
+    private void OnPluginInfoBarDisable(object sender, RoutedEventArgs e)
+    {
+        if (_infoBarPluginId is not null)
+            _ = _pluginHost?.DisablePluginAsync(_infoBarPluginId);
+        HidePluginInfoBar();
+    }
+
+    private async void OnPluginInfoBarRestart(object sender, RoutedEventArgs e)
+    {
+        if (_infoBarPluginId is not null && _pluginHost is not null)
+            await _pluginHost.ReloadPluginAsync(_infoBarPluginId).ConfigureAwait(true);
+        HidePluginInfoBar();
+    }
+
+    private void OnPluginInfoBarIgnore(object sender, RoutedEventArgs e) => HidePluginInfoBar();
+
+    private void OnPluginInfoBarClose(object sender, RoutedEventArgs e)  => HidePluginInfoBar();
 
     private void OnPluginCrashed(object? sender, PluginFaultedEventArgs e)
     {
@@ -169,8 +218,65 @@ public partial class MainWindow
         {
             OutputLogger.Error(
                 $"[PluginSystem] Plugin '{e.PluginName}' crashed during '{e.Phase}': {e.Exception.Message}");
+
+            _pluginFaultCount++;
+            UpdatePluginStatusBar();
+
+            ShowPluginInfoBar(
+                e.PluginId,
+                $"Plugin '{e.PluginName}' crashed: {e.Exception.Message}",
+                showDisable: false, showRestart: true);
         });
     }
+
+    // --- Plugin status bar ----------------------------------------------------
+
+    /// <summary>
+    /// Refreshes the plugin count and fault-warning badge in the status bar.
+    /// Must be called on the Dispatcher thread.
+    /// </summary>
+    private void UpdatePluginStatusBar()
+    {
+        if (_pluginHost is null || PluginStatusText is null) return;
+
+        var all    = _pluginHost.GetAllPlugins();
+        var loaded = all.Count(e => e.State == SDK.Models.PluginState.Loaded);
+        var total  = all.Count;
+
+        PluginStatusText.Text = total == 0
+            ? "No plugins"
+            : loaded == total
+                ? $"{loaded} plugin{(loaded == 1 ? "" : "s")}"
+                : $"{loaded}/{total} plugins";
+
+        // Color icon green = all healthy, amber = some not loaded, red = faults
+        if (_pluginFaultCount > 0)
+        {
+            PluginStatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(0xEF, 0x44, 0x44));
+        }
+        else if (loaded < total)
+        {
+            PluginStatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(0xF5, 0x9E, 0x0B));
+        }
+        else
+        {
+            PluginStatusIcon.Foreground = (Brush?)TryFindResource("DockTabActiveTextBrush")
+                                          ?? Brushes.White;
+        }
+
+        if (_pluginFaultCount > 0)
+        {
+            PluginWarningText.Text   = _pluginFaultCount.ToString();
+            PluginWarningBadge.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            PluginWarningBadge.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void OnPluginStatusBarClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        => OnOpenPluginManager(sender, new RoutedEventArgs());
 
     // --- Plugin Manager document tab ------------------------------------
 
@@ -198,6 +304,35 @@ public partial class MainWindow
         };
 
         StoreContent(PluginManagerContentId, control);
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    // --- Plugin Monitor docking panel -----------------------------------
+
+    private void OnOpenPluginMonitor(object sender, RoutedEventArgs e)
+    {
+        if (_pluginHost is null) return;
+
+        var existing = _layout?.FindItemByContentId(PluginMonitorContentId);
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        var vm      = new WpfHexEditor.Panels.IDE.Panels.ViewModels.PluginMonitoringViewModel(_pluginHost, Dispatcher);
+        var control = new WpfHexEditor.Panels.IDE.Panels.PluginMonitoringPanel { DataContext = vm };
+
+        var item = new DockItem
+        {
+            ContentId = PluginMonitorContentId,
+            Title     = "Plugin Monitor",
+            CanClose  = true
+        };
+
+        StoreContent(PluginMonitorContentId, control);
         _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
         DockHost.RebuildVisualTree();
     }
@@ -237,8 +372,9 @@ public partial class MainWindow
     private async Task ShutdownPluginSystemAsync()
     {
         if (_pluginHost is null) return;
-        _pluginHost.PluginCrashed -= OnPluginCrashed;
+        _pluginHost.PluginCrashed      -= OnPluginCrashed;
         _pluginHost.SlowPluginDetected -= OnSlowPluginDetected;
+        // PluginLoaded/PluginUnloaded lambdas are fire-and-forget; no need to unsubscribe explicitly.
         await _pluginHost.DisposeAsync().ConfigureAwait(false);
         _pluginHost = null;
     }

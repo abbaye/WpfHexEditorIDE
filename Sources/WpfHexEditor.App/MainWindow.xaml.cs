@@ -230,8 +230,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // Sync progress bar immediately to reflect the new active document's state
             SyncProgressBarToActiveEditor(value);
             OnPropertyChanged();
+            OnPropertyChanged(nameof(IsImageViewerActive));
         }
     }
+
+    /// <summary>
+    /// True when the active (or last active) document editor is an ImageViewer.
+    /// Controls the visibility of the _Image_ menu in the menu bar.
+    /// </summary>
+    public bool IsImageViewerActive =>
+        _activeDocumentEditor is WpfHexEditor.Editor.ImageViewer.Controls.ImageViewer;
 
     private HexEditorControl? _activeHexEditor;
     public HexEditorControl? ActiveHexEditor
@@ -2310,6 +2318,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// </summary>
     private void OpenFileDirectly(string filePath)
     {
+        // If the file is already open in ANY tab (project or standalone, any editor),
+        // activate that tab instead of creating a duplicate.
+        var allItems = _layout.GetAllGroups().SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems);
+        foreach (var di in allItems)
+        {
+            if (!di.Metadata.TryGetValue("FilePath", out var fp)) continue;
+            if (!string.Equals(fp, filePath, StringComparison.OrdinalIgnoreCase)) continue;
+            if (di.Owner is { } o) o.ActiveItem = di;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
         // Pre-flight: verify file accessibility before creating a document tab.
         // If the file is locked or missing the error is routed to the Output panel
         // and no tab is created.
@@ -2942,12 +2964,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Notify plugin focus context of the document change
         UpdatePluginFocusContext(item);
 
-        // Panel tabs: clear document-specific status bar contributions and exit.
+        // Panel tabs: exit without altering status bar or toolbar contributions.
+        // The status bar and toolbar always reflect the last active document editor,
+        // even when a panel tab is focused (same behaviour as Visual Studio).
         if (item.ContentId.StartsWith("panel-"))
-        {
-            ActiveStatusBarContributor = _defaultStatusBarContributor;
             return;
-        }
 
         // Content not yet materialized (lazy tab never selected): clear and exit.
         if (!_contentCache.TryGetValue(item.ContentId, out var content))
@@ -4312,6 +4333,24 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _solutionExplorerPanel.SetSolution(_solutionManager.CurrentSolution);
     }
 
+    private void OnShowWelcome(object sender, RoutedEventArgs e)
+    {
+        const string welcomeContentId = "doc-welcome";
+
+        var existing = _layout.FindItemByContentId(welcomeContentId);
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner)
+                owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        var item = new DockItem { Title = "Welcome", ContentId = welcomeContentId };
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
     private void OnShowOutput(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
 
@@ -4657,6 +4696,26 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         SyncAllHexEditorThemes();
         OutputLogger.Info($"Theme changed to {themeName}.");
     }
+
+    // -----------------------------------------------------------------------
+    // Image menu — delegates to the active ImageViewer
+    // -----------------------------------------------------------------------
+
+    private WpfHexEditor.Editor.ImageViewer.Controls.ImageViewer? ActiveImageViewer =>
+        _activeDocumentEditor as WpfHexEditor.Editor.ImageViewer.Controls.ImageViewer;
+
+    private void OnImageRotateRight     (object sender, RoutedEventArgs e) => ActiveImageViewer?.RotateRight();
+    private void OnImageRotateLeft      (object sender, RoutedEventArgs e) => ActiveImageViewer?.RotateLeft();
+    private void OnImageFlipH           (object sender, RoutedEventArgs e) => ActiveImageViewer?.FlipH();
+    private void OnImageFlipV           (object sender, RoutedEventArgs e) => ActiveImageViewer?.FlipV();
+    private void OnImageCropMode        (object sender, RoutedEventArgs e) => ActiveImageViewer?.ToggleCropMode();
+    private void OnImageResize          (object sender, RoutedEventArgs e) => ActiveImageViewer?.OpenResizeDialog();
+    private void OnImageSaveAs          (object sender, RoutedEventArgs e) => ActiveImageViewer?.SaveAs();
+    private void OnImageResetTransforms (object sender, RoutedEventArgs e) => ActiveImageViewer?.ResetAllTransforms();
+
+    // -----------------------------------------------------------------------
+    // Themes
+    // -----------------------------------------------------------------------
 
     private void OnDarkTheme(object sender, RoutedEventArgs e)         => ApplyTheme("DarkTheme.xaml",         "Dark");
     private void OnLightTheme(object sender, RoutedEventArgs e)        => ApplyTheme("Generic.xaml",           "Light");

@@ -52,7 +52,7 @@ public sealed class PluginEntry
     // -- Diagnostics ----------------------------------------------------------
 
     /// <summary>Rolling performance diagnostics collector for this plugin.</summary>
-    internal PluginDiagnosticsCollector Diagnostics { get; } = new();
+    public PluginDiagnosticsCollector Diagnostics { get; } = new();
 
     // -- Constructor ----------------------------------------------------------
 

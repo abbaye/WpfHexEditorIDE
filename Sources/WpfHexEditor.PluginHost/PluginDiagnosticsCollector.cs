@@ -11,7 +11,7 @@ namespace WpfHexEditor.PluginHost;
 /// <summary>
 /// Single diagnostics snapshot captured at a point in time.
 /// </summary>
-internal sealed record DiagnosticsSnapshot(
+public sealed record DiagnosticsSnapshot(
     DateTime Timestamp,
     double CpuPercent,
     long MemoryBytes,
@@ -21,7 +21,7 @@ internal sealed record DiagnosticsSnapshot(
 /// Collects rolling performance diagnostics for a plugin.
 /// Implements <see cref="IPluginDiagnostics"/> for exposure via SDK.
 /// </summary>
-internal sealed class PluginDiagnosticsCollector : IPluginDiagnostics
+public sealed class PluginDiagnosticsCollector : IPluginDiagnostics
 {
     private readonly int _capacity;
     private readonly Queue<DiagnosticsSnapshot> _buffer;

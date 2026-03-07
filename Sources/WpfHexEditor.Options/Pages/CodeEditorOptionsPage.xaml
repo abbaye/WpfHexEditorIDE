@@ -177,7 +177,6 @@
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpBg" Grid.Column="2"
                             ShowAlphaChannel="False"
-                            IsEnabled="{Binding IsChecked, ElementName=ChkBg}"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
 
@@ -197,7 +196,6 @@
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpFg" Grid.Column="2"
                             ShowAlphaChannel="False"
-                            IsEnabled="{Binding IsChecked, ElementName=ChkFg}"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
 
@@ -217,7 +215,6 @@
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpKw" Grid.Column="2"
                             ShowAlphaChannel="False"
-                            IsEnabled="{Binding IsChecked, ElementName=ChkKw}"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
 
@@ -237,7 +234,6 @@
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpStr" Grid.Column="2"
                             ShowAlphaChannel="False"
-                            IsEnabled="{Binding IsChecked, ElementName=ChkStr}"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
 
@@ -257,7 +253,6 @@
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpCmt" Grid.Column="2"
                             ShowAlphaChannel="False"
-                            IsEnabled="{Binding IsChecked, ElementName=ChkCmt}"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
 
@@ -277,7 +272,6 @@
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpNum" Grid.Column="2"
                             ShowAlphaChannel="False"
-                            IsEnabled="{Binding IsChecked, ElementName=ChkNum}"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
 
