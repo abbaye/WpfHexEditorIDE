@@ -12,7 +12,7 @@ namespace WpfHexEditor.PluginHost;
 /// <summary>
 /// Internal record of a single plugin managed by <see cref="PluginHost"/>.
 /// </summary>
-internal sealed class PluginEntry
+public sealed class PluginEntry
 {
     // â”€â”€ Identity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 

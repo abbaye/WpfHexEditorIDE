@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows;
@@ -298,9 +299,9 @@ public sealed class WpfPluginHost : IAsyncDisposable
             // Store the directory for later assembly resolution
             manifest.ResolvedDirectory = pluginDir;
 
-            var validator = new PluginManifestValidator();
+            var validator = new PluginManifestValidator(new Version(1, 0), new Version(1, 0));
             var result = validator.Validate(manifest, pluginDir);
-            if (result.HasErrors) return null; // Faulted manifest â€” skip silently
+            if (!result.IsValid) return null; // Faulted manifest — skip silently
 
             return manifest;
         }

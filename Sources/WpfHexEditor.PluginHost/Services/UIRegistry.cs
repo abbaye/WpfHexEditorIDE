@@ -46,7 +46,7 @@ public sealed class UIRegistry : IUIRegistry
     }
 
     /// <inheritdoc />
-    public void RegisterPanel(string uiId, UIElement content, PanelDescriptor descriptor, string pluginId)
+    public void RegisterPanel(string uiId, UIElement content, string pluginId, PanelDescriptor descriptor)
     {
         lock (_lock)
         {
@@ -57,7 +57,7 @@ public sealed class UIRegistry : IUIRegistry
     }
 
     /// <inheritdoc />
-    public void RegisterMenuItem(string uiId, MenuItemDescriptor descriptor, string pluginId)
+    public void RegisterMenuItem(string uiId, string pluginId, MenuItemDescriptor descriptor)
     {
         lock (_lock)
         {
@@ -68,7 +68,7 @@ public sealed class UIRegistry : IUIRegistry
     }
 
     /// <inheritdoc />
-    public void RegisterToolbarItem(string uiId, ToolbarItemDescriptor descriptor, string pluginId)
+    public void RegisterToolbarItem(string uiId, string pluginId, ToolbarItemDescriptor descriptor)
     {
         // Toolbar items are deferred to a future toolbar adapter; record only.
         lock (_lock)
@@ -79,7 +79,17 @@ public sealed class UIRegistry : IUIRegistry
     }
 
     /// <inheritdoc />
-    public void RegisterDocumentTab(string uiId, UIElement content, DocumentDescriptor descriptor, string pluginId)
+    public void UnregisterToolbarItem(string uiId)
+    {
+        lock (_lock)
+        {
+            if (!_registrations.TryGetValue(uiId, out var reg) || reg.Kind != UIElementKind.ToolbarItem) return;
+            _registrations.Remove(uiId);
+        }
+    }
+
+    /// <inheritdoc />
+    public void RegisterDocumentTab(string uiId, UIElement content, string pluginId, DocumentDescriptor descriptor)
     {
         lock (_lock)
         {
@@ -90,13 +100,35 @@ public sealed class UIRegistry : IUIRegistry
     }
 
     /// <inheritdoc />
-    public void RegisterStatusBarItem(string uiId, StatusBarItemDescriptor descriptor, string pluginId)
+    public void UnregisterDocumentTab(string uiId)
+    {
+        lock (_lock)
+        {
+            if (!_registrations.TryGetValue(uiId, out var reg) || reg.Kind != UIElementKind.DocumentTab) return;
+            _dockingAdapter.RemoveDocumentTab(uiId);
+            _registrations.Remove(uiId);
+        }
+    }
+
+    /// <inheritdoc />
+    public void RegisterStatusBarItem(string uiId, string pluginId, StatusBarItemDescriptor descriptor)
     {
         lock (_lock)
         {
             ThrowIfDuplicate(uiId);
             _statusBarAdapter.AddStatusBarItem(uiId, descriptor);
             _registrations[uiId] = new UIRegistration(pluginId, UIElementKind.StatusBarItem);
+        }
+    }
+
+    /// <inheritdoc />
+    public void UnregisterStatusBarItem(string uiId)
+    {
+        lock (_lock)
+        {
+            if (!_registrations.TryGetValue(uiId, out var reg) || reg.Kind != UIElementKind.StatusBarItem) return;
+            _statusBarAdapter.RemoveStatusBarItem(uiId);
+            _registrations.Remove(uiId);
         }
     }
 

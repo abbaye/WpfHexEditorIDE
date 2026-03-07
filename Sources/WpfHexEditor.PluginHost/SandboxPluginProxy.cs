@@ -26,7 +26,7 @@ internal sealed class SandboxPluginProxy : IWpfHexEditorPlugin, IAsyncDisposable
 
     public string Id => _manifest.Id;
     public string Name => _manifest.Name;
-    public string Version => _manifest.Version;
+    public Version Version => Version.TryParse(_manifest.Version, out var v) ? v : new Version(0, 0);
     public PluginCapabilities Capabilities => new();
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct)

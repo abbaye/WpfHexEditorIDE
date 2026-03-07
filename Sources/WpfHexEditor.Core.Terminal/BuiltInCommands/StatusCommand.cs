@@ -16,7 +16,7 @@ public sealed class StatusCommand : ITerminalCommandProvider
     {
         output.WriteLine($"Working directory : {context.WorkingDirectory}");
         output.WriteLine($"Active document   : {context.ActiveDocument?.FilePath ?? "(none)"}");
-        output.WriteLine($"Active panel      : {context.ActivePanel?.PanelId ?? "(none)"}");
+        output.WriteLine($"Active panel      : {context.ActivePanel?.ContentId ?? "(none)"}");
         return Task.FromResult(0);
     }
 }
