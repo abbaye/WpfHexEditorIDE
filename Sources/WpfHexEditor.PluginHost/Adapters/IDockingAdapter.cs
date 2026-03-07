@@ -35,4 +35,16 @@ public interface IDockingAdapter
 
     /// <summary>Removes a document tab by its UI ID.</summary>
     void RemoveDocumentTab(string uiId);
+
+    /// <summary>Makes an existing dockable panel visible.</summary>
+    void ShowDockablePanel(string uiId);
+
+    /// <summary>Hides (collapses) an existing dockable panel.</summary>
+    void HideDockablePanel(string uiId);
+
+    /// <summary>Toggles visibility of an existing dockable panel.</summary>
+    void ToggleDockablePanel(string uiId);
+
+    /// <summary>Gives keyboard focus to an existing dockable panel.</summary>
+    void FocusDockablePanel(string uiId);
 }

@@ -96,4 +96,29 @@ public sealed class DockingAdapter : IDockingAdapter
         var item = _layout.FindItemByContentId(uiId);
         if (item is not null) _engine.Close(item);
     }
+
+    public void ShowDockablePanel(string uiId)
+    {
+        var item = _layout.FindItemByContentId(uiId);
+        if (item is not null) _engine.Activate(item);
+    }
+
+    public void HideDockablePanel(string uiId)
+    {
+        var item = _layout.FindItemByContentId(uiId);
+        if (item is not null) _engine.Hide(item);
+    }
+
+    public void ToggleDockablePanel(string uiId)
+    {
+        var item = _layout.FindItemByContentId(uiId);
+        if (item is null) return;
+        if (item.IsVisible) _engine.Hide(item); else _engine.Activate(item);
+    }
+
+    public void FocusDockablePanel(string uiId)
+    {
+        var item = _layout.FindItemByContentId(uiId);
+        if (item is not null) _engine.Activate(item);
+    }
 }

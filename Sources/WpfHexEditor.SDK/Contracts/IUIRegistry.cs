@@ -80,6 +80,20 @@ public interface IUIRegistry
     /// <summary>Unregisters a status bar item by its UI ID.</summary>
     void UnregisterStatusBarItem(string uiId);
 
+    // ── Panel Visibility Control ──────────────────────────────────────────────────────────
+
+    /// <summary>Makes an already-registered panel visible in the dock layout.</summary>
+    void ShowPanel(string uiId);
+
+    /// <summary>Hides (collapses) an already-registered panel.</summary>
+    void HidePanel(string uiId);
+
+    /// <summary>Toggles visibility of a registered panel.</summary>
+    void TogglePanel(string uiId);
+
+    /// <summary>Gives keyboard focus to a registered panel.</summary>
+    void FocusPanel(string uiId);
+
     // â”€â”€ Bulk Unregister â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /// <summary>
