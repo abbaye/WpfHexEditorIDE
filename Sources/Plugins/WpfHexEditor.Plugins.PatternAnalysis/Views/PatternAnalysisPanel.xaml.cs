@@ -25,8 +25,6 @@ namespace WpfHexEditor.Plugins.PatternAnalysis.Views;
 /// </summary>
 public partial class PatternAnalysisPanel : UserControl
 {
-    private byte[]? _analysisData;
-
     public PatternAnalysisPanel()
     {
         InitializeComponent();
@@ -47,7 +45,6 @@ public partial class PatternAnalysisPanel : UserControl
             return;
         }
 
-        _analysisData        = data;
         StatusTextBlock.Text = $"Analyzing {data.Length:N0} bytes...";
 
         try
@@ -123,14 +120,21 @@ public partial class PatternAnalysisPanel : UserControl
 
         if (data.Length > 4)
         {
+            // FindRepeatedSequences uses uint keys to avoid allocating a byte[] per iteration.
             var repeats = FindRepeatedSequences(data, 4);
             if (repeats.Count > 0)
             {
                 var top = repeats.First();
+                // Reconstruct the 4-byte pattern from the packed uint for display only.
+                var bytes = new byte[4];
+                bytes[0] = (byte)(top.Key & 0xFF);
+                bytes[1] = (byte)((top.Key >> 8)  & 0xFF);
+                bytes[2] = (byte)((top.Key >> 16) & 0xFF);
+                bytes[3] = (byte)((top.Key >> 24) & 0xFF);
                 patterns.Add(new PatternInfo
                 {
                     Icon        = "\U0001F501",
-                    Pattern     = BitConverter.ToString(top.Key).Replace("-", " "),
+                    Pattern     = BitConverter.ToString(bytes).Replace("-", " "),
                     Description = $"Repeated {top.Value} times"
                 });
             }
@@ -156,19 +160,25 @@ public partial class PatternAnalysisPanel : UserControl
         return patterns;
     }
 
-    private static Dictionary<byte[], int> FindRepeatedSequences(byte[] data, int seqLen)
+    /// <summary>
+    /// Counts repeated 4-byte sequences using a uint key (bytes packed little-endian).
+    /// Avoids allocating a byte[] per iteration — previously caused ~1 M small heap allocs
+    /// per 1 MB file (GC pressure, visible memory sawtooth in Plugin Monitor).
+    /// </summary>
+    private static Dictionary<uint, int> FindRepeatedSequences(byte[] data, int seqLen)
     {
-        var sequences = new Dictionary<byte[], int>(new ByteArrayComparer());
-        for (int i = 0; i <= data.Length - seqLen; i++)
+        var counts = new Dictionary<uint, int>();
+        int limit  = data.Length - seqLen;
+        for (int i = 0; i <= limit; i++)
         {
-            var seq = new byte[seqLen];
-            Array.Copy(data, i, seq, 0, seqLen);
-            sequences[seq] = sequences.TryGetValue(seq, out int c) ? c + 1 : 1;
+            // Pack 4 bytes into a uint (little-endian) — zero-alloc key.
+            uint key = (uint)(data[i] | (data[i + 1] << 8) | (data[i + 2] << 16) | (data[i + 3] << 24));
+            counts[key] = counts.TryGetValue(key, out int c) ? c + 1 : 1;
         }
-        return sequences.Where(kvp => kvp.Value > 2)
-                        .OrderByDescending(kvp => kvp.Value)
-                        .Take(5)
-                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        return counts.Where(kvp => kvp.Value > 2)
+                     .OrderByDescending(kvp => kvp.Value)
+                     .Take(5)
+                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
     private List<AnomalyInfo> DetectAnomalies(byte[] data, int[] distribution)
@@ -351,23 +361,3 @@ public class AnomalyInfo
     public string? Description { get; set; }
 }
 
-/// <summary>Byte array equality comparer for dictionary keys.</summary>
-public class ByteArrayComparer : IEqualityComparer<byte[]>
-{
-    public bool Equals(byte[]? x, byte[]? y)
-    {
-        if (x == null || y == null) return x == y;
-        if (x.Length != y.Length)   return false;
-        for (int i = 0; i < x.Length; i++)
-            if (x[i] != y[i]) return false;
-        return true;
-    }
-
-    public int GetHashCode(byte[] obj)
-    {
-        if (obj == null) return 0;
-        int hash = 17;
-        foreach (var b in obj) hash = hash * 31 + b;
-        return hash;
-    }
-}

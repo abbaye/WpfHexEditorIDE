@@ -80,12 +80,24 @@ public partial class StructureOverlayPanel : UserControl, IStructureOverlayPanel
     /// <inheritdoc/>
     public void UpdateFileBytes(byte[] fileBytes) => _currentFileBytes = fileBytes;
 
+    /// <summary>
+    /// Clears the cached file bytes to allow the GC to reclaim the buffer.
+    /// Called automatically after overlay creation and can be called manually
+    /// when the panel knows the bytes are no longer needed.
+    /// </summary>
+    public void ReleaseFileBytes() => _currentFileBytes = null;
+
     /// <inheritdoc/>
     public void AddOverlayFromFormat(JsonObject formatDefinition)
     {
         if (_currentFileBytes is null || formatDefinition is null) return;
 
         var overlay = _service.CreateOverlayFromFormat(formatDefinition, _currentFileBytes);
+
+        // Release the byte buffer immediately after parsing — the overlay itself stores
+        // only the parsed field offsets/lengths, not the raw bytes.
+        ReleaseFileBytes();
+
         if (overlay != null)
         {
             _viewModel.AddStructure(overlay);
