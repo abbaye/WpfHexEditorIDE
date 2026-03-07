@@ -26,6 +26,7 @@ using WpfHexEditor.PluginHost;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.PluginHost.UI;
+using WpfHexEditor.Options;
 using WpfHexEditor.SDK.Contracts.Focus;
 using WpfHexEditor.Terminal;
 
@@ -108,6 +109,22 @@ public partial class MainWindow
             await _pluginHost.LoadAllAsync(
                 extraDirectories: Directory.Exists(bundledPluginsDir) ? [bundledPluginsDir] : null,
                 ct: CancellationToken.None).ConfigureAwait(false);
+
+            // Register a dynamic Options page for every plugin that supports IPluginWithOptions.
+            foreach (var entry in _pluginHost.OptionsRegistry.GetAll())
+            {
+                var captured = entry;
+                OptionsPageRegistry.RegisterDynamic(
+                    "Plugins",
+                    captured.PluginName,
+                    () =>
+                    {
+                        captured.Plugin.LoadOptions();
+                        var page = captured.Plugin.CreateOptionsPage();
+                        return page as System.Windows.Controls.UserControl
+                            ?? new System.Windows.Controls.ContentControl { Content = page };
+                    });
+            }
         }
         catch (Exception ex)
         {
