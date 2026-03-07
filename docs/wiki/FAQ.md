@@ -31,13 +31,12 @@ Then add to your XAML:
 
 ### Q: What .NET versions are supported?
 
-**A:** WPF HexEditor supports:
-- ✅ **.NET Framework 4.8** (Windows only)
-- ✅ **.NET 8.0-windows** (recommended for best performance)
+**A:** WPF HexEditor **V2 targets .NET 8.0-windows exclusively**.
 
-The NuGet package uses **multi-targeting**, so the correct binary is automatically selected based on your project's target framework.
+- ✅ **.NET 8.0-windows** — full performance: Span&lt;T&gt;, SIMD (AVX2/SSE2), PGO
+- ❌ **.NET Framework 4.8** — dropped in V2 (removed Feb 2026)
 
-**Recommendation**: Use .NET 8.0 for maximum performance (Span&lt;T&gt;, SIMD, PGO).
+> If you need .NET Framework support, use the legacy V1 NuGet package (`WPFHexaEditor`). It is no longer maintained but remains available.
 
 ---
 
@@ -63,6 +62,81 @@ this.Controls.Add(host);
 ```
 
 👉 **[See WinForms sample](https://github.com/abbaye/WpfHexEditorIDE/tree/master/Sources/Samples/WpfHexEditor.Sample.Winform)**
+
+---
+
+## 🖥️ IDE Application
+
+### Q: How do I run the full IDE?
+
+**A:** Clone the repository and open the solution:
+```bash
+git clone https://github.com/abbaye/WpfHexEditorIDE.git
+```
+Open `WpfHexEditorControl.sln` in Visual Studio 2022, set **WpfHexEditor.App** as the startup project, and press F5.
+
+---
+
+### Q: Where are plugins installed?
+
+**A:** WpfPluginHost discovers plugins from two locations:
+- `%AppData%\WpfHexEditor\Plugins\` — user-installed plugins
+- `bin\Plugins\` — bundled plugins (relative to the IDE executable)
+
+Each plugin is a folder containing a `manifest.json` and the plugin `.dll`.
+
+---
+
+### Q: How do I write a plugin?
+
+**A:** Reference `WpfHexEditor.SDK` and implement `IWpfHexEditorPluginV2`:
+
+```csharp
+public class MyPlugin : IWpfHexEditorPluginV2
+{
+    public string Id => "com.example.myplugin";
+    public string Name => "My Plugin";
+    public string Version => "1.0.0";
+
+    public void Init(IIDEHostContext context)
+    {
+        // Register a dockable panel
+        context.UIRegistry.RegisterPanel("my-panel", "My Panel", () => new MyPanelView());
+    }
+
+    public void Activate()  { /* show panels, attach events */ }
+    public void Deactivate() { /* hide panels, detach events */ }
+    public void Dispose()    { /* cleanup */ }
+}
+```
+
+Package with `WpfHexEditor.PackagingTool` (`whxpack` CLI) to produce a `.whxplugin` file.
+
+👉 **[Complete Plugin System guide →](Plugin-System)**
+
+---
+
+### Q: How do I open the integrated terminal?
+
+**A:** Press `Ctrl+`` ` or go to **Tools → Terminal**. Type `help` to list all 31+ built-in commands.
+
+👉 **[Terminal Panel guide →](Terminal-Panel)**
+
+---
+
+### Q: Can I change the IDE theme?
+
+**A:** Yes — 8 built-in themes: **Dark, Light, VS2022Dark, DarkGlass, Minimal, Office, Cyberpunk, VisualStudio**.
+
+Go to **Tools → Options → Theme** and select a theme. The change applies instantly — no restart needed.
+
+---
+
+### Q: How do I monitor plugin performance?
+
+**A:** Open **Tools → Plugin Monitoring**. The panel shows real-time CPU% and memory usage for each loaded plugin with rolling charts.
+
+👉 **[Plugin Monitoring guide →](Plugin-Monitoring)**
 
 ---
 

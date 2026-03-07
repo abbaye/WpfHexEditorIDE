@@ -1,41 +1,100 @@
 # Architecture Overview
 
-Understanding how WPF HexEditor works under the hood.
+Understanding how WPF HexEditor IDE works under the hood.
 
 ---
 
 ## 📋 Overview
 
-WPF HexEditor is built with a **modern, layered architecture** designed for performance, maintainability, and extensibility. This document provides a high-level overview of how the system works.
+WPF HexEditor is built with a **modern, layered architecture** designed for performance, maintainability, and extensibility. This document covers both the **IDE application** and the **HexEditor control** layers.
 
 **Target Audience**: Developers who want to understand the internal architecture before extending or integrating WPF HexEditor.
 
 ---
 
-## 🏗️ High-Level Architecture
+## 🖥️ IDE Application Architecture (2026-03+)
+
+The `WpfHexEditor.App` IDE is built on top of the HexEditor control and adds a full VS-like application layer.
 
 ```mermaid
 flowchart TD
-    App["🖥️ Your WPF Application<br/>(MainWindow.xaml, ViewModels, Commands)"]
+    App["🖥️ WpfHexEditor.App (MainWindow)\n• VS-style docking (WpfHexEditor.Docking.Wpf)\n• IDocumentEditor plugin contract\n• Project system (.whsln / .whproj)\n• Options, Status Bar, Themes"]
 
-    Control["🎨 HexEditor Control<br/>• User interactions (keyboard, mouse)<br/>• Visual rendering (hex + ASCII columns)<br/>• Data binding & commands"]
+    subgraph PluginLayer["🧩 Plugin System"]
+        SDK["WpfHexEditor.SDK\n• IWpfHexEditorPluginV2\n• IIDEHostContext\n• IUIRegistry / IDockingAdapter\n• 11+ service contracts"]
+        Host["WpfHexEditor.PluginHost\n• WpfPluginHost (discovery + load)\n• PluginEntry lifecycle\n• PluginManagerControl\n• PermissionService"]
+        Sandbox["WpfHexEditor.PluginSandbox\n• Out-of-process via named pipe\n• SandboxPluginProxy"]
+    end
 
-    Provider["💾 ByteProvider System<br/>• File I/O management<br/>• Edit tracking (mods, inserts, deletes)<br/>• Position mapping (virtual ↔ physical)<br/>• Undo/Redo command pattern"]
+    Editors["📝 Editors\n• HexEditor · TBL · JSON · Text\n• Code Editor · Image Viewer\n• IDocumentEditor contract"]
 
-    Services["🔧 Service Layer<br/>• Search (Boyer-Moore + SIMD)<br/>• Clipboard operations<br/>• Bookmark management<br/>• Highlight rendering<br/>• TBL (Translation Tables)<br/>• Binary comparison"]
+    Panels["🗂️ Panels\n• Solution Explorer · Properties\n• Error · Output · ParsedFields\n• DataInspector · StructureOverlay\n• Terminal · Plugin Manager\n• Plugin Monitoring"]
 
-    Storage["📁 Physical File Storage<br/>(Disk, Memory, Stream)"]
+    Terminal["💻 Terminal\n• WpfHexEditor.Core.Terminal\n• 31+ built-in commands\n• HxScriptEngine\n• ITerminalService (SDK contract)"]
+
+    App --> PluginLayer
+    App --> Editors
+    App --> Panels
+    App --> Terminal
+    SDK --> Host
+    Host --> Sandbox
+```
+
+### Plugin Lifecycle
+
+```mermaid
+sequenceDiagram
+    participant Host as WpfPluginHost
+    participant Entry as PluginEntry
+    participant Plugin as IWpfHexEditorPluginV2
+    participant IDE as IIDEHostContext
+
+    Host->>Entry: Discover (.whxplugin / bin\Plugins)
+    Host->>Entry: Load (AssemblyLoadContext)
+    Entry->>Plugin: Init(context)
+    Plugin->>IDE: Register panels, commands, options
+    Entry->>Plugin: Activate()
+    Note over Plugin: Plugin running
+    Entry->>Plugin: Deactivate()
+    Entry->>Plugin: Dispose()
+    Host->>Entry: Unload() — clears collectible ALC
+```
+
+### ContentId Routing (Docking Restore)
+
+Each dockable item has a `ContentId` that `MainWindow.BuildContentForItem()` maps to a factory:
+
+| ContentId pattern | Factory |
+|-------------------|---------|
+| `doc-welcome` | `WelcomePanel` |
+| `doc-proj-{itemId}` | Project item editor (auto editor selection) |
+| `doc-proj-{factoryId}-{itemId}` | Specific editor for item |
+| `panel-terminal` | `TerminalPanel` |
+| `panel-plugin-monitoring` | `PluginMonitoringPanel` |
+| `panel-plugin-manager` | `PluginManagerControl` |
+| `panel-solution-explorer` | `SolutionExplorerPanel` |
+| `panel-parsed-fields` | `ParsedFieldsPanel` |
+
+---
+
+## 🏗️ HexEditor Control Architecture
+
+```mermaid
+flowchart TD
+    App["🖥️ Your WPF Application\n(MainWindow.xaml, ViewModels, Commands)"]
+
+    Control["🎨 HexEditor Control\n• User interactions (keyboard, mouse)\n• Visual rendering (hex + ASCII columns)\n• Data binding & commands"]
+
+    Provider["💾 ByteProvider System\n• File I/O management\n• Edit tracking (mods, inserts, deletes)\n• Position mapping (virtual ↔ physical)\n• Undo/Redo command pattern"]
+
+    Services["🔧 Service Layer\n• Search (Boyer-Moore + SIMD)\n• Clipboard operations\n• Bookmark management\n• Highlight rendering\n• TBL (Translation Tables)\n• Binary comparison"]
+
+    Storage["📁 Physical File Storage\n(Disk, Memory, Stream)"]
 
     App --> Control
     Control --> Provider
     Provider --> Services
     Services --> Storage
-
-    style App fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
-    style Control fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px
-    style Provider fill:#fff3e0,stroke:#f57c00,stroke-width:3px
-    style Services fill:#e8f5e9,stroke:#388e3c,stroke-width:3px
-    style Storage fill:#fce4ec,stroke:#c2185b,stroke-width:3px
 ```
 
 ---

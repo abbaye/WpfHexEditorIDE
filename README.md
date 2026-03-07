@@ -147,7 +147,8 @@ Panels connect to the active document automatically via the docking system.
 | **Error Panel** | ~70% | Diagnostics and validation errors from any `IDiagnosticSource` editor |
 | **Output Panel** | ~65% | Session log, file operation messages and build feedback |
 | **Terminal Panel** | ~70% | Integrated command terminal — 31+ commands, colored output, history, `TerminalMode` (Interactive/Script/ReadOnly), session export, plugin API via `ITerminalService` |
-| **Plugin Manager** | ~60% | Browse, enable/disable, uninstall plugins; settings integration via `IPluginWithOptions` |
+| **Plugin Manager** | ~65% | Browse, enable/disable, uninstall plugins; settings integration via `IPluginWithOptions`; themed toolbar with RelayCommand |
+| **Plugin Monitoring** | ~60% | Real-time CPU% + memory charts per plugin; pure WPF `Canvas` + `Polyline` (no charting lib); rolling history, `PerformanceCounter` + GC polling at 1 s interval |
 | **Options** | ~75% | VS2026-style settings document tab — 9 pages: theme, display, editing, behavior, status bar, plugins, auto-save |
 | **Quick Search Bar** | ~55% | Inline Ctrl+F overlay (VSCode-style) — find next/prev, regex toggle, jump to Advanced |
 | **Advanced Search** | ~45% | Full-featured search dialog — 5 modes: Hex, Text, Regex, TBL, Wildcard |

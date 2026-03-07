@@ -202,6 +202,9 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - Section separators normalized from Unicode box-drawing (`──`) to ASCII (`--`) across 134 files
 - `MainWindow.xaml` — Tools menu: Plugin Monitoring entry added; `PluginMonitoringPanel` dock item registered
 - `SolutionExplorerPanel` — toolbar layout polish; drag-drop from Windows Explorer refined
+- Plugin `.csproj` SDK manifest metadata (`PluginId`, `PluginVersion`, `PluginEntryPoint`, …) updated and bumped across all 7 first-party plugin packages
+- `MainWindow` — `SetActiveEditor` now called only on hex editor tab activation; non-hex tabs (Code, JSON, TBL…) no longer reset the active editor reference, keeping panels connected
+- `PluginManagerControl` — tab hover / selected theming aligned with all 8 global themes; `RelayCommand` wired to enable/disable/uninstall toolbar actions; list item foreground driven by `DockMenuForegroundBrush`
 
 ### 🐛 Fixed
 - `PermissionService` — `PermissionChangedEventArgs` object-initializer form; missing `System.IO` using
@@ -209,6 +212,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - `SolutionExplorerPanel` — CS0136 variable scope collision in `OnTreeDragOver`
 - `HexEditor.Events.cs — EnsurePositionVisible` DOWN scroll: replaced centering formula (`lineNumber - visibleLines/2`) with `LastVisibleBytePosition`-based edge trigger; scroll now advances exactly 1 line per arrow-down keypress at viewport bottom; `VerticalScroll.Value` synced in all scroll paths
 - `ImageViewer` — `FileShare.ReadWrite` (was `Read`) allows concurrent access when HexEditor has the same file open; eliminates `IOException` on dual open
+- `MainWindow` — panels (ParsedFields, DataInspector, Properties…) now auto-refresh on file open; panel refresh dispatched non-blocking via `Dispatcher.InvokeAsync(DispatcherPriority.Background)`
+- `PluginMonitoringPanel` / `TerminalPanel` — panels showed placeholder on layout restore; `BuildContentForItem` now routes `TerminalPanelContentId` and `PluginMonitorContentId` to their factories; `DataContext` wired via deferred `Dispatcher.InvokeAsync` after `InitializePluginSystemAsync`
+- `WelcomePanel` — `## What's Next` roadmap section was silently dropped by the changelog parser (regex required `## [Label]` brackets); special-cased before regex; rendered as distinct purple roadmap block, never counted against `MaxVersionsDisplayed`
+- VisualStudio theme — `PM_*` brush keys corrected to match VS2022 palette; theme file was referencing wrong color tokens
+- `BinaryAnalysisPanel` removed from solution (replaced by ParsedFields plugin); dangling project reference cleaned up
 
 ---
 
