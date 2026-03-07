@@ -7,7 +7,7 @@
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
-using WpfHexEditor.Panels.FileOps;
+using WpfHexEditor.Plugins.FileComparison.Views;
 
 namespace WpfHexEditor.Plugins.FileComparison;
 
@@ -32,7 +32,7 @@ public sealed class FileComparisonPlugin : IWpfHexEditorPlugin
     {
         context.UIRegistry.RegisterPanel(
             "WpfHexEditor.Plugins.FileComparison.Panel.FileComparisonPanel",
-            new WpfHexEditor.Panels.FileOps.FileComparisonPanel(),
+            new FileComparisonPanel(),
             Id,
             new PanelDescriptor { Title = "FileComparison", DefaultDockSide = "Right", CanClose = true });
         return Task.CompletedTask;

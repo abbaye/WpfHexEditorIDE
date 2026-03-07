@@ -7,7 +7,7 @@
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
-using WpfHexEditor.Panels.BinaryAnalysis;
+using WpfHexEditor.Plugins.CustomParserTemplate.Views;
 
 namespace WpfHexEditor.Plugins.CustomParserTemplate;
 
@@ -32,7 +32,7 @@ public sealed class CustomParserTemplatePlugin : IWpfHexEditorPlugin
     {
         context.UIRegistry.RegisterPanel(
             "WpfHexEditor.Plugins.CustomParserTemplate.Panel.CustomParserTemplatePanel",
-            new WpfHexEditor.Panels.BinaryAnalysis.CustomParserTemplatePanel(),
+            new CustomParserTemplatePanel(),
             Id,
             new PanelDescriptor { Title = "CustomParserTemplate", DefaultDockSide = "Right", CanClose = true });
         return Task.CompletedTask;

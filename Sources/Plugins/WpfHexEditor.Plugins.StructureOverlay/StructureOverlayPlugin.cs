@@ -7,7 +7,7 @@
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
-using WpfHexEditor.Panels.BinaryAnalysis;
+using WpfHexEditor.Plugins.StructureOverlay.Views;
 
 namespace WpfHexEditor.Plugins.StructureOverlay;
 
@@ -32,7 +32,7 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
     {
         context.UIRegistry.RegisterPanel(
             "WpfHexEditor.Plugins.StructureOverlay.Panel.StructureOverlayPanel",
-            new WpfHexEditor.Panels.BinaryAnalysis.StructureOverlayPanel(),
+            new StructureOverlayPanel(),
             Id,
             new PanelDescriptor { Title = "StructureOverlay", DefaultDockSide = "Right", CanClose = true });
         return Task.CompletedTask;

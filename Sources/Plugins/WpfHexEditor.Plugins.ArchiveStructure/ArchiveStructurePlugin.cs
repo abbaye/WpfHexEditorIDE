@@ -7,7 +7,7 @@
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
-using WpfHexEditor.Panels.FileOps;
+using WpfHexEditor.Plugins.ArchiveStructure.Views;
 
 namespace WpfHexEditor.Plugins.ArchiveStructure;
 
@@ -32,7 +32,7 @@ public sealed class ArchiveStructurePlugin : IWpfHexEditorPlugin
     {
         context.UIRegistry.RegisterPanel(
             "WpfHexEditor.Plugins.ArchiveStructure.Panel.ArchiveStructurePanel",
-            new WpfHexEditor.Panels.FileOps.ArchiveStructurePanel(),
+            new ArchiveStructurePanel(),
             Id,
             new PanelDescriptor { Title = "ArchiveStructure", DefaultDockSide = "Right", CanClose = true });
         return Task.CompletedTask;

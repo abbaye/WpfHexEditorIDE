@@ -7,7 +7,7 @@
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
-using WpfHexEditor.Panels.BinaryAnalysis;
+using WpfHexEditor.Plugins.FileStatistics.Views;
 
 namespace WpfHexEditor.Plugins.FileStatistics;
 
@@ -32,7 +32,7 @@ public sealed class FileStatisticsPlugin : IWpfHexEditorPlugin
     {
         context.UIRegistry.RegisterPanel(
             "WpfHexEditor.Plugins.FileStatistics.Panel.FileStatisticsPanel",
-            new WpfHexEditor.Panels.BinaryAnalysis.FileStatisticsPanel(),
+            new FileStatisticsPanel(),
             Id,
             new PanelDescriptor { Title = "FileStatistics", DefaultDockSide = "Right", CanClose = true });
         return Task.CompletedTask;

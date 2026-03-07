@@ -7,7 +7,7 @@
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
-using WpfHexEditor.Panels.BinaryAnalysis;
+using WpfHexEditor.Plugins.FormatInfo.Views;
 
 namespace WpfHexEditor.Plugins.FormatInfo;
 
@@ -32,7 +32,7 @@ public sealed class FormatInfoPlugin : IWpfHexEditorPlugin
     {
         context.UIRegistry.RegisterPanel(
             "WpfHexEditor.Plugins.FormatInfo.Panel.EnrichedFormatInfoPanel",
-            new WpfHexEditor.Panels.BinaryAnalysis.EnrichedFormatInfoPanel(),
+            new EnrichedFormatInfoPanel(),
             Id,
             new PanelDescriptor { Title = "EnrichedFormatInfo", DefaultDockSide = "Right", CanClose = true });
         return Task.CompletedTask;

@@ -7,7 +7,7 @@
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
-using WpfHexEditor.Panels.BinaryAnalysis;
+using WpfHexEditor.Plugins.DataInspector.Views;
 
 namespace WpfHexEditor.Plugins.DataInspector;
 
@@ -32,12 +32,12 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin
     {
         context.UIRegistry.RegisterPanel(
             "WpfHexEditor.Plugins.DataInspector.Panel.DataInspectorPanel",
-            new WpfHexEditor.Panels.BinaryAnalysis.DataInspectorPanel(),
+            new DataInspectorPanel(),
             Id,
             new PanelDescriptor { Title = "DataInspector", DefaultDockSide = "Right", CanClose = true });
         context.UIRegistry.RegisterPanel(
             "WpfHexEditor.Plugins.DataInspector.Panel.ByteChartPanel",
-            new WpfHexEditor.Panels.BinaryAnalysis.ByteChartPanel(),
+            new ByteChartPanel(),
             Id,
             new PanelDescriptor { Title = "ByteChart", DefaultDockSide = "Right", CanClose = true });
         return Task.CompletedTask;

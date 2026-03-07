@@ -7,7 +7,7 @@
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
-using WpfHexEditor.Panels.BinaryAnalysis;
+using WpfHexEditor.Plugins.PatternAnalysis.Views;
 
 namespace WpfHexEditor.Plugins.PatternAnalysis;
 
@@ -32,7 +32,7 @@ public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
     {
         context.UIRegistry.RegisterPanel(
             "WpfHexEditor.Plugins.PatternAnalysis.Panel.PatternAnalysisPanel",
-            new WpfHexEditor.Panels.BinaryAnalysis.PatternAnalysisPanel(),
+            new PatternAnalysisPanel(),
             Id,
             new PanelDescriptor { Title = "PatternAnalysis", DefaultDockSide = "Right", CanClose = true });
         return Task.CompletedTask;
