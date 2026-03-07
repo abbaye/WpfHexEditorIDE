@@ -70,7 +70,8 @@
             </Setter>
         </Style>
 
-        <!-- Themed TabItem -->
+        <!-- Themed TabItem — uses DockTabHoverBrush (per-theme, clearly visible)
+             not PM_ListItemHoverBrush which is designed for list items on dark backgrounds. -->
         <Style x:Key="PM_TabItemStyle" TargetType="TabItem">
             <Setter Property="Background"   Value="Transparent"/>
             <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
@@ -92,15 +93,29 @@
                                               TextBlock.Foreground="{TemplateBinding Foreground}"/>
                         </Border>
                         <ControlTemplate.Triggers>
+                            <!-- Selected: merge with content area background -->
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
                                         Value="{DynamicResource DockBackgroundBrush}"/>
-                                <Setter TargetName="Bd" Property="BorderThickness" Value="1,1,1,0"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource DockBorderBrush}"/>
                             </Trigger>
+                            <!-- Unselected hover: use proper tab hover brush -->
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource PM_ListItemHoverBrush}"/>
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
                             </Trigger>
+                            <!-- Selected + hover: use dedicated selected-hover brush -->
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected"   Value="True"/>
+                                    <Condition Property="IsMouseOver"  Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabSelectedHoverBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource DockBorderBrush}"/>
+                            </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -295,10 +310,10 @@
 
                                 <StackPanel Grid.Column="1" Margin="6,0,4,0">
                                     <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12"
-                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"
                                                TextTrimming="CharacterEllipsis"/>
                                     <TextBlock FontSize="10" Opacity="0.7"
-                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
+                                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}">
                                         <Run Text="{Binding Publisher, Mode=OneWay}"/>
                                         <Run Text=" · "/>
                                         <Run Text="{Binding VersionLabel, Mode=OneWay}"/>

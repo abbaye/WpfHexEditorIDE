@@ -581,9 +581,12 @@
          Plugin Manager (PM_*) — shared styles for PluginManagerControl
          ══════════════════════════════════════════════════════════= -->
 
-    <!-- Plugin list item container — hover + selected state via DynamicResource -->
+    <!-- Plugin list item container — hover + selected state via DynamicResource.
+         Selected trigger also sets Foreground=White so subtitle text (bound via
+         RelativeSource to ListBoxItem.Foreground) remains readable on the accent bg. -->
     <Style x:Key="PM_PluginListItemStyle" TargetType="ListBoxItem">
         <Setter Property="Background"   Value="Transparent"/>
+        <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding"      Value="0"/>
         <Setter Property="Cursor"       Value="Hand"/>
@@ -602,6 +605,7 @@
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Bd" Property="Background"
                                     Value="{DynamicResource PM_ListItemSelectedBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
