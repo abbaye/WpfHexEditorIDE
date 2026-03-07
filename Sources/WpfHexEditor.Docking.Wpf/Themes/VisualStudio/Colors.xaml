@@ -317,12 +317,12 @@
     <SolidColorBrush x:Key="Panel_WarningTextBrush"       Color="#E0A000"/>
 
     <!-- Plugin Manager (PM_*) -->
-    <SolidColorBrush x:Key="PM_ListBackgroundBrush"              Color="#F5F5F5"/>
-    <SolidColorBrush x:Key="PM_ListItemHoverBrush"               Color="#E8E8EC"/>
-    <SolidColorBrush x:Key="PM_ListItemSelectedBrush"            Color="#CCE4F7"/>
-    <SolidColorBrush x:Key="PM_CategoryHeaderBrush"              Color="#EEEEF2"/>
-    <SolidColorBrush x:Key="PM_CategoryHeaderForegroundBrush"    Color="#717171"/>
-    <SolidColorBrush x:Key="PM_DetailHeaderBackgroundBrush"      Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="PM_ListBackgroundBrush"              Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="PM_ListItemHoverBrush"               Color="#2A2D2E"/>
+    <SolidColorBrush x:Key="PM_ListItemSelectedBrush"            Color="#094771"/>
+    <SolidColorBrush x:Key="PM_CategoryHeaderBrush"              Color="#2D2D30"/>
+    <SolidColorBrush x:Key="PM_CategoryHeaderForegroundBrush"    Color="#858585"/>
+    <SolidColorBrush x:Key="PM_DetailHeaderBackgroundBrush"      Color="#252526"/>
     <SolidColorBrush x:Key="PM_BadgeLoadedBrush"                 Color="#16A34A"/>
     <SolidColorBrush x:Key="PM_BadgeDisabledBrush"               Color="#6B7280"/>
     <SolidColorBrush x:Key="PM_BadgeFaultedBrush"                Color="#DC2626"/>

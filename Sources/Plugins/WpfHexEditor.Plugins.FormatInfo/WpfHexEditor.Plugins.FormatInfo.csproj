@@ -10,7 +10,7 @@
     <!-- Plugin metadata required by WpfHexEditor.SDK.targets to generate manifest.json -->
     <PluginId>WpfHexEditor.Plugins.FormatInfo</PluginId>
     <PluginName>Format Info</PluginName>
-    <PluginVersion>1.0.0</PluginVersion>
+    <PluginVersion>0.4.0</PluginVersion>
     <PluginEntryPoint>WpfHexEditor.Plugins.FormatInfo.FormatInfoPlugin</PluginEntryPoint>
     <PluginAuthor>Derek Tremblay</PluginAuthor>
     <PluginPublisher>WpfHexEditor</PluginPublisher>

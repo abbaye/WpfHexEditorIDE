@@ -19,7 +19,7 @@ public sealed class FileComparisonPlugin : IWpfHexEditorPlugin
 {
     public string Id      => "WpfHexEditor.Plugins.FileComparison";
     public string Name    => "File Comparison";
-    public Version Version => new(1, 0, 0);
+    public Version Version => new(0, 2, 0);
 
     public PluginCapabilities Capabilities => new()
     {

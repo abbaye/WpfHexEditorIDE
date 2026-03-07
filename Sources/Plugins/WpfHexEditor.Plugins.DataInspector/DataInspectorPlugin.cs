@@ -36,7 +36,7 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
 {
     public string  Id      => "WpfHexEditor.Plugins.DataInspector";
     public string  Name    => "Data Inspector";
-    public Version Version => new(1, 0, 0);
+    public Version Version => new(0, 6, 0);
 
     public PluginCapabilities Capabilities => new()
     {

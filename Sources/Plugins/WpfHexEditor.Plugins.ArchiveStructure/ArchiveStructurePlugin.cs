@@ -19,7 +19,7 @@ public sealed class ArchiveStructurePlugin : IWpfHexEditorPlugin
 {
     public string Id      => "WpfHexEditor.Plugins.ArchiveStructure";
     public string Name    => "Archive Structure";
-    public Version Version => new(1, 0, 0);
+    public Version Version => new(0, 3, 0);
 
     public PluginCapabilities Capabilities => new()
     {

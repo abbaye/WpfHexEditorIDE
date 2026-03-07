@@ -39,7 +39,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
 {
     public string  Id      => "WpfHexEditor.Plugins.ParsedFields";
     public string  Name    => "Parsed Fields";
-    public Version Version => new(1, 0, 0);
+    public Version Version => new(0, 5, 0);
 
     public PluginCapabilities Capabilities => new()
     {

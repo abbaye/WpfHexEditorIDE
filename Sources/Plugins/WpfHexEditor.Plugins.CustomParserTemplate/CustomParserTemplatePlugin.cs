@@ -38,7 +38,7 @@ public sealed class CustomParserTemplatePlugin : IWpfHexEditorPlugin
 
     public string  Id      => "WpfHexEditor.Plugins.CustomParserTemplate";
     public string  Name    => "Custom Parser Template";
-    public Version Version => new(1, 0, 0);
+    public Version Version => new(0, 4, 0);
 
     public PluginCapabilities Capabilities => new()
     {

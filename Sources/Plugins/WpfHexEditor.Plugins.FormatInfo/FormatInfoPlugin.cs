@@ -36,7 +36,7 @@ public sealed class FormatInfoPlugin : IWpfHexEditorPlugin
 
     public string  Id      => "WpfHexEditor.Plugins.FormatInfo";
     public string  Name    => "Format Info";
-    public Version Version => new(1, 0, 0);
+    public Version Version => new(0, 4, 0);
 
     public PluginCapabilities Capabilities => new()
     {

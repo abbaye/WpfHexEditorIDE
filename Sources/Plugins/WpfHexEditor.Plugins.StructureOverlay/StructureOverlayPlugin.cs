@@ -36,7 +36,7 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
 
     public string  Id      => "WpfHexEditor.Plugins.StructureOverlay";
     public string  Name    => "Structure Overlay";
-    public Version Version => new(1, 0, 0);
+    public Version Version => new(0, 4, 0);
 
     public PluginCapabilities Capabilities => new()
     {

@@ -34,7 +34,7 @@ public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
 
     public string  Id      => "WpfHexEditor.Plugins.PatternAnalysis";
     public string  Name    => "Pattern Analysis";
-    public Version Version => new(1, 0, 0);
+    public Version Version => new(0, 4, 0);
 
     public PluginCapabilities Capabilities => new()
     {
