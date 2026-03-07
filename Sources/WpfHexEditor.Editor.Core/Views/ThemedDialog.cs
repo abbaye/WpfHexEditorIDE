@@ -46,7 +46,7 @@ namespace WpfHexEditor.Editor.Core.Views;
 /// </remarks>
 public class ThemedDialog : Window
 {
-    // ── ShowIcon dependency property ──────────────────────────────────────
+    // -- ShowIcon dependency property --------------------------------------
     public static readonly DependencyProperty ShowIconProperty =
         DependencyProperty.Register(nameof(ShowIcon), typeof(bool),
             typeof(ThemedDialog), new PropertyMetadata(false));
@@ -61,11 +61,11 @@ public class ThemedDialog : Window
         set => SetValue(ShowIconProperty, value);
     }
 
-    // ── Wrapper elements kept as fields so StateChanged can mutate them ──
+    // -- Wrapper elements kept as fields so StateChanged can mutate them --
     private Border? _outerBorder;
     private Button? _maxButton;
 
-    // ── Win32 P/Invoke — multi-monitor maximize ──────────────────────────
+    // -- Win32 P/Invoke — multi-monitor maximize --------------------------
     [StructLayout(LayoutKind.Sequential)] private struct WINPOINT  { public int x, y; }
     [StructLayout(LayoutKind.Sequential)] private struct WINRECT   { public int left, top, right, bottom; }
     [StructLayout(LayoutKind.Sequential)] private struct MINMAXINFO
@@ -86,7 +86,7 @@ public class ThemedDialog : Window
     [DllImport("user32.dll")]
     private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
-    // ────────────────────────────────────────────────────────────────────
+    // --------------------------------------------------------------------
 
     public ThemedDialog()
     {
@@ -109,7 +109,7 @@ public class ThemedDialog : Window
         StateChanged += OnWindowStateChanged;
     }
 
-    // ── Content wrapping ─────────────────────────────────────────────────
+    // -- Content wrapping -------------------------------------------------
 
     protected override void OnInitialized(EventArgs e)
     {
@@ -129,7 +129,7 @@ public class ThemedDialog : Window
         if (WindowChrome.GetWindowChrome(this) is { } chrome)
             chrome.ResizeBorderThickness = isResizable ? new Thickness(4) : new Thickness(0);
 
-        // ── Title bar ─────────────────────────────────────────────────
+        // -- Title bar -------------------------------------------------
         var titleText = new TextBlock
         {
             VerticalAlignment = VerticalAlignment.Center,
@@ -154,7 +154,7 @@ public class ThemedDialog : Window
             titleDock.Children.Add(_maxButton);
         }
 
-        // ── Optional app icon (left of title) ─────────────────────────
+        // -- Optional app icon (left of title) -------------------------
         if (ShowIcon)
         {
             var iconImage = new Image
@@ -197,7 +197,7 @@ public class ThemedDialog : Window
         // CaptionHeight = 28 → OS handles drag and double-click maximize natively.
         // No MouseLeftButtonDown handler needed on the title bar.
 
-        // ── Wrapper grid ──────────────────────────────────────────────
+        // -- Wrapper grid ----------------------------------------------
         var rootGrid = new Grid();
         rootGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
         rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -218,7 +218,7 @@ public class ThemedDialog : Window
             rootGrid.Children.Add(grip);
         }
 
-        // ── Outer 1 px themed border ──────────────────────────────────
+        // -- Outer 1 px themed border ----------------------------------
         _outerBorder = new Border { BorderThickness = new Thickness(1) };
         _outerBorder.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
         _outerBorder.Child = rootGrid;
@@ -273,7 +273,7 @@ public class ThemedDialog : Window
         return canvas;
     }
 
-    // ── Maximize / restore ────────────────────────────────────────────────
+    // -- Maximize / restore ------------------------------------------------
 
     private void OnMaximizeRestoreClick(object sender, RoutedEventArgs e) =>
         WindowState = WindowState == WindowState.Maximized
@@ -293,7 +293,7 @@ public class ThemedDialog : Window
                 : new Thickness(1);
     }
 
-    // ── Multi-monitor maximize fix ────────────────────────────────────────
+    // -- Multi-monitor maximize fix ----------------------------------------
 
     protected override void OnSourceInitialized(EventArgs e)
     {

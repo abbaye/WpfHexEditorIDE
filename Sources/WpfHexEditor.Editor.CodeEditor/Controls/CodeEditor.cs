@@ -327,7 +327,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             set => SetValue(EditorFontSizeProperty, value);
         }
 
-        // ── ZoomLevel (B6) ─────────────────────────────────────────────────────
+        // -- ZoomLevel (B6) -----------------------------------------------------
 
         public static readonly DependencyProperty ZoomLevelProperty =
             DependencyProperty.Register(nameof(ZoomLevel), typeof(double), typeof(CodeEditor),
@@ -1699,7 +1699,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             RunValidation();
         }
 
-        // ── Find bar ─────────────────────────────────────────────────────
+        // -- Find bar -----------------------------------------------------
 
         private Window? _findWindow;
         private System.Windows.Controls.TextBox? _findTextBox;
@@ -1990,7 +1990,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         #endregion
 
-        // ── Format JSON ──────────────────────────────────────────────────
+        // -- Format JSON --------------------------------------------------
 
         private void FormatJson()
         {
@@ -2018,7 +2018,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
         }
 
-        // ── Validate JSON ────────────────────────────────────────────────
+        // -- Validate JSON ------------------------------------------------
 
         private void RunValidation()
         {
@@ -2169,7 +2169,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Calculate visible line range
             CalculateVisibleLines();
 
-            // ── Clip to content area (prevent drawing over scrollbars) ──
+            // -- Clip to content area (prevent drawing over scrollbars) --
             dc.PushClip(new RectangleGeometry(new Rect(0, 0, contentW, contentH)));
 
             // 1. Editor background
@@ -2182,7 +2182,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // 3. Current line highlight (spans visible text area, no H offset)
             RenderCurrentLineHighlight(dc, contentW, contentH);
 
-            // ── Text area clip + horizontal translate ───────────────────
+            // -- Text area clip + horizontal translate -------------------
             dc.PushClip(new RectangleGeometry(new Rect(textLeft, 0, Math.Max(0, contentW - textLeft), contentH)));
             dc.PushTransform(new System.Windows.Media.TranslateTransform(-_horizontalScrollOffset, 0));
 
@@ -2310,7 +2310,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             {
                 double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
-                // ── Vertical ────────────────────────────────────────────
+                // -- Vertical --------------------------------------------
                 double totalH = TopMargin + (_document?.Lines.Count ?? 0) * _lineHeight;
                 double maxV   = Math.Max(0, totalH - contentH);
 
@@ -2328,7 +2328,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _vScrollBar.LargeChange = contentH;
                 _vScrollBar.Value       = _verticalScrollOffset;
 
-                // ── Horizontal ──────────────────────────────────────────
+                // -- Horizontal ------------------------------------------
                 double totalTW = textLeft + _maxContentWidth;
                 double maxH    = Math.Max(0, totalTW - contentW);
 
@@ -4260,14 +4260,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         #region IDocumentEditor
 
-        // ── State ──────────────────────────────────────────────────────────
+        // -- State ----------------------------------------------------------
 
         /// <summary>
         /// True when the document has unsaved changes.
         /// </summary>
         public bool IsDirty => _isDirty;
 
-        // ── IsReadOnly DP ─────────────────────────────────────────────────
+        // -- IsReadOnly DP -------------------------------------------------
 
         public static readonly DependencyProperty IsReadOnlyProperty =
             DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(CodeEditor),
@@ -4279,11 +4279,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             set => SetValue(IsReadOnlyProperty, value);
         }
 
-        // ── Title ─────────────────────────────────────────────────────────
+        // -- Title ---------------------------------------------------------
 
         public string Title => BuildTitle();
 
-        // ── Commands ──────────────────────────────────────────────────────
+        // -- Commands ------------------------------------------------------
 
         public System.Windows.Input.ICommand UndoCommand => new JsonRelayCommand(_ => Undo(), _ => CanUndo);
         public System.Windows.Input.ICommand RedoCommand => new JsonRelayCommand(_ => Redo(), _ => CanRedo);
@@ -4294,7 +4294,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         public System.Windows.Input.ICommand DeleteCommand => new JsonRelayCommand(_ => DeleteSelection(), _ => !_selection.IsEmpty && !IsReadOnly);
         public System.Windows.Input.ICommand SelectAllCommand => new JsonRelayCommand(_ => SelectAll());
 
-        // ── Methods ───────────────────────────────────────────────────────
+        // -- Methods -------------------------------------------------------
 
         public void Save()
         {
@@ -4325,7 +4325,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             StatusMessage?.Invoke(this, $"Saved: {Path.GetFileName(filePath)}");
         }
 
-        // ── Open file ─────────────────────────────────────────────────────
+        // -- Open file -----------------------------------------------------
 
         public void LoadFromFile(string filePath)
         {
@@ -4350,7 +4350,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             return System.Threading.Tasks.Task.CompletedTask;
         }
 
-        // ── Public methods (IDocumentEditor) ─────────────────────────────
+        // -- Public methods (IDocumentEditor) -----------------------------
 
         void IDocumentEditor.Copy() => CopyToClipboard();
         void IDocumentEditor.Cut() => CutToClipboard();
@@ -4374,7 +4374,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        // ── Events ────────────────────────────────────────────────────────
+        // -- Events --------------------------------------------------------
 
         public event EventHandler? ModifiedChanged;
         public event EventHandler? CanUndoChanged;
@@ -4384,14 +4384,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         public event EventHandler<string>? OutputMessage;
         public event EventHandler? SelectionChanged;
 
-        // ── Long-running operations (no-op: CodeEditor has no async operations) ──
+        // -- Long-running operations (no-op: CodeEditor has no async operations) --
         public bool IsBusy => false;
         public void CancelOperation() { }
         public event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
         public event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
         public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
 
-        // ── Helpers ───────────────────────────────────────────────────────
+        // -- Helpers -------------------------------------------------------
 
         private string BuildTitle()
         {
@@ -4403,7 +4403,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         #endregion
 
-        // ── IPropertyProviderSource ───────────────────────────────────────────
+        // -- IPropertyProviderSource -------------------------------------------
         private WpfHexEditor.Editor.CodeEditor.CodeEditorPropertyProvider? _propertyProvider;
         public IPropertyProvider? GetPropertyProvider()
             => _propertyProvider ??= new WpfHexEditor.Editor.CodeEditor.CodeEditorPropertyProvider(this);
@@ -4517,7 +4517,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
     }
 
-    // ── File-scoped RelayCommand ──────────────────────────────────────────────
+    // -- File-scoped RelayCommand ----------------------------------------------
     file sealed class JsonRelayCommand(Action<object?> execute, Predicate<object?>? canExecute = null)
         : System.Windows.Input.ICommand
     {

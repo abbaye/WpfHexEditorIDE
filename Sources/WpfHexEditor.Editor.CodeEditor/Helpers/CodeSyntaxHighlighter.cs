@@ -20,7 +20,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
     /// </summary>
     public class CodeSyntaxHighlighter : ISyntaxHighlighter
     {
-        // ── ISyntaxHighlighter — implicit context for interface calls ─────────
+        // -- ISyntaxHighlighter — implicit context for interface calls ---------
         private JsonParserContext _implicitContext = new();
 
         /// <inheritdoc />

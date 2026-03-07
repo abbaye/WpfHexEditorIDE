@@ -13,7 +13,7 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public sealed class EditorConfigDto
 {
-    // ── HexEditor ────────────────────────────────────────────────────────
+    // -- HexEditor --------------------------------------------------------
     public int     BytesPerLine    { get; set; }
     public string? Encoding        { get; set; }
     public string? EditMode        { get; set; }   // "Insert" | "Overwrite"
@@ -22,13 +22,13 @@ public sealed class EditorConfigDto
     public long    SelectionStart  { get; set; } = -1;
     public long    SelectionLength { get; set; }
 
-    // ── TBL link ─────────────────────────────────────────────────────────
+    // -- TBL link ---------------------------------------------------------
     /// <summary>
     /// Id of the IProjectItem (TBL) bound to this editor.
     /// </summary>
     public string? TblFileId { get; set; }
 
-    // ── TextEditor ───────────────────────────────────────────────────────
+    // -- TextEditor -------------------------------------------------------
 
     /// <summary>
     /// Override for the syntax language id (e.g. <c>"lua"</c>, <c>"markdown"</c>, <c>"asm_6502"</c>).
@@ -51,6 +51,6 @@ public sealed class EditorConfigDto
     /// </summary>
     public int FirstVisibleLine { get; set; }
 
-    // ── Extension slot — arbitrary key/value for future editors ──────────
+    // -- Extension slot — arbitrary key/value for future editors ----------
     public Dictionary<string, string>? Extra { get; set; }
 }

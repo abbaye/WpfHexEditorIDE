@@ -87,7 +87,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
 
     public string LoadedSince => _entry.LoadedAt.HasValue
         ? _entry.LoadedAt.Value.ToString("HH:mm:ss")
-        : "â€”";
+        : "—";
 
     // Commands
     public ICommand EnableCommand { get; }
@@ -95,7 +95,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public ICommand ReloadCommand { get; }
     public ICommand UninstallCommand { get; }
 
-    // ── Plugin options ────────────────────────────────────────────────────────
+    // -- Plugin options --------------------------------------------------------
 
     /// <summary>True if the plugin exposes an options page via IPluginWithOptions.</summary>
     public bool HasOptions => _entry.Instance is SDK.Contracts.IPluginWithOptions;

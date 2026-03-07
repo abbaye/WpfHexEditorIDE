@@ -19,7 +19,7 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
 
     public CodeEditorOptionsPage() => InitializeComponent();
 
-    // â”€â”€ IOptionsPage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- IOptionsPage ------------------------------------------------------
 
     public void Load(AppSettings s)
     {
@@ -69,7 +69,7 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         ce.NumberColor       = FlushColorPicker(ChkNum, CpNum);
     }
 
-    // â”€â”€ Control handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Control handlers -------------------------------------------------
 
     private void OnCheckChanged(object sender, RoutedEventArgs e)
     {
@@ -96,7 +96,7 @@ public sealed partial class CodeEditorOptionsPage : UserControl, IOptionsPage
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
     }
 
-    // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Helpers ----------------------------------------------------------
 
     private static void SelectComboByTag(ComboBox combo, string tag)
     {

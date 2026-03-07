@@ -17,7 +17,7 @@ public sealed class PluginEventBus : IPluginEventBus
     private readonly Dictionary<Type, List<WeakHandlerWrapper>> _handlers = new();
     private readonly object _lock = new();
 
-    // â”€â”€ IPluginEventBus â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- IPluginEventBus -------------------------------------------------------
 
     public void Publish<TEvent>(TEvent evt) where TEvent : class
     {
@@ -63,7 +63,7 @@ public sealed class PluginEventBus : IPluginEventBus
         return new Subscription(() => RemoveHandler(typeof(TEvent), wrapper));
     }
 
-    // â”€â”€ Internal helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Internal helpers ------------------------------------------------------
 
     private void AddHandler(Type eventType, WeakHandlerWrapper wrapper)
     {
@@ -93,7 +93,7 @@ public sealed class PluginEventBus : IPluginEventBus
         }
     }
 
-    // â”€â”€ Nested types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Nested types ----------------------------------------------------------
 
     private abstract class WeakHandlerWrapper
     {

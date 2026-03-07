@@ -39,7 +39,7 @@ public partial class FileComparisonPanel : UserControl
         InitializeComponent();
     }
 
-    // ── Toolbar handlers ─────────────────────────────────────────────────────
+    // -- Toolbar handlers -----------------------------------------------------
 
     private void LoadFile1_Click(object sender, RoutedEventArgs e)
     {
@@ -63,7 +63,7 @@ public partial class FileComparisonPanel : UserControl
         UpdateComparison();
     }
 
-    // ── Format parsing ───────────────────────────────────────────────────────
+    // -- Format parsing -------------------------------------------------------
 
     private void LoadFieldsFromFile(string filePath, out List<ParsedField> fields)
     {
@@ -152,7 +152,7 @@ public partial class FileComparisonPanel : UserControl
         catch { return BitConverter.ToString(data).Replace("-", " "); }
     }
 
-    // ── Diff logic ───────────────────────────────────────────────────────────
+    // -- Diff logic -----------------------------------------------------------
 
     private void UpdateComparison()
     {
@@ -243,7 +243,7 @@ public partial class FileComparisonPanel : UserControl
     }
 }
 
-// ── Supporting types ─────────────────────────────────────────────────────────
+// -- Supporting types ---------------------------------------------------------
 
 public class ParsedField
 {

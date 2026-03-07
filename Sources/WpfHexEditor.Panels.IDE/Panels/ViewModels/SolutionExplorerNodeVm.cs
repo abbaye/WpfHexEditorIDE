@@ -12,7 +12,7 @@ using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Panels.IDE.ViewModels;
 
-// ── Base ─────────────────────────────────────────────────────────────────────
+// -- Base ---------------------------------------------------------------------
 
 /// <summary>
 /// Base class for all nodes displayed in the Solution Explorer tree.
@@ -52,7 +52,7 @@ public abstract class SolutionExplorerNodeVm : INotifyPropertyChanged
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
-// ── Solution node ─────────────────────────────────────────────────────────────
+// -- Solution node -------------------------------------------------------------
 
 public sealed class SolutionNodeVm : SolutionExplorerNodeVm
 {
@@ -71,7 +71,7 @@ public sealed class SolutionNodeVm : SolutionExplorerNodeVm
 
     public ISolution Source => _solution;
 
-    // ── Inline rename ───────────────────────────────────────────────────────
+    // -- Inline rename -------------------------------------------------------
 
     public override bool IsEditing => _isEditing;
 
@@ -88,7 +88,7 @@ public sealed class SolutionNodeVm : SolutionExplorerNodeVm
     public void   CancelEdit() => SetIsEditing(false);
 }
 
-// ── Project node ──────────────────────────────────────────────────────────────
+// -- Project node --------------------------------------------------------------
 
 public sealed class ProjectNodeVm : SolutionExplorerNodeVm
 {
@@ -131,7 +131,7 @@ public sealed class ProjectNodeVm : SolutionExplorerNodeVm
 
     public IProject Source => _project;
 
-    // ── Inline rename ───────────────────────────────────────────────────────
+    // -- Inline rename -------------------------------------------------------
 
     private bool   _isEditing;
     private string _editingName = string.Empty;
@@ -151,7 +151,7 @@ public sealed class ProjectNodeVm : SolutionExplorerNodeVm
     public void   CancelEdit() => SetIsEditing(false);
 }
 
-// ── Virtual folder node ───────────────────────────────────────────────────────
+// -- Virtual folder node -------------------------------------------------------
 
 public sealed class FolderNodeVm : SolutionExplorerNodeVm
 {
@@ -194,7 +194,7 @@ public sealed class FolderNodeVm : SolutionExplorerNodeVm
         }
     }
 
-    // ── Inline rename ───────────────────────────────────────────────────────
+    // -- Inline rename -------------------------------------------------------
 
     private bool   _isEditing;
     private string _editingName = string.Empty;
@@ -214,7 +214,7 @@ public sealed class FolderNodeVm : SolutionExplorerNodeVm
     public void   CancelEdit() => SetIsEditing(false);
 }
 
-// ── File node ─────────────────────────────────────────────────────────────────
+// -- File node -----------------------------------------------------------------
 
 public sealed class FileNodeVm : SolutionExplorerNodeVm
 {
@@ -323,7 +323,7 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
         }
     }
 
-    // ── Inline rename ───────────────────────────────────────────────────────
+    // -- Inline rename -------------------------------------------------------
 
     private bool   _isEditing;
     private string _editingName = string.Empty;
@@ -368,7 +368,7 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
     /// </summary>
     public void CancelEdit() => SetIsEditing(false);
 
-    // ── Changeset child node ────────────────────────────────────────────────
+    // -- Changeset child node ------------------------------------------------
 
     /// <summary>
     /// Adds or removes the <see cref="ChangesetNodeVm"/> child depending on whether
@@ -392,13 +392,13 @@ public sealed class FileNodeVm : SolutionExplorerNodeVm
         }
     }
 
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
 
     public IProjectItem Source => _item;
     public IProject?   Project { get; init; }
 }
 
-// ── Solution Folder node (VS-like — holds Projects at solution level) ────────
+// -- Solution Folder node (VS-like — holds Projects at solution level) --------
 
 /// <summary>
 /// Represents a VS-like Solution Folder node in the Solution Explorer tree.
@@ -422,7 +422,7 @@ public sealed class SolutionFolderNodeVm : SolutionExplorerNodeVm
     /// <summary>Segoe MDL2 "FolderOpen" glyph — distinct colour from project-level FolderNodeVm.</summary>
     public override string Icon => "\uE8B7";
 
-    // ── Inline rename ─────────────────────────────────────────────────────────
+    // -- Inline rename ---------------------------------------------------------
 
     public override bool IsEditing => _isEditing;
 
@@ -439,7 +439,7 @@ public sealed class SolutionFolderNodeVm : SolutionExplorerNodeVm
     public void   CancelEdit() => SetIsEditing(false);
 }
 
-// ── Physical folder node (Show All Files mode) ───────────────────────────────
+// -- Physical folder node (Show All Files mode) -------------------------------
 
 /// <summary>
 /// Represents a physical directory when "Show All Files" is enabled.
@@ -457,7 +457,7 @@ public sealed class PhysicalFolderNodeVm : SolutionExplorerNodeVm
     public override string Icon        => "\uE8D5";
 }
 
-// ── Physical file node (Show All Files mode) ─────────────────────────────────
+// -- Physical file node (Show All Files mode) ---------------------------------
 
 /// <summary>Represents a physical file when "Show All Files" is enabled.
 /// <see cref="IsInProject"/> is <see langword="true"/> when the file is already a project item.</summary>
@@ -476,7 +476,7 @@ public sealed class PhysicalFileNodeVm : SolutionExplorerNodeVm
     public override string Icon        => "\uE8A5";
 }
 
-// ── Changeset node (.whchg companion file) ────────────────────────────────────
+// -- Changeset node (.whchg companion file) ------------------------------------
 
 /// <summary>
 /// Represents the <c>.whchg</c> companion file for a <see cref="FileNodeVm"/>.

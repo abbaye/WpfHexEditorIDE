@@ -44,7 +44,7 @@ internal sealed class PluginScheduler
         lock (_lock) { _counters.Remove(pluginId); }
     }
 
-    // â”€â”€ Sliding window counter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Sliding window counter -----------------------------------------------
 
     private sealed class SlidingWindowCounter(int maxPerSecond)
     {

@@ -47,11 +47,11 @@ public static class ProjectTemplateRegistry
     /// </summary>
     public static void RegisterDefaults()
     {
-        // ── General ─────────────────────────────────────────────────────
+        // -- General -----------------------------------------------------
         Register(new EmptyProjectTemplate());
         Register(new ScratchProjectTemplate());
 
-        // ── Analysis ────────────────────────────────────────────────────
+        // -- Analysis ----------------------------------------------------
         Register(new BinaryAnalysisTemplate());
         Register(new ForensicsTemplate());
         Register(new FirmwareAnalysisTemplate());
@@ -59,16 +59,16 @@ public static class ProjectTemplateRegistry
         Register(new ScientificDataTemplate());
         Register(new MediaInspectionTemplate());
 
-        // ── ReverseEngineering ───────────────────────────────────────────
+        // -- ReverseEngineering -------------------------------------------
         Register(new ReverseEngineeringTemplate());
         Register(new DecompilationTemplate());
         Register(new CryptoAnalysisTemplate());
 
-        // ── Development ─────────────────────────────────────────────────
+        // -- Development -------------------------------------------------
         Register(new FormatDefinitionTemplate());
         Register(new TextScriptTemplate());
 
-        // ── RomHacking ──────────────────────────────────────────────────
+        // -- RomHacking --------------------------------------------------
         Register(new RomHackingTemplate());
         Register(new PatchDevelopmentTemplate());
         Register(new TranslationTemplate());

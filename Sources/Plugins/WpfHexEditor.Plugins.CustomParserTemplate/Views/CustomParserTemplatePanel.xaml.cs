@@ -63,7 +63,7 @@ public partial class CustomParserTemplatePanel : UserControl
         LoadTemplates();
     }
 
-    // ── Initialisation ───────────────────────────────────────────────────────
+    // -- Initialisation -------------------------------------------------------
 
     private void InitializeTemplatesDirectory()
     {
@@ -104,7 +104,7 @@ public partial class CustomParserTemplatePanel : UserControl
         }
     }
 
-    // ── Toolbar handlers ─────────────────────────────────────────────────────
+    // -- Toolbar handlers -----------------------------------------------------
 
     private void NewTemplate_Click(object sender, RoutedEventArgs e)
     {
@@ -295,7 +295,7 @@ public partial class CustomParserTemplatePanel : UserControl
     }
 }
 
-// ── Data models ──────────────────────────────────────────────────────────────
+// -- Data models --------------------------------------------------------------
 
 public class CustomTemplate : INotifyPropertyChanged
 {

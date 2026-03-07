@@ -42,7 +42,7 @@ namespace WpfHexEditor.Editor.Core.Views
             InitializeComponent();
             DataContext = new SearchBarViewModel();
 
-            // ── Expand / collapse replace row ────────────────────────────────────
+            // -- Expand / collapse replace row ------------------------------------
             ExpandReplaceToggle.Checked += (_, __) =>
             {
                 // Icon opacity: full when replace row is open
@@ -59,13 +59,13 @@ namespace WpfHexEditor.Editor.Core.Views
                     new Action(() => SearchInput?.Focus()));
             };
 
-            // ── Drag-to-move (styled MoveThumb, bottom-left) ─────────────────────
+            // -- Drag-to-move (styled MoveThumb, bottom-left) ---------------------
             MoveThumb.DragDelta += MoveThumb_DragDelta;
 
-            // ── Width-only resize (transparent ResizeThumb, left edge) ────────────
+            // -- Width-only resize (transparent ResizeThumb, left edge) ------------
             ResizeThumb.DragDelta += ResizeThumb_DragDelta;
 
-            // ── Host-level actions (not bound to ViewModel) ───────────────────────
+            // -- Host-level actions (not bound to ViewModel) -----------------------
             CloseButton.Click          += (_, __) => OnCloseRequested?.Invoke(this, EventArgs.Empty);
             AdvancedSearchButton.Click += (_, __) => OnAdvancedSearchRequested?.Invoke(this, EventArgs.Empty);
 
@@ -184,7 +184,7 @@ namespace WpfHexEditor.Editor.Core.Views
             bool hasAdvanced       = caps.HasFlag(SearchBarCapabilities.AdvancedSearch);
             bool hasCustomFilters  = caps.HasFlag(SearchBarCapabilities.CustomFilters);
 
-            // ── Options row toggles (Row 2) ──────────────────────────────────────
+            // -- Options row toggles (Row 2) --------------------------------------
             AbToggle.Visibility      = hasCaseSensitive ? Visibility.Visible : Visibility.Collapsed;
             WildcardToggle.Visibility = hasWildcard      ? Visibility.Visible : Visibility.Collapsed;
             RegexToggle.Visibility    = hasWildcard      ? Visibility.Visible : Visibility.Collapsed;
@@ -194,7 +194,7 @@ namespace WpfHexEditor.Editor.Core.Views
             bool anyToggleOrFilter = hasCaseSensitive || hasWildcard || hasHexMode || hasCustomFilters;
             OptionsSeparator.Visibility = anyToggleOrFilter ? Visibility.Visible : Visibility.Collapsed;
 
-            // ── Replace row (Row 1) ──────────────────────────────────────────────
+            // -- Replace row (Row 1) ----------------------------------------------
             ExpandReplaceToggle.Visibility = hasReplace ? Visibility.Visible : Visibility.Collapsed;
             if (!hasReplace)
             {
@@ -202,11 +202,11 @@ namespace WpfHexEditor.Editor.Core.Views
                 ReplaceRow.Visibility = Visibility.Collapsed;
             }
 
-            // ── Advanced search button + its separator (Row 0) ───────────────────
+            // -- Advanced search button + its separator (Row 0) -------------------
             AdvancedSearchButton.Visibility = hasAdvanced ? Visibility.Visible : Visibility.Collapsed;
             ActionsSeparator.Visibility     = hasAdvanced ? Visibility.Visible : Visibility.Collapsed;
 
-            // ── Custom filters zone (Row 2) ──────────────────────────────────────
+            // -- Custom filters zone (Row 2) --------------------------------------
             if (hasCustomFilters && _target != null)
             {
                 var content = _target.GetCustomFiltersContent();

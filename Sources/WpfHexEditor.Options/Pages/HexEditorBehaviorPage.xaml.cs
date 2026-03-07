@@ -18,7 +18,7 @@ public sealed partial class HexEditorBehaviorPage : UserControl, IOptionsPage
 
     public HexEditorBehaviorPage() => InitializeComponent();
 
-    // â”€â”€ IOptionsPage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- IOptionsPage ------------------------------------------------------
 
     public void Load(AppSettings s)
     {
@@ -51,7 +51,7 @@ public sealed partial class HexEditorBehaviorPage : UserControl, IOptionsPage
             s.HexEditorDefaults.PreloadByteInEditorMode = pbm;
     }
 
-    // â”€â”€ Control handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Control handlers -------------------------------------------------
 
     private void OnCheckChanged(object sender, RoutedEventArgs e)
     {

@@ -33,7 +33,7 @@ internal sealed class Solution : ISolution, INotifyPropertyChanged
         set { _isModified = value; OnPropertyChanged(); }
     }
 
-    // ── Format versioning ─────────────────────────────────────────────────
+    // -- Format versioning -------------------------------------------------
 
     public int  SourceFormatVersion  { get; set; }
     public bool FormatUpgradeRequired => SourceFormatVersion > 0 &&
@@ -45,7 +45,7 @@ internal sealed class Solution : ISolution, INotifyPropertyChanged
         set { _isReadOnlyFormat = value; OnPropertyChanged(); }
     }
 
-    // ── Internal helpers ──────────────────────────────────────────────────
+    // -- Internal helpers --------------------------------------------------
 
     internal ObservableCollection<Project>        ProjectsMutable    => _projects;
     internal ObservableCollection<SolutionFolder> RootFoldersMutable => _rootFolders;

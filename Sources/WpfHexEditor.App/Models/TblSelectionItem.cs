@@ -56,7 +56,7 @@ public sealed class TblSelectionItem
     /// <summary>True for visual separator rows.</summary>
     public bool IsSeparator => Kind == TblSelectionKind.Separator;
 
-    // ── Convenience factories ─────────────────────────────────────────────
+    // -- Convenience factories ---------------------------------------------
 
     public static TblSelectionItem MakeHeader(string text)
         => new() { DisplayName = text, Kind = TblSelectionKind.Header };

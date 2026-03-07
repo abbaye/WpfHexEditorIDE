@@ -87,7 +87,7 @@ public sealed class PluginPackageExtractor
         return targetDir;
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────
+    // -- Helpers ----------------------------------------------------------
 
     private static async Task<PluginMetadata> ReadAndValidateManifestAsync(ZipArchive archive, CancellationToken ct)
     {

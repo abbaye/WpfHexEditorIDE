@@ -37,7 +37,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 /// </summary>
 public partial class AddExistingItemDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
-    // ── Inner model ──────────────────────────────────────────────────────────
+    // -- Inner model ----------------------------------------------------------
 
     /// <summary>One row in the multi-file list.</summary>
     private sealed record FileEntry(
@@ -47,11 +47,11 @@ public partial class AddExistingItemDialog : WpfHexEditor.Editor.Core.Views.Them
         ProjectItemType Type,
         string IconGlyph);
 
-    // ── State ────────────────────────────────────────────────────────────────
+    // -- State ----------------------------------------------------------------
     private readonly IProject _project;
     private          string[] _filePaths = [];
 
-    // ── Output properties ────────────────────────────────────────────────────
+    // -- Output properties ----------------------------------------------------
 
     /// <summary>Source paths selected by the user.</summary>
     public IReadOnlyList<string> SelectedFilePaths         { get; private set; } = [];
@@ -66,7 +66,7 @@ public partial class AddExistingItemDialog : WpfHexEditor.Editor.Core.Views.Them
     /// </summary>
     public string? SelectedPhysicalDestination { get; private set; }
 
-    // ── Constructor ──────────────────────────────────────────────────────────
+    // -- Constructor ----------------------------------------------------------
     public AddExistingItemDialog(IProject project)
     {
         InitializeComponent();
@@ -80,7 +80,7 @@ public partial class AddExistingItemDialog : WpfHexEditor.Editor.Core.Views.Them
         Refresh();
     }
 
-    // ── Initialisation helpers ───────────────────────────────────────────────
+    // -- Initialisation helpers -----------------------------------------------
 
     private void PopulateTypeCombo()
     {
@@ -156,7 +156,7 @@ public partial class AddExistingItemDialog : WpfHexEditor.Editor.Core.Views.Them
         return panel;
     }
 
-    // ── Event handlers ───────────────────────────────────────────────────────
+    // -- Event handlers -------------------------------------------------------
 
     private void OnFileDrop(object sender, DragEventArgs e)
     {
@@ -240,7 +240,7 @@ public partial class AddExistingItemDialog : WpfHexEditor.Editor.Core.Views.Them
         DialogResult = true;
     }
 
-    // ── New Folder handlers ──────────────────────────────────────────────────
+    // -- New Folder handlers --------------------------------------------------
 
     private void OnNewFolder(object sender, RoutedEventArgs e)
     {
@@ -296,7 +296,7 @@ public partial class AddExistingItemDialog : WpfHexEditor.Editor.Core.Views.Them
         NewFolderNameBox.Text          = "";
     }
 
-    // ── Private helpers ──────────────────────────────────────────────────────
+    // -- Private helpers ------------------------------------------------------
 
     private void UpdateFilePathBox()
     {

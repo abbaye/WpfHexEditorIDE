@@ -14,7 +14,7 @@ namespace WpfHexEditor.SDK.Contracts;
 /// </summary>
 public interface IWpfHexEditorPlugin
 {
-    // â”€â”€ Identity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Identity -------------------------------------------------------------
 
     /// <summary>
     /// Globally unique plugin identifier matching the manifest <c>id</c> field.
@@ -28,7 +28,7 @@ public interface IWpfHexEditorPlugin
     /// <summary>Plugin version matching the manifest <c>version</c> field.</summary>
     Version Version { get; }
 
-    // â”€â”€ Capabilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Capabilities ---------------------------------------------------------
 
     /// <summary>
     /// Declares the capabilities this plugin requires.
@@ -36,7 +36,7 @@ public interface IWpfHexEditorPlugin
     /// </summary>
     PluginCapabilities Capabilities { get; }
 
-    // â”€â”€ Lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Lifecycle -------------------------------------------------------------
 
     /// <summary>
     /// Initializes the plugin. Called by PluginHost after the assembly is loaded.

@@ -17,7 +17,7 @@ public sealed partial class SolutionExplorerOptionsPage : UserControl, IOptionsP
 
     public SolutionExplorerOptionsPage() => InitializeComponent();
 
-    // â”€â”€ IOptionsPage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- IOptionsPage ------------------------------------------------------
 
     public void Load(AppSettings s)
     {
@@ -42,7 +42,7 @@ public sealed partial class SolutionExplorerOptionsPage : UserControl, IOptionsP
         s.SolutionExplorer.DefaultFilterMode = ReadComboTag(FilterCombo, "All");
     }
 
-    // â”€â”€ Control handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Control handlers -------------------------------------------------
 
     private void OnCheckChanged(object sender, RoutedEventArgs e)
     {
@@ -54,7 +54,7 @@ public sealed partial class SolutionExplorerOptionsPage : UserControl, IOptionsP
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
     }
 
-    // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Helpers ----------------------------------------------------------
 
     private static void SelectComboByTag(ComboBox combo, string tag)
     {

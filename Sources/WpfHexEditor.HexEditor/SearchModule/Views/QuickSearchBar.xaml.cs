@@ -49,10 +49,10 @@ namespace WpfHexEditor.HexEditor.Search.Views
 
             DataContext = new ReplaceViewModel();
 
-            // ── Resize thumb — width-only resize from the left edge ──────────────
+            // -- Resize thumb — width-only resize from the left edge --------------
             ResizeThumb.DragDelta += ResizeThumb_DragDelta;
 
-            // ── Expand / collapse replace row ────────────────────────────────────
+            // -- Expand / collapse replace row ------------------------------------
             ExpandReplaceToggle.Checked += (_, __) =>
             {
                 // Rotate chevron to point downward (expanded)
@@ -74,7 +74,7 @@ namespace WpfHexEditor.HexEditor.Search.Views
                     new Action(() => SearchInput?.Focus()));
             };
 
-            // ── Wire named buttons (host-level actions, not bound to ViewModel) ──
+            // -- Wire named buttons (host-level actions, not bound to ViewModel) --
             CloseButton.Click           += (_, __) => OnCloseRequested?.Invoke(this, EventArgs.Empty);
             AdvancedSearchButton.Click  += (_, __) => OnAdvancedSearchRequested?.Invoke(this, EventArgs.Empty);
 

@@ -277,7 +277,7 @@ namespace WpfHexEditor.HexEditor
             remove => _docEditorSelectionChanged -= value;
         }
 
-        // ── IDocumentEditor — Long-running operation ──────────────────────
+        // -- IDocumentEditor — Long-running operation ----------------------
 
         /// <inheritdoc />
         bool IDocumentEditor.IsBusy => IsOperationActive;

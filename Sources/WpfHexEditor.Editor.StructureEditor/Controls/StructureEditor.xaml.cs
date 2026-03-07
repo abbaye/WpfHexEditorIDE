@@ -25,7 +25,7 @@ namespace WpfHexEditor.Editor.StructureEditor.Controls;
 /// </summary>
 public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpenableDocument
 {
-    // ── State ────────────────────────────────────────────────────────────────
+    // -- State ----------------------------------------------------------------
 
     private string            _filePath   = string.Empty;
     private FormatDefinition? _definition;
@@ -34,7 +34,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
 
     private readonly ObservableCollection<BlockViewModel> _blocks = [];
 
-    // ── JSON options ─────────────────────────────────────────────────────────
+    // -- JSON options ---------------------------------------------------------
 
     private static readonly JsonSerializerOptions LoadOptions = new()
     {
@@ -50,7 +50,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
-    // ── Constructor ──────────────────────────────────────────────────────────
+    // -- Constructor ----------------------------------------------------------
 
     /// <summary>Creates a new <see cref="StructureEditor"/>.</summary>
     public StructureEditor()
@@ -79,7 +79,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         };
     }
 
-    // ── IDocumentEditor — State ──────────────────────────────────────────────
+    // -- IDocumentEditor — State ----------------------------------------------
 
     /// <inheritdoc/>
     public bool IsDirty => _isDirty;
@@ -99,7 +99,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
     /// <inheritdoc/>
     public bool IsBusy { get; private set; }
 
-    // ── IDocumentEditor — Commands ───────────────────────────────────────────
+    // -- IDocumentEditor — Commands -------------------------------------------
 
     /// <inheritdoc/>
     public ICommand UndoCommand      { get; }
@@ -125,7 +125,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
     /// <inheritdoc/>
     public ICommand SelectAllCommand { get; }
 
-    // ── IDocumentEditor — Events ─────────────────────────────────────────────
+    // -- IDocumentEditor — Events ---------------------------------------------
 
     /// <inheritdoc/>
     public event EventHandler?         ModifiedChanged;
@@ -160,7 +160,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
     public event EventHandler<DocumentOperationEventArgs>? OperationProgress;
 #pragma warning restore CS0067
 
-    // ── IDocumentEditor — Editing stubs ──────────────────────────────────────
+    // -- IDocumentEditor — Editing stubs --------------------------------------
 
     /// <inheritdoc/>
     public void Undo() { }
@@ -211,7 +211,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
     /// <inheritdoc/>
     public void CancelOperation() { }
 
-    // ── IOpenableDocument ────────────────────────────────────────────────────
+    // -- IOpenableDocument ----------------------------------------------------
 
     /// <inheritdoc/>
     public async Task OpenAsync(string filePath, CancellationToken ct = default)
@@ -247,7 +247,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         }
     }
 
-    // ── Private — load ────────────────────────────────────────────────────────
+    // -- Private — load --------------------------------------------------------
 
     private void PopulateFromDefinition()
     {
@@ -280,7 +280,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         SetStatus($"{_blocks.Count} block(s)");
     }
 
-    // ── Private — save ────────────────────────────────────────────────────────
+    // -- Private — save --------------------------------------------------------
 
     private void SaveFile()
     {
@@ -310,7 +310,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         }
     }
 
-    // ── Toolbar handlers ──────────────────────────────────────────────────────
+    // -- Toolbar handlers ------------------------------------------------------
 
     private void OnAddBlock(object sender, RoutedEventArgs e)
     {
@@ -355,7 +355,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
 
     private void OnSaveClick(object sender, RoutedEventArgs e) => SaveFile();
 
-    // ── DataGrid / Description handlers ──────────────────────────────────────
+    // -- DataGrid / Description handlers --------------------------------------
 
     private void OnBlockSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -386,7 +386,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         MarkDirty();
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // -- Helpers ---------------------------------------------------------------
 
     private void RenumberRows()
     {
@@ -414,7 +414,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
     private void SetStatus(string msg) => StatusText.Text = msg;
 }
 
-// ── BlockViewModel ────────────────────────────────────────────────────────────
+// -- BlockViewModel ------------------------------------------------------------
 
 internal sealed class BlockViewModel : INotifyPropertyChanged
 {
@@ -525,7 +525,7 @@ internal sealed class BlockViewModel : INotifyPropertyChanged
         set { if (_block.Description != value) { _block.Description = value; Notify(); Changed?.Invoke(this, EventArgs.Empty); } }
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // -- Helpers ---------------------------------------------------------------
 
     private static string DisplayObj(object? val) => val switch
     {
@@ -543,7 +543,7 @@ internal sealed class BlockViewModel : INotifyPropertyChanged
         return s;
     }
 
-    // ── INotifyPropertyChanged ────────────────────────────────────────────────
+    // -- INotifyPropertyChanged ------------------------------------------------
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -551,7 +551,7 @@ internal sealed class BlockViewModel : INotifyPropertyChanged
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
-// ── Minimal RelayCommand (no external dep) ────────────────────────────────────
+// -- Minimal RelayCommand (no external dep) ------------------------------------
 
 internal sealed class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
 {

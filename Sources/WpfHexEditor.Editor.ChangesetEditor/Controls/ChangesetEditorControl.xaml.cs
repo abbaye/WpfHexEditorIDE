@@ -27,14 +27,14 @@ public sealed partial class ChangesetEditorControl : UserControl,
     IDocumentEditor, IOpenableDocument, IEditorToolbarContributor,
     INotifyPropertyChanged
 {
-    // ── INotifyPropertyChanged ───────────────────────────────────────────────
+    // -- INotifyPropertyChanged -----------------------------------------------
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    // ── IDocumentEditor — State ───────────────────────────────────────────────
+    // -- IDocumentEditor — State -----------------------------------------------
 
     public string? FilePath { get; private set; }
 
@@ -71,7 +71,7 @@ public sealed partial class ChangesetEditorControl : UserControl,
         }
     }
 
-    // ── IDocumentEditor — Commands ────────────────────────────────────────────
+    // -- IDocumentEditor — Commands --------------------------------------------
 
     public ICommand? SaveCommand      { get; }
     public ICommand? UndoCommand      { get; }
@@ -82,7 +82,7 @@ public sealed partial class ChangesetEditorControl : UserControl,
     public ICommand? DeleteCommand    { get; }
     public ICommand? SelectAllCommand { get; }
 
-    // ── IDocumentEditor — Events ──────────────────────────────────────────────
+    // -- IDocumentEditor — Events ----------------------------------------------
 
     public event EventHandler?          ModifiedChanged;
     public event EventHandler?          CanUndoChanged;
@@ -96,7 +96,7 @@ public sealed partial class ChangesetEditorControl : UserControl,
     public event EventHandler<DocumentOperationEventArgs>?          OperationProgress;
     public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
 
-    // ── IDocumentEditor — Methods ─────────────────────────────────────────────
+    // -- IDocumentEditor — Methods ---------------------------------------------
 
     public void Undo() { }
     public void Redo() { }
@@ -111,11 +111,11 @@ public sealed partial class ChangesetEditorControl : UserControl,
     public void Close() => ViewModel.Clear();
     public void CancelOperation() { }
 
-    // ── ViewModel ─────────────────────────────────────────────────────────────
+    // -- ViewModel -------------------------------------------------------------
 
     public ChangesetEditorViewModel ViewModel { get; } = new();
 
-    // ── Computed tab headers ───────────────────────────────────────────────────
+    // -- Computed tab headers ---------------------------------------------------
 
     public string ModifiedHeader =>
         $"Modified ({ViewModel.ModifiedEntries.Count})";
@@ -130,12 +130,12 @@ public sealed partial class ChangesetEditorControl : UserControl,
         $"Deleted: {ViewModel.DeletedRanges.Count}" +
         (string.IsNullOrEmpty(ViewModel.SourceHash) ? "" : $"  |  {ViewModel.SourceHash}");
 
-    // ── IEditorToolbarContributor ─────────────────────────────────────────────
+    // -- IEditorToolbarContributor ---------------------------------------------
 
     private readonly ObservableCollection<EditorToolbarItem> _toolbarItems = [];
     public ObservableCollection<EditorToolbarItem> ToolbarItems => _toolbarItems;
 
-    // ── Commands for toolbar ──────────────────────────────────────────────────
+    // -- Commands for toolbar --------------------------------------------------
 
     private readonly RelayCommand _applyToDiskCommand;
     private readonly RelayCommand _discardCommand;
@@ -143,7 +143,7 @@ public sealed partial class ChangesetEditorControl : UserControl,
     public ICommand ApplyToDiskCommand => _applyToDiskCommand;
     public ICommand DiscardCommand     => _discardCommand;
 
-    // ── Constructor ───────────────────────────────────────────────────────────
+    // -- Constructor -----------------------------------------------------------
 
     public ChangesetEditorControl()
     {
@@ -168,7 +168,7 @@ public sealed partial class ChangesetEditorControl : UserControl,
         });
     }
 
-    // ── IOpenableDocument ──────────────────────────────────────────────────────
+    // -- IOpenableDocument ------------------------------------------------------
 
     public Task OpenAsync(string filePath, CancellationToken ct = default)
     {
@@ -177,7 +177,7 @@ public sealed partial class ChangesetEditorControl : UserControl,
         return Task.CompletedTask;
     }
 
-    // ── File I/O ─────────────────────────────────────────────────────────────
+    // -- File I/O -------------------------------------------------------------
 
     private void LoadFromDisk()
     {
@@ -208,7 +208,7 @@ public sealed partial class ChangesetEditorControl : UserControl,
         }
     }
 
-    // ── Toolbar command handlers ───────────────────────────────────────────────
+    // -- Toolbar command handlers -----------------------------------------------
 
     private void OnApplyToDisk()
     {
@@ -221,7 +221,7 @@ public sealed partial class ChangesetEditorControl : UserControl,
         StatusMessage?.Invoke(this, "Discard: use the Solution Explorer context menu.");
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // -- Helpers ---------------------------------------------------------------
 
     private void NotifyHeadersChanged()
     {
@@ -238,7 +238,7 @@ public sealed partial class ChangesetEditorControl : UserControl,
 #pragma warning restore CS0067
 }
 
-// ── Simple RelayCommand ───────────────────────────────────────────────────────
+// -- Simple RelayCommand -------------------------------------------------------
 
 internal sealed class RelayCommand : ICommand
 {

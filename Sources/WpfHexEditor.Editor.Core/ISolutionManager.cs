@@ -14,7 +14,7 @@ namespace WpfHexEditor.Editor.Core;
 /// </summary>
 public interface ISolutionManager
 {
-    // ── State ────────────────────────────────────────────────────────────
+    // -- State ------------------------------------------------------------
     ISolution? CurrentSolution { get; }
 
     /// <summary>
@@ -27,13 +27,13 @@ public interface ISolutionManager
     /// </summary>
     IReadOnlyList<string> RecentFiles { get; }
 
-    // ── Solution lifecycle ───────────────────────────────────────────────
+    // -- Solution lifecycle -----------------------------------------------
     Task<ISolution> CreateSolutionAsync(string directory, string name, CancellationToken ct = default);
     Task<ISolution> OpenSolutionAsync(string filePath, CancellationToken ct = default);
     Task SaveSolutionAsync(ISolution solution, CancellationToken ct = default);
     Task CloseSolutionAsync(CancellationToken ct = default);
 
-    // ── Project management ───────────────────────────────────────────────
+    // -- Project management -----------------------------------------------
     Task<IProject> CreateProjectAsync(ISolution solution, string directory, string name, CancellationToken ct = default);
     Task<IProject> AddExistingProjectAsync(ISolution solution, string projectFilePath, CancellationToken ct = default);
     Task SaveProjectAsync(IProject project, CancellationToken ct = default);
@@ -50,7 +50,7 @@ public interface ISolutionManager
     /// </summary>
     Task RenameProjectAsync(IProject project, string newName, CancellationToken ct = default);
 
-    // ── Item management ──────────────────────────────────────────────────
+    // -- Item management --------------------------------------------------
     Task<IProjectItem> AddItemAsync(IProject project, string absolutePath, string? virtualFolderId = null, CancellationToken ct = default);
     Task<IProjectItem> CreateItemAsync(IProject project, string name, ProjectItemType type, string? virtualFolderId = null, byte[]? initialContent = null, CancellationToken ct = default);
     Task RemoveItemAsync(IProject project, IProjectItem item, bool deleteFromDisk = false, CancellationToken ct = default);
@@ -72,7 +72,7 @@ public interface ISolutionManager
     /// </param>
     Task ImportExternalItemAsync(IProject project, IProjectItem item, string? targetSubDirectory = null, CancellationToken ct = default);
 
-    // ── Solution Folder CRUD ─────────────────────────────────────────────
+    // -- Solution Folder CRUD ---------------------------------------------
     /// <summary>
     /// Creates a VS-like Solution Folder in the solution, optionally nested under
     /// an existing folder. Persists the solution immediately.
@@ -103,7 +103,7 @@ public interface ISolutionManager
     Task MoveProjectToSolutionFolderAsync(ISolution solution, IProject project,
         string? targetFolderId, CancellationToken ct = default);
 
-    // ── Project-level Folder CRUD ─────────────────────────────────────────
+    // -- Project-level Folder CRUD -----------------------------------------
     /// <summary>
     /// Creates a virtual folder in the project, optionally also creating the corresponding
     /// physical directory on disk.  Persists the project immediately.
@@ -133,7 +133,7 @@ public interface ISolutionManager
     Task<IVirtualFolder> AddFolderFromDiskAsync(IProject project, string physicalPath,
         string? parentVirtualFolderId = null, CancellationToken ct = default);
 
-    // ── Modification tracking (legacy IPS — kept for migration) ──────────
+    // -- Modification tracking (legacy IPS — kept for migration) ----------
     /// <summary>
     /// Stores <paramref name="modifications"/> (IPS patch bytes) for the given project item
     /// and persists the project file immediately.
@@ -148,7 +148,7 @@ public interface ISolutionManager
     /// </summary>
     byte[]? GetItemModifications(IProject project, IProjectItem item);
 
-    // ── WHChg changeset operations ────────────────────────────────────────
+    // -- WHChg changeset operations ----------------------------------------
 
     /// <summary>
     /// Applies the pending .whchg changeset for <paramref name="item"/> to its
@@ -165,15 +165,15 @@ public interface ISolutionManager
     Task DiscardChangesetAsync(IProject project, IProjectItem item,
                                CancellationToken ct = default);
 
-    // ── TBL helpers ──────────────────────────────────────────────────────
+    // -- TBL helpers ------------------------------------------------------
     /// <summary>Designates <paramref name="tblItem"/> as the default TBL for <paramref name="project"/>.
     /// Pass <see langword="null"/> to clear the designation.</summary>
     void SetDefaultTbl(IProject project, IProjectItem? tblItem);
 
-    // ── MRU helpers ──────────────────────────────────────────────────────
+    // -- MRU helpers ------------------------------------------------------
     void PushRecentFile(string absolutePath);
 
-    // ── Format upgrade ───────────────────────────────────────────────────
+    // -- Format upgrade ---------------------------------------------------
 
     /// <summary>
     /// Upgrades all files belonging to <paramref name="solution"/> from their on-disk
@@ -190,7 +190,7 @@ public interface ISolutionManager
     /// </summary>
     void SetReadOnlyFormat(ISolution solution, bool readOnly);
 
-    // ── Events ───────────────────────────────────────────────────────────
+    // -- Events -----------------------------------------------------------
     event EventHandler<SolutionChangedEventArgs>?      SolutionChanged;
     event EventHandler<ProjectChangedEventArgs>?       ProjectChanged;
     event EventHandler<ProjectItemEventArgs>?          ItemAdded;

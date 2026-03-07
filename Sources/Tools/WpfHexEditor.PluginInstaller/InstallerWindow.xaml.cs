@@ -28,7 +28,7 @@ public partial class InstallerWindow : Window
         Loaded += OnLoaded;
     }
 
-    // ── Startup ──────────────────────────────────────────────────────────
+    // -- Startup ----------------------------------------------------------
 
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
@@ -88,7 +88,7 @@ public partial class InstallerWindow : Window
         }
     }
 
-    // ── Install ───────────────────────────────────────────────────────────
+    // -- Install -----------------------------------------------------------
 
     private async void OnInstallClick(object sender, RoutedEventArgs e)
     {
@@ -135,7 +135,7 @@ public partial class InstallerWindow : Window
         Close();
     }
 
-    // ── UI helpers ────────────────────────────────────────────────────────
+    // -- UI helpers --------------------------------------------------------
 
     private void ShowSuccess(string message)
     {

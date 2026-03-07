@@ -27,7 +27,7 @@ internal sealed class MruService
     public IReadOnlyList<string> RecentSolutions => _solutions;
     public IReadOnlyList<string> RecentFiles     => _files;
 
-    // ── Lifecycle ────────────────────────────────────────────────────────
+    // -- Lifecycle --------------------------------------------------------
 
     public void Load()
     {
@@ -57,7 +57,7 @@ internal sealed class MruService
         catch { /* silent */ }
     }
 
-    // ── Mutation ─────────────────────────────────────────────────────────
+    // -- Mutation ---------------------------------------------------------
 
     public void PushSolution(string path) => Push(_solutions, path);
     public void PushFile(string path)     => Push(_files, path);
@@ -70,7 +70,7 @@ internal sealed class MruService
             list.RemoveAt(list.Count - 1);
     }
 
-    // ── DTO ───────────────────────────────────────────────────────────────
+    // -- DTO ---------------------------------------------------------------
 
     private sealed class MruDto
     {

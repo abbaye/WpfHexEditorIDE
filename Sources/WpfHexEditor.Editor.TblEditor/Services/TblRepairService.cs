@@ -55,28 +55,28 @@ public sealed class TblRepairService
             lineNumber++;
             var trimmed = line.TrimEnd();
 
-            // ── blank lines and full-line comments are kept unchanged ─────
+            // -- blank lines and full-line comments are kept unchanged -----
             if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith('#'))
             {
                 repairedLines.Add(line);
                 continue;
             }
 
-            // ── bookmarks  (StartsWith '(') ───────────────────────────────
+            // -- bookmarks  (StartsWith '(') -------------------------------
             if (trimmed.StartsWith('('))
             {
                 repairedLines.Add(line);
                 continue;
             }
 
-            // ── special markers: EndLine '*XX' or EndBlock '/XX' ──────────
+            // -- special markers: EndLine '*XX' or EndBlock '/XX' ----------
             if (trimmed.StartsWith('*') || trimmed.StartsWith('/'))
             {
                 repairedLines.Add(line);
                 continue;
             }
 
-            // ── DTE entry  HEXKEY=VALUE ───────────────────────────────────
+            // -- DTE entry  HEXKEY=VALUE -----------------------------------
             var eqIdx = trimmed.IndexOf('=');
             if (eqIdx > 0)
             {
@@ -139,7 +139,7 @@ public sealed class TblRepairService
                 continue;
             }
 
-            // ── TBL004 – unrecognised line ────────────────────────────────
+            // -- TBL004 – unrecognised line --------------------------------
             diagnostics.Add(new DiagnosticEntry(
                 DiagnosticSeverity.Message,
                 "TBL004",
@@ -158,7 +158,7 @@ public sealed class TblRepairService
         return new TblRepairResult(repairedContent, diagnostics, repairsApplied, wasModified);
     }
 
-    // ── Helpers ────────────────────────────────────────────────────────────
+    // -- Helpers ------------------------------------------------------------
 
     private static bool IsValidHex(string entry)
         => entry.Length is >= 2 and <= 16

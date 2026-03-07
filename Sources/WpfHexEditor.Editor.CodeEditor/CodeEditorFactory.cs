@@ -73,7 +73,7 @@ public sealed class CodeEditorFactory : IEditorFactory
     /// </summary>
     public IDocumentEditor Create() => new CodeEditorSplitHost();
 
-    // ── Language → highlighter ───────────────────────────────────────────────
+    // -- Language → highlighter -----------------------------------------------
 
     private static ISyntaxHighlighter BuildHighlighter(LanguageDefinition language)
     {
@@ -94,7 +94,7 @@ public sealed class CodeEditorFactory : IEditorFactory
         return mgr;
     }
 
-    // ── Token kind → brush mapping (VS-inspired defaults) ───────────────────
+    // -- Token kind → brush mapping (VS-inspired defaults) -------------------
 
     private static Brush TokenKindToBrush(SyntaxTokenKind kind) => kind switch
     {

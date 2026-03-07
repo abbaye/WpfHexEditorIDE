@@ -43,7 +43,7 @@ public interface IEditorPersistable
     /// </summary>
     void ApplyUnsavedModifications(byte[] data);
 
-    // ── Changeset (WHChg) ──────────────────────────────────────────────────
+    // -- Changeset (WHChg) --------------------------------------------------
 
     /// <summary>
     /// Returns an immutable snapshot of all pending edits (modify / insert / delete).
@@ -68,7 +68,7 @@ public interface IEditorPersistable
     /// </summary>
     void MarkChangesetSaved();
 
-    // ── Bookmarks ─────────────────────────────────────────────────────────
+    // -- Bookmarks ---------------------------------------------------------
 
     /// <summary>
     /// Returns the current bookmarks as serialisable DTOs, or <see langword="null"/>

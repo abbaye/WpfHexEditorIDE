@@ -14,7 +14,7 @@ namespace WpfHexEditor.SDK.Contracts;
 /// </summary>
 public interface IUIRegistry
 {
-    // â”€â”€ ID Management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- ID Management --------------------------------------------------------
 
     /// <summary>
     /// Generates a unique UI element identifier following the pattern:
@@ -29,7 +29,7 @@ public interface IUIRegistry
     /// <summary>Returns true if a UI element with this ID is already registered.</summary>
     bool Exists(string uiId);
 
-    // â”€â”€ Panel Registration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Panel Registration ---------------------------------------------------
 
     /// <summary>
     /// Registers a dockable panel in the IDE.
@@ -44,7 +44,7 @@ public interface IUIRegistry
     /// <summary>Unregisters and removes a dockable panel by its UI ID.</summary>
     void UnregisterPanel(string uiId);
 
-    // â”€â”€ Menu Registration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Menu Registration ----------------------------------------------------
 
     /// <summary>
     /// Registers a menu item in the IDE main menu.
@@ -54,7 +54,7 @@ public interface IUIRegistry
     /// <summary>Unregisters a menu item by its UI ID.</summary>
     void UnregisterMenuItem(string uiId);
 
-    // â”€â”€ Toolbar Registration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Toolbar Registration -------------------------------------------------
 
     /// <summary>Registers a toolbar button in the IDE main toolbar.</summary>
     void RegisterToolbarItem(string uiId, string pluginId, ToolbarItemDescriptor descriptor);
@@ -62,7 +62,7 @@ public interface IUIRegistry
     /// <summary>Unregisters a toolbar button by its UI ID.</summary>
     void UnregisterToolbarItem(string uiId);
 
-    // â”€â”€ Document Tab Registration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Document Tab Registration --------------------------------------------
 
     /// <summary>
     /// Registers a document tab in the central document host area.
@@ -72,7 +72,7 @@ public interface IUIRegistry
     /// <summary>Unregisters and closes a document tab by its UI ID.</summary>
     void UnregisterDocumentTab(string uiId);
 
-    // â”€â”€ Status Bar Registration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Status Bar Registration ----------------------------------------------
 
     /// <summary>Registers a status bar item in the IDE status bar.</summary>
     void RegisterStatusBarItem(string uiId, string pluginId, StatusBarItemDescriptor descriptor);
@@ -80,7 +80,7 @@ public interface IUIRegistry
     /// <summary>Unregisters a status bar item by its UI ID.</summary>
     void UnregisterStatusBarItem(string uiId);
 
-    // ── Panel Visibility Control ──────────────────────────────────────────────────────────
+    // -- Panel Visibility Control ----------------------------------------------------------
 
     /// <summary>Makes an already-registered panel visible in the dock layout.</summary>
     void ShowPanel(string uiId);
@@ -94,7 +94,7 @@ public interface IUIRegistry
     /// <summary>Gives keyboard focus to a registered panel.</summary>
     void FocusPanel(string uiId);
 
-    // â”€â”€ Bulk Unregister â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Bulk Unregister ------------------------------------------------------
 
     /// <summary>
     /// Atomically unregisters and removes ALL UI elements owned by the specified plugin.

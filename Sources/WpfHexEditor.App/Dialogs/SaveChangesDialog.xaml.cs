@@ -23,7 +23,7 @@ public sealed partial class SaveChangesDialog : WpfHexEditor.Editor.Core.Views.T
     private readonly List<FileEntry> _entries = [];
     private bool _updatingAll;
 
-    // ── Input ─────────────────────────────────────────────────────────────
+    // -- Input -------------------------------------------------------------
 
     /// <summary>
     /// List of (ContentId, display title) for each dirty document.
@@ -37,12 +37,12 @@ public sealed partial class SaveChangesDialog : WpfHexEditor.Editor.Core.Views.T
         }
     }
 
-    // ── Output ────────────────────────────────────────────────────────────
+    // -- Output ------------------------------------------------------------
 
     public SaveChangesChoice     Choice             { get; private set; } = SaveChangesChoice.Cancel;
     public IReadOnlyList<string> SelectedContentIds { get; private set; } = [];
 
-    // ── Ctor ──────────────────────────────────────────────────────────────
+    // -- Ctor --------------------------------------------------------------
 
     public SaveChangesDialog()
     {
@@ -68,7 +68,7 @@ public sealed partial class SaveChangesDialog : WpfHexEditor.Editor.Core.Views.T
         }
     }
 
-    // ── Master checkbox ────────────────────────────────────────────────────
+    // -- Master checkbox ----------------------------------------------------
 
     private void OnSelectAllChecked(object sender, RoutedEventArgs e)
     {
@@ -100,7 +100,7 @@ public sealed partial class SaveChangesDialog : WpfHexEditor.Editor.Core.Views.T
                                  : null;
     }
 
-    // ── Button handlers ────────────────────────────────────────────────────
+    // -- Button handlers ----------------------------------------------------
 
     private void OnSaveClicked(object sender, RoutedEventArgs e)
     {
@@ -121,7 +121,7 @@ public sealed partial class SaveChangesDialog : WpfHexEditor.Editor.Core.Views.T
         DialogResult = false;
     }
 
-    // ── Entry model ───────────────────────────────────────────────────────
+    // -- Entry model -------------------------------------------------------
 
     private sealed class FileEntry(string contentId, string title) : INotifyPropertyChanged
     {

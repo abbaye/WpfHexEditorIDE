@@ -15,7 +15,7 @@ public sealed partial class EnvironmentSavePage : UserControl, IOptionsPage
 
     public EnvironmentSavePage() => InitializeComponent();
 
-    // ── IOptionsPage ──────────────────────────────────────────────────────
+    // -- IOptionsPage ------------------------------------------------------
 
     public void Load(AppSettings s)
     {
@@ -42,7 +42,7 @@ public sealed partial class EnvironmentSavePage : UserControl, IOptionsPage
             s.AutoSerializeIntervalSeconds = secs;
     }
 
-    // ── Control handlers ─────────────────────────────────────────────────
+    // -- Control handlers -------------------------------------------------
 
     private void OnSaveModeChanged(object sender, RoutedEventArgs e)
     {

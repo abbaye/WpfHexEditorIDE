@@ -31,7 +31,7 @@ public partial class PatternAnalysisPanel : UserControl
         InitializeComponent();
     }
 
-    // ── Public API ───────────────────────────────────────────────────────────
+    // -- Public API -----------------------------------------------------------
 
     /// <summary>Analyzes the provided byte array and updates the UI.</summary>
     public void Analyze(byte[] data)
@@ -69,7 +69,7 @@ public partial class PatternAnalysisPanel : UserControl
     /// <summary>Raised when the user requests a new analysis.</summary>
     public event EventHandler? AnalysisRequested;
 
-    // ── Analysis algorithms ──────────────────────────────────────────────────
+    // -- Analysis algorithms --------------------------------------------------
 
     private static double CalculateEntropy(byte[] data)
     {
@@ -191,7 +191,7 @@ public partial class PatternAnalysisPanel : UserControl
         return anomalies;
     }
 
-    // ── UI updates ───────────────────────────────────────────────────────────
+    // -- UI updates -----------------------------------------------------------
 
     private void UpdateEntropyCard(double entropy)
     {
@@ -317,13 +317,13 @@ public partial class PatternAnalysisPanel : UserControl
         AnomaliesCard.Visibility    = Visibility.Collapsed;
     }
 
-    // ── Toolbar handlers ─────────────────────────────────────────────────────
+    // -- Toolbar handlers -----------------------------------------------------
 
     private void AnalyzeButton_Click(object sender, RoutedEventArgs e)
         => AnalysisRequested?.Invoke(this, EventArgs.Empty);
 }
 
-// ── Supporting data types ────────────────────────────────────────────────────
+// -- Supporting data types ----------------------------------------------------
 
 public class PatternInfo
 {

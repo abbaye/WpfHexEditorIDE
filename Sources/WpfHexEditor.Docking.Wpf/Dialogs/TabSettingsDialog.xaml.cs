@@ -32,7 +32,7 @@ namespace WpfHexEditor.Docking.Wpf.Dialogs;
 /// </summary>
 public partial class TabSettingsDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog, INotifyPropertyChanged
 {
-    // ─── Dependencies ─────────────────────────────────────────────────────────
+    // --- Dependencies ---------------------------------------------------------
 
     private DocumentTabBarSettings? _settings;
 
@@ -50,7 +50,7 @@ public partial class TabSettingsDialog : WpfHexEditor.Editor.Core.Views.ThemedDi
         }
     }
 
-    // ─── Constructor ─────────────────────────────────────────────────────────
+    // --- Constructor ---------------------------------------------------------
 
     public TabSettingsDialog()
     {
@@ -58,7 +58,7 @@ public partial class TabSettingsDialog : WpfHexEditor.Editor.Core.Views.ThemedDi
         RegexGrid.ItemsSource = _regexVmList;
     }
 
-    // ─── Placement ────────────────────────────────────────────────────────────
+    // --- Placement ------------------------------------------------------------
 
     public bool PlacementTop
     {
@@ -78,7 +78,7 @@ public partial class TabSettingsDialog : WpfHexEditor.Editor.Core.Views.ThemedDi
         set { if (value && _settings is not null) _settings.TabPlacement = DocumentTabPlacement.Right; }
     }
 
-    // ─── Color mode ───────────────────────────────────────────────────────────
+    // --- Color mode -----------------------------------------------------------
 
     public bool ColorNone
     {
@@ -104,7 +104,7 @@ public partial class TabSettingsDialog : WpfHexEditor.Editor.Core.Views.ThemedDi
         set { if (value && _settings is not null) { _settings.ColorMode = DocumentTabColorMode.Regex; OnColorModeChanged(); } }
     }
 
-    // ─── Multi-row ────────────────────────────────────────────────────────────
+    // --- Multi-row ------------------------------------------------------------
 
     public bool MultiRowTabs
     {
@@ -126,7 +126,7 @@ public partial class TabSettingsDialog : WpfHexEditor.Editor.Core.Views.ThemedDi
         set { if (_settings is not null) _settings.MultiRowWithMouseWheel = value; }
     }
 
-    // ─── Regex rules VM list ──────────────────────────────────────────────────
+    // --- Regex rules VM list --------------------------------------------------
 
     private readonly ObservableCollection<RegexColorRuleVm> _regexVmList = [];
 
@@ -164,11 +164,11 @@ public partial class TabSettingsDialog : WpfHexEditor.Editor.Core.Views.ThemedDi
         SyncRegexRulesToSettings();
     }
 
-    // ─── Event handlers ───────────────────────────────────────────────────────
+    // --- Event handlers -------------------------------------------------------
 
     private void OnCloseClick(object sender, RoutedEventArgs e) => Close();
 
-    // ─── INotifyPropertyChanged ───────────────────────────────────────────────
+    // --- INotifyPropertyChanged -----------------------------------------------
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -188,7 +188,7 @@ public partial class TabSettingsDialog : WpfHexEditor.Editor.Core.Views.ThemedDi
         Notify(nameof(MultiRowWithMouseWheel));
     }
 
-    // ─── Inner VM for regex rules DataGrid ───────────────────────────────────
+    // --- Inner VM for regex rules DataGrid -----------------------------------
 
     /// <summary>
     /// Lightweight view-model for DataGrid editing of regex color rules.

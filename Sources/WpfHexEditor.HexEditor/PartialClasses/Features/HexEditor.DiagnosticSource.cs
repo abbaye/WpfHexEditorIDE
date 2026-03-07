@@ -34,7 +34,7 @@ namespace WpfHexEditor.HexEditor;
 /// </remarks>
 public partial class HexEditor : IDiagnosticSource
 {
-    // ── IDiagnosticSource backing store ──────────────────────────────────────
+    // -- IDiagnosticSource backing store --------------------------------------
 
     private readonly List<DiagnosticEntry> _panelDiagnostics = [];
 
@@ -51,7 +51,7 @@ public partial class HexEditor : IDiagnosticSource
     /// <inheritdoc/>
     public event EventHandler? DiagnosticsChanged;
 
-    // ── Internal API (used by parsers/validators in future sprints) ──────────
+    // -- Internal API (used by parsers/validators in future sprints) ----------
 
     /// <summary>
     /// Adds a diagnostic entry and notifies subscribers.

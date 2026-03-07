@@ -30,7 +30,7 @@ namespace WpfHexEditor.Docking.Wpf.Services;
 /// </summary>
 public static class TabColorService
 {
-    // ─── Palette ─────────────────────────────────────────────────────────────
+    // --- Palette -------------------------------------------------------------
     // 12 distinct, accessible colors that work on both dark and light backgrounds.
     // Kept at ~50–60% lightness so the stripe is visible without being harsh.
 
@@ -50,7 +50,7 @@ public static class TabColorService
         Color.FromRgb(0xA0, 0xA0, 0xF0), // Periwinkle
     ];
 
-    // ─── Public API ──────────────────────────────────────────────────────────
+    // --- Public API ----------------------------------------------------------
 
     /// <summary>
     /// Returns the accent <see cref="Brush"/> for <paramref name="item"/> given the
@@ -69,7 +69,7 @@ public static class TabColorService
         return color.HasValue ? new SolidColorBrush(color.Value) : null;
     }
 
-    // ─── Private helpers ─────────────────────────────────────────────────────
+    // --- Private helpers -----------------------------------------------------
 
     private static Color? ByExtension(string title)
     {

@@ -60,7 +60,7 @@ namespace WpfHexEditor.HexEditor
             var sel    = _editor.SelectionStart;
             var len    = _editor.SelectionLength;
 
-            // ── Position ─────────────────────────────────────────────────────
+            // -- Position -----------------------------------------------------
             groups.Add(new PropertyGroup
             {
                 Name    = "Position",
@@ -77,7 +77,7 @@ namespace WpfHexEditor.HexEditor
                 }
             });
 
-            // ── Value (single byte) ───────────────────────────────────────────
+            // -- Value (single byte) -------------------------------------------
             if (sel >= 0 && _editor.FileName?.Length > 0 && TryReadByte(_editor, sel, out var b))
             {
                 groups.Add(new PropertyGroup
@@ -93,7 +93,7 @@ namespace WpfHexEditor.HexEditor
                     }
                 });
 
-                // ── Interpretation ─────────────────────────────────────────────
+                // -- Interpretation ---------------------------------------------
                 if (TryReadBytes(_editor, sel, 8, out var raw))
                 {
                     var interp = new List<PropertyEntry>
@@ -122,7 +122,7 @@ namespace WpfHexEditor.HexEditor
                 }
             }
 
-            // ── Selection ─────────────────────────────────────────────────────
+            // -- Selection -----------------------------------------------------
             if (len > 1)
             {
                 groups.Add(new PropertyGroup
@@ -137,7 +137,7 @@ namespace WpfHexEditor.HexEditor
                 });
             }
 
-            // ── Document ──────────────────────────────────────────────────────
+            // -- Document ------------------------------------------------------
             var editModeValues = new List<object> { EditMode.Insert, EditMode.Overwrite };
             groups.Add(new PropertyGroup
             {
@@ -190,7 +190,7 @@ namespace WpfHexEditor.HexEditor
             return groups;
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────────
+        // -- Helpers -----------------------------------------------------------
 
         private static bool TryReadByte(HexEditor editor, long offset, out byte result)
         {

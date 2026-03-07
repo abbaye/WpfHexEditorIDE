@@ -98,14 +98,14 @@ internal sealed class PluginManifestValidator
 
     private static void ValidateAssemblyHash(PluginManifest manifest, string pluginDirectory, ValidationResult result)
     {
-        // Only Distribution Manifests have assembly.sha256 â€” skip for Build Manifests.
+        // Only Distribution Manifests have assembly.sha256 â€" skip for Build Manifests.
         if (manifest.Assembly?.Sha256 is not { Length: > 0 } expectedHash)
             return;
 
         string? dllFileName = manifest.Assembly?.File;
         if (string.IsNullOrWhiteSpace(dllFileName))
         {
-            result.Warnings.Add("Distribution manifest has 'sha256' but missing 'assembly.file' â€” hash not verified.");
+            result.Warnings.Add("Distribution manifest has 'sha256' but missing 'assembly.file' - hash not verified.");
             return;
         }
 

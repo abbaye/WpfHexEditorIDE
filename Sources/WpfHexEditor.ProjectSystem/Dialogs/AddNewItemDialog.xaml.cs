@@ -27,7 +27,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 /// </summary>
 public partial class AddNewItemDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
-    // ── Output properties ──────────────────────────────────────────────────
+    // -- Output properties --------------------------------------------------
     public string         FileName         { get; private set; } = "";
     public IFileTemplate? SelectedTemplate { get; private set; }
     /// <summary>
@@ -35,7 +35,7 @@ public partial class AddNewItemDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
     /// </summary>
     public string?        TargetFolderId   { get; private set; }
 
-    // ── Constructor ────────────────────────────────────────────────────────
+    // -- Constructor --------------------------------------------------------
     /// <param name="project">Project that will receive the new item.</param>
     public AddNewItemDialog(IProject project)
     {
@@ -48,7 +48,7 @@ public partial class AddNewItemDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
         NameBox.Focus();
     }
 
-    // ── Initialisation helpers ─────────────────────────────────────────────
+    // -- Initialisation helpers ---------------------------------------------
 
     private void PopulateTemplateList()
     {
@@ -87,7 +87,7 @@ public partial class AddNewItemDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
             AddFolderItem(child, indent + 1);
     }
 
-    // ── Event handlers ─────────────────────────────────────────────────────
+    // -- Event handlers -----------------------------------------------------
 
     private void OnTemplateSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -117,7 +117,7 @@ public partial class AddNewItemDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
         DialogResult     = true;
     }
 
-    // ── Private helpers ────────────────────────────────────────────────────
+    // -- Private helpers ----------------------------------------------------
 
     private void Refresh()
     {

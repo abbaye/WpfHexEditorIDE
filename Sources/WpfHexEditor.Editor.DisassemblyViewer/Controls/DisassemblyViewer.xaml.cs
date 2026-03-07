@@ -37,7 +37,7 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
         SelectAllCommand = new RelayCommand(() => OutputBox.SelectAll(), () => !string.IsNullOrEmpty(OutputBox.Text));
     }
 
-    // ── IDocumentEditor — State ──────────────────────────────────────────
+    // -- IDocumentEditor — State ------------------------------------------
 
     public bool IsDirty    => false;
     public bool CanUndo    => false;
@@ -46,7 +46,7 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
     public string Title { get; private set; } = "";
     public bool IsBusy { get; private set; }
 
-    // ── IDocumentEditor — Commands ───────────────────────────────────────
+    // -- IDocumentEditor — Commands ---------------------------------------
 
     public ICommand UndoCommand      { get; }
     public ICommand RedoCommand      { get; }
@@ -57,7 +57,7 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
     public ICommand DeleteCommand    { get; }
     public ICommand SelectAllCommand { get; }
 
-    // ── IDocumentEditor — Events ─────────────────────────────────────────
+    // -- IDocumentEditor — Events -----------------------------------------
 
 #pragma warning disable CS0067
     public event EventHandler?         ModifiedChanged;
@@ -72,7 +72,7 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
     public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
 #pragma warning restore CS0067
 
-    // ── IDocumentEditor — Methods ────────────────────────────────────────
+    // -- IDocumentEditor — Methods ----------------------------------------
 
     public void Undo() { }
     public void Redo() { }
@@ -94,7 +94,7 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
         ShowState(ViewerState.Empty);
     }
 
-    // ── IOpenableDocument ────────────────────────────────────────────────
+    // -- IOpenableDocument ------------------------------------------------
 
     public async Task OpenAsync(string filePath, CancellationToken ct = default)
     {
@@ -118,7 +118,7 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
         await RunDecompileAsync(_cts.Token);
     }
 
-    // ── Private ──────────────────────────────────────────────────────────
+    // -- Private ----------------------------------------------------------
 
     private async Task RunDecompileAsync(CancellationToken ct)
     {
@@ -186,7 +186,7 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
     private static int CountLines(string text)
         => text.Length == 0 ? 0 : text.Count(c => c == '\n') + 1;
 
-    // ── Event handlers ───────────────────────────────────────────────────
+    // -- Event handlers ---------------------------------------------------
 
     private async void OnRefreshClick(object sender, RoutedEventArgs e)
     {
@@ -201,7 +201,7 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
     private enum ViewerState { Empty, Busy, Output, NoDecompiler }
 }
 
-// ── Minimal RelayCommand (no external dep) ───────────────────────────────────
+// -- Minimal RelayCommand (no external dep) -----------------------------------
 
 internal sealed class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
 {

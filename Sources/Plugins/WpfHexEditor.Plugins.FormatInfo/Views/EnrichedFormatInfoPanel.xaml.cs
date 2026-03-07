@@ -33,7 +33,7 @@ public partial class EnrichedFormatInfoPanel : UserControl
         ShowNoFormatMessage();
     }
 
-    // ── Public API ───────────────────────────────────────────────────────────
+    // -- Public API -----------------------------------------------------------
 
     /// <summary>Sets the format to display.</summary>
     public void SetFormat(FormatDefinition? format)
@@ -57,7 +57,7 @@ public partial class EnrichedFormatInfoPanel : UserControl
         ShowNoFormatMessage();
     }
 
-    // ── Private helpers ──────────────────────────────────────────────────────
+    // -- Private helpers ------------------------------------------------------
 
     private void UpdateUI()
     {

@@ -173,7 +173,7 @@ public sealed class UIRegistry : IUIRegistry
         }
     }
 
-    // ── Panel visibility (stubs — wire to docking adapter when IDockingAdapter exposes show/hide) ─
+    // -- Panel visibility (stubs — wire to docking adapter when IDockingAdapter exposes show/hide) -
 
     public void ShowPanel(string uiId)   => _dockingAdapter.ShowDockablePanel(uiId);
     public void HidePanel(string uiId)   => _dockingAdapter.HideDockablePanel(uiId);

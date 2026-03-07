@@ -39,7 +39,7 @@ namespace WpfHexEditor.Docking.Wpf;
 /// </summary>
 public class DocumentTabHost : DockTabControl
 {
-    // ─── Settings DP ─────────────────────────────────────────────────────────
+    // --- Settings DP ---------------------------------------------------------
 
     public static readonly DependencyProperty SettingsProperty =
         DependencyProperty.Register(
@@ -59,14 +59,14 @@ public class DocumentTabHost : DockTabControl
         set => SetValue(SettingsProperty, value);
     }
 
-    // ─── Constructor ─────────────────────────────────────────────────────────
+    // --- Constructor ---------------------------------------------------------
 
     public DocumentTabHost()
     {
         SetResourceReference(StyleProperty, "DocumentTabHostStyle");
     }
 
-    // ─── Template wiring ─────────────────────────────────────────────────────
+    // --- Template wiring -----------------------------------------------------
 
     public override void OnApplyTemplate()
     {
@@ -86,7 +86,7 @@ public class DocumentTabHost : DockTabControl
             panel.PreviewMouseWheel += OnTabStripMouseWheel;
     }
 
-    // ─── Settings change handling ─────────────────────────────────────────────
+    // --- Settings change handling ---------------------------------------------
 
     private static void OnSettingsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -127,7 +127,7 @@ public class DocumentTabHost : DockTabControl
         // OnApplyTemplate is called automatically after the style change, which re-wires parts.
     }
 
-    // ─── Mouse wheel on tab strip ─────────────────────────────────────────────
+    // --- Mouse wheel on tab strip ---------------------------------------------
 
     private void OnTabStripMouseWheel(object sender, MouseWheelEventArgs e)
     {
@@ -138,7 +138,7 @@ public class DocumentTabHost : DockTabControl
         }
     }
 
-    // ─── Tab colorization ─────────────────────────────────────────────────────
+    // --- Tab colorization -----------------------------------------------------
 
     protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
     {
@@ -162,7 +162,7 @@ public class DocumentTabHost : DockTabControl
         TabColorizerAttached.SetAccentBrush(tab, brush ?? Brushes.Transparent);
     }
 
-    // ─── Options dialog ───────────────────────────────────────────────────────
+    // --- Options dialog -------------------------------------------------------
 
     private void OnOptionsRequested(object? sender, EventArgs e)
     {
@@ -175,7 +175,7 @@ public class DocumentTabHost : DockTabControl
         dlg.ShowDialog();
     }
 
-    // ─── Placeholder ─────────────────────────────────────────────────────────
+    // --- Placeholder ---------------------------------------------------------
 
     /// <summary>
     /// Shows a placeholder when no documents are open.

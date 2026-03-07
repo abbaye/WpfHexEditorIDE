@@ -50,17 +50,17 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
     private SortMode   _currentSort   = SortMode.None;
     private FilterMode _currentFilter = FilterMode.All;
 
-    // ── Collapse-state memory (session-level) ─────────────────────────────────
+    // -- Collapse-state memory (session-level) ---------------------------------
     // Persists IsExpanded across Rebuild() calls so tree state is not lost on
     // sort/filter/file-watcher refreshes.  Keyed by a stable node identifier.
 
     private readonly Dictionary<string, bool> _expandedState = new(StringComparer.Ordinal);
 
-    // ── Tree ─────────────────────────────────────────────────────────────────
+    // -- Tree -----------------------------------------------------------------
 
     public ObservableCollection<SolutionExplorerNodeVm> Roots { get; } = [];
 
-    // ── Multi-select (D3) ────────────────────────────────────────────────────
+    // -- Multi-select (D3) ----------------------------------------------------
 
     /// <summary>
     /// All nodes that currently have <see cref="SolutionExplorerNodeVm.IsSelected"/> set.
@@ -164,7 +164,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
-    // ── Search ───────────────────────────────────────────────────────────────
+    // -- Search ---------------------------------------------------------------
 
     public string SearchText
     {
@@ -178,7 +178,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
-    // ── Show All Files ───────────────────────────────────────────────────────
+    // -- Show All Files -------------------------------------------------------
 
     public bool ShowAllFiles
     {
@@ -192,7 +192,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
-    // ── Sort ─────────────────────────────────────────────────────────────────
+    // -- Sort -----------------------------------------------------------------
 
     public SortMode CurrentSort
     {
@@ -206,7 +206,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
-    // ── Filter ───────────────────────────────────────────────────────────────
+    // -- Filter ---------------------------------------------------------------
 
     public FilterMode CurrentFilter
     {
@@ -220,7 +220,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
-    // ── Solution binding ─────────────────────────────────────────────────────
+    // -- Solution binding -----------------------------------------------------
 
     public void SetSolution(ISolution? solution)
     {
@@ -266,7 +266,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         RestoreExpandedState(Roots);
     }
 
-    // ── Collapse-state helpers ────────────────────────────────────────────────
+    // -- Collapse-state helpers ------------------------------------------------
 
     /// <summary>
     /// Recursively walks <paramref name="nodes"/> and records each node's
@@ -345,7 +345,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
-    // ── Node construction ────────────────────────────────────────────────────
+    // -- Node construction ----------------------------------------------------
 
     private static HashSet<string> CollectFolderedProjectNames(IReadOnlyList<ISolutionFolder> folders)
     {
@@ -438,7 +438,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
-    // ── Physical tree (Show All Files) ────────────────────────────────────────
+    // -- Physical tree (Show All Files) ----------------------------------------
 
     private static ProjectNodeVm BuildProjectNodePhysical(IProject project)
     {
@@ -485,7 +485,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
-    // ── External modification (D1) ───────────────────────────────────────────
+    // -- External modification (D1) -------------------------------------------
 
     /// <summary>
     /// Marks or clears the <see cref="FileNodeVm.IsModifiedExternally"/> flag for
@@ -513,7 +513,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         return null;
     }
 
-    // ── Active document tracking (D5) ────────────────────────────────────────
+    // -- Active document tracking (D5) ----------------------------------------
 
     /// <summary>
     /// Finds the <see cref="FileNodeVm"/> matching <paramref name="filePath"/>, expands
@@ -549,7 +549,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         return false;
     }
 
-    // ── Sort helpers (D2) ────────────────────────────────────────────────────
+    // -- Sort helpers (D2) ----------------------------------------------------
 
     private void ApplySort(ObservableCollection<SolutionExplorerNodeVm> children)
     {
@@ -584,7 +584,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
             ApplySort(child.Children);
     }
 
-    // ── Filter helpers (D2) ──────────────────────────────────────────────────
+    // -- Filter helpers (D2) --------------------------------------------------
 
     private bool PassesFilter(SolutionExplorerNodeVm node)
     {
@@ -601,7 +601,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         };
     }
 
-    // ── Search filter ─────────────────────────────────────────────────────────
+    // -- Search filter ---------------------------------------------------------
 
     private void ApplySearch()
     {
@@ -638,7 +638,7 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         }
     }
 
-    // ── INPC ─────────────────────────────────────────────────────────────────
+    // -- INPC -----------------------------------------------------------------
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null)

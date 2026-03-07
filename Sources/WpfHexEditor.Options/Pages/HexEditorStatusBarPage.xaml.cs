@@ -17,7 +17,7 @@ public sealed partial class HexEditorStatusBarPage : UserControl, IOptionsPage
 
     public HexEditorStatusBarPage() => InitializeComponent();
 
-    // â”€â”€ IOptionsPage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- IOptionsPage ------------------------------------------------------
 
     public void Load(AppSettings s)
     {
@@ -44,7 +44,7 @@ public sealed partial class HexEditorStatusBarPage : UserControl, IOptionsPage
         s.HexEditorDefaults.ShowBytesPerLineInStatusBar = CheckShowBytesPerLine.IsChecked == true;
     }
 
-    // â”€â”€ Control handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Control handlers -------------------------------------------------
 
     private void OnCheckChanged(object sender, RoutedEventArgs e)
     {

@@ -13,7 +13,7 @@ namespace WpfHexEditor.SDK.Models;
 /// </summary>
 public sealed class PluginManifest
 {
-    // â”€â”€ Identity â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Identity ------------------------------------------------------------
 
     /// <summary>Unique global identifier (e.g. "WpfHexEditor.Plugins.Barchart").</summary>
     [JsonPropertyName("id")]
@@ -39,7 +39,7 @@ public sealed class PluginManifest
     [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;
 
-    // â”€â”€ Version â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Version -------------------------------------------------------------
 
     /// <summary>Plugin version (SemVer, e.g. "1.2.0").</summary>
     [JsonPropertyName("version")]
@@ -65,7 +65,7 @@ public sealed class PluginManifest
     [JsonPropertyName("supportedIDEVersion")]
     public string? SupportedIDEVersion { get; set; }
 
-    // â”€â”€ Entry Point â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Entry Point ---------------------------------------------------------
 
     /// <summary>Fully qualified class name implementing <c>IWpfHexEditorPlugin</c>.</summary>
     [JsonPropertyName("entryPoint")]
@@ -75,31 +75,31 @@ public sealed class PluginManifest
     [JsonPropertyName("isolationMode")]
     public PluginIsolationMode IsolationMode { get; set; } = PluginIsolationMode.InProcess;
 
-    // â”€â”€ Assembly â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Assembly -------------------------------------------------------------
 
     /// <summary>Assembly file information (only populated in Distribution Manifest).</summary>
     [JsonPropertyName("assembly")]
     public PluginAssemblyInfo? Assembly { get; set; }
 
-    // â”€â”€ Permissions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Permissions ---------------------------------------------------------
 
     /// <summary>Capability declarations â€” validated against user-granted permissions at runtime.</summary>
     [JsonPropertyName("permissions")]
     public PluginCapabilities Permissions { get; set; } = new();
 
-    // â”€â”€ Signature â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Signature ------------------------------------------------------------
 
     /// <summary>Digital signature information (only populated in Distribution Manifest).</summary>
     [JsonPropertyName("signature")]
     public PluginSignatureInfo? Signature { get; set; }
 
-    // â”€â”€ Marketplace â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Marketplace ----------------------------------------------------------
 
     /// <summary>Marketplace listing metadata (optional).</summary>
     [JsonPropertyName("marketplace")]
     public PluginMarketplaceInfo? Marketplace { get; set; }
 
-    // â”€â”€ Dependencies & Load Order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Dependencies & Load Order ---------------------------------------------
 
     /// <summary>
     /// List of plugin IDs that must be loaded before this plugin.
@@ -116,7 +116,7 @@ public sealed class PluginManifest
     [JsonPropertyName("loadPriority")]
     public int LoadPriority { get; set; } = 100;
 
-    // â”€â”€ UI Elements Declaration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- UI Elements Declaration -----------------------------------------------
 
     /// <summary>
     /// Optional pre-declaration of UI element IDs this plugin will register.
@@ -127,7 +127,7 @@ public sealed class PluginManifest
     public List<string> UiElements { get; set; } = [];
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ----------------------------------------------------------------------------
 
 /// <summary>Assembly metadata â€” populated by PackagingTool in Distribution Manifest.</summary>
 public sealed class PluginAssemblyInfo

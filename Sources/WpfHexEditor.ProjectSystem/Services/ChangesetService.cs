@@ -20,12 +20,12 @@ namespace WpfHexEditor.ProjectSystem.Services;
 /// </summary>
 public sealed class ChangesetService
 {
-    // ── Singleton ─────────────────────────────────────────────────────────
+    // -- Singleton ---------------------------------------------------------
 
     public static readonly ChangesetService Instance = new();
     private ChangesetService() { }
 
-    // ── Path helpers ──────────────────────────────────────────────────────
+    // -- Path helpers ------------------------------------------------------
 
     /// <summary>Returns the companion .whchg path for a project item.</summary>
     public string GetChangesetPath(IProjectItem item)
@@ -35,7 +35,7 @@ public sealed class ChangesetService
     public bool HasChangeset(IProjectItem item)
         => File.Exists(GetChangesetPath(item));
 
-    // ── Read / Write ──────────────────────────────────────────────────────
+    // -- Read / Write ------------------------------------------------------
 
     /// <summary>
     /// Serialises <paramref name="snapshot"/> to the companion .whchg file.
@@ -98,7 +98,7 @@ public sealed class ChangesetService
         return await ChangesetSerializer.ReadAsync(fs, ct).ConfigureAwait(false);
     }
 
-    // ── Write to Disk ─────────────────────────────────────────────────────
+    // -- Write to Disk -----------------------------------------------------
 
     /// <summary>
     /// Applies the .whchg changeset to the physical file on disk, then removes the companion file.
@@ -126,7 +126,7 @@ public sealed class ChangesetService
         await DeleteChangesetAsync(item, ct).ConfigureAwait(false);
     }
 
-    // ── Discard ───────────────────────────────────────────────────────────
+    // -- Discard -----------------------------------------------------------
 
     /// <summary>Deletes the .whchg companion file without applying it.</summary>
     public Task DeleteChangesetAsync(IProjectItem item, CancellationToken ct = default)
@@ -137,7 +137,7 @@ public sealed class ChangesetService
         return Task.CompletedTask;
     }
 
-    // ── CRC32 helper ──────────────────────────────────────────────────────
+    // -- CRC32 helper ------------------------------------------------------
 
     private static string ComputeCrc32Hex(string filePath)
     {

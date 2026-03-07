@@ -10,7 +10,7 @@ using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.Editor.ChangesetEditor.ViewModels;
 
-// ── Row view-models ─────────────────────────────────────────────────────────
+// -- Row view-models ---------------------------------------------------------
 
 public sealed class ModifiedEntryVm : INotifyPropertyChanged
 {
@@ -45,7 +45,7 @@ public sealed class DeletedRangeVm
     public long   Count { get; set; }
 }
 
-// ── Main ViewModel ───────────────────────────────────────────────────────────
+// -- Main ViewModel -----------------------------------------------------------
 
 /// <summary>
 /// ViewModel for <see cref="Controls.ChangesetEditorControl"/>.
@@ -54,13 +54,13 @@ public sealed class DeletedRangeVm
 /// </summary>
 public sealed class ChangesetEditorViewModel : INotifyPropertyChanged
 {
-    // ── Collections ──────────────────────────────────────────────────────
+    // -- Collections ------------------------------------------------------
 
     public ObservableCollection<ModifiedEntryVm> ModifiedEntries { get; } = [];
     public ObservableCollection<InsertedEntryVm> InsertedEntries { get; } = [];
     public ObservableCollection<DeletedRangeVm>  DeletedRanges   { get; } = [];
 
-    // ── Status ────────────────────────────────────────────────────────────
+    // -- Status ------------------------------------------------------------
 
     private string _sourceFile = string.Empty;
     public string SourceFile
@@ -76,7 +76,7 @@ public sealed class ChangesetEditorViewModel : INotifyPropertyChanged
         private set { _sourceHash = value; OnPropertyChanged(); }
     }
 
-    // ── Load ──────────────────────────────────────────────────────────────
+    // -- Load --------------------------------------------------------------
 
     public void Load(ChangesetDto dto)
     {

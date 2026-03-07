@@ -45,13 +45,13 @@ namespace WpfHexEditor.Docking.Wpf.Controls;
 /// </summary>
 public sealed class TabHoverPreview
 {
-    // ── Configuration ────────────────────────────────────────────────────────
+    // -- Configuration --------------------------------------------------------
     private const double PreviewWidth  = 200;
     private const double PreviewHeight = 150;
     private const int    OpenDelayMs   = 400;
     private const int    CloseDelayMs  = 150;
 
-    // ── State ────────────────────────────────────────────────────────────────
+    // -- State ----------------------------------------------------------------
     private readonly DockTabControl                     _owner;
     private readonly Popup                              _popup;
     private readonly Border                             _border;
@@ -64,7 +64,7 @@ public sealed class TabHoverPreview
 
     private TabItem? _hoveredTab;
 
-    // ── Constructor ──────────────────────────────────────────────────────────
+    // -- Constructor ----------------------------------------------------------
 
     private TabHoverPreview(DockTabControl owner)
     {
@@ -140,7 +140,7 @@ public sealed class TabHoverPreview
         owner.MouseLeave += (_, _) => { _openTimer.Stop(); _closeTimer.Stop(); HidePreview(); };
     }
 
-    // ── Public API ───────────────────────────────────────────────────────────
+    // -- Public API -----------------------------------------------------------
 
     /// <summary>
     /// Attaches a <see cref="TabHoverPreview"/> to the given <paramref name="tabControl"/>.
@@ -164,7 +164,7 @@ public sealed class TabHoverPreview
         return preview;
     }
 
-    // ── Eager Snapshot on Deselection ────────────────────────────────────────
+    // -- Eager Snapshot on Deselection ----------------------------------------
 
     private void OnOwnerSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -209,7 +209,7 @@ public sealed class TabHoverPreview
         }
     }
 
-    // ── Wire tab items ───────────────────────────────────────────────────────
+    // -- Wire tab items -------------------------------------------------------
 
     private void WireAllTabs(DockTabControl tabControl)
     {
@@ -229,7 +229,7 @@ public sealed class TabHoverPreview
         tab.MouseLeave += OnTabMouseLeave;
     }
 
-    // ── Hover handlers ───────────────────────────────────────────────────────
+    // -- Hover handlers -------------------------------------------------------
 
     private void OnTabMouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
     {
@@ -293,7 +293,7 @@ public sealed class TabHoverPreview
         _popup.IsOpen = true;
     }
 
-    // ── Hide ─────────────────────────────────────────────────────────────────
+    // -- Hide -----------------------------------------------------------------
 
     private void HidePreview()
     {

@@ -28,13 +28,13 @@ namespace WpfHexEditor.ProjectSystem.Languages;
 /// </summary>
 public sealed class LanguageRegistry
 {
-    // ── Singleton ────────────────────────────────────────────────────────────
+    // -- Singleton ------------------------------------------------------------
 
     public static LanguageRegistry Instance { get; } = new();
 
     private LanguageRegistry() { }
 
-    // ── Internal state ───────────────────────────────────────────────────────
+    // -- Internal state -------------------------------------------------------
 
     private readonly object _lock = new();
 
@@ -46,7 +46,7 @@ public sealed class LanguageRegistry
     private readonly Dictionary<string, Dictionary<string, LanguageDefinition>> _projectDefaults
         = new(StringComparer.Ordinal);
 
-    // ── Registration ─────────────────────────────────────────────────────────
+    // -- Registration ---------------------------------------------------------
 
     /// <summary>
     /// Registers a built-in language definition.
@@ -111,7 +111,7 @@ public sealed class LanguageRegistry
             _projectDefaults.Remove(projectId);
     }
 
-    // ── Lookup ────────────────────────────────────────────────────────────────
+    // -- Lookup ----------------------------------------------------------------
 
     /// <summary>
     /// Returns the best <see cref="LanguageDefinition"/> for <paramref name="filePath"/>

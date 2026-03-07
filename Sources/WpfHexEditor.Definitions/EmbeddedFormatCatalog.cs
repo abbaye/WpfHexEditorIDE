@@ -26,7 +26,7 @@ namespace WpfHexEditor.Definitions;
 /// </summary>
 public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 {
-    // ── Singleton ─────────────────────────────────────────────────────────────
+    // -- Singleton -------------------------------------------------------------
 
     private static EmbeddedFormatCatalog? _instance;
 
@@ -38,7 +38,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 
     private EmbeddedFormatCatalog() { }
 
-    // ── Lazy cache ────────────────────────────────────────────────────────────
+    // -- Lazy cache ------------------------------------------------------------
 
     private IReadOnlyList<EmbeddedFormatEntry>? _entries;
     private IReadOnlyList<string>?              _categories;
@@ -46,7 +46,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
     private static readonly Assembly DefinitionsAssembly =
         typeof(EmbeddedFormatCatalog).Assembly;
 
-    // ── IEmbeddedFormatCatalog ────────────────────────────────────────────────
+    // -- IEmbeddedFormatCatalog ------------------------------------------------
 
     /// <inheritdoc/>
     public IReadOnlyList<EmbeddedFormatEntry> GetAll()
@@ -100,7 +100,7 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         return reader.ReadToEnd();
     }
 
-    // ── Private helpers ───────────────────────────────────────────────────────
+    // -- Private helpers -------------------------------------------------------
 
     private static EmbeddedFormatEntry? LoadHeader(string resourceKey)
     {

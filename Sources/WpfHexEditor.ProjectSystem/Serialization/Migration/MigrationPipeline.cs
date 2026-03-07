@@ -30,7 +30,7 @@ internal static class MigrationPipeline
         // future: new V2ToV3Migrator(),
     ];
 
-    // ── Public API ──────────────────────────────────────────────────────────
+    // -- Public API ----------------------------------------------------------
 
     /// <summary>
     /// Returns <see langword="true"/> when <paramref name="fileVersion"/> is older than
@@ -96,7 +96,7 @@ internal static class MigrationPipeline
         File.Copy(filePath, backupPath, overwrite: true);
     }
 
-    // ── Helpers ─────────────────────────────────────────────────────────────
+    // -- Helpers -------------------------------------------------------------
 
     private static IFormatMigrator? FindMigrator(int fromVersion)
         => Array.Find(_migrators, m => m.FromVersion == fromVersion);

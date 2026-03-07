@@ -36,7 +36,7 @@ public sealed partial class TileEditor : UserControl, IDocumentEditor, IOpenable
         SelectAllCommand = new RelayCommand(() => { }, () => false);
     }
 
-    // ── IDocumentEditor — State ──────────────────────────────────────────
+    // -- IDocumentEditor — State ------------------------------------------
 
     /// <inheritdoc/>
     public bool IsDirty    => false;
@@ -56,7 +56,7 @@ public sealed partial class TileEditor : UserControl, IDocumentEditor, IOpenable
     /// <inheritdoc/>
     public bool IsBusy { get; private set; }
 
-    // ── IDocumentEditor — Commands ───────────────────────────────────────
+    // -- IDocumentEditor — Commands ---------------------------------------
 
     /// <inheritdoc/>
     public ICommand UndoCommand      { get; }
@@ -82,7 +82,7 @@ public sealed partial class TileEditor : UserControl, IDocumentEditor, IOpenable
     /// <inheritdoc/>
     public ICommand SelectAllCommand { get; }
 
-    // ── IDocumentEditor — Events ─────────────────────────────────────────
+    // -- IDocumentEditor — Events -----------------------------------------
 
 #pragma warning disable CS0067
     /// <inheritdoc/>
@@ -115,7 +115,7 @@ public sealed partial class TileEditor : UserControl, IDocumentEditor, IOpenable
     public event EventHandler<DocumentOperationCompletedEventArgs>? OperationCompleted;
 #pragma warning restore CS0067
 
-    // ── IDocumentEditor — Methods (no-ops for stub) ──────────────────────
+    // -- IDocumentEditor — Methods (no-ops for stub) ----------------------
 
     /// <inheritdoc/>
     public void Undo() { }
@@ -153,7 +153,7 @@ public sealed partial class TileEditor : UserControl, IDocumentEditor, IOpenable
     /// <inheritdoc/>
     public void CancelOperation() { }
 
-    // ── IOpenableDocument ────────────────────────────────────────────────
+    // -- IOpenableDocument ------------------------------------------------
 
     /// <inheritdoc/>
     public async Task OpenAsync(string filePath, CancellationToken ct = default)
@@ -166,7 +166,7 @@ public sealed partial class TileEditor : UserControl, IDocumentEditor, IOpenable
     }
 }
 
-// ── Minimal RelayCommand (no external dep) ───────────────────────────────────
+// -- Minimal RelayCommand (no external dep) -----------------------------------
 
 internal sealed class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
 {

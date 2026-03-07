@@ -23,7 +23,7 @@ public static class ChangesetSerializer
         PropertyNameCaseInsensitive = true,
     };
 
-    // ── I/O ────────────────────────────────────────────────────────────────
+    // -- I/O ----------------------------------------------------------------
 
     /// <summary>Serialises a <see cref="ChangesetDto"/> to a stream asynchronously.</summary>
     public static Task WriteAsync(ChangesetDto dto, Stream dest, CancellationToken ct = default)
@@ -38,7 +38,7 @@ public static class ChangesetSerializer
     public static ChangesetDto? Read(Stream src)
         => JsonSerializer.Deserialize<ChangesetDto>(src, Options);
 
-    // ── Conversion helpers ─────────────────────────────────────────────────
+    // -- Conversion helpers -------------------------------------------------
 
     /// <summary>
     /// Converts a <see cref="ChangesetSnapshot"/> to a <see cref="ChangesetDto"/>.
@@ -81,7 +81,7 @@ public static class ChangesetSerializer
         return dto;
     }
 
-    // ── Parsing helpers ────────────────────────────────────────────────────
+    // -- Parsing helpers ----------------------------------------------------
 
     /// <summary>Parses a hex or decimal offset string, e.g. "0x0400" or "1024".</summary>
     public static long ParseOffset(string s)
@@ -103,7 +103,7 @@ public static class ChangesetSerializer
         return result;
     }
 
-    // ── Private formatting ─────────────────────────────────────────────────
+    // -- Private formatting -------------------------------------------------
 
     private static string FormatOffset(long offset) => $"0x{offset:X}";
 

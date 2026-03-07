@@ -13,7 +13,7 @@ namespace WpfHexEditor.Options.Pages;
 
 public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
 {
-    // ── Theme map : display name → .xaml file stem ───────────────────────
+    // -- Theme map : display name → .xaml file stem -----------------------
     private static readonly IReadOnlyDictionary<string, string> ThemeMap =
         new Dictionary<string, string>
         {
@@ -32,7 +32,7 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
 
     public EnvironmentGeneralPage() => InitializeComponent();
 
-    // ── IOptionsPage ──────────────────────────────────────────────────────
+    // -- IOptionsPage ------------------------------------------------------
 
     public void Load(AppSettings s)
     {
@@ -56,7 +56,7 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
             s.ActiveThemeName = stem;
     }
 
-    // ── Control handlers ─────────────────────────────────────────────────
+    // -- Control handlers -------------------------------------------------
 
     private void OnThemeSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -69,7 +69,7 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
         Changed?.Invoke(this, EventArgs.Empty);
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────
+    // -- Helpers ----------------------------------------------------------
 
     private static void ApplyThemeFile(string stem)
     {

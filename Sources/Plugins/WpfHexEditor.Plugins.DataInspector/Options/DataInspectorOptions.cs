@@ -23,7 +23,7 @@ public sealed class DataInspectorOptions
     private static DataInspectorOptions? _instance;
     public static DataInspectorOptions Instance => _instance ??= Load();
 
-    // ── Option properties ────────────────────────────────────────────────────
+    // -- Option properties ----------------------------------------------------
 
     /// <summary>Whether the inspector auto-refreshes when the hex selection changes.</summary>
     public bool AutoRefresh { get; set; } = true;
@@ -37,7 +37,7 @@ public sealed class DataInspectorOptions
     /// <summary>Whether to show the ByteChart panel alongside the inspector.</summary>
     public bool ShowByteChart { get; set; } = true;
 
-    // ── Persistence ──────────────────────────────────────────────────────────
+    // -- Persistence ----------------------------------------------------------
 
     public static DataInspectorOptions Load()
     {

@@ -165,7 +165,7 @@ public class AutoHideFlyout : Grid
         _clickCatcher.MouseLeftButtonDown += (_, _) => Close();
         Children.Add(_clickCatcher);
 
-        // ── Title bar ────────────────────────────────────────────────────────────────
+        // -- Title bar ----------------------------------------------------------------
         _titleBlock = new TextBlock
         {
             FontWeight        = FontWeights.SemiBold,
@@ -287,7 +287,7 @@ public class AutoHideFlyout : Grid
             titleBar.ReleaseMouseCapture();
         };
 
-        // ── Content ──────────────────────────────────────────────────────────────────
+        // -- Content ------------------------------------------------------------------
         _contentHost = new ContentControl();
 
         var innerStack = new DockPanel { LastChildFill = true };
@@ -303,7 +303,7 @@ public class AutoHideFlyout : Grid
         _panel.SetResourceReference(Border.BackgroundProperty, "DockBackgroundBrush");
         _panel.SetResourceReference(Border.BorderBrushProperty, "DockBorderBrush");
 
-        // ── Resize handle ─────────────────────────────────────────────────────────
+        // -- Resize handle ---------------------------------------------------------
         // Transparent strip placed on the inner edge; position/cursor configured in ShowForItem.
         _resizeHandle = new Border { Background = Brushes.Transparent };
         _resizeHandle.MouseLeftButtonDown += OnResizeStart;
@@ -311,7 +311,7 @@ public class AutoHideFlyout : Grid
         _resizeHandle.MouseLeftButtonUp   += (_, _) => OnResizeEnd();
         _resizeHandle.LostMouseCapture    += (_, _) => OnResizeEnd();
 
-        // ── Panel container: _panel + resize handle overlaid ─────────────────────
+        // -- Panel container: _panel + resize handle overlaid ---------------------
         _panelContainer = new Grid();
         _panelContainer.Children.Add(_panel);
         _panelContainer.Children.Add(_resizeHandle);
@@ -442,7 +442,7 @@ public class AutoHideFlyout : Grid
             _panelContainer.BeginAnimation(HeightProperty, hideAnim);
     }
 
-    // ── Resize ───────────────────────────────────────────────────────────────────
+    // -- Resize -------------------------------------------------------------------
 
     private void OnResizeStart(object sender, MouseButtonEventArgs e)
     {

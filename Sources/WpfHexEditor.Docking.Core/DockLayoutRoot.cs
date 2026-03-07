@@ -48,7 +48,7 @@ public class DockLayoutRoot
     /// </summary>
     public List<DockItem> HiddenItems { get; } = [];
 
-    // ─── Window state (set by the host before serialization) ────────
+    // --- Window state (set by the host before serialization) --------
 
     /// <summary>
     /// Main window state: 0 = Normal, 1 = Minimized, 2 = Maximized.
@@ -63,7 +63,7 @@ public class DockLayoutRoot
     public double? WindowWidth { get; set; }
     public double? WindowHeight { get; set; }
 
-    // ─── Tab bar settings ────────────────────────────────────────────────────
+    // --- Tab bar settings ----------------------------------------------------
 
     /// <summary>
     /// Runtime settings for the document tab bar (placement, multi-row, colorization, etc.).

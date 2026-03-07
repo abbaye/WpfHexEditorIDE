@@ -25,7 +25,7 @@ internal static class SolutionSerializer
         Converters             = { new JsonStringEnumConverter() },
     };
 
-    // ── Read ─────────────────────────────────────────────────────────────
+    // -- Read -------------------------------------------------------------
 
     /// <summary>
     /// Reads a .whsln file, runs in-memory migration if needed, and returns the
@@ -94,7 +94,7 @@ internal static class SolutionSerializer
         return (solution, migratedDockLayout);
     }
 
-    // ── Write ─────────────────────────────────────────────────────────────
+    // -- Write -------------------------------------------------------------
 
     public static async Task WriteAsync(Solution solution, CancellationToken ct = default)
     {
@@ -132,7 +132,7 @@ internal static class SolutionSerializer
         await JsonSerializer.SerializeAsync(stream, dto, _options, ct);
     }
 
-    // ── Solution Folder mapping helpers ───────────────────────────────────
+    // -- Solution Folder mapping helpers -----------------------------------
 
     private static SolutionFolder DtoToSolutionFolder(SolutionFolderDto dto)
     {

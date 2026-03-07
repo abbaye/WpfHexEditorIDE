@@ -57,7 +57,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         };
     }
 
-    // ── ISolutionExplorerPanel ────────────────────────────────────────────────
+    // -- ISolutionExplorerPanel ------------------------------------------------
 
     public void SetSolution(ISolution? solution)
     {
@@ -85,7 +85,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     public event EventHandler<ItemMoveRequestedEventArgs>?         ItemMoveRequested;
     public event EventHandler<OpenWithSpecificEditorEventArgs>?    OpenWithSpecificRequested;
 
-    // ── Tree events ───────────────────────────────────────────────────────────
+    // -- Tree events -----------------------------------------------------------
 
     private void OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
@@ -104,7 +104,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             ItemActivated?.Invoke(this, new ProjectItemActivatedEventArgs { Item = fn.Source, Project = fn.Project });
     }
 
-    // ── Toolbar ───────────────────────────────────────────────────────────────
+    // -- Toolbar ---------------------------------------------------------------
 
     private void OnCollapseAll(object sender, RoutedEventArgs e)
     {
@@ -120,7 +120,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private void OnRefresh(object sender, RoutedEventArgs e)
         => _vm.Rebuild();
 
-    // D2 — Sort / Filter ───────────────────────────────────────────────────────
+    // D2 — Sort / Filter -------------------------------------------------------
 
     private void OnSortButtonClick(object sender, RoutedEventArgs e)
     {
@@ -146,7 +146,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             _vm.CurrentFilter = mode;
     }
 
-    // ── Search box ────────────────────────────────────────────────────────────
+    // -- Search box ------------------------------------------------------------
 
     private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
         => SearchPlaceholder.Visibility = Visibility.Collapsed;
@@ -155,7 +155,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         => SearchPlaceholder.Visibility =
             string.IsNullOrEmpty(SearchBox.Text) ? Visibility.Visible : Visibility.Collapsed;
 
-    // ── Context menu ──────────────────────────────────────────────────────────
+    // -- Context menu ----------------------------------------------------------
 
     /// <summary>
     /// Adapts all context-menu item visibility to <paramref name="node"/>.
@@ -495,7 +495,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private void OnSaveAll(object sender, RoutedEventArgs e)
         => SaveAllRequested?.Invoke(this, EventArgs.Empty);
 
-    // ── Clipboard context-menu handlers (Copy / Cut / Paste) ─────────────────
+    // -- Clipboard context-menu handlers (Copy / Cut / Paste) -----------------
 
     private void OnMenuCopy(object sender, RoutedEventArgs e)
     {
@@ -688,7 +688,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         }
     }
 
-    // ── Path helpers ──────────────────────────────────────────────────────────
+    // -- Path helpers ----------------------------------------------------------
 
     /// <summary>Returns the directory to reveal when the user chooses "Open in File Explorer".</summary>
     private static string? GetExplorerPath(SolutionExplorerNodeVm? node) => node switch
@@ -722,7 +722,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         return projDir;
     }
 
-    // ── Additional public events ───────────────────────────────────────────────
+    // -- Additional public events -----------------------------------------------
 
     /// <inheritdoc/>
     public event EventHandler<SolutionRenameRequestedEventArgs>? SolutionRenameRequested;
@@ -800,7 +800,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             StartInlineFolderEdit(fv);
     }
 
-    // ── Solution Folder events ────────────────────────────────────────────────
+    // -- Solution Folder events ------------------------------------------------
 
     /// <inheritdoc/>
     public event EventHandler<SolutionFolderCreateRequestedEventArgs>? SolutionFolderCreateRequested;
@@ -855,7 +855,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         return null;
     }
 
-    // ── F2 Inline rename ──────────────────────────────────────────────────────
+    // -- F2 Inline rename ------------------------------------------------------
 
     private void OnTreePreviewKeyDown(object sender, KeyEventArgs e)
     {
@@ -966,7 +966,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         SolutionTree.Focus();
     }
 
-    // ── F2 Inline rename — solution ───────────────────────────────────────────
+    // -- F2 Inline rename — solution -------------------------------------------
 
     private void StartInlineSolutionEdit(SolutionNodeVm sv)
     {
@@ -1031,7 +1031,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         SolutionTree.Focus();
     }
 
-    // ── F2 Inline rename — folder ─────────────────────────────────────────────
+    // -- F2 Inline rename — folder ---------------------------------------------
 
     private void StartInlineFolderEdit(FolderNodeVm fv)
     {
@@ -1098,7 +1098,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         SolutionTree.Focus();
     }
 
-    // ── F2 Inline rename — solution folder ───────────────────────────────────
+    // -- F2 Inline rename — solution folder -----------------------------------
 
     private void StartInlineSolutionFolderEdit(SolutionFolderNodeVm sfv)
     {
@@ -1161,7 +1161,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         SolutionTree.Focus();
     }
 
-    // ── F2 Inline rename — project ────────────────────────────────────────────
+    // -- F2 Inline rename — project --------------------------------------------
 
     private void StartInlineProjectEdit(ProjectNodeVm pv)
     {
@@ -1226,7 +1226,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         SolutionTree.Focus();
     }
 
-    // ── DragDrop ──────────────────────────────────────────────────────────────
+    // -- DragDrop --------------------------------------------------------------
 
     private const string DragDataFormat        = "SolutionExplorerFileNode";
     private const string DragDataFormatProject = "SolutionExplorerProjectNode";
@@ -1385,7 +1385,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     private void OnTreeDrop(object sender, DragEventArgs e)
     {
-        // ── External file drop from Windows Explorer ───────────────────────────
+        // -- External file drop from Windows Explorer ---------------------------
         if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
             !e.Data.GetDataPresent(DragDataFormat) &&
             !e.Data.GetDataPresent(DragDataFormatProject))
@@ -1436,7 +1436,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             return;
         }
 
-        // ── File drop (project-level folder move) ──────────────────────────────
+        // -- File drop (project-level folder move) ------------------------------
         if (e.Data.GetDataPresent(DragDataFormat))
         {
             if (e.Data.GetData(DragDataFormat) is not FileNodeVm draggedFile) return;
@@ -1463,7 +1463,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
             return;
         }
 
-        // ── Project drop (solution folder move) ────────────────────────────────
+        // -- Project drop (solution folder move) --------------------------------
         if (e.Data.GetDataPresent(DragDataFormatProject))
         {
             if (e.Data.GetData(DragDataFormatProject) is not ProjectNodeVm draggedProj) return;
@@ -1539,7 +1539,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         };
     }
 
-    // ── Visual-tree helpers ───────────────────────────────────────────────────
+    // -- Visual-tree helpers ---------------------------------------------------
 
     private static TreeViewItem? FindTreeViewItem(ItemsControl container, object item)
     {
@@ -1578,7 +1578,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         return null;
     }
 
-    // ── Tree helpers ──────────────────────────────────────────────────────────
+    // -- Tree helpers ----------------------------------------------------------
 
     private static void CollapseAll(SolutionExplorerNodeVm node)
     {
@@ -1606,7 +1606,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
         return false;
     }
 
-    // ── Changeset context menu actions ────────────────────────────────────────
+    // -- Changeset context menu actions ----------------------------------------
 
     /// <inheritdoc/>
     public event EventHandler<ProjectItemEventArgs>? WriteToDiskRequested;

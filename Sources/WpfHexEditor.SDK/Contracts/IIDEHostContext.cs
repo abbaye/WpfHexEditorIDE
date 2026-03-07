@@ -14,7 +14,7 @@ namespace WpfHexEditor.SDK.Contracts;
 /// </summary>
 public interface IIDEHostContext
 {
-    // â”€â”€ IDE Services â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- IDE Services ---------------------------------------------------------
 
     /// <summary>Access to the Solution Explorer for file/project navigation.</summary>
     ISolutionExplorerService SolutionExplorer { get; }
@@ -34,7 +34,7 @@ public interface IIDEHostContext
     /// <summary>Access to the IDE ErrorPanel for plugin diagnostics.</summary>
     IErrorPanelService ErrorPanel { get; }
 
-    // â”€â”€ Cross-Plugin Services â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Cross-Plugin Services ------------------------------------------------
 
     /// <summary>Focus-aware service tracking active document and panel.</summary>
     IFocusContextService FocusContext { get; }
@@ -45,7 +45,7 @@ public interface IIDEHostContext
     /// </summary>
     IPluginEventBus EventBus { get; }
 
-    // â”€â”€ UI Integration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- UI Integration -------------------------------------------------------
 
     /// <summary>
     /// Registry for contributing UI elements (panels, menus, toolbars, status bar items).
@@ -53,7 +53,7 @@ public interface IIDEHostContext
     /// </summary>
     IUIRegistry UIRegistry { get; }
 
-    // â”€â”€ IDE Features â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- IDE Features ----------------------------------------------------------
 
     /// <summary>
     /// Theme service providing current IDE theme resources and theme change notifications.

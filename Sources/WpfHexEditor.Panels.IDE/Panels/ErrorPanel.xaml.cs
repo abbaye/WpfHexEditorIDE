@@ -24,16 +24,16 @@ namespace WpfHexEditor.Panels.IDE.Panels;
 /// </summary>
 public partial class ErrorPanel : UserControl, IErrorPanel
 {
-    // ── Sources ──────────────────────────────────────────────────────────────
+    // -- Sources --------------------------------------------------------------
     private readonly List<IDiagnosticSource> _sources = [];
     private readonly ObservableCollection<DiagnosticEntryVm> _allEntries = [];
 
-    // ── View ─────────────────────────────────────────────────────────────────
+    // -- View -----------------------------------------------------------------
     private readonly CollectionViewSource _viewSource = new();
     private string _sortColumn = string.Empty;
     private ListSortDirection _sortDirection = ListSortDirection.Ascending;
 
-    // ── IErrorPanel ──────────────────────────────────────────────────────────
+    // -- IErrorPanel ----------------------------------------------------------
     private ErrorPanelScope _scope = ErrorPanelScope.Solution;
 
     public ErrorPanelScope Scope
@@ -51,7 +51,7 @@ public partial class ErrorPanel : UserControl, IErrorPanel
     /// </summary>
     public event EventHandler<DiagnosticEntry>? OpenInTextEditorRequested;
 
-    // ── Ctor ─────────────────────────────────────────────────────────────────
+    // -- Ctor -----------------------------------------------------------------
     public ErrorPanel()
     {
         InitializeComponent();
@@ -64,9 +64,9 @@ public partial class ErrorPanel : UserControl, IErrorPanel
         ScopeCombo.SelectedIndex = 0;
     }
 
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
     // IErrorPanel implementation
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
 
     public void AddSource(IDiagnosticSource source)
     {
@@ -95,9 +95,9 @@ public partial class ErrorPanel : UserControl, IErrorPanel
         UpdateCounts();
     }
 
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
     // Source change handling
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
 
     private void OnSourceChanged(object? sender, EventArgs e)
     {
@@ -131,9 +131,9 @@ public partial class ErrorPanel : UserControl, IErrorPanel
         _viewSource.View?.Refresh();
     }
 
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
     // Filter
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
 
     private void OnViewFilter(object sender, FilterEventArgs e)
     {
@@ -167,9 +167,9 @@ public partial class ErrorPanel : UserControl, IErrorPanel
 
     private void ApplyFilter() => _viewSource.View?.Refresh();
 
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
     // Counts
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
 
     private void UpdateCounts()
     {
@@ -182,9 +182,9 @@ public partial class ErrorPanel : UserControl, IErrorPanel
         MessageCountText.Text = messages == 1 ? "1 Message" : $"{messages} Messages";
     }
 
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
     // Event handlers
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
 
     private void OnFilterChanged(object sender, RoutedEventArgs e) => ApplyFilter();
 
@@ -226,7 +226,7 @@ public partial class ErrorPanel : UserControl, IErrorPanel
         }
     }
 
-    // ── Context menu ──────────────────────────────────────────────────────────
+    // -- Context menu ----------------------------------------------------------
 
     private void OnErrListContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
@@ -287,9 +287,9 @@ public partial class ErrorPanel : UserControl, IErrorPanel
         _viewSource.SortDescriptions.Add(new SortDescription($"Entry.{col}", _sortDirection));
     }
 
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
     // Helpers
-    // ────────────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------------
 
     private void CopySelectedEntry()
     {
@@ -318,7 +318,7 @@ public partial class ErrorPanel : UserControl, IErrorPanel
             ScopeCombo.SelectedIndex = idx;
     }
 
-    // ── Nested ViewModel ─────────────────────────────────────────────────────
+    // -- Nested ViewModel -----------------------------------------------------
 
     /// <summary>
     /// Wraps a <see cref="DiagnosticEntry"/> with its originating source for tracking.

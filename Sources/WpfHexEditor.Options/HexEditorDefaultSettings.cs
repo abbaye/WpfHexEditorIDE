@@ -13,7 +13,7 @@ namespace WpfHexEditor.Options;
 /// </summary>
 public sealed class HexEditorDefaultSettings
 {
-    // ── Display ─────────────────────────────────────────────────────────
+    // -- Display ---------------------------------------------------------
 
     /// <summary>Number of bytes displayed per line (8, 16, 32, 64 …).</summary>
     public int BytePerLine { get; set; } = 16;
@@ -36,7 +36,7 @@ public sealed class HexEditorDefaultSettings
     /// <summary>Position of byte spacers relative to the data columns.</summary>
     public ByteSpacerPosition ByteSpacerPositioning { get; set; } = ByteSpacerPosition.Both;
 
-    // ── Editing ──────────────────────────────────────────────────────────
+    // -- Editing ----------------------------------------------------------
 
     /// <summary>Default edit mode when a new file is opened.</summary>
     public EditMode DefaultEditMode { get; set; } = EditMode.Overwrite;
@@ -50,7 +50,7 @@ public sealed class HexEditorDefaultSettings
     /// <summary>Allow files to be opened by dragging them onto the editor.</summary>
     public bool AllowFileDrop { get; set; } = true;
 
-    // ── Data interpretation ──────────────────────────────────────────────
+    // -- Data interpretation ----------------------------------------------
 
     /// <summary>Default byte size for multi-byte data display (8 / 16 / 32 bit).</summary>
     public ByteSizeType ByteSize { get; set; } = ByteSizeType.Bit8;
@@ -64,7 +64,7 @@ public sealed class HexEditorDefaultSettings
     /// <summary>Visual style of the spacer between byte groups (Empty / Line / Dash).</summary>
     public ByteSpacerVisual ByteSpacerVisualStyle { get; set; } = ByteSpacerVisual.Line;
 
-    // ── Scroll markers ───────────────────────────────────────────────────
+    // -- Scroll markers ---------------------------------------------------
 
     /// <summary>Show bookmark markers on the scroll bar.</summary>
     public bool ShowBookmarkMarkers { get; set; } = true;
@@ -81,7 +81,7 @@ public sealed class HexEditorDefaultSettings
     /// <summary>Show search-result markers on the scroll bar.</summary>
     public bool ShowSearchResultMarkers { get; set; } = true;
 
-    // ── Status bar visibility ─────────────────────────────────────────────
+    // -- Status bar visibility ---------------------------------------------
 
     /// <summary>Show the status message row inside the HexEditor status bar.</summary>
     public bool ShowStatusMessage { get; set; } = true;
@@ -101,7 +101,7 @@ public sealed class HexEditorDefaultSettings
     /// <summary>Show bytes-per-line count in the HexEditor status bar.</summary>
     public bool ShowBytesPerLineInStatusBar { get; set; } = true;
 
-    // ── Advanced behaviour ────────────────────────────────────────────────
+    // -- Advanced behaviour ------------------------------------------------
 
     /// <summary>Highlight all bytes with the same value as the byte under the cursor.</summary>
     public bool AllowAutoHighLightSelectionByte { get; set; } = false;

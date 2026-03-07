@@ -65,12 +65,12 @@ namespace WpfHexEditor.App;
 
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
-    // ─── INotifyPropertyChanged ────────────────────────────────────────
+    // --- INotifyPropertyChanged ----------------------------------------
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    // ─── Static RoutedCommands (Find / Find Next / Previous — F3/Shift+F3) ────
+    // --- Static RoutedCommands (Find / Find Next / Previous — F3/Shift+F3) ----
     public static readonly RoutedCommand FindNextCommand = new RoutedCommand(
         "FindNext", typeof(MainWindow),
         new InputGestureCollection { new KeyGesture(Key.F3) });
@@ -93,7 +93,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         "GoToOffset", typeof(MainWindow),
         new InputGestureCollection { new KeyGesture(Key.G, ModifierKeys.Control) });
 
-    // ─── Constants ─────────────────────────────────────────────────────
+    // --- Constants -----------------------------------------------------
     private static readonly string LayoutFilePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "WpfHexEditor", "Sample.Docking", "layout.json");
@@ -105,7 +105,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private const string ParsedFieldsPanelContentId   = "panel-parsed-fields";
     private const string SolutionExplorerContentId    = "panel-solution-explorer";
 
-    // ─── Fields ────────────────────────────────────────────────────────
+    // --- Fields --------------------------------------------------------
     private DockLayoutRoot _layout = null!;
     private DockEngine     _engine = null!;
     private int  _documentCounter;
@@ -198,7 +198,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         public ObservableCollection<StatusBarItem> StatusBarItems { get; } = [];
     }
 
-    // ─── Bindable properties ────────────────────────────────────────────
+    // --- Bindable properties --------------------------------------------
 
     private IDocumentEditor? _activeDocumentEditor;
     public IDocumentEditor? ActiveDocumentEditor
@@ -240,7 +240,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         private set { _activeHexEditor = value; OnPropertyChanged(); }
     }
 
-    // ── TBL toolbar dropdown ─────────────────────────────────────────────
+    // -- TBL toolbar dropdown ---------------------------------------------
 
     private readonly ObservableCollection<TblSelectionItem> _tblItems = new();
     public  ObservableCollection<TblSelectionItem> TblItems => _tblItems;
@@ -280,7 +280,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         private set { _hasSolution = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsProjectMenuEnabled)); }
     }
 
-    // ── Long-running operation state (per active document) ───────────────
+    // -- Long-running operation state (per active document) ---------------
     private bool _isDocumentBusy;
     private bool _isClosingForced;
     /// <summary>
@@ -309,7 +309,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// </summary>
     public bool IsProjectMenuEnabled => _hasSolution && !_isDocumentBusy;
 
-    // ─── Constructor ───────────────────────────────────────────────────
+    // --- Constructor ---------------------------------------------------
     public MainWindow()
     {
         InitializeComponent();
@@ -429,7 +429,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         Close();
     }
 
-    // ─── SolutionManager event handlers ────────────────────────────────
+    // --- SolutionManager event handlers --------------------------------
 
     private void OnSolutionChanged(object? sender, SolutionChangedEventArgs e)
     {
@@ -548,7 +548,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    // ─── Layout persistence ────────────────────────────────────────────
+    // --- Layout persistence --------------------------------------------
 
     private void LoadSavedLayoutOrDefault()
     {
@@ -760,7 +760,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         PopulateRecentMenus();
     }
 
-    // ─── Layout helpers ────────────────────────────────────────────────
+    // --- Layout helpers ------------------------------------------------
 
     private void SetupDefaultLayout()
     {
@@ -912,7 +912,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _documentCounter = max;
     }
 
-    // ─── Content factory (with cache) ──────────────────────────────────
+    // --- Content factory (with cache) ----------------------------------
 
     private object CreateContentForItem(DockItem item)
     {
@@ -959,7 +959,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _ => CreateDocumentContent(item)
         };
 
-    // ─── Panel factories ───────────────────────────────────────────────
+    // --- Panel factories -----------------------------------------------
 
     private UIElement CreateSolutionExplorerContent()
     {
@@ -1281,7 +1281,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ActiveStatusBarContributor = hexEditor as IStatusBarContributor;
         }
 
-        // ── Phase 12: in-memory new document ──────────────────────────
+        // -- Phase 12: in-memory new document --------------------------
         if (isNewFile)
         {
             hexEditor.OpenNew(displayName ?? "New1.bin");
@@ -1289,7 +1289,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return hexEditor;
         }
 
-        // ── File-backed document ───────────────────────────────────────
+        // -- File-backed document ---------------------------------------
         if (filePath is null)
         {
             // Legacy fallback: unnamed temp document (e.g. Welcome tab)
@@ -1670,7 +1670,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             BorderThickness       = new Thickness(0)
         };
 
-    // ─── SolutionExplorer events ────────────────────────────────────────
+    // --- SolutionExplorer events ----------------------------------------
 
     private void OnSolutionExplorerItemActivated(object? sender, ProjectItemActivatedEventArgs e)
     {
@@ -1756,7 +1756,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    // ── TBL management ───────────────────────────────────────────────────
+    // -- TBL management ---------------------------------------------------
 
     /// <summary>
     /// Handles "Apply to Active Document" / "Apply to All Documents" from the Solution Explorer.
@@ -1934,7 +1934,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async void OnSEAddExistingItem(object? sender, AddItemRequestedEventArgs e)
     {
-        // ── Direct import path (D&D from Windows Explorer, clipboard paste with known paths) ──
+        // -- Direct import path (D&D from Windows Explorer, clipboard paste with known paths) --
         if (e.FilePaths is { Count: > 0 } directPaths)
         {
             foreach (var srcPath in directPaths)
@@ -1946,7 +1946,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return;
         }
 
-        // ── Normal flow: show dialog for user to pick file(s) ──────────────
+        // -- Normal flow: show dialog for user to pick file(s) --------------
         var dlg = new AddExistingItemDialog(e.Project) { Owner = this };
         if (dlg.ShowDialog() != true) return;
 
@@ -1954,7 +1954,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             var finalPath = srcPath;
 
-            // ── 1. Physical copy to user-selected destination folder ──────────
+            // -- 1. Physical copy to user-selected destination folder ----------
             if (dlg.CopyToProject)
             {
                 var destDir = dlg.SelectedPhysicalDestination
@@ -1965,7 +1965,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     File.Copy(srcPath, finalPath, overwrite: false);
             }
 
-            // ── 2. Register item in project (no virtual-folder assignment for files) ──
+            // -- 2. Register item in project (no virtual-folder assignment for files) --
             await _solutionManager.AddItemAsync(e.Project, finalPath, virtualFolderId: null);
         }
     }
@@ -2001,7 +2001,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 var fileName = Path.GetFileName(srcPath);
                 var destPath = Path.Combine(physDestDir, fileName);
 
-                // ── Name-conflict resolution ──────────────────────────────────────
+                // -- Name-conflict resolution --------------------------------------
                 if (File.Exists(destPath) &&
                     !string.Equals(srcPath, destPath, StringComparison.OrdinalIgnoreCase))
                 {
@@ -2021,7 +2021,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     destPath = Path.Combine(physDestDir, dlg.NewName);
                 }
 
-                // ── Physical file operation ───────────────────────────────────────
+                // -- Physical file operation ---------------------------------------
                 if (e.IsCut)
                 {
                     if (!string.Equals(srcPath, destPath, StringComparison.OrdinalIgnoreCase))
@@ -2148,7 +2148,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             $"Imported {dlg.SelectedEntries.Count} syntax definition(s) into project '{e.Project.Name}'.");
     }
 
-    // ── ROM-hint helpers for ConvertTblDialog auto-fill ──────────────────────
+    // -- ROM-hint helpers for ConvertTblDialog auto-fill ----------------------
 
     /// <summary>
     /// Lazy-loaded lookup: file extension (lower-case, with dot) → platform name.
@@ -2515,7 +2515,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         return hex;
     }
 
-    // ─── Folder management ──────────────────────────────────────────────
+    // --- Folder management ----------------------------------------------
 
     private void OnSEFolderCreateRequested(object? sender, FolderCreateRequestedEventArgs e)
         => _ = CreateFolderAndBeginRenameAsync(e.Project, e.ParentFolderId, e.CreatePhysical);
@@ -2567,7 +2567,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         OutputLogger.Info($"Folder '{e.Folder.Name}' removed from '{e.Project.Name}'");
     }
 
-    // ─── Solution Folder management ─────────────────────────────────────────
+    // --- Solution Folder management -----------------------------------------
 
     private void OnSESolutionFolderCreateRequested(object? sender, SolutionFolderCreateRequestedEventArgs e)
         => _ = CreateSolutionFolderAndBeginRenameAsync(e.Solution, e.ParentFolderId);
@@ -2849,7 +2849,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    // ─── Solution Explorer — changeset actions ──────────────────────────
+    // --- Solution Explorer — changeset actions --------------------------
 
     private async void OnSEWriteToDisk(object? sender, ProjectItemEventArgs e)
     {
@@ -2935,7 +2935,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         });
     }
 
-    // ─── Active document tracking ───────────────────────────────────────
+    // --- Active document tracking ---------------------------------------
 
     private void OnActiveDocumentChanged(DockItem item)
     {
@@ -3025,7 +3025,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    // ─── IDocumentEditor event handlers ────────────────────────────────
+    // --- IDocumentEditor event handlers --------------------------------
 
     private void OnEditorTitleChanged(object? sender, string newTitle)
     {
@@ -3045,7 +3045,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnEditorModifiedChanged(object? sender, EventArgs e)
         => CommandManager.InvalidateRequerySuggested();
 
-    // ─── Find / Replace handlers ────────────────────────────────────────
+    // --- Find / Replace handlers ----------------------------------------
 
     /// <summary>Ctrl+F — always opens the inline QuickSearchBar for the active editor.</summary>
     private void OnShowAdvancedSearch(object sender, RoutedEventArgs e)
@@ -3135,7 +3135,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnEditorOutputMessage(object? sender, string message)
         => OutputLogger.Info(message);
 
-    // ─── Long-running operation handlers (per active document) ──────────
+    // --- Long-running operation handlers (per active document) ----------
 
     /// <summary>
     /// Syncs the progress bar zone to the given editor's busy state.
@@ -3221,7 +3221,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    // ─── Tab / panel management ────────────────────────────────────────
+    // --- Tab / panel management ----------------------------------------
 
     /// <summary>Returns <c>true</c> when <paramref name="item"/> is a project document.
     /// Project items always use the Tracked (twin-file) strategy — the SaveChanges dialog
@@ -3375,7 +3375,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _ = _solutionManager.PersistItemModificationsAsync(project!, item, mods);
     }
 
-    // ─── Menu: File — New ──────────────────────────────────────────────
+    // --- Menu: File — New ----------------------------------------------
 
     private void OnNewSolution(object sender, RoutedEventArgs e)
     {
@@ -3517,7 +3517,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (dlg.SaveLater)
         {
-            // ── In-memory (Phase 12): file written on first Ctrl+S ─────
+            // -- In-memory (Phase 12): file written on first Ctrl+S -----
             var item = new DockItem
             {
                 Title     = dlg.FileName,
@@ -3535,7 +3535,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         else
         {
-            // ── Write to disk immediately ──────────────────────────────
+            // -- Write to disk immediately ------------------------------
             try
             {
                 Directory.CreateDirectory(dlg.FileDirectory);
@@ -3615,7 +3615,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             CloseTab(doc, promptIfDirty: false);
     }
 
-    // ─── Menu: File — Open ─────────────────────────────────────────────
+    // --- Menu: File — Open ---------------------------------------------
 
     private void OnOpenSolutionOrProject(object sender, RoutedEventArgs e)
     {
@@ -3671,7 +3671,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         OutputLogger.Info($"Open file: {dlg.FileName}");
     }
 
-    // ─── Toolbar dropdown helper ───────────────────────────────────────
+    // --- Toolbar dropdown helper ---------------------------------------
     // Generic Click handler for DockToolBarPodDropDownButtonStyle buttons.
     // Opens the ContextMenu attached to the button below its bottom edge.
     private void OnToolBarDropDownClick(object sender, RoutedEventArgs e)
@@ -3686,7 +3686,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnOpenProject(object sender, RoutedEventArgs e) =>
         OnOpenSolutionOrProject(sender, e);
 
-    // ─── Menu: File — Close ────────────────────────────────────────────
+    // --- Menu: File — Close --------------------------------------------
 
     private void OnCloseActiveDocument(object sender, RoutedEventArgs e)
     {
@@ -3723,7 +3723,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         return true;
     }
 
-    // ─── Solution dirty-save helpers ───────────────────────────────────
+    // --- Solution dirty-save helpers -----------------------------------
 
     // Synthetic content IDs used in the SaveChangesDialog for solution/project files.
     private const string SolutionDirtyId = "__solution__";
@@ -3825,7 +3825,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    // ─── Menu: File — Save ─────────────────────────────────────────────
+    // --- Menu: File — Save ---------------------------------------------
 
     private void OnSaveAll(object sender, RoutedEventArgs e)
     {
@@ -4040,7 +4040,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         hex.PreloadByteInEditorMode              = d.PreloadByteInEditorMode;
     }
 
-    // ─── Menu: Project ─────────────────────────────────────────────────
+    // --- Menu: Project -------------------------------------------------
 
     private void OnProjectAddNewItem(object sender, RoutedEventArgs e)
     {
@@ -4080,7 +4080,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         dlg.ShowDialog();
     }
 
-    // ─── MRU menus (Recent Solutions / Recent Files) ───────────────────
+    // --- MRU menus (Recent Solutions / Recent Files) -------------------
 
     private void PopulateRecentMenus()
     {
@@ -4168,7 +4168,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    // ─── View panel helpers ────────────────────────────────────────────
+    // --- View panel helpers --------------------------------------------
 
     private void OnShowProperties(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Properties", "panel-properties", DockDirection.Right);
@@ -4570,7 +4570,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ShowOrCreatePanel("Solution Explorer", SolutionExplorerContentId, DockDirection.Left);
     }
 
-    // ─── Menu: Layout ──────────────────────────────────────────────────
+    // --- Menu: Layout --------------------------------------------------
 
     private void OnSaveLayout(object sender, RoutedEventArgs e)
     {
@@ -4634,7 +4634,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         OutputLogger.Debug("Layout reset to default.");
     }
 
-    // ─── Menu: other ───────────────────────────────────────────────────
+    // --- Menu: other ---------------------------------------------------
 
     private void OnToggleLock(object sender, RoutedEventArgs e)
     {
@@ -4688,7 +4688,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnExit(object sender, RoutedEventArgs e) => Close();
 
-    // ─── Title bar ───────────────────────────────────────────────────
+    // --- Title bar ---------------------------------------------------
 
     private void OnMinimize(object sender, RoutedEventArgs e) =>
         WindowState = WindowState.Minimized;
@@ -4706,7 +4706,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         RootGrid.Margin = new Thickness(0);
     }
 
-    // ─── Logo click — native system menu ─────────────────────────────
+    // --- Logo click — native system menu -----------------------------
 
     [DllImport("user32.dll")] private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
     [DllImport("user32.dll")] private static extern int    TrackPopupMenuEx(IntPtr hmenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
@@ -4731,7 +4731,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         e.Handled = true;
     }
 
-    // ─── WM_GETMINMAXINFO — maximize respects taskbar (per-monitor) ──────
+    // --- WM_GETMINMAXINFO — maximize respects taskbar (per-monitor) ------
 
     [StructLayout(LayoutKind.Sequential)] private struct POINT      { public int x, y; }
     [StructLayout(LayoutKind.Sequential)] private struct WINRECT    { public int left, top, right, bottom; }

@@ -24,7 +24,7 @@ public sealed class FileMonitorDiagnosticSource : IDiagnosticSource
 
     private readonly object _lock = new();
 
-    // ── IDiagnosticSource ─────────────────────────────────────────────────
+    // -- IDiagnosticSource -------------------------------------------------
 
     public string SourceLabel => "Background Validator";
 
@@ -36,7 +36,7 @@ public sealed class FileMonitorDiagnosticSource : IDiagnosticSource
             return _byFile.Values.SelectMany(x => x).ToList();
     }
 
-    // ── Update API (called by FileMonitorService) ─────────────────────────
+    // -- Update API (called by FileMonitorService) -------------------------
 
     /// <summary>
     /// Replaces the diagnostics for <paramref name="filePath"/>.

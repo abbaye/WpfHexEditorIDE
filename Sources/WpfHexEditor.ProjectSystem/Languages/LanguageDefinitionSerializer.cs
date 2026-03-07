@@ -82,7 +82,7 @@ public static class LanguageDefinitionSerializer
         };
     }
 
-    // ── Internal DTO ─────────────────────────────────────────────────────────
+    // -- Internal DTO ---------------------------------------------------------
 
     private sealed class LanguageDefinitionDto
     {

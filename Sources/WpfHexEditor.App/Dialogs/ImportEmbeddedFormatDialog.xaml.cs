@@ -41,12 +41,12 @@ namespace WpfHexEditor.App.Dialogs;
 /// </summary>
 public partial class ImportEmbeddedFormatDialog : ThemedDialog
 {
-    // ── Output properties ──────────────────────────────────────────────────
+    // -- Output properties --------------------------------------------------
     public IReadOnlyList<EmbeddedFormatEntry> SelectedEntries { get; private set; } = [];
     /// <summary>Id of the virtual folder, or <c>null</c> for the project root.</summary>
     public string? TargetFolderId { get; private set; }
 
-    // ── Private state ──────────────────────────────────────────────────────
+    // -- Private state ------------------------------------------------------
     private readonly IEmbeddedFormatCatalog _catalog;
     private          List<CategoryNode>     _categories   = [];
     private readonly HashSet<FormatRow>     _checked      = [];
@@ -60,7 +60,7 @@ public partial class ImportEmbeddedFormatDialog : ThemedDialog
 
     private static readonly StringComparison OIC = StringComparison.OrdinalIgnoreCase;
 
-    // ── Constructor ────────────────────────────────────────────────────────
+    // -- Constructor --------------------------------------------------------
     /// <param name="catalog">Catalog of embedded format definitions.</param>
     /// <param name="project">Project that will receive the imported items (used for folder picker).</param>
     public ImportEmbeddedFormatDialog(IEmbeddedFormatCatalog catalog, IProject project, string? initialFolderId = null)
@@ -88,7 +88,7 @@ public partial class ImportEmbeddedFormatDialog : ThemedDialog
         }
     }
 
-    // ── Initialisation ─────────────────────────────────────────────────────
+    // -- Initialisation -----------------------------------------------------
 
     private void BuildCategories()
     {
@@ -256,7 +256,7 @@ public partial class ImportEmbeddedFormatDialog : ThemedDialog
             AddFolderItem(child, indent + 1);
     }
 
-    // ── Event handlers ─────────────────────────────────────────────────────
+    // -- Event handlers -----------------------------------------------------
 
     private void OnSearchChanged(object sender, TextChangedEventArgs e)
     {
@@ -316,7 +316,7 @@ public partial class ImportEmbeddedFormatDialog : ThemedDialog
         DialogResult    = true;
     }
 
-    // ── Private helpers ────────────────────────────────────────────────────
+    // -- Private helpers ----------------------------------------------------
 
     private void RefreshDetail(FormatRow? row)
     {
@@ -404,7 +404,7 @@ public partial class ImportEmbeddedFormatDialog : ThemedDialog
         },
     };
 
-    // ── Inner types ────────────────────────────────────────────────────────
+    // -- Inner types --------------------------------------------------------
 
     private sealed class CategoryNode(string name)
     {

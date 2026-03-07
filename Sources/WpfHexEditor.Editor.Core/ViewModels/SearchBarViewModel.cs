@@ -227,7 +227,7 @@ namespace WpfHexEditor.Editor.Core.ViewModels
         #endregion
     }
 
-    // ── Internal RelayCommand — no external dependency on HexEditor search stack ──
+    // -- Internal RelayCommand — no external dependency on HexEditor search stack --
 
     internal sealed class RelayCommand : ICommand
     {

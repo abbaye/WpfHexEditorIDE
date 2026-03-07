@@ -25,7 +25,7 @@ namespace WpfHexEditor.Panels.BinaryAnalysis
             InitializeComponent();
         }
 
-        // ── Public API ────────────────────────────────────────────────────────────
+        // -- Public API ------------------------------------------------------------
 
         /// <summary>
         /// Update all displayed statistics from the provided <see cref="FileStats"/> snapshot.
@@ -34,7 +34,7 @@ namespace WpfHexEditor.Panels.BinaryAnalysis
         {
             if (stats == null) return;
 
-            // ── File info ──
+            // -- File info --
             FileNameText.Text    = string.IsNullOrEmpty(stats.FileName) ? "No file loaded" : stats.FileName;
             FilePathText.Text    = stats.FilePath ?? string.Empty;
             FileSizeText.Text    = FormatFileSize(stats.FileSize);
@@ -43,12 +43,12 @@ namespace WpfHexEditor.Panels.BinaryAnalysis
                 ? "—"
                 : stats.AnalysisDate.ToString("yyyy-MM-dd HH:mm:ss");
 
-            // ── Data type badge ──
+            // -- Data type badge --
             var dtLabel = string.IsNullOrEmpty(stats.DataType) ? "Unknown" : stats.DataType;
             DataTypeText.Text    = dtLabel;
             DataTypeDescText.Text = GetDataTypeDescription(dtLabel);
 
-            // ── Byte composition ──
+            // -- Byte composition --
             NullBar.Value       = stats.NullBytePercentage;
             NullPctText.Text    = $"{stats.NullBytePercentage:F1}%";
 
@@ -62,23 +62,23 @@ namespace WpfHexEditor.Panels.BinaryAnalysis
             MostCommonByteText.Text = $"0x{stats.MostCommonByte:X2} ({stats.MostCommonBytePct:F1}%)";
             UniqueCountText.Text    = $"{stats.UniqueBytesCount} / 256";
 
-            // ── Health score ──
+            // -- Health score --
             HealthScoreBar.Value  = stats.HealthScore;
             HealthScoreText.Text  = $"{stats.HealthScore}/100";
             HealthStatusText.Text = stats.HealthMessage ?? string.Empty;
 
-            // ── Entropy ──
+            // -- Entropy --
             EntropyBar.Value  = (stats.Entropy / 8.0) * 100;
             EntropyText.Text  = $"{stats.Entropy:F2}/8.0";
             EntropyDescText.Text = GetEntropyDescription(stats.Entropy);
 
-            // ── Validation ──
+            // -- Validation --
             StructureIcon.Text    = stats.StructureValid ? "✅" : "⚠️";
             StructureStatus.Text  = stats.StructureValid ? "Valid" : "Invalid";
             ChecksumIcon.Text     = stats.ChecksumsPass  ? "✅" : "⚠️";
             ChecksumStatus.Text   = stats.ChecksumStatus ?? "N/A";
 
-            // ── Anomalies ──
+            // -- Anomalies --
             if (stats.Anomalies?.Count > 0)
             {
                 AnomaliesList.ItemsSource  = stats.Anomalies;
@@ -92,12 +92,12 @@ namespace WpfHexEditor.Panels.BinaryAnalysis
             }
         }
 
-        // ── Event handlers ────────────────────────────────────────────────────────
+        // -- Event handlers --------------------------------------------------------
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
             => RefreshRequested?.Invoke(this, EventArgs.Empty);
 
-        // ── Helpers ───────────────────────────────────────────────────────────────
+        // -- Helpers ---------------------------------------------------------------
 
         private static string FormatFileSize(long size)
         {
@@ -129,7 +129,7 @@ namespace WpfHexEditor.Panels.BinaryAnalysis
         };
     }
 
-    // ── Data model ────────────────────────────────────────────────────────────────
+    // -- Data model ----------------------------------------------------------------
 
     /// <summary>
     /// Snapshot of file statistics passed to <see cref="FileStatisticsPanel.UpdateStatistics"/>.

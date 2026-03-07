@@ -38,7 +38,7 @@ public interface ISolution
     /// </summary>
     bool IsModified { get; }
 
-    // ── Format versioning ─────────────────────────────────────────────────
+    // -- Format versioning -------------------------------------------------
 
     /// <summary>
     /// The format version that was read from disk.

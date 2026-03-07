@@ -556,7 +556,7 @@ namespace WpfHexEditor.Tests
             System.Diagnostics.Debug.WriteLine($"Total Formats: {stats.TotalFormats}");
             System.Diagnostics.Debug.WriteLine($"Total Extensions: {stats.TotalExtensions}");
             System.Diagnostics.Debug.WriteLine($"Categories: {stats.FormatsByCategory.Count}");
-            System.Diagnostics.Debug.WriteLine("───────────────────────────────────────────");
+            System.Diagnostics.Debug.WriteLine("-------------------------------------------");
             foreach (var kvp in stats.FormatsByCategory.OrderByDescending(x => x.Value))
             {
                 System.Diagnostics.Debug.WriteLine($"  {kvp.Key,-15}: {kvp.Value,3} formats");

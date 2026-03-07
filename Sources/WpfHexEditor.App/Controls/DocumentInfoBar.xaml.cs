@@ -67,7 +67,7 @@ public partial class DocumentInfoBar : UserControl
             ActionButtons.Children.Add(MakeButton(factory.Descriptor.DisplayName, factory.Descriptor.Id));
     }
 
-    // ── Event handlers ──────────────────────────────────────────────────────
+    // -- Event handlers ------------------------------------------------------
 
     private void OnDismiss(object sender, RoutedEventArgs e)
         => Visibility = Visibility.Collapsed;
@@ -83,7 +83,7 @@ public partial class DocumentInfoBar : UserControl
             });
     }
 
-    // ── Helpers ─────────────────────────────────────────────────────────────
+    // -- Helpers -------------------------------------------------------------
 
     private Button MakeButton(string label, string? factoryId)
     {

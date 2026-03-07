@@ -58,7 +58,7 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
 
     public CodeEditorSplitHost()
     {
-        // ── Row layout ──────────────────────────────────────────────────────
+        // -- Row layout ------------------------------------------------------
         _primaryRow   = new RowDefinition { Height = new GridLength(1, GridUnitType.Star) };
         _splitterRow  = new RowDefinition { Height = GridLength.Auto };
         _secondaryRow = new RowDefinition { Height = new GridLength(0) };  // collapsed initially
@@ -67,12 +67,12 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
         RowDefinitions.Add(_splitterRow);
         RowDefinitions.Add(_secondaryRow);
 
-        // ── Primary editor ──────────────────────────────────────────────────
+        // -- Primary editor --------------------------------------------------
         _primaryEditor = new CodeEditor();
         SetRow(_primaryEditor, 0);
         Children.Add(_primaryEditor);
 
-        // ── Splitter (hidden while not split) ───────────────────────────────
+        // -- Splitter (hidden while not split) -------------------------------
         _splitter = new GridSplitter
         {
             Height            = 4,
@@ -83,12 +83,12 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
         SetRow(_splitter, 1);
         Children.Add(_splitter);
 
-        // ── Secondary editor (shares the same document) ─────────────────────
+        // -- Secondary editor (shares the same document) ---------------------
         _secondaryEditor = new CodeEditor();
         SetRow(_secondaryEditor, 2);
         Children.Add(_secondaryEditor);
 
-        // ── Split toggle button (top-right overlay on primary editor) ────────
+        // -- Split toggle button (top-right overlay on primary editor) --------
         _splitToggle = new ToggleButton
         {
             Content           = "\uE70D",   // Segoe MDL2 "Split" icon
@@ -107,13 +107,13 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IOpenableDocume
         _splitToggle.Unchecked += OnSplitToggleUnchecked;
         Children.Add(_splitToggle);
 
-        // ── Initialise active editor and wire focus tracking ─────────────────
+        // -- Initialise active editor and wire focus tracking -----------------
         _activeEditor = _primaryEditor;
 
         _primaryEditor.GotFocus   += (_, _) => _activeEditor = _primaryEditor;
         _secondaryEditor.GotFocus += (_, _) => _activeEditor = _secondaryEditor;
 
-        // ── Forward events from primary editor (document is shared) ───────────
+        // -- Forward events from primary editor (document is shared) -----------
         _primaryEditor.ModifiedChanged  += (s, e) => ModifiedChanged?.Invoke(this, e);
         _primaryEditor.CanUndoChanged   += (s, e) => CanUndoChanged?.Invoke(this, e);
         _primaryEditor.CanRedoChanged   += (s, e) => CanRedoChanged?.Invoke(this, e);

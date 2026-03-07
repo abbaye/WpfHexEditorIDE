@@ -21,7 +21,7 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
 
     public PluginSystemOptionsPage() => InitializeComponent();
 
-    // ── IOptionsPage ─────────────────────────────────────────────────────────────
+    // -- IOptionsPage -------------------------------------------------------------
 
     public void Load(AppSettings s)
     {
@@ -48,7 +48,7 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
         s.PluginSystem.CpuThresholdPercent       = ParseDouble(TextCpuThreshold.Text, 25.0);
     }
 
-    // ── Control handlers ─────────────────────────────────────────────────────────
+    // -- Control handlers ---------------------------------------------------------
 
     private void OnCheckChanged(object sender, RoutedEventArgs e)
     {
@@ -60,7 +60,7 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────────
+    // -- Helpers ------------------------------------------------------------------
 
     private static int ParseInt(string text, int fallback)
         => int.TryParse(text, out var v) && v > 0 ? v : fallback;

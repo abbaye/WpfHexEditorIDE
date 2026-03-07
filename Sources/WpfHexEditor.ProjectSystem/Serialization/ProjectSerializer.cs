@@ -24,7 +24,7 @@ internal static class ProjectSerializer
         Converters             = { new JsonStringEnumConverter() },
     };
 
-    // ── Read ─────────────────────────────────────────────────────────────
+    // -- Read -------------------------------------------------------------
 
     public static async Task<Project> ReadAsync(string filePath, CancellationToken ct = default)
     {
@@ -87,7 +87,7 @@ internal static class ProjectSerializer
         return project;
     }
 
-    // ── Write ─────────────────────────────────────────────────────────────
+    // -- Write -------------------------------------------------------------
 
     public static async Task WriteAsync(Project project, CancellationToken ct = default)
     {
@@ -129,7 +129,7 @@ internal static class ProjectSerializer
         await JsonSerializer.SerializeAsync(stream, dto, _options, ct);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────
+    // -- Helpers -----------------------------------------------------------
 
     private static VirtualFolder MapFolder(VirtualFolderDto dto)
     {

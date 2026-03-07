@@ -20,7 +20,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 /// </summary>
 public partial class NewProjectDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
-    // ── Outputs ──────────────────────────────────────────────────────────
+    // -- Outputs ----------------------------------------------------------
 
     /// <summary>
     /// Name entered by the user for the new project.
@@ -37,12 +37,12 @@ public partial class NewProjectDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
     /// </summary>
     public IProjectTemplate? SelectedTemplate { get; private set; }
 
-    // ── Categories ───────────────────────────────────────────────────────
+    // -- Categories -------------------------------------------------------
 
     private static readonly string[] Categories =
         ["All", "General", "Analysis", "ReverseEngineering", "Development", "RomHacking"];
 
-    // ── Constructor ──────────────────────────────────────────────────────
+    // -- Constructor ------------------------------------------------------
 
     /// <param name="suggestedDirectory">Pre-filled location (e.g. the solution directory).</param>
     public NewProjectDialog(string? suggestedDirectory = null)
@@ -61,7 +61,7 @@ public partial class NewProjectDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
         NameBox.Focus();
     }
 
-    // ── Event handlers ───────────────────────────────────────────────────
+    // -- Event handlers ---------------------------------------------------
 
     private void OnCategoryChanged(object sender, SelectionChangedEventArgs e)
         => RefreshTemplateList();

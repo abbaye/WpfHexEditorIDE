@@ -55,7 +55,7 @@ public sealed class SolutionExplorerServiceImpl : ISolutionExplorerService
     public Task SaveFileAsync(string? fileName = null, CancellationToken ct = default)
         => SaveFileHandler is not null ? SaveFileHandler(fileName) : Task.CompletedTask;
 
-    // ── Folder / project / solution management — stubs until UI is wired ─────
+    // -- Folder / project / solution management — stubs until UI is wired -----
 
     public Task OpenFolderAsync(string path, CancellationToken ct = default)
         => Task.CompletedTask;

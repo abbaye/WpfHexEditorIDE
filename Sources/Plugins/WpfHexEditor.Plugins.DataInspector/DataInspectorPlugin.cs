@@ -53,7 +53,7 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
         return Task.CompletedTask;
     }
 
-    // ── IPluginWithOptions ──────────────────────────────────────────────────
+    // -- IPluginWithOptions --------------------------------------------------
 
     private DataInspectorOptionsPage? _optionsPage;
 

@@ -36,7 +36,7 @@ internal sealed class ProjectItem : IProjectItem, INotifyPropertyChanged
         set { _editorConfig = value; OnPropertyChanged(); }
     }
 
-    // ── LinkedItems ──────────────────────────────────────────────────────
+    // -- LinkedItems ------------------------------------------------------
 
     private readonly ObservableCollection<ItemLink> _linkedItems = [];
 
@@ -44,11 +44,11 @@ internal sealed class ProjectItem : IProjectItem, INotifyPropertyChanged
 
     internal ObservableCollection<ItemLink> LinkedItemsMutable => _linkedItems;
 
-    // ── Bookmarks ────────────────────────────────────────────────────────
+    // -- Bookmarks --------------------------------------------------------
 
     public IReadOnlyList<BookmarkDto>? Bookmarks { get; set; }
 
-    // ── Internal persistence ─────────────────────────────────────────────
+    // -- Internal persistence ---------------------------------------------
 
     /// <summary>
     /// Raw bytes of unsaved in-memory modifications (null = clean).

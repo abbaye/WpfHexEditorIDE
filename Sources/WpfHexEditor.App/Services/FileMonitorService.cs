@@ -61,7 +61,7 @@ public sealed class FileMonitorService : IDisposable
         _source   = source;
     }
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────
+    // -- Lifecycle ---------------------------------------------------------
 
     /// <summary>
     /// Starts watching <paramref name="directories"/> (one per project root).
@@ -93,7 +93,7 @@ public sealed class FileMonitorService : IDisposable
         _source.Clear();
     }
 
-    // ── Internal ──────────────────────────────────────────────────────────
+    // -- Internal ----------------------------------------------------------
 
     private void AddWatcher(string directory)
     {
@@ -233,7 +233,7 @@ public sealed class FileMonitorService : IDisposable
         }
     }
 
-    // ── IDisposable ───────────────────────────────────────────────────────
+    // -- IDisposable -------------------------------------------------------
 
     public void Dispose()
     {
@@ -244,7 +244,7 @@ public sealed class FileMonitorService : IDisposable
     }
 }
 
-// ── Below-normal priority TaskScheduler ───────────────────────────────────
+// -- Below-normal priority TaskScheduler -----------------------------------
 
 /// <summary>
 /// Simple TaskScheduler that runs tasks on a ThreadPool thread with below-normal

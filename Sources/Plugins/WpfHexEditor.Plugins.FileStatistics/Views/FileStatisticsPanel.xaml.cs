@@ -29,7 +29,7 @@ public partial class FileStatisticsPanel : UserControl
         InitializeComponent();
     }
 
-    // ── Public API ───────────────────────────────────────────────────────────
+    // -- Public API -----------------------------------------------------------
 
     /// <summary>
     /// Update all displayed statistics from the provided <see cref="FileStats"/> snapshot.
@@ -88,12 +88,12 @@ public partial class FileStatisticsPanel : UserControl
         }
     }
 
-    // ── Event handlers ───────────────────────────────────────────────────────
+    // -- Event handlers -------------------------------------------------------
 
     private void RefreshButton_Click(object sender, RoutedEventArgs e)
         => RefreshRequested?.Invoke(this, EventArgs.Empty);
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
+    // -- Helpers --------------------------------------------------------------
 
     private static string FormatFileSize(long size)
     {
@@ -125,7 +125,7 @@ public partial class FileStatisticsPanel : UserControl
     };
 }
 
-// ── Data model ───────────────────────────────────────────────────────────────
+// -- Data model ---------------------------------------------------------------
 
 /// <summary>
 /// Snapshot of file statistics passed to <see cref="FileStatisticsPanel.UpdateStatistics"/>.

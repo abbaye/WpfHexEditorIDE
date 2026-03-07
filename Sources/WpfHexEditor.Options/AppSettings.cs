@@ -13,7 +13,7 @@ namespace WpfHexEditor.Options;
 /// </summary>
 public sealed class AppSettings
 {
-    // â”€â”€ Environment > General â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Environment > General -------------------------------------------
 
     /// <summary>
     /// Theme file name stem (e.g. "DarkTheme", "Generic").
@@ -22,7 +22,7 @@ public sealed class AppSettings
     /// </summary>
     public string ActiveThemeName { get; set; } = "DarkTheme";
 
-    // â”€â”€ Environment > Save â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Environment > Save ----------------------------------------------
 
     /// <summary>
     /// Whether Ctrl+S writes directly to the physical file (Direct)
@@ -39,7 +39,7 @@ public sealed class AppSettings
     /// <summary>Interval between auto-serialize passes, in seconds.</summary>
     public int AutoSerializeIntervalSeconds { get; set; } = 30;
 
-    // â”€â”€ Hex Editor defaults â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Hex Editor defaults ---------------------------------------------
 
     /// <summary>
     /// Applied to every newly-opened HexEditor tab.
@@ -47,7 +47,7 @@ public sealed class AppSettings
     /// </summary>
     public HexEditorDefaultSettings HexEditorDefaults { get; set; } = new();
 
-    // â”€â”€ Solution Explorer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Solution Explorer -----------------------------------------------
 
     /// <summary>
     /// Solution Explorer panel behaviour settings.
@@ -55,7 +55,7 @@ public sealed class AppSettings
     /// </summary>
     public SolutionExplorerSettings SolutionExplorer { get; set; } = new();
 
-    // â”€â”€ Code Editor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Code Editor -----------------------------------------------------
 
     /// <summary>
     /// CodeEditor appearance and behaviour defaults.
@@ -63,7 +63,7 @@ public sealed class AppSettings
     /// </summary>
     public CodeEditorDefaultSettings CodeEditorDefaults { get; set; } = new();
 
-    // â”€â”€ Text Editor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Text Editor -----------------------------------------------------
 
     /// <summary>
     /// TextEditor appearance and behaviour defaults.
@@ -71,7 +71,7 @@ public sealed class AppSettings
     /// </summary>
     public TextEditorDefaultSettings TextEditorDefaults { get; set; } = new();
 
-    // ── Plugin System ────────────────────────────────────────────────────────────────
+    // -- Plugin System ----------------------------------------------------------------
 
     /// <summary>
     /// Plugin system behaviour and monitoring settings.
@@ -80,9 +80,9 @@ public sealed class AppSettings
     public PluginSystemSettings PluginSystem { get; set; } = new();
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ----------------------------------------------------------------------------
 // Solution Explorer Settings
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ----------------------------------------------------------------------------
 
 /// <summary>
 /// Behaviour settings for the Solution Explorer panel.
@@ -120,16 +120,16 @@ public sealed class SolutionExplorerSettings
     public string DefaultFilterMode { get; set; } = "All";
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ----------------------------------------------------------------------------
 // Code Editor Settings
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ----------------------------------------------------------------------------
 
 /// <summary>
 /// Appearance and behaviour defaults applied to every new CodeEditor tab.
 /// </summary>
 public sealed class CodeEditorDefaultSettings
 {
-    // â”€â”€ Font â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Font ------------------------------------------------------------
 
     /// <summary>Font family name for the editor text area.</summary>
     public string FontFamily { get; set; } = "Consolas";
@@ -137,7 +137,7 @@ public sealed class CodeEditorDefaultSettings
     /// <summary>Font size in points.</summary>
     public double FontSize { get; set; } = 13.0;
 
-    // â”€â”€ Indentation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Indentation -----------------------------------------------------
 
     /// <summary>Number of spaces (or tab width) for one indentation level.</summary>
     public int IndentSize { get; set; } = 4;
@@ -145,7 +145,7 @@ public sealed class CodeEditorDefaultSettings
     /// <summary>When true, indentation inserts spaces; when false, inserts tab characters.</summary>
     public bool UseSpaces { get; set; } = true;
 
-    // â”€â”€ Features â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Features --------------------------------------------------------
 
     /// <summary>Show IntelliSense auto-complete popup while typing.</summary>
     public bool ShowIntelliSense { get; set; } = true;
@@ -159,7 +159,7 @@ public sealed class CodeEditorDefaultSettings
     /// <summary>Default zoom factor (1.0 = 100 %).</summary>
     public double DefaultZoom { get; set; } = 1.0;
 
-    // â”€â”€ Changeset (.whchg) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Changeset (.whchg) -----------------------------------------------
 
     /// <summary>
     /// When true, CodeEditor tracks edits in a .whchg companion file
@@ -167,7 +167,7 @@ public sealed class CodeEditorDefaultSettings
     /// </summary>
     public bool ChangesetEnabled { get; set; } = true;
 
-    // â”€â”€ Syntax colours â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Syntax colours --------------------------------------------------
     // Stored as HTML hex strings (e.g. "#FF8C00").  Empty string = use theme default.
 
     /// <summary>Editor background colour override. Empty = use theme.</summary>
@@ -189,16 +189,16 @@ public sealed class CodeEditorDefaultSettings
     public string NumberColor { get; set; } = string.Empty;
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ----------------------------------------------------------------------------
 // Text Editor Settings
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ----------------------------------------------------------------------------
 
 /// <summary>
 /// Appearance and behaviour defaults applied to every new TextEditor tab.
 /// </summary>
 public sealed class TextEditorDefaultSettings
 {
-    // â”€â”€ Font â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Font ------------------------------------------------------------
 
     /// <summary>Font family name for the editor text area.</summary>
     public string FontFamily { get; set; } = "Consolas";
@@ -206,7 +206,7 @@ public sealed class TextEditorDefaultSettings
     /// <summary>Font size in points.</summary>
     public double FontSize { get; set; } = 13.0;
 
-    // â”€â”€ Indentation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Indentation -----------------------------------------------------
 
     /// <summary>Number of spaces (or tab width) for one indentation level.</summary>
     public int IndentSize { get; set; } = 4;
@@ -214,7 +214,7 @@ public sealed class TextEditorDefaultSettings
     /// <summary>When true, indentation inserts spaces; when false, inserts tab characters.</summary>
     public bool UseSpaces { get; set; } = true;
 
-    // â”€â”€ Features â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Features --------------------------------------------------------
 
     /// <summary>Show line numbers in the gutter.</summary>
     public bool ShowLineNumbers { get; set; } = true;
@@ -222,7 +222,7 @@ public sealed class TextEditorDefaultSettings
     /// <summary>Default zoom factor (1.0 = 100 %).</summary>
     public double DefaultZoom { get; set; } = 1.0;
 
-    // â”€â”€ Changeset (.whchg) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Changeset (.whchg) -----------------------------------------------
 
     /// <summary>
     /// When true, TextEditor tracks edits in a .whchg companion file
@@ -230,7 +230,7 @@ public sealed class TextEditorDefaultSettings
     /// </summary>
     public bool ChangesetEnabled { get; set; } = false;
 
-    // â”€â”€ Syntax colours â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Syntax colours --------------------------------------------------
 
     /// <summary>Editor background colour override. Empty = use theme.</summary>
     public string BackgroundColor { get; set; } = string.Empty;
@@ -248,9 +248,9 @@ public sealed class TextEditorDefaultSettings
     public string CommentColor { get; set; } = string.Empty;
 }
 
-// ────────────────────────────────────────────────────────────────────────────────
+// --------------------------------------------------------------------------------
 // Plugin System Settings
-// ────────────────────────────────────────────────────────────────────────────────
+// --------------------------------------------------------------------------------
 
 /// <summary>
 /// Behaviour and monitoring settings for the plugin system.

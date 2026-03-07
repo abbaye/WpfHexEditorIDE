@@ -14,14 +14,14 @@ namespace WpfHexEditor.Options;
 /// </summary>
 public sealed class AppSettingsService
 {
-    // ── Singleton ─────────────────────────────────────────────────────────
+    // -- Singleton ---------------------------------------------------------
     public static readonly AppSettingsService Instance = new();
     private AppSettingsService() { }
 
-    // ── State ─────────────────────────────────────────────────────────────
+    // -- State -------------------------------------------------------------
     public AppSettings Current { get; private set; } = new();
 
-    // ── Path ──────────────────────────────────────────────────────────────
+    // -- Path --------------------------------------------------------------
     private static readonly string SettingsPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "WpfHexEditor", "settings.json");
@@ -37,7 +37,7 @@ public sealed class AppSettingsService
         Converters                  = { new JsonStringEnumConverter() },
     };
 
-    // ── Load / Save ───────────────────────────────────────────────────────
+    // -- Load / Save -------------------------------------------------------
 
     public void Load()
     {

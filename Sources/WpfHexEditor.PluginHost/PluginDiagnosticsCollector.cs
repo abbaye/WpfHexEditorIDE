@@ -66,7 +66,7 @@ internal sealed class PluginDiagnosticsCollector : IPluginDiagnostics
         lock (_lock) { return [.. _buffer]; }
     }
 
-    // â”€â”€ IPluginDiagnostics â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- IPluginDiagnostics ----------------------------------------------------
 
     public long MemoryBytes => GetLatest()?.MemoryBytes ?? 0;
     public double CpuUsagePercent => GetLatest()?.CpuPercent ?? 0.0;

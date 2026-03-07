@@ -27,7 +27,7 @@ namespace WpfHexEditor.ProjectSystem.Dialogs;
 /// </summary>
 public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
-    // ── Output properties ──────────────────────────────────────────────
+    // -- Output properties ----------------------------------------------
     public string         FileName         { get; private set; } = "";
     public string         FileDirectory    { get; private set; } = "";
     /// <summary>
@@ -42,7 +42,7 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
     /// </summary>
     public bool           SaveLater        { get; private set; }
 
-    // ── Constructor ────────────────────────────────────────────────────
+    // -- Constructor ----------------------------------------------------
     /// <param name="defaultDirectory">Initial location shown in the Location box.</param>
     /// <param name="availableProjects">Projects to offer in the "Add to project" combo.</param>
     public NewFileDialog(
@@ -61,7 +61,7 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
         NameBox.Focus();
     }
 
-    // ── Initialisation helpers ─────────────────────────────────────────
+    // -- Initialisation helpers -----------------------------------------
 
     private void PopulateTemplateList()
     {
@@ -90,7 +90,7 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
         ProjectCombo.SelectedIndex = 0;
     }
 
-    // ── Event handlers ─────────────────────────────────────────────────
+    // -- Event handlers -------------------------------------------------
 
     private void OnTemplateSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -154,7 +154,7 @@ public partial class NewFileDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
         DialogResult = true;
     }
 
-    // ── Private helpers ────────────────────────────────────────────────
+    // -- Private helpers ------------------------------------------------
 
     private void Refresh()
     {

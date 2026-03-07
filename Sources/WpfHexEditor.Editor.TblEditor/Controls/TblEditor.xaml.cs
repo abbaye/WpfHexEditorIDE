@@ -30,12 +30,12 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
     private double _baseFontSize = 12.0;
     private bool _suppressSourceLoad;
 
-    // ── ISearchTarget — custom filter controls (created once, reused) ──────
+    // -- ISearchTarget — custom filter controls (created once, reused) ------
     private ComboBox _typeFilterCombo = null!;
     private CheckBox _conflictsOnlyCheckBox = null!;
     private StackPanel? _customFiltersPanel;
 
-    // ── IDiagnosticSource ─────────────────────────────────────────────────
+    // -- IDiagnosticSource -------------------------------------------------
     private List<DiagnosticEntry> _diagnostics = [];
     public event EventHandler? DiagnosticsChanged;
 
@@ -44,7 +44,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
 
     IReadOnlyList<DiagnosticEntry> IDiagnosticSource.GetDiagnostics() => _diagnostics;
 
-    // ── Constructor ────────────────────────────────────────────────────────
+    // -- Constructor --------------------------------------------------------
 
     public TblEditor()
     {
@@ -270,7 +270,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
     public event EventHandler<string>? StatusMessage;
     public event EventHandler<string>? OutputMessage;
 
-    // ── Long-running operations (no-op: TblEditor has no async operations) ──
+    // -- Long-running operations (no-op: TblEditor has no async operations) --
     public bool IsBusy => false;
     public void CancelOperation() { }
     public event EventHandler<DocumentOperationEventArgs>?          OperationStarted;
@@ -292,7 +292,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
     public ICommand AddCommand    => _vm.AddCommand;
     public ICommand DeleteCommand => _vm.DeleteCommand;
 
-    // ── Load ─────────────────────────────────────────────────────────────
+    // -- Load -------------------------------------------------------------
 
     public void Load(TblStream tbl)   => _ = LoadAsync(tbl);
     public void Load(string filePath) => _ = LoadFromFileAsync(filePath);
@@ -306,13 +306,13 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         NotifyTitle();
     }
 
-    // ── Editing ──────────────────────────────────────────────────────────
+    // -- Editing ----------------------------------------------------------
 
     public void AddEntry(Dte? template = null) => _vm.AddEntry(template);
     public void DuplicateSelectedEntry()       => _vm.DuplicateSelected();
     public void DeleteSelectedEntries()        => _vm.DeleteSelected();
 
-    // ── Import / Export ───────────────────────────────────────────────────
+    // -- Import / Export ---------------------------------------------------
 
     public async Task ImportAsync(string filePath)
     {
@@ -340,7 +340,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         StatusMessage?.Invoke(this, $"Exported to {Path.GetFileName(filePath)}");
     }
 
-    // ── Search / Filter ───────────────────────────────────────────────────
+    // -- Search / Filter ---------------------------------------------------
 
     public void ShowSearch()
     {
@@ -367,7 +367,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
     public void SetConflictsFilter(bool b) => _vm.ShowConflictsOnly = b;
     public void ClearFilter()              => _vm.ClearFilter();
 
-    // ── ISearchTarget ─────────────────────────────────────────────────────
+    // -- ISearchTarget -----------------------------------------------------
 
     SearchBarCapabilities ISearchTarget.Capabilities =>
         SearchBarCapabilities.CaseSensitive | SearchBarCapabilities.CustomFilters;
@@ -447,7 +447,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
 
     public event EventHandler? SearchResultsChanged;
 
-    // ── Validation ────────────────────────────────────────────────────────
+    // -- Validation --------------------------------------------------------
 
     /// <summary>
     /// Re-runs full validation + conflict analysis on all in-memory entries,
@@ -502,7 +502,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         RefreshStatusBarItems();
     }
 
-    // ── Navigation ────────────────────────────────────────────────────────
+    // -- Navigation --------------------------------------------------------
 
     public void GoToEntry(string hexKey)
     {
@@ -541,7 +541,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
 
     public void SelectAll() => EntriesGrid.SelectAll();
 
-    // ── State ─────────────────────────────────────────────────────────────
+    // -- State -------------------------------------------------------------
 
     public int  EntryCount    => _vm.Entries.Count;
     public Dte? SelectedEntry => _vm.SelectedEntry?.ToDto();
@@ -553,12 +553,12 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         remove => _vm.StatisticsChanged -= value;
     }
 
-    // ── IPropertyProviderSource ───────────────────────────────────────────
+    // -- IPropertyProviderSource -------------------------------------------
     private TblEditorPropertyProvider? _propertyProvider;
     public IPropertyProvider? GetPropertyProvider()
         => _propertyProvider ??= new TblEditorPropertyProvider(this);
 
-    // ── IEditorToolbarContributor ─────────────────────────────────────────
+    // -- IEditorToolbarContributor -----------------------------------------
     private readonly ObservableCollection<EditorToolbarItem> _toolbarItems = [];
     private EditorToolbarItem _tbDeleteItem    = null!;
     private EditorToolbarItem _tbDuplicateItem = null!;
@@ -670,7 +670,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         CtxRedo.IsEnabled             = _vm.CanRedo;
     }
 
-    // ── Context menu Click handlers ────────────────────────────────────────
+    // -- Context menu Click handlers ----------------------------------------
 
     private void CtxAdd_Click(object sender, RoutedEventArgs e)              => AddEntry();
     private void CtxDuplicate_Click(object sender, RoutedEventArgs e)        => DuplicateSelectedEntry();
@@ -711,7 +711,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
 
     private void BuildToolbarItems()
     {
-        // ── Group 1 : Entry editing ───────────────────────────────────────
+        // -- Group 1 : Entry editing ---------------------------------------
         _toolbarItems.Add(new EditorToolbarItem
         {
             Icon    = "\uE710",
@@ -739,7 +739,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
 
         _toolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
 
-        // ── Group 2 : Search & Filter ─────────────────────────────────────
+        // -- Group 2 : Search & Filter -------------------------------------
         _toolbarItems.Add(new EditorToolbarItem
         {
             Icon    = "\uE721",
@@ -763,7 +763,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
 
         _toolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
 
-        // ── Group 3 : More ▾ (dropdown) ───────────────────────────────────
+        // -- Group 3 : More ▾ (dropdown) -----------------------------------
         _toolbarItems.Add(new EditorToolbarItem
         {
             Icon    = "\uE712",
@@ -809,12 +809,12 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         var fileName = Path.GetFileName(filePath);
         OutputMessage?.Invoke(this, $"Opening {fileName}…");
 
-        // ── 1. Repair analysis on raw content (produces line-numbered diagnostics)
+        // -- 1. Repair analysis on raw content (produces line-numbered diagnostics)
         var rawContent   = await File.ReadAllTextAsync(filePath, Encoding.UTF8, ct);
         var repairResult = await Task.Run(
             () => new TblRepairService().Repair(rawContent, fileName), ct);
 
-        // ── 2. Load via TblStream (already lenient — invalid lines silently skipped)
+        // -- 2. Load via TblStream (already lenient — invalid lines silently skipped)
         var tbl = new TblStream(filePath);
         await Task.Run(() => tbl.Load(), ct);
         _currentFilePath = filePath;
@@ -825,7 +825,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         finally { _suppressSourceLoad = false; }
         await _vm.LoadAsync(tbl, ct);
 
-        // ── 3. Output summary
+        // -- 3. Output summary
         OutputMessage?.Invoke(this, $"  {EntryCount} entries loaded.");
         if (repairResult.Diagnostics.Count > 0)
         {
@@ -839,13 +839,13 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
                     $"  {warnings} warning(s) — see Error Panel for details.");
         }
 
-        // ── 4. Propagate FilePath into diagnostics and publish to ErrorPanel
+        // -- 4. Propagate FilePath into diagnostics and publish to ErrorPanel
         _diagnostics = repairResult.Diagnostics
             .Select(d => d with { FilePath = filePath })
             .ToList();
         DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
 
-        // ── 5. Mark dirty when repairs would change the saved content
+        // -- 5. Mark dirty when repairs would change the saved content
         if (repairResult.WasModified)
             _vm.MarkDirty();
 
@@ -871,7 +871,7 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
     }
 }
 
-// ── File-scoped RelayCommand for TblEditor IDocumentEditor commands ────
+// -- File-scoped RelayCommand for TblEditor IDocumentEditor commands ----
 
 file sealed class TblRelayCommand : ICommand
 {

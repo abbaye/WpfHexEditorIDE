@@ -39,7 +39,7 @@ namespace WpfHexEditor.Docking.Wpf.Controls;
 /// </summary>
 public class TabOverflowButton : Button
 {
-    // ─── OverflowPanel DP ────────────────────────────────────────────────────
+    // --- OverflowPanel DP ----------------------------------------------------
 
     public static readonly DependencyProperty OverflowPanelProperty =
         DependencyProperty.Register(nameof(OverflowPanel), typeof(TabOverflowPanel), typeof(TabOverflowButton),
@@ -51,7 +51,7 @@ public class TabOverflowButton : Button
         set => SetValue(OverflowPanelProperty, value);
     }
 
-    // ─── ShowAllDocuments DP ─────────────────────────────────────────────────
+    // --- ShowAllDocuments DP -------------------------------------------------
 
     public static readonly DependencyProperty ShowAllDocumentsProperty =
         DependencyProperty.Register(
@@ -72,7 +72,7 @@ public class TabOverflowButton : Button
         set => SetValue(ShowAllDocumentsProperty, value);
     }
 
-    // ─── Constructor ─────────────────────────────────────────────────────────
+    // --- Constructor ---------------------------------------------------------
 
     public TabOverflowButton()
     {
@@ -86,7 +86,7 @@ public class TabOverflowButton : Button
         SetResourceReference(StyleProperty, "DockTitleButtonStyle");
     }
 
-    // ─── DP callbacks ────────────────────────────────────────────────────────
+    // --- DP callbacks --------------------------------------------------------
 
     private static void OnOverflowPanelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -119,7 +119,7 @@ public class TabOverflowButton : Button
         }
     }
 
-    // ─── Click ───────────────────────────────────────────────────────────────
+    // --- Click ---------------------------------------------------------------
 
     protected override void OnClick()
     {

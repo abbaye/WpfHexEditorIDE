@@ -189,7 +189,7 @@ public interface ISolutionExplorerPanel
     /// </summary>
     void BeginFolderRename(IVirtualFolder folder);
 
-    // ── Solution Folder events ────────────────────────────────────────────────
+    // -- Solution Folder events ------------------------------------------------
 
     /// <summary>
     /// Fired when the user requests creation of a new Solution Folder from the context menu.

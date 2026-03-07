@@ -15,13 +15,13 @@ namespace WpfHexEditor.Options;
 /// </summary>
 public sealed partial class OptionsEditorControl : UserControl
 {
-    // ── State ─────────────────────────────────────────────────────────────
+    // -- State -------------------------------------------------------------
     private readonly Dictionary<OptionsPageDescriptor, UserControl> _pageCache = new();
     private readonly List<IOptionsPage> _shownPages = new();
     private OptionsPageDescriptor? _currentDesc;
     private bool _initialized;
 
-    // ── Events (consumed by MainWindow) ───────────────────────────────────
+    // -- Events (consumed by MainWindow) -----------------------------------
 
     /// <summary>Fired after any setting is auto-saved.</summary>
     public event Action? SettingsChanged;
@@ -29,7 +29,7 @@ public sealed partial class OptionsEditorControl : UserControl
     /// <summary>Fired when the user clicks the "Edit JSON" button.</summary>
     public event Action<string>? EditJsonRequested;
 
-    // ── Construction ──────────────────────────────────────────────────────
+    // -- Construction ------------------------------------------------------
 
     public OptionsEditorControl()
     {
@@ -46,7 +46,7 @@ public sealed partial class OptionsEditorControl : UserControl
         SelectFirstPage();
     }
 
-    // ── Tree building ─────────────────────────────────────────────────────
+    // -- Tree building -----------------------------------------------------
 
     private void BuildTree()
     {
@@ -102,7 +102,7 @@ public sealed partial class OptionsEditorControl : UserControl
         FilterCombo.SelectedIndex = 0;
     }
 
-    // ── Navigation ────────────────────────────────────────────────────────
+    // -- Navigation --------------------------------------------------------
 
     private void OnTreeSelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
@@ -131,7 +131,7 @@ public sealed partial class OptionsEditorControl : UserControl
         PageHost.Content = ctrl;
     }
 
-    // ── Auto-save ─────────────────────────────────────────────────────────
+    // -- Auto-save ---------------------------------------------------------
 
     private void OnPageChanged(object? sender, EventArgs e)
     {
@@ -141,7 +141,7 @@ public sealed partial class OptionsEditorControl : UserControl
         SettingsChanged?.Invoke();
     }
 
-    // ── Search & Filter ───────────────────────────────────────────────────
+    // -- Search & Filter ---------------------------------------------------
 
     private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
         => ApplyFilter(SearchBox.Text.Trim());
@@ -174,7 +174,7 @@ public sealed partial class OptionsEditorControl : UserControl
         }
     }
 
-    // ── Edit JSON ─────────────────────────────────────────────────────────
+    // -- Edit JSON ---------------------------------------------------------
 
     private void OnEditJson(object sender, RoutedEventArgs e)
         => EditJsonRequested?.Invoke(AppSettingsService.Instance.FilePath);

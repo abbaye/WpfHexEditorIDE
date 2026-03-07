@@ -38,7 +38,7 @@ public sealed class SyntaxRuleHighlighter : ISyntaxHighlighter
         _rules = rules.ToArray();
     }
 
-    // ── ISyntaxHighlighter ───────────────────────────────────────────────────
+    // -- ISyntaxHighlighter ---------------------------------------------------
 
     public IReadOnlyList<SyntaxHighlightToken> Highlight(string lineText, int lineIndex)
     {

@@ -17,7 +17,7 @@ internal static class OutputLogger
 {
     private static OutputPanel? _panel;
 
-    // ─── Log-level brush palette ───────────────────────────────────────
+    // --- Log-level brush palette ---------------------------------------
     // INFO  : null  = inherits theme foreground (white/light in dark themes)
     private static readonly Brush WarnBrush  = Freeze(Color.FromRgb(220, 180,  50)); // gold
     private static readonly Brush ErrorBrush = Freeze(Color.FromRgb(240,  80,  60)); // red-orange
@@ -38,7 +38,7 @@ internal static class OutputLogger
         _panel = panel;
     }
 
-    // ─── Public API ────────────────────────────────────────────────────
+    // --- Public API ----------------------------------------------------
 
     public static void Info(string message)  => Log("INFO ", message, null);
     public static void Warn(string message)  => Log("WARN ", message, WarnBrush);
@@ -49,7 +49,7 @@ internal static class OutputLogger
     /// Writes a separator line to visually group output sections.
     /// </summary>
     public static void Section(string title)
-        => Append($"──── {title} ────────────────────────────────────", null);
+        => Append($"---- {title} ------------------------------------", null);
 
     /// <summary>
     /// Clears all output.
@@ -60,7 +60,7 @@ internal static class OutputLogger
         _panel.OutputBox.Dispatcher.Invoke(() => _panel.ClearOutput());
     }
 
-    // ─── Internals ─────────────────────────────────────────────────────
+    // --- Internals -----------------------------------------------------
 
     private static void Log(string level, string message, Brush? color)
         => Append($"[{DateTime.Now:HH:mm:ss}] {level}  {message}", color);

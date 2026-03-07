@@ -19,7 +19,7 @@ namespace WpfHexEditor.ProjectSystem.Services;
 /// </summary>
 public sealed class SolutionManager : ISolutionManager
 {
-    // ── Singleton ────────────────────────────────────────────────────────
+    // -- Singleton --------------------------------------------------------
     private static SolutionManager? _instance;
     public  static SolutionManager  Instance => _instance ??= new SolutionManager();
 
@@ -28,7 +28,7 @@ public sealed class SolutionManager : ISolutionManager
         _mru.Load();
     }
 
-    // ── State ────────────────────────────────────────────────────────────
+    // -- State ------------------------------------------------------------
     private readonly MruService _mru = new();
     private Solution? _current;
 
@@ -36,7 +36,7 @@ public sealed class SolutionManager : ISolutionManager
     public IReadOnlyList<string> RecentSolutions => _mru.RecentSolutions;
     public IReadOnlyList<string> RecentFiles     => _mru.RecentFiles;
 
-    // ── Solution lifecycle ───────────────────────────────────────────────
+    // -- Solution lifecycle -----------------------------------------------
 
     public async Task<ISolution> CreateSolutionAsync(string directory, string name, CancellationToken ct = default)
     {
@@ -114,7 +114,7 @@ public sealed class SolutionManager : ISolutionManager
         await Task.CompletedTask;
     }
 
-    // ── Format upgrade ───────────────────────────────────────────────────
+    // -- Format upgrade ---------------------------------------------------
 
     public async Task UpgradeFormatAsync(ISolution solution, CancellationToken ct = default)
     {
@@ -147,7 +147,7 @@ public sealed class SolutionManager : ISolutionManager
             sol.IsReadOnlyFormat = readOnly;
     }
 
-    // ── Project management ───────────────────────────────────────────────
+    // -- Project management -----------------------------------------------
 
     public async Task<IProject> CreateProjectAsync(ISolution solution, string directory, string name, CancellationToken ct = default)
     {
@@ -198,7 +198,7 @@ public sealed class SolutionManager : ISolutionManager
         RaiseProjectChanged(proj, ProjectChangeKind.Removed);
     }
 
-    // ── Item management ──────────────────────────────────────────────────
+    // -- Item management --------------------------------------------------
 
     public async Task<IProjectItem> AddItemAsync(IProject project, string absolutePath, string? virtualFolderId = null, CancellationToken ct = default)
     {
@@ -406,7 +406,7 @@ public sealed class SolutionManager : ISolutionManager
         await SaveProjectAsync(project, ct);
     }
 
-    // ── Folder CRUD ───────────────────────────────────────────────────────
+    // -- Folder CRUD -------------------------------------------------------
 
     public async Task<IVirtualFolder> CreateFolderAsync(IProject project, string name,
         string? parentFolderId = null, bool createPhysical = false, CancellationToken ct = default)
@@ -489,7 +489,7 @@ public sealed class SolutionManager : ISolutionManager
         return folder;
     }
 
-    // ── Solution Folder CRUD ──────────────────────────────────────────────
+    // -- Solution Folder CRUD ----------------------------------------------
 
     public async Task<ISolutionFolder> CreateSolutionFolderAsync(ISolution solution, string name,
         string? parentFolderId = null, CancellationToken ct = default)
@@ -555,7 +555,7 @@ public sealed class SolutionManager : ISolutionManager
         RaiseSolutionChanged(SolutionChangeKind.Modified);
     }
 
-    // ── Modification tracking ─────────────────────────────────────────────
+    // -- Modification tracking ---------------------------------------------
 
     public async Task PersistItemModificationsAsync(IProject project, IProjectItem item,
         byte[]? modifications, CancellationToken ct = default)
@@ -569,7 +569,7 @@ public sealed class SolutionManager : ISolutionManager
     public byte[]? GetItemModifications(IProject project, IProjectItem item)
         => item is ProjectItem pi ? pi.UnsavedModifications : null;
 
-    // ── WHChg changeset operations ────────────────────────────────────────
+    // -- WHChg changeset operations ----------------------------------------
 
     public Task WriteItemToDiskAsync(IProject project, IProjectItem item,
         CancellationToken ct = default)
@@ -579,7 +579,7 @@ public sealed class SolutionManager : ISolutionManager
         CancellationToken ct = default)
         => ChangesetService.Instance.DeleteChangesetAsync(item, ct);
 
-    // ── TBL helpers ──────────────────────────────────────────────────────
+    // -- TBL helpers ------------------------------------------------------
 
     public void SetDefaultTbl(IProject project, IProjectItem? tblItem)
     {
@@ -590,7 +590,7 @@ public sealed class SolutionManager : ISolutionManager
         _ = SaveProjectAsync(project);
     }
 
-    // ── MRU helpers ──────────────────────────────────────────────────────
+    // -- MRU helpers ------------------------------------------------------
 
     public void PushRecentFile(string absolutePath)
     {
@@ -598,7 +598,7 @@ public sealed class SolutionManager : ISolutionManager
         _mru.Save();
     }
 
-    // ── Private helpers ───────────────────────────────────────────────────
+    // -- Private helpers ---------------------------------------------------
 
     private static void AddToProject(Project proj, ProjectItem item, string? folderId)
     {
@@ -745,7 +745,7 @@ public sealed class SolutionManager : ISolutionManager
         _                                => ".bin",
     };
 
-    // ── Solution Folder private helpers ──────────────────────────────────
+    // -- Solution Folder private helpers ----------------------------------
 
     private static bool AddSolutionFolderToParent(
         ObservableCollection<SolutionFolder> list, string parentId, SolutionFolder newFolder)
@@ -776,7 +776,7 @@ public sealed class SolutionManager : ISolutionManager
             RemoveProjectFromFolderTree(child, projectName);
     }
 
-    // ── Events ────────────────────────────────────────────────────────────
+    // -- Events ------------------------------------------------------------
 
     public event EventHandler<SolutionChangedEventArgs>?      SolutionChanged;
     public event EventHandler<ProjectChangedEventArgs>?       ProjectChanged;

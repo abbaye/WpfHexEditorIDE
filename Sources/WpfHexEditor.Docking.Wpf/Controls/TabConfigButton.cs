@@ -32,7 +32,7 @@ namespace WpfHexEditor.Docking.Wpf.Controls;
 /// </summary>
 public class TabConfigButton : Button
 {
-    // ─── Settings DP ─────────────────────────────────────────────────────────
+    // --- Settings DP ---------------------------------------------------------
 
     public static readonly DependencyProperty SettingsProperty =
         DependencyProperty.Register(
@@ -50,7 +50,7 @@ public class TabConfigButton : Button
         set => SetValue(SettingsProperty, value);
     }
 
-    // ─── Events ──────────────────────────────────────────────────────────────
+    // --- Events --------------------------------------------------------------
 
     /// <summary>
     /// Raised when the user clicks "Options…" in the dropdown.
@@ -58,7 +58,7 @@ public class TabConfigButton : Button
     /// </summary>
     public event EventHandler? OptionsRequested;
 
-    // ─── Constructor ─────────────────────────────────────────────────────────
+    // --- Constructor ---------------------------------------------------------
 
     public TabConfigButton()
     {
@@ -73,7 +73,7 @@ public class TabConfigButton : Button
         SetResourceReference(StyleProperty, "DockTitleButtonStyle");
     }
 
-    // ─── Click handler ────────────────────────────────────────────────────────
+    // --- Click handler --------------------------------------------------------
 
     protected override void OnClick()
     {
@@ -86,14 +86,14 @@ public class TabConfigButton : Button
         var s = Settings;
         var menu = new ContextMenu { PlacementTarget = this, Placement = PlacementMode.Bottom };
 
-        // ── Placement group ──────────────────────────────────────────────────
+        // -- Placement group --------------------------------------------------
         menu.Items.Add(MakePlacementItem("Place tabs on left",  DocumentTabPlacement.Left,  s));
         menu.Items.Add(MakePlacementItem("Place tabs on top",   DocumentTabPlacement.Top,   s));
         menu.Items.Add(MakePlacementItem("Place tabs on right", DocumentTabPlacement.Right, s));
 
         menu.Items.Add(new Separator());
 
-        // ── Color by submenu ─────────────────────────────────────────────────
+        // -- Color by submenu -------------------------------------------------
         var colorParent = new MenuItem { Header = "Color document tabs by" };
         colorParent.Items.Add(MakeColorModeItem("Project",        DocumentTabColorMode.Project,       s));
         colorParent.Items.Add(MakeColorModeItem("File extension", DocumentTabColorMode.FileExtension, s));
@@ -104,7 +104,7 @@ public class TabConfigButton : Button
 
         menu.Items.Add(new Separator());
 
-        // ── Multi-row tabs ───────────────────────────────────────────────────
+        // -- Multi-row tabs ---------------------------------------------------
         var multiRow = new MenuItem
         {
             Header = "Show tabs in multiple rows",
@@ -118,7 +118,7 @@ public class TabConfigButton : Button
         };
         menu.Items.Add(multiRow);
 
-        // ── Multi-row with mouse wheel ────────────────────────────────────────
+        // -- Multi-row with mouse wheel ----------------------------------------
         var wheelItem = new MenuItem
         {
             Header = "Enable/disable multiple rows with the mouse wheel",
@@ -135,7 +135,7 @@ public class TabConfigButton : Button
 
         menu.Items.Add(new Separator());
 
-        // ── Options… ─────────────────────────────────────────────────────────
+        // -- Options… ---------------------------------------------------------
         var options = new MenuItem { Header = "Options…" };
         options.Click += (_, _) => OptionsRequested?.Invoke(this, EventArgs.Empty);
         menu.Items.Add(options);
@@ -143,7 +143,7 @@ public class TabConfigButton : Button
         menu.IsOpen = true;
     }
 
-    // ─── Helpers ─────────────────────────────────────────────────────────────
+    // --- Helpers -------------------------------------------------------------
 
     private MenuItem MakePlacementItem(string header, DocumentTabPlacement placement,
                                         DocumentTabBarSettings? s)

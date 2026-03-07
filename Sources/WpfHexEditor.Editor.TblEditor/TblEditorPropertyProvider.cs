@@ -40,7 +40,7 @@ internal sealed class TblEditorPropertyProvider : IPropertyProvider
     {
         var groups = new List<PropertyGroup>();
 
-        // ── Entry group (only when a row is selected) ──────────────────────
+        // -- Entry group (only when a row is selected) ----------------------
         var entry = _editor.SelectedEntry;
         if (entry is not null)
         {
@@ -74,7 +74,7 @@ internal sealed class TblEditorPropertyProvider : IPropertyProvider
             });
         }
 
-        // ── File statistics group ──────────────────────────────────────────
+        // -- File statistics group ------------------------------------------
         var src          = _editor.Source;
         var fileEntries  = new List<PropertyEntry>
         {

@@ -68,7 +68,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
         _slowDetector.Start();
     }
 
-    // â”€â”€â”€ Discovery â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- Discovery --------------------------------------------------------------
 
     /// <summary>
     /// Discovers all plugins under <see cref="UserPluginsDir"/> and any provided extra directories.
@@ -97,7 +97,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
         return result;
     }
 
-    // â”€â”€â”€ Load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- Load --------------------------------------------------------------------
 
     /// <summary>
     /// Loads a plugin from a discovered manifest. Handles ALC creation, entry point
@@ -121,7 +121,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
         try
         {
             if (manifest.IsolationMode == PluginIsolationMode.Sandbox)
-                throw new NotSupportedException("Sandbox isolation is Phase 5 â€” use InProcess for now.");
+                throw new NotSupportedException("Sandbox isolation is Phase 5 - use InProcess for now.");
 
             // Resolve assembly path
             var pluginDir = ResolvePluginDirectory(manifest);
@@ -195,7 +195,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
         }
     }
 
-    // â”€â”€â”€ Unload â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- Unload ------------------------------------------------------------------
 
     /// <summary>
     /// Gracefully shuts down and unloads a plugin. Removes all UI contributions.
@@ -227,7 +227,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
         }
     }
 
-    // â”€â”€â”€ Reload â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- Reload ------------------------------------------------------------------
 
     /// <summary>
     /// Hot-reloads a plugin: unload + wait for ALC GC + load fresh.
@@ -259,7 +259,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
         await LoadPluginAsync(manifest, ct).ConfigureAwait(false);
     }
 
-    // â”€â”€â”€ Enable / Disable â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- Enable / Disable --------------------------------------------------------
 
     public async Task EnablePluginAsync(string pluginId, CancellationToken ct = default)
     {
@@ -286,7 +286,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
         // Physical file removal is handled by PluginInstaller, not PluginHost.
     }
 
-    // â”€â”€â”€ Queries â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- Queries -----------------------------------------------------------------
 
     public IReadOnlyList<PluginEntry> GetAllPlugins()
     {
@@ -298,7 +298,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
         lock (_lock) return _entries.TryGetValue(pluginId, out var entry) ? entry : null;
     }
 
-    // â”€â”€â”€ Private helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- Private helpers ---------------------------------------------------------
 
     private static async Task<PluginManifest?> TryLoadManifestAsync(string pluginDir)
     {
@@ -376,7 +376,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
     }
 }
 
-// â”€â”€â”€ Lightweight event args â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Lightweight event args --------------------------------------------------
 
 public sealed class PluginEventArgs : EventArgs
 {

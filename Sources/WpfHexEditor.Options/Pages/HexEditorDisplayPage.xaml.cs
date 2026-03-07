@@ -15,7 +15,7 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
 
     public HexEditorDisplayPage() => InitializeComponent();
 
-    // ── IOptionsPage ──────────────────────────────────────────────────────
+    // -- IOptionsPage ------------------------------------------------------
 
     public void Load(AppSettings s)
     {
@@ -72,7 +72,7 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
         s.HexEditorDefaults.ShowSearchResultMarkers = CheckShowSearchResultMarkers.IsChecked == true;
     }
 
-    // ── Control handlers ─────────────────────────────────────────────────
+    // -- Control handlers -------------------------------------------------
 
     private void OnComboChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -84,7 +84,7 @@ public sealed partial class HexEditorDisplayPage : UserControl, IOptionsPage
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────
+    // -- Helpers ----------------------------------------------------------
 
     private void SelectByPerLine(int value)
     {

@@ -95,7 +95,7 @@ public class DocumentTabBarSettings : INotifyPropertyChanged
         set => Set(ref _regexRules, value);
     }
 
-    // ─── INotifyPropertyChanged ──────────────────────────────────────────────
+    // --- INotifyPropertyChanged ----------------------------------------------
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

@@ -38,7 +38,7 @@ namespace WpfHexEditor.App.Controls;
 /// </summary>
 public partial class WelcomePanel : UserControl
 {
-    // ── Injected callbacks ─────────────────────────────────────────────
+    // -- Injected callbacks ---------------------------------------------
 
     private Action?          _onNewFile;
     private Action?          _onOpenFile;
@@ -47,25 +47,25 @@ public partial class WelcomePanel : UserControl
     private Action<string>?  _openRecentFile;
     private Action<string>?  _openRecentSolution;
 
-    // ── Brushes for changelog categories (static, work on all themes) ──
+    // -- Brushes for changelog categories (static, work on all themes) --
 
     private static readonly Brush BrushAdded   = new SolidColorBrush(Color.FromArgb(0xFF, 0x4E, 0xC9, 0x6E)); // green
     private static readonly Brush BrushChanged = new SolidColorBrush(Color.FromArgb(0xFF, 0x56, 0x9C, 0xD6)); // blue
     private static readonly Brush BrushFixed   = new SolidColorBrush(Color.FromArgb(0xFF, 0xCE, 0x91, 0x78)); // orange
     private static readonly Brush BrushRemoved = new SolidColorBrush(Color.FromArgb(0xFF, 0xF4, 0x47, 0x47)); // red
 
-    // ── GitHub changelog fetch ─────────────────────────────────────────
+    // -- GitHub changelog fetch -----------------------------------------
 
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(8) };
 
     private const string ChangelogUrl =
         "https://raw.githubusercontent.com/abbaye/WpfHexEditorControl/master/CHANGELOG.md";
 
-    // ── Max versions shown in changelog ───────────────────────────────
+    // -- Max versions shown in changelog -------------------------------
 
     private const int MaxVersionsDisplayed = 3;
 
-    // ──────────────────────────────────────────────────────────────────
+    // ------------------------------------------------------------------
 
     public WelcomePanel()
     {
@@ -73,7 +73,7 @@ public partial class WelcomePanel : UserControl
         Loaded += OnLoaded;
     }
 
-    // ── Public configuration API ───────────────────────────────────────
+    // -- Public configuration API ---------------------------------------
 
     /// <summary>
     /// Injects all runtime dependencies (callbacks + MRU lists).
@@ -101,7 +101,7 @@ public partial class WelcomePanel : UserControl
         return this;
     }
 
-    // ── Lifecycle ──────────────────────────────────────────────────────
+    // -- Lifecycle ------------------------------------------------------
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
@@ -111,7 +111,7 @@ public partial class WelcomePanel : UserControl
         LoadChangelogAsync();
     }
 
-    // ── Action buttons ─────────────────────────────────────────────────
+    // -- Action buttons -------------------------------------------------
 
     private void BindActionButtons()
     {
@@ -129,7 +129,7 @@ public partial class WelcomePanel : UserControl
         catch { /* silently ignore if browser unavailable */ }
     }
 
-    // ── Version display ────────────────────────────────────────────────
+    // -- Version display ------------------------------------------------
 
     private void SetVersionText()
     {
@@ -139,7 +139,7 @@ public partial class WelcomePanel : UserControl
             : "Development build";
     }
 
-    // ── Recent files ───────────────────────────────────────────────────
+    // -- Recent files ---------------------------------------------------
 
     private void PopulateRecentFiles(IReadOnlyList<string> paths)
     {
@@ -204,7 +204,7 @@ public partial class WelcomePanel : UserControl
         return btn;
     }
 
-    // ── Changelog fetch + parse ────────────────────────────────────────
+    // -- Changelog fetch + parse ----------------------------------------
 
     /// <summary>
     /// Fetches CHANGELOG.md from GitHub and populates the changelog panel.
@@ -237,13 +237,13 @@ public partial class WelcomePanel : UserControl
         }
     }
 
-    // ── Changelog model ────────────────────────────────────────────────
+    // -- Changelog model ------------------------------------------------
 
     private sealed record ChangelogVersion(string Label, string Date, string Title,
                                            List<ChangelogSection> Sections);
     private sealed record ChangelogSection(string Title, List<string> Entries);
 
-    // ── Parser ─────────────────────────────────────────────────────────
+    // -- Parser ---------------------------------------------------------
 
     // Matches: ## [Unreleased] — 2026-03 — IDE & Project System
     //      or: ## [2.7.0] — 2026-02 — Title
@@ -309,7 +309,7 @@ public partial class WelcomePanel : UserControl
         return versions;
     }
 
-    // ── Changelog WPF rendering ────────────────────────────────────────
+    // -- Changelog WPF rendering ----------------------------------------
 
     private UIElement BuildVersionBlock(ChangelogVersion version)
     {
@@ -417,7 +417,7 @@ public partial class WelcomePanel : UserControl
         return BrushChanged; // default: blue
     }
 
-    // ── Hyperlink navigation ───────────────────────────────────────────
+    // -- Hyperlink navigation -------------------------------------------
 
     private void OnHyperlinkNavigate(object sender, RequestNavigateEventArgs e)
     {

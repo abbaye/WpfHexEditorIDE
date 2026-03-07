@@ -16,7 +16,7 @@ public sealed partial class HexEditorEditingPage : UserControl, IOptionsPage
 
     public HexEditorEditingPage() => InitializeComponent();
 
-    // ── IOptionsPage ──────────────────────────────────────────────────────
+    // -- IOptionsPage ------------------------------------------------------
 
     public void Load(AppSettings s)
     {
@@ -61,7 +61,7 @@ public sealed partial class HexEditorEditingPage : UserControl, IOptionsPage
         s.HexEditorDefaults.AllowFileDrop = CheckAllowFileDrop.IsChecked == true;
     }
 
-    // ── Control handlers ─────────────────────────────────────────────────
+    // -- Control handlers -------------------------------------------------
 
     private void OnComboChanged(object sender, SelectionChangedEventArgs e)
     {

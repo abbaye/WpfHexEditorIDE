@@ -35,7 +35,7 @@ namespace WpfHexEditor.Core.Bytes
             if (!_editsManager.HasChanges)
                 return ChangesetSnapshot.Empty;
 
-            // ── Modified: group consecutive bytes into runs ────────────────
+            // -- Modified: group consecutive bytes into runs ----------------
             var modifiedRanges = new List<ModifiedRange>();
             {
                 long runStart = -1;
@@ -63,7 +63,7 @@ namespace WpfHexEditor.Core.Bytes
                     modifiedRanges.Add(new ModifiedRange(runStart, runValues.ToArray()));
             }
 
-            // ── Inserted: collect bytes per physical position ──────────────
+            // -- Inserted: collect bytes per physical position --------------
             var insertedBlocks = new List<InsertedBlock>();
             foreach (var kvp in _editsManager.GetInsertionPositionsWithCounts())
             {
@@ -76,7 +76,7 @@ namespace WpfHexEditor.Core.Bytes
                     insertedBlocks.Add(new InsertedBlock(kvp.Key, ordered));
             }
 
-            // ── Deleted: group consecutive positions into ranges ───────────
+            // -- Deleted: group consecutive positions into ranges -----------
             var deletedRanges = new List<DeletedRange>();
             {
                 long rangeStart = -1;

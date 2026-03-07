@@ -29,7 +29,7 @@ internal sealed class SolutionFolder : ISolutionFolder
     public IReadOnlyList<string>          ProjectIds => _projectIds;
     public IReadOnlyList<ISolutionFolder> Children   => _children;
 
-    // ── Internal mutable access ──────────────────────────────────────────
+    // -- Internal mutable access ------------------------------------------
     internal ObservableCollection<string>         ProjectIdsMutable => _projectIds;
     internal ObservableCollection<SolutionFolder> ChildrenMutable   => _children;
 }

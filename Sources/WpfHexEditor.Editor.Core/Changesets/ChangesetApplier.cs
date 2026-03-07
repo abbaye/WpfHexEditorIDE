@@ -24,7 +24,7 @@ public static class ChangesetApplier
     /// </summary>
     public static byte[] Apply(byte[] source, ChangesetDto dto)
     {
-        // ── Build lookup tables from the DTO ───────────────────────────────
+        // -- Build lookup tables from the DTO -------------------------------
 
         // Flat map: physical position → new byte value (expanded from runs)
         var modifiedFlat = new Dictionary<long, byte>(
@@ -56,7 +56,7 @@ public static class ChangesetApplier
                 deleted.Add(start + i);
         }
 
-        // ── Estimate output size and write ─────────────────────────────────
+        // -- Estimate output size and write ---------------------------------
         int insertedTotal = insertedAt.Values.Sum(b => b.Length);
         int estimatedSize = source.Length + insertedTotal - deleted.Count;
         if (estimatedSize < 0) estimatedSize = 0;

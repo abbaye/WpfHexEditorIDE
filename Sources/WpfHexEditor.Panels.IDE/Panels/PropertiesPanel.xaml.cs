@@ -19,7 +19,7 @@ namespace WpfHexEditor.Panels.IDE;
 /// </summary>
 public partial class PropertiesPanel : UserControl, IPropertiesPanel
 {
-    // ── IPropertiesPanel ─────────────────────────────────────────────────────
+    // -- IPropertiesPanel -----------------------------------------------------
 
     private IPropertyProvider? _provider;
 
@@ -38,14 +38,14 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
         Refresh();
     }
 
-    // ── Constructor ──────────────────────────────────────────────────────────
+    // -- Constructor ----------------------------------------------------------
 
     public PropertiesPanel()
     {
         InitializeComponent();
     }
 
-    // ── Refresh ──────────────────────────────────────────────────────────────
+    // -- Refresh --------------------------------------------------------------
 
     private void OnProviderChanged(object? sender, EventArgs e) => Refresh();
 
@@ -61,7 +61,7 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
         GroupsControl.ItemsSource = source;
     }
 
-    // ── Entry events ─────────────────────────────────────────────────────────
+    // -- Entry events ---------------------------------------------------------
 
     private void OnEntryRowClick(object sender, MouseButtonEventArgs e)
     {

@@ -37,7 +37,7 @@ public sealed class RegexColorRule : INotifyPropertyChanged
         set => Set(ref _colorHex, value);
     }
 
-    // ─── INotifyPropertyChanged ──────────────────────────────────────────────
+    // --- INotifyPropertyChanged ----------------------------------------------
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

@@ -28,7 +28,7 @@ public partial class ArchiveStructurePanel : UserControl
         InitializeComponent();
     }
 
-    // ── Public API ───────────────────────────────────────────────────────────
+    // -- Public API -----------------------------------------------------------
 
     /// <summary>Loads and displays an archive root node.</summary>
     public void LoadArchive(ArchiveNode? root)
@@ -52,7 +52,7 @@ public partial class ArchiveStructurePanel : UserControl
             CompressionRatioText.Text = $"Ratio: {100.0 * stats.CompressedSize / stats.TotalSize:F1}%";
     }
 
-    // ── Event handlers ───────────────────────────────────────────────────────
+    // -- Event handlers -------------------------------------------------------
 
     private void StructureTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) { }
 
@@ -81,7 +81,7 @@ public partial class ArchiveStructurePanel : UserControl
             SetExpandedRecursive(item, expanded);
     }
 
-    // ── Private helpers ──────────────────────────────────────────────────────
+    // -- Private helpers ------------------------------------------------------
 
     private static ArchiveStats CalculateStats(ArchiveNode root)
     {
@@ -124,7 +124,7 @@ public partial class ArchiveStructurePanel : UserControl
     }
 }
 
-// ── Data models ──────────────────────────────────────────────────────────────
+// -- Data models --------------------------------------------------------------
 
 public class ArchiveNode : INotifyPropertyChanged
 {

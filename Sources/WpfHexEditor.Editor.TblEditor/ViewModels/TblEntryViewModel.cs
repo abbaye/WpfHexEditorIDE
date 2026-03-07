@@ -32,7 +32,7 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
         _comment = dte.Comment;
     }
 
-    // ── Core fields ────────────────────────────────────────────────────────
+    // -- Core fields --------------------------------------------------------
 
     /// <summary>
     /// Hex byte sequence (uppercase, e.g. "41" or "8283").
@@ -70,7 +70,7 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
         set { if (_comment != value) { _comment = value; OnPropertyChanged(); } }
     }
 
-    // ── Computed ───────────────────────────────────────────────────────────
+    // -- Computed -----------------------------------------------------------
 
     /// <summary>
     /// Number of bytes this entry encodes (Entry.Length / 2).
@@ -94,7 +94,7 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
         _                             => Type.ToString(),
     };
 
-    // ── State ──────────────────────────────────────────────────────────────
+    // -- State --------------------------------------------------------------
 
     /// <summary>
     /// True when this entry has a prefix conflict with another entry.
@@ -117,7 +117,7 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
         set { if (_validationError != value) { _validationError = value; OnPropertyChanged(); } }
     }
 
-    // ── Conversion ─────────────────────────────────────────────────────────
+    // -- Conversion ---------------------------------------------------------
 
     /// <summary>
     /// Converts back to a <see cref="Dte"/> for persistence.
@@ -129,7 +129,7 @@ public sealed class TblEntryViewModel : INotifyPropertyChanged
         return dte;
     }
 
-    // ── INotifyPropertyChanged ────────────────────────────────────────────
+    // -- INotifyPropertyChanged --------------------------------------------
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null)

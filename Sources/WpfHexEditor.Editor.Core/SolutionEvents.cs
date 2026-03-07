@@ -6,7 +6,7 @@
 
 namespace WpfHexEditor.Editor.Core;
 
-// ── Solution ─────────────────────────────────────────────────────────────────
+// -- Solution -----------------------------------------------------------------
 
 public enum SolutionChangeKind { Opened, Closed, Modified }
 
@@ -16,7 +16,7 @@ public sealed class SolutionChangedEventArgs : EventArgs
     public SolutionChangeKind  Kind     { get; set; }
 }
 
-// ── Project ──────────────────────────────────────────────────────────────────
+// -- Project ------------------------------------------------------------------
 
 public enum ProjectChangeKind { Added, Removed, Modified }
 
@@ -26,7 +26,7 @@ public sealed class ProjectChangedEventArgs : EventArgs
     public ProjectChangeKind Kind   { get; set; }
 }
 
-// ── Item ─────────────────────────────────────────────────────────────────────
+// -- Item ---------------------------------------------------------------------
 
 public sealed class ProjectItemEventArgs : EventArgs
 {
@@ -44,7 +44,7 @@ public sealed class ProjectItemActivatedEventArgs : EventArgs
     public IProject     Project { get; set; } = null!;
 }
 
-// ── Item move (DragDrop) ──────────────────────────────────────────────────
+// -- Item move (DragDrop) --------------------------------------------------
 
 /// <summary>
 /// Fired when the user drags a file node to a new folder in the Solution Explorer.
@@ -59,7 +59,7 @@ public sealed class ItemMoveRequestedEventArgs : EventArgs
     public string?      TargetFolderId { get; set; }
 }
 
-// ── Folder ───────────────────────────────────────────────────────────────────
+// -- Folder -------------------------------------------------------------------
 
 public sealed class FolderRenameEventArgs : EventArgs
 {
@@ -96,7 +96,7 @@ public sealed class FolderFromDiskRequestedEventArgs : EventArgs
     public string?  ParentFolderId { get; init; }
 }
 
-// ── Project rename (panel → host) ────────────────────────────────────────────
+// -- Project rename (panel → host) --------------------------------------------
 
 /// <summary>
 /// Raised by <see cref="ISolutionExplorerPanel"/> when the user commits an inline rename on a project node.
@@ -107,7 +107,7 @@ public sealed class ProjectRenameRequestedEventArgs : EventArgs
     public string   NewName { get; init; } = string.Empty;
 }
 
-// ── Solution rename (panel → host) ────────────────────────────────────────────
+// -- Solution rename (panel → host) --------------------------------------------
 
 /// <summary>
 /// Raised by <see cref="ISolutionExplorerPanel"/> when the user commits an inline rename on the solution node.
@@ -118,7 +118,7 @@ public sealed class SolutionRenameRequestedEventArgs : EventArgs
     public string    NewName  { get; init; } = string.Empty;
 }
 
-// ── Item renamed ──────────────────────────────────────────────────────────────
+// -- Item renamed --------------------------------------------------------------
 
 /// <summary>
 /// Raised by <see cref="ISolutionManager"/> after a project item has been successfully renamed on disk and in the model.
@@ -137,7 +137,7 @@ public sealed class ProjectItemRenamedEventArgs : EventArgs
     public string       OldAbsolutePath { get; init; } = string.Empty;
 }
 
-// ── Solution Explorer — shell actions ────────────────────────────────────────
+// -- Solution Explorer — shell actions ----------------------------------------
 
 /// <summary>
 /// Fired when the user chooses "Open With…" from the Solution Explorer context menu.
@@ -205,7 +205,7 @@ public sealed class ImportExternalFileRequestedEventArgs : EventArgs
     public IProject     Project { get; init; } = null!;
 }
 
-// ── Solution Folder (panel → host) ───────────────────────────────────────────
+// -- Solution Folder (panel → host) -------------------------------------------
 
 /// <summary>
 /// Fired when the user requests creation of a new Solution Folder.
@@ -247,7 +247,7 @@ public sealed class ProjectMovedEventArgs : EventArgs
     public string?   TargetFolderId { get; init; }
 }
 
-// ── Format upgrade ────────────────────────────────────────────────────────────
+// -- Format upgrade ------------------------------------------------------------
 
 /// <summary>
 /// Raised by <see cref="ISolutionManager"/> immediately after a solution (and its projects)

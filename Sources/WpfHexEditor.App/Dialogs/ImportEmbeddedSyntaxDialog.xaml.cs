@@ -27,12 +27,12 @@ namespace WpfHexEditor.App.Dialogs;
 /// </summary>
 public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
 {
-    // ── Output properties ──────────────────────────────────────────────────
+    // -- Output properties --------------------------------------------------
     public IReadOnlyList<EmbeddedSyntaxEntry> SelectedEntries { get; private set; } = [];
     /// <summary>Id of the virtual folder, or <c>null</c> for the project root.</summary>
     public string? TargetFolderId { get; private set; }
 
-    // ── Private state ──────────────────────────────────────────────────────
+    // -- Private state ------------------------------------------------------
     private readonly EmbeddedSyntaxCatalog _catalog;
     private          List<CategoryNode>    _categories   = [];
     private readonly HashSet<SyntaxRow>    _checked      = [];
@@ -40,7 +40,7 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
 
     private static readonly StringComparison OIC = StringComparison.OrdinalIgnoreCase;
 
-    // ── Constructor ────────────────────────────────────────────────────────
+    // -- Constructor --------------------------------------------------------
     /// <param name="catalog">Catalog of embedded syntax definitions.</param>
     /// <param name="project">Project that will receive the imported items.</param>
     public ImportEmbeddedSyntaxDialog(EmbeddedSyntaxCatalog catalog, IProject project, string? initialFolderId = null)
@@ -68,7 +68,7 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
         }
     }
 
-    // ── Initialisation ─────────────────────────────────────────────────────
+    // -- Initialisation -----------------------------------------------------
 
     private void BuildCategories()
     {
@@ -209,7 +209,7 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
             AddFolderItem(child, indent + 1);
     }
 
-    // ── Event handlers ─────────────────────────────────────────────────────
+    // -- Event handlers -----------------------------------------------------
 
     private void OnSearchChanged(object sender, TextChangedEventArgs e)
     {
@@ -277,7 +277,7 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
         DialogResult    = true;
     }
 
-    // ── Private helpers ────────────────────────────────────────────────────
+    // -- Private helpers ----------------------------------------------------
 
     private void RefreshDetail(SyntaxRow? row)
     {
@@ -339,7 +339,7 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
         },
     };
 
-    // ── Inner types ────────────────────────────────────────────────────────
+    // -- Inner types --------------------------------------------------------
 
     private sealed class CategoryNode(string name)
     {

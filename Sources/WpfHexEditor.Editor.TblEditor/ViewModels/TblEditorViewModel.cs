@@ -21,35 +21,35 @@ namespace WpfHexEditor.Editor.TblEditor.ViewModels;
 /// </summary>
 internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
 {
-    // ── Undo / Redo ────────────────────────────────────────────────────────
+    // -- Undo / Redo --------------------------------------------------------
     private const int MaxUndoDepth = 100;
 
     private readonly Stack<ITblCommand> _undoStack = new();
     private readonly Stack<ITblCommand> _redoStack = new();
 
-    // ── Data ───────────────────────────────────────────────────────────────
+    // -- Data ---------------------------------------------------------------
     private readonly ObservableCollection<TblEntryViewModel> _entries = [];
     private ICollectionView? _filteredEntries;
     private TblStream? _source;
 
-    // ── Filter / Search ────────────────────────────────────────────────────
+    // -- Filter / Search ----------------------------------------------------
     private string? _searchText;
     private DteType? _typeFilter;
     private bool _showConflictsOnly;
     private readonly DispatcherTimer _searchDebounce;
 
-    // ── State ──────────────────────────────────────────────────────────────
+    // -- State --------------------------------------------------------------
     private bool _isDirty;
     private bool _isLoading;
     private bool _isAnalyzing;
     private TblStatistics _statistics = new();
 
-    // ── Services (lazy) ────────────────────────────────────────────────────
+    // -- Services (lazy) ----------------------------------------------------
     private readonly TblConflictAnalyzer _conflictAnalyzer = new();
     private readonly TblValidationService _validationService = new();
     private CancellationTokenSource _analysisCts = new();
 
-    // ── Constructor ────────────────────────────────────────────────────────
+    // -- Constructor --------------------------------------------------------
     public TblEditorViewModel()
     {
         _searchDebounce = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
@@ -61,7 +61,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
         RedoCommand   = new RelayCommand(_ => Redo(),          _ => CanRedo);
     }
 
-    // ── Properties ─────────────────────────────────────────────────────────
+    // -- Properties ---------------------------------------------------------
 
     public ICollectionView? FilteredEntries => _filteredEntries;
     public ObservableCollection<TblEntryViewModel> Entries => _entries;
@@ -130,17 +130,17 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
     /// </summary>
     internal void MarkDirty() => IsDirty = true;
 
-    // ── Undo / Redo state ──────────────────────────────────────────────────
+    // -- Undo / Redo state --------------------------------------------------
     public bool CanUndo => _undoStack.Count > 0;
     public bool CanRedo => _redoStack.Count > 0;
 
-    // ── Commands ───────────────────────────────────────────────────────────
+    // -- Commands -----------------------------------------------------------
     public ICommand AddCommand    { get; }
     public ICommand DeleteCommand { get; }
     public ICommand UndoCommand   { get; }
     public ICommand RedoCommand   { get; }
 
-    // ── Events ─────────────────────────────────────────────────────────────
+    // -- Events -------------------------------------------------------------
     public event EventHandler? DirtyChanged;
     public event EventHandler? CanUndoChanged;
     public event EventHandler? CanRedoChanged;
@@ -148,7 +148,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
     /// <summary>Raised after every <see cref="ApplyFilter"/> call (debounce, TypeFilter, ShowConflictsOnly).</summary>
     public event EventHandler? FilteredViewChanged;
 
-    // ── Load ───────────────────────────────────────────────────────────────
+    // -- Load ---------------------------------------------------------------
 
     public async Task LoadAsync(TblStream tbl, CancellationToken ct = default)
     {
@@ -177,7 +177,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
         finally { IsLoading = false; }
     }
 
-    // ── Save ───────────────────────────────────────────────────────────────
+    // -- Save ---------------------------------------------------------------
 
     public void Save()
     {
@@ -187,7 +187,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
         IsDirty = false;
     }
 
-    // ── Undo / Redo ────────────────────────────────────────────────────────
+    // -- Undo / Redo --------------------------------------------------------
 
     public void Undo()
     {
@@ -211,7 +211,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
-    // ── Entry mutations ────────────────────────────────────────────────────
+    // -- Entry mutations ----------------------------------------------------
 
     public void AddEntry(Dte? template = null)
     {
@@ -244,7 +244,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
         _ = RunAnalysisAsync();
     }
 
-    // ── Filter ─────────────────────────────────────────────────────────────
+    // -- Filter -------------------------------------------------------------
 
     public void ClearFilter()
     {
@@ -257,7 +257,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
         ApplyFilter();
     }
 
-    // ── Force reanalysis ───────────────────────────────────────────────────
+    // -- Force reanalysis ---------------------------------------------------
 
     /// <summary>
     /// Re-runs both entry validation and conflict analysis on all in-memory entries,
@@ -270,12 +270,12 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
         UpdateStatistics();
     }
 
-    // ── GoTo ───────────────────────────────────────────────────────────────
+    // -- GoTo ---------------------------------------------------------------
 
     public TblEntryViewModel? FindEntry(string hexKey)
         => _entries.FirstOrDefault(e => e.Entry.Equals(hexKey, StringComparison.OrdinalIgnoreCase));
 
-    // ── Internals ──────────────────────────────────────────────────────────
+    // -- Internals ----------------------------------------------------------
 
     private void ExecuteAdd()    => AddEntry();
     private void ExecuteDelete() => DeleteSelected();
@@ -409,12 +409,12 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
             yield return source.GetRange(i, Math.Min(size, source.Count - i));
     }
 
-    // ── INotifyPropertyChanged ─────────────────────────────────────────────
+    // -- INotifyPropertyChanged ---------------------------------------------
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    // ── IDisposable ────────────────────────────────────────────────────────
+    // -- IDisposable --------------------------------------------------------
     public void Dispose()
     {
         _searchDebounce.Stop();
@@ -423,7 +423,7 @@ internal sealed class TblEditorViewModel : INotifyPropertyChanged, IDisposable
     }
 }
 
-// ── Undo/Redo Command infrastructure ──────────────────────────────────────────
+// -- Undo/Redo Command infrastructure ------------------------------------------
 
 internal interface ITblCommand
 {
@@ -450,7 +450,7 @@ internal sealed class EditEntryCommand(TblEntryViewModel vm, string oldEntry, st
     public void Undo()    { vm.Entry = oldEntry; vm.Value = oldValue; }
 }
 
-// ── RelayCommand ──────────────────────────────────────────────────────────────
+// -- RelayCommand --------------------------------------------------------------
 
 internal sealed class RelayCommand(Action<object?> execute, Predicate<object?>? canExecute = null) : ICommand
 {

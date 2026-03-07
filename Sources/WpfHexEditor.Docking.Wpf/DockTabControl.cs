@@ -25,7 +25,7 @@ public class DockTabControl : TabControl
 {
     public DockGroupNode? Node { get; private set; }
 
-    // ── MaxTabWidth DP — caps the title text width so long filenames are ellipsis-truncated.
+    // -- MaxTabWidth DP — caps the title text width so long filenames are ellipsis-truncated.
     public static readonly DependencyProperty MaxTabWidthProperty =
         DependencyProperty.Register(nameof(MaxTabWidth), typeof(double), typeof(DockTabControl),
             new PropertyMetadata(180.0));
@@ -141,7 +141,7 @@ public class DockTabControl : TabControl
         return tabItem;
     }
 
-    // ── Reorder — ghost-based, zero live Remove/Insert ──────────────────────
+    // -- Reorder — ghost-based, zero live Remove/Insert ----------------------
     //
     // During drag:
     //   • The dragged tab is dimmed in place (opacity 0.4).
@@ -206,7 +206,7 @@ public class DockTabControl : TabControl
         RemoveInsertionIndicator();
     }
 
-    // ── Ghost helpers ────────────────────────────────────────────────────────
+    // -- Ghost helpers --------------------------------------------------------
 
     private void SetDraggedTabOpacity(DockItem draggedItem, double opacity)
     {
@@ -259,7 +259,7 @@ public class DockTabControl : TabControl
         _reorderGhost = null;
     }
 
-    // ── Insertion-indicator helpers ──────────────────────────────────────────
+    // -- Insertion-indicator helpers ------------------------------------------
 
     private void ShowInsertionIndicator()
     {
@@ -297,7 +297,7 @@ public class DockTabControl : TabControl
         _reorderAdorner = null;
     }
 
-    // ── Hit-test (screen coordinates) ───────────────────────────────────────
+    // -- Hit-test (screen coordinates) ---------------------------------------
 
     private int HitTestInsertionIndex(Point screenPos)
     {

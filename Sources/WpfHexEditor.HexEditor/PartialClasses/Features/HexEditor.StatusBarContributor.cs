@@ -59,7 +59,7 @@ namespace WpfHexEditor.HexEditor
 
         private ObservableCollection<StatusBarItem> BuildStatusBarItems()
         {
-            // ── Byte size ──────────────────────────────────────────────────
+            // -- Byte size --------------------------------------------------
             _sbByteSize = new StatusBarItem
             {
                 Label   = "Byte size",
@@ -81,7 +81,7 @@ namespace WpfHexEditor.HexEditor
                 Command     = new HexEditorRelayCommand(_ => ByteSize = ByteSizeType.Bit32)
             });
 
-            // ── Byte order ─────────────────────────────────────────────────
+            // -- Byte order -------------------------------------------------
             _sbByteOrder = new StatusBarItem
             {
                 Label   = "Byte order",
@@ -98,7 +98,7 @@ namespace WpfHexEditor.HexEditor
                 Command     = new HexEditorRelayCommand(_ => ByteOrder = ByteOrderType.HiLo)
             });
 
-            // ── Edit mode ──────────────────────────────────────────────────
+            // -- Edit mode --------------------------------------------------
             _sbEditMode = new StatusBarItem
             {
                 Label   = "Mode",
@@ -115,7 +115,7 @@ namespace WpfHexEditor.HexEditor
                 Command     = new HexEditorRelayCommand(_ => EditMode = EditModeEnum.Insert)
             });
 
-            // ── Bytes per line ─────────────────────────────────────────────
+            // -- Bytes per line ---------------------------------------------
             _sbBytePerLine = new StatusBarItem
             {
                 Label   = "Bytes/line",
@@ -131,7 +131,7 @@ namespace WpfHexEditor.HexEditor
                 });
             }
 
-            // ── Offset display format ──────────────────────────────────────────
+            // -- Offset display format ------------------------------------------
             _sbOffsetVisual = new StatusBarItem
             {
                 Label   = "Offset",
@@ -153,7 +153,7 @@ namespace WpfHexEditor.HexEditor
                 Command     = new HexEditorRelayCommand(_ => OffSetStringVisual = DataVisualType.Binary)
             });
 
-            // ── Data display format ────────────────────────────────────────────
+            // -- Data display format --------------------------------------------
             _sbDataVisual = new StatusBarItem
             {
                 Label   = "Data",
@@ -175,7 +175,7 @@ namespace WpfHexEditor.HexEditor
                 Command     = new HexEditorRelayCommand(_ => DataStringVisual = DataVisualType.Binary)
             });
 
-            // ── Byte grouping ──────────────────────────────────────────────────
+            // -- Byte grouping --------------------------------------------------
             _sbByteGrouping = new StatusBarItem
             {
                 Label   = "Grouping",
@@ -202,7 +202,7 @@ namespace WpfHexEditor.HexEditor
                 Command     = new HexEditorRelayCommand(_ => ByteGrouping = ByteSpacerGroup.EightByte)
             });
 
-            // ── Copy-to-clipboard format ───────────────────────────────────────
+            // -- Copy-to-clipboard format ---------------------------------------
             _sbCopyMode = new StatusBarItem
             {
                 Label   = "Copy as",

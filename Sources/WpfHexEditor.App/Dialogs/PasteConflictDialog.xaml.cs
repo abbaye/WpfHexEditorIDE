@@ -36,7 +36,7 @@ namespace WpfHexEditor.App.Dialogs;
 /// </summary>
 public partial class PasteConflictDialog : WpfHexEditor.Editor.Core.Views.ThemedDialog
 {
-    // ── Input ────────────────────────────────────────────────────────────────
+    // -- Input ----------------------------------------------------------------
 
     /// <summary>
     /// Name of the file that already exists in the destination folder.
@@ -44,7 +44,7 @@ public partial class PasteConflictDialog : WpfHexEditor.Editor.Core.Views.Themed
     /// </summary>
     public required string OriginalName { get; init; }
 
-    // ── Output ───────────────────────────────────────────────────────────────
+    // -- Output ---------------------------------------------------------------
 
     /// <summary>
     /// The file name chosen by the user. Valid only when
@@ -58,7 +58,7 @@ public partial class PasteConflictDialog : WpfHexEditor.Editor.Core.Views.Themed
     /// </summary>
     public bool CancelAll { get; private set; }
 
-    // ── Constructor ──────────────────────────────────────────────────────────
+    // -- Constructor ----------------------------------------------------------
 
     public PasteConflictDialog()
     {
@@ -76,7 +76,7 @@ public partial class PasteConflictDialog : WpfHexEditor.Editor.Core.Views.Themed
         };
     }
 
-    // ── Event handlers ───────────────────────────────────────────────────────
+    // -- Event handlers -------------------------------------------------------
 
     private void OnInputKeyDown(object sender, KeyEventArgs e)
     {
@@ -99,7 +99,7 @@ public partial class PasteConflictDialog : WpfHexEditor.Editor.Core.Views.Themed
         Close();
     }
 
-    // ── Validation ───────────────────────────────────────────────────────────
+    // -- Validation -----------------------------------------------------------
 
     private void TryAccept()
     {

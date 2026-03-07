@@ -31,7 +31,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers;
 /// </summary>
 public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
 {
-    // ── Static fallback brushes for TE_* color keys ───────────────────────────
+    // -- Static fallback brushes for TE_* color keys ---------------------------
     private static readonly IReadOnlyDictionary<string, Brush> _fallbackBrushes =
         new Dictionary<string, Brush>(StringComparer.OrdinalIgnoreCase)
         {
@@ -114,7 +114,7 @@ public sealed class RegexBasedSyntaxHighlighter : ISyntaxHighlighter
     /// <inheritdoc />
     public void Reset() { /* RegexSyntaxHighlighter is stateless — no-op. */ }
 
-    // ── Private helpers ───────────────────────────────────────────────────────
+    // -- Private helpers -------------------------------------------------------
 
     private Brush ResolveBrush(string colorKey)
     {

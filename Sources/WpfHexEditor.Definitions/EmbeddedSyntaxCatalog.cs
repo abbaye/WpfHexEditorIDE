@@ -24,7 +24,7 @@ namespace WpfHexEditor.Definitions;
 /// </summary>
 public sealed class EmbeddedSyntaxCatalog
 {
-    // ── Singleton ─────────────────────────────────────────────────────────────
+    // -- Singleton -------------------------------------------------------------
 
     private static EmbeddedSyntaxCatalog? _instance;
 
@@ -36,7 +36,7 @@ public sealed class EmbeddedSyntaxCatalog
 
     private EmbeddedSyntaxCatalog() { }
 
-    // ── Lazy cache ────────────────────────────────────────────────────────────
+    // -- Lazy cache ------------------------------------------------------------
 
     private IReadOnlyList<EmbeddedSyntaxEntry>? _all;
 
@@ -45,7 +45,7 @@ public sealed class EmbeddedSyntaxCatalog
 
     private const string Prefix = "WpfHexEditor.Definitions.SyntaxDefinitions.";
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    // -- Public API ------------------------------------------------------------
 
     /// <summary>
     /// Returns all embedded syntax definitions sorted by name.
@@ -115,7 +115,7 @@ public sealed class EmbeddedSyntaxCatalog
         return GetAll().FirstOrDefault(e => string.Equals(e.Name, name, StringComparison.OrdinalIgnoreCase));
     }
 
-    // ── Private helpers ───────────────────────────────────────────────────────
+    // -- Private helpers -------------------------------------------------------
 
     private static EmbeddedSyntaxEntry? ParseHeader(string resourceKey)
     {

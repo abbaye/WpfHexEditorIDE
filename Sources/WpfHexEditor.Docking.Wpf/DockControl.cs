@@ -97,7 +97,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// </summary>
     public DockEngine? Engine => _engine;
 
-    // ─── MVVM Source Binding ─────────────────────────────────────────
+    // --- MVVM Source Binding -----------------------------------------
 
     public static readonly DependencyProperty DocumentsSourceProperty =
         DependencyProperty.Register(nameof(DocumentsSource), typeof(IEnumerable), typeof(DockControl),
@@ -170,7 +170,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             _anchorablesSynchronizer = new DockItemSourceSynchronizer(this, AnchorablesSource, ItemMapper, isDocument: false);
     }
 
-    // ─── Content Factory ─────────────────────────────────────────────
+    // --- Content Factory ---------------------------------------------
 
     /// <summary>
     /// Factory to create content for a DockItem. If not set, a default placeholder is shown.
@@ -183,7 +183,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// </summary>
     public Func<DockItem, Task<object>>? AsyncContentFactory { get; set; }
 
-    // ─── Layout Item Templates ──────────────────────────────────────
+    // --- Layout Item Templates --------------------------------------
 
     /// <summary>
     /// Default <see cref="DataTemplate"/> used to present document view-model content.
@@ -207,7 +207,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// </summary>
     public DataTemplateSelector? AnchorableTemplateSelector { get; set; }
 
-    // ─── Cached Content Factory ─────────────────────────────────────
+    // --- Cached Content Factory -------------------------------------
 
     /// <summary>
     /// Returns a wrapped content factory that caches results by <see cref="DockItem.ContentId"/>.
@@ -595,7 +595,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         Dispatcher.Invoke(RebuildVisualTree);
     }
 
-    // ─── Layout size sync ───────────────────────────────────────────
+    // --- Layout size sync -------------------------------------------
 
     /// <summary>
     /// Synchronizes the in-memory <see cref="DockSplitNode.Ratios"/> with the actual

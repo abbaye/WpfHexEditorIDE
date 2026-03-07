@@ -40,7 +40,7 @@ public sealed class SolutionFileWatcher : IDisposable
     // The solution currently being watched (null when disposed / no solution loaded).
     private ISolution? _solution;
 
-    // ── Public API ───────────────────────────────────────────────────────────
+    // -- Public API -----------------------------------------------------------
 
     /// <summary>
     /// Raised on the thread-pool (marshal to UI thread as needed) when a
@@ -69,7 +69,7 @@ public sealed class SolutionFileWatcher : IDisposable
         _solution = null;
     }
 
-    // ── Index construction ───────────────────────────────────────────────────
+    // -- Index construction ---------------------------------------------------
 
     private void RebuildIndex(ISolution solution)
     {
@@ -85,7 +85,7 @@ public sealed class SolutionFileWatcher : IDisposable
         }
     }
 
-    // ── FileSystemWatcher management ─────────────────────────────────────────
+    // -- FileSystemWatcher management -----------------------------------------
 
     private void StartWatchers(ISolution solution)
     {
@@ -127,7 +127,7 @@ public sealed class SolutionFileWatcher : IDisposable
         _debounce.Clear();
     }
 
-    // ── Event handlers ───────────────────────────────────────────────────────
+    // -- Event handlers -------------------------------------------------------
 
     private void OnFsEvent(object sender, FileSystemEventArgs e)
         => ScheduleNotification(e.FullPath, e.ChangeType);
@@ -167,7 +167,7 @@ public sealed class SolutionFileWatcher : IDisposable
         }, null, DebounceMs, System.Threading.Timeout.Infinite);
     }
 
-    // ── IDisposable ──────────────────────────────────────────────────────────
+    // -- IDisposable ----------------------------------------------------------
 
     public void Dispose() => StopWatchers();
 }

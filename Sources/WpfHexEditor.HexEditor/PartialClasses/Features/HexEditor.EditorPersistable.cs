@@ -31,7 +31,7 @@ namespace WpfHexEditor.HexEditor
     /// </summary>
     public partial class HexEditor : IEditorPersistable
     {
-        // ── IEditorPersistable ─────────────────────────────────────────────
+        // -- IEditorPersistable ---------------------------------------------
 
         /// <inheritdoc />
         public EditorConfigDto GetEditorConfig()
@@ -127,7 +127,7 @@ namespace WpfHexEditor.HexEditor
             }
         }
 
-        // ── IEditorPersistable — WHChg changeset ─────────────────────────────
+        // -- IEditorPersistable — WHChg changeset -----------------------------
 
         /// <inheritdoc />
         public ChangesetSnapshot GetChangesetSnapshot()
@@ -157,7 +157,7 @@ namespace WpfHexEditor.HexEditor
         void IEditorPersistable.MarkChangesetSaved()
             => _changesetSavedUndoCount = _viewModel?.Provider?.UndoCount ?? 0;
 
-        // ── IEditorPersistable — Bookmarks ────────────────────────────────────
+        // -- IEditorPersistable — Bookmarks ------------------------------------
         // Explicit interface implementation to avoid collision with the existing
         // public long[] GetBookmarks() method in HexEditor.Bookmarks.cs.
 

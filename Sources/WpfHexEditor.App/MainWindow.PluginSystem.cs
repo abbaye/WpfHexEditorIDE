@@ -34,7 +34,7 @@ namespace WpfHexEditor.App;
 
 public partial class MainWindow
 {
-    // ─── Plugin system singletons ───────────────────────────────────────
+    // --- Plugin system singletons ---------------------------------------
     private WpfPluginHost? _pluginHost;
     private IDEHostContext? _ideHostContext;
     private readonly FocusContextService _focusContextService = new();
@@ -48,7 +48,7 @@ public partial class MainWindow
     private const string PluginManagerContentId = "plugin-manager";
     private const string TerminalPanelContentId  = "panel-terminal";
 
-    // ─── Startup ────────────────────────────────────────────────────────
+    // --- Startup --------------------------------------------------------
 
     /// <summary>
     /// Called from OnLoaded (after layout is ready) to bootstrap the full plugin system.
@@ -132,7 +132,7 @@ public partial class MainWindow
         }
     }
 
-    // ─── Focus context wiring ────────────────────────────────────────────
+    // --- Focus context wiring --------------------------------------------
 
     /// <summary>
     /// Called by OnActiveDocumentChanged to push focus changes into FocusContextService.
@@ -152,7 +152,7 @@ public partial class MainWindow
         _focusContextService.SetActiveDocument(document);
     }
 
-    // ─── Plugin notification handlers ────────────────────────────────────
+    // --- Plugin notification handlers ------------------------------------
 
     private void OnSlowPluginDetected(object? sender, SlowPluginDetectedEventArgs e)
     {
@@ -171,7 +171,7 @@ public partial class MainWindow
         });
     }
 
-    // ─── Plugin Manager document tab ────────────────────────────────────
+    // --- Plugin Manager document tab ------------------------------------
 
     private void OnOpenPluginManager(object sender, RoutedEventArgs e)
     {
@@ -201,7 +201,7 @@ public partial class MainWindow
         DockHost.RebuildVisualTree();
     }
 
-    // ─── Terminal panel ──────────────────────────────────────────────────
+    // --- Terminal panel --------------------------------------------------
 
     private void OnOpenTerminal(object sender, RoutedEventArgs e)
     {
@@ -231,7 +231,7 @@ public partial class MainWindow
         DockHost.RebuildVisualTree();
     }
 
-    // ─── Plugin system shutdown ──────────────────────────────────────────
+    // --- Plugin system shutdown ------------------------------------------
 
     private async Task ShutdownPluginSystemAsync()
     {
@@ -242,7 +242,7 @@ public partial class MainWindow
         _pluginHost = null;
     }
 
-    // ─── Minimal helpers ────────────────────────────────────────────────
+    // --- Minimal helpers ------------------------------------------------
 
     /// <summary>
     /// Minimal IDocument adapter wrapping a DockItem for FocusContextService.

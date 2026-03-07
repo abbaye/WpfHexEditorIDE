@@ -451,7 +451,7 @@ internal sealed class TextViewport : FrameworkElement
 
         switch (e.Key)
         {
-            // ── Clipboard / Edit shortcuts ──────────────────────────────
+            // -- Clipboard / Edit shortcuts ------------------------------
             case Key.A when ctrl:
                 ViewportSelectAll();
                 e.Handled = true; break;
@@ -465,7 +465,7 @@ internal sealed class TextViewport : FrameworkElement
                 ViewportPaste(); ScrollIntoView(_vm.CaretLine);
                 e.Handled = true; break;
 
-            // ── Navigation (with optional Shift selection) ──────────────
+            // -- Navigation (with optional Shift selection) --------------
             case Key.Left:
                 BeginSelectionIfShift(shift);
                 if (_vm.CaretColumn > 0) _vm.CaretColumn--;
@@ -514,7 +514,7 @@ internal sealed class TextViewport : FrameworkElement
                 ScrollIntoView(_vm.CaretLine);
                 e.Handled = true; break;
 
-            // ── Edit operations ─────────────────────────────────────────
+            // -- Edit operations -----------------------------------------
             case Key.Back:
                 if (_vm.HasSelection) _vm.DeleteSelectedText();
                 else _vm.Backspace();

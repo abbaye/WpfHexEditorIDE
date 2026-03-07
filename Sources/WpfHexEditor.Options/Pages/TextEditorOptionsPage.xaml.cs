@@ -19,7 +19,7 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
 
     public TextEditorOptionsPage() => InitializeComponent();
 
-    // â”€â”€ IOptionsPage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- IOptionsPage ------------------------------------------------------
 
     public void Load(AppSettings s)
     {
@@ -63,7 +63,7 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
         te.CommentColor    = FlushColorPicker(ChkCmt, CpCmt);
     }
 
-    // â”€â”€ Control handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Control handlers -------------------------------------------------
 
     private void OnCheckChanged(object sender, RoutedEventArgs e)
     {
@@ -90,7 +90,7 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
         if (!_loading) Changed?.Invoke(this, EventArgs.Empty);
     }
 
-    // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // -- Helpers ----------------------------------------------------------
 
     private static void SelectComboByTag(ComboBox combo, string tag)
     {

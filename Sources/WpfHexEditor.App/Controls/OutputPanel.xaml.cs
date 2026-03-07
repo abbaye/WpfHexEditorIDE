@@ -35,7 +35,7 @@ public partial class OutputPanel : UserControl
     /// </summary>
     internal RichTextBox OutputBox => OutputTextBox;
 
-    // ─── Public append API (called by OutputLogger) ────────────────────
+    // --- Public append API (called by OutputLogger) --------------------
 
     /// <summary>
     /// Appends a line of text with an optional foreground color.
@@ -71,7 +71,7 @@ public partial class OutputPanel : UserControl
         new TextRange(OutputTextBox.Document.ContentStart,
                       OutputTextBox.Document.ContentEnd).Text;
 
-    // ─── Toolbar handlers ──────────────────────────────────────────────
+    // --- Toolbar handlers ----------------------------------------------
 
     private void OnClear(object sender, RoutedEventArgs e)
         => OutputLogger.Clear();

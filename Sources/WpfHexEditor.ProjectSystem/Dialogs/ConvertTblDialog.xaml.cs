@@ -49,7 +49,7 @@ public partial class ConvertTblDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
         }
     }
 
-    // ── Output properties consumed by the host ────────────────────────────────
+    // -- Output properties consumed by the host --------------------------------
 
     /// <summary>
     /// Full path of the source .tbl file.
@@ -104,7 +104,7 @@ public partial class ConvertTblDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
     /// </summary>
     public bool OpenAfterConversion => OpenAfterCheck.IsChecked == true;
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // -- Helpers ---------------------------------------------------------------
 
     private static string GetComboText(System.Windows.Controls.ComboBox combo)
     {
@@ -118,7 +118,7 @@ public partial class ConvertTblDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
     private void RefreshTargetText()
         => TargetFileText.Text = Path.GetFileNameWithoutExtension(_sourcePath) + ".tblx";
 
-    // ── Event handlers ────────────────────────────────────────────────────────
+    // -- Event handlers --------------------------------------------------------
 
     private void OnOutputLocationChanged(object sender, RoutedEventArgs e)
     {

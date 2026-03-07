@@ -33,7 +33,7 @@ public sealed class TblEditorFactory : IEditorFactory, IFileValidator
 
     public IDocumentEditor Create() => new Controls.TblEditor();
 
-    // ── IFileValidator ────────────────────────────────────────────────────
+    // -- IFileValidator ----------------------------------------------------
 
     /// <summary>
     /// Validates a .tbl/.tblx file without opening a UI editor.

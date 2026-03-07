@@ -29,7 +29,7 @@ public sealed class ProjectItemPropertyProvider : IPropertyProvider
     {
         var groups = new List<PropertyGroup>();
 
-        // ── File group ─────────────────────────────────────────────────────
+        // -- File group -----------------------------------------------------
         FileInfo? info = null;
         try { if (File.Exists(_item.AbsolutePath)) info = new FileInfo(_item.AbsolutePath); }
         catch { /* ignore I/O errors */ }
@@ -53,7 +53,7 @@ public sealed class ProjectItemPropertyProvider : IPropertyProvider
 
         groups.Add(new PropertyGroup { Name = "File", Entries = fileEntries });
 
-        // ── Editor config group (if saved) ─────────────────────────────────
+        // -- Editor config group (if saved) ---------------------------------
         var cfg = _item.EditorConfig;
         if (cfg is not null)
         {

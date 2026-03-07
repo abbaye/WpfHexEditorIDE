@@ -45,14 +45,14 @@ namespace WpfHexEditor.Editor.Core
     /// </summary>
     public interface ISearchTarget
     {
-        // ── Capabilities (what the bar should show) ──────────────────────
+        // -- Capabilities (what the bar should show) ----------------------
         SearchBarCapabilities Capabilities { get; }
 
-        // ── Current state ────────────────────────────────────────────────
+        // -- Current state ------------------------------------------------
         int MatchCount        { get; }
         int CurrentMatchIndex { get; }
 
-        // ── Operations ───────────────────────────────────────────────────
+        // -- Operations ---------------------------------------------------
 
         /// <summary>
         /// Starts a new search. The target executes the search (possibly async)
@@ -70,11 +70,11 @@ namespace WpfHexEditor.Editor.Core
         /// <summary>Clears highlights / cached results.</summary>
         void ClearSearch();
 
-        // ── Replace (only called when Capabilities has Replace) ───────────
+        // -- Replace (only called when Capabilities has Replace) -----------
         void Replace(string replacement);
         void ReplaceAll(string replacement);
 
-        // ── Custom filters (only called when Capabilities has CustomFilters)
+        // -- Custom filters (only called when Capabilities has CustomFilters)
         /// <summary>
         /// Returns a <see cref="UIElement"/> injected into the bar's custom-filter
         /// slot (between the toggles and the Prev/Next buttons).

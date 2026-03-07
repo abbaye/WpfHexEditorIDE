@@ -23,20 +23,20 @@ namespace WpfHexEditor.Terminal;
 /// </summary>
 public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable, ITerminalContext, ITerminalOutput
 {
-    // ── Core services ────────────────────────────────────────────────────────────
+    // -- Core services ------------------------------------------------------------
 
     private readonly TerminalCommandRegistry _registry = new();
     private readonly CommandHistory _history = new();
     private CancellationTokenSource? _cts;
 
-    // ── ITerminalContext ──────────────────────────────────────────────────────────
+    // -- ITerminalContext ----------------------------------------------------------
 
     public IIDEHostContext IDE { get; }
     public IDocument? ActiveDocument => IDE.FocusContext.ActiveDocument;
     public IPanel? ActivePanel => IDE.FocusContext.ActivePanel;
     public string WorkingDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
-    // ── Observable state ─────────────────────────────────────────────────────────
+    // -- Observable state ---------------------------------------------------------
 
     public ObservableCollection<TerminalOutputLine> OutputLines { get; } = [];
 
@@ -54,13 +54,13 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         private set { _isRunning = value; OnPropertyChanged(); }
     }
 
-    // ── Commands ─────────────────────────────────────────────────────────────────
+    // -- Commands -----------------------------------------------------------------
 
     public ICommand RunCommand { get; }
     public ICommand CancelCommand { get; }
     public ICommand ClearOutputCommand { get; }
 
-    // ── Constructor ──────────────────────────────────────────────────────────────
+    // -- Constructor --------------------------------------------------------------
 
     public TerminalPanelViewModel(IIDEHostContext hostContext)
     {
@@ -76,12 +76,12 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         _ = _history.LoadAsync();
     }
 
-    // ── Public API: register plugin commands ─────────────────────────────────────
+    // -- Public API: register plugin commands -------------------------------------
 
     public void RegisterCommand(ITerminalCommandProvider command) => _registry.Register(command);
     public void UnregisterCommand(string commandName) => _registry.Unregister(commandName);
 
-    // ── Keyboard navigation ───────────────────────────────────────────────────────
+    // -- Keyboard navigation -------------------------------------------------------
 
     public void NavigateHistoryUp()
     {
@@ -95,7 +95,7 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         if (entry is not null) CommandInput = entry;
     }
 
-    // ── ITerminalOutput ───────────────────────────────────────────────────────────
+    // -- ITerminalOutput -----------------------------------------------------------
 
     public void Write(string text) => AppendLine(text, TerminalOutputKind.Standard);
     public void WriteLine(string text = "") => AppendLine(text, TerminalOutputKind.Standard);
@@ -103,7 +103,7 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
     public void WriteWarning(string text) => AppendLine(text, TerminalOutputKind.Warning);
     public void Clear() => System.Windows.Application.Current?.Dispatcher.InvokeAsync(OutputLines.Clear);
 
-    // ── Private helpers ───────────────────────────────────────────────────────────
+    // -- Private helpers -----------------------------------------------------------
 
     private async Task ExecuteInputAsync()
     {
@@ -223,13 +223,13 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         _registry.Register(new RunPluginCommand());
     }
 
-    // ── INotifyPropertyChanged ────────────────────────────────────────────────────
+    // -- INotifyPropertyChanged ----------------------------------------------------
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    // ── IDisposable ───────────────────────────────────────────────────────────────
+    // -- IDisposable ---------------------------------------------------------------
 
     public void Dispose()
     {
@@ -238,7 +238,7 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         _ = _history.SaveAsync();
     }
 
-    // ── RelayCommand ──────────────────────────────────────────────────────────────
+    // -- RelayCommand --------------------------------------------------------------
 
     private sealed class RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute = null) : ICommand
     {

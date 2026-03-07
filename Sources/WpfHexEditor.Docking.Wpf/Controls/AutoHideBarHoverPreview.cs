@@ -38,12 +38,12 @@ namespace WpfHexEditor.Docking.Wpf.Controls;
 /// </summary>
 public sealed class AutoHideBarHoverPreview
 {
-    // ── Configuration ────────────────────────────────────────────────────────
+    // -- Configuration --------------------------------------------------------
     private const double PreviewWidth  = 200;
     private const double PreviewHeight = 150;
     private const int    HoverDelayMs  = 400;
 
-    // ── State ────────────────────────────────────────────────────────────────
+    // -- State ----------------------------------------------------------------
     private readonly AutoHideBar                    _owner;
     private readonly Func<DockItem, BitmapSource?>  _bitmapProvider;
     private readonly Dock                           _barSide;
@@ -56,7 +56,7 @@ public sealed class AutoHideBarHoverPreview
     private Button?   _hoveredButton;
     private DockItem? _hoveredItem;
 
-    // ── Constructor ──────────────────────────────────────────────────────────
+    // -- Constructor ----------------------------------------------------------
 
     private AutoHideBarHoverPreview(AutoHideBar owner, Func<DockItem, BitmapSource?> bitmapProvider, Dock barSide)
     {
@@ -64,7 +64,7 @@ public sealed class AutoHideBarHoverPreview
         _bitmapProvider = bitmapProvider;
         _barSide        = barSide;
 
-        // ── Preview image ────────────────────────────────────────────────────
+        // -- Preview image ----------------------------------------------------
         _previewImage = new Image
         {
             Width               = PreviewWidth,
@@ -74,7 +74,7 @@ public sealed class AutoHideBarHoverPreview
             VerticalAlignment   = VerticalAlignment.Top
         };
 
-        // ── Title label (shown when no bitmap) ──────────────────────────────
+        // -- Title label (shown when no bitmap) ------------------------------
         _titleBlock = new TextBlock
         {
             FontWeight        = FontWeights.SemiBold,
@@ -88,7 +88,7 @@ public sealed class AutoHideBarHoverPreview
         stack.Children.Add(_previewImage);
         stack.Children.Add(_titleBlock);
 
-        // ── Themed border + shadow ───────────────────────────────────────────
+        // -- Themed border + shadow -------------------------------------------
         _border = new Border
         {
             Child           = stack,
@@ -105,7 +105,7 @@ public sealed class AutoHideBarHoverPreview
             Color       = Colors.Black
         };
 
-        // ── Popup ────────────────────────────────────────────────────────────
+        // -- Popup ------------------------------------------------------------
         // PlacementMode.Mouse was intentionally NOT used here: it positions the popup
         // directly under the cursor, creating a Win32 layered window (WS_EX_TRANSPARENT)
         // that prevents WPF from firing MouseLeave on the button → popup never closes.
@@ -120,7 +120,7 @@ public sealed class AutoHideBarHoverPreview
             IsHitTestVisible   = false   // pointer events pass through
         };
 
-        // ── Hover timer ──────────────────────────────────────────────────────
+        // -- Hover timer ------------------------------------------------------
         _hoverTimer = new DispatcherTimer(DispatcherPriority.Background)
         {
             Interval = TimeSpan.FromMilliseconds(HoverDelayMs)
@@ -131,7 +131,7 @@ public sealed class AutoHideBarHoverPreview
         owner.MouseLeave += (_, _) => HidePreview();
     }
 
-    // ── Public API ───────────────────────────────────────────────────────────
+    // -- Public API -----------------------------------------------------------
 
     /// <summary>
     /// Attaches a hover-preview to every button in <paramref name="bar"/>.
@@ -149,7 +149,7 @@ public sealed class AutoHideBarHoverPreview
         return preview;
     }
 
-    // ── Wiring ───────────────────────────────────────────────────────────────
+    // -- Wiring ---------------------------------------------------------------
 
     private void WireButtons()
     {
@@ -169,7 +169,7 @@ public sealed class AutoHideBarHoverPreview
         btn.MouseLeave += (_, _) => OnButtonMouseLeave();
     }
 
-    // ── Hover handlers ───────────────────────────────────────────────────────
+    // -- Hover handlers -------------------------------------------------------
 
     private void OnButtonMouseEnter(Button btn, DockItem item)
     {
@@ -200,7 +200,7 @@ public sealed class AutoHideBarHoverPreview
         _popup.IsOpen = true;
     }
 
-    // ── Placement ────────────────────────────────────────────────────────────
+    // -- Placement ------------------------------------------------------------
 
     /// <summary>
     /// Configures the popup placement relative to <paramref name="btn"/> based on the bar side.
@@ -224,7 +224,7 @@ public sealed class AutoHideBarHoverPreview
         _popup.VerticalOffset   = 0;
     }
 
-    // ── Hide ─────────────────────────────────────────────────────────────────
+    // -- Hide -----------------------------------------------------------------
 
     private void HidePreview()
     {
