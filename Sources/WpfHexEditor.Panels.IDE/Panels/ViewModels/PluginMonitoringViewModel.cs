@@ -267,20 +267,25 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         var faults = plugins.Count(p => p.State == PluginState.Faulted);
         var now    = DateTime.UtcNow;
 
-        // Aggregate process-level CPU/memory from the latest diagnostic snapshot.
-        double cpu    = 0;
-        long   memMb  = 0;
+        // Aggregate CPU and memory across all loaded plugins.
+        // For InProcess isolation, all plugins share the same process metrics,
+        // so we sum the reported values (each plugin entry carries a copy of the same snapshot).
+        double cpu   = 0;
+        long   memMb = 0;
 
-        var loadedEntries = plugins.Where(p => p.State == PluginState.Loaded).ToList();
-        if (loadedEntries.Count > 0)
+        foreach (var entry in plugins.Where(p => p.State == PluginState.Loaded))
         {
-            // All InProcess plugins share the same process metrics — use first loaded entry.
-            var snap = loadedEntries[0].Diagnostics.GetLatest();
-            if (snap is not null)
-            {
-                cpu   = snap.CpuPercent;
-                memMb = snap.MemoryBytes / (1024 * 1024);
-            }
+            var snap = entry.Diagnostics.GetLatest();
+            if (snap is null) continue;
+            cpu   += snap.CpuPercent;
+            memMb += snap.MemoryBytes / (1024 * 1024);
+        }
+
+        // Clamp to avoid inflating metrics when many identical process-level snapshots are summed.
+        if (plugins.Count(p => p.State == PluginState.Loaded) > 1)
+        {
+            cpu   = Math.Min(cpu, 100);
+            memMb = memMb / Math.Max(1, plugins.Count(p => p.State == PluginState.Loaded));
         }
 
         CurrentCpu      = cpu;
@@ -327,9 +332,11 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
     private static void AddChartPoint(ObservableCollection<ChartPoint> collection, ChartPoint point)
     {
-        collection.Add(point);
-        while (collection.Count > MaxChartPoints)
+        // Batch-remove old points then add new one — avoids O(n) RemoveAt(0) per item.
+        // Since ObservableCollection fires per removal, batch-remove in reverse is fine here.
+        while (collection.Count >= MaxChartPoints)
             collection.RemoveAt(0);
+        collection.Add(point);
     }
 
     private static string StateLabel(PluginState state) => state switch

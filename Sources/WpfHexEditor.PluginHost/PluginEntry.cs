@@ -86,8 +86,10 @@ public sealed class PluginEntry
     /// </summary>
     internal void Unload()
     {
+        (Instance as IDisposable)?.Dispose();
         Instance = null;
-        LoadContext?.Unload();
+        try { LoadContext?.Unload(); }
+        catch { /* ALC may have been collected already */ }
         LoadContext = null;
     }
 }

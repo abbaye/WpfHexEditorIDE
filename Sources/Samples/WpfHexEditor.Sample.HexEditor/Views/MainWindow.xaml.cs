@@ -62,9 +62,6 @@ namespace WpfHexEditor.Sample.HexEditor.Views
             // Connect the external ParsedFieldsPanel to HexEditor (via DP)
             HexEditorControl.ConnectParsedFieldsPanel(ParsedFieldsPanelControl);
 
-            // Connect the external BarChartPanel to HexEditor (via DP IByteDistributionPanel)
-            HexEditorControl.ByteDistributionPanel = ByteDistChartPanel;
-
             // Synchronize initial ParsedFieldsPanel column state
             _viewModel.PropertyChanged += ViewModel_ParsedFieldsPanelVisibilityChanged;
             ApplyParsedFieldsPanelVisibility(_viewModel.IsParsedFieldsPanelVisible);

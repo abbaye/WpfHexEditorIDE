@@ -1,23 +1,40 @@
-﻿//////////////////////////////////////////////
-// Apache 2.0  - 2026
-// Author : Derek Tremblay (derektremblay666@gmail.com)
+// ==========================================================
+// Project: WpfHexEditor.Plugins.FormatInfo
+// File: FormatInfoPlugin.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
-//////////////////////////////////////////////
+// Created: 2026-03-07
+// Description:
+//     Plugin entry point for the Enriched Format Info panel.
+//     Subscribes to IHexEditorService.FormatDetected / FileOpened events
+//     to push rich format metadata into EnrichedFormatInfoPanel.
+//
+// Architecture Notes:
+//     FormatDetectedArgs.RawFormatDefinition carries the full Core FormatDefinition
+//     object (bundled-plugin privilege). We cast it here — external/sandboxed plugins
+//     must not rely on this field.
+// ==========================================================
 
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Plugins.FormatInfo.Views;
 
 namespace WpfHexEditor.Plugins.FormatInfo;
 
 /// <summary>
-/// Official plugin wrapping the Format Info panel(s).
+/// Official plugin wrapping the Enriched Format Info panel.
+/// Displays rich format metadata when the HexEditor detects a file format.
 /// </summary>
 public sealed class FormatInfoPlugin : IWpfHexEditorPlugin
 {
-    public string Id      => "WpfHexEditor.Plugins.FormatInfo";
-    public string Name    => "Format Info";
+    private IIDEHostContext?        _context;
+    private EnrichedFormatInfoPanel? _panel;
+
+    public string  Id      => "WpfHexEditor.Plugins.FormatInfo";
+    public string  Name    => "Format Info";
     public Version Version => new(1, 0, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -30,17 +47,48 @@ public sealed class FormatInfoPlugin : IWpfHexEditorPlugin
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
     {
+        _context = context;
+        _panel   = new EnrichedFormatInfoPanel();
+
         context.UIRegistry.RegisterPanel(
             "WpfHexEditor.Plugins.FormatInfo.Panel.EnrichedFormatInfoPanel",
-            new EnrichedFormatInfoPanel(),
+            _panel,
             Id,
-            new PanelDescriptor { Title = "EnrichedFormatInfo", DefaultDockSide = "Right", CanClose = true });
+            new PanelDescriptor { Title = "Format Info", DefaultDockSide = "Right", CanClose = true });
+
+        context.HexEditor.FormatDetected += OnFormatDetected;
+        context.HexEditor.FileOpened     += OnFileOpened;
+
         return Task.CompletedTask;
     }
 
     public Task ShutdownAsync(CancellationToken ct = default)
     {
-        // UIRegistry.UnregisterAllForPlugin is called automatically by PluginHost.
+        if (_context is not null)
+        {
+            _context.HexEditor.FormatDetected -= OnFormatDetected;
+            _context.HexEditor.FileOpened     -= OnFileOpened;
+        }
         return Task.CompletedTask;
+    }
+
+    // -------------------------------------------------------------------------
+
+    private void OnFormatDetected(object? sender, FormatDetectedArgs e)
+    {
+        if (_panel is null) return;
+
+        // RawFormatDefinition is populated by HexEditorServiceImpl — bundled plugins may cast it.
+        var format = e.RawFormatDefinition as FormatDefinition;
+
+        _panel.Dispatcher.BeginInvoke(() => _panel.SetFormat(format));
+    }
+
+    private void OnFileOpened(object? sender, EventArgs e)
+    {
+        if (_panel is null) return;
+
+        // Clear stale format info when a new file opens (before detection completes)
+        _panel.Dispatcher.BeginInvoke(() => _panel.ClearFormat());
     }
 }

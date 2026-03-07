@@ -1,4 +1,4 @@
-﻿//////////////////////////////////////////////
+//////////////////////////////////////////////
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
@@ -50,19 +50,25 @@ public sealed class CountToVisibilityConverter : IValueConverter
 }
 
 /// <summary>
-/// Plugin Manager document tab â€” lists all plugins with live metrics and lifecycle actions.
+/// Plugin Manager document tab — lists all plugins with live metrics and lifecycle actions.
+/// Supports deferred DataContext wiring (layout restoration before plugin system is ready).
 /// </summary>
 public sealed partial class PluginManagerControl : UserControl
 {
-    public PluginManagerControl(PluginManagerViewModel viewModel)
+    /// <summary>
+    /// Parameterless constructor — used when the layout is restored before the plugin system
+    /// is initialised. The DataContext (PluginManagerViewModel) must be set afterwards.
+    /// </summary>
+    public PluginManagerControl()
     {
         InitializeComponent();
-        DataContext = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
-
-        // Theme-aware foreground (rule 7b)
         SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
-
         Unloaded += OnUnloaded;
+    }
+
+    public PluginManagerControl(PluginManagerViewModel viewModel) : this()
+    {
+        DataContext = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -70,4 +76,54 @@ public sealed partial class PluginManagerControl : UserControl
         if (DataContext is IDisposable d) d.Dispose();
         Unloaded -= OnUnloaded;
     }
+
+    // --- Context menu handlers (bound via XAML ContextMenu on ListBox items) ---
+
+    private void OnContextEnable(object sender, RoutedEventArgs e)
+        => GetSelectedItemVm()?.EnableCommand.Execute(null);
+
+    private void OnContextDisable(object sender, RoutedEventArgs e)
+        => GetSelectedItemVm()?.DisableCommand.Execute(null);
+
+    private void OnContextReload(object sender, RoutedEventArgs e)
+        => GetSelectedItemVm()?.ReloadCommand.Execute(null);
+
+    private void OnContextUninstall(object sender, RoutedEventArgs e)
+    {
+        var vm = GetSelectedItemVm();
+        if (vm is null) return;
+        var result = System.Windows.MessageBox.Show(
+            $"Uninstall '{vm.Name}'?\nThis action cannot be undone.",
+            "Uninstall Plugin",
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Warning);
+        if (result == System.Windows.MessageBoxResult.Yes)
+            vm.UninstallCommand.Execute(null);
+    }
+
+    private void OnContextCopyId(object sender, RoutedEventArgs e)
+    {
+        var vm = GetSelectedItemVm();
+        if (vm is not null) System.Windows.Clipboard.SetText(vm.Id);
+    }
+
+    private void OnContextCopyFault(object sender, RoutedEventArgs e)
+    {
+        var vm = GetSelectedItemVm();
+        if (vm?.FaultMessage is not null) System.Windows.Clipboard.SetText(vm.FaultMessage);
+    }
+
+    private void OnContextOpenMonitor(object sender, RoutedEventArgs e)
+    {
+        // Bubble up to MainWindow via routed command
+        var win = System.Windows.Window.GetWindow(this);
+        if (win is null) return;
+        // Raise the Tools > Plugin Monitor menu handler by walking the logical tree
+        win.GetType().GetMethod("OnOpenPluginMonitor",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            ?.Invoke(win, [sender, e]);
+    }
+
+    private PluginListItemViewModel? GetSelectedItemVm()
+        => (DataContext as PluginManagerViewModel)?.SelectedPlugin;
 }

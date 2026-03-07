@@ -58,16 +58,16 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
         // Pass context so the panel can perform scope-aware reads (WholeFile mode).
         _panel.SetContext(context);
 
-        // Register ONE unified panel docked at the bottom.
+        // Register ONE unified panel docked on the Right (alongside ParsedFields).
         // ByteChart and byte interpretations are both inside this panel.
         context.UIRegistry.RegisterPanel(
-            "WpfHexEditor.Plugins.DataInspector.Panel",
+            "WpfHexEditor.Plugins.DataInspector.Panel.DataInspectorPanel",
             _panel,
             Id,
             new PanelDescriptor
             {
                 Title           = "Data Inspector",
-                DefaultDockSide = "Bottom",
+                DefaultDockSide = "Right",
                 CanClose        = true,
                 PreferredHeight = 180
             });

@@ -21,7 +21,9 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using WpfHexEditor.App.Services;
+using WpfHexEditor.SDK.Events;
 using WpfHexEditor.Core.Terminal;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
@@ -61,6 +63,12 @@ public partial class MainWindow
     // Their DataContext is wired up at the end of InitializePluginSystemAsync.
     private TerminalPanel? _pendingTerminalPanel;
     private WpfHexEditor.Panels.IDE.Panels.PluginMonitoringPanel? _pendingPluginMonitorPanel;
+    private WpfHexEditor.PluginHost.UI.PluginManagerControl? _pendingPluginManagerControl;
+
+    // StatusBar fault-blink timer (DispatcherTimer, 800 ms toggle)
+    private DispatcherTimer? _statusBarBlinkTimer;
+    private bool _statusBarBlinkState;
+    private string? _slowPluginName;
 
     // --- Startup --------------------------------------------------------
 
@@ -116,8 +124,8 @@ public partial class MainWindow
             // 4. Subscribe to host events
             _pluginHost.PluginCrashed       += OnPluginCrashed;
             _pluginHost.SlowPluginDetected  += OnSlowPluginDetected;
-            _pluginHost.PluginLoaded        += (_, _) => Dispatcher.InvokeAsync(() => UpdatePluginStatusBar());
-            _pluginHost.PluginUnloaded      += (_, _) => Dispatcher.InvokeAsync(() => UpdatePluginStatusBar());
+            _pluginHost.PluginLoaded        += OnPluginLoadedOrUnloaded;
+            _pluginHost.PluginUnloaded      += OnPluginLoadedOrUnloaded;
 
             // 5. Discover + load all plugins
             var binDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -125,6 +133,9 @@ public partial class MainWindow
             await _pluginHost.LoadAllAsync(
                 extraDirectories: Directory.Exists(bundledPluginsDir) ? [bundledPluginsDir] : null,
                 ct: CancellationToken.None).ConfigureAwait(false);
+
+            // Subscribe: CustomParser template applied via plugin → populate ParsedFieldsPanel in MainWindow
+            eventBus.Subscribe<TemplateApplyRequestedEvent>(OnTemplateAppliedViaPlugin);
 
             // Register a dynamic Options page for every plugin that supports IPluginWithOptions.
             foreach (var entry in _pluginHost.OptionsRegistry.GetAll())
@@ -162,6 +173,22 @@ public partial class MainWindow
                     _pendingPluginMonitorPanel.DataContext = vm;
                     _pendingPluginMonitorPanel = null;
                 }
+
+                if (_pendingPluginManagerControl is not null && _pluginHost is not null)
+                {
+                    var vm = new PluginManagerViewModel(_pluginHost, Dispatcher);
+                    _pendingPluginManagerControl.DataContext = vm;
+                    _pendingPluginManagerControl = null;
+                }
+
+                // Initialise the status bar blink timer (fault indicator)
+                _statusBarBlinkTimer = new DispatcherTimer(DispatcherPriority.Background, Dispatcher)
+                {
+                    Interval = TimeSpan.FromMilliseconds(800)
+                };
+                _statusBarBlinkTimer.Tick += OnStatusBarBlinkTick;
+
+                UpdatePluginStatusBar();
             });
         }
         catch (Exception ex)
@@ -192,18 +219,33 @@ public partial class MainWindow
 
     // --- Plugin notification handlers ------------------------------------
 
+    private void OnPluginLoadedOrUnloaded(object? sender, EventArgs e)
+        => Dispatcher.InvokeAsync(() => UpdatePluginStatusBar());
+
     private void OnSlowPluginDetected(object? sender, SlowPluginDetectedEventArgs e)
     {
+        _slowPluginName = e.PluginName;
         OutputLogger.Info(
             $"[PluginSystem] Warning: Plugin '{e.PluginName}' is slow " +
             $"(avg {e.AverageExecutionTime.TotalMilliseconds:F0} ms, " +
             $"threshold {e.Threshold.TotalMilliseconds:F0} ms).");
 
-        Dispatcher.InvokeAsync(() => ShowPluginInfoBar(
-            e.PluginId,
-            $"Plugin '{e.PluginName}' is slowing down the IDE " +
-            $"(avg {e.AverageExecutionTime.TotalMilliseconds:F0} ms).",
-            showDisable: true, showRestart: true));
+        Dispatcher.InvokeAsync(() =>
+        {
+            UpdatePluginStatusBar();
+            ShowPluginInfoBar(
+                e.PluginId,
+                $"Plugin '{e.PluginName}' is slowing down the IDE " +
+                $"(avg {e.AverageExecutionTime.TotalMilliseconds:F0} ms).",
+                showDisable: true, showRestart: true);
+        });
+    }
+
+    private void OnStatusBarBlinkTick(object? sender, EventArgs e)
+    {
+        if (PluginStatusIcon is null) return;
+        _statusBarBlinkState = !_statusBarBlinkState;
+        PluginStatusIcon.Opacity = _statusBarBlinkState ? 1.0 : 0.3;
     }
 
     // --- Plugin InfoBar (VS-style notification banner) -------------------
@@ -262,7 +304,7 @@ public partial class MainWindow
     // --- Plugin status bar ----------------------------------------------------
 
     /// <summary>
-    /// Refreshes the plugin count and fault-warning badge in the status bar.
+    /// Refreshes the plugin count, fault badge, tooltip, and blink state in the status bar.
     /// Must be called on the Dispatcher thread.
     /// </summary>
     private void UpdatePluginStatusBar()
@@ -279,24 +321,65 @@ public partial class MainWindow
                 ? $"{loaded} plugin{(loaded == 1 ? "" : "s")}"
                 : $"{loaded}/{total} plugins";
 
-        // Color icon green = all healthy, amber = some not loaded, red = faults
+        // Aggregate metrics for tooltip
+        double totalCpu = 0;
+        long   totalMem = 0;
+        string lastLoaded = "—";
+        DateTime? lastTime = null;
+
+        foreach (var entry in all.Where(e => e.State == SDK.Models.PluginState.Loaded))
+        {
+            var snap = entry.Diagnostics.GetLatest();
+            if (snap is not null) { totalCpu += snap.CpuPercent; totalMem += snap.MemoryBytes; }
+            if (entry.LoadedAt.HasValue && (lastTime is null || entry.LoadedAt > lastTime))
+            {
+                lastTime   = entry.LoadedAt;
+                lastLoaded = $"{entry.Manifest.Name} ({entry.InitDuration.TotalMilliseconds:F0} ms)";
+            }
+        }
+
+        // Build tooltip
+        var tooltipLines = new System.Text.StringBuilder();
+        tooltipLines.AppendLine($"Plugins: {loaded}/{total} loaded");
+        if (loaded > 0)
+        {
+            tooltipLines.AppendLine($"CPU avg: {totalCpu / loaded:F1}%   RAM: {totalMem / 1024 / 1024} MB");
+            tooltipLines.AppendLine($"Last loaded: {lastLoaded}");
+        }
+        if (_slowPluginName is not null)
+            tooltipLines.AppendLine($"⚠ Slow plugin: {_slowPluginName}");
+        tooltipLines.Append(_pluginFaultCount > 0
+            ? $"⛔ {_pluginFaultCount} fault(s) — click to open Plugin Manager"
+            : "Click to open Plugin Manager");
+
+        PluginStatusItem.ToolTip = tooltipLines.ToString().TrimEnd();
+
+        // Icon color: red = faults, amber = slow or partial, green = healthy
         if (_pluginFaultCount > 0)
         {
             PluginStatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(0xEF, 0x44, 0x44));
+            // Start blink
+            if (_statusBarBlinkTimer is not null && !_statusBarBlinkTimer.IsEnabled)
+                _statusBarBlinkTimer.Start();
         }
-        else if (loaded < total)
+        else if (_slowPluginName is not null || loaded < total)
         {
             PluginStatusIcon.Foreground = new SolidColorBrush(Color.FromRgb(0xF5, 0x9E, 0x0B));
+            _statusBarBlinkTimer?.Stop();
+            PluginStatusIcon.Opacity = 1.0;
         }
         else
         {
             PluginStatusIcon.Foreground = (Brush?)TryFindResource("DockTabActiveTextBrush")
                                           ?? Brushes.White;
+            _statusBarBlinkTimer?.Stop();
+            PluginStatusIcon.Opacity = 1.0;
         }
 
+        // Fault badge
         if (_pluginFaultCount > 0)
         {
-            PluginWarningText.Text   = _pluginFaultCount.ToString();
+            PluginWarningText.Text        = _pluginFaultCount.ToString();
             PluginWarningBadge.Visibility = Visibility.Visible;
         }
         else
@@ -306,7 +389,69 @@ public partial class MainWindow
     }
 
     private void OnPluginStatusBarClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        => OnOpenPluginManager(sender, new RoutedEventArgs());
+    {
+        if (e.ChangedButton == System.Windows.Input.MouseButton.Left)
+            OnOpenPluginManager(sender, new RoutedEventArgs());
+        else if (e.ChangedButton == System.Windows.Input.MouseButton.Right)
+            OpenPluginQuickStatusPopup();
+    }
+
+    private void OpenPluginQuickStatusPopup()
+    {
+        if (_pluginHost is null || PluginStatusItem is null) return;
+
+        var content = new WpfHexEditor.App.Controls.PluginQuickStatusPopup
+        {
+            DataContext = new WpfHexEditor.App.ViewModels.PluginQuickStatusViewModel(
+                _pluginHost,
+                () => OnOpenPluginManager(this, new RoutedEventArgs()),
+                () => OnInstallPluginFromStatusBar())
+        };
+
+        var popup = new System.Windows.Controls.Primitives.Popup
+        {
+            Child           = content,
+            PlacementTarget = PluginStatusItem,
+            Placement       = System.Windows.Controls.Primitives.PlacementMode.Top,
+            StaysOpen       = false,
+            AllowsTransparency = true
+        };
+        popup.IsOpen = true;
+    }
+
+    /// <summary>Right-click on status bar plugin indicator → quick status popup.</summary>
+    private void OnPluginStatusBarRightClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        e.Handled = true;
+        OpenPluginQuickStatusPopup();
+    }
+
+    /// <summary>Plugins > Install from File... menu item handler.</summary>
+    internal void OnInstallPluginFromMenu(object sender, RoutedEventArgs e)
+        => OnInstallPluginFromStatusBar();
+
+    internal void OnInstallPluginFromStatusBar()
+    {
+        // Reuse existing Plugin Manager VM if open, else open plugin manager then invoke install
+        OnOpenPluginManager(this, new RoutedEventArgs());
+    }
+
+    internal void OnRefreshAllPlugins(object sender, RoutedEventArgs e)
+    {
+        if (_pluginHost is null) return;
+        _ = Task.Run(async () =>
+        {
+            foreach (var entry in _pluginHost.GetAllPlugins()
+                         .Where(p => p.State == SDK.Models.PluginState.Loaded))
+                await _pluginHost.ReloadPluginAsync(entry.Manifest.Id).ConfigureAwait(false);
+        });
+    }
+
+    internal void OnOpenPluginSettings(object sender, RoutedEventArgs e)
+    {
+        // Open Options dialog at the Plugins page
+        OnSettings(sender, e);
+    }
 
     // --- Plugin Manager document tab ------------------------------------
 
@@ -377,6 +522,27 @@ public partial class MainWindow
     }
 
     // --- Content factories for panels that may be restored from layout --
+
+    /// <summary>
+    /// Creates the Plugin Manager tab during layout restoration.
+    /// If the plugin system is not yet initialised, the DataContext is deferred.
+    /// </summary>
+    private UIElement CreatePluginManagerContent()
+    {
+        var control = new PluginManagerControl();
+
+        if (_pluginHost is not null)
+        {
+            var vm = new PluginManagerViewModel(_pluginHost, Dispatcher);
+            control.DataContext = vm;
+        }
+        else
+        {
+            _pendingPluginManagerControl = control;  // wire up after InitializePluginSystemAsync
+        }
+
+        return control;
+    }
 
     /// <summary>
     /// Creates the Terminal panel during layout restoration.
@@ -461,6 +627,65 @@ public partial class MainWindow
         DockHost.RebuildVisualTree();
     }
 
+    // --- EventBus handlers -----------------------------------------------
+
+    /// <summary>
+    /// Called when the CustomParserTemplate plugin applies a template.
+    /// Routes parsed blocks to the MainWindow-managed ParsedFieldsPanel.
+    /// Must be called on the UI thread (PluginEventBus dispatches synchronously).
+    /// </summary>
+    private void OnTemplateAppliedViaPlugin(TemplateApplyRequestedEvent evt)
+    {
+        Dispatcher.InvokeAsync(() =>
+        {
+            if (ActiveHexEditor is not { IsFileOrStreamLoaded: true } hex)
+                return;
+
+            ShowOrCreatePanel("Parsed Fields", ParsedFieldsPanelContentId, DockDirection.Right);
+            if (_parsedFieldsPanel is null) return;
+
+            var allBytes = hex.GetAllBytes();
+
+            _parsedFieldsPanel.Clear();
+            _parsedFieldsPanel.TotalFileSize = allBytes?.LongLength ?? 0;
+            _parsedFieldsPanel.FormatInfo = new WpfHexEditor.Core.Interfaces.FormatInfo
+            {
+                IsDetected  = true,
+                Name        = evt.TemplateName,
+                Description = string.Empty,
+                Category    = "Custom Template"
+            };
+
+            foreach (var block in evt.Blocks)
+            {
+                var offset = (int)block.Offset;
+                if (allBytes is null || offset < 0 || offset + block.Length > allBytes.Length)
+                    continue;
+
+                var data = new byte[block.Length];
+                Array.Copy(allBytes, offset, data, 0, block.Length);
+                var (rawVal, fmtVal) = InterpretTemplateBytes(data, block.TypeHint);
+
+                _parsedFieldsPanel.ParsedFields.Add(
+                    new WpfHexEditor.Core.ViewModels.ParsedFieldViewModel
+                    {
+                        Name           = block.Name,
+                        Offset         = offset,
+                        Length         = block.Length,
+                        RawValue       = rawVal,
+                        FormattedValue = fmtVal,
+                        ValueType      = block.TypeHint,
+                        Description    = block.DisplayValue,
+                        IsValid        = true
+                    });
+            }
+
+            _parsedFieldsPanel.RefreshView();
+            if (RefreshText is not null)
+                RefreshText.Text = $"Template '{evt.TemplateName}' applied — {evt.Blocks.Count} fields.";
+        });
+    }
+
     // --- Plugin system shutdown ------------------------------------------
 
     private async Task ShutdownPluginSystemAsync()
@@ -468,7 +693,10 @@ public partial class MainWindow
         if (_pluginHost is null) return;
         _pluginHost.PluginCrashed      -= OnPluginCrashed;
         _pluginHost.SlowPluginDetected -= OnSlowPluginDetected;
-        // PluginLoaded/PluginUnloaded lambdas are fire-and-forget; no need to unsubscribe explicitly.
+        _pluginHost.PluginLoaded       -= OnPluginLoadedOrUnloaded;
+        _pluginHost.PluginUnloaded     -= OnPluginLoadedOrUnloaded;
+        _statusBarBlinkTimer?.Stop();
+        _statusBarBlinkTimer = null;
         await _pluginHost.DisposeAsync().ConfigureAwait(false);
         _pluginHost = null;
     }

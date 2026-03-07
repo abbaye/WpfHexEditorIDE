@@ -87,6 +87,20 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
 
     public string? FaultMessage => _entry.FaultException?.Message;
 
+    /// <summary>
+    /// Set to true by PluginManagerViewModel when SlowPluginDetected fires for this plugin.
+    /// Drives the "SLOW" badge visibility in the list.
+    /// </summary>
+    private bool _isSlow;
+    public bool IsSlow
+    {
+        get => _isSlow;
+        set { _isSlow = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Category label used for grouping in the plugin list.</summary>
+    public string CategoryLabel => _entry.Manifest.TrustedPublisher ? "Official" : "Community";
+
     // Live diagnostics
     public double CpuPercent { get; private set; }
     public long MemoryMb { get; private set; }
@@ -136,24 +150,27 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
 
     // -- Plugin options --------------------------------------------------------
 
-    /// <summary>True if the plugin exposes an options page via IPluginWithOptions.</summary>
-    public bool HasOptions => _entry.Instance is SDK.Contracts.IPluginWithOptions;
+    /// <summary>True if the plugin instance is loaded and exposes an options page.</summary>
+    public bool HasOptions => _entry.Instance is not null && _entry.Instance is SDK.Contracts.IPluginWithOptions;
 
     private System.Windows.FrameworkElement? _optionsPage;
 
     /// <summary>
-    /// Lazily created options page control. Null if the plugin has no options.
-    /// Calls LoadOptions() each time the tab is first shown.
+    /// Lazily created options page control. Null if the plugin has no options or is not loaded.
+    /// LoadOptions() is called on first access; the control is cached afterwards.
     /// </summary>
     public System.Windows.FrameworkElement? OptionsPage
     {
         get
         {
-            if (_optionsPage is null && _entry.Instance is SDK.Contracts.IPluginWithOptions opts)
-            {
-                opts.LoadOptions();
-                _optionsPage = opts.CreateOptionsPage();
-            }
+            if (_optionsPage is not null) return _optionsPage;
+            if (_entry.Instance is null) return null;
+            if (_entry.Instance is not SDK.Contracts.IPluginWithOptions opts) return null;
+
+            // LoadOptions/CreateOptionsPage may do I/O — call synchronously here but OK since
+            // this getter is triggered by tab selection (UI thread, user interaction, not hot path).
+            opts.LoadOptions();
+            _optionsPage = opts.CreateOptionsPage();
             return _optionsPage;
         }
     }

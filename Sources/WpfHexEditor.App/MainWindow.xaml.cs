@@ -93,6 +93,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         "GoToOffset", typeof(MainWindow),
         new InputGestureCollection { new KeyGesture(Key.G, ModifierKeys.Control) });
 
+    /// <summary>Ctrl+Shift+P — opens the Plugin Manager panel.</summary>
+    public static readonly RoutedCommand OpenPluginManagerCommand = new RoutedCommand(
+        "OpenPluginManager", typeof(MainWindow),
+        new InputGestureCollection { new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift) });
+
     // --- Constants -----------------------------------------------------
     private static readonly string LayoutFilePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -137,20 +142,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     // Properties panel (persistent singleton)
     private PropertiesPanel? _propertiesPanel;
 
-    // Custom Parser Template panel (persistent singleton)
-    private WpfHexEditor.Panels.BinaryAnalysis.CustomParserTemplatePanel? _customParserPanel;
-
-    private const string CustomParserPanelContentId = "panel-custom-parser";
-
     // Error Panel (persistent singleton)
     private ErrorPanel? _errorPanel;
     private const string ErrorPanelContentId    = "panel-errors";
     private const string OptionsContentId       = "panel-options";
-    private const string DataInspectorPanelContentId      = "panel-data-inspector";
-    private const string StructureOverlayPanelContentId   = "panel-structure-overlay";
-    private const string FileStatsPanelContentId           = "panel-file-statistics";
-    private const string PatternAnalysisPanelContentId    = "panel-pattern-analysis";
-    private const string FormatInfoPanelContentId         = "panel-format-info";
     private const string FileComparisonPanelContentId    = "panel-file-comparison";
     private const string ArchivePanelContentId           = "panel-archive";
     private string _lastAppliedTheme = string.Empty;
@@ -164,13 +159,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // Output Panel (persistent singleton — pre-created so OutputLogger works from startup)
     private OutputPanel? _outputPanel;
-
-    // Analysis panels (persistent singletons)
-    private WpfHexEditor.Panels.BinaryAnalysis.DataInspectorPanel?     _dataInspectorPanel;
-    private WpfHexEditor.Panels.BinaryAnalysis.StructureOverlayPanel?  _structureOverlayPanel;
-    private WpfHexEditor.Panels.BinaryAnalysis.FileStatisticsPanel?    _fileStatisticsPanel;
-    private WpfHexEditor.Panels.BinaryAnalysis.PatternAnalysisPanel?   _patternAnalysisPanel;
-    private WpfHexEditor.Panels.BinaryAnalysis.EnrichedFormatInfoPanel? _formatInfoPanel;
 
     // FileOps panels (persistent singletons)
     private WpfHexEditor.Panels.FileOps.ArchiveStructurePanel? _archivePanel;
@@ -793,22 +781,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         };
         engine.Dock(parsedFields, layout.MainDocumentHost, DockDirection.Right);
 
-        // Additional right-side analysis panels (tabs alongside Parsed Fields)
-        var dataInspector = new DockItem { Title = "Data Inspector", ContentId = DataInspectorPanelContentId };
-        engine.Dock(dataInspector, parsedFields.Owner!, DockDirection.Center);
-
-        var structureOverlay = new DockItem { Title = "Structure Overlay", ContentId = StructureOverlayPanelContentId };
-        engine.Dock(structureOverlay, parsedFields.Owner!, DockDirection.Center);
-
-        var formatInfo = new DockItem { Title = "Format Info", ContentId = FormatInfoPanelContentId };
-        engine.Dock(formatInfo, parsedFields.Owner!, DockDirection.Center);
-
-        // File Statistics docked on the right alongside Parsed Fields (vertical scroll content)
-        var fileStats = new DockItem { Title = "File Statistics", ContentId = FileStatsPanelContentId };
-        engine.Dock(fileStats, parsedFields.Owner!, DockDirection.Center);
-
-        var patternAnalysis = new DockItem { Title = "Pattern Analysis", ContentId = PatternAnalysisPanelContentId };
-        engine.Dock(patternAnalysis, output.Owner!, DockDirection.Center);
+        // Note: analysis panels (DataInspector, StructureOverlay, FormatInfo, FileStatistics, PatternAnalysis)
+        // are now registered by their respective plugins via UIRegistry.RegisterPanel.
+        // They dock automatically based on PanelDescriptor.DefaultDockSide.
 
         ApplyLayout(layout, engine);
         OutputLogger.Debug("Default layout applied.");
@@ -927,19 +902,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             "panel-output"             => CreateOutputContent(),
             ParsedFieldsPanelContentId => CreateParsedFieldsContent(),
             "panel-properties"         => CreatePropertiesContent(),
-            CustomParserPanelContentId => CreateCustomParserContent(),
             ErrorPanelContentId        => CreateErrorPanelContent(),
-            DataInspectorPanelContentId    => CreateDataInspectorContent(),
-            StructureOverlayPanelContentId => CreateStructureOverlayContent(),
-            FileStatsPanelContentId        => CreateFileStatsContent(),
-            PatternAnalysisPanelContentId  => CreatePatternAnalysisContent(),
-            FormatInfoPanelContentId       => CreateFormatInfoContent(),
             FileComparisonPanelContentId   => CreateFileComparisonContent(),
             ArchivePanelContentId          => CreateArchivePanelContent(),
             OptionsContentId               => CreateOptionsContent(),
             "doc-welcome"                  => CreateWelcomeContent(),
             TerminalPanelContentId         => CreateTerminalPanelContent(),
             PluginMonitorContentId         => CreatePluginMonitorPanelContent(),
+            PluginManagerContentId         => CreatePluginManagerContent(),
             _ when item.ContentId.StartsWith("doc-file-") => CreateSmartFileEditorContent(item),
             _ when item.ContentId.StartsWith("doc-hex-")  => WrapHexDocItemWithInfoBar(item),
             _ when item.ContentId.StartsWith("doc-proj-") => CreateProjectItemContent(item),
@@ -1004,70 +974,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         return _propertiesPanel;
     }
 
-    private UIElement CreateCustomParserContent()
-    {
-        if (_customParserPanel is null)
-        {
-            _customParserPanel = new WpfHexEditor.Panels.BinaryAnalysis.CustomParserTemplatePanel();
-            _customParserPanel.TemplateApplyRequested += OnTemplateApplyRequested;
-        }
-        return _customParserPanel;
-    }
-
     private UIElement CreateOutputContent()
     {
         _outputPanel ??= new OutputPanel();
         return _outputPanel;
-    }
-
-    private UIElement CreateDataInspectorContent()
-    {
-        _dataInspectorPanel ??= new WpfHexEditor.Panels.BinaryAnalysis.DataInspectorPanel();
-
-        // Seed with current caret/selection bytes when panel is first shown
-        if (_connectedHexEditor is not null)
-            _dataInspectorPanel.UpdateBytes(_connectedHexEditor.GetSelectionByteArray());
-
-        return _dataInspectorPanel;
-    }
-
-    private UIElement CreateStructureOverlayContent()
-    {
-        if (_structureOverlayPanel is null)
-        {
-            _structureOverlayPanel = new WpfHexEditor.Panels.BinaryAnalysis.StructureOverlayPanel();
-            _structureOverlayPanel.OnFieldSelectedForHighlight += OnStructureOverlayFieldSelected;
-        }
-        return _structureOverlayPanel;
-    }
-
-    private UIElement CreateFileStatsContent()
-    {
-        if (_fileStatisticsPanel is null)
-        {
-            _fileStatisticsPanel = new WpfHexEditor.Panels.BinaryAnalysis.FileStatisticsPanel();
-            _fileStatisticsPanel.RefreshRequested += async (_, _) =>
-            {
-                if (_connectedHexEditor is not null)
-                    await RefreshAnalysisPanelsAsync(_connectedHexEditor);
-            };
-            // Auto-refresh if a file is already loaded (panel opened/restored after the file)
-            if (_connectedHexEditor is not null)
-                _ = RefreshAnalysisPanelsAsync(_connectedHexEditor);
-        }
-        return _fileStatisticsPanel;
-    }
-
-    private UIElement CreatePatternAnalysisContent()
-    {
-        _patternAnalysisPanel ??= new WpfHexEditor.Panels.BinaryAnalysis.PatternAnalysisPanel();
-        return _patternAnalysisPanel;
-    }
-
-    private UIElement CreateFormatInfoContent()
-    {
-        _formatInfoPanel ??= new WpfHexEditor.Panels.BinaryAnalysis.EnrichedFormatInfoPanel();
-        return _formatInfoPanel;
     }
 
     private UIElement CreateFileComparisonContent()
@@ -1258,8 +1168,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             _connectedHexEditor = hexEditor;
             hexEditor.ConnectParsedFieldsPanel(_parsedFieldsPanel);
-            hexEditor.SelectionChanged += OnHexSelectionChangedForInspector;
-            hexEditor.FormatDetected   += OnHexFormatDetected;
             ActiveDocumentEditor       = hexEditor as IDocumentEditor;
             ActiveHexEditor            = hexEditor;
             ActiveStatusBarContributor = hexEditor as IStatusBarContributor;
@@ -3013,20 +2921,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _errorPanel?.RemoveSource(prevDiag);
             _connectedHexEditor?.DisconnectParsedFieldsPanel();
             if (_connectedHexEditor is not null)
-            {
-                _connectedHexEditor.ByteDistributionPanel  = null;
-                _connectedHexEditor.SelectionChanged       -= OnHexSelectionChangedForInspector;
-                _connectedHexEditor.FormatDetected         -= OnHexFormatDetected;
-            }
+                _connectedHexEditor.ByteDistributionPanel = null;
 
             _connectedHexEditor = hex;
             _connectedHexEditor.ConnectParsedFieldsPanel(_parsedFieldsPanel);
             if (_connectedHexEditor is IDiagnosticSource newDiag)
                 EnsureErrorPanelInstance().AddSource(newDiag);
-            _connectedHexEditor.SelectionChanged += OnHexSelectionChangedForInspector;
-            _connectedHexEditor.FormatDetected   += OnHexFormatDetected;
 
-            // Refresh data-intensive analysis panels in background
+            // Refresh archive-structure panel for ZIP files (analysis panels handled by plugins)
             _ = RefreshAnalysisPanelsAsync(_connectedHexEditor);
         }
 
@@ -3356,21 +3258,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 if (ReferenceEquals(hex, _connectedHexEditor))
                 {
                     hex.DisconnectParsedFieldsPanel();
-                    hex.SelectionChanged -= OnHexSelectionChangedForInspector;
-                    hex.FormatDetected   -= OnHexFormatDetected;
                     _connectedHexEditor = null;
                     _parsedFieldsPanel?.Clear();
-                    _dataInspectorPanel?.Clear();
-                    _structureOverlayPanel?.ClearAllOverlays();
-                    _fileStatisticsPanel?.UpdateStatistics(new WpfHexEditor.Panels.BinaryAnalysis.FileStats
-                    {
-                        FormatName    = "—",
-                        FileSize      = 0,
-                        HealthScore   = 0,
-                        HealthMessage = "No file loaded"
-                    });
-                    _patternAnalysisPanel?.Analyze(Array.Empty<byte>());
-                    _formatInfoPanel?.ClearFormat();
+                    // Plugins handle their own clear via FileOpened event when next file opens.
                 }
                 if (ReferenceEquals(hex, ActiveHexEditor))
                 {
@@ -4250,7 +4140,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         => ShowOrCreatePanel("Properties", "panel-properties", DockDirection.Right);
 
     private void OnShowCustomParserTemplate(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("Custom Parser Template", CustomParserPanelContentId, DockDirection.Right);
+        => ShowOrCreatePanel("Custom Parser Template", "WpfHexEditor.Plugins.CustomParserTemplate.Panel.CustomParserTemplatePanel", DockDirection.Right);
 
     private void OnCompareFiles(object sender, RoutedEventArgs e)
     {
@@ -4293,63 +4183,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
         DockHost.RebuildVisualTree();
         _ = viewer.OpenAsync(filePath);
-    }
-
-    private void OnTemplateApplyRequested(object? sender,
-        WpfHexEditor.Panels.BinaryAnalysis.TemplateApplyEventArgs e)
-    {
-        if (ActiveHexEditor is not { IsFileOrStreamLoaded: true } hex)
-        {
-            System.Windows.MessageBox.Show(
-                "Please open a file in the HexEditor before applying a template.",
-                "Apply Template", System.Windows.MessageBoxButton.OK,
-                System.Windows.MessageBoxImage.Warning);
-            return;
-        }
-
-        var bytes    = hex.GetAllBytes();
-        var template = e.Template;
-
-        // Ensure ParsedFieldsPanel is visible and initialised
-        ShowOrCreatePanel("Parsed Fields", ParsedFieldsPanelContentId, DockDirection.Right);
-        if (_parsedFieldsPanel is null) return;
-
-        _parsedFieldsPanel.Clear();
-        _parsedFieldsPanel.TotalFileSize = bytes.LongLength;
-        _parsedFieldsPanel.FormatInfo = new WpfHexEditor.Core.Interfaces.FormatInfo
-        {
-            IsDetected  = true,
-            Name        = template.Name,
-            Description = template.Description ?? string.Empty,
-            Category    = "Custom Template",
-        };
-
-        foreach (var block in template.Blocks)
-        {
-            if (block.Offset < 0 || block.Offset + block.Length > bytes.Length)
-                continue;
-
-            var data = new byte[block.Length];
-            Array.Copy(bytes, block.Offset, data, 0, block.Length);
-            var (rawVal, fmtVal) = InterpretTemplateBytes(data, block.ValueType);
-
-            _parsedFieldsPanel.ParsedFields.Add(
-                new WpfHexEditor.Core.ViewModels.ParsedFieldViewModel
-                {
-                    Name           = block.Name ?? $"Field@0x{block.Offset:X}",
-                    Offset         = block.Offset,
-                    Length         = block.Length,
-                    RawValue       = rawVal,
-                    FormattedValue = fmtVal,
-                    ValueType      = block.ValueType,
-                    Description    = block.Description,
-                    Color          = block.Color,
-                    IsValid        = true,
-                });
-        }
-
-        _parsedFieldsPanel.RefreshView();
-        RefreshText.Text = $"Template '{template.Name}' applied — {template.Blocks.Count} fields.";
     }
 
     private static (object rawVal, string fmtVal) InterpretTemplateBytes(byte[] data, string? type)
@@ -4412,43 +4245,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnShowErrorPanel(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Error List", ErrorPanelContentId, DockDirection.Bottom);
 
-    private void OnHexSelectionChangedForInspector(object? sender, WpfHexEditor.Core.Events.HexSelectionChangedEventArgs e)
-    {
-        if (_dataInspectorPanel is null || sender is not HexEditorControl hex) return;
-        var bytes = hex.GetSelectionByteArray();
-        _dataInspectorPanel.UpdateBytes(bytes);
-    }
-
-    private void OnHexFormatDetected(object? sender, WpfHexEditor.Core.Events.FormatDetectedEventArgs e)
-    {
-        if (e.Success && e.Format is not null)
-            _formatInfoPanel?.SetFormat(e.Format);
-        else
-            _formatInfoPanel?.ClearFormat();
-    }
-
-    private void OnStructureOverlayFieldSelected(object? sender, WpfHexEditor.Core.Models.StructureOverlay.OverlayField field)
-    {
-        if (_connectedHexEditor is not { } hex) return;
-        hex.SelectionStart = field.Offset;
-        hex.SelectionStop  = field.Offset + Math.Max(1, field.Length) - 1;
-    }
-
     private async System.Threading.Tasks.Task RefreshAnalysisPanelsAsync(HexEditorControl hex)
     {
         try
         {
-            var bytes = await System.Threading.Tasks.Task.Run(() =>
-            {
-                var all = hex.GetAllBytes();
-                return all.Length > 1_048_576 ? all[..1_048_576] : all;
-            });
-
-            if (!ReferenceEquals(hex, _connectedHexEditor)) return; // tab switched during loading
-
-            _structureOverlayPanel?.UpdateFileBytes(bytes);
-            _patternAnalysisPanel?.Analyze(bytes);
-
             // Auto-load archive structure for ZIP files
             if (_archivePanel is not null && !string.IsNullOrEmpty(hex.FileName))
             {
@@ -4465,37 +4265,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 }
             }
 
-            if (_fileStatisticsPanel is not null)
-            {
-                var fstats = await System.Threading.Tasks.Task.Run(
-                    () => new WpfHexEditor.BinaryAnalysis.Services.DataStatisticsService().CalculateStatistics(bytes));
-
-                if (!ReferenceEquals(hex, _connectedHexEditor)) return;
-
-                _fileStatisticsPanel.UpdateStatistics(new WpfHexEditor.Panels.BinaryAnalysis.FileStats
-                {
-                    FileName                 = System.IO.Path.GetFileName(hex.FileName ?? ""),
-                    FilePath                 = hex.FileName ?? "",
-                    AnalysisDate             = DateTime.Now,
-                    FileSize                 = hex.Length,
-                    FormatName               = System.IO.Path.GetExtension(hex.FileName ?? "").TrimStart('.').ToUpperInvariant(),
-                    Entropy                  = fstats.Entropy,
-                    DataType                 = fstats.EstimatedDataType.ToString(),
-                    MostCommonByte           = fstats.MostCommonByte,
-                    MostCommonBytePct        = fstats.MostCommonByteCount * 100.0 / Math.Max(1, bytes.Length),
-                    UniqueBytesCount         = fstats.UniqueBytesCount,
-                    NullBytePercentage       = fstats.NullBytePercentage,
-                    PrintableAsciiPercentage = fstats.PrintableAsciiPercentage,
-                    HealthScore              = 100,
-                    HealthMessage            = "File loaded",
-                    StructureValid           = true,
-                    ChecksumsPass            = true,
-                    ChecksumStatus           = "N/A",
-                    CompressionRatio         = 1.0,
-                    FieldCount               = 0,
-                    Anomalies                = new System.Collections.Generic.List<WpfHexEditor.Panels.BinaryAnalysis.AnomalyInfo>()
-                });
-            }
         }
         catch (Exception ex)
         {
@@ -4559,20 +4328,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         return root;
     }
 
+    // These panels are now managed by plugins — activate the plugin-registered panel by ContentId.
     private void OnShowDataInspectorPanel(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("Data Inspector", DataInspectorPanelContentId, DockDirection.Right);
+        => ShowOrCreatePanel("Data Inspector", "WpfHexEditor.Plugins.DataInspector.Panel.DataInspectorPanel", DockDirection.Right);
 
     private void OnShowStructureOverlayPanel(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("Structure Overlay", StructureOverlayPanelContentId, DockDirection.Right);
+        => ShowOrCreatePanel("Structure Overlay", "WpfHexEditor.Plugins.StructureOverlay.Panel.StructureOverlayPanel", DockDirection.Right);
 
     private void OnShowFileStatsPanel(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("File Statistics", FileStatsPanelContentId, DockDirection.Right);
+        => ShowOrCreatePanel("File Statistics", "WpfHexEditor.Plugins.FileStatistics.Panel.FileStatisticsPanel", DockDirection.Right);
 
     private void OnShowPatternAnalysisPanel(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("Pattern Analysis", PatternAnalysisPanelContentId, DockDirection.Bottom);
+        => ShowOrCreatePanel("Pattern Analysis", "WpfHexEditor.Plugins.PatternAnalysis.Panel.PatternAnalysisPanel", DockDirection.Bottom);
 
     private void OnShowFormatInfoPanel(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("Format Info", FormatInfoPanelContentId, DockDirection.Right);
+        => ShowOrCreatePanel("Format Info", "WpfHexEditor.Plugins.FormatInfo.Panel.EnrichedFormatInfoPanel", DockDirection.Right);
 
     private void OnShowFileComparisonPanel(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("File Comparison", FileComparisonPanelContentId, DockDirection.Bottom);

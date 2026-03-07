@@ -1,40 +1,40 @@
 // ==========================================================
-// Project: WpfHexEditor.Panels.BinaryAnalysis
+// Project: WpfHexEditor.Plugins.DataInspector
 // File: BarChartPanel.cs
 // Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-06
 // Description:
 //     Bar chart FrameworkElement displaying byte frequency distribution (0x00-0xFF).
-//     Implements IByteDistributionPanel to connect to HexEditor via the
-//     ByteDistributionPanel dependency property.
-//     Migrated from WpfHexEditor.BarChart (now deleted). Resource strings inlined.
+//     Moved from WpfHexEditor.Panels.BinaryAnalysis.Controls to live entirely
+//     within the DataInspector plugin. Managed directly by DataInspectorPanel
+//     via UpdateData() / Clear() — not wired via HexEditor ByteDistributionPanel DP.
 //
 // Architecture Notes:
 //     - DrawingContext-based custom rendering for maximum performance
 //     - Zoom support via ViewStartByte/ViewEndByte (ZoomToRange / ZoomReset)
 //     - Default range 0-255 is fully backward-compatible
 //     - No external resource file dependency (strings inlined as constants)
+//     - No dependency on WpfHexEditor.Core (plugin boundary respected)
 // ==========================================================
 
 using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using WpfHexEditor.Core.Interfaces;
 
-namespace WpfHexEditor.Panels.BinaryAnalysis.Controls
+namespace WpfHexEditor.Plugins.DataInspector.Controls
 {
     /// <summary>
     /// Bar chart panel displaying byte frequency distribution (0x00-0xFF).
-    /// Implements <see cref="IByteDistributionPanel"/> to connect to HexEditor via
-    /// the <c>ByteDistributionPanel</c> dependency property.
+    /// Managed directly by <see cref="Views.DataInspectorPanel"/> — data is pushed
+    /// via <see cref="UpdateData"/> and <see cref="Clear"/>; no HexEditor DP binding.
     ///
     /// Supports zoom via <see cref="ZoomToRange"/> — only the bytes in
     /// [<see cref="ViewStartByte"/>, <see cref="ViewEndByte"/>] are rendered.
     /// Default range is 0-255 (full distribution, backward-compatible).
     /// </summary>
-    public class BarChartPanel : FrameworkElement, IByteDistributionPanel
+    public class BarChartPanel : FrameworkElement
     {
         #region Inlined resource strings
 
