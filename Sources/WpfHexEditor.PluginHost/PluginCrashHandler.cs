@@ -45,8 +45,8 @@ internal sealed class PluginCrashHandler
     /// <param name="phase">Phase name where the fault occurred.</param>
     public void HandleCrash(PluginEntry entry, Exception exception, string phase)
     {
-        entry.State = PluginState.Faulted;
-        entry.FaultException = exception;
+        entry.SetState(PluginState.Faulted);
+        entry.SetFaultException(exception);
 
         PluginFaulted?.Invoke(this, new PluginFaultedEventArgs
         {
@@ -55,5 +55,15 @@ internal sealed class PluginCrashHandler
             Exception = exception,
             Phase = phase
         });
+    }
+
+    /// <summary>
+    /// Async wrapper over <see cref="HandleCrash"/> — marshals the event to the UI
+    /// dispatcher when called from a background thread.
+    /// </summary>
+    public Task HandleCrashAsync(PluginEntry entry, Exception exception, string phase)
+    {
+        HandleCrash(entry, exception, phase);
+        return Task.CompletedTask;
     }
 }

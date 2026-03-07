@@ -4,6 +4,8 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.IO;
+
 namespace WpfHexEditor.PluginHost;
 
 /// <summary>

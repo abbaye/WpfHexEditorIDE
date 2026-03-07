@@ -176,7 +176,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
             entry.SetState(PluginState.Faulted);
             entry.SetFaultException(ex);
             RaiseOnDispatcher(() => PluginCrashed?.Invoke(this,
-                new PluginFaultedEventArgs(manifest.Id, manifest.Name, ex, "Load")));
+                new PluginFaultedEventArgs { PluginId = manifest.Id, PluginName = manifest.Name, Exception = ex, Phase = "Load" }));
             throw;
         }
     }

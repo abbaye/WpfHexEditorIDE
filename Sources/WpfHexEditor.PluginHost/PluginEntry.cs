@@ -60,4 +60,34 @@ public sealed class PluginEntry
     {
         Manifest = manifest;
     }
+
+    // -- Mutation helpers (called by WpfPluginHost) ----------------------------
+
+    internal void SetState(PluginState state) => _state = state;
+
+    internal void SetInstance(IWpfHexEditorPlugin instance, PluginLoadContext? context)
+    {
+        Instance = instance;
+        LoadContext = context;
+    }
+
+    internal void SetInitDuration(TimeSpan duration) => InitDuration = duration;
+
+    internal void SetLoadedAt(DateTime timestamp)
+    {
+        LoadedAt = timestamp;
+        Diagnostics.SetLoadTime(timestamp);
+    }
+
+    internal void SetFaultException(Exception exception) => FaultException = exception;
+
+    /// <summary>
+    /// Releases the plugin instance and unloads the AssemblyLoadContext (if collectible).
+    /// </summary>
+    internal void Unload()
+    {
+        Instance = null;
+        LoadContext?.Unload();
+        LoadContext = null;
+    }
 }

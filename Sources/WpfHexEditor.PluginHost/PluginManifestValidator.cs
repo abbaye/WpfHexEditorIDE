@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System.IO;
 using System.Security.Cryptography;
 using WpfHexEditor.SDK.Models;
 

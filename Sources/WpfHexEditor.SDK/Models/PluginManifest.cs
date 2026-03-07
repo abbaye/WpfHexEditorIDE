@@ -125,6 +125,12 @@ public sealed class PluginManifest
     /// </summary>
     [JsonPropertyName("uiElements")]
     public List<string> UiElements { get; set; } = [];
+
+    // -- Runtime (not serialized) ---------------------------------------------
+
+    /// <summary>Resolved directory path set by PluginHost during discovery. Not serialized.</summary>
+    [JsonIgnore]
+    public string? ResolvedDirectory { get; set; }
 }
 
 // ----------------------------------------------------------------------------
