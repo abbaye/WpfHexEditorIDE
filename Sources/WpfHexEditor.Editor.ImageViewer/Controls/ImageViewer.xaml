@@ -174,18 +174,20 @@ Architecture Notes:
                 <!-- Crop selection overlay — only shown in CropMode -->
                 <Canvas x:Name="CropOverlay"
                         Visibility="Collapsed"
+                        Background="Transparent"
                         IsHitTestVisible="True"
                         MouseLeftButtonDown="CropOverlay_MouseLeftButtonDown"
                         MouseMove="CropOverlay_MouseMove"
                         MouseLeftButtonUp="CropOverlay_MouseLeftButtonUp"
                         Cursor="Cross">
 
-                    <!-- Semi-transparent dark veil (dim everything outside selection) -->
-                    <Rectangle x:Name="CropVeil"
-                               Fill="#80000000"
-                               IsHitTestVisible="False"/>
+                    <!-- 4 veil regions surrounding the crop selection (darken cropped-out areas) -->
+                    <Rectangle x:Name="VeilTop"    Fill="#CC000000" IsHitTestVisible="False"/>
+                    <Rectangle x:Name="VeilBottom" Fill="#CC000000" IsHitTestVisible="False"/>
+                    <Rectangle x:Name="VeilLeft"   Fill="#CC000000" IsHitTestVisible="False"/>
+                    <Rectangle x:Name="VeilRight"  Fill="#CC000000" IsHitTestVisible="False"/>
 
-                    <!-- Selection rectangle with dashed accent-colored border -->
+                    <!-- Selection rectangle with dashed border -->
                     <Rectangle x:Name="CropSelection"
                                Visibility="Collapsed"
                                Fill="#20FFFFFF"
@@ -196,6 +198,48 @@ Architecture Notes:
                         <Rectangle.StrokeThickness>1.5</Rectangle.StrokeThickness>
                         <Rectangle.StrokeDashArray>4 2</Rectangle.StrokeDashArray>
                     </Rectangle>
+
+                    <!-- 8 crop resize handles (corners + edge midpoints) -->
+                    <Rectangle x:Name="CropHandleTL" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                               Cursor="SizeNWSE" Visibility="Collapsed" Panel.ZIndex="10"
+                               MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
+                               MouseMove="CropHandle_MouseMove"
+                               MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
+                    <Rectangle x:Name="CropHandleTC" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                               Cursor="SizeNS" Visibility="Collapsed" Panel.ZIndex="10"
+                               MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
+                               MouseMove="CropHandle_MouseMove"
+                               MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
+                    <Rectangle x:Name="CropHandleTR" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                               Cursor="SizeNESW" Visibility="Collapsed" Panel.ZIndex="10"
+                               MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
+                               MouseMove="CropHandle_MouseMove"
+                               MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
+                    <Rectangle x:Name="CropHandleML" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                               Cursor="SizeWE" Visibility="Collapsed" Panel.ZIndex="10"
+                               MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
+                               MouseMove="CropHandle_MouseMove"
+                               MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
+                    <Rectangle x:Name="CropHandleMR" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                               Cursor="SizeWE" Visibility="Collapsed" Panel.ZIndex="10"
+                               MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
+                               MouseMove="CropHandle_MouseMove"
+                               MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
+                    <Rectangle x:Name="CropHandleBL" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                               Cursor="SizeNESW" Visibility="Collapsed" Panel.ZIndex="10"
+                               MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
+                               MouseMove="CropHandle_MouseMove"
+                               MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
+                    <Rectangle x:Name="CropHandleBC" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                               Cursor="SizeNS" Visibility="Collapsed" Panel.ZIndex="10"
+                               MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
+                               MouseMove="CropHandle_MouseMove"
+                               MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
+                    <Rectangle x:Name="CropHandleBR" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                               Cursor="SizeNWSE" Visibility="Collapsed" Panel.ZIndex="10"
+                               MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
+                               MouseMove="CropHandle_MouseMove"
+                               MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
 
                 </Canvas>
 

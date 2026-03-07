@@ -29,6 +29,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Models;
@@ -66,6 +67,10 @@ namespace WpfHexEditor.HexEditor
         private CancellationTokenSource? _hashCts;
         private SelectionHashes?         _selectionHashes;
 
+        // Deferred one-shot refresh after selection stabilises
+        private readonly DispatcherTimer _idleRefreshTimer;
+        private long                     _idleSelectionSnapshot = -1;
+
         // Stored delegate for DependencyPropertyDescriptor unsubscription
         private readonly EventHandler _notifyChange;
 
@@ -74,41 +79,64 @@ namespace WpfHexEditor.HexEditor
         private readonly DependencyPropertyDescriptor _dpReadOnly;
         private readonly DependencyPropertyDescriptor _dpEditMode;
         private readonly DependencyPropertyDescriptor _dpBytesPerLine;
+        // Selection DPs: used instead of SelectionChanged event because the event
+        // is never raised during keyboard navigation (the anti-recursion guard in
+        // OnSelectionStartPropertyChanged short-circuits before firing it).
+        private readonly DependencyPropertyDescriptor _dpSelectionStart;
+        private readonly DependencyPropertyDescriptor _dpSelectionStop;
 
         public HexEditorPropertyProvider(HexEditor editor)
         {
             _editor = editor;
             _notifyChange = (_, _) => PropertiesChanged?.Invoke(this, EventArgs.Empty);
 
-            _editor.SelectionChanged += OnSelectionChanged;
-            _editor.FileOpened       += _notifyChange;
-            _editor.FileClosed       += OnFileClosed;
-            _editor.FormatDetected   += OnFormatDetected;
+            _editor.FileOpened     += _notifyChange;
+            _editor.FileClosed     += OnFileClosed;
+            _editor.FormatDetected += OnFormatDetected;
 
             _dpIsModified   = DependencyPropertyDescriptor.FromProperty(HexEditor.IsModifiedProperty,   typeof(HexEditor));
             _dpReadOnly     = DependencyPropertyDescriptor.FromProperty(HexEditor.ReadOnlyModeProperty, typeof(HexEditor));
             _dpEditMode     = DependencyPropertyDescriptor.FromProperty(HexEditor.EditModeProperty,     typeof(HexEditor));
             _dpBytesPerLine = DependencyPropertyDescriptor.FromProperty(HexEditor.BytePerLineProperty,  typeof(HexEditor));
+            // Watch selection DPs directly: the SelectionChanged event is never raised
+            // during keyboard navigation because OnSelectionStartPropertyChanged has an
+            // anti-recursion guard that returns before firing the event.
+            // DependencyPropertyDescriptor.ValueChanged fires independently of that guard.
+            _dpSelectionStart = DependencyPropertyDescriptor.FromProperty(HexEditor.SelectionStartProperty, typeof(HexEditor));
+            _dpSelectionStop  = DependencyPropertyDescriptor.FromProperty(HexEditor.SelectionStopProperty,  typeof(HexEditor));
 
-            _dpIsModified  .AddValueChanged(_editor, _notifyChange);
-            _dpReadOnly    .AddValueChanged(_editor, _notifyChange);
-            _dpEditMode    .AddValueChanged(_editor, _notifyChange);
-            _dpBytesPerLine.AddValueChanged(_editor, _notifyChange);
+            _dpIsModified    .AddValueChanged(_editor, _notifyChange);
+            _dpReadOnly      .AddValueChanged(_editor, _notifyChange);
+            _dpEditMode      .AddValueChanged(_editor, _notifyChange);
+            _dpBytesPerLine  .AddValueChanged(_editor, _notifyChange);
+            _dpSelectionStart.AddValueChanged(_editor, OnSelectionChanged);
+            _dpSelectionStop .AddValueChanged(_editor, OnSelectionChanged);
+
+            // One-shot timer: fires once after 400 ms of selection inactivity.
+            _idleRefreshTimer = new DispatcherTimer(DispatcherPriority.Background, editor.Dispatcher)
+            {
+                Interval = TimeSpan.FromMilliseconds(400)
+            };
+            _idleRefreshTimer.Tick += OnIdleRefreshTick;
         }
 
         // -- IDisposable ----------------------------------------------------------
 
         public void Dispose()
         {
-            _editor.SelectionChanged -= OnSelectionChanged;
-            _editor.FileOpened       -= _notifyChange;
-            _editor.FileClosed       -= OnFileClosed;
-            _editor.FormatDetected   -= OnFormatDetected;
+            _editor.FileOpened     -= _notifyChange;
+            _editor.FileClosed     -= OnFileClosed;
+            _editor.FormatDetected -= OnFormatDetected;
 
-            _dpIsModified  .RemoveValueChanged(_editor, _notifyChange);
-            _dpReadOnly    .RemoveValueChanged(_editor, _notifyChange);
-            _dpEditMode    .RemoveValueChanged(_editor, _notifyChange);
-            _dpBytesPerLine.RemoveValueChanged(_editor, _notifyChange);
+            _dpIsModified    .RemoveValueChanged(_editor, _notifyChange);
+            _dpReadOnly      .RemoveValueChanged(_editor, _notifyChange);
+            _dpEditMode      .RemoveValueChanged(_editor, _notifyChange);
+            _dpBytesPerLine  .RemoveValueChanged(_editor, _notifyChange);
+            _dpSelectionStart.RemoveValueChanged(_editor, OnSelectionChanged);
+            _dpSelectionStop .RemoveValueChanged(_editor, OnSelectionChanged);
+
+            _idleRefreshTimer.Stop();
+            _idleRefreshTimer.Tick -= OnIdleRefreshTick;
 
             _hashCts?.Cancel();
             _hashCts?.Dispose();
@@ -287,7 +315,7 @@ namespace WpfHexEditor.HexEditor
                     new()
                     {
                         Name          = "Edit mode",
-                        Value         = _editor.EditMode.ToString(),
+                        Value         = _editor.EditMode,   // keep as enum so SelectedItem matches AllowedValues
                         Type          = PropertyEntryType.Enum,
                         IsReadOnly    = false,
                         AllowedValues = editModeValues,
@@ -469,9 +497,30 @@ namespace WpfHexEditor.HexEditor
         private void OnSelectionChanged(object? sender, EventArgs e)
         {
             _selectionHashes = null;
+
+            // Do NOT fire PropertiesChanged here: GetProperties() opens FileStreams,
+            // reads bytes and computes entropy synchronously on the UI thread.
+            // Calling it on every keypress blocks WPF's message loop, causing sluggish
+            // navigation and scroll-jump artefacts from batched input events.
+            // Instead, restart the idle timer: the panel refreshes exactly once after
+            // the user stops navigating (400 ms of inactivity).
+            _idleSelectionSnapshot = _editor.SelectionStart;
+            _idleRefreshTimer.Stop();
+            _idleRefreshTimer.Start();
+        }
+
+        private void OnIdleRefreshTick(object? sender, EventArgs e)
+        {
+            // One-shot: stop immediately so the timer does not repeat.
+            _idleRefreshTimer.Stop();
+
+            if (_editor.SelectionStart != _idleSelectionSnapshot)
+                return; // Position moved again before the timer fired — skip.
+
+            // Position has been stable for 400 ms: start async hash if needed,
+            // then refresh the panel once.
             var sel = _editor.SelectionStart;
             var len = _editor.SelectionLength;
-
             if (len > 1 && len <= 16L * 1024 * 1024 && !string.IsNullOrEmpty(_editor.FileName))
                 BeginSelectionHashAsync(sel, len);
 

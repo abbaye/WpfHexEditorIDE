@@ -499,14 +499,23 @@ namespace WpfHexEditor.HexEditor
                 _viewModel.SelectionStop = new VirtualPosition(newPos);
             }
 
-            // Scroll to ensure new position is visible
+            // Scroll to ensure new position is visible.
+            // Always sync VerticalScroll.Value alongside the ViewModel: the ScrollBar has
+            // no binding and setting .Value programmatically does NOT fire VerticalScroll_Scroll
+            // (Scroll event is user-interaction only), so there is no feedback loop.
             long targetLine = newPos / _viewModel.BytePerLine;
             if (targetLine < _viewModel.ScrollPosition)
+            {
                 _viewModel.ScrollPosition = targetLine;
+                VerticalScroll.Value = targetLine;
+            }
             // VisibleLines has +2 safety margin (see HexEditor.Events.cs line 710)
             // Scroll when cursor reaches actual visible area boundary (VisibleLines - 2)
             else if (targetLine >= _viewModel.ScrollPosition + _viewModel.VisibleLines - 2)
+            {
                 _viewModel.ScrollPosition = targetLine - _viewModel.VisibleLines + 3;
+                VerticalScroll.Value = _viewModel.ScrollPosition;
+            }
 
             // Update UI
             UpdateSelectionInfo();

@@ -29,6 +29,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WpfHexEditor.Editor.Core;
+using Rectangle = System.Windows.Shapes.Rectangle;
 using WpfHexEditor.Editor.ImageViewer.Dialogs;
 using WpfHexEditor.Editor.ImageViewer.Transforms;
 
@@ -68,6 +69,12 @@ public sealed partial class ImageViewer : UserControl,
     private bool  _isCropMode;
     private bool  _isDraggingCrop;
     private Point _cropDragStart;   // in CropOverlay canvas coordinates
+    private Rect  _cropRect = Rect.Empty;
+
+    // Crop handle drag state
+    private string? _activeCropHandle;
+    private Point   _cropHandleDragStart;
+    private Rect    _cropRectAtHandleDragStart;
 
     // Persistence
     private double _restoredZoom;   // 0 = "fit to window"
@@ -107,8 +114,6 @@ public sealed partial class ImageViewer : UserControl,
 
         BuildToolbarItems();
         BuildStatusBarItems();
-
-        CropOverlay.SizeChanged += OnCropOverlaySizeChanged;
     }
 
     // -----------------------------------------------------------------------
@@ -376,7 +381,9 @@ public sealed partial class ImageViewer : UserControl,
             {
                 // Load via FileStream so the file handle is released immediately after
                 // EndInit() — BitmapImage.UriSource can hold a lock even with OnLoad.
-                using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                // FileShare.ReadWrite: allows the HexEditor (or any other consumer) to
+                // have the same file open concurrently without causing an IOException.
+                using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 var img = new BitmapImage();
                 img.BeginInit();
                 img.StreamSource = stream;
@@ -534,24 +541,28 @@ public sealed partial class ImageViewer : UserControl,
     public void ToggleCropMode()
     {
         _isCropMode = !_isCropMode;
-        CropOverlay.Visibility     = _isCropMode ? Visibility.Visible : Visibility.Collapsed;
+        CropOverlay.Visibility           = _isCropMode ? Visibility.Visible : Visibility.Collapsed;
         CropInstructionBanner.Visibility = _isCropMode ? Visibility.Visible : Visibility.Collapsed;
-        CropSelection.Visibility   = Visibility.Collapsed;
-        _isDraggingCrop            = false;
+        _isDraggingCrop                  = false;
+        _cropRect                        = Rect.Empty;
+        UpdateCropUI();
+
+        // Grab keyboard focus so Enter/Escape are handled by this control, not by toolbar buttons.
+        if (_isCropMode) Focus();
+
         StatusMessage?.Invoke(this, _isCropMode ? "Crop Mode: draw a selection rectangle" : "Crop Mode off");
     }
 
     private void ApplyCrop()
     {
-        if (!_isCropMode || _displayBitmap is null) return;
-        if (CropSelection.Visibility != Visibility.Visible) return;
+        if (!_isCropMode || _displayBitmap is null || _cropRect.IsEmpty) return;
 
         // Map canvas coordinates → image pixel coordinates
-        var imageTopLeft  = ImageDisplay.TranslatePoint(new Point(0, 0), CropOverlay);
-        double x = (Canvas.GetLeft(CropSelection) - imageTopLeft.X) / _zoom;
-        double y = (Canvas.GetTop(CropSelection)  - imageTopLeft.Y) / _zoom;
-        double w = CropSelection.Width  / _zoom;
-        double h = CropSelection.Height / _zoom;
+        var imageTopLeft = ImageDisplay.TranslatePoint(new Point(0, 0), CropOverlay);
+        double x = (_cropRect.X - imageTopLeft.X) / _zoom;
+        double y = (_cropRect.Y - imageTopLeft.Y) / _zoom;
+        double w = _cropRect.Width  / _zoom;
+        double h = _cropRect.Height / _zoom;
 
         // Clamp to image bounds
         int ix = Math.Max(0, (int)x);
@@ -570,18 +581,100 @@ public sealed partial class ImageViewer : UserControl,
         ApplyTransform(new CropImageTransform(new Int32Rect(ix, iy, iw, ih)));
     }
 
-    private void OnCropOverlaySizeChanged(object sender, SizeChangedEventArgs e)
+    // Updates the CropSelection rectangle, 4 veil regions, and 8 handles from _cropRect.
+    private void UpdateCropUI()
     {
-        CropVeil.Width  = CropOverlay.ActualWidth;
-        CropVeil.Height = CropOverlay.ActualHeight;
+        if (_cropRect.IsEmpty)
+        {
+            CropSelection.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            Canvas.SetLeft(CropSelection, _cropRect.X);
+            Canvas.SetTop(CropSelection,  _cropRect.Y);
+            CropSelection.Width      = _cropRect.Width;
+            CropSelection.Height     = _cropRect.Height;
+            CropSelection.Visibility = Visibility.Visible;
+        }
+
+        UpdateCropVeil();
+        UpdateCropHandles();
+    }
+
+    private void UpdateCropVeil()
+    {
+        if (_cropRect.IsEmpty)
+        {
+            VeilTop.Width = VeilTop.Height = VeilBottom.Width = VeilBottom.Height = 0;
+            VeilLeft.Width = VeilLeft.Height = VeilRight.Width = VeilRight.Height = 0;
+            return;
+        }
+
+        double cw = CropOverlay.ActualWidth;
+        double ch = CropOverlay.ActualHeight;
+        double x = _cropRect.X, y = _cropRect.Y, w = _cropRect.Width, h = _cropRect.Height;
+
+        // Top: full width, from canvas top to crop top
+        Canvas.SetLeft(VeilTop, 0);  Canvas.SetTop(VeilTop, 0);
+        VeilTop.Width  = cw;         VeilTop.Height = y;
+
+        // Bottom: full width, from crop bottom to canvas bottom
+        Canvas.SetLeft(VeilBottom, 0);  Canvas.SetTop(VeilBottom, y + h);
+        VeilBottom.Width  = cw;         VeilBottom.Height = Math.Max(0, ch - y - h);
+
+        // Left: left of crop rect, between top and bottom veils
+        Canvas.SetLeft(VeilLeft, 0);  Canvas.SetTop(VeilLeft, y);
+        VeilLeft.Width  = x;          VeilLeft.Height = h;
+
+        // Right: right of crop rect, between top and bottom veils
+        Canvas.SetLeft(VeilRight, x + w);  Canvas.SetTop(VeilRight, y);
+        VeilRight.Width  = Math.Max(0, cw - x - w);  VeilRight.Height = h;
+    }
+
+    private void UpdateCropHandles()
+    {
+        var handles = new[]
+        {
+            CropHandleTL, CropHandleTC, CropHandleTR,
+            CropHandleML, CropHandleMR,
+            CropHandleBL, CropHandleBC, CropHandleBR
+        };
+
+        if (_cropRect.IsEmpty)
+        {
+            foreach (var h in handles) h.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        double x = _cropRect.X, y = _cropRect.Y, w = _cropRect.Width, rh = _cropRect.Height;
+        double mx = x + w / 2, my = y + rh / 2;
+        const double ho = 4.5; // half of handle size (9px)
+
+        void Place(Rectangle r, double cx, double cy)
+        {
+            Canvas.SetLeft(r, cx - ho);
+            Canvas.SetTop(r,  cy - ho);
+            r.Visibility = Visibility.Visible;
+        }
+
+        Place(CropHandleTL, x,       y);
+        Place(CropHandleTC, mx,      y);
+        Place(CropHandleTR, x + w,   y);
+        Place(CropHandleML, x,       my);
+        Place(CropHandleMR, x + w,   my);
+        Place(CropHandleBL, x,       y + rh);
+        Place(CropHandleBC, mx,      y + rh);
+        Place(CropHandleBR, x + w,   y + rh);
     }
 
     private void CropOverlay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         if (!_isCropMode) return;
+        Focus(); // Reclaim keyboard focus so Enter/Escape reach ImageViewer_KeyDown.
         _cropDragStart  = e.GetPosition(CropOverlay);
         _isDraggingCrop = true;
-        CropSelection.Visibility = Visibility.Collapsed;
+        _cropRect       = Rect.Empty;
+        UpdateCropUI();
         CropOverlay.CaptureMouse();
         e.Handled = true;
     }
@@ -598,11 +691,8 @@ public sealed partial class ImageViewer : UserControl,
 
         if (w < 2 || h < 2) return;
 
-        Canvas.SetLeft(CropSelection, x);
-        Canvas.SetTop(CropSelection,  y);
-        CropSelection.Width  = w;
-        CropSelection.Height = h;
-        CropSelection.Visibility = Visibility.Visible;
+        _cropRect = new Rect(x, y, w, h);
+        UpdateCropUI();
         e.Handled = true;
     }
 
@@ -612,8 +702,84 @@ public sealed partial class ImageViewer : UserControl,
         _isDraggingCrop = false;
         CropOverlay.ReleaseMouseCapture();
         e.Handled = true;
-        // User must press Enter to confirm or Escape to cancel
         StatusMessage?.Invoke(this, "Press Enter to apply crop or Escape to cancel");
+    }
+
+    private void CropHandle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        _activeCropHandle          = ((FrameworkElement)sender).Name;
+        _cropHandleDragStart       = e.GetPosition(CropOverlay);
+        _cropRectAtHandleDragStart = _cropRect;
+        ((FrameworkElement)sender).CaptureMouse();
+        e.Handled = true;
+    }
+
+    private void CropHandle_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (_activeCropHandle is null) return;
+
+        var pos = e.GetPosition(CropOverlay);
+        double dx = pos.X - _cropHandleDragStart.X;
+        double dy = pos.Y - _cropHandleDragStart.Y;
+
+        _cropRect = ComputeNewCropRect(_activeCropHandle, _cropRectAtHandleDragStart, dx, dy);
+        UpdateCropUI();
+        e.Handled = true;
+    }
+
+    private void CropHandle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        _activeCropHandle = null;
+        ((FrameworkElement)sender).ReleaseMouseCapture();
+        e.Handled = true;
+    }
+
+    private Rect ComputeNewCropRect(string handle, Rect original, double dx, double dy)
+    {
+        const double minSize = 10.0;
+        double cw = CropOverlay.ActualWidth;
+        double ch = CropOverlay.ActualHeight;
+
+        double left   = original.Left;
+        double top    = original.Top;
+        double right  = original.Right;
+        double bottom = original.Bottom;
+
+        switch (handle)
+        {
+            case nameof(CropHandleTL): left  += dx; top    += dy; break;
+            case nameof(CropHandleTC):              top    += dy; break;
+            case nameof(CropHandleTR): right += dx; top    += dy; break;
+            case nameof(CropHandleML): left  += dx;               break;
+            case nameof(CropHandleMR): right += dx;               break;
+            case nameof(CropHandleBL): left  += dx; bottom += dy; break;
+            case nameof(CropHandleBC):              bottom += dy; break;
+            case nameof(CropHandleBR): right += dx; bottom += dy; break;
+        }
+
+        // Enforce minimum size (prevent inversion)
+        if (right - left < minSize)
+        {
+            if (handle is nameof(CropHandleTL) or nameof(CropHandleML) or nameof(CropHandleBL))
+                left  = right - minSize;
+            else
+                right = left  + minSize;
+        }
+        if (bottom - top < minSize)
+        {
+            if (handle is nameof(CropHandleTL) or nameof(CropHandleTC) or nameof(CropHandleTR))
+                top    = bottom - minSize;
+            else
+                bottom = top    + minSize;
+        }
+
+        // Clamp within canvas bounds
+        left   = Math.Max(0, left);
+        top    = Math.Max(0, top);
+        right  = Math.Min(cw, right);
+        bottom = Math.Min(ch, bottom);
+
+        return new Rect(left, top, right - left, bottom - top);
     }
 
     // -----------------------------------------------------------------------
