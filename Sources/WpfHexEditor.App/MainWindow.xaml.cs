@@ -4124,6 +4124,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _ = viewer.OpenAsync(filePath);
     }
 
+    // Toolbar shortcut — delegates to ParsedFields plugin panel via UIRegistry.
+    private void OnShowParsedFields(object sender, RoutedEventArgs e)
+        => _ideHostContext?.UIRegistry.ShowPanel(
+               "WpfHexEditor.Plugins.ParsedFields.Panel.ParsedFieldsPanel");
+
     private void OnShowSolutionExplorer(object sender, RoutedEventArgs e)
     {
         ShowOrCreatePanel("Solution Explorer", SolutionExplorerContentId, DockDirection.Left);
