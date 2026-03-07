@@ -8,43 +8,53 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ## What's Next
 
-> Planned features — subject to change.
+> Planned features — subject to change. Feature numbers map to DevPlans.
 
-### Plugin System & SDK
-- Hot-load / Hot-unload plugins at runtime without IDE restart (AssemblyLoadContext collectible — UI not yet exposed)
-- Real-time CPU / memory monitoring per plugin — `PluginMonitoringPanel` with `PerformanceCounter` polling
+### Plugin System — Remaining
+- Hot-load / Hot-unload at runtime without IDE restart (AssemblyLoadContext collectible — UI not yet exposed)
+- **#41 Plugin Marketplace** — `MarketplaceManager`, browse/install/update from online registry, signed packages
+- **#42 Plugin Security & Sandboxing** — permission declarations at install time, integrity verification, AppDomain isolation
+- **#43 Auto-Update** — `UpdateService` / `UpdateChecker`, rollback support, scheduled checks for IDE + plugins
 
-### Integrated Terminal
+### Integrated Terminal — Remaining (#92)
 - Multi-tab terminal with separate shell sessions (PowerShell, Bash, CMD)
-- Script file execution (`.hxscript`) with macro recording
+- Script file execution (`.hxscript`) with macro recording and history replay
 
-### Image Viewer
-- Full transform pipeline: rotate, flip, crop, resize — `IImageTransform` + `ImageTransformPipeline`
+### Image Viewer — Remaining
 - Batch export, format conversion (PNG/JPEG/BMP/TIFF)
-
-### CodeEditor — VS-Like Overkill
-- Multi-caret editing, virtual scroll for >1 GB files
-- Incremental multi-language syntax highlighting + code folding / gutter with line numbers
-- IntelliSense engine: autocomplete, snippets, quick-info, signature help
-- Real-time diagnostics tightly integrated with Error Panel and EventBus
+- Histogram panel, color picker, EXIF metadata viewer
 
 ### IDE Core Infrastructure
-- Service Container / Dependency Injection for all IDE components (#36)
-- Global CommandBus — all IDE actions (menus, toolbar, terminal, plugins) routed centrally
-- Configurable Keyboard Shortcuts with per-plugin extension support
-- Persistent user preferences (global + per-workspace)
+- **#36 Service Container / Dependency Injection** — `ServiceContainer` singleton; `FileService`, `EditorService`, `PanelService`, `PluginService`, `EventBus`, `TerminalService` — Singleton/Scoped/Transient lifecycle
+- **#37 Global CommandBus** — all IDE actions (menus, toolbar, terminal, plugins) routed through `CommandBus`; every command has an Id, Handler, CanExecute context, and Category
+- **#38 Keyboard Shortcuts & Bindings** — `KeyBindingService`, configurable gestures per command, conflict detection, plugin-extensible, export/import
+- **#39 User Preferences Persistence** — `ConfigurationManager`, per-section schemas, plugin config API, export/import, cross-session persistence
+- **#40 Centralized Logging & Diagnostics** — `LogService` (Info/Warning/Error/Debug), `DiagnosticService` (perf metrics), `LogSink` abstraction, Output + Error Panel integration
 
-### Advanced IDE Modules — Roadmap (#88–#91)
-- **#88 Dynamic Snippets** — user/plugin/language-scoped snippets with IntelliSense integration, `SnippetsManager`, `SnippetEditorDialog`
-- **#89 AI-Assisted Code Suggestions** — contextual completions, auto-refactoring hints, `AICompletionEngine`, plugin-extensible
-- **#90 Integrated Debugger** — breakpoints in gutter, watches, step over/into, `DebugManager`, EventBus integration
-- **#91 Git Integration** — inline gutter diff, commit/push/pull/branch panel, `GitManager`, plugin hooks for linters
-- Advanced Refactoring: rename symbol, extract method, move class — workspace-wide
-- Unit Testing panel: auto-detect frameworks (NUnit/JUnit/PyTest), run by file/project
-- Code Analysis & Metrics: dependency graphs, cyclomatic complexity, duplication reports
-- Large File Performance: virtualization + lazy parsing + multi-thread IntelliSense
-- Multi-User Collaboration / Pair Programming with real-time document sync
-- Internationalization / Localization — EN/FR initial, plugin-extensible
+### Code Intelligence / Editor
+- **#85 LSP Engine** — incremental symbol parsing, folding, go-to-definition, find-references
+- **#86 IntelliSense** — autocomplete, quick-info, signature help, multi-caret, virtual scroll for >1 GB files
+- **#88 Dynamic Snippets** — `SnippetsManager`, `SnippetEditorDialog`; user/plugin/language-scoped; dynamic variables (`CurrentLine`, `FileName`, `CursorPosition`); priority: user > imported > built-in
+- **#89 AI-Assisted Code Suggestions** — `AICompletionEngine`, `AIRefactoringAssistant`; contextual completions, auto-refactoring, plugin-extensible AI rules
+
+### Debugging & Testing
+- **#44 / #90 Integrated Debugger** — `DebuggerService` (StartDebug, StepInto/Over/Out, Evaluate), `BreakpointsManager`, `WatchPanel`, `CallStackPanel`; supports scripts, plugins and workspace multi-projects via EventBus
+- **#95 Unit Testing Panel** — `TestManager`, `TestRunner`, `TestResultPanel`; auto-detect NUnit/JUnit/PyTest; run by file/project/workspace; scaffolding from workspace templates
+
+### Source Control
+- **#91 Git Integration** — `GitManager`, `GitPanel` (commit/push/pull/branch); inline gutter diff; `GitEventAdapter` for file-change notifications; plugin hooks for pre-commit linters
+
+### Code Analysis & Refactoring
+- **#94 Advanced Refactoring** — `RefactoringManager`, `ASTAnalyzer`; rename symbol (workspace-wide), extract method/class, inline variable, move file between projects; AI-assisted suggestions
+- **#96 Code Analysis & Metrics** — `CodeAnalysisManager`, `DependencyGraphEngine`, `MetricsCalculator`; cyclomatic complexity, code duplication, dependency graphs; dedicated panel with filter/sort
+
+### Performance
+- **#97 Large File Optimization** — `VirtualizationEngine`, `LazyParser`, `MultiThreadedIntelliSenseAdapter`; virtualized display for >1 GB files, incremental parsing, multi-core IntelliSense, workspace memory management
+
+### Collaboration & UX
+- **#98 Multi-User Collaboration** — `CollaborationManager`, `DocumentSyncEngine`; multi-cursor real-time editing, contextual chat/comments per line, EventBus integration
+- **#99 Advanced UI/UX** — `NotificationManager`, `WorkspaceLayoutAdapter`; contextual inline notifications, layout persistence per workspace, full docking for all panels
+- **#100 Internationalization / Localization** — `LocalizationManager`, `TranslationLoader`; EN/FR initial, plugin-provided translations, dynamic switching per workspace
 
 ---
 
