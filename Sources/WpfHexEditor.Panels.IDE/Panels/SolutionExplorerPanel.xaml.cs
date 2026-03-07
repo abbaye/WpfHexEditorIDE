@@ -70,7 +70,8 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
     public void SyncWithFile(string absolutePath)
     {
-        // Walk tree and select the FileNodeVm matching the path
+        // Clear previous selection first — auto-tracking must never accumulate a multi-selection.
+        _vm.ClearSelection();
         SelectNodeByPath(absolutePath, _vm.Roots);
     }
 

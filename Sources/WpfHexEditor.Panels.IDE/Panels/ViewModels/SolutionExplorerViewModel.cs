@@ -71,6 +71,18 @@ public sealed class SolutionExplorerViewModel : INotifyPropertyChanged
         => CollectSelected(Roots);
 
     /// <summary>
+    /// Deselects all nodes without selecting a new one.
+    /// Used by <see cref="SolutionExplorerPanel.SyncWithFile"/> before highlighting the tracked file
+    /// so that auto-tracking never adds to an existing multi-selection.
+    /// </summary>
+    public void ClearSelection()
+    {
+        ClearAllSelected(Roots);
+        _lastAnchor = null;
+        OnPropertyChanged(nameof(SelectedNodes));
+    }
+
+    /// <summary>
     /// Clears all selections, then selects <paramref name="node"/> as the sole selection.
     /// Stores it as the anchor for future range selections.
     /// </summary>
