@@ -6,14 +6,14 @@
      Created: 2026-03-07
      Description:
          Main application window. VS Code-style chrome with a custom title bar
-         (logo, theme toggle, window control buttons) and a DockControl filling
+         (logo, inline menu, window control buttons) and a DockControl filling
          the content area. A StatusBar at the bottom shows the active theme.
 
      Architecture Notes:
-         Theme: Dynamic — DockWindowBackgroundBrush, DockMenuBackgroundBrush,
-                TitleBarButtonStyle, TitleBarCloseButtonStyle from active theme.
-         ResourceDictionaries applied: inherited from App.xaml (DarkTheme / OfficeTheme).
-         Patterns: ContentFactory (see MainWindow.xaml.cs), Layout persistence.
+         Theme: DockWindowBackgroundBrush, DockMenuBackgroundBrush,
+                DockDarkMenuStyle, TitleBarButtonStyle, TitleBarCloseButtonStyle
+                — all dynamic, auto-update on theme switch.
+         Menu items: View > Theme (Dark/Light) | View > Layout > Reset
      ========================================================== -->
 
 <Window x:Class="WpfHexEditor.Sample.Docking.MainWindow"
@@ -49,7 +49,7 @@
         </Grid.RowDefinitions>
 
         <!-- ═══════════════════════════════════════════════════════════
-             Row 0 — Title bar (VS Code style)
+             Row 0 — Title bar (VS Code style: menu left + buttons right)
              ═══════════════════════════════════════════════════════════ -->
         <Border Grid.Row="0" Background="{DynamicResource DockMenuBackgroundBrush}">
             <DockPanel Height="32">
@@ -57,31 +57,17 @@
                 <!-- Window buttons — right side -->
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
                             WindowChrome.IsHitTestVisibleInChrome="True">
-
-                    <!-- Theme toggle button -->
-                    <Button x:Name="ThemeToggleButton"
-                            Content="&#xE706;"
-                            Style="{DynamicResource TitleBarButtonStyle}"
-                            ToolTip="Switch theme (Dark / Light)"
-                            Click="OnThemeToggle"
-                            WindowChrome.IsHitTestVisibleInChrome="True" />
-
-                    <!-- Minimize -->
                     <Button Content="&#xE949;"
                             Style="{DynamicResource TitleBarButtonStyle}"
                             ToolTip="Minimize"
                             Click="OnMinimize"
                             WindowChrome.IsHitTestVisibleInChrome="True" />
-
-                    <!-- Maximize / Restore -->
                     <Button x:Name="MaxRestoreButton"
                             Content="&#xE739;"
                             Style="{DynamicResource TitleBarButtonStyle}"
                             ToolTip="Maximize"
                             Click="OnMaximizeRestore"
                             WindowChrome.IsHitTestVisibleInChrome="True" />
-
-                    <!-- Close -->
                     <Button Content="&#xE106;"
                             Style="{DynamicResource TitleBarCloseButtonStyle}"
                             ToolTip="Close"
@@ -89,7 +75,52 @@
                             WindowChrome.IsHitTestVisibleInChrome="True" />
                 </StackPanel>
 
-                <!-- App title — centered, non-interactive (drag area) -->
+                <!-- App icon — far left -->
+                <TextBlock DockPanel.Dock="Left"
+                           Text="&#xE700;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="14"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                           VerticalAlignment="Center"
+                           Margin="10,0,4,0"
+                           IsHitTestVisible="False" />
+
+                <!-- Inline menu bar — VS Code style -->
+                <Menu DockPanel.Dock="Left"
+                      Style="{DynamicResource DockDarkMenuStyle}"
+                      VerticalAlignment="Center"
+                      WindowChrome.IsHitTestVisibleInChrome="True">
+
+                    <!-- ═══ View ═══ -->
+                    <MenuItem Header="_View">
+
+                        <!-- Theme submenu -->
+                        <MenuItem Header="_Theme">
+                            <MenuItem x:Name="MenuDarkTheme"
+                                      Header="_Dark (VS2022)"
+                                      IsCheckable="True"
+                                      IsChecked="True"
+                                      Click="OnThemeDark" />
+                            <MenuItem x:Name="MenuLightTheme"
+                                      Header="_Light (Office)"
+                                      IsCheckable="True"
+                                      IsChecked="False"
+                                      Click="OnThemeLight" />
+                        </MenuItem>
+
+                        <Separator />
+
+                        <!-- Layout submenu -->
+                        <MenuItem Header="_Layout">
+                            <MenuItem Header="_Reset to default"
+                                      Click="OnLayoutReset"
+                                      ToolTip="Restore the original panel arrangement (Explorer left, Output+Properties bottom)" />
+                        </MenuItem>
+
+                    </MenuItem>
+                </Menu>
+
+                <!-- Title — centered, non-interactive drag area -->
                 <TextBlock Text="WpfHexEditor — Docking Sample"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            VerticalAlignment="Center"
@@ -100,7 +131,7 @@
         </Border>
 
         <!-- ═══════════════════════════════════════════════════════════
-             Row 1 — DockControl (the entire docking framework)
+             Row 1 — DockControl
              ═══════════════════════════════════════════════════════════ -->
         <dock:DockControl x:Name="DockHost"
                           Grid.Row="1"
