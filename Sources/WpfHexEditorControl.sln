@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Core", "WpfHex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.HexEditor", "WpfHexEditor.HexEditor\WpfHexEditor.HexEditor.csproj", "{B8A9C0D1-E2F3-4567-89AB-CDEF01234567}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Sample.Main", "Samples\WpfHexEditor.Sample.Main\WpfHexEditor.Sample.Main.csproj", "{B1A2C3D4-E5F6-7890-A1B2-C3D4E5F67890}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHexEditor.Sample.HexEditor", "Samples\WpfHexEditor.Sample.HexEditor\WpfHexEditor.Sample.HexEditor.csproj", "{B1A2C3D4-E5F6-7890-A1B2-C3D4E5F67890}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Tests", "WpfHexEditor.Tests\WpfHexEditor.Tests.csproj", "{AC616BD2-091D-47F8-8B3A-8C4F51A059B4}"
 EndProject

@@ -1,0 +1,35 @@
+<!--
+    Apache 2.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+
+    WpfHexEditor.Sample.Docking
+    ===========================
+    Minimal sample showing how to build a docking-based WPF application
+    using WpfHexEditor.Docking.Wpf. Demonstrates:
+      - VS Code-like chrome (WindowChrome + WindowStyle=None)
+      - ContentFactory pattern for panel/document content
+      - Runtime theme switching (Dark / Office Light)
+      - Layout persistence (JSON in %APPDATA%)
+      - Three demo panels: Explorer (left), Output (bottom), Welcome document (center)
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>WpfHexEditor.Sample.Docking</AssemblyName>
+    <RootNamespace>WpfHexEditor.Sample.Docking</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Only dependency: the docking framework (pulls in Docking.Core + Editor.Core transitively) -->
+    <ProjectReference Include="..\..\WpfHexEditor.Docking.Wpf\WpfHexEditor.Docking.Wpf.csproj" />
+  </ItemGroup>
+
+</Project>

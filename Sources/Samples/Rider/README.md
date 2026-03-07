@@ -1,4 +1,4 @@
-# 🚀 WpfHexEditor - Rider Sample Projects
+﻿# 🚀 WpfHexEditor - Rider Sample Projects
 
 **Ready-to-use examples** for JetBrains Rider users.
 
@@ -63,7 +63,7 @@ Import [WpfHexEditor.DotSettings](../../../docs/IDE/WpfHexEditor.DotSettings), t
 ## 📚 More Examples
 
 **Looking for advanced features?**
-- **[Main Sample](../WpfHexEditor.Sample.Main/)** - Full-featured application
+- **[Main Sample](../WpfHexEditor.Sample.HexEditor/)** - Full-featured application
 - **[Legacy Samples](../Legacy/)** - V1 examples
 - **[All Samples](../README.md)** - Complete list
 
