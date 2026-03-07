@@ -51,6 +51,7 @@ public sealed class ArchiveStructurePlugin : IWpfHexEditorPlugin
             {
                 Header     = "_Archive Structure",
                 ParentPath = "View",
+                Group      = "FileTools",
                 IconGlyph  = "\uE7C3",
                 Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
                                  "WpfHexEditor.Plugins.ArchiveStructure.Panel.ArchiveStructurePanel"))

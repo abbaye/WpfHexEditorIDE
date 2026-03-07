@@ -82,6 +82,7 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
             {
                 Header     = "_Parsed Fields",
                 ParentPath = "View",
+                Group      = "Analysis",
                 IconGlyph  = "\uE81E",
                 Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
                                  "WpfHexEditor.Plugins.ParsedFields.Panel.ParsedFieldsPanel"))

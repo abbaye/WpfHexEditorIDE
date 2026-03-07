@@ -82,6 +82,7 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
             {
                 Header     = "_Data Inspector",
                 ParentPath = "View",
+                Group      = "Analysis",
                 IconGlyph  = "\uE9E6",
                 Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
                                  "WpfHexEditor.Plugins.DataInspector.Panel.DataInspectorPanel"))

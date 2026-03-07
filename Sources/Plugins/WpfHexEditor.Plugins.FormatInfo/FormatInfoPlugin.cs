@@ -71,6 +71,7 @@ public sealed class FormatInfoPlugin : IWpfHexEditorPlugin
             {
                 Header     = "Format _Info",
                 ParentPath = "View",
+                Group      = "Analysis",
                 IconGlyph  = "\uE946",
                 Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
                                  "WpfHexEditor.Plugins.FormatInfo.Panel.EnrichedFormatInfoPanel"))

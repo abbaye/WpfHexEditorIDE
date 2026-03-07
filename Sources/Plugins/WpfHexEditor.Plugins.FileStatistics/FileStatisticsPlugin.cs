@@ -74,6 +74,7 @@ public sealed class FileStatisticsPlugin : IWpfHexEditorPlugin
             {
                 Header     = "File _Statistics",
                 ParentPath = "View",
+                Group      = "Statistics",
                 IconGlyph  = "\uE9F5",
                 Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
                                  "WpfHexEditor.Plugins.FileStatistics.Panel.FileStatisticsPanel"))

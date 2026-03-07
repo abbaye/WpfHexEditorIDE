@@ -342,13 +342,6 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Parsed Fields" Click="OnShowParsedFields">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
                         <MenuItem Header="_Properties" Click="OnShowProperties" InputGestureText="F4">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"

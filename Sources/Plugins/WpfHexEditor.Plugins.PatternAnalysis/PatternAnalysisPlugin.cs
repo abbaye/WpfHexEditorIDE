@@ -69,6 +69,7 @@ public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
             {
                 Header     = "_Pattern Analysis",
                 ParentPath = "View",
+                Group      = "Statistics",
                 IconGlyph  = "\uE773",
                 Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
                                  "WpfHexEditor.Plugins.PatternAnalysis.Panel.PatternAnalysisPanel"))

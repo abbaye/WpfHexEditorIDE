@@ -74,6 +74,7 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
             {
                 Header     = "_Structure Overlay",
                 ParentPath = "View",
+                Group      = "Analysis",
                 IconGlyph  = "\uE82D",
                 Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
                                  "WpfHexEditor.Plugins.StructureOverlay.Panel.StructureOverlayPanel"))

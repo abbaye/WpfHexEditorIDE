@@ -51,6 +51,7 @@ public sealed class FileComparisonPlugin : IWpfHexEditorPlugin
             {
                 Header     = "File _Comparison",
                 ParentPath = "View",
+                Group      = "FileTools",
                 IconGlyph  = "\uE93D",
                 Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
                                  "WpfHexEditor.Plugins.FileComparison.Panel.FileComparisonPanel"))

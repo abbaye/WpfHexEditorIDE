@@ -76,6 +76,7 @@ public sealed class CustomParserTemplatePlugin : IWpfHexEditorPlugin
             {
                 Header     = "_Custom Parser Template",
                 ParentPath = "View",
+                Group      = "FileTools",
                 IconGlyph  = "\uE9A1",
                 Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
                                  "WpfHexEditor.Plugins.CustomParserTemplate.Panel.CustomParserTemplatePanel"))

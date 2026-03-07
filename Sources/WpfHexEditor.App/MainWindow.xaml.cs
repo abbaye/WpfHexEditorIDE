@@ -4267,10 +4267,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         e.Handled = true;
     }
 
-    private void OnShowParsedFields(object sender, RoutedEventArgs e)
-        => _ideHostContext?.UIRegistry.ShowPanel(
-               "WpfHexEditor.Plugins.ParsedFields.Panel.ParsedFieldsPanel");
-
     private void ShowOrCreatePanel(string title, string contentId, DockDirection direction)
     {
         var existing = _layout.FindItemByContentId(contentId);

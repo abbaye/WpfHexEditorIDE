@@ -691,6 +691,14 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     }
 
     /// <summary>
+    /// Evicts a single item from the internal content cache so the next
+    /// <see cref="RebuildVisualTree"/> call will invoke <see cref="ContentFactory"/> again
+    /// for that item. Use this when a plugin replaces a previously-rendered placeholder.
+    /// </summary>
+    public void InvalidateContent(string contentId)
+        => _contentCache.Remove(contentId);
+
+    /// <summary>
     /// Rebuilds the entire visual tree from the current Layout.
     /// </summary>
     public void RebuildVisualTree()
