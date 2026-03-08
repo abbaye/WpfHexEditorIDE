@@ -175,38 +175,51 @@
                          BorderBrush="{DynamicResource DockBorderBrush}"
                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                          Opened="OnContextMenuOpened">
-                <MenuItem Header="Open in HexEditor"  x:Name="MenuOpenInHex"   Click="OnOpenInHexEditor">
-                    <MenuItem.Icon><TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource DockMenuForegroundBrush}"/></MenuItem.Icon>
+                <!-- Foreground on MenuItem (not on icon TextBlock) — ContextMenu is a separate HwndSource,
+                     DynamicResource on child TextBlock would not resolve; the MenuItem Foreground is
+                     set at the ContextMenu level and inherited by the icon correctly. -->
+                <MenuItem Header="Open in HexEditor"  x:Name="MenuOpenInHex"   Click="OnOpenInHexEditor"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <MenuItem.Icon><TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Copy Name"           x:Name="MenuCopyName"    Click="OnCopyName">
-                    <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource DockMenuForegroundBrush}"/></MenuItem.Icon>
+                <MenuItem Header="Copy Name"           x:Name="MenuCopyName"    Click="OnCopyName"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Copy Full Name"      x:Name="MenuCopyFull"    Click="OnCopyFullName">
-                    <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource DockMenuForegroundBrush}"/></MenuItem.Icon>
+                <MenuItem Header="Copy Full Name"      x:Name="MenuCopyFull"    Click="OnCopyFullName"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Copy IL Offset"      x:Name="MenuCopyOffset"  Click="OnCopyOffset">
-                    <MenuItem.Icon><TextBlock Text="&#xE77F;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource DockMenuForegroundBrush}"/></MenuItem.Icon>
-                </MenuItem>
-                <Separator/>
-                <MenuItem Header="Go to Definition"    IsEnabled="False" ToolTip="Coming in a future release">
-                    <MenuItem.Icon><TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource DockMenuForegroundBrush}"/></MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Decompile to C#"     x:Name="MenuDecompile"   Click="OnDecompile">
-                    <MenuItem.Icon><TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource DockMenuForegroundBrush}"/></MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Show in Metadata Tables" IsEnabled="False" ToolTip="Coming in a future release">
-                    <MenuItem.Icon><TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource DockMenuForegroundBrush}"/></MenuItem.Icon>
+                <MenuItem Header="Copy IL Offset"      x:Name="MenuCopyOffset"  Click="OnCopyOffset"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <MenuItem.Icon><TextBlock Text="&#xE77F;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Export IL"           IsEnabled="False" ToolTip="Coming in a future release">
-                    <MenuItem.Icon><TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource DockMenuForegroundBrush}"/></MenuItem.Icon>
+                <MenuItem Header="Go to Definition"    IsEnabled="False" ToolTip="Coming in a future release"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <MenuItem.Icon><TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Export C#"           IsEnabled="False" ToolTip="Coming in a future release">
-                    <MenuItem.Icon><TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource DockMenuForegroundBrush}"/></MenuItem.Icon>
+                <MenuItem Header="Decompile to C#"     x:Name="MenuDecompile"   Click="OnDecompile"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <MenuItem.Icon><TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Show in Metadata Tables" IsEnabled="False" ToolTip="Coming in a future release"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <MenuItem.Icon><TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Close Assembly"      x:Name="MenuCloseAssembly" Click="OnCloseAssembly">
-                    <MenuItem.Icon><TextBlock Text="&#xED60;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource DangerBrush}"/></MenuItem.Icon>
+                <MenuItem Header="Export IL"           IsEnabled="False" ToolTip="Coming in a future release"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <MenuItem.Icon><TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Export C#"           IsEnabled="False" ToolTip="Coming in a future release"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <MenuItem.Icon><TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Close Assembly"      x:Name="MenuCloseAssembly" Click="OnCloseAssembly"
+                          Foreground="{DynamicResource DangerBrush}">
+                    <MenuItem.Icon><TextBlock Text="&#xED60;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
                 </MenuItem>
             </ContextMenu>
         </TreeView.ContextMenu>
