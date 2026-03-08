@@ -594,6 +594,8 @@ public partial class TblEditor : UserControl, IDocumentEditor, IDiagnosticSource
         return new ObservableCollection<StatusBarItem> { _sbZoom, _sbEntries, _sbAscii, _sbDte, _sbMte, _sbCov, _sbConf };
     }
 
+    void IStatusBarContributor.RefreshStatusBarItems() => RefreshStatusBarItems();
+
     internal void RefreshStatusBarItems()
     {
         if (_statusBarItems == null) return;

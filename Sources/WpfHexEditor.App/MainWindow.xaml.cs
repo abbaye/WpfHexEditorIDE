@@ -177,6 +177,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private sealed class EmptyStatusBarContributor : IStatusBarContributor
     {
         public ObservableCollection<StatusBarItem> StatusBarItems { get; } = [];
+        public void RefreshStatusBarItems() { }
     }
 
     // --- Bindable properties --------------------------------------------
@@ -867,6 +868,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // causing the next open of the same ContentId to return the old, already-Close()d control.
         _engine = DockHost.Engine!;
 
+        // Rebind the DockingAdapter to the new engine/layout so plugin panel toggles continue
+        // to work after Reset Layout or Load Layout replaces the layout tree.
+        _dockingAdapter?.RebindLayout(_engine, _layout);
+
         SyncDocumentCounter();
         UpdateStatusBar();
     }
@@ -933,6 +938,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _displayContent[contentId] = displayElement;
         _contentCache[contentId]   = UnwrapEditor(displayElement);
+
+        // In split-pane layouts the user can click inside a content area without
+        // changing tab selection, so TrackActivation never fires.  Subscribe to
+        // IsKeyboardFocusWithinChanged so the status bar stays in sync with the
+        // editor that actually has keyboard focus.
+        if (!contentId.StartsWith("panel-"))
+        {
+            displayElement.IsKeyboardFocusWithinChanged += (_, e) =>
+            {
+                if ((bool)e.NewValue)
+                    SyncStatusBarToFocusedEditor(contentId);
+            };
+        }
     }
 
     private UIElement BuildContentForItem(DockItem item) =>
@@ -2980,10 +2998,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         ActiveToolbarContributor   = content as IEditorToolbarContributor;
         SyncTblDropdownToActiveEditor();
 
-        if (ActiveDocumentEditor == null)
+        // Clear the transient refresh-time text whenever the active editor is not a HexEditor,
+        // or when there is no active editor at all.  For HexEditor, RefreshDocumentStatus()
+        // fires StatusMessage → OnEditorStatusMessage which sets RefreshText from the "Refresh:" part.
+        if (hex == null)
             RefreshText.Text = "";
         else
-            hex?.RefreshDocumentStatus();
+            hex.RefreshDocumentStatus();
+
+        // Refresh status bar item values for all contributor types (generic, not hex-only).
+        ActiveStatusBarContributor.RefreshStatusBarItems();
 
         // Sync Solution Explorer highlight — hex FileName takes priority, then Metadata["FilePath"]
         var syncPath = hex?.FileName;
@@ -3009,6 +3033,43 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Sync active document in DocumentManager so IsActive / ActiveDocument are accurate.
         SyncActiveDocument(item.ContentId);
+    }
+
+    // --- Split-pane focus tracking ------------------------------------
+
+    /// <summary>
+    /// Lightweight status bar sync triggered when keyboard focus enters a document
+    /// editor content area in a split-pane layout, bypassing tab selection events.
+    /// Does NOT reconnect tool panels or refresh analysis results — those heavy
+    /// operations are reserved for the full <see cref="OnActiveDocumentChanged"/> path
+    /// (explicit tab click).
+    /// </summary>
+    private void SyncStatusBarToFocusedEditor(string contentId)
+    {
+        if (!_contentCache.TryGetValue(contentId, out var content)) return;
+        var unwrapped   = content; // _contentCache already stores the unwrapped editor
+        var contributor = unwrapped as IStatusBarContributor ?? _defaultStatusBarContributor;
+
+        // Skip if this editor is already reflected in the status bar — avoids
+        // a redundant refresh on the frame immediately after a normal tab switch
+        // (which already went through OnActiveDocumentChanged).
+        if (ReferenceEquals(contributor, ActiveStatusBarContributor) &&
+            ReferenceEquals(unwrapped as IDocumentEditor, ActiveDocumentEditor))
+            return;
+
+        // Only sync for genuine document editors; non-editor viewers keep the current state.
+        if (unwrapped is not IDocumentEditor docEditor) return;
+
+        ActiveDocumentEditor       = docEditor;
+        ActiveStatusBarContributor = contributor;
+        contributor.RefreshStatusBarItems();
+        SyncActiveDocument(contentId);
+
+        var focusedHex = unwrapped as HexEditorControl;
+        if (focusedHex != null)
+            focusedHex.RefreshDocumentStatus();
+        else
+            RefreshText.Text = "";
     }
 
     // --- IDocumentEditor event handlers --------------------------------
@@ -4480,9 +4541,26 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnResetLayout(object sender, RoutedEventArgs e)
     {
-        _contentCache.Clear();
+        // Snapshot open document items before resetting (exclude the Welcome tab).
+        // The _contentCache is intentionally NOT cleared — cached UIElements remain valid
+        // and will be returned by ContentFactory when the tabs are re-docked below.
+        var openDocs = _layout.GetAllGroups()
+            .SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Where(i => i.ContentId.StartsWith("doc-") && i.ContentId != "doc-welcome")
+            .Select(i => new DockItem { ContentId = i.ContentId, Title = i.Title, CanClose = i.CanClose })
+            .ToList();
+
         SetupDefaultLayout();
-        OutputLogger.Debug("Layout reset to default.");
+
+        // Re-dock all previously open document tabs into the document host.
+        foreach (var doc in openDocs)
+            _engine.Dock(doc, _layout.MainDocumentHost, DockDirection.Center);
+
+        if (openDocs.Count > 0)
+            DockHost.RebuildVisualTree();
+
+        OutputLogger.Debug($"Layout reset to default. {openDocs.Count} document(s) preserved.");
     }
 
     // --- Menu: other ---------------------------------------------------

@@ -37,6 +37,7 @@ namespace WpfHexEditor.HexEditor
         // ═══════════════════════════════════════════════════════════════════
 
         private ObservableCollection<StatusBarItem>? _statusBarItems;
+        private StatusBarItem _sbFileSize       = null!;
         private StatusBarItem _sbByteSize       = null!;
         private StatusBarItem _sbByteOrder      = null!;
         private StatusBarItem _sbEditMode       = null!;
@@ -59,6 +60,13 @@ namespace WpfHexEditor.HexEditor
 
         private ObservableCollection<StatusBarItem> BuildStatusBarItems()
         {
+            // -- File size (read-only, display only — no Choices) -----------
+            _sbFileSize = new StatusBarItem
+            {
+                Label   = "Size",
+                Tooltip = "Current file size (virtual length including pending insertions)"
+            };
+
             // -- Byte size --------------------------------------------------
             _sbByteSize = new StatusBarItem
             {
@@ -223,6 +231,7 @@ namespace WpfHexEditor.HexEditor
 
             return new ObservableCollection<StatusBarItem>
             {
+                _sbFileSize,
                 _sbByteSize,
                 _sbByteOrder,
                 _sbEditMode,
@@ -243,9 +252,17 @@ namespace WpfHexEditor.HexEditor
         /// No-op until the items have been built (i.e. until the host first accesses
         /// <see cref="IStatusBarContributor.StatusBarItems"/>).
         /// </summary>
+        /// <inheritdoc cref="IStatusBarContributor.RefreshStatusBarItems"/>
+        void IStatusBarContributor.RefreshStatusBarItems() => RefreshStatusBarItemValues();
+
         internal void RefreshStatusBarItemValues()
         {
             if (_statusBarItems == null) return;
+
+            // File size (display-only — no Choices)
+            _sbFileSize.Value = _viewModel != null
+                ? FormatFileSize(_viewModel.VirtualLength)
+                : "-";
 
             // Byte size
             var bsLabel = ByteSize switch

@@ -212,6 +212,8 @@ public sealed partial class ImageViewer : UserControl,
 
     public ObservableCollection<StatusBarItem> StatusBarItems { get; } = new();
 
+    void IStatusBarContributor.RefreshStatusBarItems() => UpdateStatusBar();
+
     // -----------------------------------------------------------------------
     // IDocumentEditor — Events
     // -----------------------------------------------------------------------
