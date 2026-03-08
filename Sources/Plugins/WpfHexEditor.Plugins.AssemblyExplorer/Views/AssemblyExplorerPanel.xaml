@@ -190,16 +190,43 @@
                 <RowDefinition Height="220" MinHeight="60"/>
             </Grid.RowDefinitions>
 
-            <!-- Assembly tree -->
-            <controls:AssemblyTreeView x:Name="MainTreeView"
-                                       Grid.Row="0"
-                                       NodeSelected="OnTreeNodeSelected"
-                                       OpenInHexEditorRequested="OnOpenInHexEditor"
-                                       DecompileRequested="OnDecompile"
-                                       CopyNameRequested="OnCopyName"
-                                       CopyFullNameRequested="OnCopyFullName"
-                                       CopyOffsetRequested="OnCopyOffset"
-                                       CloseAssemblyRequested="OnCloseAssembly"/>
+            <!-- Assembly tree + loading overlay -->
+            <Grid Grid.Row="0">
+                <controls:AssemblyTreeView x:Name="MainTreeView"
+                                           NodeSelected="OnTreeNodeSelected"
+                                           OpenInHexEditorRequested="OnOpenInHexEditor"
+                                           DecompileRequested="OnDecompile"
+                                           CopyNameRequested="OnCopyName"
+                                           CopyFullNameRequested="OnCopyFullName"
+                                           CopyOffsetRequested="OnCopyOffset"
+                                           CloseAssemblyRequested="OnCloseAssembly"/>
+
+                <!-- Loading overlay — visible while IsLoading=true -->
+                <Border x:Name="LoadingOverlay"
+                        Background="#AA1A1A1A"
+                        Visibility="Collapsed">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Loading assembly..."
+                                   FontSize="11"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,8"/>
+                        <ProgressBar Width="180" Height="4"
+                                     IsIndeterminate="True"
+                                     Foreground="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
 
             <!-- Splitter -->
             <GridSplitter Grid.Row="1"
