@@ -20,6 +20,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Controls"
              xmlns:views="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Views"
+             xmlns:ui="clr-namespace:WpfHexEditor.SDK.UI;assembly=WpfHexEditor.SDK"
              Background="{DynamicResource PFP_PanelBackgroundBrush}"
              Foreground="{DynamicResource PFP_TextBrush}"
              Focusable="True"
@@ -201,31 +202,9 @@
                                            CopyOffsetRequested="OnCopyOffset"
                                            CloseAssemblyRequested="OnCloseAssembly"/>
 
-                <!-- Loading overlay — visible while IsLoading=true -->
-                <Border x:Name="LoadingOverlay"
-                        Background="#AA1A1A1A"
-                        Visibility="Collapsed">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsLoading}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="Loading assembly..."
-                                   FontSize="11"
-                                   Foreground="White"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
-                        <ProgressBar Width="180" Height="4"
-                                     IsIndeterminate="True"
-                                     Foreground="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
-                    </StackPanel>
-                </Border>
+                <!-- Loading overlay — reusable SDK control, visible while IsLoading=true -->
+                <ui:LoadingOverlay IsActive="{Binding IsLoading}"
+                                   Label="Loading assembly..."/>
             </Grid>
 
             <!-- Splitter -->

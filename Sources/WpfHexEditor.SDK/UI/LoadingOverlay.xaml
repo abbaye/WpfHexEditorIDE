@@ -1,0 +1,34 @@
+<!--
+    Project: WpfHexEditor.SDK
+    File: UI/LoadingOverlay.xaml
+    Author: Derek Tremblay
+    Created: 2026-03-08
+    Description:
+        Reusable loading overlay UserControl. Renders a semi-transparent scrim
+        with a centered label and indeterminate progress bar.
+        Visibility is driven by the IsActive dependency property.
+
+    Architecture Notes:
+        Pattern: UserControl with DependencyProperty (IsActive, Label).
+        Theme: DynamicResource Panel_ToolbarButtonActiveBrush for progress bar accent.
+        Usage: place as the LAST child at the target Grid row so it paints on top.
+-->
+<UserControl x:Class="WpfHexEditor.SDK.UI.LoadingOverlay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Visibility="Collapsed"
+             IsHitTestVisible="True"
+             Focusable="False">
+    <Border Background="#AA1A1A1A">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock x:Name="LabelText"
+                       FontSize="11"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,8"/>
+            <ProgressBar Width="180" Height="4"
+                         IsIndeterminate="True"
+                         Foreground="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+        </StackPanel>
+    </Border>
+</UserControl>

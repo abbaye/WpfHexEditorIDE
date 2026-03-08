@@ -9,6 +9,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:WpfHexEditor.SDK.UI;assembly=WpfHexEditor.SDK"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="350">
 
@@ -78,6 +79,11 @@
                 </ContextMenu>
             </TreeView.ContextMenu>
         </TreeView>
+
+        <!-- Loading overlay — covers the TreeView while IsLoading=true -->
+        <ui:LoadingOverlay Grid.Row="1"
+                           IsActive="{Binding IsLoading}"
+                           Label="Loading archive..."/>
 
         <!-- Status bar -->
         <Border Grid.Row="2"

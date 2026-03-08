@@ -10,6 +10,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WpfHexEditor.Core.Models.StructureOverlay;assembly=WpfHexEditor.Core"
+             xmlns:ui="clr-namespace:WpfHexEditor.SDK.UI;assembly=WpfHexEditor.SDK"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="350">
     <UserControl.Resources>
@@ -203,6 +204,11 @@
                                           ItemTemplate="{StaticResource FieldTemplate}"/>
             </TreeView.Resources>
         </TreeView>
+
+        <!-- Loading overlay — covers the TreeView while IsLoading=true -->
+        <ui:LoadingOverlay Grid.Row="2"
+                           IsActive="{Binding IsLoading}"
+                           Label="Loading structure..."/>
 
         <!-- Status bar -->
         <Border Grid.Row="3"

@@ -9,6 +9,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:WpfHexEditor.SDK.UI;assembly=WpfHexEditor.SDK"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="300">
 
@@ -111,7 +112,8 @@
         </Border>
 
         <!-- Scrollable content -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                      x:Name="ContentScrollViewer">
             <StackPanel Margin="8">
 
                 <!-- File Info card -->
@@ -377,5 +379,9 @@
 
             </StackPanel>
         </ScrollViewer>
+        <!-- Loading overlay — covers the ScrollViewer while IsLoading=true -->
+        <ui:LoadingOverlay Grid.Row="1"
+                           IsActive="{Binding IsLoading}"
+                           Label="Analyzing file..."/>
     </Grid>
 </UserControl>
