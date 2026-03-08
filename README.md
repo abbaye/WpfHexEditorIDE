@@ -333,18 +333,20 @@ Open `WpfHexEditorControl.sln` in Visual Studio 2022, set **WpfHexEditor.App** a
 
 ## 🗺️ Roadmap
 
-> Full planned feature list with issue tracking in [CHANGELOG.md — What's Next](CHANGELOG.md#whats-next).
+> Full details in **[ROADMAP.md](ROADMAP.md)** · Issue tracking in [CHANGELOG.md — What's Next](CHANGELOG.md#whats-next).
 
 | Feature | Status | Feature # |
 |---------|--------|-----------|
+| **Document Model** — unified in-memory document representation | 🔧 In Progress ~10% | #107 |
+| **Assembly Explorer — full tree + ECMA-335 metadata** | 🔧 In Progress ~15% | #104–105 |
+| **Integrated Terminal** — full multi-shell + macro | 🔧 In Progress ~70% | #92 |
 | **MSBuild & Visual Studio `.sln` / `.csproj` / `.vbproj` support** | 🔜 Planned | #101–103 |
-| **Assembly Explorer — full tree + ECMA-335 metadata** | 🔧 In Progress (Phase 1 done) | #104–105 |
 | **.NET Decompilation via ILSpy** | 🔜 Planned | #106 |
 | **Code Intelligence (LSP / IntelliSense / Snippets)** | 🔜 Planned | #85–89 |
 | **Integrated Debugger** | 🔜 Planned | #44, #90 |
 | **Git Integration** | 🔜 Planned | #91 |
 | **Plugin Marketplace & Auto-Update** | 🔜 Planned | #41–43 |
-| **IDE Localization Engine** — full IDE UI translation beyond HexEditor control | 🔜 Coming Soon | #100 |
+| **IDE Localization Engine** — full IDE UI (HexEditor control already 19 languages) | 🔜 Planned | #100 |
 
 ---
 
@@ -383,11 +385,12 @@ Open `WpfHexEditorControl.sln` in Visual Studio 2022, set **WpfHexEditor.App** a
 
 ## 🌍 Multilingual
 
-19 languages defined with instant runtime switching (no restart).
+> ⚠️ **HexEditor control only** — The embedded `HexEditorControl` supports 19 languages with instant runtime switching (no restart required). The **IDE UI is currently English only** — a full localization engine for the IDE is planned ([#100](ROADMAP.md)).
 
-> ⚠️ **Partial translations** — not all languages are fully translated yet. English and French are the most complete. Contributions welcome!
-
+**HexEditor control languages:**
 English · French · Spanish · German · Italian · Japanese · Korean · Dutch · Polish · Portuguese · Russian · Swedish · Turkish · Chinese · Arabic · Hindi · and more
+
+> English and French are the most complete. Contributions welcome!
 
 ---
 
