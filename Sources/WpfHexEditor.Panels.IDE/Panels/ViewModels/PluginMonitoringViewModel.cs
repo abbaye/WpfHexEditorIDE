@@ -467,10 +467,13 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             _ => ExportCrashReport(),
             _ => _selectedPlugin?.State == "Error");
         InstallPluginCommand     = new RelayCommand(_ => InstallFromBrowse());
-        UninstallPluginCommand   = new RelayCommand(
+        UninstallPluginCommand        = new RelayCommand(
             _ => RequestUninstall?.Invoke(_selectedPlugin!),
             _ => _selectedPlugin is not null);
-        CopyTableCommand         = new RelayCommand(_ => CopyTableToClipboard());
+        OpenInPluginManagerCommand   = new RelayCommand(
+            _ => RequestOpenInPluginManager?.Invoke(_selectedPlugin!.Id),
+            _ => _selectedPlugin is not null);
+        CopyTableCommand             = new RelayCommand(_ => CopyTableToClipboard());
         ExportEventLogCommand    = new RelayCommand(_ => ExportEventLog());
 
         // -- Host event subscriptions --
@@ -504,13 +507,22 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     public ICommand ExportJsonCommand        { get; }
     public ICommand ExportCrashReportCommand { get; }
     public ICommand InstallPluginCommand     { get; }
-    public ICommand UninstallPluginCommand   { get; }
+    public ICommand UninstallPluginCommand        { get; }
+    public ICommand OpenInPluginManagerCommand   { get; }
 
     /// <summary>
     /// Raised when the user triggers Uninstall on a plugin.
     /// Code-behind shows a confirmation dialog, then calls <see cref="UninstallConfirmedAsync"/>.
     /// </summary>
     public event Action<PluginMonitorRow>? RequestUninstall;
+
+    /// <summary>
+    /// Raised when the user chooses "Open in Plugin Manager" from the context menu.
+    /// Carries the plugin ID — code-behind opens/focuses the Plugin Manager tab
+    /// and pre-selects the matching entry.
+    /// </summary>
+    public event Action<string>? RequestOpenInPluginManager;
+
     public ICommand CopyTableCommand         { get; }
     public ICommand ExportEventLogCommand    { get; }
 

@@ -504,6 +504,25 @@ public partial class MainWindow
         DockHost.RebuildVisualTree();
     }
 
+    /// <summary>
+    /// Opens (or focuses) the Plugin Manager tab and pre-selects the plugin
+    /// matching <paramref name="pluginId"/>.
+    /// Called from the Plugin Monitor panel via reflection when the user
+    /// chooses "Open in Plugin Manager" from the context menu.
+    /// </summary>
+    internal void OnOpenPluginManagerWithSelection(string pluginId)
+    {
+        // Open or focus the tab first.
+        OnOpenPluginManager(this, new RoutedEventArgs());
+
+        // Retrieve the control from the content cache and delegate the selection.
+        if (_contentCache.TryGetValue(PluginManagerContentId, out var content) &&
+            content is WpfHexEditor.PluginHost.UI.PluginManagerControl pmControl)
+        {
+            pmControl.SelectPlugin(pluginId);
+        }
+    }
+
     // --- Plugin Monitor docking panel -----------------------------------
 
     private void OnOpenPluginMonitor(object sender, RoutedEventArgs e)

@@ -8,6 +8,8 @@
 //     (stub — full table browser deferred to a future phase).
 // ==========================================================
 
+using System.Windows.Media;
+
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
 /// <summary>

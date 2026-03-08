@@ -187,7 +187,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" MinHeight="80"/>
                 <RowDefinition Height="5"/>     <!-- Splitter -->
-                <RowDefinition Height="130" MinHeight="60"/>
+                <RowDefinition Height="220" MinHeight="60"/>
             </Grid.RowDefinitions>
 
             <!-- Assembly tree -->
@@ -198,7 +198,8 @@
                                        DecompileRequested="OnDecompile"
                                        CopyNameRequested="OnCopyName"
                                        CopyFullNameRequested="OnCopyFullName"
-                                       CopyOffsetRequested="OnCopyOffset"/>
+                                       CopyOffsetRequested="OnCopyOffset"
+                                       CloseAssemblyRequested="OnCloseAssembly"/>
 
             <!-- Splitter -->
             <GridSplitter Grid.Row="1"

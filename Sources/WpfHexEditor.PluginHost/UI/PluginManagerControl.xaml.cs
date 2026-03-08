@@ -145,6 +145,16 @@ public sealed partial class PluginManagerControl : UserControl
             ?.Invoke(win, [sender, e]);
     }
 
+    /// <summary>
+    /// Pre-selects the plugin matching <paramref name="pluginId"/> in the list.
+    /// Called by MainWindow after the Plugin Monitor requests "Open in Plugin Manager".
+    /// </summary>
+    public void SelectPlugin(string pluginId)
+    {
+        if (DataContext is not PluginManagerViewModel vm) return;
+        vm.SelectedPlugin = vm.Plugins.FirstOrDefault(p => p.Id == pluginId);
+    }
+
     // --- Drag-drop install (.whxplugin) ---
 
     private void OnPanelDragOver(object sender, DragEventArgs e)

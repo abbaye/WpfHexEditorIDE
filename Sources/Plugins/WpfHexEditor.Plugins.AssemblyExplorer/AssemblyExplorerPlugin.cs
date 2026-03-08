@@ -24,6 +24,7 @@
 //       Right-aligned, order 21: "{typeCount} types | {methodCount} methods"
 // ==========================================================
 
+using System.IO;
 using System.Windows;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
@@ -134,7 +135,13 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         context.EventBus.Subscribe<OpenAssemblyInExplorerEvent>(OnOpenAssemblyRequested);
 
         // Wire ViewModel events → status bar + EventBus
-        _panel.ViewModel.AssemblyLoaded += OnAssemblyLoaded;
+        _panel.ViewModel.AssemblyLoaded  += OnAssemblyLoaded;
+        _panel.ViewModel.AssemblyCleared += OnAssemblyCleared;
+
+        // Restore the last loaded assembly from the previous session.
+        var lastPath = AssemblyExplorerOptions.Instance.LastSessionAssemblyPath;
+        if (!string.IsNullOrEmpty(lastPath) && File.Exists(lastPath))
+            _ = _panel.ViewModel.LoadAssemblyAsync(lastPath);
 
         return Task.CompletedTask;
     }
@@ -148,7 +155,10 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         }
 
         if (_panel?.ViewModel is not null)
-            _panel.ViewModel.AssemblyLoaded -= OnAssemblyLoaded;
+        {
+            _panel.ViewModel.AssemblyLoaded  -= OnAssemblyLoaded;
+            _panel.ViewModel.AssemblyCleared -= OnAssemblyCleared;
+        }
 
         _panel      = null;
         _context    = null;
@@ -187,6 +197,15 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
             _ = _panel.ViewModel.LoadAssemblyAsync(path);
     }
 
+    // ── Assembly cleared → erase persisted session path ──────────────────────
+
+    private static void OnAssemblyCleared(object? sender, EventArgs e)
+    {
+        var opts = AssemblyExplorerOptions.Instance;
+        opts.LastSessionAssemblyPath = null;
+        opts.Save();
+    }
+
     // ── Assembly loaded → status bar update ──────────────────────────────────
 
     private void OnAssemblyLoaded(
@@ -202,6 +221,11 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
             _sbTypeCount.Text = evt.IsManaged
                 ? $"{evt.TypeCount} types | {evt.MethodCount} methods"
                 : $"{_context?.HexEditor.FileSize:N0} bytes";
+
+        // Persist the loaded path so it can be restored on next startup.
+        var opts = AssemblyExplorerOptions.Instance;
+        opts.LastSessionAssemblyPath = evt.FilePath;
+        opts.Save();
     }
 
     // ── Menu items ────────────────────────────────────────────────────────────

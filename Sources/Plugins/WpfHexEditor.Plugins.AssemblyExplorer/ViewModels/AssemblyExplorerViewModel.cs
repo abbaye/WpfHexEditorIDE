@@ -260,7 +260,14 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         FilterText  = string.Empty;
         _lastModel  = null;
         _selectedNode = null;
+        AssemblyCleared?.Invoke(this, EventArgs.Empty);
     }
+
+    /// <summary>
+    /// Raised when the panel is explicitly cleared by the user.
+    /// The plugin entry point subscribes to erase the persisted session path.
+    /// </summary>
+    public event EventHandler? AssemblyCleared;
 
     /// <summary>
     /// Called when the user selects a tree node.

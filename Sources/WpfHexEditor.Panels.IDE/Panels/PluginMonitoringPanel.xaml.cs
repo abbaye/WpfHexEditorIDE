@@ -133,8 +133,9 @@ public partial class PluginMonitoringPanel : UserControl
             ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    -= OnCpuHistoryChanged;
             ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged -= OnMemHistoryChanged;
             ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      -= OnEventLogChanged;
-            _vm.PropertyChanged    -= OnVmPropertyChanged;
-            _vm.RequestUninstall   -= OnRequestUninstall;
+            _vm.PropertyChanged              -= OnVmPropertyChanged;
+            _vm.RequestUninstall             -= OnRequestUninstall;
+            _vm.RequestOpenInPluginManager   -= OnRequestOpenInPluginManager;
             _vm.Dispose();
             _vm = null;
         }
@@ -150,8 +151,9 @@ public partial class PluginMonitoringPanel : UserControl
             ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    -= OnCpuHistoryChanged;
             ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged -= OnMemHistoryChanged;
             ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      -= OnEventLogChanged;
-            _vm.PropertyChanged  -= OnVmPropertyChanged;
-            _vm.RequestUninstall -= OnRequestUninstall;
+            _vm.PropertyChanged              -= OnVmPropertyChanged;
+            _vm.RequestUninstall             -= OnRequestUninstall;
+            _vm.RequestOpenInPluginManager   -= OnRequestOpenInPluginManager;
         }
 
         _vm = e.NewValue as PluginMonitoringViewModel;
@@ -161,8 +163,9 @@ public partial class PluginMonitoringPanel : UserControl
             ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    += OnCpuHistoryChanged;
             ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged += OnMemHistoryChanged;
             ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      += OnEventLogChanged;
-            _vm.PropertyChanged  += OnVmPropertyChanged;
-            _vm.RequestUninstall += OnRequestUninstall;
+            _vm.PropertyChanged              += OnVmPropertyChanged;
+            _vm.RequestUninstall             += OnRequestUninstall;
+            _vm.RequestOpenInPluginManager   += OnRequestOpenInPluginManager;
             ApplySparklineVisibility();
             SyncLayoutCombo(_vm.ChartsPosition);
             RebuildContentGrid(_vm.ChartsPosition);
@@ -524,6 +527,38 @@ public partial class PluginMonitoringPanel : UserControl
         var files = e.Data.GetData(DataFormats.FileDrop) as string[];
         return files?.Any(f => string.Equals(
             Path.GetExtension(f), ".whxplugin", StringComparison.OrdinalIgnoreCase)) == true;
+    }
+
+    // ── Row right-click selection ────────────────────────────────────────────
+
+    /// <summary>
+    /// Ensures the right-clicked row is selected before the ContextMenu opens,
+    /// so that _selectedPlugin is set in the ViewModel when the menu items evaluate
+    /// their IsEnabled / Header bindings.
+    /// </summary>
+    internal void OnRowPreviewRightClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (sender is DataGridRow row)
+            row.IsSelected = true;
+    }
+
+    // ── Open in Plugin Manager ───────────────────────────────────────────────
+
+    /// <summary>
+    /// Opens the Plugin Manager tab (or focuses it if already open) and pre-selects
+    /// the plugin whose ID was received from the ViewModel event.
+    /// Uses the same reflection-on-MainWindow pattern as OnContextOpenMonitor in
+    /// PluginManagerControl, keeping the two panels symmetrical.
+    /// </summary>
+    private void OnRequestOpenInPluginManager(string pluginId)
+    {
+        var win = Window.GetWindow(this);
+        if (win is null) return;
+
+        win.GetType()
+           .GetMethod("OnOpenPluginManagerWithSelection",
+               System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+           ?.Invoke(win, [pluginId]);
     }
 
     // ── Uninstall confirmation ───────────────────────────────────────────────

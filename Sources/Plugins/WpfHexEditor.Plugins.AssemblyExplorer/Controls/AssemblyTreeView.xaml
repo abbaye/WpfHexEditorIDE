@@ -19,27 +19,117 @@
         <conv:NodeTypeToIconConverter x:Key="NodeIconConverter"/>
         <conv:MemberAccessToVisibilityConverter x:Key="AccessConverter"/>
 
-        <!-- Item container style: hover + selected brushes via PFP tokens -->
+        <!-- Expander toggle button: chevron arrow, themed -->
+        <Style x:Key="TreeExpanderStyle" TargetType="ToggleButton">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Width"     Value="16"/>
+            <Setter Property="Height"    Value="16"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="Transparent" Width="16" Height="16">
+                            <Path x:Name="Arrow"
+                                  Data="M 4 2 L 12 8 L 4 14 Z"
+                                  Fill="{DynamicResource PFP_SubTextBrush}"
+                                  Stretch="Uniform"
+                                  Width="6" Height="8"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  RenderTransformOrigin="0.5,0.5">
+                                <Path.RenderTransform>
+                                    <RotateTransform Angle="0"/>
+                                </Path.RenderTransform>
+                            </Path>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Arrow" Property="RenderTransform">
+                                    <Setter.Value><RotateTransform Angle="90"/></Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Item container: full ControlTemplate so selected bg uses PFP tokens, not SystemColors -->
         <Style x:Key="AsmTreeItemStyle" TargetType="TreeViewItem">
             <Setter Property="IsExpanded"  Value="{Binding IsExpanded, Mode=TwoWay}"/>
             <Setter Property="IsSelected"  Value="{Binding IsSelected, Mode=TwoWay}"/>
             <Setter Property="ToolTip"     Value="{Binding ToolTipText}"/>
-            <Setter Property="Padding"     Value="2,1"/>
             <Setter Property="Foreground"  Value="{DynamicResource PFP_TextBrush}"/>
             <Setter Property="Background"  Value="Transparent"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource PFP_ItemHoverBrush}"/>
-                </Trigger>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource PFP_ItemSelectedBrush}"/>
-                    <Setter Property="Foreground" Value="{DynamicResource PFP_ItemSelectedForegroundBrush}"/>
-                </Trigger>
-                <!-- Deep filter: collapse nodes with no matching self or descendants -->
-                <DataTrigger Binding="{Binding IsVisible}" Value="False">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                </DataTrigger>
-            </Style.Triggers>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TreeViewItem">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" MinWidth="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Expand/collapse arrow -->
+                            <ToggleButton x:Name="Expander"
+                                          Grid.Row="0" Grid.Column="0"
+                                          Style="{StaticResource TreeExpanderStyle}"
+                                          IsChecked="{Binding IsExpanded,
+                                              RelativeSource={RelativeSource TemplatedParent}}"
+                                          ClickMode="Press"/>
+
+                            <!-- Row highlight + content -->
+                            <Border x:Name="Bd"
+                                    Grid.Row="0" Grid.Column="1"
+                                    Background="Transparent"
+                                    Padding="2,1">
+                                <ContentPresenter ContentSource="Header"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+
+                            <!-- Children -->
+                            <ItemsPresenter x:Name="ItemsHost"
+                                            Grid.Row="1" Grid.Column="1"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="False">
+                                <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                            <Trigger Property="HasItems" Value="False">
+                                <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource PFP_ItemHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource PFP_ItemSelectedBrush}"/>
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource PFP_ItemSelectedForegroundBrush}"/>
+                            </Trigger>
+                            <!-- Keep selection visible when TreeView loses keyboard focus -->
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected"        Value="True"/>
+                                    <Condition Property="IsSelectionActive" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource PFP_ItemSelectedBrush}"/>
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.7"/>
+                            </MultiTrigger>
+                            <!-- Deep filter: collapse nodes not matching search -->
+                            <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <!-- Default node DataTemplate -->
@@ -96,6 +186,8 @@
                 <Separator/>
                 <MenuItem Header="Export IL"           IsEnabled="False" ToolTip="Coming in a future release"/>
                 <MenuItem Header="Export C#"           IsEnabled="False" ToolTip="Coming in a future release"/>
+                <Separator/>
+                <MenuItem Header="Close Assembly"      x:Name="MenuCloseAssembly" Click="OnCloseAssembly"/>
             </ContextMenu>
         </TreeView.ContextMenu>
     </TreeView>

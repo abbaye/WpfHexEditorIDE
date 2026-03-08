@@ -625,12 +625,22 @@
                     <DataGridTextColumn Header="Init ms" Binding="{Binding InitTimeMs, StringFormat={}{0:F0}}"       Width="60"/>
                 </DataGrid.Columns>
 
-                <!-- Context menu on each row: Reload / Enable-Disable / Uninstall -->
+                <!-- Context menu on each row: Reload / Enable-Disable / Open in Manager / Uninstall        -->
+                <!-- DataContext fix: ContextMenu lives in a Popup (not in the visual tree).               -->
+                <!-- RelativeSource AncestorType=UserControl does NOT work from a Popup.                   -->
+                <!-- Solution: bind DataGridRow.Tag to the DataGrid's DataContext (PluginMonitoringViewModel)
+                     while still in the visual tree, then read it back via PlacementTarget.Tag.            -->
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow" BasedOn="{StaticResource MonitorRowStyle}">
+                        <!-- Carry the panel VM through the Tag so the ContextMenu (Popup) can reach it. -->
+                        <Setter Property="Tag"
+                                Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                        <!-- Select the row on right-click so _selectedPlugin is set before the menu opens. -->
+                        <EventSetter Event="PreviewMouseRightButtonDown" Handler="OnRowPreviewRightClick"/>
                         <Setter Property="ContextMenu">
                             <Setter.Value>
-                                <ContextMenu DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}">
+                                <!-- PlacementTarget = the DataGridRow; Tag = PluginMonitoringViewModel -->
+                                <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                                     <MenuItem Header="Reload"
                                               Command="{Binding ReloadPluginCommand}"
                                               IsEnabled="{Binding HasSelectedPlugin}">
@@ -643,6 +653,14 @@
                                               IsEnabled="{Binding HasSelectedPlugin}">
                                         <MenuItem.Icon>
                                             <TextBlock Text="{Binding TogglePluginIcon}" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator/>
+                                    <MenuItem Header="Open in Plugin Manager"
+                                              Command="{Binding OpenInPluginManagerCommand}"
+                                              IsEnabled="{Binding HasSelectedPlugin}">
+                                        <MenuItem.Icon>
+                                            <TextBlock Text="&#xE71C;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <Separator/>

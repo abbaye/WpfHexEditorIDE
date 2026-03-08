@@ -9,6 +9,7 @@
 //     (Namespaces group, References, Resources, Modules, Metadata).
 // ==========================================================
 
+using System.Windows.Media;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;

@@ -41,12 +41,73 @@
             <Setter Property="BorderBrush"  Value="{DynamicResource PFP_BorderBrush}"/>
             <Setter Property="Padding"      Value="10,3"/>
             <Setter Property="FontSize"     Value="11"/>
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
-                    <Setter Property="FontWeight" Value="SemiBold"/>
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabBorder"
+                                Background="Transparent"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBorder" Property="BorderBrush"     Value="{DynamicResource PFP_AccentBrush}"/>
+                                <Setter TargetName="TabBorder" Property="BorderThickness" Value="0,0,0,2"/>
+                                <Setter Property="Foreground"                             Value="{DynamicResource PFP_TextBrush}"/>
+                                <Setter Property="FontWeight"                             Value="SemiBold"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected"  Value="False"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource PFP_ItemHoverBrush}"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TabControl style: overrides the default template so the header strip
+             uses PFP theme brushes instead of the Windows system Aero brush. -->
+        <Style x:Key="DetailTabControlStyle" TargetType="TabControl">
+            <Setter Property="Background"     Value="{DynamicResource PFP_SectionBackgroundBrush}"/>
+            <Setter Property="BorderBrush"    Value="{DynamicResource PFP_BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding"        Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid KeyboardNavigation.TabNavigation="Local" SnapsToDevicePixels="True">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <!-- Header strip: explicit PFP background prevents Windows Aero bleed-through -->
+                            <Border Grid.Row="0"
+                                    Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                                    BorderBrush="{DynamicResource PFP_BorderBrush}"
+                                    BorderThickness="0,0,0,1">
+                                <TabPanel IsItemsHost="True"
+                                          Background="Transparent"
+                                          KeyboardNavigation.TabNavigation="Local"/>
+                            </Border>
+                            <!-- Content area -->
+                            <Border Grid.Row="1"
+                                    Background="{TemplateBinding Background}">
+                                <ContentPresenter x:Name="PART_SelectedContentHost"
+                                                  ContentSource="SelectedContent"
+                                                  KeyboardNavigation.TabNavigation="Local"
+                                                  KeyboardNavigation.DirectionalNavigation="Contained"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
 
@@ -85,13 +146,11 @@
         <!-- 4-tab detail body -->
         <TabControl Grid.Row="1"
                     SelectedIndex="{Binding ActiveTabIndex, Mode=TwoWay}"
-                    Background="{DynamicResource PFP_SectionBackgroundBrush}"
-                    Foreground="{DynamicResource PFP_SubTextBrush}"
-                    BorderBrush="{DynamicResource PFP_BorderBrush}"
-                    BorderThickness="0,1,0,0">
+                    Style="{StaticResource DetailTabControlStyle}"
+                    ItemContainerStyle="{StaticResource DetailTabItemStyle}">
 
             <!-- Tab 0: Code — C# structural skeleton -->
-            <TabItem Header="Code" Style="{StaticResource DetailTabItemStyle}">
+            <TabItem Header="Code">
                 <ScrollViewer Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Auto">
@@ -101,7 +160,7 @@
             </TabItem>
 
             <!-- Tab 1: IL — raw IL disassembly (methods only) -->
-            <TabItem Header="IL" Style="{StaticResource DetailTabItemStyle}">
+            <TabItem Header="IL">
                 <Grid Background="{DynamicResource PFP_SectionBackgroundBrush}">
                     <!-- Shown when no IL text is available -->
                     <TextBlock Text="// Select a method node to view IL disassembly."
@@ -141,7 +200,7 @@
             </TabItem>
 
             <!-- Tab 2: Info — structured metadata key/value grid -->
-            <TabItem Header="Info" Style="{StaticResource DetailTabItemStyle}">
+            <TabItem Header="Info">
                 <ScrollViewer Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
@@ -173,7 +232,7 @@
             </TabItem>
 
             <!-- Tab 3: Hex — 64-byte raw hex dump at PE offset -->
-            <TabItem Header="Hex" Style="{StaticResource DetailTabItemStyle}">
+            <TabItem Header="Hex">
                 <ScrollViewer Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Auto">

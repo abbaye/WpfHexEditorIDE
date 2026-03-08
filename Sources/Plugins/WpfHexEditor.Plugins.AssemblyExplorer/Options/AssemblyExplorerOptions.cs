@@ -84,6 +84,13 @@ public sealed class AssemblyExplorerOptions
     /// </summary>
     public string DefaultDecompileTab { get; set; } = "Code";
 
+    /// <summary>
+    /// File path of the last assembly loaded in the explorer.
+    /// Restored automatically on next IDE startup when the file still exists.
+    /// Null when no assembly was loaded or the user explicitly cleared the panel.
+    /// </summary>
+    public string? LastSessionAssemblyPath { get; set; } = null;
+
     // ── Persistence ───────────────────────────────────────────────────────────
 
     private static readonly string FilePath = Path.Combine(

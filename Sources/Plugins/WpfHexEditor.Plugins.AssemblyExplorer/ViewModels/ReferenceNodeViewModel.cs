@@ -7,6 +7,7 @@
 //     Tree node for an assembly reference (AssemblyRef metadata row).
 // ==========================================================
 
+using System.Windows.Media;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;

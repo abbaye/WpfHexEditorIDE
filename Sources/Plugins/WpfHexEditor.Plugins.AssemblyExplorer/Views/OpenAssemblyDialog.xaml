@@ -34,6 +34,39 @@
     DragLeave="OnWindowDragLeave">
 
     <Grid>
+        <Grid.Resources>
+            <!-- Themed button: respects Background/Foreground, accent-highlight on hover -->
+            <Style TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="2"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  TextElement.Foreground="{TemplateBinding Foreground}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Opacity" Value="0.82"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Bd" Property="Opacity" Value="0.65"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Bd" Property="Opacity" Value="0.35"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>   <!-- path bar  -->
             <RowDefinition Height="*"/>      <!-- tab area  -->
@@ -105,12 +138,65 @@
                     BorderThickness="0"
                     Padding="0">
             <TabControl.Resources>
+
+                <!-- Full TabControl template: dark header strip + themed content area -->
+                <Style TargetType="TabControl">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabControl">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Border Grid.Row="0"
+                                            Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                                            BorderBrush="{DynamicResource DockBorderBrush}"
+                                            BorderThickness="0,0,0,1">
+                                        <TabPanel IsItemsHost="True" Background="Transparent"/>
+                                    </Border>
+                                    <Border Grid.Row="1"
+                                            Background="{TemplateBinding Background}"
+                                            BorderThickness="0">
+                                        <ContentPresenter ContentSource="SelectedContent"/>
+                                    </Border>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <!-- Full TabItem template: accent bottom-border on selected, hover bg -->
                 <Style TargetType="TabItem">
-                    <Setter Property="Background"     Value="Transparent"/>
-                    <Setter Property="Foreground"     Value="{DynamicResource PFP_SubTextBrush}"/>
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="Padding"        Value="14,7"/>
-                    <Setter Property="FontSize"       Value="12"/>
+                    <Setter Property="Foreground"  Value="{DynamicResource PFP_SubTextBrush}"/>
+                    <Setter Property="Padding"     Value="14,8"/>
+                    <Setter Property="FontSize"    Value="12"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border x:Name="Bd"
+                                        Background="Transparent"
+                                        BorderThickness="0,0,0,2"
+                                        BorderBrush="Transparent"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter ContentSource="Header"
+                                                      VerticalAlignment="Center"
+                                                      HorizontalAlignment="Center"
+                                                      TextElement.Foreground="{TemplateBinding Foreground}"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background"
+                                                Value="{DynamicResource PFP_ItemHoverBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Bd" Property="BorderBrush"
+                                                Value="{DynamicResource PFP_AccentBrush}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>

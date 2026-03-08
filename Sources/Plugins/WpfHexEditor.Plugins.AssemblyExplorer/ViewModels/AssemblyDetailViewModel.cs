@@ -153,13 +153,8 @@ public sealed class AssemblyDetailViewModel : AssemblyNodeViewModel
             ? FormatHexDump(ReadPeBytes(filePath, node.PeOffset), node.PeOffset)
             : "// No PE offset available for this node.";
 
-        // Auto-select the most useful tab based on node kind
-        ActiveTabIndex = node switch
-        {
-            MethodNodeViewModel                                  => 1, // IL
-            AssemblyRootNodeViewModel or TypeNodeViewModel       => 0, // C# skeleton
-            _                                                    => 2  // Info for others
-        };
+        // Do NOT override ActiveTabIndex here — respect the tab the user last picked.
+        // Tab is only reset to 0 (Code) by Clear() when the pane is emptied.
     }
 
     /// <summary>Resets the detail pane to its initial empty state.</summary>

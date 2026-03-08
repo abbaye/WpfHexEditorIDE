@@ -195,8 +195,18 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
 
             // LoadOptions/CreateOptionsPage may do I/O — call synchronously here but OK since
             // this getter is triggered by tab selection (UI thread, user interaction, not hot path).
-            opts.LoadOptions();
-            _optionsPage = opts.CreateOptionsPage();
+            // Guard: a buggy plugin must not crash the host — catch and swallow any plugin exception.
+            try
+            {
+                opts.LoadOptions();
+                _optionsPage = opts.CreateOptionsPage();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"[PluginManager] CreateOptionsPage threw for plugin '{_entry.Id}': {ex}");
+                return null;
+            }
             return _optionsPage;
         }
     }

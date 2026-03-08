@@ -39,6 +39,13 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
     private PluginListItemViewModel? _selectedPlugin;
     private bool _isInstalling;
 
+    // Global summary metrics (updated on every metrics tick)
+    private double _globalCpuPercent;
+    private long   _globalMemoryMb;
+    private int    _globalRunningCount;
+    private int    _globalTotalCount;
+    private int    _globalFaultCount;
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public PluginManagerViewModel(WpfPluginHost host, Dispatcher dispatcher)
@@ -123,6 +130,29 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
 
     public IReadOnlyList<string> SortOptions { get; } = ["Name", "State", "CPU", "InitTime"];
 
+    // --- Global summary metrics ---
+
+    public double GlobalCpuPercent
+    {
+        get => _globalCpuPercent;
+        private set { _globalCpuPercent = value; OnPropertyChanged(); }
+    }
+
+    public long GlobalMemoryMb
+    {
+        get => _globalMemoryMb;
+        private set { _globalMemoryMb = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>E.g. "10/10" — loaded/total.</summary>
+    public string RunningLabel => $"{_globalRunningCount}/{_globalTotalCount}";
+
+    public int FaultCount
+    {
+        get => _globalFaultCount;
+        private set { _globalFaultCount = value; OnPropertyChanged(); }
+    }
+
     // --- Commands ---
 
     public ICommand RefreshCommand           { get; }
@@ -183,6 +213,8 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         // Restore selection if still present
         if (previousId is not null)
             SelectedPlugin = Plugins.FirstOrDefault(p => p.Id == previousId);
+
+        RefreshGlobalMetrics();
     }
 
     private void RebuildOnUiThread()
@@ -227,6 +259,28 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
     private void OnMetricsTick(object? sender, EventArgs e)
     {
         foreach (var vm in Plugins) vm.Refresh();
+        RefreshGlobalMetrics();
+    }
+
+    private void RefreshGlobalMetrics()
+    {
+        // CPU: all loaded plugins share the same process-level sample — take the first non-zero value.
+        GlobalCpuPercent = Plugins.FirstOrDefault(p => p.State == PluginState.Loaded)?.CpuPercent ?? 0;
+
+        // Memory: total managed heap (process-wide).
+        GlobalMemoryMb = GC.GetTotalMemory(forceFullCollection: false) / (1024 * 1024);
+
+        var running = Plugins.Count(p => p.State == PluginState.Loaded);
+        var total   = Plugins.Count;
+        var faults  = Plugins.Count(p => p.State == PluginState.Faulted);
+
+        _globalRunningCount = running;
+        _globalTotalCount   = total;
+
+        // Raise RunningLabel only when values change to avoid spurious bindings.
+        if (_globalFaultCount != faults)
+            FaultCount = faults;
+        OnPropertyChanged(nameof(RunningLabel));
     }
 
     private void OnFilterDebounced(object? sender, EventArgs e)

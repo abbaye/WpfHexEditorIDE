@@ -8,6 +8,8 @@
 //     Types with empty Namespace are grouped under "(global namespace)".
 // ==========================================================
 
+using System.Windows.Media;
+
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
 /// <summary>Groups type nodes under a namespace name.</summary>

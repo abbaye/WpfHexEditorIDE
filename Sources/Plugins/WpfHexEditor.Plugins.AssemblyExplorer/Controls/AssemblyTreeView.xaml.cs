@@ -31,6 +31,7 @@ public partial class AssemblyTreeView : UserControl
     public event EventHandler<AssemblyNodeViewModel>?  CopyNameRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CopyFullNameRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CopyOffsetRequested;
+    public event EventHandler<AssemblyNodeViewModel>?  CloseAssemblyRequested;
 
     // ── ItemsSource passthrough ───────────────────────────────────────────────
 
@@ -58,10 +59,11 @@ public partial class AssemblyTreeView : UserControl
     private void OnContextMenuOpened(object sender, RoutedEventArgs e)
     {
         var node = InnerTreeView.SelectedItem as AssemblyNodeViewModel;
-        MenuOpenInHex.IsEnabled  = node?.PeOffset > 0;
-        MenuCopyFull.IsEnabled   = node is TypeNodeViewModel;
-        MenuCopyOffset.IsEnabled = node is MethodNodeViewModel;
-        MenuDecompile.IsEnabled  = node is TypeNodeViewModel or MethodNodeViewModel or AssemblyRootNodeViewModel;
+        MenuOpenInHex.IsEnabled      = node?.PeOffset > 0;
+        MenuCopyFull.IsEnabled       = node is TypeNodeViewModel;
+        MenuCopyOffset.IsEnabled     = node is MethodNodeViewModel;
+        MenuDecompile.IsEnabled      = node is TypeNodeViewModel or MethodNodeViewModel or AssemblyRootNodeViewModel;
+        MenuCloseAssembly.IsEnabled  = node is not null;
     }
 
     private void OnOpenInHexEditor(object sender, RoutedEventArgs e)
@@ -92,5 +94,11 @@ public partial class AssemblyTreeView : UserControl
     {
         if (InnerTreeView.SelectedItem is AssemblyNodeViewModel node)
             DecompileRequested?.Invoke(this, node);
+    }
+
+    private void OnCloseAssembly(object sender, RoutedEventArgs e)
+    {
+        if (InnerTreeView.SelectedItem is AssemblyNodeViewModel node)
+            CloseAssemblyRequested?.Invoke(this, node);
     }
 }

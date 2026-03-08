@@ -70,15 +70,24 @@ public partial class OpenAssemblyDialog : ThemedDialog
     // ── Public output ──────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Absolute path chosen by the user.
-    /// Valid only when <see cref="ShowDialog"/> returns <see langword="true"/>.
+    /// All selected paths (1..N). Valid only when <see cref="ShowDialog"/> returns true.
+    /// Contains more than one item when the user selected a runtime group or version node.
     /// </summary>
-    public string SelectedFilePath { get; private set; } = string.Empty;
+    public List<string> SelectedFilePaths { get; private set; } = [];
+
+    /// <summary>First selected path — convenience accessor for single-file callers.</summary>
+    public string SelectedFilePath => SelectedFilePaths.Count > 0 ? SelectedFilePaths[0] : string.Empty;
 
     // ── Private state ──────────────────────────────────────────────────────────
 
     /// <summary>All leaf nodes from all runtimes — used for the flat filtered list.</summary>
     private List<AssemblyFileNode> _allRuntimeAssemblies = [];
+
+    /// <summary>
+    /// When a non-leaf tree node is selected, holds all its descendant DLL paths so
+    /// <see cref="Accept"/> can return them all at once. Null for single-file selection.
+    /// </summary>
+    private List<string>? _pendingMultiplePaths;
 
     // ── Construction ──────────────────────────────────────────────────────────
 
@@ -198,8 +207,35 @@ public partial class OpenAssemblyDialog : ThemedDialog
     private void OnRuntimeTreeSelectionChanged(object sender,
         RoutedPropertyChangedEventArgs<object> e)
     {
-        if (e.NewValue is AssemblyFileNode node)
-            SetPath(node.FullPath);
+        switch (e.NewValue)
+        {
+            case AssemblyFileNode file:
+                _pendingMultiplePaths = null;
+                SetPath(file.FullPath);
+                break;
+
+            case VersionGroupNode version:
+                _pendingMultiplePaths = version.Assemblies
+                    .Select(a => a.FullPath).ToList();
+                SetMultiplePathsHint(
+                    $"{_pendingMultiplePaths.Count} assemblies — {version.Version}");
+                break;
+
+            case RuntimeGroupNode group:
+                _pendingMultiplePaths = group.Versions
+                    .SelectMany(v => v.Assemblies)
+                    .Select(a => a.FullPath).ToList();
+                SetMultiplePathsHint(
+                    $"{_pendingMultiplePaths.Count} assemblies — {group.Name}");
+                break;
+        }
+    }
+
+    private void SetMultiplePathsHint(string hint)
+    {
+        PathBox.Text       = hint;
+        PathBox.CaretIndex = hint.Length;
+        OpenButton.IsEnabled = true;
     }
 
     private void OnRuntimeFilterChanged(object sender, TextChangedEventArgs e)
@@ -340,7 +376,11 @@ public partial class OpenAssemblyDialog : ThemedDialog
     }
 
     private void ValidatePath(string path)
-        => OpenButton.IsEnabled = !string.IsNullOrEmpty(path) && File.Exists(path);
+    {
+        // Keep Open enabled when a multi-file node is already pending.
+        if (_pendingMultiplePaths is { Count: > 0 }) return;
+        OpenButton.IsEnabled = !string.IsNullOrEmpty(path) && File.Exists(path);
+    }
 
     // ── Dialog result ─────────────────────────────────────────────────────────
 
@@ -355,9 +395,21 @@ public partial class OpenAssemblyDialog : ThemedDialog
 
     private void Accept(string path)
     {
+        // Multi-file selection (runtime group or version node).
+        if (_pendingMultiplePaths is { Count: > 0 })
+        {
+            SelectedFilePaths = _pendingMultiplePaths;
+            foreach (var p in _pendingMultiplePaths)
+                AssemblyExplorerOptions.Instance.AddRecentFile(p);
+            DialogResult = true;
+            Close();
+            return;
+        }
+
+        // Single-file selection.
         if (string.IsNullOrEmpty(path) || !File.Exists(path)) return;
 
-        SelectedFilePath = path;
+        SelectedFilePaths = [path];
         AssemblyExplorerOptions.Instance.AddRecentFile(path);
 
         DialogResult = true;

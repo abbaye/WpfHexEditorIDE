@@ -8,6 +8,7 @@
 //     Children are method/field/property/event sub-groups.
 // ==========================================================
 
+using System.Windows.Media;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;

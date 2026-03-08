@@ -150,16 +150,19 @@ public partial class AssemblyExplorerPanel : UserControl
             // Clipboard text doesn't point to an existing file — open dialog pre-filled.
             var dialog = new OpenAssemblyDialog { Owner = Window.GetWindow(this) };
             dialog.PreFillPath(path);
-            if (dialog.ShowDialog() == true && !string.IsNullOrEmpty(dialog.SelectedFilePath))
-                _ = ViewModel.LoadAssemblyAsync(dialog.SelectedFilePath);
+            if (dialog.ShowDialog() == true)
+                foreach (var p in dialog.SelectedFilePaths)
+                    _ = ViewModel.LoadAssemblyAsync(p);
         }
     }
 
     private void OpenAssemblyViaDialog()
     {
         var dialog = new OpenAssemblyDialog { Owner = Window.GetWindow(this) };
-        if (dialog.ShowDialog() == true && !string.IsNullOrEmpty(dialog.SelectedFilePath))
-            _ = ViewModel.LoadAssemblyAsync(dialog.SelectedFilePath);
+        if (dialog.ShowDialog() != true) return;
+
+        foreach (var path in dialog.SelectedFilePaths)
+            _ = ViewModel.LoadAssemblyAsync(path);
     }
 
     /// <summary>
@@ -230,6 +233,9 @@ public partial class AssemblyExplorerPanel : UserControl
 
     private void OnCopyOffset(object? sender, AssemblyNodeViewModel node)
         => SafeCopy(node.PeOffset > 0 ? $"0x{node.PeOffset:X}" : "0");
+
+    private void OnCloseAssembly(object? sender, AssemblyNodeViewModel node)
+        => ViewModel.Clear();
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
