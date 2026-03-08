@@ -140,6 +140,7 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
     private double _cpuPercent;
     private double _weightedCpu;
     private long   _memoryMb;
+    private long   _weightedMemMb;
     private double _avgExecMs;
     private double _initTimeMs;
     private string _uptimeLabel  = string.Empty;
@@ -153,8 +154,14 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
 
     public string Id { get; init; } = string.Empty;
 
+    private PluginMiniChartViewModel? _miniChart;
+
     /// <summary>Reference to this plugin's per-plugin mini-chart ViewModel.</summary>
-    public PluginMiniChartViewModel? MiniChart { get; set; }
+    public PluginMiniChartViewModel? MiniChart
+    {
+        get => _miniChart;
+        set { _miniChart = value; OnPropertyChanged(); }
+    }
 
     public string Name         { get => _name;         set { _name         = value; OnPropertyChanged(); } }
     public string State        { get => _state;        set { _state        = value; OnPropertyChanged(); } }
@@ -162,8 +169,11 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
     public double CpuPercent   { get => _cpuPercent;   set { _cpuPercent   = value; OnPropertyChanged(); } }
 
     /// <summary>Weighted CPU estimate for this plugin (process CPU × exec-time weight).</summary>
-    public double WeightedCpu  { get => _weightedCpu;  set { _weightedCpu  = value; OnPropertyChanged(); } }
-    public long   MemoryMb     { get => _memoryMb;     set { _memoryMb     = value; OnPropertyChanged(); } }
+    public double WeightedCpu    { get => _weightedCpu;    set { _weightedCpu    = value; OnPropertyChanged(); } }
+    public long   MemoryMb       { get => _memoryMb;       set { _memoryMb       = value; OnPropertyChanged(); } }
+
+    /// <summary>Weighted memory estimate for this plugin (process GC heap × exec-time weight).</summary>
+    public long   WeightedMemMb  { get => _weightedMemMb;  set { _weightedMemMb  = value; OnPropertyChanged(); } }
     public double AvgExecMs    { get => _avgExecMs;    set { _avgExecMs    = value; OnPropertyChanged(); } }
     public double InitTimeMs   { get => _initTimeMs;   set { _initTimeMs   = value; OnPropertyChanged(); } }
     public string UptimeLabel  { get => _uptimeLabel;  set { _uptimeLabel  = value; OnPropertyChanged(); } }
@@ -381,6 +391,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     private const int MaxEventLog    = 200;
 
     private readonly WpfPluginHost    _host;
+    private readonly Dispatcher       _dispatcher;
     private readonly DispatcherTimer  _timer;
     private readonly PluginAlertEngine _alertEngine = new();
     private readonly PluginDiagnosticsExporter _exporter = new();
@@ -422,6 +433,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     public PluginMonitoringViewModel(WpfPluginHost host, Dispatcher dispatcher, IOutputService? outputService = null)
     {
         _host          = host ?? throw new ArgumentNullException(nameof(host));
+        _dispatcher    = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
         _outputService = outputService;
 
         _timer = new DispatcherTimer(DispatcherPriority.Background, dispatcher)
@@ -465,6 +477,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         _filteredRows.Filter = FilterPlugin;
 
         Refresh();
+        SynthesizeInitialLoadEvents();
     }
 
     // -- Commands ----------------------------------------------------------------
@@ -753,12 +766,20 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
         if (loaded.Count > 0)
         {
-            var snap = loaded[0].Diagnostics.GetLatest();
-            if (snap is not null)
-            {
-                totalCpu = snap.CpuPercent;
-                totalMem = snap.MemoryBytes / (1024 * 1024);
-            }
+            // Use the host's directly-sampled CPU% — NOT the ring-buffer latest.
+            // The ring-buffer latest may be the init sample (recorded during batch startup
+            // at ~100% CPU) until the first periodic tick fires. LastSampledCpuPercent is
+            // only set by OnSamplingTick and starts at 0, giving a correct idle reading.
+            totalCpu = _host.LastSampledCpuPercent;
+
+            // All loaded plugins record the same process-level GC memory per tick.
+            // Use the first plugin that has a snapshot rather than always loaded[0],
+            // which may be null during the brief window before the first sampling tick.
+            var memSnap = loaded
+                .Select(e => e.Diagnostics.GetLatest())
+                .FirstOrDefault(s => s is not null);
+            if (memSnap is not null)
+                totalMem = memSnap.MemoryBytes / (1024 * 1024);
         }
 
         CurrentCpu      = totalCpu;
@@ -794,36 +815,56 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
             if (row is null)
             {
-                row = new PluginMonitorRow { Id = entry.Manifest.Id };
+                // Pre-assign MiniChart so the DataGrid binding resolves immediately.
+                // Assigning after Rows.Add would be invisible to WPF (no PropertyChanged
+                // on a plain auto-property at the time the cell is first bound).
+                var newMini = GetOrCreateMiniChart(entry.Manifest.Id, entry.Manifest.Name);
+                row = new PluginMonitorRow { Id = entry.Manifest.Id, MiniChart = newMini };
                 Rows.Add(row);
             }
 
-            // Compute weighted CPU estimate for this plugin.
-            double avgMs      = entry.Diagnostics.AverageExecutionTime.TotalMilliseconds;
-            double weight     = sumExecMs > 0 && avgMs > 0
-                ? avgMs / sumExecMs
-                : loaded.Count > 0 ? 1.0 / loaded.Count : 0;
+            // Compute weighted CPU and memory estimates for this plugin.
+            // Weight is proportional to measured average execution time.
+            //
+            // Rules:
+            //   • Non-loaded plugin (Faulted, Unloaded…) → weight = 0, no allocation.
+            //   • sumExecMs > 0 (at least one plugin has measured data):
+            //       – avgMs > 0 → proportional share   (avgMs / sumExecMs)
+            //       – avgMs = 0 → weight = 0 (no evidence of CPU usage; do NOT fall back
+            //                     to equal share here — that inflates the running total
+            //                     above 100% and gives metrics to unmeasured plugins).
+            //   • sumExecMs = 0 (no plugin has been measured yet at startup):
+            //       → equal share across all loaded plugins as initial estimate.
+            double avgMs  = entry.Diagnostics.AverageExecutionTime.TotalMilliseconds;
+            double weight = entry.State != PluginState.Loaded
+                ? 0
+                : sumExecMs > 0
+                    ? (avgMs > 0 ? avgMs / sumExecMs : 0)
+                    : (loaded.Count > 0 ? 1.0 / loaded.Count : 0);
             double weightedCpu = Math.Clamp(totalCpu * weight, 0, 100);
+            long   weightedMem = (long)Math.Round(totalMem * weight);
 
-            row.Name         = entry.Manifest.Name;
-            row.State        = StateLabel(entry.State);
-            row.StateColor   = StateBadgeColor(entry.State);
-            row.CpuPercent   = snap?.CpuPercent ?? 0;
-            row.WeightedCpu  = weightedCpu;
-            row.MemoryMb     = snap is not null ? snap.MemoryBytes / (1024 * 1024) : 0;
-            row.AvgExecMs    = entry.Diagnostics.AverageExecutionTime.TotalMilliseconds;
-            row.InitTimeMs   = entry.InitDuration.TotalMilliseconds;
-            row.UptimeLabel  = FormatUptime(entry.Diagnostics.Uptime);
-            row.PeakCpu      = entry.Diagnostics.PeakCpu();
-            row.IsResponsive = entry.Diagnostics.IsResponsive;
-            row.IsSlow       = _slowPluginIds.Contains(entry.Manifest.Id);
-            row.FaultMessage = entry.FaultException?.Message ?? string.Empty;
-            row.Version      = entry.Manifest.Version ?? string.Empty;
+            row.Name           = entry.Manifest.Name;
+            row.State          = StateLabel(entry.State);
+            row.StateColor     = StateBadgeColor(entry.State);
+            row.CpuPercent     = snap?.CpuPercent ?? 0;
+            row.WeightedCpu    = weightedCpu;
+            row.MemoryMb       = snap is not null ? snap.MemoryBytes / (1024 * 1024) : 0;
+            row.WeightedMemMb  = weightedMem;
+            row.AvgExecMs      = entry.Diagnostics.AverageExecutionTime.TotalMilliseconds;
+            row.InitTimeMs     = entry.InitDuration.TotalMilliseconds;
+            row.UptimeLabel    = FormatUptime(entry.Diagnostics.Uptime);
+            // Track peak from weighted CPU (process-level PeakCpu() is identical for all plugins).
+            if (weightedCpu > row.PeakCpu) row.PeakCpu = weightedCpu;
+            row.IsResponsive   = entry.Diagnostics.IsResponsive;
+            row.IsSlow         = _slowPluginIds.Contains(entry.Manifest.Id);
+            row.FaultMessage   = entry.FaultException?.Message ?? string.Empty;
+            row.Version        = entry.Manifest.Version ?? string.Empty;
 
-            // Push sample to per-plugin mini chart.
+            // Push per-plugin weighted samples to sparkline mini chart.
             var mini = GetOrCreateMiniChart(entry.Manifest.Id, entry.Manifest.Name);
             row.MiniChart = mini;
-            mini.PushSample(weightedCpu, row.MemoryMb);
+            mini.PushSample(weightedCpu, weightedMem);
         }
 
         // Refresh detail pane when a plugin is selected.
@@ -1064,9 +1105,37 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
     private void AddEvent(PluginEventEntry entry)
     {
+        // Marshal to the UI thread — event handlers (PluginLoaded, Crashed, Slow) can fire
+        // from background threads (LoadAllAsync uses ConfigureAwait(false)).
+        if (!_dispatcher.CheckAccess())
+        {
+            _dispatcher.InvokeAsync(() => AddEvent(entry));
+            return;
+        }
         while (EventLog.Count >= MaxEventLog)
             EventLog.RemoveAt(0);
         EventLog.Add(entry);
+    }
+
+    /// <summary>
+    /// Synthesizes "Plugin loaded" entries for plugins already in Loaded state when this
+    /// ViewModel was created. Necessary because the VM is constructed after LoadAllAsync
+    /// completes — the initial PluginLoaded events have already fired before subscription.
+    /// </summary>
+    private void SynthesizeInitialLoadEvents()
+    {
+        foreach (var entry in _host.GetAllPlugins()
+                     .Where(p => p.State == PluginState.Loaded))
+        {
+            var initMs = entry.InitDuration.TotalMilliseconds;
+            AddEvent(new PluginEventEntry(
+                entry.LoadedAt.HasValue
+                    ? entry.LoadedAt.Value.ToLocalTime().ToString("HH:mm:ss")
+                    : Now(),
+                "\uE73E", "#22C55E",
+                entry.Manifest.Name,
+                $"Plugin loaded (init: {initMs:F0} ms)"));
+        }
     }
 
     private static void AddChartPoint(ObservableCollection<ChartPoint> col, ChartPoint point)
@@ -1153,7 +1222,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         var sb = new StringBuilder();
         sb.AppendLine("Name\tState\tCPU%\tPeak%\tMem MB\tUptime\tAvg ms\tInit ms");
         foreach (PluginMonitorRow row in _filteredRows)
-            sb.AppendLine($"{row.Name}\t{row.State}\t{row.CpuPercent:F1}\t{row.PeakCpu:F1}\t{row.MemoryMb}\t{row.UptimeLabel}\t{row.AvgExecMs:F1}\t{row.InitTimeMs:F0}");
+            sb.AppendLine($"{row.Name}\t{row.State}\t{row.WeightedCpu:F1}\t{row.PeakCpu:F1}\t{row.WeightedMemMb}\t{row.UptimeLabel}\t{row.AvgExecMs:F1}\t{row.InitTimeMs:F0}");
         Clipboard.SetText(sb.ToString());
         AddEvent(new PluginEventEntry(Now(), "\uE8C8", "#22C55E", "Monitor", "Table copied to clipboard"));
     }
