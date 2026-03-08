@@ -77,64 +77,65 @@
                 Grid.Row="0"
                 Style="{DynamicResource PanelToolbarStyle}"
                 SizeChanged="OnToolbarSizeChanged">
-            <DockPanel>
-                <!-- Left: title — always visible -->
-                <TextBlock Text="Terminal"
-                           FontWeight="SemiBold"
-                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                           VerticalAlignment="Center"
-                           Margin="8,0,8,0"
-                           DockPanel.Dock="Left"/>
+            <DockPanel LastChildFill="False">
+                <!-- Left fixed: title + shell selector + encoding (measured by overflow manager) -->
+                <StackPanel x:Name="ToolbarLeftFixedPanel"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Left"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Terminal"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               VerticalAlignment="Center"
+                               Margin="8,0,8,0"/>
+                    <Button Style="{DynamicResource PanelDropdownButtonStyle}"
+                            ToolTip="Switch Shell"
+                            MinWidth="90"
+                            Click="OnShellSelectorClick">
+                        <Button.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="HxTerminal"
+                                          Command="{Binding SwitchModeCommand}"
+                                          CommandParameter="HxTerminal"/>
+                                <MenuItem Header="PowerShell"
+                                          Command="{Binding SwitchModeCommand}"
+                                          CommandParameter="PowerShell"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding CurrentModeLabel}"
+                                       FontFamily="Segoe UI"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="&#xE70D;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="9"
+                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="4,0,0,0"/>
+                        </StackPanel>
+                    </Button>
+                    <!-- Encoding selector — PowerShell mode only -->
+                    <ComboBox ItemsSource="{Binding AvailableEncodings}"
+                              SelectedItem="{Binding SelectedEncoding}"
+                              FontSize="11" Width="90" Height="20"
+                              VerticalContentAlignment="Center"
+                              Background="{DynamicResource Panel_ToolbarBrush}"
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              BorderBrush="{DynamicResource DockBorderBrush}"
+                              Margin="4,0,0,0"
+                              Visibility="{Binding IsPowerShellMode, Converter={StaticResource BoolToVis}}"
+                              ToolTip="PowerShell output encoding"/>
+                </StackPanel>
 
-                <!-- Left: shell selector — always visible -->
-                <Button Style="{DynamicResource PanelDropdownButtonStyle}"
-                        ToolTip="Switch Shell"
-                        MinWidth="90"
-                        Click="OnShellSelectorClick"
-                        DockPanel.Dock="Left">
-                    <Button.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="HxTerminal"
-                                      Command="{Binding SwitchModeCommand}"
-                                      CommandParameter="HxTerminal"/>
-                            <MenuItem Header="PowerShell"
-                                      Command="{Binding SwitchModeCommand}"
-                                      CommandParameter="PowerShell"/>
-                        </ContextMenu>
-                    </Button.ContextMenu>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding CurrentModeLabel}"
-                                   FontFamily="Segoe UI"
-                                   FontSize="11"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                                   VerticalAlignment="Center"/>
-                        <TextBlock Text="&#xE70D;"
-                                   FontFamily="Segoe MDL2 Assets"
-                                   FontSize="9"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                                   VerticalAlignment="Center"
-                                   Margin="4,0,0,0"/>
-                    </StackPanel>
-                </Button>
-
-                <!-- Encoding selector — PowerShell mode only, always visible -->
-                <ComboBox DockPanel.Dock="Left"
-                          ItemsSource="{Binding AvailableEncodings}"
-                          SelectedItem="{Binding SelectedEncoding}"
-                          FontSize="11" Width="90" Height="20"
-                          VerticalContentAlignment="Center"
-                          Background="{DynamicResource Panel_ToolbarBrush}"
-                          Foreground="{DynamicResource DockMenuForegroundBrush}"
-                          BorderBrush="{DynamicResource DockBorderBrush}"
-                          Margin="4,0,0,0"
-                          Visibility="{Binding IsPowerShellMode, Converter={StaticResource BoolToVis}}"
-                          ToolTip="PowerShell output encoding"/>
-
-                <!-- Right: always-visible actions (Save, Clear, Cancel) -->
+                <!-- Left: always-visible actions (Save, Clear, Cancel) -->
                 <StackPanel x:Name="ToolbarRightPanel"
                             Orientation="Horizontal"
-                            DockPanel.Dock="Right"
+                            DockPanel.Dock="Left"
                             VerticalAlignment="Center">
+                    <Rectangle Width="1" Height="14" Margin="2,0"
+                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                     <!-- Save output -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding SaveOutputCommand}"
@@ -224,7 +225,7 @@
                 <!-- Group: TbgFont [3] last to collapse -->
                 <StackPanel x:Name="TbgFont"
                             Orientation="Horizontal"
-                            DockPanel.Dock="Right"
+                            DockPanel.Dock="Left"
                             VerticalAlignment="Center">
                     <Rectangle Width="1" Height="14" Margin="2,0"
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
@@ -247,7 +248,7 @@
                 <!-- Group: TbgTextOptions [1] -->
                 <StackPanel x:Name="TbgTextOptions"
                             Orientation="Horizontal"
-                            DockPanel.Dock="Right"
+                            DockPanel.Dock="Left"
                             VerticalAlignment="Center">
                     <Rectangle Width="1" Height="14" Margin="2,0"
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
@@ -277,7 +278,7 @@
                 <!-- Group: TbgOutputControl [2] -->
                 <StackPanel x:Name="TbgOutputControl"
                             Orientation="Horizontal"
-                            DockPanel.Dock="Right"
+                            DockPanel.Dock="Left"
                             VerticalAlignment="Center">
                     <Rectangle Width="1" Height="14" Margin="2,0"
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
@@ -300,8 +301,10 @@
                 <!-- Group: TbgScrollNav [0] first to collapse -->
                 <StackPanel x:Name="TbgScrollNav"
                             Orientation="Horizontal"
-                            DockPanel.Dock="Right"
+                            DockPanel.Dock="Left"
                             VerticalAlignment="Center">
+                    <Rectangle Width="1" Height="14" Margin="2,0"
+                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                     <!-- Scroll to Top -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Click="OnScrollToTop"
@@ -316,8 +319,6 @@
                         <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
-                    <Rectangle Width="1" Height="14" Margin="2,0"
-                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 </StackPanel>
             </DockPanel>
         </Border>

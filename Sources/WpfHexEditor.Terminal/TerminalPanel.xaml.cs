@@ -96,7 +96,8 @@ public sealed partial class TerminalPanel : UserControl
                     TbgTextOptions,  // [1]
                     TbgOutputControl,// [2]
                     TbgFont,         // [3] last to collapse
-                });
+                },
+                leftFixedElements: new FrameworkElement[] { ToolbarLeftFixedPanel });
             Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
         };
 

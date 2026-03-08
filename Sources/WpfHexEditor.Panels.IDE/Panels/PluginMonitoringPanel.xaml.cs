@@ -31,7 +31,9 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 using WpfHexEditor.Panels.IDE.Panels.ViewModels;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Panels.IDE.Panels;
 
@@ -96,6 +98,7 @@ public partial class PluginMonitoringPanel : UserControl
 {
     private PluginMonitoringViewModel? _vm;
     private bool _suppressLayoutChange;
+    private ToolbarOverflowManager?   _overflowManager;
 
     public PluginMonitoringPanel()
     {
@@ -105,6 +108,20 @@ public partial class PluginMonitoringPanel : UserControl
         MemChartCanvas.SizeChanged += (_, _) => RedrawCharts();
         DragLeave += (_, _) => DropHintOverlay.Visibility = Visibility.Collapsed;
         Unloaded  += OnUnloaded;
+
+        Loaded += (_, _) =>
+        {
+            // Collapse order: TbgPlugin(0) TbgLog(1) TbgCharts(2) TbgLayout(3) TbgInterval(4) TbgMonitor(5)
+            _overflowManager = new ToolbarOverflowManager(
+                toolbarContainer:      ToolbarBorder,
+                alwaysVisiblePanel:    ToolbarRightPanel,
+                overflowButton:        ToolbarOverflowButton,
+                overflowMenu:          OverflowContextMenu,
+                groupsInCollapseOrder: [TbgPlugin, TbgLog, TbgCharts, TbgLayout, TbgInterval, TbgMonitor],
+                leftFixedElements:     [ToolbarLeftPanel]);
+
+            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+        };
     }
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
@@ -378,6 +395,65 @@ public partial class PluginMonitoringPanel : UserControl
             ChartsInnerSplitter.Height              = 4;
             ChartsInnerSplitter.ResizeDirection     = GridResizeDirection.Rows;
         }
+    }
+
+    // ── Toolbar overflow ──────────────────────────────────────────────────────
+
+    private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged) _overflowManager?.Update();
+    }
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        OverflowContextMenu.PlacementTarget = ToolbarOverflowButton;
+        OverflowContextMenu.Placement       = PlacementMode.Bottom;
+        OverflowContextMenu.IsOpen          = true;
+    }
+
+    private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+    {
+        if (_vm is null) return;
+
+        OvfStartStop.Header    = _vm.StartStopLabel;
+        OvfTogglePlugin.Header = _vm.TogglePluginLabel;
+        OvfShowSparklines.IsChecked = _vm.ShowSparklines;
+        OvfShowEventLog.IsChecked   = _vm.ShowEventLog;
+
+        var pos = _vm.ChartsPosition.ToString();
+        OvfLayoutTop.IsChecked    = pos == "Top";
+        OvfLayoutBottom.IsChecked = pos == "Bottom";
+        OvfLayoutLeft.IsChecked   = pos == "Left";
+        OvfLayoutRight.IsChecked  = pos == "Right";
+
+        _overflowManager?.SyncMenuVisibility();
+    }
+
+    private void OnOverflowLayoutClick(object sender, RoutedEventArgs e)
+    {
+        if (_vm is null || sender is not MenuItem mi) return;
+        if (Enum.TryParse<MonitorChartsPosition>(mi.Tag?.ToString(), out var pos))
+        {
+            _vm.ChartsPosition = pos;
+            SyncLayoutCombo(pos);
+        }
+    }
+
+    private void OnOvfStartStop(object sender, RoutedEventArgs e)       => _vm?.StartStopCommand.Execute(null);
+    private void OnOvfReset(object sender, RoutedEventArgs e)            => _vm?.ResetCommand.Execute(null);
+    private void OnOvfReloadPlugin(object sender, RoutedEventArgs e)     => _vm?.ReloadPluginCommand.Execute(null);
+    private void OnOvfTogglePlugin(object sender, RoutedEventArgs e)     => _vm?.TogglePluginCommand.Execute(null);
+    private void OnOvfInstallPlugin(object sender, RoutedEventArgs e)    => _vm?.InstallPluginCommand.Execute(null);
+    private void OnOvfUninstallPlugin(object sender, RoutedEventArgs e)  => _vm?.UninstallPluginCommand.Execute(null);
+    private void OnOvfCrashReport(object sender, RoutedEventArgs e)      => _vm?.ExportCrashReportCommand.Execute(null);
+    private void OnOvfClearLog(object sender, RoutedEventArgs e)         => _vm?.ClearLogCommand.Execute(null);
+    private void OnOvfToggleSparklines(object sender, RoutedEventArgs e) => _vm?.ToggleSparklinesCommand.Execute(null);
+    private void OnOvfToggleEventLog(object sender, RoutedEventArgs e)   => _vm?.ToggleEventLogCommand.Execute(null);
+
+    private void OnOvfInterval(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi && int.TryParse(mi.Tag?.ToString(), out var sec))
+            _vm?.SetIntervalCommand.Execute(sec);
     }
 
     // ── Export dropdown ──────────────────────────────────────────────────────

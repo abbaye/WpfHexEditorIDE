@@ -404,8 +404,9 @@ public class DockTabHeader : StackPanel
     private Point _dragStartPoint;
     private bool _isDragging;
     private bool _isReordering;
-    private const double FloatThresholdY    = 20.0;
-    private const double FloatThresholdTool = 20.0;
+    // Increased from 20 to 40 px to reduce accidental undock on small mouse jitter (VS-like feel).
+    private const double FloatThresholdY    = 40.0;
+    private const double FloatThresholdTool = 40.0;
 
     public event Action? CloseClicked;
     public event Action? DragStarted;
