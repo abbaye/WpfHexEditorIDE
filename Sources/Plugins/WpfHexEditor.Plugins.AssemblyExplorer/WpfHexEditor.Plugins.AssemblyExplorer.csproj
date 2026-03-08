@@ -42,7 +42,7 @@
       <PluginDestDir>$(MSBuildThisFileDirectory)..\..\WpfHexEditor.App\bin\$(Configuration)\net8.0-windows\Plugins\$(AssemblyName)\</PluginDestDir>
     </PropertyGroup>
     <MakeDir Directories="$(PluginDestDir)" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)manifest.json;$(OutputPath)WpfHexEditor.Core.AssemblyAnalysis.dll"
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll;$(OutputPath)$(AssemblyName).deps.json;$(OutputPath)manifest.json;$(OutputPath)WpfHexEditor.Core.AssemblyAnalysis.dll"
           DestinationFolder="$(PluginDestDir)"
           SkipUnchangedFiles="true" />
   </Target>

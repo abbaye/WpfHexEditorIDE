@@ -180,8 +180,11 @@ public sealed class WpfPluginHost : IAsyncDisposable
             if (!File.Exists(assemblyPath))
                 throw new FileNotFoundException($"Plugin assembly not found: {assemblyPath}");
 
-            // Create collectible ALC
-            var loadContext = new PluginLoadContext(pluginDir);
+            // Create collectible ALC.
+            // Pass assemblyPath (not pluginDir) so AssemblyDependencyResolver can locate
+            // the {plugin}.deps.json file and correctly resolve inter-plugin dependencies
+            // (e.g. WpfHexEditor.Core.AssemblyAnalysis) from the plugin directory.
+            var loadContext = new PluginLoadContext(assemblyPath);
             var assembly = loadContext.LoadFromAssemblyPath(assemblyPath);
 
             // Resolve entry point type
