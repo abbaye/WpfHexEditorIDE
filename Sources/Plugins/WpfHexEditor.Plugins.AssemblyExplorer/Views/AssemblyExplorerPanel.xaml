@@ -1,0 +1,202 @@
+<!--
+    Project: WpfHexEditor.Plugins.AssemblyExplorer
+    File: Views/AssemblyExplorerPanel.xaml
+    Author: Derek Tremblay
+    Created: 2026-03-08
+    Description:
+        Main dockable panel for the .NET Assembly Explorer plugin.
+        VS-Like layout: toolbar at top (ToolbarOverflowManager, 6 groups),
+        custom AssemblyTreeView in the center, AssemblyDetailPane at the bottom.
+        Theme: DynamicResource PFP_* and Dock* brush tokens.
+
+    Architecture Notes:
+        Toolbar group collapse priority (lowest=first):
+          TbgDecompile → TbgVisibility → TbgSort → TbgSync → TbgExpandCollapse → TbgFilter (last)
+        ToolbarOverflowManager initialized in code-behind Loaded handler.
+        Panel is left-docked, PreferredWidth=280.
+-->
+<UserControl x:Class="WpfHexEditor.Plugins.AssemblyExplorer.Views.AssemblyExplorerPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Controls"
+             xmlns:views="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Views"
+             Background="{DynamicResource PFP_PanelBackgroundBrush}"
+             Foreground="{DynamicResource PFP_TextBrush}"
+             Loaded="OnLoaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Toolbar -->
+            <RowDefinition Height="*"/>     <!-- Main content -->
+        </Grid.RowDefinitions>
+
+        <!-- ═══ ROW 0: Toolbar ════════════════════════════════════════════════ -->
+        <Border x:Name="ToolbarBorder"
+                Grid.Row="0"
+                Style="{StaticResource PanelToolbarStyle}"
+                SizeChanged="OnToolbarSizeChanged">
+            <DockPanel LastChildFill="False">
+
+                <!-- Always-visible right panel (placeholder, never collapses) -->
+                <StackPanel x:Name="ToolbarRightPanel"
+                            DockPanel.Dock="Right"
+                            Orientation="Horizontal"/>
+
+                <!-- Overflow button — shown when groups collapse -->
+                <Button x:Name="ToolbarOverflowButton"
+                        DockPanel.Dock="Right"
+                        Style="{StaticResource PanelIconButtonStyle}"
+                        Content="&#xE712;"
+                        FontFamily="Segoe MDL2 Assets"
+                        Width="22" Height="22"
+                        Visibility="Collapsed"
+                        ToolTip="More toolbar options"
+                        Click="OnOverflowButtonClick">
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu"
+                                     Background="{DynamicResource DockMenuBackgroundBrush}"
+                                     BorderBrush="{DynamicResource DockBorderBrush}"
+                                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                     Opened="OnOverflowMenuOpened">
+                            <MenuItem Header="Decompile"    Tag="TbgDecompile"      IsCheckable="True"/>
+                            <MenuItem Header="Visibility"   Tag="TbgVisibility"     IsCheckable="True"/>
+                            <MenuItem Header="Sort"         Tag="TbgSort"           IsCheckable="True"/>
+                            <MenuItem Header="Sync"         Tag="TbgSync"           IsCheckable="True"/>
+                            <MenuItem Header="Expand/Collapse" Tag="TbgExpandCollapse" IsCheckable="True"/>
+                            <MenuItem Header="Filter"       Tag="TbgFilter"         IsCheckable="True"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+
+                <!-- TbgDecompile [0] — first to collapse (stub button) -->
+                <StackPanel x:Name="TbgDecompile"
+                            DockPanel.Dock="Left"
+                            Orientation="Horizontal"
+                            Margin="2,0">
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE8F4;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Width="22" Height="22"
+                            IsEnabled="False"
+                            ToolTip="Decompile — coming in a future release"/>
+                </StackPanel>
+
+                <!-- TbgVisibility [1] — show/hide References/Resources/Metadata toggles -->
+                <StackPanel x:Name="TbgVisibility"
+                            DockPanel.Dock="Left"
+                            Orientation="Horizontal"
+                            Margin="2,0">
+                    <ToggleButton x:Name="BtnShowRefs"
+                                  Style="{StaticResource PanelIconToggleStyle}"
+                                  Content="&#xE71B;"
+                                  FontFamily="Segoe MDL2 Assets"
+                                  Width="22" Height="22"
+                                  IsChecked="{Binding ShowReferences}"
+                                  ToolTip="Show/hide References"/>
+                    <ToggleButton x:Name="BtnShowRes"
+                                  Style="{StaticResource PanelIconToggleStyle}"
+                                  Content="&#xEB9F;"
+                                  FontFamily="Segoe MDL2 Assets"
+                                  Width="22" Height="22"
+                                  IsChecked="{Binding ShowResources}"
+                                  ToolTip="Show/hide Resources"/>
+                    <ToggleButton x:Name="BtnShowMeta"
+                                  Style="{StaticResource PanelIconToggleStyle}"
+                                  Content="&#xE9D2;"
+                                  FontFamily="Segoe MDL2 Assets"
+                                  Width="22" Height="22"
+                                  IsChecked="{Binding ShowMetadata}"
+                                  ToolTip="Show/hide Metadata Tables"/>
+                </StackPanel>
+
+                <!-- TbgSort [2] — sort order combo -->
+                <StackPanel x:Name="TbgSort"
+                            DockPanel.Dock="Left"
+                            Orientation="Horizontal"
+                            Margin="2,0">
+                    <ToggleButton x:Name="BtnSort"
+                                  Style="{StaticResource PanelIconToggleStyle}"
+                                  Content="&#xE8CB;"
+                                  FontFamily="Segoe MDL2 Assets"
+                                  Width="22" Height="22"
+                                  IsChecked="{Binding SortAlphabetical}"
+                                  ToolTip="Sort alphabetically (off = sort by PE offset)"/>
+                </StackPanel>
+
+                <!-- TbgSync [3] — sync with HexEditor toggle -->
+                <StackPanel x:Name="TbgSync"
+                            DockPanel.Dock="Left"
+                            Orientation="Horizontal"
+                            Margin="2,0">
+                    <ToggleButton x:Name="BtnSync"
+                                  Style="{StaticResource PanelIconToggleStyle}"
+                                  Content="&#xE8AB;"
+                                  FontFamily="Segoe MDL2 Assets"
+                                  Width="22" Height="22"
+                                  IsChecked="{Binding SyncWithHexEditor}"
+                                  ToolTip="Sync selection with HexEditor"/>
+                </StackPanel>
+
+                <!-- TbgExpandCollapse [4] — expand / collapse all -->
+                <StackPanel x:Name="TbgExpandCollapse"
+                            DockPanel.Dock="Left"
+                            Orientation="Horizontal"
+                            Margin="2,0">
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE8A9;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Width="22" Height="22"
+                            Command="{Binding ExpandAllCommand}"
+                            ToolTip="Expand all"/>
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE8AA;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Width="22" Height="22"
+                            Command="{Binding CollapseAllCommand}"
+                            ToolTip="Collapse all"/>
+                </StackPanel>
+
+                <!-- TbgFilter [5] — last to collapse: filter TextBox -->
+                <StackPanel x:Name="TbgFilter"
+                            DockPanel.Dock="Left"
+                            Orientation="Horizontal"
+                            Margin="2,0">
+                    <controls:FilterBox x:Name="FilterControl"
+                                        Width="120"
+                                        VerticalAlignment="Center"
+                                        FilterText="{Binding FilterText, Mode=TwoWay}"/>
+                </StackPanel>
+
+            </DockPanel>
+        </Border>
+
+        <!-- ═══ ROW 1: Tree + detail pane ════════════════════════════════════ -->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" MinHeight="80"/>
+                <RowDefinition Height="5"/>     <!-- Splitter -->
+                <RowDefinition Height="130" MinHeight="60"/>
+            </Grid.RowDefinitions>
+
+            <!-- Assembly tree -->
+            <controls:AssemblyTreeView x:Name="MainTreeView"
+                                       Grid.Row="0"
+                                       NodeSelected="OnTreeNodeSelected"
+                                       OpenInHexEditorRequested="OnOpenInHexEditor"
+                                       DecompileRequested="OnDecompile"
+                                       CopyNameRequested="OnCopyName"
+                                       CopyFullNameRequested="OnCopyFullName"
+                                       CopyOffsetRequested="OnCopyOffset"/>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Row="1"
+                          HorizontalAlignment="Stretch"
+                          Background="{DynamicResource PFP_BorderBrush}"
+                          Cursor="SizeNS"/>
+
+            <!-- Detail pane -->
+            <views:AssemblyDetailPane x:Name="DetailPane"
+                                      Grid.Row="2"/>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,128 @@
+<!--
+    Project: WpfHexEditor.Plugins.AssemblyExplorer
+    File: Options/AssemblyExplorerOptionsPage.xaml
+    Author: Derek Tremblay
+    Created: 2026-03-08
+    Description:
+        Options page for the Assembly Explorer plugin.
+        Shown in IDE Options > Plugins > Assembly Explorer
+        and in Plugin Manager "Settings" tab.
+        Theme: DynamicResource PFP_* tokens.
+-->
+<UserControl x:Class="WpfHexEditor.Plugins.AssemblyExplorer.Options.AssemblyExplorerOptionsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource PFP_PanelBackgroundBrush}"
+             Foreground="{DynamicResource PFP_TextBrush}"
+             Padding="12">
+
+    <StackPanel>
+
+        <!-- Section: Decompiler -->
+        <TextBlock Text="Decompiler"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource PFP_AccentBrush}"
+                   Margin="0,0,0,6"/>
+
+        <Grid Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Detail pane font size:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource PFP_TextBrush}"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Slider x:Name="FontSizeSlider"
+                        Minimum="8" Maximum="24" TickFrequency="1"
+                        IsSnapToTickEnabled="True"
+                        Width="120"
+                        VerticalAlignment="Center"
+                        ValueChanged="OnFontSizeChanged"/>
+                <TextBlock x:Name="FontSizeLabel"
+                           Margin="8,0,0,0"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           FontSize="11"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Decompiler backend:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource PFP_TextBrush}"/>
+            <ComboBox x:Name="BackendCombo"
+                      Grid.Column="1"
+                      Width="160"
+                      HorizontalAlignment="Left"
+                      Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      BorderBrush="{DynamicResource PFP_BorderBrush}">
+                <ComboBoxItem Content="None (stub — Phase 1)" Tag="None" IsSelected="True"/>
+                <ComboBoxItem Content="ILSpy engine (future)" Tag="ILSpy" IsEnabled="False"/>
+                <ComboBoxItem Content="dnSpy engine (future)" Tag="dnSpy" IsEnabled="False"/>
+            </ComboBox>
+        </Grid>
+
+        <Grid Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Decompile language:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource PFP_TextBrush}"/>
+            <ComboBox x:Name="LanguageCombo"
+                      Grid.Column="1"
+                      Width="160"
+                      HorizontalAlignment="Left"
+                      Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                      Foreground="{DynamicResource PFP_TextBrush}"
+                      BorderBrush="{DynamicResource PFP_BorderBrush}">
+                <ComboBoxItem Content="C#"           Tag="CSharp"   IsSelected="True"/>
+                <ComboBoxItem Content="IL"           Tag="IL"/>
+                <ComboBoxItem Content="VB.NET (future)" Tag="VBNet"  IsEnabled="False"/>
+                <ComboBoxItem Content="F# (future)"  Tag="FSharp"   IsEnabled="False"/>
+            </ComboBox>
+        </Grid>
+
+        <!-- Separator -->
+        <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
+
+        <!-- Section: Behaviour -->
+        <TextBlock Text="Behaviour"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource PFP_AccentBrush}"
+                   Margin="0,0,0,6"/>
+
+        <CheckBox x:Name="ChkAutoAnalyze"
+                  Content="Automatically analyze file when opened in HexEditor"
+                  Foreground="{DynamicResource PFP_TextBrush}"
+                  Margin="0,0,0,4"/>
+
+        <CheckBox x:Name="ChkAutoSync"
+                  Content="Sync HexEditor cursor when selecting a tree node"
+                  Foreground="{DynamicResource PFP_TextBrush}"
+                  Margin="0,0,0,4"/>
+
+        <CheckBox x:Name="ChkShowResources"
+                  Content="Show Resources group in the tree"
+                  Foreground="{DynamicResource PFP_TextBrush}"
+                  Margin="0,0,0,4"/>
+
+        <CheckBox x:Name="ChkShowMetadata"
+                  Content="Show Metadata Tables group in the tree"
+                  Foreground="{DynamicResource PFP_TextBrush}"
+                  Margin="0,0,0,4"/>
+
+        <CheckBox x:Name="ChkInheritTheme"
+                  Content="Inherit IDE global theme"
+                  Foreground="{DynamicResource PFP_TextBrush}"
+                  Margin="0,0,0,4"/>
+
+    </StackPanel>
+</UserControl>

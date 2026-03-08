@@ -1,0 +1,68 @@
+<!--
+    Project: WpfHexEditor.Plugins.AssemblyExplorer
+    File: Controls/FilterBox.xaml
+    Author: Derek Tremblay
+    Created: 2026-03-08
+    Description:
+        Composite filter control: TextBox with inline clear Button and placeholder text.
+        Exposes FilterText DependencyProperty (two-way bindable) and FilterChanged event.
+        Theme: all brushes via DynamicResource (PFP_* tokens).
+-->
+<UserControl x:Class="WpfHexEditor.Plugins.AssemblyExplorer.Controls.FilterBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="22" MinWidth="80">
+    <Border BorderBrush="{DynamicResource PFP_BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="2"
+            Background="{DynamicResource PFP_SectionBackgroundBrush}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Placeholder text — shown when TextBox is empty -->
+            <TextBlock x:Name="PlaceholderText"
+                       Grid.Column="0"
+                       Text="Filter types…"
+                       Foreground="{DynamicResource PFP_SubTextBrush}"
+                       VerticalAlignment="Center"
+                       Margin="4,0,0,0"
+                       IsHitTestVisible="False"
+                       FontSize="11"/>
+
+            <!-- Actual input -->
+            <TextBox x:Name="FilterTextBox"
+                     Grid.Column="0"
+                     Background="Transparent"
+                     Foreground="{DynamicResource PFP_TextBrush}"
+                     CaretBrush="{DynamicResource PFP_TextBrush}"
+                     BorderThickness="0"
+                     VerticalAlignment="Center"
+                     Margin="4,0,0,0"
+                     FontSize="11"
+                     TextChanged="OnTextChanged"/>
+
+            <!-- Clear button — shown only when there is text -->
+            <Button x:Name="ClearButton"
+                    Grid.Column="1"
+                    Width="16" Height="16"
+                    Margin="2,0"
+                    Padding="0"
+                    Visibility="Collapsed"
+                    ToolTip="Clear filter"
+                    Click="OnClearClicked"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Cursor="Hand">
+                <TextBlock Text="&#xE711;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="9"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+            </Button>
+        </Grid>
+    </Border>
+</UserControl>
