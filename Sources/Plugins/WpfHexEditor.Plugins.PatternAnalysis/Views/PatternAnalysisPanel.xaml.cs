@@ -17,6 +17,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Plugins.PatternAnalysis.Views;
 
@@ -25,9 +27,22 @@ namespace WpfHexEditor.Plugins.PatternAnalysis.Views;
 /// </summary>
 public partial class PatternAnalysisPanel : UserControl
 {
+    private ToolbarOverflowManager _overflowManager = null!;
+
     public PatternAnalysisPanel()
     {
         InitializeComponent();
+
+        Loaded += (_, _) =>
+        {
+            _overflowManager = new ToolbarOverflowManager(
+                toolbarContainer:      ToolbarBorder,
+                alwaysVisiblePanel:    ToolbarRightPanel,
+                overflowButton:        ToolbarOverflowButton,
+                overflowMenu:          OverflowContextMenu,
+                groupsInCollapseOrder: new FrameworkElement[] { TbgPatternRefresh });
+            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+        };
     }
 
     // -- Public API -----------------------------------------------------------
@@ -344,6 +359,25 @@ public partial class PatternAnalysisPanel : UserControl
 
     private void AnalyzeButton_Click(object sender, RoutedEventArgs e)
         => AnalysisRequested?.Invoke(this, EventArgs.Empty);
+
+    // ── Toolbar overflow ─────────────────────────────────────────────────────
+
+    private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged) _overflowManager?.Update();
+    }
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        OverflowContextMenu.PlacementTarget = ToolbarOverflowButton;
+        OverflowContextMenu.Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        OverflowContextMenu.IsOpen          = true;
+    }
+
+    private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+    {
+        _overflowManager?.SyncMenuVisibility();
+    }
 }
 
 // -- Supporting data types ----------------------------------------------------

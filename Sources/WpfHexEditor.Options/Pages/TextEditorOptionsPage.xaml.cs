@@ -17,7 +17,25 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
     public event EventHandler? Changed;
     private bool _loading;
 
-    public TextEditorOptionsPage() => InitializeComponent();
+    public TextEditorOptionsPage()
+    {
+        InitializeComponent();
+
+        // Auto-check the override checkbox whenever the user picks a new color.
+        WireAutoCheck(ChkBg,  CpBg);
+        WireAutoCheck(ChkFg,  CpFg);
+        WireAutoCheck(ChkKw,  CpKw);
+        WireAutoCheck(ChkStr, CpStr);
+        WireAutoCheck(ChkCmt, CpCmt);
+    }
+
+    private void WireAutoCheck(CheckBox chk, ColorPickerControl cp)
+    {
+        cp.ColorChanged += (_, _) =>
+        {
+            if (!_loading) chk.IsChecked = true;
+        };
+    }
 
     // -- IOptionsPage ------------------------------------------------------
 
@@ -36,11 +54,11 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
             TxtZoom.Text = ((int)(te.DefaultZoom * 100)).ToString();
             CheckChangeset.IsChecked = te.ChangesetEnabled;
 
-            LoadColorPicker(ChkBg,  CpBg,  te.BackgroundColor);
-            LoadColorPicker(ChkFg,  CpFg,  te.ForegroundColor);
-            LoadColorPicker(ChkKw,  CpKw,  te.KeywordColor);
-            LoadColorPicker(ChkStr, CpStr, te.StringColor);
-            LoadColorPicker(ChkCmt, CpCmt, te.CommentColor);
+            LoadColorPicker(ChkBg,  CpBg,  te.BackgroundColor, "TE_Background");
+            LoadColorPicker(ChkFg,  CpFg,  te.ForegroundColor, "TE_Foreground");
+            LoadColorPicker(ChkKw,  CpKw,  te.KeywordColor,    "TE_Keyword");
+            LoadColorPicker(ChkStr, CpStr, te.StringColor,     "TE_String");
+            LoadColorPicker(ChkCmt, CpCmt, te.CommentColor,    "TE_Comment");
         }
         finally { _loading = false; }
     }
@@ -118,11 +136,14 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
         => int.TryParse(text, out int v) && v > 0 ? v : fallback;
 
     // Restores CheckBox + ColorPicker from a stored hex string (empty = no override).
-    private static void LoadColorPicker(CheckBox chk, ColorPickerControl cp, string value)
+    // When no override is stored the swatch shows the actual theme colour for themeKey.
+    private static void LoadColorPicker(CheckBox chk, ColorPickerControl cp,
+                                        string value, string themeKey)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
             chk.IsChecked = false;
+            cp.SelectedColor = ResolveThemeColor(themeKey);
             return;
         }
         try
@@ -133,8 +154,14 @@ public sealed partial class TextEditorOptionsPage : UserControl, IOptionsPage
         catch
         {
             chk.IsChecked = false;
+            cp.SelectedColor = ResolveThemeColor(themeKey);
         }
     }
+
+    // Resolves a SolidColorBrush from the application resource dictionary by key.
+    // Falls back to Transparent when the key is absent (no theme loaded).
+    private static Color ResolveThemeColor(string key)
+        => Application.Current.Resources[key] is SolidColorBrush b ? b.Color : Colors.Transparent;
 
     // Returns "#RRGGBB" when the override is active, empty string otherwise.
     private static string FlushColorPicker(CheckBox chk, ColorPickerControl cp)

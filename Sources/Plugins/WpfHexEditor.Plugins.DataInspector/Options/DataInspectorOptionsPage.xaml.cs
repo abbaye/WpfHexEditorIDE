@@ -24,10 +24,11 @@ public partial class DataInspectorOptionsPage : UserControl
     public void Load()
     {
         var opts = DataInspectorOptions.Instance;
-        AutoRefreshCheckBox.IsChecked      = opts.AutoRefresh;
-        LittleEndianCheckBox.IsChecked     = opts.DefaultLittleEndian;
-        ShowByteChartCheckBox.IsChecked    = opts.ShowByteChart;
-        MaxStringBytesSlider.Value         = opts.MaxStringBytes;
+        AutoRefreshCheckBox.IsChecked   = opts.AutoRefresh;
+        LittleEndianCheckBox.IsChecked  = opts.DefaultLittleEndian;
+        ShowByteChartCheckBox.IsChecked = opts.ShowByteChart;
+        MaxStringBytesSlider.Value      = opts.MaxStringBytes;
+        SyncChartPositionCombo(opts.ChartPosition);
     }
 
     /// <summary>Persists page control values back to DataInspectorOptions and saves.</summary>
@@ -38,6 +39,27 @@ public partial class DataInspectorOptionsPage : UserControl
         opts.DefaultLittleEndian = LittleEndianCheckBox.IsChecked == true;
         opts.ShowByteChart       = ShowByteChartCheckBox.IsChecked == true;
         opts.MaxStringBytes      = (int)MaxStringBytesSlider.Value;
+        opts.ChartPosition       = SelectedChartPosition();
         opts.Save();
+    }
+
+    private void SyncChartPositionCombo(ChartPosition pos)
+    {
+        foreach (System.Windows.Controls.ComboBoxItem item in ChartPositionComboBox.Items)
+        {
+            if (item.Tag?.ToString() == pos.ToString())
+            {
+                ChartPositionComboBox.SelectedItem = item;
+                return;
+            }
+        }
+    }
+
+    private ChartPosition SelectedChartPosition()
+    {
+        if (ChartPositionComboBox.SelectedItem is System.Windows.Controls.ComboBoxItem item &&
+            Enum.TryParse<ChartPosition>(item.Tag?.ToString(), out var pos))
+            return pos;
+        return ChartPosition.Left;
     }
 }

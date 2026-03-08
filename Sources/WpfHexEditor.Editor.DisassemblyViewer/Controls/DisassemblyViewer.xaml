@@ -15,20 +15,55 @@
         </Grid.RowDefinitions>
 
         <!-- Toolbar -->
-        <Border Grid.Row="0" Style="{DynamicResource PanelToolbarStyle}">
+        <Border x:Name="ToolbarBorder"
+                Grid.Row="0"
+                Style="{DynamicResource PanelToolbarStyle}"
+                SizeChanged="OnToolbarSizeChanged">
             <DockPanel LastChildFill="True">
-                <Button x:Name="CopyAllButton"
+                <!-- Right: always-visible (Refresh) -->
+                <StackPanel x:Name="ToolbarRightPanel"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
+                    <Button x:Name="RefreshButton"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            Content="&#xE72C;"
+                            ToolTip="Decompile again"
+                            Click="OnRefreshClick"/>
+                </StackPanel>
+
+                <!-- Overflow button — shown only when groups are collapsed -->
+                <Button x:Name="ToolbarOverflowButton"
                         DockPanel.Dock="Right"
+                        Visibility="Collapsed"
                         Style="{DynamicResource PanelIconButtonStyle}"
-                        Content="&#xE8C8;"
-                        ToolTip="Copy all"
-                        Click="OnCopyAllClick"/>
-                <Button x:Name="RefreshButton"
-                        DockPanel.Dock="Right"
-                        Style="{DynamicResource PanelIconButtonStyle}"
-                        Content="&#xE72C;"
-                        ToolTip="Decompile again"
-                        Click="OnRefreshClick"/>
+                        ToolTip="More options"
+                        Click="OnOverflowButtonClick">
+                    <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
+                            <!-- TbgDisasmActions items -->
+                            <MenuItem Header="Copy All"
+                                      Tag="TbgDisasmActions"
+                                      Click="OnCopyAllClick"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+
+                <!-- Group: TbgDisasmActions [0] (only collapsible group) -->
+                <StackPanel x:Name="TbgDisasmActions"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
+                    <Button x:Name="CopyAllButton"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            Content="&#xE8C8;"
+                            ToolTip="Copy all"
+                            Click="OnCopyAllClick"/>
+                </StackPanel>
+
+                <!-- ArchLabel fills remaining space (LastChildFill) -->
                 <TextBlock x:Name="ArchLabel"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"

@@ -176,6 +176,7 @@
                       Checked="OnColorCheckChanged"
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpBg" Grid.Column="2"
+                            MaxWidth="350"
                             ShowAlphaChannel="False"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
@@ -195,6 +196,7 @@
                       Checked="OnColorCheckChanged"
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpFg" Grid.Column="2"
+                            MaxWidth="350"
                             ShowAlphaChannel="False"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
@@ -214,6 +216,7 @@
                       Checked="OnColorCheckChanged"
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpKw" Grid.Column="2"
+                            MaxWidth="350"
                             ShowAlphaChannel="False"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
@@ -233,6 +236,7 @@
                       Checked="OnColorCheckChanged"
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpStr" Grid.Column="2"
+                            MaxWidth="350"
                             ShowAlphaChannel="False"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
@@ -252,6 +256,7 @@
                       Checked="OnColorCheckChanged"
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpCmt" Grid.Column="2"
+                            MaxWidth="350"
                             ShowAlphaChannel="False"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>
@@ -271,6 +276,7 @@
                       Checked="OnColorCheckChanged"
                       Unchecked="OnColorCheckChanged"/>
             <cp:ColorPicker x:Name="CpNum" Grid.Column="2"
+                            MaxWidth="350"
                             ShowAlphaChannel="False"
                             ColorChanged="OnColorPickerChanged"/>
         </Grid>

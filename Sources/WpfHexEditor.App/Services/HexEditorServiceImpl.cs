@@ -36,7 +36,26 @@ public sealed class HexEditorServiceImpl : IHexEditorService
 
     public long SelectionLength => _activeEditor?.SelectionLength ?? 0L;
 
+    public long FirstVisibleByteOffset
+    {
+        get
+        {
+            if (_activeEditor is null) return 0;
+            return _activeEditor.ScrollPosition * _activeEditor.BytePerLine + _activeEditor.ByteShiftLeft;
+        }
+    }
+
+    public long LastVisibleByteOffset
+    {
+        get
+        {
+            if (_activeEditor is null) return 0;
+            return FirstVisibleByteOffset + (long)_activeEditor.VisibleLines * _activeEditor.BytePerLine;
+        }
+    }
+
     public event EventHandler? SelectionChanged;
+    public event EventHandler? ViewportScrolled;
     public event EventHandler? FileOpened;
     public event EventHandler<FormatDetectedArgs>? FormatDetected;
     public event EventHandler? ActiveEditorChanged;
@@ -44,7 +63,7 @@ public sealed class HexEditorServiceImpl : IHexEditorService
     public byte[] ReadBytes(long offset, int length)
     {
         if (_activeEditor is null || length <= 0) return [];
-        try { return _activeEditor.GetCopyData(offset, (long)length, false) ?? []; }
+        try { return _activeEditor.GetCopyData(offset, offset + length - 1, false) ?? []; }
         catch { return []; }
     }
 
@@ -97,21 +116,23 @@ public sealed class HexEditorServiceImpl : IHexEditorService
 
         if (_activeEditor is not null)
         {
-            _activeEditor.SelectionStartChanged -= OnSelectionChanged;
-            _activeEditor.SelectionStopChanged  -= OnSelectionChanged;
-            _activeEditor.FormatDetected        -= OnFormatDetected;
-            _activeEditor.FileOpened            -= OnHexEditorFileOpened;
+            _activeEditor.SelectionStartChanged  -= OnSelectionChanged;
+            _activeEditor.SelectionStopChanged   -= OnSelectionChanged;
+            _activeEditor.FormatDetected         -= OnFormatDetected;
+            _activeEditor.FileOpened             -= OnHexEditorFileOpened;
+            _activeEditor.VerticalScrollBarChanged -= OnVerticalScrollBarChanged;
         }
 
         _activeEditor = editor;
 
         if (_activeEditor is not null)
         {
-            _activeEditor.SelectionStartChanged += OnSelectionChanged;
-            _activeEditor.SelectionStopChanged  += OnSelectionChanged;
-            _activeEditor.FormatDetected        += OnFormatDetected;
+            _activeEditor.SelectionStartChanged  += OnSelectionChanged;
+            _activeEditor.SelectionStopChanged   += OnSelectionChanged;
+            _activeEditor.FormatDetected         += OnFormatDetected;
             // Forward the native FileOpened (fires after file stream is ready, not before).
-            _activeEditor.FileOpened            += OnHexEditorFileOpened;
+            _activeEditor.FileOpened             += OnHexEditorFileOpened;
+            _activeEditor.VerticalScrollBarChanged += OnVerticalScrollBarChanged;
 
             // Tab switch: file already loaded — fire at Background priority so the
             // UI finishes rendering the tab before plugin handlers run.
@@ -131,6 +152,9 @@ public sealed class HexEditorServiceImpl : IHexEditorService
 
     private void OnSelectionChanged(object? sender, EventArgs e)
         => SelectionChanged?.Invoke(this, EventArgs.Empty);
+
+    private void OnVerticalScrollBarChanged(object? sender, EventArgs e)
+        => ViewportScrolled?.Invoke(this, EventArgs.Empty);
 
     /// <summary>
     /// Dispatches a plugin-facing event at Background priority so the UI thread

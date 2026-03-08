@@ -54,13 +54,46 @@
         </Grid.RowDefinitions>
 
         <!-- Toolbar -->
-        <Border Grid.Row="0" Style="{StaticResource PanelToolbarStyle}">
-            <DockPanel>
-                <Button DockPanel.Dock="Right"
+        <Border x:Name="ToolbarBorder"
+                Grid.Row="0"
+                Style="{StaticResource PanelToolbarStyle}"
+                SizeChanged="OnToolbarSizeChanged">
+            <DockPanel LastChildFill="True">
+                <!-- Right: always-visible placeholder -->
+                <StackPanel x:Name="ToolbarRightPanel"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center"/>
+
+                <!-- Overflow button -->
+                <Button x:Name="ToolbarOverflowButton"
+                        DockPanel.Dock="Right"
+                        Visibility="Collapsed"
                         Style="{StaticResource PanelIconButtonStyle}"
-                        Content="&#xE72C;"
-                        ToolTip="Analyze"
-                        Click="AnalyzeButton_Click"/>
+                        ToolTip="More options"
+                        Click="OnOverflowButtonClick">
+                    <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
+                            <MenuItem Header="Analyze"
+                                      Tag="TbgPatternRefresh"
+                                      Click="AnalyzeButton_Click"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+
+                <!-- Group: TbgPatternRefresh [0] -->
+                <StackPanel x:Name="TbgPatternRefresh"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE72C;"
+                            ToolTip="Analyze"
+                            Click="AnalyzeButton_Click"/>
+                </StackPanel>
+
                 <TextBlock Text="Pattern Analysis"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"

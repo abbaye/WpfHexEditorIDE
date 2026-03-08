@@ -11,6 +11,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.PluginHost.UI;
 
@@ -61,11 +63,28 @@ public sealed partial class PluginManagerControl : UserControl
     /// Parameterless constructor — used when the layout is restored before the plugin system
     /// is initialised. The DataContext (PluginManagerViewModel) must be set afterwards.
     /// </summary>
+    private ToolbarOverflowManager _overflowManager = null!;
+
     public PluginManagerControl()
     {
         InitializeComponent();
         SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
         Unloaded += OnUnloaded;
+
+        Loaded += (_, _) =>
+        {
+            _overflowManager = new ToolbarOverflowManager(
+                toolbarContainer:      ToolbarBorder,
+                alwaysVisiblePanel:    ToolbarRightPanel,
+                overflowButton:        ToolbarOverflowButton,
+                overflowMenu:          OverflowContextMenu,
+                groupsInCollapseOrder: new FrameworkElement[]
+                {
+                    TbgPluginDiag,    // [0] first to collapse
+                    TbgPluginInstall, // [1] last to collapse
+                });
+            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+        };
     }
 
     public PluginManagerControl(PluginManagerViewModel viewModel) : this()
@@ -188,4 +207,29 @@ public sealed partial class PluginManagerControl : UserControl
 
     private PluginListItemViewModel? GetSelectedItemVm()
         => (DataContext as PluginManagerViewModel)?.SelectedPlugin;
+
+    // ── Toolbar overflow ─────────────────────────────────────────────────────
+
+    private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged) _overflowManager?.Update();
+    }
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        OverflowContextMenu.PlacementTarget = ToolbarOverflowButton;
+        OverflowContextMenu.Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        OverflowContextMenu.IsOpen          = true;
+    }
+
+    private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+    {
+        _overflowManager?.SyncMenuVisibility();
+    }
+
+    private void OvfExportDiag_Click(object sender, RoutedEventArgs e)
+        => (DataContext as PluginManagerViewModel)?.ExportDiagnosticsCommand.Execute(null);
+
+    private void OvfInstall_Click(object sender, RoutedEventArgs e)
+        => (DataContext as PluginManagerViewModel)?.InstallFromFileCommand.Execute(null);
 }

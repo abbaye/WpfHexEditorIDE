@@ -81,46 +81,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Compact TabControl (dark theme) -->
-        <Style x:Key="MonitorTabControlStyle" TargetType="TabControl">
-            <Setter Property="Background"      Value="{DynamicResource Panel_ToolbarBrush}"/>
-            <Setter Property="BorderBrush"     Value="{DynamicResource DockBorderBrush}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding"         Value="0"/>
-        </Style>
-
-        <!-- Compact TabItem (dark theme, bottom accent line on active) -->
-        <Style x:Key="MonitorTabItemStyle" TargetType="TabItem">
-            <Setter Property="FontSize"        Value="10"/>
-            <Setter Property="Padding"         Value="8,4"/>
-            <Setter Property="Background"      Value="Transparent"/>
-            <Setter Property="Foreground"      Value="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Border x:Name="Bd" Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{DynamicResource DockBorderBrush}"
-                                BorderThickness="0,0,0,2">
-                            <ContentPresenter ContentSource="Header"
-                                              TextBlock.FontSize="{TemplateBinding FontSize}"
-                                              TextBlock.Foreground="{TemplateBinding Foreground}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="#60A5FA"/>
-                                <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!-- Risk badge style -->
         <Style x:Key="RiskBadgeStyle" TargetType="Border">
             <Setter Property="CornerRadius" Value="3"/>
@@ -565,8 +525,8 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <!-- Process CPU% -->
-                    <DataGridTextColumn Header="CPU%" Binding="{Binding CpuPercent, StringFormat={}{0:F1}%}" Width="55"/>
+                    <!-- Weighted CPU% — process CPU distributed proportionally by plugin exec-time weight -->
+                    <DataGridTextColumn Header="CPU%" Binding="{Binding WeightedCpu, StringFormat={}{0:F1}%}" Width="55"/>
 
                     <!--
                         Mini CPU sparkline — SparklineControl subscribes to CpuHistory.CollectionChanged
@@ -589,8 +549,9 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Header="Peak%"  Binding="{Binding PeakCpu, StringFormat={}{0:F1}%}" Width="55"/>
-                    <DataGridTextColumn Header="Mem MB" Binding="{Binding MemoryMb}"                        Width="60"/>
+                    <DataGridTextColumn Header="Peak%"  Binding="{Binding PeakCpu, StringFormat={}{0:F1}%}"    Width="55"/>
+                    <!-- Weighted memory — process GC heap distributed proportionally by plugin exec-time weight -->
+                    <DataGridTextColumn Header="Mem MB" Binding="{Binding WeightedMemMb}"                     Width="60"/>
 
                     <!--
                         Mini Memory sparkline — same pattern as CPU sparkline above.
@@ -607,7 +568,7 @@
                                     MaxValue="0"
                                     StrokeThickness="1.2"
                                     Height="20" Margin="2,1"
-                                    ToolTip="{Binding MemoryMb, StringFormat='Memory: {0} MB'}"/>
+                                    ToolTip="{Binding WeightedMemMb, StringFormat='Weighted Memory: {0} MB'}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -699,25 +660,25 @@
                       Background="{DynamicResource Panel_ToolbarBorderBrush}"
                       Visibility="{Binding HasSelectedPlugin, Converter={StaticResource BoolToVis}}"/>
 
-        <!-- ── Plugin detail pane — TabControl (Overview / CPU+RAM / Permissions / Settings) ── -->
-        <Border Grid.Row="2" Margin="6,0,6,0"
+        <!-- ── Plugin detail pane — single scrollable page (Overview / CPU+RAM / Permissions / Settings) ── -->
+        <Border Grid.Row="2" Margin="6,0,6,0" MaxHeight="320"
                 BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="0,1,0,0"
                 Background="{DynamicResource Panel_ToolbarBrush}"
                 Visibility="{Binding HasSelectedPlugin, Converter={StaticResource BoolToVis}}">
 
-            <TabControl Style="{StaticResource MonitorTabControlStyle}" MinHeight="120" MaxHeight="260">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="8,8,8,16">
 
-                <!-- ── Tab: Overview (metrics summary) ───────────────────────── -->
-                <TabItem Header="Overview" Style="{StaticResource MonitorTabItemStyle}">
-                    <Grid DataContext="{Binding SelectedPluginDetail}" Margin="8,6">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                    <!-- ── Section: Overview ────────────────────────────────────── -->
+                    <TextBlock Text="Overview"
+                               FontWeight="SemiBold" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Margin="0,0,0,10"/>
 
-                        <!-- Row 0: name / version / trust / author -->
-                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <StackPanel DataContext="{Binding SelectedPluginDetail}">
+
+                        <!-- name / version / trust / author -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
                             <Ellipse Width="8" Height="8" Fill="{Binding StateColor}"
                                      VerticalAlignment="Center" Margin="0,0,5,0"/>
                             <TextBlock Text="{Binding Name}" FontSize="11" FontWeight="SemiBold"
@@ -736,8 +697,8 @@
                                        VerticalAlignment="Center" Margin="6,0,0,0"/>
                         </StackPanel>
 
-                        <!-- Row 1: metrics grid (2×3 pairs) -->
-                        <Grid Grid.Row="1" Margin="0,4,0,0">
+                        <!-- metrics grid (2×3 pairs) -->
+                        <Grid Margin="0,0,0,4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto" SharedSizeGroup="V"/>
@@ -769,25 +730,25 @@
                             <TextBlock Grid.Row="1" Grid.Column="7" Text="{Binding AvgCpuLabel}"     FontSize="9" FontWeight="SemiBold" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                         </Grid>
 
-                        <!-- Row 2: fault message -->
-                        <TextBlock Grid.Row="2" Margin="0,4,0,0"
+                        <!-- fault message -->
+                        <TextBlock Margin="0,2,0,0"
                                    Text="{Binding FaultMessage}" FontSize="9" Foreground="#EF4444"
                                    TextWrapping="Wrap" MaxHeight="32" TextTrimming="CharacterEllipsis"
                                    Visibility="{Binding HasFault, Converter={StaticResource BoolToVis}}"/>
-                    </Grid>
-                </TabItem>
+                    </StackPanel>
 
-                <!-- ── Tab: CPU / RAM (per-plugin sparklines) ─────────────────── -->
-                <TabItem Header="CPU / RAM" Style="{StaticResource MonitorTabItemStyle}">
-                    <Grid DataContext="{Binding SelectedMiniChart}" Margin="4">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="4"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                    <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
-                        <!-- Per-plugin CPU sparkline -->
-                        <Grid Grid.Row="0">
+                    <!-- ── Section: CPU / RAM ────────────────────────────────────── -->
+                    <TextBlock Text="CPU / RAM"
+                               FontWeight="SemiBold" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Margin="0,0,0,10"/>
+
+                    <StackPanel DataContext="{Binding SelectedMiniChart}">
+
+                        <!-- CPU sparkline -->
+                        <Grid Height="70" Margin="0,0,0,4">
                             <Border Background="{DynamicResource DockBackgroundBrush}" CornerRadius="3"/>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left"
                                         Margin="4,2">
@@ -808,11 +769,8 @@
                                 Margin="4,18,4,4"/>
                         </Grid>
 
-                        <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch"
-                                      Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
-
-                        <!-- Per-plugin Memory sparkline -->
-                        <Grid Grid.Row="2">
+                        <!-- Memory sparkline -->
+                        <Grid Height="70">
                             <Border Background="{DynamicResource DockBackgroundBrush}" CornerRadius="3"/>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left"
                                         Margin="4,2">
@@ -832,103 +790,100 @@
                                 StrokeThickness="1.5"
                                 Margin="4,18,4,4"/>
                         </Grid>
-                    </Grid>
-                </TabItem>
+                    </StackPanel>
 
-                <!-- ── Tab: Permissions (interactive toggle DataGrid) ─────────── -->
-                <TabItem Header="Permissions" Style="{StaticResource MonitorTabItemStyle}">
-                    <Grid DataContext="{Binding SelectedPluginDetail}" Margin="4,2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                    <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
-                        <DataGrid Grid.Row="0"
-                                  ItemsSource="{Binding PermissionRows}"
-                                  AutoGenerateColumns="False"
-                                  IsReadOnly="False"
-                                  HeadersVisibility="Column"
-                                  GridLinesVisibility="None"
-                                  SelectionMode="Single"
-                                  Background="Transparent"
-                                  BorderThickness="0"
-                                  CanUserAddRows="False"
-                                  CanUserDeleteRows="False"
-                                  CanUserSortColumns="False"
-                                  ColumnHeaderStyle="{StaticResource MonitorColumnHeaderStyle}"
-                                  CellStyle="{StaticResource MonitorCellStyle}"
-                                  RowStyle="{StaticResource MonitorRowStyle}"
-                                  MaxHeight="160">
-                            <DataGrid.Columns>
+                    <!-- ── Section: Permissions ──────────────────────────────────── -->
+                    <TextBlock Text="Permissions"
+                               FontWeight="SemiBold" FontSize="13"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               Margin="0,0,0,6"/>
+                    <TextBlock Text="Permission changes take effect after plugin reload."
+                               FontSize="11" FontStyle="Italic" Opacity="0.65"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               Margin="0,0,0,8"/>
 
-                                <!-- Granted checkbox (two-way bound, calls PermissionService.Grant/Revoke) -->
-                                <DataGridCheckBoxColumn Header="✓" Width="28"
-                                    Binding="{Binding IsGranted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <DataGrid DataContext="{Binding SelectedPluginDetail}"
+                              ItemsSource="{Binding PermissionRows}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="None"
+                              SelectionMode="Single"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              CanUserSortColumns="False"
+                              ColumnHeaderStyle="{StaticResource MonitorColumnHeaderStyle}"
+                              CellStyle="{StaticResource MonitorCellStyle}"
+                              RowStyle="{StaticResource MonitorRowStyle}">
+                        <DataGrid.Columns>
 
-                                <!-- Permission name -->
-                                <DataGridTextColumn Header="Permission" Binding="{Binding Name}" Width="90" IsReadOnly="True"/>
+                            <!-- Granted checkbox (two-way bound, calls PermissionService.Grant/Revoke) -->
+                            <DataGridCheckBoxColumn Header="✓" Width="28"
+                                Binding="{Binding IsGranted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                                <!-- Declared in manifest (checkmark / empty) -->
-                                <DataGridTemplateColumn Header="Declared" Width="62" IsReadOnly="True">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="11"
-                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                       Text="{Binding IsDeclared, Converter={x:Static local:BoolToCheckConverter.Instance}}"
-                                                       Foreground="{Binding IsDeclared, Converter={x:Static local:BoolToGrantColorConverter.Instance}}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                            <!-- Permission name -->
+                            <DataGridTextColumn Header="Permission" Binding="{Binding Name}" Width="90" IsReadOnly="True"/>
 
-                                <!-- Risk level badge -->
-                                <DataGridTemplateColumn Header="Risk" Width="52" IsReadOnly="True">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Border Style="{StaticResource RiskBadgeStyle}"
-                                                    Background="{Binding RiskColor}" Margin="2,1">
-                                                <TextBlock Text="{Binding RiskLevel}" FontSize="9"
-                                                           Foreground="White" HorizontalAlignment="Center"/>
-                                            </Border>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
+                            <!-- Declared in manifest (checkmark / empty) -->
+                            <DataGridTemplateColumn Header="Declared" Width="62" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                   Text="{Binding IsDeclared, Converter={x:Static local:BoolToCheckConverter.Instance}}"
+                                                   Foreground="{Binding IsDeclared, Converter={x:Static local:BoolToGrantColorConverter.Instance}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
-                                <!-- Description -->
-                                <DataGridTextColumn Header="Description"
-                                                    Binding="{Binding Description}" Width="*" IsReadOnly="True"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                            <!-- Risk level badge -->
+                            <DataGridTemplateColumn Header="Risk" Width="52" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource RiskBadgeStyle}"
+                                                Background="{Binding RiskColor}" Margin="2,1">
+                                            <TextBlock Text="{Binding RiskLevel}" FontSize="9"
+                                                       Foreground="White" HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
-                        <TextBlock Grid.Row="1" Margin="4,3,4,2" FontSize="9" FontStyle="Italic"
-                                   Text="Permission changes take effect after plugin reload."
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </Grid>
-                </TabItem>
+                            <!-- Description -->
+                            <DataGridTextColumn Header="Description"
+                                                Binding="{Binding Description}" Width="*" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
 
-                <!-- ── Tab: Settings (IPluginWithOptions) ─────────────────────── -->
-                <TabItem Header="Settings" Style="{StaticResource MonitorTabItemStyle}"
-                         Visibility="{Binding SelectedPluginDetail.HasOptions,
-                                              Converter={StaticResource BoolToVis},
-                                              FallbackValue=Collapsed}">
-                    <Grid DataContext="{Binding SelectedPluginDetail}" Margin="4,2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="26"/>
-                        </Grid.RowDefinitions>
+                    <!-- ── Section: Settings (conditional) ──────────────────────── -->
+                    <StackPanel Visibility="{Binding SelectedPluginDetail.HasOptions,
+                                                     Converter={StaticResource BoolToVis},
+                                                     FallbackValue=Collapsed}">
+                        <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
-                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
-                            <ContentPresenter Content="{Binding OptionsPageContent}"/>
-                        </ScrollViewer>
+                        <TextBlock Text="Settings"
+                                   FontWeight="SemiBold" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   Margin="0,0,0,10"/>
 
-                        <Button Grid.Row="1" Content="Save Settings"
+                        <ContentPresenter DataContext="{Binding SelectedPluginDetail}"
+                                          Content="{Binding OptionsPageContent}"
+                                          Margin="0,0,0,8"/>
+
+                        <Button Content="Save Settings"
+                                DataContext="{Binding SelectedPluginDetail}"
                                 Command="{Binding SaveOptionsCommand}"
                                 HorizontalAlignment="Right" VerticalAlignment="Center"
-                                Margin="0,2,0,0" Padding="10,3" FontSize="10"
+                                Padding="10,3" FontSize="10"
                                 Style="{DynamicResource PanelIconButtonStyle}"/>
-                    </Grid>
-                </TabItem>
+                    </StackPanel>
 
-            </TabControl>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
 
         </Grid><!-- end inner wrapper Grid (Row 3) -->

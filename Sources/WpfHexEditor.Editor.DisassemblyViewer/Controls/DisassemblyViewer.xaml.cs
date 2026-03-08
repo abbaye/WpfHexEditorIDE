@@ -8,8 +8,10 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using WpfHexEditor.Decompiler.Core;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Editor.DisassemblyViewer.Controls;
 
@@ -22,6 +24,7 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
     private string _filePath = string.Empty;
     private IDecompiler? _decompiler;
     private CancellationTokenSource? _cts;
+    private ToolbarOverflowManager _overflowManager = null!;
 
     public DisassemblyViewer()
     {
@@ -35,6 +38,17 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
         PasteCommand     = new RelayCommand(() => { }, () => false);
         DeleteCommand    = new RelayCommand(() => { }, () => false);
         SelectAllCommand = new RelayCommand(() => OutputBox.SelectAll(), () => !string.IsNullOrEmpty(OutputBox.Text));
+
+        Loaded += (_, _) =>
+        {
+            _overflowManager = new ToolbarOverflowManager(
+                toolbarContainer:      ToolbarBorder,
+                alwaysVisiblePanel:    ToolbarRightPanel,
+                overflowButton:        ToolbarOverflowButton,
+                overflowMenu:          OverflowContextMenu,
+                groupsInCollapseOrder: new FrameworkElement[] { TbgDisasmActions });
+            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+        };
     }
 
     // -- IDocumentEditor — State ------------------------------------------
@@ -197,6 +211,25 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
     }
 
     private void OnCopyAllClick(object sender, RoutedEventArgs e) => CopyAll();
+
+    // ── Toolbar overflow ─────────────────────────────────────────────────────
+
+    private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged) _overflowManager?.Update();
+    }
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        OverflowContextMenu.PlacementTarget = ToolbarOverflowButton;
+        OverflowContextMenu.Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        OverflowContextMenu.IsOpen          = true;
+    }
+
+    private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+    {
+        _overflowManager?.SyncMenuVisibility();
+    }
 
     private enum ViewerState { Empty, Busy, Output, NoDecompiler }
 }

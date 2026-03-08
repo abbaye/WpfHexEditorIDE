@@ -25,8 +25,8 @@ namespace WpfHexEditor.App.Services;
 /// </remarks>
 public sealed class DockingAdapter : IDockingAdapter
 {
-    private readonly DockEngine _engine;
-    private readonly DockLayoutRoot _layout;
+    private DockEngine _engine;
+    private DockLayoutRoot _layout;
     private readonly DockControl _dockHost;
     private readonly Action<string, UIElement> _storeContent;
 
@@ -39,6 +39,10 @@ public sealed class DockingAdapter : IDockingAdapter
     // the user explicitly opens them (e.g. via View menu / ShowPanel).
     private readonly bool _isRestoredFromFile;
     private readonly Dictionary<string, (UIElement Content, PanelDescriptor Descriptor)> _deferredPanels = new();
+
+    // Tracks every panel ever registered so RebindLayout() can re-defer panels that
+    // are absent from a new layout (e.g. after Reset Layout or Load Layout).
+    private readonly Dictionary<string, (UIElement Content, PanelDescriptor Descriptor)> _allKnownPanels = new();
 
     // Bulk-load optimization: when suspended, all RebuildVisualTree() calls are skipped.
     // A single rebuild is performed by ResumeRebuild() at the end of the batch.
@@ -79,6 +83,9 @@ public sealed class DockingAdapter : IDockingAdapter
     /// <inheritdoc />
     public void AddDockablePanel(string uiId, UIElement content, PanelDescriptor descriptor)
     {
+        // Always track for RebindLayout re-defer logic (covers initial dock, deferred, and restored panels).
+        _allKnownPanels[uiId] = (content, descriptor);
+
         var existing = _layout.FindItemByContentId(uiId);
         if (existing is not null)
         {
@@ -228,6 +235,28 @@ public sealed class DockingAdapter : IDockingAdapter
 
         var item = _layout.FindItemByContentId(uiId);
         if (item is not null) _engine.Show(item);
+    }
+
+    /// <summary>
+    /// Updates the engine/layout references when the host replaces the docking layout
+    /// (e.g. Reset Layout or Load Layout). All previously known panels that are absent
+    /// from the new layout are re-queued as deferred so ToggleDockablePanel can re-dock them.
+    /// Must be called on the UI thread after <see cref="DockControl.Layout"/> is replaced.
+    /// </summary>
+    public void RebindLayout(DockEngine engine, DockLayoutRoot layout)
+    {
+        _engine = engine;
+        _layout = layout;
+        _sideAnchorIds.Clear();
+
+        // Re-defer panels absent from the new layout so ToggleDockablePanel can re-dock them.
+        foreach (var (uiId, panelEntry) in _allKnownPanels)
+        {
+            if (_layout.FindItemByContentId(uiId) is null)
+                _deferredPanels[uiId] = panelEntry;
+            else
+                _deferredPanels.Remove(uiId);
+        }
     }
 
     /// <inheritdoc />

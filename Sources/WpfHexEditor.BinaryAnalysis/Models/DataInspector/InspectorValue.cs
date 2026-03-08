@@ -66,6 +66,12 @@ namespace WpfHexEditor.BinaryAnalysis.Models.DataInspector
             set { _isValid = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Human-readable explanation of what this format represents.
+        /// Shown in a tooltip via the help icon in the Data Inspector panel.
+        /// </summary>
+        public string? Description { get; init; }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

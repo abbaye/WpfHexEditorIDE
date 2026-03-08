@@ -292,9 +292,12 @@
 
     <!-- Generic Dialog Resources (AdvancedSearch, ProjectDialogs, etc.) -->
     <Color x:Key="AccentColor">#0078D4</Color>
-    <SolidColorBrush x:Key="BackgroundBrush"  Color="{StaticResource DockWindowBackgroundColor}"/>
-    <SolidColorBrush x:Key="ForegroundBrush"  Color="{StaticResource DockMenuForegroundColor}"/>
-    <SolidColorBrush x:Key="AccentBrush"      Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="BackgroundBrush"       Color="{StaticResource DockWindowBackgroundColor}"/>
+    <SolidColorBrush x:Key="ForegroundBrush"       Color="{StaticResource DockMenuForegroundColor}"/>
+    <SolidColorBrush x:Key="AccentBrush"           Color="{StaticResource AccentColor}"/>
+    <!-- Elevated surface (popup/dialog background) — used by ColorPicker and other floating controls -->
+    <SolidColorBrush x:Key="SurfaceElevatedBrush"  Color="{StaticResource DockMenuBackgroundColor}"/>
+    <SolidColorBrush x:Key="BorderBrush"           Color="{StaticResource DockBorderColor}"/>
 
     <!-- DocumentInfoBar (InfoBar_*) -->
     <SolidColorBrush x:Key="InfoBar_BackgroundBrush"             Color="#FAFAFA"/>

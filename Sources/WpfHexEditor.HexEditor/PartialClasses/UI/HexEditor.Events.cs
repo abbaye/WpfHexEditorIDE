@@ -21,6 +21,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.Core;
+using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Models;
 using WpfHexEditor.HexEditor.ViewModels;
 
@@ -787,6 +788,9 @@ namespace WpfHexEditor.HexEditor
             if (_viewModel != null)
             {
                 _viewModel.ScrollPosition = (long)e.NewValue;
+                OnVerticalScrollBarChanged(new ByteEventArgs(
+                    _viewModel.ScrollPosition * _viewModel.BytePerLine + ByteShiftLeft,
+                    lineNumber: _viewModel.ScrollPosition));
             }
         }
 
@@ -839,6 +843,9 @@ namespace WpfHexEditor.HexEditor
             {
                 _viewModel.ScrollPosition = newScrollPos;
                 VerticalScroll.Value = newScrollPos;
+                OnVerticalScrollBarChanged(new ByteEventArgs(
+                    newScrollPos * _viewModel.BytePerLine + ByteShiftLeft,
+                    lineNumber: newScrollPos));
             }
 
             // Mark event as handled to prevent ScrollViewer from scrolling

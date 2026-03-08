@@ -14,10 +14,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Plugins.ParsedFields.Dialogs;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Plugins.ParsedFields.Views
 {
@@ -38,6 +40,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         private bool _hasSelection;
         private int _sortMode = 0; // 0=offset, 1=nameAZ, 2=nameZA, 3=type, 4=size
         private long _totalFileSize;
+        private ToolbarOverflowManager _overflowManager = null!;
 
         public ParsedFieldsPanel()
         {
@@ -57,6 +60,21 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
             ParsedFields.CollectionChanged += (s, e) => ApplyFilter();
 
             FormatInfo = new FormatInfo();
+
+            Loaded += (_, _) =>
+            {
+                _overflowManager = new ToolbarOverflowManager(
+                    toolbarContainer:      ToolbarBorder,
+                    alwaysVisiblePanel:    ToolbarRightPanel,
+                    overflowButton:        ToolbarOverflowButton,
+                    overflowMenu:          OverflowContextMenu,
+                    groupsInCollapseOrder: new FrameworkElement[]
+                    {
+                        TbgExport,   // [0] first to collapse
+                        TbgActions,  // [1] last to collapse
+                    });
+                Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+            };
         }
 
         /// <summary>
@@ -1678,6 +1696,25 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        // ── Toolbar overflow ─────────────────────────────────────────────────
+
+        private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.WidthChanged) _overflowManager?.Update();
+        }
+
+        private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+        {
+            OverflowContextMenu.PlacementTarget = ToolbarOverflowButton;
+            OverflowContextMenu.Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            OverflowContextMenu.IsOpen          = true;
+        }
+
+        private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+        {
+            _overflowManager?.SyncMenuVisibility();
         }
     }
 

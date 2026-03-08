@@ -4443,6 +4443,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             return new ObservableCollection<StatusBarItem> { _sbJsonFile };
         }
 
+        void IStatusBarContributor.RefreshStatusBarItems() => RefreshJsonStatusBarItems();
+
         internal void RefreshJsonStatusBarItems()
         {
             if (_jsonStatusBarItems == null) return;

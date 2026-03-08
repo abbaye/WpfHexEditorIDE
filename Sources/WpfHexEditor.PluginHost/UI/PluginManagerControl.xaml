@@ -42,80 +42,6 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
-        <!-- TabControl — transparent content area -->
-        <Style x:Key="PM_TabControlStyle" TargetType="TabControl">
-            <Setter Property="Background"   Value="Transparent"/>
-            <Setter Property="BorderBrush"  Value="{DynamicResource Panel_ToolbarBorderBrush}"/>
-            <Setter Property="BorderThickness" Value="0,1,0,0"/>
-            <Setter Property="Padding"      Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabControl">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TabPanel Grid.Row="0" IsItemsHost="True"
-                                      Background="{DynamicResource Panel_ToolbarBrush}"
-                                      KeyboardNavigation.TabIndex="1"/>
-                            <Border Grid.Row="1" Background="Transparent"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    KeyboardNavigation.TabNavigation="Local"
-                                    KeyboardNavigation.DirectionalNavigation="Contained"
-                                    KeyboardNavigation.TabIndex="2">
-                                <ContentPresenter x:Name="PART_SelectedContentHost"
-                                                  ContentSource="SelectedContent" Margin="0"/>
-                            </Border>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- TabItem -->
-        <Style x:Key="PM_TabItemStyle" TargetType="TabItem">
-            <Setter Property="Background"   Value="Transparent"/>
-            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
-            <Setter Property="BorderBrush"  Value="{DynamicResource Panel_ToolbarBorderBrush}"/>
-            <Setter Property="Padding"      Value="12,5"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TabItem">
-                        <Border x:Name="Bd"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="1,1,1,0"
-                                Padding="{TemplateBinding Padding}"
-                                Margin="0,0,2,0">
-                            <ContentPresenter ContentSource="Header"
-                                              HorizontalAlignment="Center" VerticalAlignment="Center"
-                                              TextBlock.FontSize="12"
-                                              TextBlock.Foreground="{TemplateBinding Foreground}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockBackgroundBrush}"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource DockBorderBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected"  Value="True"/>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource DockTabSelectedHoverBrush}"/>
-                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource DockBorderBrush}"/>
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!-- Context menu -->
         <ContextMenu x:Key="PM_PluginContextMenu"
                      Background="{DynamicResource DockMenuBackgroundBrush}"
@@ -189,25 +115,77 @@
             </Grid.RowDefinitions>
 
             <!-- Toolbar -->
-            <Border Grid.Row="0" Style="{DynamicResource PanelToolbarStyle}">
+            <Border x:Name="ToolbarBorder"
+                    Grid.Row="0"
+                    Style="{DynamicResource PanelToolbarStyle}"
+                    SizeChanged="OnToolbarSizeChanged">
                 <DockPanel Margin="4,0">
+                    <!-- Left: title — always visible -->
                     <TextBlock Text="PLUGINS" FontSize="10" FontWeight="SemiBold"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                DockPanel.Dock="Left"/>
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                        <!-- Install -->
-                        <Button Style="{DynamicResource PanelIconButtonStyle}"
-                                Content="&#xE710;" ToolTip="Install Plugin from .whxplugin"
-                                Command="{Binding InstallFromFileCommand}"/>
-                        <!-- Export diagnostics -->
-                        <Button Style="{DynamicResource PanelIconButtonStyle}"
-                                Content="&#xE74E;" ToolTip="Export all diagnostics (CSV / JSON)"
-                                Command="{Binding ExportDiagnosticsCommand}"/>
-                        <!-- Refresh list -->
+
+                    <!-- Right: always-visible (Refresh) -->
+                    <StackPanel x:Name="ToolbarRightPanel"
+                                Orientation="Horizontal"
+                                DockPanel.Dock="Right"
+                                VerticalAlignment="Center">
                         <Button Style="{DynamicResource PanelIconButtonStyle}"
                                 Content="&#xE72C;" ToolTip="Refresh Plugin List"
                                 Command="{Binding RefreshCommand}"/>
+                    </StackPanel>
+
+                    <!-- Overflow button — shown only when groups are collapsed -->
+                    <Button x:Name="ToolbarOverflowButton"
+                            DockPanel.Dock="Right"
+                            Visibility="Collapsed"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            ToolTip="More options"
+                            Click="OnOverflowButtonClick">
+                        <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
+                                <!-- TbgPluginDiag items -->
+                                <MenuItem Header="Export Diagnostics"
+                                          Tag="TbgPluginDiag"
+                                          Click="OvfExportDiag_Click">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator Tag="TbgPluginDiag"/>
+                                <!-- TbgPluginInstall items -->
+                                <MenuItem Header="Install Plugin…"
+                                          Tag="TbgPluginInstall"
+                                          Click="OvfInstall_Click">
+                                    <MenuItem.Icon>
+                                        <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+
+                    <!-- Group: TbgPluginInstall [1] last to collapse -->
+                    <StackPanel x:Name="TbgPluginInstall"
+                                Orientation="Horizontal"
+                                DockPanel.Dock="Right"
+                                VerticalAlignment="Center">
+                        <Button Style="{DynamicResource PanelIconButtonStyle}"
+                                Content="&#xE710;" ToolTip="Install Plugin from .whxplugin"
+                                Command="{Binding InstallFromFileCommand}"/>
+                    </StackPanel>
+
+                    <!-- Group: TbgPluginDiag [0] first to collapse -->
+                    <StackPanel x:Name="TbgPluginDiag"
+                                Orientation="Horizontal"
+                                DockPanel.Dock="Right"
+                                VerticalAlignment="Center">
+                        <Button Style="{DynamicResource PanelIconButtonStyle}"
+                                Content="&#xE74E;" ToolTip="Export all diagnostics (CSV / JSON)"
+                                Command="{Binding ExportDiagnosticsCommand}"/>
                     </StackPanel>
                 </DockPanel>
             </Border>
@@ -457,186 +435,185 @@
                     </Grid>
                 </Border>
 
-                <!-- Tabs: Info / Permissions / Settings -->
-                <TabControl Grid.Row="1"
-                            Style="{StaticResource PM_TabControlStyle}"
-                            ItemContainerStyle="{StaticResource PM_TabItemStyle}">
+                <!-- Single scrollable page: Info / Permissions / Settings -->
+                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="12,12,12,20">
 
-                    <!-- ── Info tab ──────────────────────────────────────── -->
-                    <TabItem Header="Info">
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-                            <StackPanel Margin="12">
+                        <!-- ── Section: Info ────────────────────────────────── -->
+                        <TextBlock Text="Info"
+                                   FontWeight="SemiBold" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   Margin="0,0,0,10"/>
 
-                                <!-- Fault banner -->
-                                <Border Background="#3EEF4444" CornerRadius="4" Padding="8,6" Margin="0,0,0,8"
-                                        Visibility="{Binding FaultMessage, Converter={StaticResource NotNullToVis}}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="&#xEA39;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                                                   Foreground="{DynamicResource PM_BadgeFaultedBrush}"
-                                                   VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                        <TextBlock Text="{Binding FaultMessage}" FontSize="11"
-                                                   Foreground="{DynamicResource PM_BadgeFaultedBrush}"
-                                                   TextWrapping="Wrap" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Description -->
-                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="12"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           Opacity="0.85" Margin="0,0,0,12"/>
-
-                                <!-- METRICS label -->
-                                <TextBlock Text="METRICS" FontSize="10" FontWeight="SemiBold"
-                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                                           Margin="0,0,0,4"/>
-
-                                <!-- Metrics card: CPU / Mem / Init / AvgCall / Uptime -->
-                                <Border Style="{DynamicResource PM_MetricCardStyle}" Margin="0,0,0,4">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                                            <TextBlock Text="{Binding CpuPercent, StringFormat={}{0:F1}%}"
-                                                       FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
-                                                       Foreground="#22C55E"/>
-                                            <TextBlock Text="CPU" FontSize="10" HorizontalAlignment="Center"
-                                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                            <TextBlock Text="{Binding PeakCpuPercent, StringFormat='peak {0:F1}%'}"
-                                                       FontSize="9" HorizontalAlignment="Center" Opacity="0.6"
-                                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                                            <TextBlock Text="{Binding MemoryMb, StringFormat={}{0} MB}"
-                                                       FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
-                                                       Foreground="#60A5FA"/>
-                                            <TextBlock Text="Memory" FontSize="10" HorizontalAlignment="Center"
-                                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                            <TextBlock Text="{Binding PeakMemoryMb, StringFormat='peak {0} MB'}"
-                                                       FontSize="9" HorizontalAlignment="Center" Opacity="0.6"
-                                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
-                                            <TextBlock Text="{Binding InitTimeMs, StringFormat={}{0:F0} ms}"
-                                                       FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
-                                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                                            <TextBlock Text="Init" FontSize="10" HorizontalAlignment="Center"
-                                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="3" HorizontalAlignment="Center">
-                                            <TextBlock Text="{Binding AvgExecMs, StringFormat={}{0:F1} ms}"
-                                                       FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
-                                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                                            <TextBlock Text="Avg Call" FontSize="10" HorizontalAlignment="Center"
-                                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="4" HorizontalAlignment="Center">
-                                            <TextBlock Text="{Binding UptimeLabel}"
-                                                       FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
-                                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                                            <TextBlock Text="Uptime" FontSize="10" HorizontalAlignment="Center"
-                                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-
-                                <!-- Loaded since -->
-                                <TextBlock Margin="0,0,0,12" FontSize="11"
-                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
-                                    <Run Text="Loaded since: "/><Run Text="{Binding LoadedSince, Mode=OneWay}"/>
-                                </TextBlock>
-
-                                <!-- ── CPU % Chart ─────────────────────────────────────── -->
-                                <TextBlock Text="CPU % — History" FontSize="10" FontWeight="SemiBold"
-                                           Foreground="#22C55E" Margin="0,0,0,4"/>
-                                <Border Height="70" Margin="0,0,0,10"
-                                        Background="{DynamicResource DockBackgroundBrush}"
-                                        BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
-                                        BorderThickness="1" CornerRadius="3">
-                                    <local:PluginSparklineControl
-                                        PointsSource="{Binding CpuHistory}"
-                                        LineColor="#22C55E"
-                                        MaxValue="100"
-                                        StrokeThickness="1.5"
-                                        Margin="6,6"/>
-                                </Border>
-
-                                <!-- ── Memory MB Chart ──────────────────────────────────── -->
-                                <TextBlock Text="Memory MB — History" FontSize="10" FontWeight="SemiBold"
-                                           Foreground="#60A5FA" Margin="0,0,0,4"/>
-                                <Border Height="70" Margin="0,0,0,10"
-                                        Background="{DynamicResource DockBackgroundBrush}"
-                                        BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
-                                        BorderThickness="1" CornerRadius="3">
-                                    <local:PluginSparklineControl
-                                        PointsSource="{Binding MemoryHistory}"
-                                        LineColor="#60A5FA"
-                                        MaxValue="0"
-                                        StrokeThickness="1.5"
-                                        Margin="6,6"/>
-                                </Border>
-
+                        <!-- Fault banner -->
+                        <Border Background="#3EEF4444" CornerRadius="4" Padding="8,6" Margin="0,0,0,8"
+                                Visibility="{Binding FaultMessage, Converter={StaticResource NotNullToVis}}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xEA39;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                           Foreground="{DynamicResource PM_BadgeFaultedBrush}"
+                                           VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="{Binding FaultMessage}" FontSize="11"
+                                           Foreground="{DynamicResource PM_BadgeFaultedBrush}"
+                                           TextWrapping="Wrap" VerticalAlignment="Center"/>
                             </StackPanel>
-                        </ScrollViewer>
-                    </TabItem>
+                        </Border>
 
-                    <!-- ── Permissions tab ──────────────────────────────── -->
-                    <TabItem Header="Permissions">
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-                            <StackPanel Margin="12">
-                                <TextBlock Text="Toggle individual permissions for this plugin. Changes take effect immediately."
-                                           FontSize="11" TextWrapping="Wrap" Margin="0,0,0,8"
-                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Opacity="0.7"/>
-                                <ItemsControl ItemsSource="{Binding Permissions}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type local:PluginPermissionItemViewModel}">
-                                            <Border Padding="8,6" Margin="0,0,0,4"
-                                                    Background="{DynamicResource Panel_ToolbarBrush}"
-                                                    BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
-                                                    BorderThickness="1" CornerRadius="4">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                                        <TextBlock Text="{Binding Label}" FontSize="12"
-                                                                   FontWeight="SemiBold"
-                                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                                                        <TextBlock Text="{Binding Description}" FontSize="10"
-                                                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                                                                   Opacity="0.65" TextWrapping="Wrap"/>
-                                                    </StackPanel>
-                                                    <CheckBox Grid.Column="1"
-                                                              IsChecked="{Binding IsGranted}"
-                                                              VerticalAlignment="Center" Margin="12,0,0,0"/>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </TabItem>
+                        <!-- Description -->
+                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="12"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   Opacity="0.85" Margin="0,0,0,12"/>
 
-                    <!-- ── Settings tab ─────────────────────────────────── -->
-                    <TabItem Header="Settings"
-                             Visibility="{Binding HasOptions, Converter={StaticResource BoolToVis}}">
-                        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-                            <ContentPresenter Content="{Binding OptionsPage}" Margin="12"/>
-                        </ScrollViewer>
-                    </TabItem>
+                        <!-- METRICS label -->
+                        <TextBlock Text="METRICS" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                   Margin="0,0,0,4"/>
 
-                </TabControl>
+                        <!-- Metrics card: CPU / Mem / Init / AvgCall / Uptime -->
+                        <Border Style="{DynamicResource PM_MetricCardStyle}" Margin="0,0,0,4">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding CpuPercent, StringFormat={}{0:F1}%}"
+                                               FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
+                                               Foreground="#22C55E"/>
+                                    <TextBlock Text="CPU" FontSize="10" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                    <TextBlock Text="{Binding PeakCpuPercent, StringFormat='peak {0:F1}%'}"
+                                               FontSize="9" HorizontalAlignment="Center" Opacity="0.6"
+                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding MemoryMb, StringFormat={}{0} MB}"
+                                               FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
+                                               Foreground="#60A5FA"/>
+                                    <TextBlock Text="Memory" FontSize="10" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                    <TextBlock Text="{Binding PeakMemoryMb, StringFormat='peak {0} MB'}"
+                                               FontSize="9" HorizontalAlignment="Center" Opacity="0.6"
+                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding InitTimeMs, StringFormat={}{0:F0} ms}"
+                                               FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    <TextBlock Text="Init" FontSize="10" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding AvgExecMs, StringFormat={}{0:F1} ms}"
+                                               FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    <TextBlock Text="Avg Call" FontSize="10" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding UptimeLabel}"
+                                               FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    <TextBlock Text="Uptime" FontSize="10" HorizontalAlignment="Center"
+                                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Loaded since -->
+                        <TextBlock Margin="0,0,0,12" FontSize="11"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
+                            <Run Text="Loaded since: "/><Run Text="{Binding LoadedSince, Mode=OneWay}"/>
+                        </TextBlock>
+
+                        <!-- CPU % Chart -->
+                        <TextBlock Text="CPU % — History" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="#22C55E" Margin="0,0,0,4"/>
+                        <Border Height="70" Margin="0,0,0,10"
+                                Background="{DynamicResource DockBackgroundBrush}"
+                                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                                BorderThickness="1" CornerRadius="3">
+                            <local:PluginSparklineControl
+                                PointsSource="{Binding CpuHistory}"
+                                LineColor="#22C55E"
+                                MaxValue="100"
+                                StrokeThickness="1.5"
+                                Margin="6,6"/>
+                        </Border>
+
+                        <!-- Memory MB Chart -->
+                        <TextBlock Text="Memory MB — History" FontSize="10" FontWeight="SemiBold"
+                                   Foreground="#60A5FA" Margin="0,0,0,4"/>
+                        <Border Height="70" Margin="0,0,0,10"
+                                Background="{DynamicResource DockBackgroundBrush}"
+                                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                                BorderThickness="1" CornerRadius="3">
+                            <local:PluginSparklineControl
+                                PointsSource="{Binding MemoryHistory}"
+                                LineColor="#60A5FA"
+                                MaxValue="0"
+                                StrokeThickness="1.5"
+                                Margin="6,6"/>
+                        </Border>
+
+                        <Separator Margin="0,4,0,12" Background="{DynamicResource DockBorderBrush}"/>
+
+                        <!-- ── Section: Permissions ──────────────────────────── -->
+                        <TextBlock Text="Permissions"
+                                   FontWeight="SemiBold" FontSize="13"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   Margin="0,0,0,6"/>
+                        <TextBlock Text="Toggle individual permissions for this plugin. Changes take effect immediately."
+                                   FontSize="11" TextWrapping="Wrap" Margin="0,0,0,10"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Opacity="0.7"/>
+                        <ItemsControl ItemsSource="{Binding Permissions}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type local:PluginPermissionItemViewModel}">
+                                    <Border Padding="8,6" Margin="0,0,0,4"
+                                            Background="{DynamicResource Panel_ToolbarBrush}"
+                                            BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                                            BorderThickness="1" CornerRadius="4">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Label}" FontSize="12"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                                <TextBlock Text="{Binding Description}" FontSize="10"
+                                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                                           Opacity="0.65" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <CheckBox Grid.Column="1"
+                                                      IsChecked="{Binding IsGranted}"
+                                                      VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- ── Section: Settings (conditional) ──────────────── -->
+                        <StackPanel Visibility="{Binding HasOptions, Converter={StaticResource BoolToVis}}">
+                            <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
+                            <TextBlock Text="Settings"
+                                       FontWeight="SemiBold" FontSize="13"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                       Margin="0,0,0,10"/>
+                            <ContentPresenter Content="{Binding OptionsPage}"/>
+                        </StackPanel>
+
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
         </Grid>
     </Grid>

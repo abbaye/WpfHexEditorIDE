@@ -92,6 +92,7 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
         context.HexEditor.SelectionChanged    += OnSelectionChanged;
         context.HexEditor.FileOpened          += OnFileOpened;
         context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
+        context.HexEditor.ViewportScrolled    += OnViewportScrolled;
 
         return Task.CompletedTask;
     }
@@ -103,6 +104,7 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
             _context.HexEditor.SelectionChanged    -= OnSelectionChanged;
             _context.HexEditor.FileOpened          -= OnFileOpened;
             _context.HexEditor.ActiveEditorChanged -= OnActiveEditorChanged;
+            _context.HexEditor.ViewportScrolled    -= OnViewportScrolled;
         }
 
         _panel   = null;
@@ -128,6 +130,14 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
     /// <summary>Refreshes the panel when the active editor tab changes.</summary>
     private void OnActiveEditorChanged(object? sender, EventArgs e)
         => _panel?.OnHexEditorSelectionChanged();
+
+    /// <summary>
+    /// Triggered when the user scrolls the hex viewport.
+    /// Only forwards to the panel when the "Active view" scope is selected,
+    /// since the other scopes are not affected by scroll position.
+    /// </summary>
+    private void OnViewportScrolled(object? sender, EventArgs e)
+        => _panel?.OnViewportScrolled();
 
     // ── IPluginWithOptions ────────────────────────────────────────────────────
 

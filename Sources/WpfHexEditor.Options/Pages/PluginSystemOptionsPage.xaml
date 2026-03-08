@@ -10,175 +10,164 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-    <StackPanel Margin="0,0,8,16">
+    <StackPanel Margin="0,0,0,16">
 
         <!-- ── General ───────────────────────────────────────────────────────── -->
-        <GroupBox Header="General"
+        <TextBlock Text="General"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,12"/>
+
+        <CheckBox x:Name="CheckAutoLoad"
+                  Content="Automatically load all discovered plugins at startup"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                  BorderBrush="{DynamicResource DockBorderBrush}"
-                  Margin="0,0,0,12" Padding="8">
-            <StackPanel>
+                  Margin="0,0,0,10"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
 
-                <CheckBox x:Name="CheckAutoLoad"
-                          Content="Automatically load all discovered plugins at startup"
-                          Foreground="{DynamicResource DockMenuForegroundBrush}"
-                          Margin="0,0,0,10"
-                          Checked="OnCheckChanged"
-                          Unchecked="OnCheckChanged"/>
+        <TextBlock Text="Additional plugins directory (leave empty to use %AppData%\WpfHexEditor\Plugins):"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Opacity="0.8"
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,4"/>
 
-                <TextBlock Text="Additional plugins directory (leave empty to use %AppData%\WpfHexEditor\Plugins):"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           Opacity="0.8"
-                           TextWrapping="Wrap"
-                           Margin="0,0,0,4"/>
+        <Grid Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="TextPluginsDir"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Background="{DynamicResource Panel_ToolbarBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     Padding="4,3"
+                     Margin="0,0,4,0"
+                     VerticalContentAlignment="Center"
+                     TextChanged="OnTextChanged"/>
+            <Button Grid.Column="1"
+                    Content="Browse…"
+                    Padding="8,3"
+                    Click="OnBrowsePluginsDir"
+                    Background="{DynamicResource Panel_ToolbarBrush}"
+                    Foreground="{DynamicResource DockMenuForegroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"/>
+        </Grid>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="TextPluginsDir"
-                             Foreground="{DynamicResource DockMenuForegroundBrush}"
-                             Background="{DynamicResource Panel_ToolbarBrush}"
-                             BorderBrush="{DynamicResource DockBorderBrush}"
-                             Padding="4,3"
-                             Margin="0,0,4,0"
-                             VerticalContentAlignment="Center"
-                             TextChanged="OnTextChanged"/>
-                    <Button Grid.Column="1"
-                            Content="Browse…"
-                            Padding="8,3"
-                            Click="OnBrowsePluginsDir"
-                            Background="{DynamicResource Panel_ToolbarBrush}"
-                            Foreground="{DynamicResource DockMenuForegroundBrush}"
-                            BorderBrush="{DynamicResource DockBorderBrush}"/>
-                </Grid>
-
-            </StackPanel>
-        </GroupBox>
+        <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Watchdog ───────────────────────────────────────────────────────── -->
-        <GroupBox Header="Watchdog"
+        <TextBlock Text="Watchdog"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,12"/>
+
+        <CheckBox x:Name="CheckEnableWatchdog"
+                  Content="Enable plugin watchdog (monitors call timeouts)"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                  BorderBrush="{DynamicResource DockBorderBrush}"
-                  Margin="0,0,0,12" Padding="8">
-            <StackPanel>
+                  Margin="0,0,0,10"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
 
-                <CheckBox x:Name="CheckEnableWatchdog"
-                          Content="Enable plugin watchdog (monitors call timeouts)"
-                          Foreground="{DynamicResource DockMenuForegroundBrush}"
-                          Margin="0,0,0,10"
-                          Checked="OnCheckChanged"
-                          Unchecked="OnCheckChanged"/>
+        <Grid Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Watchdog timeout (seconds):"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBox x:Name="TextWatchdogTimeout" Grid.Column="1"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Background="{DynamicResource Panel_ToolbarBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     Padding="4,3"
+                     TextChanged="OnTextChanged"/>
+        </Grid>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="70"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Watchdog timeout (seconds):"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <TextBox x:Name="TextWatchdogTimeout" Grid.Column="1"
-                             Foreground="{DynamicResource DockMenuForegroundBrush}"
-                             Background="{DynamicResource Panel_ToolbarBrush}"
-                             BorderBrush="{DynamicResource DockBorderBrush}"
-                             Padding="4,3"
-                             TextChanged="OnTextChanged"/>
-                </Grid>
-
-            </StackPanel>
-        </GroupBox>
+        <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Diagnostics sampling ───────────────────────────────────────────── -->
-        <GroupBox Header="Diagnostics &amp; Sampling"
-                  Foreground="{DynamicResource DockMenuForegroundBrush}"
-                  BorderBrush="{DynamicResource DockBorderBrush}"
-                  Margin="0,0,0,12" Padding="8">
-            <StackPanel>
+        <TextBlock Text="Diagnostics &amp; Sampling"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,12"/>
 
-                <Grid Margin="0,0,0,4">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="70"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Diagnostic sampling interval (seconds):"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <TextBox x:Name="TextDiagnosticSampling" Grid.Column="1"
-                             Foreground="{DynamicResource DockMenuForegroundBrush}"
-                             Background="{DynamicResource Panel_ToolbarBrush}"
-                             BorderBrush="{DynamicResource DockBorderBrush}"
-                             Padding="4,3"
-                             TextChanged="OnTextChanged"/>
-                </Grid>
+        <Grid Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Diagnostic sampling interval (seconds):"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBox x:Name="TextDiagnosticSampling" Grid.Column="1"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Background="{DynamicResource Panel_ToolbarBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     Padding="4,3"
+                     TextChanged="OnTextChanged"/>
+        </Grid>
 
-                <TextBlock Text="Drives the Plugin Monitor CPU/Memory chart refresh rate."
-                           FontSize="11" Opacity="0.65"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+        <TextBlock Text="Drives the Plugin Monitor CPU/Memory chart refresh rate."
+                   FontSize="11" Opacity="0.65"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,4"/>
 
-            </StackPanel>
-        </GroupBox>
+        <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Slow-Plugin Detection ──────────────────────────────────────────── -->
-        <GroupBox Header="Slow-Plugin Detection"
-                  Foreground="{DynamicResource DockMenuForegroundBrush}"
-                  BorderBrush="{DynamicResource DockBorderBrush}"
-                  Margin="0,0,0,12" Padding="8">
-            <StackPanel>
+        <TextBlock Text="Slow-Plugin Detection"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,12"/>
 
-                <Grid Margin="0,0,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="70"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Monitoring interval (seconds):"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <TextBox x:Name="TextMonitoringInterval" Grid.Column="1"
-                             Foreground="{DynamicResource DockMenuForegroundBrush}"
-                             Background="{DynamicResource Panel_ToolbarBrush}"
-                             BorderBrush="{DynamicResource DockBorderBrush}"
-                             Padding="4,3"
-                             TextChanged="OnTextChanged"/>
-                </Grid>
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Monitoring interval (seconds):"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBox x:Name="TextMonitoringInterval" Grid.Column="1"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Background="{DynamicResource Panel_ToolbarBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     Padding="4,3"
+                     TextChanged="OnTextChanged"/>
+        </Grid>
 
-                <Grid Margin="0,0,0,8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="70"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Response time threshold (ms):"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <TextBox x:Name="TextResponseTime" Grid.Column="1"
-                             Foreground="{DynamicResource DockMenuForegroundBrush}"
-                             Background="{DynamicResource Panel_ToolbarBrush}"
-                             BorderBrush="{DynamicResource DockBorderBrush}"
-                             Padding="4,3"
-                             TextChanged="OnTextChanged"/>
-                </Grid>
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Response time threshold (ms):"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBox x:Name="TextResponseTime" Grid.Column="1"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Background="{DynamicResource Panel_ToolbarBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     Padding="4,3"
+                     TextChanged="OnTextChanged"/>
+        </Grid>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="70"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="CPU threshold (%):"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <TextBox x:Name="TextCpuThreshold" Grid.Column="1"
-                             Foreground="{DynamicResource DockMenuForegroundBrush}"
-                             Background="{DynamicResource Panel_ToolbarBrush}"
-                             BorderBrush="{DynamicResource DockBorderBrush}"
-                             Padding="4,3"
-                             TextChanged="OnTextChanged"/>
-                </Grid>
-
-            </StackPanel>
-        </GroupBox>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="CPU threshold (%):"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBox x:Name="TextCpuThreshold" Grid.Column="1"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Background="{DynamicResource Panel_ToolbarBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     Padding="4,3"
+                     TextChanged="OnTextChanged"/>
+        </Grid>
 
     </StackPanel>
-    </ScrollViewer>
 </UserControl>

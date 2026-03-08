@@ -35,6 +35,18 @@ public interface IHexEditorService
     /// <summary>Gets the length of the current selection in bytes.</summary>
     long SelectionLength { get; }
 
+    /// <summary>Gets the byte offset of the first byte currently visible in the hex viewport.</summary>
+    long FirstVisibleByteOffset { get; }
+
+    /// <summary>Gets the byte offset one past the last byte currently visible in the hex viewport.</summary>
+    long LastVisibleByteOffset { get; }
+
+    /// <summary>
+    /// Raised when the user scrolls the hex viewport (mouse wheel or scrollbar drag).
+    /// Raised on the UI thread.
+    /// </summary>
+    event EventHandler ViewportScrolled;
+
     /// <summary>
     /// Reads a block of bytes from the currently open file.
     /// </summary>

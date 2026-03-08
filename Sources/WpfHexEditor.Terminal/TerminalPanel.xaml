@@ -73,10 +73,12 @@
         </Grid.RowDefinitions>
 
         <!-- ── Toolbar ──────────────────────────────────────────────────── -->
-        <Border Grid.Row="0"
-                Style="{DynamicResource PanelToolbarStyle}">
+        <Border x:Name="ToolbarBorder"
+                Grid.Row="0"
+                Style="{DynamicResource PanelToolbarStyle}"
+                SizeChanged="OnToolbarSizeChanged">
             <DockPanel>
-                <!-- Left: title -->
+                <!-- Left: title — always visible -->
                 <TextBlock Text="Terminal"
                            FontWeight="SemiBold"
                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
@@ -84,7 +86,7 @@
                            Margin="8,0,8,0"
                            DockPanel.Dock="Left"/>
 
-                <!-- Left: shell selector — click opens the context menu -->
+                <!-- Left: shell selector — always visible -->
                 <Button Style="{DynamicResource PanelDropdownButtonStyle}"
                         ToolTip="Switch Shell"
                         MinWidth="90"
@@ -106,7 +108,6 @@
                                    FontSize="11"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                    VerticalAlignment="Center"/>
-                        <!-- Chevron-down glyph -->
                         <TextBlock Text="&#xE70D;"
                                    FontFamily="Segoe MDL2 Assets"
                                    FontSize="9"
@@ -116,7 +117,7 @@
                     </StackPanel>
                 </Button>
 
-                <!-- Encoding selector — PowerShell mode only -->
+                <!-- Encoding selector — PowerShell mode only, always visible -->
                 <ComboBox DockPanel.Dock="Left"
                           ItemsSource="{Binding AvailableEncodings}"
                           SelectedItem="{Binding SelectedEncoding}"
@@ -129,93 +130,11 @@
                           Visibility="{Binding IsPowerShellMode, Converter={StaticResource BoolToVis}}"
                           ToolTip="PowerShell output encoding"/>
 
-                <!-- Right: icon buttons group -->
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
-
-                    <!-- Scroll to Top -->
-                    <Button Style="{DynamicResource PanelIconButtonStyle}"
-                            Click="OnScrollToTop"
-                            ToolTip="Scroll to Top">
-                        <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </Button>
-
-                    <!-- Scroll to Bottom -->
-                    <Button Style="{DynamicResource PanelIconButtonStyle}"
-                            Click="OnScrollToBottom"
-                            ToolTip="Scroll to Bottom">
-                        <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </Button>
-
-                    <Rectangle Width="1" Height="14" Margin="2,0"
-                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
-
-                    <!-- Auto-scroll toggle -->
-                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
-                                  IsChecked="{Binding IsAutoScrollEnabled}"
-                                  ToolTip="Auto Scroll to Bottom">
-                        <TextBlock Text="&#xF0AF;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </ToggleButton>
-
-                    <!-- Pause output toggle -->
-                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
-                                  IsChecked="{Binding IsOutputPaused}"
-                                  ToolTip="Pause Output">
-                        <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </ToggleButton>
-
-                    <Rectangle Width="1" Height="14" Margin="2,0"
-                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
-
-                    <!-- Timestamps toggle -->
-                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
-                                  IsChecked="{Binding ShowTimestamps}"
-                                  ToolTip="Show Timestamps">
-                        <TextBlock Text="&#xE121;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </ToggleButton>
-
-                    <!-- Word wrap toggle -->
-                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
-                                  IsChecked="{Binding IsWordWrap}"
-                                  ToolTip="Word Wrap">
-                        <TextBlock Text="&#xE8AC;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </ToggleButton>
-
-                    <!-- Copy on select toggle -->
-                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
-                                  IsChecked="{Binding CopyOnSelect}"
-                                  ToolTip="Copy on Select">
-                        <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </ToggleButton>
-
-                    <Rectangle Width="1" Height="14" Margin="2,0"
-                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
-
-                    <!-- Font + -->
-                    <Button Style="{DynamicResource PanelIconButtonStyle}"
-                            Command="{Binding IncreaseFontCommand}"
-                            ToolTip="Increase Font Size (Ctrl++)">
-                        <TextBlock Text="&#xE8A3;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </Button>
-
-                    <!-- Font - -->
-                    <Button Style="{DynamicResource PanelIconButtonStyle}"
-                            Command="{Binding DecreaseFontCommand}"
-                            ToolTip="Decrease Font Size (Ctrl+-)">
-                        <TextBlock Text="&#xE71F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </Button>
-
-                    <Rectangle Width="1" Height="14" Margin="2,0"
-                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
-
+                <!-- Right: always-visible actions (Save, Clear, Cancel) -->
+                <StackPanel x:Name="ToolbarRightPanel"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
                     <!-- Save output -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding SaveOutputCommand}"
@@ -223,7 +142,6 @@
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
-
                     <!-- Clear output -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding ClearOutputCommand}"
@@ -231,7 +149,6 @@
                         <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
-
                     <!-- Cancel running command -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding CancelCommand}"
@@ -239,7 +156,168 @@
                         <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
+                </StackPanel>
 
+                <!-- Overflow button — shown only when groups are collapsed -->
+                <Button x:Name="ToolbarOverflowButton"
+                        DockPanel.Dock="Right"
+                        Visibility="Collapsed"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        ToolTip="More options"
+                        Click="OnOverflowButtonClick">
+                    <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
+                            <!-- TbgScrollNav items -->
+                            <MenuItem x:Name="OvfScrollTop"
+                                      Header="Scroll to Top"
+                                      Tag="TbgScrollNav"
+                                      Click="OnScrollToTop"/>
+                            <MenuItem x:Name="OvfScrollBottom"
+                                      Header="Scroll to Bottom"
+                                      Tag="TbgScrollNav"
+                                      Click="OnScrollToBottom"/>
+                            <Separator Tag="TbgScrollNav"/>
+                            <!-- TbgOutputControl items -->
+                            <MenuItem x:Name="OvfAutoScroll"
+                                      Header="Auto Scroll"
+                                      IsCheckable="True"
+                                      Tag="TbgOutputControl"
+                                      Click="OvfAutoScroll_Click"/>
+                            <MenuItem x:Name="OvfPauseOutput"
+                                      Header="Pause Output"
+                                      IsCheckable="True"
+                                      Tag="TbgOutputControl"
+                                      Click="OvfPauseOutput_Click"/>
+                            <Separator Tag="TbgOutputControl"/>
+                            <!-- TbgTextOptions items -->
+                            <MenuItem x:Name="OvfTimestamps"
+                                      Header="Show Timestamps"
+                                      IsCheckable="True"
+                                      Tag="TbgTextOptions"
+                                      Click="OvfTimestamps_Click"/>
+                            <MenuItem x:Name="OvfWordWrap"
+                                      Header="Word Wrap"
+                                      IsCheckable="True"
+                                      Tag="TbgTextOptions"
+                                      Click="OvfWordWrap_Click"/>
+                            <MenuItem x:Name="OvfCopyOnSelect"
+                                      Header="Copy on Select"
+                                      IsCheckable="True"
+                                      Tag="TbgTextOptions"
+                                      Click="OvfCopyOnSelect_Click"/>
+                            <Separator Tag="TbgTextOptions"/>
+                            <!-- TbgFont items -->
+                            <MenuItem x:Name="OvfFontIncrease"
+                                      Header="Increase Font Size"
+                                      Tag="TbgFont"
+                                      Click="OvfFontIncrease_Click"/>
+                            <MenuItem x:Name="OvfFontDecrease"
+                                      Header="Decrease Font Size"
+                                      Tag="TbgFont"
+                                      Click="OvfFontDecrease_Click"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+
+                <!-- Group: TbgFont [3] last to collapse -->
+                <StackPanel x:Name="TbgFont"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
+                    <Rectangle Width="1" Height="14" Margin="2,0"
+                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
+                    <!-- Font + -->
+                    <Button Style="{DynamicResource PanelIconButtonStyle}"
+                            Command="{Binding IncreaseFontCommand}"
+                            ToolTip="Increase Font Size (Ctrl++)">
+                        <TextBlock Text="&#xE8A3;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </Button>
+                    <!-- Font - -->
+                    <Button Style="{DynamicResource PanelIconButtonStyle}"
+                            Command="{Binding DecreaseFontCommand}"
+                            ToolTip="Decrease Font Size (Ctrl+-)">
+                        <TextBlock Text="&#xE71F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </Button>
+                </StackPanel>
+
+                <!-- Group: TbgTextOptions [1] -->
+                <StackPanel x:Name="TbgTextOptions"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
+                    <Rectangle Width="1" Height="14" Margin="2,0"
+                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
+                    <!-- Timestamps toggle -->
+                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
+                                  IsChecked="{Binding ShowTimestamps}"
+                                  ToolTip="Show Timestamps">
+                        <TextBlock Text="&#xE121;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </ToggleButton>
+                    <!-- Word wrap toggle -->
+                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
+                                  IsChecked="{Binding IsWordWrap}"
+                                  ToolTip="Word Wrap">
+                        <TextBlock Text="&#xE8AC;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </ToggleButton>
+                    <!-- Copy on select toggle -->
+                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
+                                  IsChecked="{Binding CopyOnSelect}"
+                                  ToolTip="Copy on Select">
+                        <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </ToggleButton>
+                </StackPanel>
+
+                <!-- Group: TbgOutputControl [2] -->
+                <StackPanel x:Name="TbgOutputControl"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
+                    <Rectangle Width="1" Height="14" Margin="2,0"
+                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
+                    <!-- Auto-scroll toggle -->
+                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
+                                  IsChecked="{Binding IsAutoScrollEnabled}"
+                                  ToolTip="Auto Scroll to Bottom">
+                        <TextBlock Text="&#xF0AF;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </ToggleButton>
+                    <!-- Pause output toggle -->
+                    <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
+                                  IsChecked="{Binding IsOutputPaused}"
+                                  ToolTip="Pause Output">
+                        <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </ToggleButton>
+                </StackPanel>
+
+                <!-- Group: TbgScrollNav [0] first to collapse -->
+                <StackPanel x:Name="TbgScrollNav"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
+                    <!-- Scroll to Top -->
+                    <Button Style="{DynamicResource PanelIconButtonStyle}"
+                            Click="OnScrollToTop"
+                            ToolTip="Scroll to Top">
+                        <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </Button>
+                    <!-- Scroll to Bottom -->
+                    <Button Style="{DynamicResource PanelIconButtonStyle}"
+                            Click="OnScrollToBottom"
+                            ToolTip="Scroll to Bottom">
+                        <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </Button>
+                    <Rectangle Width="1" Height="14" Margin="2,0"
+                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 </StackPanel>
             </DockPanel>
         </Border>

@@ -5,14 +5,20 @@
 // Contributors: Claude Sonnet 4.6
 // Created: 2026-03-06
 // Description:
-//     Unified bottom panel — ByteChart (left) + byte interpretations (right).
-//     Optimised for bottom-dock layout: wide and short (design 1000x180).
+//     Unified Data Inspector panel — ByteChart + byte interpretations.
+//     Chart position is configurable (Left/Right/Top/Bottom) and persisted.
 //
 // Architecture Notes:
 //     Pattern: Observer — driven by DataInspectorPlugin via SetContext/
 //     OnHexEditorSelectionChanged.  Interpretation bindings delegate to
 //     DataInspectorViewModel (MVVM). Chart and zoom state are managed
 //     entirely in code-behind for performance.
+//
+//     Layout model:
+//       RebuildLayout(ChartPosition) dynamically configures MainAreaGrid
+//       ColumnDefinitions/RowDefinitions and Grid.Row/Col attached properties
+//       on ChartContainer, ChartSplitter, and ListContainer.
+//       Called on Loaded and when the user changes the Layout toolbar combo.
 //
 //     Zoom model:
 //       _zoomLevel 1x  = all 256 bars fill the chart width
@@ -22,7 +28,8 @@
 //       Mouse wheel → zoom in/out
 //
 //     Scope model:
-//       Selection  — GetSelectedBytes()       instant, no overlay
+//       ActiveView — ReadBytes(FirstVisible, viewport width)   instant, reactive on scroll
+//       Selection  — GetSelectedBytes() / ReadBytes(sel range) async if > 1 MB
 //       WholeFile  — ReadBytes(0, ≤4 MB)      async with progress overlay if > 1 MB
 // ==========================================================
 
@@ -35,9 +42,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using WpfHexEditor.HexEditor.ViewModels;
 using WpfHexEditor.Plugins.DataInspector.Options;
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Plugins.DataInspector.Views;
 
@@ -50,7 +59,7 @@ public partial class DataInspectorPanel : UserControl
     // ── Enums ────────────────────────────────────────────────────────────────
 
     private enum ChartMode { Frequency, Entropy }
-    private enum DataScope { Selection, WholeFile }
+    private enum DataScope { ActiveView, Selection, WholeFile }
 
     // ── Fields ───────────────────────────────────────────────────────────────
 
@@ -73,6 +82,19 @@ public partial class DataInspectorPanel : UserControl
     // Async scope loading cancellation
     private CancellationTokenSource? _loadCts;
 
+    // True once whole-file chart data has been loaded — prevents reloading on every SelectionChanged.
+    // Reset to false on Clear(), scope switch to WholeFile, and manual Refresh.
+    private bool _wholeFileChartLoaded;
+
+    // Layout change suppression (prevents feedback loop when syncing the combo programmatically)
+    private bool _suppressLayoutChange;
+
+    // Coalescing flag: prevents dispatcher flooding during fast scrolling in ActiveView scope
+    private bool _viewportRefreshPending;
+
+    // Toolbar overflow manager
+    private ToolbarOverflowManager _overflowManager = null!;
+
     // ── Constructor ──────────────────────────────────────────────────────────
 
     public DataInspectorPanel()
@@ -82,8 +104,28 @@ public partial class DataInspectorPanel : UserControl
         DataContext = _viewModel;
         SetSeparatorsVisibility(Visibility.Collapsed);
 
-        // Apply persisted options once the visual tree is ready.
-        Loaded += (_, _) => ApplyOptions();
+        Loaded += (_, _) =>
+        {
+            // Wire overflow manager (groups ordered: index 0 = first to collapse)
+            _overflowManager = new ToolbarOverflowManager(
+                toolbarContainer:        ToolbarBorder,
+                alwaysVisiblePanel:      ToolbarRightPanel,
+                overflowButton:          ToolbarOverflowButton,
+                overflowMenu:            OverflowContextMenu,
+                groupsInCollapseOrder:   new FrameworkElement[]
+                {
+                    TbgLayout,   // [0] first to collapse
+                    TbgAction,   // [1]
+                    TbgZoom,     // [2]
+                    TbgMode,     // [3]
+                    TbgToggles,  // [4] last to collapse
+                });
+
+            ApplyOptions();
+
+            // Capture natural widths after the first full layout pass
+            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+        };
     }
 
     // ── Options ──────────────────────────────────────────────────────────────
@@ -95,17 +137,143 @@ public partial class DataInspectorPanel : UserControl
     public void ApplyOptions()
     {
         var opts = DataInspectorOptions.Instance;
+        SyncChartPositionCombo(opts.ChartPosition);
         SetChartVisible(opts.ShowByteChart);
         RefreshTheme();
     }
 
-    /// <summary>Shows or hides the chart column and its splitter.</summary>
+    /// <summary>Shows or hides the chart and its splitter, rebuilding the layout accordingly.</summary>
     private void SetChartVisible(bool visible)
     {
-        ChartContainer.Visibility  = visible ? Visibility.Visible : Visibility.Collapsed;
-        ChartSplitter.Visibility   = visible ? Visibility.Visible : Visibility.Collapsed;
-        ChartColumnDef.Width       = visible ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
-        SplitterColumnDef.Width    = visible ? new GridLength(5) : new GridLength(0);
+        ChartContainer.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        ChartSplitter.Visibility  = visible ? Visibility.Visible : Visibility.Collapsed;
+
+        if (visible)
+            RebuildLayout(DataInspectorOptions.Instance.ChartPosition);
+        else
+            RebuildLayoutListOnly();
+    }
+
+    // ── Layout ────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Rebuilds <see cref="MainAreaGrid"/> definitions and child positions for the given
+    /// chart position.  Must be called whenever <see cref="ChartPosition"/> changes or on Loaded.
+    /// </summary>
+    private void RebuildLayout(ChartPosition position)
+    {
+        MainAreaGrid.RowDefinitions.Clear();
+        MainAreaGrid.ColumnDefinitions.Clear();
+
+        switch (position)
+        {
+            case ChartPosition.Left:
+                MainAreaGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = 120 });
+                MainAreaGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(5) });
+                MainAreaGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(280), MinWidth = 160 });
+
+                Grid.SetRow(ChartContainer, 0); Grid.SetColumn(ChartContainer, 0);
+                Grid.SetRow(ChartSplitter,  0); Grid.SetColumn(ChartSplitter,  1);
+                Grid.SetRow(ListContainer,  0); Grid.SetColumn(ListContainer,  2);
+
+                ChartSplitter.Width           = 5;
+                ChartSplitter.Height          = double.NaN;
+                ChartSplitter.ResizeDirection = GridResizeDirection.Columns;
+                ChartSplitter.Cursor          = Cursors.SizeWE;
+                break;
+
+            case ChartPosition.Right:
+                MainAreaGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(280), MinWidth = 160 });
+                MainAreaGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(5) });
+                MainAreaGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = 120 });
+
+                Grid.SetRow(ListContainer,  0); Grid.SetColumn(ListContainer,  0);
+                Grid.SetRow(ChartSplitter,  0); Grid.SetColumn(ChartSplitter,  1);
+                Grid.SetRow(ChartContainer, 0); Grid.SetColumn(ChartContainer, 2);
+
+                ChartSplitter.Width           = 5;
+                ChartSplitter.Height          = double.NaN;
+                ChartSplitter.ResizeDirection = GridResizeDirection.Columns;
+                ChartSplitter.Cursor          = Cursors.SizeWE;
+                break;
+
+            case ChartPosition.Top:
+                MainAreaGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star), MinHeight = 50 });
+                MainAreaGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(5) });
+                MainAreaGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star), MinHeight = 60 });
+
+                Grid.SetRow(ChartContainer, 0); Grid.SetColumn(ChartContainer, 0);
+                Grid.SetRow(ChartSplitter,  1); Grid.SetColumn(ChartSplitter,  0);
+                Grid.SetRow(ListContainer,  2); Grid.SetColumn(ListContainer,  0);
+
+                ChartSplitter.Width           = double.NaN;
+                ChartSplitter.Height          = 5;
+                ChartSplitter.ResizeDirection = GridResizeDirection.Rows;
+                ChartSplitter.Cursor          = Cursors.SizeNS;
+                break;
+
+            case ChartPosition.Bottom:
+                MainAreaGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star), MinHeight = 60 });
+                MainAreaGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(5) });
+                MainAreaGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star), MinHeight = 50 });
+
+                Grid.SetRow(ListContainer,  0); Grid.SetColumn(ListContainer,  0);
+                Grid.SetRow(ChartSplitter,  1); Grid.SetColumn(ChartSplitter,  0);
+                Grid.SetRow(ChartContainer, 2); Grid.SetColumn(ChartContainer, 0);
+
+                ChartSplitter.Width           = double.NaN;
+                ChartSplitter.Height          = 5;
+                ChartSplitter.ResizeDirection = GridResizeDirection.Rows;
+                ChartSplitter.Cursor          = Cursors.SizeNS;
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Configures <see cref="MainAreaGrid"/> so that <see cref="ListContainer"/> fills the entire
+    /// area when the chart is hidden.
+    /// </summary>
+    private void RebuildLayoutListOnly()
+    {
+        MainAreaGrid.RowDefinitions.Clear();
+        MainAreaGrid.ColumnDefinitions.Clear();
+        Grid.SetRow(ListContainer, 0);
+        Grid.SetColumn(ListContainer, 0);
+    }
+
+    /// <summary>
+    /// Syncs <see cref="ChartPositionCombo"/> to reflect <paramref name="pos"/> without
+    /// triggering <see cref="OnChartPositionChanged"/>.
+    /// </summary>
+    private void SyncChartPositionCombo(ChartPosition pos)
+    {
+        _suppressLayoutChange = true;
+        foreach (ComboBoxItem item in ChartPositionCombo.Items)
+        {
+            if (item.Tag?.ToString() == pos.ToString())
+            {
+                ChartPositionCombo.SelectedItem = item;
+                break;
+            }
+        }
+        _suppressLayoutChange = false;
+    }
+
+    /// <summary>
+    /// Fires when the user picks a new chart position from the toolbar combo.
+    /// Saves the choice and rebuilds the layout immediately.
+    /// </summary>
+    private void OnChartPositionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_suppressLayoutChange) return;
+        if (ChartPositionCombo.SelectedItem is not ComboBoxItem item) return;
+        if (!Enum.TryParse<ChartPosition>(item.Tag?.ToString(), out var pos)) return;
+
+        DataInspectorOptions.Instance.ChartPosition = pos;
+        DataInspectorOptions.Instance.Save();
+
+        if (ChartContainer.Visibility == Visibility.Visible)
+            RebuildLayout(pos);
     }
 
     // ── Public API (called by DataInspectorPlugin) ───────────────────────────
@@ -126,22 +294,80 @@ public partial class DataInspectorPanel : UserControl
         RefreshFromEditor();
     }
 
+    /// <summary>
+    /// Called by the plugin when <see cref="IHexEditorService.ViewportScrolled"/> fires.
+    /// Only triggers a refresh when the "Active view" scope is active.
+    /// Coalesced via a bool flag to avoid flooding the dispatcher at high scroll rates.
+    /// </summary>
+    public void OnViewportScrolled()
+    {
+        if (_scope != DataScope.ActiveView) return;
+        if (_viewportRefreshPending) return;
+
+        _viewportRefreshPending = true;
+        Dispatcher.InvokeAsync(() =>
+        {
+            _viewportRefreshPending = false;
+            if (_scope == DataScope.ActiveView && _context != null)
+                RefreshFromEditor();
+        }, System.Windows.Threading.DispatcherPriority.Background);
+    }
+
     private void RefreshFromEditor()
     {
         if (_context == null) return;
 
         switch (_scope)
         {
+            case DataScope.ActiveView:
+                var fileSize  = _context.HexEditor.FileSize;
+                var firstByte = _context.HexEditor.FirstVisibleByteOffset;
+                var lastByte  = Math.Min(_context.HexEditor.LastVisibleByteOffset, fileSize);
+                // Guard: nothing to display if viewport is past the file (e.g. empty or tiny file)
+                if (firstByte >= fileSize) break;
+                var viewLen = (int)Math.Max(0, lastByte - firstByte);
+                if (viewLen > 0)
+                {
+                    var viewBytes = _context.HexEditor.ReadBytes(firstByte, viewLen);
+                    if (viewBytes.Length > 0)
+                        UpdateChartData(viewBytes);
+                }
+                // Interpretations always follow cursor/selection.
+                UpdateInterpretations(_context.HexEditor.GetSelectedBytes());
+                UpdateScopeStatus($"Active view: {viewLen:N0} bytes");
+                break;
+
             case DataScope.Selection:
-                var bytes = _context.HexEditor.GetSelectedBytes();
-                UpdateChartData(bytes);
-                UpdateInterpretations(bytes);
+                var selBytes = _context.HexEditor.GetSelectedBytes();
+                if (selBytes.Length == 0)
+                {
+                    ShowEmptyState("No bytes selected — select bytes in the hex editor.");
+                    return;
+                }
+                // Large selection (> 1 MB): async path with overlay.
+                // Small selection or caret-only: use in-memory data directly (no stream I/O).
+                if (_context.HexEditor.SelectionLength > 1L * 1024 * 1024)
+                {
+                    _ = LoadSelectionAsync();
+                }
+                else
+                {
+                    UpdateChartData(selBytes);
+                    UpdateInterpretations(selBytes);
+                    var selLen = _context.HexEditor.SelectionLength;
+                    UpdateScopeStatus(selLen > 0
+                        ? $"Selection: {selLen:N0} bytes"
+                        : $"Cursor: {selBytes.Length} bytes");
+                }
                 break;
 
             case DataScope.WholeFile:
-                // Interpretations always follow the active selection.
+                // Interpretations always follow the active selection/cursor.
                 UpdateInterpretations(_context.HexEditor.GetSelectedBytes());
-                _ = LoadWholeFileAsync();
+                // Chart is static (whole file content): only load once per file.
+                // Reloads are triggered by scope switch, file open, or manual Refresh.
+                if (!_wholeFileChartLoaded)
+                    _ = LoadWholeFileAsync();
                 break;
         }
     }
@@ -152,6 +378,7 @@ public partial class DataInspectorPanel : UserControl
     public void Clear()
     {
         _loadCts?.Cancel();
+        _wholeFileChartLoaded = false;
         _lastChartData = null;
 
         Chart.Clear();
@@ -203,7 +430,11 @@ public partial class DataInspectorPanel : UserControl
         if (fileSize <= MaxInstant)
         {
             var data = _context.HexEditor.ReadBytes(0, readLen);
-            if (!ct.IsCancellationRequested) UpdateChartData(data);
+            if (!ct.IsCancellationRequested)
+            {
+                _wholeFileChartLoaded = true;
+                UpdateChartData(data);
+            }
             return;
         }
 
@@ -213,9 +444,65 @@ public partial class DataInspectorPanel : UserControl
         {
             var ctx = _context;
             var data = await Task.Run(() => ctx.HexEditor.ReadBytes(0, readLen), ct);
-            if (!ct.IsCancellationRequested) UpdateChartData(data);
+            if (!ct.IsCancellationRequested)
+            {
+                _wholeFileChartLoaded = true;
+                UpdateChartData(data);
+            }
         }
         catch (OperationCanceledException) { /* scope changed, discard result */ }
+        finally { HideProgressOverlay(); }
+    }
+
+    // ── Async Selection loading ───────────────────────────────────────────────
+
+    private async Task LoadSelectionAsync()
+    {
+        _loadCts?.Cancel();
+        _loadCts = new CancellationTokenSource();
+        var ct = _loadCts.Token;
+
+        if (_context == null) return;
+        var selLength = _context.HexEditor.SelectionLength;
+        if (selLength <= 0) { Clear(); return; }
+
+        const long MaxInstant = 1L * 1024 * 1024;  // 1 MB threshold for async
+        const int  MaxSample  = 4  * 1024 * 1024;  // 4 MB cap for large selections
+
+        UpdateScopeStatus(selLength > MaxSample
+            ? $"Selection: {selLength:N0} bytes (showing {MaxSample / 1024 / 1024} MB sample)"
+            : $"Selection: {selLength:N0} bytes");
+
+        // Small selection (≤ 1 MB): use in-memory GetSelectedBytes() — no stream I/O,
+        // safe to call on every SelectionChanged without UI thread stalls.
+        if (selLength <= MaxInstant)
+        {
+            var data = _context.HexEditor.GetSelectedBytes();
+            if (!ct.IsCancellationRequested)
+            {
+                UpdateChartData(data);
+                UpdateInterpretations(data);
+            }
+            return;
+        }
+
+        // Large selection (> 1 MB): async read with progress overlay + sample cap.
+        var selStart = _context.HexEditor.SelectionStart;
+        var readLen  = (int)Math.Min(selLength, MaxSample);
+
+        ShowProgressOverlay($"Reading selection ({readLen / 1024 / 1024} MB sample)…");
+        try
+        {
+            var ctx   = _context;
+            var start = selStart;
+            var data  = await Task.Run(() => ctx.HexEditor.ReadBytes(start, readLen), ct);
+            if (!ct.IsCancellationRequested)
+            {
+                UpdateChartData(data);
+                UpdateInterpretations(data);
+            }
+        }
+        catch (OperationCanceledException) { /* scope changed, discard */ }
         finally { HideProgressOverlay(); }
     }
 
@@ -223,10 +510,19 @@ public partial class DataInspectorPanel : UserControl
 
     private void OnScopeChanged(object sender, SelectionChangedEventArgs e)
     {
-        var item = ScopeComboBox.SelectedItem as ComboBoxItem;
-        _scope = item?.Content?.ToString() == "Whole file"
-            ? DataScope.WholeFile
-            : DataScope.Selection;
+        var item   = ScopeComboBox.SelectedItem as ComboBoxItem;
+        var label  = item?.Content?.ToString() ?? string.Empty;
+
+        _scope = label switch
+        {
+            "Active view" => DataScope.ActiveView,
+            "Whole file"  => DataScope.WholeFile,
+            _             => DataScope.Selection
+        };
+
+        // Switching to WholeFile forces a chart reload (new file context or explicit scope switch).
+        if (_scope == DataScope.WholeFile)
+            _wholeFileChartLoaded = false;
 
         // Scope change always triggers a refresh regardless of AutoRefresh setting.
         if (_context != null) RefreshFromEditor();
@@ -286,6 +582,9 @@ public partial class DataInspectorPanel : UserControl
     private void OnRefresh(object sender, RoutedEventArgs e)
     {
         // Manual refresh always runs regardless of AutoRefresh setting.
+        // For WholeFile scope: force chart reload (reset flag so LoadWholeFileAsync runs again).
+        if (_scope == DataScope.WholeFile)
+            _wholeFileChartLoaded = false;
         if (_context != null) RefreshFromEditor();
     }
 
@@ -353,6 +652,52 @@ public partial class DataInspectorPanel : UserControl
         ZoomRangeText.Visibility = zoomed ? Visibility.Visible : Visibility.Collapsed;
         if (zoomed)
             ZoomRangeText.Text = $"Zoom {_zoomLevel:F0}x  [0x{_viewStart:X2}–0x{_viewEnd:X2}]";
+    }
+
+    // ── Chart context menu ───────────────────────────────────────────────────
+
+    /// <summary>
+    /// Manually opens the chart context menu from BarChartPanel or EntropyCanvas right-click.
+    /// Required because custom FrameworkElement + ScrollViewer does not propagate right-click
+    /// to the parent Grid's ContextMenu automatically.
+    /// </summary>
+    private void OnChartAreaRightClick(object sender, MouseButtonEventArgs e)
+    {
+        OnChartContextMenuOpening(this, new RoutedEventArgs());
+        ChartContainer.ContextMenu!.PlacementTarget = (FrameworkElement)sender;
+        ChartContainer.ContextMenu!.Placement       = PlacementMode.MousePoint;
+        ChartContainer.ContextMenu!.IsOpen          = true;
+        e.Handled = true;
+    }
+
+    /// <summary>
+    /// Syncs IsChecked states from live toolbar/mode state before the menu is shown.
+    /// </summary>
+    private void OnChartContextMenuOpening(object sender, RoutedEventArgs e)
+    {
+        CtxToggleLabels.IsChecked  = ToggleLabels.IsChecked == true;
+        CtxToggleGrid.IsChecked    = ToggleGrid.IsChecked   == true;
+        CtxToggleStats.IsChecked   = ToggleStats.IsChecked  == true;
+        CtxModeFrequency.IsChecked = _mode == ChartMode.Frequency;
+        CtxModeEntropy.IsChecked   = _mode == ChartMode.Entropy;
+    }
+
+    private void OnCtxToggleLabels(object sender, RoutedEventArgs e)
+    {
+        ToggleLabels.IsChecked = CtxToggleLabels.IsChecked;
+        Chart.ShowAxisLabels   = CtxToggleLabels.IsChecked == true;
+    }
+
+    private void OnCtxToggleGrid(object sender, RoutedEventArgs e)
+    {
+        ToggleGrid.IsChecked = CtxToggleGrid.IsChecked;
+        Chart.ShowGridLines  = CtxToggleGrid.IsChecked == true;
+    }
+
+    private void OnCtxToggleStats(object sender, RoutedEventArgs e)
+    {
+        ToggleStats.IsChecked = CtxToggleStats.IsChecked;
+        Chart.ShowStatistics  = CtxToggleStats.IsChecked == true;
     }
 
     // ── Mouse wheel zoom ─────────────────────────────────────────────────────
@@ -548,6 +893,25 @@ public partial class DataInspectorPanel : UserControl
     private void HideProgressOverlay()
         => ProgressOverlay.Visibility = Visibility.Collapsed;
 
+    // ── Empty state + scope status ────────────────────────────────────────────
+
+    /// <summary>
+    /// Shows an empty-state message in the status bar and clears chart/interpretations.
+    /// Used by the Selection scope when no bytes are selected.
+    /// </summary>
+    private void ShowEmptyState(string message)
+    {
+        _loadCts?.Cancel();
+        Chart.Clear();
+        EntropyCanvas.Children.Clear();
+        _viewModel.UpdateBytes(null);
+        UpdateScopeStatus(message);
+    }
+
+    /// <summary>Updates <see cref="TotalBytesText"/> with an arbitrary scope description.</summary>
+    private void UpdateScopeStatus(string message)
+        => TotalBytesText.Text = message;
+
     // ── Theme refresh ─────────────────────────────────────────────────────────
 
     /// <summary>
@@ -577,5 +941,54 @@ public partial class DataInspectorPanel : UserControl
 
         if (_mode == ChartMode.Entropy && _lastChartData != null)
             RedrawEntropyCanvas();
+
+        // Invalidate cached widths — icons/fonts may have changed size with the theme
+        _overflowManager?.InvalidateWidths();
+    }
+
+    // ── Toolbar overflow ──────────────────────────────────────────────────────
+
+    private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged) _overflowManager?.Update();
+    }
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        OverflowContextMenu.PlacementTarget = ToolbarOverflowButton;
+        OverflowContextMenu.Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        OverflowContextMenu.IsOpen          = true;
+    }
+
+    private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+    {
+        // Sync toggle IsChecked states
+        OvfToggleLabels.IsChecked  = ToggleLabels.IsChecked == true;
+        OvfToggleGrid.IsChecked    = ToggleGrid.IsChecked   == true;
+        OvfToggleStats.IsChecked   = ToggleStats.IsChecked  == true;
+        OvfModeFrequency.IsChecked = _mode == ChartMode.Frequency;
+        OvfModeEntropy.IsChecked   = _mode == ChartMode.Entropy;
+
+        // Sync layout position checked state
+        var pos = DataInspectorOptions.Instance.ChartPosition.ToString();
+        OvfLayoutLeft.IsChecked   = pos == "Left";
+        OvfLayoutRight.IsChecked  = pos == "Right";
+        OvfLayoutTop.IsChecked    = pos == "Top";
+        OvfLayoutBottom.IsChecked = pos == "Bottom";
+
+        _overflowManager?.SyncMenuVisibility();
+    }
+
+    private void OnOverflowLayoutClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi &&
+            Enum.TryParse<ChartPosition>(mi.Tag?.ToString(), out var pos))
+        {
+            DataInspectorOptions.Instance.ChartPosition = pos;
+            DataInspectorOptions.Instance.Save();
+            SyncChartPositionCombo(pos);
+            if (ChartContainer.Visibility == Visibility.Visible)
+                RebuildLayout(pos);
+        }
     }
 }

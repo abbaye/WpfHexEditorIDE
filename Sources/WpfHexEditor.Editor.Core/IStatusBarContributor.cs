@@ -17,4 +17,11 @@ namespace WpfHexEditor.Editor.Core;
 public interface IStatusBarContributor
 {
     ObservableCollection<StatusBarItem> StatusBarItems { get; }
+
+    /// <summary>
+    /// Called by the host when this editor becomes the active document tab.
+    /// Implementations must refresh all status bar item values to reflect current state.
+    /// This ensures no stale values are shown after a tab switch.
+    /// </summary>
+    void RefreshStatusBarItems();
 }

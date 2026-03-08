@@ -41,6 +41,10 @@ public sealed class PluginAlertEngine
     // One alert per plugin per cooldown period (default: 60 s).
     private static readonly TimeSpan AlertCooldown = TimeSpan.FromSeconds(60);
 
+    // Suppress all alerts for this duration after a plugin is loaded.
+    // Prevents false positives from the CPU spike that occurs during batch startup.
+    private static readonly TimeSpan StartupGracePeriod = TimeSpan.FromSeconds(30);
+
     private readonly Dictionary<string, DateTime> _lastAlertTime =
         new(StringComparer.OrdinalIgnoreCase);
 
@@ -80,6 +84,10 @@ public sealed class PluginAlertEngine
 
             var snap = entry.Diagnostics.GetLatest();
             if (snap is null) continue;
+
+            // Suppress alerts during the startup grace period to avoid false positives
+            // caused by the process-wide CPU spike that occurs during batch plugin init.
+            if (entry.Diagnostics.Uptime < StartupGracePeriod) continue;
 
             // Enforce cooldown — one alert per plugin per window.
             if (_lastAlertTime.TryGetValue(entry.Manifest.Id, out var lastAlert)

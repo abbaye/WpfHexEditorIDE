@@ -61,14 +61,47 @@
         </Grid.RowDefinitions>
 
         <!-- Toolbar (VS-style PanelCommon) -->
-        <Border Grid.Row="0" Style="{StaticResource PanelToolbarStyle}">
-            <DockPanel>
-                <Button DockPanel.Dock="Right"
-                        x:Name="RefreshButton"
+        <Border x:Name="ToolbarBorder"
+                Grid.Row="0"
+                Style="{StaticResource PanelToolbarStyle}"
+                SizeChanged="OnToolbarSizeChanged">
+            <DockPanel LastChildFill="True">
+                <!-- Right: always-visible placeholder -->
+                <StackPanel x:Name="ToolbarRightPanel"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center"/>
+
+                <!-- Overflow button -->
+                <Button x:Name="ToolbarOverflowButton"
+                        DockPanel.Dock="Right"
+                        Visibility="Collapsed"
                         Style="{StaticResource PanelIconButtonStyle}"
-                        Content="&#xE72C;"
-                        ToolTip="Re-analyze"
-                        Click="RefreshButton_Click"/>
+                        ToolTip="More options"
+                        Click="OnOverflowButtonClick">
+                    <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
+                            <MenuItem Header="Re-analyze"
+                                      Tag="TbgStatsRefresh"
+                                      Click="RefreshButton_Click"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+
+                <!-- Group: TbgStatsRefresh [0] -->
+                <StackPanel x:Name="TbgStatsRefresh"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
+                    <Button x:Name="RefreshButton"
+                            Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE72C;"
+                            ToolTip="Re-analyze"
+                            Click="RefreshButton_Click"/>
+                </StackPanel>
+
                 <TextBlock Text="File Statistics"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"

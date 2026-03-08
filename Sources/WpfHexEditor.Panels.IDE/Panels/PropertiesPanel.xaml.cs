@@ -29,7 +29,9 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Panels.IDE;
 
@@ -42,9 +44,10 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
 {
     // -- IPropertiesPanel -----------------------------------------------------
 
-    private IPropertyProvider? _provider;
-    private bool                _isSorted;
-    private PropertyEntry?      _selectedEntry;
+    private IPropertyProvider?      _provider;
+    private bool                    _isSorted;
+    private PropertyEntry?          _selectedEntry;
+    private ToolbarOverflowManager  _overflowManager = null!;
 
     public PropertyEntryDataTemplateSelector EntryTemplateSelector { get; } = new();
 
@@ -66,6 +69,17 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
     public PropertiesPanel()
     {
         InitializeComponent();
+
+        Loaded += (_, _) =>
+        {
+            _overflowManager = new ToolbarOverflowManager(
+                toolbarContainer:      ToolbarBorder,
+                alwaysVisiblePanel:    ToolbarRightPanel,
+                overflowButton:        ToolbarOverflowButton,
+                overflowMenu:          OverflowContextMenu,
+                groupsInCollapseOrder: new FrameworkElement[] { TbgPropActions });
+            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+        };
     }
 
     // -- Refresh --------------------------------------------------------------
@@ -193,6 +207,32 @@ public partial class PropertiesPanel : UserControl, IPropertiesPanel
     {
         try { Clipboard.SetText(text); }
         catch { /* silently ignored — clipboard may be locked by another process */ }
+    }
+
+    // ── Toolbar overflow ─────────────────────────────────────────────────────
+
+    private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged) _overflowManager?.Update();
+    }
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        OverflowContextMenu.PlacementTarget = ToolbarOverflowButton;
+        OverflowContextMenu.Placement       = PlacementMode.Bottom;
+        OverflowContextMenu.IsOpen          = true;
+    }
+
+    private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+    {
+        OvfSort.IsChecked = SortToggle.IsChecked == true;
+        _overflowManager?.SyncMenuVisibility();
+    }
+
+    private void OvfSort_Click(object sender, RoutedEventArgs e)
+    {
+        SortToggle.IsChecked = !(SortToggle.IsChecked == true);
+        OnSortChanged(SortToggle, new RoutedEventArgs());
     }
 }
 
