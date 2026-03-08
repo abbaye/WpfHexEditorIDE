@@ -189,8 +189,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             if (_activeDocumentEditor != null)
             {
-                _activeDocumentEditor.TitleChanged       -= OnEditorTitleChanged;
-                _activeDocumentEditor.ModifiedChanged    -= OnEditorModifiedChanged;
+                // TitleChanged and ModifiedChanged are now handled by DocumentManager
+                // (wired via AttachEditor — covers all open editors, not just the active one).
                 _activeDocumentEditor.StatusMessage      -= OnEditorStatusMessage;
                 _activeDocumentEditor.OutputMessage      -= OnEditorOutputMessage;
                 _activeDocumentEditor.OperationStarted   -= OnDocumentOperationStarted;
@@ -200,8 +200,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _activeDocumentEditor = value;
             if (_activeDocumentEditor != null)
             {
-                _activeDocumentEditor.TitleChanged       += OnEditorTitleChanged;
-                _activeDocumentEditor.ModifiedChanged    += OnEditorModifiedChanged;
+                // TitleChanged and ModifiedChanged are handled by DocumentManager.
                 _activeDocumentEditor.StatusMessage      += OnEditorStatusMessage;
                 _activeDocumentEditor.OutputMessage      += OnEditorOutputMessage;
                 _activeDocumentEditor.OperationStarted   += OnDocumentOperationStarted;
@@ -315,6 +314,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        // Wire DocumentManager events (title changes, dirty state → all open editors)
+        InitDocumentManager();
+
         // Wire SolutionManager events before restoring layout
         _solutionManager.SolutionChanged      += OnSolutionChanged;
         _solutionManager.ProjectChanged       += OnProjectChanged;
@@ -918,6 +920,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return cachedDisplay;
         var display = BuildContentForItem(item);
         StoreContent(item.ContentId, display);
+        RegisterDocumentFromItem(item, display);
         return display;
     }
 
@@ -1156,9 +1159,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             var newDockItem = new DockItem
             {
                 ContentId = newContentId,
-                Title     = Path.GetFileName(e.FilePath)
+                Title     = Path.GetFileName(e.FilePath),
+                Metadata  = { ["FilePath"] = e.FilePath }
             };
             _engine.Dock(newDockItem, _layout.MainDocumentHost, DockDirection.Center);
+            RegisterDocumentFromItem(newDockItem, editor);
             ActiveDocumentEditor       = editor;
             ActiveStatusBarContributor = null;
         }
@@ -3001,6 +3006,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             _propertiesPanel?.SetProvider(null);
         }
+
+        // Sync active document in DocumentManager so IsActive / ActiveDocument are accurate.
+        SyncActiveDocument(item.ContentId);
     }
 
     // --- IDocumentEditor event handlers --------------------------------
@@ -3317,6 +3325,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _errorPanel?.RemoveSource(closingDiag);
 
             _propertyProviderCache.Remove(ctrl);  // M5: evict cached provider
+            UnregisterDocument(item.ContentId);
             _contentCache.Remove(item.ContentId);
             _displayContent.Remove(item.ContentId);   // must clear both caches so reopen gets a fresh editor
         }
@@ -3742,12 +3751,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private List<(string ContentId, string Title)> CollectAllDirtyItems(out List<DockItem> dirtyDocs)
     {
         var allDirty = CollectDirtySolutionItems();
-        dirtyDocs = _layout.GetAllGroups()
-            .SelectMany(g => g.Items)
-            .Where(i => !i.ContentId.StartsWith("panel-") &&
-                        _contentCache.TryGetValue(i.ContentId, out var c) &&
-                        c is IDocumentEditor { IsDirty: true })
-            .ToList();
+
+        // DocumentManager.GetDirty() is O(n) over registered models — faster than
+        // walking the full docking layout and re-querying the content cache.
+        dirtyDocs = _documentManager.GetDirty()
+            .Select(m => _layout.FindItemByContentId(m.ContentId))
+            .Where(i => i is not null)
+            .ToList()!;
+
         allDirty.AddRange(dirtyDocs.Select(i => (i.ContentId, i.Title.TrimEnd('*', ' '))));
         return allDirty;
     }
