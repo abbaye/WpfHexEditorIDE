@@ -214,9 +214,8 @@ public partial class AssemblyExplorerPanel : UserControl
     private void OnOpenInHexEditor(object? sender, AssemblyNodeViewModel node)
     {
         if (node.PeOffset <= 0) return;
-        // Directly trigger navigation — ViewModel.OnNodeSelected already does sync.
-        // This handler covers the context menu path (user didn't click the row).
-        ViewModel.OnNodeSelected(node);
+        // Explicit user action — bypasses SyncWithHexEditor toggle and scrolls to the offset.
+        ViewModel.NavigateToNodeExplicit(node);
     }
 
     private void OnDecompile(object? sender, AssemblyNodeViewModel node)

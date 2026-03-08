@@ -82,6 +82,15 @@ public sealed class HexEditorServiceImpl : IHexEditorService
         _activeEditor.SelectionStop  = end;
     }
 
+    public void NavigateTo(long offset)
+    {
+        if (_activeEditor is null) return;
+        // SetPosition scrolls the viewport so the offset is visible (EnsurePositionVisible),
+        // then sets the caret. SelectionStop is set separately to produce a 1-byte highlight.
+        _activeEditor.SetPosition(offset);
+        _activeEditor.SelectionStop = offset;
+    }
+
     public void ConnectParsedFieldsPanel(IParsedFieldsPanel panel)
         => _activeEditor?.ConnectParsedFieldsPanel(panel);
 

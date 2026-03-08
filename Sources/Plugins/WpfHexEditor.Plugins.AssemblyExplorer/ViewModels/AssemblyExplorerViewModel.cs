@@ -480,19 +480,54 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
     // ── HexEditor sync ────────────────────────────────────────────────────────
 
-    private void NavigateHexEditorToNode(AssemblyNodeViewModel node)
+    /// <param name="force">
+    /// When true, bypasses the SyncWithHexEditor toggle (explicit user action via context menu).
+    /// When false, respects the toggle (auto-sync on tree selection).
+    /// </param>
+    private void NavigateHexEditorToNode(AssemblyNodeViewModel node, bool force = false)
     {
-        if (!_syncWithHexEditor || node.PeOffset <= 0) return;
-        if (!_hexEditor.IsActive) return;
+        if (!force && !_syncWithHexEditor) return;
+        if (node.PeOffset <= 0) return;
+        if (!_hexEditor.IsActive)
+        {
+            if (force)
+                _output.Warning("[Assembly Explorer] Open the assembly in the HexEditor first.");
+            return;
+        }
+
+        // Warn when the hex editor has a different file than the explored assembly.
+        var hexFile      = _hexEditor.CurrentFilePath;
+        var assemblyFile = _lastModel?.FilePath;
+        if (force
+            && !string.IsNullOrEmpty(hexFile)
+            && !string.IsNullOrEmpty(assemblyFile)
+            && !string.Equals(hexFile, assemblyFile, StringComparison.OrdinalIgnoreCase))
+        {
+            _output.Warning(
+                $"[Assembly Explorer] HexEditor has '{Path.GetFileName(hexFile)}' open, " +
+                $"but the explorer loaded '{Path.GetFileName(assemblyFile)}'. " +
+                $"Navigating anyway — offsets may not match.");
+        }
 
         try
         {
-            _hexEditor.SetSelection(node.PeOffset, node.PeOffset + 1);
+            // NavigateTo scrolls the viewport; SetSelection only highlights without scrolling.
+            _hexEditor.NavigateTo(node.PeOffset);
         }
         catch (Exception ex)
         {
-            _output.Warning($"[Assembly Explorer] HexEditor sync failed: {ex.Message}");
+            _output.Warning($"[Assembly Explorer] HexEditor navigation failed: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Explicit "Open in HexEditor" from context menu.
+    /// Bypasses the SyncWithHexEditor auto-sync toggle.
+    /// </summary>
+    public void NavigateToNodeExplicit(AssemblyNodeViewModel node)
+    {
+        DetailViewModel.ShowNode(node, _lastModel?.FilePath ?? string.Empty);
+        NavigateHexEditorToNode(node, force: true);
     }
 
     // ── EventBus publishing ───────────────────────────────────────────────────

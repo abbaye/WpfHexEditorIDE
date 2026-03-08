@@ -101,10 +101,18 @@ public interface IHexEditorService
     /// <summary>
     /// Programmatically sets the HexEditor selection range.
     /// Used by the StructureOverlay plugin to highlight parsed fields.
+    /// Does NOT scroll the viewport.
     /// </summary>
     /// <param name="start">Start byte offset (inclusive).</param>
     /// <param name="end">End byte offset (inclusive).</param>
     void SetSelection(long start, long end);
+
+    /// <summary>
+    /// Scrolls the HexEditor to <paramref name="offset"/> and selects one byte.
+    /// Unlike <see cref="SetSelection"/>, this also ensures the offset is visible in the viewport.
+    /// Use this for explicit "go to" navigation; use SetSelection for passive highlighting.
+    /// </summary>
+    void NavigateTo(long offset) => SetSelection(offset, offset);
 
     /// <summary>
     /// Raised when the active HexEditor document tab changes (a different file becomes active).

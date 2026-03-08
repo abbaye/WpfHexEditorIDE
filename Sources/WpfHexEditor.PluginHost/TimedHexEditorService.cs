@@ -82,6 +82,7 @@ internal sealed class TimedHexEditorService : IHexEditorService
     public IReadOnlyList<long> SearchText(string text)                 => _inner.SearchText(text);
     public void                WriteBytes(long offset, byte[] data)    => _inner.WriteBytes(offset, data);
     public void                SetSelection(long start, long end)      => _inner.SetSelection(start, end);
+    public void                NavigateTo(long offset)                 => _inner.NavigateTo(offset);
     public void                ConnectParsedFieldsPanel(IParsedFieldsPanel panel) => _inner.ConnectParsedFieldsPanel(panel);
     public void                DisconnectParsedFieldsPanel()           => _inner.DisconnectParsedFieldsPanel();
 

@@ -204,7 +204,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(
-                    $"[PluginManager] CreateOptionsPage threw for plugin '{_entry.Id}': {ex}");
+                    $"[PluginManager] CreateOptionsPage threw for plugin '{_entry.Manifest.Id}': {ex}");
                 return null;
             }
             return _optionsPage;
