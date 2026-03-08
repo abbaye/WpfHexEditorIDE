@@ -540,11 +540,12 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                <StackPanel Grid.Column="0" HorizontalAlignment="Center"
+                                            ToolTip="Process-level CPU — per-plugin isolation is not available in InProcess mode">
                                     <TextBlock Text="{Binding CpuPercent, StringFormat={}{0:F1}%}"
                                                FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
                                                Foreground="#22C55E"/>
-                                    <TextBlock Text="CPU" FontSize="10" HorizontalAlignment="Center"
+                                    <TextBlock Text="Proc. CPU" FontSize="10" HorizontalAlignment="Center"
                                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                     <TextBlock Text="{Binding PeakCpuPercent, StringFormat='peak {0:F1}%'}"
                                                FontSize="9" HorizontalAlignment="Center" Opacity="0.6"

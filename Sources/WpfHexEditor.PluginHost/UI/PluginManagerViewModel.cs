@@ -264,8 +264,10 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
 
     private void RefreshGlobalMetrics()
     {
-        // CPU: all loaded plugins share the same process-level sample — take the first non-zero value.
-        GlobalCpuPercent = Plugins.FirstOrDefault(p => p.State == PluginState.Loaded)?.CpuPercent ?? 0;
+        // CPU: use the host's last sampled process-level value directly.
+        // All plugins share the same process-level sample (InProcess mode); reading from the
+        // first plugin's diagnostics was equivalent but semantically misleading.
+        GlobalCpuPercent = _host.LastSampledCpuPercent;
 
         // Memory: total managed heap (process-wide).
         GlobalMemoryMb = GC.GetTotalMemory(forceFullCollection: false) / (1024 * 1024);
