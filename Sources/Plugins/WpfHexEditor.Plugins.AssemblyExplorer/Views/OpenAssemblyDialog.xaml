@@ -3,216 +3,496 @@
     File: Views/OpenAssemblyDialog.xaml
     Author: Derek Tremblay
     Created: 2026-03-08
-    License: GNU Affero General Public License v3.0 (AGPL-3.0)
     Description:
-        "Open Assembly" dialog. Supports:
-          - Drag-and-drop of .dll/.exe files onto the drop zone
-          - Ctrl+V paste of a file path (plain text) or Explorer clipboard (FileDrop)
-          - Browse button (OpenFileDialog)
-          - Recent assemblies list (double-click to load, [×] to remove)
-        Theme: all brushes via DynamicResource Dock* / PFP_* tokens.
-        Validated: OK button enabled only when path exists + CanAnalyze().
-
-    Architecture Notes:
-        No external NuGet. Plain Window (no ThemedDialog dependency).
-        All behaviour in code-behind to stay self-contained within the plugin.
+        "Open Assembly" dialog — VS2022-style redesign.
+        Inherits ThemedDialog for custom chrome + per-monitor maximize.
+        Layout:
+          - Path bar (top): search-icon + path TextBox + Browse button
+          - TabControl: Recent (clock icon) | .NET Runtimes (runtime icon)
+              Recent tab:   ListBox — FileName bold + FullPath dim + [×] remove button
+              Runtimes tab: filter TextBox + TreeView (RuntimeGroup > Version > Assembly);
+                            flat filtered ListBox shown when filter is active
+          - Footer bar: drop hint (left) + Cancel / Open Assembly accent button (right)
+          - Drag overlay: full-dialog semi-transparent panel shown on DragOver
+        Theme: DynamicResource PFP_*/Dock* tokens — light + dark compliant.
+        All behaviour in code-behind (no MVVM overhead for a single-use dialog).
 -->
-<Window x:Class="WpfHexEditor.Plugins.AssemblyExplorer.Views.OpenAssemblyDialog"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Open Assembly"
-        Width="520" SizeToContent="Height"
-        MinWidth="400" MinHeight="260"
-        ResizeMode="CanResizeWithGrip"
-        WindowStartupLocation="CenterOwner"
-        Background="{DynamicResource DockWindowBackgroundBrush}"
-        Foreground="{DynamicResource DockMenuForegroundBrush}"
-        TextElement.Foreground="{DynamicResource DockMenuForegroundBrush}"
-        KeyDown="OnWindowKeyDown"
-        AllowDrop="True"
-        Drop="OnWindowDrop"
-        DragOver="OnWindowDragOver">
+<core:ThemedDialog
+    x:Class="WpfHexEditor.Plugins.AssemblyExplorer.Views.OpenAssemblyDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
+    xmlns:local="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Views"
+    Title="Open Assembly"
+    Width="620" Height="520"
+    MinWidth="480" MinHeight="400"
+    ResizeMode="CanResizeWithGrip"
+    KeyDown="OnWindowKeyDown"
+    AllowDrop="True"
+    Drop="OnWindowDrop"
+    DragOver="OnWindowDragOver"
+    DragLeave="OnWindowDragLeave">
 
-    <Window.Resources>
-        <!-- Drop zone style -->
-        <Style x:Key="DropZoneStyle" TargetType="Border">
-            <Setter Property="Background"        Value="{DynamicResource PFP_PanelBackgroundBrush}"/>
-            <Setter Property="BorderBrush"       Value="{DynamicResource DockBorderBrush}"/>
-            <Setter Property="BorderThickness"   Value="2"/>
-            <Setter Property="CornerRadius"      Value="4"/>
-            <Setter Property="Height"            Value="72"/>
-            <Setter Property="AllowDrop"         Value="True"/>
-        </Style>
-
-        <!-- Recent item remove button -->
-        <Style x:Key="RemoveButtonStyle" TargetType="Button">
-            <Setter Property="Width"            Value="18"/>
-            <Setter Property="Height"           Value="18"/>
-            <Setter Property="Padding"          Value="0"/>
-            <Setter Property="FontFamily"       Value="Segoe MDL2 Assets"/>
-            <Setter Property="FontSize"         Value="10"/>
-            <Setter Property="Content"          Value="&#xE8BB;"/>
-            <Setter Property="Background"       Value="Transparent"/>
-            <Setter Property="BorderThickness"  Value="0"/>
-            <Setter Property="Foreground"       Value="{DynamicResource DockMenuForegroundBrush}"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Cursor"           Value="Hand"/>
-            <Setter Property="ToolTip"          Value="Remove from recent list"/>
-        </Style>
-
-        <!-- Dialog action buttons -->
-        <Style x:Key="DialogButtonStyle" TargetType="Button">
-            <Setter Property="MinWidth"         Value="88"/>
-            <Setter Property="Height"           Value="26"/>
-            <Setter Property="Padding"          Value="8,0"/>
-            <Setter Property="Background"       Value="{DynamicResource PFP_PanelBackgroundBrush}"/>
-            <Setter Property="Foreground"       Value="{DynamicResource DockMenuForegroundBrush}"/>
-            <Setter Property="BorderBrush"      Value="{DynamicResource DockBorderBrush}"/>
-            <Setter Property="BorderThickness"  Value="1"/>
-        </Style>
-    </Window.Resources>
-
-    <Grid Margin="16,12,16,12">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>   <!-- Drop zone -->
-            <RowDefinition Height="8"/>      <!-- Spacer -->
-            <RowDefinition Height="Auto"/>   <!-- Path row -->
-            <RowDefinition Height="8"/>      <!-- Spacer -->
-            <RowDefinition Height="Auto"/>   <!-- Section label -->
-            <RowDefinition Height="*"
-                           MinHeight="80"
-                           MaxHeight="200"/> <!-- Recent list -->
-            <RowDefinition Height="8"/>      <!-- Spacer -->
-            <RowDefinition Height="Auto"/>   <!-- Buttons -->
+            <RowDefinition Height="Auto"/>   <!-- path bar  -->
+            <RowDefinition Height="*"/>      <!-- tab area  -->
+            <RowDefinition Height="Auto"/>   <!-- footer    -->
         </Grid.RowDefinitions>
 
-        <!-- ── Drop zone ───────────────────────────────────────────────── -->
-        <Border x:Name="DropZone"
-                Grid.Row="0"
-                Style="{StaticResource DropZoneStyle}"
-                Drop="OnDropZoneDrop"
-                DragOver="OnDropZoneDragOver"
-                DragLeave="OnDropZoneDragLeave">
-            <StackPanel VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Orientation="Horizontal"
-                        IsHitTestVisible="False">
-                <TextBlock FontFamily="Segoe MDL2 Assets"
-                           FontSize="22"
-                           Text="&#xEC50;"
+        <!-- ══ Path bar ══════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="12,9">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Search icon -->
+                <TextBlock Grid.Column="0"
+                           Text="&#xE721;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="14"
                            VerticalAlignment="Center"
                            Margin="0,0,8,0"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           Opacity="0.6"/>
-                <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Drop a .dll or .exe here"
+                           Opacity="0.5"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+
+                <!-- Path text box -->
+                <TextBox x:Name="PathBox"
+                         Grid.Column="1"
+                         Height="26"
+                         Padding="6,0"
+                         VerticalContentAlignment="Center"
+                         FontSize="12"
+                         Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                         Foreground="{DynamicResource DockMenuForegroundBrush}"
+                         BorderBrush="{DynamicResource DockBorderBrush}"
+                         BorderThickness="1"
+                         CaretBrush="{DynamicResource DockMenuForegroundBrush}"
+                         TextChanged="OnPathTextChanged"
+                         KeyDown="OnPathBoxKeyDown"
+                         ToolTip="Assembly path — type, paste (Ctrl+V) or drag a .dll / .exe"/>
+
+                <!-- Browse button -->
+                <Button x:Name="BrowseButton"
+                        Grid.Column="3"
+                        Content="Browse…"
+                        Height="26"
+                        MinWidth="72"
+                        Padding="10,0"
+                        FontSize="12"
+                        Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                        Foreground="{DynamicResource DockMenuForegroundBrush}"
+                        BorderBrush="{DynamicResource DockBorderBrush}"
+                        BorderThickness="1"
+                        Click="OnBrowseClick"/>
+            </Grid>
+        </Border>
+
+        <!-- ══ Tab area ═══════════════════════════════════════════════════════ -->
+        <TabControl Grid.Row="1"
+                    x:Name="MainTabs"
+                    Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                    Foreground="{DynamicResource DockMenuForegroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
+                    BorderThickness="0"
+                    Padding="0">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Background"     Value="Transparent"/>
+                    <Setter Property="Foreground"     Value="{DynamicResource PFP_SubTextBrush}"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding"        Value="14,7"/>
+                    <Setter Property="FontSize"       Value="12"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <!-- Shared ListBoxItem style reused in both tabs -->
+                <Style x:Key="FileListItemStyle" TargetType="ListBoxItem">
+                    <Setter Property="Padding"                    Value="12,6"/>
+                    <Setter Property="Background"                 Value="Transparent"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="BorderThickness"            Value="0,0,0,1"/>
+                    <Setter Property="BorderBrush"                Value="{DynamicResource DockBorderBrush}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource PFP_ItemHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource PFP_ItemSelectedBrush}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TabControl.Resources>
+
+            <!-- ── Tab: Recent ─────────────────────────────────────────────── -->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets"
+                                   FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="Recent" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+
+                <Grid>
+                    <!-- Empty state -->
+                    <TextBlock x:Name="RecentEmptyLabel"
+                               Text="No recent assemblies"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Opacity="0.5"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               Visibility="Collapsed"/>
+
+                    <ListBox x:Name="RecentList"
+                             Background="Transparent"
+                             Foreground="{DynamicResource DockMenuForegroundBrush}"
+                             BorderThickness="0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ItemContainerStyle="{StaticResource FileListItemStyle}"
+                             MouseDoubleClick="OnRecentDoubleClick"
+                             Padding="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:RecentFileItem}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- DLL icon -->
+                                    <TextBlock Grid.Column="0"
+                                               Text="&#xE7AC;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="16"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,10,0"
+                                               Foreground="{DynamicResource PFP_AccentBrush}"
+                                               Opacity="0.85"/>
+
+                                    <!-- Name + path -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding FileName}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding FullPath}"
+                                                   FontSize="10"
+                                                   Opacity="0.5"
+                                                   Foreground="{DynamicResource PFP_SubTextBrush}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+
+                                    <!-- Remove [×] -->
+                                    <Button Grid.Column="2"
+                                            Width="22" Height="22"
+                                            FontFamily="Segoe MDL2 Assets"
+                                            FontSize="9"
+                                            Content="&#xE8BB;"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Foreground="{DynamicResource PFP_SubTextBrush}"
+                                            VerticalAlignment="Center"
+                                            Cursor="Hand"
+                                            ToolTip="Remove from recent list"
+                                            Tag="{Binding FullPath}"
+                                            Click="OnRemoveRecentClick"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </TabItem>
+
+            <!-- ── Tab: .NET Runtimes ───────────────────────────────────────── -->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xECAA;" FontFamily="Segoe MDL2 Assets"
+                                   FontSize="12" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text=".NET Runtimes" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>  <!-- filter bar -->
+                        <RowDefinition Height="*"/>     <!-- tree / list -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Filter bar -->
+                    <Border Grid.Row="0"
+                            Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            Padding="10,6">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="12" VerticalAlignment="Center"
+                                       Margin="0,0,6,0" Opacity="0.45"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                            <TextBox x:Name="RuntimeFilterBox"
+                                     Grid.Column="1"
+                                     Height="22"
+                                     Padding="4,0"
+                                     VerticalContentAlignment="Center"
+                                     FontSize="11"
+                                     Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                     BorderBrush="{DynamicResource DockBorderBrush}"
+                                     BorderThickness="1"
+                                     CaretBrush="{DynamicResource DockMenuForegroundBrush}"
+                                     TextChanged="OnRuntimeFilterChanged"
+                                     ToolTip="Filter assemblies by name"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- TreeView — full hierarchy (shown when filter is empty) -->
+                    <TreeView x:Name="RuntimeTree"
+                              Grid.Row="1"
+                              Background="Transparent"
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
+                              BorderThickness="0"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling"
+                              SelectedItemChanged="OnRuntimeTreeSelectionChanged">
+                        <TreeView.Resources>
+                            <!-- RuntimeGroupNode → runtime pack root -->
+                            <HierarchicalDataTemplate DataType="{x:Type local:RuntimeGroupNode}"
+                                                      ItemsSource="{Binding Versions}">
+                                <StackPanel Orientation="Horizontal" Margin="0,2">
+                                    <TextBlock Text="&#xECAA;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="13"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,7,0"
+                                               Foreground="{DynamicResource PFP_AccentBrush}"/>
+                                    <TextBlock Text="{Binding Name}"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource PFP_TextBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+
+                            <!-- VersionGroupNode → version subfolder -->
+                            <HierarchicalDataTemplate DataType="{x:Type local:VersionGroupNode}"
+                                                      ItemsSource="{Binding Assemblies}">
+                                <StackPanel Orientation="Horizontal" Margin="0,1">
+                                    <TextBlock Text="&#xE7B8;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="11"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,7,0"
+                                               Opacity="0.6"
+                                               Foreground="{DynamicResource PFP_SubTextBrush}"/>
+                                    <TextBlock Text="{Binding Version}"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource PFP_TextBrush}"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding AssemblyCount, StringFormat=' ({0})'}"
+                                               FontSize="10"
+                                               Opacity="0.4"
+                                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+
+                            <!-- AssemblyFileNode → leaf DLL -->
+                            <DataTemplate DataType="{x:Type local:AssemblyFileNode}">
+                                <StackPanel Orientation="Horizontal" Margin="0,1">
+                                    <TextBlock Text="&#xE7AC;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="11"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,7,0"
+                                               Opacity="0.55"
+                                               Foreground="{DynamicResource PFP_SubTextBrush}"/>
+                                    <TextBlock Text="{Binding FileName}"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource PFP_TextBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </TreeView.Resources>
+
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem">
+                                <Setter Property="Padding"    Value="2,1"/>
+                                <Setter Property="Foreground" Value="{DynamicResource PFP_TextBrush}"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource PFP_ItemHoverBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource PFP_ItemSelectedBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                    </TreeView>
+
+                    <!-- Flat filtered list — visible when filter text is non-empty -->
+                    <ListBox x:Name="RuntimeFilterList"
+                             Grid.Row="1"
+                             Background="Transparent"
+                             Foreground="{DynamicResource DockMenuForegroundBrush}"
+                             BorderThickness="0"
+                             Visibility="Collapsed"
+                             VirtualizingPanel.IsVirtualizing="True"
+                             VirtualizingPanel.VirtualizationMode="Recycling"
+                             ItemContainerStyle="{StaticResource FileListItemStyle}"
+                             MouseDoubleClick="OnRuntimeFilterListDoubleClick"
+                             SelectionChanged="OnRuntimeFilterListSelectionChanged"
+                             Padding="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:AssemblyFileNode}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="&#xE7AC;"
+                                               FontFamily="Segoe MDL2 Assets"
+                                               FontSize="14"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,10,0"
+                                               Opacity="0.55"
+                                               Foreground="{DynamicResource PFP_SubTextBrush}"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding FileName}"
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource PFP_TextBrush}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding FullPath}"
+                                                   FontSize="10"
+                                                   Opacity="0.45"
+                                                   Foreground="{DynamicResource PFP_SubTextBrush}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <!-- Empty / no-runtimes label -->
+                    <TextBlock x:Name="RuntimeEmptyLabel"
+                               Grid.Row="1"
+                               Text="No installed .NET runtimes found"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Opacity="0.5"
+                               Foreground="{DynamicResource PFP_SubTextBrush}"
+                               Visibility="Collapsed"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!-- ══ Footer bar ═════════════════════════════════════════════════════ -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="12,8">
+            <DockPanel LastChildFill="False">
+
+                <!-- Drop hint (left) -->
+                <StackPanel DockPanel.Dock="Left"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="&#xEC50;"
+                               FontFamily="Segoe MDL2 Assets"
                                FontSize="13"
+                               VerticalAlignment="Center"
+                               Margin="0,0,6,0"
+                               Opacity="0.35"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <TextBlock Text="or paste a path with Ctrl+V"
+                    <TextBlock Text="Drop a .dll or .exe anywhere"
                                FontSize="11"
-                               Opacity="0.6"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                               Opacity="0.4"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
+
+                <!-- Action buttons (right) -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Content="Cancel"
+                            IsCancel="True"
+                            Height="26"
+                            MinWidth="72"
+                            Padding="10,0"
+                            FontSize="12"
+                            Background="{DynamicResource PFP_PanelBackgroundBrush}"
+                            Foreground="{DynamicResource DockMenuForegroundBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            BorderThickness="1"
+                            Margin="0,0,8,0"
+                            Click="OnCancelClick"/>
+                    <Button x:Name="OpenButton"
+                            Content="Open Assembly"
+                            IsDefault="True"
+                            IsEnabled="False"
+                            Height="26"
+                            MinWidth="110"
+                            Padding="10,0"
+                            FontSize="12"
+                            Background="{DynamicResource PFP_AccentBrush}"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Click="OnOpenClick"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- ══ Drag overlay (shown during DragOver) ════════════════════════════ -->
+        <Border x:Name="DragOverlay"
+                Grid.RowSpan="3"
+                Background="{DynamicResource PFP_SectionBackgroundBrush}"
+                Opacity="0.93"
+                Visibility="Collapsed"
+                IsHitTestVisible="False">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="&#xEC50;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="52"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource PFP_AccentBrush}"/>
+                <TextBlock Text="Drop assembly here"
+                           FontSize="17"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
+                           Margin="0,14,0,0"
+                           Foreground="{DynamicResource PFP_TextBrush}"/>
+                <TextBlock Text=".dll  or  .exe"
+                           FontSize="12"
+                           HorizontalAlignment="Center"
+                           Margin="0,5,0,0"
+                           Opacity="0.5"
+                           Foreground="{DynamicResource PFP_SubTextBrush}"/>
             </StackPanel>
         </Border>
 
-        <!-- ── File path row ───────────────────────────────────────────── -->
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="6"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <TextBox x:Name="PathBox"
-                     Grid.Column="0"
-                     Height="24"
-                     Padding="4,0"
-                     VerticalContentAlignment="Center"
-                     Background="{DynamicResource PFP_PanelBackgroundBrush}"
-                     Foreground="{DynamicResource DockMenuForegroundBrush}"
-                     BorderBrush="{DynamicResource DockBorderBrush}"
-                     CaretBrush="{DynamicResource DockMenuForegroundBrush}"
-                     TextChanged="OnPathTextChanged"
-                     KeyDown="OnPathBoxKeyDown"
-                     ToolTip="Type or paste the full path to the assembly"/>
-
-            <Button x:Name="BrowseButton"
-                    Grid.Column="2"
-                    Content="Browse…"
-                    Style="{StaticResource DialogButtonStyle}"
-                    Click="OnBrowseClick"/>
-        </Grid>
-
-        <!-- ── Recent section ──────────────────────────────────────────── -->
-        <TextBlock Grid.Row="4"
-                   Text="Recent"
-                   FontWeight="SemiBold"
-                   FontSize="11"
-                   Opacity="0.75"
-                   Margin="0,0,0,4"
-                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-
-        <Border Grid.Row="5"
-                BorderBrush="{DynamicResource DockBorderBrush}"
-                BorderThickness="1"
-                Background="{DynamicResource PFP_PanelBackgroundBrush}">
-            <ListBox x:Name="RecentList"
-                     Background="Transparent"
-                     Foreground="{DynamicResource DockMenuForegroundBrush}"
-                     BorderThickness="0"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     MouseDoubleClick="OnRecentDoubleClick">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Padding"            Value="4,3"/>
-                        <Setter Property="Foreground"         Value="{DynamicResource DockMenuForegroundBrush}"/>
-                        <Setter Property="Background"         Value="Transparent"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding FileName}"
-                                           FontWeight="SemiBold"
-                                           FontSize="12"
-                                           TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Text="{Binding FullPath}"
-                                           FontSize="10"
-                                           Opacity="0.6"
-                                           TextTrimming="CharacterEllipsis"/>
-                            </StackPanel>
-                            <Button Grid.Column="1"
-                                    Style="{StaticResource RemoveButtonStyle}"
-                                    Tag="{Binding FullPath}"
-                                    Click="OnRemoveRecentClick"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Border>
-
-        <!-- ── Action buttons ──────────────────────────────────────────── -->
-        <StackPanel Grid.Row="7"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right">
-            <Button Content="Cancel"
-                    IsCancel="True"
-                    Style="{StaticResource DialogButtonStyle}"
-                    Margin="0,0,8,0"
-                    Click="OnCancelClick"/>
-            <Button x:Name="OpenButton"
-                    Content="Open Assembly"
-                    IsDefault="True"
-                    IsEnabled="False"
-                    Style="{StaticResource DialogButtonStyle}"
-                    Click="OnOpenClick"/>
-        </StackPanel>
     </Grid>
-</Window>
+</core:ThemedDialog>

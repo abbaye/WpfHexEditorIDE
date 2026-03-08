@@ -16,8 +16,10 @@
 //       TbgDecompile, TbgVisibility, TbgSort, TbgSync, TbgExpandCollapse, TbgFilter
 // ==========================================================
 
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
@@ -120,17 +122,71 @@ public partial class AssemblyExplorerPanel : UserControl
             DispatcherPriority.Loaded);
     }
 
-    // ── Open Assembly dialog ──────────────────────────────────────────────────
+    // ── Open Assembly dialog + panel-level Ctrl+V ─────────────────────────────
 
     private void OnOpenAssemblyClick(object sender, RoutedEventArgs e)
-    {
-        var dialog = new OpenAssemblyDialog
-        {
-            Owner = Window.GetWindow(this)
-        };
+        => OpenAssemblyViaDialog();
 
+    /// <summary>
+    /// Panel-level Ctrl+V: if the clipboard holds a valid .dll/.exe path, load it
+    /// directly without opening the dialog. Otherwise open the dialog pre-filled.
+    /// </summary>
+    private void OnPanelKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.V || Keyboard.Modifiers != ModifierKeys.Control) return;
+
+        var path = TryGetPathFromClipboard();
+        if (path is null) return;
+
+        e.Handled = true;
+
+        if (File.Exists(path))
+        {
+            // Valid existing path — load immediately, no dialog needed.
+            _ = ViewModel.LoadAssemblyAsync(path);
+        }
+        else
+        {
+            // Clipboard text doesn't point to an existing file — open dialog pre-filled.
+            var dialog = new OpenAssemblyDialog { Owner = Window.GetWindow(this) };
+            dialog.PreFillPath(path);
+            if (dialog.ShowDialog() == true && !string.IsNullOrEmpty(dialog.SelectedFilePath))
+                _ = ViewModel.LoadAssemblyAsync(dialog.SelectedFilePath);
+        }
+    }
+
+    private void OpenAssemblyViaDialog()
+    {
+        var dialog = new OpenAssemblyDialog { Owner = Window.GetWindow(this) };
         if (dialog.ShowDialog() == true && !string.IsNullOrEmpty(dialog.SelectedFilePath))
             _ = ViewModel.LoadAssemblyAsync(dialog.SelectedFilePath);
+    }
+
+    /// <summary>
+    /// Extracts a .dll/.exe file path from the clipboard.
+    /// Returns null if no usable path is found.
+    /// Priority: Explorer FileDrop > plain text.
+    /// </summary>
+    private static string? TryGetPathFromClipboard()
+    {
+        if (Clipboard.ContainsFileDropList())
+        {
+            var list = Clipboard.GetFileDropList();
+            foreach (string? entry in list)
+            {
+                if (entry is null) continue;
+                var ext = Path.GetExtension(entry).ToLowerInvariant();
+                if (ext is ".dll" or ".exe") return entry;
+            }
+        }
+
+        if (Clipboard.ContainsText())
+        {
+            var text = Clipboard.GetText().Trim().Trim('"');
+            if (!string.IsNullOrEmpty(text)) return text;
+        }
+
+        return null;
     }
 
     // ── Toolbar ───────────────────────────────────────────────────────────────

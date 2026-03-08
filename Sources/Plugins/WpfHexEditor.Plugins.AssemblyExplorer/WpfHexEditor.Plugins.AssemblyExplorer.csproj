@@ -32,6 +32,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
     <ProjectReference Include="..\..\WpfHexEditor.Core.AssemblyAnalysis\WpfHexEditor.Core.AssemblyAnalysis.csproj" />
+    <!-- Compile-only reference for ThemedDialog; the DLL is already in the host
+         App output directory and is resolved via the host AssemblyLoadContext fallback
+         at runtime — no copy to Plugins dir required. -->
+    <ProjectReference Include="..\..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
   </ItemGroup>
 
   <Import Project="..\..\WpfHexEditor.SDK\Build\WpfHexEditor.SDK.targets" />

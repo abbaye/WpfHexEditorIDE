@@ -3,51 +3,82 @@
 // File: Views/OpenAssemblyDialog.xaml.cs
 // Author: Derek Tremblay
 // Created: 2026-03-08
-// License: GNU Affero General Public License v3.0 (AGPL-3.0)
 // Description:
-//     Code-behind for the "Open Assembly" dialog.
-//     Accepts paths via: drop zone drag-and-drop, Ctrl+V clipboard paste
-//     (both Explorer FileDrop and raw text), manual typing, Browse button,
-//     and double-click on the recent files list.
-//     Validates the path via File.Exists before enabling the OK button.
+//     Code-behind for the "Open Assembly" redesigned dialog.
+//     Inherits ThemedDialog for VS2022-style custom chrome.
+//     Input paths via: drop zone drag-and-drop (whole window),
+//     Ctrl+V clipboard paste (Explorer FileDrop or raw text),
+//     Browse button (OpenFileDialog), Recent tab double-click,
+//     .NET Runtimes tab single-click leaf selection / double-click.
 //
 // Architecture Notes:
-//     Pattern: Dialog (modal), returns selected FilePath via property.
-//     RecentFileItem is a lightweight display model (FileName + FullPath).
-//     No MVVM overhead — this is a single-use dialog; code-behind is appropriate.
+//     Pattern: Dialog (modal) — returns selected path via SelectedFilePath.
+//     Data models: RecentFileItem, RuntimeGroupNode, VersionGroupNode, AssemblyFileNode
+//       are file-scoped display models; no MVVM overhead for a single-use dialog.
+//     .NET runtime discovery: enumerates %ProgramFiles%\dotnet\shared\ (BCL only).
 // ==========================================================
 
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using Microsoft.Win32;
+using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Views;
 
-/// <summary>
-/// Display model for recent file list items.
-/// </summary>
+// ── Display models ─────────────────────────────────────────────────────────────
+
+/// <summary>Display model for the Recent tab list items.</summary>
 internal sealed class RecentFileItem
 {
     public string FileName { get; init; } = string.Empty;
     public string FullPath { get; init; } = string.Empty;
 }
 
+/// <summary>Leaf node: a single .dll file under a versioned runtime directory.</summary>
+internal sealed class AssemblyFileNode
+{
+    public string FileName { get; init; } = string.Empty;
+    public string FullPath { get; init; } = string.Empty;
+}
+
+/// <summary>Intermediate node: a specific .NET runtime version (e.g. "8.0.13").</summary>
+internal sealed class VersionGroupNode
+{
+    public string                   Version      { get; init; } = string.Empty;
+    public List<AssemblyFileNode>   Assemblies   { get; init; } = [];
+    public int                      AssemblyCount => Assemblies.Count;
+}
+
+/// <summary>Root node: a .NET runtime pack (e.g. "Microsoft.NETCore.App").</summary>
+internal sealed class RuntimeGroupNode
+{
+    public string                   Name     { get; init; } = string.Empty;
+    public List<VersionGroupNode>   Versions { get; init; } = [];
+}
+
+// ── Dialog ─────────────────────────────────────────────────────────────────────
+
 /// <summary>
-/// Dialog that allows the user to select a .dll or .exe for analysis.
+/// Dialog to select a .dll or .exe for analysis.
 /// Show with <see cref="ShowDialog"/>; read <see cref="SelectedFilePath"/> on true result.
 /// </summary>
-public partial class OpenAssemblyDialog : Window
+public partial class OpenAssemblyDialog : ThemedDialog
 {
     // ── Public output ──────────────────────────────────────────────────────────
 
     /// <summary>
-    /// The absolute file path chosen by the user.
+    /// Absolute path chosen by the user.
     /// Valid only when <see cref="ShowDialog"/> returns <see langword="true"/>.
     /// </summary>
     public string SelectedFilePath { get; private set; } = string.Empty;
+
+    // ── Private state ──────────────────────────────────────────────────────────
+
+    /// <summary>All leaf nodes from all runtimes — used for the flat filtered list.</summary>
+    private List<AssemblyFileNode> _allRuntimeAssemblies = [];
 
     // ── Construction ──────────────────────────────────────────────────────────
 
@@ -57,26 +88,35 @@ public partial class OpenAssemblyDialog : Window
         Loaded += OnLoaded;
     }
 
+    /// <summary>Optional pre-fill: set the path box text before the dialog is shown.</summary>
+    public void PreFillPath(string path)
+    {
+        // Called before ShowDialog() — InitializeComponent not yet done.
+        // Store and apply in Loaded handler if needed, or set directly if already loaded.
+        if (IsLoaded)
+            SetPath(path);
+        else
+            Loaded += (_, _) => SetPath(path);
+    }
+
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         PopulateRecentList();
+        PopulateRuntimeTree();
         PathBox.Focus();
     }
 
-    // ── Recent list ───────────────────────────────────────────────────────────
+    // ── Recent list ────────────────────────────────────────────────────────────
 
     private void PopulateRecentList()
     {
         var items = AssemblyExplorerOptions.Instance.RecentFiles
             .Where(File.Exists)
-            .Select(p => new RecentFileItem
-            {
-                FileName = Path.GetFileName(p),
-                FullPath = p
-            })
+            .Select(p => new RecentFileItem { FileName = Path.GetFileName(p), FullPath = p })
             .ToList();
 
-        RecentList.ItemsSource = items;
+        RecentList.ItemsSource      = items;
+        RecentEmptyLabel.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void OnRecentDoubleClick(object sender, MouseButtonEventArgs e)
@@ -96,55 +136,135 @@ public partial class OpenAssemblyDialog : Window
         }
     }
 
-    // ── Drop zone ─────────────────────────────────────────────────────────────
+    // ── .NET Runtimes tree ─────────────────────────────────────────────────────
 
-    private void OnDropZoneDragOver(object sender, DragEventArgs e)
+    private void PopulateRuntimeTree()
     {
-        e.Effects = GetDropPath(e) is not null
-            ? DragDropEffects.Copy
-            : DragDropEffects.None;
-        e.Handled = true;
+        var groups = DiscoverDotNetRuntimes().ToList();
+
+        _allRuntimeAssemblies = groups
+            .SelectMany(g => g.Versions)
+            .SelectMany(v => v.Assemblies)
+            .ToList();
+
+        RuntimeTree.ItemsSource    = groups;
+        RuntimeEmptyLabel.Visibility = groups.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        RuntimeTree.Visibility       = groups.Count > 0  ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void OnDropZoneDragLeave(object sender, DragEventArgs e)
+    /// <summary>
+    /// Enumerates installed .NET runtimes from %ProgramFiles%\dotnet\shared.
+    /// Returns runtime pack groups (e.g. Microsoft.NETCore.App) with version subgroups,
+    /// ordered newest version first.
+    /// </summary>
+    private static IEnumerable<RuntimeGroupNode> DiscoverDotNetRuntimes()
     {
-        DropZone.BorderBrush = (Brush)FindResource("DockBorderBrush");
+        var dotnetShared = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+            "dotnet", "shared");
+
+        if (!Directory.Exists(dotnetShared)) yield break;
+
+        foreach (var runtimeDir in Directory.GetDirectories(dotnetShared).OrderBy(Path.GetFileName))
+        {
+            var versions = new List<VersionGroupNode>();
+
+            // Sort versions descending so the latest is at the top.
+            foreach (var versionDir in Directory.GetDirectories(runtimeDir)
+                         .OrderByDescending(Path.GetFileName, StringComparer.OrdinalIgnoreCase))
+            {
+                var assemblies = Directory.GetFiles(versionDir, "*.dll")
+                    .Select(f => new AssemblyFileNode { FileName = Path.GetFileName(f), FullPath = f })
+                    .OrderBy(a => a.FileName)
+                    .ToList();
+
+                if (assemblies.Count > 0)
+                    versions.Add(new VersionGroupNode
+                    {
+                        Version    = Path.GetFileName(versionDir),
+                        Assemblies = assemblies
+                    });
+            }
+
+            if (versions.Count > 0)
+                yield return new RuntimeGroupNode
+                {
+                    Name     = Path.GetFileName(runtimeDir),
+                    Versions = versions
+                };
+        }
     }
 
-    private void OnDropZoneDrop(object sender, DragEventArgs e)
+    private void OnRuntimeTreeSelectionChanged(object sender,
+        RoutedPropertyChangedEventArgs<object> e)
     {
-        DropZone.BorderBrush = (Brush)FindResource("DockBorderBrush");
-        var path = GetDropPath(e);
-        if (path is not null) SetPath(path);
+        if (e.NewValue is AssemblyFileNode node)
+            SetPath(node.FullPath);
     }
+
+    private void OnRuntimeFilterChanged(object sender, TextChangedEventArgs e)
+    {
+        var text = RuntimeFilterBox.Text.Trim();
+
+        if (string.IsNullOrEmpty(text))
+        {
+            RuntimeTree.Visibility       = Visibility.Visible;
+            RuntimeFilterList.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            var filtered = _allRuntimeAssemblies
+                .Where(a => a.FileName.Contains(text, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            RuntimeFilterList.ItemsSource = filtered;
+            RuntimeTree.Visibility        = Visibility.Collapsed;
+            RuntimeFilterList.Visibility  = Visibility.Visible;
+        }
+    }
+
+    private void OnRuntimeFilterListSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (RuntimeFilterList.SelectedItem is AssemblyFileNode node)
+            SetPath(node.FullPath);
+    }
+
+    private void OnRuntimeFilterListDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (RuntimeFilterList.SelectedItem is AssemblyFileNode node)
+            Accept(node.FullPath);
+    }
+
+    // ── Drag and drop ──────────────────────────────────────────────────────────
 
     private void OnWindowDragOver(object sender, DragEventArgs e)
     {
-        e.Effects = GetDropPath(e) is not null
-            ? DragDropEffects.Copy
-            : DragDropEffects.None;
-        e.Handled = true;
+        var hasFile    = GetDropPath(e) is not null;
+        e.Effects      = hasFile ? DragDropEffects.Copy : DragDropEffects.None;
+        DragOverlay.Visibility = hasFile ? Visibility.Visible : Visibility.Collapsed;
+        e.Handled      = true;
     }
+
+    private void OnWindowDragLeave(object sender, DragEventArgs e)
+        => DragOverlay.Visibility = Visibility.Collapsed;
 
     private void OnWindowDrop(object sender, DragEventArgs e)
     {
+        DragOverlay.Visibility = Visibility.Collapsed;
         var path = GetDropPath(e);
         if (path is not null) SetPath(path);
     }
 
     private static string? GetDropPath(DragEventArgs e)
     {
-        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return null;
+
+        var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+        return files?.FirstOrDefault(f =>
         {
-            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
-            var first = files?.FirstOrDefault(f =>
-            {
-                var ext = Path.GetExtension(f).ToLowerInvariant();
-                return ext is ".dll" or ".exe";
-            });
-            return first;
-        }
-        return null;
+            var ext = Path.GetExtension(f).ToLowerInvariant();
+            return ext is ".dll" or ".exe";
+        });
     }
 
     // ── Clipboard / Ctrl+V ────────────────────────────────────────────────────
@@ -160,7 +280,6 @@ public partial class OpenAssemblyDialog : Window
 
     private void OnPathBoxKeyDown(object sender, KeyEventArgs e)
     {
-        // Enter in path box triggers Open if valid
         if (e.Key == Key.Return && OpenButton.IsEnabled)
         {
             Accept(PathBox.Text.Trim());
@@ -170,7 +289,7 @@ public partial class OpenAssemblyDialog : Window
 
     private void TryPasteFromClipboard()
     {
-        // Priority 1: Explorer FileDrop (copy a file in Explorer, then Ctrl+V here)
+        // Priority 1: Explorer FileDrop (user copied a file in Explorer)
         if (Clipboard.ContainsFileDropList())
         {
             var list = Clipboard.GetFileDropList();
@@ -178,23 +297,15 @@ public partial class OpenAssemblyDialog : Window
             {
                 if (entry is null) continue;
                 var ext = Path.GetExtension(entry).ToLowerInvariant();
-                if (ext is ".dll" or ".exe")
-                {
-                    SetPath(entry);
-                    return;
-                }
+                if (ext is ".dll" or ".exe") { SetPath(entry); return; }
             }
         }
 
-        // Priority 2: Plain text that looks like a path
+        // Priority 2: Plain text path
         if (Clipboard.ContainsText())
         {
             var text = Clipboard.GetText().Trim().Trim('"');
-            if (!string.IsNullOrEmpty(text))
-            {
-                SetPath(text);
-                return;
-            }
+            if (!string.IsNullOrEmpty(text)) { SetPath(text); return; }
         }
     }
 
@@ -218,20 +329,18 @@ public partial class OpenAssemblyDialog : Window
 
     // ── Path validation ───────────────────────────────────────────────────────
 
-    private void OnPathTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    private void OnPathTextChanged(object sender, TextChangedEventArgs e)
         => ValidatePath(PathBox.Text.Trim());
 
     private void SetPath(string path)
     {
-        PathBox.Text = path;
+        PathBox.Text       = path;
         PathBox.CaretIndex = path.Length;
         ValidatePath(path);
     }
 
     private void ValidatePath(string path)
-    {
-        OpenButton.IsEnabled = !string.IsNullOrEmpty(path) && File.Exists(path);
-    }
+        => OpenButton.IsEnabled = !string.IsNullOrEmpty(path) && File.Exists(path);
 
     // ── Dialog result ─────────────────────────────────────────────────────────
 

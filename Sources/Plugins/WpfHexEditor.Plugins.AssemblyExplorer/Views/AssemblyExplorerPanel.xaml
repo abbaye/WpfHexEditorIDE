@@ -22,6 +22,8 @@
              xmlns:views="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Views"
              Background="{DynamicResource PFP_PanelBackgroundBrush}"
              Foreground="{DynamicResource PFP_TextBrush}"
+             Focusable="True"
+             KeyDown="OnPanelKeyDown"
              Loaded="OnLoaded">
 
     <Grid>
