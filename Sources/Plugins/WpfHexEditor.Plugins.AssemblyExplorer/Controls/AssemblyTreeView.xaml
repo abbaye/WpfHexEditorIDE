@@ -175,51 +175,112 @@
                          BorderBrush="{DynamicResource DockBorderBrush}"
                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                          Opened="OnContextMenuOpened">
-                <!-- Foreground on MenuItem (not on icon TextBlock) — ContextMenu is a separate HwndSource,
-                     DynamicResource on child TextBlock would not resolve; the MenuItem Foreground is
-                     set at the ContextMenu level and inherited by the icon correctly. -->
-                <MenuItem Header="Open in HexEditor"  x:Name="MenuOpenInHex"   Click="OnOpenInHexEditor"
+                <!-- Icons are embedded in the Header StackPanel, bypassing MenuItem.Icon entirely.
+                     The theme's Icon column (SharedSizeGroup) can collapse to zero width when
+                     Grid.IsSharedSizeScope is not set on the ContextMenu popup root, making
+                     MenuItem.Icon invisible. Putting the icon in the Header is always reliable. -->
+                <MenuItem x:Name="MenuOpenInHex" Click="OnOpenInHexEditor"
                           Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <MenuItem.Icon><TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Width="18" TextAlignment="Center" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Open in HexEditor" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Header="Copy Name"           x:Name="MenuCopyName"    Click="OnCopyName"
+                <MenuItem x:Name="MenuCopyName" Click="OnCopyName"
                           Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Width="18" TextAlignment="Center" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Copy Name" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Header="Copy Full Name"      x:Name="MenuCopyFull"    Click="OnCopyFullName"
+                <MenuItem x:Name="MenuCopyFull" Click="OnCopyFullName"
                           Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Width="18" TextAlignment="Center" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Copy Full Name" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Header="Copy IL Offset"      x:Name="MenuCopyOffset"  Click="OnCopyOffset"
+                <MenuItem x:Name="MenuCopyOffset" Click="OnCopyOffset"
                           Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <MenuItem.Icon><TextBlock Text="&#xE77F;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE77F;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Width="18" TextAlignment="Center" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Copy IL Offset" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Go to Definition"    IsEnabled="False" ToolTip="Coming in a future release"
+                <MenuItem IsEnabled="False" ToolTip="Coming in a future release"
                           Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <MenuItem.Icon><TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Width="18" TextAlignment="Center" Foreground="#888888" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Go to Definition" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Header="Decompile to C#"     x:Name="MenuDecompile"   Click="OnDecompile"
+                <MenuItem x:Name="MenuDecompile" Click="OnDecompile"
                           Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <MenuItem.Icon><TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Width="18" TextAlignment="Center" Foreground="#CCCCCC" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Decompile to C#" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Header="Show in Metadata Tables" IsEnabled="False" ToolTip="Coming in a future release"
+                <MenuItem IsEnabled="False" ToolTip="Coming in a future release"
                           Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <MenuItem.Icon><TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE9D5;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Width="18" TextAlignment="Center" Foreground="#888888" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Show in Metadata Tables" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Export IL"           IsEnabled="False" ToolTip="Coming in a future release"
+                <MenuItem IsEnabled="False" ToolTip="Coming in a future release"
                           Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <MenuItem.Icon><TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Width="18" TextAlignment="Center" Foreground="#888888" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Export IL" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Header="Export C#"           IsEnabled="False" ToolTip="Coming in a future release"
+                <MenuItem IsEnabled="False" ToolTip="Coming in a future release"
                           Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <MenuItem.Icon><TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Width="18" TextAlignment="Center" Foreground="#888888" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Export C#" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Close Assembly"      x:Name="MenuCloseAssembly" Click="OnCloseAssembly"
-                          Foreground="{DynamicResource DangerBrush}">
-                    <MenuItem.Icon><TextBlock Text="&#xED60;" FontFamily="Segoe MDL2 Assets" FontSize="12"/></MenuItem.Icon>
+                <MenuItem x:Name="MenuCloseAssembly" Click="OnCloseAssembly"
+                          Foreground="#EF4444">
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xED60;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                       Width="18" TextAlignment="Center" Foreground="#EF4444" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBlock Text="Close Assembly" Foreground="#EF4444" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </MenuItem.Header>
                 </MenuItem>
             </ContextMenu>
         </TreeView.ContextMenu>

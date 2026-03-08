@@ -23,6 +23,10 @@ public partial class DataInspectorOptionsPage : UserControl
     /// <summary>Populates the page controls from current options.</summary>
     public void Load()
     {
+        // Guard: named fields may be null if InitializeComponent() failed to resolve
+        // the BAML resource (e.g., custom AssemblyLoadContext in the plugin host).
+        if (AutoRefreshCheckBox is null) return;
+
         var opts = DataInspectorOptions.Instance;
         AutoRefreshCheckBox.IsChecked   = opts.AutoRefresh;
         LittleEndianCheckBox.IsChecked  = opts.DefaultLittleEndian;

@@ -29,6 +29,10 @@ public partial class AssemblyExplorerOptionsPage : UserControl
     /// <summary>Populates controls from <see cref="AssemblyExplorerOptions.Instance"/>.</summary>
     public void Load()
     {
+        // Guard: named fields may be null if InitializeComponent() failed to resolve
+        // the BAML resource (e.g., custom AssemblyLoadContext in the plugin host).
+        if (FontSizeSlider is null) return;
+
         var opts = AssemblyExplorerOptions.Instance;
 
         FontSizeSlider.Value = opts.DecompilerFontSize;

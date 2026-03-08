@@ -180,17 +180,21 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public bool HasOptions => _entry.Instance is not null && _entry.Instance is SDK.Contracts.IPluginWithOptions;
 
     private System.Windows.FrameworkElement? _optionsPage;
+    // Set to true on first failed CreateOptionsPage() call so we never retry.
+    // Without this flag, every selection of the plugin re-throws and stops the VS debugger.
+    private bool _optionsPageFailed;
 
     /// <summary>
-    /// Lazily created options page control. Null if the plugin has no options or is not loaded.
-    /// LoadOptions() is called on first access; the control is cached afterwards.
+    /// Lazily created options page control. Null if the plugin has no options, is not loaded,
+    /// or if CreateOptionsPage() threw on the first attempt (failure is not retried).
     /// </summary>
     public System.Windows.FrameworkElement? OptionsPage
     {
         get
         {
             if (_optionsPage is not null) return _optionsPage;
-            if (_entry.Instance is null) return null;
+            if (_optionsPageFailed)       return null;
+            if (_entry.Instance is null)  return null;
             if (_entry.Instance is not SDK.Contracts.IPluginWithOptions opts) return null;
 
             // LoadOptions/CreateOptionsPage may do I/O — call synchronously here but OK since
@@ -203,6 +207,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
             }
             catch (Exception ex)
             {
+                _optionsPageFailed = true;
                 System.Diagnostics.Debug.WriteLine(
                     $"[PluginManager] CreateOptionsPage threw for plugin '{_entry.Manifest.Id}': {ex}");
                 return null;

@@ -350,10 +350,21 @@ public sealed class PluginDetailViewModel : INotifyPropertyChanged
             // Only recreate the options page when the plugin changes.
             if (_optionsPluginId != entry.Manifest.Id)
             {
-                _optionsPluginId   = entry.Manifest.Id;
-                _optionsPlugin     = opts;
-                OptionsPageContent = opts.CreateOptionsPage();
-                opts.LoadOptions();
+                _optionsPluginId = entry.Manifest.Id;
+                _optionsPlugin   = opts;
+
+                // Guard: a buggy plugin must not crash the host.
+                try
+                {
+                    OptionsPageContent = opts.CreateOptionsPage();
+                    opts.LoadOptions();
+                }
+                catch (Exception ex)
+                {
+                    OptionsPageContent = null;
+                    System.Diagnostics.Debug.WriteLine(
+                        $"[PluginMonitor] CreateOptionsPage threw for plugin '{entry.Manifest.Id}': {ex}");
+                }
             }
         }
         else
