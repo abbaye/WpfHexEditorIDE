@@ -346,6 +346,21 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
     {
         var typeNode = new TypeNodeViewModel(type);
 
+        // "Inherits From" group — base type + interfaces (first child for easy discovery)
+        var hasBase       = !string.IsNullOrEmpty(type.BaseTypeName) && type.BaseTypeName != "System.Object";
+        var hasInterfaces = type.InterfaceNames.Count > 0;
+        if (hasBase || hasInterfaces)
+        {
+            var inheritsGroup = new NamespaceNodeViewModel("Inherits From");
+            if (hasBase)
+                inheritsGroup.Children.Add(
+                    new MetadataTableNodeViewModel($"\u21B3 {type.BaseTypeName}", 0));  // ↳
+            foreach (var iface in type.InterfaceNames)
+                inheritsGroup.Children.Add(
+                    new MetadataTableNodeViewModel($"\u21AA {iface}", 0));              // ↪
+            typeNode.Children.Add(inheritsGroup);
+        }
+
         if (type.Methods.Count > 0)
         {
             var methodsGroup = new NamespaceNodeViewModel("Methods");
@@ -419,16 +434,33 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
     private void ApplyFilter(string text)
     {
-        // Shallow filter: hide namespace/type nodes whose display name does not contain text.
-        // A full subtree filter (hiding all parents when children match) is deferred to Phase 2.
         foreach (var root in RootNodes)
-            FilterNode(root, text);
+            SetNodeVisibility(root, text);
     }
 
-    private static void FilterNode(AssemblyNodeViewModel node, string text)
+    /// <summary>
+    /// Deep recursive filter: a node is visible when empty filter, its own name
+    /// matches, or any descendant matches. Parents of matching children stay
+    /// visible to preserve tree structure. Matched parents are auto-expanded.
+    /// Returns true if this node or any descendant should be shown.
+    /// </summary>
+    private static bool SetNodeVisibility(AssemblyNodeViewModel node, string text)
     {
+        var empty      = string.IsNullOrEmpty(text);
+        var selfMatch  = empty || node.DisplayName.Contains(text, StringComparison.OrdinalIgnoreCase);
+        var childMatch = false;
+
         foreach (var child in node.Children)
-            FilterNode(child, text);
+            childMatch |= SetNodeVisibility(child, text);
+
+        node.IsMatch   = !empty && selfMatch;
+        node.IsVisible = empty || selfMatch || childMatch;
+
+        // Auto-expand parents that have matching descendants.
+        if (!empty && childMatch)
+            node.IsExpanded = true;
+
+        return node.IsVisible;
     }
 
     // ── Rebuild ───────────────────────────────────────────────────────────────

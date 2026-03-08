@@ -35,6 +35,10 @@
                     <Setter Property="Background" Value="{DynamicResource PFP_ItemSelectedBrush}"/>
                     <Setter Property="Foreground" Value="{DynamicResource PFP_ItemSelectedForegroundBrush}"/>
                 </Trigger>
+                <!-- Deep filter: collapse nodes with no matching self or descendants -->
+                <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
 

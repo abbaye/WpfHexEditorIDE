@@ -24,10 +24,21 @@ public sealed class AssemblyRootNodeViewModel : AssemblyNodeViewModel
 
     public AssemblyModel Model { get; }
 
-    public override string DisplayName =>
-        Model.Version is not null
-            ? $"{Model.Name} v{Model.Version}"
-            : Model.Name;
+    /// <summary>
+    /// Assembly name + version + optional target framework badge.
+    /// Example: "MyLib v1.0.0  [.NET 8.0]"
+    /// </summary>
+    public override string DisplayName
+    {
+        get
+        {
+            var ver   = Model.Version is not null ? $" v{Model.Version}" : string.Empty;
+            var badge = !string.IsNullOrEmpty(Model.TargetFramework)
+                ? $"  [{Model.TargetFramework}]"
+                : string.Empty;
+            return $"{Model.Name}{ver}{badge}";
+        }
+    }
 
     public override string IconGlyph => "\uE8A5"; // Assembly icon
 

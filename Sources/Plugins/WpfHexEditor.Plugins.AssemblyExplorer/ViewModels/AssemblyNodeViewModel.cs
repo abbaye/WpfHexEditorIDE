@@ -92,4 +92,29 @@ public abstract class AssemblyNodeViewModel : INotifyPropertyChanged
 
     /// <summary>Child nodes. Populated eagerly in Phase 1; lazily in future phases.</summary>
     public ObservableCollection<AssemblyNodeViewModel> Children { get; } = [];
+
+    // ── Filter state ──────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Controls TreeViewItem visibility during an active filter.
+    /// False when the filter is active and neither this node nor any descendant
+    /// matches the filter text. Defaults to true (always visible with no filter).
+    /// </summary>
+    private bool _isVisible = true;
+    public bool IsVisible
+    {
+        get => _isVisible;
+        set => SetField(ref _isVisible, value);
+    }
+
+    /// <summary>
+    /// True when the filter text directly matches this node's <see cref="DisplayName"/>.
+    /// Used for potential highlight rendering in future phases.
+    /// </summary>
+    private bool _isMatch;
+    public bool IsMatch
+    {
+        get => _isMatch;
+        set => SetField(ref _isMatch, value);
+    }
 }
