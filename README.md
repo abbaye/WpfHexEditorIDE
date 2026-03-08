@@ -43,6 +43,7 @@
 
 ### 🏗️ Project System
 - **Solution & Project** management (`.whsln` / `.whproj`)
+- **Visual Studio `.sln` / `.csproj` / `.vbproj`** support via MSBuild *(#101-103 — planned)*
 - **Virtual & physical folders** (like VS Solution Explorer)
 - **Format versioning** with auto-migration
 - **Per-file state** persistence (bookmarks, scroll, encoding)
@@ -77,6 +78,7 @@
 - **400+ file format** auto-detection with **format-aware editor routing**
 - **Parsed Fields Panel** with structure overlay
 - **Data Inspector** — 40+ type interpretations
+- **Assembly Explorer** — .NET PE inspection, types, methods, fields; ILSpy decompilation *(#104-106 — in progress)*
 - **19 languages** with instant switching *(partial — not all languages fully translated)*
 
 </td>
