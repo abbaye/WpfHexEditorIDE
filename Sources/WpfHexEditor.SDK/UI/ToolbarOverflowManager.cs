@@ -18,12 +18,16 @@
 //     - ContextMenu items are shown/hidden by matching their Tag property
 //       to the name of the collapsed group FrameworkElement.
 //     - Caller is responsible for syncing IsChecked states on ContextMenu.Opened.
+//     - leftFixedElements: optional array of always-visible LEFT-side elements
+//       (e.g. a Scope ComboBox) whose width must be subtracted from available
+//       space when the collapsible groups are also left-docked.
 //
 //     Usage (in panel code-behind):
 //       _overflowManager = new ToolbarOverflowManager(
 //           ToolbarBorder, ToolbarRightPanel, ToolbarOverflowButton,
 //           OverflowContextMenu,
-//           new FrameworkElement[] { TbgLowPriority, TbgHighPriority });
+//           new FrameworkElement[] { TbgLowPriority, TbgHighPriority },
+//           leftFixedElements: new FrameworkElement[] { TbgScope }); // optional
 //
 //       // After Loaded:
 //       Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
@@ -54,6 +58,12 @@ public sealed class ToolbarOverflowManager
     private readonly ContextMenu        _overflowMenu;
     private readonly FrameworkElement[] _groups;
 
+    /// <summary>
+    /// Always-visible left-side elements (e.g. Scope ComboBox) whose widths reduce
+    /// the space available for left-docked collapsible groups.
+    /// </summary>
+    private readonly FrameworkElement[] _leftFixedElements;
+
     private double[]? _naturalWidths;
 
     // ── Constructor ───────────────────────────────────────────────────────────
@@ -69,18 +79,25 @@ public sealed class ToolbarOverflowManager
     ///   Collapsible groups, ordered from <b>lowest priority (index 0, first to collapse)</b>
     ///   to highest priority (last to collapse).
     /// </param>
+    /// <param name="leftFixedElements">
+    ///   Optional. Always-visible elements on the LEFT side of the toolbar (e.g. a scope
+    ///   ComboBox) that also consume horizontal space. Required only when the collapsible
+    ///   groups are left-docked and a separate always-visible left element is present.
+    /// </param>
     public ToolbarOverflowManager(
-        FrameworkElement   toolbarContainer,
-        FrameworkElement   alwaysVisiblePanel,
-        ButtonBase         overflowButton,
-        ContextMenu        overflowMenu,
-        FrameworkElement[] groupsInCollapseOrder)
+        FrameworkElement    toolbarContainer,
+        FrameworkElement    alwaysVisiblePanel,
+        ButtonBase          overflowButton,
+        ContextMenu         overflowMenu,
+        FrameworkElement[]  groupsInCollapseOrder,
+        FrameworkElement[]? leftFixedElements = null)
     {
         _toolbarContainer   = toolbarContainer;
         _alwaysVisiblePanel = alwaysVisiblePanel;
         _overflowButton     = overflowButton;
         _overflowMenu       = overflowMenu;
         _groups             = groupsInCollapseOrder;
+        _leftFixedElements  = leftFixedElements ?? [];
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -89,13 +106,21 @@ public sealed class ToolbarOverflowManager
     /// Captures the natural (uncollapsed) width of each group.
     /// Must be called after the initial layout pass, e.g., via
     /// <c>Dispatcher.InvokeAsync(CaptureNaturalWidths, DispatcherPriority.Loaded)</c>.
-    /// Skips capture if any group is already collapsed.
+    /// Skips capture if any group is already collapsed or not yet measured (ActualWidth == 0).
     /// </summary>
     public void CaptureNaturalWidths()
     {
+        // Guard: groups must be visible and already laid out (ActualWidth > 0).
+        // ActualWidth stays 0 when the panel is in a hidden/inactive tab — defer
+        // until the panel becomes visible and SizeChanged fires.
         if (_groups.Any(g => g.Visibility != Visibility.Visible)) return;
+        if (_groups.Any(g => g.ActualWidth <= 0)) return;
 
         _naturalWidths = _groups.Select(g => g.ActualWidth).ToArray();
+
+        // Immediately evaluate overflow so the button appears at startup
+        // without requiring the user to trigger a first SizeChanged.
+        Update();
     }
 
     /// <summary>
@@ -111,21 +136,25 @@ public sealed class ToolbarOverflowManager
     /// </summary>
     public void Update()
     {
-        // If widths were invalidated, try to recapture with all groups visible
+        // If widths were invalidated, try to recapture with all groups visible.
+        // SizeChanged fires after a layout pass, so ActualWidths should be valid here
+        // as long as the panel is visible (i.e., not a hidden docking tab).
         if (_naturalWidths is null)
         {
-            // Restore everything first so we can measure
             foreach (var g in _groups) g.Visibility = Visibility.Visible;
             _overflowButton.Visibility = Visibility.Collapsed;
             CaptureNaturalWidths();
-            if (_naturalWidths is null) return; // not ready yet (some group still collapsed)
+            if (_naturalWidths is null) return; // not ready yet — wait for next SizeChanged
         }
 
-        // Budget: total toolbar width minus the always-visible right panel
+        // Budget: total toolbar width minus always-visible right panel, left-fixed
+        // elements, and a small padding margin.
         const double margin = 8.0;
-        double available = _toolbarContainer.ActualWidth
-                         - _alwaysVisiblePanel.ActualWidth
-                         - margin;
+        double leftFixed  = _leftFixedElements.Sum(e => e.ActualWidth);
+        double available  = _toolbarContainer.ActualWidth
+                          - _alwaysVisiblePanel.ActualWidth
+                          - leftFixed
+                          - margin;
 
         double totalNeeded = _naturalWidths.Sum();
 
@@ -151,7 +180,7 @@ public sealed class ToolbarOverflowManager
             }
             else
             {
-                _groups[i].Visibility =  Visibility.Collapsed;
+                _groups[i].Visibility = Visibility.Collapsed;
                 totalNeeded -= _naturalWidths[i];
             }
         }

@@ -119,7 +119,8 @@ public partial class DataInspectorPanel : UserControl
                     TbgZoom,     // [2]
                     TbgMode,     // [3]
                     TbgToggles,  // [4] last to collapse
-                });
+                },
+                leftFixedElements: new FrameworkElement[] { TbgScope });
 
             ApplyOptions();
 

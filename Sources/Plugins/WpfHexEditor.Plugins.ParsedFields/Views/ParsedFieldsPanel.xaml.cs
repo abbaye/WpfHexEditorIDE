@@ -72,7 +72,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                     {
                         TbgExport,   // [0] first to collapse
                         TbgActions,  // [1] last to collapse
-                    });
+                    },
+                    leftFixedElements: new FrameworkElement[] { RefreshButton });
                 Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
             };
         }

@@ -265,6 +265,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - `MainWindow.DocumentModel.cs` — `InitDocumentManager()`, `RegisterDocumentFromItem()`, `UnregisterDocument()`, `SyncActiveDocument()`; routes `DocumentTitleChanged` → `DockItem.Title`; `DocumentDirtyChanged` → `CommandManager.InvalidateRequerySuggested()`.
 - `CollectAllDirtyItems` now queries `_documentManager.GetDirty()` (O(n) over models) instead of walking the layout tree.
 - **Files:** `DocumentModel.cs`, `IDocumentManager.cs`, `DocumentManager.cs`, `MainWindow.DocumentModel.cs`, `MainWindow.xaml.cs`
+
+### 🐛 Fixed — Plugin Monitor: metrics always 0 for event-driven plugins (2026-03-08) — Issue #176
+
+- **Root cause** — `Diagnostics.Record(nonZeroTime)` was only called during Init / Shutdown / Reload. The periodic 5 s sampling tick passed `TimeSpan.Zero`. `AverageExecutionTime` explicitly filters zero-duration samples, so all plugins had `avgMs = 0` after startup except Archive Structure (4.2 ms init). After the previous weight-formula fix, plugins with `avgMs = 0` received `weight = 0` — correct math, wrong observable result: actively working plugins (e.g. Data Inspector analysing a 2 MB file) displayed 0% CPU / 0 MB RAM.
+- **`TimedHexEditorService`** (new) — Proxy/Decorator over `IHexEditorService`. Intercepts the add accessors of all 5 events (`SelectionChanged`, `ViewportScrolled`, `FileOpened`, `FormatDetected`, `ActiveEditorChanged`). Times each plugin's handler invocation via `Stopwatch` and records the elapsed time to `PluginDiagnosticsCollector`. After a few selection changes the plugin accumulates non-zero `avgMs` and receives a proportional CPU/RAM share in the Plugin Monitor.
+- **`PluginScopedContext`** (new) — Lightweight `IIDEHostContext` Decorator created once per plugin. Substitutes `HexEditor` with the timed proxy; all other 10 services delegate to the shared base context.
+- **`WpfPluginHost.LoadPluginAsync`** — now creates `TimedHexEditorService` + `PluginScopedContext` per plugin and passes `pluginContext` to `InitializeAsync` instead of the shared `_hostContext`.
+- **`PluginAlertEngine`** — Added `StartupGracePeriod` (30 s). Alerts suppressed while `Uptime < 30s`, eliminating false "CPU 100% exceeds threshold 50%" alerts fired for every plugin during batch init.
+- **Files:** `TimedHexEditorService.cs` (new), `PluginScopedContext.cs` (new), `WpfPluginHost.cs`, `PluginAlertEngine.cs`
 - **Commit:** `5c75f60c`
 
 ### 🐛 Fixed — Plugin Monitor (2026-03-08) ⚠️ Partial — #175 still open

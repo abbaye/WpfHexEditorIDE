@@ -151,7 +151,43 @@
                 SizeChanged="OnToolbarSizeChanged">
             <DockPanel LastChildFill="False" Margin="4,0">
 
-                <!-- ── RIGHT: Overflow button (shown when items don't fit) ────── -->
+                <!-- ── RIGHT: Always-visible items (Category filter + All formats) -->
+                <!-- Declared FIRST so it is placed at the far right of the DockPanel.  -->
+                <!-- The overflow button is declared second, just inside of this panel.  -->
+                <StackPanel DockPanel.Dock="Right" x:Name="ToolbarRightPanel"
+                            Orientation="Horizontal">
+                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                    <TextBlock Text="Category:"
+                               VerticalAlignment="Center"
+                               FontSize="11"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               Margin="0,0,4,0"/>
+                    <ComboBox x:Name="CategoryFilterComboBox"
+                              Width="100" FontSize="11"
+                              VerticalAlignment="Center"
+                              SelectedValue="{Binding SelectedCategory, Mode=TwoWay}"
+                              SelectedValuePath="Content">
+                        <ComboBoxItem Content="All"       IsSelected="True"/>
+                        <ComboBoxItem Content="Integer"/>
+                        <ComboBoxItem Content="Float"/>
+                        <ComboBoxItem Content="Date/Time"/>
+                        <ComboBoxItem Content="Network"/>
+                        <ComboBoxItem Content="GUID"/>
+                        <ComboBoxItem Content="Color"/>
+                        <ComboBoxItem Content="Basic"/>
+                        <ComboBoxItem Content="Bits"/>
+                    </ComboBox>
+                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                    <CheckBox Content="All formats"
+                              VerticalAlignment="Center"
+                              IsChecked="{Binding ShowAllFormats, Mode=TwoWay}"
+                              FontSize="11"
+                              Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                              Margin="0,0,6,0"/>
+                </StackPanel>
+
+                <!-- ── RIGHT: Overflow button — shown when collapsible items don't fit -->
+                <!-- Declared SECOND so it appears just to the left of ToolbarRightPanel. -->
                 <Button DockPanel.Dock="Right"
                         x:Name="ToolbarOverflowButton"
                         Style="{StaticResource PanelIconButtonStyle}"
@@ -195,39 +231,6 @@
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
-
-                <!-- ── RIGHT: Always-visible items (Category filter + All formats) -->
-                <StackPanel DockPanel.Dock="Right" x:Name="ToolbarRightPanel"
-                            Orientation="Horizontal">
-                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
-                    <TextBlock Text="Category:"
-                               VerticalAlignment="Center"
-                               FontSize="11"
-                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                               Margin="0,0,4,0"/>
-                    <ComboBox x:Name="CategoryFilterComboBox"
-                              Width="100" FontSize="11"
-                              VerticalAlignment="Center"
-                              SelectedValue="{Binding SelectedCategory, Mode=TwoWay}"
-                              SelectedValuePath="Content">
-                        <ComboBoxItem Content="All"       IsSelected="True"/>
-                        <ComboBoxItem Content="Integer"/>
-                        <ComboBoxItem Content="Float"/>
-                        <ComboBoxItem Content="Date/Time"/>
-                        <ComboBoxItem Content="Network"/>
-                        <ComboBoxItem Content="GUID"/>
-                        <ComboBoxItem Content="Color"/>
-                        <ComboBoxItem Content="Basic"/>
-                        <ComboBoxItem Content="Bits"/>
-                    </ComboBox>
-                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
-                    <CheckBox Content="All formats"
-                              VerticalAlignment="Center"
-                              IsChecked="{Binding ShowAllFormats, Mode=TwoWay}"
-                              FontSize="11"
-                              Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                              Margin="0,0,6,0"/>
-                </StackPanel>
 
                 <!-- ── LEFT: TbgScope — always visible ───────────────────────── -->
                 <StackPanel DockPanel.Dock="Left" x:Name="TbgScope" Orientation="Horizontal">

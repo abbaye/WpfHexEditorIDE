@@ -10,7 +10,7 @@
     <!-- Plugin metadata required by WpfHexEditor.SDK.targets to generate manifest.json -->
     <PluginId>WpfHexEditor.Plugins.ParsedFields</PluginId>
     <PluginName>Parsed Fields</PluginName>
-    <PluginVersion>0.5.0</PluginVersion>
+    <PluginVersion>0.6.0</PluginVersion>
     <PluginEntryPoint>WpfHexEditor.Plugins.ParsedFields.ParsedFieldsPlugin</PluginEntryPoint>
     <PluginAuthor>Derek Tremblay</PluginAuthor>
     <PluginPublisher>WpfHexEditor</PluginPublisher>
