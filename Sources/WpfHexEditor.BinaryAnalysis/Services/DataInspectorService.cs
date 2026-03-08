@@ -84,7 +84,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "Int8 (signed)",
                     Value = ((sbyte)bytes[0]).ToString(),
                     HexValue = bytes[0].ToString("X2"),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Signed 8-bit integer. Reads 1 byte.\nRange: −128 to 127."
                 });
 
                 results.Add(new InspectorValue
@@ -93,7 +94,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "UInt8 (unsigned)",
                     Value = bytes[0].ToString(),
                     HexValue = bytes[0].ToString("X2"),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Unsigned 8-bit integer. Reads 1 byte.\nRange: 0 to 255."
                 });
             }
 
@@ -110,7 +112,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "Int16 LE (signed)",
                     Value = int16LE.ToString(),
                     HexValue = BitConverter.ToString(bytes, 0, 2).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Signed 16-bit integer, Little-Endian (LSB first). Reads 2 bytes.\nRange: −32,768 to 32,767."
                 });
 
                 results.Add(new InspectorValue
@@ -119,7 +122,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "UInt16 LE (unsigned)",
                     Value = uint16LE.ToString(),
                     HexValue = BitConverter.ToString(bytes, 0, 2).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Unsigned 16-bit integer, Little-Endian (LSB first). Reads 2 bytes.\nRange: 0 to 65,535."
                 });
 
                 // Big Endian
@@ -135,7 +139,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "Int16 BE (signed)",
                     Value = int16BE.ToString(),
                     HexValue = BitConverter.ToString(bytesReversed, 0, 2).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Signed 16-bit integer, Big-Endian (MSB first). Reads 2 bytes.\nRange: −32,768 to 32,767."
                 });
 
                 results.Add(new InspectorValue
@@ -144,7 +149,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "UInt16 BE (unsigned)",
                     Value = uint16BE.ToString(),
                     HexValue = BitConverter.ToString(bytesReversed, 0, 2).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Unsigned 16-bit integer, Big-Endian (MSB first). Reads 2 bytes.\nRange: 0 to 65,535."
                 });
             }
 
@@ -161,7 +167,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "Int32 LE (signed)",
                     Value = int32LE.ToString("N0"),
                     HexValue = BitConverter.ToString(bytes, 0, 4).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Signed 32-bit integer, Little-Endian. Reads 4 bytes.\nRange: −2,147,483,648 to 2,147,483,647.\nCommon in x86/x64 binaries and file formats."
                 });
 
                 results.Add(new InspectorValue
@@ -170,7 +177,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "UInt32 LE (unsigned)",
                     Value = uint32LE.ToString("N0"),
                     HexValue = BitConverter.ToString(bytes, 0, 4).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Unsigned 32-bit integer, Little-Endian. Reads 4 bytes.\nRange: 0 to 4,294,967,295.\nCommon in x86/x64 binaries and file formats."
                 });
 
                 // Big Endian
@@ -186,7 +194,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "Int32 BE (signed)",
                     Value = int32BE.ToString("N0"),
                     HexValue = BitConverter.ToString(bytesReversed, 0, 4).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Signed 32-bit integer, Big-Endian. Reads 4 bytes.\nRange: −2,147,483,648 to 2,147,483,647.\nCommon in network protocols and big-endian platforms (SPARC, PowerPC)."
                 });
 
                 results.Add(new InspectorValue
@@ -195,7 +204,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "UInt32 BE (unsigned)",
                     Value = uint32BE.ToString("N0"),
                     HexValue = BitConverter.ToString(bytesReversed, 0, 4).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Unsigned 32-bit integer, Big-Endian. Reads 4 bytes.\nRange: 0 to 4,294,967,295.\nCommon in network protocols and big-endian platforms."
                 });
             }
 
@@ -212,7 +222,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "Int64 LE (signed)",
                     Value = int64LE.ToString("N0"),
                     HexValue = BitConverter.ToString(bytes, 0, 8).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Signed 64-bit integer, Little-Endian. Reads 8 bytes.\nRange: −9.2×10¹⁸ to 9.2×10¹⁸.\nUsed for large counters, file offsets and timestamps."
                 });
 
                 results.Add(new InspectorValue
@@ -221,7 +232,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "UInt64 LE (unsigned)",
                     Value = uint64LE.ToString("N0"),
                     HexValue = BitConverter.ToString(bytes, 0, 8).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Unsigned 64-bit integer, Little-Endian. Reads 8 bytes.\nRange: 0 to 1.8×10¹⁹.\nUsed for large counters, file sizes and addresses."
                 });
 
                 // Big Endian
@@ -237,7 +249,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "Int64 BE (signed)",
                     Value = int64BE.ToString("N0"),
                     HexValue = BitConverter.ToString(bytesReversed, 0, 8).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Signed 64-bit integer, Big-Endian. Reads 8 bytes.\nRange: −9.2×10¹⁸ to 9.2×10¹⁸.\nUsed in network protocols and big-endian platforms."
                 });
 
                 results.Add(new InspectorValue
@@ -246,7 +259,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "UInt64 BE (unsigned)",
                     Value = uint64BE.ToString("N0"),
                     HexValue = BitConverter.ToString(bytesReversed, 0, 8).Replace("-", " "),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Unsigned 64-bit integer, Big-Endian. Reads 8 bytes.\nRange: 0 to 1.8×10¹⁹.\nUsed in network protocols and big-endian platforms."
                 });
             }
 
@@ -275,7 +289,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                             Format = "Float32 LE",
                             Value = floatLE.ToString("G9"),
                             HexValue = BitConverter.ToString(bytes, 0, 4).Replace("-", " "),
-                            IsValid = true
+                            IsValid = true,
+                            Description = "IEEE 754 single-precision floating-point, Little-Endian. Reads 4 bytes.\n~7 significant decimal digits.\nUsed in game engines, graphics and DSP."
                         });
                     }
 
@@ -292,7 +307,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                             Format = "Float32 BE",
                             Value = floatBE.ToString("G9"),
                             HexValue = BitConverter.ToString(bytesReversed, 0, 4).Replace("-", " "),
-                            IsValid = true
+                            IsValid = true,
+                            Description = "IEEE 754 single-precision floating-point, Big-Endian. Reads 4 bytes.\n~7 significant decimal digits.\nCommon in network protocols and big-endian systems."
                         });
                     }
                 }
@@ -313,7 +329,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                             Format = "Float64 LE (double)",
                             Value = doubleLE.ToString("G17"),
                             HexValue = BitConverter.ToString(bytes, 0, 8).Replace("-", " "),
-                            IsValid = true
+                            IsValid = true,
+                            Description = "IEEE 754 double-precision floating-point, Little-Endian. Reads 8 bytes.\n~15–17 significant decimal digits.\nDefault floating-point type in C#, Java and most languages."
                         });
                     }
 
@@ -330,7 +347,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                             Format = "Float64 BE (double)",
                             Value = doubleBE.ToString("G17"),
                             HexValue = BitConverter.ToString(bytesReversed, 0, 8).Replace("-", " "),
-                            IsValid = true
+                            IsValid = true,
+                            Description = "IEEE 754 double-precision floating-point, Big-Endian. Reads 8 bytes.\n~15–17 significant decimal digits.\nCommon in network protocols and big-endian platforms."
                         });
                     }
                 }
@@ -363,7 +381,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                             Format = "Unix Timestamp (32-bit)",
                             Value = date.ToString("yyyy-MM-dd HH:mm:ss UTC"),
                             HexValue = BitConverter.ToString(bytes, 0, 4).Replace("-", " "),
-                            IsValid = true
+                            IsValid = true,
+                            Description = "Seconds elapsed since 1970-01-01 00:00:00 UTC (Unix Epoch). Reads 4 bytes.\nValid range: 1970–2106.\nWidely used in Linux, macOS, C/C++ and embedded systems."
                         });
                     }
                 }
@@ -387,7 +406,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                                 Format = "Unix Timestamp (64-bit ms)",
                                 Value = date.ToString("yyyy-MM-dd HH:mm:ss.fff UTC"),
                                 HexValue = BitConverter.ToString(bytes, 0, 8).Replace("-", " "),
-                                IsValid = true
+                                IsValid = true,
+                                Description = "Milliseconds elapsed since 1970-01-01 00:00:00 UTC. Reads 8 bytes.\nUsed by Java, JavaScript (Date.now()), databases and logging systems."
                             });
                         }
                     }
@@ -409,7 +429,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                                 Format = "Windows FILETIME",
                                 Value = date.ToString("yyyy-MM-dd HH:mm:ss.fffffff UTC"),
                                 HexValue = BitConverter.ToString(bytes, 0, 8).Replace("-", " "),
-                                IsValid = true
+                                IsValid = true,
+                                Description = "100-nanosecond intervals since 1601-01-01 00:00:00 UTC. Reads 8 bytes.\nNative Windows date format used in NTFS file metadata and Win32 API (FILETIME struct)."
                             });
                         }
                     }
@@ -429,7 +450,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                             Format = ".NET DateTime Ticks",
                             Value = date.ToString("yyyy-MM-dd HH:mm:ss.fffffff"),
                             HexValue = BitConverter.ToString(bytes, 0, 8).Replace("-", " "),
-                            IsValid = true
+                            IsValid = true,
+                            Description = "100-nanosecond intervals since 0001-01-01 00:00:00. Reads 8 bytes.\nNative .NET DateTime/DateTimeOffset storage format (DateTime.Ticks property)."
                         });
                     }
                 }
@@ -459,7 +481,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                         Format = "IPv4 Address",
                         Value = ipv4.ToString(),
                         HexValue = BitConverter.ToString(bytes, 0, 4).Replace("-", " "),
-                        IsValid = true
+                        IsValid = true,
+                        Description = "4 bytes as an IPv4 dotted-decimal address (e.g. 192.168.1.1).\nNote: any 4 bytes produce a valid result — not necessarily a real network address."
                     });
 
                     // Port (first 2 bytes as port number)
@@ -470,7 +493,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                         Format = "Port Number (LE)",
                         Value = port.ToString(),
                         HexValue = BitConverter.ToString(bytes, 0, 2).Replace("-", " "),
-                        IsValid = true
+                        IsValid = true,
+                        Description = "2 bytes as a TCP/UDP port number, Little-Endian. Range: 0–65535.\nWell-known ports: 0–1023. Registered: 1024–49151."
                     });
 
                     var portBE = (ushort)((bytes[0] << 8) | bytes[1]);
@@ -480,7 +504,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                         Format = "Port Number (BE)",
                         Value = portBE.ToString(),
                         HexValue = BitConverter.ToString(bytes, 0, 2).Replace("-", " "),
-                        IsValid = true
+                        IsValid = true,
+                        Description = "2 bytes as a TCP/UDP port number, Big-Endian (network byte order).\nPort numbers in network packets are always Big-Endian per RFC 793/768."
                     });
                 }
                 catch { }
@@ -498,7 +523,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                         Format = "MAC Address",
                         Value = mac,
                         HexValue = BitConverter.ToString(bytes, 0, 6).Replace("-", " "),
-                        IsValid = true
+                        IsValid = true,
+                        Description = "6 bytes as a hardware MAC address in XX:XX:XX:XX:XX:XX notation.\nFirst 3 bytes = OUI (manufacturer ID). Used to uniquely identify network adapters."
                     });
                 }
                 catch { }
@@ -516,7 +542,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                         Format = "IPv6 Address",
                         Value = ipv6.ToString(),
                         HexValue = BitConverter.ToString(bytes, 0, 16).Replace("-", " "),
-                        IsValid = true
+                        IsValid = true,
+                        Description = "16 bytes as an IPv6 address in colon-hex notation.\nNote: any 16 bytes produce a valid result — not necessarily a real network address."
                     });
                 }
                 catch { }
@@ -544,7 +571,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                         Format = "GUID/UUID",
                         Value = guid.ToString(),
                         HexValue = BitConverter.ToString(bytes, 0, 16).Replace("-", " "),
-                        IsValid = true
+                        IsValid = true,
+                        Description = "16 bytes as a Globally Unique Identifier (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).\nUsed to uniquely identify objects in Windows COM, databases and distributed systems."
                     });
 
                     results.Add(new InspectorValue
@@ -553,7 +581,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                         Format = "GUID (braces)",
                         Value = guid.ToString("B"),
                         HexValue = BitConverter.ToString(bytes, 0, 16).Replace("-", " "),
-                        IsValid = true
+                        IsValid = true,
+                        Description = "Same GUID displayed with surrounding braces: {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}.\nCommon format in Windows registry, COM class IDs and Visual Studio project files."
                     });
                 }
                 catch { }
@@ -579,7 +608,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "RGB",
                     Value = $"R={bytes[0]} G={bytes[1]} B={bytes[2]}",
                     HexValue = $"#{bytes[0]:X2}{bytes[1]:X2}{bytes[2]:X2}",
-                    IsValid = true
+                    IsValid = true,
+                    Description = "3 bytes as Red, Green, Blue color components (0–255 each).\nStandard format used in HTML/CSS, PNG, JPEG and most image editors."
                 });
 
                 // BGR (reversed)
@@ -589,7 +619,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "BGR",
                     Value = $"B={bytes[0]} G={bytes[1]} R={bytes[2]}",
                     HexValue = $"#{bytes[2]:X2}{bytes[1]:X2}{bytes[0]:X2}",
-                    IsValid = true
+                    IsValid = true,
+                    Description = "3 bytes as Blue, Green, Red (reversed channel order).\nCommon in Windows BMP bitmaps, DirectX textures and OpenCV images."
                 });
             }
 
@@ -602,7 +633,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "RGBA",
                     Value = $"R={bytes[0]} G={bytes[1]} B={bytes[2]} A={bytes[3]}",
                     HexValue = $"#{bytes[0]:X2}{bytes[1]:X2}{bytes[2]:X2}{bytes[3]:X2}",
-                    IsValid = true
+                    IsValid = true,
+                    Description = "4 bytes as Red, Green, Blue, Alpha.\nAlpha controls transparency: 0 = fully transparent, 255 = fully opaque.\nUsed in PNG, WebGL and most modern graphics APIs."
                 });
 
                 // ARGB
@@ -612,7 +644,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "ARGB",
                     Value = $"A={bytes[0]} R={bytes[1]} G={bytes[2]} B={bytes[3]}",
                     HexValue = $"#{bytes[0]:X2}{bytes[1]:X2}{bytes[2]:X2}{bytes[3]:X2}",
-                    IsValid = true
+                    IsValid = true,
+                    Description = "4 bytes as Alpha, Red, Green, Blue.\nUsed by WPF, GDI+, Windows Imaging Component and many Windows graphics APIs."
                 });
             }
 
@@ -636,7 +669,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                 Format = "Hexadecimal",
                 Value = hexValue,
                 HexValue = hexValue,
-                IsValid = true
+                IsValid = true,
+                Description = "Raw bytes displayed in base-16 notation (digits 0–9 and A–F).\nUp to 8 bytes shown. The universal format for binary data inspection."
             });
 
             // Binary
@@ -647,7 +681,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                 Format = "Binary",
                 Value = binaryValue,
                 HexValue = hexValue,
-                IsValid = true
+                IsValid = true,
+                Description = "Raw bytes displayed as base-2 bit strings. Each byte = 8 bits (0 or 1).\nUp to 8 bytes shown. Useful for inspecting flags and bitfield structures."
             });
 
             // Octal
@@ -658,7 +693,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                 Format = "Octal",
                 Value = octalValue,
                 HexValue = hexValue,
-                IsValid = true
+                IsValid = true,
+                Description = "Raw bytes displayed in base-8 notation (digits 0–7).\nUp to 8 bytes shown. Historically used in Unix file permissions and older systems."
             });
 
             // ASCII (printable characters)
@@ -673,7 +709,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                 Format = "ASCII",
                 Value = ascii.ToString(),
                 HexValue = hexValue,
-                IsValid = true
+                IsValid = true,
+                Description = "Bytes interpreted as ASCII text characters. Non-printable bytes (< 32 or ≥ 127) are shown as '.'.\nUp to 8 bytes shown."
             });
 
             return results;
@@ -703,7 +740,8 @@ namespace WpfHexEditor.BinaryAnalysis.Services
                     Format = "Bit Pattern (MSB first)",
                     Value = bits.ToString().Trim(),
                     HexValue = byteValue.ToString("X2"),
-                    IsValid = true
+                    IsValid = true,
+                    Description = "Individual bit values of the first byte, from most-significant (Bit7) to least-significant (Bit0).\nUseful for inspecting hardware registers, protocol headers and bitfield flags."
                 });
             }
 

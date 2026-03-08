@@ -86,9 +86,43 @@
 
                     <!-- Format + value (compact 2-line layout) -->
                     <StackPanel Grid.Column="1">
-                        <TextBlock Text="{Binding Format}"
-                                   FontWeight="SemiBold" FontSize="10"
-                                   Foreground="{DynamicResource PFP_TextBrush}"/>
+                        <DockPanel>
+                            <!-- Help icon — visible only when Description is set -->
+                            <TextBlock DockPanel.Dock="Right"
+                                       Text="&#xE9CE;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="9"
+                                       Foreground="{DynamicResource PFP_SubTextBrush}"
+                                       VerticalAlignment="Center"
+                                       Margin="4,0,0,0"
+                                       Cursor="Help">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Description}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                                <TextBlock.ToolTip>
+                                    <ToolTip Background="{DynamicResource DockMenuBackgroundBrush}"
+                                             BorderBrush="{DynamicResource DockBorderBrush}"
+                                             BorderThickness="1"
+                                             Padding="8,6">
+                                        <TextBlock Text="{Binding Description}"
+                                                   MaxWidth="300"
+                                                   TextWrapping="Wrap"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    </ToolTip>
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBlock Text="{Binding Format}"
+                                       FontWeight="SemiBold" FontSize="10"
+                                       Foreground="{DynamicResource PFP_TextBrush}"/>
+                        </DockPanel>
                         <TextBlock Text="{Binding Value}"
                                    FontFamily="Consolas" FontSize="11"
                                    TextWrapping="NoWrap"
@@ -112,168 +146,248 @@
         <!-- Left  : Scope | Chart toggles | Mode | Zoom | Refresh/Copy        -->
         <!-- Right : Category filter | All formats                              -->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <Border Grid.Row="0" Style="{StaticResource PanelToolbarStyle}">
+        <Border Grid.Row="0" x:Name="ToolbarBorder"
+                Style="{StaticResource PanelToolbarStyle}"
+                SizeChanged="OnToolbarSizeChanged">
             <DockPanel LastChildFill="False" Margin="4,0">
 
-                <!-- ── RIGHT side: Inspector controls ────────────────────────── -->
-                <CheckBox DockPanel.Dock="Right"
-                          Content="All formats"
-                          VerticalAlignment="Center"
-                          IsChecked="{Binding ShowAllFormats, Mode=TwoWay}"
-                          FontSize="11"
-                          Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                          Margin="0,0,6,0"/>
-
-                <Rectangle DockPanel.Dock="Right" Style="{StaticResource PanelToolbarSeparatorStyle}"/>
-
-                <TextBlock DockPanel.Dock="Right"
-                           Text="Category:"
-                           VerticalAlignment="Center"
-                           FontSize="11"
-                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                           Margin="0,0,4,0"/>
-
-                <ComboBox DockPanel.Dock="Right"
-                          x:Name="CategoryFilterComboBox"
-                          Width="100" FontSize="11"
-                          VerticalAlignment="Center"
-                          SelectedValue="{Binding SelectedCategory, Mode=TwoWay}"
-                          SelectedValuePath="Content">
-                    <ComboBoxItem Content="All"       IsSelected="True"/>
-                    <ComboBoxItem Content="Integer"/>
-                    <ComboBoxItem Content="Float"/>
-                    <ComboBoxItem Content="Date/Time"/>
-                    <ComboBoxItem Content="Network"/>
-                    <ComboBoxItem Content="GUID"/>
-                    <ComboBoxItem Content="Color"/>
-                    <ComboBoxItem Content="Basic"/>
-                    <ComboBoxItem Content="Bits"/>
-                </ComboBox>
-
-                <Rectangle DockPanel.Dock="Right" Style="{StaticResource PanelToolbarSeparatorStyle}"/>
-
-                <!-- ── LEFT side: Scope ──────────────────────────────────────── -->
-                <TextBlock DockPanel.Dock="Left"
-                           Text="Scope:"
-                           VerticalAlignment="Center"
-                           FontSize="11"
-                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                           Margin="4,0,4,0"/>
-
-                <ComboBox DockPanel.Dock="Left"
-                          x:Name="ScopeComboBox"
-                          Width="110" FontSize="11"
-                          VerticalAlignment="Center"
-                          SelectionChanged="OnScopeChanged">
-                    <ComboBoxItem x:Name="ScopeSelection" Content="Selection" IsSelected="True"/>
-                    <ComboBoxItem x:Name="ScopeWholeFile" Content="Whole file"/>
-                </ComboBox>
-
-                <Rectangle DockPanel.Dock="Left" Style="{StaticResource PanelToolbarSeparatorStyle}"/>
-
-                <!-- ── LEFT side: Chart display toggles ─────────────────────── -->
-                <ToggleButton DockPanel.Dock="Left"
-                              x:Name="ToggleLabels"
-                              Style="{StaticResource PanelIconToggleStyle}"
-                              Content="&#xE8EC;"
-                              IsChecked="True"
-                              ToolTip="Show axis labels"
-                              Checked="OnToggleLabels" Unchecked="OnToggleLabels"/>
-
-                <ToggleButton DockPanel.Dock="Left"
-                              x:Name="ToggleGrid"
-                              Style="{StaticResource PanelIconToggleStyle}"
-                              Content="&#xE80A;"
-                              IsChecked="False"
-                              ToolTip="Show grid lines"
-                              Checked="OnToggleGrid" Unchecked="OnToggleGrid"/>
-
-                <ToggleButton DockPanel.Dock="Left"
-                              x:Name="ToggleStats"
-                              Style="{StaticResource PanelIconToggleStyle}"
-                              Content="&#xE9D9;"
-                              IsChecked="True"
-                              ToolTip="Show statistics overlay"
-                              Checked="OnToggleStats" Unchecked="OnToggleStats"/>
-
-                <Rectangle DockPanel.Dock="Left" Style="{StaticResource PanelToolbarSeparatorStyle}"/>
-
-                <!-- ── LEFT side: Chart mode dropdown ───────────────────────── -->
-                <Button DockPanel.Dock="Left"
-                        x:Name="ModeButton"
-                        Style="{StaticResource PanelDropdownButtonStyle}"
-                        ToolTip="Chart display mode"
-                        Click="OnModeButtonClick">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock x:Name="ModeLabel" Text="Frequency" FontSize="11"/>
-                            <TextBlock Text=" &#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="9"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button.Content>
+                <!-- ── RIGHT: Overflow button (shown when items don't fit) ────── -->
+                <Button DockPanel.Dock="Right"
+                        x:Name="ToolbarOverflowButton"
+                        Style="{StaticResource PanelIconButtonStyle}"
+                        Content="&#xE712;"
+                        ToolTip="More toolbar options"
+                        Visibility="Collapsed"
+                        Click="OnOverflowButtonClick">
                     <Button.ContextMenu>
-                        <ContextMenu x:Name="ModeContextMenu">
-                            <MenuItem Header="Frequency distribution"
-                                      Click="OnModeFrequency"
-                                      IsCheckable="True" x:Name="ModeFrequencyItem" IsChecked="True"/>
-                            <MenuItem Header="Entropy (sliding window)"
-                                      Click="OnModeEntropy"
-                                      IsCheckable="True" x:Name="ModeEntropyItem"/>
+                        <ContextMenu x:Name="OverflowContextMenu"
+                                     Opened="OnOverflowMenuOpened">
+                            <!-- TbgToggles -->
+                            <MenuItem x:Name="OvfToggleLabels" Header="Show Axis Labels"
+                                      IsCheckable="True" Click="OnToggleLabels" Tag="TbgToggles"/>
+                            <MenuItem x:Name="OvfToggleGrid"   Header="Show Grid Lines"
+                                      IsCheckable="True" Click="OnToggleGrid"   Tag="TbgToggles"/>
+                            <MenuItem x:Name="OvfToggleStats"  Header="Show Statistics"
+                                      IsCheckable="True" Click="OnToggleStats"  Tag="TbgToggles"/>
+                            <Separator Tag="TbgToggles"/>
+                            <!-- TbgMode -->
+                            <MenuItem x:Name="OvfModeFrequency" Header="Frequency Distribution"
+                                      IsCheckable="True" Click="OnModeFrequency" Tag="TbgMode"/>
+                            <MenuItem x:Name="OvfModeEntropy"   Header="Entropy (Sliding Window)"
+                                      IsCheckable="True" Click="OnModeEntropy"   Tag="TbgMode"/>
+                            <Separator Tag="TbgMode"/>
+                            <!-- TbgZoom -->
+                            <MenuItem Header="Zoom In"    Click="OnZoomIn"    InputGestureText="Wheel ↑" Tag="TbgZoom"/>
+                            <MenuItem Header="Zoom Out"   Click="OnZoomOut"   InputGestureText="Wheel ↓" Tag="TbgZoom"/>
+                            <MenuItem Header="Reset Zoom" Click="OnZoomReset"                            Tag="TbgZoom"/>
+                            <Separator Tag="TbgZoom"/>
+                            <!-- TbgAction -->
+                            <MenuItem Header="Refresh Chart"    Click="OnRefresh"   Tag="TbgAction"/>
+                            <MenuItem Header="Copy Chart Image" Click="OnCopyChart" Tag="TbgAction"/>
+                            <Separator Tag="TbgAction"/>
+                            <!-- TbgLayout -->
+                            <MenuItem Header="Layout" Tag="TbgLayout">
+                                <MenuItem x:Name="OvfLayoutLeft"   Header="Left"   IsCheckable="True" Tag="Left"   Click="OnOverflowLayoutClick"/>
+                                <MenuItem x:Name="OvfLayoutRight"  Header="Right"  IsCheckable="True" Tag="Right"  Click="OnOverflowLayoutClick"/>
+                                <MenuItem x:Name="OvfLayoutTop"    Header="Top"    IsCheckable="True" Tag="Top"    Click="OnOverflowLayoutClick"/>
+                                <MenuItem x:Name="OvfLayoutBottom" Header="Bottom" IsCheckable="True" Tag="Bottom" Click="OnOverflowLayoutClick"/>
+                            </MenuItem>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
 
-                <Rectangle DockPanel.Dock="Left" Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                <!-- ── RIGHT: Always-visible items (Category filter + All formats) -->
+                <StackPanel DockPanel.Dock="Right" x:Name="ToolbarRightPanel"
+                            Orientation="Horizontal">
+                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                    <TextBlock Text="Category:"
+                               VerticalAlignment="Center"
+                               FontSize="11"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               Margin="0,0,4,0"/>
+                    <ComboBox x:Name="CategoryFilterComboBox"
+                              Width="100" FontSize="11"
+                              VerticalAlignment="Center"
+                              SelectedValue="{Binding SelectedCategory, Mode=TwoWay}"
+                              SelectedValuePath="Content">
+                        <ComboBoxItem Content="All"       IsSelected="True"/>
+                        <ComboBoxItem Content="Integer"/>
+                        <ComboBoxItem Content="Float"/>
+                        <ComboBoxItem Content="Date/Time"/>
+                        <ComboBoxItem Content="Network"/>
+                        <ComboBoxItem Content="GUID"/>
+                        <ComboBoxItem Content="Color"/>
+                        <ComboBoxItem Content="Basic"/>
+                        <ComboBoxItem Content="Bits"/>
+                    </ComboBox>
+                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                    <CheckBox Content="All formats"
+                              VerticalAlignment="Center"
+                              IsChecked="{Binding ShowAllFormats, Mode=TwoWay}"
+                              FontSize="11"
+                              Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                              Margin="0,0,6,0"/>
+                </StackPanel>
 
-                <!-- ── LEFT side: Zoom controls ─────────────────────────────── -->
-                <Button DockPanel.Dock="Left"
-                        Style="{StaticResource PanelIconButtonStyle}"
-                        Content="&#xE8A3;"
-                        ToolTip="Zoom in (mouse wheel also works)"
-                        Click="OnZoomIn"/>
+                <!-- ── LEFT: TbgScope — always visible ───────────────────────── -->
+                <StackPanel DockPanel.Dock="Left" x:Name="TbgScope" Orientation="Horizontal">
+                    <TextBlock Text="Scope:"
+                               VerticalAlignment="Center"
+                               FontSize="11"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               Margin="4,0,4,0"/>
+                    <ComboBox x:Name="ScopeComboBox"
+                              Width="120" FontSize="11"
+                              VerticalAlignment="Center"
+                              SelectionChanged="OnScopeChanged">
+                        <ComboBoxItem x:Name="ScopeActiveView" Content="Active view"/>
+                        <ComboBoxItem x:Name="ScopeSelection"  Content="Selection" IsSelected="True"/>
+                        <ComboBoxItem x:Name="ScopeWholeFile"  Content="Whole file"/>
+                    </ComboBox>
+                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                </StackPanel>
 
-                <Button DockPanel.Dock="Left"
-                        Style="{StaticResource PanelIconButtonStyle}"
-                        Content="&#xE71F;"
-                        ToolTip="Zoom out"
-                        Click="OnZoomOut"/>
+                <!-- ── LEFT: TbgToggles (collapse priority 4 — last) ─────────── -->
+                <StackPanel DockPanel.Dock="Left" x:Name="TbgToggles" Orientation="Horizontal">
+                    <ToggleButton x:Name="ToggleLabels"
+                                  Style="{StaticResource PanelIconToggleStyle}"
+                                  Content="&#xE8EC;"
+                                  IsChecked="True"
+                                  ToolTip="Show axis labels"
+                                  Checked="OnToggleLabels" Unchecked="OnToggleLabels"/>
+                    <ToggleButton x:Name="ToggleGrid"
+                                  Style="{StaticResource PanelIconToggleStyle}"
+                                  Content="&#xE80A;"
+                                  IsChecked="False"
+                                  ToolTip="Show grid lines"
+                                  Checked="OnToggleGrid" Unchecked="OnToggleGrid"/>
+                    <ToggleButton x:Name="ToggleStats"
+                                  Style="{StaticResource PanelIconToggleStyle}"
+                                  Content="&#xE9D9;"
+                                  IsChecked="True"
+                                  ToolTip="Show statistics overlay"
+                                  Checked="OnToggleStats" Unchecked="OnToggleStats"/>
+                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                </StackPanel>
 
-                <Button DockPanel.Dock="Left"
-                        Style="{StaticResource PanelIconButtonStyle}"
-                        Content="&#xE740;"
-                        ToolTip="Reset zoom (show full 0x00–0xFF)"
-                        Click="OnZoomReset"/>
+                <!-- ── LEFT: TbgMode (collapse priority 3) ───────────────────── -->
+                <StackPanel DockPanel.Dock="Left" x:Name="TbgMode" Orientation="Horizontal">
+                    <Button x:Name="ModeButton"
+                            Style="{StaticResource PanelDropdownButtonStyle}"
+                            ToolTip="Chart display mode"
+                            Click="OnModeButtonClick">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock x:Name="ModeLabel" Text="Frequency" FontSize="11"/>
+                                <TextBlock Text=" &#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="9"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button.Content>
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="ModeContextMenu">
+                                <MenuItem Header="Frequency distribution"
+                                          Click="OnModeFrequency"
+                                          IsCheckable="True" x:Name="ModeFrequencyItem" IsChecked="True"/>
+                                <MenuItem Header="Entropy (sliding window)"
+                                          Click="OnModeEntropy"
+                                          IsCheckable="True" x:Name="ModeEntropyItem"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
+                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                </StackPanel>
 
-                <Rectangle DockPanel.Dock="Left" Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                <!-- ── LEFT: TbgZoom (collapse priority 2) ───────────────────── -->
+                <StackPanel DockPanel.Dock="Left" x:Name="TbgZoom" Orientation="Horizontal">
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE8A3;"
+                            ToolTip="Zoom in (mouse wheel also works)"
+                            Click="OnZoomIn"/>
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE71F;"
+                            ToolTip="Zoom out"
+                            Click="OnZoomOut"/>
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE740;"
+                            ToolTip="Reset zoom (show full 0x00–0xFF)"
+                            Click="OnZoomReset"/>
+                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                </StackPanel>
 
-                <!-- ── LEFT side: Refresh + Copy ────────────────────────────── -->
-                <Button DockPanel.Dock="Left"
-                        Style="{StaticResource PanelIconButtonStyle}"
-                        Content="&#xE72C;"
-                        ToolTip="Refresh chart"
-                        Click="OnRefresh"/>
+                <!-- ── LEFT: TbgAction (collapse priority 1) ─────────────────── -->
+                <StackPanel DockPanel.Dock="Left" x:Name="TbgAction" Orientation="Horizontal">
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE72C;"
+                            ToolTip="Refresh chart"
+                            Click="OnRefresh"/>
+                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xE8C8;"
+                            ToolTip="Copy chart as image"
+                            Click="OnCopyChart"/>
+                    <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
+                </StackPanel>
 
-                <Button DockPanel.Dock="Left"
-                        Style="{StaticResource PanelIconButtonStyle}"
-                        Content="&#xE8C8;"
-                        ToolTip="Copy chart as image"
-                        Click="OnCopyChart"/>
+                <!-- ── LEFT: TbgLayout (collapse priority 0 — first to collapse) -->
+                <StackPanel DockPanel.Dock="Left" x:Name="TbgLayout" Orientation="Horizontal">
+                    <TextBlock Text="Layout:"
+                               VerticalAlignment="Center"
+                               FontSize="11"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                               Margin="4,0,4,0"/>
+                    <ComboBox x:Name="ChartPositionCombo"
+                              Width="75" FontSize="11"
+                              VerticalAlignment="Center"
+                              ToolTip="Chart position relative to the interpretation list"
+                              SelectionChanged="OnChartPositionChanged">
+                        <ComboBoxItem Content="Left"   Tag="Left"/>
+                        <ComboBoxItem Content="Right"  Tag="Right"/>
+                        <ComboBoxItem Content="Top"    Tag="Top"/>
+                        <ComboBoxItem Content="Bottom" Tag="Bottom"/>
+                    </ComboBox>
+                </StackPanel>
 
             </DockPanel>
         </Border>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->
-        <!-- Row 1 — Main area: ByteChart (left) | Interpretations (right)     -->
+        <!-- Row 1 — Main area: Chart + Interpretations                        -->
+        <!-- Layout (Left/Right/Top/Bottom) is set dynamically by RebuildLayout()-->
         <!-- ═══════════════════════════════════════════════════════════════════ -->
         <Grid Grid.Row="1" x:Name="MainAreaGrid">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="ChartColumnDef"    Width="*" MinWidth="120"/> <!-- chart area   -->
-                <ColumnDefinition x:Name="SplitterColumnDef" Width="5"/>                <!-- splitter     -->
-                <ColumnDefinition                            Width="280" MinWidth="160"/> <!-- interpretations -->
-            </Grid.ColumnDefinitions>
+            <!-- ColumnDefinitions / RowDefinitions built at runtime by RebuildLayout() -->
 
-            <!-- ── Col 0: Chart area ─────────────────────────────────────────── -->
-            <Grid Grid.Column="0" x:Name="ChartContainer">
+            <!-- ── Chart area ────────────────────────────────────────────────── -->
+            <!-- Grid.Row / Grid.Column set by RebuildLayout() -->
+            <Grid x:Name="ChartContainer">
+                <Grid.ContextMenu>
+                    <ContextMenu Opened="OnChartContextMenuOpening">
+
+                        <!-- Group 1 — Zoom -->
+                        <MenuItem Header="Zoom In"    Click="OnZoomIn"    InputGestureText="Wheel ↑"/>
+                        <MenuItem Header="Zoom Out"   Click="OnZoomOut"   InputGestureText="Wheel ↓"/>
+                        <MenuItem Header="Reset Zoom" Click="OnZoomReset"/>
+
+                        <Separator/>
+
+                        <!-- Group 2 — Display toggles -->
+                        <MenuItem x:Name="CtxToggleLabels" Header="Show Axis Labels" IsCheckable="True" Click="OnCtxToggleLabels"/>
+                        <MenuItem x:Name="CtxToggleGrid"   Header="Show Grid Lines"  IsCheckable="True" Click="OnCtxToggleGrid"/>
+                        <MenuItem x:Name="CtxToggleStats"  Header="Show Statistics"  IsCheckable="True" Click="OnCtxToggleStats"/>
+
+                        <Separator/>
+
+                        <!-- Group 3 — Chart mode -->
+                        <MenuItem x:Name="CtxModeFrequency" Header="Frequency Distribution"   IsCheckable="True" Click="OnModeFrequency"/>
+                        <MenuItem x:Name="CtxModeEntropy"   Header="Entropy (Sliding Window)" IsCheckable="True" Click="OnModeEntropy"/>
+
+                        <Separator/>
+
+                        <!-- Group 4 — Actions -->
+                        <MenuItem Header="Refresh"             Click="OnRefresh"/>
+                        <MenuItem Header="Copy Chart as Image" Click="OnCopyChart"/>
+
+                    </ContextMenu>
+                </Grid.ContextMenu>
 
                 <!-- Frequency mode: BarChartPanel wrapped in horizontal ScrollViewer for zoom -->
                 <ScrollViewer x:Name="ChartScrollViewer"
@@ -287,6 +401,7 @@
                                          MouseMove="OnChartMouseMove"
                                          MouseLeftButtonUp="OnChartMouseUp"
                                          MouseWheel="OnChartMouseWheel"
+                                         MouseRightButtonUp="OnChartAreaRightClick"
                                          Cursor="Cross"/>
                 </ScrollViewer>
 
@@ -295,6 +410,7 @@
                         Visibility="Collapsed"
                         MinHeight="50"
                         SizeChanged="OnEntropyCanvasSizeChanged"
+                        MouseRightButtonUp="OnChartAreaRightClick"
                         Background="{DynamicResource PFP_PanelBackgroundBrush}"/>
 
                 <!-- Drag-to-zoom rubber band overlay (hit-test transparent) -->
@@ -322,34 +438,34 @@
                 </Border>
             </Grid>
 
-            <!-- ── Col 1: GridSplitter ──────────────────────────────────────── -->
+            <!-- ── GridSplitter — Row/Column set by RebuildLayout() ──────────── -->
             <GridSplitter x:Name="ChartSplitter"
-                          Grid.Column="1"
                           Width="5"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
                           Background="{DynamicResource PFP_BorderBrush}"
                           Cursor="SizeWE"/>
 
-            <!-- ── Col 2: Byte interpretations ──────────────────────────────── -->
-            <ScrollViewer Grid.Column="2"
-                          VerticalScrollBarVisibility="Auto"
-                          HorizontalScrollBarVisibility="Disabled"
-                          Background="{DynamicResource PFP_PanelBackgroundBrush}">
-                <ItemsControl x:Name="ValuesItemsControl"
-                              ItemsSource="{Binding Values}"
-                              ItemTemplate="{StaticResource InspectorValueTemplate}">
-                    <ItemsControl.Template>
-                        <ControlTemplate TargetType="ItemsControl">
-                            <Border Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}">
-                                <ItemsPresenter/>
-                            </Border>
-                        </ControlTemplate>
-                    </ItemsControl.Template>
-                </ItemsControl>
-            </ScrollViewer>
+            <!-- ── Interpretations list container — Row/Column set by RebuildLayout() -->
+            <Grid x:Name="ListContainer">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              Background="{DynamicResource PFP_PanelBackgroundBrush}">
+                    <ItemsControl x:Name="ValuesItemsControl"
+                                  ItemsSource="{Binding Values}"
+                                  ItemTemplate="{StaticResource InspectorValueTemplate}">
+                        <ItemsControl.Template>
+                            <ControlTemplate TargetType="ItemsControl">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}">
+                                    <ItemsPresenter/>
+                                </Border>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
         </Grid>
 
         <!-- ═══════════════════════════════════════════════════════════════════ -->

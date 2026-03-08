@@ -44,6 +44,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
     private readonly DispatcherTimer _samplingTimer;
     private TimeSpan _lastCpuTime;
     private DateTime _lastCpuCheck;
+    private double _lastSampledCpuPercent;
 
     /// <summary>Interval between diagnostics samples. Default: 5 seconds.</summary>
     public TimeSpan DiagnosticSamplingInterval
@@ -51,6 +52,13 @@ public sealed class WpfPluginHost : IAsyncDisposable
         get => _samplingTimer.Interval;
         set => _samplingTimer.Interval = value;
     }
+
+    /// <summary>
+    /// Process-level CPU% measured at the most recent periodic sampling tick.
+    /// Zero until the first tick fires (~5 s after startup).
+    /// NOT contaminated by the init-phase sample recorded in LoadPluginAsync.
+    /// </summary>
+    public double LastSampledCpuPercent => _lastSampledCpuPercent;
 
     /// <summary>Registry of per-plugin options pages (populated automatically on load).</summary>
     public PluginOptionsRegistry OptionsRegistry { get; } = new();
@@ -189,10 +197,18 @@ public sealed class WpfPluginHost : IAsyncDisposable
             var declaredPerms = instance.Capabilities.ToPermissionFlags();
             _permissionService.InitializeForPlugin(manifest.Id, declaredPerms);
 
+            // Build a per-plugin context: substitutes IHexEditorService with a
+            // TimedHexEditorService proxy so that every event handler invocation is
+            // timed and recorded in the plugin's diagnostics ring buffer.
+            // This gives PluginMonitoringViewModel a non-zero avgMs for active plugins,
+            // enabling proportional CPU/RAM distribution in the Plugin Monitor.
+            var timedHex     = new TimedHexEditorService(_hostContext.HexEditor, entry.Diagnostics);
+            var pluginContext = new PluginScopedContext(_hostContext, timedHex);
+
             // Run InitializeAsync on the STA dispatcher thread: plugins create WPF controls
             // (UserControl, Window, etc.) which require an STA thread.
             var cpuBefore = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
-            var initTask  = await _dispatcher.InvokeAsync(() => instance.InitializeAsync(_hostContext, ct));
+            var initTask  = await _dispatcher.InvokeAsync(() => instance.InitializeAsync(pluginContext, ct));
             var elapsed   = await _watchdog.WrapAsync(manifest.Id, "InitializeAsync",
                 initTask,
                 _watchdog.InitTimeout).ConfigureAwait(false);
@@ -487,6 +503,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
         double cpuPct = cpuDelta.TotalMilliseconds
             / (wallElapsed.TotalMilliseconds * Environment.ProcessorCount) * 100.0;
         cpuPct = Math.Clamp(cpuPct, 0.0, 100.0);
+        _lastSampledCpuPercent = cpuPct;
 
         _lastCpuTime = cpuNow;
         _lastCpuCheck = now;

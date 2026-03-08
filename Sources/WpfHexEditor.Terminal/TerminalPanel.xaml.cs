@@ -29,6 +29,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Terminal;
 
@@ -43,6 +44,10 @@ public sealed partial class TerminalPanel : UserControl
     private static readonly Regex UrlRegex = new(
         @"https?://[^\s""'<>]+|ftp://[^\s""'<>]+",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    // -- Toolbar overflow ---------------------------------------------------------
+
+    private ToolbarOverflowManager _overflowManager = null!;
 
     // -- Auto-scroll state --------------------------------------------------------
 
@@ -76,6 +81,23 @@ public sealed partial class TerminalPanel : UserControl
         {
             if ((bool)e.NewValue)
                 Dispatcher.InvokeAsync(() => InputBox.Focus(), DispatcherPriority.Input);
+        };
+
+        Loaded += (_, _) =>
+        {
+            _overflowManager = new ToolbarOverflowManager(
+                toolbarContainer:      ToolbarBorder,
+                alwaysVisiblePanel:    ToolbarRightPanel,
+                overflowButton:        ToolbarOverflowButton,
+                overflowMenu:          OverflowContextMenu,
+                groupsInCollapseOrder: new FrameworkElement[]
+                {
+                    TbgScrollNav,    // [0] first to collapse
+                    TbgTextOptions,  // [1]
+                    TbgOutputControl,// [2]
+                    TbgFont,         // [3] last to collapse
+                });
+            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
         };
 
         Unloaded += OnUnloaded;
@@ -577,4 +599,59 @@ public sealed partial class TerminalPanel : UserControl
         OutputRtb.Selection.Select(start, end);
         start.Paragraph?.BringIntoView();
     }
+
+    // ── Toolbar overflow ─────────────────────────────────────────────────────
+
+    private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged) _overflowManager?.Update();
+    }
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        OverflowContextMenu.PlacementTarget = ToolbarOverflowButton;
+        OverflowContextMenu.Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        OverflowContextMenu.IsOpen          = true;
+    }
+
+    private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+    {
+        OvfAutoScroll.IsChecked   = _vm?.IsAutoScrollEnabled == true;
+        OvfPauseOutput.IsChecked  = _vm?.IsOutputPaused      == true;
+        OvfTimestamps.IsChecked   = _vm?.ShowTimestamps       == true;
+        OvfWordWrap.IsChecked     = _vm?.IsWordWrap           == true;
+        OvfCopyOnSelect.IsChecked = _vm?.CopyOnSelect         == true;
+        _overflowManager?.SyncMenuVisibility();
+    }
+
+    private void OvfAutoScroll_Click(object sender, RoutedEventArgs e)
+    {
+        if (_vm is not null) _vm.IsAutoScrollEnabled = !_vm.IsAutoScrollEnabled;
+    }
+
+    private void OvfPauseOutput_Click(object sender, RoutedEventArgs e)
+    {
+        if (_vm is not null) _vm.IsOutputPaused = !_vm.IsOutputPaused;
+    }
+
+    private void OvfTimestamps_Click(object sender, RoutedEventArgs e)
+    {
+        if (_vm is not null) _vm.ShowTimestamps = !_vm.ShowTimestamps;
+    }
+
+    private void OvfWordWrap_Click(object sender, RoutedEventArgs e)
+    {
+        if (_vm is not null) _vm.IsWordWrap = !_vm.IsWordWrap;
+    }
+
+    private void OvfCopyOnSelect_Click(object sender, RoutedEventArgs e)
+    {
+        if (_vm is not null) _vm.CopyOnSelect = !_vm.CopyOnSelect;
+    }
+
+    private void OvfFontIncrease_Click(object sender, RoutedEventArgs e)
+        => _vm?.IncreaseFontCommand.Execute(null);
+
+    private void OvfFontDecrease_Click(object sender, RoutedEventArgs e)
+        => _vm?.DecreaseFontCommand.Execute(null);
 }

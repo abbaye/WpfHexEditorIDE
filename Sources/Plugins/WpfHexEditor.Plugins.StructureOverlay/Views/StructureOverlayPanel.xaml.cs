@@ -14,11 +14,13 @@ using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Microsoft.Win32;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.Models.StructureOverlay;
 using WpfHexEditor.Core.Services;
 using WpfHexEditor.HexEditor.ViewModels;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Plugins.StructureOverlay.Views;
 
@@ -32,6 +34,7 @@ public partial class StructureOverlayPanel : UserControl, IStructureOverlayPanel
     private readonly StructureOverlayViewModel _viewModel;
     private readonly StructureOverlayService _service;
     private byte[]? _currentFileBytes;
+    private ToolbarOverflowManager _overflowManager = null!;
 
     #endregion
 
@@ -64,6 +67,17 @@ public partial class StructureOverlayPanel : UserControl, IStructureOverlayPanel
         _viewModel.OnFieldSelected     += ViewModel_OnFieldSelected;
         _viewModel.OnStructureSelected += ViewModel_OnStructureSelected;
         StructuresTreeView.SelectedItemChanged += StructuresTreeView_SelectedItemChanged;
+
+        Loaded += (_, _) =>
+        {
+            _overflowManager = new ToolbarOverflowManager(
+                toolbarContainer:      ToolbarBorder,
+                alwaysVisiblePanel:    ToolbarRightPanel,
+                overflowButton:        ToolbarOverflowButton,
+                overflowMenu:          OverflowContextMenu,
+                groupsInCollapseOrder: new FrameworkElement[] { TbgStructureAdd });
+            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+        };
     }
 
     #endregion
@@ -201,4 +215,23 @@ public partial class StructureOverlayPanel : UserControl, IStructureOverlayPanel
     }
 
     #endregion
+
+    // ── Toolbar overflow ─────────────────────────────────────────────────────
+
+    private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged) _overflowManager?.Update();
+    }
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        OverflowContextMenu.PlacementTarget = ToolbarOverflowButton;
+        OverflowContextMenu.Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        OverflowContextMenu.IsOpen          = true;
+    }
+
+    private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+    {
+        _overflowManager?.SyncMenuVisibility();
+    }
 }

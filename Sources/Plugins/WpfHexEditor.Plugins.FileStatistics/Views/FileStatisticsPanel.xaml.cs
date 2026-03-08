@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
+using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Plugins.FileStatistics.Views;
 
@@ -24,9 +26,22 @@ public partial class FileStatisticsPanel : UserControl
     /// <summary>Raised when the user clicks the Refresh button.</summary>
     public event EventHandler? RefreshRequested;
 
+    private ToolbarOverflowManager _overflowManager = null!;
+
     public FileStatisticsPanel()
     {
         InitializeComponent();
+
+        Loaded += (_, _) =>
+        {
+            _overflowManager = new ToolbarOverflowManager(
+                toolbarContainer:      ToolbarBorder,
+                alwaysVisiblePanel:    ToolbarRightPanel,
+                overflowButton:        ToolbarOverflowButton,
+                overflowMenu:          OverflowContextMenu,
+                groupsInCollapseOrder: new FrameworkElement[] { TbgStatsRefresh });
+            Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+        };
     }
 
     // -- Public API -----------------------------------------------------------
@@ -123,6 +138,25 @@ public partial class FileStatisticsPanel : UserControl
         "Executable" => "Executable file signature detected (PE, ELF, etc.)",
         _            => string.Empty
     };
+
+    // ── Toolbar overflow ─────────────────────────────────────────────────────
+
+    private void OnToolbarSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (e.WidthChanged) _overflowManager?.Update();
+    }
+
+    private void OnOverflowButtonClick(object sender, RoutedEventArgs e)
+    {
+        OverflowContextMenu.PlacementTarget = ToolbarOverflowButton;
+        OverflowContextMenu.Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        OverflowContextMenu.IsOpen          = true;
+    }
+
+    private void OnOverflowMenuOpened(object sender, RoutedEventArgs e)
+    {
+        _overflowManager?.SyncMenuVisibility();
+    }
 }
 
 // -- Data model ---------------------------------------------------------------

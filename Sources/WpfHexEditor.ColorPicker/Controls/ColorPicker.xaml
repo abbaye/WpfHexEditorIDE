@@ -15,11 +15,6 @@
              d:DesignHeight="32" d:DesignWidth="200">
 
     <UserControl.Resources>
-        <!-- Fallback brushes for apps without theme -->
-        <SolidColorBrush x:Key="BorderBrush" Color="#CCCCCC"/>
-        <SolidColorBrush x:Key="SurfaceElevatedBrush" Color="#F5F5F5"/>
-        <SolidColorBrush x:Key="ForegroundBrush" Color="#333333"/>
-
         <!-- ColorPicker converters -->
         <local:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
         <local:ColorToContrastBrushConverter x:Key="ColorToContrastBrushConverter"/>
@@ -28,7 +23,7 @@
 
     <Grid>
         <!-- Compact Display (Trigger) -->
-        <Border BorderBrush="{DynamicResource BorderBrush}"
+        <Border BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="3"
                 Height="28"
@@ -49,13 +44,13 @@
 
                 <!-- Hex Color Display -->
                 <Border Grid.Column="1"
-                       Background="{DynamicResource SurfaceElevatedBrush}"
+                       Background="{DynamicResource DockMenuBackgroundBrush}"
                        Padding="8,0"
                        CornerRadius="0,2,2,0">
                     <TextBlock x:Name="HexColorText"
                               FontSize="11"
                               FontFamily="Consolas"
-                              Foreground="{DynamicResource ForegroundBrush}"
+                              Foreground="{DynamicResource DockMenuForegroundBrush}"
                               VerticalAlignment="Center"/>
                 </Border>
             </Grid>
@@ -68,19 +63,24 @@
                StaysOpen="False"
                AllowsTransparency="True"
                PopupAnimation="Fade">
-            <Border Background="White"
-                    BorderBrush="#CCCCCC"
+            <Border Background="{DynamicResource DockMenuBackgroundBrush}"
+                    BorderBrush="{DynamicResource DockBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="4"
-                    Padding="12">
+                    Padding="12"
+                    TextElement.Foreground="{DynamicResource DockMenuForegroundBrush}">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="12" ShadowDepth="4" Opacity="0.3"/>
                 </Border.Effect>
 
-                <TabControl Width="380" Height="480">
+                <TabControl Width="380" Height="480"
+                            Background="{DynamicResource DockMenuBackgroundBrush}"
+                            Foreground="{DynamicResource DockMenuForegroundBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}">
                     <!-- Custom Color Tab -->
                     <TabItem Header="{DynamicResource ColorPicker_Tab_Custom}">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      Background="{DynamicResource DockMenuBackgroundBrush}">
                             <StackPanel Margin="8">
 
                                 <!-- HSV Color Selector -->
@@ -185,9 +185,14 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="60"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="R" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="0" Text="R" FontWeight="SemiBold" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                     <Slider Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding Red, Mode=TwoWay}" Margin="4,0"/>
                                     <TextBox Grid.Column="2" Text="{Binding Red, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Background="{DynamicResource DockMenuBackgroundBrush}"
+                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                            BorderBrush="{DynamicResource DockBorderBrush}"
+                                            CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                                             VerticalContentAlignment="Center" Margin="4,0,0,0"/>
                                 </Grid>
 
@@ -198,9 +203,14 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="60"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="G" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="0" Text="G" FontWeight="SemiBold" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                     <Slider Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding Green, Mode=TwoWay}" Margin="4,0"/>
                                     <TextBox Grid.Column="2" Text="{Binding Green, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Background="{DynamicResource DockMenuBackgroundBrush}"
+                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                            BorderBrush="{DynamicResource DockBorderBrush}"
+                                            CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                                             VerticalContentAlignment="Center" Margin="4,0,0,0"/>
                                 </Grid>
 
@@ -211,9 +221,14 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="60"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="B" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="0" Text="B" FontWeight="SemiBold" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                     <Slider Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding Blue, Mode=TwoWay}" Margin="4,0"/>
                                     <TextBox Grid.Column="2" Text="{Binding Blue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Background="{DynamicResource DockMenuBackgroundBrush}"
+                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                            BorderBrush="{DynamicResource DockBorderBrush}"
+                                            CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                                             VerticalContentAlignment="Center" Margin="4,0,0,0"/>
                                 </Grid>
 
@@ -224,9 +239,14 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="60"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="A" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="0" Text="A" FontWeight="SemiBold" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                     <Slider Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding Alpha, Mode=TwoWay}" Margin="4,0"/>
                                     <TextBox Grid.Column="2" Text="{Binding Alpha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            Background="{DynamicResource DockMenuBackgroundBrush}"
+                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                            BorderBrush="{DynamicResource DockBorderBrush}"
+                                            CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                                             VerticalContentAlignment="Center" Margin="4,0,0,0"/>
                                 </Grid>
 
@@ -240,6 +260,10 @@
                                     <TextBox Grid.Column="0"
                                             Text="{Binding HexColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             FontFamily="Consolas"
+                                            Background="{DynamicResource DockMenuBackgroundBrush}"
+                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                            BorderBrush="{DynamicResource DockBorderBrush}"
+                                            CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                                             VerticalContentAlignment="Center"
                                             Margin="0,0,4,0"/>
                                     <TextBlock Grid.Column="1"
@@ -257,7 +281,8 @@
 
                     <!-- Palette Tab -->
                     <TabItem Header="{DynamicResource ColorPicker_Tab_Palette}">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      Background="{DynamicResource DockMenuBackgroundBrush}">
                             <StackPanel Margin="8">
 
                                 <!-- Standard Colors -->
@@ -273,7 +298,7 @@
                                             <Border Width="40" Height="40"
                                                    Margin="2"
                                                    Background="{Binding Converter={StaticResource ColorToBrushConverter}}"
-                                                   BorderBrush="#CCCCCC"
+                                                   BorderBrush="{DynamicResource DockBorderBrush}"
                                                    BorderThickness="1"
                                                    CornerRadius="3"
                                                    Cursor="Hand"
@@ -296,7 +321,7 @@
                                             <Border Width="32" Height="32"
                                                    Margin="2"
                                                    Background="{Binding Converter={StaticResource ColorToBrushConverter}}"
-                                                   BorderBrush="#CCCCCC"
+                                                   BorderBrush="{DynamicResource DockBorderBrush}"
                                                    BorderThickness="1"
                                                    CornerRadius="3"
                                                    Cursor="Hand"

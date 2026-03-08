@@ -46,6 +46,7 @@ public partial class MainWindow
     private readonly FocusContextService _focusContextService = new();
 
     // Service adapters (lazily set in InitializePluginSystemAsync after layout is ready)
+    private DockingAdapter? _dockingAdapter;
     private HexEditorServiceImpl? _hexEditorService;
     private OutputServiceImpl? _outputService;
     private ErrorPanelServiceImpl? _errorPanelService;
@@ -89,7 +90,8 @@ public partial class MainWindow
             if (_errorPanel is not null)
                 _errorPanelService.SetErrorPanel(_errorPanel);
 
-            var dockingAdapter = new DockingAdapter(_engine, _layout, DockHost, StoreContent, _layoutWasRestoredFromFile);
+            _dockingAdapter = new DockingAdapter(_engine, _layout, DockHost, StoreContent, _layoutWasRestoredFromFile);
+            var dockingAdapter = _dockingAdapter;
             var menuAdapter = new MenuAdapter(MainMenuBar);
             var statusBarAdapter = new StatusBarAdapter(AppStatusBar);
 

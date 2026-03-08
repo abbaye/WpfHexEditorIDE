@@ -9,12 +9,9 @@
 <UserControl x:Class="WpfHexEditor.Plugins.DataInspector.Options.DataInspectorOptionsPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             d:DesignHeight="320" d:DesignWidth="480">
+             Background="Transparent">
 
-    <StackPanel Margin="16" MaxWidth="480">
+    <StackPanel Margin="0,0,0,16">
 
         <!-- Auto-refresh -->
         <CheckBox x:Name="AutoRefreshCheckBox"
@@ -32,7 +29,23 @@
         <CheckBox x:Name="ShowByteChartCheckBox"
                   Content="Show Byte Chart panel"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                  Margin="0,0,0,16"/>
+                  Margin="0,0,0,12"/>
+
+        <!-- Chart position -->
+        <DockPanel Margin="0,0,0,16">
+            <TextBlock DockPanel.Dock="Left"
+                       Text="Chart position:"
+                       VerticalAlignment="Center"
+                       Width="180"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="ChartPositionComboBox"
+                      Width="120" HorizontalAlignment="Left">
+                <ComboBoxItem Content="Left"   Tag="Left"/>
+                <ComboBoxItem Content="Right"  Tag="Right"/>
+                <ComboBoxItem Content="Top"    Tag="Top"/>
+                <ComboBoxItem Content="Bottom" Tag="Bottom"/>
+            </ComboBox>
+        </DockPanel>
 
         <!-- Max string bytes -->
         <DockPanel Margin="0,0,0,4">

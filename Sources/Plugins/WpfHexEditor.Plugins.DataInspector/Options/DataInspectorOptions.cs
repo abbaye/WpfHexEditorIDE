@@ -14,6 +14,9 @@ using System.Text.Json;
 
 namespace WpfHexEditor.Plugins.DataInspector.Options;
 
+/// <summary>Position of the frequency/entropy chart relative to the interpretations list.</summary>
+public enum ChartPosition { Left, Right, Top, Bottom }
+
 public sealed class DataInspectorOptions
 {
     private static readonly string FilePath = Path.Combine(
@@ -36,6 +39,9 @@ public sealed class DataInspectorOptions
 
     /// <summary>Whether to show the ByteChart panel alongside the inspector.</summary>
     public bool ShowByteChart { get; set; } = true;
+
+    /// <summary>Position of the frequency/entropy chart relative to the interpretations list.</summary>
+    public ChartPosition ChartPosition { get; set; } = ChartPosition.Left;
 
     // -- Persistence ----------------------------------------------------------
 

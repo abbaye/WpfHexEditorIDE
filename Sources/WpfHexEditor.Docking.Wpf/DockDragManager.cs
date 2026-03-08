@@ -56,6 +56,10 @@ public class DockDragManager
     private Point _dragOffset;
     private Point _originalWindowPos;
 
+    // true when the last-hit edge indicator was an outer (full-width/height at root) indicator.
+    // false means inner (between side panels, targeting MainDocumentHost).
+    private bool _isOuterEdgeDrop;
+
     public DockDragManager(DockControl dockControl)
     {
         _dockControl = dockControl;
@@ -146,14 +150,18 @@ public class DockDragManager
 
         // --- Hit test with priority: panel compass first, then edge ---
 
+        // Update inner bounds so the edge overlay can show the correct inner indicators
+        _edgeOverlay.InnerBounds = ComputeInnerBoundsInCenterHost();
+
         // 1. Panel compass (if visible)
         DockDirection? panelDir = _panelOverlay.IsVisible ? _panelOverlay.HitTest(screenPos) : null;
         if (panelDir.HasValue && targetNode != null)
         {
-            _lastDirection = panelDir;
-            _targetGroup = targetNode;
+            _lastDirection      = panelDir;
+            _targetGroup        = targetNode;
+            _isOuterEdgeDrop    = false;
             _panelOverlay.HighlightedDirection = panelDir;
-            _edgeOverlay.HighlightedDirection = null;
+            _edgeOverlay.HighlightedDirection  = null;
             return;
         }
 
@@ -161,20 +169,38 @@ public class DockDragManager
         if (_panelOverlay.IsVisible)
             _panelOverlay.HighlightedDirection = null;
 
-        // 2. Edge overlay
-        DockDirection? edgeDir = _edgeOverlay.HitTest(screenPos);
+        // 2. Edge overlay — inner indicators take priority (checked first inside HitTestEx)
+        var (edgeDir, isOuter) = _edgeOverlay.HitTestEx(screenPos);
         if (edgeDir.HasValue && _dockControl.Layout != null)
         {
-            _lastDirection = edgeDir;
-            _targetGroup = _dockControl.Layout.MainDocumentHost;
+            _lastDirection      = edgeDir;
+            _targetGroup        = _dockControl.Layout.MainDocumentHost;
+            _isOuterEdgeDrop    = isOuter;
             _edgeOverlay.HighlightedDirection = edgeDir;
+            _edgeOverlay.IsHighlightOuter     = isOuter;
             return;
         }
 
         // 3. Neither
-        _lastDirection = null;
+        _lastDirection   = null;
+        _isOuterEdgeDrop = false;
         _targetGroup = isSelfDrag ? null : targetNode; // keep for reference but no direction
         _edgeOverlay.HighlightedDirection = null;
+    }
+
+    /// <summary>
+    /// Computes the bounds of the inner document zone (DocumentTabHost) in overlay-local DIPs.
+    /// Returns <see cref="Rect.Empty"/> if the DocumentTabHost cannot be found.
+    /// Used to position the inner edge indicators and produce accurate snap previews.
+    /// </summary>
+    private Rect ComputeInnerBoundsInCenterHost()
+    {
+        var docHost = FindDescendant<DocumentTabHost>(_dockControl.CenterHost);
+        if (docHost is null) return Rect.Empty;
+
+        var screenTl = docHost.PointToScreen(new Point(0, 0));
+        var localTl  = _dockControl.CenterHost.PointFromScreen(screenTl);
+        return new Rect(localTl, docHost.RenderSize);
     }
 
     /// <summary>
@@ -194,6 +220,7 @@ public class DockDragManager
         if (_edgeOverlay != null)
         {
             _edgeOverlay.HighlightedDirection = null;
+            _edgeOverlay.IsHighlightOuter     = false;
             if (_edgeOverlay.IsVisible) _edgeOverlay.Hide();
         }
     }
@@ -384,7 +411,27 @@ public class DockDragManager
                 return;
             }
 
-            if (floatingItems is { Count: > 1 })
+            if (_isOuterEdgeDrop)
+            {
+                // Outer edge drop: wrap the entire layout root so the panel spans the
+                // full window width (Bottom/Top) or full window height (Left/Right).
+                var floatingItemsOuter = _sourceFloatingWindow.Node?.Items.ToList();
+                DockGroupNode? landingGroupOuter = null;
+
+                foreach (var item in floatingItemsOuter ?? [_draggedItem!])
+                {
+                    if (landingGroupOuter is null)
+                    {
+                        engine.DockAtRoot(item, _lastDirection.Value);
+                        landingGroupOuter = item.Owner;
+                    }
+                    else
+                    {
+                        engine.Dock(item, landingGroupOuter, DockDirection.Center);
+                    }
+                }
+            }
+            else if (floatingItems is { Count: > 1 })
             {
                 DockGroupNode? landingGroup = null;
 
@@ -466,11 +513,27 @@ public class DockDragManager
         }
 
         // Determine the target element for snap zone calculation.
-        // Edge indicators target MainDocumentHost → use CenterHost as the visual reference.
-        // Panel compass indicators target a specific group → use the hovered DockTabControl.
-        var target = _targetGroup == _dockControl.Layout?.MainDocumentHost
-            ? (UIElement)_dockControl.CenterHost
-            : _targetElement;
+        // Outer edge drops (full-width / full-height) → use CenterHost as the visual reference.
+        // Inner edge drops (between side panels) → use the DocumentTabHost so the preview
+        //   reflects the real zone where the panel will land (bounded by side panels).
+        // Panel compass drops → use the hovered DockTabControl.
+        UIElement? target;
+        if (_targetGroup == _dockControl.Layout?.MainDocumentHost && !_isOuterEdgeDrop)
+        {
+            // Inner edge drop: preview bounded by the document host area
+            target = FindDescendant<DocumentTabHost>(_dockControl.CenterHost)
+                     ?? (UIElement)_dockControl.CenterHost;
+        }
+        else if (_targetGroup == _dockControl.Layout?.MainDocumentHost)
+        {
+            // Outer edge drop: preview spans the full CenterHost
+            target = _dockControl.CenterHost;
+        }
+        else
+        {
+            // Panel compass drop: preview over the specific hovered panel
+            target = _targetElement;
+        }
 
         if (target is null)
         {
@@ -520,12 +583,13 @@ public class DockDragManager
     {
         var window = _sourceFloatingWindow;
 
-        _isDragging = false;
-        _draggedItem = null;
-        _originalGroup = null;
-        _lastDirection = null;
-        _targetGroup = null;
-        _targetElement = null;
+        _isDragging      = false;
+        _draggedItem     = null;
+        _originalGroup   = null;
+        _lastDirection   = null;
+        _targetGroup     = null;
+        _targetElement   = null;
+        _isOuterEdgeDrop = false;
         _sourceFloatingWindow = null;
 
         Mouse.Capture(null);
@@ -542,5 +606,21 @@ public class DockDragManager
         HideSnapPreview();
         _snapPreview?.Close();
         _snapPreview = null;
+    }
+
+    /// <summary>
+    /// Walks the visual tree to find the first descendant of type <typeparamref name="T"/>.
+    /// </summary>
+    private static T? FindDescendant<T>(DependencyObject parent) where T : DependencyObject
+    {
+        var count = VisualTreeHelper.GetChildrenCount(parent);
+        for (var i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T t) return t;
+            var found = FindDescendant<T>(child);
+            if (found is not null) return found;
+        }
+        return null;
     }
 }

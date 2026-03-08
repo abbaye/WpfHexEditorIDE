@@ -119,14 +119,47 @@
         </Grid.RowDefinitions>
 
         <!-- Header toolbar -->
-        <Border Grid.Row="0" Style="{StaticResource PanelToolbarStyle}">
+        <Border x:Name="ToolbarBorder"
+                Grid.Row="0"
+                Style="{StaticResource PanelToolbarStyle}"
+                SizeChanged="OnToolbarSizeChanged">
             <DockPanel LastChildFill="True">
-                <Button DockPanel.Dock="Right"
-                        x:Name="AddStructureButton"
-                        Content="&#xE710;"
+                <!-- Right: always-visible placeholder -->
+                <StackPanel x:Name="ToolbarRightPanel"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center"/>
+
+                <!-- Overflow button -->
+                <Button x:Name="ToolbarOverflowButton"
+                        DockPanel.Dock="Right"
+                        Visibility="Collapsed"
                         Style="{StaticResource PanelIconButtonStyle}"
-                        ToolTip="Add structure overlay"
-                        Click="AddStructureButton_Click"/>
+                        ToolTip="More options"
+                        Click="OnOverflowButtonClick">
+                    <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    <Button.ContextMenu>
+                        <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
+                            <MenuItem Header="Add Structure Overlay"
+                                      Tag="TbgStructureAdd"
+                                      Click="AddStructureButton_Click"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+
+                <!-- Group: TbgStructureAdd [0] -->
+                <StackPanel x:Name="TbgStructureAdd"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
+                    <Button x:Name="AddStructureButton"
+                            Content="&#xE710;"
+                            Style="{StaticResource PanelIconButtonStyle}"
+                            ToolTip="Add structure overlay"
+                            Click="AddStructureButton_Click"/>
+                </StackPanel>
+
                 <TextBlock Text="Structure Overlay"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"

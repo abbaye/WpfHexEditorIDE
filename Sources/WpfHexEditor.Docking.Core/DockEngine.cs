@@ -117,6 +117,40 @@ public class DockEngine
     }
 
     /// <summary>
+    /// Docks an item at the layout root level, wrapping the entire RootNode with a new split.
+    /// Creates a full-width (Top/Bottom) or full-height (Left/Right) panel that sits outside
+    /// all existing side panels — equivalent to Visual Studio's outer edge dock indicators.
+    /// </summary>
+    public void DockAtRoot(DockItem item, DockDirection direction)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+
+        item.Owner?.RemoveItem(item);
+        Layout.FloatingItems.Remove(item);
+        Layout.AutoHideItems.Remove(item);
+
+        var newGroup = new DockGroupNode();
+        newGroup.AddItem(item);
+        item.State = DockItemState.Docked;
+        item.LastDockSide = direction switch
+        {
+            DockDirection.Left   => DockSide.Left,
+            DockDirection.Right  => DockSide.Right,
+            DockDirection.Top    => DockSide.Top,
+            DockDirection.Bottom => DockSide.Bottom,
+            _                    => DockSide.Bottom
+        };
+
+        // WrapWithSplit accepts DockNode (base class), so passing the root split node is valid.
+        // When the root has no parent, WrapWithSplit sets Layout.RootNode = the new split.
+        WrapWithSplit(Layout.RootNode, newGroup, direction);
+
+        AutoNormalize();
+        ItemDocked?.Invoke(item);
+        if (!IsInTransaction) LayoutChanged?.Invoke();
+    }
+
+    /// <summary>
     /// Removes an item from its current group (undock). The item becomes floating.
     /// </summary>
     public void Undock(DockItem item)

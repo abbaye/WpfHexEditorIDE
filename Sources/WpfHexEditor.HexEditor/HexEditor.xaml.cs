@@ -1665,6 +1665,12 @@ namespace WpfHexEditor.HexEditor
         }
 
         /// <summary>
+        /// Current first-line scroll offset (line number of the topmost visible line).
+        /// Synchronized with <see cref="VerticalScroll"/>.Value on every scroll event.
+        /// </summary>
+        public long ScrollPosition => _viewModel?.ScrollPosition ?? 0;
+
+        /// <summary>
         /// Number of visible lines in the viewport
         /// Increasing this value shows more bytes at once but may impact performance
         /// </summary>

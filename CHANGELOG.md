@@ -231,6 +231,50 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - VisualStudio theme — `PM_*` brush keys corrected to match VS2022 palette; theme file was referencing wrong color tokens
 - `BinaryAnalysisPanel` removed from solution (replaced by ParsedFields plugin); dangling project reference cleaned up
 
+### 🐛 Fixed — DataInspector — ActiveView Scope + SDK Viewport API (2026-03-08) — Issue #171
+
+- **DataInspector not reactive to viewport scroll** — Added `ActiveView` as a third `DataScope` value. The panel subscribes to `IHexEditorService.ViewportScrolled` when active, with a `_viewportRefreshPending` coalescing flag to prevent Dispatcher flooding during fast scroll. `_wholeFileChartLoaded` flag prevents full-file reload on every `SelectionChanged`. *(Fixes #171)*
+- **SDK — viewport API** — `IHexEditorService` now exposes `long FirstVisibleByteOffset`, `long LastVisibleByteOffset`, and `event EventHandler ViewportScrolled`. `HexEditorServiceImpl` subscribes to `HexEditor.VerticalScrollBarChanged` and forwards it via `ViewportScrolled`.
+- **Chart position configurable** — Toolbar combo (Left / Right / Top / Bottom) persisted in `DataInspectorOptions`. `RebuildLayout(ChartPosition)` dynamically reconfigures `MainAreaGrid` row/column definitions and `Grid` attached properties on `ChartContainer`, `ChartSplitter`, and `ListContainer`.
+- **Files:** `IHexEditorService.cs`, `HexEditorServiceImpl.cs`, `DataInspectorPanel.xaml(.cs)`, `DataInspectorOptions.cs`, `DataInspectorOptionsPage.xaml(.cs)`, `DataInspectorPlugin.cs`
+
+### 🐛 Fixed — Status Bar (2026-03-08) — Issues #168 #169 #172 #173 #174
+
+- **File Size missing from IDE status bar** — `HexEditor.StatusBarContributor` now exposes a `_sbFileSize` item (first position, read-only) reporting `VirtualLength` via `FormatFileSize()`. Refreshed on every file operation / selection change / mode change via `RaiseHexStatusChanged()`. *(Fixes #169, #172)*
+- **Stale status bar values on tab switch** — Added `void RefreshStatusBarItems()` to `IStatusBarContributor`. All editors implement it (`HexEditor` → `RefreshStatusBarItemValues()`, `TblEditor`, `CodeEditor`, `ImageViewer`, `EmptyStatusBarContributor` no-op). `OnActiveDocumentChanged` now calls it unconditionally. `RefreshText.Text` cleared when a non-hex editor becomes active. *(Fixes #173)*
+- **Split-pane focus does not update status bar** — `StoreContent()` subscribes to `UIElement.IsKeyboardFocusWithinChanged` for all non-panel content. On focus-enter, `SyncStatusBarToFocusedEditor(contentId)` performs a lightweight sync (updates `ActiveDocumentEditor`, `ActiveStatusBarContributor`, calls `RefreshStatusBarItems()` + `SyncActiveDocument()`). Skips if the same contributor/editor is already active. *(Fixes #168, #174)*
+- **Files:** `IStatusBarContributor.cs`, `HexEditor.StatusBarContributor.cs`, `MainWindow.xaml.cs`, `TblEditor.xaml.cs`, `CodeEditor.cs`, `ImageViewer.xaml.cs`
+- **Commit:** `05c19630`
+
+### 🐛 Fixed — Docking (2026-03-08) — Issue #170
+
+- **Outer/root-level dock support** — `DockEngine.DockAtRoot(item, direction)` wraps `Layout.RootNode` entirely via `WrapWithSplit()`, creating true full-width/height panels outside all side panels (like VS outer dock targets). `DockEdgeOverlayWindow` rewritten with dual indicator sets: outer (36 px, at window edge → root-level) and inner (28 px, at document host → existing behaviour). `HitTestEx()` returns `(Direction, IsOuter)`. `DockDragManager` uses `_isOuterEdgeDrop` flag and `ComputeInnerBoundsInCenterHost()` to route `OnFloatingMouseUp` to `DockAtRoot()` when outer. *(Fixes #170)*
+- **Drop preview mismatch** — Inner hits now snap preview to `DocumentTabHost` bounds; outer hits snap to `CenterHost` bounds, matching the actual panel width created.
+- **Files:** `DockEngine.cs`, `DockEdgeOverlayWindow.cs`, `DockDragManager.cs`
+
+### 🐛 Fixed — Reset Layout / DockingAdapter (2026-03-08)
+
+- **Open documents lost after Reset Layout** — `OnResetLayout` now snapshots open `doc-*` DockItems before calling `SetupDefaultLayout()` and re-docks them after. `_contentCache.Clear()` removed from the reset path to preserve editor instances.
+- **Plugin menus broken after Reset / Load Layout** — `DockingAdapter` fields (`_engine`, `_layout`) made non-readonly; `_allKnownPanels` dict tracks every registered panel. New `RebindLayout(engine, layout)` updates refs and re-defers panels absent from the new layout. `ApplyLayout()` calls `_dockingAdapter?.RebindLayout(...)` after every layout change.
+- **Files:** `DockingAdapter.cs`, `MainWindow.PluginSystem.cs`, `MainWindow.xaml.cs`
+
+### ✨ Added — Document Lifecycle Service (2026-03-08)
+
+- `DocumentModel` — observable per-tab state: `Title`, `IsDirty`, `CanUndo`, `CanRedo`, `IsBusy`, `IsReadOnly`, `IsActive`. Wires `IDocumentEditor` events → properties via `AttachEditor` / `DetachEditor`.
+- `IDocumentManager` / `DocumentManager` — central document registry: `Register`, `Unregister`, `AttachEditor`, `SetActive`, `GetDirty`; typed events: `DocumentRegistered`, `DocumentUnregistered`, `ActiveDocumentChanged`, `DocumentDirtyChanged`, `DocumentTitleChanged`.
+- `MainWindow.DocumentModel.cs` — `InitDocumentManager()`, `RegisterDocumentFromItem()`, `UnregisterDocument()`, `SyncActiveDocument()`; routes `DocumentTitleChanged` → `DockItem.Title`; `DocumentDirtyChanged` → `CommandManager.InvalidateRequerySuggested()`.
+- `CollectAllDirtyItems` now queries `_documentManager.GetDirty()` (O(n) over models) instead of walking the layout tree.
+- **Files:** `DocumentModel.cs`, `IDocumentManager.cs`, `DocumentManager.cs`, `MainWindow.DocumentModel.cs`, `MainWindow.xaml.cs`
+- **Commit:** `5c75f60c`
+
+### 🐛 Fixed — Plugin Monitor (2026-03-08) ⚠️ Partial — #175 still open
+
+- **Sparklines not updating** — `PluginMonitorRow.MiniChart` is now a proper observable property (backing field + `OnPropertyChanged()`). Row pre-assigns `MiniChart` before `Rows.Add()` to avoid null-binding on initial render.
+- **CPU reading reflects idle process CPU, not startup spike** — `WpfPluginHost` added `_lastSampledCpuPercent` field updated exclusively in `OnSamplingTick`; `PluginMonitoringViewModel.Refresh()` reads `_host.LastSampledCpuPercent` instead of per-plugin ring-buffer first sample (which captured the ~100% startup spike).
+- **Initial events not shown** — `_dispatcher` stored in VM constructor; `AddEvent()` guards mutations with `_dispatcher.CheckAccess()`; `SynthesizeInitialLoadEvents()` called at construction to replay already-loaded plugin events.
+- **Weight fallback incorrectly distributes metrics** — Partial fix applied in `50f800ca`: non-loaded plugins → weight = 0; `sumExecMs > 0 && avgMs = 0` → weight = 0; `sumExecMs = 0` → equal share. **Issue #175 remains open** — further investigation needed for metric attribution accuracy under real multi-plugin load.
+- **Files:** `PluginMonitoringViewModel.cs`, `WpfPluginHost.cs`
+
 ---
 
 ## [Unreleased] — 2026-03 — IDE & Project System
