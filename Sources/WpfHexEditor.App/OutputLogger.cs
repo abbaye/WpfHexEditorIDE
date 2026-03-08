@@ -19,9 +19,10 @@ internal static class OutputLogger
 
     // --- Log-level brush palette ---------------------------------------
     // INFO  : null  = inherits theme foreground (white/light in dark themes)
-    private static readonly Brush WarnBrush  = Freeze(Color.FromRgb(220, 180,  50)); // gold
-    private static readonly Brush ErrorBrush = Freeze(Color.FromRgb(240,  80,  60)); // red-orange
-    private static readonly Brush DebugBrush = Freeze(Color.FromRgb(130, 130, 130)); // gray
+    private static readonly Brush WarnBrush    = Freeze(Color.FromRgb(220, 180,  50)); // gold
+    private static readonly Brush ErrorBrush   = Freeze(Color.FromRgb(240,  80,  60)); // red-orange
+    private static readonly Brush DebugBrush   = Freeze(Color.FromRgb(130, 130, 130)); // gray
+    private static readonly Brush SuccessBrush = Freeze(Color.FromRgb( 78, 201, 176)); // teal-green
 
     private static SolidColorBrush Freeze(Color c)
     {
@@ -57,6 +58,22 @@ internal static class OutputLogger
     public static void PluginInfo(string message)  => Log("INFO ", message, null,       SourcePluginSystem);
     public static void PluginWarn(string message)  => Log("WARN ", message, WarnBrush,  SourcePluginSystem);
     public static void PluginError(string message) => Log("ERROR", message, ErrorBrush, SourcePluginSystem);
+
+    // --- Public API — Build channel ------------------------------------
+
+    public static void BuildInfo(string message)    => Log("INFO ", message, null,          SourceBuild);
+    public static void BuildWarn(string message)    => Log("WARN ", message, WarnBrush,     SourceBuild);
+    public static void BuildError(string message)   => Log("ERROR", message, ErrorBrush,    SourceBuild);
+    public static void BuildSuccess(string message) => Log("OK   ", message, SuccessBrush,  SourceBuild);
+
+    /// <summary>
+    /// Writes a separator line to visually group sections in the Build channel
+    /// (e.g. project name, target name).
+    /// </summary>
+    public static void BuildSection(string title)
+        => Append($"---- {title} ------------------------------------", null, SourceBuild);
+
+    // -----------
 
     /// <summary>
     /// Writes a separator line to visually group output sections in the General channel.

@@ -544,7 +544,7 @@
                             MinWidth="110"
                             Padding="10,0"
                             FontSize="12"
-                            Background="{DynamicResource PFP_AccentBrush}"
+                            Background="{DynamicResource AccentBrush}"
                             Foreground="White"
                             BorderThickness="0"
                             Click="OnOpenClick"/>
