@@ -24,10 +24,15 @@ using System.Windows.Input;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using WpfHexEditor.Plugins.AssemblyExplorer.Events;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
+using WpfHexEditor.SDK.Descriptors;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
@@ -41,6 +46,8 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
     private readonly DecompilerService       _decompiler;
     private readonly IHexEditorService       _hexEditor;
     private readonly IOutputService          _output;
+    private readonly IUIRegistry             _uiRegistry;
+    private readonly string                  _pluginId;
 
     private CancellationTokenSource? _loadCts;
 
@@ -48,12 +55,16 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
         IAssemblyAnalysisEngine analysisService,
         DecompilerService       decompiler,
         IHexEditorService       hexEditor,
-        IOutputService          output)
+        IOutputService          output,
+        IUIRegistry             uiRegistry,
+        string                  pluginId)
     {
         _analysisService = analysisService;
         _decompiler      = decompiler;
         _hexEditor       = hexEditor;
         _output          = output;
+        _uiRegistry      = uiRegistry;
+        _pluginId        = pluginId;
 
         DetailViewModel = new AssemblyDetailViewModel(decompiler);
 
@@ -71,9 +82,9 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 
         ClearCommand = new RelayCommand(_ => Clear());
 
-        // Phase 5: "Open in Code Editor" — stub until TextEditor integration is complete
+        // Phase 5: opens decompiled text in a read-only styled TextBox document tab
         OpenInEditorCommand = new RelayCommand(
-            _ => _output.Info("[Assembly Explorer] Open in Code Editor — Phase 5 (coming soon)"),
+            _ => OpenSelectedNodeInEditor(),
             _ => SelectedNode is not null);
     }
 
@@ -473,5 +484,69 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             node.IsExpanded = expanded;
             SetAllExpanded(node.Children, expanded);
         }
+    }
+
+    // ── Open in Code Editor ───────────────────────────────────────────────────
+
+    private void OpenSelectedNodeInEditor()
+    {
+        if (_selectedNode is null) return;
+
+        var text = _selectedNode switch
+        {
+            AssemblyRootNodeViewModel root => _decompiler.DecompileAssembly(root.Model),
+            TypeNodeViewModel         type => _decompiler.DecompileType(type.Model),
+            MethodNodeViewModel       meth => _decompiler.DecompileMethod(meth.Model),
+            _                              => _decompiler.GetStubText(_selectedNode.DisplayName)
+        };
+
+        var token  = _selectedNode.MetadataToken;
+        var uiId   = $"doc-plugin-{_pluginId}-decompiled-{(token != 0 ? token.ToString("X8") : _selectedNode.DisplayName.GetHashCode().ToString("X8"))}";
+        var title  = $"{_selectedNode.DisplayName} (decompiled)";
+
+        // If the tab is already open, just show it; otherwise create it.
+        if (_uiRegistry.Exists(uiId))
+        {
+            _output.Info($"[Assembly Explorer] '{_selectedNode.DisplayName}' is already open in the editor.");
+            return;
+        }
+
+        var content = BuildDecompiledContent(text);
+
+        _uiRegistry.RegisterDocumentTab(uiId, content, _pluginId, new DocumentDescriptor
+        {
+            Title     = title,
+            ContentId = uiId,
+            ToolTip   = $"Decompiled: {_selectedNode.DisplayName}",
+            CanClose  = true
+        });
+    }
+
+    /// <summary>
+    /// Builds a read-only, theme-aware WPF control to display decompiled text as a document tab.
+    /// Uses DynamicResource so the content adapts automatically to IDE theme changes.
+    /// No TextEditor project reference required — SDK-only approach.
+    /// </summary>
+    private static UIElement BuildDecompiledContent(string text)
+    {
+        var textBox = new TextBox
+        {
+            Text              = text,
+            IsReadOnly        = true,
+            FontFamily        = new FontFamily("Consolas"),
+            FontSize          = 12,
+            BorderThickness   = new Thickness(0),
+            TextWrapping      = TextWrapping.NoWrap,
+            CaretBrush        = Brushes.Transparent,
+            Padding           = new Thickness(8, 4, 8, 4),
+            VerticalScrollBarVisibility   = ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
+        };
+
+        // DynamicResource resolves once the control enters the visual tree inside the IDE.
+        textBox.SetResourceReference(TextBox.ForegroundProperty, "PFP_SubTextBrush");
+        textBox.SetResourceReference(TextBox.BackgroundProperty, "PFP_SectionBackgroundBrush");
+
+        return textBox;
     }
 }

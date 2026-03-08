@@ -87,7 +87,8 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         // Build panel with all dependencies injected
         _panel = new AssemblyExplorerPanel(
             analysisEngine, decompiler,
-            context.HexEditor, context.Output, context.EventBus);
+            context.HexEditor, context.Output, context.EventBus,
+            context.UIRegistry, Id);
 
         _panel.SetContext(context);
 

@@ -43,12 +43,14 @@ public partial class AssemblyExplorerPanel : UserControl
         DecompilerService                        decompiler,
         SDK.Contracts.Services.IHexEditorService hexEditor,
         SDK.Contracts.Services.IOutputService    output,
-        IPluginEventBus                          eventBus)
+        IPluginEventBus                          eventBus,
+        IUIRegistry                              uiRegistry,
+        string                                   pluginId)
     {
         InitializeComponent();
 
         ViewModel = new AssemblyExplorerViewModel(
-            analysisEngine, decompiler, hexEditor, output);
+            analysisEngine, decompiler, hexEditor, output, uiRegistry, pluginId);
 
         DataContext            = ViewModel;
         DetailPane.DataContext = ViewModel.DetailViewModel;

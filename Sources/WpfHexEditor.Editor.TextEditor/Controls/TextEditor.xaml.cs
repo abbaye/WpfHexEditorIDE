@@ -367,6 +367,34 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IOpenable
     public string GetText() => _vm.GetText();
 
     /// <summary>
+    /// Populates the editor with raw text, bypassing file I/O.
+    /// Optionally applies a syntax language by name (e.g. "C#") and/or marks the
+    /// document as read-only. Intended for plugin-generated content such as
+    /// decompiled source or IL disassembly that has no backing file.
+    /// </summary>
+    /// <param name="text">Text content to display.</param>
+    /// <param name="readOnly">When true the user cannot edit the content.</param>
+    /// <param name="languageName">
+    /// Optional syntax language name to look up in <see cref="SyntaxDefinitionCatalog"/>.
+    /// Pass null for plain text.
+    /// </param>
+    public void SetContentDirect(string text, bool readOnly = true, string? languageName = null)
+    {
+        _vm.SetText(text);
+        _vm.IsReadOnly = readOnly;
+
+        if (languageName is not null)
+        {
+            var def = SyntaxDefinitionCatalog.Instance.FindByName(languageName);
+            if (def is not null)
+            {
+                _vm.SyntaxDefinition = def;
+                LanguageText.Text    = def.Name;
+            }
+        }
+    }
+
+    /// <summary>
     /// Moves the caret to the given 1-based line and column and scrolls it into view.
     /// </summary>
     public void GoToLine(int line, int column = 1)
