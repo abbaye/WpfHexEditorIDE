@@ -352,75 +352,15 @@
 
         <!-- ═══ RIGHT PANE ═══ -->
         <Grid Grid.Column="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/> <!-- Global metrics strip -->
-                <RowDefinition Height="*"/>    <!-- Plugin detail / placeholder -->
-            </Grid.RowDefinitions>
-
-            <!-- Global metrics strip — always visible, bound to PluginManagerViewModel -->
-            <Border Grid.Row="0"
-                    Background="{DynamicResource Panel_ToolbarBrush}"
-                    BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
-                    BorderThickness="0,0,0,1"
-                    Padding="16,8">
-                <UniformGrid Columns="4">
-                    <!-- CPU -->
-                    <StackPanel HorizontalAlignment="Center">
-                        <TextBlock Text="{Binding GlobalCpuPercent, StringFormat={}{0:F1}%}"
-                                   FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
-                                   Foreground="#4ADE80"/>
-                        <TextBlock Text="CPU" FontSize="10" HorizontalAlignment="Center"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </StackPanel>
-                    <!-- Memory -->
-                    <StackPanel HorizontalAlignment="Center">
-                        <TextBlock Text="{Binding GlobalMemoryMb, StringFormat={}{0} MB}"
-                                   FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
-                                   Foreground="#60A5FA"
-                                   ToolTip="Total managed heap (process-wide, shared by all plugins)"/>
-                        <TextBlock Text="Memory" FontSize="10" HorizontalAlignment="Center"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </StackPanel>
-                    <!-- Running -->
-                    <StackPanel HorizontalAlignment="Center">
-                        <TextBlock Text="{Binding RunningLabel}"
-                                   FontSize="14" FontWeight="Bold" HorizontalAlignment="Center"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                        <TextBlock Text="Running" FontSize="10" HorizontalAlignment="Center"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </StackPanel>
-                    <!-- Faults — red when > 0 -->
-                    <StackPanel HorizontalAlignment="Center">
-                        <TextBlock Text="{Binding FaultCount}"
-                                   FontSize="14" FontWeight="Bold" HorizontalAlignment="Center">
-                            <TextBlock.Style>
-                                <!-- Default: red (faults present). When 0: neutral foreground. -->
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="#EF4444"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding FaultCount}" Value="0">
-                                            <Setter Property="Foreground" Value="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <TextBlock Text="Faults" FontSize="10" HorizontalAlignment="Center"
-                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                    </StackPanel>
-                </UniformGrid>
-            </Border>
 
             <!-- No selection placeholder -->
-            <TextBlock Grid.Row="1"
-                       Text="Select a plugin to view details"
+            <TextBlock Text="Select a plugin to view details"
                        HorizontalAlignment="Center" VerticalAlignment="Center"
                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Opacity="0.5"
                        Visibility="{Binding SelectedPlugin, Converter={StaticResource NullToVis}}"/>
 
             <!-- Detail pane (plugin selected) -->
-            <Grid Grid.Row="1"
-                  Visibility="{Binding SelectedPlugin, Converter={StaticResource NotNullToVis}}"
+            <Grid Visibility="{Binding SelectedPlugin, Converter={StaticResource NotNullToVis}}"
                   DataContext="{Binding SelectedPlugin}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/> <!-- Plugin header card -->
