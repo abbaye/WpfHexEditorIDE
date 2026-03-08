@@ -3,55 +3,50 @@
 // File: Services/DecompilerService.cs
 // Author: Derek Tremblay
 // Created: 2026-03-08
+// License: GNU Affero General Public License v3.0 (AGPL-3.0)
 // Description:
-//     Stub decompiler service that returns placeholder C# text.
-//     Full decompilation via ILSpy engine (IDecompiler from
-//     WpfHexEditor.Decompiler.Core) is planned for a future phase.
-//     No ProjectReference to Decompiler.Core is added in this stub.
+//     Decompiler service implementation using the BCL-only Core emitters:
+//       - CSharpSkeletonEmitter -> "Code" tab (C# structural skeleton)
+//     Full decompilation (control-flow reconstruction, expressions) is
+//     outside the BCL-only scope; method bodies are left as stubs.
 //
 // Architecture Notes:
-//     Pattern: Strategy stub — the interface expected by future phases
-//     is expressed through method signatures so the ViewModel layer
-//     can call this service without change when a real engine is plugged in.
+//     Pattern: Facade - wraps Core emitters behind a plugin-facing API.
 // ==========================================================
 
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
+using WpfHexEditor.Core.AssemblyAnalysis.Services;
+using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Services;
 
 /// <summary>
-/// Returns placeholder decompiled text for assembly nodes.
-/// All methods are synchronous stubs — a real decompiler backend
-/// will replace these with async calls to an ILSpy/dnSpy engine.
+/// Provides decompiled text for the detail pane tabs.
+/// Uses only BCL-based Core emitters - no external NuGet dependencies.
 /// </summary>
 public sealed class DecompilerService
 {
-    private const string NotLoaded =
-        "// Decompiler not yet loaded.\n// Full decompilation is planned for a future release.";
+    private readonly IAssemblyAnalysisEngine _engine;
+    private readonly CSharpSkeletonEmitter   _csharp = new();
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    public DecompilerService(IAssemblyAnalysisEngine engine)
+        => _engine = engine;
 
-    /// <summary>Returns stub C# text for an assembly root node.</summary>
+    // Public API
+
+    /// <summary>Returns the C# skeleton for an assembly (AssemblyInfo.cs style).</summary>
     public string DecompileAssembly(AssemblyModel assembly)
-        => $"// Assembly: {assembly.Name} v{assembly.Version}\n"
-         + $"// File: {assembly.FilePath}\n"
-         + (assembly.IsManaged
-               ? $"// Types: {assembly.Types.Count}  |  References: {assembly.References.Count}\n\n{NotLoaded}"
-               : "// Native PE — no managed metadata.\n\n" + NotLoaded);
+        => _csharp.EmitAssemblyInfo(assembly);
 
-    /// <summary>Returns stub C# text for a type node.</summary>
+    /// <summary>Returns the C# structural skeleton for a type.</summary>
     public string DecompileType(TypeModel type)
-        => $"// Type: {type.FullName}\n"
-         + $"// Token: 0x{type.MetadataToken:X8}\n\n"
-         + NotLoaded;
+        => _csharp.EmitType(type);
 
-    /// <summary>Returns stub C# text for a method node.</summary>
-    public string DecompileMethod(MemberModel method)
-        => $"// Method: {method.Name}\n"
-         + $"// Token: 0x{method.MetadataToken:X8}\n\n"
-         + NotLoaded;
+    /// <summary>Returns the C# signature stub for a single member.</summary>
+    public string DecompileMethod(MemberModel member)
+        => _csharp.EmitMethod(member);
 
-    /// <summary>Returns stub text for any other node kind.</summary>
+    /// <summary>Returns a placeholder for node kinds with no decompilation support.</summary>
     public string GetStubText(string nodeDisplayName)
-        => $"// {nodeDisplayName}\n\n{NotLoaded}";
+        => $"// {nodeDisplayName}\n\n// No decompilation available for this node type.";
 }

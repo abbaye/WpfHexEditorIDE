@@ -19,6 +19,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using WpfHexEditor.Core.AssemblyAnalysis.Services;
+using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 using WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
@@ -37,17 +39,16 @@ public partial class AssemblyExplorerPanel : UserControl
     // ── Constructor ───────────────────────────────────────────────────────────
 
     public AssemblyExplorerPanel(
-        IAssemblyAnalysisService analysisService,
-        PeOffsetResolver         offsetResolver,
-        DecompilerService        decompiler,
+        IAssemblyAnalysisEngine                  analysisEngine,
+        DecompilerService                        decompiler,
         SDK.Contracts.Services.IHexEditorService hexEditor,
         SDK.Contracts.Services.IOutputService    output,
-        IPluginEventBus          eventBus)
+        IPluginEventBus                          eventBus)
     {
         InitializeComponent();
 
         ViewModel = new AssemblyExplorerViewModel(
-            analysisService, decompiler, hexEditor, output);
+            analysisEngine, decompiler, hexEditor, output);
 
         DataContext            = ViewModel;
         DetailPane.DataContext = ViewModel.DetailViewModel;
@@ -115,6 +116,19 @@ public partial class AssemblyExplorerPanel : UserControl
         Dispatcher.InvokeAsync(
             _overflowManager.CaptureNaturalWidths,
             DispatcherPriority.Loaded);
+    }
+
+    // ── Open Assembly dialog ──────────────────────────────────────────────────
+
+    private void OnOpenAssemblyClick(object sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenAssemblyDialog
+        {
+            Owner = Window.GetWindow(this)
+        };
+
+        if (dialog.ShowDialog() == true && !string.IsNullOrEmpty(dialog.SelectedFilePath))
+            _ = ViewModel.LoadAssemblyAsync(dialog.SelectedFilePath);
     }
 
     // ── Toolbar ───────────────────────────────────────────────────────────────

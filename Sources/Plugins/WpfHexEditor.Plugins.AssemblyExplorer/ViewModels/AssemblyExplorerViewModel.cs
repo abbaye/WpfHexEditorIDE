@@ -21,8 +21,10 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using WpfHexEditor.Plugins.AssemblyExplorer.Events;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
+using WpfHexEditor.Core.AssemblyAnalysis.Services;
+using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
+using WpfHexEditor.Plugins.AssemblyExplorer.Events;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -35,18 +37,18 @@ namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 /// </summary>
 public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
 {
-    private readonly IAssemblyAnalysisService _analysisService;
-    private readonly DecompilerService        _decompiler;
-    private readonly IHexEditorService        _hexEditor;
-    private readonly IOutputService           _output;
+    private readonly IAssemblyAnalysisEngine _analysisService;
+    private readonly DecompilerService       _decompiler;
+    private readonly IHexEditorService       _hexEditor;
+    private readonly IOutputService          _output;
 
     private CancellationTokenSource? _loadCts;
 
     public AssemblyExplorerViewModel(
-        IAssemblyAnalysisService analysisService,
-        DecompilerService        decompiler,
-        IHexEditorService        hexEditor,
-        IOutputService           output)
+        IAssemblyAnalysisEngine analysisService,
+        DecompilerService       decompiler,
+        IHexEditorService       hexEditor,
+        IOutputService          output)
     {
         _analysisService = analysisService;
         _decompiler      = decompiler;
@@ -68,6 +70,11 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
             _ => RootNodes.Count > 0);
 
         ClearCommand = new RelayCommand(_ => Clear());
+
+        // Phase 5: "Open in Code Editor" — stub until TextEditor integration is complete
+        OpenInEditorCommand = new RelayCommand(
+            _ => _output.Info("[Assembly Explorer] Open in Code Editor — Phase 5 (coming soon)"),
+            _ => SelectedNode is not null);
     }
 
     // ── INotifyPropertyChanged ────────────────────────────────────────────────
@@ -168,6 +175,7 @@ public sealed class AssemblyExplorerViewModel : INotifyPropertyChanged
     public ICommand CollapseAllCommand     { get; }
     public ICommand ExpandAllCommand       { get; }
     public ICommand ClearCommand           { get; }
+    public ICommand OpenInEditorCommand    { get; }
 
     // ── Events (consumed by plugin entry point for status bar) ────────────────
 

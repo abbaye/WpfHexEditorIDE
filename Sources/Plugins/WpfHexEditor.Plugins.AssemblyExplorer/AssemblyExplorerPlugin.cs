@@ -25,12 +25,15 @@
 // ==========================================================
 
 using System.Windows;
+using WpfHexEditor.Core.AssemblyAnalysis.Services;
+using IAssemblyAnalysisEngine = WpfHexEditor.Core.AssemblyAnalysis.Services.IAssemblyAnalysisEngine;
 using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 using WpfHexEditor.Plugins.AssemblyExplorer.Views;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
+using WpfHexEditor.SDK.Events;
 using WpfHexEditor.SDK.Models;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer;
@@ -77,14 +80,13 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     {
         _context = context;
 
-        // Build internal services
-        var offsetResolver  = new PeOffsetResolver();
-        var analysisService = new AssemblyAnalysisService(offsetResolver);
-        var decompiler      = new DecompilerService();
+        // Build internal services — Core engine replaces the plugin stub
+        var analysisEngine = new AssemblyAnalysisEngine();
+        var decompiler     = new DecompilerService(analysisEngine);
 
         // Build panel with all dependencies injected
         _panel = new AssemblyExplorerPanel(
-            analysisService, offsetResolver, decompiler,
+            analysisEngine, decompiler,
             context.HexEditor, context.Output, context.EventBus);
 
         _panel.SetContext(context);
@@ -127,6 +129,9 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         context.HexEditor.FileOpened          += OnFileOpened;
         context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
 
+        // Subscribe to cross-plugin "open assembly" requests
+        context.EventBus.Subscribe<OpenAssemblyInExplorerEvent>(OnOpenAssemblyRequested);
+
         // Wire ViewModel events → status bar + EventBus
         _panel.ViewModel.AssemblyLoaded += OnAssemblyLoaded;
 
@@ -149,6 +154,18 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         _optionsPage = null;
 
         return Task.CompletedTask;
+    }
+
+    // ── EventBus handler: OpenAssemblyInExplorerEvent ─────────────────────────
+
+    private void OnOpenAssemblyRequested(OpenAssemblyInExplorerEvent evt)
+    {
+        if (string.IsNullOrEmpty(evt.FilePath)) return;
+
+        _ = _panel?.ViewModel.LoadAssemblyAsync(evt.FilePath);
+
+        if (evt.BringToFront)
+            _context?.UIRegistry.ShowPanel(PanelUiId);
     }
 
     // ── HexEditor event handlers ──────────────────────────────────────────────

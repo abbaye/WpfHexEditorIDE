@@ -68,17 +68,27 @@
                     </Button.ContextMenu>
                 </Button>
 
-                <!-- TbgDecompile [0] — first to collapse (stub button) -->
+                <!-- TbgDecompile [0] — first to collapse -->
                 <StackPanel x:Name="TbgDecompile"
                             DockPanel.Dock="Left"
                             Orientation="Horizontal"
                             Margin="2,0">
-                    <Button Style="{StaticResource PanelIconButtonStyle}"
+                    <!-- Open Assembly button (Ctrl+O in panel focus) -->
+                    <Button x:Name="BtnOpenAssembly"
+                            Style="{StaticResource PanelIconButtonStyle}"
+                            Content="&#xEC50;"
+                            FontFamily="Segoe MDL2 Assets"
+                            Width="22" Height="22"
+                            ToolTip="Open Assembly… (Ctrl+O)"
+                            Click="OnOpenAssemblyClick"/>
+                    <!-- Decompile to Code Editor -->
+                    <Button x:Name="BtnDecompile"
+                            Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE8F4;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
-                            IsEnabled="False"
-                            ToolTip="Decompile — coming in a future release"/>
+                            ToolTip="Open in Code Editor"
+                            Command="{Binding OpenInEditorCommand}"/>
                 </StackPanel>
 
                 <!-- TbgVisibility [1] — show/hide References/Resources/Metadata toggles -->
