@@ -269,60 +269,61 @@ Open `WpfHexEditorControl.sln` in Visual Studio 2022, set **WpfHexEditor.App** a
 <tr>
 <td width="33%">
 
-### ⚡ Performance
-- **99% faster** rendering (DrawingContext)
-- **10-100x faster** search (LRU + SIMD + parallel)
-- **80-90% less** memory (Span\<T\> + pooling)
-- Handles **GB+ files** without freezing
+### ⚡ Built for Performance
+- **DrawingContext** rendering — handles GB+ files without freezing
+- **LRU + SIMD + parallel** search engine
+- **Span\<T\> + pooling** — minimal allocations
+- **Async** file I/O with progress throughout
 
 </td>
 <td width="33%">
 
 ### 🏗️ Clean Architecture
-- **MVVM** with 16 specialized services
+- **MVVM** with 16+ specialized services
 - **Partial classes** organized by feature
-- **Plugin editors** via IDocumentEditor
-- **100% testable**, zero UI in services
+- **Plugin editors** via `IDocumentEditor`
+- **100% testable** — zero UI in services
+- **Open SDK** — extend anything
 
 </td>
 <td width="33%">
 
-### 🖥️ Full IDE
-- **Project system** (.whsln / .whproj)
-- **VS-style docking** (no third-party lib)
-- **8 themes** out of the box
-- **4 functional editors** + structure, diff, image viewers
+### 🖥️ Full IDE Experience
+- **Project system** (`.whsln` / `.whproj`) — VS-like solution explorer
+- **VS-style docking** — 100% in-house, no third-party lib
+- **8 built-in themes** — Dark, Light, Cyberpunk and more
 - **Plugin system** — open SDK + `.whxplugin` packages
-- **Integrated terminal** — 31 commands
+- **Integrated terminal** — 31 built-in commands + macro recording
+- **MSBuild / `.sln`** support *(coming — #101-103)*
 
 </td>
 </tr>
 <tr>
 <td width="33%">
 
-### 🔍 Binary Intelligence
-- **400+ formats** auto-detected
-- **Parsed Fields** with type overlay
-- **Data Inspector** 40+ interpretations
-- **Binary templates** support
+### 🔍 Binary & Code Intelligence
+- **400+ formats** auto-detected with format-aware routing
+- **Parsed Fields** with structure overlay
+- **Data Inspector** — 40+ type interpretations
+- **Assembly Explorer** — .NET PE tree + ILSpy decompilation *(#104-106)*
 
 </td>
 <td width="33%">
 
-### 🌍 Multilingual
-- **19 languages** defined *(partial translations)*
-- **Instant switching** at runtime
-- No restart required
-- Extensible with new languages
+### 🌍 Multilingual Control
+- **HexEditor control** — 19 languages, instant runtime switching
+- **IDE UI** — English; full localization engine coming soon *(#100)*
+- Extensible — add new languages without recompiling
 
 </td>
 <td width="33%">
 
-### ✅ Production Ready
-- **Insert Mode** bug fixed (#145)
-- **Save data loss** resolved
-- **Unlimited Undo/Redo**
-- **Async** file operations with progress
+### ✅ Actively Maintained
+- **AGPL v3.0** — fully open source
+- **Active development** — features added regularly
+- **Unlimited Undo/Redo** across all editors
+- **Insert Mode**, save reliability, async ops — production-grade
+- Contributions welcome — clean, documented codebase
 
 </td>
 </tr>
