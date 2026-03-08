@@ -9,14 +9,19 @@
 //     Drives the RichTextBox output area: colored lines, clickable hyperlinks,
 //     auto-scroll with smart user-scroll detection, find bar, tab completion,
 //     word wrap, font zoom, timestamps, pause/resume, and copy-on-select.
+//     Multi-tab session support: re-subscribes OutputLines when ActiveSession changes.
 //
 // Architecture Notes:
 //     - Output is rendered into a FlowDocument (Paragraph per line, Run per segment).
 //     - URLs in output are auto-detected with a Regex and wrapped in Hyperlink elements.
-//     - CollectionChanged events from ViewModel.OutputLines drive incremental RichTextBox updates.
+//     - CollectionChanged events from the *active session's* OutputLines drive incremental RichTextBox updates.
+//     - When ActiveSession changes (tab switch), UnsubscribeOutputLines() + SubscribeToActiveSessionOutput()
+//       + RebuildOutput() fully rewire the output area.
 //     - A _suppressAutoScrollPause flag prevents the programmatic ScrollToEnd call from
 //       triggering the "user scrolled up → pause auto-scroll" logic.
 //     - FindNext / FindPrev traverse FlowDocument using TextPointer.FindText.
+//     - ToolbarOverflowManager manages 5 groups: TbgScrollNav[0], TbgTextOptions[1],
+//       TbgOutputControl[2], TbgFont[3], TbgMacro[4].
 // ==========================================================
 
 using System.Collections.Specialized;
@@ -35,7 +40,7 @@ namespace WpfHexEditor.Terminal;
 
 /// <summary>
 /// VS-Like dockable Terminal panel.
-/// Hosts toolbar, collapsible find bar, RichTextBox output, and command input row.
+/// Hosts toolbar, session tab strip, collapsible find bar, RichTextBox output, and command input row.
 /// </summary>
 public sealed partial class TerminalPanel : UserControl
 {
@@ -60,6 +65,14 @@ public sealed partial class TerminalPanel : UserControl
     // -- Current search position --------------------------------------------------
 
     private TextPointer? _lastFindPointer;
+
+    // -- Session output subscription ----------------------------------------------
+
+    /// <summary>
+    /// The OutputLines collection currently subscribed via CollectionChanged.
+    /// Tracked separately so we can unsubscribe cleanly on session switch.
+    /// </summary>
+    private INotifyCollectionChanged? _subscribedOutputLines;
 
     // -- DataContext / ViewModel --------------------------------------------------
 
@@ -95,7 +108,8 @@ public sealed partial class TerminalPanel : UserControl
                     TbgScrollNav,    // [0] first to collapse
                     TbgTextOptions,  // [1]
                     TbgOutputControl,// [2]
-                    TbgFont,         // [3] last to collapse
+                    TbgFont,         // [3]
+                    TbgMacro,        // [4] last to collapse
                 });
             Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
         };
@@ -119,30 +133,63 @@ public sealed partial class TerminalPanel : UserControl
         DetachViewModel(_vm);
         _vm = e.NewValue as TerminalPanelViewModel;
         AttachViewModel(_vm);
+        SubscribeToActiveSessionOutput();
         RebuildOutput();
     }
 
     private void AttachViewModel(TerminalPanelViewModel? vm)
     {
         if (vm is null) return;
-        ((INotifyCollectionChanged)vm.OutputLines).CollectionChanged += OnOutputLinesChanged;
         vm.PropertyChanged += OnViewModelPropertyChanged;
     }
 
     private void DetachViewModel(TerminalPanelViewModel? vm)
     {
         if (vm is null) return;
-        ((INotifyCollectionChanged)vm.OutputLines).CollectionChanged -= OnOutputLinesChanged;
         vm.PropertyChanged -= OnViewModelPropertyChanged;
+        UnsubscribeOutputLines();
+    }
+
+    // -- Session output subscription management -----------------------------------
+
+    /// <summary>
+    /// Subscribes to the active session's OutputLines CollectionChanged.
+    /// Unsubscribes from any previously-subscribed collection first.
+    /// </summary>
+    private void SubscribeToActiveSessionOutput()
+    {
+        UnsubscribeOutputLines();
+
+        if (_vm?.OutputLines is INotifyCollectionChanged newCollection)
+        {
+            _subscribedOutputLines = newCollection;
+            _subscribedOutputLines.CollectionChanged += OnOutputLinesChanged;
+        }
+    }
+
+    private void UnsubscribeOutputLines()
+    {
+        if (_subscribedOutputLines is not null)
+        {
+            _subscribedOutputLines.CollectionChanged -= OnOutputLinesChanged;
+            _subscribedOutputLines = null;
+        }
     }
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
         {
+            case nameof(TerminalPanelViewModel.OutputLines):
+                // Active session changed — rewire collection subscription and rebuild output.
+                SubscribeToActiveSessionOutput();
+                RebuildOutput();
+                break;
+
             case nameof(TerminalPanelViewModel.IsWordWrap):
                 UpdateWordWrap();
                 break;
+
             case nameof(TerminalPanelViewModel.ShowTimestamps):
                 RebuildOutput();
                 break;
@@ -279,7 +326,7 @@ public sealed partial class TerminalPanel : UserControl
         e.Handled = true;
     }
 
-    // -- Rebuild entire output (used when ShowTimestamps toggles) -----------------
+    // -- Rebuild entire output (used when ShowTimestamps toggles or session switches) ----
 
     private void RebuildOutput()
     {
@@ -353,6 +400,50 @@ public sealed partial class TerminalPanel : UserControl
         }
     }
 
+    // -- Session tab strip handlers -----------------------------------------------
+
+    /// <summary>
+    /// Handles tab selection change from the session ListBox tab strip.
+    /// The VM's ActiveSession binding handles the actual switch; this handler focuses the input.
+    /// </summary>
+    private void OnSessionTabSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        Dispatcher.InvokeAsync(() => InputBox.Focus(), DispatcherPriority.Input);
+    }
+
+    /// <summary>
+    /// Handles the close "×" button on a session tab.
+    /// The Tag of the button is the ShellSessionViewModel to close.
+    /// </summary>
+    private void OnCloseSessionTabClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: ShellSessionViewModel session })
+            _vm?.CloseSessionCommand.Execute(session.Session.Id);
+
+        e.Handled = true; // prevent tab selection change on close click
+    }
+
+    /// <summary>
+    /// Handles a new-session menu item click from the "+" button context menu.
+    /// The Tag of the MenuItem holds the TerminalMode name string.
+    /// </summary>
+    private void OnNewSessionMenuClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem { Tag: string modeStr })
+        {
+            if (Enum.TryParse<TerminalMode>(modeStr, out var mode))
+            {
+                switch (mode)
+                {
+                    case TerminalMode.HxTerminal: _vm?.AddHxTerminalCommand.Execute(null); break;
+                    case TerminalMode.PowerShell: _vm?.AddPowerShellCommand.Execute(null); break;
+                    case TerminalMode.Bash:       _vm?.AddBashCommand.Execute(null);       break;
+                    case TerminalMode.Cmd:        _vm?.AddCmdCommand.Execute(null);        break;
+                }
+            }
+        }
+    }
+
     // -- Toolbar button handlers --------------------------------------------------
 
     private void OnShellSelectorClick(object sender, RoutedEventArgs e)
@@ -372,6 +463,18 @@ public sealed partial class TerminalPanel : UserControl
     {
         if (OutputDoc.Blocks.LastBlock is Paragraph last)
             ScrollLastIntoView(last);
+    }
+
+    // -- "+" new session button ---------------------------------------------------
+
+    private void OnNewSessionButtonClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.ContextMenu is { } menu)
+        {
+            menu.PlacementTarget = btn;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.IsOpen = true;
+        }
     }
 
     // -- Input box key handling ---------------------------------------------------
@@ -621,6 +724,7 @@ public sealed partial class TerminalPanel : UserControl
         OvfTimestamps.IsChecked   = _vm?.ShowTimestamps       == true;
         OvfWordWrap.IsChecked     = _vm?.IsWordWrap           == true;
         OvfCopyOnSelect.IsChecked = _vm?.CopyOnSelect         == true;
+        OvfRecord.IsChecked       = _vm?.IsRecording          == true;
         _overflowManager?.SyncMenuVisibility();
     }
 
@@ -654,4 +758,18 @@ public sealed partial class TerminalPanel : UserControl
 
     private void OvfFontDecrease_Click(object sender, RoutedEventArgs e)
         => _vm?.DecreaseFontCommand.Execute(null);
+
+    // -- Macro overflow handlers --------------------------------------------------
+
+    private void OvfRecord_Click(object sender, RoutedEventArgs e)
+        => _vm?.StartRecordingCommand.Execute(null);
+
+    private void OvfStop_Click(object sender, RoutedEventArgs e)
+        => _vm?.StopRecordingCommand.Execute(null);
+
+    private void OvfReplay_Click(object sender, RoutedEventArgs e)
+        => _vm?.ReplayMacroCommand.Execute(null);
+
+    private void OvfSaveMacro_Click(object sender, RoutedEventArgs e)
+        => _vm?.SaveMacroCommand.Execute(null);
 }

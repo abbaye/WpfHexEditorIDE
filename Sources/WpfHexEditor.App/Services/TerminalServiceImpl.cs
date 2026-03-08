@@ -13,27 +13,39 @@
 //     - Pattern: Adapter + Null-Object (no-op when _output is null)
 //     - SetOutput() is called by MainWindow whenever a TerminalPanelViewModel
 //       is created (on open) or disposed (on close, set to null).
-//     - Thread-safe: volatile field, no locks needed for write-only sink.
+//     - SetSessionManager() wires the IShellSessionManager so that OpenSession /
+//       CloseActiveSession route to the multi-tab session orchestrator (Feature #92).
+//     - Thread-safe: volatile fields, no locks needed for write-only sink.
 // ==========================================================
 
 using WpfHexEditor.Core.Terminal;
+using WpfHexEditor.Core.Terminal.ShellSession;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.App.Services;
 
 /// <summary>
 /// Bridges the SDK <see cref="ITerminalService"/> surface to the live
-/// <see cref="ITerminalOutput"/> sink of the active Terminal panel.
+/// <see cref="ITerminalOutput"/> sink of the active Terminal panel and
+/// the <see cref="IShellSessionManager"/> for multi-tab session control.
 /// </summary>
 public sealed class TerminalServiceImpl : ITerminalService
 {
     private volatile ITerminalOutput? _output;
+    private volatile IShellSessionManager? _sessionManager;
 
     /// <summary>
     /// Registers (or clears) the active Terminal output sink.
     /// Called by MainWindow when a TerminalPanelViewModel is created or closed.
     /// </summary>
     public void SetOutput(ITerminalOutput? output) => _output = output;
+
+    /// <summary>
+    /// Registers (or clears) the session manager used by OpenSession / CloseActiveSession.
+    /// Called by MainWindow.PluginSystem.cs after the terminal panel is initialised.
+    /// </summary>
+    public void SetSessionManager(IShellSessionManager? sessionManager)
+        => _sessionManager = sessionManager;
 
     /// <inheritdoc />
     public void WriteLine(string text) => _output?.WriteLine(text);
@@ -49,4 +61,29 @@ public sealed class TerminalServiceImpl : ITerminalService
 
     /// <inheritdoc />
     public void Clear() => _output?.Clear();
+
+    /// <inheritdoc />
+    public void OpenSession(string shellType)
+    {
+        var manager = _sessionManager;
+        if (manager is null) return;
+
+        var mode = shellType.ToLowerInvariant() switch
+        {
+            "powershell" => TerminalShellType.PowerShell,
+            "bash"       => TerminalShellType.Bash,
+            "cmd"        => TerminalShellType.Cmd,
+            _            => TerminalShellType.HxTerminal
+        };
+
+        manager.CreateSession(mode);
+    }
+
+    /// <inheritdoc />
+    public void CloseActiveSession()
+    {
+        var manager = _sessionManager;
+        if (manager?.ActiveSession is { } active)
+            manager.CloseSession(active.Id);
+    }
 }

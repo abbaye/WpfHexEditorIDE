@@ -2,12 +2,14 @@
 // Apache 2.0  - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
-// VS-Like Terminal panel.
-//   Row 0 : Toolbar
-//   Row 1 : Find bar (collapsible)
-//   Row 2 : RichTextBox output (selectable, colored, hyperlinks)
-//   Row 3 : Input row (prompt + TextBox + line-count + Run + Cancel)
+// VS-Like Terminal panel — Feature #92: Multi-tab sessions + Macro recording.
+//   Row 0 : Toolbar (with TbgMacro group)
+//   Row 1 : Session tab bar (ListBox styled as tabs + "+" new-session button)
+//   Row 2 : Find bar (collapsible)
+//   Row 3 : RichTextBox output (selectable, colored, hyperlinks)
+//   Row 4 : Input row (prompt + TextBox + line-count + Run + Cancel)
 // Theme: PanelCommon.xaml DynamicResource brushes (all themes)
+// Theme compliance: all brushes from DockMenuBackgroundBrush / DockBorderBrush / DockMenuForegroundBrush
 -->
 <UserControl x:Class="WpfHexEditor.Terminal.TerminalPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -18,9 +20,7 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
-        <!-- Themed text button for Run / Cancel in the input row.
-             Uses the same ControlTemplate pattern as PanelIconButtonStyle
-             but with auto width, Segoe UI font, and configurable padding. -->
+        <!-- Themed text button for Run / Cancel in the input row. -->
         <Style x:Key="TerminalTextButtonStyle" TargetType="Button">
             <Setter Property="Padding"             Value="10,3"/>
             <Setter Property="BorderThickness"     Value="1"/>
@@ -62,17 +62,56 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Session tab ListBoxItem style — VS-like tab header appearance. -->
+        <Style x:Key="SessionTabItemStyle" TargetType="ListBoxItem">
+            <Setter Property="FocusVisualStyle"  Value="{x:Null}"/>
+            <Setter Property="Padding"           Value="8,4"/>
+            <Setter Property="Cursor"            Value="Hand"/>
+            <Setter Property="Background"        Value="{DynamicResource Panel_ToolbarBrush}"/>
+            <Setter Property="Foreground"        Value="{DynamicResource DockMenuForegroundBrush}"/>
+            <Setter Property="BorderBrush"       Value="{DynamicResource DockBorderBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="TabBd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1,0,1,0"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabBd" Property="Background"
+                                        Value="{DynamicResource DockBackgroundBrush}"/>
+                                <Setter TargetName="TabBd" Property="BorderThickness"
+                                        Value="1,2,1,0"/>
+                                <Setter TargetName="TabBd" Property="BorderBrush"
+                                        Value="{DynamicResource DockAccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TabBd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>   <!-- Toolbar -->
-            <RowDefinition Height="Auto"/>   <!-- Find bar -->
-            <RowDefinition Height="*"/>      <!-- Output -->
-            <RowDefinition Height="Auto"/>   <!-- Input -->
+            <RowDefinition Height="Auto"/>   <!-- Row 0: Toolbar -->
+            <RowDefinition Height="Auto"/>   <!-- Row 1: Session tab bar -->
+            <RowDefinition Height="Auto"/>   <!-- Row 2: Find bar -->
+            <RowDefinition Height="*"/>      <!-- Row 3: Output -->
+            <RowDefinition Height="Auto"/>   <!-- Row 4: Input -->
         </Grid.RowDefinitions>
 
-        <!-- ── Toolbar ──────────────────────────────────────────────────── -->
+        <!-- ── Row 0: Toolbar ──────────────────────────────────────────────────── -->
         <Border x:Name="ToolbarBorder"
                 Grid.Row="0"
                 Style="{DynamicResource PanelToolbarStyle}"
@@ -88,36 +127,30 @@
 
                 <!-- Left: shell selector — always visible -->
                 <Button Style="{DynamicResource PanelDropdownButtonStyle}"
-                        ToolTip="Switch Shell"
+                        ToolTip="Add new session"
                         MinWidth="90"
                         Click="OnShellSelectorClick"
                         DockPanel.Dock="Left">
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="HxTerminal"
-                                      Command="{Binding SwitchModeCommand}"
-                                      CommandParameter="HxTerminal"/>
-                            <MenuItem Header="PowerShell"
-                                      Command="{Binding SwitchModeCommand}"
-                                      CommandParameter="PowerShell"/>
+                            <MenuItem Header="HxTerminal" Command="{Binding AddHxTerminalCommand}"/>
+                            <MenuItem Header="PowerShell" Command="{Binding AddPowerShellCommand}"/>
+                            <MenuItem Header="Bash"       Command="{Binding AddBashCommand}"/>
+                            <MenuItem Header="CMD"        Command="{Binding AddCmdCommand}"/>
                         </ContextMenu>
                     </Button.ContextMenu>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding CurrentModeLabel}"
-                                   FontFamily="Segoe UI"
-                                   FontSize="11"
+                                   FontFamily="Segoe UI" FontSize="11"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                    VerticalAlignment="Center"/>
-                        <TextBlock Text="&#xE70D;"
-                                   FontFamily="Segoe MDL2 Assets"
-                                   FontSize="9"
+                        <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="9"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                                   VerticalAlignment="Center"
-                                   Margin="4,0,0,0"/>
+                                   VerticalAlignment="Center" Margin="4,0,0,0"/>
                     </StackPanel>
                 </Button>
 
-                <!-- Encoding selector — PowerShell mode only, always visible -->
+                <!-- Encoding selector — external shell mode only, always visible -->
                 <ComboBox DockPanel.Dock="Left"
                           ItemsSource="{Binding AvailableEncodings}"
                           SelectedItem="{Binding SelectedEncoding}"
@@ -127,29 +160,26 @@
                           Foreground="{DynamicResource DockMenuForegroundBrush}"
                           BorderBrush="{DynamicResource DockBorderBrush}"
                           Margin="4,0,0,0"
-                          Visibility="{Binding IsPowerShellMode, Converter={StaticResource BoolToVis}}"
-                          ToolTip="PowerShell output encoding"/>
+                          Visibility="{Binding IsExternalShellMode, Converter={StaticResource BoolToVis}}"
+                          ToolTip="Shell output encoding"/>
 
                 <!-- Right: always-visible actions (Save, Clear, Cancel) -->
                 <StackPanel x:Name="ToolbarRightPanel"
                             Orientation="Horizontal"
                             DockPanel.Dock="Right"
                             VerticalAlignment="Center">
-                    <!-- Save output -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding SaveOutputCommand}"
                             ToolTip="Save Output…">
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
-                    <!-- Clear output -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding ClearOutputCommand}"
                             ToolTip="Clear Output">
                         <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
-                    <!-- Cancel running command -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding CancelCommand}"
                             ToolTip="Cancel Running Command">
@@ -169,57 +199,77 @@
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
-                            <!-- TbgScrollNav items -->
-                            <MenuItem x:Name="OvfScrollTop"
-                                      Header="Scroll to Top"
-                                      Tag="TbgScrollNav"
-                                      Click="OnScrollToTop"/>
-                            <MenuItem x:Name="OvfScrollBottom"
-                                      Header="Scroll to Bottom"
-                                      Tag="TbgScrollNav"
-                                      Click="OnScrollToBottom"/>
+                            <!-- TbgScrollNav -->
+                            <MenuItem x:Name="OvfScrollTop"    Header="Scroll to Top"    Tag="TbgScrollNav" Click="OnScrollToTop"/>
+                            <MenuItem x:Name="OvfScrollBottom" Header="Scroll to Bottom" Tag="TbgScrollNav" Click="OnScrollToBottom"/>
                             <Separator Tag="TbgScrollNav"/>
-                            <!-- TbgOutputControl items -->
-                            <MenuItem x:Name="OvfAutoScroll"
-                                      Header="Auto Scroll"
-                                      IsCheckable="True"
-                                      Tag="TbgOutputControl"
-                                      Click="OvfAutoScroll_Click"/>
-                            <MenuItem x:Name="OvfPauseOutput"
-                                      Header="Pause Output"
-                                      IsCheckable="True"
-                                      Tag="TbgOutputControl"
-                                      Click="OvfPauseOutput_Click"/>
+                            <!-- TbgOutputControl -->
+                            <MenuItem x:Name="OvfAutoScroll"  Header="Auto Scroll"  IsCheckable="True" Tag="TbgOutputControl" Click="OvfAutoScroll_Click"/>
+                            <MenuItem x:Name="OvfPauseOutput" Header="Pause Output" IsCheckable="True" Tag="TbgOutputControl" Click="OvfPauseOutput_Click"/>
                             <Separator Tag="TbgOutputControl"/>
-                            <!-- TbgTextOptions items -->
-                            <MenuItem x:Name="OvfTimestamps"
-                                      Header="Show Timestamps"
-                                      IsCheckable="True"
-                                      Tag="TbgTextOptions"
-                                      Click="OvfTimestamps_Click"/>
-                            <MenuItem x:Name="OvfWordWrap"
-                                      Header="Word Wrap"
-                                      IsCheckable="True"
-                                      Tag="TbgTextOptions"
-                                      Click="OvfWordWrap_Click"/>
-                            <MenuItem x:Name="OvfCopyOnSelect"
-                                      Header="Copy on Select"
-                                      IsCheckable="True"
-                                      Tag="TbgTextOptions"
-                                      Click="OvfCopyOnSelect_Click"/>
+                            <!-- TbgTextOptions -->
+                            <MenuItem x:Name="OvfTimestamps"   Header="Show Timestamps" IsCheckable="True" Tag="TbgTextOptions" Click="OvfTimestamps_Click"/>
+                            <MenuItem x:Name="OvfWordWrap"     Header="Word Wrap"       IsCheckable="True" Tag="TbgTextOptions" Click="OvfWordWrap_Click"/>
+                            <MenuItem x:Name="OvfCopyOnSelect" Header="Copy on Select"  IsCheckable="True" Tag="TbgTextOptions" Click="OvfCopyOnSelect_Click"/>
                             <Separator Tag="TbgTextOptions"/>
-                            <!-- TbgFont items -->
-                            <MenuItem x:Name="OvfFontIncrease"
-                                      Header="Increase Font Size"
-                                      Tag="TbgFont"
-                                      Click="OvfFontIncrease_Click"/>
-                            <MenuItem x:Name="OvfFontDecrease"
-                                      Header="Decrease Font Size"
-                                      Tag="TbgFont"
-                                      Click="OvfFontDecrease_Click"/>
+                            <!-- TbgFont -->
+                            <MenuItem x:Name="OvfFontIncrease" Header="Increase Font Size" Tag="TbgFont" Click="OvfFontIncrease_Click"/>
+                            <MenuItem x:Name="OvfFontDecrease" Header="Decrease Font Size" Tag="TbgFont" Click="OvfFontDecrease_Click"/>
+                            <Separator Tag="TbgFont"/>
+                            <!-- TbgMacro -->
+                            <MenuItem x:Name="OvfRecord"    Header="Start Recording"    Tag="TbgMacro" Click="OvfRecord_Click"/>
+                            <MenuItem x:Name="OvfStop"      Header="Stop Recording"     Tag="TbgMacro" Click="OvfStop_Click"/>
+                            <MenuItem x:Name="OvfReplay"    Header="Replay Macro"       Tag="TbgMacro" Click="OvfReplay_Click"/>
+                            <MenuItem x:Name="OvfSaveMacro" Header="Save as .hxscript"  Tag="TbgMacro" Click="OvfSaveMacro_Click"/>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
+
+                <!-- Group: TbgMacro [4] — macro recording -->
+                <StackPanel x:Name="TbgMacro"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Right"
+                            VerticalAlignment="Center">
+                    <Rectangle Width="1" Height="14" Margin="2,0"
+                               Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
+                    <!-- Record (hidden while recording) -->
+                    <Button Style="{DynamicResource PanelIconButtonStyle}"
+                            Command="{Binding StartRecordingCommand}"
+                            ToolTip="Start Macro Recording">
+                        <Button.Visibility>
+                            <Binding Path="IsRecording">
+                                <Binding.Converter>
+                                    <BooleanToVisibilityConverter/>
+                                </Binding.Converter>
+                            </Binding>
+                        </Button.Visibility>
+                        <TextBlock Text="&#xEBE8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource ErrorForegroundBrush}"/>
+                    </Button>
+                    <!-- Stop (visible while recording) -->
+                    <Button x:Name="BtnStopRecord"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            Command="{Binding StopRecordingCommand}"
+                            ToolTip="Stop Recording"
+                            Visibility="{Binding IsRecording, Converter={StaticResource BoolToVis}}">
+                        <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource ErrorForegroundBrush}"/>
+                    </Button>
+                    <!-- Replay -->
+                    <Button Style="{DynamicResource PanelIconButtonStyle}"
+                            Command="{Binding ReplayMacroCommand}"
+                            ToolTip="Replay Last Macro">
+                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </Button>
+                    <!-- Save .hxscript -->
+                    <Button Style="{DynamicResource PanelIconButtonStyle}"
+                            Command="{Binding SaveMacroCommand}"
+                            ToolTip="Save Macro as .hxscript">
+                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                    </Button>
+                </StackPanel>
 
                 <!-- Group: TbgFont [3] last to collapse -->
                 <StackPanel x:Name="TbgFont"
@@ -228,14 +278,12 @@
                             VerticalAlignment="Center">
                     <Rectangle Width="1" Height="14" Margin="2,0"
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
-                    <!-- Font + -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding IncreaseFontCommand}"
                             ToolTip="Increase Font Size (Ctrl++)">
                         <TextBlock Text="&#xE8A3;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
-                    <!-- Font - -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding DecreaseFontCommand}"
                             ToolTip="Decrease Font Size (Ctrl+-)">
@@ -251,21 +299,18 @@
                             VerticalAlignment="Center">
                     <Rectangle Width="1" Height="14" Margin="2,0"
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
-                    <!-- Timestamps toggle -->
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding ShowTimestamps}"
                                   ToolTip="Show Timestamps">
                         <TextBlock Text="&#xE121;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </ToggleButton>
-                    <!-- Word wrap toggle -->
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding IsWordWrap}"
                                   ToolTip="Word Wrap">
                         <TextBlock Text="&#xE8AC;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </ToggleButton>
-                    <!-- Copy on select toggle -->
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding CopyOnSelect}"
                                   ToolTip="Copy on Select">
@@ -281,14 +326,12 @@
                             VerticalAlignment="Center">
                     <Rectangle Width="1" Height="14" Margin="2,0"
                                Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
-                    <!-- Auto-scroll toggle -->
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding IsAutoScrollEnabled}"
                                   ToolTip="Auto Scroll to Bottom">
                         <TextBlock Text="&#xF0AF;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </ToggleButton>
-                    <!-- Pause output toggle -->
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding IsOutputPaused}"
                                   ToolTip="Pause Output">
@@ -302,14 +345,12 @@
                             Orientation="Horizontal"
                             DockPanel.Dock="Right"
                             VerticalAlignment="Center">
-                    <!-- Scroll to Top -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Click="OnScrollToTop"
                             ToolTip="Scroll to Top">
                         <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     </Button>
-                    <!-- Scroll to Bottom -->
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Click="OnScrollToBottom"
                             ToolTip="Scroll to Bottom">
@@ -322,15 +363,86 @@
             </DockPanel>
         </Border>
 
-        <!-- ── Find bar (collapsible) ────────────────────────────────────── -->
+        <!-- ── Row 1: Session tab bar ────────────────────────────────────────── -->
         <Border Grid.Row="1"
+                Background="{DynamicResource DockMenuBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <DockPanel>
+                <!-- "+" new session button at far right -->
+                <Button DockPanel.Dock="Right"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        ToolTip="New Terminal Session"
+                        Click="OnNewSessionMenuClick"
+                        Width="28" Height="28">
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="HxTerminal" Command="{Binding AddHxTerminalCommand}"/>
+                            <MenuItem Header="PowerShell" Command="{Binding AddPowerShellCommand}"/>
+                            <MenuItem Header="Bash"       Command="{Binding AddBashCommand}"/>
+                            <MenuItem Header="CMD"        Command="{Binding AddCmdCommand}"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                    <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                </Button>
+
+                <!-- Session tabs (ListBox styled as horizontal tab strip) -->
+                <ListBox x:Name="SessionTabBar"
+                         ItemsSource="{Binding Sessions}"
+                         SelectedItem="{Binding ActiveSession}"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         SelectionChanged="OnSessionTabSelectionChanged"
+                         ItemContainerStyle="{StaticResource SessionTabItemStyle}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                         ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel MinWidth="80">
+                                <!-- Close session button -->
+                                <Button DockPanel.Dock="Right"
+                                        Tag="{Binding}"
+                                        Click="OnCloseSessionTabClick"
+                                        Width="14" Height="14"
+                                        VerticalAlignment="Center"
+                                        Margin="4,0,0,0"
+                                        Padding="0"
+                                        BorderThickness="0"
+                                        Background="Transparent"
+                                        Cursor="Hand"
+                                        ToolTip="Close Session"
+                                        FocusVisualStyle="{x:Null}">
+                                    <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="9"
+                                               Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                </Button>
+                                <!-- Tab title -->
+                                <TextBlock Text="{Binding TabTitle}"
+                                           FontFamily="Segoe UI" FontSize="11"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxWidth="120"/>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <!-- ── Row 2: Find bar (collapsible) ──────────────────────────────────── -->
+        <Border Grid.Row="2"
                 Background="{DynamicResource Panel_ToolbarBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="0,1,0,1"
                 Padding="4,2"
                 Visibility="{Binding IsFindVisible, Converter={StaticResource BoolToVis}}">
             <DockPanel>
-                <!-- Close find bar -->
                 <Button DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Click="OnCloseFindBar"
@@ -338,8 +450,6 @@
                     <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 </Button>
-
-                <!-- Status label -->
                 <TextBlock x:Name="FindStatusText"
                            DockPanel.Dock="Right"
                            Text="{Binding FindStatusLabel}"
@@ -347,8 +457,6 @@
                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                            VerticalAlignment="Center"
                            Margin="4,0"/>
-
-                <!-- Prev match -->
                 <Button DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Click="OnFindPrev"
@@ -356,8 +464,6 @@
                     <TextBlock Text="&#xE76B;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 </Button>
-
-                <!-- Next match -->
                 <Button DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Click="OnFindNext"
@@ -365,8 +471,6 @@
                     <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 </Button>
-
-                <!-- Find label + TextBox -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="Find:"
                                FontFamily="Segoe UI" FontSize="11"
@@ -380,17 +484,16 @@
                              Foreground="{DynamicResource DockMenuForegroundBrush}"
                              Background="{DynamicResource DockBackgroundBrush}"
                              BorderBrush="{DynamicResource DockBorderBrush}"
-                             BorderThickness="1"
-                             Padding="3,1"
+                             BorderThickness="1" Padding="3,1"
                              VerticalAlignment="Center"
                              KeyDown="OnFindKeyDown"/>
                 </StackPanel>
             </DockPanel>
         </Border>
 
-        <!-- ── Output (RichTextBox — selectable, colored, hyperlinks) ────── -->
+        <!-- ── Row 3: Output (RichTextBox) ────────────────────────────────────── -->
         <RichTextBox x:Name="OutputRtb"
-                     Grid.Row="2"
+                     Grid.Row="3"
                      IsReadOnly="True"
                      IsDocumentEnabled="True"
                      BorderThickness="0"
@@ -406,10 +509,10 @@
                      SelectionChanged="OnOutputSelectionChanged">
             <RichTextBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Copy"         Command="ApplicationCommands.Copy"/>
-                    <MenuItem Header="Copy All"     Command="{Binding PlacementTarget.DataContext.CopyAllCommand,
-                                                               RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                    <MenuItem Header="Select All"   Command="ApplicationCommands.SelectAll"/>
+                    <MenuItem Header="Copy"       Command="ApplicationCommands.Copy"/>
+                    <MenuItem Header="Copy All"   Command="{Binding PlacementTarget.DataContext.CopyAllCommand,
+                                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="Select All" Command="ApplicationCommands.SelectAll"/>
                     <Separator/>
                     <MenuItem Header="Clear Output" Command="{Binding PlacementTarget.DataContext.ClearOutputCommand,
                                                                RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
@@ -442,27 +545,33 @@
                               Command="{Binding PlacementTarget.DataContext.DecreaseFontCommand,
                                         RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                               InputGestureText="Ctrl+-"/>
+                    <Separator/>
+                    <MenuItem Header="Start Recording" Command="{Binding PlacementTarget.DataContext.StartRecordingCommand,
+                                                                 RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="Stop Recording"  Command="{Binding PlacementTarget.DataContext.StopRecordingCommand,
+                                                                 RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    <MenuItem Header="Replay Macro"    Command="{Binding PlacementTarget.DataContext.ReplayMacroCommand,
+                                                                 RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                 </ContextMenu>
             </RichTextBox.ContextMenu>
             <FlowDocument x:Name="OutputDoc" PagePadding="0"/>
         </RichTextBox>
 
-        <!-- ── Input row ────────────────────────────────────────────────── -->
-        <Border Grid.Row="3"
+        <!-- ── Row 4: Input row ──────────────────────────────────────────────── -->
+        <Border Grid.Row="4"
                 Background="{DynamicResource Panel_ToolbarBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="0,1,0,0"
                 Padding="4,3">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>  <!-- Working dir prompt -->
-                    <ColumnDefinition Width="*"/>     <!-- Input TextBox -->
-                    <ColumnDefinition Width="Auto"/>  <!-- Line count -->
-                    <ColumnDefinition Width="Auto"/>  <!-- Run button -->
-                    <ColumnDefinition Width="Auto"/>  <!-- Cancel button -->
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Working directory prompt -->
                 <StackPanel Grid.Column="0"
                             Orientation="Horizontal"
                             VerticalAlignment="Center"
@@ -480,7 +589,6 @@
                                Margin="2,0,4,0"/>
                 </StackPanel>
 
-                <!-- Command input -->
                 <TextBox x:Name="InputBox"
                          Grid.Column="1"
                          Text="{Binding CommandInput, UpdateSourceTrigger=PropertyChanged}"
@@ -492,7 +600,6 @@
                          VerticalAlignment="Center"
                          KeyDown="OnInputKeyDown"/>
 
-                <!-- Line count indicator -->
                 <TextBlock Grid.Column="2"
                            Text="{Binding OutputLineCountLabel}"
                            FontFamily="Segoe UI" FontSize="10"
@@ -501,7 +608,6 @@
                            Margin="4,0"
                            Opacity="0.7"/>
 
-                <!-- Run -->
                 <Button Grid.Column="3"
                         Style="{StaticResource TerminalTextButtonStyle}"
                         Content="Run"
@@ -509,7 +615,6 @@
                         Padding="10,3"
                         Margin="4,0,2,0"/>
 
-                <!-- Cancel -->
                 <Button Grid.Column="4"
                         Style="{StaticResource TerminalTextButtonStyle}"
                         Content="✕"

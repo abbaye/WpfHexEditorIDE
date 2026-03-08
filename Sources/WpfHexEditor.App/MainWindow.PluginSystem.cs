@@ -25,6 +25,7 @@ using System.Windows.Threading;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.SDK.Events;
 using WpfHexEditor.Core.Terminal;
+using WpfHexEditor.Core.Terminal.ShellSession;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.PluginHost;
@@ -176,7 +177,8 @@ public partial class MainWindow
                 if (_pendingTerminalPanel is not null)
                 {
                     var vm = new TerminalPanelViewModel(hostContext);
-                    _terminalService?.SetOutput(vm);
+                    _terminalService?.SetOutput(vm.GetActiveOutput());
+                    _terminalService?.SetSessionManager(vm.SessionManager);
                     _pendingTerminalPanel.DataContext = vm;
                     _pendingTerminalPanel = null;
                 }
@@ -569,7 +571,8 @@ public partial class MainWindow
         if (_ideHostContext is not null)
         {
             var vm = new TerminalPanelViewModel(_ideHostContext);
-            _terminalService?.SetOutput(vm);
+            _terminalService?.SetOutput(vm.GetActiveOutput());
+            _terminalService?.SetSessionManager(vm.SessionManager);
             panel.DataContext = vm;
         }
         else
@@ -617,7 +620,8 @@ public partial class MainWindow
         if (_ideHostContext is null) { OutputLogger.Error("[Terminal] Host context unavailable."); return; }
 
         var vm      = new TerminalPanelViewModel(_ideHostContext);
-        _terminalService?.SetOutput(vm);
+        _terminalService?.SetOutput(vm.GetActiveOutput());
+        _terminalService?.SetSessionManager(vm.SessionManager);
         var control = new TerminalPanel { DataContext = vm };
 
         var item = new DockItem

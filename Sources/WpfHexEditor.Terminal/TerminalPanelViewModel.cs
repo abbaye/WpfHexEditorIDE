@@ -1,460 +1,367 @@
-//////////////////////////////////////////////
-// Apache 2.0  - 2026
-// Author : Derek Tremblay (derektremblay666@gmail.com)
+// ==========================================================
+// Project: WpfHexEditor.Terminal
+// File: TerminalPanelViewModel.cs
+// Author: Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
-//////////////////////////////////////////////
+// Created: 2026-03-07
+// Description:
+//     Session orchestrator for the multi-tab Terminal panel.
+//     Manages the collection of ShellSessionViewModel instances (one per tab),
+//     the active session, macro recording state, and global commands
+//     (add/close tab, save output, copy-all, macro start/stop/replay/save).
+//     All per-session state (OutputLines, CommandInput, history, process I/O) is
+//     delegated to the active ShellSessionViewModel.
+//
+// Architecture Notes:
+//     Pattern: MVVM ViewModel (Orchestrator) + Proxy (delegates properties to ActiveSession).
+//     Feature #92: Multi-tab shell sessions + macro recording / replay.
+//     Built-in commands (including RecordMacroCommand, ReplayHistoryCommand) are
+//     registered once on the shared TerminalCommandRegistry; all sessions share
+//     the same command set but have independent histories and processes.
+//     The TerminalPanel code-behind subscribes to OutputLines.CollectionChanged;
+//     when ActiveSession changes it must re-subscribe to the new OutputLines.
+//
+// ==========================================================
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Core.Terminal;
 using WpfHexEditor.Core.Terminal.BuiltInCommands;
+using WpfHexEditor.Core.Terminal.Macros;
 using WpfHexEditor.Core.Terminal.Scripting;
+using WpfHexEditor.Core.Terminal.ShellSession;
 using WpfHexEditor.SDK.Contracts;
-using WpfHexEditor.SDK.Contracts.Focus;
 
 namespace WpfHexEditor.Terminal;
 
 /// <summary>
-/// ViewModel for the Terminal dockable panel.
-/// Manages command input, output lines, history navigation, execution lifecycle,
-/// shell switching, and all UX feature toggles (auto-scroll, word wrap, timestamps, pause, find…).
+/// Orchestrates multiple <see cref="ShellSessionViewModel"/> tabs for the Terminal panel.
+/// Exposes the session collection, active-session switching, macro recording controls,
+/// and per-session property proxies consumed by the Terminal XAML.
 /// </summary>
-public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable, ITerminalContext, ITerminalOutput
+public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
 {
-    // -- Core services ------------------------------------------------------------
+    // -- Shared services ----------------------------------------------------------
 
     private readonly TerminalCommandRegistry _registry = new();
-    private readonly CommandHistory _history = new();
-    private CancellationTokenSource? _cts;
+    private readonly ITerminalMacroService   _macroService;
+    private readonly ShellSessionManager     _sessionManager = new();
+    private readonly IIDEHostContext         _ideHostContext;
 
-    // -- PowerShell process -------------------------------------------------------
+    // -- Session collection (bound to TabControl) ---------------------------------
 
-    private Process? _psProcess;
-    private StreamWriter? _psInput;
+    public ObservableCollection<ShellSessionViewModel> Sessions { get; } = [];
 
-    // -- Pause buffer -------------------------------------------------------------
+    private ShellSessionViewModel? _activeSession;
 
-    private readonly Queue<TerminalOutputLine> _pauseBuffer = new();
-
-    // -- Tab completion state -----------------------------------------------------
-
-    private string _completionPrefix = string.Empty;
-    private List<string> _completions = [];
-    private int _completionIndex = -1;
-
-    // -- ITerminalContext ----------------------------------------------------------
-
-    public IIDEHostContext IDE { get; }
-    public IDocument? ActiveDocument => IDE.FocusContext.ActiveDocument;
-    public IPanel? ActivePanel => IDE.FocusContext.ActivePanel;
-
-    private string _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-    public string WorkingDirectory
+    /// <summary>
+    /// Currently selected session tab. Changing this raises PropertyChanged for all
+    /// proxied per-session properties so the XAML bindings stay in sync.
+    /// </summary>
+    public ShellSessionViewModel? ActiveSession
     {
-        get => _workingDirectory;
+        get => _activeSession;
         set
         {
-            _workingDirectory = value;
+            if (_activeSession == value) return;
+            _activeSession = value;
             OnPropertyChanged();
+            // Notify all proxied properties so XAML bindings refresh.
+            OnPropertyChanged(nameof(OutputLines));
+            OnPropertyChanged(nameof(CommandInput));
+            OnPropertyChanged(nameof(IsRunning));
+            OnPropertyChanged(nameof(WorkingDirectory));
             OnPropertyChanged(nameof(WorkingDirectoryLabel));
+            OnPropertyChanged(nameof(CurrentModeLabel));
+            OnPropertyChanged(nameof(IsExternalShellMode));
+            OnPropertyChanged(nameof(IsAutoScrollEnabled));
+            OnPropertyChanged(nameof(IsWordWrap));
+            OnPropertyChanged(nameof(OutputFontSize));
+            OnPropertyChanged(nameof(ShowTimestamps));
+            OnPropertyChanged(nameof(IsOutputPaused));
+            OnPropertyChanged(nameof(IsFindVisible));
+            OnPropertyChanged(nameof(CopyOnSelect));
+            OnPropertyChanged(nameof(FindText));
+            OnPropertyChanged(nameof(FindStatusLabel));
+            OnPropertyChanged(nameof(OutputLineCountLabel));
+            OnPropertyChanged(nameof(AvailableEncodings));
+            OnPropertyChanged(nameof(SelectedEncoding));
+            OnPropertyChanged(nameof(HasActiveSession));
         }
     }
 
-    /// <summary>Shortened version of WorkingDirectory for display in the input row prompt.</summary>
-    public string WorkingDirectoryLabel
-    {
-        get
-        {
-            var dir = _workingDirectory;
-            if (dir.Length <= 38) return dir;
-            var parts = dir.TrimEnd('\\', '/').Split(['\\', '/']);
-            return parts.Length >= 3
-                ? parts[0] + "\\…\\" + string.Join('\\', parts[^2..])
-                : "…" + dir[^36..];
-        }
-    }
+    public bool HasActiveSession => _activeSession is not null;
 
-    // -- Observable state ---------------------------------------------------------
+    // -- Proxied per-session properties (bound by XAML) ---------------------------
 
-    public ObservableCollection<TerminalOutputLine> OutputLines { get; } = [];
+    // The XAML binds to these so it does not need to know about ActiveSession.
+    // The code-behind re-subscribes to OutputLines.CollectionChanged on session switch.
 
-    private string _commandInput = string.Empty;
+    public ObservableCollection<TerminalOutputLine> OutputLines
+        => _activeSession?.OutputLines ?? [];
+
     public string CommandInput
     {
-        get => _commandInput;
-        set { _commandInput = value; OnPropertyChanged(); ResetCompletion(); }
+        get => _activeSession?.CommandInput ?? string.Empty;
+        set { if (_activeSession is not null) _activeSession.CommandInput = value; }
     }
 
-    private bool _isRunning;
-    public bool IsRunning
-    {
-        get => _isRunning;
-        private set { _isRunning = value; OnPropertyChanged(); }
-    }
+    public bool IsRunning => _activeSession?.IsRunning ?? false;
 
-    // -- Shell mode ---------------------------------------------------------------
+    public string WorkingDirectory => _activeSession?.WorkingDirectory ?? string.Empty;
+    public string WorkingDirectoryLabel => _activeSession?.WorkingDirectoryLabel ?? string.Empty;
+    public string CurrentModeLabel => _activeSession?.CurrentModeLabel ?? "HxTerminal";
+    public bool IsExternalShellMode => _activeSession?.IsExternalShellMode ?? false;
 
-    private TerminalMode _currentMode = TerminalMode.HxTerminal;
-    public TerminalMode CurrentMode
-    {
-        get => _currentMode;
-        private set
-        {
-            if (_currentMode == value) return;
-            _currentMode = value;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(CurrentModeLabel));
-            OnPropertyChanged(nameof(IsPowerShellMode));
-        }
-    }
-
-    public string CurrentModeLabel => CurrentMode == TerminalMode.PowerShell ? "PowerShell" : "HxTerminal";
-    public bool IsPowerShellMode => CurrentMode == TerminalMode.PowerShell;
-
-    // -- Encoding (PowerShell mode) -----------------------------------------------
-
-    public ObservableCollection<string> AvailableEncodings { get; } = ["UTF-8", "Windows-1252", "ASCII"];
-
-    private string _selectedEncoding = "UTF-8";
-    public string SelectedEncoding
-    {
-        get => _selectedEncoding;
-        set { _selectedEncoding = value; OnPropertyChanged(); }
-    }
-
-    // -- UX feature toggles -------------------------------------------------------
-
-    private bool _isAutoScrollEnabled = true;
     public bool IsAutoScrollEnabled
     {
-        get => _isAutoScrollEnabled;
-        set { _isAutoScrollEnabled = value; OnPropertyChanged(); }
+        get => _activeSession?.IsAutoScrollEnabled ?? true;
+        set { if (_activeSession is not null) _activeSession.IsAutoScrollEnabled = value; }
     }
 
-    private bool _isWordWrap = true;
     public bool IsWordWrap
     {
-        get => _isWordWrap;
-        set { _isWordWrap = value; OnPropertyChanged(); }
+        get => _activeSession?.IsWordWrap ?? true;
+        set { if (_activeSession is not null) _activeSession.IsWordWrap = value; }
     }
 
-    private double _outputFontSize = 12;
     public double OutputFontSize
     {
-        get => _outputFontSize;
-        set { _outputFontSize = Math.Clamp(value, 8, 28); OnPropertyChanged(); }
+        get => _activeSession?.OutputFontSize ?? 12;
+        set { if (_activeSession is not null) _activeSession.OutputFontSize = value; }
     }
 
-    private bool _showTimestamps;
     public bool ShowTimestamps
     {
-        get => _showTimestamps;
-        set { _showTimestamps = value; OnPropertyChanged(); }
+        get => _activeSession?.ShowTimestamps ?? false;
+        set { if (_activeSession is not null) _activeSession.ShowTimestamps = value; }
     }
 
-    private bool _isOutputPaused;
     public bool IsOutputPaused
     {
-        get => _isOutputPaused;
-        set { _isOutputPaused = value; OnPropertyChanged(); }
+        get => _activeSession?.IsOutputPaused ?? false;
+        set { if (_activeSession is not null) _activeSession.IsOutputPaused = value; }
     }
 
-    private bool _isFindVisible;
     public bool IsFindVisible
     {
-        get => _isFindVisible;
-        set { _isFindVisible = value; OnPropertyChanged(); }
+        get => _activeSession?.IsFindVisible ?? false;
+        set { if (_activeSession is not null) _activeSession.IsFindVisible = value; }
     }
 
-    private bool _copyOnSelect;
     public bool CopyOnSelect
     {
-        get => _copyOnSelect;
-        set { _copyOnSelect = value; OnPropertyChanged(); }
+        get => _activeSession?.CopyOnSelect ?? false;
+        set { if (_activeSession is not null) _activeSession.CopyOnSelect = value; }
     }
 
-    private string _findText = string.Empty;
     public string FindText
     {
-        get => _findText;
-        set { _findText = value; OnPropertyChanged(); }
+        get => _activeSession?.FindText ?? string.Empty;
+        set { if (_activeSession is not null) _activeSession.FindText = value; }
     }
 
-    private string _findStatusLabel = string.Empty;
     public string FindStatusLabel
     {
-        get => _findStatusLabel;
-        set { _findStatusLabel = value; OnPropertyChanged(); }
+        get => _activeSession?.FindStatusLabel ?? string.Empty;
+        set { if (_activeSession is not null) _activeSession.FindStatusLabel = value; }
     }
 
-    /// <summary>Shows the number of output lines in the input row status area.</summary>
-    public string OutputLineCountLabel => $"{OutputLines.Count} lines";
+    public string OutputLineCountLabel => _activeSession?.OutputLineCountLabel ?? "0 lines";
 
-    // -- Commands -----------------------------------------------------------------
+    public ObservableCollection<string> AvailableEncodings
+        => _activeSession?.AvailableEncodings ?? [];
 
-    public ICommand RunCommand { get; }
-    public ICommand CancelCommand { get; }
-    public ICommand ClearOutputCommand { get; }
-    public ICommand SwitchModeCommand { get; }
-    public ICommand ToggleWordWrapCommand { get; }
-    public ICommand IncreaseFontCommand { get; }
-    public ICommand DecreaseFontCommand { get; }
-    public ICommand SaveOutputCommand { get; }
-    public ICommand CopyAllCommand { get; }
-    public ICommand ToggleTimestampsCommand { get; }
-    public ICommand TogglePauseCommand { get; }
-    public ICommand ToggleFindCommand { get; }
+    public string SelectedEncoding
+    {
+        get => _activeSession?.SelectedEncoding ?? "UTF-8";
+        set { if (_activeSession is not null) _activeSession.SelectedEncoding = value; }
+    }
 
-    // -- Line limit ---------------------------------------------------------------
+    // -- Macro state --------------------------------------------------------------
 
-    private const int MaxOutputLines = 5000;
+    private bool _isRecording;
+    public bool IsRecording
+    {
+        get => _isRecording;
+        private set { _isRecording = value; OnPropertyChanged(); }
+    }
+
+    private MacroSession? _lastRecordedMacro;
+
+    // -- Global commands (tab management + macros) --------------------------------
+
+    public ICommand AddHxTerminalCommand  { get; }
+    public ICommand AddPowerShellCommand  { get; }
+    public ICommand AddBashCommand        { get; }
+    public ICommand AddCmdCommand         { get; }
+    public ICommand CloseSessionCommand   { get; }
+    public ICommand SaveOutputCommand     { get; }
+    public ICommand CopyAllCommand        { get; }
+
+    // Macro toolbar
+    public ICommand StartRecordingCommand { get; }
+    public ICommand StopRecordingCommand  { get; }
+    public ICommand ReplayMacroCommand    { get; }
+    public ICommand SaveMacroCommand      { get; }
+
+    // Per-session commands (delegated to ActiveSession) ---------------------------
+
+    public ICommand RunCommand             => _activeSession?.RunCommand    ?? NullCommand;
+    public ICommand CancelCommand          => _activeSession?.CancelCommand ?? NullCommand;
+    public ICommand ClearOutputCommand     => _activeSession?.ClearOutputCommand  ?? NullCommand;
+    public ICommand ToggleWordWrapCommand  => _activeSession?.ToggleWordWrapCommand ?? NullCommand;
+    public ICommand IncreaseFontCommand    => _activeSession?.IncreaseFontCommand   ?? NullCommand;
+    public ICommand DecreaseFontCommand    => _activeSession?.DecreaseFontCommand   ?? NullCommand;
+    public ICommand ToggleTimestampsCommand => _activeSession?.ToggleTimestampsCommand ?? NullCommand;
+    public ICommand TogglePauseCommand     => _activeSession?.TogglePauseCommand  ?? NullCommand;
+    public ICommand ToggleFindCommand      => _activeSession?.ToggleFindCommand   ?? NullCommand;
+
+    // Switch-mode command delegates to session (keeps XAML unchanged).
+    public ICommand SwitchModeCommand =>
+        new RelayCommand(p => { /* mode is per-session in multi-tab; tab type = mode */ });
 
     // -- Constructor --------------------------------------------------------------
 
     public TerminalPanelViewModel(IIDEHostContext hostContext)
     {
-        IDE = hostContext ?? throw new ArgumentNullException(nameof(hostContext));
+        _ideHostContext = hostContext ?? throw new ArgumentNullException(nameof(hostContext));
 
-        var engine = new HxScriptEngine(_registry);
+        _macroService = new TerminalMacroService(_registry);
+        _macroService.RecordingStateChanged += (_, recording) => IsRecording = recording;
 
-        RunCommand             = new RelayCommand(_ => _ = ExecuteInputAsync(), _ => !IsRunning);
-        CancelCommand          = new RelayCommand(_ => CancelCurrentOperation(), _ => IsRunning || _psProcess is not null);
-        ClearOutputCommand     = new RelayCommand(_ => ClearOutput());
-        SwitchModeCommand      = new RelayCommand(p => _ = SwitchModeAsync(ParseMode(p)));
-        ToggleWordWrapCommand  = new RelayCommand(_ => IsWordWrap = !IsWordWrap);
-        IncreaseFontCommand    = new RelayCommand(_ => OutputFontSize++);
-        DecreaseFontCommand    = new RelayCommand(_ => OutputFontSize--);
-        SaveOutputCommand      = new RelayCommand(_ => SaveOutput());
-        CopyAllCommand         = new RelayCommand(_ => CopyAllToClipboard());
-        ToggleTimestampsCommand = new RelayCommand(_ => ShowTimestamps = !ShowTimestamps);
-        TogglePauseCommand     = new RelayCommand(_ => TogglePause());
-        ToggleFindCommand      = new RelayCommand(_ => IsFindVisible = !IsFindVisible);
+        var scriptEngine = new HxScriptEngine(_registry);
+        RegisterBuiltIns(scriptEngine);
 
-        RegisterBuiltIns(engine);
-        _ = _history.LoadAsync();
+        AddHxTerminalCommand  = new RelayCommand(_ => CreateSession(TerminalShellType.HxTerminal));
+        AddPowerShellCommand  = new RelayCommand(_ => CreateSession(TerminalShellType.PowerShell));
+        AddBashCommand        = new RelayCommand(_ => CreateSession(TerminalShellType.Bash));
+        AddCmdCommand         = new RelayCommand(_ => CreateSession(TerminalShellType.Cmd));
+        CloseSessionCommand   = new RelayCommand(
+            p => CloseSession(p is ShellSessionViewModel vm ? vm.Session.Id : _activeSession?.Session.Id ?? Guid.Empty),
+            _ => Sessions.Count > 1);
+        SaveOutputCommand     = new RelayCommand(_ => SaveOutput());
+        CopyAllCommand        = new RelayCommand(_ => CopyAll());
+
+        StartRecordingCommand = new RelayCommand(_ => _macroService.StartRecording(),  _ => !IsRecording);
+        StopRecordingCommand  = new RelayCommand(_ => _lastRecordedMacro = _macroService.StopRecording(), _ => IsRecording);
+        ReplayMacroCommand    = new RelayCommand(_ => _ = ReplayLastMacroAsync(),
+            _ => _lastRecordedMacro is { IsEmpty: false } && !IsRecording);
+        SaveMacroCommand      = new RelayCommand(_ => SaveMacroAsHxScript(),
+            _ => _lastRecordedMacro is { IsEmpty: false });
+
+        // Create the initial HxTerminal session.
+        CreateSession(TerminalShellType.HxTerminal);
     }
 
-    // -- Public API ---------------------------------------------------------------
+    // -- Public API (SDK bridge) --------------------------------------------------
 
-    public void RegisterCommand(ITerminalCommandProvider command) => _registry.Register(command);
-    public void UnregisterCommand(string commandName) => _registry.Unregister(commandName);
+    /// <summary>Returns the active session's ITerminalOutput sink (for TerminalServiceImpl).</summary>
+    public ITerminalOutput? GetActiveOutput() => _activeSession;
 
-    // -- Keyboard navigation -------------------------------------------------------
+    /// <summary>Exposes the session manager so TerminalServiceImpl can route OpenSession calls.</summary>
+    public IShellSessionManager SessionManager => _sessionManager;
 
-    public void NavigateHistoryUp()
+    /// <summary>Opens a new session of the specified shell type (called by TerminalServiceImpl).</summary>
+    public void OpenSession(TerminalShellType shellType) => CreateSession(shellType);
+
+    /// <summary>Closes the active session if more than one exists.</summary>
+    public void CloseActiveSession()
     {
-        var entry = _history.NavigatePrevious();
-        if (entry is not null) CommandInput = entry;
+        if (_activeSession is not null && Sessions.Count > 1)
+            CloseSession(_activeSession.Session.Id);
     }
 
-    public void NavigateHistoryDown()
+    // -- History navigation (called by code-behind keyboard handler) --------------
+
+    public void NavigateHistoryUp()   => _activeSession?.NavigateHistoryUp();
+    public void NavigateHistoryDown() => _activeSession?.NavigateHistoryDown();
+    public void CycleCompletion()     => _activeSession?.CycleCompletion();
+
+    // -- Session management -------------------------------------------------------
+
+    private void CreateSession(TerminalShellType shellType)
     {
-        var entry = _history.NavigateNext();
-        if (entry is not null) CommandInput = entry;
+        var coreSession = _sessionManager.CreateSession(shellType);
+        var vm = new ShellSessionViewModel(coreSession, _registry, _ideHostContext, _macroService);
+
+        // Forward per-session property changes up so XAML bindings on this VM update.
+        vm.PropertyChanged += OnActiveSessionPropertyChanged;
+
+        Sessions.Add(vm);
+        ActiveSession = vm;
     }
 
-    /// <summary>
-    /// Cycles through tab-completion candidates matching the current CommandInput prefix.
-    /// Resets the cycle when CommandInput changes (handled by ResetCompletion).
-    /// </summary>
-    public void CycleCompletion()
+    private void CloseSession(Guid sessionId)
     {
-        if (CurrentMode != TerminalMode.HxTerminal) return;
+        if (Sessions.Count <= 1) return;
 
-        var input = CommandInput;
-        if (input != _completionPrefix || _completions.Count == 0)
+        var vm = Sessions.FirstOrDefault(s => s.Session.Id == sessionId);
+        if (vm is null) return;
+
+        var idx = Sessions.IndexOf(vm);
+        vm.PropertyChanged -= OnActiveSessionPropertyChanged;
+        Sessions.Remove(vm);
+
+        if (ActiveSession == vm)
+            ActiveSession = Sessions.Count > 0 ? Sessions[Math.Max(0, idx - 1)] : null;
+
+        _sessionManager.CloseSession(sessionId);
+        vm.Dispose();
+    }
+
+    private void OnActiveSessionPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // Only propagate from the currently active session.
+        if (sender != _activeSession) return;
+        OnPropertyChanged(e.PropertyName);
+    }
+
+    // -- Macro helpers ------------------------------------------------------------
+
+    private async Task ReplayLastMacroAsync()
+    {
+        if (_lastRecordedMacro is null || _activeSession is null) return;
+
+        await _macroService.ReplayAsync(
+            _lastRecordedMacro,
+            _activeSession,
+            _activeSession,
+            CancellationToken.None).ConfigureAwait(false);
+    }
+
+    private void SaveMacroAsHxScript()
+    {
+        if (_lastRecordedMacro is null || _lastRecordedMacro.IsEmpty) return;
+
+        var dlg = new SaveFileDialog
         {
-            _completionPrefix = input;
-            _completions = [.. _registry.GetCompletions(input)];
-            _completionIndex = -1;
-        }
-
-        if (_completions.Count == 0) return;
-
-        _completionIndex = (_completionIndex + 1) % _completions.Count;
-        // Temporarily bypass ResetCompletion by setting the backing field directly.
-        _commandInput = _completions[_completionIndex];
-        OnPropertyChanged(nameof(CommandInput));
-    }
-
-    private void ResetCompletion()
-    {
-        _completions = [];
-        _completionIndex = -1;
-        _completionPrefix = string.Empty;
-    }
-
-    // -- ITerminalOutput -----------------------------------------------------------
-
-    public void Write(string text) => AppendLine(text, TerminalOutputKind.Standard);
-    public void WriteLine(string text = "") => AppendLine(text, TerminalOutputKind.Standard);
-    public void WriteError(string text)   => AppendLine(text, TerminalOutputKind.Error);
-    public void WriteWarning(string text) => AppendLine(text, TerminalOutputKind.Warning);
-    public void WriteInfo(string text)    => AppendLine(text, TerminalOutputKind.Info);
-    public void Clear() => Application.Current?.Dispatcher.InvokeAsync(ClearOutput);
-
-    // -- Shell-mode switching ------------------------------------------------------
-
-    private static TerminalMode ParseMode(object? parameter) =>
-        parameter is TerminalMode m ? m :
-        parameter is string s && Enum.TryParse<TerminalMode>(s, out var parsed) ? parsed :
-        TerminalMode.HxTerminal;
-
-    private async Task SwitchModeAsync(TerminalMode newMode)
-    {
-        if (CurrentMode == newMode) return;
-
-        if (newMode == TerminalMode.PowerShell)
-            await StartPowerShellAsync().ConfigureAwait(false);
-        else
-            await StopPowerShellAsync().ConfigureAwait(false);
-    }
-
-    private async Task StartPowerShellAsync()
-    {
-        _cts?.Cancel();
-
-        var exe = ResolveShellExecutable("pwsh.exe", "powershell.exe");
-        if (exe is null)
-        {
-            WriteError("PowerShell not found (pwsh.exe / powershell.exe). Staying in HxTerminal mode.");
-            return;
-        }
-
-        var encoding = SelectedEncoding switch
-        {
-            "Windows-1252" => Encoding.GetEncoding(1252),
-            "ASCII"        => Encoding.ASCII,
-            _              => new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)
+            Filter      = "HxScript|*.hxscript|All Files|*.*",
+            FileName    = "macro",
+            DefaultExt  = "hxscript",
+            FilterIndex = 1
         };
 
-        var psi = new ProcessStartInfo(exe)
-        {
-            Arguments               = "-NoLogo -NoExit",
-            UseShellExecute         = false,
-            CreateNoWindow          = true,
-            RedirectStandardInput   = true,
-            RedirectStandardOutput  = true,
-            RedirectStandardError   = true,
-            StandardOutputEncoding  = encoding,
-            StandardErrorEncoding   = encoding,
-        };
+        if (dlg.ShowDialog() != true) return;
 
-        _psProcess = new Process { StartInfo = psi, EnableRaisingEvents = true };
-        _psProcess.Exited += OnPsProcessExited;
-
-        try
-        {
-            _psProcess.Start();
-        }
-        catch (Exception ex)
-        {
-            WriteError($"Failed to start PowerShell: {ex.Message}");
-            _psProcess.Dispose();
-            _psProcess = null;
-            return;
-        }
-
-        _psInput = _psProcess.StandardInput;
-
-        _ = PipeReaderAsync(_psProcess.StandardOutput, TerminalOutputKind.Standard);
-        _ = PipeReaderAsync(_psProcess.StandardError,  TerminalOutputKind.Error);
-
-        CurrentMode = TerminalMode.PowerShell;
-        AppendLine($"[PowerShell started: {exe}]", TerminalOutputKind.Info);
-        await Task.CompletedTask;
+        var source = _macroService.ExportToHxScript(_lastRecordedMacro);
+        File.WriteAllText(dlg.FileName, source, System.Text.Encoding.UTF8);
     }
 
-    private async Task StopPowerShellAsync()
-    {
-        if (_psProcess is null) { CurrentMode = TerminalMode.HxTerminal; return; }
-
-        try
-        {
-            await _psInput!.WriteLineAsync("exit").ConfigureAwait(false);
-            await _psInput.FlushAsync().ConfigureAwait(false);
-
-            var exited = await Task.Run(() => _psProcess.WaitForExit(300)).ConfigureAwait(false);
-            if (!exited) _psProcess.Kill(entireProcessTree: true);
-        }
-        catch { /* process may already be gone */ }
-        finally
-        {
-            CleanupPsProcess();
-        }
-
-        CurrentMode = TerminalMode.HxTerminal;
-        AppendLine("[Switched to HxTerminal]", TerminalOutputKind.Info);
-    }
-
-    private void OnPsProcessExited(object? sender, EventArgs e)
-    {
-        CleanupPsProcess();
-        AppendLine("[PowerShell process exited]", TerminalOutputKind.Warning);
-        Application.Current?.Dispatcher.InvokeAsync(() => CurrentMode = TerminalMode.HxTerminal);
-    }
-
-    private void CleanupPsProcess()
-    {
-        if (_psProcess is not null)
-        {
-            _psProcess.Exited -= OnPsProcessExited;
-            _psProcess.Dispose();
-            _psProcess = null;
-        }
-        _psInput?.Dispose();
-        _psInput = null;
-    }
-
-    private async Task PipeReaderAsync(StreamReader reader, TerminalOutputKind kind)
-    {
-        try
-        {
-            while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line)
-                AppendLine(line, kind);
-        }
-        catch { /* stream closed when process exits */ }
-    }
-
-    // -- UX feature helpers --------------------------------------------------------
-
-    private void TogglePause()
-    {
-        IsOutputPaused = !IsOutputPaused;
-
-        if (!IsOutputPaused)
-        {
-            // Flush buffered lines accumulated while paused.
-            while (_pauseBuffer.TryDequeue(out var buffered))
-                AddLineAndTrim(buffered);
-        }
-    }
-
-    private void ClearOutput()
-    {
-        OutputLines.Clear();
-        OnPropertyChanged(nameof(OutputLineCountLabel));
-    }
+    // -- Output helpers (save / copy all) -----------------------------------------
 
     private void SaveOutput()
     {
+        if (_activeSession is null) return;
+
         var dlg = new SaveFileDialog
         {
-            Filter      = "Plain Text|*.txt"
-                        + "|HTML|*.html"
-                        + "|RTF / Word|*.rtf"
-                        + "|ANSI Text|*.ansi"
-                        + "|Markdown|*.md"
-                        + "|Excel / LibreOffice Calc|*.xml"
-                        + "|All Files|*.*",
+            Filter      = "Plain Text|*.txt|HTML|*.html|RTF / Word|*.rtf|ANSI Text|*.ansi|Markdown|*.md|Excel / LibreOffice Calc|*.xml|All Files|*.*",
             FileName    = "terminal-output",
             DefaultExt  = "txt",
             FilterIndex = 1
@@ -462,8 +369,8 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
 
         if (dlg.ShowDialog() != true) return;
 
-        var lines = (IReadOnlyList<TerminalOutputLine>)OutputLines;
-        var ts    = ShowTimestamps;
+        var lines = (IReadOnlyList<TerminalOutputLine>)_activeSession.OutputLines;
+        var ts    = _activeSession.ShowTimestamps;
 
         var content = dlg.FilterIndex switch
         {
@@ -478,143 +385,21 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         File.WriteAllText(dlg.FileName, content, System.Text.Encoding.UTF8);
     }
 
-    private void CopyAllToClipboard()
+    private void CopyAll()
     {
+        if (_activeSession is null) return;
+
+        var ts = _activeSession.ShowTimestamps;
         var text = string.Join(
             Environment.NewLine,
-            OutputLines.Select(l => ShowTimestamps ? $"[{l.Timestamp:HH:mm:ss}] {l.Text}" : l.Text));
+            _activeSession.OutputLines.Select(l =>
+                ts ? $"[{l.Timestamp:HH:mm:ss}] {l.Text}" : l.Text));
 
         if (!string.IsNullOrEmpty(text))
             Clipboard.SetText(text);
     }
 
-    private void CancelCurrentOperation()
-    {
-        if (CurrentMode == TerminalMode.PowerShell && _psProcess is { HasExited: false })
-            try { _psProcess.Kill(entireProcessTree: false); } catch { /* ignore */ }
-        else
-            _cts?.Cancel();
-    }
-
-    // -- Private helpers -----------------------------------------------------------
-
-    private async Task ExecuteInputAsync()
-    {
-        var input = CommandInput.Trim();
-        if (string.IsNullOrEmpty(input)) return;
-
-        _history.Push(input);
-        CommandInput = string.Empty;
-        AppendLine($"> {input}", TerminalOutputKind.Info);
-
-        // PowerShell mode: forward to PS stdin.
-        if (CurrentMode == TerminalMode.PowerShell && _psInput is not null)
-        {
-            try
-            {
-                await _psInput.WriteLineAsync(input).ConfigureAwait(false);
-                await _psInput.FlushAsync().ConfigureAwait(false);
-            }
-            catch (Exception ex) { WriteError($"PowerShell I/O error: {ex.Message}"); }
-            return;
-        }
-
-        // HxTerminal mode: built-in registry.
-        var parts = TokenizeInput(input);
-        if (parts.Length == 0) return;
-
-        _cts = new CancellationTokenSource();
-        IsRunning = true;
-
-        try
-        {
-            var cmd = _registry.FindCommand(parts[0]);
-            if (cmd is null)
-            {
-                WriteError($"Unknown command: {parts[0]}. Type 'help' for a list of commands.");
-                return;
-            }
-
-            await cmd.ExecuteAsync(parts[1..], this, this, _cts.Token).ConfigureAwait(false);
-        }
-        catch (OperationCanceledException)
-        {
-            AppendLine("[Cancelled]", TerminalOutputKind.Warning);
-        }
-        catch (Exception ex)
-        {
-            WriteError($"Error: {ex.Message}");
-        }
-        finally
-        {
-            IsRunning = false;
-            _cts?.Dispose();
-            _cts = null;
-        }
-    }
-
-    private void AppendLine(string text, TerminalOutputKind kind)
-    {
-        var line = new TerminalOutputLine(text, kind);
-
-        if (IsOutputPaused)
-        {
-            _pauseBuffer.Enqueue(line);
-            return;
-        }
-
-        if (Application.Current?.Dispatcher.CheckAccess() == true)
-            AddLineAndTrim(line);
-        else
-            Application.Current?.Dispatcher.InvokeAsync(() => AddLineAndTrim(line));
-    }
-
-    private void AddLineAndTrim(TerminalOutputLine line)
-    {
-        while (OutputLines.Count >= MaxOutputLines)
-            OutputLines.RemoveAt(0);
-
-        OutputLines.Add(line);
-        OnPropertyChanged(nameof(OutputLineCountLabel));
-    }
-
-    private static string[] TokenizeInput(string input)
-    {
-        var args = new List<string>();
-        bool inQuote = false;
-        var current = new System.Text.StringBuilder();
-        foreach (var ch in input)
-        {
-            if (ch == '"') { inQuote = !inQuote; continue; }
-            if (ch == ' ' && !inQuote) { if (current.Length > 0) { args.Add(current.ToString()); current.Clear(); } continue; }
-            current.Append(ch);
-        }
-        if (current.Length > 0) args.Add(current.ToString());
-        return [.. args];
-    }
-
-    private static string? ResolveShellExecutable(params string[] candidates)
-    {
-        foreach (var name in candidates)
-        {
-            var located = SearchInPath(name);
-            if (located is not null) return located;
-        }
-        return null;
-    }
-
-    private static string? SearchInPath(string fileName)
-    {
-        if (File.Exists(fileName)) return Path.GetFullPath(fileName);
-
-        var paths = Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator) ?? [];
-        foreach (var dir in paths)
-        {
-            var full = Path.Combine(dir.Trim(), fileName);
-            if (File.Exists(full)) return full;
-        }
-        return null;
-    }
+    // -- Built-in command registration -------------------------------------------
 
     private void RegisterBuiltIns(HxScriptEngine engine)
     {
@@ -625,7 +410,6 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         _registry.Register(new ExitCommand());
         _registry.Register(new PluginListCommand());
         _registry.Register(new StatusCommand());
-        _registry.Register(new HistoryCommand(_history));
         _registry.Register(new SendOutputCommand());
         _registry.Register(new SendErrorCommand());
         _registry.Register(new RunScriptCommand(engine));
@@ -656,26 +440,39 @@ public sealed class TerminalPanelViewModel : INotifyPropertyChanged, IDisposable
         _registry.Register(new ShowErrorsCommand());
         _registry.Register(new WriteHexCommand());
         _registry.Register(new RunPluginCommand());
+
+        // Feature #92 — macro commands
+        _registry.Register(new RecordMacroCommand(_macroService));
+        _registry.Register(new ReplayHistoryCommand(
+            _macroService,
+            () => _activeSession?.Session.History.GetAll() ?? []));
     }
 
-    // -- INotifyPropertyChanged ----------------------------------------------------
+    // -- INotifyPropertyChanged ---------------------------------------------------
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-    // -- IDisposable ---------------------------------------------------------------
+    // -- IDisposable --------------------------------------------------------------
 
     public void Dispose()
     {
-        _cts?.Cancel();
-        _cts?.Dispose();
-        try { _psProcess?.Kill(entireProcessTree: true); } catch { /* ignore */ }
-        CleanupPsProcess();
-        _ = _history.SaveAsync();
+        foreach (var vm in Sessions)
+        {
+            vm.PropertyChanged -= OnActiveSessionPropertyChanged;
+            vm.Dispose();
+        }
+
+        Sessions.Clear();
+        _sessionManager.Dispose();
     }
 
-    // -- RelayCommand --------------------------------------------------------------
+    // -- Helpers ------------------------------------------------------------------
+
+    private static readonly ICommand NullCommand =
+        new RelayCommand(_ => { }, _ => false);
 
     private sealed class RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute = null) : ICommand
     {

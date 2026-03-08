@@ -189,17 +189,6 @@
 
                         <Separator />
 
-                        <!-- Options (VS-style document tab) -->
-                        <MenuItem Header="_Options..." Click="OnSettings">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-
-                        <Separator />
-
                         <!-- Recent Solutions ► -->
                         <MenuItem x:Name="RecentSolutionsMenuItem" Header="Recent _Solutions">
                             <MenuItem.Icon>
@@ -456,6 +445,17 @@
                         <MenuItem Header="_Terminal" Click="OnOpenTerminal">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <Separator />
+
+                        <!-- Options — VS-style: always in Tools menu -->
+                        <MenuItem Header="_Options..." Click="OnSettings">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>

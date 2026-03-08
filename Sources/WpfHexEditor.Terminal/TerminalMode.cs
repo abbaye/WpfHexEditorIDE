@@ -10,13 +10,14 @@
 // Architecture Notes:
 //     Separate enum file to keep TerminalPanelViewModel focused
 //     on behaviour rather than type declarations.
+//     Feature #92: Added Bash and Cmd external shell modes.
 //
 // ==========================================================
 
 namespace WpfHexEditor.Terminal;
 
 /// <summary>
-/// The shell mode active in the Terminal panel.
+/// The shell mode active in a Terminal session tab.
 /// </summary>
 public enum TerminalMode
 {
@@ -24,5 +25,11 @@ public enum TerminalMode
     HxTerminal,
 
     /// <summary>External PowerShell process (pwsh.exe or powershell.exe).</summary>
-    PowerShell
+    PowerShell,
+
+    /// <summary>External Bash process (bash.exe via WSL or Git Bash).</summary>
+    Bash,
+
+    /// <summary>External Windows Command Prompt (cmd.exe).</summary>
+    Cmd
 }

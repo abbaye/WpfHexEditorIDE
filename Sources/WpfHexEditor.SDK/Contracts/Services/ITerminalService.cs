@@ -15,6 +15,8 @@
 //       dependency (Core.Terminal already references SDK via ITerminalContext).
 //     - Implemented by TerminalServiceImpl in WpfHexEditor.App; null-object
 //       fallback (NullTerminalService) used when Terminal panel is unavailable.
+//     - Feature #92: OpenSession / CloseActiveSession enable plugins to manage
+//       terminal tabs without a direct WPF dependency.
 // ==========================================================
 
 namespace WpfHexEditor.SDK.Contracts.Services;
@@ -39,4 +41,16 @@ public interface ITerminalService
 
     /// <summary>Clears all output from the Terminal panel.</summary>
     void Clear();
+
+    /// <summary>
+    /// Opens a new terminal session tab of the specified shell type.
+    /// </summary>
+    /// <param name="shellType">
+    /// Shell type string: <c>"hx"</c>, <c>"powershell"</c>, <c>"bash"</c>, or <c>"cmd"</c>.
+    /// Unrecognised values default to <c>"hx"</c>.
+    /// </param>
+    void OpenSession(string shellType);
+
+    /// <summary>Closes the currently active terminal session tab.</summary>
+    void CloseActiveSession();
 }
