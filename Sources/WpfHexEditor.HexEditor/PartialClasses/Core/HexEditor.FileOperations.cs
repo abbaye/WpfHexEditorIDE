@@ -426,6 +426,10 @@ namespace WpfHexEditor.HexEditor
                 // Set the expanded selection in ViewModel
                 _viewModel.SetSelectionRange(new VirtualPosition(scanStart), new VirtualPosition(scanStop));
 
+                // Notify plugins (DataInspector, etc.) — DP callbacks are not triggered here.
+                OnSelectionStartChanged(EventArgs.Empty);
+                OnSelectionStopChanged(EventArgs.Empty);
+
                 // CRITICAL: Synchronize viewport properties IMMEDIATELY (don't wait for PropertyChanged)
                 HexViewport.SelectionStart = scanStart;
                 HexViewport.SelectionStop = scanStop;

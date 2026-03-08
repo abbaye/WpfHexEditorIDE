@@ -352,6 +352,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         TryRestoreSession();
         HandleStartupFile();
 
+        // Deferred theme sync: catches editors that the docking system creates lazily
+        // (ContentFactory called on first render pass) or via async session restore.
+        Dispatcher.InvokeAsync(SyncAllHexEditorThemes, System.Windows.Threading.DispatcherPriority.Background);
+
         // Plugin system — fire-and-forget after layout is ready
         _ = InitializePluginSystemAsync();
     }
@@ -1227,6 +1231,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 hexEditor.OpenFile(filePath);
                 ApplyDefaultTbl(hexEditor, project);
+
+                // Apply theme eagerly before the editor enters the visual tree.
+                // The Loaded event fires asynchronously (next dispatcher pass), so without
+                // this call the docking system may render one frame with default light colors.
+                hexEditor.ApplyThemeFromResources();
+
                 OutputLogger.Info($"Opened: {filePath}");
                 return hexEditor;
             }
@@ -4519,9 +4529,18 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void SyncAllHexEditorThemes()
     {
+        // Sync editors in the visual tree (visible tabs).
         foreach (var editor in FindVisualChildren<HexEditorControl>(this))
             editor.ApplyThemeFromResources();
 
+        // Also sync editors that are cached but not yet in the visual tree
+        // (background tabs whose ContentFactory was called but the DockHost
+        // hasn't added them to the live visual tree yet).
+        foreach (var content in _contentCache.Values)
+        {
+            if (content is HexEditorControl cached)
+                cached.ApplyThemeFromResources();
+        }
     }
 
     private static IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject

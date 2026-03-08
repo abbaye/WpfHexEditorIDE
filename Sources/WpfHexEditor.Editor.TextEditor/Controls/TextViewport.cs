@@ -16,11 +16,18 @@ namespace WpfHexEditor.Editor.TextEditor.Controls;
 
 /// <summary>
 /// Custom WPF element that renders lines of text with syntax highlighting via
-/// <see cref="OnRender(DrawingContext)"/>.  No external dependency — pure WPF.
-/// <para>
-/// Pattern: same architecture as HexViewport (FrameworkElement + DrawingContext +
-/// FormattedText caching + DrawingVisual cursor overlay).
-/// </para>
+/// three <see cref="DrawingVisual"/> layers:
+/// <list type="number">
+///   <item>Layer 0 (<c>_backgroundVisual</c>) — background, line-number gutter,
+///         current-line highlight and selection rectangles.</item>
+///   <item>Layer 1 (<c>_textContentVisual</c>) — line-number labels and
+///         syntax-highlighted code text.</item>
+///   <item>Layer 2 (<c>_cursorOverlay</c>) — blinking caret.</item>
+/// </list>
+/// During mouse-drag selection only layer 0 is redrawn (~10 µs).
+/// Layer 1 is only redrawn when text content changes.
+/// A per-line <see cref="FormattedText"/> segment cache prevents heap allocations
+/// on every render frame when text is unchanged.
 /// </summary>
 internal sealed class TextViewport : FrameworkElement
 {
@@ -37,39 +44,68 @@ internal sealed class TextViewport : FrameworkElement
     // -----------------------------------------------------------------------
 
     private TextEditorViewModel? _vm;
+
+    // Font / layout metrics
     private double _lineHeight;
     private double _charWidth;
     private double _lineNumberWidth;
     private int _firstVisibleLine;
     private int _visibleLineCount;
     private double _horizontalOffset;
-    private readonly DispatcherTimer _cursorBlinkTimer;
-    private bool _cursorVisible = true;
-    private readonly DrawingVisual _cursorOverlay;
-    private DpiScale _dpi;
-
-    // Typeface / font (recached when theme resource changes)
     private Typeface? _typeface;
     private double _emSize;
+    private double _cachedFontSize = -1;
+    private Typeface? _cachedTypeface;
+    private DpiScale _dpi;
 
     // Mouse drag selection
     private bool _isDragging;
 
+    // Set to true while OnMouseMove updates the caret directly so that
+    // OnVmPropertyChanged does not queue a redundant background render.
+    private bool _suppressVmNotify;
+
+    // Cursor blink
+    private readonly DispatcherTimer _cursorBlinkTimer;
+    private bool _cursorVisible = true;
+
     // Brush cache — keyed by theme resource key
     private readonly Dictionary<string, Brush> _brushCache = new();
 
-    // FormattedText measurement cache (single char 'W' for width, 'g' for height)
-    private double _cachedFontSize = -1;
-    private Typeface? _cachedTypeface;
+    // Per-line FormattedText segment cache.
+    // Key = line index; valid when LineRenderCache.Text equals the current line string.
+    // Cleared on content change, theme change, or font change.
+    private readonly Dictionary<int, LineRenderCache> _lineRenderCache = new();
+
+    // Render coalescing — prevent dispatcher queue flooding
+    private bool _fullRenderPending;
+    private bool _backgroundRenderPending;
 
     // -----------------------------------------------------------------------
-    // Visual children (cursor overlay)
+    // DrawingVisual layers
     // -----------------------------------------------------------------------
+
+    private readonly DrawingVisual _backgroundVisual  = new(); // layer 0
+    private readonly DrawingVisual _textContentVisual = new(); // layer 1
+    private readonly DrawingVisual _cursorOverlay     = new(); // layer 2
 
     private readonly VisualCollection _visuals;
 
     protected override int VisualChildrenCount => _visuals.Count;
     protected override Visual GetVisualChild(int index) => _visuals[index];
+
+    // -----------------------------------------------------------------------
+    // Per-line render cache entry
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Cached segments for one rendered line.
+    /// <see cref="XPositions"/> are relative to the code-area origin (before adding <c>codeX</c>).
+    /// </summary>
+    private readonly record struct LineRenderCache(
+        string Text,
+        FormattedText[] Segments,
+        double[] XPositions);
 
     // -----------------------------------------------------------------------
     // Constructor
@@ -78,8 +114,9 @@ internal sealed class TextViewport : FrameworkElement
     public TextViewport()
     {
         _visuals = new VisualCollection(this);
-        _cursorOverlay = new DrawingVisual();
-        _visuals.Add(_cursorOverlay);
+        _visuals.Add(_backgroundVisual);   // z = 0 (bottom — below text)
+        _visuals.Add(_textContentVisual);  // z = 1
+        _visuals.Add(_cursorOverlay);      // z = 2 (top)
 
         _cursorBlinkTimer = new DispatcherTimer(DispatcherPriority.Render)
         {
@@ -93,7 +130,7 @@ internal sealed class TextViewport : FrameworkElement
 
         // Watch TE_Background via DynamicResource so that any theme swap
         // (Application.Resources.MergedDictionaries replacement) triggers
-        // OnThemeWatcherChanged → brush cache flush + re-render.
+        // OnThemeWatcherChanged → brush/text cache flush + re-render.
         SetResourceReference(ThemeWatcherProperty, "TE_Background");
     }
 
@@ -108,8 +145,9 @@ internal sealed class TextViewport : FrameworkElement
 
         _vm = vm;
         vm.PropertyChanged += OnVmPropertyChanged;
+        _lineRenderCache.Clear();
         InvalidateMeasure();
-        InvalidateVisual();
+        InvalidateVisual(); // triggers OnRender → full render
     }
 
     public void Detach()
@@ -119,6 +157,7 @@ internal sealed class TextViewport : FrameworkElement
             _vm.PropertyChanged -= OnVmPropertyChanged;
             _vm = null;
         }
+        _lineRenderCache.Clear();
         InvalidateVisual();
     }
 
@@ -130,7 +169,7 @@ internal sealed class TextViewport : FrameworkElement
             if (_firstVisibleLine != value)
             {
                 _firstVisibleLine = Math.Max(0, value);
-                InvalidateVisual();
+                QueueFullRender();
             }
         }
     }
@@ -143,23 +182,19 @@ internal sealed class TextViewport : FrameworkElement
             if (Math.Abs(_horizontalOffset - value) > 0.01)
             {
                 _horizontalOffset = Math.Max(0, value);
-                InvalidateVisual();
+                QueueFullRender();
             }
         }
     }
 
-    /// <summary>
-    /// Total document height in device-independent units.
-    /// </summary>
+    /// <summary>Total document height in device-independent units.</summary>
     public double TotalHeight => (_vm?.LineCount ?? 0) * LineHeight;
 
-    /// <summary>
-    /// Estimated max line width (for horizontal scrollbar).
-    /// </summary>
+    /// <summary>Estimated max line width (for horizontal scrollbar).</summary>
     public double EstimatedMaxWidth => (_vm?.Lines.Max(l => l.Length) ?? 0) * CharWidth + LineNumberColumnWidth + LeftMargin + 20;
 
-    public double LineHeight    => _lineHeight > 0 ? _lineHeight : 18;
-    public double CharWidth     => _charWidth > 0 ? _charWidth : 7.2;
+    public double LineHeight            => _lineHeight > 0 ? _lineHeight : 18;
+    public double CharWidth             => _charWidth  > 0 ? _charWidth  : 7.2;
     public double LineNumberColumnWidth => _lineNumberWidth + LineNumberPadding * 2;
 
     public void ScrollIntoView(int lineIndex)
@@ -193,10 +228,7 @@ internal sealed class TextViewport : FrameworkElement
     {
         EnsureFontMetrics();
 
-        // WPF forbids returning PositiveInfinity from MeasureOverride.
-        // When hosted inside a ScrollViewer, availableSize may be infinite on one or both axes.
-        // Return a finite desired size: actual document dimensions clamped to available space.
-        double desiredWidth  = double.IsInfinity(availableSize.Width)
+        double desiredWidth = double.IsInfinity(availableSize.Width)
             ? EstimatedMaxWidth
             : availableSize.Width;
 
@@ -204,9 +236,7 @@ internal sealed class TextViewport : FrameworkElement
             ? TotalHeight
             : availableSize.Height;
 
-        return new Size(
-            Math.Max(0, desiredWidth),
-            Math.Max(0, desiredHeight));
+        return new Size(Math.Max(0, desiredWidth), Math.Max(0, desiredHeight));
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -216,78 +246,69 @@ internal sealed class TextViewport : FrameworkElement
     }
 
     // -----------------------------------------------------------------------
-    // Main render
+    // OnRender — triggered by WPF for layout/size/theme/InvalidateVisual changes.
+    // Performs a full synchronous render and cancels any pending async renders.
     // -----------------------------------------------------------------------
 
     protected override void OnRender(DrawingContext dc)
     {
-        if (_vm is null) return;
+        // Reserve hit-test area. Actual rendering is in DrawingVisual children.
+        dc.DrawRectangle(Brushes.Transparent, null, new Rect(0, 0, ActualWidth, ActualHeight));
+
+        // Cancel any queued async renders — we're doing a full render now.
+        _fullRenderPending       = false;
+        _backgroundRenderPending = false;
 
         EnsureFontMetrics();
         EnsureDpi();
 
-        var bounds = new Rect(0, 0, ActualWidth, ActualHeight);
-
-        // Background
-        dc.DrawRectangle(GetBrush("TE_Background"), null, bounds);
-
-        if (_lineHeight <= 0) return;
-
-        var lines        = _vm.Lines;
-        int totalLines   = lines.Count;
-        int firstLine    = Math.Max(0, _firstVisibleLine);
-        int lastLine     = Math.Min(totalLines - 1, firstLine + _visibleLineCount);
-
-        // Line number column background
-        var lnBg = GetBrush("TE_LineNumberBackground");
-        dc.DrawRectangle(lnBg, null, new Rect(0, 0, LineNumberColumnWidth, ActualHeight));
-
-        // Separator line between line numbers and code
-        var sep = GetBrush("TE_LineNumberForeground");
-        dc.DrawRectangle(sep, null, new Rect(LineNumberColumnWidth - 1, 0, 1, ActualHeight));
-
-        double codeX = LineNumberColumnWidth + LeftMargin - _horizontalOffset;
-
-        // Selection highlight (drawn before text so text renders on top)
-        if (_vm.HasSelection)
-            RenderSelection(dc, firstLine, lastLine, codeX);
-
-        for (int li = firstLine; li <= lastLine; li++)
-        {
-            double y    = (li - firstLine) * _lineHeight;
-            var    line = lines[li];
-
-            // --- Current-line highlight ---
-            if (li == _vm.CaretLine)
-            {
-                dc.DrawRectangle(GetBrush("TE_CurrentLineBrush"), null,
-                    new Rect(0, y, ActualWidth, _lineHeight));
-            }
-
-            // --- Line number ---
-            var lnText = BuildFormattedText((li + 1).ToString(), GetBrush("TE_LineNumberForeground"));
-            double lnX = LineNumberColumnWidth - lnText.Width - LineNumberPadding;
-            dc.DrawText(lnText, new Point(lnX, y + (_lineHeight - lnText.Height) / 2));
-
-            if (string.IsNullOrEmpty(line)) continue;
-
-            // --- Syntax-highlighted spans ---
-            var spans = _vm.GetHighlightedSpans(li);
-            if (spans.Count > 0)
-                RenderHighlightedLine(dc, line, spans, codeX, y);
-            else
-            {
-                // Plain text
-                var ft = BuildFormattedText(line, GetBrush("TE_Foreground"));
-                dc.DrawText(ft, new Point(codeX, y));
-            }
-        }
-
-        // Cursor is drawn in the overlay visual, not here.
+        UpdateBackground();
+        UpdateTextContent();
         DrawCursor();
     }
 
-    private void RenderSelection(DrawingContext dc, int firstVisLine, int lastVisLine, double codeX)
+    // -----------------------------------------------------------------------
+    // Layer 0 — background, gutter, current-line highlight, selection
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Redraws layer 0: background, line-number gutter, current-line highlight,
+    /// and selection rectangles.  No <see cref="FormattedText"/> is created here —
+    /// this is the fast path called on every mouse move during drag (~10–50 µs).
+    /// </summary>
+    private void UpdateBackground()
+    {
+        using var dc = _backgroundVisual.RenderOpen();
+
+        var bounds = new Rect(0, 0, ActualWidth, ActualHeight);
+        dc.DrawRectangle(GetBrush("TE_Background"), null, bounds);
+
+        if (_vm is null || _lineHeight <= 0) return;
+
+        // Line number column background + separator
+        dc.DrawRectangle(GetBrush("TE_LineNumberBackground"), null,
+            new Rect(0, 0, LineNumberColumnWidth, ActualHeight));
+        dc.DrawRectangle(GetBrush("TE_LineNumberForeground"), null,
+            new Rect(LineNumberColumnWidth - 1, 0, 1, ActualHeight));
+
+        int firstLine = Math.Max(0, _firstVisibleLine);
+        int lastLine  = Math.Min(_vm.Lines.Count - 1, firstLine + _visibleLineCount);
+        double codeX  = LineNumberColumnWidth + LeftMargin - _horizontalOffset;
+
+        // Current-line highlight (drawn before text so text renders on top)
+        if (_vm.CaretLine >= firstLine && _vm.CaretLine <= lastLine)
+        {
+            double y = (_vm.CaretLine - firstLine) * _lineHeight;
+            dc.DrawRectangle(GetBrush("TE_CurrentLineBrush"), null,
+                new Rect(0, y, ActualWidth, _lineHeight));
+        }
+
+        // Selection rectangles
+        if (_vm.HasSelection)
+            DrawSelectionRects(dc, firstLine, lastLine, codeX);
+    }
+
+    private void DrawSelectionRects(DrawingContext dc, int firstVisLine, int lastVisLine, double codeX)
     {
         if (_vm is null || !_vm.HasSelection) return;
 
@@ -296,7 +317,6 @@ internal sealed class TextViewport : FrameworkElement
         int carLine = _vm.CaretLine;
         int carCol  = _vm.CaretColumn;
 
-        // Normalise: startLine <= endLine
         bool anchorFirst = ancLine < carLine || (ancLine == carLine && ancCol <= carCol);
         int startLine = anchorFirst ? ancLine : carLine;
         int startCol  = anchorFirst ? ancCol  : carCol;
@@ -318,10 +338,10 @@ internal sealed class TextViewport : FrameworkElement
         // First (partial) line
         if (startLine >= firstVisLine && startLine <= lastVisLine)
         {
-            double y      = (startLine - firstVisLine) * _lineHeight;
-            double x1     = codeX + startCol * _charWidth;
-            double lineW  = (_vm.GetLine(startLine).Length - startCol) * _charWidth;
-            double width  = Math.Max(lineW, _charWidth);
+            double y     = (startLine - firstVisLine) * _lineHeight;
+            double x1    = codeX + startCol * _charWidth;
+            double lineW = (_vm.GetLine(startLine).Length - startCol) * _charWidth;
+            double width = Math.Max(lineW, _charWidth);
             dc.DrawRectangle(selBrush, null, new Rect(x1, y, width, _lineHeight));
         }
 
@@ -343,19 +363,92 @@ internal sealed class TextViewport : FrameworkElement
         }
     }
 
-    private void RenderHighlightedLine(DrawingContext dc, string line,
+    // -----------------------------------------------------------------------
+    // Layer 1 — line-number labels + syntax-highlighted code text
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Redraws layer 1: line-number text labels and syntax-highlighted code.
+    /// Uses a per-line <see cref="FormattedText"/> segment cache — no allocations
+    /// for lines whose text has not changed since the last render.
+    /// </summary>
+    private void UpdateTextContent()
+    {
+        using var dc = _textContentVisual.RenderOpen();
+
+        if (_vm is null || _lineHeight <= 0) return;
+
+        var lines     = _vm.Lines;
+        int firstLine = Math.Max(0, _firstVisibleLine);
+        int lastLine  = Math.Min(lines.Count - 1, firstLine + _visibleLineCount);
+        double codeX  = LineNumberColumnWidth + LeftMargin - _horizontalOffset;
+
+        for (int li = firstLine; li <= lastLine; li++)
+        {
+            double y    = (li - firstLine) * _lineHeight;
+            var    line = lines[li];
+
+            // Line number label
+            var lnText = BuildFormattedText((li + 1).ToString(), GetBrush("TE_LineNumberForeground"));
+            double lnX = LineNumberColumnWidth - lnText.Width - LineNumberPadding;
+            dc.DrawText(lnText, new Point(lnX, y + (_lineHeight - lnText.Height) / 2));
+
+            if (string.IsNullOrEmpty(line)) continue;
+
+            var spans = _vm.GetHighlightedSpans(li);
+            if (spans.Count > 0)
+                RenderHighlightedLineCached(dc, li, line, spans, codeX, y);
+            else
+                RenderPlainLineCached(dc, li, line, codeX, y);
+        }
+    }
+
+    /// <summary>
+    /// Renders a plain (unstyled) line, reusing the cached <see cref="FormattedText"/>
+    /// when the line text is unchanged.
+    /// </summary>
+    private void RenderPlainLineCached(DrawingContext dc, int lineIndex, string line, double codeX, double y)
+    {
+        if (_lineRenderCache.TryGetValue(lineIndex, out var cache) && cache.Text == line)
+        {
+            // Cache hit — draw segments at the new Y position; codeX may have changed (h-scroll).
+            for (int i = 0; i < cache.Segments.Length; i++)
+                dc.DrawText(cache.Segments[i], new Point(codeX + cache.XPositions[i], y));
+            return;
+        }
+
+        // Cache miss — build FormattedText and populate cache.
+        var ft = BuildFormattedText(line, GetBrush("TE_Foreground"));
+        dc.DrawText(ft, new Point(codeX, y));
+        _lineRenderCache[lineIndex] = new LineRenderCache(line, [ft], [0.0]);
+    }
+
+    /// <summary>
+    /// Renders a syntax-highlighted line, reusing cached <see cref="FormattedText"/>
+    /// segments when the line text is unchanged.
+    /// </summary>
+    private void RenderHighlightedLineCached(DrawingContext dc, int lineIndex, string line,
         IReadOnlyList<ColoredSpan> spans, double codeX, double y)
     {
-        int pos = 0;
+        if (_lineRenderCache.TryGetValue(lineIndex, out var cache) && cache.Text == line)
+        {
+            for (int i = 0; i < cache.Segments.Length; i++)
+                dc.DrawText(cache.Segments[i], new Point(codeX + cache.XPositions[i], y));
+            return;
+        }
+
+        // Cache miss — rebuild all FormattedText segments for this line.
+        var segments   = new List<FormattedText>(spans.Count * 2 + 1);
+        var xPositions = new List<double>(spans.Count * 2 + 1);
         var defaultBrush = GetBrush("TE_Foreground");
+        int pos = 0;
 
         foreach (var span in spans)
         {
-            // Guard: spans computed on a stale/different line version must not
-            // reference positions beyond the current line length.
+            // Guard: stale span positions must not exceed current line length.
             if (span.Start >= line.Length) break;
 
-            // Render unstyled text before this span
+            // Unstyled text before this span
             if (span.Start > pos)
             {
                 int safeEnd = Math.Min(span.Start, line.Length);
@@ -363,40 +456,46 @@ internal sealed class TextViewport : FrameworkElement
                 var raw = line[safePos..safeEnd];
                 if (!string.IsNullOrEmpty(raw))
                 {
-                    var ft = BuildFormattedText(raw, defaultBrush);
-                    dc.DrawText(ft, new Point(codeX + safePos * _charWidth, y));
+                    segments.Add(BuildFormattedText(raw, defaultBrush));
+                    xPositions.Add(safePos * _charWidth);
                 }
             }
 
-            // Render styled span
+            // Styled span
             var spanText = span.Start < line.Length
                 ? line.Substring(span.Start, Math.Min(span.Length, line.Length - span.Start))
                 : string.Empty;
 
             if (!string.IsNullOrEmpty(spanText))
             {
-                var brush = GetBrush(span.ColorKey, defaultBrush);
-                var ft    = BuildFormattedText(spanText, brush);
-                dc.DrawText(ft, new Point(codeX + span.Start * _charWidth, y));
+                segments.Add(BuildFormattedText(spanText, GetBrush(span.ColorKey, defaultBrush)));
+                xPositions.Add(span.Start * _charWidth);
             }
 
             pos = span.Start + span.Length;
         }
 
-        // Remaining text after last span
+        // Remaining unstyled text after last span
         if (pos < line.Length)
         {
             var tail = line[pos..];
             if (!string.IsNullOrEmpty(tail))
             {
-                var ft = BuildFormattedText(tail, defaultBrush);
-                dc.DrawText(ft, new Point(codeX + pos * _charWidth, y));
+                segments.Add(BuildFormattedText(tail, defaultBrush));
+                xPositions.Add(pos * _charWidth);
             }
         }
+
+        var segsArr = segments.ToArray();
+        var xArr    = xPositions.ToArray();
+        _lineRenderCache[lineIndex] = new LineRenderCache(line, segsArr, xArr);
+
+        for (int i = 0; i < segsArr.Length; i++)
+            dc.DrawText(segsArr[i], new Point(codeX + xArr[i], y));
     }
 
     // -----------------------------------------------------------------------
-    // Cursor overlay
+    // Layer 2 — cursor overlay
     // -----------------------------------------------------------------------
 
     private void DrawCursor()
@@ -411,15 +510,61 @@ internal sealed class TextViewport : FrameworkElement
         if (caretLine < _firstVisibleLine || caretLine > _firstVisibleLine + _visibleLineCount)
             return;
 
-        double y    = (caretLine - _firstVisibleLine) * _lineHeight;
-        double x    = LineNumberColumnWidth + LeftMargin + caretCol * _charWidth - _horizontalOffset;
-        var    pen  = new Pen(GetBrush("TE_Foreground"), 1.5);
+        double y   = (caretLine - _firstVisibleLine) * _lineHeight;
+        double x   = LineNumberColumnWidth + LeftMargin + caretCol * _charWidth - _horizontalOffset;
+        var    pen = new Pen(GetBrush("TE_Foreground"), 1.5);
         dc.DrawLine(pen, new Point(x, y + 1), new Point(x, y + _lineHeight - 1));
     }
 
     private void OnCursorBlink(object? sender, EventArgs e)
     {
         _cursorVisible = !_cursorVisible;
+        DrawCursor();
+    }
+
+    // -----------------------------------------------------------------------
+    // Render scheduling
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Queues a full render (background + text content + cursor) at Render priority.
+    /// Coalesces multiple calls into a single dispatch item.
+    /// </summary>
+    private void QueueFullRender()
+    {
+        if (_fullRenderPending) return;
+        _fullRenderPending = true;
+        Dispatcher.InvokeAsync(DoFullRender, DispatcherPriority.Render);
+    }
+
+    /// <summary>
+    /// Queues a background-only render (selection + current-line highlight + cursor)
+    /// at Render priority.  Skipped if a full render is already pending.
+    /// </summary>
+    private void QueueBackgroundRender()
+    {
+        if (_fullRenderPending || _backgroundRenderPending) return;
+        _backgroundRenderPending = true;
+        Dispatcher.InvokeAsync(DoBackgroundRender, DispatcherPriority.Render);
+    }
+
+    private void DoFullRender()
+    {
+        _fullRenderPending       = false;
+        _backgroundRenderPending = false;
+        EnsureFontMetrics();
+        EnsureDpi();
+        UpdateBackground();
+        UpdateTextContent();
+        DrawCursor();
+    }
+
+    private void DoBackgroundRender()
+    {
+        _backgroundRenderPending = false;
+        EnsureFontMetrics();
+        EnsureDpi();
+        UpdateBackground();
         DrawCursor();
     }
 
@@ -431,14 +576,14 @@ internal sealed class TextViewport : FrameworkElement
     {
         base.OnGotFocus(e);
         StartCursorBlink();
-        InvalidateVisual();
+        UpdateBackground(); // redraw separator/highlight with focus-aware styling
     }
 
     protected override void OnLostFocus(RoutedEventArgs e)
     {
         base.OnLostFocus(e);
         StopCursorBlink();
-        InvalidateVisual();
+        UpdateBackground();
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
@@ -549,7 +694,9 @@ internal sealed class TextViewport : FrameworkElement
                 e.Handled = true; break;
         }
 
-        InvalidateVisual();
+        // Content edits fire Lines/LineCount PropertyChanged → QueueFullRender().
+        // Navigation fires CaretLine/CaretColumn PropertyChanged → QueueBackgroundRender().
+        // Draw cursor immediately for instant visual feedback regardless.
         _cursorVisible = true;
         DrawCursor();
     }
@@ -570,7 +717,6 @@ internal sealed class TextViewport : FrameworkElement
         if (_vm is null || _vm.IsReadOnly) return;
         base.OnTextInput(e);
 
-        // Replace selection with the typed text
         if (_vm.HasSelection) _vm.DeleteSelectedText();
 
         foreach (var c in e.Text)
@@ -580,7 +726,6 @@ internal sealed class TextViewport : FrameworkElement
             _vm.InsertChar(c);
         }
         ScrollIntoView(_vm.CaretLine);
-        InvalidateVisual();
         _cursorVisible = true;
         DrawCursor();
         e.Handled = true;
@@ -615,7 +760,6 @@ internal sealed class TextViewport : FrameworkElement
             _vm.CaretColumn = col;
             SelectWordAtCaret();
             e.Handled = true;
-            InvalidateVisual();
             return;
         }
 
@@ -642,7 +786,6 @@ internal sealed class TextViewport : FrameworkElement
             CaptureMouse();
         }
 
-        InvalidateVisual();
         _cursorVisible = true;
         DrawCursor();
         e.Handled = true;
@@ -665,10 +808,19 @@ internal sealed class TextViewport : FrameworkElement
         int line = Math.Clamp((int)(pos.Y / _lineHeight) + _firstVisibleLine, 0, _vm.LineCount - 1);
         int col  = Math.Clamp((int)((pos.X - LineNumberColumnWidth - LeftMargin + _horizontalOffset) / _charWidth), 0, _vm.GetLine(line).Length);
 
+        // Guard: skip if caret cell is unchanged (mouse within same character).
+        if (line == _vm.CaretLine && col == _vm.CaretColumn) return;
+
+        // Suppress VM PropertyChanged so OnVmPropertyChanged does not queue
+        // a redundant background render — we update layer 0 directly below.
+        _suppressVmNotify = true;
         _vm.CaretLine   = line;
         _vm.CaretColumn = col;
+        _suppressVmNotify = false;
 
-        InvalidateVisual();
+        // Redraw only layer 0 (selection + current-line highlight).
+        // Layer 1 (text content) is unchanged during drag — not redrawn.
+        UpdateBackground();
         _cursorVisible = true;
         DrawCursor();
     }
@@ -681,7 +833,7 @@ internal sealed class TextViewport : FrameworkElement
         _isDragging = false;
         ReleaseMouseCapture();
 
-        // Simple click (no movement): clear the selection that may have been set
+        // Simple click (no movement): clear the selection
         if (_vm is not null && _vm.HasSelection
             && _vm.SelectionAnchorLine   == _vm.CaretLine
             && _vm.SelectionAnchorColumn == _vm.CaretColumn)
@@ -689,7 +841,7 @@ internal sealed class TextViewport : FrameworkElement
             _vm.ClearSelection();
         }
 
-        InvalidateVisual();
+        UpdateBackground();
     }
 
     protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -714,11 +866,12 @@ internal sealed class TextViewport : FrameworkElement
             _cachedFontSize == size && Equals(_cachedTypeface, _typeface))
             return;
 
-        _typeface = new Typeface(font, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-        _emSize   = size;
-        _cachedFontSize  = size;
-        _cachedTypeface  = _typeface;
+        _typeface       = new Typeface(font, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+        _emSize         = size;
+        _cachedFontSize = size;
+        _cachedTypeface = _typeface;
         _brushCache.Clear();
+        _lineRenderCache.Clear(); // font changed — all cached FormattedText is stale
 
         EnsureDpi();
 
@@ -729,9 +882,8 @@ internal sealed class TextViewport : FrameworkElement
             _typeface, _emSize, Brushes.Black, _dpi.PixelsPerDip);
 
         _charWidth  = ft.Width;
-        _lineHeight = ft.Height + 2; // +2px line spacing
+        _lineHeight = ft.Height + 2; // +2 px line spacing
 
-        // Measure the widest possible line number (9 digits)
         var lnSample = BuildFormattedText("999999", Brushes.Gray);
         _lineNumberWidth = lnSample.Width;
     }
@@ -779,10 +931,6 @@ internal sealed class TextViewport : FrameworkElement
     }
 
     // -----------------------------------------------------------------------
-    // Helpers
-    // -----------------------------------------------------------------------
-
-    // -----------------------------------------------------------------------
     // Clipboard helpers (called from OnKeyDown Ctrl+C/X/V/A)
     // -----------------------------------------------------------------------
 
@@ -793,7 +941,7 @@ internal sealed class TextViewport : FrameworkElement
         _vm.SelectionAnchorColumn = 0;
         _vm.CaretLine   = _vm.LineCount - 1;
         _vm.CaretColumn = _vm.GetLine(_vm.CaretLine).Length;
-        InvalidateVisual();
+        // Selection/caret PropertyChanged → QueueBackgroundRender()
     }
 
     private void ViewportCopy()
@@ -808,14 +956,14 @@ internal sealed class TextViewport : FrameworkElement
         if (_vm is null || !_vm.HasSelection || _vm.IsReadOnly) return;
         ViewportCopy();
         _vm.DeleteSelectedText();
-        InvalidateVisual();
+        // Lines/LineCount PropertyChanged → QueueFullRender()
     }
 
     private void ViewportPaste()
     {
         if (_vm is null || _vm.IsReadOnly || !Clipboard.ContainsText()) return;
         _vm.InsertText(Clipboard.GetText());
-        InvalidateVisual();
+        // Lines/LineCount PropertyChanged → QueueFullRender()
     }
 
     // -----------------------------------------------------------------------
@@ -829,7 +977,6 @@ internal sealed class TextViewport : FrameworkElement
         var line = _vm.GetLine(_vm.CaretLine);
         int col  = Math.Clamp(_vm.CaretColumn, 0, line.Length);
 
-        // Boundary condition: empty line or caret past end
         if (col >= line.Length)
         {
             _vm.ClearSelection();
@@ -838,12 +985,10 @@ internal sealed class TextViewport : FrameworkElement
 
         bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
 
-        // Find word start
         int start = col;
         if (IsWordChar(line[col]))
             while (start > 0 && IsWordChar(line[start - 1])) start--;
 
-        // Find word end
         int end = col;
         if (IsWordChar(line[col]))
             while (end < line.Length && IsWordChar(line[end])) end++;
@@ -853,7 +998,7 @@ internal sealed class TextViewport : FrameworkElement
         _vm.SelectionAnchorLine   = _vm.CaretLine;
         _vm.SelectionAnchorColumn = start;
         _vm.CaretColumn           = end;
-        InvalidateVisual();
+        // CaretColumn/SelectionAnchor PropertyChanged → QueueBackgroundRender()
     }
 
     private static int GetFirstNonWhiteSpace(string line)
@@ -867,10 +1012,10 @@ internal sealed class TextViewport : FrameworkElement
     // Theme change detection
     // -----------------------------------------------------------------------
 
-    // Sentinel DependencyProperty: bound to TE_Background via SetResourceReference.
-    // When the application theme swaps its MergedDictionaries, WPF re-resolves every
+    // Sentinel DependencyProperty bound to TE_Background via SetResourceReference.
+    // When the application theme swaps MergedDictionaries, WPF re-resolves every
     // DynamicResource binding — this triggers OnThemeWatcherChanged, which flushes
-    // the brush cache and forces a re-render with the new theme colours.
+    // both brush and FormattedText caches and forces a full re-render.
     private static readonly DependencyProperty ThemeWatcherProperty =
         DependencyProperty.Register(
             nameof(ThemeWatcher),
@@ -888,23 +1033,37 @@ internal sealed class TextViewport : FrameworkElement
     {
         var vp = (TextViewport)d;
         vp._brushCache.Clear();
-        vp._cachedFontSize = -1; // force TE_FontFamily / TE_FontSize re-read
-        vp.InvalidateVisual();
+        vp._lineRenderCache.Clear(); // brushes changed — cached FormattedText has stale colors
+        vp._cachedFontSize = -1;     // force TE_FontFamily / TE_FontSize re-read
+        vp.InvalidateVisual();       // triggers OnRender → full render
     }
 
     // -----------------------------------------------------------------------
-    // VM event
+    // VM property changes
     // -----------------------------------------------------------------------
 
     private void OnVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
+        // Suppressed during OnMouseMove's direct caret update to avoid a
+        // redundant queued render on top of the immediate UpdateBackground() call.
+        if (_suppressVmNotify) return;
+
         switch (e.PropertyName)
         {
             case nameof(TextEditorViewModel.Lines):
             case nameof(TextEditorViewModel.LineCount):
+                // Text content changed — evict entire FormattedText cache and do a full render.
+                _lineRenderCache.Clear();
+                QueueFullRender();
+                break;
+
             case nameof(TextEditorViewModel.CaretLine):
             case nameof(TextEditorViewModel.CaretColumn):
-                Dispatcher.InvokeAsync(InvalidateVisual, DispatcherPriority.Render);
+            case nameof(TextEditorViewModel.HasSelection):
+                // Only the background layer needs updating:
+                // current-line highlight moves with the caret; selection geometry changes.
+                // Text layer is unchanged — skip the expensive UpdateTextContent().
+                QueueBackgroundRender();
                 break;
         }
     }

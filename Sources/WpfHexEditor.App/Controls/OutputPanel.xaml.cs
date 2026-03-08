@@ -46,6 +46,11 @@ public partial class OutputPanel : UserControl
     /// </summary>
     internal RichTextBox OutputBox => OutputTextBox;
 
+    /// <summary>
+    /// The currently selected source channel name (e.g. "General", "Plugin System").
+    /// </summary>
+    internal string ActiveSource => _activeSource;
+
     // --- Public append API (called by OutputLogger) --------------------
 
     /// <summary>
@@ -131,6 +136,22 @@ public partial class OutputPanel : UserControl
     {
         _autoScroll = !_autoScroll;
         UpdateAutoScrollVisual();
+    }
+
+    /// <summary>
+    /// Returns the last <paramref name="count"/> lines from the specified source channel as plain strings.
+    /// Called by <see cref="OutputLogger.GetRecentLines"/>.
+    /// </summary>
+    internal IReadOnlyList<string> GetRecentLinesFromSource(string source, int count)
+    {
+        if (!_sourceDocs.TryGetValue(source, out var doc)) return [];
+        var result = new List<string>(count);
+        foreach (var block in doc.Blocks.Reverse().OfType<Paragraph>())
+        {
+            if (result.Count >= count) break;
+            result.Insert(0, new TextRange(block.ContentStart, block.ContentEnd).Text.TrimEnd());
+        }
+        return result;
     }
 
     /// <summary>

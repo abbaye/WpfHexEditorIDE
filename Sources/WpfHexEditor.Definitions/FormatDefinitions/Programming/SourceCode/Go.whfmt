@@ -1,0 +1,25 @@
+{
+  "formatName": "Go Source File",
+  "version": "1.0",
+  "extensions": [".go"],
+  "description": "Go (Golang) programming language source file.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["text/x-go"],
+  "Software": ["VS Code", "GoLand"],
+  "UseCases": ["Backend services", "CLI tools", "Cloud-native development"]
+}

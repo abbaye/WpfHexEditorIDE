@@ -1,0 +1,25 @@
+{
+  "formatName": "Ruby Source File",
+  "version": "1.0",
+  "extensions": [".rb", ".rbw", ".rake", ".gemspec"],
+  "description": "Ruby programming language source files and Rake build scripts.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["text/x-ruby"],
+  "Software": ["RubyMine", "VS Code"],
+  "UseCases": ["Ruby on Rails development", "Scripting", "Rake build tasks"]
+}

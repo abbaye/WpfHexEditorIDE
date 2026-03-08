@@ -102,6 +102,10 @@ namespace WpfHexEditor.HexEditor
                     var position = new VirtualPosition(hitResult.Position.Value);
                     // Update selection range during drag
                     _viewModel.SetSelectionRange(_mouseDownPosition, position);
+
+                    // Notify plugins (e.g. DataInspector) — DP callbacks are not triggered here.
+                    OnSelectionStartChanged(EventArgs.Empty);
+                    OnSelectionStopChanged(EventArgs.Empty);
                 }
             }
 

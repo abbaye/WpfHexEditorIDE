@@ -1,0 +1,25 @@
+{
+  "formatName": "JavaScript Source File",
+  "version": "1.0",
+  "extensions": [".js", ".mjs", ".cjs", ".jsx"],
+  "description": "JavaScript programming language source file (ECMAScript).",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["text/javascript"],
+  "Software": ["VS Code", "WebStorm", "Sublime Text"],
+  "UseCases": ["Web front-end development", "Node.js scripting", "React JSX components"]
+}

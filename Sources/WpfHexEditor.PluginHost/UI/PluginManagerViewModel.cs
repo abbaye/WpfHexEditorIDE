@@ -37,6 +37,7 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
     private string _rawFilterText = string.Empty;
     private string _sortBy = "Name";
     private PluginListItemViewModel? _selectedPlugin;
+    private bool _isInstalling;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -45,10 +46,10 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         _host       = host       ?? throw new ArgumentNullException(nameof(host));
         _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 
-        // Metrics timer — only refreshes live CPU/RAM, does NOT rebuild the list
+        // Metrics timer — only refreshes live CPU/RAM + sparkline history, does NOT rebuild the list
         _metricsTimer = new DispatcherTimer(DispatcherPriority.Background, _dispatcher)
         {
-            Interval = TimeSpan.FromSeconds(10)
+            Interval = TimeSpan.FromSeconds(5)
         };
         _metricsTimer.Tick += OnMetricsTick;
         _metricsTimer.Start();
@@ -65,12 +66,20 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         _host.PluginUnloaded += OnHostPluginChanged;
         _host.SlowPluginDetected += OnHostSlowPlugin;
 
-        RefreshCommand         = new RelayCommand(_ => RebuildOnUiThread());
-        InstallFromFileCommand = new RelayCommand(_ => ExecuteInstallFromFile());
-        ClearFilterCommand     = new RelayCommand(_ => FilterText = string.Empty,
-                                                  _ => !string.IsNullOrEmpty(_rawFilterText));
+        RefreshCommand             = new RelayCommand(_ => RebuildOnUiThread());
+        InstallFromFileCommand     = new RelayCommand(_ => ExecuteInstallFromFile());
+        ClearFilterCommand         = new RelayCommand(_ => FilterText = string.Empty,
+                                                      _ => !string.IsNullOrEmpty(_rawFilterText));
+        ExportDiagnosticsCommand   = new RelayCommand(_ => ExecuteExportDiagnostics());
+        ExportCrashReportCommand   = new RelayCommand(
+            _ => ExecuteExportCrashReport(),
+            _ => _selectedPlugin?.State == PluginState.Faulted);
 
         Rebuild();
+
+        // Immediately populate metrics so the detail pane shows real values on first open,
+        // rather than showing all-zeroes until the first 5-second timer tick.
+        foreach (var vm in Plugins) vm.Refresh();
     }
 
     // --- Observable collections ---
@@ -116,9 +125,19 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
 
     // --- Commands ---
 
-    public ICommand RefreshCommand         { get; }
-    public ICommand InstallFromFileCommand { get; }
-    public ICommand ClearFilterCommand     { get; }
+    public ICommand RefreshCommand           { get; }
+    public ICommand InstallFromFileCommand   { get; }
+    public ICommand ClearFilterCommand       { get; }
+    public ICommand ExportDiagnosticsCommand { get; }
+    public ICommand ExportCrashReportCommand { get; }
+
+    // --- Install progress ---
+
+    public bool IsInstalling
+    {
+        get => _isInstalling;
+        private set { _isInstalling = value; OnPropertyChanged(); }
+    }
 
     // --- Plugin lifecycle callbacks (called from PluginListItemViewModel commands) ---
 
@@ -230,11 +249,10 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         }).ContinueWith(_ => _dispatcher.InvokeAsync(Rebuild, DispatcherPriority.Background));
     }
 
-    // --- Install from file (must show dialog on UI thread) ---
+    // --- Install / Uninstall from file ---
 
     private async void ExecuteInstallFromFile()
     {
-        // OpenFileDialog MUST run on the UI thread
         var dialog = new OpenFileDialog
         {
             Title           = "Install Plugin Package",
@@ -243,24 +261,67 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
         };
 
         if (dialog.ShowDialog() != true) return;
+        await InstallFromPathAsync(dialog.FileName);
+    }
 
-        var filePath = dialog.FileName;
+    /// <summary>Called by code-behind when a .whxplugin is dropped onto the panel.</summary>
+    public Task InstallFromDropAsync(string path) => InstallFromPathAsync(path);
 
-        // Install on background thread, then rebuild on UI thread
+    private async Task InstallFromPathAsync(string filePath)
+    {
+        if (IsInstalling) return;
+        IsInstalling = true;
         try
         {
             await Task.Run(() => _host.InstallFromFileAsync(filePath)).ConfigureAwait(true);
-            Rebuild(); // back on UI thread via ConfigureAwait(true)
+            Rebuild();
         }
         catch (Exception ex)
         {
-            // MessageBox must be called on UI thread — we're already there (ConfigureAwait(true))
-            MessageBox.Show(
-                $"Installation failed:\n{ex.Message}",
-                "Plugin Install Error",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+            MessageBox.Show($"Installation failed:\n{ex.Message}",
+                "Plugin Install Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        finally { IsInstalling = false; }
+    }
+
+    // --- Export ---
+
+    private void ExecuteExportDiagnostics()
+    {
+        var dlg = new SaveFileDialog
+        {
+            Title      = "Export Plugin Diagnostics",
+            Filter     = "CSV files (*.csv)|*.csv|JSON files (*.json)|*.json|All files (*.*)|*.*",
+            FileName   = $"plugin-diagnostics-{DateTime.Now:yyyyMMdd-HHmmss}.csv"
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        var plugins  = _host.GetAllPlugins();
+        var exporter = new Services.PluginDiagnosticsExporter();
+        var isCsv    = System.IO.Path.GetExtension(dlg.FileName)
+                             .Equals(".csv", StringComparison.OrdinalIgnoreCase);
+
+        _ = isCsv
+            ? exporter.ExportCsvAsync(plugins, dlg.FileName)
+            : exporter.ExportJsonAsync(plugins, dlg.FileName);
+    }
+
+    private void ExecuteExportCrashReport()
+    {
+        if (_selectedPlugin is null) return;
+        var entry = _host.GetPlugin(_selectedPlugin.Id);
+        if (entry is null) return;
+
+        var dlg = new SaveFileDialog
+        {
+            Title      = $"Export Crash Report — {_selectedPlugin.Name}",
+            Filter     = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+            FileName   = $"crash-{_selectedPlugin.Id}-{DateTime.Now:yyyyMMdd-HHmmss}.txt"
+        };
+        if (dlg.ShowDialog() != true) return;
+
+        var exporter = new Services.PluginDiagnosticsExporter();
+        _ = exporter.ExportCrashReportAsync(entry, dlg.FileName);
     }
 
     public void Dispose()

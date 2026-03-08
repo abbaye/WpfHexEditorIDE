@@ -1,0 +1,25 @@
+{
+  "formatName": "Dart Source File",
+  "version": "1.0",
+  "extensions": [".dart"],
+  "description": "Dart programming language source file (Flutter, web, server).",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["application/dart"],
+  "Software": ["Android Studio", "VS Code"],
+  "UseCases": ["Flutter mobile development", "Web applications", "Server-side Dart"]
+}

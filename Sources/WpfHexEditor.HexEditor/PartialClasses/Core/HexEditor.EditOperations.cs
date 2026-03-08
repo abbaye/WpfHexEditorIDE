@@ -54,6 +54,10 @@ namespace WpfHexEditor.HexEditor
         public void SelectAll()
         {
             _viewModel?.SelectAll();
+
+            // Notify plugins — ViewModel.SelectAll bypasses DP callbacks.
+            OnSelectionStartChanged(EventArgs.Empty);
+            OnSelectionStopChanged(EventArgs.Empty);
         }
 
         /// <summary>

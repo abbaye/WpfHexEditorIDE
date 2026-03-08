@@ -87,6 +87,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private bool _isSelecting = false;
         private TextPosition _mouseDownPosition;
 
+        // Coalesces InvalidateVisual() calls during mouse-drag selection.
+        // Prevents dispatcher queue flooding at high mouse-event rates (200–1000 Hz).
+        private bool _selectionRenderPending;
+
         #endregion
 
         #region Fields - IntelliSense (Phase 4)
@@ -3685,14 +3689,28 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             if (_isSelecting && e.LeftButton == MouseButtonState.Pressed)
             {
-                var pos = e.GetPosition(this);
+                var pos     = e.GetPosition(this);
                 var textPos = PixelToTextPosition(pos);
 
-                _selection.End = textPos;
-                _cursorLine = textPos.Line;
-                _cursorColumn = textPos.Column;
+                // Guard: skip re-render if the selection endpoint hasn't moved to a new cell.
+                // Mouse-move events can fire at 200–1000 Hz; many will resolve to the same
+                // text position and would trigger a full OnRender() for nothing.
+                if (textPos == _selection.End) return;
 
-                InvalidateVisual();
+                _selection.End = textPos;
+                _cursorLine    = textPos.Line;
+                _cursorColumn  = textPos.Column;
+
+                // Coalesce: queue at most one render per WPF frame (~60 Hz) instead of
+                // one per OS mouse event.  _selectionRenderPending is cleared inside the
+                // dispatched lambda so subsequent events re-arm correctly.
+                if (_selectionRenderPending) return;
+                _selectionRenderPending = true;
+                Dispatcher.InvokeAsync(() =>
+                {
+                    _selectionRenderPending = false;
+                    InvalidateVisual();
+                }, System.Windows.Threading.DispatcherPriority.Render);
             }
         }
 

@@ -1,0 +1,25 @@
+{
+  "formatName": "PowerShell Script",
+  "version": "1.0",
+  "extensions": [".ps1", ".psm1", ".psd1"],
+  "description": "PowerShell script and module files (Windows/cross-platform scripting).",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["application/x-powershell"],
+  "Software": ["VS Code", "PowerShell ISE", "Windows Terminal"],
+  "UseCases": ["Windows automation", "DevOps scripts", "CI/CD pipelines"]
+}

@@ -129,13 +129,25 @@ public partial class MainWindow
             _pluginHost.PluginLoaded        += OnPluginLoadedOrUnloaded;
             _pluginHost.PluginUnloaded      += OnPluginLoadedOrUnloaded;
 
-            // 5. Discover + load all plugins
+            // 5. Discover + load all plugins.
+            // Suspend visual tree rebuilds so that N plugins each registering a panel
+            // do not trigger N full RebuildVisualTree() calls on the UI thread.
+            // A single rebuild is performed by ResumeRebuild() after all plugins are loaded.
             var binDir = AppDomain.CurrentDomain.BaseDirectory;
             var bundledPluginsDir = Path.Combine(binDir, "Plugins");
             OutputLogger.PluginInfo($"[PluginSystem] Plugins dir: {bundledPluginsDir} (exists: {Directory.Exists(bundledPluginsDir)})");
-            await _pluginHost.LoadAllAsync(
-                extraDirectories: Directory.Exists(bundledPluginsDir) ? [bundledPluginsDir] : null,
-                ct: CancellationToken.None).ConfigureAwait(false);
+            dockingAdapter.SuspendRebuild();
+            try
+            {
+                await _pluginHost.LoadAllAsync(
+                    extraDirectories: Directory.Exists(bundledPluginsDir) ? [bundledPluginsDir] : null,
+                    ct: CancellationToken.None).ConfigureAwait(false);
+            }
+            finally
+            {
+                // ResumeRebuild must run on the UI thread; dispatch back after ConfigureAwait(false).
+                await Dispatcher.InvokeAsync(dockingAdapter.ResumeRebuild);
+            }
 
             // Register a dynamic Options page for every plugin that supports IPluginWithOptions.
             foreach (var entry in _pluginHost.OptionsRegistry.GetAll())
@@ -169,7 +181,7 @@ public partial class MainWindow
 
                 if (_pendingPluginMonitorPanel is not null && _pluginHost is not null)
                 {
-                    var vm = new WpfHexEditor.Panels.IDE.Panels.ViewModels.PluginMonitoringViewModel(_pluginHost, Dispatcher);
+                    var vm = new WpfHexEditor.Panels.IDE.Panels.ViewModels.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
                     _pendingPluginMonitorPanel.DataContext = vm;
                     _pendingPluginMonitorPanel = null;
                 }
@@ -497,7 +509,7 @@ public partial class MainWindow
             return;
         }
 
-        var vm      = new WpfHexEditor.Panels.IDE.Panels.ViewModels.PluginMonitoringViewModel(_pluginHost, Dispatcher);
+        var vm      = new WpfHexEditor.Panels.IDE.Panels.ViewModels.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
         var control = new WpfHexEditor.Panels.IDE.Panels.PluginMonitoringPanel { DataContext = vm };
 
         var item = new DockItem
@@ -576,7 +588,7 @@ public partial class MainWindow
 
         if (_pluginHost is not null)
         {
-            var vm = new WpfHexEditor.Panels.IDE.Panels.ViewModels.PluginMonitoringViewModel(_pluginHost, Dispatcher);
+            var vm = new WpfHexEditor.Panels.IDE.Panels.ViewModels.PluginMonitoringViewModel(_pluginHost, Dispatcher, _outputService);
             panel.DataContext = vm;
         }
         else

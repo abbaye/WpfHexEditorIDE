@@ -5,6 +5,8 @@
 //////////////////////////////////////////////
 
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -122,6 +124,66 @@ public sealed partial class PluginManagerControl : UserControl
         win.GetType().GetMethod("OnOpenPluginMonitor",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
             ?.Invoke(win, [sender, e]);
+    }
+
+    // --- Drag-drop install (.whxplugin) ---
+
+    private void OnPanelDragOver(object sender, DragEventArgs e)
+    {
+        if (IsValidPluginDrop(e))
+        {
+            e.Effects = DragDropEffects.Copy;
+            DropHintOverlay.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            e.Effects = DragDropEffects.None;
+        }
+        e.Handled = true;
+    }
+
+    private void OnPanelDragLeave(object sender, DragEventArgs e)
+    {
+        DropHintOverlay.Visibility = Visibility.Collapsed;
+    }
+
+    private async void OnPanelDrop(object sender, DragEventArgs e)
+    {
+        DropHintOverlay.Visibility = Visibility.Collapsed;
+
+        if (!IsValidPluginDrop(e)) return;
+        if (DataContext is not PluginManagerViewModel vm) return;
+
+        var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+        if (files is null) return;
+
+        var packagePath = files.FirstOrDefault(f =>
+            string.Equals(Path.GetExtension(f), ".whxplugin", StringComparison.OrdinalIgnoreCase));
+
+        if (packagePath is not null)
+            await vm.InstallFromDropAsync(packagePath);
+    }
+
+    private static bool IsValidPluginDrop(DragEventArgs e)
+    {
+        if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return false;
+        var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+        return files?.Any(f => string.Equals(
+            Path.GetExtension(f), ".whxplugin", StringComparison.OrdinalIgnoreCase)) == true;
+    }
+
+    // --- Export context menu handlers ---
+
+    private void OnContextExportDiagnostics(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is PluginManagerViewModel vm)
+            vm.ExportDiagnosticsCommand.Execute(null);
+    }
+
+    private void OnContextExportCrashReport(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is PluginManagerViewModel vm)
+            vm.ExportCrashReportCommand.Execute(null);
     }
 
     private PluginListItemViewModel? GetSelectedItemVm()

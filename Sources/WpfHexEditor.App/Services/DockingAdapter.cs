@@ -40,6 +40,10 @@ public sealed class DockingAdapter : IDockingAdapter
     private readonly bool _isRestoredFromFile;
     private readonly Dictionary<string, (UIElement Content, PanelDescriptor Descriptor)> _deferredPanels = new();
 
+    // Bulk-load optimization: when suspended, all RebuildVisualTree() calls are skipped.
+    // A single rebuild is performed by ResumeRebuild() at the end of the batch.
+    private bool _rebuildSuspended;
+
     public DockingAdapter(
         DockEngine engine,
         DockLayoutRoot layout,
@@ -52,6 +56,24 @@ public sealed class DockingAdapter : IDockingAdapter
         _dockHost = dockHost ?? throw new ArgumentNullException(nameof(dockHost));
         _storeContent = storeContent ?? throw new ArgumentNullException(nameof(storeContent));
         _isRestoredFromFile = isRestoredFromFile;
+    }
+
+    /// <summary>
+    /// Suppresses <see cref="DockControl.RebuildVisualTree"/> calls during a bulk operation
+    /// (e.g. plugin startup). Call <see cref="ResumeRebuild"/> to flush a single rebuild.
+    /// Must be called on the UI thread.
+    /// </summary>
+    public void SuspendRebuild() => _rebuildSuspended = true;
+
+    /// <summary>
+    /// Re-enables visual tree rebuilds and performs a single rebuild to apply all
+    /// pending layout changes accumulated since <see cref="SuspendRebuild"/> was called.
+    /// Must be called on the UI thread.
+    /// </summary>
+    public void ResumeRebuild()
+    {
+        _rebuildSuspended = false;
+        _dockHost.RebuildVisualTree();
     }
 
     /// <inheritdoc />
@@ -69,7 +91,7 @@ public sealed class DockingAdapter : IDockingAdapter
             // Evict the stale placeholder from DockControl's internal cache so ContentFactory
             // is called again on the next rebuild, returning the real plugin UIElement.
             _dockHost.InvalidateContent(uiId);
-            _dockHost.RebuildVisualTree();
+            if (!_rebuildSuspended) _dockHost.RebuildVisualTree();
             return;
         }
 
@@ -134,7 +156,7 @@ public sealed class DockingAdapter : IDockingAdapter
         if (descriptor.DefaultAutoHide)
             _engine.AutoHide(item);
 
-        _dockHost.RebuildVisualTree();
+        if (!_rebuildSuspended) _dockHost.RebuildVisualTree();
     }
 
     /// <inheritdoc />
@@ -151,7 +173,7 @@ public sealed class DockingAdapter : IDockingAdapter
 
         _storeContent(uiId, content);
         _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
-        _dockHost.RebuildVisualTree();
+        if (!_rebuildSuspended) _dockHost.RebuildVisualTree();
     }
 
     /// <inheritdoc />
@@ -206,5 +228,22 @@ public sealed class DockingAdapter : IDockingAdapter
 
         var item = _layout.FindItemByContentId(uiId);
         if (item is not null) _engine.Show(item);
+    }
+
+    /// <inheritdoc />
+    public bool IsPanelVisible(string uiId)
+    {
+        // Panel was never shown (deferred after layout restore) — treat as not visible.
+        if (_deferredPanels.ContainsKey(uiId)) return false;
+
+        var item = _layout.FindItemByContentId(uiId);
+
+        // Panel absent from layout (not yet registered or already removed) — fail-open so
+        // plugins do not permanently skip work during early startup before layout is ready.
+        if (item is null) return true;
+
+        // Hidden state means the user explicitly closed or hid the panel.
+        // Docked, Float and AutoHide are all reachable by the user without opening a file again.
+        return item.State != DockItemState.Hidden;
     }
 }

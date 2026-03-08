@@ -329,7 +329,8 @@ public class FloatingWindowManager
             {
                 _dockControl.Engine.Dock(i, _dockControl.Layout!.MainDocumentHost, DockDirection.Center);
                 _dockControl.RebuildVisualTree();
-                window.Close();
+                // OnItemDocked already closed the window via CloseWindowForItem — guard against double-close.
+                if (window.IsLoaded) window.Close();
             }
         };
 
@@ -444,7 +445,8 @@ public class FloatingWindowManager
             };
             _dockControl.Engine.Dock(i, _dockControl.Layout!.MainDocumentHost, dir);
             _dockControl.RebuildVisualTree();
-            if (window.Node?.IsEmpty == true) window.Close();
+            // OnItemDocked already closed the window via CloseWindowForItem — guard against double-close.
+            if (window.IsLoaded && window.Node?.IsEmpty == true) window.Close();
         };
 
         window.WindowDragStarted += i =>
@@ -456,7 +458,8 @@ public class FloatingWindowManager
         {
             _dockControl.Engine?.AutoHide(i);
             _dockControl.RebuildVisualTree();
-            if (window.Node?.IsEmpty == true) window.Close();
+            // OnItemHidden already closed the window via CloseWindowForItem — guard against double-close.
+            if (window.IsLoaded && window.Node?.IsEmpty == true) window.Close();
         };
 
         _windows.Add(window);

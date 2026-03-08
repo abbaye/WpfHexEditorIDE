@@ -47,4 +47,11 @@ public interface IDockingAdapter
 
     /// <summary>Gives keyboard focus to an existing dockable panel.</summary>
     void FocusDockablePanel(string uiId);
+
+    /// <summary>
+    /// Returns true if the panel is currently registered in the layout and not hidden/closed.
+    /// Docked, floating, and auto-hidden panels all return true; deferred (never-shown) or
+    /// explicitly hidden panels return false.
+    /// </summary>
+    bool IsPanelVisible(string uiId);
 }

@@ -276,6 +276,10 @@ namespace WpfHexEditor.HexEditor
             _viewModel.ScrollPosition = scrollToLine;
             VerticalScroll.Value = scrollToLine;
 
+            // Notify plugins — ViewModel-level assignment bypasses DP callbacks.
+            OnSelectionStartChanged(EventArgs.Empty);
+            OnSelectionStopChanged(EventArgs.Empty);
+
             // Update UI
             UpdateSelectionInfo();
             UpdatePositionInfo();
@@ -369,6 +373,11 @@ namespace WpfHexEditor.HexEditor
                 new VirtualPosition(e.StartPosition),
                 new VirtualPosition(e.EndPosition));
 
+            // Notify plugins subscribed via HexEditorServiceImpl (SelectionStartChanged / SelectionStopChanged).
+            // These events are not fired via the DP path when selection is set directly on the ViewModel.
+            OnSelectionStartChanged(EventArgs.Empty);
+            OnSelectionStopChanged(EventArgs.Empty);
+
             // Update UI
             UpdateSelectionInfo();
         }
@@ -393,6 +402,11 @@ namespace WpfHexEditor.HexEditor
             _mouseDownPosition = start;
 
             _viewModel.SetSelectionRange(start, end);
+
+            // Notify plugins — ViewModel-level change bypasses DP callbacks.
+            OnSelectionStartChanged(EventArgs.Empty);
+            OnSelectionStopChanged(EventArgs.Empty);
+
             UpdateSelectionInfo();
         }
 
@@ -498,6 +512,10 @@ namespace WpfHexEditor.HexEditor
                 _viewModel.SelectionStart = new VirtualPosition(newPos);
                 _viewModel.SelectionStop = new VirtualPosition(newPos);
             }
+
+            // Notify plugins (DataInspector, etc.) — ViewModel-level changes bypass the DP callbacks.
+            OnSelectionStartChanged(EventArgs.Empty);
+            OnSelectionStopChanged(EventArgs.Empty);
 
             // Scroll to ensure new position is visible.
             // Always sync VerticalScroll.Value alongside the ViewModel: the ScrollBar has

@@ -1,0 +1,25 @@
+{
+  "formatName": "C# Source File",
+  "version": "1.0",
+  "extensions": [".cs"],
+  "description": "C# programming language source file (Microsoft .NET platform).",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["text/x-csharp"],
+  "Software": ["Visual Studio", "Rider", "VS Code"],
+  "UseCases": ["C# source code development", ".NET applications"]
+}

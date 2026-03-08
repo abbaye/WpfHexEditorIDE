@@ -424,7 +424,10 @@ public class DockDragManager
             }
 
             _dockControl.RebuildVisualTree();
-            _sourceFloatingWindow.Close();
+            // OnItemDocked already closed the floating window via CloseWindowForItem.
+            // Guard against double-close (calling Close() on a disposed WPF Window throws ObjectDisposedException).
+            if (_sourceFloatingWindow.IsLoaded)
+                _sourceFloatingWindow.Close();
         }
 
         EndFloatingDrag();

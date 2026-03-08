@@ -145,6 +145,10 @@ namespace WpfHexEditor.HexEditor
                 {
                     _viewModel.EndUpdate();
                 }
+
+                // Notify plugins after the EndUpdate batch — DP callbacks are not triggered here.
+                OnSelectionStartChanged(EventArgs.Empty);
+                OnSelectionStopChanged(EventArgs.Empty);
             }
         }
 
@@ -727,6 +731,10 @@ namespace WpfHexEditor.HexEditor
                 _viewModel.SelectionStart = new VirtualPosition(nextBookmark.BytePositionInStream);
                 _viewModel.SelectionStop = new VirtualPosition(nextBookmark.BytePositionInStream);
 
+                // Notify plugins — DP callbacks are not triggered by direct ViewModel assignment.
+                OnSelectionStartChanged(EventArgs.Empty);
+                OnSelectionStopChanged(EventArgs.Empty);
+
                 // Scroll to ensure bookmark is visible
                 long targetLine = nextBookmark.BytePositionInStream / _viewModel.BytePerLine;
                 if (targetLine < _viewModel.ScrollPosition ||
@@ -761,6 +769,10 @@ namespace WpfHexEditor.HexEditor
                 // Navigate to bookmark position
                 _viewModel.SelectionStart = new VirtualPosition(prevBookmark.BytePositionInStream);
                 _viewModel.SelectionStop = new VirtualPosition(prevBookmark.BytePositionInStream);
+
+                // Notify plugins — DP callbacks are not triggered by direct ViewModel assignment.
+                OnSelectionStartChanged(EventArgs.Empty);
+                OnSelectionStopChanged(EventArgs.Empty);
 
                 // Scroll to ensure bookmark is visible
                 long targetLine = prevBookmark.BytePositionInStream / _viewModel.BytePerLine;

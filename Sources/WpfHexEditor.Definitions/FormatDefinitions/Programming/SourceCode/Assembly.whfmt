@@ -1,0 +1,25 @@
+{
+  "formatName": "Assembly Source File",
+  "version": "1.0",
+  "extensions": [".asm", ".s", ".z80", ".arm", ".mips", ".65s", ".6502"],
+  "description": "Assembly language source files for various architectures (x86, ARM, Z80, 6502, MIPS).",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["text/x-asm"],
+  "Software": ["NASM", "MASM", "VS Code"],
+  "UseCases": ["Low-level systems programming", "Reverse engineering", "Embedded ROM development", "Retro computing"]
+}

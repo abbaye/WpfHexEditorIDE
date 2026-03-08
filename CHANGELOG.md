@@ -167,12 +167,16 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - `ImageViewer.xaml(.cs)` — major enhancement: zoom/pan, transform toolbar, context menu, theme compliance
 - `DockEngine` / `FloatingWindow` — minor additions for ImageViewer floating window sizing
 
-### ✨ Added — Plugin Monitoring Panel
-- `PluginMonitoringViewModel` — observes `PluginEntry` collection, polls CPU% and memory MB at 1 s interval via `PerformanceCounter` / GC; rolling chart history per plugin
-- `PluginMonitoringPanel.xaml(.cs)` — VS-style dockable panel; pure WPF `Canvas` + `Polyline` charts, no external charting library; redraws on `CollectionChanged`
+### ✨ Added — Plugin Monitoring Panel (Phases 1–5 complete)
+- `PluginMonitoringViewModel` — observes `PluginEntry` collection, polls CPU% and memory MB at 1 s interval via `PerformanceCounter` / GC; rolling 60-point chart history; per-plugin CPU estimation (`processCpu × avgMs / sumAvgMs`)
+- `PluginMonitoringPanel.xaml(.cs)` — VS-style dockable panel; global `Canvas`+`Polyline` charts + per-plugin `SparklineControl` columns in DataGrid; detail pane with 4-tab `TabControl` (Overview / CPU+RAM / Permissions / Settings); alert badge in toolbar; export dropdown (CSV / JSON / event log / copy table); drag-drop `.whxplugin` install
+- `SparklineControl` — new `FrameworkElement`-based mini chart (no external lib); renders CPU and RAM rolling sparklines directly via `OnRender`; bound to `PluginMiniChartViewModel` (60-point history)
+- `PluginPermissionRowViewModel` — interactive permissions editor: toggles `IsGranted` → calls `PermissionService.Grant/Revoke` immediately; risk badge (High/Medium/Low); declared vs granted columns
+- `PluginAlertEngine` — debounced per-plugin threshold evaluation (CPU%, MemMB, ExecTimeMs); 60 s cooldown per plugin per metric; raises `AlertTriggered` event consumed by toolbar badge
+- `PluginDiagnosticsExporter` — exports metrics to CSV, full diagnostics to JSON, crash summary to plain text; no external NuGet; triggered via toolbar export commands
 - `WpfPluginHost` — expanded load/unload/enable/disable lifecycle; diagnostic hooks; hot-unload via collectible `AssemblyLoadContext`
-- `PluginManagerViewModel` — full VM with Enable/Disable/Uninstall/Reload commands, filter/search, `SelectionChanged` wiring to monitoring panel
-- `PluginManagerControl` — DataGrid with status column, toolbar actions, details pane with diagnostics output; `PluginListItemViewModel` extended with `LiveCpuPercent`, `LiveMemoryMb`, `DiagnosticsSummary`
+- `PluginManagerViewModel` — full VM with Enable/Disable/Uninstall/Reload commands, filter/search, `SelectionChanged` wiring to monitoring panel; drag-drop `.whxplugin` install via `PluginManagerControl`
+- `PluginManagerControl` — DataGrid with status column, toolbar actions, details pane with sparkline charts; drag-drop install dropzone overlay; `PluginListItemViewModel` extended with `LiveCpuPercent`, `LiveMemoryMb`, `DiagnosticsSummary`, sparkline history
 - Plugin `.csproj` files — SDK manifest metadata (`PluginId`, `PluginVersion`, `PluginEntryPoint`, …) for auto-generated `manifest.json` at build time
 
 ### ✨ Added — Options
@@ -205,6 +209,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 - Plugin `.csproj` SDK manifest metadata (`PluginId`, `PluginVersion`, `PluginEntryPoint`, …) updated and bumped across all 7 first-party plugin packages
 - `MainWindow` — `SetActiveEditor` now called only on hex editor tab activation; non-hex tabs (Code, JSON, TBL…) no longer reset the active editor reference, keeping panels connected
 - `PluginManagerControl` — tab hover / selected theming aligned with all 8 global themes; `RelayCommand` wired to enable/disable/uninstall toolbar actions; list item foreground driven by `DockMenuForegroundBrush`
+
+### ✨ Added — Output Service
+- `OutputPanel.GetRecentLinesFromSource(source, count)` — returns the last N lines from a specific source channel as plain strings
+- `OutputPanel.ActiveSource` — exposes the currently selected source channel name
+- `OutputLogger.GetRecentLines(count)` — reads recent lines from the active source; thread-safe via `Dispatcher.Invoke`
+- `OutputServiceImpl.GetRecentLines()` — fully wired (was a `TODO` stub returning empty list)
+
+### ✨ Added — Format Definitions
+- Source code format definitions (`Programming/SourceCode/`) — `.whfmt` files for Shell, Bash, PowerShell, Batch, and related scripting formats; extends the 427-entry embedded format catalog
 
 ### 🐛 Fixed
 - `PermissionService` — `PermissionChangedEventArgs` object-initializer form; missing `System.IO` using

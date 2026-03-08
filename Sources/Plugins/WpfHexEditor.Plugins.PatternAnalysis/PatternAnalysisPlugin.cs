@@ -8,13 +8,17 @@
 //     Plugin entry point for the Pattern Analysis panel.
 //     Subscribes to FileOpened on IHexEditorService and feeds
 //     file bytes to PatternAnalysisPanel for entropy / pattern detection.
+//     Only runs analysis when the panel is visible; cancels in-flight work on new events.
 //
 // Architecture Notes:
 //     Pattern: Observer — host event drives panel refresh.
 //     Reads up to 1 MB for analysis to remain responsive on large files.
+//     Fixes #167 — removed redundant ActiveEditorChanged subscription (double-fire),
+//     added IsPanelVisible guard and CancellationToken to avoid wasted work.
 // ==========================================================
 
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -30,8 +34,11 @@ namespace WpfHexEditor.Plugins.PatternAnalysis;
 /// </summary>
 public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
 {
-    private IIDEHostContext?     _context;
+    private IIDEHostContext?      _context;
     private PatternAnalysisPanel? _panel;
+    private CancellationTokenSource? _cts;
+
+    private const string PanelUiId = "WpfHexEditor.Plugins.PatternAnalysis.Panel.PatternAnalysisPanel";
 
     public string  Id      => "WpfHexEditor.Plugins.PatternAnalysis";
     public string  Name    => "Pattern Analysis";
@@ -51,7 +58,7 @@ public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
         _panel   = new PatternAnalysisPanel();
 
         context.UIRegistry.RegisterPanel(
-            "WpfHexEditor.Plugins.PatternAnalysis.Panel.PatternAnalysisPanel",
+            PanelUiId,
             _panel,
             Id,
             new PanelDescriptor
@@ -72,12 +79,13 @@ public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
                 ParentPath = "View",
                 Group      = "Statistics",
                 IconGlyph  = "\uE773",
-                Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
-                                 "WpfHexEditor.Plugins.PatternAnalysis.Panel.PatternAnalysisPanel"))
+                Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(PanelUiId))
             });
 
-        context.HexEditor.FileOpened          += OnFileOpened;
-        context.HexEditor.ActiveEditorChanged += OnActiveEditorChanged;
+        // FileOpened fires on both new file opens AND tab switches to already-loaded files
+        // (HexEditorServiceImpl.SetActiveEditor re-fires FileOpened when IsFileLoaded).
+        // Do NOT subscribe to ActiveEditorChanged — that causes a second redundant analysis pass.
+        context.HexEditor.FileOpened += OnFileOpened;
 
         return Task.CompletedTask;
     }
@@ -85,20 +93,29 @@ public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
     public Task ShutdownAsync(CancellationToken ct = default)
     {
         if (_context is not null)
-        {
-            _context.HexEditor.FileOpened          -= OnFileOpened;
-            _context.HexEditor.ActiveEditorChanged -= OnActiveEditorChanged;
-        }
+            _context.HexEditor.FileOpened -= OnFileOpened;
+
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = null;
+
         return Task.CompletedTask;
     }
 
     // -------------------------------------------------------------------------
 
-    private void OnActiveEditorChanged(object? sender, EventArgs e) => OnFileOpened(sender, e);
-
     private async void OnFileOpened(object? sender, EventArgs e)
     {
         if (_panel is null || _context is null || !_context.HexEditor.IsActive) return;
+
+        // Skip expensive I/O when the panel is not visible (closed or auto-hidden).
+        if (!_context.UIRegistry.IsPanelVisible(PanelUiId)) return;
+
+        // Cancel any in-flight analysis and start a fresh run.
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
+        var ct = _cts.Token;
 
         // Capture locals — _panel / _context may change on the next event.
         var hexEditor = _context.HexEditor;
@@ -111,11 +128,12 @@ public sealed class PatternAnalysisPlugin : IWpfHexEditorPlugin
         // which does its heavy computation on a background thread internally.
         await Task.Run(async () =>
         {
-            if (!hexEditor.IsActive) return;
+            if (ct.IsCancellationRequested || !hexEditor.IsActive) return;
             var data = readLen > 0
-                ? await panel.Dispatcher.InvokeAsync(() => hexEditor.ReadBytes(0, readLen))
+                ? await panel.Dispatcher.InvokeAsync(() => hexEditor.ReadBytes(0, readLen), DispatcherPriority.Background, ct)
                 : [];
-            await panel.Dispatcher.InvokeAsync(() => panel.AnalyzeAsync(data));
-        });
+            if (ct.IsCancellationRequested) return;
+            await panel.Dispatcher.InvokeAsync(() => panel.AnalyzeAsync(data), DispatcherPriority.Background, ct);
+        }, ct);
     }
 }

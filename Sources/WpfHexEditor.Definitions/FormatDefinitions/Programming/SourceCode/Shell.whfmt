@@ -1,0 +1,25 @@
+{
+  "formatName": "Shell Script",
+  "version": "1.0",
+  "extensions": [".sh", ".bash", ".zsh", ".fish"],
+  "description": "Unix/Linux shell script files (Bash, Zsh, Fish).",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["application/x-sh"],
+  "Software": ["VS Code", "Vim", "Nano"],
+  "UseCases": ["Automation scripts", "Build pipelines", "System administration"]
+}

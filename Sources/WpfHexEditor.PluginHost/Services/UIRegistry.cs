@@ -173,12 +173,13 @@ public sealed class UIRegistry : IUIRegistry
         }
     }
 
-    // -- Panel visibility (stubs — wire to docking adapter when IDockingAdapter exposes show/hide) -
+    // -- Panel visibility -----------------------------------------------------------------
 
-    public void ShowPanel(string uiId)   => _dockingAdapter.ShowDockablePanel(uiId);
-    public void HidePanel(string uiId)   => _dockingAdapter.HideDockablePanel(uiId);
-    public void TogglePanel(string uiId) => _dockingAdapter.ToggleDockablePanel(uiId);
-    public void FocusPanel(string uiId)  => _dockingAdapter.FocusDockablePanel(uiId);
+    public void ShowPanel(string uiId)      => _dockingAdapter.ShowDockablePanel(uiId);
+    public void HidePanel(string uiId)      => _dockingAdapter.HideDockablePanel(uiId);
+    public void TogglePanel(string uiId)    => _dockingAdapter.ToggleDockablePanel(uiId);
+    public void FocusPanel(string uiId)     => _dockingAdapter.FocusDockablePanel(uiId);
+    public bool IsPanelVisible(string uiId) => _dockingAdapter.IsPanelVisible(uiId);
 
     private void RemoveByKind(string uiId, UIElementKind kind)
     {

@@ -4,6 +4,7 @@
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
 
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -41,8 +42,8 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
     // Continuous diagnostics sampling (default: every 5 seconds).
     private readonly DispatcherTimer _samplingTimer;
-    private TimeSpan _lastCpuTime = TimeSpan.Zero;
-    private DateTime _lastCpuCheck = DateTime.UtcNow;
+    private TimeSpan _lastCpuTime;
+    private DateTime _lastCpuCheck;
 
     /// <summary>Interval between diagnostics samples. Default: 5 seconds.</summary>
     public TimeSpan DiagnosticSamplingInterval
@@ -85,6 +86,11 @@ public sealed class WpfPluginHost : IAsyncDisposable
         _log = logger ?? (_ => { });
         _logError = errorLogger ?? _log;
         _dispatcher = dispatcher;
+        // Snapshot the current CPU time so the first sampling tick measures a real delta
+        // rather than the entire process CPU from startup (which would produce 100%).
+        _lastCpuTime  = Process.GetCurrentProcess().TotalProcessorTime;
+        _lastCpuCheck = DateTime.UtcNow;
+
         _watchdog = new PluginWatchdog();
         _watchdog.PluginNonResponsive += OnPluginNonResponsive;
 
@@ -193,8 +199,10 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
             var cpuAfter  = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
             var cpuDelta  = cpuAfter - cpuBefore;
+            // Clamp: cpuDelta is process-wide (all cores, all threads). During batch startup
+            // multiple plugins init in parallel, so cpuDelta >> per-plugin share → clamp to 100.
             var cpuPct    = elapsed.TotalMilliseconds > 0
-                ? cpuDelta.TotalMilliseconds / (elapsed.TotalMilliseconds * Environment.ProcessorCount) * 100.0
+                ? Math.Clamp(cpuDelta.TotalMilliseconds / (elapsed.TotalMilliseconds * Environment.ProcessorCount) * 100.0, 0.0, 100.0)
                 : 0.0;
             var memBytes  = GC.GetTotalMemory(forceFullCollection: false);
             entry.Diagnostics.Record(cpuPct, memBytes, elapsed);
@@ -483,7 +491,10 @@ public sealed class WpfPluginHost : IAsyncDisposable
         _lastCpuTime = cpuNow;
         _lastCpuCheck = now;
 
-        long memBytes = process.WorkingSet64;
+        // Use managed heap size (consistent with LoadPluginAsync) rather than WorkingSet64.
+        // WorkingSet64 is the full process physical footprint (~200-400 MB for WPF), which
+        // would cause a jarring jump after the first tick and is misleading per-plugin.
+        long memBytes = GC.GetTotalMemory(forceFullCollection: false);
 
         IReadOnlyList<PluginEntry> loaded;
         lock (_lock) loaded = _entries.Values.Where(e2 => e2.State == PluginState.Loaded).ToList();
@@ -491,8 +502,10 @@ public sealed class WpfPluginHost : IAsyncDisposable
         // Distribute a single process-level sample to every loaded plugin.
         // Per-plugin isolation is not possible in InProcess mode; the process metrics
         // serve as an upper-bound indicator for the monitoring UI.
+        // Pass TimeSpan.Zero as executionTime: wallElapsed is the sampling interval (~5s),
+        // not the plugin's execution time. Passing it would corrupt AverageExecutionTime.
         foreach (var entry in loaded)
-            entry.Diagnostics.Record(cpuPct, memBytes, wallElapsed);
+            entry.Diagnostics.Record(cpuPct, memBytes, TimeSpan.Zero);
     }
 
     private IReadOnlyList<PluginEntry> GetLoadedEntries()

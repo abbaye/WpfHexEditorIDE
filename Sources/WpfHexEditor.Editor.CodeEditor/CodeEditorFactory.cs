@@ -7,6 +7,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
+using WpfHexEditor.Definitions;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
@@ -32,11 +33,16 @@ public sealed class CodeEditorFactory : IEditorFactory
 
     public bool CanOpen(string filePath)
     {
-        // Accept any extension that LanguageRegistry knows about, plus the core JSON extensions.
         var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
         if (ext is ".json" or ".whfmt" or ".whjson" or ".whlang") return true;
 
-        // Also accept files for which a LanguageDefinition is registered.
+        // Catalog-driven: accept any extension explicitly mapped to this editor via .whfmt preferredEditor field.
+        var entry = EmbeddedFormatCatalog.Instance.GetAll()
+            .FirstOrDefault(e => e.Extensions.Any(
+                x => string.Equals(x, ext, StringComparison.OrdinalIgnoreCase)));
+        if (entry?.PreferredEditor == "code-editor") return true;
+
+        // Fallback: language definition registered at runtime via .whlang.
         return ext is not null && LanguageRegistry.Instance.GetLanguageForFile(filePath) is not null;
     }
 

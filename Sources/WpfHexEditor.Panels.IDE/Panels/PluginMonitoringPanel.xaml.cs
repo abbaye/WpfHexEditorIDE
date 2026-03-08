@@ -8,17 +8,27 @@
 //     Code-behind for the Plugin Monitoring docking panel.
 //     Redraws the CPU% and Memory MB Canvas+Polyline charts
 //     whenever the ViewModel's chart history collections change.
+//     Provides value converters for the Permissions tab (BoolToCheck,
+//     BoolToGrantColor) and sparkline column visibility management.
+//     Handles .whxplugin drag-drop install and uninstall confirmation dialog.
 //
 // Architecture Notes:
 //     Pure WPF chart rendering: normalise values to canvas pixels,
 //     update Polyline.Points directly. No external charting library.
+//     SparklineControl (FrameworkElement) handles per-plugin redraws
+//     autonomously via INotifyCollectionChanged subscription.
+//     Drag-drop: DragOver shows DropHintOverlay, Drop delegates to VM.
+//     Uninstall: code-behind shows MessageBox confirm before calling VM.
 // ==========================================================
 
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 using WpfHexEditor.Panels.IDE.Panels.ViewModels;
@@ -26,13 +36,57 @@ using WpfHexEditor.Panels.IDE.Panels.ViewModels;
 namespace WpfHexEditor.Panels.IDE.Panels;
 
 /// <summary>
-/// IValueConverter used only in XAML to satisfy the converter key requirement.
-/// Actual chart drawing is done in code-behind via CollectionChanged events.
+/// IValueConverter — not actively used for chart drawing (done in code-behind).
+/// Kept for XAML resource dictionary completeness.
 /// </summary>
 public sealed class ChartPointsConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        => DependencyProperty.UnsetValue; // not used — charts drawn in code-behind
+        => DependencyProperty.UnsetValue; // charts drawn in code-behind
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => DependencyProperty.UnsetValue;
+}
+
+/// <summary>
+/// Converts a bool to a Segoe MDL2 checkmark glyph (\uE73E) or empty string.
+/// Used in the Permissions tab "Declared" column.
+/// </summary>
+public sealed class BoolToCheckConverter : IValueConverter
+{
+    public static readonly BoolToCheckConverter Instance = new();
+
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        => value is true ? "\uE73E" : string.Empty;
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        => DependencyProperty.UnsetValue;
+}
+
+/// <summary>
+/// Converts a bool (IsGranted) to a foreground color:
+///   true  → green  (#22C55E — permission granted)
+///   false → gray   (#6B7280 — permission not granted)
+/// Used in the Permissions tab risk-badge column.
+/// </summary>
+public sealed class BoolToGrantColorConverter : IValueConverter
+{
+    public static readonly BoolToGrantColorConverter Instance = new();
+
+    private static readonly SolidColorBrush GrantedBrush =
+        new(Color.FromRgb(0x22, 0xC5, 0x5E)) { };  // #22C55E
+
+    private static readonly SolidColorBrush RevokedBrush =
+        new(Color.FromRgb(0x6B, 0x72, 0x80)) { };  // #6B7280
+
+    static BoolToGrantColorConverter()
+    {
+        GrantedBrush.Freeze();
+        RevokedBrush.Freeze();
+    }
+
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        => value is true ? GrantedBrush : RevokedBrush;
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => DependencyProperty.UnsetValue;
@@ -53,6 +107,25 @@ public partial class PluginMonitoringPanel : UserControl
         CpuChartCanvas.SizeChanged += (_, _) => RedrawCharts();
         MemChartCanvas.SizeChanged += (_, _) => RedrawCharts();
         SizeChanged += (_, _) => ApplyLayoutMode();
+        DragLeave += (_, _) => DropHintOverlay.Visibility = Visibility.Collapsed;
+        Unloaded  += OnUnloaded;
+    }
+
+    // ── Lifecycle ────────────────────────────────────────────────────────────
+
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        if (_vm is not null)
+        {
+            ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    -= OnCpuHistoryChanged;
+            ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged -= OnMemHistoryChanged;
+            ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      -= OnEventLogChanged;
+            _vm.PropertyChanged    -= OnVmPropertyChanged;
+            _vm.RequestUninstall   -= OnRequestUninstall;
+            _vm.Dispose();
+            _vm = null;
+        }
+        Unloaded -= OnUnloaded;
     }
 
     // ── DataContext wiring ───────────────────────────────────────────────────
@@ -64,7 +137,8 @@ public partial class PluginMonitoringPanel : UserControl
             ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    -= OnCpuHistoryChanged;
             ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged -= OnMemHistoryChanged;
             ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      -= OnEventLogChanged;
-            _vm.PropertyChanged -= OnVmPropertyChanged;
+            _vm.PropertyChanged  -= OnVmPropertyChanged;
+            _vm.RequestUninstall -= OnRequestUninstall;
         }
 
         _vm = e.NewValue as PluginMonitoringViewModel;
@@ -74,17 +148,32 @@ public partial class PluginMonitoringPanel : UserControl
             ((INotifyCollectionChanged)_vm.CpuHistory).CollectionChanged    += OnCpuHistoryChanged;
             ((INotifyCollectionChanged)_vm.MemoryHistory).CollectionChanged += OnMemHistoryChanged;
             ((INotifyCollectionChanged)_vm.EventLog).CollectionChanged      += OnEventLogChanged;
-            _vm.PropertyChanged += OnVmPropertyChanged;
+            _vm.PropertyChanged  += OnVmPropertyChanged;
+            _vm.RequestUninstall += OnRequestUninstall;
+            ApplySparklineVisibility();
         }
 
         RedrawCharts();
     }
 
-    // Rebuild columns when the user toggles the list side via the toolbar button.
     private void OnVmPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(PluginMonitoringViewModel.ListSide))
             RebuildContentGrid(_isLandscape);
+        else if (e.PropertyName == nameof(PluginMonitoringViewModel.ShowSparklines))
+            ApplySparklineVisibility();
+    }
+
+    // ── Sparkline column visibility ──────────────────────────────────────────
+
+    /// <summary>
+    /// Shows or hides the two sparkline DataGrid columns based on ViewModel.ShowSparklines.
+    /// </summary>
+    private void ApplySparklineVisibility()
+    {
+        var vis = (_vm?.ShowSparklines ?? true) ? Visibility.Visible : Visibility.Collapsed;
+        SparklineCpuColumn.Visibility = vis;
+        SparklineMemColumn.Visibility = vis;
     }
 
     // ── Adaptive layout ──────────────────────────────────────────────────────
@@ -111,12 +200,13 @@ public partial class PluginMonitoringPanel : UserControl
 
         if (!isLandscape)
         {
-            // Portrait: 3 rows — charts (2*) | splitter (4px) | table (*)
-            ContentGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star), MinHeight = 60 });
+            // Portrait: 3 rows — charts (*) | splitter (4px) | table (2*).
+            // Plugin table is the primary view — it gets twice the space of the charts area.
+            ContentGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star), MinHeight = 50 });
             ContentGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(4) });
-            ContentGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star), MinHeight = 30 });
+            ContentGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star), MinHeight = 50 });
 
-            Grid.SetRow(ChartsArea,     0); Grid.SetColumn(ChartsArea,     0);
+            Grid.SetRow(ChartsArea,      0); Grid.SetColumn(ChartsArea,      0);
             Grid.SetRow(ContentSplitter, 1); Grid.SetColumn(ContentSplitter, 0);
             Grid.SetRow(PluginsDataGrid, 2); Grid.SetColumn(PluginsDataGrid, 0);
 
@@ -199,6 +289,17 @@ public partial class PluginMonitoringPanel : UserControl
         }
     }
 
+    // ── Export dropdown ──────────────────────────────────────────────────────
+
+    private void OnExportButtonClick(object sender, RoutedEventArgs e)
+    {
+        if (Resources["ExportMenu"] is not ContextMenu menu) return;
+        menu.PlacementTarget = ExportButton;
+        menu.Placement = PlacementMode.Bottom;
+        menu.DataContext = _vm;
+        menu.IsOpen = true;
+    }
+
     // ── Selection & event log ────────────────────────────────────────────────
 
     private void OnPluginSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -212,6 +313,61 @@ public partial class PluginMonitoringPanel : UserControl
         // Auto-scroll to the latest log entry.
         if (_vm?.EventLog.Count > 0)
             EventLogListBox.ScrollIntoView(_vm.EventLog[^1]);
+    }
+
+    // ── Drag-drop install ────────────────────────────────────────────────────
+
+    private void OnPanelDragOver(object sender, DragEventArgs e)
+    {
+        if (IsValidPluginDrop(e))
+        {
+            e.Effects = DragDropEffects.Copy;
+            DropHintOverlay.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            e.Effects = DragDropEffects.None;
+            DropHintOverlay.Visibility = Visibility.Collapsed;
+        }
+        e.Handled = true;
+    }
+
+    private void OnPanelDrop(object sender, DragEventArgs e)
+    {
+        DropHintOverlay.Visibility = Visibility.Collapsed;
+
+        if (_vm is null || !IsValidPluginDrop(e)) return;
+
+        var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+        var packagePath = files?.FirstOrDefault(
+            f => string.Equals(Path.GetExtension(f), ".whxplugin", StringComparison.OrdinalIgnoreCase));
+
+        if (packagePath is not null)
+            _ = _vm.InstallFromDropAsync(packagePath);
+
+        e.Handled = true;
+    }
+
+    private static bool IsValidPluginDrop(DragEventArgs e)
+    {
+        if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return false;
+        var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+        return files?.Any(f => string.Equals(
+            Path.GetExtension(f), ".whxplugin", StringComparison.OrdinalIgnoreCase)) == true;
+    }
+
+    // ── Uninstall confirmation ───────────────────────────────────────────────
+
+    private void OnRequestUninstall(PluginMonitorRow row)
+    {
+        var result = MessageBox.Show(
+            $"Uninstall \"{row.Name}\"?\n\nThis will remove the plugin files from disk and cannot be undone.",
+            "Uninstall Plugin",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+        if (result == MessageBoxResult.Yes && _vm is not null)
+            _ = _vm.UninstallConfirmedAsync(row);
     }
 
     // ── Chart drawing ────────────────────────────────────────────────────────

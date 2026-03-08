@@ -28,8 +28,5 @@ public sealed class OutputServiceImpl : IOutputService
     public void Clear() => OutputLogger.Clear();
 
     public IReadOnlyList<string> GetRecentLines(int count)
-    {
-        // TODO: wire to OutputPanel's internal line buffer when available.
-        return [];
-    }
+        => OutputLogger.GetRecentLines(count);
 }

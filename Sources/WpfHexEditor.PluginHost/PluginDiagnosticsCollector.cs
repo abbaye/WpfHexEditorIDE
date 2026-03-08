@@ -80,7 +80,11 @@ public sealed class PluginDiagnosticsCollector : IPluginDiagnostics
             lock (_lock)
             {
                 if (_buffer.Count == 0) return TimeSpan.Zero;
-                double avgMs = _buffer.Average(s => s.LastExecutionTime.TotalMilliseconds);
+                // Exclude zero-duration samples (emitted by the periodic sampling tick,
+                // which has no plugin-specific execution to measure).
+                var meaningful = _buffer.Where(s => s.LastExecutionTime > TimeSpan.Zero).ToList();
+                if (meaningful.Count == 0) return TimeSpan.Zero;
+                double avgMs = meaningful.Average(s => s.LastExecutionTime.TotalMilliseconds);
                 return TimeSpan.FromMilliseconds(avgMs);
             }
         }
@@ -92,6 +96,15 @@ public sealed class PluginDiagnosticsCollector : IPluginDiagnostics
         lock (_lock)
         {
             return _buffer.Count > 0 ? _buffer.Max(s => s.CpuPercent) : 0.0;
+        }
+    }
+
+    /// <summary>Returns the peak memory (bytes) observed in the rolling window.</summary>
+    public long PeakMemoryBytes()
+    {
+        lock (_lock)
+        {
+            return _buffer.Count > 0 ? _buffer.Max(s => s.MemoryBytes) : 0;
         }
     }
 

@@ -15,6 +15,7 @@
 //
 // ==========================================================
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WpfHexEditor.Core.Models;
@@ -118,6 +119,10 @@ namespace WpfHexEditor.HexEditor
             var stop = new VirtualPosition(position + length - 1);
 
             _viewModel.SetSelectionRange(start, stop);
+
+            // Notify plugins (DataInspector, etc.) — DP callbacks are not triggered here.
+            OnSelectionStartChanged(EventArgs.Empty);
+            OnSelectionStopChanged(EventArgs.Empty);
 
             // Scroll to make selection visible
             EnsurePositionVisible(start);

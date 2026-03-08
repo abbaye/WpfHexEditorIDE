@@ -1,0 +1,25 @@
+{
+  "formatName": "C Source File",
+  "version": "1.0",
+  "extensions": [".c", ".h"],
+  "description": "C programming language source and header files.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["text/x-csrc"],
+  "Software": ["GCC", "Clang", "Visual Studio"],
+  "UseCases": ["Systems programming", "Embedded systems", "OS kernels"]
+}

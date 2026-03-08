@@ -65,6 +65,17 @@ internal static class OutputLogger
         => Append($"---- {title} ------------------------------------", null, SourceGeneral);
 
     /// <summary>
+    /// Returns the last <paramref name="count"/> lines from the currently active source channel.
+    /// Returns an empty list if the panel is not registered.
+    /// </summary>
+    public static IReadOnlyList<string> GetRecentLines(int count)
+    {
+        if (_panel is null) return [];
+        return _panel.OutputBox.Dispatcher.Invoke(
+            () => _panel.GetRecentLinesFromSource(_panel.ActiveSource, count));
+    }
+
+    /// <summary>
     /// Clears the currently visible source channel.
     /// </summary>
     public static void Clear()

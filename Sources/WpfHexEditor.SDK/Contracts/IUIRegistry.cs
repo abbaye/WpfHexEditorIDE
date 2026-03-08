@@ -94,6 +94,14 @@ public interface IUIRegistry
     /// <summary>Gives keyboard focus to a registered panel.</summary>
     void FocusPanel(string uiId);
 
+    /// <summary>
+    /// Returns true if the panel is currently registered in the layout and not hidden/closed.
+    /// Plugins should call this before performing expensive background I/O or analysis
+    /// to avoid wasting resources when the user has closed the panel.
+    /// Returns true (fail-open) when panel state cannot be determined (e.g. during startup).
+    /// </summary>
+    bool IsPanelVisible(string uiId);
+
     // -- Bulk Unregister ------------------------------------------------------
 
     /// <summary>

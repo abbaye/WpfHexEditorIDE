@@ -9,12 +9,15 @@
 //     Feeds file bytes to the panel on FileOpened, and bridges
 //     OnFieldSelectedForHighlight → IHexEditorService.SetSelection
 //     so that selecting a field in the tree highlights it in the HexEditor.
+//     Only feeds bytes when the panel is visible; cancels in-flight work on new events.
 //
 // Architecture Notes:
 //     Pattern: Observer + Adapter — host events drive panel; panel events drive host.
+//     Fixes #167 — added IsPanelVisible guard and CancellationToken to avoid wasted work.
 // ==========================================================
 
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
@@ -34,6 +37,9 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
 {
     private IIDEHostContext?       _context;
     private StructureOverlayPanel? _panel;
+    private CancellationTokenSource? _cts;
+
+    private const string PanelUiId = "WpfHexEditor.Plugins.StructureOverlay.Panel.StructureOverlayPanel";
 
     public string  Id      => "WpfHexEditor.Plugins.StructureOverlay";
     public string  Name    => "Structure Overlay";
@@ -56,7 +62,7 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
         _panel.OnFieldSelectedForHighlight += OnFieldSelectedForHighlight;
 
         context.UIRegistry.RegisterPanel(
-            "WpfHexEditor.Plugins.StructureOverlay.Panel.StructureOverlayPanel",
+            PanelUiId,
             _panel,
             Id,
             new PanelDescriptor
@@ -77,8 +83,7 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
                 ParentPath = "View",
                 Group      = "Analysis",
                 IconGlyph  = "\uE82D",
-                Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(
-                                 "WpfHexEditor.Plugins.StructureOverlay.Panel.StructureOverlayPanel"))
+                Command    = new RelayCommand(_ => context.UIRegistry.ShowPanel(PanelUiId))
             });
 
         context.HexEditor.FileOpened += OnFileOpened;
@@ -94,6 +99,10 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
         if (_panel is not null)
             _panel.OnFieldSelectedForHighlight -= OnFieldSelectedForHighlight;
 
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = null;
+
         return Task.CompletedTask;
     }
 
@@ -103,6 +112,15 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
     {
         if (_panel is null || _context is null || !_context.HexEditor.IsActive) return;
 
+        // Skip expensive I/O when the panel is not visible (closed or auto-hidden).
+        if (!_context.UIRegistry.IsPanelVisible(PanelUiId)) return;
+
+        // Cancel any in-flight byte transfer and start a fresh run.
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
+        var ct = _cts.Token;
+
         var hexEditor = _context.HexEditor;
         var panel     = _panel;
         var readLen   = (int)Math.Min(hexEditor.FileSize, 1_048_576);
@@ -111,12 +129,13 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
         // affinity), then hand the buffer to the panel without blocking the render pass.
         await Task.Run(async () =>
         {
-            if (!hexEditor.IsActive) return;
+            if (ct.IsCancellationRequested || !hexEditor.IsActive) return;
             var data = readLen > 0
-                ? await panel.Dispatcher.InvokeAsync(() => hexEditor.ReadBytes(0, readLen))
+                ? await panel.Dispatcher.InvokeAsync(() => hexEditor.ReadBytes(0, readLen), DispatcherPriority.Background, ct)
                 : [];
-            await panel.Dispatcher.InvokeAsync(() => panel.UpdateFileBytes(data));
-        });
+            if (ct.IsCancellationRequested) return;
+            await panel.Dispatcher.InvokeAsync(() => panel.UpdateFileBytes(data), DispatcherPriority.Background, ct);
+        }, ct);
     }
 
     private void OnFieldSelectedForHighlight(object? sender, OverlayField field)

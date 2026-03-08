@@ -1,0 +1,25 @@
+{
+  "formatName": "Batch Script",
+  "version": "1.0",
+  "extensions": [".bat", ".cmd"],
+  "description": "Windows batch script files for command-line automation.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["application/x-bat"],
+  "Software": ["Notepad", "VS Code", "Windows Command Prompt"],
+  "UseCases": ["Windows automation", "Build scripts", "Deployment scripts"]
+}

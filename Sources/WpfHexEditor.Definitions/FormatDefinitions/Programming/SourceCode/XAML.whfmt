@@ -1,0 +1,25 @@
+{
+  "formatName": "XAML Source File",
+  "version": "1.0",
+  "extensions": [".xaml", ".xsl", ".xslt", ".xhtml", ".resx", ".svg"],
+  "description": "XAML and XML-derived markup source files (WPF, Silverlight, UWP, XSLT stylesheets, resource files).",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-03-07",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "MimeTypes": ["application/xaml+xml", "image/svg+xml", "text/xml"],
+  "Software": ["Visual Studio", "Blend for Visual Studio", "VS Code"],
+  "UseCases": ["WPF UI design", "XSLT transformations", ".NET resource files", "SVG vector graphics"]
+}

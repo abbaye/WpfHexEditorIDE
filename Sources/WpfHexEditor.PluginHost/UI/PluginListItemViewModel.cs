@@ -50,6 +50,10 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         UninstallCommand = new RelayCommand(_ => _onUninstall(Id));
 
         Permissions = BuildPermissions();
+
+        // Eagerly populate InitTimeMs so the detail pane never shows "0 ms"
+        // before the first 5-second metrics timer tick.
+        InitTimeMs = _entry.InitDuration.TotalMilliseconds;
     }
 
     public string Id => _entry.Manifest.Id;
@@ -107,9 +111,31 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public double InitTimeMs { get; private set; }
     public double AvgExecMs { get; private set; }
 
+    // Rolling history for sparkline charts (60-point rolling window).
+    private const int HistoryCapacity = 60;
+    public ObservableCollection<double> CpuHistory    { get; } = new();
+    public ObservableCollection<double> MemoryHistory { get; } = new();
+
+    public double PeakCpuPercent { get; private set; }
+    public long   PeakMemoryMb  { get; private set; }
+
     public string LoadedSince => _entry.LoadedAt.HasValue
         ? _entry.LoadedAt.Value.ToString("HH:mm:ss")
         : "—";
+
+    public TimeSpan Uptime => _entry.Diagnostics.Uptime;
+
+    public string UptimeLabel
+    {
+        get
+        {
+            var u = _entry.Diagnostics.Uptime;
+            if (u.TotalSeconds < 1) return "—";
+            return u.TotalHours >= 1
+                ? $"{(int)u.TotalHours:D2}:{u.Minutes:D2}:{u.Seconds:D2}"
+                : $"{u.Minutes:D2}:{u.Seconds:D2}";
+        }
+    }
 
     // Commands
     public ICommand EnableCommand { get; }
@@ -176,7 +202,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Called periodically by PluginManagerViewModel to refresh live metrics.
+    /// Called periodically by PluginManagerViewModel to refresh live metrics and rolling history.
     /// </summary>
     public void Refresh()
     {
@@ -184,8 +210,27 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         if (snap is not null)
         {
             CpuPercent = snap.CpuPercent;
-            MemoryMb = snap.MemoryBytes / (1024 * 1024);
-            AvgExecMs = _entry.Diagnostics.AverageExecutionTime.TotalMilliseconds;
+            MemoryMb   = snap.MemoryBytes / (1024 * 1024);
+            AvgExecMs  = _entry.Diagnostics.AverageExecutionTime.TotalMilliseconds;
+
+            PushHistory(CpuHistory,    snap.CpuPercent);
+            PushHistory(MemoryHistory, snap.MemoryBytes / (1024.0 * 1024.0));
+
+            // Use rolling-buffer max (consistent with PluginMonitoringViewModel) so that
+            // artificially high peaks from startup age out of the buffer naturally.
+            var rollingPeakCpu = _entry.Diagnostics.PeakCpu();
+            if (Math.Abs(rollingPeakCpu - PeakCpuPercent) > 0.01)
+            {
+                PeakCpuPercent = rollingPeakCpu;
+                OnPropertyChanged(nameof(PeakCpuPercent));
+            }
+
+            var rollingPeakMem = _entry.Diagnostics.PeakMemoryBytes() / (1024 * 1024);
+            if (rollingPeakMem != PeakMemoryMb)
+            {
+                PeakMemoryMb = rollingPeakMem;
+                OnPropertyChanged(nameof(PeakMemoryMb));
+            }
         }
         InitTimeMs = _entry.InitDuration.TotalMilliseconds;
 
@@ -197,10 +242,19 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(AvgExecMs));
         OnPropertyChanged(nameof(InitTimeMs));
         OnPropertyChanged(nameof(FaultMessage));
+        OnPropertyChanged(nameof(Uptime));
+        OnPropertyChanged(nameof(UptimeLabel));
 
         ((RelayCommand)EnableCommand).RaiseCanExecuteChanged();
         ((RelayCommand)DisableCommand).RaiseCanExecuteChanged();
         ((RelayCommand)ReloadCommand).RaiseCanExecuteChanged();
+    }
+
+    private static void PushHistory(ObservableCollection<double> col, double value)
+    {
+        while (col.Count >= HistoryCapacity)
+            col.RemoveAt(0);
+        col.Add(value);
     }
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)
