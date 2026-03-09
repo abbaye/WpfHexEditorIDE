@@ -128,6 +128,7 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 | #115 | **Binary Patch Recorder** | Record every byte modification as a named, annotated patch; export as binary diff, IDA script, or human-readable `.patch` file for reproducible patching. |
 | #116 | **Obfuscation & Packing Detector** | Heuristic analysis of section entropy, suspicious imports, and known packer watermarks (UPX, Themida, MPRESS); produces a risk score and actionable report. |
 | #117 | **Memory Snapshot Viewer** | Load Windows mini-dump (`.dmp`) or Linux core-dump files; display memory regions, thread stacks, loaded modules, and heap blocks in the hex view with structured overlays. |
+| #139 | Grammar File Support | Add support for loading and parsing .syn grammar files from Synalysis; enable syntax highlighting, structured parsing, and integration with memory/code analysis workflows. |
 
 ---
 
