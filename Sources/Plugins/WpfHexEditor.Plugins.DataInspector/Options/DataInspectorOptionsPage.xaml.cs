@@ -17,13 +17,23 @@ public partial class DataInspectorOptionsPage : UserControl
 {
     public DataInspectorOptionsPage()
     {
-        // Wrap InitializeComponent() because Application.LoadComponent() can throw
-        // NullReferenceException when the plugin assembly is loaded in a custom
-        // AssemblyLoadContext and WPF's pack URI system can't resolve the resource stream.
-        // If BAML loading fails, all x:Name fields remain null; Load() handles that
-        // via its null guard and returns early without accessing any field.
-        try { InitializeComponent(); }
-        catch { /* BAML load failed in ALC — UI fields will be null; Load() guard handles it */ }
+        // Application.LoadComponent() (called by InitializeComponent()) throws NRE internally
+        // when the plugin is loaded in a custom AssemblyLoadContext and the pack URI resource
+        // can't be resolved. The throw happens inside WPF code BEFORE any catch block runs,
+        // so VS "break when thrown" fires even though the exception would be caught upstream.
+        //
+        // Fix: pre-check via GetResourceStream(), which returns null without throwing when
+        // the resource is unavailable. Skip InitializeComponent() entirely in that case;
+        // Load()'s null guard (if AutoRefreshCheckBox is null) handles the empty-control case.
+        var uri = new System.Uri(
+            "/WpfHexEditor.Plugins.DataInspector;component/options/datainspectoroptionspage.xaml",
+            System.UriKind.Relative);
+
+        if (Application.GetResourceStream(uri) is not null)
+        {
+            try { InitializeComponent(); }
+            catch { /* Unexpected BAML failure — fields stay null; Load() guard handles it */ }
+        }
     }
 
     /// <summary>Populates the page controls from current options.</summary>
