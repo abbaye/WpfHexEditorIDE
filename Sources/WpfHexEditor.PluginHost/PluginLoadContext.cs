@@ -28,14 +28,25 @@ internal sealed class PluginLoadContext : AssemblyLoadContext
     /// <inheritdoc/>
     protected override Assembly? Load(AssemblyName assemblyName)
     {
-        // Try to resolve from the plugin's own directory first.
+        // If the host (default context) already has this assembly loaded, always use
+        // the host's version.  This is the enforcement point for shared assemblies
+        // (WpfHexEditor.SDK, WpfHexEditor.Core, WpfHexEditor.HexEditor, …):
+        //   - Prevents loading a stale copy from the plugin's output directory.
+        //   - Prevents type-identity mismatches ("is IWpfHexEditorPlugin" fails
+        //     when the interface is loaded from two different ALCs).
+        //   - Guarantees plugins always see the latest SDK surface area even if
+        //     their output directory was not updated since the last SDK build.
+        var hostAssembly = Default.Assemblies
+            .FirstOrDefault(a => a.GetName().Name == assemblyName.Name);
+        if (hostAssembly is not null)
+            return hostAssembly;
+
+        // Plugin-specific assemblies (not present in the host): load from the
+        // plugin's own directory so each plugin is properly isolated.
         string? assemblyPath = _resolver.ResolveAssemblyToPath(assemblyName);
         if (assemblyPath is not null)
             return LoadFromAssemblyPath(assemblyPath);
 
-        // Fall back to the host (default) context for shared assemblies.
-        // This ensures WpfHexEditor.SDK, WpfHexEditor.Core etc. are shared,
-        // preventing type identity mismatches across contexts.
         return null;
     }
 
