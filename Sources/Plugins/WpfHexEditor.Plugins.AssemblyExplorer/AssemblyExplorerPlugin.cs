@@ -110,18 +110,18 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         // Register status bar items
         _sbAssembly = new StatusBarItemDescriptor
         {
-            Text      = "No assembly loaded",
+            Text = "No assembly loaded",
             Alignment = StatusBarAlignment.Right,
-            Order     = 20,
-            ToolTip   = "Assembly currently loaded in the Assembly Explorer"
+            Order = 20,
+            ToolTip = "Assembly currently loaded in the Assembly Explorer"
         };
         _sbTypeCount = new StatusBarItemDescriptor
         {
-            Text      = string.Empty,
+            Text = string.Empty,
             Alignment = StatusBarAlignment.Right,
-            Order     = 21
+            Order = 21
         };
-        context.UIRegistry.RegisterStatusBarItem(StatusAssemblyId,  Id, _sbAssembly);
+        context.UIRegistry.RegisterStatusBarItem(StatusAssemblyId, Id, _sbAssembly);
         context.UIRegistry.RegisterStatusBarItem(StatusTypeCountId, Id, _sbTypeCount);
 
         // Register menu items
