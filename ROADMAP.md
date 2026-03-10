@@ -40,6 +40,17 @@ Features already shipped are in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
+## 🔜 Planned — Ultimate IDE Architecture (VS-Level)
+
+Cette section présente les concepts VS-level de l’IDE, en se concentrant uniquement sur les fonctionnalités **non encore incluses** dans la roadmap actuelle.
+
+| Feature # | Title | Description | Remarque |
+|-----------|-------|-------------|----------|
+| #153 | **Visual Scripting / Graph View** | Node-based visual representation for binary structures, memory flow, or data pipelines; plugin-extensible graphs for analysis and automation. | Nouveau concept, pas encore dans la roadmap |
+| #154 | **Cross-Platform Ready Core** | WPF/.NET 8 foundation; potential interop with WinForms; future-proof design for possible Linux/macOS port with Avalonia/MAUI. | Nouveau concept, pas encore dans la roadmap |
+
+---
+
 ## 🔜 Planned — Editors & Code Intelligence
 
 | Feature # | Title | Description |
