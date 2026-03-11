@@ -97,7 +97,11 @@ public sealed class ShellSession : IDisposable
                 catch { /* best-effort */ }
             }
 
-            ShellProcess.Dispose();
+            
+            if (ShellProcess is not null) 
+                ShellProcess.Dispose();
+            
+
             ShellProcess = null;
         }
     }
