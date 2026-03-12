@@ -329,4 +329,21 @@ public sealed class PluginSystemSettings
     /// without prompting the user.
     /// </summary>
     public bool AutoLoadPlugins { get; set; } = true;
+
+    // -- Memory Alert Thresholds ------------------------------------------
+
+    /// <summary>Memory warning threshold in MB (yellow). Default: 500 MB.</summary>
+    public int MemoryWarningThresholdMB { get; set; } = 500;
+
+    /// <summary>Memory high threshold in MB (orange). Default: 750 MB.</summary>
+    public int MemoryHighThresholdMB { get; set; } = 750;
+
+    /// <summary>Memory critical threshold in MB (red). Default: 1000 MB.</summary>
+    public int MemoryCriticalThresholdMB { get; set; } = 1000;
+
+    /// <summary>Enable memory usage alerts and badges.</summary>
+    public bool EnableMemoryAlerts { get; set; } = true;
+
+    /// <summary>Show color gradation (green/yellow/orange/red) in monitors.</summary>
+    public bool ShowMemoryColorGradation { get; set; } = true;
 }

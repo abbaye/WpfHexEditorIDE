@@ -215,10 +215,61 @@ public sealed class PluginMonitorRow : INotifyPropertyChanged
         }
     }
 
-    public bool   HasWarning    => !_isResponsive || _isSlow;
-    public string WarningIcon   => !_isResponsive ? "\uE7BA" : _isSlow ? "\uE946" : string.Empty;
-    public string WarningColor  => !_isResponsive ? "#F97316" : "#F59E0B";
-    public string WarningTooltip => !_isResponsive ? "Plugin not responsive" : _isSlow ? "Slow plugin detected" : string.Empty;
+    public bool   HasWarning    => !_isResponsive || _isSlow || _hasMemoryAlert;
+    public string WarningIcon   => !_isResponsive ? "\uE7BA" : _isSlow ? "\uE946" : _hasMemoryAlert ? "\uE7BA" : string.Empty;
+    public string WarningColor  => !_isResponsive ? "#F97316" : _isSlow ? "#F59E0B" : _hasMemoryAlert ? MemoryAlertColor : string.Empty;
+    public string WarningTooltip => !_isResponsive ? "Plugin not responsive" : _isSlow ? "Slow plugin detected" : _hasMemoryAlert ? MemoryAlertMessage : string.Empty;
+
+    // -- Memory alert properties -----------------------------------------------
+
+    private bool _hasMemoryAlert;
+    private string _memoryAlertLevel = "Normal";
+    private string _memoryAlertColor = "#22C55E";
+    private string _memoryAlertIcon = "🟢";
+    private string _memoryAlertMessage = string.Empty;
+
+    /// <summary>True if memory usage exceeds any configured threshold.</summary>
+    public bool HasMemoryAlert
+    {
+        get => _hasMemoryAlert;
+        set
+        {
+            _hasMemoryAlert = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasWarning));
+            OnPropertyChanged(nameof(WarningIcon));
+            OnPropertyChanged(nameof(WarningColor));
+            OnPropertyChanged(nameof(WarningTooltip));
+        }
+    }
+
+    /// <summary>Memory alert level name: "Normal", "Warning", "High", or "Critical".</summary>
+    public string MemoryAlertLevel
+    {
+        get => _memoryAlertLevel;
+        set { _memoryAlertLevel = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Memory alert color (hex string, e.g., "#22C55E").</summary>
+    public string MemoryAlertColor
+    {
+        get => _memoryAlertColor;
+        set { _memoryAlertColor = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Memory alert icon/emoji (🟢🟡🟠🔴).</summary>
+    public string MemoryAlertIcon
+    {
+        get => _memoryAlertIcon;
+        set { _memoryAlertIcon = value; OnPropertyChanged(); }
+    }
+
+    /// <summary>Memory alert descriptive message.</summary>
+    public string MemoryAlertMessage
+    {
+        get => _memoryAlertMessage;
+        set { _memoryAlertMessage = value; OnPropertyChanged(); }
+    }
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -413,6 +464,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     private readonly PluginAlertEngine _alertEngine = new();
     private readonly PluginDiagnosticsExporter _exporter = new();
     private readonly IOutputService?  _outputService;
+    private MemoryAlertService? _memoryAlertService;
 
     // Per-plugin mini-chart lookup (pluginId → ViewModel)
     private readonly Dictionary<string, PluginMiniChartViewModel> _miniCharts =
@@ -449,11 +501,14 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public PluginMonitoringViewModel(WpfPluginHost host, Dispatcher dispatcher, IOutputService? outputService = null)
+    public PluginMonitoringViewModel(WpfPluginHost host, Dispatcher dispatcher, IOutputService? outputService = null, MemoryAlertThresholds? memoryThresholds = null)
     {
         _host          = host ?? throw new ArgumentNullException(nameof(host));
         _dispatcher    = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
         _outputService = outputService;
+
+        // Initialize memory alert service with provided or default thresholds
+        InitializeMemoryAlertService(memoryThresholds);
 
         _timer = new DispatcherTimer(DispatcherPriority.Background, dispatcher)
         {
@@ -926,6 +981,17 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             row.FaultMessage   = entry.FaultException?.Message ?? string.Empty;
             row.Version        = entry.Manifest.Version ?? string.Empty;
 
+            // Evaluate memory alert for this plugin
+            if (_memoryAlertService != null)
+            {
+                var level = _memoryAlertService.EvaluateMemoryUsage((int)weightedMem);
+                row.HasMemoryAlert = level != MemoryAlertLevel.Normal;
+                row.MemoryAlertLevel = level.ToString();
+                row.MemoryAlertColor = _memoryAlertService.GetAlertColorHex(level);
+                row.MemoryAlertIcon = _memoryAlertService.GetAlertIcon(level);
+                row.MemoryAlertMessage = _memoryAlertService.GetAlertMessage(level, (int)weightedMem);
+            }
+
             // Push per-plugin weighted samples to sparkline mini chart.
             var mini = GetOrCreateMiniChart(entry.Manifest.Id, entry.Manifest.Name);
             row.MiniChart = mini;
@@ -1330,6 +1396,33 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     };
 
     private static string Now() => DateTime.Now.ToString("HH:mm:ss");
+
+    // -- Memory Alert Service Initialization -------------------------------------
+
+    private void InitializeMemoryAlertService(MemoryAlertThresholds? thresholds)
+    {
+        try
+        {
+            var effectiveThresholds = thresholds ?? MemoryAlertThresholds.CreateDefault();
+
+            if (effectiveThresholds.Validate())
+            {
+                _memoryAlertService = new MemoryAlertService(effectiveThresholds);
+            }
+            else
+            {
+                // Fallback to defaults if validation fails
+                _memoryAlertService = new MemoryAlertService(MemoryAlertThresholds.CreateDefault());
+                _outputService?.Warning("[Plugin Monitor] Invalid memory thresholds, using defaults.");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Fallback to defaults on any error
+            _memoryAlertService = new MemoryAlertService(MemoryAlertThresholds.CreateDefault());
+            _outputService?.Error($"[Plugin Monitor] Failed to initialize memory alert service: {ex.Message}");
+        }
+    }
 
     // -- IDisposable -------------------------------------------------------------
 

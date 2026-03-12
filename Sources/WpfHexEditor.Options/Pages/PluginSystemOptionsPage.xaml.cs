@@ -39,6 +39,13 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
             TextMonitoringInterval.Text     = s.PluginSystem.MonitoringIntervalSeconds.ToString();
             TextResponseTime.Text           = s.PluginSystem.ResponseTimeThresholdMs.ToString();
             TextCpuThreshold.Text           = s.PluginSystem.CpuThresholdPercent.ToString("F1");
+
+            // Memory alert thresholds
+            CheckEnableMemoryAlerts.IsChecked        = s.PluginSystem.EnableMemoryAlerts;
+            CheckShowMemoryColorGradation.IsChecked  = s.PluginSystem.ShowMemoryColorGradation;
+            TextMemoryWarningThreshold.Text          = s.PluginSystem.MemoryWarningThresholdMB.ToString();
+            TextMemoryHighThreshold.Text             = s.PluginSystem.MemoryHighThresholdMB.ToString();
+            TextMemoryCriticalThreshold.Text         = s.PluginSystem.MemoryCriticalThresholdMB.ToString();
         }
         finally { _loading = false; }
     }
@@ -53,6 +60,13 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
         s.PluginSystem.MonitoringIntervalSeconds = ParseInt(TextMonitoringInterval.Text, 5);
         s.PluginSystem.ResponseTimeThresholdMs   = ParseInt(TextResponseTime.Text, 500);
         s.PluginSystem.CpuThresholdPercent       = ParseDouble(TextCpuThreshold.Text, 25.0);
+
+        // Memory alert thresholds
+        s.PluginSystem.EnableMemoryAlerts           = CheckEnableMemoryAlerts.IsChecked == true;
+        s.PluginSystem.ShowMemoryColorGradation     = CheckShowMemoryColorGradation.IsChecked == true;
+        s.PluginSystem.MemoryWarningThresholdMB     = ParseInt(TextMemoryWarningThreshold.Text, 500);
+        s.PluginSystem.MemoryHighThresholdMB        = ParseInt(TextMemoryHighThreshold.Text, 750);
+        s.PluginSystem.MemoryCriticalThresholdMB    = ParseInt(TextMemoryCriticalThreshold.Text, 1000);
     }
 
     // -- Control handlers ---------------------------------------------------------

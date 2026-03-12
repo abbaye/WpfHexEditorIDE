@@ -169,5 +169,96 @@
                      TextChanged="OnTextChanged"/>
         </Grid>
 
+        <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
+
+        <!-- ── Memory Alert Thresholds ─────────────────────────────────────── -->
+        <TextBlock Text="Memory Alert Thresholds"
+                   FontWeight="SemiBold" FontSize="13"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,0,0,12"/>
+
+        <CheckBox x:Name="CheckEnableMemoryAlerts"
+                  Content="Enable memory usage alerts and badges"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,10"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <CheckBox x:Name="CheckShowMemoryColorGradation"
+                  Content="Show color gradation in monitors (green/yellow/orange/red)"
+                  Foreground="{DynamicResource DockMenuForegroundBrush}"
+                  Margin="0,0,0,10"
+                  Checked="OnCheckChanged"
+                  Unchecked="OnCheckChanged"/>
+
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="⚠️ Warning threshold (yellow):"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBox x:Name="TextMemoryWarningThreshold" Grid.Column="1"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Background="{DynamicResource Panel_ToolbarBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     Padding="4,3"
+                     TextChanged="OnTextChanged"/>
+            <TextBlock Grid.Column="2" Text=" MB"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Margin="4,0,0,0"/>
+        </Grid>
+
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="🟠 High threshold (orange):"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBox x:Name="TextMemoryHighThreshold" Grid.Column="1"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Background="{DynamicResource Panel_ToolbarBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     Padding="4,3"
+                     TextChanged="OnTextChanged"/>
+            <TextBlock Grid.Column="2" Text=" MB"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Margin="4,0,0,0"/>
+        </Grid>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="🔴 Critical threshold (red):"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <TextBox x:Name="TextMemoryCriticalThreshold" Grid.Column="1"
+                     Foreground="{DynamicResource DockMenuForegroundBrush}"
+                     Background="{DynamicResource Panel_ToolbarBrush}"
+                     BorderBrush="{DynamicResource DockBorderBrush}"
+                     Padding="4,3"
+                     TextChanged="OnTextChanged"/>
+            <TextBlock Grid.Column="2" Text=" MB"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"
+                       Margin="4,0,0,0"/>
+        </Grid>
+
+        <TextBlock Text="Note: Thresholds should be in ascending order (Warning &lt; High &lt; Critical)."
+                   FontSize="11" Opacity="0.65"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Margin="0,8,0,0"
+                   TextWrapping="Wrap"/>
+
     </StackPanel>
 </UserControl>
