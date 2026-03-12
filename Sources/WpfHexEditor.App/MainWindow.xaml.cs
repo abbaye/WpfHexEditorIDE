@@ -258,7 +258,71 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     public IStatusBarContributor? ActiveStatusBarContributor
     {
         get => _activeStatusBarContributor;
-        private set { _activeStatusBarContributor = value; OnPropertyChanged(); }
+        private set 
+        { 
+            // Unsubscribe from previous HexEditor refresh time updates
+            if (_activeStatusBarContributor is HexEditor.HexEditor previousHex)
+            {
+                UnsubscribeFromRefreshTimeUpdates(previousHex);
+            }
+
+            _activeStatusBarContributor = value;
+
+            // Subscribe to new HexEditor refresh time updates
+            if (_activeStatusBarContributor is HexEditor.HexEditor currentHex)
+            {
+                SubscribeToRefreshTimeUpdates(currentHex);
+            }
+            else
+            {
+                // Hide refresh time for non-HexEditor documents
+                if (RefreshTimeStatusItem != null)
+                    RefreshTimeStatusItem.Visibility = Visibility.Collapsed;
+            }
+
+            OnPropertyChanged(); 
+        }
+    }
+
+    private void SubscribeToRefreshTimeUpdates(HexEditor.HexEditor hexEditor)
+    {
+        if (RefreshTimeStatusItem == null || RefreshTimeText == null) return;
+
+        // Access the RefreshTimeStatusBarItem to trigger lazy initialization
+        var refreshItem = hexEditor.RefreshTimeStatusBarItem;
+        if (refreshItem != null)
+        {
+            RefreshTimeStatusItem.Visibility = Visibility.Visible;
+            // Update immediately
+            UpdateRefreshTimeDisplay(refreshItem.Value);
+            // Subscribe to property changes
+            refreshItem.PropertyChanged += OnRefreshTimeItemPropertyChanged;
+        }
+    }
+
+    private void UnsubscribeFromRefreshTimeUpdates(HexEditor.HexEditor hexEditor)
+    {
+        var refreshItem = hexEditor.RefreshTimeStatusBarItem;
+        if (refreshItem != null)
+        {
+            refreshItem.PropertyChanged -= OnRefreshTimeItemPropertyChanged;
+        }
+    }
+
+    private void OnRefreshTimeItemPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(Editor.Core.StatusBarItem.Value) && sender is Editor.Core.StatusBarItem item)
+        {
+            Dispatcher.InvokeAsync(() => UpdateRefreshTimeDisplay(item.Value));
+        }
+    }
+
+    private void UpdateRefreshTimeDisplay(string? value)
+    {
+        if (RefreshTimeText != null)
+        {
+            RefreshTimeText.Text = string.IsNullOrEmpty(value) ? "" : $"Refresh: {value}";
+        }
     }
 
     private IEditorToolbarContributor? _activeToolbarContributor;
@@ -466,10 +530,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ? $"WpfHexEditor — {titleSol.Name}"
             : "WpfHexEditor";
 
-        // Update status bar
-        SolutionText.Text = _solutionManager.CurrentSolution is { } s
-            ? $"Solution: {s.Name}"
-            : "";
+        // Solution status bar removed per user request
+        // SolutionText.Text = _solutionManager.CurrentSolution is { } s
+        //     ? $"Solution: {s.Name}"
+        //     : "";
     }
 
     private void OnFormatUpgradeRequired(object? sender, FormatUpgradeRequiredEventArgs e)
@@ -3000,9 +3064,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Clear the transient refresh-time text whenever the active editor is not a HexEditor,
         // or when there is no active editor at all.  For HexEditor, RefreshDocumentStatus()
-        // fires StatusMessage → OnEditorStatusMessage which sets RefreshText from the "Refresh:" part.
+        // fires StatusMessage → OnEditorStatusMessage which sets refresh time via StatusBarContributor.
         if (hex == null)
-            RefreshText.Text = "";
+        {
+            // RefreshText.Text = ""; // Removed - now handled via StatusBarContributor
+        }
         else
             hex.RefreshDocumentStatus();
 
@@ -3068,8 +3134,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var focusedHex = unwrapped as HexEditorControl;
         if (focusedHex != null)
             focusedHex.RefreshDocumentStatus();
-        else
-            RefreshText.Text = "";
+        // else RefreshText.Text = ""; // Removed - now handled via StatusBarContributor
     }
 
     // --- IDocumentEditor event handlers --------------------------------
@@ -3150,9 +3215,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var parts = message.Split(new[] { "  |  " }, StringSplitOptions.None);
 
-        var refreshPart = parts.FirstOrDefault(
-            p => p.TrimStart().StartsWith("Refresh:", StringComparison.OrdinalIgnoreCase));
-        RefreshText.Text = refreshPart?.Trim() ?? "";
+        // Refresh time is now handled via StatusBarContributor, not via status message
+        // var refreshPart = parts.FirstOrDefault(
+        //     p => p.TrimStart().StartsWith("Refresh:", StringComparison.OrdinalIgnoreCase));
+        // RefreshText.Text = refreshPart?.Trim() ?? "";
 
         if (!message.StartsWith("Format detected:", StringComparison.OrdinalIgnoreCase))
             return;
@@ -3244,7 +3310,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             if (e.WasCancelled)
             {
-                RefreshText.Text = "Operation cancelled";
+                // RefreshText.Text = "Operation cancelled"; // Removed - status handled differently
                 return;
             }
 
@@ -3253,7 +3319,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 // Log as Error (red) and reveal the Output panel.
                 OutputLogger.Error(e.ErrorMessage);
                 ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
-                RefreshText.Text = $"Error: {e.ErrorMessage}";
+                // RefreshText.Text = $"Error: {e.ErrorMessage}"; // Removed - errors shown in Output panel
 
                 // Silently close the tab whose editor raised the failure.
                 if (e.CloseTabOnFailure)
@@ -3367,7 +3433,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 {
                     ActiveDocumentEditor = null;
                     ActiveHexEditor      = null;
-                    RefreshText.Text     = "";
+                    // RefreshText.Text  = ""; // Removed - handled via StatusBarContributor
                 }
                 hex.Close();   // Release the underlying FileStream immediately
             }

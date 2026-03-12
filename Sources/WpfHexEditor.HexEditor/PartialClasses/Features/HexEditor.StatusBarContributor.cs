@@ -46,6 +46,7 @@ namespace WpfHexEditor.HexEditor
         private StatusBarItem _sbDataVisual     = null!;
         private StatusBarItem _sbByteGrouping   = null!;
         private StatusBarItem _sbCopyMode       = null!;
+        private StatusBarItem _sbRefreshTime    = null!;
 
         // ═══════════════════════════════════════════════════════════════════
         // IStatusBarContributor
@@ -53,6 +54,22 @@ namespace WpfHexEditor.HexEditor
 
         public ObservableCollection<StatusBarItem> StatusBarItems
             => _statusBarItems ??= BuildStatusBarItems();
+
+        /// <summary>
+        /// Gets the refresh time status bar item. This is NOT included in StatusBarItems
+        /// because it is displayed separately on the right side of the IDE status bar.
+        /// Accessing this property ensures the status bar items are initialized.
+        /// </summary>
+        public StatusBarItem? RefreshTimeStatusBarItem
+        {
+            get
+            {
+                // Ensure items are built so _sbRefreshTime is initialized
+                if (_statusBarItems == null)
+                    _ = StatusBarItems;
+                return _sbRefreshTime;
+            }
+        }
 
         // ═══════════════════════════════════════════════════════════════════
         // Building items (lazy, called once on first access)
@@ -226,6 +243,17 @@ namespace WpfHexEditor.HexEditor
                 });
             }
 
+            // -- Refresh time (display-only, updated by HexViewport) -----------
+            // Note: This is exposed as a separate field (_sbRefreshTime) but NOT included
+            // in the returned collection, because MainWindow displays it separately on the
+            // right side of the status bar, next to the plugin count.
+            _sbRefreshTime = new StatusBarItem
+            {
+                Label   = "Refresh",
+                Tooltip = "Viewport refresh time in milliseconds",
+                Value   = "—"
+            };
+
             // Initialise values from current DP state
             RefreshStatusBarItemValues();
 
@@ -240,6 +268,7 @@ namespace WpfHexEditor.HexEditor
                 _sbDataVisual,
                 _sbByteGrouping,
                 _sbCopyMode
+                // _sbRefreshTime is NOT included here - displayed separately on the right
             };
         }
 

@@ -1275,32 +1275,39 @@
                 </StackPanel>
             </StatusBarItem>
 
-            <!-- Plugin health indicator (click to open Plugin Manager) -->
-            <StatusBarItem x:Name="PluginStatusItem" HorizontalAlignment="Right"
-                           Cursor="Hand" ToolTip="Plugin System Status — Click to open Plugin Manager"
-                           MouseLeftButtonDown="OnPluginStatusBarClick"
-                           MouseRightButtonDown="OnPluginStatusBarRightClick">
-                <StackPanel Orientation="Horizontal" Margin="0,0,8,0">
-                    <TextBlock x:Name="PluginStatusIcon" Text="&#xE74C;" FontFamily="Segoe MDL2 Assets"
-                               FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0"
-                               Foreground="{DynamicResource DockTabActiveTextBrush}"/>
-                    <TextBlock x:Name="PluginStatusText" Text="0 plugins"
-                               FontSize="11" VerticalAlignment="Center"
-                               Foreground="{DynamicResource DockTabActiveTextBrush}"/>
-                    <!-- Warning badge (hidden until a plugin faults) -->
-                    <Border x:Name="PluginWarningBadge" Background="{DynamicResource PM_BadgeFaultedBrush}" CornerRadius="8"
-                            Padding="4,1" Margin="4,0,0,0" VerticalAlignment="Center"
-                            Visibility="Collapsed">
-                        <TextBlock x:Name="PluginWarningText" Text="" FontSize="10" Foreground="White"/>
-                    </Border>
-                </StackPanel>
-            </StatusBarItem>
-
-            <!-- Right: solution name + refresh time + panel count -->
+            <!-- Right-aligned group: Refresh time + Plugin status -->
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="SolutionText" Text="" Foreground="{DynamicResource DockTabActiveTextBrush}" Margin="0,0,12,0"/>
-                    <TextBlock x:Name="RefreshText" Text="" Foreground="{DynamicResource DockTabActiveTextBrush}" Margin="0,0,12,0"/>
+                    <!-- Refresh time (from active HexEditor) -->
+                    <StackPanel x:Name="RefreshTimeStatusItem" Orientation="Horizontal" Visibility="Collapsed">
+                        <TextBlock x:Name="RefreshTimeText" Text="" 
+                                   FontSize="11" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource DockTabActiveTextBrush}"
+                                   Margin="0,0,12,0"/>
+                    </StackPanel>
+
+                    <!-- Plugin health indicator (click to open Plugin Manager) -->
+                    <StackPanel x:Name="PluginStatusItem" Orientation="Horizontal" 
+                                Cursor="Hand" Background="Transparent"
+                                MouseLeftButtonDown="OnPluginStatusBarClick"
+                                MouseRightButtonDown="OnPluginStatusBarRightClick"
+                                Margin="0,0,8,0">
+                        <StackPanel.ToolTip>
+                            <ToolTip Content="Plugin System Status — Click to open Plugin Manager"/>
+                        </StackPanel.ToolTip>
+                        <TextBlock x:Name="PluginStatusIcon" Text="&#xE74C;" FontFamily="Segoe MDL2 Assets"
+                                   FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0"
+                                   Foreground="{DynamicResource DockTabActiveTextBrush}"/>
+                        <TextBlock x:Name="PluginStatusText" Text="0 plugins"
+                                   FontSize="11" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource DockTabActiveTextBrush}"/>
+                        <!-- Warning badge (hidden until a plugin faults) -->
+                        <Border x:Name="PluginWarningBadge" Background="{DynamicResource PM_BadgeFaultedBrush}" CornerRadius="8"
+                                Padding="4,1" Margin="4,0,0,0" VerticalAlignment="Center"
+                                Visibility="Collapsed">
+                            <TextBlock x:Name="PluginWarningText" Text="" FontSize="10" Foreground="White"/>
+                        </Border>
+                    </StackPanel>
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>

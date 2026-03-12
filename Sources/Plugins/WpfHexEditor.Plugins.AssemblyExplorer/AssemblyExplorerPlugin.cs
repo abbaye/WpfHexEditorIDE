@@ -18,10 +18,6 @@
 //       View > "_Assembly Explorer"    (Panels group)
 //       Tools > "_Analyze Assembly"    (AssemblyExplorer group, Ctrl+Shift+A)
 //       Edit  > "Go to _Metadata Token…" (AssemblyExplorer group)
-//
-//     Status bar:
-//       Right-aligned, order 20: "Assembly: {name} v{version}"  (or "No assembly loaded")
-//       Right-aligned, order 21: "{typeCount} types | {methodCount} methods"
 // ==========================================================
 
 using System.IO;
@@ -107,22 +103,22 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
                 PreferredWidth  = 280
             });
 
-        // Register status bar items
-        _sbAssembly = new StatusBarItemDescriptor
-        {
-            Text = "No assembly loaded",
-            Alignment = StatusBarAlignment.Right,
-            Order = 20,
-            ToolTip = "Assembly currently loaded in the Assembly Explorer"
-        };
-        _sbTypeCount = new StatusBarItemDescriptor
-        {
-            Text = string.Empty,
-            Alignment = StatusBarAlignment.Right,
-            Order = 21
-        };
-        context.UIRegistry.RegisterStatusBarItem(StatusAssemblyId, Id, _sbAssembly);
-        context.UIRegistry.RegisterStatusBarItem(StatusTypeCountId, Id, _sbTypeCount);
+        // Register status bar items - Disabled: status bar items removed per user request
+        // _sbAssembly = new StatusBarItemDescriptor
+        // {
+        //     Text = "No assembly loaded",
+        //     Alignment = StatusBarAlignment.Right,
+        //     Order = 20,
+        //     ToolTip = "Assembly currently loaded in the Assembly Explorer"
+        // };
+        // _sbTypeCount = new StatusBarItemDescriptor
+        // {
+        //     Text = string.Empty,
+        //     Alignment = StatusBarAlignment.Right,
+        //     Order = 21
+        // };
+        // context.UIRegistry.RegisterStatusBarItem(StatusAssemblyId, Id, _sbAssembly);
+        // context.UIRegistry.RegisterStatusBarItem(StatusTypeCountId, Id, _sbTypeCount);
 
         // Register menu items
         RegisterMenuItems(context);
@@ -212,15 +208,16 @@ public sealed class AssemblyExplorerPlugin : IWpfHexEditorPlugin, IPluginWithOpt
         object? sender,
         Events.AssemblyLoadedEvent evt)
     {
-        if (_sbAssembly is not null)
-            _sbAssembly.Text = evt.IsManaged
-                ? $"Assembly: {evt.Name} v{evt.Version}"
-                : $"Native PE: {evt.Name}";
+        // Status bar updates disabled per user request
+        // if (_sbAssembly is not null)
+        //     _sbAssembly.Text = evt.IsManaged
+        //         ? $"Assembly: {evt.Name} v{evt.Version}"
+        //         : $"Native PE: {evt.Name}";
 
-        if (_sbTypeCount is not null)
-            _sbTypeCount.Text = evt.IsManaged
-                ? $"{evt.TypeCount} types | {evt.MethodCount} methods"
-                : $"{_context?.HexEditor.FileSize:N0} bytes";
+        // if (_sbTypeCount is not null)
+        //     _sbTypeCount.Text = evt.IsManaged
+        //         ? $"{evt.TypeCount} types | {evt.MethodCount} methods"
+        //         : $"{_context?.HexEditor.FileSize:N0} bytes";
 
         // Persist the loaded path so it can be restored on next startup.
         var opts = AssemblyExplorerOptions.Instance;

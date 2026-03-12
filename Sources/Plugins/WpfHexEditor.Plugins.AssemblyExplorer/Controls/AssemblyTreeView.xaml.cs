@@ -58,12 +58,35 @@ public partial class AssemblyTreeView : UserControl
 
     private void OnContextMenuOpened(object sender, RoutedEventArgs e)
     {
+        if (sender is not ContextMenu menu) return;
+
         var node = InnerTreeView.SelectedItem as AssemblyNodeViewModel;
-        MenuOpenInHex.IsEnabled      = node?.PeOffset > 0;
-        MenuCopyFull.IsEnabled       = node is TypeNodeViewModel;
-        MenuCopyOffset.IsEnabled     = node is MethodNodeViewModel;
-        MenuDecompile.IsEnabled      = node is TypeNodeViewModel or MethodNodeViewModel or AssemblyRootNodeViewModel;
-        MenuCloseAssembly.IsEnabled  = node is not null;
+
+        // Find menu items dynamically since they're defined in Resources
+        if (FindMenuItemByName(menu, "MenuOpenInHex") is MenuItem menuOpenInHex)
+            menuOpenInHex.IsEnabled = node?.PeOffset > 0;
+
+        if (FindMenuItemByName(menu, "MenuCopyFull") is MenuItem menuCopyFull)
+            menuCopyFull.IsEnabled = node is TypeNodeViewModel;
+
+        if (FindMenuItemByName(menu, "MenuCopyOffset") is MenuItem menuCopyOffset)
+            menuCopyOffset.IsEnabled = node is MethodNodeViewModel;
+
+        if (FindMenuItemByName(menu, "MenuDecompile") is MenuItem menuDecompile)
+            menuDecompile.IsEnabled = node is TypeNodeViewModel or MethodNodeViewModel or AssemblyRootNodeViewModel;
+
+        if (FindMenuItemByName(menu, "MenuCloseAssembly") is MenuItem menuCloseAssembly)
+            menuCloseAssembly.IsEnabled = node is not null;
+    }
+
+    private static MenuItem? FindMenuItemByName(ContextMenu menu, string name)
+    {
+        foreach (var item in menu.Items)
+        {
+            if (item is MenuItem menuItem && menuItem.Name == name)
+                return menuItem;
+        }
+        return null;
     }
 
     private void OnOpenInHexEditor(object sender, RoutedEventArgs e)

@@ -545,6 +545,13 @@ namespace WpfHexEditor.HexEditor
         /// </summary>
         private void HexViewport_RefreshTimeUpdated(object sender, long refreshTimeMs)
         {
+            // Update StatusBarItem for IDE integration (via IStatusBarContributor)
+            if (_sbRefreshTime != null)
+            {
+                _sbRefreshTime.Value = $"{refreshTimeMs} ms";
+            }
+
+            // Update internal StatusBar TextBlock (for standalone use)
             if (RefreshTimeText != null)
             {
                 RefreshTimeText.Text = $"Refresh: {refreshTimeMs} ms";
