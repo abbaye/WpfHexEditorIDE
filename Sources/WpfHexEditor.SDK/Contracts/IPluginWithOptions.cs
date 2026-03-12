@@ -30,4 +30,18 @@ public interface IPluginWithOptions
     /// Loads saved option values into the options page UI.
     /// </summary>
     void LoadOptions();
+
+    /// <summary>
+    /// Optional: Returns the category name for this plugin's options page.
+    /// Default: "Plugins"
+    /// Example: "Data Analysis", "Editors", "Debugging Tools"
+    /// </summary>
+    string GetOptionsCategory() => "Plugins";
+
+    /// <summary>
+    /// Optional: Returns an emoji/icon for the options category.
+    /// Default: "🔌"
+    /// Example: "📊" for data plugins, "✏️" for editors, "🐛" for debuggers
+    /// </summary>
+    string GetOptionsCategoryIcon() => "🔌";
 }

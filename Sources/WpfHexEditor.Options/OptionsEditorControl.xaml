@@ -13,39 +13,129 @@
                 <ResourceDictionary Source="/WpfHexEditor.Docking.Wpf;component/Themes/PanelCommon.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- TreeViewItem sans couleur système — utilise les brushes du thème actif -->
+            <!-- Chevron d'expansion style Visual Studio -->
+            <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
+                <Setter Property="Focusable" Value="False"/>
+                <Setter Property="Width" Value="16"/>
+                <Setter Property="Height" Value="16"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border Background="Transparent" Width="16" Height="16">
+                                <TextBlock x:Name="Arrow"
+                                          Text="▶"
+                                          FontSize="10"
+                                          FontFamily="Segoe UI Symbol"
+                                          Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          RenderTransformOrigin="0.5,0.5">
+                                    <TextBlock.RenderTransform>
+                                        <RotateTransform Angle="0"/>
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="Arrow"
+                                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                               To="90"
+                                                               Duration="0:0:0.15"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="Arrow"
+                                                               Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                               To="0"
+                                                               Duration="0:0:0.15"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Arrow" Property="Foreground" Value="{DynamicResource SE_SelectedBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- TreeViewItem amélioré style VS -->
             <Style TargetType="{x:Type TreeViewItem}">
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Padding"    Value="4,3"/>
+                <Setter Property="Padding"    Value="2,3"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                            <StackPanel>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
                                 <Border x:Name="Bd"
+                                        Grid.Row="0"
                                         Background="{TemplateBinding Background}"
-                                        Padding="{TemplateBinding Padding}">
-                                    <ContentPresenter ContentSource="Header"
-                                                      HorizontalAlignment="Left"
-                                                      VerticalAlignment="Center"/>
+                                        Padding="{TemplateBinding Padding}"
+                                        CornerRadius="2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Expander chevron (only for items with children) -->
+                                        <ToggleButton x:Name="Expander"
+                                                    Grid.Column="0"
+                                                    Style="{StaticResource ExpandCollapseToggleStyle}"
+                                                    IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                                    ClickMode="Press"
+                                                    Visibility="Hidden"/>
+
+                                        <ContentPresenter Grid.Column="1"
+                                                        ContentSource="Header"
+                                                        HorizontalAlignment="Left"
+                                                        VerticalAlignment="Center"
+                                                        Margin="4,0,0,0"/>
+                                    </Grid>
                                 </Border>
-                                <ItemsPresenter x:Name="ItemsHost"/>
-                            </StackPanel>
+
+                                <ItemsPresenter x:Name="ItemsHost"
+                                              Grid.Row="1"
+                                              Margin="16,0,0,0"/>
+                            </Grid>
+
                             <ControlTemplate.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="Bd" Property="Background"
-                                            Value="{DynamicResource SE_SelectedBrush}"/>
+                                <!-- Show expander only if item has children -->
+                                <Trigger Property="HasItems" Value="True">
+                                    <Setter TargetName="Expander" Property="Visibility" Value="Visible"/>
                                 </Trigger>
+
+                                <!-- Hide items when collapsed -->
+                                <Trigger Property="IsExpanded" Value="False">
+                                    <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                                </Trigger>
+
+                                <!-- Selection style -->
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SE_SelectedBrush}"/>
+                                </Trigger>
+
+                                <!-- Hover style -->
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsMouseOver" Value="True"/>
                                         <Condition Property="IsSelected"  Value="False"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter TargetName="Bd" Property="Background"
-                                            Value="{DynamicResource SE_HoverBrush}"/>
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SE_HoverBrush}"/>
                                 </MultiTrigger>
-                                <Trigger Property="IsExpanded" Value="False">
-                                    <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
-                                </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>

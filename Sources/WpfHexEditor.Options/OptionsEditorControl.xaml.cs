@@ -3,23 +3,28 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Options.ViewModels;
 
 namespace WpfHexEditor.Options;
 
 /// <summary>
 /// VS2026-style Options editor — opened as a document tab in the docking area.
 /// Changes are auto-saved immediately when any control value changes.
+/// Automatically refreshes when plugins register or unregister options pages.
 /// </summary>
 public sealed partial class OptionsEditorControl : UserControl
 {
     // -- State -------------------------------------------------------------
     private readonly Dictionary<OptionsPageDescriptor, UserControl> _pageCache = new();
     private readonly List<IOptionsPage> _shownPages = new();
+    private readonly ObservableCollection<OptionsTreeItemViewModel> _treeItems = new();
     private OptionsPageDescriptor? _currentDesc;
     private bool _initialized;
+    private string? _currentSelectionPath; // To restore selection after rebuild
 
     // -- Events (consumed by MainWindow) -----------------------------------
 
@@ -34,7 +39,13 @@ public sealed partial class OptionsEditorControl : UserControl
     public OptionsEditorControl()
     {
         InitializeComponent();
+
+        // Subscribe to registry events for auto-refresh
+        OptionsPageRegistry.PageRegistered += OnPageRegistered;
+        OptionsPageRegistry.PageUnregistered += OnPageUnregistered;
+
         Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -46,18 +57,62 @@ public sealed partial class OptionsEditorControl : UserControl
         SelectFirstPage();
     }
 
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        // Unsubscribe from events to prevent memory leaks
+        OptionsPageRegistry.PageRegistered -= OnPageRegistered;
+        OptionsPageRegistry.PageUnregistered -= OnPageUnregistered;
+    }
+
+    // -- Event handlers for dynamic page registration ---------------------
+
+    private void OnPageRegistered(object? sender, OptionsPageDescriptor descriptor)
+    {
+        // Rebuild the tree on the UI thread
+        Dispatcher.InvokeAsync(() =>
+        {
+            SaveCurrentSelection();
+            RebuildTree();
+            RestoreSelection();
+        });
+    }
+
+    private void OnPageUnregistered(object? sender, (string Category, string PageName) info)
+    {
+        // Rebuild the tree on the UI thread
+        Dispatcher.InvokeAsync(() =>
+        {
+            // Clear cache if it contains the removed page
+            var toRemove = _pageCache.Keys.FirstOrDefault(d =>
+                d.Category == info.Category && d.PageName == info.PageName);
+            if (toRemove != null)
+            {
+                _pageCache.Remove(toRemove);
+            }
+
+            SaveCurrentSelection();
+            RebuildTree();
+            RestoreSelection();
+        });
+    }
+
     // -- Tree building -----------------------------------------------------
 
     private void BuildTree()
     {
         PageTree.Items.Clear();
+
+        // Group pages by category
         var groups = OptionsPageRegistry.Pages.GroupBy(p => p.Category);
 
         foreach (var group in groups)
         {
+            // Use the icon from the first descriptor in the group (all pages in same category should have same icon)
+            var icon = group.FirstOrDefault()?.CategoryIcon ?? "📂";
+
             var catItem = new TreeViewItem
             {
-                Header     = group.Key,
+                Header     = $"{icon}  {group.Key}",
                 IsExpanded = true,
                 FontWeight = FontWeights.SemiBold,
                 Focusable  = false,    // category headers are not selectable
@@ -70,7 +125,7 @@ public sealed partial class OptionsEditorControl : UserControl
                 {
                     Header  = desc.PageName,
                     Tag     = desc,
-                    Padding = new Thickness(16, 3, 4, 3),
+                    Padding = new Thickness(20, 3, 4, 3),  // Increased indent for hierarchy
                 };
                 pageItem.SetResourceReference(ForegroundProperty, "DockMenuForegroundBrush");
                 catItem.Items.Add(pageItem);
@@ -78,6 +133,67 @@ public sealed partial class OptionsEditorControl : UserControl
 
             PageTree.Items.Add(catItem);
         }
+    }
+
+    /// <summary>
+    /// Rebuilds the entire tree (used when pages are dynamically added/removed).
+    /// </summary>
+    private void RebuildTree()
+    {
+        BuildTree();
+        PopulateFilterCombo();
+    }
+
+    /// <summary>
+    /// Saves the current selection path so it can be restored after rebuild.
+    /// </summary>
+    private void SaveCurrentSelection()
+    {
+        if (PageTree.SelectedItem is TreeViewItem { Tag: OptionsPageDescriptor desc })
+        {
+            _currentSelectionPath = $"{desc.Category}|{desc.PageName}";
+        }
+        else
+        {
+            _currentSelectionPath = null;
+        }
+    }
+
+    /// <summary>
+    /// Restores the previously selected item after tree rebuild.
+    /// </summary>
+    private void RestoreSelection()
+    {
+        if (string.IsNullOrEmpty(_currentSelectionPath))
+        {
+            SelectFirstPage();
+            return;
+        }
+
+        var parts = _currentSelectionPath.Split('|');
+        if (parts.Length != 2) return;
+
+        var category = parts[0];
+        var pageName = parts[1];
+
+        // Find and select the matching item
+        foreach (TreeViewItem catItem in PageTree.Items)
+        {
+            foreach (TreeViewItem pageItem in catItem.Items)
+            {
+                if (pageItem.Tag is OptionsPageDescriptor desc &&
+                    desc.Category == category &&
+                    desc.PageName == pageName)
+                {
+                    pageItem.IsSelected = true;
+                    catItem.IsExpanded = true;
+                    return;
+                }
+            }
+        }
+
+        // Fallback: select first page if not found
+        SelectFirstPage();
     }
 
     private void SelectFirstPage()

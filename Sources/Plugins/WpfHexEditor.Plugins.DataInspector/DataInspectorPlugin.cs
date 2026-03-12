@@ -160,4 +160,10 @@ public sealed class DataInspectorPlugin : IWpfHexEditorPlugin, IPluginWithOption
 
     /// <summary>Reloads options from disk into the cached options page (if alive).</summary>
     public void LoadOptions() => _optionsPage?.Load();
+
+    /// <summary>Returns the options category for this plugin (groups related plugins together).</summary>
+    public string GetOptionsCategory() => "Data Analysis";
+
+    /// <summary>Returns an emoji/icon for the options category.</summary>
+    public string GetOptionsCategoryIcon() => "📊";
 }

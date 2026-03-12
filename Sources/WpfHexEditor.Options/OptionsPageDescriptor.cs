@@ -10,10 +10,12 @@ namespace WpfHexEditor.Options;
 /// Metadata that registers one options page in <see cref="OptionsPageRegistry"/>.
 /// Adding a new page requires only a single descriptor entry in the registry.
 /// </summary>
-/// <param name="Category">Top-level tree node label (e.g. "Environnement").</param>
-/// <param name="PageName">Child-level node label (e.g. "Général").</param>
+/// <param name="Category">Top-level tree node label (e.g. "Environment", "Plugins").</param>
+/// <param name="PageName">Child-level node label (e.g. "General", "Display").</param>
 /// <param name="Factory">Creates the page UserControl lazily on first navigation.</param>
+/// <param name="CategoryIcon">Optional emoji/icon for the category (e.g. "🌍", "🔌"). If null, uses default icon.</param>
 public sealed record OptionsPageDescriptor(
     string Category,
     string PageName,
-    Func<UserControl> Factory);
+    Func<UserControl> Factory,
+    string? CategoryIcon = null);
