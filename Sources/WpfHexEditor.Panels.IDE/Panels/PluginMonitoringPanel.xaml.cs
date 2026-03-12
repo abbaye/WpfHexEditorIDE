@@ -212,19 +212,8 @@ public partial class PluginMonitoringPanel : UserControl
     /// </summary>
     private void ApplyEventLogVisibility()
     {
-        var show = (_vm?.ShowEventLog ?? true) && (_vm?.EventLog.Count ?? 0) > 0;
-        var vis  = show ? Visibility.Visible : Visibility.Collapsed;
-
-        EventLogSplitter.Visibility = vis;
-        EventLogArea.Visibility     = vis;
-
-        // When hidden, collapse the rows entirely so they don't reserve space.
-        RootGrid.RowDefinitions[4].Height = show
-            ? new GridLength(4)
-            : new GridLength(0);
-        RootGrid.RowDefinitions[5].Height = show
-            ? new GridLength(1, GridUnitType.Star)
-            : new GridLength(0);
+        // Les événements sont maintenant intégrés dans le TabControl comme premier onglet.
+        // Cette méthode n'est plus nécessaire mais conservée pour compatibilité.
     }
 
     // ── Layout ───────────────────────────────────────────────────────────────

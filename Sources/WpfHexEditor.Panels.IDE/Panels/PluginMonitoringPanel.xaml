@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     Project: WpfHexEditor.Panels.IDE
     File: PluginMonitoringPanel.xaml
     Author: Derek Tremblay (derektremblay666@gmail.com)
@@ -7,13 +7,13 @@
     Updated: 2026-03-07
     Description:
         Docking panel for real-time plugin health monitoring.
-        â€” Global CPU% and Memory MB line charts (Canvas+Polyline, no external lib)
-        â€” Per-plugin sparkline columns in the DataGrid (SparklineControl)
-        â€” Detail pane with TabControl: Overview / CPU+RAM / Permissions / Settings
-        â€” Alert badge in toolbar, Export CSV/JSON buttons
-        â€” Interactive permissions editor (DataGrid with checkboxes, risk badges)
-        â€” Settings tab routed to IPluginWithOptions.CreateOptionsPage()
-        â€” Install (.whxplugin drag-drop + toolbar button), Uninstall (context menu)
+        — Global CPU% and Memory MB line charts (Canvas+Polyline, no external lib)
+        — Per-plugin sparkline columns in the DataGrid (SparklineControl)
+        — Detail pane with TabControl: Overview / CPU+RAM / Permissions / Settings
+        — Alert badge in toolbar, Export CSV/JSON buttons
+        — Interactive permissions editor (DataGrid with checkboxes, risk badges)
+        — Settings tab routed to IPluginWithOptions.CreateOptionsPage()
+        — Install (.whxplugin drag-drop + toolbar button), Uninstall (context menu)
     Theme: DynamicResource only (PanelCommon.xaml via merged parent theme).
     ContentId: "plugin-monitor"
 -->
@@ -36,7 +36,7 @@
             <MenuItem Header="Export Metrics CSV"  Command="{Binding ExportCsvCommand}"/>
             <MenuItem Header="Export Metrics JSON" Command="{Binding ExportJsonCommand}"/>
             <Separator/>
-            <MenuItem Header="Export Event Logâ€¦"   Command="{Binding ExportEventLogCommand}"/>
+            <MenuItem Header="Export Event Log…"   Command="{Binding ExportEventLogCommand}"/>
             <MenuItem Header="Copy Table"          Command="{Binding CopyTableCommand}"/>
         </ContextMenu>
 
@@ -90,21 +90,21 @@
 
     <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="26"/>            <!-- Row 0: Toolbar -->
-            <RowDefinition Height="Auto"/>          <!-- Row 1: Filter chips strip -->
-            <RowDefinition Height="Auto"/>          <!-- Row 2: Summary cards -->
+            <RowDefinition Height="26"/>                 <!-- Row 0: Toolbar -->
+            <RowDefinition Height="Auto"/>               <!-- Row 1: Filter chips strip -->
+            <RowDefinition Height="Auto"/>               <!-- Row 2: Summary cards -->
             <RowDefinition Height="*" MinHeight="150"/>  <!-- Row 3: ContentGrid + TabControl detail -->
         </Grid.RowDefinitions>
 
-        <!-- â”€â”€ Toolbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
-        <!-- ToolbarOverflowManager collapses groups rightâ†’left when too narrow. -->
+        <!-- ── Toolbar ──────────────────────────────────────────────────────── -->
+        <!-- ToolbarOverflowManager collapses groups right→left when too narrow. -->
         <!-- Collapse order: TbgPlugin(0) TbgLog(1) TbgCharts(2) TbgLayout(3) TbgInterval(4) TbgMonitor(5) -->
         <Border Grid.Row="0" x:Name="ToolbarBorder"
                 Style="{DynamicResource PanelToolbarStyle}"
                 SizeChanged="OnToolbarSizeChanged">
             <DockPanel LastChildFill="False" Margin="4,0">
 
-                <!-- â”€â”€ Fixed LEFT: title + health badge + alert badge (always visible) â”€â”€ -->
+                <!-- ── Fixed LEFT: title + health badge + alert badge (always visible) ── -->
                 <StackPanel x:Name="ToolbarLeftPanel" DockPanel.Dock="Left"
                             Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="PLUGIN MONITOR"
@@ -124,7 +124,7 @@
                     </Border>
                 </StackPanel>
 
-                <!-- â”€â”€ Fixed RIGHT: search box (always visible) â€” declared before left groups â”€â”€ -->
+                <!-- ── Fixed RIGHT: search box (always visible) — declared before left groups ── -->
                 <StackPanel x:Name="ToolbarRightPanel" DockPanel.Dock="Right"
                             Orientation="Horizontal" VerticalAlignment="Center">
                     <Rectangle Width="1" Height="14" Margin="4,0"
@@ -136,7 +136,7 @@
                                  Foreground="{DynamicResource DockMenuForegroundBrush}"
                                  BorderBrush="{DynamicResource DockBorderBrush}"
                                  BorderThickness="1" Padding="3,1" VerticalContentAlignment="Center"/>
-                        <TextBlock Text="Filter pluginsâ€¦" FontSize="10" Padding="4,1"
+                        <TextBlock Text="Filter plugins…" FontSize="10" Padding="4,1"
                                    VerticalAlignment="Center" IsHitTestVisible="False"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
                             <TextBlock.Style>
@@ -153,7 +153,7 @@
                     </Grid>
                 </StackPanel>
 
-                <!-- â”€â”€ Overflow button (right, just inside search) â”€â”€ -->
+                <!-- ── Overflow button (right, just inside search) ── -->
                 <Button x:Name="ToolbarOverflowButton" DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         ToolTip="More options" Visibility="Collapsed"
@@ -169,7 +169,7 @@
                             <MenuItem x:Name="OvfTogglePlugin" Header="Enable Plugin"
                                       Click="OnOvfTogglePlugin" Tag="TbgPlugin"
                                       IsEnabled="{Binding HasSelectedPlugin}"/>
-                            <MenuItem Header="Install Pluginâ€¦"
+                            <MenuItem Header="Install Plugin…"
                                       Click="OnOvfInstallPlugin" Tag="TbgPlugin"/>
                             <MenuItem Header="Uninstall Plugin"
                                       Click="OnOvfUninstallPlugin" Tag="TbgPlugin"
@@ -189,7 +189,7 @@
                                       IsCheckable="True" Click="OnOvfToggleSparklines" Tag="TbgCharts"/>
                             <MenuItem Header="Export Metrics CSV"  Command="{Binding ExportCsvCommand}"  Tag="TbgCharts"/>
                             <MenuItem Header="Export Metrics JSON" Command="{Binding ExportJsonCommand}" Tag="TbgCharts"/>
-                            <MenuItem Header="Export Event Logâ€¦"   Command="{Binding ExportEventLogCommand}" Tag="TbgCharts"/>
+                            <MenuItem Header="Export Event Log…"   Command="{Binding ExportEventLogCommand}" Tag="TbgCharts"/>
                             <Separator Tag="TbgCharts"/>
                             <!-- TbgLayout items -->
                             <MenuItem Header="Layout" Tag="TbgLayout">
@@ -216,7 +216,7 @@
                     </Button.ContextMenu>
                 </Button>
 
-                <!-- â”€â”€ Group: TbgMonitor â€” Start/Pause, Reset (collapse last) â”€â”€ -->
+                <!-- ── Group: TbgMonitor — Start/Pause, Reset (collapse last) ── -->
                 <StackPanel x:Name="TbgMonitor" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding StartStopCommand}" ToolTip="{Binding StartStopLabel}">
@@ -231,7 +231,7 @@
                     <Rectangle Width="1" Height="14" Margin="4,0" Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 </StackPanel>
 
-                <!-- â”€â”€ Group: TbgInterval â€” sampling interval combo â”€â”€ -->
+                <!-- ── Group: TbgInterval — sampling interval combo ── -->
                 <StackPanel x:Name="TbgInterval" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="Interval:" FontSize="10" VerticalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,0"/>
@@ -249,7 +249,7 @@
                     <Rectangle Width="1" Height="14" Margin="4,0" Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 </StackPanel>
 
-                <!-- â”€â”€ Group: TbgLayout â€” charts layout position combo â”€â”€ -->
+                <!-- ── Group: TbgLayout — charts layout position combo ── -->
                 <StackPanel x:Name="TbgLayout" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="Layout:" FontSize="10" VerticalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,0"/>
@@ -268,7 +268,7 @@
                     <Rectangle Width="1" Height="14" Margin="4,0" Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 </StackPanel>
 
-                <!-- â”€â”€ Group: TbgCharts â€” sparklines, event log, export â”€â”€ -->
+                <!-- ── Group: TbgCharts — sparklines, event log, export ── -->
                 <StackPanel x:Name="TbgCharts" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding ToggleSparklinesCommand}" ToolTip="{Binding ShowSparklinesLabel}">
@@ -281,14 +281,14 @@
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
                     <Button x:Name="ExportButton" Style="{DynamicResource PanelIconButtonStyle}"
-                            ToolTip="Exportâ€¦" Click="OnExportButtonClick">
+                            ToolTip="Export…" Click="OnExportButtonClick">
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
                     <Rectangle Width="1" Height="14" Margin="4,0" Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 </StackPanel>
 
-                <!-- â”€â”€ Group: TbgPlugin â€” plugin lifecycle actions â”€â”€ -->
+                <!-- ── Group: TbgPlugin — plugin lifecycle actions ── -->
                 <StackPanel x:Name="TbgPlugin" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding ReloadPluginCommand}"
@@ -324,7 +324,7 @@
                     <Rectangle Width="1" Height="14" Margin="4,0" Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 </StackPanel>
 
-                <!-- â”€â”€ Group: TbgLog â€” event log controls â”€â”€ -->
+                <!-- ── Group: TbgLog — event log controls ── -->
                 <StackPanel x:Name="TbgLog" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding ClearLogCommand}" ToolTip="Clear event log and alerts">
@@ -336,7 +336,7 @@
             </DockPanel>
         </Border>
 
-        <!-- â”€â”€ Filter chips strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+        <!-- ── Filter chips strip ────────────────────────────────────────────── -->
         <Border Grid.Row="1"
                 Background="{DynamicResource Panel_ToolbarBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="0,0,0,1"
@@ -394,7 +394,7 @@
             </DockPanel>
         </Border>
 
-        <!-- â”€â”€ Summary cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+        <!-- ── Summary cards ─────────────────────────────────────────────────── -->
         <Grid Grid.Row="2" Margin="6,4,6,2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -453,7 +453,7 @@
             </Border>
         </Grid>
 
-        <!-- â”€â”€ Adaptive content area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        <!-- ── Adaptive content area ───────────────────────────────────────────
              ContentGrid: portrait = 3 rows (charts / splitter / table)
                           landscape = 3 columns (charts | splitter | table)
              Code-behind rebuilds layout on SizeChanged.                     -->
@@ -514,7 +514,7 @@
                           Grid.Row="1" Height="4" HorizontalAlignment="Stretch"
                           Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
 
-            <!-- â”€â”€ Plugin table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+            <!-- ── Plugin table ──────────────────────────────────────────────── -->
             <DataGrid x:Name="PluginsDataGrid"
                       Grid.Row="2"
                       ItemsSource="{Binding FilteredRows}"
@@ -570,11 +570,11 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <!-- Weighted CPU% â€” process CPU distributed proportionally by plugin exec-time weight -->
+                    <!-- Weighted CPU% — process CPU distributed proportionally by plugin exec-time weight -->
                     <DataGridTextColumn Header="CPU%" Binding="{Binding WeightedCpu, StringFormat={}{0:F1}%}" Width="55"/>
 
                     <!--
-                        Mini CPU sparkline â€” SparklineControl subscribes to CpuHistory.CollectionChanged
+                        Mini CPU sparkline — SparklineControl subscribes to CpuHistory.CollectionChanged
                         and auto-redraws. Visibility toggled by ShowSparklines via code-behind.
                     -->
                     <DataGridTemplateColumn x:Name="SparklineCpuColumn" Width="60" CanUserResize="False" CanUserSort="False">
@@ -595,11 +595,11 @@
                     </DataGridTemplateColumn>
 
                     <DataGridTextColumn Header="Peak%"  Binding="{Binding PeakCpu, StringFormat={}{0:F1}%}"    Width="55"/>
-                    <!-- Weighted memory â€” process GC heap distributed proportionally by plugin exec-time weight -->
+                    <!-- Weighted memory — process GC heap distributed proportionally by plugin exec-time weight -->
                     <DataGridTextColumn Header="Mem MB" Binding="{Binding WeightedMemMb}"                     Width="60"/>
 
                     <!--
-                        Mini Memory sparkline â€” same pattern as CPU sparkline above.
+                        Mini Memory sparkline — same pattern as CPU sparkline above.
                     -->
                     <DataGridTemplateColumn x:Name="SparklineMemColumn" Width="60" CanUserResize="False" CanUserSort="False">
                         <DataGridTemplateColumn.Header>
@@ -662,7 +662,7 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <Separator/>
-                                    <MenuItem Header="Uninstallâ€¦"
+                                    <MenuItem Header="Uninstall…"
                                               Command="{Binding UninstallPluginCommand}"
                                               IsEnabled="{Binding HasSelectedPlugin}">
                                         <MenuItem.Icon>
@@ -678,7 +678,7 @@
             </DataGrid>
 
             <!--
-                Drop-zone progress overlay â€” shown while IsInstalling is true.
+                Drop-zone progress overlay — shown while IsInstalling is true.
                 Rendered on top of the DataGrid so drag feedback is clearly visible.
             -->
             <Border Grid.Row="2"
@@ -689,7 +689,7 @@
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="32"
                                Foreground="#60A5FA" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                    <TextBlock Text="Installing pluginâ€¦" FontSize="13" FontWeight="SemiBold"
+                    <TextBlock Text="Installing plugin…" FontSize="13" FontWeight="SemiBold"
                                Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8"/>
                     <ProgressBar IsIndeterminate="True" Width="180" Height="4"
                                  Foreground="#60A5FA"/>
@@ -697,7 +697,7 @@
             </Border>
 
             <!--
-                Drag-target hint overlay â€” shown when a valid .whxplugin file is dragged over the panel.
+                Drag-target hint overlay — shown when a valid .whxplugin file is dragged over the panel.
                 Controlled by code-behind via x:Name.
             -->
             <Border x:Name="DropHintOverlay"
@@ -717,17 +717,15 @@
             </Border>
         </Grid>
 
-        <!-- Splitter between plugin list and detail pane â€” hidden when no plugin is selected -->
+        <!-- Splitter between plugin list and detail pane -->
         <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch"
                       ResizeBehavior="PreviousAndNext"
-                      Background="{DynamicResource Panel_ToolbarBorderBrush}"
-                      Visibility="{Binding HasSelectedPlugin, Converter={StaticResource BoolToVis}}"/>
+                      Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
 
-        <!-- â”€â”€ Plugin detail pane â€” single scrollable page (Overview / CPU+RAM / Permissions / Settings) â”€â”€ -->
+        <!-- ── Plugin detail pane — TabControl avec onglets Overview / Charts / Permissions / Settings ── -->
         <Border Grid.Row="2" Margin="6,0,6,0" MaxHeight="320"
                 BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="0,1,0,0"
-                Background="{DynamicResource Panel_ToolbarBrush}"
-                Visibility="{Binding HasSelectedPlugin, Converter={StaticResource BoolToVis}}">
+                Background="{DynamicResource Panel_ToolbarBrush}">
             <TabControl Background="Transparent" BorderThickness="0" Padding="0">
                 <TabControl.Resources>
                     <Style TargetType="TabItem">
@@ -763,17 +761,81 @@
                     </Style>
                 </TabControl.Resources>
 
+                <!-- Tab 0: Events (nouveau premier onglet) -->
+                <TabItem Header="📋 Events">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- En-tête avec bouton Clear -->
+                        <Border Grid.Row="0" Background="{DynamicResource Panel_ToolbarBrush}"
+                                BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="0,0,0,1"
+                                Padding="8,4">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right"
+                                        Style="{DynamicResource PanelIconButtonStyle}"
+                                        Command="{Binding ClearLogCommand}"
+                                        ToolTip="Clear event log"
+                                        Padding="6,2" Margin="4,0,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                        <TextBlock Text="Clear" FontSize="10" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <TextBlock Text="EVENTS" FontSize="10" FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                            </DockPanel>
+                        </Border>
+
+                        <!-- Liste des événements -->
+                        <ListBox x:Name="EventLogListBox" Grid.Row="1"
+                                 ItemsSource="{Binding EventLog}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="8,2">
+                                        <TextBlock Text="{Binding TimeLabel}" FontSize="9" Width="50"
+                                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                        <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                                   Foreground="{Binding Color}" Width="20" Margin="4,0"/>
+                                        <TextBlock Text="{Binding PluginName}" FontSize="9" FontWeight="SemiBold"
+                                                   Width="120" TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,8,0"/>
+                                        <TextBlock Text="{Binding Message}" FontSize="9"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </TabItem>
+
                 <!-- Tab 1: Overview -->
-                <TabItem Header="ðŸ“Š Overview">
+                <TabItem Header="📊 Overview" DataContext="{Binding SelectedPluginDetail}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="8,8,8,16">
-<!-- â”€â”€ Section: Overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+<!-- ── Section: Overview ──────────────────────────────────── -->
                     <TextBlock Text="Overview"
                                FontWeight="SemiBold" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Margin="0,0,0,10"/>
 
-                    <StackPanel DataContext="{Binding SelectedPluginDetail}">
+                    <StackPanel>
 
                         <!-- name / version / trust / author -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
@@ -790,12 +852,12 @@
                                 <TextBlock Text="{Binding TrustLabel}" FontSize="9"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                             </Border>
-                            <TextBlock Text="{Binding Author, StringFormat=' â€” by {0}'}" FontSize="10"
+                            <TextBlock Text="{Binding Author, StringFormat=' — by {0}'}" FontSize="10"
                                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                        VerticalAlignment="Center" Margin="6,0,0,0"/>
                         </StackPanel>
 
-                        <!-- metrics grid (2Ã—3 pairs) -->
+                        <!-- metrics grid (2×3 pairs) -->
                         <Grid Margin="0,0,0,4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -835,22 +897,22 @@
                                    Visibility="{Binding HasFault, Converter={StaticResource BoolToVis}}"/>
                     </StackPanel>
 
-                    
+
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
 
                 <!-- Tab 2: Charts -->
-                <TabItem Header="ðŸ“ˆ Charts">
+                <TabItem Header="📈 Charts" DataContext="{Binding SelectedMiniChart}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="8,8,8,16">
-<!-- â”€â”€ Section: CPU / RAM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+<!-- ── Section: CPU / RAM ──────────────────────────────────── -->
                     <TextBlock Text="CPU / RAM"
                                FontWeight="SemiBold" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Margin="0,0,0,10"/>
 
-                    <StackPanel DataContext="{Binding SelectedMiniChart}">
+                    <StackPanel>
 
                         <!-- CPU sparkline -->
                         <Grid Height="70" Margin="0,0,0,4">
@@ -897,16 +959,16 @@
                         </Grid>
                     </StackPanel>
 
-                    
+
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
 
                 <!-- Tab 3: Permissions -->
-                <TabItem Header="ðŸ”’ Permissions">
+                <TabItem Header="🔒 Permissions" DataContext="{Binding SelectedPluginDetail}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="8,8,8,16">
-<!-- â”€â”€ Section: Permissions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+<!-- ── Section: Permissions ──────────────────────────────────── -->
                     <TextBlock Text="Permissions"
                                FontWeight="SemiBold" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -916,8 +978,7 @@
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                Margin="0,0,0,8"/>
 
-                    <DataGrid DataContext="{Binding SelectedPluginDetail}"
-                              ItemsSource="{Binding PermissionRows}"
+                    <DataGrid ItemsSource="{Binding PermissionRows}"
                               AutoGenerateColumns="False"
                               IsReadOnly="False"
                               HeadersVisibility="Column"
@@ -934,7 +995,7 @@
                         <DataGrid.Columns>
 
                             <!-- Granted checkbox (two-way bound, calls PermissionService.Grant/Revoke) -->
-                            <DataGridCheckBoxColumn Header="âœ“" Width="28"
+                            <DataGridCheckBoxColumn Header="✓" Width="28"
                                 Binding="{Binding IsGranted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <!-- Permission name -->
@@ -971,13 +1032,13 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    
+
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
 
                 <!-- Tab 4: Settings -->
-                <TabItem Header="âš™ï¸ Settings" Visibility="{Binding SelectedPluginDetail.HasOptions, Converter={StaticResource BoolToVis}, FallbackValue=Collapsed}">
+                <TabItem Header="⚙️ Settings" Visibility="{Binding SelectedPluginDetail.HasOptions, Converter={StaticResource BoolToVis}, FallbackValue=Collapsed}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="8,8,8,16">
 
@@ -986,61 +1047,8 @@
                 </TabItem>
 
             </TabControl>
-</Border>
+        </Border>
 
         </Grid><!-- end inner wrapper Grid (Row 3) -->
-
-        <!-- â”€â”€ EventLog GridSplitter â€” visibility managed by ApplyEventLogVisibility() -->
-        <GridSplitter x:Name="EventLogSplitter" Grid.Row="4" Height="4"
-                      HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext"
-                      Visibility="Collapsed"
-                      Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
-
-        <!-- â”€â”€ Live event log â€” visibility managed by ApplyEventLogVisibility() â”€â”€ -->
-        <Border x:Name="EventLogArea" Grid.Row="5"
-                BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="0,1,0,0"
-                Background="{DynamicResource DockBackgroundBrush}" Margin="6,0,6,4"
-                Visibility="Collapsed">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="16"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Border Grid.Row="0" Background="{DynamicResource Panel_ToolbarBrush}">
-                    <TextBlock Text="EVENTS" FontSize="9" FontWeight="SemiBold" Margin="6,0"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                </Border>
-                <ListBox x:Name="EventLogListBox" Grid.Row="1"
-                         ItemsSource="{Binding EventLog}"
-                         Background="Transparent" BorderThickness="0"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Padding"                    Value="0"/>
-                            <Setter Property="Background"                 Value="Transparent"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="4,1">
-                                <TextBlock Text="{Binding TimeLabel}" FontSize="9" Width="44"
-                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="10"
-                                           Foreground="{Binding Color}" Width="16" Margin="2,0"/>
-                                <TextBlock Text="{Binding PluginName}" FontSize="9" FontWeight="SemiBold"
-                                           Width="100" TextTrimming="CharacterEllipsis"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="2,0"/>
-                                <TextBlock Text="{Binding Message}" FontSize="9"
-                                           TextTrimming="CharacterEllipsis"
-                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-        </Border>
     </Grid>
 </UserControl>
