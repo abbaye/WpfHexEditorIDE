@@ -55,7 +55,8 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
     /// <summary>
     /// Process-level CPU% measured at the most recent periodic sampling tick.
-    /// Zero until the first tick fires (~5 s after startup).
+    /// Initialized to 0% immediately at startup (via PerformInitialSample), 
+    /// then updated every ~5s by the sampling timer.
     /// NOT contaminated by the init-phase sample recorded in LoadPluginAsync.
     /// </summary>
     public double LastSampledCpuPercent => _lastSampledCpuPercent;
@@ -113,6 +114,12 @@ public sealed class WpfPluginHost : IAsyncDisposable
             Interval = TimeSpan.FromSeconds(5)
         };
         _samplingTimer.Tick += OnSamplingTick;
+
+        // Perform initial sample immediately to avoid race condition with PluginMonitoringViewModel.
+        // Without this, LastSampledCpuPercent remains 0 until first timer tick (~5s),
+        // causing Plugin Monitor metrics and charts to not update if opened before first tick.
+        PerformInitialSample();
+
         _samplingTimer.Start();
     }
 
@@ -486,6 +493,33 @@ public sealed class WpfPluginHost : IAsyncDisposable
             return manifest.ResolvedDirectory;
 
         return Path.Combine(UserPluginsDir, manifest.Id);
+    }
+
+    // --- Diagnostics sampling (continuous background monitoring) -------------------
+
+    /// <summary>
+    /// Performs an initial CPU/Memory sample to initialize LastSampledCpuPercent.
+    /// Called immediately in the constructor to avoid race condition where PluginMonitoringViewModel
+    /// queries metrics before the first timer tick (which happens ~5s after startup).
+    /// Uses initial zero delta for CPU (will show 0% initially, which is correct for startup).
+    /// </summary>
+    private void PerformInitialSample()
+    {
+        var process = Process.GetCurrentProcess();
+        _lastCpuTime = process.TotalProcessorTime;
+        _lastCpuCheck = DateTime.UtcNow;
+
+        // Initial sample: CPU will be 0% (no delta yet), Memory will be current heap size
+        _lastSampledCpuPercent = 0.0;
+
+        long memBytes = GC.GetTotalMemory(forceFullCollection: false);
+
+        // Record initial sample for any already-loaded plugins
+        IReadOnlyList<PluginEntry> loaded;
+        lock (_lock) loaded = _entries.Values.Where(e => e.State == PluginState.Loaded).ToList();
+
+        foreach (var entry in loaded)
+            entry.Diagnostics.Record(0.0, memBytes, TimeSpan.Zero);
     }
 
     /// <summary>
