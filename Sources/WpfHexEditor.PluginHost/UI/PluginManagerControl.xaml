@@ -290,7 +290,7 @@
                                     </Grid>
                                 </StackPanel>
 
-                                <!-- Badges: SLOW + Trusted -->
+                                <!-- Badges: SLOW + Memory Alert + Trusted -->
                                 <StackPanel Grid.Column="2" Orientation="Vertical"
                                             VerticalAlignment="Center" Margin="0,0,2,0">
                                     <Border Background="{DynamicResource PM_BadgeSlowBrush}"
@@ -298,6 +298,28 @@
                                             Visibility="{Binding IsSlow, Converter={StaticResource BoolToVis}}">
                                         <TextBlock Text="SLOW" FontSize="8" FontWeight="Bold" Foreground="White"/>
                                     </Border>
+                                    <!-- Memory Alert Badge -->
+                                    <TextBlock Text="{Binding MemoryAlertIcon}" FontSize="11"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,0,0,2"
+                                               ToolTip="{Binding MemoryAlertMessage}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding MemoryAlertIcon}" Value="🟡">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding MemoryAlertIcon}" Value="🟠">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding MemoryAlertIcon}" Value="🔴">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                     <TextBlock Text="&#xE8A4;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                Foreground="{DynamicResource PM_BadgeTrustedBrush}"
                                                HorizontalAlignment="Center"
