@@ -346,4 +346,18 @@ public sealed class PluginSystemSettings
 
     /// <summary>Show color gradation (green/yellow/orange/red) in monitors.</summary>
     public bool ShowMemoryColorGradation { get; set; } = true;
+
+    // -- Memory Alert Colors ----------------------------------------------
+
+    /// <summary>Color for normal memory usage (green). Default: #22C55E</summary>
+    public string MemoryNormalColor { get; set; } = "#22C55E";
+
+    /// <summary>Color for warning threshold (yellow). Default: #EAB308</summary>
+    public string MemoryWarningColor { get; set; } = "#EAB308";
+
+    /// <summary>Color for high threshold (orange). Default: #F97316</summary>
+    public string MemoryHighColor { get; set; } = "#F97316";
+
+    /// <summary>Color for critical threshold (red). Default: #EF4444</summary>
+    public string MemoryCriticalColor { get; set; } = "#EF4444";
 }

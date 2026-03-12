@@ -46,6 +46,19 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
             TextMemoryWarningThreshold.Text          = s.PluginSystem.MemoryWarningThresholdMB.ToString();
             TextMemoryHighThreshold.Text             = s.PluginSystem.MemoryHighThresholdMB.ToString();
             TextMemoryCriticalThreshold.Text         = s.PluginSystem.MemoryCriticalThresholdMB.ToString();
+
+            // Memory alert colors - load into ColorPickers
+            if (FindName("PickerMemoryNormal") is ColorPicker.Controls.ColorPicker pickerNormal)
+                pickerNormal.SelectedColor = ParseHexColor(s.PluginSystem.MemoryNormalColor);
+
+            if (FindName("PickerMemoryWarning") is ColorPicker.Controls.ColorPicker pickerWarning)
+                pickerWarning.SelectedColor = ParseHexColor(s.PluginSystem.MemoryWarningColor);
+
+            if (FindName("PickerMemoryHigh") is ColorPicker.Controls.ColorPicker pickerHigh)
+                pickerHigh.SelectedColor = ParseHexColor(s.PluginSystem.MemoryHighColor);
+
+            if (FindName("PickerMemoryCritical") is ColorPicker.Controls.ColorPicker pickerCritical)
+                pickerCritical.SelectedColor = ParseHexColor(s.PluginSystem.MemoryCriticalColor);
         }
         finally { _loading = false; }
     }
@@ -67,6 +80,19 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
         s.PluginSystem.MemoryWarningThresholdMB     = ParseInt(TextMemoryWarningThreshold.Text, 500);
         s.PluginSystem.MemoryHighThresholdMB        = ParseInt(TextMemoryHighThreshold.Text, 750);
         s.PluginSystem.MemoryCriticalThresholdMB    = ParseInt(TextMemoryCriticalThreshold.Text, 1000);
+
+        // Memory alert colors - get from ColorPickers
+        if (FindName("PickerMemoryNormal") is ColorPicker.Controls.ColorPicker pickerNormal)
+            s.PluginSystem.MemoryNormalColor = ColorToHex(pickerNormal.SelectedColor);
+
+        if (FindName("PickerMemoryWarning") is ColorPicker.Controls.ColorPicker pickerWarning)
+            s.PluginSystem.MemoryWarningColor = ColorToHex(pickerWarning.SelectedColor);
+
+        if (FindName("PickerMemoryHigh") is ColorPicker.Controls.ColorPicker pickerHigh)
+            s.PluginSystem.MemoryHighColor = ColorToHex(pickerHigh.SelectedColor);
+
+        if (FindName("PickerMemoryCritical") is ColorPicker.Controls.ColorPicker pickerCritical)
+            s.PluginSystem.MemoryCriticalColor = ColorToHex(pickerCritical.SelectedColor);
     }
 
     // -- Control handlers ---------------------------------------------------------
@@ -108,4 +134,50 @@ public sealed partial class PluginSystemOptionsPage : UserControl, IOptionsPage
         => double.TryParse(text, System.Globalization.NumberStyles.Any,
                            System.Globalization.CultureInfo.InvariantCulture,
                            out var v) && v > 0 ? v : fallback;
+
+    // -- Memory Alert Color Pickers -----------------------------------------------
+
+    private void OnColorPickerChanged(object sender, System.Windows.Media.Color e)
+    {
+        if (_loading) return;
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnResetMemoryColors(object sender, RoutedEventArgs e)
+    {
+        _loading = true;
+        try
+        {
+            if (FindName("PickerMemoryNormal") is ColorPicker.Controls.ColorPicker pickerNormal)
+                pickerNormal.SelectedColor = ParseHexColor("#22C55E");
+            if (FindName("PickerMemoryWarning") is ColorPicker.Controls.ColorPicker pickerWarning)
+                pickerWarning.SelectedColor = ParseHexColor("#EAB308");
+            if (FindName("PickerMemoryHigh") is ColorPicker.Controls.ColorPicker pickerHigh)
+                pickerHigh.SelectedColor = ParseHexColor("#F97316");
+            if (FindName("PickerMemoryCritical") is ColorPicker.Controls.ColorPicker pickerCritical)
+                pickerCritical.SelectedColor = ParseHexColor("#EF4444");
+        }
+        finally
+        {
+            _loading = false;
+        }
+
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private static System.Windows.Media.Color ParseHexColor(string hex)
+    {
+        hex = hex.TrimStart('#');
+        if (hex.Length == 6)
+            hex = "FF" + hex; // Add alpha if missing
+
+        return System.Windows.Media.Color.FromArgb(
+            Convert.ToByte(hex.Substring(0, 2), 16),
+            Convert.ToByte(hex.Substring(2, 2), 16),
+            Convert.ToByte(hex.Substring(4, 2), 16),
+            Convert.ToByte(hex.Substring(6, 2), 16));
+    }
+
+    private static string ColorToHex(System.Windows.Media.Color color)
+        => $"#{color.R:X2}{color.G:X2}{color.B:X2}";
 }

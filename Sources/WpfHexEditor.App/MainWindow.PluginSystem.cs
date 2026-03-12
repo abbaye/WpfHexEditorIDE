@@ -197,7 +197,23 @@ public partial class MainWindow
 
                 if (_pendingPluginManagerControl is not null && _pluginHost is not null)
                 {
-                    var vm = new PluginManagerViewModel(_pluginHost, Dispatcher);
+                    var vm = new PluginManagerViewModel(
+                        _pluginHost, 
+                        Dispatcher,
+                        () =>
+                        {
+                            var ps = AppSettingsService.Instance.Current.PluginSystem;
+                            return (
+                                ps.MemoryWarningThresholdMB, 
+                                ps.MemoryHighThresholdMB, 
+                                ps.MemoryCriticalThresholdMB, 
+                                ps.EnableMemoryAlerts,
+                                ps.MemoryNormalColor,
+                                ps.MemoryWarningColor,
+                                ps.MemoryHighColor,
+                                ps.MemoryCriticalColor
+                            );
+                        });
                     _pendingPluginManagerControl.DataContext = vm;
                     _pendingPluginManagerControl = null;
                 }

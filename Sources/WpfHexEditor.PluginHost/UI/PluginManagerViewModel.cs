@@ -24,6 +24,8 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly WpfPluginHost _host;
     private readonly Dispatcher _dispatcher;
+    private readonly Func<(int warning, int high, int critical, bool enabled,
+                           string normalColor, string warningColor, string highColor, string criticalColor)>? _getMemoryThresholds;
 
     // Metrics-only refresh timer (10 s — lighter than full Rebuild)
     private readonly DispatcherTimer _metricsTimer;
@@ -48,10 +50,15 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public PluginManagerViewModel(WpfPluginHost host, Dispatcher dispatcher)
+    public PluginManagerViewModel(
+        WpfPluginHost host, 
+        Dispatcher dispatcher,
+        Func<(int warning, int high, int critical, bool enabled,
+              string normalColor, string warningColor, string highColor, string criticalColor)>? getMemoryThresholds = null)
     {
         _host       = host       ?? throw new ArgumentNullException(nameof(host));
         _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+        _getMemoryThresholds = getMemoryThresholds;
 
         // Metrics timer — only refreshes live CPU/RAM + sparkline history, does NOT rebuild the list
         _metricsTimer = new DispatcherTimer(DispatcherPriority.Background, _dispatcher)
@@ -205,7 +212,8 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
                 onDisable: DisablePlugin,
                 onReload: ReloadPlugin,
                 onUninstall: UninstallPlugin,
-                permissionService: _host.Permissions));
+                permissionService: _host.Permissions,
+                getMemoryThresholds: _getMemoryThresholds));
         }
 
         ApplyFilterAndSort();

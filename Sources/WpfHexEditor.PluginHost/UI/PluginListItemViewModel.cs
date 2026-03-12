@@ -27,6 +27,10 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     private readonly Action<string> _onUninstall;
     private readonly PermissionService? _permissionService;
 
+    // Delegate to get memory thresholds from settings (injected to avoid circular dependency)
+    private readonly Func<(int warning, int high, int critical, bool enabled, 
+                           string normalColor, string warningColor, string highColor, string criticalColor)>? _getMemoryThresholds;
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public PluginListItemViewModel(
@@ -35,7 +39,9 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         Action<string> onDisable,
         Action<string> onReload,
         Action<string> onUninstall,
-        PermissionService? permissionService = null)
+        PermissionService? permissionService = null,
+        Func<(int warning, int high, int critical, bool enabled, 
+              string normalColor, string warningColor, string highColor, string criticalColor)>? getMemoryThresholds = null)
     {
         _entry = entry ?? throw new ArgumentNullException(nameof(entry));
         _onEnable = onEnable;
@@ -43,6 +49,7 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         _onReload = onReload;
         _onUninstall = onUninstall;
         _permissionService = permissionService;
+        _getMemoryThresholds = getMemoryThresholds;
 
         EnableCommand = new RelayCommand(_ => _onEnable(Id), _ => State == PluginState.Disabled);
         DisableCommand = new RelayCommand(_ => _onDisable(Id), _ => State == PluginState.Loaded);
@@ -110,6 +117,29 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public long MemoryMb { get; private set; }
     public double InitTimeMs { get; private set; }
     public double AvgExecMs { get; private set; }
+
+    // Memory alert properties
+    private string _memoryAlertColor = "#22C55E";
+    private string _memoryAlertIcon = "🟢";
+    private string _memoryAlertMessage = string.Empty;
+
+    public string MemoryAlertColor
+    {
+        get => _memoryAlertColor;
+        private set { _memoryAlertColor = value; OnPropertyChanged(); }
+    }
+
+    public string MemoryAlertIcon
+    {
+        get => _memoryAlertIcon;
+        private set { _memoryAlertIcon = value; OnPropertyChanged(); }
+    }
+
+    public string MemoryAlertMessage
+    {
+        get => _memoryAlertMessage;
+        private set { _memoryAlertMessage = value; OnPropertyChanged(); }
+    }
 
     // Rolling history for sparkline charts (60-point rolling window).
     private const int HistoryCapacity = 60;
@@ -250,6 +280,9 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
                 PeakMemoryMb = rollingPeakMem;
                 OnPropertyChanged(nameof(PeakMemoryMb));
             }
+
+            // Update memory alert badge
+            UpdateMemoryAlert(MemoryMb);
         }
         InitTimeMs = _entry.InitDuration.TotalMilliseconds;
 
@@ -274,6 +307,60 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         while (col.Count >= HistoryCapacity)
             col.RemoveAt(0);
         col.Add(value);
+    }
+
+    /// <summary>
+    /// Evaluates current memory usage against thresholds and updates alert properties.
+    /// </summary>
+    private void UpdateMemoryAlert(long memoryMb)
+    {
+        // If no threshold provider, default to green (no alerts)
+        if (_getMemoryThresholds is null)
+        {
+            MemoryAlertColor = "#22C55E";
+            MemoryAlertIcon = "🟢";
+            MemoryAlertMessage = string.Empty;
+            return;
+        }
+
+        var (warning, high, critical, enabled, normalColor, warningColor, highColor, criticalColor) 
+            = _getMemoryThresholds();
+
+        if (!enabled)
+        {
+            // Reset to configured normal color when alerts are disabled
+            MemoryAlertColor = normalColor;
+            MemoryAlertIcon = "🟢";
+            MemoryAlertMessage = string.Empty;
+            return;
+        }
+
+        // Evaluate thresholds with configured colors (critical > high > warning)
+        if (memoryMb >= critical)
+        {
+            MemoryAlertColor = criticalColor;
+            MemoryAlertIcon = "🔴";
+            MemoryAlertMessage = $"Critical: {memoryMb} MB (threshold: {critical} MB)";
+        }
+        else if (memoryMb >= high)
+        {
+            MemoryAlertColor = highColor;
+            MemoryAlertIcon = "🟠";
+            MemoryAlertMessage = $"High: {memoryMb} MB (threshold: {high} MB)";
+        }
+        else if (memoryMb >= warning)
+        {
+            MemoryAlertColor = warningColor;
+            MemoryAlertIcon = "🟡";
+            MemoryAlertMessage = $"Warning: {memoryMb} MB (threshold: {warning} MB)";
+        }
+        else
+        {
+            // Normal - use configured normal color
+            MemoryAlertColor = normalColor;
+            MemoryAlertIcon = "🟢";
+            MemoryAlertMessage = string.Empty;
+        }
     }
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)
