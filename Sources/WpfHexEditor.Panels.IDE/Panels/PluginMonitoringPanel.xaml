@@ -90,12 +90,10 @@
 
     <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="26"/>            <!-- Row 0: Toolbar -->
-            <RowDefinition Height="Auto"/>          <!-- Row 1: Filter chips strip -->
-            <RowDefinition Height="Auto"/>          <!-- Row 2: Summary cards -->
-            <RowDefinition Height="2*" MinHeight="90"/>  <!-- Row 3: ContentGrid + Detail pane -->
-            <RowDefinition Height="4"/>             <!-- Row 4: EventLog splitter -->
-            <RowDefinition Height="*" MinHeight="60"/>   <!-- Row 5: EventLog -->
+            <RowDefinition Height="26"/>                 <!-- Row 0: Toolbar -->
+            <RowDefinition Height="Auto"/>               <!-- Row 1: Filter chips strip -->
+            <RowDefinition Height="Auto"/>               <!-- Row 2: Summary cards -->
+            <RowDefinition Height="*" MinHeight="150"/>  <!-- Row 3: ContentGrid + TabControl detail -->
         </Grid.RowDefinitions>
 
         <!-- ── Toolbar ──────────────────────────────────────────────────────── -->
@@ -719,28 +717,125 @@
             </Border>
         </Grid>
 
-        <!-- Splitter between plugin list and detail pane — hidden when no plugin is selected -->
+        <!-- Splitter between plugin list and detail pane -->
         <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch"
                       ResizeBehavior="PreviousAndNext"
-                      Background="{DynamicResource Panel_ToolbarBorderBrush}"
-                      Visibility="{Binding HasSelectedPlugin, Converter={StaticResource BoolToVis}}"/>
+                      Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
 
-        <!-- ── Plugin detail pane — single scrollable page (Overview / CPU+RAM / Permissions / Settings) ── -->
+        <!-- ── Plugin detail pane — TabControl avec onglets Overview / Charts / Permissions / Settings ── -->
         <Border Grid.Row="2" Margin="6,0,6,0" MaxHeight="320"
                 BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="0,1,0,0"
-                Background="{DynamicResource Panel_ToolbarBrush}"
-                Visibility="{Binding HasSelectedPlugin, Converter={StaticResource BoolToVis}}">
+                Background="{DynamicResource Panel_ToolbarBrush}">
+            <TabControl Background="Transparent" BorderThickness="0" Padding="0">
+                <TabControl.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="Background" Value="{DynamicResource Panel_ToolbarBrush}"/>
+                        <Setter Property="Foreground" Value="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,2"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Setter Property="Padding" Value="12,6"/>
+                        <Setter Property="FontSize" Value="11"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border Name="Border" Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter ContentSource="Header"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Border" Property="BorderBrush" Value="#60A5FA"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource DockTabHoverBrush}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <StackPanel Margin="8,8,8,16">
+                <!-- Tab 0: Events (nouveau premier onglet) -->
+                <TabItem Header="📋 Events">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <!-- ── Section: Overview ────────────────────────────────────── -->
+                        <!-- En-tête avec bouton Clear -->
+                        <Border Grid.Row="0" Background="{DynamicResource Panel_ToolbarBrush}"
+                                BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="0,0,0,1"
+                                Padding="8,4">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right"
+                                        Style="{DynamicResource PanelIconButtonStyle}"
+                                        Command="{Binding ClearLogCommand}"
+                                        ToolTip="Clear event log"
+                                        Padding="6,2" Margin="4,0,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                   VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                        <TextBlock Text="Clear" FontSize="10" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <TextBlock Text="EVENTS" FontSize="10" FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                            </DockPanel>
+                        </Border>
+
+                        <!-- Liste des événements -->
+                        <ListBox x:Name="EventLogListBox" Grid.Row="1"
+                                 ItemsSource="{Binding EventLog}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="8,2">
+                                        <TextBlock Text="{Binding TimeLabel}" FontSize="9" Width="50"
+                                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                        <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                                   Foreground="{Binding Color}" Width="20" Margin="4,0"/>
+                                        <TextBlock Text="{Binding PluginName}" FontSize="9" FontWeight="SemiBold"
+                                                   Width="120" TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,8,0"/>
+                                        <TextBlock Text="{Binding Message}" FontSize="9"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </TabItem>
+
+                <!-- Tab 1: Overview -->
+                <TabItem Header="📊 Overview" DataContext="{Binding SelectedPluginDetail}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="8,8,8,16">
+<!-- ── Section: Overview ──────────────────────────────────── -->
                     <TextBlock Text="Overview"
                                FontWeight="SemiBold" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Margin="0,0,0,10"/>
 
-                    <StackPanel DataContext="{Binding SelectedPluginDetail}">
+                    <StackPanel>
 
                         <!-- name / version / trust / author -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
@@ -802,15 +897,22 @@
                                    Visibility="{Binding HasFault, Converter={StaticResource BoolToVis}}"/>
                     </StackPanel>
 
-                    <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
-                    <!-- ── Section: CPU / RAM ────────────────────────────────────── -->
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- Tab 2: Charts -->
+                <TabItem Header="📈 Charts" DataContext="{Binding SelectedMiniChart}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="8,8,8,16">
+<!-- ── Section: CPU / RAM ──────────────────────────────────── -->
                     <TextBlock Text="CPU / RAM"
                                FontWeight="SemiBold" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Margin="0,0,0,10"/>
 
-                    <StackPanel DataContext="{Binding SelectedMiniChart}">
+                    <StackPanel>
 
                         <!-- CPU sparkline -->
                         <Grid Height="70" Margin="0,0,0,4">
@@ -857,9 +959,16 @@
                         </Grid>
                     </StackPanel>
 
-                    <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
-                    <!-- ── Section: Permissions ──────────────────────────────────── -->
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- Tab 3: Permissions -->
+                <TabItem Header="🔒 Permissions" DataContext="{Binding SelectedPluginDetail}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="8,8,8,16">
+<!-- ── Section: Permissions ──────────────────────────────────── -->
                     <TextBlock Text="Permissions"
                                FontWeight="SemiBold" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -869,8 +978,7 @@
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                Margin="0,0,0,8"/>
 
-                    <DataGrid DataContext="{Binding SelectedPluginDetail}"
-                              ItemsSource="{Binding PermissionRows}"
+                    <DataGrid ItemsSource="{Binding PermissionRows}"
                               AutoGenerateColumns="False"
                               IsReadOnly="False"
                               HeadersVisibility="Column"
@@ -924,86 +1032,23 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <!-- ── Section: Settings (conditional) ──────────────────────── -->
-                    <StackPanel Visibility="{Binding SelectedPluginDetail.HasOptions,
-                                                     Converter={StaticResource BoolToVis},
-                                                     FallbackValue=Collapsed}">
-                        <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
-                        <TextBlock Text="Settings"
-                                   FontWeight="SemiBold" FontSize="13"
-                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                   Margin="0,0,0,10"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
 
-                        <ContentPresenter DataContext="{Binding SelectedPluginDetail}"
-                                          Content="{Binding OptionsPageContent}"
-                                          Margin="0,0,0,8"/>
+                <!-- Tab 4: Settings -->
+                <TabItem Header="⚙️ Settings" Visibility="{Binding SelectedPluginDetail.HasOptions, Converter={StaticResource BoolToVis}, FallbackValue=Collapsed}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="8,8,8,16">
 
-                        <Button Content="Save Settings"
-                                DataContext="{Binding SelectedPluginDetail}"
-                                Command="{Binding SaveOptionsCommand}"
-                                HorizontalAlignment="Right" VerticalAlignment="Center"
-                                Padding="10,3" FontSize="10"
-                                Style="{DynamicResource PanelIconButtonStyle}"/>
-                    </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
 
-                </StackPanel>
-            </ScrollViewer>
+            </TabControl>
         </Border>
 
         </Grid><!-- end inner wrapper Grid (Row 3) -->
-
-        <!-- ── EventLog GridSplitter — visibility managed by ApplyEventLogVisibility() -->
-        <GridSplitter x:Name="EventLogSplitter" Grid.Row="4" Height="4"
-                      HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext"
-                      Visibility="Collapsed"
-                      Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
-
-        <!-- ── Live event log — visibility managed by ApplyEventLogVisibility() ── -->
-        <Border x:Name="EventLogArea" Grid.Row="5"
-                BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="0,1,0,0"
-                Background="{DynamicResource DockBackgroundBrush}" Margin="6,0,6,4"
-                Visibility="Collapsed">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="16"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Border Grid.Row="0" Background="{DynamicResource Panel_ToolbarBrush}">
-                    <TextBlock Text="EVENTS" FontSize="9" FontWeight="SemiBold" Margin="6,0"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                </Border>
-                <ListBox x:Name="EventLogListBox" Grid.Row="1"
-                         ItemsSource="{Binding EventLog}"
-                         Background="Transparent" BorderThickness="0"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Padding"                    Value="0"/>
-                            <Setter Property="Background"                 Value="Transparent"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="4,1">
-                                <TextBlock Text="{Binding TimeLabel}" FontSize="9" Width="44"
-                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets" FontSize="10"
-                                           Foreground="{Binding Color}" Width="16" Margin="2,0"/>
-                                <TextBlock Text="{Binding PluginName}" FontSize="9" FontWeight="SemiBold"
-                                           Width="100" TextTrimming="CharacterEllipsis"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="2,0"/>
-                                <TextBlock Text="{Binding Message}" FontSize="9"
-                                           TextTrimming="CharacterEllipsis"
-                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-        </Border>
     </Grid>
 </UserControl>
