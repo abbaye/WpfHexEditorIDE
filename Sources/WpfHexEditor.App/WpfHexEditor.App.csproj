@@ -48,6 +48,32 @@
     <ProjectReference Include="..\WpfHexEditor.Core.Terminal\WpfHexEditor.Core.Terminal.csproj" />
   </ItemGroup>
 
+  <!-- Sandbox host process: build-only reference so the exe is always up to date,
+       then copy it next to the App exe so SandboxProcessManager can find it. -->
+  <ItemGroup Label="SandboxBuildOrder">
+    <ProjectReference Include="..\WpfHexEditor.PluginSandbox\WpfHexEditor.PluginSandbox.csproj"
+                      ReferenceOutputAssembly="false"
+                      SkipGetTargetFrameworkProperties="true" />
+  </ItemGroup>
+
+  <Target Name="CopySandboxExe" AfterTargets="Build">
+    <PropertyGroup>
+      <_SandboxExeDir>$(MSBuildThisFileDirectory)..\WpfHexEditor.PluginSandbox\bin\$(Configuration)\net8.0-windows\</_SandboxExeDir>
+    </PropertyGroup>
+    <Copy SourceFiles="$(_SandboxExeDir)WpfHexEditor.PluginSandbox.exe"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(_SandboxExeDir)WpfHexEditor.PluginSandbox.exe')" />
+    <Copy SourceFiles="$(_SandboxExeDir)WpfHexEditor.PluginSandbox.dll"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(_SandboxExeDir)WpfHexEditor.PluginSandbox.dll')" />
+    <Copy SourceFiles="$(_SandboxExeDir)WpfHexEditor.PluginSandbox.runtimeconfig.json"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(_SandboxExeDir)WpfHexEditor.PluginSandbox.runtimeconfig.json')" />
+  </Target>
+
   <!-- Build-order dependencies: ensure plugins are compiled and their CopyToPluginsDir
        post-build target runs before the App is launched. No runtime coupling. -->
   <ItemGroup Label="PluginBuildOrder">
