@@ -20,12 +20,18 @@
 // ==========================================================
 
 using System.IO.Pipes;
+using System.Windows.Threading;
 using WpfHexEditor.PluginSandbox;
 using WpfHexEditor.SDK.Sandbox;
 
 internal static class Program
 {
-    private static async Task<int> Main(string[] args)
+    // [STAThread] must be on a non-async entry point.
+    // async Task Main ignores [STAThread] — the compiler wraps it in an MTA state machine.
+    // Instead, we start Dispatcher.Run() here to pump the STA message loop, and
+    // post the async work via InvokeAsync so plugins can safely create WPF UI elements.
+    [STAThread]
+    private static int Main(string[] args)
     {
         if (args.Length < 1)
         {
@@ -33,7 +39,21 @@ internal static class Program
             return 1;
         }
 
-        var pipeName = args[0];
+        var dispatcher = Dispatcher.CurrentDispatcher;
+        int exitCode = 0;
+
+        dispatcher.InvokeAsync(async () =>
+        {
+            exitCode = await RunAsync(args[0]).ConfigureAwait(true);
+            dispatcher.BeginInvokeShutdown(DispatcherPriority.Normal);
+        });
+
+        Dispatcher.Run(); // STA message pump — keeps thread alive for WPF UI creation
+        return exitCode;
+    }
+
+    private static async Task<int> RunAsync(string pipeName)
+    {
         using var cts = new CancellationTokenSource();
         Console.CancelKeyPress += (_, e) => { e.Cancel = true; cts.Cancel(); };
 
