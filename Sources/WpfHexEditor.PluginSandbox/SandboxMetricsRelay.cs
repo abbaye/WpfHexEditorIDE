@@ -7,8 +7,6 @@
 // ==========================================================
 // Project: WpfHexEditor.PluginSandbox
 // File: SandboxMetricsRelay.cs
-// Author: Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.6
 // Created: 2026-03-15
 // Description:
 //     Periodically measures CPU and memory of the sandbox process and

@@ -7,8 +7,6 @@
 // ==========================================================
 // Project: WpfHexEditor.SDK
 // File: SandboxIpcProtocol.cs
-// Author: Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.6
 // Created: 2026-03-15
 // Description:
 //     Shared IPC message protocol between the IDE host process and

@@ -16,7 +16,7 @@
     <PluginPublisher>WpfHexEditor</PluginPublisher>
     <PluginTrustedPublisher>true</PluginTrustedPublisher>
     <PluginDescription>Detects repeating byte patterns, magic numbers, and common data signatures within binary files.</PluginDescription>
-    <PluginIsolationMode>InProcess</PluginIsolationMode>
+    <PluginIsolationMode>Sandbox</PluginIsolationMode>
     <PluginLoadPriority>70</PluginLoadPriority>
     <PluginSdkVersion>1.0.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>

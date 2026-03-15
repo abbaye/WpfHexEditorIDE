@@ -9,7 +9,7 @@
   "minIDEVersion": "0.2.0",
   "description": "Official Archive Structure panel plugin.",
   "entryPoint": "WpfHexEditor.Plugins.ArchiveStructure.ArchiveStructurePlugin",
-  "isolationMode": "InProcess",
+  "isolationMode": "Sandbox",
   "loadPriority": 100,
   "assembly": {
     "file": "WpfHexEditor.Plugins.ArchiveStructure.dll"

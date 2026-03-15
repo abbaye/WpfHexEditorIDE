@@ -7,8 +7,6 @@
 // ==========================================================
 // Project: WpfHexEditor.PluginHost
 // File: DevTools/PluginDevLoader.cs
-// Author: Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.6
 // Created: 2026-03-15
 // Description:
 //     In-IDE plugin development hot-reload engine (Phase 8).

@@ -9,7 +9,7 @@
   "minIDEVersion": "0.2.0",
   "description": "Explores .NET and native PE assemblies with a VS-like tree view, metadata inspection, and PE offset sync with the hex editor.",
   "entryPoint": "WpfHexEditor.Plugins.AssemblyExplorer.AssemblyExplorerPlugin",
-  "isolationMode": "InProcess",
+  "isolationMode": "Sandbox",
   "loadPriority": 40,
   "assembly": {
     "file": "WpfHexEditor.Plugins.AssemblyExplorer.dll"

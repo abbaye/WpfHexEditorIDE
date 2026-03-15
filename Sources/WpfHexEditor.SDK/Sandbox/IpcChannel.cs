@@ -7,8 +7,6 @@
 // ==========================================================
 // Project: WpfHexEditor.SDK
 // File: Sandbox/IpcChannel.cs
-// Author: Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.6
 // Created: 2026-03-15
 // Description:
 //     Bidirectional Named Pipe IPC channel using length-prefixed JSON framing.

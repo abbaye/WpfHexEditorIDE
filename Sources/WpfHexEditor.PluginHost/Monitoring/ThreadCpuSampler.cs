@@ -7,8 +7,6 @@
 // ==========================================================
 // Project: WpfHexEditor.PluginHost
 // File: Monitoring/ThreadCpuSampler.cs
-// Author: Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.6
 // Created: 2026-03-15
 // Description:
 //     Per-thread CPU time sampler for InProcess plugins.

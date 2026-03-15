@@ -7,8 +7,6 @@
 // ==========================================================
 // Project: WpfHexEditor.PluginHost
 // File: UI/MarketplacePanel.xaml.cs
-// Author: Derek Tremblay (derektremblay666@gmail.com)
-// Contributors: Claude Sonnet 4.6
 // Created: 2026-03-15
 // Description:
 //     Code-behind for the Marketplace dockable panel.
