@@ -26,6 +26,38 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+        <!-- Flat button style for the Plugin InfoBar — keeps the orange banner look on hover/press -->
+        <Style x:Key="InfoBarButtonStyle" TargetType="Button">
+            <Setter Property="Foreground"       Value="White"/>
+            <Setter Property="Background"       Value="Transparent"/>
+            <Setter Property="BorderBrush"      Value="White"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="Cursor"           Value="Hand"/>
+            <Setter Property="Padding"          Value="8,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#33FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#55FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <WindowChrome.WindowChrome>
@@ -1181,29 +1213,27 @@
                                Text="" Foreground="White" FontSize="12"
                                VerticalAlignment="Center" TextWrapping="NoWrap"/>
                     <Button x:Name="PluginInfoBarDisable" Grid.Column="2"
-                            Content="Disable" Margin="8,0,4,0" Padding="8,2"
+                            Content="Disable" Margin="8,0,4,0"
                             Click="OnPluginInfoBarDisable"
-                            Foreground="White" Background="Transparent"
-                            BorderBrush="White" BorderThickness="1" Cursor="Hand"
+                            Style="{StaticResource InfoBarButtonStyle}"
                             Visibility="Collapsed"/>
                     <Button x:Name="PluginInfoBarRestart" Grid.Column="3"
-                            Content="Restart" Margin="4,0" Padding="8,2"
+                            Content="Restart" Margin="4,0"
                             Click="OnPluginInfoBarRestart"
-                            Foreground="White" Background="Transparent"
-                            BorderBrush="White" BorderThickness="1" Cursor="Hand"
+                            Style="{StaticResource InfoBarButtonStyle}"
                             Visibility="Collapsed"/>
                     <Button x:Name="PluginInfoBarIgnore" Grid.Column="4"
-                            Content="Ignore" Margin="4,0" Padding="8,2"
+                            Content="Ignore" Margin="4,0"
                             Click="OnPluginInfoBarIgnore"
-                            Foreground="White" Background="Transparent"
-                            BorderBrush="White" BorderThickness="1" Cursor="Hand"
+                            Style="{StaticResource InfoBarButtonStyle}"
                             Visibility="Collapsed"/>
                     <Button Grid.Column="5" Content="&#xE711;"
                             FontFamily="Segoe MDL2 Assets" FontSize="10"
-                            Margin="8,0,0,0" Padding="4,2"
+                            Margin="8,0,0,0"
                             Click="OnPluginInfoBarClose"
-                            Foreground="White" Background="Transparent"
-                            BorderBrush="Transparent" Cursor="Hand" ToolTip="Dismiss"/>
+                            Style="{StaticResource InfoBarButtonStyle}"
+                            BorderBrush="Transparent"
+                            ToolTip="Dismiss"/>
                 </Grid>
             </Border>
 

@@ -54,6 +54,11 @@ internal static class Program
 
     private static async Task<int> RunAsync(string pipeName)
     {
+        // Capture STA dispatcher before the first await — after ConfigureAwait(false)
+        // the continuation runs on a thread-pool MTA thread where CurrentDispatcher
+        // would create a new non-STA dispatcher.
+        var dispatcher = Dispatcher.CurrentDispatcher;
+
         using var cts = new CancellationTokenSource();
         Console.CancelKeyPress += (_, e) => { e.Cancel = true; cts.Cancel(); };
 
@@ -72,14 +77,19 @@ internal static class Program
             runner = new SandboxedPluginRunner(channel, relay, cts.Token, Console.Error.WriteLine);
 
             // 2. Message loop
+            // I/O receive stays on thread pool; plugin handling is dispatched back to
+            // the STA thread so plugins can safely create WPF UI elements.
             while (!cts.IsCancellationRequested)
             {
                 var envelope = await channel.ReceiveAsync<SandboxEnvelope>(cts.Token)
-                    .ConfigureAwait(false);
+                    .ConfigureAwait(false); // thread pool OK for I/O
 
                 if (envelope is null) break; // Pipe closed by host
 
-                var continueLoop = await runner.HandleAsync(envelope).ConfigureAwait(false);
+                var continueLoop = await dispatcher
+                    .InvokeAsync(async () => await runner!.HandleAsync(envelope))
+                    .Task.Unwrap()
+                    .ConfigureAwait(false); // result back to thread pool for next receive
                 if (!continueLoop) break;
             }
 
