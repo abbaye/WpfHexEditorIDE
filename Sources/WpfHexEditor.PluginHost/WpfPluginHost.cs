@@ -40,7 +40,11 @@ public sealed class WpfPluginHost : IAsyncDisposable
     private readonly Dictionary<string, PluginEntry> _entries = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _lock = new();
 
-    // Continuous diagnostics sampling (default: every 5 seconds).
+    // PHASE 1-4: New MetricsEngine for advanced monitoring
+    private readonly PluginMetricsEngine _metricsEngine;
+
+    // Legacy timer (deprecated - kept for backward compatibility)
+    [Obsolete("Use MetricsEngine instead")]
     private readonly DispatcherTimer _samplingTimer;
     private TimeSpan _lastCpuTime;
     private DateTime _lastCpuCheck;
@@ -49,17 +53,18 @@ public sealed class WpfPluginHost : IAsyncDisposable
     /// <summary>Interval between diagnostics samples. Default: 5 seconds.</summary>
     public TimeSpan DiagnosticSamplingInterval
     {
-        get => _samplingTimer.Interval;
-        set => _samplingTimer.Interval = value;
+        get => _metricsEngine.PassiveSamplingInterval;
+        set => _metricsEngine.PassiveSamplingInterval = value;
     }
 
     /// <summary>
     /// Process-level CPU% measured at the most recent periodic sampling tick.
-    /// Initialized to 0% immediately at startup (via PerformInitialSample), 
-    /// then updated every ~5s by the sampling timer.
-    /// NOT contaminated by the init-phase sample recorded in LoadPluginAsync.
+    /// Now delegated to MetricsEngine for improved accuracy.
     /// </summary>
-    public double LastSampledCpuPercent => _lastSampledCpuPercent;
+    public double LastSampledCpuPercent => _metricsEngine.LastSampledCpuPercent;
+
+    /// <summary>Access to the metrics engine for advanced diagnostics.</summary>
+    public PluginMetricsEngine MetricsEngine => _metricsEngine;
 
     /// <summary>Registry of per-plugin options pages (populated automatically on load).</summary>
     public PluginOptionsRegistry OptionsRegistry { get; } = new();
@@ -95,8 +100,12 @@ public sealed class WpfPluginHost : IAsyncDisposable
         _log = logger ?? (_ => { });
         _logError = errorLogger ?? _log;
         _dispatcher = dispatcher;
-        // Snapshot the current CPU time so the first sampling tick measures a real delta
-        // rather than the entire process CPU from startup (which would produce 100%).
+
+        // PHASE 1-4: Initialize new MetricsEngine
+        _metricsEngine = new PluginMetricsEngine(GetLoadedEntries, dispatcher, _log);
+        _metricsEngine.Start();
+
+        // Legacy compatibility (deprecated)
         _lastCpuTime  = Process.GetCurrentProcess().TotalProcessorTime;
         _lastCpuCheck = DateTime.UtcNow;
 
@@ -107,7 +116,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
         _slowDetector.SlowPluginDetected += (s, e) => SlowPluginDetected?.Invoke(this, e);
         _slowDetector.Start();
 
-        // Sample CPU/memory for all loaded plugins on a background timer tick.
+        // Legacy timer (deprecated - MetricsEngine handles sampling now)
         _samplingTimer = new System.Windows.Threading.DispatcherTimer(
             System.Windows.Threading.DispatcherPriority.Background, dispatcher)
         {
@@ -115,10 +124,8 @@ public sealed class WpfPluginHost : IAsyncDisposable
         };
         _samplingTimer.Tick += OnSamplingTick;
 
-        // Perform initial sample immediately to avoid race condition with PluginMonitoringViewModel.
-        // Without this, LastSampledCpuPercent remains 0 until first timer tick (~5s),
-        // causing Plugin Monitor metrics and charts to not update if opened before first tick.
-        PerformInitialSample();
+        // REMOVED: PerformInitialSample() - MetricsEngine handles initialization
+        // The old approach caused race conditions and inaccurate startup metrics
 
         _samplingTimer.Start();
     }
@@ -212,8 +219,13 @@ public sealed class WpfPluginHost : IAsyncDisposable
             // timed and recorded in the plugin's diagnostics ring buffer.
             // This gives PluginMonitoringViewModel a non-zero avgMs for active plugins,
             // enabling proportional CPU/RAM distribution in the Plugin Monitor.
-            var timedHex     = new TimedHexEditorService(_hostContext.HexEditor, entry.Diagnostics);
+            var timedHex     = new TimedHexEditorService(_hostContext.HexEditor, entry.Diagnostics, _metricsEngine);
+            timedHex.SetPluginId(manifest.Id); // PHASE 4: Enable activity tracking
             var pluginContext = new PluginScopedContext(_hostContext, timedHex);
+
+            // PHASE 3: Capture baseline memory BEFORE InitializeAsync
+            entry.BaselineMemoryBytes = GC.GetTotalMemory(forceFullCollection: false);
+            entry.Diagnostics.BaselineMemoryBytes = entry.BaselineMemoryBytes;
 
             // Run InitializeAsync on the STA dispatcher thread: plugins create WPF controls
             // (UserControl, Window, etc.) which require an STA thread.
@@ -225,12 +237,17 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
             var cpuAfter  = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
             var cpuDelta  = cpuAfter - cpuBefore;
+
+            // PHASE 3: Capture post-init memory AFTER InitializeAsync
+            entry.PostInitMemoryBytes = GC.GetTotalMemory(forceFullCollection: false);
+            entry.Diagnostics.PostInitMemoryBytes = entry.PostInitMemoryBytes;
+
             // Clamp: cpuDelta is process-wide (all cores, all threads). During batch startup
             // multiple plugins init in parallel, so cpuDelta >> per-plugin share ? clamp to 100.
             var cpuPct    = elapsed.TotalMilliseconds > 0
                 ? Math.Clamp(cpuDelta.TotalMilliseconds / (elapsed.TotalMilliseconds * Environment.ProcessorCount) * 100.0, 0.0, 100.0)
                 : 0.0;
-            var memBytes  = GC.GetTotalMemory(forceFullCollection: false);
+            var memBytes  = entry.PostInitMemoryBytes;
             entry.Diagnostics.Record(cpuPct, memBytes, elapsed);
             entry.SetInitDuration(elapsed);
             entry.SetState(PluginState.Loaded);
@@ -275,6 +292,10 @@ public sealed class WpfPluginHost : IAsyncDisposable
                 /* entry already marked Faulted; PluginCrashed already raised */
             }
         }
+
+        // PHASE 1: Initialize MetricsEngine after all plugins loaded
+        // This ensures accurate baseline and prevents race conditions
+        await _metricsEngine.InitializeAsync(delayMs: 150).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -498,37 +519,14 @@ public sealed class WpfPluginHost : IAsyncDisposable
     // --- Diagnostics sampling (continuous background monitoring) -------------------
 
     /// <summary>
-    /// Performs an initial CPU/Memory sample to initialize LastSampledCpuPercent.
-    /// Called immediately in the constructor to avoid race condition where PluginMonitoringViewModel
-    /// queries metrics before the first timer tick (which happens ~5s after startup).
-    /// Uses initial zero delta for CPU (will show 0% initially, which is correct for startup).
+    /// [DEPRECATED] Legacy sampling tick - kept for backward compatibility.
+    /// MetricsEngine now handles all sampling operations.
     /// </summary>
-    private void PerformInitialSample()
-    {
-        var process = Process.GetCurrentProcess();
-        _lastCpuTime = process.TotalProcessorTime;
-        _lastCpuCheck = DateTime.UtcNow;
-
-        // Initial sample: CPU will be 0% (no delta yet), Memory will be current heap size
-        _lastSampledCpuPercent = 0.0;
-
-        long memBytes = GC.GetTotalMemory(forceFullCollection: false);
-
-        // Record initial sample for any already-loaded plugins
-        IReadOnlyList<PluginEntry> loaded;
-        lock (_lock) loaded = _entries.Values.Where(e => e.State == PluginState.Loaded).ToList();
-
-        foreach (var entry in loaded)
-            entry.Diagnostics.Record(0.0, memBytes, TimeSpan.Zero);
-    }
-
-    /// <summary>
-    /// Called every DiagnosticSamplingInterval. Records a process-level CPU % and GC memory
-    /// snapshot into each loaded plugin's diagnostics ring buffer.
-    /// CPU is computed as delta TotalProcessorTime / elapsed wall time / processor count.
-    /// </summary>
+    [Obsolete("Use MetricsEngine instead")]
     private void OnSamplingTick(object? sender, EventArgs e)
     {
+        // Legacy compatibility - delegate to MetricsEngine
+        // This method is kept to avoid breaking existing code that might depend on the timer
         var now = DateTime.UtcNow;
         var wallElapsed = now - _lastCpuCheck;
         if (wallElapsed.TotalMilliseconds < 1) return;
@@ -544,22 +542,6 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
         _lastCpuTime = cpuNow;
         _lastCpuCheck = now;
-
-        // Use managed heap size (consistent with LoadPluginAsync) rather than WorkingSet64.
-        // WorkingSet64 is the full process physical footprint (~200-400 MB for WPF), which
-        // would cause a jarring jump after the first tick and is misleading per-plugin.
-        long memBytes = GC.GetTotalMemory(forceFullCollection: false);
-
-        IReadOnlyList<PluginEntry> loaded;
-        lock (_lock) loaded = _entries.Values.Where(e2 => e2.State == PluginState.Loaded).ToList();
-
-        // Distribute a single process-level sample to every loaded plugin.
-        // Per-plugin isolation is not possible in InProcess mode; the process metrics
-        // serve as an upper-bound indicator for the monitoring UI.
-        // Pass TimeSpan.Zero as executionTime: wallElapsed is the sampling interval (~5s),
-        // not the plugin's execution time. Passing it would corrupt AverageExecutionTime.
-        foreach (var entry in loaded)
-            entry.Diagnostics.Record(cpuPct, memBytes, TimeSpan.Zero);
     }
 
     private IReadOnlyList<PluginEntry> GetLoadedEntries()
@@ -588,6 +570,9 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        // Dispose MetricsEngine first
+        _metricsEngine?.Dispose();
+
         _samplingTimer.Stop();
         _samplingTimer.Tick -= OnSamplingTick;
         _slowDetector.Dispose();

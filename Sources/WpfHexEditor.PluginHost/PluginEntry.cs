@@ -54,6 +54,19 @@ public sealed class PluginEntry
     /// <summary>Rolling performance diagnostics collector for this plugin.</summary>
     public PluginDiagnosticsCollector Diagnostics { get; } = new();
 
+    // PHASE 3: Memory baseline tracking
+    /// <summary>Memory footprint (bytes) measured before InitializeAsync.</summary>
+    public long BaselineMemoryBytes { get; set; }
+
+    /// <summary>Memory footprint (bytes) measured after InitializeAsync.</summary>
+    public long PostInitMemoryBytes { get; set; }
+
+    /// <summary>
+    /// Estimated memory footprint attributable to this plugin.
+    /// Calculated as (PostInitMemoryBytes - BaselineMemoryBytes).
+    /// </summary>
+    public long EstimatedMemoryFootprint => Math.Max(0, PostInitMemoryBytes - BaselineMemoryBytes);
+
     // -- Constructor ----------------------------------------------------------
 
     public PluginEntry(PluginManifest manifest)

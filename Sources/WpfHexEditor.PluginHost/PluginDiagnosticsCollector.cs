@@ -20,6 +20,7 @@ public sealed record DiagnosticsSnapshot(
 /// <summary>
 /// Collects rolling performance diagnostics for a plugin.
 /// Implements <see cref="IPluginDiagnostics"/> for exposure via SDK.
+/// Enhanced with baseline memory tracking and activity monitoring.
 /// </summary>
 public sealed class PluginDiagnosticsCollector : IPluginDiagnostics
 {
@@ -27,6 +28,38 @@ public sealed class PluginDiagnosticsCollector : IPluginDiagnostics
     private readonly Queue<DiagnosticsSnapshot> _buffer;
     private readonly object _lock = new();
     private DateTime _loadedAt = DateTime.UtcNow;
+    private DateTime _lastActivityTimestamp = DateTime.UtcNow;
+    private int _samplingPriority = 0;
+
+    // PHASE 3: Baseline memory tracking
+    /// <summary>Memory footprint measured immediately before InitializeAsync.</summary>
+    public long BaselineMemoryBytes { get; set; }
+
+    /// <summary>Memory footprint measured immediately after InitializeAsync.</summary>
+    public long PostInitMemoryBytes { get; set; }
+
+    /// <summary>
+    /// Estimated memory footprint attributable to this plugin
+    /// (delta from baseline to post-init).
+    /// </summary>
+    public long EstimatedPluginMemoryBytes => Math.Max(0, PostInitMemoryBytes - BaselineMemoryBytes);
+
+    /// <summary>Timestamp of last recorded plugin activity (callback invocation).</summary>
+    public DateTime LastActivityTimestamp
+    {
+        get => _lastActivityTimestamp;
+        internal set => _lastActivityTimestamp = value;
+    }
+
+    /// <summary>
+    /// Sampling priority for active plugins (higher = more frequent sampling).
+    /// Incremented when plugin is active, decays over time.
+    /// </summary>
+    public int SamplingPriority
+    {
+        get => _samplingPriority;
+        internal set => _samplingPriority = Math.Max(0, value);
+    }
 
     public PluginDiagnosticsCollector(int capacity = 100)
     {

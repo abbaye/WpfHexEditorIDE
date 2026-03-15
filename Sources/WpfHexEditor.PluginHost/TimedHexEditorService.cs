@@ -23,6 +23,7 @@
 
 using System.Diagnostics;
 using WpfHexEditor.Core.Interfaces;
+using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.SDK.Contracts.Services;
 
 namespace WpfHexEditor.PluginHost;
@@ -32,15 +33,15 @@ namespace WpfHexEditor.PluginHost;
 /// execution time of each plugin's event handlers and feeds the samples into the
 /// plugin's <see cref="PluginDiagnosticsCollector"/>.
 /// <para>
-/// Once the ring buffer contains non-zero <c>LastExecutionTime</c> entries the
-/// Plugin Monitor's weighted-CPU formula assigns a proportional CPU/RAM share to
-/// the plugin instead of treating it as idle (weight = 0).
+/// PHASE 4: Now also notifies MetricsEngine for active sampling.
 /// </para>
 /// </summary>
 internal sealed class TimedHexEditorService : IHexEditorService
 {
     private readonly IHexEditorService _inner;
     private readonly PluginDiagnosticsCollector _diagnostics;
+    private readonly PluginMetricsEngine _metricsEngine;
+    private string? _pluginId; // Set lazily on first callback
 
     // Per-event managed invocation lists — independent per plugin instance.
     private EventHandler? _selectionChanged;
@@ -56,11 +57,20 @@ internal sealed class TimedHexEditorService : IHexEditorService
     private bool _formatDetectedSubscribed;
     private bool _activeEditorChangedSubscribed;
 
-    public TimedHexEditorService(IHexEditorService inner, PluginDiagnosticsCollector diagnostics)
+    public TimedHexEditorService(
+        IHexEditorService inner, 
+        PluginDiagnosticsCollector diagnostics,
+        PluginMetricsEngine metricsEngine)
     {
-        _inner      = inner       ?? throw new ArgumentNullException(nameof(inner));
+        _inner       = inner       ?? throw new ArgumentNullException(nameof(inner));
         _diagnostics = diagnostics ?? throw new ArgumentNullException(nameof(diagnostics));
+        _metricsEngine = metricsEngine ?? throw new ArgumentNullException(nameof(metricsEngine));
     }
+
+    /// <summary>
+    /// Sets the plugin ID for activity tracking (called by WpfPluginHost after context creation).
+    /// </summary>
+    internal void SetPluginId(string pluginId) => _pluginId = pluginId;
 
     // ── Properties (pure delegation) ─────────────────────────────────────────
 
@@ -203,6 +213,8 @@ internal sealed class TimedHexEditorService : IHexEditorService
     /// Appends an execution-time sample to the plugin's diagnostics ring buffer.
     /// CPU% and MemoryBytes are carried forward from the latest periodic snapshot
     /// so the ring buffer remains internally consistent.
+    /// 
+    /// PHASE 4: Also notifies MetricsEngine for active sampling and activity tracking.
     /// </summary>
     private void RecordExecution(TimeSpan elapsed)
     {
@@ -211,5 +223,18 @@ internal sealed class TimedHexEditorService : IHexEditorService
             latest?.CpuPercent  ?? 0,
             latest?.MemoryBytes ?? 0,
             elapsed);
+
+        // PHASE 4: Notify MetricsEngine of plugin activity
+        if (!string.IsNullOrEmpty(_pluginId))
+        {
+            _metricsEngine.RecordPluginActivity(_pluginId);
+
+            // Queue active sample for immediate processing
+            _ = _metricsEngine.EnqueueActiveSampleAsync(_pluginId, elapsed);
+        }
+
+        // Update diagnostics collector activity tracking
+        _diagnostics.LastActivityTimestamp = DateTime.UtcNow;
+        _diagnostics.SamplingPriority = Math.Min(_diagnostics.SamplingPriority + 1, 10);
     }
 }

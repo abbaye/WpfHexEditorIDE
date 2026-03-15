@@ -466,6 +466,9 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
     private readonly IOutputService?  _outputService;
     private MemoryAlertService? _memoryAlertService;
 
+    // DEBUG: Sample counter for logging
+    private long _sampleCount = 0;
+
     // Per-plugin mini-chart lookup (pluginId → ViewModel)
     private readonly Dictionary<string, PluginMiniChartViewModel> _miniCharts =
         new(StringComparer.OrdinalIgnoreCase);
@@ -515,7 +518,13 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             Interval = TimeSpan.FromSeconds(_intervalSeconds)
         };
         _timer.Tick += OnTimerTick;
-        _timer.Start();
+
+        // PHASE 1: Subscribe to MetricsEngine events for real-time updates
+        _host.MetricsEngine.MetricsSampled += OnMetricsSampled;
+
+        // PHASE 1: Wait for MetricsEngine initialization before starting timer
+        // This prevents race condition where UI queries metrics before first sample
+        _ = InitializeAsync();
 
         // -- Commands --
         StartStopCommand         = new RelayCommand(_ => ToggleRunning());
@@ -542,6 +551,9 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
         CopyTableCommand             = new RelayCommand(_ => CopyTableToClipboard());
         ExportEventLogCommand    = new RelayCommand(_ => ExportEventLog());
 
+        // PHASE 5: Add Force Sample command
+        ForceSampleCommand = new RelayCommand(_ => _ = ForceSampleNowAsync());
+
         // -- Host event subscriptions --
         _host.PluginLoaded       += OnPluginLoaded;
         _host.PluginCrashed      += OnPluginCrashed;
@@ -556,6 +568,35 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
         Refresh();
         SynthesizeInitialLoadEvents();
+    }
+
+    // PHASE 1: Async initialization waits for MetricsEngine
+    private async Task InitializeAsync()
+    {
+        await _host.MetricsEngine.WaitForInitializationAsync();
+
+        // Now safe to start timer - metrics are ready
+        _dispatcher.Invoke(() =>
+        {
+            _timer.Start();
+            Refresh(); // Force initial UI update
+        });
+    }
+
+    // PHASE 5: Force sample command
+    public ICommand ForceSampleCommand { get; }
+
+    private async Task ForceSampleNowAsync()
+    {
+        await _host.MetricsEngine.ForceSampleNowAsync();
+        Refresh();
+    }
+
+    // PHASE 1: Handle real-time metrics events from MetricsEngine
+    private void OnMetricsSampled(object? sender, WpfHexEditor.PluginHost.Monitoring.MetricsSampledEventArgs e)
+    {
+        // Update UI immediately on metrics event (in addition to timer)
+        _dispatcher.InvokeAsync(Refresh);
     }
 
     // -- Commands ----------------------------------------------------------------
@@ -876,6 +917,7 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
 
     public void Refresh()
     {
+        _sampleCount++; // DEBUG: Increment sample counter
         var plugins = _host.GetAllPlugins();
         var loaded  = plugins.Where(p => p.State == PluginState.Loaded).ToList();
         var now     = DateTime.UtcNow;
@@ -946,23 +988,41 @@ public sealed class PluginMonitoringViewModel : INotifyPropertyChanged, IDisposa
             // Compute weighted CPU and memory estimates for this plugin.
             // Weight is proportional to measured average execution time.
             //
+            // PHASE 2: Improved fallback logic (FIXED)
             // Rules:
             //   • Non-loaded plugin (Faulted, Unloaded…) → weight = 0, no allocation.
-            //   • sumExecMs > 0 (at least one plugin has measured data):
-            //       – avgMs > 0 → proportional share   (avgMs / sumExecMs)
-            //       – avgMs = 0 → weight = 0 (no evidence of CPU usage; do NOT fall back
-            //                     to equal share here — that inflates the running total
-            //                     above 100% and gives metrics to unmeasured plugins).
-            //   • sumExecMs = 0 (no plugin has been measured yet at startup):
-            //       → equal share across all loaded plugins as initial estimate.
+            //   • Plugin has measured activity (avgMs > 0):
+            //       → Proportional share based on execution time (avgMs / sumExecMs)
+            //   • Plugin has NO activity (avgMs = 0):
+            //       → Equal share among all loaded plugins (1.0 / loadedCount)
+            //       This ensures visible attribution even for idle plugins.
+            //
+            // FIX: Changed from 0.01/loadedCount to 1.0/loadedCount for idle plugins.
+            // The previous 0.01 factor resulted in weights like 0.001, which when
+            // multiplied by totalCpu (e.g., 3.7%) gave 0.0037% → rounded to 0.0% in UI.
             double avgMs  = entry.Diagnostics.AverageExecutionTime.TotalMilliseconds;
             double weight = entry.State != PluginState.Loaded
                 ? 0
-                : sumExecMs > 0
-                    ? (avgMs > 0 ? avgMs / sumExecMs : 0)
-                    : (loaded.Count > 0 ? 1.0 / loaded.Count : 0);
+                : avgMs > 0
+                    ? avgMs / Math.Max(sumExecMs, 0.001) // Proportional to activity
+                    : 1.0 / Math.Max(loaded.Count, 1);  // FIX: Equal share for idle plugins
             double weightedCpu = Math.Clamp(totalCpu * weight, 0, 100);
-            long   weightedMem = (long)Math.Round(totalMem * weight);
+
+            // DEBUG: Log weight calculation for first 3 plugins
+            if (_sampleCount < 3 || entry.Manifest.Id.Contains("Archive"))
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"[METRICS DEBUG] {entry.Manifest.Name}: " +
+                    $"avgMs={avgMs:F2}, weight={weight:F4}, " +
+                    $"totalCpu={totalCpu:F2}%, weightedCpu={weightedCpu:F2}%, " +
+                    $"loaded={loaded.Count}, sumExecMs={sumExecMs:F2}");
+            }
+
+            // PHASE 3: Use EstimatedMemoryFootprint if available for more accurate attribution
+            long pluginMemEstimate = entry.EstimatedMemoryFootprint > 0 
+                ? entry.EstimatedMemoryFootprint / (1024 * 1024) 
+                : (long)Math.Round(totalMem * weight);
+            long weightedMem = pluginMemEstimate;
 
             row.Name           = entry.Manifest.Name;
             row.State          = StateLabel(entry.State);
