@@ -9,7 +9,7 @@
   "minIDEVersion": "0.2.0",
   "description": "Official Custom Parser Template panel plugin.",
   "entryPoint": "WpfHexEditor.Plugins.CustomParserTemplate.CustomParserTemplatePlugin",
-  "isolationMode": "Sandbox",
+  "isolationMode": "InProcess",
   "loadPriority": 100,
   "assembly": {
     "file": "WpfHexEditor.Plugins.CustomParserTemplate.dll"

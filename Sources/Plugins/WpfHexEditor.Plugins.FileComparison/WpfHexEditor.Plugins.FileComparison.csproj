@@ -16,7 +16,7 @@
     <PluginPublisher>WpfHexEditor</PluginPublisher>
     <PluginTrustedPublisher>true</PluginTrustedPublisher>
     <PluginDescription>Side-by-side binary diff viewer for comparing two files byte-by-byte with diff highlighting.</PluginDescription>
-    <PluginIsolationMode>Sandbox</PluginIsolationMode>
+    <PluginIsolationMode>InProcess</PluginIsolationMode>
     <PluginLoadPriority>40</PluginLoadPriority>
     <PluginSdkVersion>1.0.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>

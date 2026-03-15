@@ -16,7 +16,7 @@
     <PluginPublisher>WpfHexEditor</PluginPublisher>
     <PluginTrustedPublisher>true</PluginTrustedPublisher>
     <PluginDescription>Overlays parsed structure field annotations directly onto the hex view.</PluginDescription>
-    <PluginIsolationMode>Sandbox</PluginIsolationMode>
+    <PluginIsolationMode>InProcess</PluginIsolationMode>
     <PluginLoadPriority>90</PluginLoadPriority>
     <PluginSdkVersion>1.0.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>

@@ -16,7 +16,7 @@
     <PluginPublisher>WpfHexEditor</PluginPublisher>
     <PluginTrustedPublisher>true</PluginTrustedPublisher>
     <PluginDescription>Displays byte frequency histograms, entropy charts, and distribution statistics for the active file.</PluginDescription>
-    <PluginIsolationMode>Sandbox</PluginIsolationMode>
+    <PluginIsolationMode>InProcess</PluginIsolationMode>
     <PluginLoadPriority>80</PluginLoadPriority>
     <PluginSdkVersion>1.0.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>

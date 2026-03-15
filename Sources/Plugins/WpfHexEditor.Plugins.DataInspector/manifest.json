@@ -9,7 +9,7 @@
   "minIDEVersion": "0.2.0",
   "description": "Official Data Inspector panel plugin.",
   "entryPoint": "WpfHexEditor.Plugins.DataInspector.DataInspectorPlugin",
-  "isolationMode": "Sandbox",
+  "isolationMode": "InProcess",
   "loadPriority": 100,
   "assembly": {
     "file": "WpfHexEditor.Plugins.DataInspector.dll"

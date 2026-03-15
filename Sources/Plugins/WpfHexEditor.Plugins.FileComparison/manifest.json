@@ -9,7 +9,7 @@
   "minIDEVersion": "0.2.0",
   "description": "Official File Comparison panel plugin.",
   "entryPoint": "WpfHexEditor.Plugins.FileComparison.FileComparisonPlugin",
-  "isolationMode": "Sandbox",
+  "isolationMode": "InProcess",
   "loadPriority": 100,
   "assembly": {
     "file": "WpfHexEditor.Plugins.FileComparison.dll"

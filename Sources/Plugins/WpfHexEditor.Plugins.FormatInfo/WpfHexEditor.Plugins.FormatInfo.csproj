@@ -16,7 +16,7 @@
     <PluginPublisher>WpfHexEditor</PluginPublisher>
     <PluginTrustedPublisher>true</PluginTrustedPublisher>
     <PluginDescription>Shows enriched format metadata, version information, and structural details for detected file formats.</PluginDescription>
-    <PluginIsolationMode>Sandbox</PluginIsolationMode>
+    <PluginIsolationMode>InProcess</PluginIsolationMode>
     <PluginLoadPriority>60</PluginLoadPriority>
     <PluginSdkVersion>1.0.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>

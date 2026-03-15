@@ -16,7 +16,7 @@
     <PluginPublisher>WpfHexEditor</PluginPublisher>
     <PluginTrustedPublisher>true</PluginTrustedPublisher>
     <PluginDescription>Inspects binary data at the current cursor position, showing decoded values for all common data types.</PluginDescription>
-    <PluginIsolationMode>Sandbox</PluginIsolationMode>
+    <PluginIsolationMode>InProcess</PluginIsolationMode>
     <PluginLoadPriority>100</PluginLoadPriority>
     <PluginSdkVersion>1.0.0</PluginSdkVersion>
     <PluginMinIDEVersion>0.2.0</PluginMinIDEVersion>

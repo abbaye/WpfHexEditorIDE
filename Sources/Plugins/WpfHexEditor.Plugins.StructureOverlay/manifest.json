@@ -9,7 +9,7 @@
   "minIDEVersion": "0.2.0",
   "description": "Official Structure Overlay panel plugin.",
   "entryPoint": "WpfHexEditor.Plugins.StructureOverlay.StructureOverlayPlugin",
-  "isolationMode": "Sandbox",
+  "isolationMode": "InProcess",
   "loadPriority": 100,
   "assembly": {
     "file": "WpfHexEditor.Plugins.StructureOverlay.dll"
