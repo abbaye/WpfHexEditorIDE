@@ -189,17 +189,6 @@
 
                         <Separator />
 
-                        <!-- Options (VS-style document tab) -->
-                        <MenuItem Header="_Options..." Click="OnSettings">
-                            <MenuItem.Icon>
-                                <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-
-                        <Separator />
-
                         <!-- Recent Solutions ► -->
                         <MenuItem x:Name="RecentSolutionsMenuItem" Header="Recent _Solutions">
                             <MenuItem.Icon>
@@ -460,6 +449,17 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
+
+                        <Separator />
+
+                        <!-- Options -->
+                        <MenuItem Header="_Options..." Click="OnSettings">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
 
                     <!-- ═══════════ Plugins ═══════════ -->
@@ -481,6 +481,13 @@
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="Plugin _Marketplace" Click="OnOpenMarketplace">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xE719;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         <Separator/>
                         <MenuItem Header="_Install from File..." Click="OnInstallPluginFromMenu">
                             <MenuItem.Icon>
@@ -492,6 +499,13 @@
                         <MenuItem Header="_Refresh All Plugins" Click="OnRefreshAllPlugins">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Plugin _Dev Watch..." Click="OnOpenPluginDevWatch">
+                            <MenuItem.Icon>
+                                <TextBlock Text="&#xECC6;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>

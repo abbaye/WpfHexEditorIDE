@@ -29,6 +29,7 @@ using WpfHexEditor.Core.Terminal.ShellSession;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.PluginHost;
+using WpfHexEditor.PluginHost.DevTools;
 using WpfHexEditor.PluginHost.Monitoring;
 using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.PluginHost.UI;
@@ -57,6 +58,7 @@ public partial class MainWindow
     private const string PluginManagerContentId   = "plugin-manager";
     private const string TerminalPanelContentId   = "panel-terminal";
     private const string PluginMonitorContentId   = "plugin-monitor";
+    private const string MarketplaceContentId     = "plugin-marketplace";
 
     private int    _pluginFaultCount = 0;
     private string? _infoBarPluginId;   // ID of the plugin currently shown in the InfoBar
@@ -66,6 +68,9 @@ public partial class MainWindow
     private TerminalPanel? _pendingTerminalPanel;
     private WpfHexEditor.Panels.IDE.Panels.PluginMonitoringPanel? _pendingPluginMonitorPanel;
     private WpfHexEditor.PluginHost.UI.PluginManagerControl? _pendingPluginManagerControl;
+
+    // Dev tools (instantiated on first use)
+    private PluginDevLoader? _pluginDevLoader;
 
     // StatusBar fault-blink timer (DispatcherTimer, 800 ms toggle)
     private DispatcherTimer? _statusBarBlinkTimer;
@@ -575,6 +580,72 @@ public partial class MainWindow
             _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Bottom);
 
         DockHost.RebuildVisualTree();
+    }
+
+    // --- Marketplace panel -----------------------------------------------
+
+    private void OnOpenMarketplace(object sender, RoutedEventArgs e)
+    {
+        var existing = _layout?.FindItemByContentId(MarketplaceContentId);
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        var svc   = new MarketplaceServiceImpl();
+        var vm    = new MarketplacePanelViewModel(_pluginHost!, svc, msg => OutputLogger.PluginInfo(msg));
+        var panel = new MarketplacePanel();
+        panel.Initialize(vm);
+
+        var item = new DockItem
+        {
+            ContentId = MarketplaceContentId,
+            Title     = "Plugin Marketplace",
+            CanClose  = true
+        };
+
+        StoreContent(MarketplaceContentId, panel);
+
+        var bottomGroup = _layout.FindItemByContentId(ErrorPanelContentId)?.Owner
+                       ?? _layout.FindItemByContentId("panel-output")?.Owner;
+        if (bottomGroup is not null)
+            _engine.Dock(item, bottomGroup, DockDirection.Center);
+        else
+            _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Bottom);
+
+        DockHost.RebuildVisualTree();
+    }
+
+    // --- Plugin Dev Watch ------------------------------------------------
+
+    private void OnOpenPluginDevWatch(object sender, RoutedEventArgs e)
+    {
+        if (_pluginHost is null)
+        {
+            OutputLogger.PluginError("[DevWatch] Plugin system not initialised.");
+            return;
+        }
+
+        var dialog = new Microsoft.Win32.OpenFolderDialog
+        {
+            Title = "Select Plugin Build Output Directory",
+            Multiselect = false
+        };
+
+        if (dialog.ShowDialog(this) != true) return;
+
+        var dir = dialog.FolderName;
+        if (!Directory.Exists(dir)) return;
+
+        // Derive plugin ID from the folder name (user can rename via the folder they pick)
+        var pluginId = new DirectoryInfo(dir).Name;
+
+        _pluginDevLoader ??= new PluginDevLoader(_pluginHost, Dispatcher, msg => OutputLogger.PluginInfo(msg));
+        _pluginDevLoader.Watch(pluginId, dir);
+
+        OutputLogger.PluginInfo($"[DevWatch] Watching '{pluginId}' → {dir}");
     }
 
     // --- Content factories for panels that may be restored from layout --

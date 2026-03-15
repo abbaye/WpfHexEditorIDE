@@ -5,6 +5,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
     <RootNamespace>WpfHexEditor.PluginSandbox</RootNamespace>
     <AssemblyName>WpfHexEditor.PluginSandbox</AssemblyName>
   </PropertyGroup>

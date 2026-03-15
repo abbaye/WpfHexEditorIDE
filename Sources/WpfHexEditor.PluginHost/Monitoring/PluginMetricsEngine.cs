@@ -147,16 +147,36 @@ public sealed class PluginMetricsEngine : IDisposable
 
     /// <summary>
     /// Manually triggers an immediate active sample for a specific plugin.
-    /// Used when we detect a plugin callback execution.
+    /// Called by TimedHexEditorService after each timed plugin callback.
     /// </summary>
     public async Task EnqueueActiveSampleAsync(string pluginId, TimeSpan executionTime)
     {
         var sample = new MetricsSample
         {
-            Timestamp = DateTime.UtcNow,
-            PluginId = pluginId,
-            ExecutionTime = executionTime,
-            IsActiveSample = true
+            Timestamp      = DateTime.UtcNow,
+            PluginId       = pluginId,
+            ExecutionTime  = executionTime,
+            IsActiveSample = true,
+        };
+
+        await _metricsQueue.Writer.WriteAsync(sample, _cts.Token);
+    }
+
+    /// <summary>
+    /// Enqueues an active sample with a precise per-thread CPU% from
+    /// <see cref="ThreadCpuSampler"/> (Phase 6 — InProcess plugins).
+    /// Provides real per-plugin CPU rather than the process-wide estimate.
+    /// </summary>
+    public async Task EnqueueThreadSampleAsync(string pluginId, ThreadSample threadSample)
+    {
+        var sample = new MetricsSample
+        {
+            Timestamp      = DateTime.UtcNow,
+            PluginId       = pluginId,
+            ExecutionTime  = threadSample.Elapsed,
+            ThreadCpuPct   = threadSample.CpuPercent,
+            IsActiveSample = true,
+            HasThreadCpu   = true,
         };
 
         await _metricsQueue.Writer.WriteAsync(sample, _cts.Token);
@@ -206,6 +226,8 @@ public sealed class PluginMetricsEngine : IDisposable
 
     /// <summary>
     /// Processes an active sample (plugin-specific callback execution).
+    /// Uses per-thread CPU% when available (Phase 6 — ThreadCpuSampler),
+    /// otherwise falls back to last known process-wide CPU%.
     /// </summary>
     private void ProcessActiveSample(MetricsSample sample)
     {
@@ -215,14 +237,16 @@ public sealed class PluginMetricsEngine : IDisposable
         var plugin = plugins.FirstOrDefault(p => p.Manifest.Id == sample.PluginId);
         if (plugin == null) return;
 
-        // For active samples, we already have execution time from the callback
-        // Record it with current process metrics
         var memBytes = GC.GetTotalMemory(forceFullCollection: false);
-        var cpuPct = _lastSampledCpuPercent; // Use last known CPU%
+
+        // Phase 6: prefer precise per-thread CPU% over the process-wide estimate
+        var cpuPct = sample.HasThreadCpu ? sample.ThreadCpuPct : _lastSampledCpuPercent;
 
         plugin.Diagnostics.Record(cpuPct, memBytes, sample.ExecutionTime);
 
-        _log($"[MetricsEngine] Active sample: {sample.PluginId}, ExecTime={sample.ExecutionTime.TotalMilliseconds:F2}ms");
+        _log($"[MetricsEngine] Active sample: {sample.PluginId}, " +
+             $"ExecTime={sample.ExecutionTime.TotalMilliseconds:F2}ms, " +
+             $"CPU={cpuPct:F2}% ({(sample.HasThreadCpu ? "thread" : "process-est")})");
     }
 
     /// <summary>
@@ -309,6 +333,10 @@ internal sealed class MetricsSample
     public string? PluginId { get; init; }
     public TimeSpan ExecutionTime { get; init; }
     public bool IsActiveSample { get; init; }
+
+    // Phase 6: per-thread CPU data (set when HasThreadCpu = true)
+    public double ThreadCpuPct { get; init; }
+    public bool HasThreadCpu { get; init; }
 }
 
 /// <summary>

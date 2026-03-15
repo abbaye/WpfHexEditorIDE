@@ -13,9 +13,11 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
 using WpfHexEditor.PluginHost.Monitoring;
+using WpfHexEditor.PluginHost.Sandbox;
 using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.SDK.Sandbox;
 
 namespace WpfHexEditor.PluginHost;
 
@@ -134,29 +136,30 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
     /// <summary>
     /// Discovers all plugins under <see cref="UserPluginsDir"/> and any provided extra directories.
-    /// Returns a list of validated manifests ready for loading.
+    /// Manifest parsing runs in parallel (Phase 6c) for fast startup with many plugins.
+    /// Returns validated manifests sorted by dependency order.
     /// </summary>
     public async Task<IReadOnlyList<PluginManifest>> DiscoverPluginsAsync(
         IEnumerable<string>? extraDirectories = null,
         CancellationToken ct = default)
     {
-        var result = new List<PluginManifest>();
         var searchDirs = new List<string> { UserPluginsDir };
         if (extraDirectories is not null) searchDirs.AddRange(extraDirectories);
 
+        // Collect all candidate plugin directories first
+        var pluginDirs = new List<string>();
         foreach (var dir in searchDirs)
         {
             _log($"[PluginSystem] Scanning: {dir} (exists: {Directory.Exists(dir)})");
-            if (!Directory.Exists(dir)) continue;
-
-            foreach (var pluginDir in Directory.GetDirectories(dir))
-            {
-                ct.ThrowIfCancellationRequested();
-                var manifest = await TryLoadManifestAsync(pluginDir).ConfigureAwait(false);
-                if (manifest is not null) result.Add(manifest);
-            }
+            if (Directory.Exists(dir))
+                pluginDirs.AddRange(Directory.GetDirectories(dir));
         }
 
+        // Phase 6c: Parse all manifests in parallel
+        var tasks = pluginDirs.Select(d => TryLoadManifestAsync(d)).ToArray();
+        var manifests = await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        var result = manifests.Where(m => m is not null).Cast<PluginManifest>().ToList();
         _log($"[PluginSystem] Discovered {result.Count} plugin(s).");
         return result;
     }
@@ -164,8 +167,10 @@ public sealed class WpfPluginHost : IAsyncDisposable
     // --- Load --------------------------------------------------------------------
 
     /// <summary>
-    /// Loads a plugin from a discovered manifest. Handles ALC creation, entry point
-    /// reflection, InitializeAsync (watchdog-bounded), permission initialization.
+    /// Loads a plugin from a discovered manifest.
+    /// Supports both InProcess (AssemblyLoadContext) and Sandbox (out-of-process) isolation modes.
+    /// Assembly loading and InitializeAsync run off the UI thread; only WPF control registration
+    /// is dispatched back to the STA Dispatcher.
     /// </summary>
     public async Task<PluginEntry> LoadPluginAsync(PluginManifest manifest, CancellationToken ct = default)
     {
@@ -184,79 +189,118 @@ public sealed class WpfPluginHost : IAsyncDisposable
 
         try
         {
+            IWpfHexEditorPlugin instance;
+            PluginLoadContext? loadContext = null;
+
             if (manifest.IsolationMode == PluginIsolationMode.Sandbox)
-                throw new NotSupportedException("Sandbox isolation is Phase 5 - use InProcess for now.");
+            {
+                // ── Phase 5: Out-of-process sandbox ─────────────────────────────
+                var proxy = new SandboxPluginProxy(manifest, _log);
+                proxy.SetMetricsEngine(_metricsEngine);
 
-            // Resolve assembly path
-            var pluginDir = ResolvePluginDirectory(manifest);
-            var assemblyPath = Path.Combine(pluginDir, manifest.Assembly?.File ?? $"{manifest.Id}.dll");
+                // Forward sandbox crash events to the IDE crash handler
+                proxy.CrashReceived += (_, crash) =>
+                {
+                    var ex = new Exception($"[Sandbox crash] {crash.ExceptionType}: {crash.Message}");
+                    entry.SetState(PluginState.Faulted);
+                    entry.SetFaultException(ex);
+                    RaiseOnDispatcher(() => PluginCrashed?.Invoke(this,
+                        new PluginFaultedEventArgs
+                        {
+                            PluginId   = manifest.Id,
+                            PluginName = manifest.Name,
+                            Exception  = ex,
+                            Phase      = crash.Phase,
+                        }));
+                };
 
-            if (!File.Exists(assemblyPath))
-                throw new FileNotFoundException($"Plugin assembly not found: {assemblyPath}");
+                instance = proxy;
+                // Sandbox plugins declare permissions via manifest — no ALC needed
+                _permissionService.InitializeForPlugin(
+                    manifest.Id, manifest.Permissions?.ToPermissionFlags() ?? SDK.Models.PluginPermission.None);
+            }
+            else
+            {
+                // ── InProcess: AssemblyLoadContext per plugin ────────────────────
+                // Phase 6b: Assembly loading runs off the UI thread (no Dispatcher.InvokeAsync here)
+                var pluginDir    = ResolvePluginDirectory(manifest);
+                var assemblyPath = Path.Combine(pluginDir, manifest.Assembly?.File ?? $"{manifest.Id}.dll");
 
-            // Create collectible ALC.
-            // Pass assemblyPath (not pluginDir) so AssemblyDependencyResolver can locate
-            // the {plugin}.deps.json file and correctly resolve inter-plugin dependencies
-            // (e.g. WpfHexEditor.Core.AssemblyAnalysis) from the plugin directory.
-            var loadContext = new PluginLoadContext(assemblyPath);
-            var assembly = loadContext.LoadFromAssemblyPath(assemblyPath);
+                if (!File.Exists(assemblyPath))
+                    throw new FileNotFoundException($"Plugin assembly not found: {assemblyPath}");
 
-            // Resolve entry point type
-            var entryType = assembly.GetType(manifest.EntryPoint)
-                ?? throw new TypeLoadException($"Entry point type '{manifest.EntryPoint}' not found in '{assemblyPath}'.");
+                // Create collectible ALC off the UI thread — no WPF objects created yet
+                loadContext = new PluginLoadContext(assemblyPath);
+                var assembly = await Task.Run(() =>
+                    loadContext.LoadFromAssemblyPath(assemblyPath), ct).ConfigureAwait(false);
 
-            var instance = (IWpfHexEditorPlugin)(Activator.CreateInstance(entryType)
-                ?? throw new InvalidOperationException($"Could not create instance of '{manifest.EntryPoint}'."));
+                var entryType = assembly.GetType(manifest.EntryPoint)
+                    ?? throw new TypeLoadException(
+                        $"Entry point type '{manifest.EntryPoint}' not found in '{assemblyPath}'.");
+
+                instance = (IWpfHexEditorPlugin)(Activator.CreateInstance(entryType)
+                    ?? throw new InvalidOperationException(
+                        $"Could not create instance of '{manifest.EntryPoint}'."));
+
+                var declaredPerms = instance.Capabilities.ToPermissionFlags();
+                _permissionService.InitializeForPlugin(manifest.Id, declaredPerms);
+            }
 
             entry.SetInstance(instance, loadContext);
 
-            // Initialize permissions from declared capabilities
-            var declaredPerms = instance.Capabilities.ToPermissionFlags();
-            _permissionService.InitializeForPlugin(manifest.Id, declaredPerms);
-
-            // Build a per-plugin context: substitutes IHexEditorService with a
-            // TimedHexEditorService proxy so that every event handler invocation is
-            // timed and recorded in the plugin's diagnostics ring buffer.
-            // This gives PluginMonitoringViewModel a non-zero avgMs for active plugins,
-            // enabling proportional CPU/RAM distribution in the Plugin Monitor.
+            // Build per-plugin scoped context (timed hex service wraps callbacks for metrics)
             var timedHex     = new TimedHexEditorService(_hostContext.HexEditor, entry.Diagnostics, _metricsEngine);
-            timedHex.SetPluginId(manifest.Id); // PHASE 4: Enable activity tracking
+            timedHex.SetPluginId(manifest.Id);
             var pluginContext = new PluginScopedContext(_hostContext, timedHex);
 
-            // PHASE 3: Capture baseline memory BEFORE InitializeAsync
+            // Phase 3: Capture baseline memory BEFORE InitializeAsync
             entry.BaselineMemoryBytes = GC.GetTotalMemory(forceFullCollection: false);
             entry.Diagnostics.BaselineMemoryBytes = entry.BaselineMemoryBytes;
 
-            // Run InitializeAsync on the STA dispatcher thread: plugins create WPF controls
-            // (UserControl, Window, etc.) which require an STA thread.
-            var cpuBefore = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
-            var initTask  = await _dispatcher.InvokeAsync(() => instance.InitializeAsync(pluginContext, ct));
-            var elapsed   = await _watchdog.WrapAsync(manifest.Id, "InitializeAsync",
-                initTask,
-                _watchdog.InitTimeout).ConfigureAwait(false);
+            var cpuBefore = Process.GetCurrentProcess().TotalProcessorTime;
+            var sw = Stopwatch.StartNew();
 
-            var cpuAfter  = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
-            var cpuDelta  = cpuAfter - cpuBefore;
+            // Phase 6b: For InProcess plugins, InitializeAsync MUST run on the STA Dispatcher
+            // because plugins create WPF controls. For Sandbox plugins it runs on the thread pool
+            // (only IPC messages go over the pipe — no WPF created in-process).
+            Task initTask;
+            if (manifest.IsolationMode == PluginIsolationMode.Sandbox)
+            {
+                initTask = instance.InitializeAsync(pluginContext, ct);
+            }
+            else
+            {
+                initTask = await _dispatcher.InvokeAsync(
+                    () => instance.InitializeAsync(pluginContext, ct));
+            }
 
-            // PHASE 3: Capture post-init memory AFTER InitializeAsync
+            var elapsed = await _watchdog.WrapAsync(
+                manifest.Id, "InitializeAsync", initTask, _watchdog.InitTimeout)
+                .ConfigureAwait(false);
+
+            sw.Stop();
+            var cpuAfter = Process.GetCurrentProcess().TotalProcessorTime;
+            var cpuDelta = cpuAfter - cpuBefore;
+
+            // Phase 3: Capture post-init memory AFTER InitializeAsync
             entry.PostInitMemoryBytes = GC.GetTotalMemory(forceFullCollection: false);
             entry.Diagnostics.PostInitMemoryBytes = entry.PostInitMemoryBytes;
 
-            // Clamp: cpuDelta is process-wide (all cores, all threads). During batch startup
-            // multiple plugins init in parallel, so cpuDelta >> per-plugin share ? clamp to 100.
-            var cpuPct    = elapsed.TotalMilliseconds > 0
-                ? Math.Clamp(cpuDelta.TotalMilliseconds / (elapsed.TotalMilliseconds * Environment.ProcessorCount) * 100.0, 0.0, 100.0)
+            var cpuPct = elapsed.TotalMilliseconds > 0
+                ? Math.Clamp(
+                    cpuDelta.TotalMilliseconds / (elapsed.TotalMilliseconds * Environment.ProcessorCount) * 100.0,
+                    0.0, 100.0)
                 : 0.0;
-            var memBytes  = entry.PostInitMemoryBytes;
-            entry.Diagnostics.Record(cpuPct, memBytes, elapsed);
+
+            entry.Diagnostics.Record(cpuPct, entry.PostInitMemoryBytes, elapsed);
             entry.SetInitDuration(elapsed);
             entry.SetState(PluginState.Loaded);
 
-            // Auto-register options page if the plugin supports it.
+            // Auto-register options page (InProcess plugins only — sandbox UI is remote)
             if (instance is IPluginWithOptions optionsPlugin)
                 OptionsRegistry.RegisterPluginPage(manifest.Id, manifest.Name, optionsPlugin);
-            entry.SetLoadedAt(DateTime.UtcNow);
 
+            entry.SetLoadedAt(DateTime.UtcNow);
             RaiseOnDispatcher(() => PluginLoaded?.Invoke(this, new PluginEventArgs(manifest.Id, manifest.Name)));
             return entry;
         }
@@ -265,7 +309,13 @@ public sealed class WpfPluginHost : IAsyncDisposable
             entry.SetState(PluginState.Faulted);
             entry.SetFaultException(ex);
             RaiseOnDispatcher(() => PluginCrashed?.Invoke(this,
-                new PluginFaultedEventArgs { PluginId = manifest.Id, PluginName = manifest.Name, Exception = ex, Phase = "Load" }));
+                new PluginFaultedEventArgs
+                {
+                    PluginId   = manifest.Id,
+                    PluginName = manifest.Name,
+                    Exception  = ex,
+                    Phase      = "Load",
+                }));
             throw;
         }
     }
@@ -299,29 +349,60 @@ public sealed class WpfPluginHost : IAsyncDisposable
     }
 
     /// <summary>
-    /// Sorts manifests so that dependencies are loaded before dependents.
+    /// Sorts manifests so that dependencies are loaded before dependents using Kahn's algorithm.
+    /// Phase 6c: Detects dependency cycles and logs them instead of silently infinite-looping.
     /// Within the same dependency level, lower LoadPriority values load first.
-    /// Cycles and unknown dependencies are silently skipped.
     /// </summary>
-    private static IEnumerable<PluginManifest> TopologicalSort(IReadOnlyList<PluginManifest> manifests)
+    private IEnumerable<PluginManifest> TopologicalSort(IReadOnlyList<PluginManifest> manifests)
     {
-        var byId   = manifests.ToDictionary(m => m.Id);
-        var result = new List<PluginManifest>(manifests.Count);
-        var visited = new HashSet<string>();
+        var byId = manifests.ToDictionary(m => m.Id, StringComparer.OrdinalIgnoreCase);
 
-        void Visit(PluginManifest m)
+        // Build in-degree map and adjacency list (dep → dependents)
+        var inDegree   = manifests.ToDictionary(m => m.Id, _ => 0, StringComparer.OrdinalIgnoreCase);
+        var dependents = manifests.ToDictionary(m => m.Id,
+            _ => new List<string>(), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var m in manifests)
         {
-            if (!visited.Add(m.Id)) return;
             foreach (var depId in m.Dependencies)
             {
-                if (byId.TryGetValue(depId, out var dep))
-                    Visit(dep);
+                if (!byId.ContainsKey(depId)) continue; // unknown dep — skip
+                inDegree[m.Id]++;
+                dependents[depId].Add(m.Id);
             }
-            result.Add(m);
         }
 
-        foreach (var m in manifests.OrderBy(x => x.LoadPriority))
-            Visit(m);
+        // Kahn's BFS: start with nodes that have no dependencies
+        // Use a priority queue keyed by LoadPriority so lower-priority values load first
+        var queue = new SortedSet<(int Priority, string Id)>(
+            manifests
+                .Where(m => inDegree[m.Id] == 0)
+                .Select(m => (m.LoadPriority, m.Id)));
+
+        var result = new List<PluginManifest>(manifests.Count);
+
+        while (queue.Count > 0)
+        {
+            var (_, id) = queue.Min;
+            queue.Remove(queue.Min);
+
+            result.Add(byId[id]);
+
+            foreach (var dependentId in dependents[id])
+            {
+                inDegree[dependentId]--;
+                if (inDegree[dependentId] == 0)
+                    queue.Add((byId[dependentId].LoadPriority, dependentId));
+            }
+        }
+
+        // Phase 6c: Cycle detection — any remaining non-zero in-degree = cycle
+        var cycleIds = inDegree.Where(kv => kv.Value > 0).Select(kv => kv.Key).ToList();
+        if (cycleIds.Count > 0)
+        {
+            _logError($"[PluginSystem] Circular dependency detected. Affected plugins will be skipped: " +
+                      string.Join(", ", cycleIds));
+        }
 
         return result;
     }
