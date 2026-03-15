@@ -42,6 +42,13 @@ public sealed class WpfPluginHost : IAsyncDisposable
     private readonly Dictionary<string, PluginEntry> _entries = new(StringComparer.OrdinalIgnoreCase);
     private readonly object _lock = new();
 
+    // --- Isolation mode overrides (user preference, persisted) ------------------
+    private readonly Dictionary<string, PluginIsolationMode> _isolationOverrides =
+        new(StringComparer.OrdinalIgnoreCase);
+    private static readonly string OverridesFilePath =
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                     "WpfHexEditor", "plugin-isolation-overrides.json");
+
     // PHASE 1-4: New MetricsEngine for advanced monitoring
     private readonly PluginMetricsEngine _metricsEngine;
 
@@ -130,6 +137,8 @@ public sealed class WpfPluginHost : IAsyncDisposable
         // The old approach caused race conditions and inaccurate startup metrics
 
         _samplingTimer.Start();
+
+        LoadIsolationOverrides();
     }
 
     // --- Discovery --------------------------------------------------------------
@@ -176,6 +185,9 @@ public sealed class WpfPluginHost : IAsyncDisposable
     {
         ArgumentNullException.ThrowIfNull(manifest);
 
+        // Use user override if present, else fall back to manifest declaration.
+        var effectiveMode = GetEffectiveIsolationMode(manifest);
+
         PluginEntry entry;
         lock (_lock)
         {
@@ -192,7 +204,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
             IWpfHexEditorPlugin instance;
             PluginLoadContext? loadContext = null;
 
-            if (manifest.IsolationMode == PluginIsolationMode.Sandbox)
+            if (effectiveMode == PluginIsolationMode.Sandbox)
             {
                 // ── Phase 5: Out-of-process sandbox ─────────────────────────────
                 var proxy = new SandboxPluginProxy(manifest, _log);
@@ -264,7 +276,7 @@ public sealed class WpfPluginHost : IAsyncDisposable
             // because plugins create WPF controls. For Sandbox plugins it runs on the thread pool
             // (only IPC messages go over the pipe — no WPF created in-process).
             Task initTask;
-            if (manifest.IsolationMode == PluginIsolationMode.Sandbox)
+            if (effectiveMode == PluginIsolationMode.Sandbox)
             {
                 initTask = instance.InitializeAsync(pluginContext, ct);
             }
@@ -437,6 +449,66 @@ public sealed class WpfPluginHost : IAsyncDisposable
             entry.SetState(PluginState.Unloaded);
             RaiseOnDispatcher(() => PluginUnloaded?.Invoke(this, new PluginEventArgs(pluginId, entry.Manifest.Name)));
         }
+    }
+
+    // --- Isolation Mode Override -------------------------------------------------
+
+    /// <summary>
+    /// Returns the effective isolation mode for a plugin:
+    /// user override if set, otherwise the manifest declaration.
+    /// </summary>
+    public PluginIsolationMode GetEffectiveIsolationMode(PluginManifest manifest)
+        => _isolationOverrides.TryGetValue(manifest.Id, out var mode) ? mode : manifest.IsolationMode;
+
+    /// <summary>
+    /// Changes the isolation mode for a plugin at runtime and hot-reloads it immediately.
+    /// The override is persisted to AppData and survives IDE restarts.
+    /// </summary>
+    public async Task SetIsolationOverrideAsync(
+        string pluginId, PluginIsolationMode mode, CancellationToken ct = default)
+    {
+        PluginEntry? entry;
+        lock (_lock) _entries.TryGetValue(pluginId, out entry);
+        if (entry is null) return;
+
+        _isolationOverrides[pluginId] = mode;
+        SaveIsolationOverrides();
+
+        var manifest = entry.Manifest;
+        _log($"[PluginSystem] '{pluginId}' isolation → {mode}. Hot-reloading…");
+
+        await UnloadPluginAsync(pluginId, ct).ConfigureAwait(false);
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        await Task.Delay(200, ct).ConfigureAwait(false);
+        await LoadPluginAsync(manifest, ct).ConfigureAwait(false);
+    }
+
+    private void LoadIsolationOverrides()
+    {
+        try
+        {
+            if (!File.Exists(OverridesFilePath)) return;
+            var json = File.ReadAllText(OverridesFilePath);
+            var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+            if (dict is null) return;
+            foreach (var (k, v) in dict)
+                if (Enum.TryParse<PluginIsolationMode>(v, out var parsed))
+                    _isolationOverrides[k] = parsed;
+        }
+        catch { /* best-effort: corrupt/missing file is not fatal */ }
+    }
+
+    private void SaveIsolationOverrides()
+    {
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(OverridesFilePath)!);
+            var dict = _isolationOverrides.ToDictionary(kv => kv.Key, kv => kv.Value.ToString());
+            File.WriteAllText(OverridesFilePath,
+                JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true }));
+        }
+        catch { /* best-effort */ }
     }
 
     // --- Reload ------------------------------------------------------------------

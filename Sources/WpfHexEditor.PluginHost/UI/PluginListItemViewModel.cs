@@ -26,10 +26,14 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     private readonly Action<string> _onReload;
     private readonly Action<string> _onUninstall;
     private readonly PermissionService? _permissionService;
+    private readonly Func<string, PluginIsolationMode, Task>? _onIsolationModeChanged;
 
     // Delegate to get memory thresholds from settings (injected to avoid circular dependency)
-    private readonly Func<(int warning, int high, int critical, bool enabled, 
+    private readonly Func<(int warning, int high, int critical, bool enabled,
                            string normalColor, string warningColor, string highColor, string criticalColor)>? _getMemoryThresholds;
+
+    private PluginIsolationMode _selectedIsolationMode;
+    private bool _isReloading;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -40,8 +44,10 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         Action<string> onReload,
         Action<string> onUninstall,
         PermissionService? permissionService = null,
-        Func<(int warning, int high, int critical, bool enabled, 
-              string normalColor, string warningColor, string highColor, string criticalColor)>? getMemoryThresholds = null)
+        Func<(int warning, int high, int critical, bool enabled,
+              string normalColor, string warningColor, string highColor, string criticalColor)>? getMemoryThresholds = null,
+        PluginIsolationMode? initialIsolationMode = null,
+        Func<string, PluginIsolationMode, Task>? onIsolationModeChanged = null)
     {
         _entry = entry ?? throw new ArgumentNullException(nameof(entry));
         _onEnable = onEnable;
@@ -50,6 +56,8 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
         _onUninstall = onUninstall;
         _permissionService = permissionService;
         _getMemoryThresholds = getMemoryThresholds;
+        _onIsolationModeChanged = onIsolationModeChanged;
+        _selectedIsolationMode = initialIsolationMode ?? entry.Manifest.IsolationMode;
 
         EnableCommand = new RelayCommand(_ => _onEnable(Id), _ => State == PluginState.Disabled);
         DisableCommand = new RelayCommand(_ => _onDisable(Id), _ => State == PluginState.Loaded);
@@ -71,7 +79,37 @@ public sealed class PluginListItemViewModel : INotifyPropertyChanged
     public string Publisher => _entry.Manifest.Publisher;
     public bool IsTrustedPublisher => _entry.Manifest.TrustedPublisher;
     public string Description => _entry.Manifest.Description;
-    public string IsolationMode => _entry.Manifest.IsolationMode.ToString();
+    // IsolationMode — bindable ComboBox selection; changing triggers a hot-swap reload.
+    public static IReadOnlyList<string> IsolationModes { get; } = ["InProcess", "Sandbox"];
+
+    public string SelectedIsolationMode
+    {
+        get => _selectedIsolationMode.ToString();
+        set
+        {
+            if (!Enum.TryParse<PluginIsolationMode>(value, out var mode) || mode == _selectedIsolationMode)
+                return;
+            _selectedIsolationMode = mode;
+            OnPropertyChanged();
+            if (_onIsolationModeChanged is not null)
+                _ = ApplyIsolationModeAsync(mode);
+        }
+    }
+
+    public bool IsReloading
+    {
+        get => _isReloading;
+        private set { _isReloading = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanChangeIsolationMode)); }
+    }
+
+    public bool CanChangeIsolationMode => !_isReloading;
+
+    private async Task ApplyIsolationModeAsync(PluginIsolationMode mode)
+    {
+        IsReloading = true;
+        try { await _onIsolationModeChanged!(Id, mode).ConfigureAwait(false); }
+        finally { IsReloading = false; }
+    }
 
     public PluginState State => _entry.State;
 

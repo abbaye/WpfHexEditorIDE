@@ -8,7 +8,7 @@
     <PluginName>         - Display name
     <PluginVersion>      - SemVer (e.g. "1.0.0")
     <PluginEntryPoint>   - Fully qualified class implementing IWpfHexEditorPlugin
-    <PluginIsolationMode>- InProcess | Sandbox (default: InProcess)
+    <PluginIsolationMode>- InProcess | Sandbox (default: Sandbox)
     <PluginSdkVersion>   - SDK version required (default: "1.0.0")
     <PluginMinIDEVersion>- Minimum IDE version (default: "0.1.0")
 
@@ -29,7 +29,7 @@
 
   <PropertyGroup>
     <!-- Defaults for optional properties -->
-    <PluginIsolationMode Condition="'$(PluginIsolationMode)' == ''">InProcess</PluginIsolationMode>
+    <PluginIsolationMode Condition="'$(PluginIsolationMode)' == ''">Sandbox</PluginIsolationMode>
     <PluginSdkVersion Condition="'$(PluginSdkVersion)' == ''">1.0.0</PluginSdkVersion>
     <PluginMinIDEVersion Condition="'$(PluginMinIDEVersion)' == ''">0.1.0</PluginMinIDEVersion>
     <PluginLoadPriority Condition="'$(PluginLoadPriority)' == ''">100</PluginLoadPriority>

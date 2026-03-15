@@ -423,13 +423,29 @@
                                     <TextBlock Text="OFFICIAL" FontSize="8" FontWeight="Bold" Foreground="White"/>
                                 </Border>
                             </StackPanel>
-                            <TextBlock FontSize="11" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Opacity="0.8">
-                                <Run Text="{Binding Publisher, Mode=OneWay}"/>
-                                <Run Text=" · "/>
-                                <Run Text="{Binding VersionLabel, Mode=OneWay}"/>
-                                <Run Text=" · "/>
-                                <Run Text="{Binding IsolationMode, Mode=OneWay}"/>
-                            </TextBlock>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock FontSize="11" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                           Opacity="0.8" VerticalAlignment="Center">
+                                    <Run Text="{Binding Publisher, Mode=OneWay}"/>
+                                    <Run Text=" · "/>
+                                    <Run Text="{Binding VersionLabel, Mode=OneWay}"/>
+                                    <Run Text=" · "/>
+                                </TextBlock>
+                                <ComboBox ItemsSource="{Binding IsolationModes}"
+                                          SelectedItem="{Binding SelectedIsolationMode}"
+                                          IsEnabled="{Binding CanChangeIsolationMode}"
+                                          FontSize="11"
+                                          Background="{DynamicResource Panel_ToolbarBrush}"
+                                          Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                          BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                                          VerticalAlignment="Center"
+                                          Padding="4,1" MinWidth="80"/>
+                                <TextBlock Text="⟳" FontSize="12" Margin="4,0,0,0"
+                                           Foreground="{DynamicResource DockAccentBrush}"
+                                           Visibility="{Binding IsReloading, Converter={StaticResource BoolToVis}}"
+                                           VerticalAlignment="Center"
+                                           ToolTip="Reloading plugin with new isolation mode…"/>
+                            </StackPanel>
                         </StackPanel>
 
                         <!-- State pill + action buttons -->

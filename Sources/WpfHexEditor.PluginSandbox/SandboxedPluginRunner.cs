@@ -1,3 +1,9 @@
+//////////////////////////////////////////////
+// GNU Affero General Public License v3.0 - 2026
+// Author : Derek Tremblay (derektremblay666@gmail.com)
+// Contributors: Claude Sonnet 4.6
+//////////////////////////////////////////////
+
 // ==========================================================
 // Project: WpfHexEditor.PluginSandbox
 // File: SandboxedPluginRunner.cs

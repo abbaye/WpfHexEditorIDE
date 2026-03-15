@@ -213,7 +213,9 @@ public sealed class PluginManagerViewModel : INotifyPropertyChanged, IDisposable
                 onReload: ReloadPlugin,
                 onUninstall: UninstallPlugin,
                 permissionService: _host.Permissions,
-                getMemoryThresholds: _getMemoryThresholds));
+                getMemoryThresholds: _getMemoryThresholds,
+                initialIsolationMode: _host.GetEffectiveIsolationMode(entry.Manifest),
+                onIsolationModeChanged: (id, mode) => _host.SetIsolationOverrideAsync(id, mode)));
         }
 
         ApplyFilterAndSort();
