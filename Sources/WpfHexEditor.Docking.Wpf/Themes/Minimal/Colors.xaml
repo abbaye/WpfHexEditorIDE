@@ -266,6 +266,8 @@
     <!-- Common Panel Resources (PanelCommon.xaml keys — shared across all IDE panels) -->
     <SolidColorBrush x:Key="Panel_ToolbarBrush"             Color="#FFFFFF"/>
     <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#E0E0E0"/>
+    <!-- Group header in Plugin Monitor DataGrid (InProcess / Sandbox category rows) -->
+    <SolidColorBrush x:Key="DockGroupHeaderBrush"           Color="#F0F0F4"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#F0F0F0"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonActiveBrush" Color="#E0E0E0"/>
     <SolidColorBrush x:Key="Panel_ToolbarForegroundBrush"   Color="#333333"/>
@@ -289,6 +291,25 @@
     <SolidColorBrush x:Key="TE_Operator"               Color="#333333"/>
     <SolidColorBrush x:Key="TE_Type"                   Color="#336699"/>
     <SolidColorBrush x:Key="TE_Directive"              Color="#990099"/>
+
+    <!-- CE_* — Code Editor syntax token colors (Minimal monochrome palette) -->
+    <SolidColorBrush x:Key="CE_Keyword"       Color="#0033CC"/>
+    <SolidColorBrush x:Key="CE_Comment"       Color="#669966"/>
+    <SolidColorBrush x:Key="CE_String"        Color="#CC3300"/>
+    <SolidColorBrush x:Key="CE_Number"        Color="#336699"/>
+    <SolidColorBrush x:Key="CE_Type"          Color="#336699"/>
+    <SolidColorBrush x:Key="CE_Identifier"    Color="#996633"/>
+    <SolidColorBrush x:Key="CE_Operator"      Color="#333333"/>
+    <SolidColorBrush x:Key="CE_Bracket"       Color="#333333"/>
+    <SolidColorBrush x:Key="CE_Brace"         Color="#333333"/>
+    <SolidColorBrush x:Key="CE_Attribute"     Color="#003399"/>
+    <SolidColorBrush x:Key="CE_Error"         Color="#CC0000"/>
+    <SolidColorBrush x:Key="CE_Background"    Color="#FEFEFE"/>
+    <SolidColorBrush x:Key="CE_Foreground"    Color="#333333"/>
+    <SolidColorBrush x:Key="CE_LineNumBg"     Color="#F8F8F8"/>
+    <SolidColorBrush x:Key="CE_LineNumFg"     Color="#AAAAAA"/>
+    <SolidColorBrush x:Key="CE_CurrentLine"   Color="#F5F5F5"/>
+    <SolidColorBrush x:Key="CE_Selection"     Color="#E0E0E0"/>
 
     <!-- Generic Dialog Resources (AdvancedSearch, ProjectDialogs, etc.) -->
     <Color x:Key="AccentColor">#333333</Color>

@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WpfHexEditor.Editor.CodeEditor.Options"
              mc:Ignorable="d"
-             d:DesignHeight="480" d:DesignWidth="500"
+             d:DesignHeight="600" d:DesignWidth="500"
              Background="{DynamicResource DockMenuBackgroundBrush}"
              Foreground="{DynamicResource DockMenuForegroundBrush}">
 
@@ -125,6 +126,82 @@
                       IsChecked="{Binding EnableMultiCaret}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+            <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
+
+            <!-- ── Syntax Colors ─────────────────────────────────────── -->
+            <Grid Margin="0,0,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="Syntax Colors"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" />
+                <Button   Grid.Column="1"
+                          x:Name="BtnResetColors"
+                          Content="Reset to theme"
+                          Padding="8,2"
+                          Background="{DynamicResource DockMenuBackgroundBrush}"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}"
+                          BorderBrush="{DynamicResource DockBorderBrush}"
+                          Click="OnResetColorsClick" />
+            </Grid>
+
+            <!-- Token color rows — populated from code-behind via SyntaxColorRows ItemsSource -->
+            <ItemsControl x:Name="SyntaxColorRowsList"
+                          Background="Transparent">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Each item: SyntaxColorRow (label, swatch, pick button, popup) -->
+                        <Grid Margin="0,3,0,3" Height="26">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="130" />
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="52" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Token kind label -->
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding Label}"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+                            <!-- Color swatch (filled with current color) -->
+                            <Border Grid.Column="1"
+                                    Width="20" Height="16"
+                                    CornerRadius="2"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    BorderThickness="1"
+                                    VerticalAlignment="Center"
+                                    Background="{Binding SwatchBrush}" />
+
+                            <!-- Hex value text -->
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding HexText}"
+                                       VerticalAlignment="Center"
+                                       Margin="6,0,0,0"
+                                       FontFamily="Consolas"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
+
+                            <!-- Pick button — opens the ColorPicker popup -->
+                            <Button Grid.Column="3"
+                                    Content="Pick"
+                                    Padding="4,2"
+                                    VerticalAlignment="Center"
+                                    Background="{DynamicResource DockMenuBackgroundBrush}"
+                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    Tag="{Binding}"
+                                    Click="OnPickColorClick" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
         </StackPanel>
     </ScrollViewer>

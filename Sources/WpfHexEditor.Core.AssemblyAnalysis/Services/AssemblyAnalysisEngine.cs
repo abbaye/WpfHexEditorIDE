@@ -232,15 +232,16 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
         {
             ct.ThrowIfCancellationRequested();
 
-            var mDef    = mdReader.GetMethodDefinition(handle);
-            var mName   = mdReader.GetString(mDef.Name);
-            var pub     = (mDef.Attributes & MethodAttributes.Public) != 0;
-            var stat    = (mDef.Attributes & MethodAttributes.Static) != 0;
-            var abstr   = (mDef.Attributes & MethodAttributes.Abstract) != 0;
-            var virt    = (mDef.Attributes & MethodAttributes.Virtual) != 0;
-            var offset  = _offsetResolver.Resolve(handle, peReader, mdReader);
-            var sig     = TryDecodeMethodSignature(mDef, mdReader);
-            var attrs   = ReadCustomAttributeNames(mDef.GetCustomAttributes(), mdReader);
+            var mDef      = mdReader.GetMethodDefinition(handle);
+            var mName     = mdReader.GetString(mDef.Name);
+            var pub       = (mDef.Attributes & MethodAttributes.Public) != 0;
+            var stat      = (mDef.Attributes & MethodAttributes.Static) != 0;
+            var abstr     = (mDef.Attributes & MethodAttributes.Abstract) != 0;
+            var virt      = (mDef.Attributes & MethodAttributes.Virtual) != 0;
+            var offset    = _offsetResolver.Resolve(handle, peReader, mdReader);
+            var byteLen   = ResolveMethodByteLength(mDef, peReader);
+            var sig       = TryDecodeMethodSignature(mDef, mdReader);
+            var attrs     = ReadCustomAttributeNames(mDef.GetCustomAttributes(), mdReader);
 
             methods.Add(new MemberModel
             {
@@ -252,6 +253,7 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
                 IsVirtual        = virt && !abstr,
                 MetadataToken    = MetadataTokens.GetToken(handle),
                 PeOffset         = offset,
+                ByteLength       = byteLen,
                 Signature        = sig,
                 CustomAttributes = attrs
             });
@@ -508,6 +510,41 @@ public sealed class AssemblyAnalysisEngine : IAssemblyAnalysisEngine
         }
         catch { /* Non-fatal */ }
         return names;
+    }
+
+    // ── Method body byte length ───────────────────────────────────────────────
+
+    /// <summary>
+    /// Returns the raw byte length of the method body (header + code + exception clauses),
+    /// or 0 for abstract/extern/interface methods with no RVA.
+    /// Uses PEReader.GetMethodBody which already handles fat vs tiny header parsing.
+    /// </summary>
+    private static int ResolveMethodByteLength(MethodDefinition mDef, PEReader peReader)
+    {
+        var rva = mDef.RelativeVirtualAddress;
+        if (rva == 0) return 0;
+        try
+        {
+            var body = peReader.GetMethodBody(rva);
+            // Tiny header: 1 byte header + code. Fat header: 12 bytes header + code + padding + clauses.
+            // body.Size gives us code size; we add the header size heuristically.
+            // A more precise approach: read the header byte at the RVA to detect fat vs tiny.
+            var firstByte = peReader.PEHeaders.SectionHeaders
+                .Select(s => new { s.PointerToRawData, s.VirtualAddress, s.SizeOfRawData })
+                .FirstOrDefault(s => rva >= s.VirtualAddress && rva < s.VirtualAddress + s.SizeOfRawData);
+            if (firstByte is null) return body.Size;
+
+            var fileOffset = rva - firstByte.VirtualAddress + firstByte.PointerToRawData;
+            var header     = peReader.GetEntireImage();
+            if (fileOffset < 0 || fileOffset >= header.Length) return body.Size;
+
+            var b = header.GetContent(fileOffset, 1)[0];
+            // Tiny format: bits [1:0] = 0b10, max 63 bytes code, no locals/exception clauses
+            var isTiny     = (b & 0x03) == 0x02;
+            var headerSize = isTiny ? 1 : 12;
+            return headerSize + body.Size;
+        }
+        catch { return 0; }
     }
 
     // ── Signature decode wrappers (non-throwing) ──────────────────────────────

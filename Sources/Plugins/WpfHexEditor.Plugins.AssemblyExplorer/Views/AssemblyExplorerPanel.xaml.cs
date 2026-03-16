@@ -27,6 +27,7 @@ using WpfHexEditor.Plugins.AssemblyExplorer.Options;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
 using WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.UI;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Views;
@@ -41,18 +42,21 @@ public partial class AssemblyExplorerPanel : UserControl
     // ── Constructor ───────────────────────────────────────────────────────────
 
     public AssemblyExplorerPanel(
-        IAssemblyAnalysisEngine                  analysisEngine,
-        DecompilerService                        decompiler,
-        SDK.Contracts.Services.IHexEditorService hexEditor,
-        SDK.Contracts.Services.IOutputService    output,
-        IPluginEventBus                          eventBus,
-        IUIRegistry                              uiRegistry,
-        string                                   pluginId)
+        IAssemblyAnalysisEngine analysisEngine,
+        IDecompilerBackend      decompilerBackend,
+        DecompilerService       decompiler,
+        IHexEditorService       hexEditor,
+        IDocumentHostService?   documentHost,
+        IOutputService          output,
+        IPluginEventBus         eventBus,
+        IUIRegistry             uiRegistry,
+        string                  pluginId)
     {
         InitializeComponent();
 
         ViewModel = new AssemblyExplorerViewModel(
-            analysisEngine, decompiler, hexEditor, output, uiRegistry, pluginId);
+            analysisEngine, decompilerBackend, decompiler,
+            hexEditor, documentHost, output, uiRegistry, pluginId);
 
         DataContext            = ViewModel;
         DetailPane.DataContext = ViewModel.DetailViewModel;
@@ -63,6 +67,11 @@ public partial class AssemblyExplorerPanel : UserControl
         // Wire EventBus publishing from ViewModel events
         ViewModel.AssemblyLoaded += (_, evt) => eventBus.Publish(evt);
         ViewModel.MemberSelected += (_, evt) => eventBus.Publish(evt);
+
+        // Wire new v2.0 tree events
+        MainTreeView.HighlightInHexEditorRequested += OnHighlightInHexEditor;
+        MainTreeView.PinAssemblyRequested          += OnPinAssembly;
+        MainTreeView.CompareWithRequested          += OnCompareWith;
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
@@ -213,13 +222,14 @@ public partial class AssemblyExplorerPanel : UserControl
 
     private void OnOpenInHexEditor(object? sender, AssemblyNodeViewModel node)
     {
-        if (node.PeOffset <= 0) return;
-        // Explicit user action — bypasses SyncWithHexEditor toggle and scrolls to the offset.
-        ViewModel.NavigateToNodeExplicit(node);
+        // "Open Assembly File in Hex Editor" — opens the raw .dll bytes without navigating.
+        var filePath = node.OwnerFilePath;
+        if (!string.IsNullOrEmpty(filePath))
+            ViewModel.OpenAssemblyFileInHexEditor(filePath);
     }
 
     private void OnDecompile(object? sender, AssemblyNodeViewModel node)
-        => ViewModel.DetailViewModel.ShowNode(node, ViewModel.CurrentAssemblyFilePath ?? string.Empty);
+        => ViewModel.DetailViewModel.ShowNode(node, node.OwnerFilePath ?? string.Empty);
 
     private void OnCopyName(object? sender, AssemblyNodeViewModel node)
         => SafeCopy(node.DisplayName);
@@ -234,7 +244,37 @@ public partial class AssemblyExplorerPanel : UserControl
         => SafeCopy(node.PeOffset > 0 ? $"0x{node.PeOffset:X}" : "0");
 
     private void OnCloseAssembly(object? sender, AssemblyNodeViewModel node)
-        => ViewModel.Clear();
+        => ViewModel.CloseAssembly(node);
+
+    // ── v2.0 tree event handlers ──────────────────────────────────────────────
+
+    private void OnHighlightInHexEditor(object? sender, AssemblyNodeViewModel node)
+        => _ = ViewModel.OpenMemberInHexEditorAsync(node);
+
+    private void OnPinAssembly(object? sender, AssemblyNodeViewModel node)
+        => ViewModel.PinAssemblyCommand.Execute(node);
+
+    private void OnCompareWith(object? sender, AssemblyNodeViewModel node)
+    {
+        if (_diffPanel is null) return;
+        _diffPanel.PreSelectBaseline(node.DisplayName.Split(' ')[0]); // strip version suffix
+        _diffPanelShowAction?.Invoke();
+    }
+
+    // ── Diff panel reference (set by plugin entry point) ─────────────────────
+
+    private AssemblyDiffPanel? _diffPanel;
+    private Action?            _diffPanelShowAction;
+
+    /// <summary>
+    /// Called by the plugin entry point after the diff panel is registered,
+    /// so "Compare with…" can pre-select the baseline and open the diff panel.
+    /// </summary>
+    public void SetDiffPanel(AssemblyDiffPanel diffPanel, Action showDiffPanel)
+    {
+        _diffPanel           = diffPanel;
+        _diffPanelShowAction = showDiffPanel;
+    }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 

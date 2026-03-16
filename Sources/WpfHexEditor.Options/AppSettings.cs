@@ -225,7 +225,7 @@ public sealed class CodeEditorDefaultSettings
     /// When true, CodeEditor tracks edits in a .whchg companion file
     /// (requires save mode Tracked to be effective).
     /// </summary>
-    public bool ChangesetEnabled { get; set; } = true;
+    public bool ChangesetEnabled { get; set; } = false;
 
     // -- Syntax colours --------------------------------------------------
     // Stored as HTML hex strings (e.g. "#FF8C00").  Empty string = use theme default.

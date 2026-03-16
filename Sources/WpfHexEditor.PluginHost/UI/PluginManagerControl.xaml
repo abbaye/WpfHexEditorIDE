@@ -473,14 +473,18 @@
                                            FontWeight="SemiBold" Foreground="White"/>
                             </Border>
                             <!-- Move to Sandbox: visible only for InProcess + Loaded plugins -->
-                            <Button Content="&#xE72A; Sandbox"
-                                    Command="{Binding MigrateToSandboxCommand}"
+                            <Button Command="{Binding MigrateToSandboxCommand}"
                                     Visibility="{Binding CanMigrateToSandbox, Converter={StaticResource BoolToVis}}"
                                     Style="{DynamicResource PM_ActionButtonStyle}"
                                     HorizontalAlignment="Right"
                                     Margin="0,0,0,0" Padding="8,3" FontSize="11"
-                                    FontFamily="Segoe MDL2 Assets"
-                                    ToolTip="Reload this plugin in an isolated out-of-process Sandbox"/>
+                                    ToolTip="Reload this plugin in an isolated out-of-process Sandbox">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="&#xE72A;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                               VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Sandbox" FontSize="11" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Border>

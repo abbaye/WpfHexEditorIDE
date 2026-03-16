@@ -12,9 +12,14 @@
 //     Pattern: Options / Settings Model
 //     All properties are mutable so AppSettings serialization works.
 //     CodeEditor reads these on Init and subscribes to OptionsChanged.
+//     SyntaxColorOverrides: null value = use theme default CE_* resource;
+//     non-null = user-specified color that overrides the theme.
 // ==========================================================
 
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Media;
+using WpfHexEditor.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Options;
 
@@ -104,6 +109,40 @@ public sealed class CodeEditorOptions : INotifyPropertyChanged
     {
         get => _themeOverride;
         set { _themeOverride = value; Notify(); }
+    }
+
+    // -- Syntax Color Overrides -----------------------------------------------
+
+    /// <summary>
+    /// Per-token user color overrides. A null value means "use the active theme's CE_* resource".
+    /// A non-null Color overrides that resource so the CodeEditor uses the exact color chosen
+    /// by the user regardless of which theme is active.
+    /// </summary>
+    public Dictionary<SyntaxTokenKind, Color?> SyntaxColorOverrides { get; set; } = new();
+
+    /// <summary>
+    /// Returns the user override for <paramref name="kind"/>, or null if no override is set.
+    /// </summary>
+    public Color? GetOverride(SyntaxTokenKind kind)
+        => SyntaxColorOverrides.TryGetValue(kind, out var c) ? c : null;
+
+    /// <summary>
+    /// Sets or clears the user override for <paramref name="kind"/>.
+    /// Pass null to revert to the theme default.
+    /// </summary>
+    public void SetOverride(SyntaxTokenKind kind, Color? color)
+    {
+        SyntaxColorOverrides[kind] = color;
+        Notify(nameof(SyntaxColorOverrides));
+    }
+
+    /// <summary>
+    /// Removes all per-token color overrides, restoring theme defaults for all tokens.
+    /// </summary>
+    public void ResetAllOverrides()
+    {
+        SyntaxColorOverrides.Clear();
+        Notify(nameof(SyntaxColorOverrides));
     }
 
     // -----------------------------------------------------------------------

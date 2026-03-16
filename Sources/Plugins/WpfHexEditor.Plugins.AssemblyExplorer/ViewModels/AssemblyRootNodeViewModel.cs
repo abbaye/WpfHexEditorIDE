@@ -19,11 +19,23 @@ public sealed class AssemblyRootNodeViewModel : AssemblyNodeViewModel
 {
     public AssemblyRootNodeViewModel(AssemblyModel model)
     {
-        Model     = model;
+        Model      = model;
         IsExpanded = true;
     }
 
     public AssemblyModel Model { get; }
+
+    private bool _isPinned;
+
+    /// <summary>
+    /// When true a pin badge (📌) is shown on the root node header and the assembly
+    /// is not evicted when the active editor changes or the workspace limit is reached.
+    /// </summary>
+    public bool IsPinned
+    {
+        get => _isPinned;
+        set => SetField(ref _isPinned, value);
+    }
 
     /// <summary>
     /// Assembly name + version + optional target framework badge.

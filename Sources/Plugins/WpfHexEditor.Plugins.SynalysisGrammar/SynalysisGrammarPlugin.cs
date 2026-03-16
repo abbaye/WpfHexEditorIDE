@@ -17,13 +17,17 @@
 //     - Publishes GrammarAppliedEvent via IPluginEventBus → consumed by
 //       ParsedFieldsPlugin to populate the Parsed Fields panel.
 //     - SynalysisGrammarService handles async execution off the UI thread.
+//     - Implements IPluginWithOptions: exposes GrammarExplorerOptionsPage in
+//       IDE Options > Plugins > Grammar Explorer.
 //
 // Theme: WPF global theme applied in GrammarSelectorPanel.xaml via DynamicResource.
 // ==========================================================
 
 using System.IO;
 using System.Reflection;
+using System.Windows;
 using WpfHexEditor.Core.SynalysisGrammar;
+using WpfHexEditor.Plugins.SynalysisGrammar.Options;
 using WpfHexEditor.Plugins.SynalysisGrammar.Services;
 using WpfHexEditor.Plugins.SynalysisGrammar.ViewModels;
 using WpfHexEditor.Plugins.SynalysisGrammar.Views;
@@ -37,11 +41,11 @@ namespace WpfHexEditor.Plugins.SynalysisGrammar;
 /// <summary>
 /// Grammar Explorer plugin — adds UFWB grammar support to the IDE.
 /// </summary>
-public sealed class SynalysisGrammarPlugin : IWpfHexEditorPlugin
+public sealed class SynalysisGrammarPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 {
     public string  Id      => "WpfHexEditor.Plugins.SynalysisGrammar";
     public string  Name    => "Grammar Explorer";
-    public Version Version => new(0, 1, 0);
+    public Version Version => new(0, 2, 0);
 
     public PluginCapabilities Capabilities => new()
     {
@@ -49,6 +53,7 @@ public sealed class SynalysisGrammarPlugin : IWpfHexEditorPlugin
         AccessFileSystem = true,
         RegisterMenus    = true,
         WriteOutput      = true,
+        AccessSettings   = true,
     };
 
     // -- Private state -----------------------------------------------------
@@ -58,6 +63,7 @@ public sealed class SynalysisGrammarPlugin : IWpfHexEditorPlugin
     private SynalysisGrammarService?    _service;
     private GrammarSelectorPanel?       _panel;
     private GrammarSelectorViewModel?   _viewModel;
+    private GrammarExplorerOptionsPage? _optionsPage;
     private CancellationTokenSource     _cts = new();
 
     private const string PanelId = "WpfHexEditor.Plugins.SynalysisGrammar.Panel.GrammarSelector";
@@ -80,7 +86,8 @@ public sealed class SynalysisGrammarPlugin : IWpfHexEditorPlugin
         _viewModel = new GrammarSelectorViewModel(
             _repository,
             applyCallback:        OnApplyRequested,
-            loadFromDiskCallback: () => _panel?.ShowOpenDialog());
+            loadFromDiskCallback: () => _panel?.ShowOpenDialog(),
+            clearOverlayCallback: OnClearOverlayRequested);
 
         _panel = new GrammarSelectorPanel { ViewModel = _viewModel };
         _panel.DroppedGrammarFiles += OnGrammarFileDropped;
@@ -147,12 +154,36 @@ public sealed class SynalysisGrammarPlugin : IWpfHexEditorPlugin
         if (_panel is not null)
             _panel.DroppedGrammarFiles -= OnGrammarFileDropped;
 
-        _panel     = null;
-        _viewModel = null;
-        _service   = null;
-        _context   = null;
+        _panel       = null;
+        _viewModel   = null;
+        _optionsPage = null;
+        _service     = null;
+        _context     = null;
         return Task.CompletedTask;
     }
+
+    // -- IPluginWithOptions ------------------------------------------------
+
+    public FrameworkElement CreateOptionsPage()
+    {
+        _optionsPage ??= new GrammarExplorerOptionsPage();
+        _optionsPage.Load();
+        return _optionsPage;
+    }
+
+    public void SaveOptions()
+    {
+        _optionsPage?.Save();
+    }
+
+    public void LoadOptions()
+    {
+        GrammarExplorerOptions.Invalidate();
+        _optionsPage?.Load();
+    }
+
+    public string GetOptionsCategory()     => "Plugins";
+    public string GetOptionsCategoryIcon() => "\uE8A5";
 
     // -- Grammar registration ----------------------------------------------
 
@@ -224,6 +255,13 @@ public sealed class SynalysisGrammarPlugin : IWpfHexEditorPlugin
         _ = _service?.ApplyByKeyAsync(entry.Key, _cts.Token);
 
         _viewModel!.StatusText = $"Applying: {entry.Name}…";
+    }
+
+    private void OnClearOverlayRequested()
+    {
+        _context?.HexEditor.ClearCustomBackgroundBlockByTag("synalysis:");
+        if (_viewModel is not null)
+            _viewModel.StatusText = "Overlay cleared.";
     }
 
     private void OnGrammarFileDropped(object? sender, string path)

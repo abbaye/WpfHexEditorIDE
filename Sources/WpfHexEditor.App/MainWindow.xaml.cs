@@ -54,6 +54,7 @@ using WpfHexEditor.ProjectSystem.Dialogs;
 using WpfHexEditor.ProjectSystem.Serialization;
 using WpfHexEditor.ProjectSystem.Services;
 using WpfHexEditor.ProjectSystem.Templates;
+using WpfHexEditor.ProjectSystem.Languages;
 using System.Windows.Shell;
 using System.Windows.Threading;
 using WpfHexEditor.Options;
@@ -117,6 +118,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // Content cache: ContentId → actual editor UIElement (unwrapped; used for editor logic)
     private readonly Dictionary<string, UIElement> _contentCache = new();
+
+    // Project properties map: doc-projprops-{id} → IProject (for deferred content creation)
+    private readonly Dictionary<string, IProject> _projectPropertiesMap = new();
 
     // Display cache: ContentId → visual UIElement shown in the docking layout
     // When an InfoBar is present this is a Grid wrapper; otherwise == _contentCache entry.
@@ -378,6 +382,32 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         StateChanged += OnStateChanged;
     }
 
+    /// <summary>
+    /// Registers all embedded .whlang syntax definitions into <see cref="LanguageRegistry"/>
+    /// so that <see cref="CodeEditorFactory"/> can resolve the correct
+    /// <see cref="ISyntaxHighlighter"/> for every file type it opens.
+    /// Must be called before any editor factory is used.
+    /// </summary>
+    private static void LoadEmbeddedLanguageDefinitions()
+    {
+        var catalog  = EmbeddedSyntaxCatalog.Instance;
+        var registry = LanguageRegistry.Instance;
+
+        foreach (var entry in catalog.GetAll())
+        {
+            try
+            {
+                var json = catalog.GetContent(entry.ResourceKey);
+                var def  = LanguageDefinitionSerializer.Parse(json);
+                registry.RegisterBuiltin(def);
+            }
+            catch
+            {
+                // Skip malformed or incomplete .whlang entries to avoid blocking startup.
+            }
+        }
+    }
+
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         // Wire DocumentManager events (title changes, dirty state → all open editors)
@@ -388,6 +418,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _solutionManager.ProjectChanged       += OnProjectChanged;
         _solutionManager.ItemAdded            += OnProjectItemAdded;
         _solutionManager.FormatUpgradeRequired += OnFormatUpgradeRequired;
+
+        // Populate LanguageRegistry with all embedded .whlang syntax definitions.
+        // This must run before any editor factory is used so that CodeEditorFactory
+        // can resolve ExternalHighlighter via LanguageRegistry.GetLanguageForFile().
+        LoadEmbeddedLanguageDefinitions();
 
         // Register editor factories (doc-proj-* dispatcher)
         _editorRegistry.Register(new TblEditorFactory());
@@ -447,13 +482,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (settings.DefaultFileSaveMode != FileSaveMode.Tracked) return;
         if (_solutionManager.CurrentSolution is null) return;
 
-        foreach (var project in _solutionManager.CurrentSolution.Projects)
-        foreach (var item    in project.Items)
+        // _dirtyTrackedContentIds is maintained by OnDocumentManagerDirtyChanged,
+        // so this loop is O(dirty editors) instead of O(all solution items).
+        foreach (var contentId in _dirtyTrackedContentIds)
         {
-            var contentId = $"doc-proj-{item.Id}";
             if (!_contentCache.TryGetValue(contentId, out var ctrl)) continue;
             if (ctrl is not IEditorPersistable persistable) continue;
-            if (ctrl is not IDocumentEditor editor || !editor.IsDirty) continue;
+            if (!TryGetProjectItemFromContentId(contentId, out var item) || item is null) continue;
 
             var snapshot = persistable.GetChangesetSnapshot();
             if (!snapshot.HasEdits) continue;
@@ -874,7 +909,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (prop.ValueKind != System.Text.Json.JsonValueKind.String) return;
             var path = prop.GetString();
             if (string.IsNullOrEmpty(path) || !File.Exists(path)) return;
-            _ = OpenSolutionAsync(path);
+            // WH-native formats can be opened immediately (no plugin loader required).
+            // VS formats (.sln/.csproj/etc.) require ISolutionLoader extensions registered by
+            // InitializePluginSystemAsync — store the path and open it there instead.
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            if (ext is ".whsln" or ".whproj")
+                _ = OpenSolutionAsync(path);
+            else
+                _pendingRestoreSolutionPath = path;
         }
         catch (Exception ex)
         {
@@ -888,7 +930,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (string.IsNullOrEmpty(path)) return;
 
         var ext = Path.GetExtension(path).ToLowerInvariant();
-        if (ext is ".whsln" or ".whproj")
+        if (ext is ".whsln" or ".whproj" or ".sln" or ".csproj" or ".vbproj" or ".fsproj")
         {
             if (File.Exists(path)) _ = OpenSolutionAsync(path);
             else OutputLogger.Error($"Startup solution not found: {path}");
@@ -1052,9 +1094,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             TerminalPanelContentId         => CreateTerminalPanelContent(),
             PluginMonitorContentId         => CreatePluginMonitorPanelContent(),
             PluginManagerContentId         => CreatePluginManagerContent(),
-            _ when item.ContentId.StartsWith("doc-file-") => CreateSmartFileEditorContent(item),
-            _ when item.ContentId.StartsWith("doc-hex-")  => WrapHexDocItemWithInfoBar(item),
-            _ when item.ContentId.StartsWith("doc-proj-") => CreateProjectItemContent(item),
+            _ when item.ContentId.StartsWith("doc-file-")      => CreateSmartFileEditorContent(item),
+            _ when item.ContentId.StartsWith("doc-hex-")       => WrapHexDocItemWithInfoBar(item),
+            _ when item.ContentId.StartsWith("doc-projprops-") => CreateProjectPropertiesContent(item),
+            _ when item.ContentId.StartsWith("doc-proj-")      => CreateProjectItemContent(item),
             _ => CreateDocumentContent(item)
         };
 
@@ -2937,9 +2980,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (e.Item is null && e.Project is not null)
         {
-            // Project node → Project Properties dialog
-            var dlg = new ProjectPropertiesDialog(e.Project) { Owner = this };
-            dlg.ShowDialog();
+            // Project node → VS-Like Project Properties document tab
+            OpenProjectPropertiesDocument(e.Project);
         }
         else if (e.Item is not null)
         {
@@ -3435,14 +3477,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _contentCache.TryGetValue(item.ContentId, out var dirtyCtrl) &&
             dirtyCtrl is IDocumentEditor dirtyEditor && dirtyEditor.IsDirty)
         {
-            if (IsTrackedProjectItem(item))
+            if (IsTrackedItemWithChangeset(item))
             {
                 // Auto-serialize to .whchg — no dialog
                 _ = AutoSerializeTrackedItemAsync(item);
             }
             else
             {
-                // Direct mode — standard save dialog
+                // Direct mode or changeset disabled — standard save dialog
                 var cleanTitle = item.Title.TrimEnd('*', ' ');
                 var dlg = new Dialogs.SaveChangesDialog
                 {
@@ -3729,8 +3771,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                         && c is IDocumentEditor { IsDirty: true })
             .ToList();
 
-        // Auto-serialize Tracked project items silently
-        var tracked = dirty.Where(IsTrackedProjectItem).ToList();
+        // Auto-serialize Tracked project items silently (only when changeset is enabled for the editor)
+        var tracked = dirty.Where(IsTrackedItemWithChangeset).ToList();
         foreach (var t in tracked)
         {
             _ = AutoSerializeTrackedItemAsync(t);
@@ -3982,7 +4024,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         List<DockItem> dirtyDocs)
     {
         // Auto-serialize Tracked project items silently — no dialog needed
-        var trackedItems = dirtyDocs.Where(IsTrackedProjectItem).ToList();
+        // (only when changeset is enabled for the editor type)
+        var trackedItems = dirtyDocs.Where(IsTrackedItemWithChangeset).ToList();
         foreach (var t in trackedItems)
         {
             await AutoSerializeTrackedItemAsync(t);
@@ -4053,11 +4096,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var settings = AppSettingsService.Instance.Current;
 
-        // Try to resolve the active project item for Tracked mode
+        // Try to resolve the active project item for Tracked mode.
+        // ChangesetEnabled must also be true for the editor type — if not, fall through
+        // to the direct-save branch so Ctrl+S behaves normally.
         if (settings.DefaultFileSaveMode == FileSaveMode.Tracked &&
             TryGetActiveProjectItem(out var saveProject, out var saveItem, out var saveContentId) &&
             _contentCache.TryGetValue(saveContentId, out var saveCtrl) &&
-            saveCtrl is IEditorPersistable savePersistable)
+            saveCtrl is IEditorPersistable savePersistable &&
+            IsChangesetEnabledForEditor(saveCtrl, settings))
         {
             var snapshot = savePersistable.GetChangesetSnapshot();
             if (!snapshot.HasEdits)
@@ -4318,9 +4364,59 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var project = _solutionManager.CurrentSolution?.Projects.FirstOrDefault();
         if (project is null) return;
+        OpenProjectPropertiesDocument(project);
+    }
 
-        var dlg = new ProjectPropertiesDialog(project) { Owner = this };
-        dlg.ShowDialog();
+    /// <summary>
+    /// Opens (or activates) the VS-Like Project Properties document tab for the given project.
+    /// Uses contentId "doc-projprops-{Name}" for deduplication.
+    /// </summary>
+    private void OpenProjectPropertiesDocument(IProject project)
+    {
+        var contentId = $"doc-projprops-{project.Name}";
+
+        // Dedup: activate existing tab if already open
+        var existing = _layout.GetAllGroups().SelectMany(g => g.Items)
+            .Concat(_layout.FloatingItems)
+            .Concat(_layout.AutoHideItems)
+            .FirstOrDefault(di => di.ContentId == contentId);
+
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            DockHost.RebuildVisualTree();
+            return;
+        }
+
+        // Register project reference so the content factory can retrieve it
+        _projectPropertiesMap[contentId] = project;
+
+        var item = new DockItem
+        {
+            Title     = $"{project.Name} — Propriétés",
+            ContentId = contentId,
+            Metadata  = { ["ProjectName"] = project.Name }
+        };
+
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    /// <summary>
+    /// Content factory for "doc-projprops-*" items.
+    /// Creates the <see cref="ProjectPropertiesDocument"/> UserControl backed by its ViewModel.
+    /// </summary>
+    private UIElement CreateProjectPropertiesContent(DockItem item)
+    {
+        if (!_projectPropertiesMap.TryGetValue(item.ContentId, out var project))
+            return new System.Windows.Controls.TextBlock { Text = "Projet introuvable." };
+
+        var vm = new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesViewModel(
+            project, _solutionManager);
+        return new WpfHexEditor.ProjectSystem.Documents.ProjectPropertiesDocument
+        {
+            DataContext = vm
+        };
     }
 
     // --- MRU menus (Recent Solutions / Recent Files) -------------------

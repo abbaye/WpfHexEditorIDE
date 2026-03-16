@@ -64,6 +64,20 @@ public sealed class AssemblyExplorerOptions
     /// <summary>Automatically analyze the file when it is opened in the HexEditor.</summary>
     public bool AutoAnalyzeOnFileOpen { get; set; } = true;
 
+    // ── v2.0 additions ────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Maximum number of assemblies loaded simultaneously in the workspace (1–50).
+    /// When the limit is reached, the oldest unpinned entry is evicted automatically.
+    /// </summary>
+    public int MaxLoadedAssemblies { get; set; } = 10;
+
+    /// <summary>
+    /// File paths of all assemblies in the workspace at the end of the last session.
+    /// Restored on next startup (v2.0 replacement for the singular LastSessionAssemblyPath).
+    /// </summary>
+    public List<string> LastSessionAssemblyPaths { get; set; } = [];
+
     // ── Phase 6 additions ─────────────────────────────────────────────────────
 
     /// <summary>Recently opened assembly paths (most-recent first, max 20 items).</summary>

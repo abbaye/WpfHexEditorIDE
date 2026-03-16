@@ -94,6 +94,28 @@ public sealed class BoolToGrantColorConverter : IValueConverter
         => DependencyProperty.UnsetValue;
 }
 
+/// <summary>
+/// Multi-value converter: [CollectionViewGroup, PluginMonitoringViewModel] → PluginGroupSummaryViewModel.
+/// Used in the DataGrid GroupStyle to bind the group header to the correct aggregate summary VM.
+/// Values[0] = CollectionViewGroup (DataContext of the GroupItem)
+/// Values[1] = PluginMonitoringViewModel (DataContext of the DataGrid, via RelativeSource)
+/// </summary>
+public sealed class GroupSummaryConverter : IMultiValueConverter
+{
+    public static readonly GroupSummaryConverter Instance = new();
+
+    public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values.Length < 2) return null;
+        var groupName = (values[0] as System.Windows.Data.CollectionViewGroup)?.Name as string;
+        var vm = values[1] as PluginMonitoringViewModel;
+        return vm?.GetGroupSummary(groupName);
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        => throw new NotSupportedException();
+}
+
 public partial class PluginMonitoringPanel : UserControl
 {
     private PluginMonitoringViewModel? _vm;

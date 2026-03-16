@@ -118,6 +118,15 @@ public sealed class SynalysisGrammarRepository
     public IReadOnlyList<string> GetAllKeys()
         => _registrations.Select(r => r.Key).ToList();
 
+    /// <summary>
+    /// Returns the already-cached <see cref="UfwbRoot"/> for <paramref name="key"/>
+    /// without triggering a lazy load. Returns null when the key is unknown or the
+    /// grammar has not yet been loaded.
+    /// Use <see cref="GetByKey"/> when you need on-demand loading.
+    /// </summary>
+    public UfwbRoot? GetParsedGrammar(string key)
+        => _cache.TryGetValue(key, out var g) ? g : null;
+
     // -- Internal loading --------------------------------------------------
 
     private UfwbRoot? GetOrLoad(string key)

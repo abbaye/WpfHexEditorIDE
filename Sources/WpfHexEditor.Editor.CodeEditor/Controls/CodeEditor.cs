@@ -10,9 +10,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,6 +27,8 @@ using WpfHexEditor.Editor.CodeEditor.Services;
 using WpfHexEditor.Editor.CodeEditor.Snippets;
 using WpfHexEditor.Core.Settings;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.CodeEditor.Options;
+using WpfHexEditor.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -48,6 +52,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         #region Fields - Syntax Highlighting (Phase 2)
 
         private CodeSyntaxHighlighter _highlighter;
+
+        // URL hit-zones: rebuilt on every render pass; used for cursor + Ctrl+Click.
+        private readonly List<UrlHitZone> _urlHitZones = new();
+
+        // Compiled URL regex — re-used across all render passes (thread-safe read-only after init).
+        private static readonly Regex s_urlRegex = new(
+            @"https?://[^\s""'<>\[\]{}|\\^`]+",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Optional external syntax highlighter (e.g. RegexBasedSyntaxHighlighter for .whlang languages).
@@ -1316,40 +1328,97 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         }
 
         /// <summary>
-        /// Binds all color DPs to the active theme's TE_* resource keys.
+        /// Binds all color DPs to the active theme's CE_* / TE_* resource keys via DynamicResource.
         /// Called on Loaded so the element is connected to the application resource tree.
         /// Safe to call multiple times — subsequent calls just re-register the same keys.
+        /// CE_* keys provide Code Editor–specific palette (VS Dark/Light per theme).
+        /// TE_* keys are shared with TextEditor for tokens that have no CE_* equivalent.
         /// </summary>
         private void ApplyThemeResourceBindings()
         {
-            // Viewport
-            SetResourceReference(EditorBackgroundProperty,      "TE_Background");
-            SetResourceReference(EditorForegroundProperty,      "TE_Foreground");
-            SetResourceReference(LineNumberBackgroundProperty,  "TE_LineNumberBackground");
-            SetResourceReference(LineNumberForegroundProperty,  "TE_LineNumberForeground");
-            SetResourceReference(CurrentLineBackgroundProperty, "TE_CurrentLineBrush");
-            SetResourceReference(SelectionBackgroundProperty,   "TE_SelectionBackground");
+            // Viewport — use CE_* dedicated keys so the code editor tracks its own palette
+            SetResourceReference(EditorBackgroundProperty,      "CE_Background");
+            SetResourceReference(EditorForegroundProperty,      "CE_Foreground");
+            SetResourceReference(LineNumberBackgroundProperty,  "CE_LineNumBg");
+            SetResourceReference(LineNumberForegroundProperty,  "CE_LineNumFg");
+            SetResourceReference(CurrentLineBackgroundProperty, "CE_CurrentLine");
+            SetResourceReference(SelectionBackgroundProperty,   "CE_Selection");
             SetResourceReference(CaretColorProperty,            "TE_CaretColor");
 
-            // Syntax highlighting
-            SetResourceReference(SyntaxKeyColorProperty,              "TE_Keyword");
-            SetResourceReference(SyntaxKeywordColorProperty,          "TE_Keyword");
-            SetResourceReference(SyntaxBooleanColorProperty,          "TE_Keyword");
-            SetResourceReference(SyntaxStringValueColorProperty,      "TE_String");
-            SetResourceReference(SyntaxNumberColorProperty,           "TE_Number");
-            SetResourceReference(SyntaxCommentColorProperty,          "TE_Comment");
-            SetResourceReference(SyntaxValueTypeColorProperty,        "TE_Type");
+            // Syntax highlighting — CE_* for semantically named token colors
+            SetResourceReference(SyntaxKeyColorProperty,              "CE_Identifier");
+            SetResourceReference(SyntaxKeywordColorProperty,          "CE_Keyword");
+            SetResourceReference(SyntaxBooleanColorProperty,          "CE_Keyword");
+            SetResourceReference(SyntaxStringValueColorProperty,      "CE_String");
+            SetResourceReference(SyntaxNumberColorProperty,           "CE_Number");
+            SetResourceReference(SyntaxCommentColorProperty,          "CE_Comment");
+            SetResourceReference(SyntaxValueTypeColorProperty,        "CE_Type");
             SetResourceReference(SyntaxCalcExpressionColorProperty,   "TE_Directive");
-            SetResourceReference(SyntaxVariableReferenceColorProperty,"TE_Register");
-            SetResourceReference(SyntaxEscapeSequenceColorProperty,   "TE_Label");
-            SetResourceReference(SyntaxUrlColorProperty,              "TE_Register");
-            SetResourceReference(SyntaxBraceColorProperty,            "TE_Foreground");
-            SetResourceReference(SyntaxBracketColorProperty,          "TE_Foreground");
-            SetResourceReference(SyntaxCommaColorProperty,            "TE_Foreground");
-            SetResourceReference(SyntaxColonColorProperty,            "TE_Foreground");
-            SetResourceReference(SyntaxNullColorProperty,             "TE_Operator");
-            SetResourceReference(SyntaxDeprecatedColorProperty,       "TE_Operator");
+            SetResourceReference(SyntaxVariableReferenceColorProperty,"CE_Identifier");
+            SetResourceReference(SyntaxEscapeSequenceColorProperty,   "CE_String");
+            SetResourceReference(SyntaxUrlColorProperty,              "CE_Attribute");
+            SetResourceReference(SyntaxBraceColorProperty,            "CE_Brace");
+            SetResourceReference(SyntaxBracketColorProperty,          "CE_Bracket");
+            SetResourceReference(SyntaxCommaColorProperty,            "CE_Operator");
+            SetResourceReference(SyntaxColonColorProperty,            "CE_Operator");
+            SetResourceReference(SyntaxNullColorProperty,             "CE_Keyword");
+            SetResourceReference(SyntaxDeprecatedColorProperty,       "CE_Operator");
+            SetResourceReference(SyntaxErrorColorProperty,            "CE_Error");
         }
+
+        /// <summary>
+        /// Applies settings from <paramref name="options"/> to this editor instance.
+        /// Font, display, and feature settings are applied immediately.
+        /// Per-token color overrides in <see cref="CodeEditorOptions.SyntaxColorOverrides"/>
+        /// take precedence over the active theme's CE_* resources for as long as the
+        /// override is set; clearing an override reverts to the theme resource.
+        /// </summary>
+        public void ApplyOptions(CodeEditorOptions options)
+        {
+            if (options is null) return;
+
+            // Font / display
+            if (!string.IsNullOrEmpty(options.FontFamily))
+                EditorFontFamily = new FontFamily(options.FontFamily);
+
+            if (options.FontSize is > 6 and < 72)
+                EditorFontSize = options.FontSize;
+
+            ShowLineNumbers = options.ShowLineNumbers;
+
+            // Syntax color overrides — set local value to override the DynamicResource binding.
+            // A null override clears the local value so DynamicResource (CE_*) takes effect again.
+            foreach (var kind in Enum.GetValues<SyntaxTokenKind>())
+            {
+                var dp    = SyntaxTokenKindToColorProperty(kind);
+                var color = options.GetOverride(kind);
+
+                if (dp is null) continue;
+
+                if (color.HasValue)
+                    SetValue(dp, new SolidColorBrush(color.Value));
+                else
+                    ClearValue(dp);  // revert to DynamicResource (CE_*) binding
+            }
+        }
+
+        /// <summary>
+        /// Maps a <see cref="SyntaxTokenKind"/> to the corresponding color <see cref="DependencyProperty"/>.
+        /// Returns null for token kinds that have no direct color DP.
+        /// </summary>
+        private static DependencyProperty? SyntaxTokenKindToColorProperty(SyntaxTokenKind kind) => kind switch
+        {
+            SyntaxTokenKind.Keyword    => SyntaxKeywordColorProperty,
+            SyntaxTokenKind.String     => SyntaxStringValueColorProperty,
+            SyntaxTokenKind.Number     => SyntaxNumberColorProperty,
+            SyntaxTokenKind.Comment    => SyntaxCommentColorProperty,
+            SyntaxTokenKind.Type       => SyntaxValueTypeColorProperty,
+            SyntaxTokenKind.Identifier => SyntaxKeyColorProperty,
+            SyntaxTokenKind.Operator   => SyntaxColonColorProperty,   // maps to operator-class DP
+            SyntaxTokenKind.Bracket    => SyntaxBracketColorProperty,
+            SyntaxTokenKind.Attribute  => SyntaxUrlColorProperty,      // attribute/annotation DP
+            _                          => null
+        };
 
         private void UpdateTypefacesFromDPs()
         {
@@ -2697,6 +2766,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             var context = new JsonParserContext();
 
+            // Rebuild URL hit-zones each render pass (document may have changed).
+            _urlHitZones.Clear();
+
+            // Lazy-init the underline pen from the current SyntaxUrlColor DP.
+            // Re-created each render so theme changes are reflected immediately.
+            var urlPen = new Pen(SyntaxUrlColor, 1.0);
+            urlPen.Freeze();
+
             // Reset external highlighter state before a full render pass.
             ExternalHighlighter?.Reset();
 
@@ -2726,6 +2803,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                             t.Foreground ?? EditorForeground, t.IsBold, t.IsItalic));
                     }
 
+                    // URL post-pass: overlay URL tokens on top of the highlighter output.
+                    // URLs are detected regardless of which highlighter is active and always
+                    // rendered with SyntaxUrlColor + underline so they are visually distinct.
+                    renderTokens = OverlayUrlTokens(line.Text, i, renderTokens);
+
                     // Pre-compute baseline Y once per line (GlyphRun requires it).
                     double baselineY = _glyphRenderer != null
                         ? y + _glyphRenderer.Baseline
@@ -2751,9 +2833,54 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                                 ft.SetFontStyle(FontStyles.Italic);
                             dc.DrawText(ft, new Point(tokenX, y));
                         }
+
+                        // Draw underline for URL tokens only when Ctrl is held (Ctrl+Click to open).
+                        // Hiding the underline at rest avoids visual noise in XML/XAML xmlns lines.
+                        if (ReferenceEquals(token.Foreground, SyntaxUrlColor)
+                            && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+                        {
+                            double underlineY = y + _lineHeight - 2;
+                            dc.DrawLine(urlPen,
+                                new Point(tokenX, underlineY),
+                                new Point(tokenX + token.Length * _charWidth, underlineY));
+                        }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Scans <paramref name="lineText"/> for HTTP/HTTPS URLs using <see cref="s_urlRegex"/>.
+        /// For each match, replaces any existing tokens at the URL's columns with a new token
+        /// colored with <see cref="SyntaxUrlColor"/>, and registers a <see cref="UrlHitZone"/>
+        /// for cursor and Ctrl+Click handling.
+        /// </summary>
+        private IEnumerable<SyntaxHighlightToken> OverlayUrlTokens(
+            string lineText, int lineIndex, IEnumerable<SyntaxHighlightToken> source)
+        {
+            var matches = s_urlRegex.Matches(lineText);
+            if (matches.Count == 0) return source;
+
+            // Materialise the source so we can splice URL tokens in.
+            var result = source.ToList();
+            var urlBrush = SyntaxUrlColor;
+
+            foreach (Match m in matches)
+            {
+                // Register hit-zone for mouse interaction.
+                _urlHitZones.Add(new UrlHitZone(lineIndex, m.Index, m.Index + m.Length, m.Value));
+
+                // Remove any tokens that overlap the URL range (they'll be replaced).
+                result.RemoveAll(t => t.StartColumn < m.Index + m.Length
+                                   && t.StartColumn + t.Length > m.Index);
+
+                // Add the URL token with SyntaxUrlColor (used as a sentinel in RenderTextContent).
+                result.Add(new SyntaxHighlightToken(m.Index, m.Length, m.Value, urlBrush));
+            }
+
+            // Re-sort by start column so tokens render left-to-right.
+            result.Sort(static (a, b) => a.StartColumn.CompareTo(b.StartColumn));
+            return result;
         }
 
         /// <summary>
@@ -3110,6 +3237,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         {
             base.OnKeyDown(e);
 
+            // Ctrl press: show URL underlines immediately (no mouse move required).
+            if (e.Key is Key.LeftCtrl or Key.RightCtrl)
+                InvalidateVisual();
+
             // Reset caret blink on keypress
             ResetCaretBlink();
 
@@ -3336,6 +3467,19 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Phase 11.3: Ensure cursor stays visible when using virtual scrolling
             EnsureCursorVisible();
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+
+            // Ctrl released: hide URL underlines and restore IBeam cursor.
+            if (e.Key is Key.LeftCtrl or Key.RightCtrl)
+            {
+                Cursor  = Cursors.IBeam;
+                ToolTip = null;
+                InvalidateVisual();
+            }
         }
 
         private void MoveCursorToLineStart(bool extendSelection)
@@ -3656,6 +3800,23 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 }
             }
 
+            // Ctrl+Left-click on a URL → open in browser.
+            if (e.LeftButton == MouseButtonState.Pressed
+                && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                var urlZone = FindUrlZone(textPos.Line, textPos.Column);
+                if (urlZone.HasValue)
+                {
+                    try
+                    {
+                        Process.Start(new ProcessStartInfo(urlZone.Value.Url) { UseShellExecute = true });
+                    }
+                    catch { /* Ignore failures to launch browser (e.g. malformed URL) */ }
+                    e.Handled = true;
+                    return;
+                }
+            }
+
             // Left-click behavior (unchanged)
             _cursorLine = textPos.Line;
             _cursorColumn = textPos.Column;
@@ -3686,6 +3847,25 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+
+            // URL hover: show Hand cursor only when Ctrl is held AND the pointer is over a URL.
+            // Without Ctrl the cursor stays IBeam so xmlns/href URIs don't feel clickable at rest.
+            if (!_isSelecting)
+            {
+                var isCtrl   = (Keyboard.Modifiers & ModifierKeys.Control) != 0;
+                var hoverPos = PixelToTextPosition(e.GetPosition(this));
+                var urlZone  = isCtrl ? FindUrlZone(hoverPos.Line, hoverPos.Column) : null;
+                if (urlZone.HasValue)
+                {
+                    Cursor  = Cursors.Hand;
+                    ToolTip = "Ctrl+Click to open";
+                }
+                else
+                {
+                    Cursor  = Cursors.IBeam;
+                    ToolTip = null;
+                }
+            }
 
             if (_isSelecting && e.LeftButton == MouseButtonState.Pressed)
             {
@@ -3762,6 +3942,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Repaint to show inactive selection
             InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Returns the <see cref="UrlHitZone"/> that contains <paramref name="column"/> on
+        /// <paramref name="line"/>, or <see langword="null"/> if no URL occupies that position.
+        /// Hit-zones are rebuilt on every render pass by <see cref="OverlayUrlTokens"/>.
+        /// </summary>
+        private UrlHitZone? FindUrlZone(int line, int column)
+        {
+            foreach (var zone in _urlHitZones)
+            {
+                if (zone.Line == line && column >= zone.StartCol && column < zone.EndCol)
+                    return zone;
+            }
+            return null;
         }
 
         /// <summary>
@@ -4535,6 +4730,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 Column:      ve.Column + 1
             )).ToList();
         }
+
+        // -- URL hit-zone (per-render, rebuilt in RenderTextContent) ---------------
+
+        /// <summary>
+        /// Represents a single URL token position for hit-testing (cursor + Ctrl+Click).
+        /// The list of active zones is rebuilt in <see cref="RenderTextContent"/> on each render.
+        /// </summary>
+        private readonly record struct UrlHitZone(int Line, int StartCol, int EndCol, string Url);
     }
 
     // -- File-scoped RelayCommand ----------------------------------------------

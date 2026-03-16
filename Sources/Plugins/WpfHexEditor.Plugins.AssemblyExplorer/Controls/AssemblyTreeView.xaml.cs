@@ -27,11 +27,14 @@ public partial class AssemblyTreeView : UserControl
 
     public event EventHandler<AssemblyNodeViewModel>?  NodeSelected;
     public event EventHandler<AssemblyNodeViewModel>?  OpenInHexEditorRequested;
+    public event EventHandler<AssemblyNodeViewModel>?  HighlightInHexEditorRequested;
     public event EventHandler<AssemblyNodeViewModel>?  DecompileRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CopyNameRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CopyFullNameRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CopyOffsetRequested;
     public event EventHandler<AssemblyNodeViewModel>?  CloseAssemblyRequested;
+    public event EventHandler<AssemblyNodeViewModel>?  PinAssemblyRequested;
+    public event EventHandler<AssemblyNodeViewModel>?  CompareWithRequested;
 
     // ── ItemsSource passthrough ───────────────────────────────────────────────
 
@@ -61,10 +64,15 @@ public partial class AssemblyTreeView : UserControl
         if (sender is not ContextMenu menu) return;
 
         var node = InnerTreeView.SelectedItem as AssemblyNodeViewModel;
+        var isRoot = node is AssemblyRootNodeViewModel;
 
-        // Find menu items dynamically since they're defined in Resources
+        // "Highlight in Hex Editor" — requires a resolved PE offset.
+        if (FindMenuItemByName(menu, "MenuHighlightInHex") is MenuItem menuHighlight)
+            menuHighlight.IsEnabled = node?.PeOffset > 0;
+
+        // "Open Assembly File in Hex Editor" — available for any node; uses OwnerFilePath.
         if (FindMenuItemByName(menu, "MenuOpenInHex") is MenuItem menuOpenInHex)
-            menuOpenInHex.IsEnabled = node?.PeOffset > 0;
+            menuOpenInHex.IsEnabled = node is not null;
 
         if (FindMenuItemByName(menu, "MenuCopyFull") is MenuItem menuCopyFull)
             menuCopyFull.IsEnabled = node is TypeNodeViewModel;
@@ -74,6 +82,19 @@ public partial class AssemblyTreeView : UserControl
 
         if (FindMenuItemByName(menu, "MenuDecompile") is MenuItem menuDecompile)
             menuDecompile.IsEnabled = node is TypeNodeViewModel or MethodNodeViewModel or AssemblyRootNodeViewModel;
+
+        // "Pin Assembly" — root nodes only; update header to reflect current pin state.
+        if (FindMenuItemByName(menu, "MenuPin") is MenuItem menuPin)
+        {
+            menuPin.IsEnabled = isRoot;
+            menuPin.Header    = isRoot && node is AssemblyRootNodeViewModel root
+                ? (root.IsPinned ? "Unpin Assembly" : "Pin Assembly")
+                : "Pin Assembly";
+        }
+
+        // "Compare with…" — root nodes only (two assemblies needed).
+        if (FindMenuItemByName(menu, "MenuCompareWith") is MenuItem menuCompare)
+            menuCompare.IsEnabled = isRoot;
 
         if (FindMenuItemByName(menu, "MenuCloseAssembly") is MenuItem menuCloseAssembly)
             menuCloseAssembly.IsEnabled = node is not null;
@@ -87,6 +108,12 @@ public partial class AssemblyTreeView : UserControl
                 return menuItem;
         }
         return null;
+    }
+
+    private void OnHighlightInHexEditor(object sender, RoutedEventArgs e)
+    {
+        if (InnerTreeView.SelectedItem is AssemblyNodeViewModel node)
+            HighlightInHexEditorRequested?.Invoke(this, node);
     }
 
     private void OnOpenInHexEditor(object sender, RoutedEventArgs e)
@@ -123,5 +150,17 @@ public partial class AssemblyTreeView : UserControl
     {
         if (InnerTreeView.SelectedItem is AssemblyNodeViewModel node)
             CloseAssemblyRequested?.Invoke(this, node);
+    }
+
+    private void OnPinAssembly(object sender, RoutedEventArgs e)
+    {
+        if (InnerTreeView.SelectedItem is AssemblyNodeViewModel node)
+            PinAssemblyRequested?.Invoke(this, node);
+    }
+
+    private void OnCompareWith(object sender, RoutedEventArgs e)
+    {
+        if (InnerTreeView.SelectedItem is AssemblyNodeViewModel node)
+            CompareWithRequested?.Invoke(this, node);
     }
 }

@@ -3,58 +3,262 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:WpfHexEditor.Plugins.SynalysisGrammar.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="340">
+             d:DesignHeight="500" d:DesignWidth="340">
 
     <!--
-        Theme: All colours via DynamicResource tokens from the global IDE theme.
-        Panel follows VS-Like layout: Toolbar / List / Detail strip (rules 7c, 7d).
+        Theme : All colours via DynamicResource tokens from the global IDE theme.
+        Layout: VS-Like — pod toolbar / search / list / tabbed detail / status bar (rules 7c, 7d).
+        Note  : Context-menu styles are declared explicitly here because the plugin runs in
+                a custom AssemblyLoadContext and cannot resolve Application.Resources from popups.
     -->
+
+    <UserControl.Resources>
+        <!-- Explicit styles: plugin AssemblyLoadContext cannot reach Application.Resources in popups -->
+        <Style TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource DockDarkContextMenuStyle}"/>
+        <Style TargetType="{x:Type MenuItem}"    BasedOn="{StaticResource DockDarkMenuItemStyle}"/>
+        <Style TargetType="{x:Type Separator}"   BasedOn="{StaticResource DockDarkMenuSeparatorStyle}"/>
+
+        <!--
+            DockToolBarToggleButtonStyle — defined inline because no matching key exists in any theme file.
+            Mirrors DockDarkToolBarButtonStyle (Button) but for ToggleButton, with an IsChecked state
+            that shows DockAccentBrush background to indicate the active/pressed state.
+        -->
+        <Style x:Key="DockToolBarToggleButtonStyle" TargetType="ToggleButton">
+            <Setter Property="Background"        Value="Transparent"/>
+            <Setter Property="BorderThickness"   Value="0"/>
+            <Setter Property="Padding"           Value="5,3"/>
+            <Setter Property="Cursor"            Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FocusVisualStyle"  Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockMenuHighlightBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockAccentBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource DockTabActiveBrush}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked"   Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--
+            GETabControlStyle / GETabItemStyle — simple inline styles for the Info/Structure detail
+            TabControl. DockTabControlStyle requires custom docking controls (TabOverflowPanel,
+            TabOverflowButton) that are not available in the plugin assembly load context, so we
+            define a minimal equivalent using the standard Dock theme token brushes.
+        -->
+        <Style x:Key="GETabControlStyle" TargetType="{x:Type TabControl}">
+            <Setter Property="Background"       Value="{DynamicResource DockMenuBackgroundBrush}"/>
+            <Setter Property="BorderThickness"  Value="0"/>
+            <Setter Property="Padding"          Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabControl}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>  <!-- tab strip -->
+                                <RowDefinition Height="*"/>     <!-- content   -->
+                            </Grid.RowDefinitions>
+                            <!-- Tab strip -->
+                            <Border Grid.Row="0"
+                                    Background="{DynamicResource DockMenuBackgroundBrush}"
+                                    BorderBrush="{DynamicResource DockBorderBrush}"
+                                    BorderThickness="0,0,0,1">
+                                <TabPanel IsItemsHost="True"
+                                          Background="Transparent"/>
+                            </Border>
+                            <!-- Content area -->
+                            <Border Grid.Row="1"
+                                    Background="{DynamicResource DockMenuBackgroundBrush}"
+                                    BorderThickness="0">
+                                <ContentPresenter x:Name="PART_SelectedContentHost"
+                                                  ContentSource="SelectedContent"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GETabItemStyle" TargetType="{x:Type TabItem}">
+            <Setter Property="Background"       Value="Transparent"/>
+            <Setter Property="Foreground"       Value="{DynamicResource DockTabTextBrush}"/>
+            <Setter Property="BorderThickness"  Value="0"/>
+            <Setter Property="Padding"          Value="10,4"/>
+            <Setter Property="Margin"           Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              TextElement.Foreground="{TemplateBinding Foreground}"
+                                              TextElement.FontSize="11"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockBackgroundBrush}"/>
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource DockMenuForegroundBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{DynamicResource DockBorderBrush}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected"  Value="False"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource DockTabHoverBrush}"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ContextMenu x:Key="GrammarItemMenu" Opened="OnContextMenuOpened">
+            <MenuItem Header="Apply Grammar"    InputGestureText="Enter"
+                      Command="{Binding DataContext.ApplyGrammarCommand,
+                                        RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="Copy Name"        x:Name="MenuCopyName"       Click="OnContextCopyName">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Copy Extensions"  x:Name="MenuCopyExtensions" Click="OnContextCopyExtensions">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="Remove Grammar"   x:Name="MenuRemoveGrammar"  Click="OnContextRemoveGrammar">
+                <MenuItem.Icon>
+                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+    </UserControl.Resources>
+
+    <UserControl.InputBindings>
+        <!-- Enter = Apply, F5 = Refresh -->
+        <KeyBinding Key="Return" Command="{Binding ApplyGrammarCommand}"/>
+        <KeyBinding Key="F5"     Command="{Binding RefreshCommand}"/>
+    </UserControl.InputBindings>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>   <!-- Toolbar -->
-            <RowDefinition Height="Auto"/>   <!-- Search box -->
+            <RowDefinition Height="Auto"/>   <!-- Pod toolbar -->
+            <RowDefinition Height="Auto"/>   <!-- Search box  -->
             <RowDefinition Height="*"/>      <!-- Grammar list -->
-            <RowDefinition Height="Auto"/>   <!-- Detail / info strip -->
-            <RowDefinition Height="Auto"/>   <!-- Status bar -->
+            <RowDefinition Height="Auto"/>   <!-- Tabbed detail (Info + Structure) -->
+            <RowDefinition Height="Auto"/>   <!-- Status bar  -->
         </Grid.RowDefinitions>
 
-        <!-- ── Toolbar ──────────────────────────────────────────────── -->
-        <ToolBar Grid.Row="0"
-                 Background="{DynamicResource DockToolBarBackgroundBrush}"
-                 BorderThickness="0">
+        <!-- ── Pod toolbar ──────────────────────────────────────────────── -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource DockToolBarBackgroundBrush}"
+                BorderBrush="{DynamicResource DockBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <DockPanel LastChildFill="False" Margin="3,1">
 
-            <!-- Load from disk -->
-            <Button Command="{Binding LoadFromDiskCommand}"
-                    ToolTip="Load grammar from disk (.grammar)"
-                    Style="{DynamicResource DockToolBarButtonStyle}">
-                <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                           Foreground="{DynamicResource DockForegroundBrush}"/>
-            </Button>
+                <!-- Pod 1: File -->
+                <Border Style="{StaticResource DockToolBarPodStyle}" DockPanel.Dock="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <!-- Load from disk: OpenFile \uE8DA -->
+                        <Button Command="{Binding LoadFromDiskCommand}"
+                                ToolTip="Load grammar from disk (.grammar file)"
+                                Style="{StaticResource DockDarkToolBarButtonStyle}">
+                            <TextBlock Text="&#xE8DA;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        </Button>
+                        <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
+                        <!-- Refresh list: Refresh \uE72C -->
+                        <Button Command="{Binding RefreshCommand}"
+                                ToolTip="Reload grammar list (F5)"
+                                Style="{StaticResource DockDarkToolBarButtonStyle}">
+                            <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        </Button>
+                    </StackPanel>
+                </Border>
 
-            <Separator Style="{DynamicResource DockToolBarSeparatorStyle}"/>
+                <Separator Style="{StaticResource DockDarkToolBarSeparatorStyle}" DockPanel.Dock="Left"/>
 
-            <!-- Apply grammar -->
-            <Button Command="{Binding ApplyGrammarCommand}"
-                    ToolTip="Apply selected grammar to active file"
-                    Style="{DynamicResource DockToolBarButtonStyle}">
-                <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                           Foreground="{DynamicResource DockAccentBrush}"/>
-            </Button>
+                <!-- Pod 2: Apply -->
+                <Border Style="{StaticResource DockToolBarPodStyle}" DockPanel.Dock="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <!-- Apply: Play \uE768 (accent colour) -->
+                        <Button Command="{Binding ApplyGrammarCommand}"
+                                ToolTip="Apply selected grammar (Enter)"
+                                Style="{StaticResource DockDarkToolBarButtonStyle}">
+                            <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="{DynamicResource DockAccentBrush}"/>
+                        </Button>
+                        <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
+                        <!-- Clear overlay: Delete \uE74D -->
+                        <Button Command="{Binding ClearGrammarCommand}"
+                                ToolTip="Clear grammar overlay from hex view"
+                                Style="{StaticResource DockDarkToolBarButtonStyle}">
+                            <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        </Button>
+                        <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
+                        <!-- Auto-apply toggle: SyncFolder \uE9A4 -->
+                        <ToggleButton IsChecked="{Binding IsAutoApply}"
+                                      ToolTip="Auto-apply grammar on file open"
+                                      Style="{StaticResource DockToolBarToggleButtonStyle}">
+                            <TextBlock Text="&#xE9A4;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+                        </ToggleButton>
+                    </StackPanel>
+                </Border>
+            </DockPanel>
+        </Border>
 
-            <Separator Style="{DynamicResource DockToolBarSeparatorStyle}"/>
-
-            <!-- Auto-apply toggle -->
-            <ToggleButton IsChecked="{Binding IsAutoApply}"
-                          ToolTip="Automatically apply grammar on file open"
-                          Style="{DynamicResource DockToolBarToggleButtonStyle}">
-                <TextBlock Text="&#xE773;" FontFamily="Segoe MDL2 Assets" FontSize="14"
-                           Foreground="{DynamicResource DockForegroundBrush}"/>
-            </ToggleButton>
-        </ToolBar>
-
-        <!-- ── Search ───────────────────────────────────────────────── -->
+        <!-- ── Search ───────────────────────────────────────────────────── -->
         <Border Grid.Row="1"
                 Background="{DynamicResource DockMenuBackgroundBrush}"
                 BorderBrush="{DynamicResource DockBorderBrush}"
@@ -75,13 +279,13 @@
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
 
                 <TextBox Grid.Column="1"
+                         x:Name="TbSearch"
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          Background="Transparent"
                          BorderThickness="0"
                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                          CaretBrush="{DynamicResource DockMenuForegroundBrush}"
-                         VerticalAlignment="Center"
-                         x:Name="TbSearch">
+                         VerticalAlignment="Center">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Triggers>
@@ -95,14 +299,19 @@
             </Grid>
         </Border>
 
-        <!-- ── Grammar list ─────────────────────────────────────────── -->
+        <!-- ── Grammar list ─────────────────────────────────────────────── -->
         <ListBox Grid.Row="2"
                  x:Name="LbGrammars"
                  ItemsSource="{Binding FilteredGrammars}"
                  SelectedItem="{Binding SelectedGrammar}"
                  Background="{DynamicResource DockBackgroundBrush}"
                  BorderThickness="0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ContextMenu="{StaticResource GrammarItemMenu}"
+                 MouseDoubleClick="OnListMouseDoubleClick">
+            <ListBox.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding RemoveGrammarCommand}"/>
+            </ListBox.InputBindings>
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Background"   Value="Transparent"/>
@@ -127,10 +336,9 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Source icon -->
+                        <!-- Source icon badge -->
                         <TextBlock Grid.Column="0"
                                    Text="{Binding SourceIcon}"
                                    FontFamily="Segoe MDL2 Assets"
@@ -156,30 +364,71 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <!-- ── Detail strip ─────────────────────────────────────────── -->
-        <Border Grid.Row="3"
-                Background="{DynamicResource DockMenuBackgroundBrush}"
-                BorderBrush="{DynamicResource DockBorderBrush}"
-                BorderThickness="0,1,0,0"
-                Padding="8,6"
-                MinHeight="60">
-            <StackPanel>
-                <TextBlock Text="{Binding SelectedInfo}"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           FontSize="10"
-                           Opacity="0.7"
-                           TextWrapping="Wrap"
-                           Margin="0,0,0,4"/>
-                <TextBlock Text="{Binding SelectedDescription}"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           FontSize="11"
-                           TextWrapping="Wrap"
-                           MaxHeight="60"
-                           TextTrimming="CharacterEllipsis"/>
-            </StackPanel>
-        </Border>
+        <!-- ── Tabbed detail (Info + Structure) ─────────────────────────── -->
+        <TabControl Grid.Row="3"
+                    Style="{StaticResource GETabControlStyle}"
+                    MinHeight="80" MaxHeight="220">
 
-        <!-- ── Status bar ───────────────────────────────────────────── -->
+            <!-- Tab 1: Info -->
+            <TabItem Header="Info" Style="{StaticResource GETabItemStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              Background="{DynamicResource DockMenuBackgroundBrush}">
+                    <StackPanel Margin="8,6">
+                        <TextBlock Text="{Binding SelectedInfo}"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   FontSize="10"
+                                   Opacity="0.7"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,4"/>
+                        <TextBlock Text="{Binding SelectedDescription}"
+                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                   FontSize="11"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Tab 2: Structure — UfwbStructure hierarchy TreeView -->
+            <TabItem Header="Structure" Style="{StaticResource GETabItemStyle}">
+                <TreeView ItemsSource="{Binding StructureNodes}"
+                          Background="{DynamicResource DockBackgroundBrush}"
+                          BorderThickness="0"
+                          Foreground="{DynamicResource DockMenuForegroundBrush}">
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate DataType="{x:Type vm:GrammarStructureNodeViewModel}"
+                                                  ItemsSource="{Binding Children}">
+                            <StackPanel Orientation="Horizontal" Margin="0,1">
+                                <TextBlock Text="{Binding Icon}"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="11"
+                                           Foreground="{DynamicResource DockAccentBrush}"
+                                           Margin="0,0,5,0"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding DisplayName}"
+                                           Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                           FontSize="11"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding TypeLabel}"
+                                           Foreground="{DynamicResource DockTabTextBrush}"
+                                           FontSize="10"
+                                           Margin="5,0,0,0"
+                                           Opacity="0.7"
+                                           VerticalAlignment="Center"
+                                           ToolTip="{Binding Tooltip}"/>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="TreeViewItem">
+                            <Setter Property="IsExpanded" Value="True"/>
+                            <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}"/>
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                </TreeView>
+            </TabItem>
+        </TabControl>
+
+        <!-- ── Status bar ───────────────────────────────────────────────── -->
         <Border Grid.Row="4"
                 Background="{DynamicResource DockStatusBarBackgroundBrush}"
                 Padding="8,3">

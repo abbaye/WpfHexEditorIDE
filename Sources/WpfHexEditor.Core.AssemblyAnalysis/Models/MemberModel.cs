@@ -64,6 +64,14 @@ public sealed class MemberModel
     public string? Signature { get; init; }
 
     /// <summary>
+    /// Raw byte length of the IL method body (header + code bytes).
+    /// Populated for method definitions only; 0 for fields, properties, events,
+    /// and abstract/extern/interface methods that have no body.
+    /// Used by the hex editor highlight feature to mark the exact byte range.
+    /// </summary>
+    public int ByteLength { get; init; }
+
+    /// <summary>
     /// Simple names of custom attributes applied to this member,
     /// e.g. ["Obsolete", "DllImport"]. Attribute suffix stripped.
     /// </summary>

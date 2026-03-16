@@ -6,6 +6,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using WpfHexEditor.Definitions;
 using WpfHexEditor.Editor.Core;
@@ -100,20 +101,49 @@ public sealed class CodeEditorFactory : IEditorFactory
         return mgr;
     }
 
-    // -- Token kind → brush mapping (VS-inspired defaults) -------------------
+    // -- Token kind → brush mapping ------------------------------------------
 
-    private static Brush TokenKindToBrush(SyntaxTokenKind kind) => kind switch
+    /// <summary>
+    /// Resolves a brush for <paramref name="kind"/> from active application resources (CE_* keys).
+    /// Falls back to hard-coded VS Dark defaults when resources are not yet loaded (e.g. design time).
+    /// </summary>
+    private static Brush TokenKindToBrush(SyntaxTokenKind kind)
     {
-        SyntaxTokenKind.Keyword    => new SolidColorBrush(Color.FromRgb(86,  156, 214)),  // VS blue
-        SyntaxTokenKind.String     => new SolidColorBrush(Color.FromRgb(214, 157, 133)),  // VS tan
-        SyntaxTokenKind.Number     => new SolidColorBrush(Color.FromRgb(181, 206, 168)),  // VS light green
-        SyntaxTokenKind.Comment    => new SolidColorBrush(Color.FromRgb(106, 153, 85)),   // VS green
-        SyntaxTokenKind.Type       => new SolidColorBrush(Color.FromRgb(78,  201, 176)),  // VS teal
-        SyntaxTokenKind.Identifier => new SolidColorBrush(Color.FromRgb(220, 220, 170)),  // VS yellow
-        SyntaxTokenKind.Operator   => new SolidColorBrush(Color.FromRgb(180, 180, 180)),  // light gray
-        SyntaxTokenKind.Bracket    => new SolidColorBrush(Color.FromRgb(255, 215, 0)),    // gold
-        SyntaxTokenKind.Attribute  => new SolidColorBrush(Color.FromRgb(176, 176, 255)),  // lavender
-        _                          => Brushes.White
+        var resourceKey = kind switch
+        {
+            SyntaxTokenKind.Keyword    => "CE_Keyword",
+            SyntaxTokenKind.String     => "CE_String",
+            SyntaxTokenKind.Number     => "CE_Number",
+            SyntaxTokenKind.Comment    => "CE_Comment",
+            SyntaxTokenKind.Type       => "CE_Type",
+            SyntaxTokenKind.Identifier => "CE_Identifier",
+            SyntaxTokenKind.Operator   => "CE_Operator",
+            SyntaxTokenKind.Bracket    => "CE_Bracket",
+            SyntaxTokenKind.Attribute  => "CE_Attribute",
+            _                          => "CE_Foreground"
+        };
+
+        if (Application.Current?.TryFindResource(resourceKey) is Brush themeBrush)
+            return themeBrush;
+
+        return FallbackBrush(kind);
+    }
+
+    /// <summary>
+    /// Hard-coded VS Dark fallback palette used when theme resources are unavailable.
+    /// </summary>
+    private static Brush FallbackBrush(SyntaxTokenKind kind) => kind switch
+    {
+        SyntaxTokenKind.Keyword    => new SolidColorBrush(Color.FromRgb(86,  156, 214)),  // #569CD6
+        SyntaxTokenKind.String     => new SolidColorBrush(Color.FromRgb(206, 145, 120)),  // #CE9178
+        SyntaxTokenKind.Number     => new SolidColorBrush(Color.FromRgb(181, 206, 168)),  // #B5CEA8
+        SyntaxTokenKind.Comment    => new SolidColorBrush(Color.FromRgb(106, 153, 85)),   // #6A9955
+        SyntaxTokenKind.Type       => new SolidColorBrush(Color.FromRgb(78,  201, 176)),  // #4EC9B0
+        SyntaxTokenKind.Identifier => new SolidColorBrush(Color.FromRgb(220, 220, 170)),  // #DCDCAA
+        SyntaxTokenKind.Operator   => new SolidColorBrush(Color.FromRgb(212, 212, 212)),  // #D4D4D4
+        SyntaxTokenKind.Bracket    => new SolidColorBrush(Color.FromRgb(255, 215, 0)),    // #FFD700
+        SyntaxTokenKind.Attribute  => new SolidColorBrush(Color.FromRgb(156, 220, 254)),  // #9CDCFE
+        _                          => new SolidColorBrush(Color.FromRgb(212, 212, 212))   // #D4D4D4
     };
 }
 

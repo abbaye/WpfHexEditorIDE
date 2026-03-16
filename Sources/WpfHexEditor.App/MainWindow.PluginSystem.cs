@@ -74,6 +74,10 @@ public partial class MainWindow
     private WpfHexEditor.Panels.IDE.Panels.PluginMonitoringPanel? _pendingPluginMonitorPanel;
     private WpfHexEditor.PluginHost.UI.PluginManagerControl? _pendingPluginManagerControl;
 
+    // VS solution path deferred from TryRestoreSession() because plugin loaders are not yet
+    // registered at startup. Opened at the end of InitializePluginSystemAsync once loaders are live.
+    private string? _pendingRestoreSolutionPath;
+
     // Dev tools (instantiated on first use)
     private PluginDevLoader? _pluginDevLoader;
 
@@ -304,6 +308,15 @@ public partial class MainWindow
                 _statusBarBlinkTimer.Tick += OnStatusBarBlinkTick;
 
                 UpdatePluginStatusBar();
+
+                // Restore a VS solution that was deferred in TryRestoreSession() because the
+                // plugin loaders (ISolutionLoader extensions) were not yet registered at that point.
+                if (!string.IsNullOrEmpty(_pendingRestoreSolutionPath))
+                {
+                    var deferredPath = _pendingRestoreSolutionPath;
+                    _pendingRestoreSolutionPath = null;
+                    _ = OpenSolutionAsync(deferredPath);
+                }
             });
         }
         catch (Exception ex)

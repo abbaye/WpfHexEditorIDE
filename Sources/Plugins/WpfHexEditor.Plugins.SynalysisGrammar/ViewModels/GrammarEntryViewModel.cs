@@ -13,6 +13,8 @@
 //     Theme: uses global IDE tokens via SetResourceReference in the panel XAML.
 // ==========================================================
 
+using WpfHexEditor.Core.SynalysisGrammar;
+
 namespace WpfHexEditor.Plugins.SynalysisGrammar.ViewModels;
 
 /// <summary>
@@ -54,6 +56,12 @@ public sealed class GrammarEntryViewModel
 
     /// <summary>Where this grammar entry was loaded from.</summary>
     public GrammarSource Source { get; init; }
+
+    /// <summary>
+    /// The fully-parsed grammar object. Used by the Structure tab TreeView.
+    /// Null when the grammar could not be loaded or has not been cached yet.
+    /// </summary>
+    public UfwbRoot? ParsedGrammar { get; init; }
 
     /// <summary>Icon glyph for the source badge.</summary>
     public string SourceIcon => Source switch

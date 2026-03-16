@@ -30,6 +30,8 @@
     <UserControl.Resources>
         <local:ChartPointsConverter x:Key="ChartPointsConverter"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <!-- Used in DataGrid GroupStyle to resolve CollectionViewGroup.Name → PluginGroupSummaryViewModel -->
+        <local:GroupSummaryConverter x:Key="GroupSummaryConverter"/>
 
         <!-- Export dropdown menu (opened programmatically on Export button click) -->
         <ContextMenu x:Key="ExportMenu" DataContext="{Binding}">
@@ -570,8 +572,29 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <!-- Weighted CPU% — process CPU distributed proportionally by plugin exec-time weight -->
-                    <DataGridTextColumn Header="CPU%" Binding="{Binding WeightedCpu, StringFormat={}{0:F1}%}" Width="55"/>
+                    <!-- CPU%: amber + "~" prefix for InProcess estimates, green for real Sandbox metrics -->
+                    <DataGridTemplateColumn Header="CPU%" Width="65" SortMemberPath="WeightedCpu">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center" Margin="4,2"
+                                           ToolTip="{Binding CpuTooltip}">
+                                    <Run Text="{Binding MetricsPrefix, Mode=OneWay}"/>
+                                    <Run Text="{Binding WeightedCpu, StringFormat={}{0:F1}%, Mode=OneWay}"/>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#4ADE80"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMetricsEstimated}" Value="True">
+                                                    <!-- Amber for estimated InProcess metrics -->
+                                                    <Setter Property="Foreground" Value="#F59E0B"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
                     <!--
                         Mini CPU sparkline — SparklineControl subscribes to CpuHistory.CollectionChanged
@@ -595,8 +618,29 @@
                     </DataGridTemplateColumn>
 
                     <DataGridTextColumn Header="Peak%"  Binding="{Binding PeakCpu, StringFormat={}{0:F1}%}"    Width="55"/>
-                    <!-- Weighted memory — process GC heap distributed proportionally by plugin exec-time weight -->
-                    <DataGridTextColumn Header="Mem MB" Binding="{Binding WeightedMemMb}"                     Width="60"/>
+                    <!-- Mem MB: amber for InProcess GC estimates, blue for real Sandbox private memory -->
+                    <DataGridTemplateColumn Header="Mem MB" Width="65" SortMemberPath="MemoryDisplayMb">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center" Margin="4,2"
+                                           ToolTip="{Binding MemTooltip}">
+                                    <Run Text="{Binding MetricsPrefix, Mode=OneWay}"/>
+                                    <Run Text="{Binding MemoryDisplayMb, Mode=OneWay}"/>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#60A5FA"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMetricsEstimated}" Value="True">
+                                                    <!-- Amber for estimated InProcess metrics -->
+                                                    <Setter Property="Foreground" Value="#F59E0B"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
                     <!--
                         Mini Memory sparkline — same pattern as CPU sparkline above.
@@ -622,6 +666,175 @@
                     <DataGridTextColumn Header="Avg ms"  Binding="{Binding AvgExecMs, StringFormat={}{0:F1}}"        Width="60"/>
                     <DataGridTextColumn Header="Init ms" Binding="{Binding InitTimeMs, StringFormat={}{0:F0}}"       Width="60"/>
                 </DataGrid.Columns>
+
+                <!--
+                    DataGrid group headers: one row per isolation category (In Process / Sandbox).
+                    DataContext of each GroupItem = CollectionViewGroup (Name, ItemCount).
+                    GroupSummaryConverter maps (CollectionViewGroup, PluginMonitoringViewModel) → PluginGroupSummaryViewModel,
+                    which is set as DataContext of the inner SummaryGrid so child bindings resolve naturally.
+                    ExpandToggle (ToggleButton) controls ItemsPresenter visibility via ElementName binding.
+                -->
+                <DataGrid.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="GroupItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="GroupItem">
+                                            <StackPanel>
+                                                <!-- Group header strip -->
+                                                <Border Background="{DynamicResource DockGroupHeaderBrush}"
+                                                        BorderBrush="{DynamicResource DockBorderBrush}"
+                                                        BorderThickness="0,1,0,1"
+                                                        Padding="4,3">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="20"/>   <!-- expand toggle -->
+                                                            <ColumnDefinition Width="Auto"/> <!-- icon -->
+                                                            <ColumnDefinition Width="Auto"/> <!-- category label -->
+                                                            <ColumnDefinition Width="Auto"/> <!-- count chip -->
+                                                            <ColumnDefinition Width="*"/>    <!-- spacer -->
+                                                            <ColumnDefinition Width="Auto"/> <!-- CPU aggregate -->
+                                                            <ColumnDefinition Width="Auto"/> <!-- Mem aggregate -->
+                                                            <ColumnDefinition Width="Auto"/> <!-- metrics note -->
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <!-- Expand / collapse toggle -->
+                                                        <ToggleButton x:Name="ExpandToggle"
+                                                                      Grid.Column="0"
+                                                                      IsChecked="True"
+                                                                      VerticalAlignment="Center"
+                                                                      HorizontalAlignment="Center"
+                                                                      Background="Transparent"
+                                                                      BorderThickness="0"
+                                                                      Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                                                      FontFamily="Segoe MDL2 Assets"
+                                                                      FontSize="10"
+                                                                      Padding="0"
+                                                                      Cursor="Hand">
+                                                            <ToggleButton.Style>
+                                                                <Style TargetType="ToggleButton">
+                                                                    <Setter Property="Content" Value="&#xE972;"/> <!-- ChevronDown -->
+                                                                    <Setter Property="Template">
+                                                                        <Setter.Value>
+                                                                            <ControlTemplate TargetType="ToggleButton">
+                                                                                <Border Background="Transparent" Padding="2">
+                                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                                </Border>
+                                                                            </ControlTemplate>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsChecked" Value="False">
+                                                                            <Setter Property="Content" Value="&#xE974;"/> <!-- ChevronRight (collapsed) -->
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </ToggleButton.Style>
+                                                        </ToggleButton>
+
+                                                        <!--
+                                                            SummaryGrid: DataContext resolved to PluginGroupSummaryViewModel
+                                                            via GroupSummaryConverter(CollectionViewGroup, PluginMonitoringViewModel).
+                                                            RelativeSource AncestorType=DataGrid reaches the panel VM.
+                                                        -->
+                                                        <Grid Grid.Column="1" Grid.ColumnSpan="7">
+                                                            <Grid.DataContext>
+                                                                <MultiBinding Converter="{StaticResource GroupSummaryConverter}">
+                                                                    <!-- CollectionViewGroup (outer DataContext) -->
+                                                                    <Binding/>
+                                                                    <!-- PluginMonitoringViewModel via DataGrid -->
+                                                                    <Binding RelativeSource="{RelativeSource AncestorType=DataGrid}" Path="DataContext"/>
+                                                                </MultiBinding>
+                                                            </Grid.DataContext>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto"/> <!-- icon -->
+                                                                <ColumnDefinition Width="Auto"/> <!-- category label -->
+                                                                <ColumnDefinition Width="Auto"/> <!-- count chip -->
+                                                                <ColumnDefinition Width="*"/>    <!-- spacer -->
+                                                                <ColumnDefinition Width="Auto"/> <!-- CPU aggregate -->
+                                                                <ColumnDefinition Width="Auto"/> <!-- Mem aggregate -->
+                                                                <ColumnDefinition Width="Auto"/> <!-- metrics note -->
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <!-- Category icon (Segoe MDL2 glyph, colored) -->
+                                                            <TextBlock Grid.Column="0"
+                                                                       Text="{Binding CategoryIcon}"
+                                                                       FontFamily="Segoe MDL2 Assets"
+                                                                       FontSize="11"
+                                                                       Foreground="{Binding CategoryColor}"
+                                                                       VerticalAlignment="Center"
+                                                                       Margin="0,0,5,0"/>
+
+                                                            <!-- Category label ("In Process" / "Sandbox") -->
+                                                            <TextBlock Grid.Column="1"
+                                                                       Text="{Binding Category}"
+                                                                       FontWeight="SemiBold"
+                                                                       FontSize="11"
+                                                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                                                       VerticalAlignment="Center"
+                                                                       Margin="0,0,6,0"/>
+
+                                                            <!-- Count chip: "12/14" -->
+                                                            <Border Grid.Column="2"
+                                                                    Background="#22FFFFFF"
+                                                                    CornerRadius="8"
+                                                                    Padding="5,1"
+                                                                    Margin="0,0,8,0"
+                                                                    VerticalAlignment="Center">
+                                                                <TextBlock Text="{Binding CountChip}"
+                                                                           FontSize="10"
+                                                                           Foreground="{Binding CategoryColor}"/>
+                                                            </Border>
+
+                                                            <!-- Aggregate CPU -->
+                                                            <StackPanel Grid.Column="4" Orientation="Horizontal"
+                                                                        Margin="0,0,12,0" VerticalAlignment="Center">
+                                                                <TextBlock Text="CPU "
+                                                                           FontSize="10"
+                                                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                                                           Opacity="0.6"/>
+                                                                <TextBlock Text="{Binding AggregateCpu, StringFormat={}{0:F1}%}"
+                                                                           FontSize="10"
+                                                                           FontWeight="SemiBold"
+                                                                           Foreground="#4ADE80"/>
+                                                            </StackPanel>
+
+                                                            <!-- Aggregate Memory -->
+                                                            <StackPanel Grid.Column="5" Orientation="Horizontal"
+                                                                        Margin="0,0,12,0" VerticalAlignment="Center">
+                                                                <TextBlock Text="Mem "
+                                                                           FontSize="10"
+                                                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                                                           Opacity="0.6"/>
+                                                                <TextBlock Text="{Binding AggregateMem, StringFormat={}{0} MB}"
+                                                                           FontSize="10"
+                                                                           FontWeight="SemiBold"
+                                                                           Foreground="#60A5FA"/>
+                                                            </StackPanel>
+
+                                                            <!-- Metrics quality note -->
+                                                            <TextBlock Grid.Column="6"
+                                                                       Text="{Binding MetricsNote}"
+                                                                       FontSize="9"
+                                                                       FontStyle="Italic"
+                                                                       Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                                                                       Opacity="0.5"
+                                                                       VerticalAlignment="Center"/>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Border>
+
+                                                <!-- Plugin rows — collapsed/expanded via ExpandToggle.IsChecked -->
+                                                <ItemsPresenter Visibility="{Binding IsChecked, ElementName=ExpandToggle, Converter={StaticResource BoolToVis}}"/>
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </DataGrid.GroupStyle>
 
                 <!-- Context menu on each row: Reload / Enable-Disable / Open in Manager / Uninstall        -->
                 <!-- DataContext fix: ContextMenu lives in a Popup (not in the visual tree).               -->
